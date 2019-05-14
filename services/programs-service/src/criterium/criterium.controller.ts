@@ -20,18 +20,18 @@ export class CriteriumController {
 
   constructor(private readonly criteriumService: CriteriumService) {}
 
-  // @Get()
-  // async findAll(): Promise<CriteriumEntity[]> {
-  //   return await this.criteriumService.findAll();
-  // }
+  @Get()
+  async findAll(): Promise<CriteriumEntity[]> {
+    return await this.criteriumService.findAll();
+  }
 
-  // @ApiOperation({ title: 'Create criterium' })
-  // @ApiResponse({ status: 201, description: 'The criterium has been successfully created.'})
-  // @ApiResponse({ status: 403, description: 'Forbidden.' })
-  // // @ApiImplicitBody({ name: 'CreateCriteriumDto', description: '', type: CreateCriteriumDto })
-  // @Post()
-  // async create(@Body() criteriumData: CreateCriteriumDto) {
-  //   return this.criteriumService.create(criteriumData);
-  // }
+  @ApiOperation({ title: 'Create criterium' })
+  @ApiResponse({ status: 201, description: 'The criterium has been successfully created.'})
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  // @ApiImplicitBody({ name: 'CreateCriteriumDto', description: '', type: CreateCriteriumDto })
+  @Post()
+  async create(@Body() criteriumData: CreateCriteriumDto) {
+    return this.criteriumService.create(criteriumData);
+  }
 
 }
