@@ -1,0 +1,10 @@
+{
+  "type": "postgres",
+  "host": "510cradatabase.postgres.database.azure.com",
+  "port": 5432,
+  "username": "cradatabase@510cradatabase",
+  "password": "7Trk5wkY7SzY5bfREGY6",
+  "database": "global121",
+  "entities": ["src/**/**.entity{.ts,.js}"],
+  "synchronize": true
+}
