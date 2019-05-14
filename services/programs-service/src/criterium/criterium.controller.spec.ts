@@ -35,7 +35,7 @@ describe('CriteriumController', () => {
         {
           id: 2,
           criterium: 'bla',
-          type: 'bla'
+          answerType: 'bla'
         },
       ];
       jest.spyOn(criteriumService, 'findAll').mockImplementation(() => Promise.resolve(result));
