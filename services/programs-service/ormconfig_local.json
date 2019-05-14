@@ -1,0 +1,10 @@
+{
+  "type": "postgres",
+  "host": "121db",
+  "port": 5432,
+  "username": "global121",
+  "password": "global121",
+  "database": "global121",
+  "entities": ["src/**/**.entity{.ts,.js}"],
+  "synchronize": true
+}
