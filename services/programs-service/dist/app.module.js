@@ -17,6 +17,7 @@ const user_module_1 = require("./user/user.module");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const option_module_1 = require("./option/option.module");
+const health_module_1 = require("./health.module");
 let ApplicationModule = class ApplicationModule {
     constructor(connection) {
         this.connection = connection;
@@ -30,6 +31,7 @@ ApplicationModule = __decorate([
             criterium_module_1.CriteriumModule,
             user_module_1.UserModule,
             option_module_1.OptionModule,
+            health_module_1.HealthModule
         ],
         controllers: [
             app_controller_1.AppController
