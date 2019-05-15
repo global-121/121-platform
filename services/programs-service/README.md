@@ -83,8 +83,8 @@ Possibly rebuild/rerun by changing this to:
 
 ## How tu use Swagger (with authorization features)
 - Access Swagger API via `http://localhost:3000/docs`
-- If you have no users-in your database yet, start with 'USER /POST user'. Leave the default input as is, and execute.
-- If you already have created the above user earlier, start with 'USER /POST user/ogin'. Leave the default input as is, and execute.
+- If you have no users in your database yet, start with 'USER /POST user'. Leave the default input as is, and execute.
+- If you already have created the above user earlier, start with 'USER /POST user/login'. Leave the default input as is, and execute.
 - In either case, copy the value of the Token-attribute from the output.
 - Click 'Authorize' (top-right) and fill in 'bearer <copied token>'
 - This will now give you access to all hitherto forbidden API-calls.

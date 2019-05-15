@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { OptionModule } from './option/option.module';
+import { HealthModule } from './health.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { OptionModule } from './option/option.module';
     CriteriumModule,
     UserModule,
     OptionModule,
+    HealthModule
   ],
   controllers: [
     AppController
