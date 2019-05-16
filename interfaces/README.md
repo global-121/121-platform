@@ -21,6 +21,10 @@ The tools to run or build all interfaces:
 ### Specific requirements
 Every interface or app will have their own requirements defined in their README file.
 
+### Development tools
+- [Prettier](https://prettier.io) is used to keep code-styling consistent and changes to the codebase minimal.
+
+
 ### Backend / API
 Every interface or app will refer to their specific services of APIs.
 
