@@ -1,0 +1,4 @@
+# Global Git ignore settings:
+
+## IDE-specific files:
+.vscode/
