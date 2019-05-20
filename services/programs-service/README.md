@@ -38,22 +38,24 @@ Create a new local Postgres-database through Docker with:
 
 Copy Typeorm config example file for database settings
 
-    cp ormconfig.json.example ormconfig.json
+    cp ormconfig.json.example ormconfig.json    
 
-Set database settings in `ormconfig.json`
+& fill in the password.
 
     {
-      "type": "postgres",
-      "host": "121db",
-      "port": 5432,
-      "username": "global121",
-      "password": "global121",
-      "database": "global121",
-      "entities": ["src/**/**.entity{.ts,.js}"],
-      "synchronize": true
+    "type": "postgres",
+    "host": "121db",
+    "port": 5432,
+    "username": "global121",
+    "password": "<secret>",
+    "database": "global121",
+    "entities": ["src/**/**.entity{.ts,.js}"],
+    "synchronize": true
     }
 
-On application start, tables for all entities will be created.
+On application start, tables for all entities will be created automatically.
+
+When running this setup locally, you can access the dockerized database for example through pgAdmin (or any other GUI) on port 5438 (as that's where the docker container's port forwarding goes).
 
 ----------
 
