@@ -18,7 +18,6 @@ strategy:
 
 steps:
 - task: NodeTool@0
-  name: "Run Tests"
   inputs:
     versionSpec: $(node_version)
 
