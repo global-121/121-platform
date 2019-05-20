@@ -1,5 +1,5 @@
 import { createParamDecorator } from '@nestjs/common';
-import { SECRET } from '../config';
+import { SECRET } from '../secrets';
 import * as jwt from 'jsonwebtoken';
 
 export const User = createParamDecorator((data, req) => {
