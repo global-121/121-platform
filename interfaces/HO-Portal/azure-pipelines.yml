@@ -1,0 +1,26 @@
+# See: https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  branches:
+    include:
+    - master
+    - releases/*
+  paths:
+    include:
+    - interfaces/HO-Portal/*
+
+pool:
+  vmImage: 'ubuntu-16.04'
+strategy:
+  matrix:
+    node_10_x:
+      node_version: 10.x
+
+steps:
+- task: NodeTool@0
+  name: "Run Tests"
+  inputs:
+    versionSpec: $(node_version)
+
+- script: npm install && npm run lint
+  workingDirectory: interfaces/HO-Portal/
