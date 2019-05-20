@@ -1,31 +1,27 @@
-# 121 - HO-portal
+# Programs-Service
 
-## Introduction
-
-This is the backend for the Programs Service / Humanitarian Organization web portal, where 121-programs can be created and monitored, etc.
+The Programs Service is the backend for the  *Humanitarian Organization* web portal, where 121-programs can be created and monitored, etc.
 
 ----------
 
-# Getting started
-
-## Installation
+## Getting started / Installation
 
 Clone the repository
 
     git clone https://github.com/global-121/121.global.git
 
-Switch to the repo folder
+Switch to the repository folder
 
     cd service/programs-service/
-    
+
 Install dependencies
-    
+
     npm install
 
 Copy config file and set JsonWebToken secret key
 
     cp src/config.ts.example src/config.ts
-    
+
 ----------
 
 ## Database
@@ -36,7 +32,7 @@ Install Docker & create a Docker network (needed because we will create separate
 
     docker network create 121network
 
-Create a new local postgres-database through Docker with: 
+Create a new local Postgres-database through Docker with:
 
     docker run --name 121db -p 5438:5432 -e POSTGRES_USER=global121 -e POSTGRES_PASSWORD=global121 -e POSTGRES_DB=global121 -t --restart always --network 121network -v ${PWD}/postgresql.conf:/etc/postgresql.conf -d postgres:9.6 -c 'config_file=/etc/postgresql.conf'
 
@@ -77,17 +73,17 @@ If you've already created the container before and just want to start again:
 
     docker start -i 121-programs-service
 
-The Docker container automatically runs 'npm start' (defined in Dockerfile)
+The Docker container automatically runs `npm start` (defined in Dockerfile)
 Possibly rebuild/rerun by changing this to:
-- `npm run start:dev` (uses tswatch instead of nodemon)
-- `npm run start:watch` (to use with nodemon for restart upon change)
+- `npm run start:dev` (uses `tswatch` instead of `nodemon`)
+- `npm run start:watch` (to use with `nodemon` for restart upon change)
 
-## How tu use Swagger (with authorization features)
+## How to use Swagger (with authorization features)
 - Access Swagger API via `http://localhost:3000/docs`
 - If you have no users in your database yet, start with 'USER /POST user'. Leave the default input as is, and execute.
 - If you already have created the above user earlier, start with 'USER /POST user/login'. Leave the default input as is, and execute.
 - In either case, copy the value of the Token-attribute from the output.
-- Click 'Authorize' (top-right) and fill in 'bearer <copied token>'
+- Click 'Authorize' (top-right) and fill in `Bearer <copied token>`
 - This will now give you access to all hitherto forbidden API-calls.
 - NOTE: for ease of development, if not logged in, it will take the standard login. So you do need to create one user with email test@test.nl, but the Authorize part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of Swagger, i.e. after each code change.
 
@@ -97,17 +93,17 @@ Possibly rebuild/rerun by changing this to:
 
 - `npm start` - Start application
 - `npm run start:watch` - Start application in watch mode
-- `npm run test` - run Jest test runner 
+- `npm run test` - run Jest test runner
 - `npm run start:prod` - Build application
 
 ----------
 
-# Authentication
- 
+## Authentication
+
 This applications uses JSON Web Token (JWT) to handle authentication. The token is passed with each request using the `Authorization` header with `Token` scheme. The JWT authentication middleware handles the validation and authentication of the token. Please check the following sources to learn more about JWT.
 
 ----------
- 
-# Swagger API docs
 
-This example repo uses the NestJS swagger module for API documentation. [NestJS Swagger](https://github.com/nestjs/swagger) - [www.swagger.io](https://swagger.io/)        
+## Swagger API docs
+
+We use the NestJS swagger module for API documentation. [NestJS Swagger](https://github.com/nestjs/swagger) - [swagger.io](https://swagger.io/)

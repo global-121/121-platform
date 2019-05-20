@@ -1,0 +1,9 @@
+# Rules for all interfaces:
+
+## Third-party code:
+node_modules/
+
+
+## Temporary/Generated code/files:
+dist/
+*.js.map
