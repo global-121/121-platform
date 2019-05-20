@@ -16,7 +16,7 @@ node_modules
 
 #config files
 ormconfig.json
-src/config.ts
+src/secrets.ts
 
 # code testing coverage
 coverage
