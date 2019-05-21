@@ -11,16 +11,12 @@ trigger:
   paths:
     include:
     - services/programs-service/*
-pr:
-  branches:
-    include:
-    - master
-  paths:
-    include:
-    - services/programs-service/*
+    exclude:
+    - "!services/programs-service/*"
 
 pool:
   vmImage: 'ubuntu-16.04'
+  
 strategy:
   matrix:
     node_10_x:
