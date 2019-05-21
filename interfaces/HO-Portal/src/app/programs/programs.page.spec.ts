@@ -26,10 +26,10 @@ describe('ProgramsPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have a list of 10 elements', () => {
+  it('should have a list of 9 elements', () => {
     programsPage = fixture.nativeElement;
     const items = programsPage.querySelectorAll('ion-item');
-    expect(items.length).toEqual(10);
+    expect(items.length).toEqual(9);
   });
 
 });
