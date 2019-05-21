@@ -4,15 +4,22 @@
 trigger:
   branches:
     include:
-    - master
-    - releases/*
+    - "*"
+  paths:
+    include:
+    - services/programs-service/*
+
+pr:
+  branches:
+    include:
+    - "*"
   paths:
     include:
     - services/programs-service/*
 
 pool:
   vmImage: 'ubuntu-16.04'
-  
+
 strategy:
   matrix:
     node_10_x:

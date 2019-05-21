@@ -4,8 +4,15 @@
 trigger:
   branches:
     include:
-    - master
-    - releases/*
+    - "*"
+  paths:
+    include:
+    - interfaces/HO-Portal/*
+
+pr:
+  branches:
+    include:
+    - "*"
   paths:
     include:
     - interfaces/HO-Portal/*
