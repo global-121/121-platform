@@ -1,8 +1,5 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, ManyToOne, OneToMany} from "typeorm";
-import {IsEmail, Validate} from "class-validator";
-import * as crypto from 'crypto';
-import { Type } from "class-transformer";
-import { OptionEntity } from '../option/option.entity';
+import {Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, ManyToOne, OneToMany} from "typeorm";
+import { UserEntity } from '../user/user.entity';
 
 @Entity('criterium')
 export class CriteriumEntity {
@@ -15,5 +12,22 @@ export class CriteriumEntity {
 
   @Column()
   answerType: string;
+
+  @Column()
+  criteriumType: string;
+
+  @Column({ type: 'timestamp', default: () => "CURRENT_TIMESTAMP"})
+  created: Date;
+
+  @Column({ type: 'timestamp', default: () => "CURRENT_TIMESTAMP"})
+  updated: Date;
+
+  @BeforeUpdate()
+  updateTimestamp() {
+    this.updated = new Date;
+  }
+
+  @ManyToOne(type => UserEntity, user => user.criteriums)
+  author: UserEntity;
 
 }
