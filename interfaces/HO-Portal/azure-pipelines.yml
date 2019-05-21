@@ -5,10 +5,17 @@ trigger:
   branches:
     include:
     - master
-    - releases/*
   paths:
     include:
-    - interfaces/HO-Portal/*
+    - ./interfaces/HO-Portal/*
+
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - ./interfaces/HO-Portal/*
 
 pool:
   vmImage: 'ubuntu-16.04'
