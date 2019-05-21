@@ -13,15 +13,4 @@ export class CountryEntity {
   @Column("numeric", {array:true, nullable: true})
   criteriumIds: number[];
 
-  @Column({ type: 'timestamp', default: () => "CURRENT_TIMESTAMP"})
-  created: Date;
-
-  @Column({ type: 'timestamp', default: () => "CURRENT_TIMESTAMP"})
-  updated: Date;
-
-  @BeforeUpdate()
-  updateTimestamp() {
-    this.updated = new Date;
-  }
-
 }
