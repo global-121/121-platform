@@ -4,10 +4,10 @@
 trigger:
   branches:
     include:
-    - master
+    - "*"
   paths:
     include:
-    - ./services/programs-service/*
+    - services/programs-service/*
 
 pr:
   branches:
@@ -15,7 +15,7 @@ pr:
     - "*"
   paths:
     include:
-    - ./services/programs-service/*
+    - services/programs-service/*
 
 pool:
   vmImage: 'ubuntu-16.04'
