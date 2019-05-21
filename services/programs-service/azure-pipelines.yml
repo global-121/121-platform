@@ -1,21 +1,14 @@
 # See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema
 # See: https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-trigger:
-  branches:
-    include:
-    - "*"
-  paths:
-    include:
-    - services/programs-service/*
-
+trigger: none
 pr:
   branches:
     include:
-    - "*"
+    - master
   paths:
     include:
-    - services/programs-service/*
+    - 'services/programs-service/*'
 
 pool:
   vmImage: 'ubuntu-16.04'

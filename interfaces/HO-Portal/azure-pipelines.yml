@@ -1,21 +1,14 @@
 # See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema
 # See: https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-trigger:
-  branches:
-    include:
-    - "*"
-  paths:
-    include:
-    - interfaces/HO-Portal/*
-
+trigger: none
 pr:
   branches:
     include:
-    - "*"
+    - master
   paths:
     include:
-    - interfaces/HO-Portal/*
+    - 'interfaces/HO-Portal/*'
 
 pool:
   vmImage: 'ubuntu-16.04'
