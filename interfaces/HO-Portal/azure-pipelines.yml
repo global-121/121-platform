@@ -31,23 +31,26 @@ steps:
 
 - script: npm install
   displayName: Install
-  workingDirectory: $(System.DefaultWorkingDirectory)/interfaces/HO-Portal/
+  workingDirectory: interfaces/HO-Portal/
 
 - script: npm run lint
   displayName: Linting
-  workingDirectory: $(System.DefaultWorkingDirectory)/interfaces/HO-Portal/
+  workingDirectory: interfaces/HO-Portal/
 
 - script: npm run test:ci
   displayName: Tests
-  workingDirectory: $(System.DefaultWorkingDirectory)/interfaces/HO-Portal/
+  workingDirectory: interfaces/HO-Portal/
 
-- script: npm run build --prod
+- script: npm run build -- --prod
   displayName: Build
-  workingDirectory: $(System.DefaultWorkingDirectory)/interfaces/HO-Portal/
+  workingDirectory: interfaces/HO-Portal/
 
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: cobertura
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
 
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/TEST-*.xml'
