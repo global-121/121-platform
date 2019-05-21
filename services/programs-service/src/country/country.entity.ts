@@ -10,7 +10,7 @@ export class CountryEntity {
   @Column()
   country: string;
 
-  @Column("text", {array:true, nullable: true})
+  @Column("numeric", {array:true, nullable: true})
   criteriumIds: number[];
 
   @Column({ type: 'timestamp', default: () => "CURRENT_TIMESTAMP"})

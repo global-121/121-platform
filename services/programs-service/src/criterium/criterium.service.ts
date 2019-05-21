@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CriteriumEntity } from './criterium.entity';
 import { UserEntity } from '../user/user.entity';
 import { CreateCriteriumDto } from './dto';
+import { CountryEntity } from '../country/country.entity';
 
 @Injectable()
 export class CriteriumService {
@@ -11,11 +12,22 @@ export class CriteriumService {
     @InjectRepository(CriteriumEntity)
     private readonly criteriumRepository: Repository<CriteriumEntity>,
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>
+    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(CountryEntity)
+    private readonly countryRepository: Repository<CountryEntity>
   ) {}
 
   async findAll(): Promise<CriteriumEntity[]> {
     return await this.criteriumRepository.find();
+  }
+
+  async find(countryId: number): Promise<CriteriumEntity[]> {
+    const country = await this.countryRepository.findOne(countryId);
+    console.log(country.criteriumIds);
+    return await this.criteriumRepository
+            .createQueryBuilder('table')
+            .where("table.id IN (:...criteriums)", { criteriums: country.criteriumIds })
+            .getMany();
   }
 
   async create(userId: number, criteriumData: CreateCriteriumDto): Promise<CriteriumEntity> {

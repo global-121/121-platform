@@ -19,11 +19,6 @@ export class CountryService {
     return await this.countryRepository.find();
   }
 
-  async findOne(where): Promise<CountryRO> {
-    const country = await this.countryRepository.findOne(where);
-    return {country};
-  }
-
   async create(countryData: CreateCountryDto): Promise<CountryEntity> {
 
     let country = new CountryEntity();

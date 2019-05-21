@@ -12,6 +12,7 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
+import { URLSearchParams } from 'url';
 
 @ApiBearerAuth()
 @ApiUseTags('countrys')
@@ -20,6 +21,8 @@ export class CountryController {
 
   constructor(private readonly countryService: CountryService) {}
 
+  
+  @ApiOperation({ title: 'Get all criteria' })
   @Get()
   async findAll(): Promise<CountryEntity[]> {
     return await this.countryService.findAll();
