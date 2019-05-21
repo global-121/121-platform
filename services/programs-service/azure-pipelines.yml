@@ -10,6 +10,9 @@ trigger:
     - ./services/programs-service/*
 
 pr:
+  branches:
+    include:
+    - "*"
   paths:
     include:
     - ./services/programs-service/*
