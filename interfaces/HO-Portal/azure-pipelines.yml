@@ -8,17 +8,12 @@ trigger:
   paths:
     include:
     - interfaces/HO-Portal/*
-
-pr:
-  branches:
-    include:
-    - master
-  paths:
-    include:
-    - interfaces/HO-Portal/*
+    exclude:
+    - !interfaces/HO-Portal/
 
 pool:
   vmImage: 'ubuntu-16.04'
+
 strategy:
   matrix:
     node_10_x:
@@ -31,23 +26,21 @@ steps:
 
 - script: npm install
   displayName: Install
-  workingDirectory: $(System.DefaultWorkingDirectory)/interfaces/HO-Portal/
+  workingDirectory: interfaces/HO-Portal/
 
 - script: npm run lint
   displayName: Linting
-  workingDirectory: $(System.DefaultWorkingDirectory)/interfaces/HO-Portal/
+  workingDirectory: interfaces/HO-Portal/
 
 - script: npm run test:ci
   displayName: Tests
-  workingDirectory: $(System.DefaultWorkingDirectory)/interfaces/HO-Portal/
+  workingDirectory: interfaces/HO-Portal/
 
-- script: npm run build --prod
+- script: npm run build -- --prod
   displayName: Build
-  workingDirectory: $(System.DefaultWorkingDirectory)/interfaces/HO-Portal/
+  workingDirectory: interfaces/HO-Portal/
 
 - task: PublishCodeCoverageResults@1
   inputs:
     codeCoverageTool: cobertura
     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
-
