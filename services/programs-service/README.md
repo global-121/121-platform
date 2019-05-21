@@ -1,4 +1,5 @@
-# Programs-Service
+Programs-Service
+================
 
 The Programs Service is the backend for the  *Humanitarian Organization* web portal, where 121-programs can be created and monitored, etc.
 
@@ -26,7 +27,7 @@ Copy config file and set JsonWebToken secret key
 
 ## Database
 
-The example codebase uses [Typeorm](http://typeorm.io/) with a Dockerized Postgres database.
+The example codebase uses [TypeORM](http://typeorm.io/) with a Dockerized Postgres database.
 
 Install Docker & create a Docker network (needed because we will create separate Docker containers for DB and for app, which need to be linked) through:
 
@@ -36,22 +37,24 @@ Create a new local Postgres-database through Docker with:
 
     docker run --name 121db -p 5438:5432 -e POSTGRES_USER=global121 -e POSTGRES_PASSWORD=global121 -e POSTGRES_DB=global121 -t --restart always --network 121network -v ${PWD}/postgresql.conf:/etc/postgresql.conf -d postgres:9.6 -c 'config_file=/etc/postgresql.conf'
 
-Copy Typeorm config example file for database settings
+Copy TypeORM config example file for database settings
 
-    cp ormconfig.json.example ormconfig.json    
+    cp ormconfig.json.example ormconfig.json
 
 & fill in the password.
 
-    {
-    "type": "postgres",
-    "host": "121db",
-    "port": 5432,
-    "username": "global121",
-    "password": "<secret>",
-    "database": "global121",
-    "entities": ["src/**/**.entity{.ts,.js}"],
-    "synchronize": true
-    }
+```json
+{
+  "type": "postgres",
+  "host": "121db",
+  "port": 5432,
+  "username": "global121",
+  "password": "<secret>",
+  "database": "global121",
+  "entities": ["src/**/**.entity{.ts,.js}"],
+  "synchronize": true
+}
+```
 
 On application start, tables for all entities will be created automatically.
 
@@ -100,7 +103,7 @@ Possibly rebuild/rerun by changing this to:
 
 ## Authentication
 
-This applications uses JSON Web Token (JWT) to handle authentication. The token is passed with each request using the `Authorization` header with `Token` scheme. The JWT authentication middleware handles the validation and authentication of the token. Please check the following sources to learn more about JWT.
+This applications uses [JSON Web Token](https://jwt.io/) (JWT) to handle authentication. The token is passed with each request using the `Authorization` header with `Token` scheme. The JWT authentication middleware handles the validation and authentication of the token.
 
 ----------
 
