@@ -26,7 +26,7 @@ Copy config file and set JsonWebToken secret key
 
 ## Database
 
-The example codebase uses [Typeorm](http://typeorm.io/) with a Dockerized Postgres database.
+The example codebase uses [TypeORM](http://typeorm.io/) with a Dockerized Postgres database.
 
 Install Docker & create a Docker network (needed because we will create separate Docker containers for DB and for app, which need to be linked) through:
 
@@ -36,7 +36,7 @@ Create a new local Postgres-database through Docker with:
 
     docker run --name 121db -p 5438:5432 -e POSTGRES_USER=global121 -e POSTGRES_PASSWORD=global121 -e POSTGRES_DB=global121 -t --restart always --network 121network -v ${PWD}/postgresql.conf:/etc/postgresql.conf -d postgres:9.6 -c 'config_file=/etc/postgresql.conf'
 
-Copy Typeorm config example file for database settings
+Copy TypeORM config example file for database settings
 
     cp ormconfig.json.example ormconfig.json    
 
