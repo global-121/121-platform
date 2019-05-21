@@ -11,7 +11,13 @@ trigger:
   paths:
     include:
     - services/programs-service/*
-
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - services/programs-service/*
 
 pool:
   vmImage: 'ubuntu-16.04'
@@ -21,11 +27,14 @@ strategy:
       node_version: 10.x
 
 steps:
-- task: NodeTool@0 
+- task: NodeTool@0
   inputs:
     versionSpec: $(node_version)
 
-- script: npm install && npm test
+- script: npm install
+  displayName: Install
   workingDirectory: services/programs-service/
 
-
+- script: npm test
+  displayName: Tests
+  workingDirectory: services/programs-service/
