@@ -3,7 +3,7 @@ import {Get, Post, Body, Controller } from '@nestjs/common';
 import { CriteriumEntity } from './criterium.entity';
 import { CriteriumService } from './criterium.service';
 import { CreateCriteriumDto } from './dto';
-//import { User } from '../user/user.decorator';
+import { User } from '../user/user.decorator';
 
 import {
   ApiUseTags,
@@ -30,8 +30,8 @@ export class CriteriumController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   // @ApiImplicitBody({ name: 'CreateCriteriumDto', description: '', type: CreateCriteriumDto })
   @Post()
-  async create(@Body() criteriumData: CreateCriteriumDto) {
-    return this.criteriumService.create(criteriumData);
+  async create(@User('id') userId: number, @Body() criteriumData: CreateCriteriumDto) {
+    return this.criteriumService.create(userId, criteriumData);
   }
 
 }

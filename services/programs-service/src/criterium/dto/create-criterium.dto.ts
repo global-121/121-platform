@@ -5,5 +5,7 @@ export class CreateCriteriumDto {
     readonly criterium: string;
     @ApiModelProperty({example: 'numeric / dropdown'})
     readonly answerType: string;
+    @ApiModelProperty({example: 'standard / custom'})
+    readonly criteriumType: string;
   }
   

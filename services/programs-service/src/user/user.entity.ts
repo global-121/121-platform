@@ -2,6 +2,7 @@ import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, JoinTable, ManyToM
 import { IsEmail, Validate } from 'class-validator';
 import * as crypto from 'crypto';
 import { ProgramEntity } from '../program/program.entity';
+import { CriteriumEntity } from '../criterium/criterium.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -26,4 +27,7 @@ export class UserEntity {
 
   @OneToMany(type => ProgramEntity, program => program.author)
   programs: ProgramEntity[];
+
+  @OneToMany(type => CriteriumEntity, criterium => criterium.author)
+  criteriums: CriteriumEntity[];
 }

@@ -1,20 +1,17 @@
 import {Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, ManyToOne, OneToMany} from "typeorm";
 import { UserEntity } from '../user/user.entity';
 
-@Entity('criterium')
-export class CriteriumEntity {
+@Entity('country')
+export class CountryEntity {
 
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  criterium: string;
+  country: string;
 
-  @Column()
-  answerType: string;
-
-  @Column()
-  criteriumType: string;
+  @Column("text", {array:true, nullable: true})
+  criteriumIds: number[];
 
   @Column({ type: 'timestamp', default: () => "CURRENT_TIMESTAMP"})
   created: Date;
@@ -26,8 +23,5 @@ export class CriteriumEntity {
   updateTimestamp() {
     this.updated = new Date;
   }
-
-  @ManyToOne(type => UserEntity, user => user.criteriums)
-  author: UserEntity;
 
 }
