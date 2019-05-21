@@ -23,7 +23,6 @@ export class CriteriumService {
 
   async find(countryId: number): Promise<CriteriumEntity[]> {
     const country = await this.countryRepository.findOne(countryId);
-    console.log(country.criteriumIds);
     return await this.criteriumRepository
             .createQueryBuilder('table')
             .where("table.id IN (:...criteriums)", { criteriums: country.criteriumIds })
