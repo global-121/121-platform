@@ -10,9 +10,6 @@ trigger:
     - ./interfaces/HO-Portal/*
 
 pr:
-  branches:
-    include:
-    - master
   paths:
     include:
     - ./interfaces/HO-Portal/*
