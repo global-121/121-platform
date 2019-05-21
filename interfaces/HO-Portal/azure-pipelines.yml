@@ -9,8 +9,6 @@ trigger:
   paths:
     include:
     - interfaces/HO-Portal/*
-    exclude:
-    - "!interfaces/HO-Portal/*"
 
 pool:
   vmImage: 'ubuntu-16.04'
