@@ -36,17 +36,9 @@ export class CriteriumService {
     criterium.answerType = criteriumData.answerType;
     criterium.criteriumType = criteriumData.criteriumType;
 
-    const newCriterium = await this.criteriumRepository.save(criterium);
-
     const author = await this.userRepository.findOne(userId);
-
-    if (Array.isArray(author.criteriums)) {
-      author.criteriums.push(criterium);
-    } else {
-      author.criteriums = [criterium];
-    }
-
-    await this.userRepository.save(author);
+    criterium.author = author;
+    const newCriterium = await this.criteriumRepository.save(criterium);
 
     return newCriterium;
 

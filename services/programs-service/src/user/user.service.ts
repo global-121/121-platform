@@ -34,7 +34,7 @@ export class UserService {
   async create(dto: CreateUserDto): Promise<UserRO> {
 
     // check uniqueness of username/email
-    const {username, email, password} = dto;
+    const {username, email, password, role, countryId} = dto;
     const qb = await getRepository(UserEntity)
       .createQueryBuilder('user')
       .where('user.username = :username', { username })
@@ -53,6 +53,9 @@ export class UserService {
     newUser.username = username;
     newUser.email = email;
     newUser.password = password;
+    newUser.role = role;
+    newUser.countryId = countryId;
+
     newUser.programs = [];
 
     const errors = await validate(newUser);
@@ -75,8 +78,8 @@ export class UserService {
     return await this.userRepository.save(updated);
   }
 
-  async delete(email: string): Promise<DeleteResult> {
-    return await this.userRepository.delete({ email: email});
+  async delete(userId: number): Promise<DeleteResult> {
+    return await this.userRepository.delete(userId);
   }
 
   async findById(id: number): Promise<UserRO>{
@@ -113,6 +116,8 @@ export class UserService {
       username: user.username,
       email: user.email,
       token: this.generateJWT(user),
+      role: user.role,
+      countryId: user.countryId,
     };
 
     return {user: userRO};

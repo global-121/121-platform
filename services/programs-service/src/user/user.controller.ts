@@ -49,16 +49,16 @@ export class UserController {
     if (!_user) throw new HttpException({errors}, 401);
 
     const token = await this.userService.generateJWT(_user);
-    const {email, username} = _user;
-    const user = {email, token, username};
+    const {email, username, role, countryId} = _user;
+    const user = {email, token, username, role, countryId};
     return {user}
   }
   
-  @ApiOperation({ title: 'Delete user by email' })
-  @Delete('user/:email')
-  @ApiImplicitParam({name: 'email', required: true, type: 'string'})
+  @ApiOperation({ title: 'Delete user by userId' })
+  @Delete('user/:userId')
+  @ApiImplicitParam({name: 'userId', required: true, type: 'string'})
   async delete(@Param() params) {
-    return await this.userService.delete(params.email);
+    return await this.userService.delete(params.userId);
   }
 
   @ApiOperation({ title: 'Get current user' })

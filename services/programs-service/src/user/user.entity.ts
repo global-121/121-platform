@@ -20,6 +20,12 @@ export class UserEntity {
   @Column()
   password: string;
 
+  @Column()
+  role: string;
+
+  @Column({nullable: true})
+  countryId: number;
+
   @BeforeInsert()
   hashPassword() {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');

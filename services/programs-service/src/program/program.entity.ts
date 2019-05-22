@@ -8,16 +8,13 @@ export class ProgramEntity {
   id: number;
 
   @Column()
-  slug: string;
-
-  @Column()
   title: string;
 
   @Column({default: ''})
   description: string;
 
-  @Column({default: ''})
-  country: string;
+  @Column()
+  countryId: number;
 
   @Column({ type: 'timestamp', default: () => "CURRENT_TIMESTAMP"})
   created: Date;

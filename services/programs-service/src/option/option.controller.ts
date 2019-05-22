@@ -1,4 +1,4 @@
-import {Get, Post, Body, Controller } from '@nestjs/common';
+import {Get, Post, Body, Controller, Param } from '@nestjs/common';
 
 import { OptionEntity } from './option.entity';
 import { OptionService } from './option.service';
@@ -10,7 +10,7 @@ import {
   ApiBearerAuth,
   ApiResponse,
   ApiOperation,
-  ApiImplicitBody,
+  ApiImplicitParam,
 } from '@nestjs/swagger';
 
 @ApiBearerAuth()
@@ -20,18 +20,17 @@ export class OptionController {
 
   constructor(private readonly optionService: OptionService) {}
 
-  // @Get()
-  // async findAll(): Promise<OptionEntity[]> {
-  //   return await this.optionService.findAll();
-  // }
+  @ApiOperation({ title: 'Get all criterium-dropdown-options' })
+  @Get()
+  async findAll(): Promise<OptionEntity[]> {
+    return await this.optionService.findAll();
+  }
 
-  // @ApiOperation({ title: 'Create option' })
-  // @ApiResponse({ status: 201, description: 'The option has been successfully created.'})
-  // @ApiResponse({ status: 403, description: 'Forbidden.' })
-  // // @ApiImplicitBody({ name: 'CreateOptionDto', description: '', type: CreateOptionDto })
-  // @Post()
-  // async create(@Body() optionData: CreateOptionDto) {
-  //   return this.optionService.create(optionData);
-  // }
+  @ApiOperation({ title: 'Create new option for dropdown-criterium' })
+  @ApiImplicitParam({name: 'criteriumId', required: true, type: 'number'})
+  @Post(':criteriumId')
+  async create(@Param() params, @Body() optionData: CreateOptionDto) {
+    return this.optionService.create(params.criteriumId, optionData);
+  }
 
 }
