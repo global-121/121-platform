@@ -1,8 +1,9 @@
-export interface OptionData {
-    option: string;
-    type: string;
-}
-  
+import { OptionEntity } from "./option.entity";
+
 export interface OptionRO {
-    user: OptionData;
-}
+    option: OptionEntity;
+  }
+  
+  export interface OptionsRO {
+    options: OptionEntity[];
+  }

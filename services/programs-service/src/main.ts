@@ -8,7 +8,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const options = new DocumentBuilder()
-    .setTitle('121 - HO-portal - Test')
+    .setTitle('121 - Programs-Service')
     .setDescription('API description')
     .setVersion('1.0')
     .setBasePath('api')

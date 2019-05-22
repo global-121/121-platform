@@ -5,6 +5,6 @@ export class CreateProgramDto {
   readonly title: string;
   @ApiModelProperty()
   readonly description: string;
-  @ApiModelProperty({example: 'Malawi'})
-  readonly country: string;
+  @ApiModelProperty({example: 1})
+  readonly countryId: number;
 }

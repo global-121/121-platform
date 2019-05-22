@@ -1,5 +1,6 @@
 import {Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, ManyToOne, OneToMany} from "typeorm";
 import { UserEntity } from '../user/user.entity';
+import { OptionEntity } from "../option/option.entity";
 
 @Entity('criterium')
 export class CriteriumEntity {
@@ -29,5 +30,8 @@ export class CriteriumEntity {
 
   @ManyToOne(type => UserEntity, user => user.criteriums)
   author: UserEntity;
+
+  @OneToMany(type => OptionEntity, option => option.criterium)
+  options: OptionEntity[];
 
 }

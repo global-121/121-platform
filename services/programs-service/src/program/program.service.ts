@@ -61,19 +61,20 @@ export class ProgramService {
     let program = new ProgramEntity();
     program.title = programData.title;
     program.description = programData.description;
-    program.slug = this.slugify(programData.title);
-
-    const newProgram = await this.programRepository.save(program);
+    program.countryId = programData.countryId;
 
     const author = await this.userRepository.findOne(userId);
+    program.author = author;
+    
+    const newProgram = await this.programRepository.save(program);
 
-    if (Array.isArray(author.programs)) {
-      author.programs.push(program);
-    } else {
-      author.programs = [program];
-    }
+    // if (Array.isArray(author.programs)) {
+    //   author.programs.push(program);
+    // } else {
+    //   author.programs = [program];
+    // }
 
-    await this.userRepository.save(author);
+    // await this.userRepository.save(author);
 
     return newProgram;
 
@@ -86,8 +87,8 @@ export class ProgramService {
     return {program};
   }
 
-  async delete(slug: string): Promise<DeleteResult> {
-    return await this.programRepository.delete({ slug: slug});
+  async delete(programId: number): Promise<DeleteResult> {
+    return await this.programRepository.delete(programId);
   }
 
   slugify(title: string) {

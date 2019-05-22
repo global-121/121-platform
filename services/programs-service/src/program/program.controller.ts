@@ -55,10 +55,10 @@ export class ProgramController {
   @ApiOperation({ title: 'Delete program' })
   @ApiResponse({ status: 201, description: 'The program has been successfully deleted.'})
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiImplicitParam({name: 'slug', required: true, type: 'string'})
-  @Delete(':slug')
+  @ApiImplicitParam({name: 'programId', required: true, type: 'string'})
+  @Delete(':programId')
   async delete(@Param() params) {
-    return this.programService.delete(params.slug);
+    return this.programService.delete(params.programId);
   }
 
 
