@@ -5,6 +5,7 @@ import { ProgramEntity } from './program.entity';
 import { UserEntity } from '../user/user.entity';
 import { ProgramService } from './program.service';
 import { AuthMiddleware } from '../user/auth.middleware';
+import { AuthMiddlewareAdmin } from '../user/auth.middlewareAdmin';
 import { UserModule } from '../user/user.module';
 
 @Module({
@@ -17,11 +18,13 @@ import { UserModule } from '../user/user.module';
 export class ProgramModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(AuthMiddleware)
+      .apply(AuthMiddlewareAdmin)
       .forRoutes(
-        {path: 'programs/feed', method: RequestMethod.GET},
         {path: 'programs', method: RequestMethod.POST},
-        {path: 'programs/:slug', method: RequestMethod.DELETE},
-        {path: 'programs/:slug', method: RequestMethod.PUT});
+        {path: 'programs/:programId', method: RequestMethod.DELETE},
+        {path: 'programs/:programId', method: RequestMethod.PUT});
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({path: 'programs', method: RequestMethod.GET});
   }
 }

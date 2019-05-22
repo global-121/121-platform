@@ -3,7 +3,8 @@ import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
-import { AuthMiddleware } from './auth.middleware';
+import { AuthMiddleware } from '../user/auth.middleware';
+import { AuthMiddlewareAdmin } from '../user/auth.middlewareAdmin';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
@@ -16,7 +17,16 @@ import { AuthMiddleware } from './auth.middleware';
 export class UserModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
     consumer
+      .apply(AuthMiddlewareAdmin)
+      .forRoutes(
+        {path: 'user', method: RequestMethod.POST},
+        {path: 'user/:userId', method: RequestMethod.DELETE}
+      );
+    consumer
       .apply(AuthMiddleware)
-      .forRoutes({path: 'user', method: RequestMethod.GET}, {path: 'user', method: RequestMethod.PUT});
+      .forRoutes(
+        {path: 'user', method: RequestMethod.GET}, 
+        {path: 'user/login', method: RequestMethod.POST},
+      );
   }
 }
