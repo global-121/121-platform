@@ -12,9 +12,16 @@ Interfaces on the 121-platform
 The tools to run or build all interfaces:
 
 - [Git](https://git-scm.com/)
+
 - (Optional) [NVM - Node Version Manager](http://nvm.sh/)  
- To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js.
+  To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js.  
+  After installing NVM run:
+
+      nvm install && nvm install-latest-npm
+
 - [Node.js](https://nodejs.org/) **v10+ LTS**  
+  With NPM **v6.9+**
+
 - [Ionic CLI](https://ionicframework.com/docs/installation/cli) **v4+**  
   Install with: `npm install -g ionic@^4`
 
