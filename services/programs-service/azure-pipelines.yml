@@ -23,7 +23,7 @@ steps:
   inputs:
     versionSpec: $(node_version)
 
-- script: npm install
+- script: npm ci
   displayName: Install
   workingDirectory: services/programs-service/
 
