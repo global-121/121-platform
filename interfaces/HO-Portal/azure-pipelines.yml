@@ -23,7 +23,7 @@ steps:
   inputs:
     versionSpec: $(node_version)
 
-- script: npm install
+- script: npm ci
   displayName: Install
   workingDirectory: interfaces/HO-Portal/
 
@@ -33,10 +33,6 @@ steps:
 
 - script: npm run test:ci
   displayName: Tests
-  workingDirectory: interfaces/HO-Portal/
-
-- script: npm run build -- --prod
-  displayName: Build
   workingDirectory: interfaces/HO-Portal/
 
 - task: PublishCodeCoverageResults@1
