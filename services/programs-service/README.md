@@ -52,6 +52,7 @@ Copy TypeORM config example file for database settings
   "password": "<secret>",
   "database": "global121",
   "entities": ["src/**/**.entity{.ts,.js}"],
+  "dropSchema": true,
   "synchronize": true
 }
 ```
@@ -62,7 +63,7 @@ When running this setup locally, you can access the dockerized database for exam
 
 ----------
 
-## Start application
+## Start application locally
 
 Create the Docker image from the Dockerfile in this folder through:
 
@@ -81,14 +82,37 @@ Possibly rebuild/rerun by changing this to:
 - `npm run start:dev` (uses `tswatch` instead of `nodemon`)
 - `npm run start:watch` (to use with `nodemon` for restart upon change)
 
+## Start application on VM
+
+Same as bove. But replace '-it' tag in 'docker run' or 'docker start' commands by '-d' to run in detached mode.
+Also, the CMD line of Dockerfile should be changed from CMD ["npm", "run", "start:dev"] to CMD ["npm", "start"].
+
 ## How to use Swagger (with authorization features)
 - Access Swagger API via `http://localhost:3000/docs`
+### Signup/Signin
 - If you have no users in your database yet, start with 'USER /POST user'. Leave the default input as is, and execute.
 - If you already have created the above user earlier, start with 'USER /POST user/login'. Leave the default input as is, and execute.
 - In either case, copy the value of the Token-attribute from the output.
 - Click 'Authorize' (top-right) and fill in `Bearer <copied token>`
 - This will now give you access to all hitherto forbidden API-calls.
-- NOTE: for ease of development, if not logged in, it will take the standard login. So you do need to create one user with email test@test.nl, but the Authorize part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of Swagger, i.e. after each code change.
+- NOTE: for ease of development, if not logged in, it will take the default-user. So you do need to create this default user with email test@test.nl, but the Authorize part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of Swagger, i.e. after each code change.
+### Admin vs Fieldworker
+- Different authorizations for admin or fieldworker are added.
+- In USER /POST you can set role='admin' or role='aidworker'.
+- With 'admin' you have access to all API-calls
+- With 'aidworker' you have access only to (most) GET requests
+- Only the USER /POST call is completely open at the moment, as otherwise you cannot create a first admin-user. To improve in the future.
+- NOTE: this admin/aidworker distinction is only working if you're using the Bearer authentication described above. If not, then the default-user will be used, which will have admin-rights automatically (even if you haven't specified role='admin' for that user initially).
+### Using other endpoints
+A typical flow to use other endpoints (after being signed up/in):
+- Create programs with POST /programs
+- Get a list of all programs with GET /programs 
+- Create 2 countries Malawi and Ethiopia with POST /countrys (NOTE: countries will be relevant e.g. to preload a list of standard criteria based on country, which you can subsequently choose to use in your program or not. You can additionally add custom criteria as well.)
+- Create criterium 'age' with POST /criterium and add it to country Ethiopia with PUT /countrys/{countryId}
+- Create criterium 'gender' with POST /criterium and add it to country Malawi with PUT /countrys/{countryId}
+- Create criterium-options 'male' and 'female' for criterium 'gender' with POST /criterium-options/{criteriumId}
+
+
 
 ----------
 
