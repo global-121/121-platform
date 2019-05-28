@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 
 import { ProgramsPage } from './programs.page';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ProgramsPage', () => {
   let component: ProgramsPage;
@@ -12,6 +13,9 @@ describe('ProgramsPage', () => {
     TestBed.configureTestingModule({
       declarations: [ProgramsPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        TranslateModule.forRoot(),
+      ],
     })
       .compileComponents();
   }));

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { ProgramsPage } from './programs.page';
 
@@ -16,7 +17,8 @@ import { ProgramsPage } from './programs.page';
         path: '',
         component: ProgramsPage
       }
-    ])
+    ]),
+    TranslateModule.forChild()
   ],
   declarations: [ProgramsPage]
 })

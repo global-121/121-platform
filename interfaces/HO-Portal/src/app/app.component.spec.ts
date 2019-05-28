@@ -7,6 +7,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppComponent } from './app.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AppComponent', () => {
 
@@ -26,7 +27,10 @@ describe('AppComponent', () => {
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
       ],
-      imports: [ RouterTestingModule.withRoutes([])],
+      imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([])
+      ],
     }).compileComponents();
   }));
 
@@ -50,8 +54,8 @@ describe('AppComponent', () => {
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-label');
     expect(menuItems.length).toEqual(2);
-    expect(menuItems[0].textContent).toContain('Home');
-    expect(menuItems[1].textContent).toContain('All Programs');
+    expect(menuItems[0].textContent).toContain('HOME');
+    expect(menuItems[1].textContent).toContain('PROGRAMS');
   });
 
   it('should have urls', async () => {
