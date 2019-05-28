@@ -32,4 +32,8 @@ export class AppComponent {
     this.translate.setDefaultLang('en');
     this.translate.use('nl');
   }
+
+  switchLanguage(event: any) {
+    this.translate.use(event.detail.value);
+  }
 }

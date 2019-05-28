@@ -23,6 +23,18 @@
             </ion-item>
           </ion-menu-toggle>
         </ion-list>
+
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; top: auto;">
+          <ion-segment (ionChange)="switchLanguage($event)">
+            <ion-segment-button value="nl">
+              <ion-label>NL</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="en" checked>
+              <ion-label>EN</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+        </div>
+
       </ion-content>
     </ion-menu>
     <ion-router-outlet main></ion-router-outlet>
