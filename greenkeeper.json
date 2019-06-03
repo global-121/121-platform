@@ -1,8 +1,12 @@
 {
   "groups": {
-    "default": {
+    "interfaces": {
       "packages": [
-        "interfaces/HO-Portal/package.json",
+        "interfaces/HO-Portal/package.json"
+      ]
+    },
+    "services": {
+      "packages": [
         "services/programs-service/package.json"
       ]
     }
