@@ -3,6 +3,9 @@
     "interfaces": {
       "packages": [
         "interfaces/HO-Portal/package.json"
+      ],
+      "ignore": [
+        "angular"
       ]
     },
     "services": {
