@@ -1,6 +1,5 @@
 {
   "groups": {
-    "interfaces": {},
     "services": {
       "packages": [
         "services/programs-service/package.json"
