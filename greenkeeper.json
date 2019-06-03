@@ -1,0 +1,17 @@
+{
+  "groups": {
+    "interfaces": {
+      "packages": [
+        "interfaces/HO-Portal/package.json"
+      ],
+      "ignore": [
+        "angular"
+      ]
+    },
+    "services": {
+      "packages": [
+        "services/programs-service/package.json"
+      ]
+    }
+  }
+}
