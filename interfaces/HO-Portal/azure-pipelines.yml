@@ -35,7 +35,7 @@ steps:
   displayName: Linting
   workingDirectory: interfaces/HO-Portal/
 
-- script: npm run test:ci
+- script: npm test
   displayName: Tests
   workingDirectory: interfaces/HO-Portal/
 
