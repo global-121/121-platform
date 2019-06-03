@@ -1,0 +1,10 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "interfaces/HO-Portal/package.json",
+        "services/programs-service/package.json"
+      ]
+    }
+  }
+}
