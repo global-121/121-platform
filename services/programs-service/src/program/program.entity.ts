@@ -8,6 +8,9 @@ export class ProgramEntity {
   id: number;
 
   @Column()
+  slug: string;
+
+  @Column()
   title: string;
 
   @Column({default: ''})
