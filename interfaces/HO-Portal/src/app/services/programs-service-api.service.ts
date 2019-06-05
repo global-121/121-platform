@@ -1,18 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+
+import { ApiService } from './api.service';
 
 import { Program } from '../models/program.model';
-
-import mockPrograms from '../mocks/programs.mock';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProgramsServiceApiService {
   constructor(
+    private apiService: ApiService
   ) { }
 
   getAllPrograms(): Observable<Program[]> {
-    return of(mockPrograms);
+    return this.apiService.get(
+      'programs-service',
+      '/programs'
+    );
   }
 }
