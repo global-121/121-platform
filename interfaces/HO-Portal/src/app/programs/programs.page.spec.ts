@@ -4,6 +4,8 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { ProgramsPage } from './programs.page';
 import { TranslateModule } from '@ngx-translate/core';
 
+import mockPrograms from '../mocks/programs.mock';
+
 describe('ProgramsPage', () => {
   let component: ProgramsPage;
   let fixture: ComponentFixture<ProgramsPage>;
@@ -30,10 +32,10 @@ describe('ProgramsPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have a list of 12 elements', () => {
+  it('should have a list of all mock programs', () => {
     programsPage = fixture.nativeElement;
     const items = programsPage.querySelectorAll('ion-item');
-    expect(items.length).toEqual(12);
+    expect(items.length).toEqual(mockPrograms.length);
   });
 
 });
