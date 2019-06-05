@@ -18,8 +18,6 @@ export class ProgramsPage implements OnInit {
   }
 
   ngOnInit() {
-    this.programsService.getAllPrograms().subscribe((response) => {
-      this.items = response;
-    });
+    this.programsService.getAllPrograms().subscribe(response => this.items = response);
   }
 }

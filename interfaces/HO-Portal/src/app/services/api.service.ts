@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
 import { environment } from '../../environments/environment';
@@ -12,6 +13,7 @@ import mockPrograms from '../mocks/programs.mock';
 export class ApiService {
   constructor(
     private jwtService: JwtService,
+    private http: HttpClient,
   ) { }
 
   private getApiUrl(serviceName: string): string {
@@ -45,5 +47,12 @@ export class ApiService {
     if (apiUrl === '' && serviceName === 'programs-service') {
       return of(mockPrograms);
     }
+
+    return this.http.get(
+      apiUrl + path,
+      {
+        headers: this.setHeaders(),
+      }
+    );
   }
 }
