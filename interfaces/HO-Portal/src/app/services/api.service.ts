@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { environment } from '../../environments/environment';
+import { JwtService } from './jwt.service';
 
 import mockPrograms from '../mocks/programs.mock';
 
@@ -10,6 +11,7 @@ import mockPrograms from '../mocks/programs.mock';
 })
 export class ApiService {
   constructor(
+    private jwtService: JwtService,
   ) { }
 
   private getApiUrl(serviceName: string): string {
@@ -19,6 +21,16 @@ export class ApiService {
     const apiUrl = services[serviceName];
 
     return apiUrl;
+  }
+
+  private setHeaders(): HttpHeaders {
+    const headersConfig = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Token ${this.jwtService.getToken()}`,
+    };
+
+    return new HttpHeaders(headersConfig);
   }
 
   get(
