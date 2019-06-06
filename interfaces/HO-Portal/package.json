@@ -20,7 +20,7 @@
     "@angular/http": "^7.x.x",
     "@angular/platform-browser": "^7.x.x",
     "@angular/platform-browser-dynamic": "^7.x.x",
-    "@angular/pwa": "^0.12.4",
+    "@angular/pwa": "^0.800.2",
     "@angular/router": "^7.x.x",
     "@angular/service-worker": "^7.x.x",
     "@ionic-native/core": "^5.0.0",
