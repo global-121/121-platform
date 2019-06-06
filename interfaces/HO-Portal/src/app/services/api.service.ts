@@ -5,8 +5,6 @@ import { Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { JwtService } from './jwt.service';
 
-import mockPrograms from '../mocks/programs.mock';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -42,11 +40,6 @@ export class ApiService {
     console.log(`ApiService GET: ${serviceName} : ${path}`);
 
     const apiUrl = this.getApiUrl(serviceName);
-
-    // Add 'fallback' for tests
-    if (apiUrl === '' && serviceName === 'programs-service') {
-      return of(mockPrograms);
-    }
 
     return this.http.get(
       apiUrl + path,
