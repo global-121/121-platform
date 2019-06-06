@@ -9,3 +9,8 @@ The front-end for the *Humanitarian Organization* web portal, where 121-programs
   `npm install`
 - Start in development-mode:
   `npm start`
+
+## Configuration
+Some specific information need to be configured before use:
+
+- Set the API-endpoint(s) in the [`environment.ts`](./src/environments/environment.ts)-file.

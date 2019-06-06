@@ -1,22 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+
+import { Program } from '../models/program.model';
+
 @Component({
   selector: 'app-programs',
   templateUrl: 'programs.page.html',
   styleUrls: ['programs.page.scss']
 })
 export class ProgramsPage implements OnInit {
-  private selectedItem: any;
-  public items: Array<{ title: string; }> = [];
+  public items: Program[];
 
-  constructor() {
-    for (let i = 1; i < 13; i++) {
-      this.items.push({
-        title: 'Program ' + i,
-      });
-    }
+  constructor(
+    private programsService: ProgramsServiceApiService
+  ) {
   }
 
   ngOnInit() {
+    this.programsService.getAllPrograms().subscribe(response => this.items = response);
   }
 }
