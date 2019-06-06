@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
 
 import { Program } from '../models/program.model';
@@ -16,7 +17,7 @@ export class ProgramsServiceApiService {
 
   getAllPrograms(): Observable<Program[]> {
     return this.apiService.get(
-      'programs-service',
+      environment.programs_service_api,
       '/programs'
     ).pipe(
       map((response) => {
