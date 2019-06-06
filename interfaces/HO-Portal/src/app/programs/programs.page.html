@@ -10,9 +10,17 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
+  <ion-list class="ion-padding">
     <ion-item *ngFor="let item of items">
-      {{ item.title }}
+      <ion-label position="stacked">
+        {{ item.title }}
+      </ion-label>
+      <ion-note>
+        {{ item.description }}
+      </ion-note>
+      <ion-note slot="end">
+        {{ item.updated|date:"dd-MM-y - H:m" }}
+      </ion-note>
     </ion-item>
   </ion-list>
 </ion-content>
