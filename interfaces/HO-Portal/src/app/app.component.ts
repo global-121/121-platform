@@ -11,6 +11,8 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
+  public currentLanguage: string;
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -30,7 +32,9 @@ export class AppComponent {
 
   initializeLanguages() {
     this.translate.setDefaultLang('en');
-    this.translate.use('nl');
+    this.translate.use('en');
+
+    this.currentLanguage = this.translate.currentLang;
   }
 
   switchLanguage(event: any) {
