@@ -65,7 +65,7 @@ export class ProgramService {
 
     const author = await this.userRepository.findOne(userId);
     program.author = author;
-    
+
     const newProgram = await this.programRepository.save(program);
 
     // if (Array.isArray(author.programs)) {
@@ -80,8 +80,8 @@ export class ProgramService {
 
   }
 
-  async update(slug: string, programData: any): Promise<ProgramRO> {
-    let toUpdate = await this.programRepository.findOne({ slug: slug});
+  async update(id: number, programData: any): Promise<ProgramRO> {
+    let toUpdate = await this.programRepository.findOne({ id: id});
     let updated = Object.assign(toUpdate, programData);
     const program = await this.programRepository.save(updated);
     return {program};
@@ -89,9 +89,5 @@ export class ProgramService {
 
   async delete(programId: number): Promise<DeleteResult> {
     return await this.programRepository.delete(programId);
-  }
-
-  slugify(title: string) {
-    return slug(title, {lower: true}) + '-' + (Math.random() * Math.pow(36, 6) | 0).toString(36)
   }
 }
