@@ -28,12 +28,6 @@ export class ProgramController {
     return await this.programService.findAll(query);
   }
 
-  // @Get(':slug')
-  // @ApiImplicitParam({name: 'email', required: true, type: 'string'})
-  // async findOne(@Param('slug') slug): Promise<ProgramRO> {
-  //   return await this.programService.findOne({slug});
-  // }
-
   @ApiOperation({ title: 'Create program' })
   @ApiResponse({ status: 201, description: 'The program has been successfully created.'})
   @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -43,14 +37,14 @@ export class ProgramController {
     return this.programService.create(userId, programData);
   }
 
-  // @ApiOperation({ title: 'Update program' })
-  // @ApiResponse({ status: 201, description: 'The program has been successfully updated.'})
-  // @ApiResponse({ status: 403, description: 'Forbidden.' })
-  // @Put(':slug')
-  // async update(@Param() params, @Body('program') programData: CreateProgramDto) {
-  //   // Todo: update slug also when title gets changed
-  //   return this.programService.update(params.slug, programData);
-  // }
+  @ApiOperation({ title: 'Change program' })
+  @ApiImplicitParam({name: 'programId', required: true, type: 'number'})
+  @ApiResponse({ status: 201, description: 'The program has been successfully changed.'})
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @Put(':programId')
+  async update(@Param() params, @User('id') userId: number,  @Body() programData: CreateProgramDto) {
+    return this.programService.update(params.programId, programData);
+  }
 
   @ApiOperation({ title: 'Delete program' })
   @ApiResponse({ status: 201, description: 'The program has been successfully deleted.'})
@@ -60,6 +54,4 @@ export class ProgramController {
   async delete(@Param() params) {
     return this.programService.delete(params.programId);
   }
-
-
 }
