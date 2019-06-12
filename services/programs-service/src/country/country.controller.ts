@@ -21,7 +21,7 @@ export class CountryController {
 
   constructor(private readonly countryService: CountryService) {}
 
-  
+
   @ApiOperation({ title: 'Get all criteria' })
   @Get()
   async findAll(): Promise<CountryEntity[]> {
