@@ -31,15 +31,21 @@ describe('CountryController', () => {
 
   describe('findAll', () => {
     it('should return an array of countrys', async () => {
-      const result = [
+      const initialInput = [
         {
-          id: 2,
+          id: 3,
           country: 'bla',
           criteriumIds: [1,2]
         },
       ];
-      jest.spyOn(countryService, 'findAll').mockImplementation(() => Promise.resolve(result));
-      expect(await countryController.findAll()).toBe(result);
+      const clone = [];
+      initialInput.map(val => clone.push(Object.assign({}, val)));
+      jest.spyOn(countryService, 'findAll').mockImplementation(() => Promise.resolve(initialInput));
+
+      const controllerResult = await countryController.findAll();
+
+      expect(controllerResult).toStrictEqual(clone);
     });
   });
+
 });
