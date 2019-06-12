@@ -1,5 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeUpdate, ManyToOne, OneToMany} from "typeorm";
-import { UserEntity } from '../user/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity('country')
 export class CountryEntity {
