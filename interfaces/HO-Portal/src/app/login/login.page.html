@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'LOGIN'|translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row class="ion-align-items-center ion-justify-content-center">
+      <ion-col size="4" class="">
+
+          <form method="POST" (submit)="doLogin($event)" *ngIf="!isLoggedIn">
+
+            <ion-item>
+              <ion-label position="stacked">{{ 'page.login.form.email.label'|translate }}</ion-label>
+              <ion-input type="email"
+                          name="email"
+                          inputmode="email"
+                          autocomplete="username email"
+                          autocapitalize="off"
+                          autofocus="true"
+                          clearInput="true"
+                          required
+              ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="stacked">{{ 'page.login.form.password.label'|translate }}</ion-label>
+              <ion-input type="password"
+                          name="password"
+                          autocomplete="current-password"
+                          autocapitalize="off"
+                          clearInput="true"
+                          clearOnEdit="false"
+                          required
+              ></ion-input>
+            </ion-item>
+
+            <ion-button type="submit"
+                        expand="block"
+            >
+              {{ 'page.login.form.submit.label'|translate }}
+            </ion-button>
+
+          </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

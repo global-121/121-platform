@@ -1,5 +1,21 @@
 {
+  "LOGIN": "Log in",
   "MENU": "Menu",
   "HOME": "Home",
-  "PROGRAMS": "All Programs"
+  "PROGRAMS": "All Programs",
+  "page": {
+    "login": {
+      "form": {
+        "email": {
+          "label": "E-mail"
+        },
+        "password": {
+          "label": "Password"
+        },
+        "submit": {
+          "label": "Log in"
+        }
+      }
+    }
+  }
 }
