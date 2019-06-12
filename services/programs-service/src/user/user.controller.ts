@@ -1,9 +1,7 @@
 import { Get, Post, Body, Put, Delete, Param, Controller, UsePipes, HttpStatus } from '@nestjs/common';
-import { Request } from 'express';
 import { UserService } from './user.service';
-import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
-import { CreateUserDto, UpdateUserDto, LoginUserDto } from './dto';
+import { CreateUserDto, LoginUserDto } from './dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { User } from './user.decorator';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
@@ -12,7 +10,6 @@ import {
   ApiUseTags,
   ApiBearerAuth,
   ApiOperation,
-  ApiImplicitBody,
   ApiImplicitParam
 } from '@nestjs/swagger';
 
@@ -22,14 +19,8 @@ export class UserController {
 
   constructor(private readonly userService: UserService) {}
 
-  // @Put('user')
-  // async update(@User('id') userId: number, @Body('user') userData: UpdateUserDto) {
-  //   return await this.userService.update(userId, userData);
-  // }
-
   @ApiOperation({ title: 'Sign-up new user' })
   @UsePipes(new ValidationPipe())
-  // @ApiImplicitBody({ name: 'CreateUserDto', type: CreateUserDto})
   @Post('user')
   async create(@Body() userData: CreateUserDto) {
     return this.userService.create(userData);
