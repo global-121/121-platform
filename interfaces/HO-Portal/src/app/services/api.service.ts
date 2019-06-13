@@ -13,14 +13,17 @@ export class ApiService {
     private http: HttpClient,
   ) { }
 
-  private setHeaders(): HttpHeaders {
-    const headersConfig = {
+  private createHeaders(anonymous: boolean = false): HttpHeaders {
+    const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      Authorization: `Token ${this.jwtService.getToken()}`,
-    };
+    });
 
-    return new HttpHeaders(headersConfig);
+    if (!anonymous) {
+      return headers.set('Authorization', `Token ${this.jwtService.getToken()}`);
+    }
+
+    return headers;
   }
 
   get(
@@ -32,7 +35,24 @@ export class ApiService {
     return this.http.get(
       endpoint + path,
       {
-        headers: this.setHeaders(),
+        headers: this.createHeaders(),
+      }
+    );
+  }
+
+  post(
+    endpoint: string,
+    path: string,
+    body: object,
+    anonymous: boolean = false
+  ): Observable<any> {
+    console.log(`ApiService POST: ${endpoint}${path}`, body, `Anonymous? ${anonymous}`);
+
+    return this.http.post(
+      endpoint + path,
+      body,
+      {
+        headers: this.createHeaders(anonymous),
       }
     );
   }

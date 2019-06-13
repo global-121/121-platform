@@ -14,7 +14,11 @@ const routes: Routes = [
   {
     path: 'programs',
     loadChildren: './programs/programs.module#ProgramsPageModule'
-  }
+  },
+  {
+    path: 'login',
+    loadChildren: './login/login.module#LoginPageModule'
+  },
 ];
 
 @NgModule({
