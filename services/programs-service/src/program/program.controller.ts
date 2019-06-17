@@ -10,7 +10,6 @@ import {
   ApiBearerAuth,
   ApiResponse,
   ApiOperation,
-  ApiImplicitBody,
   ApiImplicitParam
 } from '@nestjs/swagger';
 
