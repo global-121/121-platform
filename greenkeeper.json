@@ -4,7 +4,25 @@
       "packages": [
         "interfaces/HO-Portal/package.json"
       ],
-      "ignore": ["angular"]
+      "ignore": [
+        "angular",
+        "angular-cli",
+        "@angular/cli",
+        "@angular-devkit/architect",
+        "@angular-devkit/architect-cli",
+        "@angular-devkit/core",
+        "@angular-devkit/schematics",
+        "@angular-devkit/schematics-cli",
+        "@angular-devkit/build-angular",
+        "@angular-devkit/build-webpack",
+        "@angular-devkit/build-optimizer",
+        "@angular-devkit/build-ng-packagr",
+        "@angular/pwa",
+        "@schematics/angular",
+        "@schematics/schematics",
+        "@schematics/update",
+        "@ngtools/webpack"        
+      ]
     },
     "Services": {
       "packages": [
