@@ -1,10 +1,8 @@
-import { CountryController } from './country.controller';
 import { Test } from '@nestjs/testing';
 import 'jest';
-import {TypeOrmModule} from "@nestjs/typeorm";
-import { CountryService } from './country.service';
-import { CountryEntity } from './country.entity';
 
+import { CountryController } from './country.controller';
+import { CountryService } from './country.service';
 
 class CountryServiceMock  {
   async findAll(): Promise<any> {
@@ -43,7 +41,6 @@ describe('CountryController', () => {
       jest.spyOn(countryService, 'findAll').mockImplementation(() => Promise.resolve(initialInput));
 
       const controllerResult = await countryController.findAll();
-
       expect(controllerResult).toStrictEqual(clone);
     });
   });

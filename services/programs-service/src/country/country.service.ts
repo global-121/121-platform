@@ -35,16 +35,15 @@ export class CountryService {
     const countryId = countryCriteriumData.countryId;
     const criteriumId = countryCriteriumData.criteriumId;
     let country = await this.countryRepository.findOne(countryId);
-    
+
     if (Array.isArray(country.criteriumIds)) {
       country.criteriumIds.push(criteriumId);
     } else {
       country.criteriumIds = [criteriumId];
     }
-    
+
     const updatedCountry = await this.countryRepository.save(country);
 
     return updatedCountry;
-
   }
 }
