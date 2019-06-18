@@ -31,7 +31,6 @@ export class UserController {
   @Post('user/login')
   async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
     const _user = await this.userService.findOne(loginUserDto);
-
     if (!_user) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     }
