@@ -1,4 +1,14 @@
-import { Get, Post, Body, Put, Delete, Param, Controller, UsePipes, HttpStatus } from '@nestjs/common';
+import {
+  Get,
+  Post,
+  Body,
+  Put,
+  Delete,
+  Param,
+  Controller,
+  UsePipes,
+  HttpStatus,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
 import { CreateUserDto, LoginUserDto } from './dto';
@@ -10,13 +20,12 @@ import {
   ApiUseTags,
   ApiBearerAuth,
   ApiOperation,
-  ApiImplicitParam
+  ApiImplicitParam,
 } from '@nestjs/swagger';
 
 @ApiUseTags('user')
 @Controller()
 export class UserController {
-
   constructor(private readonly userService: UserService) {}
 
   @ApiOperation({ title: 'Sign-up new user' })
@@ -45,13 +54,13 @@ export class UserController {
       countryId,
     };
 
-    return { user }
+    return { user };
   }
 
   @ApiBearerAuth()
   @ApiOperation({ title: 'Delete user by userId' })
   @Delete('user/:userId')
-  @ApiImplicitParam({name: 'userId', required: true, type: 'string'})
+  @ApiImplicitParam({ name: 'userId', required: true, type: 'string' })
   async delete(@Param() params) {
     return await this.userService.delete(params.userId);
   }

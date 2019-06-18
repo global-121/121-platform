@@ -1,4 +1,4 @@
-import { UserData } from "../user/user.interface";
+import { UserData } from '../user/user.interface';
 import { CountryEntity } from './country.entity';
 
 // export interface CountryData {
@@ -6,7 +6,7 @@ import { CountryEntity } from './country.entity';
 //     type: string;
 //     author?: UserData;
 // }
-  
+
 export interface CountryRO {
-    country: CountryEntity;
+  country: CountryEntity;
 }

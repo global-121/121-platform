@@ -5,7 +5,7 @@ import { ProgramEntity } from './program.entity';
 import { UserEntity } from '../user/user.entity';
 import { CreateProgramDto } from './dto';
 
-import {ProgramRO, ProgramsRO} from './program.interface';
+import { ProgramRO, ProgramsRO } from './program.interface';
 const slug = require('slug');
 
 @Injectable()
@@ -14,24 +14,25 @@ export class ProgramService {
     @InjectRepository(ProgramEntity)
     private readonly programRepository: Repository<ProgramEntity>,
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
   async findAll(query): Promise<ProgramsRO> {
-
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.author', 'author');
 
-    qb.where("1 = 1");
+    qb.where('1 = 1');
 
     if ('tag' in query) {
-      qb.andWhere("program.tagList LIKE :tag", { tag: `%${query.tag}%` });
+      qb.andWhere('program.tagList LIKE :tag', { tag: `%${query.tag}%` });
     }
 
     if ('author' in query) {
-      const author = await this.userRepository.findOne({username: query.author});
-      qb.andWhere("program.authorId = :id", { id: author.id });
+      const author = await this.userRepository.findOne({
+        username: query.author,
+      });
+      qb.andWhere('program.authorId = :id', { id: author.id });
     }
 
     qb.orderBy('program.created', 'DESC');
@@ -48,16 +49,18 @@ export class ProgramService {
 
     const programs = await qb.getMany();
 
-    return {programs, programsCount};
+    return { programs, programsCount };
   }
 
   async findOne(where): Promise<ProgramRO> {
     const program = await this.programRepository.findOne(where);
-    return {program};
+    return { program };
   }
 
-  async create(userId: number, programData: CreateProgramDto): Promise<ProgramEntity> {
-
+  async create(
+    userId: number,
+    programData: CreateProgramDto,
+  ): Promise<ProgramEntity> {
     let program = new ProgramEntity();
     program.title = programData.title;
     program.description = programData.description;
@@ -77,14 +80,13 @@ export class ProgramService {
     // await this.userRepository.save(author);
 
     return newProgram;
-
   }
 
   async update(id: number, programData: any): Promise<ProgramRO> {
-    let toUpdate = await this.programRepository.findOne({ id: id});
+    let toUpdate = await this.programRepository.findOne({ id: id });
     let updated = Object.assign(toUpdate, programData);
     const program = await this.programRepository.save(updated);
-    return {program};
+    return { program };
   }
 
   async delete(programId: number): Promise<DeleteResult> {

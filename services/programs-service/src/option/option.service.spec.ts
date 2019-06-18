@@ -1,11 +1,11 @@
-import { OptionService } from "./option.service";
+import { OptionService } from './option.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { OptionEntity } from "./option.entity";
-import { getRepositoryToken } from "@nestjs/typeorm";
+import { OptionEntity } from './option.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 import { CriteriumEntity } from '../criterium/criterium.entity';
 
-describe("Option service", () => {
+describe('Option service', () => {
   let service: OptionService;
   let module: TestingModule;
 
@@ -13,8 +13,14 @@ describe("Option service", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         OptionService,
-        { provide: getRepositoryToken(OptionEntity), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(CriteriumEntity), useFactory: repositoryMockFactory }
+        {
+          provide: getRepositoryToken(OptionEntity),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(CriteriumEntity),
+          useFactory: repositoryMockFactory,
+        },
       ],
     }).compile();
 
@@ -25,7 +31,7 @@ describe("Option service", () => {
     module.close();
   });
 
-  it("should be defined", () => {
+  it('should be defined', () => {
     expect(service).toBeDefined();
   });
 });

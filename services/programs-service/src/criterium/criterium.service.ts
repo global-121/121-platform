@@ -14,7 +14,7 @@ export class CriteriumService {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(CountryEntity)
-    private readonly countryRepository: Repository<CountryEntity>
+    private readonly countryRepository: Repository<CountryEntity>,
   ) {}
 
   async findAll(): Promise<CriteriumEntity[]> {
@@ -24,13 +24,17 @@ export class CriteriumService {
   async find(countryId: number): Promise<CriteriumEntity[]> {
     const country = await this.countryRepository.findOne(countryId);
     return await this.criteriumRepository
-            .createQueryBuilder('table')
-            .where("table.id IN (:...criteriums)", { criteriums: country.criteriumIds })
-            .getMany();
+      .createQueryBuilder('table')
+      .where('table.id IN (:...criteriums)', {
+        criteriums: country.criteriumIds,
+      })
+      .getMany();
   }
 
-  async create(userId: number, criteriumData: CreateCriteriumDto): Promise<CriteriumEntity> {
-
+  async create(
+    userId: number,
+    criteriumData: CreateCriteriumDto,
+  ): Promise<CriteriumEntity> {
     let criterium = new CriteriumEntity();
     criterium.criterium = criteriumData.criterium;
     criterium.answerType = criteriumData.answerType;
@@ -41,6 +45,5 @@ export class CriteriumService {
     const newCriterium = await this.criteriumRepository.save(criterium);
 
     return newCriterium;
-
   }
 }

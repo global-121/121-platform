@@ -26,20 +26,24 @@ export class AuthMiddlewareAdmin implements NestMiddleware {
         req.user = user.user;
         next();
       } else if (user.user.role == 'aidworker') {
-        throw new HttpException('Not authorized for Aidworkers.', HttpStatus.UNAUTHORIZED);
+        throw new HttpException(
+          'Not authorized for Aidworkers.',
+          HttpStatus.UNAUTHORIZED,
+        );
       } else {
-        throw new HttpException('User-role not known.', HttpStatus.UNAUTHORIZED);
+        throw new HttpException(
+          'User-role not known.',
+          HttpStatus.UNAUTHORIZED,
+        );
       }
-
-
     } else {
-      if (AUTH_DEBUG){
+      if (AUTH_DEBUG) {
         const user = await this.userService.findByEmail('test@test.nl');
         req.user = user.user;
         next();
       } else {
         throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
-      }      
+      }
     }
   }
 }

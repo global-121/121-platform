@@ -12,7 +12,7 @@ export class CountryService {
     @InjectRepository(CountryEntity)
     private readonly countryRepository: Repository<CountryEntity>,
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
   async findAll(): Promise<CountryEntity[]> {
@@ -20,18 +20,17 @@ export class CountryService {
   }
 
   async create(countryData: CreateCountryDto): Promise<CountryEntity> {
-
     let country = new CountryEntity();
     country.country = countryData.country;
 
     const newCountry = await this.countryRepository.save(country);
 
     return newCountry;
-
   }
 
-  async bindCriteriumCountry(countryCriteriumData: BindCriteriumCountryDto): Promise<CountryEntity> {
-
+  async bindCriteriumCountry(
+    countryCriteriumData: BindCriteriumCountryDto,
+  ): Promise<CountryEntity> {
     const countryId = countryCriteriumData.countryId;
     const criteriumId = countryCriteriumData.criteriumId;
     let country = await this.countryRepository.findOne(countryId);
