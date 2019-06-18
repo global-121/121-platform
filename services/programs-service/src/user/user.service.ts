@@ -60,7 +60,7 @@ export class UserService {
 
     const errors = await validate(newUser);
     if (errors.length > 0) {
-      const _errors = {username: 'Userinput is not valid.'};
+      const _errors = {username: 'User input is not valid.'};
       throw new HttpException({message: 'Input data validation failed', _errors}, HttpStatus.BAD_REQUEST);
 
     } else {
@@ -98,7 +98,7 @@ export class UserService {
     return this.buildUserRO(user);
   }
 
-  public generateJWT(user) {
+  public generateJWT(user: UserEntity): string {
     let today = new Date();
     let exp = new Date(today);
     exp.setDate(today.getDate() + 60);

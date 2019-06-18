@@ -20,10 +20,10 @@ const userRo = {
 }
 
 class UserServiceMock {
-  async findByEmail(): Promise<UserRO>{
+  async findByEmail(): Promise<UserRO> {
     return userRo;
   }
-  async create(userData: CreateUserDto): Promise<UserRO>{
+  async create(userData: CreateUserDto): Promise<UserRO> {
     const userRo = {
       "user": {
         "username": userData.username,
@@ -85,7 +85,7 @@ describe("UserController", () => {
 
   describe("login", () => {
     it("should return a user", async () => {
-     const loginParameters = {
+      const loginParameters = {
         "email": "test@test.nl",
         "password": "string"
       }
@@ -100,7 +100,6 @@ describe("UserController", () => {
       expect(spy).toHaveBeenCalled();
     });
   });
-
 
   describe("create", () => {
     it("should return an a user entity", async () => {
@@ -120,6 +119,7 @@ describe("UserController", () => {
       expect(controllerResult).toEqual(userRo);
     });
   });
+
   describe("delete", () => {
     it("should return an array of users", async () => {
       const spy = jest
