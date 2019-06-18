@@ -27,7 +27,6 @@ export class ProgramService {
 
     if ('tag' in query) {
       qb.andWhere("program.tagList LIKE :tag", { tag: `%${query.tag}%` });
-      console.log("Ik ben hier")
     }
 
     if ('author' in query) {

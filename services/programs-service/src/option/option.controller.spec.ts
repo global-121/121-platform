@@ -10,16 +10,13 @@ import { CriteriumEntity } from "../criterium/criterium.entity";
 
 class OptionServiceMock {
   async findAll(): Promise<OptionEntity[]>{
-    console.log("balbal")
     return [new OptionEntity()];
   }
   async create(criteriumId: number, optionData: CreateOptionDto): Promise<OptionEntity>{
     const option = new OptionEntity();
     option.id = 1;
-    option.option = "bla"//optionData.option;
+    option.option = optionData.option;
     option.criterium = new CriteriumEntity();
-    console.log(option.option)
-    console.log("hier hier")
     return option;
   }
 }

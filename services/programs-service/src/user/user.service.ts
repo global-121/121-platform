@@ -103,12 +103,14 @@ export class UserService {
     let exp = new Date(today);
     exp.setDate(today.getDate() + 60);
 
-    return jwt.sign({
+    const result = jwt.sign({
       id: user.id,
       username: user.username,
       email: user.email,
       exp: exp.getTime() / 1000,
     }, SECRET);
+
+    return result
   };
 
   private buildUserRO(user: UserEntity) {

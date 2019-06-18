@@ -40,11 +40,12 @@ describe("CriteriumController", () => {
     it("should return an array of criteriums", async () => {
       const criterium = new CriteriumEntity();
       const criteriumsAll: [CriteriumEntity] = [criterium];
-      jest
+      const spy = jest
         .spyOn(criteriumService, "findAll")
         .mockImplementation(() => Promise.resolve(criteriumsAll));
 
       const controllerResult = await criteriumController.findAll();
+      expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(criteriumsAll);
     });
   });
@@ -52,11 +53,12 @@ describe("CriteriumController", () => {
     describe("find", () => {
       it("should return a criterium based on a country id", async () => {
         const criterium = [new CriteriumEntity()];
-        jest
+        const spy = jest
           .spyOn(criteriumService, "find")
           .mockImplementation(() => Promise.resolve(criterium));
 
         const controllerResult = await criteriumController.find(1);
+        expect(spy).toHaveBeenCalled();
         expect(controllerResult).toStrictEqual(criterium);
       });
   });
@@ -64,7 +66,7 @@ describe("CriteriumController", () => {
   describe("create", () => {
     it("should create instance of criterium ", async () => {
       const criterium = new CriteriumEntity();
-      jest
+      const spy = jest
         .spyOn(criteriumService, "create")
         .mockImplementation(() => Promise.resolve(criterium));
 
@@ -75,6 +77,7 @@ describe("CriteriumController", () => {
       }
 
       const controllerResult = await criteriumController.create(1, newCritetiumParameters);
+      expect(spy).toHaveBeenCalled();
       expect(controllerResult).toBe(criterium);
     });
 });

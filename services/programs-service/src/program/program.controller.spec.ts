@@ -46,18 +46,19 @@ describe("ProgramController", () => {
         programs: [program],
         programsCount: 1
       };
-      jest
+      const spy = jest
         .spyOn(programService, "findAll")
         .mockImplementation(() => Promise.resolve(programsAll));
 
-      const controllerResult = await programController.findAll(["bla"]);
+      const controllerResult = await programController.findAll([""]);
+      expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(programsAll);
     });
   });
   describe("create", () => {
     it("should create a program and then return that program", async () => {
       const program = new ProgramEntity();
-      jest
+      const spy = jest
         .spyOn(programService, "create")
         .mockImplementation(() => Promise.resolve(program));
 
@@ -68,6 +69,7 @@ describe("ProgramController", () => {
         }
 
       const controllerResult = await programController.create(0, newProgramParameters);
+      expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(program);
     });
   });
@@ -77,7 +79,7 @@ describe("ProgramController", () => {
       const programRO = {
         program: new ProgramEntity()
       }
-      jest
+      const spy = jest
         .spyOn(programService, "update")
         .mockImplementation(() => Promise.resolve(programRO));
 
@@ -88,6 +90,7 @@ describe("ProgramController", () => {
         }
 
       const controllerResult = await programController.update(0, 0, newProgramParameters);
+      expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(programRO);
     });
   });
