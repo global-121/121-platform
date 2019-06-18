@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '../user/user.module';
 import { CountryModule } from '../country/country.module';
@@ -12,32 +17,24 @@ import { CountryEntity } from '../country/country.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      CriteriumEntity,
-      UserEntity,
-      CountryEntity,
-    ]),
+    TypeOrmModule.forFeature([CriteriumEntity, UserEntity, CountryEntity]),
     UserModule,
     CountryModule,
   ],
   providers: [CriteriumService],
-  controllers: [
-    CriteriumController
-  ],
-  exports: []
+  controllers: [CriteriumController],
+  exports: [],
 })
 export class CriteriumModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddlewareAdmin)
-      .forRoutes(
-        { path: 'criteriums', method: RequestMethod.POST }
-      );
+      .forRoutes({ path: 'criteriums', method: RequestMethod.POST });
     consumer
       .apply(AuthMiddleware)
       .forRoutes(
         { path: 'criteriums', method: RequestMethod.GET },
-        { path: 'criteriums/:countryId', method: RequestMethod.GET }
+        { path: 'criteriums/:countryId', method: RequestMethod.GET },
       );
   }
 }

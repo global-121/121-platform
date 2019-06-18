@@ -19,4 +19,3 @@ export interface ProgramsRO {
   programs: ProgramEntity[];
   programsCount: number;
 }
-

@@ -2,7 +2,6 @@ import { SECRET } from '../secrets';
 import * as jwt from 'jsonwebtoken';
 
 export class BaseController {
-
   constructor() {}
 
   protected getUserIdFromToken(authorization) {

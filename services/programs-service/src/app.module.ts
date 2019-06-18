@@ -17,12 +17,10 @@ import { HealthModule } from './health.module';
     UserModule,
     OptionModule,
     CountryModule,
-    HealthModule
+    HealthModule,
   ],
-  controllers: [
-    AppController
-  ],
-  providers: []
+  controllers: [AppController],
+  providers: [],
 })
 export class ApplicationModule {
   constructor(private readonly connection: Connection) {}

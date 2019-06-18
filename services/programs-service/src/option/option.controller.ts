@@ -1,4 +1,4 @@
-import {Get, Post, Body, Controller, Param } from '@nestjs/common';
+import { Get, Post, Body, Controller, Param } from '@nestjs/common';
 
 import { OptionEntity } from './option.entity';
 import { OptionService } from './option.service';
@@ -17,7 +17,6 @@ import {
 @ApiUseTags('criterium-options')
 @Controller('criterium-options')
 export class OptionController {
-
   constructor(private readonly optionService: OptionService) {}
 
   @ApiOperation({ title: 'Get all criterium-dropdown-options' })
@@ -27,10 +26,9 @@ export class OptionController {
   }
 
   @ApiOperation({ title: 'Create new option for dropdown-criterium' })
-  @ApiImplicitParam({name: 'criteriumId', required: true, type: 'number'})
+  @ApiImplicitParam({ name: 'criteriumId', required: true, type: 'number' })
   @Post(':criteriumId')
   async create(@Param() params, @Body() optionData: CreateOptionDto) {
     return this.optionService.create(params.criteriumId, optionData);
   }
-
 }

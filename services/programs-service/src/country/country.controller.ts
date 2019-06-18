@@ -1,4 +1,4 @@
-import {Get, Post, Put, Body, Controller, Param } from '@nestjs/common';
+import { Get, Post, Put, Body, Controller, Param } from '@nestjs/common';
 
 import { CountryEntity } from './country.entity';
 import { CountryService } from './country.service';
@@ -18,9 +18,7 @@ import { URLSearchParams } from 'url';
 @ApiUseTags('countrys')
 @Controller('countrys')
 export class CountryController {
-
   constructor(private readonly countryService: CountryService) {}
-
 
   @ApiOperation({ title: 'Get all criteria' })
   @Get()
@@ -29,7 +27,10 @@ export class CountryController {
   }
 
   @ApiOperation({ title: 'Create country' })
-  @ApiResponse({ status: 201, description: 'The country has been successfully created.'})
+  @ApiResponse({
+    status: 201,
+    description: 'The country has been successfully created.',
+  })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post()
   async create(@Body() countryData: CreateCountryDto) {
@@ -38,8 +39,9 @@ export class CountryController {
 
   @ApiOperation({ title: 'Add criterium to country' })
   @Put(':countryId')
-  async bindCriteriumCountry(@Body() countryCriteriumData: BindCriteriumCountryDto) {
+  async bindCriteriumCountry(
+    @Body() countryCriteriumData: BindCriteriumCountryDto,
+  ) {
     return this.countryService.bindCriteriumCountry(countryCriteriumData);
   }
-
 }

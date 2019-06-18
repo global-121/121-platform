@@ -1,4 +1,4 @@
-import { UserData } from "../user/user.interface";
+import { UserData } from '../user/user.interface';
 import { CriteriumEntity } from './criterium.entity';
 
 // export interface CriteriumData {
@@ -6,11 +6,11 @@ import { CriteriumEntity } from './criterium.entity';
 //     type: string;
 //     author?: UserData;
 // }
-  
+
 export interface CriteriumRO {
-    criterium: CriteriumEntity;
+  criterium: CriteriumEntity;
 }
 
 export interface CriteriumsRO {
-    criteriums: CriteriumEntity[];
+  criteriums: CriteriumEntity[];
 }

@@ -1,11 +1,11 @@
-import { ProgramService } from "./program.service";
+import { ProgramService } from './program.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProgramEntity } from "./program.entity";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { UserEntity } from "../user/user.entity";
+import { ProgramEntity } from './program.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { UserEntity } from '../user/user.entity';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 
-describe("Program service", () => {
+describe('Program service', () => {
   let service: ProgramService;
   let module: TestingModule;
 
@@ -13,8 +13,14 @@ describe("Program service", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProgramService,
-        { provide: getRepositoryToken(ProgramEntity), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(UserEntity), useFactory: repositoryMockFactory }
+        {
+          provide: getRepositoryToken(ProgramEntity),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(UserEntity),
+          useFactory: repositoryMockFactory,
+        },
       ],
     }).compile();
 
@@ -25,7 +31,7 @@ describe("Program service", () => {
     module.close();
   });
 
-  it("should be defined", () => {
+  it('should be defined', () => {
     expect(service).toBeDefined();
   });
 });

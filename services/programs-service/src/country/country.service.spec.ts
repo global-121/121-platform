@@ -1,11 +1,11 @@
-import { CountryService } from "./country.service";
+import { CountryService } from './country.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CountryEntity } from "./country.entity";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { UserEntity } from "../user/user.entity";
+import { CountryEntity } from './country.entity';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { UserEntity } from '../user/user.entity';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 
-describe("Country service", () => {
+describe('Country service', () => {
   let service: CountryService;
   let module: TestingModule;
 
@@ -13,8 +13,14 @@ describe("Country service", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CountryService,
-        { provide: getRepositoryToken(CountryEntity), useFactory: repositoryMockFactory },
-        { provide: getRepositoryToken(UserEntity), useFactory: repositoryMockFactory }
+        {
+          provide: getRepositoryToken(CountryEntity),
+          useFactory: repositoryMockFactory,
+        },
+        {
+          provide: getRepositoryToken(UserEntity),
+          useFactory: repositoryMockFactory,
+        },
       ],
     }).compile();
 
@@ -25,7 +31,7 @@ describe("Country service", () => {
     module.close();
   });
 
-  it("should be defined", () => {
+  it('should be defined', () => {
     expect(service).toBeDefined();
   });
 });

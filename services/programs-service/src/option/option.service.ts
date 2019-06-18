@@ -18,8 +18,10 @@ export class OptionService {
     return await this.optionRepository.find();
   }
 
-  async create(criteriumId: number, optionData: CreateOptionDto): Promise<OptionEntity> {
-
+  async create(
+    criteriumId: number,
+    optionData: CreateOptionDto,
+  ): Promise<OptionEntity> {
     let option = new OptionEntity();
     option.option = optionData.option;
 
@@ -28,6 +30,5 @@ export class OptionService {
     const newOption = await this.optionRepository.save(option);
 
     return newOption;
-
   }
 }

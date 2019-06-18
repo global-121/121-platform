@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '../user/user.module';
 import { CriteriumModule } from '../criterium/criterium.module';
@@ -11,30 +16,22 @@ import { AuthMiddlewareAdmin } from '../user/auth.middlewareAdmin';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      OptionEntity,
-      CriteriumEntity,
-    ]),
+    TypeOrmModule.forFeature([OptionEntity, CriteriumEntity]),
     UserModule,
     CriteriumModule,
   ],
   providers: [OptionService],
-  controllers: [
-    OptionController
-  ],
-  exports: []
+  controllers: [OptionController],
+  exports: [],
 })
 export class OptionModule implements NestModule {
   public configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddlewareAdmin)
-      .forRoutes(
-        { path: 'criterium-options/:criteriumId', method: RequestMethod.POST }
-      );
+    consumer.apply(AuthMiddlewareAdmin).forRoutes({
+      path: 'criterium-options/:criteriumId',
+      method: RequestMethod.POST,
+    });
     consumer
       .apply(AuthMiddleware)
-      .forRoutes(
-        { path: 'criterium-options', method: RequestMethod.GET }
-      );
+      .forRoutes({ path: 'criterium-options', method: RequestMethod.GET });
   }
 }

@@ -1,4 +1,12 @@
-import {Entity, PrimaryGeneratedColumn, Column, BeforeInsert, JoinTable, ManyToMany, OneToMany} from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BeforeInsert,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+} from 'typeorm';
 import { IsEmail, Validate } from 'class-validator';
 import * as crypto from 'crypto';
 import { ProgramEntity } from '../program/program.entity';
@@ -6,7 +14,6 @@ import { CriteriumEntity } from '../criterium/criterium.entity';
 
 @Entity('user')
 export class UserEntity {
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,7 +30,7 @@ export class UserEntity {
   @Column()
   role: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   countryId: number;
 
   @BeforeInsert()

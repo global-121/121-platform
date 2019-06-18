@@ -24,15 +24,14 @@ export class AuthMiddleware implements NestMiddleware {
 
       req.user = user.user;
       next();
-
     } else {
-      if (AUTH_DEBUG){
+      if (AUTH_DEBUG) {
         const user = await this.userService.findByEmail('test@test.nl');
         req.user = user.user;
         next();
       } else {
         throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
-      }      
+      }
     }
   }
 }
