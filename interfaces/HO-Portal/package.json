@@ -43,7 +43,7 @@
     "@angular/compiler": "^7.x.x",
     "@angular/compiler-cli": "^7.x.x",
     "@angular/language-service": "^7.x.x",
-    "@ionic/angular-toolkit": "~1.5.1",
+    "@ionic/angular-toolkit": "~2.0.0",
     "@types/jasmine": "~3.3.13",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~12.0.0",
