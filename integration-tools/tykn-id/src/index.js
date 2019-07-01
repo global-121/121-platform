@@ -1,4 +1,6 @@
 var indy = require('indy-sdk')
+var fs = require('fs')
+var untildify = require('untildify');
 
 
 var tyknid = {}
@@ -7,37 +9,63 @@ var walletHandle = null
 
 
 var wallet = {} 
-wallet.getWallet = function getWallet(path,id,password){
-    var config = {}
-    config.id = id
-    config.storage_config = { "path" : path }
-    var credentials = {"key":password}
+wallet.getWallet = async function getWallet(walletPath,walletName,walletKey){
+    var indyWalletConfig = {
+        "id" : walletName,
+        "storage_config":{"path": untildify(walletPath)}
+    }
+    var indyWalletCredentials = {
+        "key" :walletKey
+    }
+    console.log(indyWalletConfig)
     if (!wallet.handle){
-        return await indy.openWallet(config,credentials)
+        var wh = await indy.openWallet(indyWalletConfig,indyWalletCredentials)
+        return wh
     }else {
         return wallet.handle
     }
 }
 wallet.close = function close() {
     if(wallet.handle) {
-        await indy.closeWallet()
+        indy.closeWallet()
     }
 }
-tyknid.initSDK = function initSDK(pathToConfig) {
-    var config = File.read(pathToConfig)
+tyknid.initSDK = async function initSDK(pathToConfig) {
+    var config = {}
+    try{
+        var config = JSON.parse(fs.readFileSync(pathToConfig))
+    }
+    catch(err){
+        throw Error("Unable to find config file or invalid json in config file.");
+    }
+    
 
     if(config.hasOwnProperty("walletName") && config["walletName"] ){
         if(config.hasOwnProperty("walletPath") && config["walletPath"] ){
-            indy.openWallet("")
+            var walletHandle = await wallet.getWallet(config.walletPath,config.walletName,config.walletKey)
+            console.log(walletHandle)
+            wallet.handle =  walletHandle
         }else{
-            throw "Config is not correct! walletPath is missing from config"
+            throw Error("Config is not correct! walletPath is missing from config");
         }    
     }else{
-        throw "Config is not correct! walletName is missing from config"
+        throw Error("Config is not correct! walletName is missing from config");
     }
 
 }
 
-tyknid.createConnection = function createConnection (subjectDID,subjectVerKey) {
-    indy.createPairwise(walletHandle,subjectDID,"","","")
+tyknid.createConnection = async function createConnection (subjectDID,subjectVerKey) {
+    if (!wallet.handle){
+        throw Error("Wallet is not open or not accessible.");
+    }
+    return await indy.createPairwise(walletHandle,subjectDID,indy.getMyDidWithMeta,"","")
 }
+tyknid.showDids = async function showDids () {
+    if (!wallet.handle){
+        throw Error("Wallet is not open or not accessible.");
+    }
+    var res = await indy.listMyDidsWithMeta(wallet.handle)
+    console.log(res)
+    return res
+}
+module.exports = tyknid
