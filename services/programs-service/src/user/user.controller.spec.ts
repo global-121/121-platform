@@ -21,10 +21,10 @@ const userRo = {
 };
 
 class UserServiceMock {
-  async findByEmail(): Promise<UserRO> {
+  public async findByEmail(): Promise<UserRO> {
     return userRo;
   }
-  async create(userData: CreateUserDto): Promise<UserRO> {
+  public async create(userData: CreateUserDto): Promise<UserRO> {
     const userRo = {
       user: {
         username: userData.username,
@@ -37,10 +37,10 @@ class UserServiceMock {
     };
     return userRo;
   }
-  async delete(userId: number): Promise<DeleteResult> {
+  public async delete(userId: number): Promise<DeleteResult> {
     return new DeleteResult();
   }
-  async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
+  public async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const user = new UserEntity();
     user.id = 1;
     user.username = 'string';
@@ -51,7 +51,7 @@ class UserServiceMock {
     user.countryId = 1;
     return user;
   }
-  generateJWT(user) {
+  public generateJWT(user) {
     return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo';
   }
 }

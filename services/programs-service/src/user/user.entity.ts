@@ -20,7 +20,7 @@ export class UserEntity {
 
   @Column()
   @IsEmail()
-  public mail: string;
+  public email: string;
 
   @Column()
   public password: string;
