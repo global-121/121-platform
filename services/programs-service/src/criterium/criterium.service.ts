@@ -8,20 +8,19 @@ import { CountryEntity } from '../country/country.entity';
 
 @Injectable()
 export class CriteriumService {
-  constructor(
-    @InjectRepository(CriteriumEntity)
-    private readonly criteriumRepository: Repository<CriteriumEntity>,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
-    @InjectRepository(CountryEntity)
-    private readonly countryRepository: Repository<CountryEntity>,
-  ) {}
+  @InjectRepository(CriteriumEntity)
+  private readonly criteriumRepository: Repository<CriteriumEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
+  @InjectRepository(CountryEntity)
+  private readonly countryRepository: Repository<CountryEntity>;
+  public constructor() {}
 
-  async findAll(): Promise<CriteriumEntity[]> {
+  public async findAll(): Promise<CriteriumEntity[]> {
     return await this.criteriumRepository.find();
   }
 
-  async find(countryId: number): Promise<CriteriumEntity[]> {
+  public async find(countryId: number): Promise<CriteriumEntity[]> {
     const country = await this.countryRepository.findOne(countryId);
     return await this.criteriumRepository
       .createQueryBuilder('table')
@@ -31,7 +30,7 @@ export class CriteriumService {
       .getMany();
   }
 
-  async create(
+  public async create(
     userId: number,
     criteriumData: CreateCriteriumDto,
   ): Promise<CriteriumEntity> {
