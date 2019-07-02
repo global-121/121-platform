@@ -1,36 +1,37 @@
+import { CountryEntity } from './country.entity';
 import { Test } from '@nestjs/testing';
-import 'jest';
-
 import { CountryController } from './country.controller';
 import { CountryService } from './country.service';
 
 class CountryServiceMock {
-  public async findAll(): Promise<any> {
+  public async findAll(): Promise<CountryEntity[]> {
     return [];
   }
 }
 
-describe('CountryController', () => {
+describe('CountryController', (): void => {
   let countryController: CountryController;
   let countryService: CountryService;
 
-  beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      controllers: [CountryController],
-      providers: [
-        {
-          provide: CountryService,
-          useValue: new CountryServiceMock(),
-        },
-      ],
-    }).compile();
+  beforeEach(
+    async (): Promise<void> => {
+      const module = await Test.createTestingModule({
+        controllers: [CountryController],
+        providers: [
+          {
+            provide: CountryService,
+            useValue: new CountryServiceMock(),
+          },
+        ],
+      }).compile();
 
-    countryService = module.get<CountryService>(CountryService);
-    countryController = module.get<CountryController>(CountryController);
-  });
+      countryService = module.get<CountryService>(CountryService);
+      countryController = module.get<CountryController>(CountryController);
+    },
+  );
 
-  describe('findAll', () => {
-    it('should return an array of countrys', async () => {
+  describe('findAll', (): void => {
+    it('should return an array of countrys', async (): Promise<void> => {
       const initialInput = [
         {
           id: 3,
@@ -42,7 +43,9 @@ describe('CountryController', () => {
       initialInput.map(val => clone.push(Object.assign({}, val)));
       jest
         .spyOn(countryService, 'findAll')
-        .mockImplementation(() => Promise.resolve(initialInput));
+        .mockImplementation(
+          (): Promise<CountryEntity[]> => Promise.resolve(initialInput),
+        );
 
       const controllerResult = await countryController.findAll();
       expect(controllerResult).toStrictEqual(clone);

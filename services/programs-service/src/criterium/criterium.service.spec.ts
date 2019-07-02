@@ -6,37 +6,41 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../user/user.entity';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 
-describe('Criterium service', () => {
+describe('Criterium service', (): void => {
   let service: CriteriumService;
   let module: TestingModule;
 
-  beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        CriteriumService,
-        {
-          provide: getRepositoryToken(CriteriumEntity),
-          useFactory: repositoryMockFactory,
-        },
-        {
-          provide: getRepositoryToken(UserEntity),
-          useFactory: repositoryMockFactory,
-        },
-        {
-          provide: getRepositoryToken(CountryEntity),
-          useFactory: repositoryMockFactory,
-        },
-      ],
-    }).compile();
+  beforeAll(
+    async (): Promise<void> => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          CriteriumService,
+          {
+            provide: getRepositoryToken(CriteriumEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(UserEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(CountryEntity),
+            useFactory: repositoryMockFactory,
+          },
+        ],
+      }).compile();
 
-    service = module.get<CriteriumService>(CriteriumService);
-  });
+      service = module.get<CriteriumService>(CriteriumService);
+    },
+  );
 
-  afterAll(async () => {
-    module.close();
-  });
+  afterAll(
+    async (): Promise<void> => {
+      module.close();
+    },
+  );
 
-  it('should be defined', () => {
+  it('should be defined', (): void => {
     expect(service).toBeDefined();
   });
 });

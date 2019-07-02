@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { CountryEntity } from './country.entity';
 import { UserEntity } from '../user/user.entity';
 import { CreateCountryDto, BindCriteriumCountryDto } from './dto';
-import { CountryRO } from './country.interface';
 
 @Injectable()
 export class CountryService {

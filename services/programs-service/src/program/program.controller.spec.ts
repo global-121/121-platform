@@ -1,7 +1,5 @@
 import { CreateProgramDto } from './dto/create-program.dto';
 import { Test } from '@nestjs/testing';
-import 'jest';
-
 import { ProgramController } from './program.controller';
 import { ProgramService } from './program.service';
 import { ProgramEntity } from './program.entity';
@@ -9,41 +7,50 @@ import { ProgramRO, ProgramsRO } from './program.interface';
 import { UserEntity } from '../user/user.entity';
 
 class ProgramServiceMock {
-  async findAll(query): Promise<ProgramsRO> {
+  public async findAll(query): Promise<ProgramsRO> {
+    query;
     return { programs: [new ProgramEntity()], programsCount: 1 };
   }
-  async create(
+  public async create(
     userId: number,
     programData: CreateProgramDto,
   ): Promise<ProgramEntity> {
+    userId;
+    programData;
     return new ProgramEntity();
   }
-  async update(id: number, programData: any): Promise<ProgramRO> {
+  public async update(id: number, programData: any): Promise<ProgramRO> {
+    id;
+    programData;
     return { program: new ProgramEntity() };
   }
 }
 
-describe('ProgramController', () => {
+describe('ProgramController', (): void => {
   let programController: ProgramController;
   let programService: ProgramService;
 
-  beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      controllers: [ProgramController],
-      providers: [
-        {
-          provide: ProgramService,
-          useValue: new ProgramServiceMock(),
-        },
-      ],
-    }).compile();
+  beforeEach(
+    async (): Promise<void> => {
+      const module = await Test.createTestingModule({
+        controllers: [ProgramController],
+        providers: [
+          {
+            provide: ProgramService,
+            useValue: new ProgramServiceMock(),
+          },
+        ],
+      }).compile();
 
-    programService = module.get<ProgramService>(ProgramService);
-    programController = module.get<ProgramController>(ProgramController);
-  });
+      programService = module.get<ProgramService>(ProgramService);
+      programController = module.get<ProgramController>(ProgramController);
+    },
+  );
 
-  describe('findAll', () => {
-    it('should return an object with a count and and array of programs', async () => {
+  describe('findAll', (): void => {
+    it('should return an object with a count and and array of programs', async (): Promise<
+      void
+    > => {
       const program = new ProgramEntity();
       const programsAll: ProgramsRO = {
         programs: [program],
@@ -51,19 +58,25 @@ describe('ProgramController', () => {
       };
       const spy = jest
         .spyOn(programService, 'findAll')
-        .mockImplementation(() => Promise.resolve(programsAll));
+        .mockImplementation(
+          (): Promise<ProgramsRO> => Promise.resolve(programsAll),
+        );
 
       const controllerResult = await programController.findAll(['']);
       expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(programsAll);
     });
   });
-  describe('create', () => {
-    it('should create a program and then return that program', async () => {
+  describe('create', (): void => {
+    it('should create a program and then return that program', async (): Promise<
+      void
+    > => {
       const program = new ProgramEntity();
       const spy = jest
         .spyOn(programService, 'create')
-        .mockImplementation(() => Promise.resolve(program));
+        .mockImplementation(
+          (): Promise<ProgramEntity> => Promise.resolve(program),
+        );
 
       const newProgramParameters = {
         title: 'string',
@@ -80,14 +93,18 @@ describe('ProgramController', () => {
     });
   });
 
-  describe('update', () => {
-    it('should update a program and then return that program', async () => {
+  describe('update', (): void => {
+    it('should update a program and then return that program', async (): Promise<
+      void
+    > => {
       const programRO = {
         program: new ProgramEntity(),
       };
       const spy = jest
         .spyOn(programService, 'update')
-        .mockImplementation(() => Promise.resolve(programRO));
+        .mockImplementation(
+          (): Promise<ProgramRO> => Promise.resolve(programRO),
+        );
 
       const newProgramParameters = {
         title: 'string',

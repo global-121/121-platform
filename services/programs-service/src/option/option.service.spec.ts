@@ -5,33 +5,37 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 import { CriteriumEntity } from '../criterium/criterium.entity';
 
-describe('Option service', () => {
+describe('Option service', (): void => {
   let service: OptionService;
   let module: TestingModule;
 
-  beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        OptionService,
-        {
-          provide: getRepositoryToken(OptionEntity),
-          useFactory: repositoryMockFactory,
-        },
-        {
-          provide: getRepositoryToken(CriteriumEntity),
-          useFactory: repositoryMockFactory,
-        },
-      ],
-    }).compile();
+  beforeAll(
+    async (): Promise<void> => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          OptionService,
+          {
+            provide: getRepositoryToken(OptionEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(CriteriumEntity),
+            useFactory: repositoryMockFactory,
+          },
+        ],
+      }).compile();
 
-    service = module.get<OptionService>(OptionService);
-  });
+      service = module.get<OptionService>(OptionService);
+    },
+  );
 
-  afterAll(async () => {
-    module.close();
-  });
+  afterAll(
+    async (): Promise<void> => {
+      module.close();
+    },
+  );
 
-  it('should be defined', () => {
+  it('should be defined', (): void => {
     expect(service).toBeDefined();
   });
 });

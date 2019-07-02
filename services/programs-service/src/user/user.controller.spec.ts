@@ -1,7 +1,5 @@
 import { UserEntity } from './user.entity';
 import { Test } from '@nestjs/testing';
-import 'jest';
-
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -56,29 +54,31 @@ class UserServiceMock {
   }
 }
 
-describe('UserController', () => {
+describe('UserController', (): void => {
   let userController: UserController;
   let userService: UserService;
 
-  beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      controllers: [UserController],
-      providers: [
-        {
-          provide: UserService,
-          useValue: new UserServiceMock(),
-        },
-      ],
-    }).compile();
-    userService = module.get<UserService>(UserService);
-    userController = module.get<UserController>(UserController);
-  });
+  beforeEach(
+    async (): Promise<void> => {
+      const module = await Test.createTestingModule({
+        controllers: [UserController],
+        providers: [
+          {
+            provide: UserService,
+            useValue: new UserServiceMock(),
+          },
+        ],
+      }).compile();
+      userService = module.get<UserService>(UserService);
+      userController = module.get<UserController>(UserController);
+    },
+  );
 
-  describe('findMe', () => {
-    it('should return a user', async () => {
+  describe('findMe', (): void => {
+    it('should return a user', async (): Promise<void> => {
       const spy = jest
         .spyOn(userService, 'findByEmail')
-        .mockImplementation(() => Promise.resolve(userRo));
+        .mockImplementation((): Promise<UserRO> => Promise.resolve(userRo));
       const controllerResult = await userController.findMe('test@test.nl');
 
       expect(spy).toHaveBeenCalled();
@@ -86,8 +86,8 @@ describe('UserController', () => {
     });
   });
 
-  describe('login', () => {
-    it('should return a user', async () => {
+  describe('login', (): void => {
+    it('should return a user', async (): Promise<void> => {
       const loginParameters = {
         email: 'test@test.nl',
         password: 'string',
@@ -98,14 +98,16 @@ describe('UserController', () => {
 
       const spy = jest
         .spyOn(userService, 'findOne')
-        .mockImplementation(() => Promise.resolve(new UserEntity()));
+        .mockImplementation(
+          (): Promise<UserEntity> => Promise.resolve(new UserEntity()),
+        );
       await userController.login(loginParameters);
       expect(spy).toHaveBeenCalled();
     });
   });
 
-  describe('create', () => {
-    it('should return an a user entity', async () => {
+  describe('create', (): void => {
+    it('should return an a user entity', async (): Promise<void> => {
       const userValue = {
         username: 'string',
         email: 'test@test.nl',
@@ -115,7 +117,7 @@ describe('UserController', () => {
       };
       const spy = jest
         .spyOn(userService, 'create')
-        .mockImplementation(() => Promise.resolve(userRo));
+        .mockImplementation((): Promise<UserRO> => Promise.resolve(userRo));
       const controllerResult = await userController.create(userValue);
 
       expect(spy).toHaveBeenCalled();
@@ -123,11 +125,13 @@ describe('UserController', () => {
     });
   });
 
-  describe('delete', () => {
-    it('should return an array of users', async () => {
+  describe('delete', (): void => {
+    it('should return an array of users', async (): Promise<void> => {
       const spy = jest
         .spyOn(userService, 'delete')
-        .mockImplementation(() => Promise.resolve(new DeleteResult()));
+        .mockImplementation(
+          (): Promise<DeleteResult> => Promise.resolve(new DeleteResult()),
+        );
       const controllerResult = await userController.delete(1);
 
       expect(spy).toHaveBeenCalled();

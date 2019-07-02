@@ -1,18 +1,15 @@
 import { Test } from '@nestjs/testing';
-import 'jest';
-
 import { OptionController } from './option.controller';
 import { OptionService } from './option.service';
 import { OptionEntity } from './option.entity';
-import { OptionsRO } from './option.interface';
 import { CreateOptionDto } from './dto/create-option.dto';
 import { CriteriumEntity } from '../criterium/criterium.entity';
 
 class OptionServiceMock {
-  async findAll(): Promise<OptionEntity[]> {
+  public async findAll(): Promise<OptionEntity[]> {
     return [new OptionEntity()];
   }
-  async create(
+  public async create(
     criteriumId: number,
     optionData: CreateOptionDto,
   ): Promise<OptionEntity> {
@@ -24,46 +21,51 @@ class OptionServiceMock {
   }
 }
 
-describe('OptionController', () => {
+describe('OptionController', (): void => {
   let optionController: OptionController;
   let optionService: OptionService;
 
-  beforeEach(async () => {
-    const module = await Test.createTestingModule({
-      controllers: [OptionController],
-      providers: [
-        {
-          provide: OptionService,
-          useValue: new OptionServiceMock(),
-        },
-      ],
-    }).compile();
-    optionService = module.get<OptionService>(OptionService);
-    optionController = module.get<OptionController>(OptionController);
-  });
+  beforeEach(
+    async (): Promise<void> => {
+      const module = await Test.createTestingModule({
+        controllers: [OptionController],
+        providers: [
+          {
+            provide: OptionService,
+            useValue: new OptionServiceMock(),
+          },
+        ],
+      }).compile();
+      optionService = module.get<OptionService>(OptionService);
+      optionController = module.get<OptionController>(OptionController);
+    },
+  );
 
-  describe('findAll', () => {
-    it('should return an array of options', async () => {
+  describe('findAll', (): void => {
+    it('should return an array of options', async (): Promise<void> => {
       const option = new OptionEntity();
       const optionsAll = [option];
       const spy = jest
         .spyOn(optionService, 'findAll')
-        .mockImplementation(() => Promise.resolve(optionsAll));
-
+        .mockImplementation(
+          (): Promise<OptionEntity[]> => Promise.resolve(optionsAll),
+        );
       const controllerResult = await optionController.findAll();
       expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(optionsAll);
     });
   });
-  describe('create', () => {
-    it('should return an a option entity', async () => {
+  describe('create', (): void => {
+    it('should return an a option entity', async (): Promise<void> => {
       const option = new OptionEntity();
       const optionValue = {
         option: 'test',
       };
       const spy = jest
         .spyOn(optionService, 'create')
-        .mockImplementation(() => Promise.resolve(option));
+        .mockImplementation(
+          (): Promise<OptionEntity> => Promise.resolve(option),
+        );
 
       const controllerResult = await optionController.create(1, optionValue);
       expect(spy).toHaveBeenCalled();
