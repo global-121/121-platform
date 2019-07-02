@@ -3,17 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
-import { User } from './user.decorator';
-
-const userRo = {
-  user: {
-    username: undefined,
-    email: undefined,
-    token: undefined,
-    role: undefined,
-    countryId: undefined,
-  },
-};
 
 describe('User service', () => {
   let service: UserService;

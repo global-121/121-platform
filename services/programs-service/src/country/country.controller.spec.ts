@@ -5,7 +5,7 @@ import { CountryController } from './country.controller';
 import { CountryService } from './country.service';
 
 class CountryServiceMock {
-  async findAll(): Promise<any> {
+  public async findAll(): Promise<any> {
     return [];
   }
 }

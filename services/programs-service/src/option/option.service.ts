@@ -7,18 +7,17 @@ import { CriteriumEntity } from '../criterium/criterium.entity';
 
 @Injectable()
 export class OptionService {
-  constructor(
-    @InjectRepository(OptionEntity)
-    private readonly optionRepository: Repository<OptionEntity>,
-    @InjectRepository(CriteriumEntity)
-    private readonly criteriumRepository: Repository<CriteriumEntity>,
-  ) {}
+  @InjectRepository(OptionEntity)
+  private readonly optionRepository: Repository<OptionEntity>;
+  @InjectRepository(CriteriumEntity)
+  private readonly criteriumRepository: Repository<CriteriumEntity>;
+  public constructor() {}
 
-  async findAll(): Promise<OptionEntity[]> {
+  public async findAll(): Promise<OptionEntity[]> {
     return await this.optionRepository.find();
   }
 
-  async create(
+  public async create(
     criteriumId: number,
     optionData: CreateOptionDto,
   ): Promise<OptionEntity> {
