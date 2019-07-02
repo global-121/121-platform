@@ -21,17 +21,22 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
+import { ProgramEntity } from './program.entity';
+import { DeleteResult } from 'typeorm';
 
 @ApiBearerAuth()
 @ApiUseTags('programs')
 @Controller('programs')
 export class ProgramController {
-  constructor(private readonly programService: ProgramService) {}
+  private readonly programService: ProgramService;
+  public constructor(programService: ProgramService) {
+    this.programService = programService;
+  }
 
   @ApiOperation({ title: 'Get all programs' })
   @ApiResponse({ status: 200, description: 'Return all programs.' })
   @Get()
-  async findAll(@Query() query): Promise<ProgramsRO> {
+  public async findAll(@Query() query): Promise<ProgramsRO> {
     return await this.programService.findAll(query);
   }
 
@@ -43,10 +48,10 @@ export class ProgramController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   // @ApiImplicitBody({ name: 'CreateProgramDto', description: '', type: CreateProgramDto })
   @Post()
-  async create(
+  public async create(
     @User('id') userId: number,
     @Body() programData: CreateProgramDto,
-  ) {
+  ): Promise<ProgramEntity> {
     return this.programService.create(userId, programData);
   }
 
@@ -58,11 +63,11 @@ export class ProgramController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Put(':programId')
-  async update(
+  public async update(
     @Param() params,
     @User('id') userId: number,
     @Body() programData: CreateProgramDto,
-  ) {
+  ): Promise<ProgramRO> {
     return this.programService.update(params.programId, programData);
   }
 
@@ -74,7 +79,7 @@ export class ProgramController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'string' })
   @Delete(':programId')
-  async delete(@Param() params) {
+  public async delete(@Param() params): Promise<DeleteResult> {
     return this.programService.delete(params.programId);
   }
 }
