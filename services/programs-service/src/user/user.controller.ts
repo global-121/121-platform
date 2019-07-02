@@ -2,7 +2,6 @@ import {
   Get,
   Post,
   Body,
-  Put,
   Delete,
   Param,
   Controller,
@@ -22,23 +21,27 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
+import { DeleteResult } from 'typeorm';
 
 @ApiUseTags('user')
 @Controller()
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  private readonly userService: UserService;
+  public constructor(userService: UserService) {
+    this.userService = userService;
+  }
 
   @ApiOperation({ title: 'Sign-up new user' })
   @UsePipes(new ValidationPipe())
   @Post('user')
-  async create(@Body() userData: CreateUserDto) {
+  public async create(@Body() userData: CreateUserDto): Promise<UserRO> {
     return this.userService.create(userData);
   }
 
   @ApiOperation({ title: 'Log in existing user' })
   @UsePipes(new ValidationPipe())
   @Post('user/login')
-  async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
+  public async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
     const _user = await this.userService.findOne(loginUserDto);
     if (!_user) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
@@ -61,14 +64,14 @@ export class UserController {
   @ApiOperation({ title: 'Delete user by userId' })
   @Delete('user/:userId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'string' })
-  async delete(@Param() params) {
+  public async delete(@Param() params): Promise<DeleteResult> {
     return await this.userService.delete(params.userId);
   }
 
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
-  async findMe(@User('email') email: string): Promise<UserRO> {
+  public async findMe(@User('email') email: string): Promise<UserRO> {
     return await this.userService.findByEmail(email);
   }
 }
