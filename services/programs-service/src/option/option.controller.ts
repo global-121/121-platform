@@ -17,18 +17,24 @@ import {
 @ApiUseTags('criterium-options')
 @Controller('criterium-options')
 export class OptionController {
-  constructor(private readonly optionService: OptionService) {}
+  private readonly optionService: OptionService;
+  public constructor(optionService: OptionService) {
+    this.optionService = optionService;
+  }
 
   @ApiOperation({ title: 'Get all criterium-dropdown-options' })
   @Get()
-  async findAll(): Promise<OptionEntity[]> {
+  public async findAll(): Promise<OptionEntity[]> {
     return await this.optionService.findAll();
   }
 
   @ApiOperation({ title: 'Create new option for dropdown-criterium' })
   @ApiImplicitParam({ name: 'criteriumId', required: true, type: 'number' })
   @Post(':criteriumId')
-  async create(@Param() params, @Body() optionData: CreateOptionDto) {
+  public async create(
+    @Param() params,
+    @Body() optionData: CreateOptionDto,
+  ): Promise<OptionEntity> {
     return this.optionService.create(params.criteriumId, optionData);
   }
 }

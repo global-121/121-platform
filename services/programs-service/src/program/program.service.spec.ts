@@ -5,33 +5,37 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../user/user.entity';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 
-describe('Program service', () => {
+describe('Program service', (): void => {
   let service: ProgramService;
   let module: TestingModule;
 
-  beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ProgramService,
-        {
-          provide: getRepositoryToken(ProgramEntity),
-          useFactory: repositoryMockFactory,
-        },
-        {
-          provide: getRepositoryToken(UserEntity),
-          useFactory: repositoryMockFactory,
-        },
-      ],
-    }).compile();
+  beforeAll(
+    async (): Promise<void> => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          ProgramService,
+          {
+            provide: getRepositoryToken(ProgramEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(UserEntity),
+            useFactory: repositoryMockFactory,
+          },
+        ],
+      }).compile();
 
-    service = module.get<ProgramService>(ProgramService);
-  });
+      service = module.get<ProgramService>(ProgramService);
+    },
+  );
 
-  afterAll(async () => {
-    module.close();
-  });
+  afterAll(
+    async (): Promise<void> => {
+      module.close();
+    },
+  );
 
-  it('should be defined', () => {
+  it('should be defined', (): void => {
     expect(service).toBeDefined();
   });
 });

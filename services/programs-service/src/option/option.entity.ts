@@ -10,11 +10,11 @@ import { CriteriumEntity } from '../criterium/criterium.entity';
 @Entity('option')
 export class OptionEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  option: string;
+  public option: string;
 
   @ManyToOne(type => CriteriumEntity, criterium => criterium.options)
-  criterium: CriteriumEntity;
+  public criterium: CriteriumEntity;
 }
