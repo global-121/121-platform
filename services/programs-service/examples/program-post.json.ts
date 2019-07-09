@@ -3,8 +3,8 @@ var programPost = {
   countryId: 265,
   title: 'Pilot program 1a',
   description: 'Program to help people hit by earthquake examplename',
-  startDate: '07/08/2019',
-  endDate: '07/08/2019',
+  startDate: '2020-05-23T18:25:43.511Z',
+  endDate: '2021-05-23T18:25:43.511Z',
   currency: 'MWK',
   distributionFrequency: 'what is this',
   distributionChannel: 'mobileMoney',
@@ -14,7 +14,7 @@ var programPost = {
     cashDistributionSites: [], // This nested level is because postgres does not have great support for arrays of json
   },
   financialServiceProviders: {
-    financialServiceProviders: [],// This nested level is because postgres does not have great support for arrays of json
+    financialServiceProviders: [], // This nested level is because postgres does not have great support for arrays of json
   },
   inclusionCalculationType: 'standard', // Only option for now later, it can also be a fancy algorithm
   customCriteria: [
@@ -41,25 +41,27 @@ var programPost = {
       },
       answerType: 'dropdown',
       criteriumType: 'standard',
-      options: [
-        {
-          id: 0,
-          option: 'steel',
-          name: {
-            english: 'steel',
-            nyanja: 'zitsulo',
+      options: {
+        options: [
+          {
+            id: 0,
+            option: 'steel',
+            name: {
+              english: 'steel',
+              nyanja: 'zitsulo',
+            },
           },
-        },
-        {
-          id: 1,
-          option: 'tiles',
-          name: {
-            english: 'tiles',
-            nyanja: 'matayala',
+          {
+            id: 1,
+            option: 'tiles',
+            name: {
+              english: 'tiles',
+              nyanja: 'matayala',
+            },
+            score: 6,
           },
-          score: 6,
-        },
-      ],
+        ],
+      },
       scoring: {
         0: 3,
         1: 6,
