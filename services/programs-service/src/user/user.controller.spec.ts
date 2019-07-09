@@ -14,6 +14,7 @@ const userRo = {
     token:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo',
     role: 'aidworker',
+    status: 'active',
     countryId: 1,
   },
 };
@@ -30,6 +31,7 @@ class UserServiceMock {
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo',
         role: userData.role,
+        status: userData.status,
         countryId: userData.countryId,
       },
     };
@@ -46,6 +48,7 @@ class UserServiceMock {
     user.password =
       'c90f86e09c3461da52b3d8bc80ccd6a0d0cb893b1a41bd461e8ed31fa21c9b6e';
     user.role = 'aidworker';
+    user.status = 'active';
     user.countryId = 1;
     return user;
   }
@@ -113,6 +116,7 @@ describe('UserController', (): void => {
         email: 'test@test.nl',
         password: 'string',
         role: 'aidworker',
+        status: 'active',
         countryId: 1,
       };
       const spy = jest
