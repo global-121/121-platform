@@ -17,6 +17,9 @@ export class CreateUserDto {
   @ApiModelProperty({ example: 'admin / aidworker' })
   readonly role: string;
 
+  @ApiModelProperty({ example: 'active' })
+  readonly status: string;
+
   @ApiModelProperty({ example: 1 })
   readonly countryId: number;
 }

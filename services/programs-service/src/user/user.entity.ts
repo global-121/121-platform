@@ -29,6 +29,9 @@ export class UserEntity {
   public role: string;
 
   @Column({ nullable: true })
+  public status: string;
+
+  @Column({ nullable: true })
   public countryId: number;
 
   @BeforeInsert()
