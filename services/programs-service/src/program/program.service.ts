@@ -1,3 +1,4 @@
+import { CustomCriterium } from './custom-criterium.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
@@ -13,6 +14,8 @@ export class ProgramService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
+  @InjectRepository(CustomCriterium)
+  public customCriteriumRepository: Repository<CustomCriterium>;
   public constructor() {}
 
   public async findAll(query): Promise<ProgramsRO> {
@@ -60,23 +63,35 @@ export class ProgramService {
     programData: CreateProgramDto,
   ): Promise<ProgramEntity> {
     let program = new ProgramEntity();
+    program.location = programData.location;
     program.title = programData.title;
+    program.startDate = programData.startDate;
+    program.endDate = programData.endDate;
+    program.currency = programData.currency;
+    program.distributionFrequency = programData.distributionFrequency;
+    program.distributionChannel = programData.distributionChannel;
+    program.notifiyPaArea = programData.notifiyPaArea;
+    program.notificationType = programData.notificationType;
+    program.cashDistributionSites = programData.cashDistributionSites;
+    program.financialServiceProviders = programData.financialServiceProviders;
+    program.inclusionCalculationType = programData.inclusionCalculationType;
+    program.minimumScore = programData.minimumScore;
     program.description = programData.description;
     program.countryId = programData.countryId;
+    program.customCriteria = [];
 
     const author = await this.userRepository.findOne(userId);
     program.author = author;
 
+    for (let customCriterium of programData.customCriteria) {
+      console.log(customCriterium);
+      let customReturn = await this.customCriteriumRepository.save(
+        customCriterium,
+      );
+      program.customCriteria.push(customReturn);
+    }
+
     const newProgram = await this.programRepository.save(program);
-
-    // if (Array.isArray(author.programs)) {
-    //   author.programs.push(program);
-    // } else {
-    //   author.programs = [program];
-    // }
-
-    // await this.userRepository.save(author);
-
     return newProgram;
   }
 

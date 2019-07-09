@@ -23,5 +23,5 @@ import { HealthModule } from './health.module';
   providers: [],
 })
 export class ApplicationModule {
-  constructor(private readonly connection: Connection) {}
+  public constructor(private readonly connection: Connection) {}
 }

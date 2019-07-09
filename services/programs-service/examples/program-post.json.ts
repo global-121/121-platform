@@ -10,10 +10,14 @@ var programPost = {
   distributionChannel: 'mobileMoney',
   notifiyPaArea: true,
   notificationType: 'announcement',
-  cashDistributionSites: [],
-  FSPs: [],
-  scoringType: 'standard', // Only option for now later, it can also be a fancy algorithm
-  criteria: [
+  cashDistributionSites: {
+    cashDistributionSites: [], // This nested level is because postgres does not have great support for arrays of json
+  },
+  financialServiceProviders: {
+    financialServiceProviders: [],// This nested level is because postgres does not have great support for arrays of json
+  },
+  inclusionCalculationType: 'standard', // Only option for now later, it can also be a fancy algorithm
+  customCriteria: [
     {
       criterium: 'Age',
       question: {
@@ -30,12 +34,13 @@ var programPost = {
       },
     },
     {
-      criterum: 'RoofType',
+      criterium: 'RoofType',
       question: {
         english: 'What type is your roof?',
         nyanja: 'Denga lanu ndi lotani?',
       },
       answerType: 'dropdown',
+      criteriumType: 'standard',
       options: [
         {
           id: 0,
@@ -61,4 +66,6 @@ var programPost = {
       },
     },
   ],
+  minimumScore: 25,
 };
+console.log(JSON.stringify(programPost));
