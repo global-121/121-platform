@@ -74,12 +74,12 @@ export class UserService {
     }
   }
 
-  public async update(id: number, dto: UpdateUserDto): Promise<UserEntity> {
+  public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
     let toUpdate = await this.userRepository.findOne(id);
-    delete toUpdate.password;
-
-    let updated = Object.assign(toUpdate, dto);
-    return await this.userRepository.save(updated);
+    let updated = toUpdate;
+    updated.password = crypto.createHmac('sha256', dto.password).digest('hex');
+    const updatedUser = await this.userRepository.save(updated);
+    return this.buildUserRO(updatedUser);
   }
 
   public async delete(userId: number): Promise<DeleteResult> {
@@ -122,6 +122,7 @@ export class UserService {
 
   private buildUserRO(user: UserEntity): UserRO {
     const userRO = {
+      id: user.id,
       username: user.username,
       email: user.email,
       token: this.generateJWT(user),

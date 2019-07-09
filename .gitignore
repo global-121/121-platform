@@ -90,3 +90,9 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Secrets
+secrets/
+
+# Helpfiles
+integration-tools/tykn-id/Dockerfile

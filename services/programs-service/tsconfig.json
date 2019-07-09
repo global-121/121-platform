@@ -12,18 +12,9 @@
     "sourceMap": true,
     "allowJs": true,
     "outDir": "./dist",
-    "types": [
-      "jest",
-    ]
+    "types": ["jest"]
   },
-    "include": [
-    "src/**/*"
-  ],
-    "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ],
-    "types": [
-    "jest",
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"],
+  "types": ["jest"]
 }
