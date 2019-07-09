@@ -61,10 +61,9 @@ export class UserController {
   }
 
   @ApiOperation({ title: 'Change password' })
-  @Post('user/change-password/:userId')
-  @ApiImplicitParam({ name: 'userId', required: true, type: 'string' })
+  @Post('user/change-password')
   async update(
-    @Param('userId') userId: number,
+    @User('id') userId: number,
     @Body() userData: UpdateUserDto,
   ) {
     return this.userService.update(userId, userData);
