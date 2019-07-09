@@ -1,3 +1,4 @@
+import { CustomCriterium } from './custom-criterium.entity';
 import { ProgramService } from './program.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProgramEntity } from './program.entity';
@@ -20,6 +21,10 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(UserEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(CustomCriterium),
             useFactory: repositoryMockFactory,
           },
         ],

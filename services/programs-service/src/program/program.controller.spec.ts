@@ -4,8 +4,25 @@ import { ProgramController } from './program.controller';
 import { ProgramService } from './program.service';
 import { ProgramEntity } from './program.entity';
 import { ProgramRO, ProgramsRO } from './program.interface';
-import { UserEntity } from '../user/user.entity';
 
+const newProgramParameters = {
+  location: 'Lilongwe',
+  countryId: 265,
+  title: 'Pilot program 1a',
+  description: 'Program to help people hit by earthquake examplename',
+  startDate: new Date(),
+  endDate: new Date(),
+  currency: 'MWK',
+  distributionFrequency: 'what is this',
+  distributionChannel: 'mobileMoney',
+  notifiyPaArea: true,
+  notificationType: 'announcement',
+  cashDistributionSites: JSON.parse('{}'), // This nested level is because postgres does not have great support for arrays of json
+  financialServiceProviders: JSON.parse('{}'), // This nested level is because postgres does not have great support for arrays of json
+  inclusionCalculationType: 'standard', // Only option for now later, it can also be a fancy algorithm
+  customCriteria: [],
+  minimumScore: 25,
+};
 class ProgramServiceMock {
   public async findAll(query): Promise<ProgramsRO> {
     query;
@@ -78,12 +95,6 @@ describe('ProgramController', (): void => {
           (): Promise<ProgramEntity> => Promise.resolve(program),
         );
 
-      const newProgramParameters = {
-        title: 'string',
-        description: 'string',
-        countryId: 1,
-      };
-
       const controllerResult = await programController.create(
         0,
         newProgramParameters,
@@ -105,12 +116,6 @@ describe('ProgramController', (): void => {
         .mockImplementation(
           (): Promise<ProgramRO> => Promise.resolve(programRO),
         );
-
-      const newProgramParameters = {
-        title: 'string',
-        description: 'string',
-        countryId: 1,
-      };
 
       const controllerResult = await programController.update(
         0,

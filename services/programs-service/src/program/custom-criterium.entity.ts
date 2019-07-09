@@ -2,16 +2,13 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  BeforeUpdate,
   ManyToOne,
-  OneToMany,
+  BeforeUpdate,
 } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
-import { OptionEntity } from '../option/option.entity';
-import { ProgramEntity } from '../program/program.entity';
+import { ProgramEntity } from './program.entity';
 
-@Entity('criterium')
-export class CriteriumEntity {
+@Entity()
+export class CustomCriterium {
   @PrimaryGeneratedColumn()
   public id: number;
 
@@ -35,9 +32,6 @@ export class CriteriumEntity {
     this.updated = new Date();
   }
 
-  @ManyToOne(type => UserEntity, user => user.criteriums)
-  public author: UserEntity;
-
-  @OneToMany(type => OptionEntity, option => option.criterium)
-  public options: OptionEntity[];
+  @ManyToOne(_type => ProgramEntity, program => program.customCriteria)
+  public program: ProgramEntity;
 }

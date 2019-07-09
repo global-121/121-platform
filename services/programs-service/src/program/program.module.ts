@@ -12,14 +12,18 @@ import { ProgramService } from './program.service';
 import { AuthMiddleware } from '../user/auth.middleware';
 import { AuthMiddlewareAdmin } from '../user/auth.middlewareAdmin';
 import { UserModule } from '../user/user.module';
+import { CustomCriterium } from './custom-criterium.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProgramEntity, UserEntity]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([ProgramEntity, UserEntity, CustomCriterium]),
+    UserModule,
+  ],
   providers: [ProgramService],
   controllers: [ProgramController],
 })
 export class ProgramModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer) {
+  public configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(AuthMiddlewareAdmin)
       .forRoutes(
