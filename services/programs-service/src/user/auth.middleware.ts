@@ -20,7 +20,10 @@ export class AuthMiddleware implements NestMiddleware {
 
       if (!user) {
         throw new HttpException('User not found.', HttpStatus.UNAUTHORIZED);
+      } else if (user.user.status == 'inactive') {
+        throw new HttpException('Account deactivated. Contact organization administration.', HttpStatus.UNAUTHORIZED);
       }
+
 
       req.user = user.user;
       next();

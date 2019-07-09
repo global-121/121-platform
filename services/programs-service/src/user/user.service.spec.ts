@@ -36,10 +36,12 @@ describe('User service', (): void => {
   > => {
     const userRo = {
       user: {
+        id: undefined,
         username: undefined,
         email: undefined,
         token: undefined,
         role: undefined,
+        status: undefined,
         countryId: undefined,
       },
     };
@@ -53,10 +55,12 @@ describe('User service', (): void => {
   it('Should find a user using ID', async (): Promise<void> => {
     const userRo = {
       user: {
+        id: undefined,
         username: undefined,
         email: undefined,
         token: undefined,
         role: undefined,
+        status: undefined,
         countryId: undefined,
       },
     };
@@ -70,10 +74,12 @@ describe('User service', (): void => {
   it('Should find a user using email', async (): Promise<void> => {
     const userRo = {
       user: {
+        id: undefined,
         username: undefined,
         email: 'test@test.nl',
         token: undefined,
         role: undefined,
+        status: undefined,
         countryId: undefined,
       },
     };

@@ -82,6 +82,36 @@ export class UserService {
     return this.buildUserRO(updatedUser);
   }
 
+  public async deactivate(id: number): Promise<UserRO> {
+    let updated = await this.userRepository.findOne(id);
+    if (updated.role == 'admin') {
+      const _errors = { username: 'Cannot change status of admin-user.' };
+      throw new HttpException(
+        { message: 'Input data validation failed', _errors },
+        HttpStatus.BAD_REQUEST,
+      );
+    } else {
+      updated.status = 'inactive';
+      const updatedUser = await this.userRepository.save(updated);
+      return this.buildUserRO(updatedUser);
+    }
+  }
+
+  public async activate(id: number): Promise<UserRO> {
+    let updated = await this.userRepository.findOne(id);
+    if (updated.role == 'admin') {
+      const _errors = { username: 'Cannot change status of admin-user.' };
+      throw new HttpException(
+        { message: 'Input data validation failed', _errors },
+        HttpStatus.BAD_REQUEST,
+      );
+    } else {
+      updated.status = 'active';
+      const updatedUser = await this.userRepository.save(updated);
+      return this.buildUserRO(updatedUser);
+    }
+  }
+
   public async delete(userId: number): Promise<DeleteResult> {
     return await this.userRepository.delete(userId);
   }
@@ -127,6 +157,7 @@ export class UserService {
       email: user.email,
       token: this.generateJWT(user),
       role: user.role,
+      status: user.status,
       countryId: user.countryId,
     };
 

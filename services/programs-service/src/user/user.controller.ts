@@ -1,6 +1,7 @@
 import {
   Get,
   Post,
+  Put,
   Body,
   Delete,
   Param,
@@ -45,24 +46,28 @@ export class UserController {
     const _user = await this.userService.findOne(loginUserDto);
     if (!_user) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    } else if (_user.status == 'inactive') {
+      throw new HttpException('Account deactivated. Contact organization administration.', HttpStatus.UNAUTHORIZED);
     }
 
     const token = await this.userService.generateJWT(_user);
-    const { email, username, role, countryId } = _user;
+    const { email, username, role, status, countryId } = _user;
     const user = {
       email,
       token,
       username,
       role,
+      status,
       countryId,
     };
 
     return { user };
   }
 
-  @ApiOperation({ title: 'Change password' })
+  @ApiBearerAuth()
+  @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
-  async update(
+  public async update(
     @User('id') userId: number,
     @Body() userData: UpdateUserDto,
   ) {
@@ -82,5 +87,21 @@ export class UserController {
   @Get('user')
   public async findMe(@User('email') email: string): Promise<UserRO> {
     return await this.userService.findByEmail(email);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ title: 'Deactivate Aidworker' })
+  @Put('user/:userId/deactivate')
+  @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
+  public async deactivate(@Param('userId') userId: number): Promise<UserRO> {
+    return await this.userService.deactivate(userId);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ title: 'Activate Aidworker' })
+  @Put('user/:userId/activate')
+  @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
+  public async activate(@Param('userId') userId: number): Promise<UserRO> {
+    return await this.userService.activate(userId);
   }
 }
