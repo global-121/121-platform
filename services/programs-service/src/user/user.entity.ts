@@ -3,11 +3,9 @@ import {
   PrimaryGeneratedColumn,
   Column,
   BeforeInsert,
-  JoinTable,
-  ManyToMany,
   OneToMany,
 } from 'typeorm';
-import { IsEmail, Validate } from 'class-validator';
+import { IsEmail } from 'class-validator';
 import * as crypto from 'crypto';
 import { ProgramEntity } from '../program/program.entity';
 import { CriteriumEntity } from '../criterium/criterium.entity';
@@ -15,32 +13,32 @@ import { CriteriumEntity } from '../criterium/criterium.entity';
 @Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  username: string;
+  public username: string;
 
   @Column()
   @IsEmail()
-  email: string;
+  public email: string;
 
   @Column()
-  password: string;
+  public password: string;
 
   @Column()
-  role: string;
+  public role: string;
 
   @Column({ nullable: true })
-  countryId: number;
+  public countryId: number;
 
   @BeforeInsert()
-  hashPassword() {
+  public hashPassword() {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
 
   @OneToMany(type => ProgramEntity, program => program.author)
-  programs: ProgramEntity[];
+  public programs: ProgramEntity[];
 
   @OneToMany(type => CriteriumEntity, criterium => criterium.author)
-  criteriums: CriteriumEntity[];
+  public criteriums: CriteriumEntity[];
 }

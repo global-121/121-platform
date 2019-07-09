@@ -4,22 +4,20 @@ import { Repository } from 'typeorm';
 import { CountryEntity } from './country.entity';
 import { UserEntity } from '../user/user.entity';
 import { CreateCountryDto, BindCriteriumCountryDto } from './dto';
-import { CountryRO } from './country.interface';
 
 @Injectable()
 export class CountryService {
-  constructor(
-    @InjectRepository(CountryEntity)
-    private readonly countryRepository: Repository<CountryEntity>,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
-  ) {}
+  @InjectRepository(CountryEntity)
+  private readonly countryRepository: Repository<CountryEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
+  public constructor() {}
 
-  async findAll(): Promise<CountryEntity[]> {
+  public async findAll(): Promise<CountryEntity[]> {
     return await this.countryRepository.find();
   }
 
-  async create(countryData: CreateCountryDto): Promise<CountryEntity> {
+  public async create(countryData: CreateCountryDto): Promise<CountryEntity> {
     let country = new CountryEntity();
     country.country = countryData.country;
 
@@ -28,7 +26,7 @@ export class CountryService {
     return newCountry;
   }
 
-  async bindCriteriumCountry(
+  public async bindCriteriumCountry(
     countryCriteriumData: BindCriteriumCountryDto,
   ): Promise<CountryEntity> {
     const countryId = countryCriteriumData.countryId;

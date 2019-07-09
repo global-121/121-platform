@@ -14,28 +14,28 @@ import { UserEntity } from '../user/user.entity';
 @Entity('program')
 export class ProgramEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  title: string;
+  public title: string;
 
   @Column({ default: '' })
-  description: string;
+  public description: string;
 
   @Column()
-  countryId: number;
+  public countryId: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created: Date;
+  public created: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  updated: Date;
+  public updated: Date;
 
   @BeforeUpdate()
-  updateTimestamp() {
+  public updateTimestamp() {
     this.updated = new Date();
   }
 
   @ManyToOne(type => UserEntity, user => user.programs)
-  author: UserEntity;
+  public author: UserEntity;
 }

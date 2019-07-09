@@ -6,18 +6,16 @@ import { UserEntity } from '../user/user.entity';
 import { CreateProgramDto } from './dto';
 
 import { ProgramRO, ProgramsRO } from './program.interface';
-const slug = require('slug');
 
 @Injectable()
 export class ProgramService {
-  constructor(
-    @InjectRepository(ProgramEntity)
-    private readonly programRepository: Repository<ProgramEntity>,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
-  ) {}
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
+  public constructor() {}
 
-  async findAll(query): Promise<ProgramsRO> {
+  public async findAll(query): Promise<ProgramsRO> {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.author', 'author');
@@ -52,12 +50,12 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
-  async findOne(where): Promise<ProgramRO> {
+  public async findOne(where): Promise<ProgramRO> {
     const program = await this.programRepository.findOne(where);
     return { program };
   }
 
-  async create(
+  public async create(
     userId: number,
     programData: CreateProgramDto,
   ): Promise<ProgramEntity> {
@@ -82,14 +80,14 @@ export class ProgramService {
     return newProgram;
   }
 
-  async update(id: number, programData: any): Promise<ProgramRO> {
+  public async update(id: number, programData: any): Promise<ProgramRO> {
     let toUpdate = await this.programRepository.findOne({ id: id });
     let updated = Object.assign(toUpdate, programData);
     const program = await this.programRepository.save(updated);
     return { program };
   }
 
-  async delete(programId: number): Promise<DeleteResult> {
+  public async delete(programId: number): Promise<DeleteResult> {
     return await this.programRepository.delete(programId);
   }
 }

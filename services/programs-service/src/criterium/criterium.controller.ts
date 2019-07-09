@@ -17,18 +17,21 @@ import {
 @ApiUseTags('criteriums')
 @Controller('criteriums')
 export class CriteriumController {
-  constructor(private readonly criteriumService: CriteriumService) {}
+  private readonly criteriumService: CriteriumService;
+  public constructor(criteriumService: CriteriumService) {
+    this.criteriumService = criteriumService;
+  }
 
   @ApiOperation({ title: 'Get all criteria' })
   @Get()
-  async findAll(): Promise<CriteriumEntity[]> {
+  public async findAll(): Promise<CriteriumEntity[]> {
     return await this.criteriumService.findAll();
   }
 
   @ApiOperation({ title: 'Get criteria by country' })
   @ApiImplicitParam({ name: 'countryId', required: true, type: 'number' })
   @Get(':countryId')
-  async find(@Param() params): Promise<CriteriumEntity[]> {
+  public async find(@Param() params): Promise<CriteriumEntity[]> {
     return await this.criteriumService.find(params.countryId);
   }
 
@@ -39,10 +42,10 @@ export class CriteriumController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post()
-  async create(
+  public async create(
     @User('id') userId: number,
     @Body() criteriumData: CreateCriteriumDto,
-  ) {
+  ): Promise<CriteriumEntity> {
     return this.criteriumService.create(userId, criteriumData);
   }
 }

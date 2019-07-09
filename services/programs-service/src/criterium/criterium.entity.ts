@@ -12,31 +12,31 @@ import { OptionEntity } from '../option/option.entity';
 @Entity('criterium')
 export class CriteriumEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  criterium: string;
+  public criterium: string;
 
   @Column()
-  answerType: string;
+  public answerType: string;
 
   @Column()
-  criteriumType: string;
+  public criteriumType: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  created: Date;
+  public created: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  updated: Date;
+  public updated: Date;
 
   @BeforeUpdate()
-  updateTimestamp() {
+  public updateTimestamp(): void {
     this.updated = new Date();
   }
 
   @ManyToOne(type => UserEntity, user => user.criteriums)
-  author: UserEntity;
+  public author: UserEntity;
 
   @OneToMany(type => OptionEntity, option => option.criterium)
-  options: OptionEntity[];
+  public options: OptionEntity[];
 }

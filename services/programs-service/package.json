@@ -5,6 +5,7 @@
   "homepage": "https://www.121.global/",
   "main": "index.js",
   "scripts": {
+    "lint": "npx eslint '**/*.ts'",
     "start": "node index.js",
     "start:dev": "tsc-watch --onSuccess \"node index.js\" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json",
     "start:watch": "nodemon",
@@ -51,6 +52,7 @@
     "deep-extend": ">=0.5.1",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^5.0.0",
+    "eslint-plugin-jest": "^22.7.1",
     "eslint-plugin-prettier": "^3.1.0",
     "extend": ">=3.0.2",
     "jest": "^24.5.0",

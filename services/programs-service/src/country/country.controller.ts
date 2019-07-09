@@ -1,28 +1,28 @@
-import { Get, Post, Put, Body, Controller, Param } from '@nestjs/common';
+import { Get, Post, Put, Body, Controller } from '@nestjs/common';
 
 import { CountryEntity } from './country.entity';
 import { CountryService } from './country.service';
 import { CreateCountryDto, BindCriteriumCountryDto } from './dto';
-import { User } from '../user/user.decorator';
 
 import {
   ApiUseTags,
   ApiBearerAuth,
   ApiResponse,
   ApiOperation,
-  ApiImplicitParam,
 } from '@nestjs/swagger';
-import { URLSearchParams } from 'url';
 
 @ApiBearerAuth()
 @ApiUseTags('countrys')
 @Controller('countrys')
 export class CountryController {
-  constructor(private readonly countryService: CountryService) {}
+  private readonly countryService: CountryService;
+  public constructor(countryService: CountryService) {
+    this.countryService = countryService;
+  }
 
   @ApiOperation({ title: 'Get all criteria' })
   @Get()
-  async findAll(): Promise<CountryEntity[]> {
+  public async findAll(): Promise<CountryEntity[]> {
     return await this.countryService.findAll();
   }
 
@@ -33,15 +33,17 @@ export class CountryController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post()
-  async create(@Body() countryData: CreateCountryDto) {
+  public async create(
+    @Body() countryData: CreateCountryDto,
+  ): Promise<CountryEntity> {
     return this.countryService.create(countryData);
   }
 
   @ApiOperation({ title: 'Add criterium to country' })
   @Put(':countryId')
-  async bindCriteriumCountry(
+  public async bindCriteriumCountry(
     @Body() countryCriteriumData: BindCriteriumCountryDto,
-  ) {
+  ): Promise<CountryEntity> {
     return this.countryService.bindCriteriumCountry(countryCriteriumData);
   }
 }
