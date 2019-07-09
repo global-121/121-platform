@@ -92,7 +92,15 @@ export class ProgramService {
     }
 
     const newProgram = await this.programRepository.save(program);
+
+    await this.createSovrinSchema(newProgram);
     return newProgram;
+  }
+
+  private async createSovrinSchema(newProgram): Promise<boolean> {
+    // place holder function to create the Sovrin schema on the blokchain
+    newProgram;
+    return true;
   }
 
   public async update(id: number, programData: any): Promise<ProgramRO> {
