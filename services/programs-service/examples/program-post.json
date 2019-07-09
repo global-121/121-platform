@@ -3,15 +3,19 @@
     "countryId": 265,
     "title": "Pilot program 1a",
     "description": "Program to help people hit by earthquake examplename",
-    "startDate": "07/08/2019",
-    "endDate": "07/08/2019",
+    "startDate": "2020-05-23T18:25:43.511Z",
+    "endDate": "2021-05-23T18:25:43.511Z",
     "currency": "MWK",
     "distributionFrequency": "what is this",
     "distributionChannel": "mobileMoney",
     "notifiyPaArea": true,
     "notificationType": "announcement",
-    "cashDistributionSites": [],
-    "financialServiceProviders": [],
+    "cashDistributionSites": {
+        "cashDistributionSites": []
+    },
+    "financialServiceProviders": {
+        "financialServiceProviders": []
+    },
     "inclusionCalculationType": "standard",
     "customCriteria": [{
             "criterium": "Age",
@@ -29,30 +33,33 @@
             }
         },
         {
-            "criterum": "RoofType",
+            "criterium": "RoofType",
             "question": {
                 "english": "What type is your roof?",
                 "nyanja": "Denga lanu ndi lotani?"
             },
             "answerType": "dropdown",
-            "options": [{
-                    "id": 0,
-                    "option": "steel",
-                    "name": {
-                        "english": "steel",
-                        "nyanja": "zitsulo"
-                    }
-                },
-                {
-                    "id": 1,
-                    "option": "tiles",
-                    "name": {
-                        "english": "tiles",
-                        "nyanja": "matayala"
+            "criteriumType": "standard",
+            "options": {
+                "options": [{
+                        "id": 0,
+                        "option": "steel",
+                        "name": {
+                            "english": "steel",
+                            "nyanja": "zitsulo"
+                        }
                     },
-                    "score": 6
-                }
-            ],
+                    {
+                        "id": 1,
+                        "option": "tiles",
+                        "name": {
+                            "english": "tiles",
+                            "nyanja": "matayala"
+                        },
+                        "score": 6
+                    }
+                ]
+            },
             "scoring": {
                 "0": 3,
                 "1": 6

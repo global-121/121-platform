@@ -18,44 +18,40 @@ export class ProgramService {
   public customCriteriumRepository: Repository<CustomCriterium>;
   public constructor() {}
 
+  public async findOne(where): Promise<ProgramEntity> {
+    const qb = await getRepository(ProgramEntity)
+      .createQueryBuilder('program')
+      .leftJoinAndSelect('program.customCriteria', 'customCriterium');
+    qb.whereInIds([where]);
+    const program = qb.getOne();
+    return program;
+  }
+
   public async findAll(query): Promise<ProgramsRO> {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
-      .leftJoinAndSelect('program.author', 'author');
+      .leftJoinAndSelect('program.customCriteria', 'customCriterium');
 
     qb.where('1 = 1');
 
-    if ('tag' in query) {
-      qb.andWhere('program.tagList LIKE :tag', { tag: `%${query.tag}%` });
-    }
-
-    if ('author' in query) {
-      const author = await this.userRepository.findOne({
-        username: query.author,
+    if ('location' in query) {
+      qb.andWhere('lower(program.location) LIKE :location', {
+        location: `%${query.location.toLowerCase()}%`,
       });
-      qb.andWhere('program.authorId = :id', { id: author.id });
+    }
+    if ('countryId' in query) {
+      qb.andWhere('program.countryId = :countryId', {
+        countryId: query.countryId,
+      });
     }
 
     qb.orderBy('program.created', 'DESC');
+    console.log(qb.getQuery());
 
     const programsCount = await qb.getCount();
-
-    if ('limit' in query) {
-      qb.limit(query.limit);
-    }
-
-    if ('offset' in query) {
-      qb.offset(query.offset);
-    }
-
     const programs = await qb.getMany();
 
     return { programs, programsCount };
-  }
-
-  public async findOne(where): Promise<ProgramRO> {
-    const program = await this.programRepository.findOne(where);
-    return { program };
   }
 
   public async create(
@@ -92,7 +88,15 @@ export class ProgramService {
     }
 
     const newProgram = await this.programRepository.save(program);
+
+    await this.createSovrinSchema(newProgram);
     return newProgram;
+  }
+
+  private async createSovrinSchema(newProgram): Promise<boolean> {
+    // place holder functiongit to create the Sovrin schema on the blokchain
+    newProgram;
+    return true;
   }
 
   public async update(id: number, programData: any): Promise<ProgramRO> {
