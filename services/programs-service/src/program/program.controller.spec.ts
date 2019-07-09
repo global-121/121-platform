@@ -24,6 +24,10 @@ const newProgramParameters = {
   minimumScore: 25,
 };
 class ProgramServiceMock {
+  public async findOne(query): Promise<ProgramEntity> {
+    query;
+    return new ProgramEntity();
+  }
   public async findAll(query): Promise<ProgramsRO> {
     query;
     return { programs: [new ProgramEntity()], programsCount: 1 };
@@ -63,6 +67,24 @@ describe('ProgramController', (): void => {
       programController = module.get<ProgramController>(ProgramController);
     },
   );
+
+  describe('findOne', (): void => {
+    it('should return an object with a count and and array of programs', async (): Promise<
+      void
+    > => {
+      const program = new ProgramEntity();
+
+      const spy = jest
+        .spyOn(programService, 'findOne')
+        .mockImplementation(
+          (): Promise<ProgramEntity> => Promise.resolve(program),
+        );
+
+      const controllerResult = await programController.findOne(['']);
+      expect(spy).toHaveBeenCalled();
+      expect(controllerResult).toStrictEqual(program);
+    });
+  });
 
   describe('findAll', (): void => {
     it('should return an object with a count and and array of programs', async (): Promise<

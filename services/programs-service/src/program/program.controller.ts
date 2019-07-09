@@ -20,6 +20,7 @@ import {
   ApiResponse,
   ApiOperation,
   ApiImplicitParam,
+  ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
 import { DeleteResult } from 'typeorm';
@@ -33,7 +34,17 @@ export class ProgramController {
     this.programService = programService;
   }
 
+  @ApiOperation({ title: 'Get program by id' })
+  @ApiImplicitQuery({ name: 'id', required: true })
+  @ApiResponse({ status: 200, description: 'Return program by id.' })
+  @Get(':id')
+  public async findOne(@Query() query): Promise<ProgramEntity> {
+    return await this.programService.findOne(query);
+  }
+
   @ApiOperation({ title: 'Get all programs' })
+  @ApiImplicitQuery({ name: 'location', required: false })
+  @ApiImplicitQuery({ name: 'countryId', required: false })
   @ApiResponse({ status: 200, description: 'Return all programs.' })
   @Get()
   public async findAll(@Query() query): Promise<ProgramsRO> {

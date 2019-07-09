@@ -10,8 +10,12 @@
     "distributionChannel": "mobileMoney",
     "notifiyPaArea": true,
     "notificationType": "announcement",
-    "cashDistributionSites": [],
-    "financialServiceProviders": [],
+    "cashDistributionSites": {
+        "cashDistributionSites": []
+    },
+    "financialServiceProviders": {
+        "financialServiceProviders": []
+    },
     "inclusionCalculationType": "standard",
     "customCriteria": [{
             "criterium": "Age",
@@ -29,12 +33,13 @@
             }
         },
         {
-            "criterum": "RoofType",
+            "criterium": "RoofType",
             "question": {
                 "english": "What type is your roof?",
                 "nyanja": "Denga lanu ndi lotani?"
             },
             "answerType": "dropdown",
+            "criteriumType": "standard",
             "options": [{
                     "id": 0,
                     "option": "steel",
