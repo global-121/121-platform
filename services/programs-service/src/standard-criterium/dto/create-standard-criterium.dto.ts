@@ -1,5 +1,14 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsIn, ValidateIf } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsIn,
+  ValidateIf,
+  ValidateNested,
+  IsDefined,
+} from 'class-validator';
+import { CreateOptionsDto } from '../../program/dto/create-options.dto';
+import { Type } from 'class-transformer';
 
 export class CreateStandardCriteriumDto {
   @ApiModelProperty({ example: 'test' })
@@ -24,6 +33,8 @@ export class CreateStandardCriteriumDto {
   public readonly criteriumType: string;
   @ApiModelProperty()
   @ValidateIf(o => o.answerType === 'dropdown')
-  @IsNotEmpty()
+  @ValidateNested()
+  @IsDefined()
+  @Type(() => CreateOptionsDto)
   public readonly options: JSON;
 }
