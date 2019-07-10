@@ -8,7 +8,6 @@ import {
   IsIn,
   IsArray,
   IsNumber,
-  IsInstance,
   ValidateNested,
   IsDefined,
 } from 'class-validator';
@@ -100,7 +99,6 @@ export class CreateProgramDto {
                 english: 'tiles',
                 nyanja: 'matayala',
               },
-              score: 6,
             },
           ],
         },

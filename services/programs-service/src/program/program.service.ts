@@ -46,7 +46,6 @@ export class ProgramService {
     }
 
     qb.orderBy('program.created', 'DESC');
-    console.log(qb.getQuery());
 
     const programsCount = await qb.getCount();
     const programs = await qb.getMany();
@@ -80,7 +79,6 @@ export class ProgramService {
     program.author = author;
 
     for (let customCriterium of programData.customCriteria) {
-      console.log(customCriterium);
       let customReturn = await this.customCriteriumRepository.save(
         customCriterium,
       );

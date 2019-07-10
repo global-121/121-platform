@@ -3,9 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { AppController } from './app.controller';
 import { ProgramModule } from './program/program.module';
-import { CriteriumModule } from './criterium/criterium.module';
+import { StandardCriteriumModule } from './standard-criterium/standard-criterium.module';
 import { UserModule } from './user/user.module';
-import { OptionModule } from './option/option.module';
 import { CountryModule } from './country/country.module';
 import { HealthModule } from './health.module';
 
@@ -13,9 +12,8 @@ import { HealthModule } from './health.module';
   imports: [
     TypeOrmModule.forRoot(),
     ProgramModule,
-    CriteriumModule,
+    StandardCriteriumModule,
     UserModule,
-    OptionModule,
     CountryModule,
     HealthModule,
   ],

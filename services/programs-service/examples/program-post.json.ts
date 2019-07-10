@@ -58,7 +58,6 @@ var programPost = {
               english: 'tiles',
               nyanja: 'matayala',
             },
-            score: 6,
           },
         ],
       },
