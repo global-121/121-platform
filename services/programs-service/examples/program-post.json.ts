@@ -41,26 +41,25 @@ var programPost = {
       },
       answerType: 'dropdown',
       criteriumType: 'standard',
-      options: {
-        options: [
-          {
-            id: 0,
-            option: 'steel',
-            name: {
-              english: 'steel',
-              nyanja: 'zitsulo',
-            },
+      options: [
+        {
+          id: 0,
+          option: 'steel',
+          name: {
+            english: 'steel',
+            nyanja: 'zitsulo',
           },
-          {
-            id: 1,
-            option: 'tiles',
-            name: {
-              english: 'tiles',
-              nyanja: 'matayala',
-            },
+        },
+        {
+          id: 1,
+          option: 'tiles',
+          name: {
+            english: 'tiles',
+            nyanja: 'matayala',
           },
-        ],
-      },
+        },
+      ],
+
       scoring: {
         0: 3,
         1: 6,
