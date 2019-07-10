@@ -1,4 +1,3 @@
-import { CreateCriteriumDto } from './../../criterium/dto/create-criterium.dto';
 import { ApiModelProperty } from '@nestjs/swagger';
 import {
   IsNotEmpty,
@@ -9,7 +8,12 @@ import {
   IsIn,
   IsArray,
   IsNumber,
+  IsInstance,
+  ValidateNested,
+  IsDefined,
 } from 'class-validator';
+import { CreateCustomCriteriumDto } from './create-custom-criterium.dto';
+import { Type } from 'class-transformer';
 
 export class CreateProgramDto {
   @ApiModelProperty()
@@ -56,7 +60,10 @@ export class CreateProgramDto {
   public readonly inclusionCalculationType: string;
   @ApiModelProperty()
   @IsArray()
-  public readonly customCriteria: CreateCriteriumDto[];
+  @ValidateNested()
+  @IsDefined()
+  @Type(() => CreateCustomCriteriumDto)
+  public readonly customCriteria: CreateCustomCriteriumDto[];
   @ApiModelProperty()
   @IsNumber()
   public readonly minimumScore: number;
