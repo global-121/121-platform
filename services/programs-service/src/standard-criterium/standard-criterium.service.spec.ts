@@ -1,22 +1,22 @@
-import { CountryEntity } from './../country/country.entity';
-import { CriteriumService } from './criterium.service';
+import { CountryEntity } from '../country/country.entity';
+import { StandardCriteriumService } from './standard-criterium.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CriteriumEntity } from './criterium.entity';
+import { StandardCriteriumEntity } from './standard-criterium.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../user/user.entity';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 
 describe('Criterium service', (): void => {
-  let service: CriteriumService;
+  let service: StandardCriteriumService;
   let module: TestingModule;
 
   beforeAll(
     async (): Promise<void> => {
       const module: TestingModule = await Test.createTestingModule({
         providers: [
-          CriteriumService,
+          StandardCriteriumService,
           {
-            provide: getRepositoryToken(CriteriumEntity),
+            provide: getRepositoryToken(StandardCriteriumEntity),
             useFactory: repositoryMockFactory,
           },
           {
@@ -30,7 +30,7 @@ describe('Criterium service', (): void => {
         ],
       }).compile();
 
-      service = module.get<CriteriumService>(CriteriumService);
+      service = module.get<StandardCriteriumService>(StandardCriteriumService);
     },
   );
 

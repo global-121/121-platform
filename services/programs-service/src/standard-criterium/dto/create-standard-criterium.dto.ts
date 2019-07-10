@@ -7,24 +7,29 @@ import {
   ValidateNested,
   IsDefined,
 } from 'class-validator';
-import { CreateOptionsDto } from './create-options.dto';
+import { CreateOptionsDto } from '../../program/dto/create-options.dto';
 import { Type } from 'class-transformer';
 
-export class CreateCustomCriteriumDto {
-  @ApiModelProperty()
+export class CreateStandardCriteriumDto {
+  @ApiModelProperty({ example: 'test' })
   @IsNotEmpty()
   @IsString()
   public readonly criterium: string;
-  @ApiModelProperty()
+  @ApiModelProperty({
+    example: {
+      question: {
+        english: 'What is your age?',
+        nyanja: 'Zaka zanu ndi zingati?',
+      },
+    },
+  })
   @IsNotEmpty()
   public readonly question: JSON;
-  @ApiModelProperty()
-  @IsNotEmpty()
-  @IsString()
+  @ApiModelProperty({ example: 'numeric' })
   @IsIn(['numeric', 'dropdown'])
   public readonly answerType: string;
-  @ApiModelProperty()
-  @IsNotEmpty()
+  @ApiModelProperty({ example: 'standard' })
+  @IsIn(['standard'])
   public readonly criteriumType: string;
   @ApiModelProperty()
   @ValidateIf(o => o.answerType === 'dropdown')
@@ -32,7 +37,4 @@ export class CreateCustomCriteriumDto {
   @IsDefined()
   @Type(() => CreateOptionsDto)
   public readonly options: JSON;
-  @ApiModelProperty()
-  @IsNotEmpty()
-  public readonly scoring: JSON;
 }

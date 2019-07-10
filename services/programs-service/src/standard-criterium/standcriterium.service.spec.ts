@@ -1,31 +1,36 @@
-import { OptionService } from './option.service';
+import { CountryEntity } from '../country/country.entity';
+import { StandardCriteriumService } from './standard-criterium.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { OptionEntity } from './option.entity';
+import { StandardCriteriumEntity } from './standard-criterium.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { UserEntity } from '../user/user.entity';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
-import { CriteriumEntity } from '../criterium/criterium.entity';
 
-describe('Option service', (): void => {
-  let service: OptionService;
+describe('Criterium service', (): void => {
+  let service: StandardCriteriumService;
   let module: TestingModule;
 
   beforeAll(
     async (): Promise<void> => {
       const module: TestingModule = await Test.createTestingModule({
         providers: [
-          OptionService,
+          StandardCriteriumService,
           {
-            provide: getRepositoryToken(OptionEntity),
+            provide: getRepositoryToken(StandardCriteriumEntity),
             useFactory: repositoryMockFactory,
           },
           {
-            provide: getRepositoryToken(CriteriumEntity),
+            provide: getRepositoryToken(UserEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(CountryEntity),
             useFactory: repositoryMockFactory,
           },
         ],
       }).compile();
 
-      service = module.get<OptionService>(OptionService);
+      service = module.get<StandardCriteriumService>(StandardCriteriumService);
     },
   );
 

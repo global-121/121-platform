@@ -1,8 +1,7 @@
 import { Get, Post, Body, Controller, Param } from '@nestjs/common';
 
-import { CriteriumEntity } from './criterium.entity';
-import { CriteriumService } from './criterium.service';
-import { CreateCriteriumDto } from './dto';
+import { StandardCriteriumEntity } from './standard-criterium.entity';
+import { StandardCriteriumService } from './standard-criterium.service';
 import { User } from '../user/user.decorator';
 
 import {
@@ -12,26 +11,27 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
+import { CreateStandardCriteriumDto } from './dto/create-standard-criterium.dto';
 
 @ApiBearerAuth()
-@ApiUseTags('criteriums')
-@Controller('criteriums')
-export class CriteriumController {
-  private readonly criteriumService: CriteriumService;
-  public constructor(criteriumService: CriteriumService) {
+@ApiUseTags('standard-criteriums')
+@Controller('standard-criteriums')
+export class StandardCriteriumController {
+  private readonly criteriumService: StandardCriteriumService;
+  public constructor(criteriumService: StandardCriteriumService) {
     this.criteriumService = criteriumService;
   }
 
   @ApiOperation({ title: 'Get all criteria' })
   @Get()
-  public async findAll(): Promise<CriteriumEntity[]> {
+  public async findAll(): Promise<StandardCriteriumEntity[]> {
     return await this.criteriumService.findAll();
   }
 
   @ApiOperation({ title: 'Get criteria by country' })
   @ApiImplicitParam({ name: 'countryId', required: true, type: 'number' })
   @Get(':countryId')
-  public async find(@Param() params): Promise<CriteriumEntity[]> {
+  public async find(@Param() params): Promise<StandardCriteriumEntity[]> {
     return await this.criteriumService.find(params.countryId);
   }
 
@@ -44,8 +44,8 @@ export class CriteriumController {
   @Post()
   public async create(
     @User('id') userId: number,
-    @Body() criteriumData: CreateCriteriumDto,
-  ): Promise<CriteriumEntity> {
+    @Body() criteriumData: CreateStandardCriteriumDto,
+  ): Promise<StandardCriteriumEntity> {
     return this.criteriumService.create(userId, criteriumData);
   }
 }

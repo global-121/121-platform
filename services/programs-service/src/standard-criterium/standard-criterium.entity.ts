@@ -7,22 +7,26 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
-import { OptionEntity } from '../option/option.entity';
-import { ProgramEntity } from '../program/program.entity';
 
 @Entity('criterium')
-export class CriteriumEntity {
+export class StandardCriteriumEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Column()
   public criterium: string;
 
+  @Column('json')
+  public question: JSON;
+
   @Column()
   public answerType: string;
 
   @Column()
   public criteriumType: string;
+
+  @Column('json', { nullable: true })
+  public options: JSON;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created: Date;
@@ -37,7 +41,4 @@ export class CriteriumEntity {
 
   @ManyToOne(type => UserEntity, user => user.criteriums)
   public author: UserEntity;
-
-  @OneToMany(type => OptionEntity, option => option.criterium)
-  public options: OptionEntity[];
 }

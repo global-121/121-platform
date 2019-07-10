@@ -8,7 +8,7 @@ import {
 import { IsEmail } from 'class-validator';
 import * as crypto from 'crypto';
 import { ProgramEntity } from '../program/program.entity';
-import { CriteriumEntity } from '../criterium/criterium.entity';
+import { StandardCriteriumEntity } from '../standard-criterium/standard-criterium.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -42,6 +42,6 @@ export class UserEntity {
   @OneToMany(type => ProgramEntity, program => program.author)
   public programs: ProgramEntity[];
 
-  @OneToMany(type => CriteriumEntity, criterium => criterium.author)
-  public criteriums: CriteriumEntity[];
+  @OneToMany(type => StandardCriteriumEntity, criterium => criterium.author)
+  public criteriums: StandardCriteriumEntity[];
 }
