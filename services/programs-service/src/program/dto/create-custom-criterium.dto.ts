@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsDateString, IsNumber } from 'class-validator';
 
 export class CreateCustomCriteriumDto {
-  @ApiModelProperty()
+  @ApiModelProperty({ example: 'string'})
   @IsNotEmpty()
   @IsString()
   public readonly criterium: string;
