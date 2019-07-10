@@ -68,4 +68,23 @@ tyknid.showDids = async function showDids () {
     console.log(res)
     return res
 }
+
+tyknid.getMainDID = async function getMyDID () {
+    if (!wallet.handle){
+        throw Error("Wallet is not open or not accessible.");
+    }
+    var myDIDs = await indy.listMyDidsWithMeta(wallet.handle)
+    
+    console.log(res)
+    return res
+}
+
+tyknid.createConnection = async function createConnection () {
+    if (!wallet.handle){
+        throw Error("Wallet is not open or not accessible.");
+    }
+    var res = await indy.createPairwise(wallet.handle,"VsKV7grR1BUE29mG2Fm2kX","P65pCL8QLaBNTQpAXD85KK","mobile1")
+    console.log(res)
+    return res
+}
 module.exports = tyknid
