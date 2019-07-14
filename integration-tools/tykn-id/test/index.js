@@ -15,14 +15,23 @@ test('test error if wallet is not open', async function (t) {
   })
   
   test('test show dids from wallet', async function (t) {
-    var data = { did: 'P65pCL8QLaBNTQpAXD85KK',
+    var data = [ { did: 'Th7MpTaRZVRYnPiabds81Y',
+    verkey: 'FYmoFw55GeQH7SRFa37dkx1d2dZ3zUF8ckg7wmL7ofN4',
+    tempVerkey: null,
+    metadata: null },
+  { did: 'P65pCL8QLaBNTQpAXD85KK',
     verkey: 'D3EZRRMCvHp62BE8gyUtayxNka6XmzuwCHS5uvP1do9G',
     tempVerkey: null,
-    metadata: null }
+    metadata: null } ]
+
     await tyknid.initSDK("/media/sami/DATA/work/repos/tykn/121-platform/integration-tools/tykn-id/ci/sampleconfig.json") 
-    t.deepEqual(await tyknid.showDids(), [data])
+    t.deepEqual(await tyknid.showDids(), data)
   })
+  // test('test get my DID', async function (t) {
+  //   await tyknid.initSDK("/media/sami/DATA/work/repos/tykn/121-platform/integration-tools/tykn-id/ci/sampleconfig.json") 
+  //   t.deepEqual(await tyknid.getMyDID(), ["P65pCL8QLaBNTQpAXD85KK"])
+  // })
   test('test get my DID', async function (t) {
     await tyknid.initSDK("/media/sami/DATA/work/repos/tykn/121-platform/integration-tools/tykn-id/ci/sampleconfig.json") 
-    t.deepEqual(await tyknid.getMyDID(), ["P65pCL8QLaBNTQpAXD85KK"])
+    t.deepEqual(await tyknid.getDIDFromSeed(), ["P65pCL8QLaBNTQpAXD85KK"])
   })

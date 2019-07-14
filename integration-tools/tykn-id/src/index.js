@@ -5,11 +5,9 @@ var untildify = require('untildify');
 
 var tyknid = {}
 
-var walletHandle = null
-
-
-var wallet = {} 
-wallet.getWallet = async function getWallet(walletPath,walletName,walletKey){
+var org = {}
+org.wallet = {} 
+org.wallet.getWallet = async function getWallet(walletPath,walletName,walletKey){
     var indyWalletConfig = {
         "id" : walletName,
         "storage_config":{"path": untildify(walletPath)}
@@ -18,15 +16,15 @@ wallet.getWallet = async function getWallet(walletPath,walletName,walletKey){
         "key" :walletKey
     }
     console.log(indyWalletConfig)
-    if (!wallet.handle){
+    if (!org.wallet.handle){
         var wh = await indy.openWallet(indyWalletConfig,indyWalletCredentials)
         return wh
     }else {
-        return wallet.handle
+        return org.wallet.handle
     }
 }
-wallet.close = function close() {
-    if(wallet.handle) {
+org.wallet.close = function close() {
+    if(org.wallet.handle) {
         indy.closeWallet()
     }
 }
@@ -44,7 +42,12 @@ tyknid.initSDK = async function initSDK(pathToConfig) {
         if(config.hasOwnProperty("walletPath") && config["walletPath"] ){
             var walletHandle = await wallet.getWallet(config.walletPath,config.walletName,config.walletKey)
             console.log(walletHandle)
-            wallet.handle =  walletHandle
+            org.wallet.handle =  walletHandle
+        }else{
+            throw Error("Config is not correct! walletPath is missing from config");
+        }
+        if(config.hasOwnProperty("orgSeed") && config["orgSeed"] ){
+            org.seed =  config["orgSeed"]
         }else{
             throw Error("Config is not correct! walletPath is missing from config");
         }    
@@ -55,36 +58,58 @@ tyknid.initSDK = async function initSDK(pathToConfig) {
 }
 
 tyknid.createConnection = async function createConnection (subjectDID,subjectVerKey) {
-    if (!wallet.handle){
+    if (!org.wallet.handle){
         throw Error("Wallet is not open or not accessible.");
     }
-    return await indy.createPairwise(walletHandle,subjectDID,indy.getMyDidWithMeta,"","")
+    return await indy.createPairwise(org.wallet.handle,subjectDID,indy.getMyDidWithMeta,"","")
 }
 tyknid.showDids = async function showDids () {
-    if (!wallet.handle){
+    if (!org.wallet.handle){
         throw Error("Wallet is not open or not accessible.");
     }
-    var res = await indy.listMyDidsWithMeta(wallet.handle)
+    var res = await indy.listMyDidsWithMeta(org.wallet.handle)
     console.log(res)
     return res
 }
 
 tyknid.getMainDID = async function getMyDID () {
-    if (!wallet.handle){
+    if (!org.wallet.handle){
         throw Error("Wallet is not open or not accessible.");
     }
-    var myDIDs = await indy.listMyDidsWithMeta(wallet.handle)
-    
-    console.log(res)
-    return res
+    var myDIDs = await indy.listMyDidsWithMeta(org.wallet.handle)
+    if (myDIDs && myDIDs.length > 0){
+        myDIDs.foreach(function(did){
+               
+                    console.log(did)
+            }
+        )
+    }
+    console.log(myDIDs)
+    return myDIDs
 }
 
-tyknid.createConnection = async function createConnection () {
+tyknid.getDIDFromSeed = async function getDIDFromSeed(){
     if (!wallet.handle){
         throw Error("Wallet is not open or not accessible.");
     }
-    var res = await indy.createPairwise(wallet.handle,"VsKV7grR1BUE29mG2Fm2kX","P65pCL8QLaBNTQpAXD85KK","mobile1")
-    console.log(res)
-    return res
+    var myDIDs = await indy.createAndStoreMyDid (wallet.handle,wallet.seed)
+    console.log(myDIDs)
+    return myDIDs
 }
+
+// tyknid.createConnection = async function createConnection (pa_did,pa_verkey) {
+//     if (!wallet.handle){
+//         throw Error("Wallet is not open or not accessible.");
+//     }
+
+//     pa_identity = {
+//         "did": pa_did,
+//         "verkey": pa_verkey
+//      }
+//     await indy.createAndStoreMyDid(wallet.handle,tyknid.getMainDID)
+//     await indy.storeTheirDid(wallet.handle,pa_identity)
+//     var res = await indy.createPairwise(wallet.handle, pa_did,,"mobile1")
+//     console.log(res)
+//     return res
+// }
 module.exports = tyknid
