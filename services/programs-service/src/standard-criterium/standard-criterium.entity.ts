@@ -4,11 +4,10 @@ import {
   Column,
   BeforeUpdate,
   ManyToOne,
-  OneToMany,
 } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 
-@Entity('criterium')
+@Entity('standard_criterium')
 export class StandardCriteriumEntity {
   @PrimaryGeneratedColumn()
   public id: number;
