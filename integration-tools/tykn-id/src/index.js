@@ -2,11 +2,10 @@ var indy = require('indy-sdk')
 var fs = require('fs')
 var untildify = require('untildify');
 
-
 var tyknid = {}
-
 var org = {}
 org.wallet = {} 
+
 org.wallet.getWallet = async function getWallet(walletPath,walletName,walletKey){
     var indyWalletConfig = {
         "id" : walletName,
@@ -40,14 +39,16 @@ tyknid.initSDK = async function initSDK(pathToConfig) {
 
     if(config.hasOwnProperty("walletName") && config["walletName"] ){
         if(config.hasOwnProperty("walletPath") && config["walletPath"] ){
-            var walletHandle = await wallet.getWallet(config.walletPath,config.walletName,config.walletKey)
+            var walletHandle = await org.wallet.getWallet(config.walletPath,config.walletName,config.walletKey)
             console.log(walletHandle)
             org.wallet.handle =  walletHandle
         }else{
             throw Error("Config is not correct! walletPath is missing from config");
         }
-        if(config.hasOwnProperty("orgSeed") && config["orgSeed"] ){
+        if(config.hasOwnProperty("orgSeed") && config["orgSeed"] && 
+        config.hasOwnProperty("orgDID") && config["orgDID"]){
             org.seed =  config["orgSeed"]
+            org.DID =  config["orgDID"]
         }else{
             throw Error("Config is not correct! walletPath is missing from config");
         }    
@@ -68,6 +69,7 @@ tyknid.showDids = async function showDids () {
         throw Error("Wallet is not open or not accessible.");
     }
     var res = await indy.listMyDidsWithMeta(org.wallet.handle)
+    console.log("DIDs from wallet >>>")
     console.log(res)
     return res
 }
@@ -76,40 +78,32 @@ tyknid.getMainDID = async function getMyDID () {
     if (!org.wallet.handle){
         throw Error("Wallet is not open or not accessible.");
     }
-    var myDIDs = await indy.listMyDidsWithMeta(org.wallet.handle)
-    if (myDIDs && myDIDs.length > 0){
-        myDIDs.foreach(function(did){
-               
-                    console.log(did)
-            }
-        )
-    }
-    console.log(myDIDs)
-    return myDIDs
+    pa_identity = {
+        "did": pa_did,
+        "verkey": pa_verkey
+     }
+    var [orgParwiseDID] = await indy.createAndStoreMyDid(org.wallet.handle,{seed:org.seed})
 }
 
-tyknid.getDIDFromSeed = async function getDIDFromSeed(){
-    if (!wallet.handle){
+
+tyknid.createConnection = async function createConnection(pa_did,pa_verkey,metadata) {
+    if (!org.wallet.handle){
         throw Error("Wallet is not open or not accessible.");
     }
-    var myDIDs = await indy.createAndStoreMyDid (wallet.handle,wallet.seed)
-    console.log(myDIDs)
-    return myDIDs
+    pa_identity = {
+        "did": pa_did,
+        "verkey": pa_verkey
+     }
+    
+    await indy.storeTheirDid(org.wallet.handle,pa_identity)
+    await indy.createPairwise(org.wallet.handle, pa_did, org.DID ,metadata)
 }
-
-// tyknid.createConnection = async function createConnection (pa_did,pa_verkey) {
-//     if (!wallet.handle){
-//         throw Error("Wallet is not open or not accessible.");
-//     }
-
-//     pa_identity = {
-//         "did": pa_did,
-//         "verkey": pa_verkey
-//      }
-//     await indy.createAndStoreMyDid(wallet.handle,tyknid.getMainDID)
-//     await indy.storeTheirDid(wallet.handle,pa_identity)
-//     var res = await indy.createPairwise(wallet.handle, pa_did,,"mobile1")
-//     console.log(res)
-//     return res
-// }
+tyknid.showConnections = async function showConnections() {
+    if (!org.wallet.handle){
+        throw Error("Wallet is not open or not accessible.");
+    }
+    var res = await indy.listPairwise(org.wallet.handle)
+    console.log(res)
+    return res
+}
 module.exports = tyknid
