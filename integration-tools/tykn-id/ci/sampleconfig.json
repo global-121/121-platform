@@ -2,6 +2,8 @@
     "walletName":"test1",
     "walletKey" : "test",
     "walletPath":"~/.indy_client/wallet",
-    "orgDid" : "P65pCL8QLaBNTQpAXD85KK",
-    "orgVerKey" : "D3EZRRMCvHp62BE8gyUtayxNka6XmzuwCHS5uvP1do9G"
+    "orgSeed" : "ny9mAdxr4WCrF79Mv2MYorOF1nVkubh4",
+    "orgDID" : "sdfgdfgregdfsg",
+    "orgVerKey" : "ny9mAdxr4WCrF79Mv2sdfgdsfgs"
+    
 }
