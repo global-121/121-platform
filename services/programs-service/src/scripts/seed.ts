@@ -10,6 +10,7 @@ export class Seed implements InterfaceScript {
   public constructor(private connection: Connection) {}
 
   public async run(): Promise<void> {
+    await this.connection.dropDatabase();
     await this.connection.synchronize(true);
     const userRepository = this.connection.getRepository(UserEntity);
     await userRepository.save([
@@ -37,8 +38,6 @@ export class Seed implements InterfaceScript {
         status: 'active',
       },
     ]);
-
-
     await this.connection.close();
   }
 }
