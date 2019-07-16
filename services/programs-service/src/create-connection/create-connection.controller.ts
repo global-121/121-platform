@@ -20,7 +20,7 @@ export class CreateConnectionController {
   @ApiOperation({ title: 'Create connection' })
   @ApiResponse({ status: 200, description: 'Create connection' })
   @Post()
-  public async create(@Body() did: CreateConnectionDto): Promise<any> {
-    return await this.createConnectionService.create(did);
+  public async create(@Body() didVerMeta: CreateConnectionDto): Promise<any> {
+    return await this.createConnectionService.create(didVerMeta);
   }
 }
