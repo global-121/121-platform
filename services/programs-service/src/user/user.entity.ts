@@ -4,7 +4,7 @@ import {
   Column,
   BeforeInsert,
   OneToMany,
-  ManyToOne
+  ManyToOne,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import * as crypto from 'crypto';
@@ -51,5 +51,5 @@ export class UserEntity {
   public criteriums: StandardCriteriumEntity[];
 
   @ManyToOne(type => ProgramEntity, program => program.aidworkers)
-  public assigned_program: ProgramEntity;
+  public assignedProgram: ProgramEntity;
 }

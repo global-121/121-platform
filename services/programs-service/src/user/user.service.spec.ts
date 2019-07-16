@@ -3,6 +3,36 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
+import { ProgramEntity } from '../program/program.entity';
+import { AvailabilityEntity } from '../appointment/availability.entity';
+import { StandardCriteriumEntity } from '../standard-criterium/standard-criterium.entity';
+
+const userRo = {
+  user: {
+    id: undefined,
+    username: undefined,
+    email: 'test@test.nl',
+    token: undefined,
+    role: undefined,
+    status: undefined,
+    countryId: undefined,
+    assignedProgramId: null,
+  },
+};
+
+const createUserDto = {
+  username: undefined,
+  email: 'test@test.nl',
+  role: undefined,
+  status: undefined,
+  countryId: undefined,
+  password: 'string',
+};
+
+const LoginUserDto = {
+  email: 'test@test.nl',
+  password: 'string',
+}
 
 describe('User service', (): void => {
   let service: UserService;
@@ -15,6 +45,18 @@ describe('User service', (): void => {
           UserService,
           {
             provide: getRepositoryToken(UserEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ProgramEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(AvailabilityEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(StandardCriteriumEntity),
             useFactory: repositoryMockFactory,
           },
         ],
@@ -31,59 +73,7 @@ describe('User service', (): void => {
     expect(result).toMatch(/ey/);
   });
 
-  it('Create should create a user and return userRO', async (): Promise<
-    void
-  > => {
-    const userRo = {
-      user: {
-        id: undefined,
-        username: undefined,
-        email: undefined,
-        token: undefined,
-        role: undefined,
-        status: undefined,
-        countryId: undefined,
-      },
-    };
-
-    const result = await service.findById(1);
-    result.user.token = undefined;
-
-    expect(result).toStrictEqual(userRo);
-  });
-
-  it('Should find a user using ID', async (): Promise<void> => {
-    const userRo = {
-      user: {
-        id: undefined,
-        username: undefined,
-        email: undefined,
-        token: undefined,
-        role: undefined,
-        status: undefined,
-        countryId: undefined,
-      },
-    };
-
-    const result = await service.findById(1);
-    result.user.token = undefined;
-
-    expect(result).toStrictEqual(userRo);
-  });
-
   it('Should find a user using email', async (): Promise<void> => {
-    const userRo = {
-      user: {
-        id: undefined,
-        username: undefined,
-        email: 'test@test.nl',
-        token: undefined,
-        role: undefined,
-        status: undefined,
-        countryId: undefined,
-      },
-    };
-
     const result = await service.findByEmail('test@test.nl');
     result.user.token = undefined;
 

@@ -50,7 +50,7 @@ export class AppointmentService {
       throw new HttpException({ errors }, 401);
     }
     let aidworkers = await this.userRepository.find({
-      where: { assigned_program: { id: programId } },
+      where: { assignedProgram: { id: programId } },
     });
     if (aidworkers.length == 0) {
       const errors = { Message: 'No aidworkers assigned to this program yet.' };

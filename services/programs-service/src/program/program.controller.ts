@@ -62,7 +62,6 @@ export class ProgramController {
     @User('id') userId: number,
     @Body() programData: CreateProgramDto,
   ): Promise<ProgramEntity> {
-    console.log(userId);
     return this.programService.create(userId, programData);
   }
 
