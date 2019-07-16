@@ -9,6 +9,9 @@ import { CountryModule } from './country/country.module';
 import { HealthModule } from './health.module';
 import { EnrollmentModule } from './enrollment/enrollment.module';
 import { AppointmentModule } from './appointment/appointment.module';
+import { CreateConnectionController } from './create-connection/create-connection.controller';
+import { CreateConnectionService } from './create-connection/create-connection.service';
+import { CreateConnectionModule } from './create-connection/create-connection.module';
 
 @Module({
   imports: [
@@ -20,9 +23,10 @@ import { AppointmentModule } from './appointment/appointment.module';
     HealthModule,
     EnrollmentModule,
     AppointmentModule,
+    CreateConnectionModule,
   ],
-  controllers: [AppController],
-  providers: [],
+  controllers: [AppController, CreateConnectionController],
+  providers: [CreateConnectionService],
 })
 export class ApplicationModule {
   public constructor(private readonly connection: Connection) {}

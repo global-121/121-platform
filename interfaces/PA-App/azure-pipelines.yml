@@ -12,24 +12,24 @@ pr:
     - master
   paths:
     include:
-    - 'services/programs-service/*'
+    - 'interfaces/PA-App/*'
 
 pool:
   vmImage: 'ubuntu-16.04'
 
 steps:
-- task: CmdLine@2
-  inputs:
-    script: cp services/programs-service/src/secrets.ts.example services/programs-service/src/secrets.ts
-
 - task: NodeTool@0
   inputs:
     versionSpec: '10.x'
 
 - script: npm ci
   displayName: Install
-  workingDirectory: services/programs-service/
+  workingDirectory: interfaces/PA-App/
+
+- script: npm run lint
+  displayName: Linting
+  workingDirectory: interfaces/PA-App/
 
 - script: npm test
   displayName: Tests
-  workingDirectory: services/programs-service/
+  workingDirectory: interfaces/PA-App/
