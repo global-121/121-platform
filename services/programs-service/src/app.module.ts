@@ -12,6 +12,9 @@ import { AppointmentModule } from './appointment/appointment.module';
 import { CreateConnectionController } from './create-connection/create-connection.controller';
 import { CreateConnectionService } from './create-connection/create-connection.service';
 import { CreateConnectionModule } from './create-connection/create-connection.module';
+import { CredentialController } from './credential/credential.controller';
+import { CredentialService } from './credential/credential.service';
+import { CredentialModule } from './credential/credential.module';
 
 @Module({
   imports: [
@@ -24,9 +27,10 @@ import { CreateConnectionModule } from './create-connection/create-connection.mo
     EnrollmentModule,
     AppointmentModule,
     CreateConnectionModule,
+    CredentialModule,
   ],
-  controllers: [AppController, CreateConnectionController],
-  providers: [CreateConnectionService],
+  controllers: [AppController, CreateConnectionController, CredentialController],
+  providers: [CreateConnectionService, CredentialService],
 })
 export class ApplicationModule {
   public constructor(private readonly connection: Connection) {}
