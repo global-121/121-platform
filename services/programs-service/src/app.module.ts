@@ -7,6 +7,9 @@ import { StandardCriteriumModule } from './standard-criterium/standard-criterium
 import { UserModule } from './user/user.module';
 import { CountryModule } from './country/country.module';
 import { HealthModule } from './health.module';
+import { CreateConnectionController } from './create-connection/create-connection.controller';
+import { CreateConnectionService } from './create-connection/create-connection.service';
+import { CreateConnectionModule } from './create-connection/create-connection.module';
 
 @Module({
   imports: [
@@ -16,9 +19,10 @@ import { HealthModule } from './health.module';
     UserModule,
     CountryModule,
     HealthModule,
+    CreateConnectionModule,
   ],
-  controllers: [AppController],
-  providers: [],
+  controllers: [AppController, CreateConnectionController],
+  providers: [CreateConnectionService],
 })
 export class ApplicationModule {
   public constructor(private readonly connection: Connection) {}

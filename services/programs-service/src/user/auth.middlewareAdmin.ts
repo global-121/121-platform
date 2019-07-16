@@ -11,7 +11,11 @@ import { UserService } from './user.service';
 export class AuthMiddlewareAdmin implements NestMiddleware {
   constructor(private readonly userService: UserService) {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
+  public async use(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
     const authHeaders = req.headers.authorization;
     if (authHeaders && (authHeaders as string).split(' ')[1]) {
       const token = (authHeaders as string).split(' ')[1];
