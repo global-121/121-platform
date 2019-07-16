@@ -128,7 +128,7 @@ export class UserService {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, 401);
     }
-    user.assigned_program = program;
+    user.assignedProgram = program;
     const updatedUser = await this.userRepository.save(user);
     return this.buildUserRO(updatedUser);
   }
@@ -180,7 +180,7 @@ export class UserService {
       role: user.role,
       status: user.status,
       countryId: user.countryId,
-      assignedProgramId: user.assigned_program ? user.assigned_program.id : null,
+      assignedProgramId: user.assignedProgram ? user.assignedProgram.id : null,
     };
 
     return { user: userRO };
