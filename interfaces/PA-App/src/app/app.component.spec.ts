@@ -6,6 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AppComponent', () => {
 
@@ -24,6 +25,9 @@ describe('AppComponent', () => {
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
+      ],
+      imports: [
+        TranslateModule.forRoot(),
       ],
     }).compileComponents();
   }));
