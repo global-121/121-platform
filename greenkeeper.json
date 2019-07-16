@@ -22,7 +22,7 @@
         "@schematics/angular",
         "@schematics/schematics",
         "@schematics/update",
-        "@ngtools/webpack"        
+        "@ngtools/webpack"
       ]
     },
     "Services": {
