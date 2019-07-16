@@ -1,6 +1,11 @@
 Interfaces on the 121-platform
 ==============================
 
+- [PA-App](./PA-App/)  
+  (Native-)app used by *People Affected* to interact with the 121-platform.  
+
+  Primary target(s): Mobile/Smartphone (Android)
+
 - [HO-Portal](./HO-Portal/)  
   Web-app used by the *Humanitarian Organization* to manage their programs, aid-workers, communication, etc.  
 
