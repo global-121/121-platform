@@ -13,14 +13,20 @@ import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { AvailabilityEntity } from './availability.entity';
 import { AppointmentEntity } from './appointment.entity';
+import { ProgramEntity } from '../program/program.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AvailabilityEntity, AppointmentEntity, UserEntity]),
+    TypeOrmModule.forFeature([
+      AvailabilityEntity,
+      AppointmentEntity,
+      UserEntity,
+      ProgramEntity,
+    ]),
     UserModule,
   ],
   controllers: [AppointmentController],
-  providers: [AppointmentService]
+  providers: [AppointmentService],
 })
 export class AppointmentModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
