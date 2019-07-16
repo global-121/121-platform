@@ -1,18 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateConnectionService } from './create-connection.service';
 
-describe('CreateConnectionService', () => {
+describe('CreateConnectionService', (): void => {
   let service: CreateConnectionService;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [CreateConnectionService],
-    }).compile();
+  beforeEach(
+    async (): Promise<void> => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [CreateConnectionService],
+      }).compile();
 
-    service = module.get<CreateConnectionService>(CreateConnectionService);
-  });
+      service = module.get<CreateConnectionService>(CreateConnectionService);
+    },
+  );
 
-  it('should be defined', () => {
+  it('should be defined', (): void => {
     expect(service).toBeDefined();
   });
 });
