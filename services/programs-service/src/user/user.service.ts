@@ -11,10 +11,15 @@ import { HttpStatus } from '@nestjs/common';
 import * as crypto from 'crypto';
 
 import jwt = require('jsonwebtoken');
+import { ProgramEntity } from '../program/program.entity';
+
+
 @Injectable()
 export class UserService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor() {}
 
@@ -112,6 +117,22 @@ export class UserService {
     }
   }
 
+  public async assignProgram(userId: number, programId: number) {
+    let user = await this.userRepository.findOne(userId);
+    if (!user) {
+      const errors = { User: ' not found' };
+      throw new HttpException({ errors }, 401);
+    }
+    const program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = { Program: ' not found' };
+      throw new HttpException({ errors }, 401);
+    }
+    user.assigned_program = program;
+    const updatedUser = await this.userRepository.save(user);
+    return this.buildUserRO(updatedUser);
+  }
+
   public async delete(userId: number): Promise<DeleteResult> {
     return await this.userRepository.delete(userId);
   }
@@ -159,6 +180,7 @@ export class UserService {
       role: user.role,
       status: user.status,
       countryId: user.countryId,
+      assignedProgramId: user.assigned_program ? user.assigned_program.id : null,
     };
 
     return { user: userRO };

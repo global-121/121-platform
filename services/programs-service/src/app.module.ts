@@ -7,6 +7,8 @@ import { StandardCriteriumModule } from './standard-criterium/standard-criterium
 import { UserModule } from './user/user.module';
 import { CountryModule } from './country/country.module';
 import { HealthModule } from './health.module';
+import { EnrollmentModule } from './enrollment/enrollment.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { HealthModule } from './health.module';
     UserModule,
     CountryModule,
     HealthModule,
+    EnrollmentModule,
+    AppointmentModule,
   ],
   controllers: [AppController],
   providers: [],
