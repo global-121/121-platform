@@ -17,15 +17,10 @@ pr:
 pool:
   vmImage: 'ubuntu-16.04'
 
-strategy:
-  matrix:
-    node_10_x:
-      node_version: 10.x
-
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: $(node_version)
+    versionSpec: '10.x'
 
 - script: npm ci
   displayName: Install
@@ -38,8 +33,3 @@ steps:
 - script: npm test
   displayName: Tests
   workingDirectory: interfaces/HO-Portal/
-
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: cobertura
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/*coverage.xml'
