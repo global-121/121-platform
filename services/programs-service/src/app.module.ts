@@ -7,6 +7,8 @@ import { StandardCriteriumModule } from './standard-criterium/standard-criterium
 import { UserModule } from './user/user.module';
 import { CountryModule } from './country/country.module';
 import { HealthModule } from './health.module';
+import { EnrollmentModule } from './enrollment/enrollment.module';
+import { AppointmentModule } from './appointment/appointment.module';
 import { CreateConnectionController } from './create-connection/create-connection.controller';
 import { CreateConnectionService } from './create-connection/create-connection.service';
 import { CreateConnectionModule } from './create-connection/create-connection.module';
@@ -19,6 +21,8 @@ import { CreateConnectionModule } from './create-connection/create-connection.mo
     UserModule,
     CountryModule,
     HealthModule,
+    EnrollmentModule,
+    AppointmentModule,
     CreateConnectionModule,
   ],
   controllers: [AppController, CreateConnectionController],

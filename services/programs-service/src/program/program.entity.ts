@@ -75,4 +75,7 @@ export class ProgramEntity {
 
   @OneToMany(type => CustomCriterium, customCriteria => customCriteria.program)
   public customCriteria: CustomCriterium[];
+
+  @OneToMany(type => UserEntity, aidworker => aidworker.assigned_program)
+  public aidworkers: UserEntity[];
 }

@@ -23,6 +23,7 @@ import {
   ApiImplicitParam,
 } from '@nestjs/swagger';
 import { DeleteResult } from 'typeorm';
+import { UserEntity } from './user.entity';
 
 @ApiUseTags('user')
 @Controller()
@@ -104,4 +105,14 @@ export class UserController {
   public async activate(@Param('userId') userId: number): Promise<UserRO> {
     return await this.userService.activate(userId);
   }
+
+  @ApiBearerAuth()
+  @ApiOperation({ title: 'Assign Aidworker to program' })
+  @Put('user/:userId/:programId')
+  @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  public async assignProgram(@Param('userId') userId: number, @Param('programId') programId: number): Promise<UserRO> {
+    return await this.userService.assignProgram(userId, programId);
+  }
+
 }
