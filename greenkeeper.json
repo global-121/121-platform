@@ -2,6 +2,7 @@
   "groups": {
     "Interfaces": {
       "packages": [
+        "interfaces/PA-App/package.json",
         "interfaces/HO-Portal/package.json"
       ],
       "ignore": [
