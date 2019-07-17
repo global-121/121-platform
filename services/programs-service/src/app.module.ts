@@ -1,3 +1,4 @@
+import { AppointmentModule } from './schedule/appointment/appointment.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
@@ -8,7 +9,6 @@ import { UserModule } from './user/user.module';
 import { CountryModule } from './programs/country/country.module';
 import { HealthModule } from './health.module';
 import { EnrollmentModule } from './enrollment/enrollment.module';
-import { AppointmentModule } from './appointment/appointment.module';
 import { CreateConnectionController } from './sovrin/create-connection/create-connection.controller';
 import { CreateConnectionService } from './sovrin/create-connection/create-connection.service';
 import { CreateConnectionModule } from './sovrin/create-connection/create-connection.module';

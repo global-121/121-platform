@@ -1,9 +1,9 @@
+import { AvailabilityEntity } from './../schedule/appointment/availability.entity';
 import { UserService } from './user.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
-import { AvailabilityEntity } from '../appointment/availability.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { StandardCriteriumEntity } from '../programs/standard-criterium/standard-criterium.entity';
 

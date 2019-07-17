@@ -7,13 +7,12 @@ import {
 import { AppointmentController } from './appointment.controller';
 import { AppointmentService } from './appointment.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthMiddleware } from '../user/auth.middleware';
-// import { AuthMiddlewareAdmin } from '../user/auth.middlewareAdmin';
-import { UserEntity } from '../user/user.entity';
-import { UserModule } from '../user/user.module';
 import { AvailabilityEntity } from './availability.entity';
 import { AppointmentEntity } from './appointment.entity';
-import { ProgramEntity } from '../programs/program/program.entity';
+import { UserEntity } from '../../user/user.entity';
+import { ProgramEntity } from '../../programs/program/program.entity';
+import { UserModule } from '../../user/user.module';
+import { AuthMiddleware } from '../../user/auth.middleware';
 
 @Module({
   imports: [
