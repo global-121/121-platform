@@ -19,7 +19,7 @@ import { ProgramEntity } from '../program/program.entity';
   exports: [UserService],
 })
 export class UserModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer) {
+  public configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(AuthMiddlewareAdmin)
       .forRoutes(

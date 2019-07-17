@@ -21,7 +21,7 @@ const newDidInfo = {
   message: 'encrypted:example',
 };
 
-class CountryServiceMock {
+class ConenctionServiceMock {
   public async get(): Promise<ConnectionRequestDto> {
     return newConnectionRequest;
   }
@@ -44,7 +44,7 @@ describe('CreateConnection Controller', (): void => {
         providers: [
           {
             provide: CreateConnectionService,
-            useValue: new CountryServiceMock(),
+            useValue: new ConenctionServiceMock(),
           },
         ],
       }).compile();
