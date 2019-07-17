@@ -20,22 +20,22 @@ export class CreateConnectionController {
   }
 
   @ApiOperation({ title: 'Get connection request' })
-  @ApiResponse({ status: 200, description: 'Create connection' })
+  @ApiResponse({ status: 200, description: 'Sent connection request' })
   @Get()
   public async get(): Promise<ConnectionRequestDto> {
     return await this.createConnectionService.get();
   }
 
   @ApiOperation({ title: 'Create connection' })
-  @ApiResponse({ status: 200, description: 'Create connection' })
+  @ApiResponse({ status: 200, description: 'Created connection' })
   @Post()
   public async create(@Body() didVerMeta: ConnectionReponseDto): Promise<void> {
     return await this.createConnectionService.create(didVerMeta);
   }
 
-  @ApiOperation({ title: 'Create connection' })
-  @ApiResponse({ status: 200, description: 'Create connection' })
-  @Post('create-connection/add')
+  @ApiOperation({ title: 'Add connection to ledger' })
+  @ApiResponse({ status: 200, description: 'Added connection to ledget' })
+  @Post('/add')
   public async addLedger(@Body() didVerMeta: DidInfoDto): Promise<void> {
     return await this.createConnectionService.addLedger(didVerMeta);
   }
