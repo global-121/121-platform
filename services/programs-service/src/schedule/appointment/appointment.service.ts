@@ -1,13 +1,12 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Injectable, CACHE_MANAGER, HttpException } from '@nestjs/common';
-// import { AppointmentEntity } from './appointment.entity';
-import { ProgramEntity } from '../program/program.entity';
-import { CustomCriterium } from '../program/custom-criterium.entity';
+import { Injectable, HttpException } from '@nestjs/common';
+
 import { CreateAvailabilityDto } from './dto';
 import { AvailabilityEntity } from './availability.entity';
-import { UserEntity } from '../user/user.entity';
 import { AppointmentEntity } from './appointment.entity';
+import { UserEntity } from '../../user/user.entity';
+import { ProgramEntity } from '../../programs/program/program.entity';
 
 @Injectable()
 export class AppointmentService {

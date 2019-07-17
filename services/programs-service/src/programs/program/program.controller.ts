@@ -12,7 +12,7 @@ import { Request } from 'express';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto';
 import { ProgramsRO, ProgramRO } from './program.interface';
-import { User } from '../user/user.decorator';
+import { User } from '../../user/user.decorator';
 
 import {
   ApiUseTags,

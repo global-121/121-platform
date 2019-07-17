@@ -5,12 +5,12 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from '../user/user.module';
+import { UserModule } from '../../user/user.module';
 import { CountryService } from './country.service';
 import { CountryEntity } from './country.entity';
 import { CountryController } from './country.controller';
-import { AuthMiddlewareAdmin } from '../user/auth.middlewareAdmin';
-import { UserEntity } from '../user/user.entity';
+import { AuthMiddlewareAdmin } from '../../user/auth.middlewareAdmin';
+import { UserEntity } from '../../user/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CountryEntity, UserEntity]), UserModule],

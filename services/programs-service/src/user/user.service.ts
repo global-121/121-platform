@@ -11,7 +11,7 @@ import { HttpStatus } from '@nestjs/common';
 import * as crypto from 'crypto';
 
 import jwt = require('jsonwebtoken');
-import { ProgramEntity } from '../program/program.entity';
+import { ProgramEntity } from '../programs/program/program.entity';
 
 
 @Injectable()

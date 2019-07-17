@@ -1,12 +1,5 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  OneToMany,
-  BeforeUpdate,
-} from 'typeorm';
-import { UserEntity } from '../user/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { UserEntity } from '../../user/user.entity';
 
 @Entity('availability')
 export class AvailabilityEntity {
@@ -24,5 +17,4 @@ export class AvailabilityEntity {
 
   @ManyToOne(type => UserEntity, user => user.availability)
   public aidworker: UserEntity;
-
 }

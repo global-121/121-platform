@@ -6,7 +6,7 @@ import {
   OneToMany,
   BeforeUpdate,
 } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
+import { UserEntity } from '../../user/user.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 
 @Entity('program')

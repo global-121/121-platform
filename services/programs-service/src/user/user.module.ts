@@ -10,7 +10,7 @@ import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 import { AuthMiddleware } from '../user/auth.middleware';
 import { AuthMiddlewareAdmin } from '../user/auth.middlewareAdmin';
-import { ProgramEntity } from '../program/program.entity';
+import { ProgramEntity } from '../programs/program/program.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity, ProgramEntity])],

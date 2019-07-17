@@ -7,9 +7,9 @@ import {
 } from '@nestjs/swagger';
 import { AppointmentService } from './appointment.service';
 import { AvailabilityEntity } from '../appointment/availability.entity';
-import { User } from '../user/user.decorator';
 import { CreateAvailabilityDto } from './dto';
 import { AppointmentEntity } from './appointment.entity';
+import { User } from '../../user/user.decorator';
 
 @ApiUseTags('appointment')
 @Controller('appointment')
