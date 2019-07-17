@@ -4,6 +4,13 @@ import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.
 import { CredentialValuesDto } from './dto/credential-values.dto';
 import { CredentialService } from './credential.service';
 
+const did = {
+  did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
+};
+
+const encryptedMessage = {
+  message: 'encrypted:example',
+};
 class CredentialnServiceMock {
   public async getOffer(did: string): Promise<EncryptedMessageDto> {
     did;
@@ -24,7 +31,8 @@ class CredentialnServiceMock {
 }
 
 describe('Credential Controller', (): void => {
-  let controller: CredentialController;
+  let credentialService: CredentialService;
+  let credentialController: CredentialController;
 
   beforeEach(
     async (): Promise<void> => {
@@ -37,12 +45,65 @@ describe('Credential Controller', (): void => {
           },
         ],
       }).compile();
+      credentialService = module.get<CredentialService>(CredentialService);
 
-      controller = module.get<CredentialController>(CredentialController);
+      credentialController = module.get<CredentialController>(
+        CredentialController,
+      );
     },
   );
 
   it('should be defined', (): void => {
-    expect(controller).toBeDefined();
+    expect(credentialController).toBeDefined();
+  });
+
+  describe('offer', (): void => {
+    it('should get a credential offer', async (): Promise<void> => {
+      const spy = jest
+        .spyOn(credentialService, 'getOffer')
+        .mockImplementation(
+          (): Promise<EncryptedMessageDto> => Promise.resolve(encryptedMessage),
+        );
+
+      const controllerResult = await credentialController.getOffer(did);
+      expect(spy).toHaveBeenCalled();
+      expect(controllerResult).toStrictEqual(encryptedMessage);
+    });
+  });
+
+  describe('request', (): void => {
+    it('should post credential request', async (): Promise<void> => {
+      const spy = jest
+        .spyOn(credentialService, 'request')
+        .mockImplementation((): Promise<void> => Promise.resolve());
+
+      await credentialController.request(encryptedMessage);
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('issue', (): void => {
+    it('should issue credential', async (): Promise<void> => {
+      const spy = jest
+        .spyOn(credentialService, 'issue')
+        .mockImplementation((): Promise<void> => Promise.resolve());
+
+      await credentialController.issue({});
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+
+  describe('get', (): void => {
+    it('should get a credential offer', async (): Promise<void> => {
+      const spy = jest
+        .spyOn(credentialService, 'get')
+        .mockImplementation(
+          (): Promise<EncryptedMessageDto> => Promise.resolve(encryptedMessage),
+        );
+
+      const controllerResult = await credentialController.get(did);
+      expect(spy).toHaveBeenCalled();
+      expect(controllerResult).toStrictEqual(encryptedMessage);
+    });
   });
 });
