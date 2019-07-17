@@ -27,12 +27,15 @@ export class ProgramModule implements NestModule {
     consumer
       .apply(AuthMiddlewareAdmin)
       .forRoutes(
+        { path: 'programs', method: RequestMethod.GET },
         { path: 'programs', method: RequestMethod.POST },
-        { path: 'programs/:programId', method: RequestMethod.DELETE },
-        { path: 'programs/:programId', method: RequestMethod.PUT },
+        { path: 'programs/:id', method: RequestMethod.DELETE },
+        { path: 'programs/:id', method: RequestMethod.PUT },
+        { path: 'programs/publish/:id', method: RequestMethod.POST },
+        { path: 'programs/unpublish/:id', method: RequestMethod.POST },
       );
     consumer
       .apply(AuthMiddleware)
-      .forRoutes({ path: 'programs', method: RequestMethod.GET });
+      .forRoutes({ path: 'programs/:id', method: RequestMethod.GET });
   }
 }

@@ -59,7 +59,8 @@ export class ProgramService {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium')
-      .where('"countryId" = :countryId', { countryId: query.countryId });
+      .where('"countryId" = :countryId', { countryId: query })
+      .andWhere('published = true');
 
     const programsCount = await qb.getCount();
     const programs = await qb.getMany();
@@ -114,6 +115,7 @@ export class ProgramService {
   }
 
   public async publish(programId: number): Promise<void> {
+    console.log(programId)
     await this.changeProgramValue(programId, { published: true });
 
     const selectedProgram = await this.findOne(programId);
