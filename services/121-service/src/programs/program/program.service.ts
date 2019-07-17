@@ -39,6 +39,7 @@ export class ProgramService {
         location: `%${query.location.toLowerCase()}%`,
       });
     }
+
     if ('countryId' in query) {
       qb.andWhere('program.countryId = :countryId', {
         countryId: query.countryId,
