@@ -62,6 +62,12 @@ export class ProgramEntity {
   @Column({ default: false })
   public published: boolean;
 
+  @Column({ default: null })
+  public schemaId: string;
+
+  @Column({ default: null })
+  public credDefId: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created: Date;
 

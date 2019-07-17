@@ -50,6 +50,17 @@ export class ProgramController {
     return await this.programService.findAll(query);
   }
 
+  @ApiOperation({ title: 'Get published programs by country id' })
+  @ApiImplicitQuery({ name: 'countryId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all published programs by country',
+  })
+  @Get('country/:countryId')
+  public async findByCountry(@Query() query): Promise<ProgramsRO> {
+    return await this.programService.findByCountry(query);
+  }
+
   @ApiOperation({ title: 'Create program' })
   @ApiResponse({
     status: 201,
@@ -91,12 +102,14 @@ export class ProgramController {
   public async delete(@Param() params): Promise<DeleteResult> {
     return this.programService.delete(params.programId);
   }
+
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('publish/:programId')
   public async publish(@Param() params): Promise<void> {
     this.programService.publish(params.programId);
   }
+
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('unpublish/:programId')
