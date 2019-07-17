@@ -5,13 +5,13 @@ import {
   ApiUseTags,
   ApiImplicitParam,
 } from '@nestjs/swagger';
-import { Controller, Get, Body, Post, Param } from '@nestjs/common';
+import { Controller, Get, Body, Post, Param, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { ConnectionRequestDto } from '../create-connection/dto/connection-request.dto';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { CredentialValuesDto } from './dto/credential-values.dto';
 
-@ApiBearerAuth()
+
 @ApiUseTags('credential')
 @Controller('credential')
 export class CredentialController {
@@ -37,8 +37,10 @@ export class CredentialController {
     return await this.credentialService.request(encryptedCredRequest);
   }
 
+  @ApiBearerAuth()
   @ApiOperation({ title: 'Issue credentials' })
   @ApiResponse({ status: 200, description: 'Credentials issued' })
+  @UsePipes(new ValidationPipe())
   @Post('/issue')
   public async issue(
     @Body() credentialValues: CredentialValuesDto,
