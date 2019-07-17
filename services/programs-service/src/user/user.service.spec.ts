@@ -32,7 +32,7 @@ const createUserDto = {
 const LoginUserDto = {
   email: 'test@test.nl',
   password: 'string',
-}
+};
 
 describe('User service', (): void => {
   let service: UserService;

@@ -24,5 +24,4 @@ export class EnrollmentService {
   // public async submitAnswers(programId: number): {
   //   let criteriums = this.customCriteriumRepository.find({where: {programId: programId}});
   // }
-
 }

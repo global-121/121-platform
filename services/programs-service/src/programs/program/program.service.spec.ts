@@ -6,7 +6,6 @@ import { ProgramEntity } from './program.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
 
-
 describe('Program service', (): void => {
   let service: ProgramService;
   let module: TestingModule;
