@@ -12,8 +12,8 @@ import {
 } from '@nestjs/swagger';
 
 @ApiBearerAuth()
-@ApiUseTags('countrys')
-@Controller('countrys')
+@ApiUseTags('programs')
+@Controller('programs/countrys')
 export class CountryController {
   private readonly countryService: CountryService;
   public constructor(countryService: CountryService) {

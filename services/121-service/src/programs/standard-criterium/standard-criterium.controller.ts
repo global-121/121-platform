@@ -14,8 +14,8 @@ import {
 import { CreateStandardCriteriumDto } from './dto/create-standard-criterium.dto';
 
 @ApiBearerAuth()
-@ApiUseTags('standard-criteriums')
-@Controller('standard-criteriums')
+@ApiUseTags('programs')
+@Controller('programs/standard-criteriums')
 export class StandardCriteriumController {
   private readonly criteriumService: StandardCriteriumService;
   public constructor(criteriumService: StandardCriteriumService) {

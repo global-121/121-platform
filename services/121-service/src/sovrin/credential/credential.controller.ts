@@ -18,8 +18,8 @@ import { CredentialService } from './credential.service';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { CredentialValuesDto } from './dto/credential-values.dto';
 
-@ApiUseTags('credential')
-@Controller('credential')
+@ApiUseTags('sovrin')
+@Controller('sovrin/credential')
 export class CredentialController {
   private readonly credentialService: CredentialService;
   public constructor(credentialService: CredentialService) {

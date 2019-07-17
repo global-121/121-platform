@@ -11,8 +11,8 @@ import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { DidInfoDto } from './dto/did-info.dto';
 
 @ApiBearerAuth()
-@ApiUseTags('create-connection')
-@Controller('create-connection')
+@ApiUseTags('sovrin')
+@Controller('sovrin/create-connection')
 export class CreateConnectionController {
   private readonly createConnectionService: CreateConnectionService;
   public constructor(createConnectionService: CreateConnectionService) {
