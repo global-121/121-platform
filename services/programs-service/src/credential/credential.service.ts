@@ -5,8 +5,9 @@ import { CredentialValuesDto } from './dto/credential-values.dto';
 @Injectable()
 export class CredentialService {
   // Used by AP
-  public async getOffer(): Promise<EncryptedMessageDto> {
+  public async getOffer(did: string): Promise<EncryptedMessageDto> {
     // tyknid.getCredentialOffer()`;
+    did;
     const result = { message: 'encrypted:example' };
     return result;
   }
@@ -26,7 +27,9 @@ export class CredentialService {
   }
 
   // Used by ap
-  public async get(did: string): Promise<void> {
+  public async get(did: string): Promise<EncryptedMessageDto> {
     did;
+    const result = { message: 'encrypted:example' };
+    return result;
   }
 }
