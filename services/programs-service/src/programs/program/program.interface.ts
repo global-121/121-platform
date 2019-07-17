@@ -1,4 +1,4 @@
-import { UserData } from '../user/user.interface';
+import { UserData } from '../../user/user.interface';
 import { ProgramEntity } from './program.entity';
 
 // interface ProgramData {

@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import * as crypto from 'crypto';
-import { ProgramEntity } from '../program/program.entity';
-import { StandardCriteriumEntity } from '../standard-criterium/standard-criterium.entity';
+import { ProgramEntity } from '../programs/program/program.entity';
+import { StandardCriteriumEntity } from '../programs/standard-criterium/standard-criterium.entity';
 import { AvailabilityEntity } from '../appointment/availability.entity';
 
 @Entity('user')

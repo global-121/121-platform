@@ -2,8 +2,8 @@ import { CountryService } from './country.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CountryEntity } from './country.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserEntity } from '../user/user.entity';
-import { repositoryMockFactory } from '../mock/repositoryMock.factory';
+import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
+import { UserEntity } from '../../user/user.entity';
 
 describe('Country service', (): void => {
   let service: CountryService;

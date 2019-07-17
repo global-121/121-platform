@@ -1,22 +1,22 @@
-import { CustomCriterium } from './custom-criterium.entity';
-import { ProgramService } from './program.service';
+import { CountryEntity } from '../country/country.entity';
+import { StandardCriteriumService } from './standard-criterium.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProgramEntity } from './program.entity';
+import { StandardCriteriumEntity } from './standard-criterium.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserEntity } from '../user/user.entity';
-import { repositoryMockFactory } from '../mock/repositoryMock.factory';
+import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
+import { UserEntity } from '../../user/user.entity';
 
-describe('Program service', (): void => {
-  let service: ProgramService;
+describe('Criterium service', (): void => {
+  let service: StandardCriteriumService;
   let module: TestingModule;
 
   beforeAll(
     async (): Promise<void> => {
       const module: TestingModule = await Test.createTestingModule({
         providers: [
-          ProgramService,
+          StandardCriteriumService,
           {
-            provide: getRepositoryToken(ProgramEntity),
+            provide: getRepositoryToken(StandardCriteriumEntity),
             useFactory: repositoryMockFactory,
           },
           {
@@ -24,13 +24,13 @@ describe('Program service', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
-            provide: getRepositoryToken(CustomCriterium),
+            provide: getRepositoryToken(CountryEntity),
             useFactory: repositoryMockFactory,
           },
         ],
       }).compile();
 
-      service = module.get<ProgramService>(ProgramService);
+      service = module.get<StandardCriteriumService>(StandardCriteriumService);
     },
   );
 

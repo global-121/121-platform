@@ -13,7 +13,7 @@ import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { AvailabilityEntity } from './availability.entity';
 import { AppointmentEntity } from './appointment.entity';
-import { ProgramEntity } from '../program/program.entity';
+import { ProgramEntity } from '../programs/program/program.entity';
 
 @Module({
   imports: [

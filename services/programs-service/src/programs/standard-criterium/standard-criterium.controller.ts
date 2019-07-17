@@ -2,7 +2,7 @@ import { Get, Post, Body, Controller, Param } from '@nestjs/common';
 
 import { StandardCriteriumEntity } from './standard-criterium.entity';
 import { StandardCriteriumService } from './standard-criterium.service';
-import { User } from '../user/user.decorator';
+import { User } from '../../user/user.decorator';
 
 import {
   ApiUseTags,

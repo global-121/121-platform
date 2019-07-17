@@ -3,8 +3,8 @@ import { StandardCriteriumService } from './standard-criterium.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { StandardCriteriumEntity } from './standard-criterium.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserEntity } from '../user/user.entity';
-import { repositoryMockFactory } from '../mock/repositoryMock.factory';
+import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
+import { UserEntity } from '../../user/user.entity';
 
 describe('Criterium service', (): void => {
   let service: StandardCriteriumService;

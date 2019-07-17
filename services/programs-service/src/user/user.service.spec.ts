@@ -3,9 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
-import { ProgramEntity } from '../program/program.entity';
 import { AvailabilityEntity } from '../appointment/availability.entity';
-import { StandardCriteriumEntity } from '../standard-criterium/standard-criterium.entity';
+import { ProgramEntity } from '../programs/program/program.entity';
+import { StandardCriteriumEntity } from '../programs/standard-criterium/standard-criterium.entity';
 
 const userRo = {
   user: {

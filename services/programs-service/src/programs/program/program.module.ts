@@ -7,11 +7,11 @@ import {
 import { ProgramController } from './program.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProgramEntity } from './program.entity';
-import { UserEntity } from '../user/user.entity';
+import { UserEntity } from '../../user/user.entity';
 import { ProgramService } from './program.service';
-import { AuthMiddleware } from '../user/auth.middleware';
-import { AuthMiddlewareAdmin } from '../user/auth.middlewareAdmin';
-import { UserModule } from '../user/user.module';
+import { AuthMiddleware } from '../../user/auth.middleware';
+import { AuthMiddlewareAdmin } from '../../user/auth.middlewareAdmin';
+import { UserModule } from '../../user/user.module';
 import { CustomCriterium } from './custom-criterium.entity';
 
 @Module({

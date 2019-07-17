@@ -2,12 +2,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 // import { EnrollmentEntity } from './enrollment.entity';
-import { ProgramEntity } from '../program/program.entity';
-import { CustomCriterium } from '../program/custom-criterium.entity';
+import { ProgramEntity } from '../programs/program/program.entity';
+import { CustomCriterium } from '../programs/program/custom-criterium.entity';
 
 @Injectable()
 export class EnrollmentService {
-    
+
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(CustomCriterium)
@@ -24,5 +24,5 @@ export class EnrollmentService {
   // public async submitAnswers(programId: number): {
   //   let criteriums = this.customCriteriumRepository.find({where: {programId: programId}});
   // }
-  
+
 }

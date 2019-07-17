@@ -5,7 +5,7 @@ import {
   BeforeUpdate,
   ManyToOne,
 } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
+import { UserEntity } from '../../user/user.entity';
 
 @Entity('standard_criterium')
 export class StandardCriteriumEntity {

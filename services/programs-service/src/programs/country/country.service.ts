@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CountryEntity } from './country.entity';
-import { UserEntity } from '../user/user.entity';
+import { UserEntity } from '../../user/user.entity';
 import { CreateCountryDto, BindCriteriumCountryDto } from './dto';
 
 @Injectable()
