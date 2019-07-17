@@ -24,7 +24,6 @@ import {
 import { ProgramEntity } from './program.entity';
 import { DeleteResult } from 'typeorm';
 
-@ApiBearerAuth()
 @ApiUseTags('programs')
 @Controller('programs')
 export class ProgramController {
@@ -33,6 +32,7 @@ export class ProgramController {
     this.programService = programService;
   }
 
+  @ApiBearerAuth()
   @ApiOperation({ title: 'Get program by id' })
   @ApiImplicitQuery({ name: 'id', required: true })
   @ApiResponse({ status: 200, description: 'Return program by id.' })
@@ -41,6 +41,7 @@ export class ProgramController {
     return await this.programService.findOne(query);
   }
 
+  @ApiBearerAuth()
   @ApiOperation({ title: 'Get all programs' })
   @ApiImplicitQuery({ name: 'location', required: false })
   @ApiImplicitQuery({ name: 'countryId', required: false })
@@ -50,6 +51,18 @@ export class ProgramController {
     return await this.programService.findAll(query);
   }
 
+  @ApiOperation({ title: 'Get published programs by country id' })
+  @ApiImplicitQuery({ name: 'countryId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return all published programs by country',
+  })
+  @Get('country/:countryId')
+  public async findByCountry(@Query() query): Promise<ProgramsRO> {
+    return await this.programService.findByCountry(query.countryId);
+  }
+
+  @ApiBearerAuth()
   @ApiOperation({ title: 'Create program' })
   @ApiResponse({
     status: 201,
@@ -64,31 +77,49 @@ export class ProgramController {
     return this.programService.create(userId, programData);
   }
 
+  @ApiBearerAuth()
   @ApiOperation({ title: 'Change program' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
   @ApiResponse({
     status: 201,
     description: 'The program has been successfully changed.',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Put(':programId')
+  @Put(':id')
   public async update(
     @Param() params,
     @User('id') userId: number,
     @Body() programData: CreateProgramDto,
   ): Promise<ProgramRO> {
-    return this.programService.update(params.programId, programData);
+    return this.programService.update(params.id, programData);
   }
 
+  @ApiBearerAuth()
   @ApiOperation({ title: 'Delete program' })
   @ApiResponse({
     status: 201,
     description: 'The program has been successfully deleted.',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'string' })
-  @Delete(':programId')
+  @ApiImplicitParam({ name: 'id', required: true, type: 'string' })
+  @Delete(':id')
   public async delete(@Param() params): Promise<DeleteResult> {
-    return this.programService.delete(params.programId);
+    return this.programService.delete(params.id);
+  }
+
+  @ApiBearerAuth()
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
+  @Post('publish/:id')
+  public async publish(@Param() params): Promise<void> {
+    this.programService.publish(params.id);
+  }
+
+  @ApiBearerAuth()
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
+  @Post('unpublish/:id')
+  public async unpublish(@Param() params): Promise<void> {
+    this.programService.unpublish(params.id);
   }
 }

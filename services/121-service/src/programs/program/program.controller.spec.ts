@@ -45,6 +45,12 @@ class ProgramServiceMock {
     programData;
     return { program: new ProgramEntity() };
   }
+  public async publish(id: number): Promise<void> {
+    id;
+  }
+  public async unpublish(id: number): Promise<void> {
+    id;
+  }
 }
 
 describe('ProgramController', (): void => {
@@ -146,6 +152,26 @@ describe('ProgramController', (): void => {
       );
       expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(programRO);
+    });
+  });
+  describe('publish', (): void => {
+    it('should publish a program', async (): Promise<void> => {
+      const spy = jest
+        .spyOn(programService, 'publish')
+        .mockImplementation((): Promise<void> => Promise.resolve());
+
+      await programController.publish(1);
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+  describe('unpublish', (): void => {
+    it('should publish a program', async (): Promise<void> => {
+      const spy = jest
+        .spyOn(programService, 'unpublish')
+        .mockImplementation((): Promise<void> => Promise.resolve());
+
+      await programController.unpublish(1);
+      expect(spy).toHaveBeenCalled();
     });
   });
 });
