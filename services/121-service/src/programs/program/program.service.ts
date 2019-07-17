@@ -108,4 +108,22 @@ export class ProgramService {
   public async delete(programId: number): Promise<DeleteResult> {
     return await this.programRepository.delete(programId);
   }
+
+  public async publish(programId: number): Promise<void> {
+    await getRepository(ProgramEntity)
+      .createQueryBuilder()
+      .update(ProgramEntity)
+      .set({ published: true })
+      .where('id = :id', { id: programId })
+      .execute();
+  }
+
+  public async unpublish(programId: number): Promise<void> {
+    await getRepository(ProgramEntity)
+      .createQueryBuilder()
+      .update(ProgramEntity)
+      .set({ published: false })
+      .where('id = :id', { id: programId })
+      .execute();
+  }
 }

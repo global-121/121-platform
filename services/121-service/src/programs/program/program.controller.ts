@@ -91,4 +91,16 @@ export class ProgramController {
   public async delete(@Param() params): Promise<DeleteResult> {
     return this.programService.delete(params.programId);
   }
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @Post('publish/:programId')
+  public async publish(@Param() params): Promise<void> {
+    this.programService.publish(params.programId);
+  }
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @Post('unpublish/:programId')
+  public async unpublish(@Param() params): Promise<void> {
+    this.programService.unpublish(params.programId);
+  }
 }

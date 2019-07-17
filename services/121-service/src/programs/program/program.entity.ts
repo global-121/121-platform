@@ -59,6 +59,9 @@ export class ProgramEntity {
   @Column()
   public countryId: number;
 
+  @Column({ default: false })
+  public published: boolean;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created: Date;
 
