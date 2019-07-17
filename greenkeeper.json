@@ -27,7 +27,7 @@
     },
     "Services": {
       "packages": [
-        "services/programs-service/package.json"
+        "services/121-service/package.json"
       ]
     }
   }
