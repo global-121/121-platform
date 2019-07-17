@@ -1,4 +1,4 @@
-import { UserModule } from './../user/user.module';
+import { UserModule } from '../../user/user.module';
 import {
   Module,
   MiddlewareConsumer,
@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { CredentialController } from './credential.controller';
-import { AuthMiddleware } from '../user/auth.middleware';
+import { AuthMiddleware } from '../../user/auth.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from '../user/user.entity';
+import { UserEntity } from '../../user/user.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity]), UserModule],
