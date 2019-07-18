@@ -6,6 +6,9 @@ trigger:
     include:
     - master
     - greenkeeper/*
+  paths:
+    include:
+    - 'interfaces/PA-App/*'
 pr:
   branches:
     include:
