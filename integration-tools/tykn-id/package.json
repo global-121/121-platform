@@ -16,11 +16,11 @@
     "node": ">=8"
   },
   "scripts": {
-    "test": " ava --fail-fast --verbose"
+    "test": " ava --verbose"
   },
-  "ava":{
-		"watch": true
-	},
+  "ava": {
+    "watch": true
+  },
   "dependencies": {
     "bindings": "^1.3.1",
     "indy-sdk": "1.9.0",
