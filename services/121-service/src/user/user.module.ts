@@ -26,6 +26,7 @@ export class UserModule implements NestModule {
         { path: 'user/:userId', method: RequestMethod.DELETE },
         { path: 'user/:userId/deactivate', method: RequestMethod.PUT },
         { path: 'user/:userId/activate', method: RequestMethod.PUT },
+        { path: 'user/:userId/:programId', method: RequestMethod.PUT },
       );
     consumer
       .apply(AuthMiddleware)

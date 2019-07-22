@@ -7,7 +7,7 @@ import {
 } from '@nestjs/swagger';
 import { AppointmentService } from './appointment.service';
 import { AvailabilityEntity } from '../appointment/availability.entity';
-import { CreateAvailabilityDto } from './dto';
+import { CreateAvailabilityDto, RegisterTimeslotDto } from './dto';
 import { AppointmentEntity } from './appointment.entity';
 import { User } from '../../user/user.decorator';
 
@@ -46,8 +46,9 @@ export class AppointmentController {
   @Post('register/:timeslotId')
   public async registerTimeslot(
     @Param('timeslotId') timeslotId: number,
+    @Body() didData: RegisterTimeslotDto,
   ): Promise<AppointmentEntity> {
-    return await this.appointmentService.registerTimeslot(timeslotId);
+    return await this.appointmentService.registerTimeslot(timeslotId, didData);
   }
 
   @ApiBearerAuth()

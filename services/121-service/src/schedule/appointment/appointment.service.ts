@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable, HttpException } from '@nestjs/common';
 
-import { CreateAvailabilityDto } from './dto';
+import { CreateAvailabilityDto, RegisterTimeslotDto } from './dto';
 import { AvailabilityEntity } from './availability.entity';
 import { AppointmentEntity } from './appointment.entity';
 import { UserEntity } from '../../user/user.entity';
@@ -72,9 +72,11 @@ export class AppointmentService {
 
   public async registerTimeslot(
     timeslotId: number,
+    didData: RegisterTimeslotDto
   ): Promise<AppointmentEntity> {
     let appointment = new AppointmentEntity();
     appointment.timeslotId = timeslotId;
+    appointment.did = didData.did;
     const newAppointment = await this.appointmentRepository.save(appointment);
     return newAppointment;
   }
