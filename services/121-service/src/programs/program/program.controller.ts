@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto';
-import { ProgramsRO, ProgramRO } from './program.interface';
+import { ProgramsRO, ProgramRO, SimpleProgramRO } from './program.interface';
 import { User } from '../../user/user.decorator';
 
 import {
@@ -111,15 +111,15 @@ export class ProgramController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
   @Post('publish/:id')
-  public async publish(@Param() params): Promise<void> {
-    this.programService.publish(params.id);
+  public async publish(@Param() params): Promise<SimpleProgramRO> {
+    return this.programService.publish(params.id);
   }
 
   @ApiBearerAuth()
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
   @Post('unpublish/:id')
-  public async unpublish(@Param() params): Promise<void> {
-    this.programService.unpublish(params.id);
+  public async unpublish(@Param() params): Promise<SimpleProgramRO> {
+    return this.programService.unpublish(params.id);
   }
 }

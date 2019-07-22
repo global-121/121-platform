@@ -1,15 +1,11 @@
 import { UserData } from '../../user/user.interface';
 import { ProgramEntity } from './program.entity';
 
-// interface ProgramData {
-//   slug: string;
-//   title: string;
-//   description: string;
-//   body?: string;
-//   createdAt?: Date
-//   updatedAt?: Date
-//   author?: UserData;
-// }
+export interface SimpleProgramRO {
+  id: number;
+  title: string;
+  published: boolean;
+}
 
 export interface ProgramRO {
   program: ProgramEntity;

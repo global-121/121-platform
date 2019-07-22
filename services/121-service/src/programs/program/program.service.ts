@@ -6,7 +6,7 @@ import { ProgramEntity } from './program.entity';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 
-import { ProgramRO, ProgramsRO } from './program.interface';
+import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 import { SchemaService } from '../../sovrin/schema/schema.service';
 
 @Injectable()
@@ -114,8 +114,7 @@ export class ProgramService {
     return await this.programRepository.delete(programId);
   }
 
-  public async publish(programId: number): Promise<void> {
-    console.log(programId)
+  public async publish(programId: number): Promise<SimpleProgramRO> {
     await this.changeProgramValue(programId, { published: true });
 
     const selectedProgram = await this.findOne(programId);
@@ -125,10 +124,14 @@ export class ProgramService {
     const result = await schemaService.create(selectedProgram);
     await this.changeProgramValue(programId, { schemaId: result.schemaId });
     await this.changeProgramValue(programId, { credDefId: result.credDefId });
+    
+    return await this.buildProgramRO(selectedProgram); 
   }
 
-  public async unpublish(programId: number): Promise<void> {
-    await this.changeProgramValue(programId, { published: true });
+  public async unpublish(programId: number): Promise<SimpleProgramRO> {
+    await this.changeProgramValue(programId, { published: false });
+    let selectedProgram = await this.findOne(programId);
+    return await this.buildProgramRO(selectedProgram); 
   }
 
   private async changeProgramValue(
@@ -141,5 +144,15 @@ export class ProgramService {
       .set(change)
       .where('id = :id', { id: programId })
       .execute();
+  }
+
+  private buildProgramRO(program: ProgramEntity): SimpleProgramRO {
+    const simpleProgramRO = {
+      id: program.id,
+      title: program.title,
+      published: program.published
+    };
+
+    return simpleProgramRO;
   }
 }
