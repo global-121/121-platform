@@ -8,7 +8,7 @@ import { AUTH_DEBUG } from '../config';
 import { UserService } from './user.service';
 
 @Injectable()
-export class AuthMiddleware implements NestMiddleware {
+export class AuthMiddlewareAW implements NestMiddleware {
   constructor(private readonly userService: UserService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {

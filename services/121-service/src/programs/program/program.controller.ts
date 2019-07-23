@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto';
-import { ProgramsRO, ProgramRO } from './program.interface';
+import { ProgramsRO, ProgramRO, SimpleProgramRO } from './program.interface';
 import { User } from '../../user/user.decorator';
 
 import {
@@ -52,14 +52,14 @@ export class ProgramController {
   }
 
   @ApiOperation({ title: 'Get published programs by country id' })
-  @ApiImplicitQuery({ name: 'countryId', required: true, type: 'integer' })
+  @ApiImplicitParam({ name: 'countryId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Return all published programs by country',
   })
   @Get('country/:countryId')
-  public async findByCountry(@Query() query): Promise<ProgramsRO> {
-    return await this.programService.findByCountry(query.countryId);
+  public async findByCountry(@Param() param): Promise<ProgramsRO> {
+    return await this.programService.findByCountry(param.countryId);
   }
 
   @ApiBearerAuth()
@@ -111,15 +111,15 @@ export class ProgramController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
   @Post('publish/:id')
-  public async publish(@Param() params): Promise<void> {
-    this.programService.publish(params.id);
+  public async publish(@Param() params): Promise<SimpleProgramRO> {
+    return this.programService.publish(params.id);
   }
 
   @ApiBearerAuth()
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
   @Post('unpublish/:id')
-  public async unpublish(@Param() params): Promise<void> {
-    this.programService.unpublish(params.id);
+  public async unpublish(@Param() params): Promise<SimpleProgramRO> {
+    return this.programService.unpublish(params.id);
   }
 }

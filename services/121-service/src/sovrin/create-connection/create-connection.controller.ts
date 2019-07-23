@@ -9,8 +9,8 @@ import {
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { DidInfoDto } from './dto/did-info.dto';
+import { ConnectionEntity } from './connection.entity';
 
-@ApiBearerAuth()
 @ApiUseTags('sovrin')
 @Controller('sovrin/create-connection')
 export class CreateConnectionController {
@@ -29,7 +29,7 @@ export class CreateConnectionController {
   @ApiOperation({ title: 'Create connection' })
   @ApiResponse({ status: 200, description: 'Created connection' })
   @Post()
-  public async create(@Body() didVerMeta: ConnectionReponseDto): Promise<void> {
+  public async create(@Body() didVerMeta: ConnectionReponseDto): Promise<ConnectionEntity> {
     return await this.createConnectionService.create(didVerMeta);
   }
 
@@ -39,4 +39,13 @@ export class CreateConnectionController {
   public async addLedger(@Body() didVerMeta: DidInfoDto): Promise<void> {
     return await this.createConnectionService.addLedger(didVerMeta);
   }
+
+  @ApiBearerAuth()
+  @ApiOperation({ title: 'Get all connections' })
+  @ApiResponse({ status: 200, description: 'Got all connections' })
+  @Get('/all')
+  public async getConnections(): Promise<ConnectionEntity[]> {
+    return await this.createConnectionService.getConnections();
+  }
+
 }

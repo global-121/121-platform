@@ -8,9 +8,10 @@ import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
-import { AuthMiddleware } from '../user/auth.middleware';
+import { AuthMiddlewareAW } from './auth.middlewareAW';
 import { AuthMiddlewareAdmin } from '../user/auth.middlewareAdmin';
 import { ProgramEntity } from '../programs/program/program.entity';
+import { AuthMiddlewarePM } from './auth.middlewarePM';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity, ProgramEntity])],
@@ -24,11 +25,16 @@ export class UserModule implements NestModule {
       .apply(AuthMiddlewareAdmin)
       .forRoutes(
         { path: 'user/:userId', method: RequestMethod.DELETE },
-        { path: 'user/:userId/deactivate', method: RequestMethod.PUT },
-        { path: 'user/:userId/activate', method: RequestMethod.PUT },
       );
     consumer
-      .apply(AuthMiddleware)
+      .apply(AuthMiddlewarePM)
+      .forRoutes(
+        { path: 'user/:userId/deactivate', method: RequestMethod.PUT },
+        { path: 'user/:userId/activate', method: RequestMethod.PUT },
+        { path: 'user/:userId/:programId', method: RequestMethod.PUT },
+      );
+    consumer
+      .apply(AuthMiddlewareAW)
       .forRoutes(
         { path: 'user', method: RequestMethod.GET },
         { path: 'user/change-password', method: RequestMethod.POST },

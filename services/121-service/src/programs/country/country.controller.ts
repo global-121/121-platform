@@ -20,7 +20,7 @@ export class CountryController {
     this.countryService = countryService;
   }
 
-  @ApiOperation({ title: 'Get all criteria' })
+  @ApiOperation({ title: 'Get all countries' })
   @Get()
   public async findAll(): Promise<CountryEntity[]> {
     return await this.countryService.findAll();

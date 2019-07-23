@@ -32,10 +32,14 @@ import { SchemaService } from './sovrin/schema/schema.service';
   ],
   controllers: [
     AppController,
-    CreateConnectionController,
-    CredentialController,
+    // CreateConnectionController,
+    // CredentialController,
   ],
-  providers: [CreateConnectionService, CredentialService, SchemaService],
+  providers: [
+    // CreateConnectionService, 
+    // CredentialService, 
+    SchemaService
+  ],
 })
 export class ApplicationModule {
   public constructor(private readonly connection: Connection) {}
