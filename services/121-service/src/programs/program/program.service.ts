@@ -1,5 +1,5 @@
 import { CustomCriterium } from './custom-criterium.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProgramEntity } from './program.entity';
@@ -115,9 +115,13 @@ export class ProgramService {
   }
 
   public async publish(programId: number): Promise<SimpleProgramRO> {
-    await this.changeProgramValue(programId, { published: true });
-
     const selectedProgram = await this.findOne(programId);
+    if (selectedProgram.published == true) {
+      const errors = { Program: ' already published' };
+      throw new HttpException({ errors }, 401);
+    }
+
+    await this.changeProgramValue(programId, { published: true });
 
     const schemaService = new SchemaService();
 
@@ -129,8 +133,12 @@ export class ProgramService {
   }
 
   public async unpublish(programId: number): Promise<SimpleProgramRO> {
-    await this.changeProgramValue(programId, { published: false });
     let selectedProgram = await this.findOne(programId);
+    if (selectedProgram.published == false) {
+      const errors = { Program: ' already unpublished' };
+      throw new HttpException({ errors }, 401);
+    }
+    await this.changeProgramValue(programId, { published: false });
     return await this.buildProgramRO(selectedProgram); 
   }
 

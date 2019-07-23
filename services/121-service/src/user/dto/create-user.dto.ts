@@ -14,7 +14,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   readonly password: string;
 
-  @ApiModelProperty({ example: 'admin / aidworker' })
+  @ApiModelProperty({ example: 'admin / aidworker / program-manager' })
   readonly role: string;
 
   @ApiModelProperty({ example: 'active' })

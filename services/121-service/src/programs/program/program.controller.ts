@@ -52,14 +52,14 @@ export class ProgramController {
   }
 
   @ApiOperation({ title: 'Get published programs by country id' })
-  @ApiImplicitQuery({ name: 'countryId', required: true, type: 'integer' })
+  @ApiImplicitParam({ name: 'countryId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Return all published programs by country',
   })
   @Get('country/:countryId')
-  public async findByCountry(@Query() query): Promise<ProgramsRO> {
-    return await this.programService.findByCountry(query.countryId);
+  public async findByCountry(@Param() param): Promise<ProgramsRO> {
+    return await this.programService.findByCountry(param.countryId);
   }
 
   @ApiBearerAuth()
