@@ -12,7 +12,7 @@ import { AppointmentEntity } from './appointment.entity';
 import { UserEntity } from '../../user/user.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { UserModule } from '../../user/user.module';
-import { AuthMiddleware } from '../../user/auth.middleware';
+import { AuthMiddlewareAW } from '../../user/auth.middlewareAW';
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ export class AppointmentModule implements NestModule {
     //   .apply(AuthMiddlewareAdmin)
     //   .forRoutes();
     consumer
-      .apply(AuthMiddleware)
+      .apply(AuthMiddlewareAW)
       .forRoutes({ path: 'availability', method: RequestMethod.POST });
   }
 }

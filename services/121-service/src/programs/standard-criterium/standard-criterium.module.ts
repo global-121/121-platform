@@ -10,7 +10,7 @@ import { CountryModule } from '../country/country.module';
 import { StandardCriteriumService } from './standard-criterium.service';
 import { StandardCriteriumEntity } from './standard-criterium.entity';
 import { StandardCriteriumController } from './standard-criterium.controller';
-import { AuthMiddleware } from '../../user/auth.middleware';
+import { AuthMiddlewareAW } from '../../user/auth.middlewareAW';
 import { AuthMiddlewareAdmin } from '../../user/auth.middlewareAdmin';
 import { UserEntity } from '../../user/user.entity';
 import { CountryEntity } from '../country/country.entity';
@@ -35,7 +35,7 @@ export class StandardCriteriumModule implements NestModule {
       .apply(AuthMiddlewareAdmin)
       .forRoutes({ path: 'criteriums', method: RequestMethod.POST });
     consumer
-      .apply(AuthMiddleware)
+      .apply(AuthMiddlewareAW)
       .forRoutes(
         { path: 'standard-criteriums', method: RequestMethod.GET },
         { path: 'standard-criteriums/:countryId', method: RequestMethod.GET },
