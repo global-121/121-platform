@@ -1,0 +1,57 @@
+.dialogue-turn {
+  display: flex;
+  padding: 0.5em;
+}
+
+.dialogue-turn--actor {
+  order: 1;
+
+  max-width: 25%;
+}
+
+.dialogue-turn--content {
+  position: relative;
+  order: 2;
+
+  width: 75%;
+  max-width: 75%;
+}
+.dialogue-turn--speech-arrow {
+  display: block;
+  position: absolute;
+  top: 13px; // margin-around ion-card + border-radius
+
+  border-width: 0.75em 1em;
+  border-style: solid;
+  border-color: transparent;
+}
+
+.dialogue-turn.is-other {
+  .dialogue-turn--speech-arrow {
+    left: -4px; // margin-around ion-card
+    border-right-color: var(--ion-color-dark);
+  }
+}
+
+.dialogue-turn.is-self {
+  .dialogue-turn--actor {
+    order: 2;
+  }
+  .dialogue-turn--content {
+    order: 1;
+  }
+  .dialogue-turn--speech-arrow {
+    right: -4px; // margin-around ion-card
+    border-left-color: var(--ion-color-light);
+  }
+}
+
+.dialogue-turn.is-connected {
+  padding-top: 0;
+  margin-top: -1em; // Overlap padding-bottom of preceding dialogue-turn
+
+  .dialogue-turn--actor,
+  .dialogue-turn--speech-arrow {
+    visibility: hidden;
+  }
+}
