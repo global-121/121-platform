@@ -8,7 +8,10 @@ export class ConnectionEntity {
   @Column()
   public did: string;
 
-  @Column('numeric', { array: true, nullable: true })
-  public programs: number[];
+  @Column('numeric', { array: true, default: ()=>'array[]::integer[]', nullable: true })
+  public programsEnrolled: number[];
+
+  @Column('numeric', { array: true, default: ()=>'array[]::integer[]', nullable: true })
+  public programsIncluded: number[];
 
 }

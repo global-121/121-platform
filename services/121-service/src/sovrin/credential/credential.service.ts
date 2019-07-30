@@ -10,8 +10,6 @@ import { CredentialEntity } from './credential.entity';
 
 @Injectable()
 export class CredentialService {
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(CredentialEntity)
   private readonly credentialRepository: Repository<CredentialEntity>;
   
@@ -42,6 +40,7 @@ export class CredentialService {
       let credential = new CredentialEntity;
       credential.did = did;
       credential.programId = programId;
+      credential.attributeId = answer.attributeId;
       credential.attribute = answer.attribute;
       credential.answer = answer.answer;
       const newCredential = await this.credentialRepository.save(credential);
@@ -49,6 +48,12 @@ export class CredentialService {
     }
     return credentials;   
 
+  }
+
+  // AW: get answers to attributes for a given PA (identified first through did/QR)
+  public async getPrefilledAnswers(did: string): Promise<CredentialEntity[]> {
+    let credentials = await this.credentialRepository.find({where: {did: did}});
+    return credentials;   
   }
 
   // Used by PA

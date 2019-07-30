@@ -1,15 +1,17 @@
 import { CreateConnectionService } from './create-connection.service';
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiUseTags,
   ApiOperation,
   ApiResponse,
+  ApiImplicitParam,
 } from '@nestjs/swagger';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { DidInfoDto } from './dto/did-info.dto';
 import { ConnectionEntity } from './connection.entity';
+import { PasswordDto } from './dto/password.dto';
 
 @ApiUseTags('sovrin')
 @Controller('sovrin/create-connection')
@@ -46,6 +48,14 @@ export class CreateConnectionController {
   @Get('/all')
   public async getConnections(): Promise<ConnectionEntity[]> {
     return await this.createConnectionService.getConnections();
+  }
+
+  //Server-side
+  @ApiOperation({ title: 'Initiate connection server-side' })
+  @ApiResponse({ status: 200, description: 'Sent connection request' })
+  @Post('/initiate/serverside')
+  public async initiateServerside(@Param() params, @Body() passwordData: PasswordDto): Promise<any> {
+    return await this.createConnectionService.initiateServerside(passwordData.password);
   }
 
 }
