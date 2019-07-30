@@ -4,6 +4,7 @@ import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateConnectionController } from './create-connection.controller';
 import { CreateConnectionService } from './create-connection.service';
+import { ConnectionEntity } from './connection.entity';
 
 const newConnectionRequest = {
   did: 'sample:did:s23kjsg',
@@ -16,6 +17,13 @@ const newConnectionResponse = {
   nonce: '123456789',
   meta: 'meta:sample',
 };
+
+const newConnection = {
+  id: 1,
+  did: 'xxx',
+  programsEnrolled: [],
+  programsIncluded: [],
+}
 
 const newDidInfo = {
   message: 'encrypted:example',
@@ -83,7 +91,7 @@ describe('CreateConnection Controller', (): void => {
     > => {
       const spy = jest
         .spyOn(createConnectionService, 'create')
-        .mockImplementation((): Promise<void> => Promise.resolve());
+        .mockImplementation((): Promise<ConnectionEntity> => Promise.resolve(newConnection));
 
       await createConnectionController.create(newConnectionResponse);
       expect(spy).toHaveBeenCalled();

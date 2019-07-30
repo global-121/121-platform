@@ -16,6 +16,9 @@ export class CredentialEntity {
   public programId: number;
 
   @Column()
+  public attributeId: number;
+
+  @Column()
   public attribute: string;
 
   @Column()
