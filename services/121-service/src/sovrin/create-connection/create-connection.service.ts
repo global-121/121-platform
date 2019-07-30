@@ -28,8 +28,9 @@ export class CreateConnectionService {
   public async create(connectionResponse: ConnectionReponseDto): Promise<ConnectionEntity> {
     ` assert nonce(connectionResponse.nonce ==== stored.nonce)
       await tyknid.createConnection(connectionResponse.did, connectionResponse.verkey, connectionResponse.meta)`;
+    console.log(connectionResponse);
     let connections = await this.connectionRepository.find({where: {did: connectionResponse['did']}});
-    if (connections) {
+    if (connections.length > 0) {
       const errors = 'There is already a secure connection with this PA.';
       throw new HttpException({ errors }, 401);
     }
@@ -70,6 +71,7 @@ export class CreateConnectionService {
     const sovrinSetupService = new SovrinSetupService();
     let poolHandle = await sovrinSetupService.connectPool();
     let did_for_ho = await sovrinSetupService.createWallet(poolHandle, connectionRequest, password);
+    console.log(did_for_ho);
     let connectionResponse: ConnectionReponseDto;
     connectionResponse = {
       did: did_for_ho['did_for_ho'],

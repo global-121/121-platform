@@ -28,7 +28,7 @@ export class SovrinSetupService {
     `;
 
     const pa = {
-      did_for_ho: 'xxx',
+      did_for_ho: 'did:sov:'+String(Math.floor(Math.random()*10000000000000)),
       key_for_ho: 'yyy'
     };
     // const connection_response = {
