@@ -114,16 +114,27 @@ tyknid.createCredentialDefination = async function createCredentialDefination(sc
     if (!org.wallet.handle){
         throw Error("Wallet is not open or not accessible.");
     }
-    pa_identity = {
-        "did": pa_did,
-        "verkey": pa_verkey
-     }
-    
     var [credDefId, credDef] = await indy.issuerCreateAndStoreCredentialDef(org.wallet.handle, org.DID, schema_json, 'TAG', 'CL', { support_revocation: true })
     credDef_req = await indy.buildCredDefRequest(org.DID, credDef)
     pool_response = await indy.signAndSubmitRequest(pool.handle, org.wallet.handle, org.DID, credDef_req)
     console.log(pool_response)
     return pool_response
+}
+tyknid.createCredentialOffer = async function createCredentialOffer(credDefId) {
+    if (!org.wallet.handle){
+        throw Error("Wallet is not open or not accessible.");
+    }
+    
+    var credentialOffer = await indy.issuerCreateCredentialOffer(wh, credDefId)
+    return credentialOffer
+}
+tyknid.createCredential = async function createCredential(credentialOffer,credentialRequest,credentialJson) {
+    if (!org.wallet.handle){
+        throw Error("Wallet is not open or not accessible.");
+    }
+    
+    var [cred, revId, revDelta] = await indy.issuerCreateCredential(wh, credentialOffer, credentialRequest, credentialJson, "","")
+    return cred
 }
 tyknid.showConnections = async function showConnections() {
     if (!org.wallet.handle){
