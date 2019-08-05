@@ -1,7 +1,7 @@
 var indy = require('indy-sdk')
 var fs = require('fs')
 var untildify = require('untildify');
-var helpers = require(`helpers`)
+// var helpers = require(`helpers`)
 
 var tyknid = {}
 var org = {}
