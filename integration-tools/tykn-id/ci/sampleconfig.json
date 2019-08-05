@@ -4,6 +4,7 @@
     "walletPath":"~/.indy_client/wallet",
     "orgSeed" : "ny9mAdxr4WCrF79Mv2MYorOF1nVkubh4",
     "orgDID" : "sdfgdfgregdfsg",
-    "orgVerKey" : "ny9mAdxr4WCrF79Mv2sdfgdsfgs"
+    "orgVerKey" : "ny9mAdxr4WCrF79Mv2sdfgdsfgs",
+    "poolconfig":""
     
 }
