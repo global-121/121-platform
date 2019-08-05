@@ -70,11 +70,11 @@ Create the Docker image from the Dockerfile in this folder through:
 
 Start the app Docker container through (NOTE: the \${PWD} code for current directory may not translate to all OS's):
 
-    docker run --name=121-programs-service -v ${PWD}:/home/121 -p 3000:3000 -it --network 121network 121-node
+    docker run --name=121-service -v ${PWD}:/home/121 -p 3000:3000 -it --network 121network 121-node
 
 If you've already created the container before and just want to start again:
 
-    docker start -i 121-programs-service
+    docker start -i 121-service
 
 The Docker container automatically runs `npm start` (defined in Dockerfile)
 Possibly rebuild/rerun by changing this to:
@@ -100,6 +100,7 @@ Access Swagger API via `http://localhost:3000/docs`
 - This will now give you access to all hitherto forbidden API-calls.
 - NOTE: for ease of development, if not logged in, it will take the default-user. So you do need to create this default user with email test@test.nl, but the Authorize part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of Swagger, i.e. after each code change.
 
+
 OPTIONAL: To seed the database with user that run the following command:
 
 ```
@@ -107,6 +108,7 @@ docker exec -i 121-service  npx ts-node src/scripts seed
 ```
 
 This user can be customized in secrets.ts
+
 
 #### Admin vs Fieldworker
 

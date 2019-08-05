@@ -6,5 +6,8 @@ export class AppointmentEntity {
   public id: number;
 
   @Column()
+  public did: string;
+
+  @Column()
   public timeslotId: number;
 }

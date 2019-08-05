@@ -15,6 +15,7 @@ import { CreateConnectionModule } from './sovrin/create-connection/create-connec
 import { CredentialController } from './sovrin/credential/credential.controller';
 import { CredentialService } from './sovrin/credential/credential.service';
 import { CredentialModule } from './sovrin/credential/credential.module';
+import { SchemaService } from './sovrin/schema/schema.service';
 
 @Module({
   imports: [
@@ -31,10 +32,14 @@ import { CredentialModule } from './sovrin/credential/credential.module';
   ],
   controllers: [
     AppController,
-    CreateConnectionController,
-    CredentialController,
+    // CreateConnectionController,
+    // CredentialController,
   ],
-  providers: [CreateConnectionService, CredentialService],
+  providers: [
+    // CreateConnectionService, 
+    // CredentialService, 
+    SchemaService
+  ],
 })
 export class ApplicationModule {
   public constructor(private readonly connection: Connection) {}

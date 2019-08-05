@@ -1,12 +1,13 @@
 import { CustomCriterium } from './custom-criterium.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 
-import { ProgramRO, ProgramsRO } from './program.interface';
+import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
+import { SchemaService } from '../../sovrin/schema/schema.service';
 
 @Injectable()
 export class ProgramService {
@@ -54,6 +55,18 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
+  public async findByCountry(query): Promise<ProgramsRO> {
+    const qb = await getRepository(ProgramEntity)
+      .createQueryBuilder('program')
+      .leftJoinAndSelect('program.customCriteria', 'customCriterium')
+      .where('"countryId" = :countryId', { countryId: query })
+      .andWhere('published = true');
+
+    const programsCount = await qb.getCount();
+    const programs = await qb.getMany();
+    return { programs, programsCount };
+  }
+
   public async create(
     userId: number,
     programData: CreateProgramDto,
@@ -87,15 +100,7 @@ export class ProgramService {
     }
 
     const newProgram = await this.programRepository.save(program);
-
-    await this.createSovrinSchema(newProgram);
     return newProgram;
-  }
-
-  private async createSovrinSchema(newProgram): Promise<boolean> {
-    // place holder functiongit to create the Sovrin schema on the blokchain
-    newProgram;
-    return true;
   }
 
   public async update(id: number, programData: any): Promise<ProgramRO> {
@@ -107,5 +112,55 @@ export class ProgramService {
 
   public async delete(programId: number): Promise<DeleteResult> {
     return await this.programRepository.delete(programId);
+  }
+
+  public async publish(programId: number): Promise<SimpleProgramRO> {
+    const selectedProgram = await this.findOne(programId);
+    if (selectedProgram.published == true) {
+      const errors = { Program: ' already published' };
+      throw new HttpException({ errors }, 401);
+    }
+
+    await this.changeProgramValue(programId, { published: true });
+
+    const schemaService = new SchemaService();
+
+    const result = await schemaService.create(selectedProgram);
+    await this.changeProgramValue(programId, { schemaId: result.schemaId });
+    await this.changeProgramValue(programId, { credDefId: result.credDefId });
+    
+    return await this.buildProgramRO(selectedProgram); 
+  }
+
+  public async unpublish(programId: number): Promise<SimpleProgramRO> {
+    let selectedProgram = await this.findOne(programId);
+    if (selectedProgram.published == false) {
+      const errors = { Program: ' already unpublished' };
+      throw new HttpException({ errors }, 401);
+    }
+    await this.changeProgramValue(programId, { published: false });
+    return await this.buildProgramRO(selectedProgram); 
+  }
+
+  private async changeProgramValue(
+    programId: number,
+    change: object,
+  ): Promise<void> {
+    await getRepository(ProgramEntity)
+      .createQueryBuilder()
+      .update(ProgramEntity)
+      .set(change)
+      .where('id = :id', { id: programId })
+      .execute();
+  }
+
+  private buildProgramRO(program: ProgramEntity): SimpleProgramRO {
+    const simpleProgramRO = {
+      id: program.id,
+      title: program.title,
+      published: program.published
+    };
+
+    return simpleProgramRO;
   }
 }

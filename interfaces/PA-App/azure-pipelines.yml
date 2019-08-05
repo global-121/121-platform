@@ -5,7 +5,10 @@ trigger:
   branches:
     include:
     - master
-    - greenkeeper/*
+    - greenkeeper/Interfaces/*
+  paths:
+    include:
+    - 'interfaces/PA-App/*'
 pr:
   branches:
     include:
