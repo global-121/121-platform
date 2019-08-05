@@ -8,15 +8,14 @@ import { EnrollmentController } from './enrollment.controller';
 import { EnrollmentService } from './enrollment.service';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { AuthMiddleware } from '../user/auth.middleware';
-// import { AuthMiddlewareAdmin } from '../user/auth.middlewareAdmin';
 import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { CustomCriterium } from '../programs/program/custom-criterium.entity';
+import { ConnectionEntity } from '../sovrin/create-connection/connection.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProgramEntity, CustomCriterium, UserEntity]),
+    TypeOrmModule.forFeature([ProgramEntity, CustomCriterium, UserEntity, ConnectionEntity]),
     UserModule,
   ],
   controllers: [EnrollmentController],

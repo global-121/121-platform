@@ -14,7 +14,8 @@ export class CountryService {
   public constructor() {}
 
   public async findAll(): Promise<CountryEntity[]> {
-    return await this.countryRepository.find();
+    let countries = await this.countryRepository.find();
+    return countries;
   }
 
   public async create(countryData: CreateCountryDto): Promise<CountryEntity> {

@@ -3,7 +3,7 @@ import { Test } from '@nestjs/testing';
 import { ProgramController } from './program.controller';
 import { ProgramService } from './program.service';
 import { ProgramEntity } from './program.entity';
-import { ProgramRO, ProgramsRO } from './program.interface';
+import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 
 const newProgramParameters = {
   location: 'Lilongwe',
@@ -23,6 +23,13 @@ const newProgramParameters = {
   customCriteria: [],
   minimumScore: 25,
 };
+
+const newSimpleProgramRO = {
+  id: 1,
+  title: 'title',
+  published: true,
+}
+
 class ProgramServiceMock {
   public async findOne(query): Promise<ProgramEntity> {
     query;
@@ -44,6 +51,12 @@ class ProgramServiceMock {
     id;
     programData;
     return { program: new ProgramEntity() };
+  }
+  public async publish(id: number): Promise<void> {
+    id;
+  }
+  public async unpublish(id: number): Promise<void> {
+    id;
   }
 }
 
@@ -146,6 +159,26 @@ describe('ProgramController', (): void => {
       );
       expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(programRO);
+    });
+  });
+  describe('publish', (): void => {
+    it('should publish a program', async (): Promise<void> => {
+      const spy = jest
+        .spyOn(programService, 'publish')
+        .mockImplementation((): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO));
+
+      await programController.publish(1);
+      expect(spy).toHaveBeenCalled();
+    });
+  });
+  describe('unpublish', (): void => {
+    it('should publish a program', async (): Promise<void> => {
+      const spy = jest
+        .spyOn(programService, 'unpublish')
+        .mockImplementation((): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO));
+
+      await programController.unpublish(1);
+      expect(spy).toHaveBeenCalled();
     });
   });
 });

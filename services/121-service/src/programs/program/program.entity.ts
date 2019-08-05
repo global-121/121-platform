@@ -59,6 +59,15 @@ export class ProgramEntity {
   @Column()
   public countryId: number;
 
+  @Column({ default: false })
+  public published: boolean;
+
+  @Column({ default: null })
+  public schemaId: string;
+
+  @Column({ default: null })
+  public credDefId: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created: Date;
 

@@ -29,6 +29,11 @@ export class AuthMiddlewareAdmin implements NestMiddleware {
       if (user.user.role == 'admin') {
         req.user = user.user;
         next();
+      } else if (user.user.role == 'program-manager') {
+        throw new HttpException(
+          'Not authorized for Program-managers.',
+          HttpStatus.UNAUTHORIZED,
+        );
       } else if (user.user.role == 'aidworker') {
         throw new HttpException(
           'Not authorized for Aidworkers.',
