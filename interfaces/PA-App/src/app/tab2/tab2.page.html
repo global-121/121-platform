@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      Tab Two
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="medium" class="ion-padding-vertical">
+
+  <dialogue-turn>
+    Introduction.
+  </dialogue-turn>
+  <dialogue-turn isConnected="true">
+    Question?
+  </dialogue-turn>
+
+  <dialogue-turn actor="self">
+    My answer:
+    <ion-radio-group>
+      <ion-item color="light">
+        <ion-label for="test1">Option 1</ion-label>
+        <ion-radio id="test1"></ion-radio>
+      </ion-item>
+      <ion-item color="light">
+        <ion-label for="test1">Option 2</ion-label>
+        <ion-radio id="test1"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+
+  </dialogue-turn>
+
+
+  <dialogue-turn actor="ho">
+    👋
+  </dialogue-turn>
+
+</ion-content>

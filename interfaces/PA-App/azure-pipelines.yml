@@ -1,0 +1,38 @@
+# See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema
+# See: https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  branches:
+    include:
+    - master
+    - greenkeeper/Interfaces/*
+  paths:
+    include:
+    - 'interfaces/PA-App/*'
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - 'interfaces/PA-App/*'
+
+pool:
+  vmImage: 'ubuntu-16.04'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+
+- script: npm ci
+  displayName: Install
+  workingDirectory: interfaces/PA-App/
+
+- script: npm run lint
+  displayName: Linting
+  workingDirectory: interfaces/PA-App/
+
+- script: npm test
+  displayName: Tests
+  workingDirectory: interfaces/PA-App/

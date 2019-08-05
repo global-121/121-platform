@@ -2,6 +2,7 @@
   "groups": {
     "Interfaces": {
       "packages": [
+        "interfaces/PA-App/package.json",
         "interfaces/HO-Portal/package.json"
       ],
       "ignore": [
@@ -21,12 +22,12 @@
         "@schematics/angular",
         "@schematics/schematics",
         "@schematics/update",
-        "@ngtools/webpack"        
+        "@ngtools/webpack"
       ]
     },
     "Services": {
       "packages": [
-        "services/programs-service/package.json"
+        "services/121-service/package.json"
       ]
     }
   }

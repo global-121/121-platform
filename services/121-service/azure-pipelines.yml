@@ -1,0 +1,38 @@
+# See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema
+# See: https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  branches:
+    include:
+      - master
+      - greenkeeper/Services/*
+  paths:
+    include:
+      - 'services/121-service/*'
+pr:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - 'services/121-service/*'
+
+pool:
+  vmImage: 'ubuntu-16.04'
+
+steps:
+  - task: CmdLine@2
+    inputs:
+      script: cp services/121-service/src/secrets.ts.example services/121-service/src/secrets.ts
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.x'
+
+  - script: npm ci
+    displayName: Install
+    workingDirectory: services/121-service/
+
+  - script: npm test
+    displayName: Tests
+    workingDirectory: services/121-service/
