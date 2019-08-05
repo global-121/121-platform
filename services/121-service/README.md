@@ -100,8 +100,8 @@ Access Swagger API via `http://localhost:3000/docs`
 - This will now give you access to all hitherto forbidden API-calls.
 - NOTE: for ease of development, if not logged in, it will take the default-user. So you do need to create this default user with email test@test.nl, but the Authorize part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of Swagger, i.e. after each code change.
 
+OPTIONAL: To seed the database with user run the following command:
 
-OPTIONAL: To seed the database with user that run the following command:
 
 ```
 docker exec -i 121-service  npx ts-node src/scripts seed
