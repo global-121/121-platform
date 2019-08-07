@@ -1,7 +1,7 @@
-import { Get, Param, Controller, Post } from '@nestjs/common';
+import { Get, Param, Controller, Post, Body } from '@nestjs/common';
 import { ApiUseTags, ApiOperation, ApiImplicitParam } from '@nestjs/swagger';
 import { ProofService } from './proof.service';
-import { ConnectionEntity } from '../create-connection/connection.entity';
+import { InculdeMeDto } from '../../programs/program/dto/include-me.dto';
 
 @ApiUseTags('sovrin')
 @Controller('sovrin')
@@ -21,14 +21,14 @@ export class ProofController {
   }
 
   @ApiOperation({ title: 'Post proof' })
-  @ApiImplicitParam({
-    name: 'programId',
-    required: true,
-    type: 'number',
-  })
-  @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
-  @Post('proof/:programId/:did')
-  public async postProof(@Param() params): Promise<ConnectionEntity> {
-    return await this.proofService.postProof(params.programId, params.did);
+  @Post('proof')
+  public async validateProof(
+    @Body() inclusionData: InculdeMeDto,
+  ): Promise<object> {
+    return await this.proofService.validateProof(
+      inclusionData.programId,
+      inclusionData.did,
+      inclusionData.encryptedProof,
+    );
   }
 }

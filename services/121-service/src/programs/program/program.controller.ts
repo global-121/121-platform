@@ -23,6 +23,8 @@ import {
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
 import { DeleteResult } from 'typeorm';
+import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { InculdeMeDto } from './dto/include-me.dto';
 
 @ApiUseTags('programs')
 @Controller('programs')
@@ -131,6 +133,18 @@ export class ProgramController {
     return await this.programService.getInclusionStatus(
       params.programId,
       params.did,
+    );
+  }
+
+  @ApiOperation({ title: 'Post proof' })
+  @Post('includeMe')
+  public async includeMe(
+    @Body() inclusionData: InculdeMeDto,
+  ): Promise<ConnectionEntity> {
+    return await this.programService.includeMe(
+      inclusionData.programId,
+      inclusionData.did,
+      inclusionData.encryptedProof,
     );
   }
 }

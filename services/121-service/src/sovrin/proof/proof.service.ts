@@ -26,7 +26,7 @@ export class ProofService {
 
     ` get cref_def_id`;
 
-    let requested_attributes = [];
+    let requestedAttributes = [];
     for (let i = 0; i < criteriums.length; i++) {
       let attribute = {};
       attribute['attr' + (i + 1) + '_referent'] = {
@@ -37,71 +37,29 @@ export class ProofService {
           },
         ],
       };
-      requested_attributes.push(attribute);
+      requestedAttributes.push(attribute);
     }
 
-    let proof_request = {
+    let proofRequest = {
       nonce: '1432422343242122312411212',
       name: 'Inclusion-request',
       version: '0.1',
-      requested_attributes: requested_attributes,
+      requested_attributes: requestedAttributes,
       requested_predicates: {},
     };
 
-    return proof_request;
+    return proofRequest;
   }
 
-  public async postProof(
+  public async validateProof(
     programId: number,
     did: string,
-  ): Promise<ConnectionEntity> {
-    `
-    The proof itself has to be added to this function as input parameter.
-    Verifier/HO gets schema_id/cred_def_id from ledger and validates proof.
-    Inclusion algorithm is run. (Allocation algorithm as well?)
-    Inclusion result is added to db (connectionRepository)?
-    When done (time-loop): run getInclusionStatus from PA.
-    `;
-
-    let connection = await this.connectionRepository.findOne({
-      where: { did: did },
-    });
-    if (!connection) {
-      const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, 400);
-    }
-
-    if (connection.programsEnrolled.includes(+programId)) {
-      const errors = 'Already enrolled for program';
-      throw new HttpException({ errors }, 400);
-    }
-
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, 400);
-    }
-
-    const proof = proofExample;
-    const programService = new ProgramService();
-    let inclusionResult = await programService.calculateInclusion(
-      programId,
-      proof,
-      did,
-    );
-
-    if (connection.programsEnrolled.indexOf(programId) <= -1) {
-      connection.programsEnrolled.push(programId);
-      if (inclusionResult) {
-        connection.programsIncluded.push(programId);
-      } else if (!inclusionResult) {
-        connection.programsExcluded.push(programId);
-      }
-    } else {
-      const errors = 'PA already enrolled earlier for this program.';
-      throw new HttpException({ errors }, 400);
-    }
-    const updatedConnection = await this.connectionRepository.save(connection);
-    return updatedConnection;
+    encryptedProof: string,
+  ): Promise<object> {
+    // tyknid.checkProof(encryptedProof);
+    programId;
+    did;
+    encryptedProof;
+    return proofExample;
   }
 }
