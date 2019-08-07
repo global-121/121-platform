@@ -18,10 +18,10 @@
     },
     "inclusionCalculationType": "standard",
     "customCriteria": [{
-            "criterium": "Age",
+            "criterium": "nr_of_children",
             "question": {
-                "english": "What is your age?",
-                "nyanja": "Zaka zanu ndi zingati?"
+                "english": "How many children do you have?",
+                "nyanja": "Muli ndi ana angati?"
             },
             "answerType": "numeric",
             "criteriumType": "standard",
@@ -33,7 +33,7 @@
             }
         },
         {
-            "criterium": "RoofType",
+            "criterium": "roof_type",
             "question": {
                 "english": "What type is your roof?",
                 "nyanja": "Denga lanu ndi lotani?"

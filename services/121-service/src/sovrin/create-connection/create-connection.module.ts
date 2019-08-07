@@ -12,15 +12,14 @@ import { AuthMiddlewareAdmin } from '../../user/auth.middlewareAdmin';
 import { UserModule } from '../../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ConnectionEntity]),UserModule
-  ],
+  imports: [TypeOrmModule.forFeature([ConnectionEntity]), UserModule],
   providers: [CreateConnectionService],
   controllers: [CreateConnectionController],
 })
 export class CreateConnectionModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AuthMiddlewareAdmin).forRoutes(
-      { path: 'create-connection/all', method: RequestMethod.POST}
-    );
+    consumer
+      .apply(AuthMiddlewareAdmin)
+      .forRoutes({ path: 'create-connection/all', method: RequestMethod.POST });
   }
 }

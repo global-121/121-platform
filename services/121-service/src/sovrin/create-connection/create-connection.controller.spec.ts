@@ -23,7 +23,8 @@ const newConnection = {
   did: 'xxx',
   programsEnrolled: [],
   programsIncluded: [],
-}
+  programsExcluded: [],
+};
 
 const newDidInfo = {
   message: 'encrypted:example',
