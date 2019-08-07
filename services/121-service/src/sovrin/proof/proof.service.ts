@@ -68,18 +68,18 @@ export class ProofService {
     });
     if (!connection) {
       const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, 400);
     }
 
     if (connection.programsEnrolled.includes(+programId)) {
       const errors = 'Already enrolled for program';
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, 400);
     }
 
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, 400);
     }
 
     const proof = proofExample;
@@ -99,11 +99,9 @@ export class ProofService {
       }
     } else {
       const errors = 'PA already enrolled earlier for this program.';
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, 400);
     }
     const updatedConnection = await this.connectionRepository.save(connection);
-
-    // Immediately run getInclusionStatus, when ready (with time-loop
     return updatedConnection;
   }
 }

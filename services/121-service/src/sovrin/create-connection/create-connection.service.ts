@@ -70,7 +70,6 @@ export class CreateConnectionService {
     const sovrinSetupService = new SovrinSetupService();
     let poolHandle = await sovrinSetupService.connectPool();
     let did_for_ho = await sovrinSetupService.createWallet(poolHandle, connectionRequest, password);
-    console.log(did_for_ho);
     let connectionResponse: ConnectionReponseDto;
     connectionResponse = {
       did: did_for_ho['did_for_ho'],

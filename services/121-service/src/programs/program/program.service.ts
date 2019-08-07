@@ -167,6 +167,7 @@ export class ProgramService {
 
     return simpleProgramRO;
   }
+
   public async getInclusionStatus(
     programId: number,
     did: string,
@@ -176,12 +177,12 @@ export class ProgramService {
     });
     if (!connection) {
       const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, 400);
     }
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, 400);
     }
 
     let inclusionStatus: number;
@@ -195,7 +196,7 @@ export class ProgramService {
       inclusionStatus = 0;
     } else {
       const errors = 'PA not enrolled in this program yet.';
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, 400);
     }
     return inclusionStatus;
   }
