@@ -1,3 +1,4 @@
+import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +12,8 @@ import { SchemaService } from '../../sovrin/schema/schema.service';
 
 @Injectable()
 export class ProgramService {
+  @InjectRepository(ConnectionEntity)
+  private readonly connectionRepository: Repository<ConnectionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(UserEntity)
@@ -128,8 +131,8 @@ export class ProgramService {
     const result = await schemaService.create(selectedProgram);
     await this.changeProgramValue(programId, { schemaId: result.schemaId });
     await this.changeProgramValue(programId, { credDefId: result.credDefId });
-    
-    return await this.buildProgramRO(selectedProgram); 
+
+    return await this.buildProgramRO(selectedProgram);
   }
 
   public async unpublish(programId: number): Promise<SimpleProgramRO> {
@@ -139,7 +142,7 @@ export class ProgramService {
       throw new HttpException({ errors }, 401);
     }
     await this.changeProgramValue(programId, { published: false });
-    return await this.buildProgramRO(selectedProgram); 
+    return await this.buildProgramRO(selectedProgram);
   }
 
   private async changeProgramValue(
@@ -158,9 +161,41 @@ export class ProgramService {
     const simpleProgramRO = {
       id: program.id,
       title: program.title,
-      published: program.published
+      published: program.published,
     };
 
     return simpleProgramRO;
+  }
+  public async getInclusionStatus(
+    programId: number,
+    did: string,
+  ): Promise<any> {
+    let connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+    if (!connection) {
+      const errors = 'No connection found for PA.';
+      throw new HttpException({ errors }, 401);
+    }
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 401);
+    }
+
+    let inclusionStatus: number;
+    if (
+      connection.programsIncluded.indexOf(parseInt(String(programId), 10)) > -1
+    ) {
+      inclusionStatus = 1;
+    } else if (
+      connection.programsEnrolled.indexOf(parseInt(String(programId), 10)) > -1
+    ) {
+      inclusionStatus = 0;
+    } else {
+      const errors = 'PA not enrolled in this program yet.';
+      throw new HttpException({ errors }, 401);
+    }
+    return inclusionStatus;
   }
 }
