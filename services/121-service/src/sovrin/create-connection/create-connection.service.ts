@@ -13,7 +13,7 @@ export class CreateConnectionService {
   private readonly connectionRepository: Repository<ConnectionEntity>;
 
   public constructor() {}
-  
+
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
     // tyknid.getConnectionRequest(connectionResponse.did, connectionResponse.verkey, connectionResponse.meta)`;
@@ -28,7 +28,6 @@ export class CreateConnectionService {
   public async create(connectionResponse: ConnectionReponseDto): Promise<ConnectionEntity> {
     ` assert nonce(connectionResponse.nonce ==== stored.nonce)
       await tyknid.createConnection(connectionResponse.did, connectionResponse.verkey, connectionResponse.meta)`;
-    console.log(connectionResponse);
     let connections = await this.connectionRepository.find({where: {did: connectionResponse['did']}});
     if (connections.length > 0) {
       const errors = 'There is already a secure connection with this PA.';
@@ -52,7 +51,7 @@ export class CreateConnectionService {
     return connections;
   }
 
-  
+
   //This is for Server-side solution
   public async initiateServerside(password: string): Promise<any> {
     `

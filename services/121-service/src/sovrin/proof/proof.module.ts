@@ -12,6 +12,7 @@ import { CustomCriterium } from '../../programs/program/custom-criterium.entity'
 import { UserEntity } from '../../user/user.entity';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { UserModule } from '../../user/user.module';
+import { ProgramModule } from '../../programs/program/program.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from '../../user/user.module';
       ConnectionEntity,
     ]),
     UserModule,
+    ProgramModule,
   ],
   controllers: [ProofController],
   providers: [ProofService],

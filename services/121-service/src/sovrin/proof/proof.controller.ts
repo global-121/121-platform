@@ -3,8 +3,8 @@ import { ApiUseTags, ApiOperation, ApiImplicitParam } from '@nestjs/swagger';
 import { ProofService } from './proof.service';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 
-@ApiUseTags('proof')
-@Controller('proof')
+@ApiUseTags('sovrin')
+@Controller('sovrin')
 export class ProofController {
   private readonly proofService: ProofService;
   public constructor(proofService: ProofService) {
@@ -13,7 +13,7 @@ export class ProofController {
 
   @ApiOperation({ title: 'Get proof request' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
-  @Get('proofRequest/:programId')
+  @Get('proof/proofRequest/:programId')
   public async getProofRequest(
     @Param('programId') programId: number,
   ): Promise<any> {
@@ -21,7 +21,11 @@ export class ProofController {
   }
 
   @ApiOperation({ title: 'Post proof' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({
+    name: 'programId',
+    required: true,
+    type: 'number',
+  })
   @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
   @Post('proof/:programId/:did')
   public async postProof(@Param() params): Promise<ConnectionEntity> {

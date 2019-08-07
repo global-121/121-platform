@@ -1,10 +1,11 @@
+import { ProgramService } from './../../programs/program/program.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { Injectable, HttpException } from '@nestjs/common';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { CustomCriterium } from '../../programs/program/custom-criterium.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
-
+import proofExample from '../../../examples/proof.json';
 
 @Injectable()
 export class ProofService {
@@ -62,8 +63,6 @@ export class ProofService {
     When done (time-loop): run getInclusionStatus from PA.
     `;
 
-    let inclusionResult = 1;
-
     let connection = await this.connectionRepository.findOne({
       where: { did: did },
     });
@@ -71,16 +70,32 @@ export class ProofService {
       const errors = 'No connection found for PA.';
       throw new HttpException({ errors }, 401);
     }
+
+    if (connection.programsEnrolled.includes(+programId)) {
+      const errors = 'Already enrolled for program';
+      throw new HttpException({ errors }, 401);
+    }
+
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, 401);
     }
 
+    const proof = proofExample;
+    const programService = new ProgramService();
+    let inclusionResult = await programService.calculateInclusion(
+      programId,
+      proof,
+      did,
+    );
+
     if (connection.programsEnrolled.indexOf(programId) <= -1) {
       connection.programsEnrolled.push(programId);
-      if (inclusionResult == 1) {
+      if (inclusionResult) {
         connection.programsIncluded.push(programId);
+      } else if (!inclusionResult) {
+        connection.programsExcluded.push(programId);
       }
     } else {
       const errors = 'PA already enrolled earlier for this program.';
@@ -88,10 +103,7 @@ export class ProofService {
     }
     const updatedConnection = await this.connectionRepository.save(connection);
 
-    // Immediately run getInclusionStatus, when ready (with time-loop)
-    // let inclusionStatus = await this.getInclusionStatus(programId, did);
-    // return inclusionStatus;
-
+    // Immediately run getInclusionStatus, when ready (with time-loop
     return updatedConnection;
   }
 }

@@ -60,9 +60,9 @@ export class CreateProgramDto {
   @ApiModelProperty({
     example: [
       {
-        criterium: 'Age',
+        criterium: 'nr_of_children',
         question: {
-          english: 'What is your age?',
+          english: 'How many children do you have?',
           nyanja: 'Zaka zanu ndi zingati?',
         },
         answerType: 'numeric',
@@ -75,7 +75,7 @@ export class CreateProgramDto {
         },
       },
       {
-        criterium: 'RoofType',
+        criterium: 'roof_type',
         question: {
           english: 'What type is your roof?',
           nyanja: 'Denga lanu ndi lotani?',

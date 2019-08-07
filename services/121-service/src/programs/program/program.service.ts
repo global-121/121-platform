@@ -9,6 +9,7 @@ import { CreateProgramDto } from './dto';
 
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 import { SchemaService } from '../../sovrin/schema/schema.service';
+import proofRequestExample from '../../../examples/proof_request.json';
 
 @Injectable()
 export class ProgramService {
@@ -197,5 +198,74 @@ export class ProgramService {
       throw new HttpException({ errors }, 401);
     }
     return inclusionStatus;
+  }
+
+  public async calculateInclusion(programId, proof, did): Promise<boolean> {
+    const currentProgram = await this.findOne(programId);
+    const programCriteria = currentProgram.customCriteria;
+    const revealedAttrProof = proof['requested_proof']['revealed_attrs'];
+    const proofRequest = proofRequestExample;
+    const attrRequest = proofRequest['requested_attributes'];
+
+    const scoreList = this.createCriteriaScoreList(
+      revealedAttrProof,
+      attrRequest,
+    );
+
+    const totalScore = this.calculateScoreAllCriteria(
+      programCriteria,
+      scoreList,
+    );
+
+    const included = totalScore >= currentProgram.minimumScore;
+    return included;
+  }
+
+  private createCriteriaScoreList(revealedAttrProof, attrRequest): object {
+    const inclusionCriteriaAnswers = {};
+    for (let attrKey in revealedAttrProof) {
+      let attrValue = revealedAttrProof[attrKey];
+      let newKeyName = attrRequest[attrKey]['name'];
+      inclusionCriteriaAnswers[newKeyName] = attrValue['raw'];
+    }
+    return inclusionCriteriaAnswers;
+  }
+
+  private calculateScoreAllCriteria(programCriteria, scoreList): number {
+    let totalScore = 0;
+    for (let criterium of programCriteria) {
+      let criteriumName = criterium.criterium;
+      if (scoreList[criteriumName]) {
+        let answerPA = scoreList[criteriumName];
+        switch (criterium.answerType) {
+          case 'dropdown': {
+            totalScore =
+              totalScore + this.getScoreForDropDown(criterium, answerPA);
+          }
+          case 'numeric':
+            totalScore =
+              totalScore + this.getScoreForNumeric(criterium, answerPA);
+        }
+      }
+    }
+    return totalScore;
+  }
+
+  private getScoreForDropDown(criterium, answerPA): number {
+    let score = 0;
+    for (let value of criterium.options.options) {
+      if (value.option === answerPA) {
+        score = criterium.scoring[value.id];
+      }
+    }
+    return score;
+  }
+
+  private getScoreForNumeric(criterium, answerPA): number {
+    let score = 0;
+    if (criterium.scoring.multiplier) {
+      score = criterium.scoring.multiplier * answerPA;
+    }
+    return score;
   }
 }

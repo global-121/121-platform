@@ -19,9 +19,9 @@ var programPost = {
   inclusionCalculationType: 'standard', // Only option for now later, it can also be a fancy algorithm
   customCriteria: [
     {
-      criterium: 'Age',
+      criterium: 'nr_of_children',
       question: {
-        english: 'What is your age?',
+        english: 'How many children do you have?',
         nyanja: 'Zaka zanu ndi zingati?',
       },
       answerType: 'numeric',
@@ -34,7 +34,7 @@ var programPost = {
       },
     },
     {
-      criterium: 'RoofType',
+      criterium: 'roof_type',
       question: {
         english: 'What type is your roof?',
         nyanja: 'Denga lanu ndi lotani?',
