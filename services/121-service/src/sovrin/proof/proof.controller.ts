@@ -28,7 +28,11 @@ export class ProofController {
   })
   @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
   @Post('proof/:programId/:did')
-  public async postProof(@Param() params): Promise<ConnectionEntity> {
-    return await this.proofService.postProof(params.programId, params.did);
+  public async postProof(@Param() params): Promise<object> {
+    return await this.proofService.postProof(
+      params.programId,
+      params.did,
+      'superencryptedproof',
+    );
   }
 }

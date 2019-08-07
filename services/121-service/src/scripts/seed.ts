@@ -39,6 +39,8 @@ export class Seed implements InterfaceScript {
       },
     ]);
     await this.connection.close();
+
+
   }
 }
 

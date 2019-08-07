@@ -1,3 +1,4 @@
+import { ProofService } from './../../sovrin/proof/proof.service';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import { Injectable, HttpException } from '@nestjs/common';
@@ -168,10 +169,61 @@ export class ProgramService {
     return simpleProgramRO;
   }
 
+  public async includeMe(
+    programId: number,
+    did: string,
+    encryptedProof: string,
+  ): Promise<ConnectionEntity> {
+    `
+    Verifier/HO gets schema_id/cred_def_id from ledger and validates proof.
+    Inclusion algorithm is run. (Allocation algorithm as well?)
+    Inclusion result is added to db (connectionRepository)?
+    When done (time-loop): run getInclusionStatus from PA.
+    `;
+
+    let connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+    if (!connection) {
+      const errors = 'No connection found for PA.';
+      throw new HttpException({ errors }, 400);
+    }
+
+    if (connection.programsEnrolled.includes(+programId)) {
+      const errors = 'Already enrolled for program';
+      throw new HttpException({ errors }, 400);
+    }
+
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 400);
+    }
+
+    const proofService = new ProofService();
+    const proof = await proofService.postProof(programId, did, encryptedProof);
+
+    let inclusionResult = await this.calculateInclusion(programId, proof);
+
+    if (connection.programsEnrolled.indexOf(programId) <= -1) {
+      connection.programsEnrolled.push(programId);
+      if (inclusionResult) {
+        connection.programsIncluded.push(programId);
+      } else if (!inclusionResult) {
+        connection.programsExcluded.push(programId);
+      }
+    } else {
+      const errors = 'PA already enrolled earlier for this program.';
+      throw new HttpException({ errors }, 400);
+    }
+    const updatedConnection = await this.connectionRepository.save(connection);
+    return updatedConnection;
+  }
+
   public async getInclusionStatus(
     programId: number,
     did: string,
-  ): Promise<any> {
+  ): Promise<boolean> {
     let connection = await this.connectionRepository.findOne({
       where: { did: did },
     });
@@ -185,15 +237,15 @@ export class ProgramService {
       throw new HttpException({ errors }, 400);
     }
 
-    let inclusionStatus: number;
+    let inclusionStatus: boolean;
     if (
       connection.programsIncluded.indexOf(parseInt(String(programId), 10)) > -1
     ) {
-      inclusionStatus = 1;
+      inclusionStatus = true;
     } else if (
       connection.programsEnrolled.indexOf(parseInt(String(programId), 10)) > -1
     ) {
-      inclusionStatus = 0;
+      inclusionStatus = false;
     } else {
       const errors = 'PA not enrolled in this program yet.';
       throw new HttpException({ errors }, 400);
@@ -201,7 +253,10 @@ export class ProgramService {
     return inclusionStatus;
   }
 
-  public async calculateInclusion(programId, proof, did): Promise<boolean> {
+  public async calculateInclusion(
+    programId: number,
+    proof: object,
+  ): Promise<boolean> {
     const currentProgram = await this.findOne(programId);
     const programCriteria = currentProgram.customCriteria;
     const revealedAttrProof = proof['requested_proof']['revealed_attrs'];
@@ -222,7 +277,10 @@ export class ProgramService {
     return included;
   }
 
-  private createCriteriaScoreList(revealedAttrProof, attrRequest): object {
+  private createCriteriaScoreList(
+    revealedAttrProof: object,
+    attrRequest: object,
+  ): object {
     const inclusionCriteriaAnswers = {};
     for (let attrKey in revealedAttrProof) {
       let attrValue = revealedAttrProof[attrKey];
@@ -232,7 +290,10 @@ export class ProgramService {
     return inclusionCriteriaAnswers;
   }
 
-  private calculateScoreAllCriteria(programCriteria, scoreList): number {
+  private calculateScoreAllCriteria(
+    programCriteria: CustomCriterium[],
+    scoreList: object,
+  ): number {
     let totalScore = 0;
     for (let criterium of programCriteria) {
       let criteriumName = criterium.criterium;
@@ -252,9 +313,12 @@ export class ProgramService {
     return totalScore;
   }
 
-  private getScoreForDropDown(criterium, answerPA): number {
+  private getScoreForDropDown(
+    criterium: CustomCriterium,
+    answerPA: object,
+  ): number {
     let score = 0;
-    for (let value of criterium.options.options) {
+    for (let value of criterium.options['options']) {
       if (value.option === answerPA) {
         score = criterium.scoring[value.id];
       }
@@ -262,10 +326,13 @@ export class ProgramService {
     return score;
   }
 
-  private getScoreForNumeric(criterium, answerPA): number {
+  private getScoreForNumeric(
+    criterium: CustomCriterium,
+    answerPA: number,
+  ): number {
     let score = 0;
-    if (criterium.scoring.multiplier) {
-      score = criterium.scoring.multiplier * answerPA;
+    if (criterium.scoring['multiplier']) {
+      score = criterium.scoring['multiplier'] * answerPA;
     }
     return score;
   }
