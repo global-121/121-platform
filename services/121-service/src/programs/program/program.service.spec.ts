@@ -1,3 +1,4 @@
+import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import { repositoryMockFactory } from './../../mock/repositoryMock.factory';
 import { CustomCriterium } from './custom-criterium.entity';
 import { ProgramService } from './program.service';
@@ -25,6 +26,10 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(CustomCriterium),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ConnectionEntity),
             useFactory: repositoryMockFactory,
           },
         ],
