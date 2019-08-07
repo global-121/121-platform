@@ -201,7 +201,11 @@ export class ProgramService {
     }
 
     const proofService = new ProofService();
-    const proof = await proofService.postProof(programId, did, encryptedProof);
+    const proof = await proofService.validateProof(
+      programId,
+      did,
+      encryptedProof,
+    );
 
     let inclusionResult = await this.calculateInclusion(programId, proof);
 

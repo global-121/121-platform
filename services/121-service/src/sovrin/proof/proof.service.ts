@@ -51,11 +51,12 @@ export class ProofService {
     return proofRequest;
   }
 
-  public async postProof(
+  public async validateProof(
     programId: number,
     did: string,
     encryptedProof: string,
   ): Promise<object> {
+    // tyknid.checkProof(encryptedProof);
     programId;
     did;
     encryptedProof;

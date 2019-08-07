@@ -34,7 +34,7 @@ import { ProofModule } from './sovrin/proof/proof.module';
   providers: [
     // CreateConnectionService,
     // CredentialService,
-    SchemaService
+    SchemaService,
   ],
 })
 export class ApplicationModule {
