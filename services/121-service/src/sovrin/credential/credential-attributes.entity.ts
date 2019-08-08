@@ -1,8 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('credential_attributes')
 export class CredentialAttributesEntity {
@@ -23,5 +19,4 @@ export class CredentialAttributesEntity {
 
   @Column()
   public answer: number;
-
 }

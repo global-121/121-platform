@@ -107,6 +107,6 @@ export class CredentialController {
   @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
   @Get(':did')
   public async get(@Param() params): Promise<EncryptedMessageDto> {
-    return await this.credentialService.get(params);
+    return await this.credentialService.get(params.did);
   }
 }

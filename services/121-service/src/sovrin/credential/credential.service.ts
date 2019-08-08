@@ -17,13 +17,15 @@ export class CredentialService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(CredentialAttributesEntity)
-  private readonly credentialAttributesRepository: Repository<CredentialAttributesEntity>;
+  private readonly credentialAttributesRepository: Repository<
+    CredentialAttributesEntity
+  >;
   @InjectRepository(CredentialRequestEntity)
   private readonly credentialRequestRepository: Repository<
     CredentialRequestEntity
   >;
   @InjectRepository(CredentialEntity)
-  private readonly credentialRepository: Repository<CredentialAttributesEntity>;
+  private readonly credentialRepository: Repository<CredentialEntity>;
 
   // Use by HO is done automatically when a program is published
   public async createOffer(credDefId: string): Promise<object> {
@@ -64,7 +66,9 @@ export class CredentialService {
       credential.attributeId = answer.attributeId;
       credential.attribute = answer.attribute;
       credential.answer = answer.answer;
-      const newCredential = await this.credentialAttributesRepository.save(credential);
+      const newCredential = await this.credentialAttributesRepository.save(
+        credential,
+      );
       credentials.push(newCredential);
     }
     return credentials;
@@ -152,8 +156,10 @@ export class CredentialService {
 
   // Used by PA
   public async get(did: string): Promise<EncryptedMessageDto> {
-    did;
-    const result = { message: 'encrypted:example' };
-    return result;
+    const queryResult = await this.credentialRepository.findOne({
+      did: did,
+    });
+    const encrypyedCredential = { message: queryResult.credential };
+    return encrypyedCredential;
   }
 }
