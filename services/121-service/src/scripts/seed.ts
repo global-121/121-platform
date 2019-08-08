@@ -1,3 +1,4 @@
+import { CredentialEntity } from './../sovrin/credential/credential.entity';
 import { AppointmentEntity } from './../schedule/appointment/appointment.entity';
 import { ProgramEntity } from './../programs/program/program.entity';
 import { CustomCriterium } from './../programs/program/custom-criterium.entity';
@@ -110,6 +111,25 @@ export class Seed implements InterfaceScript {
     appointment.timeslotId = newAvailability.id;
     appointment.did = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
     await appointmentRepository.save(appointment);
+
+    // ***** CREATE PREFILLED ANSWERS *****
+    const credentialRepository = this.connection.getRepository(
+      CredentialEntity,
+    );
+    let credential1 = new CredentialEntity();
+    credential1.did = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
+    credential1.programId = 1;
+    credential1.attributeId = 1;
+    credential1.attribute = 'nr_of_children';
+    credential1.answer = 2;
+    await credentialRepository.save(credential1);
+    let credential2 = new CredentialEntity();
+    credential2.did = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
+    credential2.programId = 1;
+    credential2.attributeId = 2;
+    credential2.attribute = 'roof_type';
+    credential2.answer = 0;
+    await credentialRepository.save(credential2);
 
     await this.connection.close();
   }
