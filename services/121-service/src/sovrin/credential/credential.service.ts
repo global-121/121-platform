@@ -1,6 +1,7 @@
+import { CredentialIssueDto } from './dto/credential-issue.dto';
 import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialRequestEntity } from './credential-request.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { CredentialValuesDto } from './dto/credential-values.dto';
 import { ProgramEntity } from '../../programs/program/program.entity';
@@ -12,6 +13,8 @@ import { CredentialEntity } from './credential.entity';
 
 @Injectable()
 export class CredentialService {
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(CredentialEntity)
   private readonly credentialRepository: Repository<CredentialEntity>;
   @InjectRepository(CredentialRequestEntity)
@@ -78,6 +81,11 @@ export class CredentialService {
 
     const programService = new ProgramService();
     const program = await programService.findOne(credRequest.programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 400);
+    }
+
     const credentialRequestInfo = new CredentialRequestEntity();
     credentialRequestInfo.did = credRequest.did;
     credentialRequestInfo.program = program;
@@ -85,15 +93,50 @@ export class CredentialService {
     credentialRequestInfo.credentialRequest = JSON.parse(
       '{ "example": "credentialRequest" }',
     );
-
     this.credentialRequestRepository.save(credentialRequestInfo);
   }
 
   // Used by Aidworker
-  public async issue(credentialValues: CredentialValuesDto): Promise<void> {
-    credentialValues;
+  public async issue(credentialIssue: CredentialIssueDto): Promise<void> {
+    // Get related credential offer
+    const program = await this.programRepository.findOne({
+      id: credentialIssue.programId,
+    });
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException(
+        {
+          errors,
+        },
+        400,
+      );
+    }
+    const credentialOffer = program.credOffer;
 
-    // tyknid.getIssueCredential(credentialValues)`;
+    // Get related credential request
+    const queryResult = await this.credentialRequestRepository.findOne({
+      program: {
+        id: credentialIssue.programId,
+      },
+      did: credentialIssue.did,
+    });
+    if (!queryResult) {
+      const errors = 'Credential request not found.';
+      throw new HttpException(
+        {
+          errors,
+        },
+        400,
+      );
+    }
+    const credentialRequest = queryResult.credentialRequest;
+
+    credentialOffer;
+    credentialRequest;
+    const credentialJson = credentialIssue.credentialJson;
+    console.log(credentialOffer, credentialRequest, credentialJson);
+
+    // tyknid.createCredential(credentialOffer,credentialRequest,credentialJson)
   }
 
   // Used by PA

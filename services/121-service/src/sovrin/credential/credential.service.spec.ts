@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
 import { CredentialEntity } from './credential.entity';
 import { CredentialRequestEntity } from './credential-request.entity';
+import { ProgramEntity } from '../../programs/program/program.entity';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -19,6 +20,10 @@ describe('CredentialService', (): void => {
           },
           {
             provide: getRepositoryToken(CredentialRequestEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,
           },
         ],

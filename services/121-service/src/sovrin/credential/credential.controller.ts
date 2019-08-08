@@ -20,6 +20,7 @@ import { CredentialValuesDto } from './dto/credential-values.dto';
 import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
 import { CredentialEntity } from './credential.entity';
 import { CredentialRequestDto } from './dto/credential-request.dto';
+import { CredentialIssueDto } from './dto/credential-issue.dto';
 
 @ApiUseTags('sovrin')
 @Controller('sovrin/credential')
@@ -81,7 +82,7 @@ export class CredentialController {
     return await this.credentialService.getPrefilledAnswers(params.did);
   }
 
-  @ApiOperation({ title: 'Post credential request' })
+  @ApiOperation({ title: 'Post credential request (for PA)' })
   @ApiResponse({ status: 200, description: 'Credential request received' })
   @Post('/request')
   public async request(
@@ -91,14 +92,14 @@ export class CredentialController {
   }
 
   @ApiBearerAuth()
-  @ApiOperation({ title: 'Issue credentials' })
+  @ApiOperation({ title: 'Issue credentials (For AW)' })
   @ApiResponse({ status: 200, description: 'Credentials issued' })
   @UsePipes(new ValidationPipe())
   @Post('/issue')
   public async issue(
-    @Body() credentialValues: CredentialValuesDto,
+    @Body() credentialIssue: CredentialIssueDto,
   ): Promise<void> {
-    return await this.credentialService.issue(credentialValues);
+    return await this.credentialService.issue(credentialIssue);
   }
 
   @ApiOperation({ title: 'Get credentials' })

@@ -1,7 +1,7 @@
 import { Length, IsNotEmpty, IsString, IsNumber } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
-export class CredentialRequestDto {
+export class CredentialIssueDto {
   @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
   @Length(30, 30)
   public readonly did: string;
@@ -11,6 +11,5 @@ export class CredentialRequestDto {
   public readonly programId: number;
   @ApiModelProperty()
   @IsNotEmpty()
-  @IsString()
-  public readonly encryptedCredentialRequest: string;
+  public readonly credentialJson: JSON;
 }

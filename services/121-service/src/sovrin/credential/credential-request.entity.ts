@@ -1,7 +1,7 @@
 import { ProgramEntity } from './../../programs/program/program.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
-@Entity('credential-request')
+@Entity('credential_request')
 export class CredentialRequestEntity {
   @PrimaryGeneratedColumn()
   public id: number;
