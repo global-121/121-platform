@@ -9,18 +9,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramService } from '../../programs/program/program.service';
 import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
+import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialEntity } from './credential.entity';
 
 @Injectable()
 export class CredentialService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(CredentialEntity)
-  private readonly credentialRepository: Repository<CredentialEntity>;
+  @InjectRepository(CredentialAttributesEntity)
+  private readonly credentialAttributesRepository: Repository<CredentialAttributesEntity>;
   @InjectRepository(CredentialRequestEntity)
   private readonly credentialRequestRepository: Repository<
     CredentialRequestEntity
   >;
+  @InjectRepository(CredentialEntity)
+  private readonly credentialRepository: Repository<CredentialAttributesEntity>;
 
   // Use by HO is done automatically when a program is published
   public async createOffer(credDefId: string): Promise<object> {
@@ -55,21 +58,23 @@ export class CredentialService {
   ): Promise<any[]> {
     let credentials = [];
     for (let answer of prefilledAnswers.attributes) {
-      let credential = new CredentialEntity();
+      let credential = new CredentialAttributesEntity();
       credential.did = did;
       credential.programId = programId;
       credential.attributeId = answer.attributeId;
       credential.attribute = answer.attribute;
       credential.answer = answer.answer;
-      const newCredential = await this.credentialRepository.save(credential);
+      const newCredential = await this.credentialAttributesRepository.save(credential);
       credentials.push(newCredential);
     }
     return credentials;
   }
 
   // AW: get answers to attributes for a given PA (identified first through did/QR)
-  public async getPrefilledAnswers(did: string): Promise<CredentialEntity[]> {
-    let credentials = await this.credentialRepository.find({
+  public async getPrefilledAnswers(
+    did: string,
+  ): Promise<CredentialAttributesEntity[]> {
+    let credentials = await this.credentialAttributesRepository.find({
       where: { did: did },
     });
     return credentials;
@@ -97,10 +102,10 @@ export class CredentialService {
   }
 
   // Used by Aidworker
-  public async issue(credentialIssue: CredentialIssueDto): Promise<void> {
+  public async issue(payload: CredentialIssueDto): Promise<void> {
     // Get related credential offer
     const program = await this.programRepository.findOne({
-      id: credentialIssue.programId,
+      id: payload.programId,
     });
     if (!program) {
       const errors = 'Program not found.';
@@ -116,9 +121,9 @@ export class CredentialService {
     // Get related credential request
     const queryResult = await this.credentialRequestRepository.findOne({
       program: {
-        id: credentialIssue.programId,
+        id: payload.programId,
       },
-      did: credentialIssue.did,
+      did: payload.did,
     });
     if (!queryResult) {
       const errors = 'Credential request not found.';
@@ -133,10 +138,16 @@ export class CredentialService {
 
     credentialOffer;
     credentialRequest;
-    const credentialJson = credentialIssue.credentialJson;
+    const credentialJson = payload.credentialJson;
     console.log(credentialOffer, credentialRequest, credentialJson);
+    // const createdCredential = tyknid.createCredential(credentialOffer,credentialRequest,credentialJson)
+    const createdCredential = 'exampleEncryptedCredential';
 
-    // tyknid.createCredential(credentialOffer,credentialRequest,credentialJson)
+    const credentialData = new CredentialEntity();
+    credentialData.credential = createdCredential;
+    credentialData.did = payload.did;
+    credentialData.program = program;
+    this.credentialRepository.save(credentialData);
   }
 
   // Used by PA

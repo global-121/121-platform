@@ -1,3 +1,4 @@
+import { CredentialEntity } from './credential.entity';
 import { UserModule } from '../../user/user.module';
 import {
   Module,
@@ -11,7 +12,7 @@ import { AuthMiddlewareAW } from '../../user/auth.middlewareAW';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
-import { CredentialEntity } from './credential.entity';
+import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialRequestEntity } from './credential-request.entity';
 
 @Module({
@@ -19,8 +20,9 @@ import { CredentialRequestEntity } from './credential-request.entity';
     TypeOrmModule.forFeature([
       UserEntity,
       ProgramEntity,
-      CredentialEntity,
+      CredentialAttributesEntity,
       CredentialRequestEntity,
+      CredentialEntity,
     ]),
     UserModule,
   ],

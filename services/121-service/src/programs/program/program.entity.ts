@@ -9,6 +9,7 @@ import {
 import { UserEntity } from '../../user/user.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
+import { CredentialEntity } from '../../sovrin/credential/credential.entity';
 
 @Entity('program')
 export class ProgramEntity {
@@ -97,4 +98,7 @@ export class ProgramEntity {
     credentialRequest => credentialRequest.program,
   )
   public credentialRequests: CredentialRequestEntity[];
+
+  @OneToMany(type => CredentialEntity, credential => credential.program)
+  public credentials: CredentialEntity[];
 }

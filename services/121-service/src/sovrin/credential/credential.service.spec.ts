@@ -1,8 +1,9 @@
+import { CredentialEntity } from './credential.entity';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CredentialService } from './credential.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
-import { CredentialEntity } from './credential.entity';
+import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialRequestEntity } from './credential-request.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 
@@ -15,7 +16,7 @@ describe('CredentialService', (): void => {
         providers: [
           CredentialService,
           {
-            provide: getRepositoryToken(CredentialEntity),
+            provide: getRepositoryToken(CredentialAttributesEntity),
             useFactory: repositoryMockFactory,
           },
           {
@@ -24,6 +25,10 @@ describe('CredentialService', (): void => {
           },
           {
             provide: getRepositoryToken(ProgramEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(CredentialEntity),
             useFactory: repositoryMockFactory,
           },
         ],

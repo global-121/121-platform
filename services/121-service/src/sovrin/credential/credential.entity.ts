@@ -1,8 +1,5 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column
-} from 'typeorm';
+import { ProgramEntity } from './../../programs/program/program.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 @Entity('credential')
 export class CredentialEntity {
@@ -12,16 +9,9 @@ export class CredentialEntity {
   @Column()
   public did: string;
 
-  @Column()
-  public programId: number;
+  @ManyToOne(type => ProgramEntity, program => program.credentials)
+  public program: ProgramEntity;
 
-  @Column()
-  public attributeId: number;
-
-  @Column()
-  public attribute: string;
-
-  @Column()
-  public answer: number;
-
+  @Column() // Store credentials encrypted
+  public credential: string;
 }

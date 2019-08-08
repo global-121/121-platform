@@ -18,7 +18,7 @@ import { CredentialService } from './credential.service';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { CredentialValuesDto } from './dto/credential-values.dto';
 import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
-import { CredentialEntity } from './credential.entity';
+import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialIssueDto } from './dto/credential-issue.dto';
 
@@ -78,7 +78,7 @@ export class CredentialController {
   @Get('/answers/:did')
   public async getPrefilledAnswers(
     @Param() params,
-  ): Promise<CredentialEntity[]> {
+  ): Promise<CredentialAttributesEntity[]> {
     return await this.credentialService.getPrefilledAnswers(params.did);
   }
 
