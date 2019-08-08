@@ -24,6 +24,7 @@ const newConnection = {
   programsEnrolled: [],
   programsIncluded: [],
   programsExcluded: [],
+  credRequest: JSON.parse('{}'),
 };
 
 const newDidInfo = {

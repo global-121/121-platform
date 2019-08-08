@@ -125,17 +125,6 @@ export class ProgramController {
     return this.programService.unpublish(params.id);
   }
 
-  @ApiOperation({ title: 'Get inclusion status' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
-  @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
-  @Get('inclusionStatus/:programId/:did')
-  public async inclusionStatus(@Param() params): Promise<any> {
-    return await this.programService.getInclusionStatus(
-      params.programId,
-      params.did,
-    );
-  }
-
   @ApiOperation({ title: 'Post proof' })
   @Post('includeMe')
   public async includeMe(
@@ -145,6 +134,16 @@ export class ProgramController {
       inclusionData.programId,
       inclusionData.did,
       inclusionData.encryptedProof,
+    );
+  }
+  @ApiOperation({ title: 'Get inclusion status' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
+  @Get('inclusionStatus/:programId/:did')
+  public async inclusionStatus(@Param() params): Promise<any> {
+    return await this.programService.getInclusionStatus(
+      params.programId,
+      params.did,
     );
   }
 }
