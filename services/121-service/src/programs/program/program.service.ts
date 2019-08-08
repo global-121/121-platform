@@ -1,3 +1,4 @@
+import { CredentialService } from './../../sovrin/credential/credential.service';
 import { ProofService } from './../../sovrin/proof/proof.service';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
@@ -129,12 +130,21 @@ export class ProgramService {
     await this.changeProgramValue(programId, { published: true });
 
     const schemaService = new SchemaService();
-
     const result = await schemaService.create(selectedProgram);
+
+    const credentialService = new CredentialService();
+    const credentialOffer = await credentialService.createOffer(
+      result.credDefId,
+    );
+
+    await this.changeProgramValue(programId, {
+      credOffer: credentialOffer,
+    });
     await this.changeProgramValue(programId, { schemaId: result.schemaId });
     await this.changeProgramValue(programId, { credDefId: result.credDefId });
 
-    return await this.buildProgramRO(selectedProgram);
+    const changedProgram = await this.findOne(programId);
+    return await this.buildProgramRO(changedProgram);
   }
 
   public async unpublish(programId: number): Promise<SimpleProgramRO> {

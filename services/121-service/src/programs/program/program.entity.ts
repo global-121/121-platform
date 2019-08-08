@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { CustomCriterium } from './custom-criterium.entity';
+import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
 
 @Entity('program')
 export class ProgramEntity {
@@ -68,6 +69,9 @@ export class ProgramEntity {
   @Column({ default: null })
   public credDefId: string;
 
+  @Column('json', { default: null })
+  public credOffer: JSON;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created: Date;
 
@@ -87,4 +91,10 @@ export class ProgramEntity {
 
   @OneToMany(type => UserEntity, aidworker => aidworker.assignedProgram)
   public aidworkers: UserEntity[];
+
+  @OneToMany(
+    type => CredentialRequestEntity,
+    credentialRequest => credentialRequest.program,
+  )
+  public credentialRequests: CredentialRequestEntity[];
 }

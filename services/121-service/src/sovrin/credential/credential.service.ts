@@ -1,3 +1,5 @@
+import { CredentialRequestDto } from './dto/credential-request.dto';
+import { CredentialRequestEntity } from './credential-request.entity';
 import { Injectable } from '@nestjs/common';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { CredentialValuesDto } from './dto/credential-values.dto';
@@ -12,12 +14,22 @@ import { CredentialEntity } from './credential.entity';
 export class CredentialService {
   @InjectRepository(CredentialEntity)
   private readonly credentialRepository: Repository<CredentialEntity>;
-  
+  @InjectRepository(CredentialRequestEntity)
+  private readonly credentialRequestRepository: Repository<
+    CredentialRequestEntity
+  >;
+
+  // Use by HO is done automatically when a program is published
+  public async createOffer(credDefId: string): Promise<object> {
+    // const credentialOffer = tyknidtyknid.createCredentialOffer(credDefId)
+    return { example: 'credoffer' };
+  }
+
   // Used by PA
-  public async getOffer(did: string): Promise<EncryptedMessageDto> {
-    // tyknid.getCredentialOffer()`;
-    did;
-    const result = { message: 'encrypted:example' };
+  public async getOffer(programId: number): Promise<object> {
+    const programService = new ProgramService();
+    const program = await programService.findOne(programId);
+    const result = program.credOffer;
     return result;
   }
 
@@ -26,18 +38,21 @@ export class CredentialService {
     const programService = new ProgramService();
     let selectedProgram = await programService.findOne(programId);
     let attributes = [];
-    for (let criterium of selectedProgram.customCriteria){
+    for (let criterium of selectedProgram.customCriteria) {
       attributes.push(criterium);
     }
     return attributes;
   }
 
   // PA: post answers to attributes
-  public async prefilledAnswers(did: string, programId: number, prefilledAnswers: PrefilledAnswersDto): Promise<any[]> {
-    
+  public async prefilledAnswers(
+    did: string,
+    programId: number,
+    prefilledAnswers: PrefilledAnswersDto,
+  ): Promise<any[]> {
     let credentials = [];
     for (let answer of prefilledAnswers.attributes) {
-      let credential = new CredentialEntity;
+      let credential = new CredentialEntity();
       credential.did = did;
       credential.programId = programId;
       credential.attributeId = answer.attributeId;
@@ -46,27 +61,38 @@ export class CredentialService {
       const newCredential = await this.credentialRepository.save(credential);
       credentials.push(newCredential);
     }
-    return credentials;   
-
+    return credentials;
   }
 
   // AW: get answers to attributes for a given PA (identified first through did/QR)
   public async getPrefilledAnswers(did: string): Promise<CredentialEntity[]> {
-    let credentials = await this.credentialRepository.find({where: {did: did}});
-    return credentials;   
+    let credentials = await this.credentialRepository.find({
+      where: { did: did },
+    });
+    return credentials;
   }
 
   // Used by PA
-  public async request(
-    encryptedCredentialRequest: EncryptedMessageDto,
-  ): Promise<void> {
-    encryptedCredentialRequest;
-    // tyknid.getIssueCredential()`;
+  public async request(credRequest: CredentialRequestDto): Promise<void> {
+    credRequest;
+
+    const programService = new ProgramService();
+    const program = await programService.findOne(credRequest.programId);
+    const credentialRequestInfo = new CredentialRequestEntity();
+    credentialRequestInfo.did = credRequest.did;
+    credentialRequestInfo.program = program;
+    // credentialRequestInfo.credOffer = tykn.decrypt(credRequest.credentialRequest)
+    credentialRequestInfo.credentialRequest = JSON.parse(
+      '{ "example": "credentialRequest" }',
+    );
+
+    this.credentialRequestRepository.save(credentialRequestInfo);
   }
 
   // Used by Aidworker
   public async issue(credentialValues: CredentialValuesDto): Promise<void> {
     credentialValues;
+
     // tyknid.getIssueCredential(credentialValues)`;
   }
 

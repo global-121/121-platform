@@ -12,9 +12,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { CredentialEntity } from './credential.entity';
+import { CredentialRequestEntity } from './credential-request.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, ProgramEntity, CredentialEntity]), UserModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      UserEntity,
+      ProgramEntity,
+      CredentialEntity,
+      CredentialRequestEntity,
+    ]),
+    UserModule,
+  ],
   providers: [CredentialService],
   controllers: [CredentialController],
   exports: [CredentialService],

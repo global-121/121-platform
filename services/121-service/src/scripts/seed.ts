@@ -81,7 +81,6 @@ export class Seed implements InterfaceScript {
     program.customCriteria = [];
 
     for (let customCriterium of customCriteria) {
-      console.log(customCriterium);
       let customReturn = await customCriteriumRepository.save(customCriterium);
       program.customCriteria.push(customReturn);
     }
