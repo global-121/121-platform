@@ -102,7 +102,7 @@ export class CredentialController {
     return await this.credentialService.issue(credentialIssue);
   }
 
-  @ApiOperation({ title: 'Get credentials' })
+  @ApiOperation({ title: 'Get credentials (For AP)' })
   @ApiResponse({ status: 200, description: 'Credentials sent' })
   @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
   @Get(':did')

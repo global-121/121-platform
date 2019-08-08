@@ -108,8 +108,33 @@ export class CredentialService {
   // Used by Aidworker
   public async issue(payload: CredentialIssueDto): Promise<void> {
     // Get related credential offer
+    const program = await this.getRelatedProgram(payload.programId);
+    const credentialOffer = program.credOffer;
+
+    // Get related credential request
+    const queryResult = await this.getRelatedCredRequest(
+      payload.programId,
+      payload.did,
+    );
+    const credentialRequest = queryResult.credentialRequest;
+
+    credentialOffer;
+    credentialRequest;
+    const credentialJson = payload.credentialJson;
+    // const createdCredential = tyknid.createCredential(credentialOffer,credentialRequest,credentialJson)
+    const createdCredential = 'exampleEncryptedCredential';
+
+    const credentialData = new CredentialEntity();
+    credentialData.credential = createdCredential;
+    credentialData.did = payload.did;
+    credentialData.program = program;
+    await this.checkForOldCredential(payload.did, payload.programId);
+    await this.credentialRepository.save(credentialData);
+  }
+
+  private async getRelatedProgram(programId: number): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne({
-      id: payload.programId,
+      id: programId,
     });
     if (!program) {
       const errors = 'Program not found.';
@@ -120,14 +145,18 @@ export class CredentialService {
         400,
       );
     }
-    const credentialOffer = program.credOffer;
+    return program;
+  }
 
-    // Get related credential request
+  private async getRelatedCredRequest(
+    programId: number,
+    did: string,
+  ): Promise<CredentialRequestEntity> {
     const queryResult = await this.credentialRequestRepository.findOne({
       program: {
-        id: payload.programId,
+        id: programId,
       },
-      did: payload.did,
+      did: did,
     });
     if (!queryResult) {
       const errors = 'Credential request not found.';
@@ -138,20 +167,28 @@ export class CredentialService {
         400,
       );
     }
-    const credentialRequest = queryResult.credentialRequest;
+    return queryResult;
+  }
 
-    credentialOffer;
-    credentialRequest;
-    const credentialJson = payload.credentialJson;
-    console.log(credentialOffer, credentialRequest, credentialJson);
-    // const createdCredential = tyknid.createCredential(credentialOffer,credentialRequest,credentialJson)
-    const createdCredential = 'exampleEncryptedCredential';
-
-    const credentialData = new CredentialEntity();
-    credentialData.credential = createdCredential;
-    credentialData.did = payload.did;
-    credentialData.program = program;
-    this.credentialRepository.save(credentialData);
+  private async checkForOldCredential(
+    did: string,
+    programId: number,
+  ): Promise<void> {
+    const oldCredential = await this.credentialRepository.findOne({
+      program: {
+        id: programId,
+      },
+      did: did,
+    });
+    if (oldCredential) {
+      const errors = 'A credential has already been created for this did for this program';
+      throw new HttpException(
+        {
+          errors,
+        },
+        400,
+      );
+    }
   }
 
   // Used by PA
