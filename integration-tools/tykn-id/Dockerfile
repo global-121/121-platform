@@ -26,4 +26,4 @@ RUN apt-get install -y nodejs
 
 ADD . /workspace
 
-RUN cd /workspace && npm install && npm test
+#RUN cd /workspace && npm install && npm test

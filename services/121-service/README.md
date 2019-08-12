@@ -68,9 +68,9 @@ Create the Docker image from the Dockerfile in this folder through:
 
     docker build -t 121-node .
 
-Start the app Docker container through (NOTE: the \${PWD} code for current directory may not translate to all OS's):
+Start the app Docker container through (NOTE: you have to change 'C:/github/121.global' to your own path for the repository-root folder):
 
-    docker run --name=121-service -v ${PWD}:/home/121 -p 3000:3000 -it --network 121network 121-node
+    docker run --name=121-service -v C:/github/121.global:/home/121 -p 3000:3000 -it --network 121network 121-node
 
 If you've already created the container before and just want to start again:
 

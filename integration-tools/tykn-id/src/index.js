@@ -59,12 +59,12 @@ tyknid.initSDK = async function initSDK(pathToConfig) {
 
 }
 
-tyknid.createConnection = async function createConnection (subjectDID,subjectVerKey) {
-    if (!org.wallet.handle){
-        throw Error("Wallet is not open or not accessible.");
-    }
-    return await indy.createPairwise(org.wallet.handle,subjectDID,indy.getMyDidWithMeta,"","")
-}
+// tyknid.createConnection = async function createConnection (subjectDID,subjectVerKey) {
+//     if (!org.wallet.handle){
+//         throw Error("Wallet is not open or not accessible.");
+//     }
+//     return await indy.createPairwise(org.wallet.handle,subjectDID,indy.getMyDidWithMeta,"","")
+// }
 tyknid.showDids = async function showDids () {
     if (!org.wallet.handle){
         throw Error("Wallet is not open or not accessible.");
@@ -83,7 +83,8 @@ tyknid.getMainDID = async function getMyDID () {
         "did": pa_did,
         "verkey": pa_verkey
      }
-    var [orgParwiseDID] = await indy.createAndStoreMyDid(org.wallet.handle,{seed:org.seed})
+    var orgParwiseDID = await indy.createAndStoreMyDid(org.wallet.handle,{seed:org.seed})
+    console.log(orgParwiseDID);
 }
 
 

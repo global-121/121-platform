@@ -1,10 +1,9 @@
 {
-    "walletName":"test1",
-    "walletKey" : "test",
-    "walletPath":"~/.indy_client/wallet",
-    "orgSeed" : "ny9mAdxr4WCrF79Mv2MYorOF1nVkubh4",
-    "orgDID" : "sdfgdfgregdfsg",
-    "orgVerKey" : "ny9mAdxr4WCrF79Mv2sdfgdsfgs",
-    "poolconfig":""
-    
+    "walletName": "HO-wallet",
+    "walletKey": "HO-password",
+    "walletPath": "~/.indy_client/wallet",
+    "orgSeed": "LUwaxYVEqHtr2e4Jt3kV0IBfvM8k3e8K",
+    "orgDID": "Er1f8SgUxi5kRCHtMRXDxo",
+    "orgVerKey": "Er1f8SgUxi5kRCHtMRXDxoS91zM2eGx97x5E38KfChXW",
+    "poolconfig": ""
 }
