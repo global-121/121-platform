@@ -7,6 +7,14 @@
 </ion-header>
 
 <ion-content color="medium" class="ion-padding-vertical">
+
+  <details class="debug--container" *ngIf="isDebug">
+    <summary class="debug--toggle">DEBUG:</summary>
+
+    ...
+
+  </details>
+
   <dialogue-turn>
     Introduction.
   </dialogue-turn>

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
@@ -8,6 +9,7 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
   providers: [ProgramsServiceApiService]
 })
 export class Tab2Page {
+  public isDebug: boolean = !environment.production;
   public countries: any = null;
   public countryChoice: number = null;
   public programs: any = null;
