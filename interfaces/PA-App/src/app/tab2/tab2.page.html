@@ -7,7 +7,6 @@
 </ion-header>
 
 <ion-content color="medium" class="ion-padding-vertical">
-
   <dialogue-turn>
     Introduction.
   </dialogue-turn>
@@ -27,12 +26,40 @@
         <ion-radio id="test1"></ion-radio>
       </ion-item>
     </ion-radio-group>
-
   </dialogue-turn>
-
 
   <dialogue-turn actor="ho">
     👋
   </dialogue-turn>
 
+  <dialogue-turn>
+    <ion-button (click)="getCountries()">Test Get Countries API</ion-button>
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    Select a country:
+    <ion-radio-group [(ngModel)]="countryChoice">
+      <ion-item *ngFor="let country of countries; index as i" color="light">
+        <ion-label for="test1">{{ country.country }}</ion-label>
+        <ion-radio id="test1" value="{{ country.id }}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </dialogue-turn>
+  <!-- <dialogue-turn>
+    {{ countryChoice }}
+  </dialogue-turn> -->
+
+  <dialogue-turn>
+    <ion-button (click)="getProgramsByCountryId(countryChoice)"
+      >Test Programs API</ion-button
+    >
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    Select a program:
+    <ion-radio-group>
+      <ion-item *ngFor="let program of programs; index as i" color="light">
+        <ion-label for="test1">Program #{{ program.id }}</ion-label>
+        <ion-radio id="test1"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </dialogue-turn>
 </ion-content>

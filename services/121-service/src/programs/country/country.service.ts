@@ -15,6 +15,7 @@ export class CountryService {
 
   public async findAll(): Promise<CountryEntity[]> {
     let countries = await this.countryRepository.find();
+    console.log(countries);
     return countries;
   }
 
