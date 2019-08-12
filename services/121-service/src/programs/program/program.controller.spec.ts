@@ -8,7 +8,7 @@ import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 const newProgramParameters = {
   location: 'Lilongwe',
   countryId: 265,
-  title: 'Pilot program 1a',
+  title: 'pilot_program_1a',
   description: 'Program to help people hit by earthquake examplename',
   startDate: new Date(),
   endDate: new Date(),

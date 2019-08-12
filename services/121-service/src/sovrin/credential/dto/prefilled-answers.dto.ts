@@ -21,12 +21,12 @@ export class PrefilledAnswersDto {
     example: [
     {
       attributeId: 1,
-      attribute: 'Age',
+      attribute: 'nr_of_children',
       answer: 32
     },
     {
       attributeId: 2,
-      attribute: 'RoofType',
+      attribute: 'roof_type',
       answer: 0
     }
     ]})

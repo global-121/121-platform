@@ -1,3 +1,4 @@
+import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import {
   MiddlewareConsumer,
   Module,
@@ -17,7 +18,12 @@ import { AuthMiddlewarePM } from '../../user/auth.middlewarePM';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProgramEntity, UserEntity, CustomCriterium]),
+    TypeOrmModule.forFeature([
+      ProgramEntity,
+      UserEntity,
+      CustomCriterium,
+      ConnectionEntity,
+    ]),
     UserModule,
   ],
   providers: [ProgramService],

@@ -18,7 +18,7 @@ export class CreateStandardCriteriumDto {
   @ApiModelProperty({
     example: {
       question: {
-        english: 'What is your age?',
+        english: 'How many children do you have?',
         nyanja: 'Zaka zanu ndi zingati?',
       },
     },

@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class SchemaService {
   public async create(program): Promise<any> {
     // console.log(program.customCriteria);
-    
+
     let attributes = [];
     for (let criterium of program.customCriteria){
       attributes.push(criterium.criterium);
@@ -14,7 +14,6 @@ export class SchemaService {
       version: '1.2',
       attributes: attributes,
     };
-    
     `
     schemaId = tykn.issuerCreateSchema(schema)
 

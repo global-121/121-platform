@@ -1,3 +1,6 @@
+import { CredentialService } from './../../sovrin/credential/credential.service';
+import { ProofService } from './../../sovrin/proof/proof.service';
+import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import { Injectable, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,9 +11,12 @@ import { CreateProgramDto } from './dto';
 
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 import { SchemaService } from '../../sovrin/schema/schema.service';
+import proofRequestExample from '../../../examples/proof_request.json';
 
 @Injectable()
 export class ProgramService {
+  @InjectRepository(ConnectionEntity)
+  private readonly connectionRepository: Repository<ConnectionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(UserEntity)
@@ -124,12 +130,21 @@ export class ProgramService {
     await this.changeProgramValue(programId, { published: true });
 
     const schemaService = new SchemaService();
-
     const result = await schemaService.create(selectedProgram);
+
+    const credentialService = new CredentialService();
+    const credentialOffer = await credentialService.createOffer(
+      result.credDefId,
+    );
+
+    await this.changeProgramValue(programId, {
+      credOffer: credentialOffer,
+    });
     await this.changeProgramValue(programId, { schemaId: result.schemaId });
     await this.changeProgramValue(programId, { credDefId: result.credDefId });
-    
-    return await this.buildProgramRO(selectedProgram); 
+
+    const changedProgram = await this.findOne(programId);
+    return await this.buildProgramRO(changedProgram);
   }
 
   public async unpublish(programId: number): Promise<SimpleProgramRO> {
@@ -139,7 +154,7 @@ export class ProgramService {
       throw new HttpException({ errors }, 401);
     }
     await this.changeProgramValue(programId, { published: false });
-    return await this.buildProgramRO(selectedProgram); 
+    return await this.buildProgramRO(selectedProgram);
   }
 
   private async changeProgramValue(
@@ -158,9 +173,181 @@ export class ProgramService {
     const simpleProgramRO = {
       id: program.id,
       title: program.title,
-      published: program.published
+      published: program.published,
     };
 
     return simpleProgramRO;
+  }
+
+  public async includeMe(
+    programId: number,
+    did: string,
+    encryptedProof: string,
+  ): Promise<ConnectionEntity> {
+    `
+    Verifier/HO gets schema_id/cred_def_id from ledger and validates proof.
+    Inclusion algorithm is run. (Allocation algorithm as well?)
+    Inclusion result is added to db (connectionRepository)?
+    When done (time-loop): run getInclusionStatus from PA.
+    `;
+
+    let connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+    if (!connection) {
+      const errors = 'No connection found for PA.';
+      throw new HttpException({ errors }, 400);
+    }
+
+    if (connection.programsEnrolled.includes(+programId)) {
+      const errors = 'Already enrolled for program';
+      throw new HttpException({ errors }, 400);
+    }
+
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 400);
+    }
+
+    const proofService = new ProofService();
+    const proof = await proofService.validateProof(
+      programId,
+      did,
+      encryptedProof,
+    );
+
+    let inclusionResult = await this.calculateInclusion(programId, proof);
+
+    if (connection.programsEnrolled.indexOf(programId) <= -1) {
+      connection.programsEnrolled.push(programId);
+      if (inclusionResult) {
+        connection.programsIncluded.push(programId);
+      } else if (!inclusionResult) {
+        connection.programsExcluded.push(programId);
+      }
+    } else {
+      const errors = 'PA already enrolled earlier for this program.';
+      throw new HttpException({ errors }, 400);
+    }
+    const updatedConnection = await this.connectionRepository.save(connection);
+    return updatedConnection;
+  }
+
+  public async getInclusionStatus(
+    programId: number,
+    did: string,
+  ): Promise<boolean> {
+    let connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+    if (!connection) {
+      const errors = 'No connection found for PA.';
+      throw new HttpException({ errors }, 400);
+    }
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 400);
+    }
+
+    let inclusionStatus: boolean;
+    if (
+      connection.programsIncluded.indexOf(parseInt(String(programId), 10)) > -1
+    ) {
+      inclusionStatus = true;
+    } else if (
+      connection.programsEnrolled.indexOf(parseInt(String(programId), 10)) > -1
+    ) {
+      inclusionStatus = false;
+    } else {
+      const errors = 'PA not enrolled in this program yet.';
+      throw new HttpException({ errors }, 400);
+    }
+    return inclusionStatus;
+  }
+
+  public async calculateInclusion(
+    programId: number,
+    proof: object,
+  ): Promise<boolean> {
+    const currentProgram = await this.findOne(programId);
+    const programCriteria = currentProgram.customCriteria;
+    const revealedAttrProof = proof['requested_proof']['revealed_attrs'];
+    const proofRequest = proofRequestExample;
+    const attrRequest = proofRequest['requested_attributes'];
+
+    const scoreList = this.createCriteriaScoreList(
+      revealedAttrProof,
+      attrRequest,
+    );
+
+    const totalScore = this.calculateScoreAllCriteria(
+      programCriteria,
+      scoreList,
+    );
+
+    const included = totalScore >= currentProgram.minimumScore;
+    return included;
+  }
+
+  private createCriteriaScoreList(
+    revealedAttrProof: object,
+    attrRequest: object,
+  ): object {
+    const inclusionCriteriaAnswers = {};
+    for (let attrKey in revealedAttrProof) {
+      let attrValue = revealedAttrProof[attrKey];
+      let newKeyName = attrRequest[attrKey]['name'];
+      inclusionCriteriaAnswers[newKeyName] = attrValue['raw'];
+    }
+    return inclusionCriteriaAnswers;
+  }
+
+  private calculateScoreAllCriteria(
+    programCriteria: CustomCriterium[],
+    scoreList: object,
+  ): number {
+    let totalScore = 0;
+    for (let criterium of programCriteria) {
+      let criteriumName = criterium.criterium;
+      if (scoreList[criteriumName]) {
+        let answerPA = scoreList[criteriumName];
+        switch (criterium.answerType) {
+          case 'dropdown': {
+            totalScore =
+              totalScore + this.getScoreForDropDown(criterium, answerPA);
+          }
+          case 'numeric':
+            totalScore =
+              totalScore + this.getScoreForNumeric(criterium, answerPA);
+        }
+      }
+    }
+    return totalScore;
+  }
+
+  private getScoreForDropDown(
+    criterium: CustomCriterium,
+    answerPA: object,
+  ): number {
+    let score = 0;
+    for (let value of criterium.options['options']) {
+      if (value.option === answerPA) {
+        score = criterium.scoring[value.id];
+      }
+    }
+    return score;
+  }
+
+  private getScoreForNumeric(
+    criterium: CustomCriterium,
+    answerPA: number,
+  ): number {
+    let score = 0;
+    if (criterium.scoring['multiplier']) {
+      score = criterium.scoring['multiplier'] * answerPA;
+    }
+    return score;
   }
 }

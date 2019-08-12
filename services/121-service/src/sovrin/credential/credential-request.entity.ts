@@ -1,17 +1,17 @@
 import { ProgramEntity } from './../../programs/program/program.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
-@Entity('credential')
-export class CredentialEntity {
+@Entity('credential_request')
+export class CredentialRequestEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Column()
   public did: string;
 
-  @ManyToOne(type => ProgramEntity, program => program.credentials)
+  @ManyToOne(type => ProgramEntity, program => program.credentialRequests)
   public program: ProgramEntity;
 
-  @Column() // Store credentials encrypted
-  public credential: string;
+  @Column('json', { default: null })
+  public credentialRequest: JSON;
 }

@@ -1,7 +1,7 @@
 var programPost = {
   location: 'Lilongwe',
   countryId: 265,
-  title: 'Pilot program 1a',
+  title: 'pilot_program_1a',
   description: 'Program to help people hit by earthquake examplename',
   startDate: '2020-05-23T18:25:43.511Z',
   endDate: '2021-05-23T18:25:43.511Z',
@@ -19,9 +19,9 @@ var programPost = {
   inclusionCalculationType: 'standard', // Only option for now later, it can also be a fancy algorithm
   customCriteria: [
     {
-      criterium: 'Age',
+      criterium: 'nr_of_children',
       question: {
-        english: 'What is your age?',
+        english: 'How many children do you have?',
         nyanja: 'Zaka zanu ndi zingati?',
       },
       answerType: 'numeric',
@@ -34,7 +34,7 @@ var programPost = {
       },
     },
     {
-      criterium: 'RoofType',
+      criterium: 'roof_type',
       question: {
         english: 'What type is your roof?',
         nyanja: 'Denga lanu ndi lotani?',

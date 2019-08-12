@@ -38,7 +38,9 @@ export class CreateConnectionController {
   @ApiOperation({ title: 'Create connection' })
   @ApiResponse({ status: 200, description: 'Created connection' })
   @Post()
-  public async create(@Body() didVerMeta: ConnectionReponseDto): Promise<ConnectionEntity> {
+  public async create(
+    @Body() didVerMeta: ConnectionReponseDto,
+  ): Promise<ConnectionEntity> {
     return await this.createConnectionService.create(didVerMeta);
   }
 
@@ -61,8 +63,12 @@ export class CreateConnectionController {
   @ApiOperation({ title: 'Initiate connection server-side' })
   @ApiResponse({ status: 200, description: 'Sent connection request' })
   @Post('/initiate/serverside')
-  public async initiateServerside(@Param() params, @Body() passwordData: PasswordDto): Promise<any> {
-    return await this.createConnectionService.initiateServerside(passwordData.password);
+  public async initiateServerside(
+    @Param() params,
+    @Body() passwordData: PasswordDto,
+  ): Promise<any> {
+    return await this.createConnectionService.initiateServerside(
+      passwordData.password,
+    );
   }
-
 }

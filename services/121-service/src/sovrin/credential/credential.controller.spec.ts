@@ -11,6 +11,18 @@ const did = {
 const encryptedMessage = {
   message: 'encrypted:example',
 };
+
+const credRequest = {
+  did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
+  programId: 1,
+  encryptedCredentialRequest: 'encrypted:example',
+};
+
+const cred = {
+  did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
+  programId: 1,
+  credentialJson: JSON.parse('{ "encrypted" :"example" }'),
+};
 class CredentialnServiceMock {
   public async getOffer(did: string): Promise<EncryptedMessageDto> {
     did;
@@ -77,7 +89,7 @@ describe('Credential Controller', (): void => {
         .spyOn(credentialService, 'request')
         .mockImplementation((): Promise<void> => Promise.resolve());
 
-      await credentialController.request(encryptedMessage);
+      await credentialController.request(credRequest);
       expect(spy).toHaveBeenCalled();
     });
   });
@@ -88,7 +100,7 @@ describe('Credential Controller', (): void => {
         .spyOn(credentialService, 'issue')
         .mockImplementation((): Promise<void> => Promise.resolve());
 
-      await credentialController.issue({});
+      await credentialController.issue(cred);
       expect(spy).toHaveBeenCalled();
     });
   });

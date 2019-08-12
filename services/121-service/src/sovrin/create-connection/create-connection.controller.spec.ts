@@ -23,7 +23,9 @@ const newConnection = {
   did: 'xxx',
   programsEnrolled: [],
   programsIncluded: [],
-}
+  programsExcluded: [],
+  credRequest: JSON.parse('{}'),
+};
 
 const newDidInfo = {
   message: 'encrypted:example',

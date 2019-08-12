@@ -8,14 +8,10 @@ import { StandardCriteriumModule } from './programs/standard-criterium/standard-
 import { UserModule } from './user/user.module';
 import { CountryModule } from './programs/country/country.module';
 import { HealthModule } from './health.module';
-import { EnrollmentModule } from './enrollment/enrollment.module';
-import { CreateConnectionController } from './sovrin/create-connection/create-connection.controller';
-import { CreateConnectionService } from './sovrin/create-connection/create-connection.service';
 import { CreateConnectionModule } from './sovrin/create-connection/create-connection.module';
-import { CredentialController } from './sovrin/credential/credential.controller';
-import { CredentialService } from './sovrin/credential/credential.service';
 import { CredentialModule } from './sovrin/credential/credential.module';
 import { SchemaService } from './sovrin/schema/schema.service';
+import { ProofModule } from './sovrin/proof/proof.module';
 
 @Module({
   imports: [
@@ -25,10 +21,10 @@ import { SchemaService } from './sovrin/schema/schema.service';
     UserModule,
     CountryModule,
     HealthModule,
-    EnrollmentModule,
     AppointmentModule,
     CreateConnectionModule,
     CredentialModule,
+    ProofModule,
   ],
   controllers: [
     AppController,
@@ -36,9 +32,9 @@ import { SchemaService } from './sovrin/schema/schema.service';
     // CredentialController,
   ],
   providers: [
-    // CreateConnectionService, 
-    // CredentialService, 
-    SchemaService
+    // CreateConnectionService,
+    // CredentialService,
+    SchemaService,
   ],
 })
 export class ApplicationModule {
