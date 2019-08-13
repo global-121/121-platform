@@ -11,34 +11,10 @@
   <details class="debug--container" *ngIf="isDebug">
     <summary class="debug--toggle">DEBUG:</summary>
 
-    ...
+    <ion-button (click)="sayHello()">Hello!</ion-button>
+
 
   </details>
-
-  <dialogue-turn>
-    Introduction.
-  </dialogue-turn>
-  <dialogue-turn isConnected="true">
-    Question?
-  </dialogue-turn>
-
-  <dialogue-turn actor="self">
-    My answer:
-    <ion-radio-group>
-      <ion-item color="light">
-        <ion-label for="test1">Option 1</ion-label>
-        <ion-radio id="test1"></ion-radio>
-      </ion-item>
-      <ion-item color="light">
-        <ion-label for="test1">Option 2</ion-label>
-        <ion-radio id="test1"></ion-radio>
-      </ion-item>
-    </ion-radio-group>
-  </dialogue-turn>
-
-  <dialogue-turn actor="ho">
-    👋
-  </dialogue-turn>
 
   <dialogue-turn>
     <ion-button (click)="getCountries()">Test Get Countries API</ion-button>
@@ -67,4 +43,17 @@
       </ion-item>
     </ion-radio-group>
   </dialogue-turn>
+
+
+
+  <div *ngFor="let turn of conversation; index as i;">
+    <dialogue-turn [actor]="turn.actor"
+                   [isConnected]="turn.isConnected"
+    >
+      {{ turn.content }}
+    </dialogue-turn>
+  </div>
+
+  <ion-button (click)="sayHello()">Hello!</ion-button>
+
 </ion-content>
