@@ -11,11 +11,10 @@ export class CountryService {
   private readonly countryRepository: Repository<CountryEntity>;
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-  public constructor() {}
+  public constructor() { }
 
   public async findAll(): Promise<CountryEntity[]> {
     let countries = await this.countryRepository.find();
-    console.log(countries);
     return countries;
   }
 

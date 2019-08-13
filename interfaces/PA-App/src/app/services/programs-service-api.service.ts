@@ -30,12 +30,14 @@ export class ProgramsServiceApiService {
       true
     ).pipe(
       map((response) => {
+
         console.log('response: ', response);
 
         const user = response.user;
 
         if (user && user.token) {
           this.jwtService.saveToken(user.token);
+
         }
       })
     );
@@ -43,24 +45,22 @@ export class ProgramsServiceApiService {
 
   getCountries(): Observable<any[]> {
     return this.apiService.get(
-      environment.url_121_service_api,                    
-      '/programs/countrys'
+      environment.url_121_service_api,
+      '/programs/countries/all'
     ).pipe(
       map((response) => {
-        //Somehow the endpoint gives no response (needs to be fixed in back-end)
-        // return response;
-        return [{"id": 1, "country": "Malawi"},{"id": 2, "country": "Ethiopia"}];
+        // Somehow the endpoint gives no response (needs to be fixed in back-end)
+        return response;
       })
     );
   }
 
   getAllPrograms(): Observable<Program[]> {
     return this.apiService.get(
-      environment.url_121_service_api,                    
+      environment.url_121_service_api,
       '/programs'
     ).pipe(
       map((response) => {
-        console.log(response);
         return response.programs;
       })
     );
@@ -68,11 +68,10 @@ export class ProgramsServiceApiService {
 
   getProgramsByCountryId(countryId: number): Observable<Program[]> {
     return this.apiService.get(
-      environment.url_121_service_api,                    
-      '/programs?countryId='+countryId
+      environment.url_121_service_api,
+      '/programs?countryId=' + countryId
     ).pipe(
       map((response) => {
-        console.log(response);
         return response.programs;
       })
     );
