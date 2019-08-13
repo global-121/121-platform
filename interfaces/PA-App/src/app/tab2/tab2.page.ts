@@ -11,6 +11,8 @@ export class Tab2Page {
   public countries: any = null;
   public countryChoice: number = null;
   public programs: any = null;
+  public programChoice: number = null;
+  public timeslots: any = null;
   constructor(
     public programsService: ProgramsServiceApiService,
   ) { }
@@ -37,5 +39,15 @@ export class Tab2Page {
     });
   }
 
+  public getTimeslots(programId: number): any {
+    this.programsService.getTimeslots(programId).subscribe(response => {
+      this.timeslots = response[0];
+    });
+  }
+
+  public postAppointment(timeslotId: number, did: string): any {
+    this.programsService.postAppointment(timeslotId, did).subscribe(response => {
+    });
+  }
 
 }

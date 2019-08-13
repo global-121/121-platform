@@ -11,10 +11,11 @@ import { InterfaceScript } from './scripts.module';
 import * as crypto from 'crypto';
 import programExample from '../../examples/program-post.json';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
+import { CountryEntity } from '../programs/country/country.entity';
 
 @Injectable()
 export class Seed implements InterfaceScript {
-  public constructor(private connection: Connection) {}
+  public constructor(private connection: Connection) { }
 
   public async run(): Promise<void> {
     await this.connection.dropDatabase();
@@ -39,7 +40,7 @@ export class Seed implements InterfaceScript {
     await userRepository.save([
       {
         username: USERCONFIG.usernameFieldworker,
-        role: 'fieldworker',
+        role: 'aidworker',
         email: USERCONFIG.emailFieldworker,
         countryId: 1,
         password: crypto
@@ -49,12 +50,20 @@ export class Seed implements InterfaceScript {
       },
     ]);
 
+    // ***** CREATE COUNTRIES *****
+
+    const countryRepository = this.connection.getRepository(
+      CountryEntity,
+    );
+    await countryRepository.save([{ country: 'Malawi' }]);
+    await countryRepository.save([{ country: 'Ethiopia' }]);
+
     // ***** CREATE A CONNECTION *****
 
-    const connectrionRepository = this.connection.getRepository(
+    const connectionRepository = this.connection.getRepository(
       ConnectionEntity,
     );
-    await connectrionRepository.save([
+    await connectionRepository.save([
       {
         did: 'did:sov:1wJPyULfLLnYTEFYzByfUR',
         programsEnrolled: [1],
@@ -87,19 +96,33 @@ export class Seed implements InterfaceScript {
 
     await programRepository.save(program);
 
+    // ***** ASSIGN AIDWORKER TO PROGRAM *****
+    const program_d = await programRepository.findOne(1); // Assign programId=1 ...
+    const user_d = await userRepository.findOne(2); // ... to userId=2 (aidworker)
+    user_d.assignedProgram = program_d;
+    await userRepository.save(user_d);
+
+
     // ***** CREATE AVAILABILITY FOR AN AIDWORKER *****
     const availabilityRepository = this.connection.getRepository(
       AvailabilityEntity,
     );
 
-    const availability = new AvailabilityEntity();
-    availability.startDate = new Date();
-    availability.endDate = new Date();
-    availability.endDate.setDate(availability.endDate.getDate() + 1);
-    availability.location = 'London';
-    const aidworker = await userRepository.findOne(2);
-    availability.aidworker = aidworker;
-    const newAvailability = await availabilityRepository.save(availability);
+    let newAvailability;
+    for (var item of [0, 1]) {
+      let availability = new AvailabilityEntity();
+      availability.startDate = new Date();
+      availability.startDate.setDate(availability.startDate.getDate() + item);
+      availability.endDate = new Date();
+      availability.endDate.setDate(availability.endDate.getDate() + item + 1);
+      availability.location = 'London';
+      let aidworker = await userRepository.findOne(2);
+      availability.aidworker = aidworker;
+      newAvailability = await availabilityRepository.save(availability);
+    }
+
+
+
 
     // ***** CREATE APPOINTMENT *****
     const appointmentRepository = this.connection.getRepository(

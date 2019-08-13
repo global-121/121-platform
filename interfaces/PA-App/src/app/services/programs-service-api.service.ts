@@ -76,4 +76,30 @@ export class ProgramsServiceApiService {
       })
     );
   }
+
+  getTimeslots(programId: number): Observable<Program[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      '/appointment/availability/' + programId
+    ).pipe(
+      map((response) => {
+        return response;
+      })
+    );
+  }
+
+  postAppointment(timeslotId: number, did: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/appointment/register/' + timeslotId,
+      {
+        did
+      },
+      true
+    ).pipe(
+      map((response) => {
+        console.log('response: ', response);
+      })
+    );
+  }
 }
