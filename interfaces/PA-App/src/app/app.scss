@@ -1,6 +1,23 @@
 // App Styles
 // ----------------------------------------------------------------------------
-// Put style rules here that you want to apply to the entire application. These 
-// styles are for the entire app and not just one component. Additionally, this 
-// file can hold Sass mixins, functions, and placeholder classes to be imported 
+// Put style rules here that you want to apply to the entire application. These
+// styles are for the entire app and not just one component. Additionally, this
+// file can hold Sass mixins, functions, and placeholder classes to be imported
 // and used throughout the application.
+
+.debug--container {
+  position: relative;
+  margin: 1em;
+  color: var(--ion-color-medium-shade);
+
+  &[open] {
+    outline: 2px dashed;
+    padding: 1em;
+  }
+}
+.debug--toggle {
+  position: absolute;
+  top: -1.5em;
+  left: 0;
+  right: 0;
+}
