@@ -3,9 +3,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { Tab2Page } from './tab2.page';
-import mockCountriesResponse from '../mocks/api.countries.mock';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { TranslateModule } from '@ngx-translate/core';
+
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import mockCountriesResponse from '../mocks/api.countries.mock';
 
 describe('Tab2Page', () => {
   let component: Tab2Page;
@@ -33,18 +34,21 @@ describe('Tab2Page', () => {
     }).compileComponents();
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(Tab2Page);
+  beforeEach(async () => {
+    fixture = await TestBed.createComponent(Tab2Page);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
-  // it('should request all programs from the server', () => {
-  //   expect(getAllCountriesSpy.calls.any()).toBe(true, 'getAllCountries called');
-  // });
+  it('should request all programs from the server', () => {
+    const getCountriesButton = document.getElementById('debugGetCountries');
+    getCountriesButton.click();
+
+    expect(getAllCountriesSpy.calls.any()).toBe(true, 'getAllCountries called');
+  });
 
 });
