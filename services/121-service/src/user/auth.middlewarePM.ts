@@ -9,7 +9,7 @@ import { UserService } from './user.service';
 
 @Injectable()
 export class AuthMiddlewarePM implements NestMiddleware {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   async use(req: Request, res: Response, next: NextFunction) {
     const authHeaders = req.headers.authorization;
@@ -41,7 +41,7 @@ export class AuthMiddlewarePM implements NestMiddleware {
 
     } else {
       if (AUTH_DEBUG) {
-        const user = await this.userService.findByEmail('test@test.nl');
+        const user = await this.userService.findByEmail('admin@test.nl');
         req.user = user.user;
         next();
       } else {

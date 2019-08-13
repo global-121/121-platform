@@ -13,7 +13,7 @@ import {
 
 @ApiBearerAuth()
 @ApiUseTags('programs')
-@Controller('programs/countrys')
+@Controller('programs/countries')
 export class CountryController {
   private readonly countryService: CountryService;
   public constructor(countryService: CountryService) {
@@ -21,7 +21,8 @@ export class CountryController {
   }
 
   @ApiOperation({ title: 'Get all countries' })
-  @Get()
+  @ApiResponse({ status: 200, description: 'Got all countries' })
+  @Get('/all')
   public async findAll(): Promise<CountryEntity[]> {
     return await this.countryService.findAll();
   }
