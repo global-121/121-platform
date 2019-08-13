@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar color="primary">
     <ion-title>
-      Tab Two
+      {{ 'PERSONAL'|translate }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -30,10 +30,9 @@
   </dialogue-turn>
 
   <dialogue-turn>
-    <ion-button (click)="getProgramsByCountryId(countryChoice)"
-      >Test Programs API</ion-button
-    >
+    <ion-button (click)="getProgramsByCountryId(countryChoice)">Test Programs API</ion-button>
   </dialogue-turn>
+
   <dialogue-turn actor="self">
     Select a program:
     <ion-radio-group>

@@ -4,11 +4,11 @@ import { environment } from 'src/environments/environment';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss'],
+  selector: 'app-personal',
+  templateUrl: 'personal.page.html',
+  styleUrls: ['personal.page.scss'],
 })
-export class Tab2Page {
+export class PersonalPage {
   @ViewChild(IonContent)
   public ionContent: IonContent;
 

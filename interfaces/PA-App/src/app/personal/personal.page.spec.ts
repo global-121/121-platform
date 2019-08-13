@@ -2,15 +2,15 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
-import { Tab2Page } from './tab2.page';
+import { PersonalPage } from './personal.page';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import mockCountriesResponse from '../mocks/api.countries.mock';
 
-describe('Tab2Page', () => {
-  let component: Tab2Page;
-  let fixture: ComponentFixture<Tab2Page>;
+describe('PersonalPage', () => {
+  let component: PersonalPage;
+  let fixture: ComponentFixture<PersonalPage>;
 
   let getAllCountriesSpy;
 
@@ -20,7 +20,7 @@ describe('Tab2Page', () => {
     getAllCountriesSpy = programsServiceApiService.getCountries.and.returnValue(of(mockCountriesResponse.countries));
 
     TestBed.configureTestingModule({
-      declarations: [Tab2Page],
+      declarations: [PersonalPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         TranslateModule.forRoot(),
@@ -35,7 +35,7 @@ describe('Tab2Page', () => {
   }));
 
   beforeEach(async () => {
-    fixture = await TestBed.createComponent(Tab2Page);
+    fixture = await TestBed.createComponent(PersonalPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
