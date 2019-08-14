@@ -251,8 +251,6 @@ export class ProgramService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, 400);
     }
-
-    console.log(connection.programsIncluded);
     let inclusionStatus: InclusionStatus;
     if (
       connection.programsIncluded.indexOf(parseInt(String(programId), 10)) > -1
