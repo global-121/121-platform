@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { TranslateService } from '@ngx-translate/core';
+import { UpdateService } from './services/update.service';
 
 @Component({
   selector: 'app-root',
@@ -15,10 +16,11 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private translate: TranslateService
+    private translate: TranslateService,
   ) {
     this.initializeApp();
     this.initializeLanguages();
+    this.initializeUpdateChecker();
   }
 
   initializeApp() {
@@ -31,5 +33,9 @@ export class AppComponent {
   initializeLanguages() {
     this.translate.setDefaultLang('en');
     this.translate.use('en');
+  }
+
+  initializeUpdateChecker() {
+    // this.updateService.checkInclusion(1);
   }
 }

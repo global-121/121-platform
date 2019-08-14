@@ -7,74 +7,83 @@ import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
 
 import { Program } from '../models/program.model';
+import { InclusionStatus } from '../models/inclusion-status.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ProgramsServiceApiService {
-  constructor(
-    private apiService: ApiService,
-    private jwtService: JwtService
-  ) { }
+  constructor(private apiService: ApiService, private jwtService: JwtService) { }
 
   login(email: string, password: string): Observable<any> {
     console.log('ProgramsService : login()');
 
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/user/login',
-      {
-        email,
-        password
-      },
-      true
-    ).pipe(
-      map((response) => {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/user/login',
+        {
+          email,
+          password
+        },
+        true
+      )
+      .pipe(
+        map(response => {
+          console.log('response: ', response);
 
-        console.log('response: ', response);
+          const user = response.user;
 
-        const user = response.user;
-
-        if (user && user.token) {
-          this.jwtService.saveToken(user.token);
-
-        }
-      })
-    );
+          if (user && user.token) {
+            this.jwtService.saveToken(user.token);
+          }
+        })
+      );
   }
 
   getCountries(): Observable<any[]> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      '/programs/countries/all'
-    ).pipe(
-      map((response) => {
-        // Somehow the endpoint gives no response (needs to be fixed in back-end)
-        return response;
-      })
-    );
+    return this.apiService
+      .get(environment.url_121_service_api, '/programs/countries/all')
+      .pipe(
+        map(response => {
+          // Somehow the endpoint gives no response (needs to be fixed in back-end)
+          return response;
+        })
+      );
   }
 
   getAllPrograms(): Observable<Program[]> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      '/programs'
-    ).pipe(
-      map((response) => {
-        return response.programs;
-      })
-    );
+    return this.apiService
+      .get(environment.url_121_service_api, '/programs')
+      .pipe(
+        map(response => {
+          return response.programs;
+        })
+      );
   }
 
   getProgramsByCountryId(countryId: number): Observable<Program[]> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      '/programs?countryId=' + countryId
-    ).pipe(
-      map((response) => {
-        return response.programs;
-      })
-    );
+    return this.apiService
+      .get(environment.url_121_service_api, '/programs?countryId=' + countryId)
+      .pipe(
+        map(response => {
+          return response.programs;
+        })
+      );
+  }
+
+  getInclusionStatus(programId: number): Observable<InclusionStatus> {
+    const did = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        '/programs/inclusionStatus/' + programId + '/' + did
+      )
+      .pipe(
+        map(response => {
+          return response;
+        })
+      );
   }
 
   getTimeslots(programId: number): Observable<Program[]> {
