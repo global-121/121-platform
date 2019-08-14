@@ -8,8 +8,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { UpdateService } from './services/update.service';
 
 @Component({
-  selector: "app-root",
-  templateUrl: "app.component.html"
+  selector: 'app-root',
+  templateUrl: 'app.component.html'
 })
 export class AppComponent {
   constructor(
@@ -32,8 +32,8 @@ export class AppComponent {
   }
 
   initializeLanguages() {
-    this.translate.setDefaultLang("en");
-    this.translate.use("en");
+    this.translate.setDefaultLang('en');
+    this.translate.use('en');
   }
 
   initializeUpdateChecker() {
