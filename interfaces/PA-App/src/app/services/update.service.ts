@@ -13,6 +13,7 @@ export class UpdateService {
   updateSpeedMs = 3000;
 
   constructor(public programsService: ProgramsServiceApiService) { }
+
   checkInclusion(programId: number): void {
     const allInclusion: InclusionStorage[] = this.getLocalStorageArray('inclusion');
     for (const inclusion of allInclusion) {
