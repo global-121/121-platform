@@ -37,7 +37,6 @@ export class AppComponent {
   }
 
   initializeUpdateChecker() {
-    localStorage.setItem("inclusion", JSON.stringify([]));
     this.updateService.checkInclusion(1);
   }
 }
