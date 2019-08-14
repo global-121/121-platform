@@ -17,6 +17,8 @@ export class PersonalPage {
   public countries: any = null;
   public countryChoice: number = null;
   public programs: any = null;
+  public programChoice: number = null;
+  public timeslots: any = null;
 
   public conversation = [];
 
@@ -41,6 +43,17 @@ export class PersonalPage {
   public getProgramsByCountryId(countryId: number): any {
     this.programsService.getProgramsByCountryId(countryId).subscribe(response => {
       this.programs = response;
+    });
+  }
+
+  public getTimeslots(programId: number): any {
+    this.programsService.getTimeslots(programId).subscribe(response => {
+      this.timeslots = response[0];
+    });
+  }
+
+  public postAppointment(timeslotId: number, did: string): any {
+    this.programsService.postAppointment(timeslotId, did).subscribe(response => {
     });
   }
 

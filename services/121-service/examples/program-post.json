@@ -1,6 +1,6 @@
 {
     "location": "Lilongwe",
-    "countryId": 265,
+    "countryId": 1,
     "title": "pilot_program_1a",
     "description": "Program to help people hit by earthquake examplename",
     "startDate": "2020-05-23T18:25:43.511Z",
@@ -17,7 +17,8 @@
         "financialServiceProviders": []
     },
     "inclusionCalculationType": "standard",
-    "customCriteria": [{
+    "customCriteria": [
+        {
             "criterium": "nr_of_children",
             "question": {
                 "english": "How many children do you have?",
@@ -40,7 +41,8 @@
             },
             "answerType": "dropdown",
             "criteriumType": "standard",
-            "options": [{
+            "options": [
+                {
                     "id": 0,
                     "option": "steel",
                     "name": {

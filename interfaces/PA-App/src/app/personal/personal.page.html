@@ -30,19 +30,41 @@
   </dialogue-turn>
 
   <dialogue-turn>
-    <ion-button (click)="getProgramsByCountryId(countryChoice)">Test Programs API</ion-button>
+    <ion-button (click)="getProgramsByCountryId(countryChoice)"
+      >Test Get Programs API</ion-button
+    >
   </dialogue-turn>
 
   <dialogue-turn actor="self">
     Select a program:
-    <ion-radio-group>
+    <ion-radio-group [(ngModel)]="programChoice">
       <ion-item *ngFor="let program of programs; index as i" color="light">
-        <ion-label for="test1">Program #{{ program.id }}</ion-label>
-        <ion-radio id="test1"></ion-radio>
+        <ion-label for="test2">Program #{{ program.id }}</ion-label>
+        <ion-radio id="test2" value="{{ program.id }}"></ion-radio>
       </ion-item>
     </ion-radio-group>
   </dialogue-turn>
 
+  <dialogue-turn>
+    <ion-button (click)="getTimeslots(programChoice)"
+      >Test Get Timeslots API</ion-button
+    >
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    Select a timeslot:
+    <ion-radio-group [(ngModel)]="timeslotChoice">
+      <ion-item *ngFor="let timeslot of timeslots; index as i" color="light">
+        <ion-label for="test3">Timeslot {{timeslot.id}}: {{timeslot.startDate}} - {{timeslot.endDate}} ({{ timeslot.location }})</ion-label>
+        <ion-radio id="test3" value="{{ timeslot.id }}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </dialogue-turn>
+
+  <dialogue-turn>
+    <ion-button (click)="postAppointment(timeslotChoice,'did:sov:2wJPyULfLLnYTEFYzByfUR')"
+      >Test Post Appointment API</ion-button
+    >
+  </dialogue-turn>
 
 
   <div *ngFor="let turn of conversation; index as i;">
