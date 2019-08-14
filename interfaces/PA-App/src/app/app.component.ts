@@ -17,7 +17,6 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private translate: TranslateService,
-    private updateService: UpdateService
   ) {
     this.initializeApp();
     this.initializeLanguages();
@@ -37,6 +36,6 @@ export class AppComponent {
   }
 
   initializeUpdateChecker() {
-    this.updateService.checkInclusion(1);
+    // this.updateService.checkInclusion(1);
   }
 }

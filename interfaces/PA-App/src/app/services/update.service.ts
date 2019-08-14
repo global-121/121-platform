@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { timer } from 'rxjs';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { InclusionStorage } from '../models/local-storage/inclusion-storage.model';
 import { InclusionStatus } from '../models/inclusion-status.model';
