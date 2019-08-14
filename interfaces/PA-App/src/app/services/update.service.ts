@@ -3,48 +3,55 @@ import { Observable } from 'rxjs';
 import { timer } from 'rxjs';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { InclusionStorage } from '../models/local-storage/inclusion-storage.model';
+import { InclusionStatus } from '../models/inclusion-status.model';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class UpdateService {
+  updateSpeedMs = 3000;
+
   constructor(public programsService: ProgramsServiceApiService) { }
   checkInclusion(programId: number): void {
-    let allInclusion: InclusionStorage[];
-    allInclusion = this.getLocalStorageArray('inclusion');
+    const allInclusion: InclusionStorage[] = this.getLocalStorageArray('inclusion');
     for (const inclusion of allInclusion) {
       if (inclusion.programId === programId || inclusion.programId in ['excluded', 'included']) {
         return;
       }
     }
-    this.programsService.getInclusionStatus(programId).subscribe(response => {
-      if (response.status === 'unavailable') {
-        const secondsWait = 3;
-        setTimeout(() => {
-          console.log(new Date());
-          this.checkInclusion(programId);
-        }, secondsWait * 1000);
-      } else {
-        const inclusionState: InclusionStorage = {
-          programId: programId,
-          status: response.status
-        };
-        allInclusion.push(inclusionState);
-        console.log(allInclusion);
-        this.setLocalStorage('inclusion', allInclusion)
+    this.listenForInclusion(programId, allInclusion);
+  }
 
+  listenForInclusion(programId: number, allInclusion: InclusionStorage[]): void {
+    this.programsService.getInclusionStatus(programId).subscribe(response => {
+      console.log(response);
+      if (response.status === 'unavailable') {
+        setTimeout(() => {
+          this.listenForInclusion(programId, allInclusion);
+        }, this.updateSpeedMs);
+      } else if (response.status in ['included', 'excluded']) {
+        this.storeInclusion(response, programId, allInclusion);
       }
     });
   }
 
-  getLocalStorageArray(itemKey: string): [any] {
-    let value: [object];
+  storeInclusion(response: InclusionStatus, programId: number, allInclusion: InclusionStorage[]) {
+    const inclusionState: InclusionStorage = {
+      programId,
+      status: response.status
+    };
+    allInclusion.push(inclusionState);
+    this.setLocalStorage('inclusion', allInclusion);
+  }
+
+  getLocalStorageArray(itemKey: string): any {
+    let value: [];
     const valueString = localStorage.getItem(itemKey);
     if (valueString) {
       value = JSON.parse(valueString);
     } else {
-      value = [new Object()];
+      value = [];
       localStorage.setItem(itemKey, JSON.stringify(value));
     }
     return value;
