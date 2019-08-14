@@ -12,6 +12,7 @@ import { CreateProgramDto } from './dto';
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 import { SchemaService } from '../../sovrin/schema/schema.service';
 import proofRequestExample from '../../../examples/proof_request.json';
+import { InclusionStatus } from './dto/inclusion-status.dto';
 
 @Injectable()
 export class ProgramService {
@@ -237,7 +238,7 @@ export class ProgramService {
   public async getInclusionStatus(
     programId: number,
     did: string,
-  ): Promise<boolean> {
+  ): Promise<InclusionStatus> {
     let connection = await this.connectionRepository.findOne({
       where: { did: did },
     });
@@ -251,18 +252,18 @@ export class ProgramService {
       throw new HttpException({ errors }, 400);
     }
 
-    let inclusionStatus: boolean;
+    console.log(connection.programsIncluded);
+    let inclusionStatus: InclusionStatus;
     if (
       connection.programsIncluded.indexOf(parseInt(String(programId), 10)) > -1
     ) {
-      inclusionStatus = true;
+      inclusionStatus = { status : 'included'}
     } else if (
-      connection.programsEnrolled.indexOf(parseInt(String(programId), 10)) > -1
+      connection.programsExcluded.indexOf(parseInt(String(programId), 10)) > -1
     ) {
-      inclusionStatus = false;
+      inclusionStatus = { status : 'excluded'}
     } else {
-      const errors = 'PA not enrolled in this program yet.';
-      throw new HttpException({ errors }, 400);
+      inclusionStatus = { status: 'unavailable' };
     }
     return inclusionStatus;
   }

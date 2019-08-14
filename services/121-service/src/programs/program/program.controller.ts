@@ -25,6 +25,7 @@ import { ProgramEntity } from './program.entity';
 import { DeleteResult } from 'typeorm';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { InculdeMeDto } from './dto/include-me.dto';
+import { InclusionStatus } from './dto/inclusion-status.dto';
 
 @ApiUseTags('programs')
 @Controller('programs')
@@ -140,7 +141,7 @@ export class ProgramController {
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
   @Get('inclusionStatus/:programId/:did')
-  public async inclusionStatus(@Param() params): Promise<any> {
+  public async inclusionStatus(@Param() params): Promise<InclusionStatus> {
     return await this.programService.getInclusionStatus(
       params.programId,
       params.did,
