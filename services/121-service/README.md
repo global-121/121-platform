@@ -8,19 +8,21 @@ The Programs Service is the backend for the _Humanitarian Organization_ web port
 
 Clone the repository
 
-    git clone https://github.com/global-121/121.global.git
+    git clone https://github.com/global-121/121-platform.git
 
 Switch to the repository folder
 
-    cd service/programs-service/
+    cd services/121-service/
 
-Install dependencies
+Install dependencies (NOT NEEDED, SINCE USING DOCKER)
 
     npm install
 
-Copy config file and set JsonWebToken secret key
+Copy a few secret files and get the right passwords from someone who knows:
 
     cp src/secrets.ts.example src/secrets.ts
+    cp secrets/DID_generation/import-HO-wallet.txt.example secrets/DID_generation/import-HO-wallet.txt
+    cp ormconfig.json.example ormconfig.json
 
 ---
 
@@ -36,26 +38,6 @@ Create a new local Postgres-database through Docker with:
 
     docker run --name 121db -p 5438:5432 -e POSTGRES_USER=global121 -e POSTGRES_PASSWORD=global121 -e POSTGRES_DB=global121 -t --restart always --network 121network -v ${PWD}/postgresql.conf:/etc/postgresql.conf -d postgres:9.6 -c 'config_file=/etc/postgresql.conf'
 
-Copy TypeORM config example file for database settings
-
-    cp ormconfig.json.example ormconfig.json
-
-& fill in the password.
-
-```json
-{
-  "type": "postgres",
-  "host": "121db",
-  "port": 5432,
-  "username": "global121",
-  "password": "<secret>",
-  "database": "global121",
-  "entities": ["src/**/**.entity{.ts,.js}"],
-  "dropSchema": true,
-  "synchronize": true
-}
-```
-
 On application start, tables for all entities will be created automatically.
 
 When running this setup locally, you can access the dockerized database for example through pgAdmin (or any other GUI) on port 5438 (as that's where the docker container's port forwarding goes).
@@ -68,16 +50,23 @@ Create the Docker image from the Dockerfile in this folder through:
 
     docker build -t 121-node .
 
-Start the app Docker container through (NOTE: you have to change 'C:/github/121.global' to your own path for the repository-root folder):
+Start the app Docker container through (NOTE: you have to change 'C:/github/121-platform' to your own path for the repository-root 121-platform folder):
 
-    docker run --name=121-service -v C:/github/121.global:/home/121 -p 3000:3000 -it --network 121network 121-node
+    docker run --name=121-service -v C:/github/121-platform:/home/121 -p 3000:3000 -it --network 121network 121-node
 
 If you've already created the container before and just want to start again:
 
     docker start -i 121-service
 
-The Docker container automatically runs `npm start` (defined in Dockerfile)
-Possibly rebuild/rerun by changing this to:
+The Docker container currently in development phase does NOT run an `npm start` command.
+
+Once in the Docker-container do (only the first time, because of the docker-volume the node_modules will also be copied to your local folder):
+
+- `cd ../../integration-tools/tykn-id`
+- `npm ci`
+- `cd ../../services/121-service` (to go back to application root-folder)
+
+Run the application through:
 
 - `npm run start:dev` (uses `tswatch` instead of `nodemon`)
 - `npm run start:watch` (to use with `nodemon` for restart upon change)
@@ -102,13 +91,11 @@ Access Swagger API via `http://localhost:3000/docs`
 
 OPTIONAL: To seed the database with user run the following command:
 
-
 ```
 docker exec -i 121-service  npx ts-node src/scripts seed
 ```
 
 This user can be customized in secrets.ts
-
 
 #### Admin vs Fieldworker
 

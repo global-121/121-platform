@@ -13,7 +13,7 @@ export class CreateConnectionService {
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
 
-  public constructor() {}
+  public constructor() { }
 
   public async testSDK(): Promise<void> {
     const pathToConfig = '../../integration-tools/tykn-id/ci/sampleconfig.json';
@@ -21,7 +21,7 @@ export class CreateConnectionService {
     await tyknid.showDids();
     // await tyknid.createConnection("H6drUiac2nETrfJCVZW2he","H6drUiac2nETrfJCVZW2heRCJEsRcjny2CpfxAcehyD1","sample-metadata")
   }
-  
+
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
     // tyknid.getConnectionRequest(connectionResponse.did, connectionResponse.verkey, connectionResponse.meta)`;
