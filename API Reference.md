@@ -1,3 +1,5 @@
+Here's a list of APIs we're working on, this API can be consumed through different interfaces regardless if its web or mobile app. 
+Please notice that each API endpoint respects security context, so only authorized users may call a specific endpoint.
 <html xmlns:v="urn:schemas-microsoft-com:vml"
 xmlns:o="urn:schemas-microsoft-com:office:office"
 xmlns:w="urn:schemas-microsoft-com:office:word"
