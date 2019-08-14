@@ -22,6 +22,10 @@ export class UpdateService {
     this.listenForInclusion(programId, allInclusion);
   }
 
+  checkCredential(programId: number): void {
+
+  }
+
   listenForInclusion(programId: number, allInclusion: InclusionStorage[]): void {
     this.programsService.getInclusionStatus(programId).subscribe(response => {
       console.log(response);
