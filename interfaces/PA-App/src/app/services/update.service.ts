@@ -2,20 +2,36 @@ import { Injectable } from '@angular/core';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { InclusionStorage } from '../models/local-storage/inclusion-storage.model';
 import { InclusionStatus } from '../models/inclusion-status.model';
+import { catchError } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class UpdateService {
-  updateSpeedMs = 3000;
+  public updateSpeedMs = 3000;
+  public inclusionStatus = {
+    included: 'included',
+    excluded: 'excluded',
+    unavailable: 'unavailable'
+  };
+  public receivedStatus = {
+    received: 'received',
+    unavailable: 'unavailable'
+  };
+  public inclusionStatusStorage = 'inclusionStatus';
+  public credentialStatusStorage = 'credentialStatus';
+  public didStorage = 'did';
 
   constructor(public programsService: ProgramsServiceApiService) { }
 
   checkInclusion(programId: number): void {
-    const allInclusion: InclusionStorage[] = this.getLocalStorageArray('inclusion');
+    const allInclusion: InclusionStorage[] = this.getLocalStorageArray(this.inclusionStatusStorage);
     for (const inclusion of allInclusion) {
-      if (inclusion.programId === programId || inclusion.programId in ['excluded', 'included']) {
+      console.log(inclusion);
+      if (inclusion.programId === programId &&
+        (inclusion.status === this.inclusionStatus.included || inclusion.status === this.inclusionStatus.included)) {
         return;
       }
     }
@@ -23,29 +39,48 @@ export class UpdateService {
   }
 
   checkCredential(programId: number): void {
-
+    const allCredentialState = this.getLocalStorageArray(this.credentialStatusStorage);
+    console.log(allCredentialState);
+    for (const credentialState of allCredentialState) {
+      if (credentialState.programId === programId && credentialState.status === this.receivedStatus.received) {
+        return;
+      }
+    }
+    this.listenForCredential(programId, allCredentialState);
   }
 
   listenForInclusion(programId: number, allInclusion: InclusionStorage[]): void {
-    this.programsService.getInclusionStatus(programId).subscribe(response => {
-      console.log(response);
-      if (response.status === 'unavailable') {
+    const did = localStorage.getItem(this.didStorage);
+    this.programsService.getInclusionStatus(programId, did).subscribe(response => {
+      if (response.status === this.inclusionStatus.unavailable) {
         setTimeout(() => {
           this.listenForInclusion(programId, allInclusion);
         }, this.updateSpeedMs);
-      } else if (response.status in ['included', 'excluded']) {
-        this.storeInclusion(response, programId, allInclusion);
+      } else if (response.status === this.inclusionStatus.included || response.status === this.inclusionStatus.excluded) {
+        this.storeStatus(response.status, programId, allInclusion, this.inclusionStatusStorage);
       }
     });
   }
 
-  storeInclusion(response: InclusionStatus, programId: number, allInclusion: InclusionStorage[]) {
-    const inclusionState: InclusionStorage = {
+  listenForCredential(programId: number, allCredentialState: any): void {
+    const did = localStorage.getItem(this.didStorage);
+    this.programsService.getCredential(did).subscribe(response => {
+      this.storeStatus(this.receivedStatus.received, programId, allCredentialState, this.credentialStatusStorage);
+    }, err => {
+      setTimeout(() => {
+        console.log('error', err);
+        this.listenForCredential(programId, allCredentialState);
+      }, this.updateSpeedMs);
+    });
+  }
+
+  storeStatus(status: string, programId: number, allState: InclusionStorage[], storageName: string): void {
+    const state: InclusionStorage = {
       programId,
-      status: response.status
+      status,
     };
-    allInclusion.push(inclusionState);
-    this.setLocalStorage('inclusion', allInclusion);
+    allState.push(state);
+    this.setLocalStorage(storageName, allState);
   }
 
   getLocalStorageArray(itemKey: string): any {
