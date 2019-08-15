@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
@@ -72,8 +72,7 @@ export class ProgramsServiceApiService {
       );
   }
 
-  getInclusionStatus(programId: number): Observable<InclusionStatus> {
-    const did = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
+  getInclusionStatus(programId: number, did: string): Observable<InclusionStatus> {
     return this.apiService
       .get(
         environment.url_121_service_api,
@@ -85,6 +84,22 @@ export class ProgramsServiceApiService {
         })
       );
   }
+
+  getCredential(did: string): Observable<any> {
+    console.log('getCredentials');
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        '/sovrin/credential/' + did
+      )
+      .pipe(
+        map(response => {
+          console.log(response, 'map');
+          return response;
+        }),
+      );
+  }
+
 
   getTimeslots(programId: number): Observable<Program[]> {
     return this.apiService.get(

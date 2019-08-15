@@ -181,7 +181,8 @@ export class CredentialService {
       did: did,
     });
     if (oldCredential) {
-      const errors = 'A credential has already been created for this did for this program';
+      const errors =
+        'A credential has already been created for this did for this program';
       throw new HttpException(
         {
           errors,
@@ -196,6 +197,16 @@ export class CredentialService {
     const queryResult = await this.credentialRepository.findOne({
       did: did,
     });
+
+    if (!queryResult) {
+      const errors = 'Credential not found.';
+      throw new HttpException(
+        {
+          errors,
+        },
+        400,
+      );
+    }
     const encrypyedCredential = { message: queryResult.credential };
     return encrypyedCredential;
   }
