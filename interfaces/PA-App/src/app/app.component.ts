@@ -5,7 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { TranslateService } from '@ngx-translate/core';
-import { UpdateService } from './services/update.service';
+// import { UpdateService } from './services/update.service';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +17,7 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private translate: TranslateService,
-    private updateService: UpdateService,
+    // private updateService: UpdateService,
   ) {
     this.initializeApp();
     this.initializeLanguages();
@@ -37,8 +37,8 @@ export class AppComponent {
   }
 
   initializeUpdateChecker() {
-    localStorage.setItem('did', 'did:sov:1wJPyULfLLnYTEFYzByfUR');
-    this.updateService.checkInclusion(1);
-    this.updateService.checkCredential(1);
+    // localStorage.setItem('did', 'did:sov:1wJPyULfLLnYTEFYzByfUR');
+    // this.updateService.checkInclusion(1);
+    // this.updateService.checkCredential(1);
   }
 }
