@@ -11,8 +11,6 @@
   <details class="debug--container" *ngIf="isDebug">
     <summary class="debug--toggle">DEBUG:</summary>
 
-    <ion-button (click)="sayHello()">Hello!</ion-button>
-
 
   </details>
 
@@ -67,14 +65,6 @@
   </dialogue-turn>
 
 
-  <div *ngFor="let turn of conversation; index as i;">
-    <dialogue-turn [actor]="turn.actor"
-                   [isConnected]="turn.isConnected"
-    >
-      {{ turn.content }}
-    </dialogue-turn>
-  </div>
 
-  <ion-button (click)="sayHello()">Hello!</ion-button>
 
 </ion-content>

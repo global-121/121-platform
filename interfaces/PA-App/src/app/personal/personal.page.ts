@@ -21,13 +21,15 @@ export class PersonalPage {
   public programChoice: number = null;
   public timeslots: any = null;
 
-  public conversation = [];
 
-  myTurn = false;
 
   constructor(
     public programsService: ProgramsServiceApiService,
   ) { }
+
+  ionViewDidEnter() {
+    this.scrollDown();
+  }
 
   public getCountries(): any {
     this.programsService.getCountries().subscribe(response => {
@@ -58,38 +60,10 @@ export class PersonalPage {
     });
   }
 
-  getActor(isMe: boolean = false) {
-    return isMe ? 'self' : 'system';
-  }
-
-  getRandomHello() {
-    const hellos = [
-      'hello',
-      'hallo',
-      'hey',
-      'hi',
-      'ola',
-      'allo',
-    ];
-
-    return hellos[Math.floor(Math.random() * hellos.length)];
-  }
-
-  addTurn(theActor: string, theContent: any) {
-    this.conversation.push({
-      actor: theActor,
-      content: theContent,
-    });
-  }
-
-  public sayHello() {
-    console.log('Hello!');
-    this.addTurn(this.getActor(this.myTurn), this.getRandomHello());
-    this.myTurn = !this.myTurn;
-
-    // Wait for the elements to be added to the DOM before scrolling down
+  scrollDown() {
+    // Wait for elements to be added to the DOM before scrolling down
     setTimeout(() => {
-      this.ionContent.scrollToBottom();
+      this.ionContent.scrollToBottom(300);
     }, 100);
   }
 }
