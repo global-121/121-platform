@@ -15,13 +15,15 @@ export class PersonalPage {
 
   public isDebug: boolean = !environment.production;
 
-  public countries: any = null;
-  public countryChoice: number = null;
-  public programs: any = null;
-  public programChoice: number = null;
-  public timeslots: any = null;
+  public countries: any;
+  public countryChoice: number;
+  public countryChoiceName: string;
 
+  public programs: any;
+  public programChoice: number;
 
+  public timeslots: any;
+  public timeslotChoice: number;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -29,6 +31,20 @@ export class PersonalPage {
 
   ionViewDidEnter() {
     this.scrollDown();
+  }
+
+  public getCountryName(countryId: number): string {
+    const country = this.countries.find(item => {
+      return item.id === countryId;
+    });
+
+    return country ? country.country : '';
+  }
+
+  public setCountryChoiceName(countryChoice: string) {
+    const countryId = parseInt(countryChoice, 10);
+
+    this.countryChoiceName = this.getCountryName(countryId);
   }
 
   public getCountries(): any {
@@ -57,6 +73,7 @@ export class PersonalPage {
 
   public postAppointment(timeslotId: number, did: string): any {
     this.programsService.postAppointment(timeslotId, did).subscribe(response => {
+      console.log('response: ', response);
     });
   }
 
