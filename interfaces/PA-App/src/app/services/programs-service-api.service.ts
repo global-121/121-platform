@@ -67,7 +67,7 @@ export class ProgramsServiceApiService {
 
   getProgramsByCountryId(countryId: number): Observable<Program[]> {
     return this.apiService
-      .get(environment.url_121_service_api, '/programs?countryId=' + countryId)
+      .get(environment.url_121_service_api, '/programs/country/' + countryId)
       .pipe(
         map(response => {
           return response.programs;
