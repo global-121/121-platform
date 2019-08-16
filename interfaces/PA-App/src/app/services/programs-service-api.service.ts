@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, tap, catchError } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
@@ -32,9 +32,8 @@ export class ProgramsServiceApiService {
         true
       )
       .pipe(
+        tap(response => console.log('response: ', response)),
         map(response => {
-          console.log('response: ', response);
-
           const user = response.user;
 
           if (user && user.token) {
@@ -48,10 +47,8 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/countries/all')
       .pipe(
-        map(response => {
-          // Somehow the endpoint gives no response (needs to be fixed in back-end)
-          return response;
-        })
+        tap(response => console.log('response: ', response)),
+        map(response => response)
       );
   }
 
@@ -59,9 +56,8 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(environment.url_121_service_api, '/programs')
       .pipe(
-        map(response => {
-          return response.programs;
-        })
+        tap(response => console.log('response: ', response)),
+        map(response => response.programs)
       );
   }
 
@@ -69,9 +65,8 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/country/' + countryId)
       .pipe(
-        map(response => {
-          return response.programs;
-        })
+        tap(response => console.log('response: ', response)),
+        map(response => response.programs)
       );
   }
 
@@ -82,9 +77,8 @@ export class ProgramsServiceApiService {
         '/programs/inclusionStatus/' + programId + '/' + did
       )
       .pipe(
-        map(response => {
-          return response;
-        })
+        tap(response => console.log('response: ', response)),
+        map(response => response)
       );
   }
 
@@ -96,10 +90,8 @@ export class ProgramsServiceApiService {
         '/sovrin/credential/' + did
       )
       .pipe(
-        map(response => {
-          console.log(response, 'map');
-          return response;
-        }),
+        tap(response => console.log('response: ', response)),
+        map(response => response)
       );
   }
 
@@ -109,9 +101,8 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       '/appointment/availability/' + programId
     ).pipe(
-      map((response) => {
-        return response;
-      })
+      tap(response => console.log('response: ', response)),
+      map(response => response)
     );
   }
 
@@ -124,9 +115,8 @@ export class ProgramsServiceApiService {
       },
       true
     ).pipe(
-      map((response) => {
-        console.log('response: ', response);
-      })
+      tap(response => console.log('response: ', response)),
+      map(response => response)
     );
   }
 }
