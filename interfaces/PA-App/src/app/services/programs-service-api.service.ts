@@ -13,7 +13,10 @@ import { InclusionStatus } from '../models/inclusion-status.model';
   providedIn: 'root'
 })
 export class ProgramsServiceApiService {
-  constructor(private apiService: ApiService, private jwtService: JwtService) { }
+  constructor(
+    private apiService: ApiService,
+    private jwtService: JwtService
+  ) { }
 
   login(email: string, password: string): Observable<any> {
     console.log('ProgramsService : login()');
