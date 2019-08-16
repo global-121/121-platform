@@ -44,7 +44,7 @@ describe('PersonalPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should request all programs from the server', () => {
+  it('should request all countries from the server', () => {
     const getCountriesButton = document.getElementById('debugGetCountries');
     getCountriesButton.click();
 
