@@ -15,4 +15,4 @@
 
 | Services   | Build Status |
 |------------|--------------|
-| Programs   | [![Build Status](https://dev.azure.com/global121/121%20Platform/_apis/build/status/Service%20-%20Programs?branchName=master)](https://dev.azure.com/global121/121%20Platform/_build/latest?definitionId=12&branchName=master) |
+| 121-service   | [![Build Status](https://dev.azure.com/global121/121%20Platform/_apis/build/status/Service%20-%20Programs?branchName=master)](https://dev.azure.com/global121/121%20Platform/_build/latest?definitionId=12&branchName=master) |
