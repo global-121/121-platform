@@ -16,7 +16,3 @@
 | Services   | Build Status |
 |------------|--------------|
 | Programs   | [![Build Status](https://dev.azure.com/global121/121%20Platform/_apis/build/status/Service%20-%20Programs?branchName=master)](https://dev.azure.com/global121/121%20Platform/_build/latest?definitionId=12&branchName=master) |
-
-| Platform | Status |
-|----------|--------|
-| Repository | [![Greenkeeper badge](https://badges.greenkeeper.io/global-121/121-platform.svg)](https://greenkeeper.io/) |
