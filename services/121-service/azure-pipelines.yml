@@ -5,7 +5,6 @@ trigger:
   branches:
     include:
       - master
-      - greenkeeper/Services/*
   paths:
     include:
       - 'services/121-service/*'
