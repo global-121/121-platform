@@ -58,6 +58,8 @@ export class CredentialService {
     programId: number,
     prefilledAnswers: PrefilledAnswersDto,
   ): Promise<any[]> {
+    programId = isNaN(programId) ? 0 : programId;
+    await this.credentialAttributesRepository.delete({ did: did, programId: programId });
     let credentials = [];
     for (let answer of prefilledAnswers.attributes) {
       let credential = new CredentialAttributesEntity();

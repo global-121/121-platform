@@ -56,12 +56,13 @@ export class CredentialController {
     type: 'string',
     description: 'did:sov:12351352kl',
   })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'string' })
+  @ApiImplicitParam({ name: 'programId', required: false, type: 'string' })
   @Post('/attributes/:programId/:did')
   public async prefilledAnswers(
     @Param() params,
     @Body() prefilledAnswers: PrefilledAnswersDto,
   ): Promise<any[]> {
+    console.log(params.programId);
     return await this.credentialService.prefilledAnswers(
       params.did,
       params.programId,
