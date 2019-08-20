@@ -37,11 +37,11 @@ export class ProgramController {
 
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get program by id' })
-  @ApiImplicitQuery({ name: 'id', required: true })
+  @ApiImplicitParam({ name: 'id', required: true })
   @ApiResponse({ status: 200, description: 'Return program by id.' })
   @Get(':id')
-  public async findOne(@Query() query): Promise<ProgramEntity> {
-    return await this.programService.findOne(query);
+  public async findOne(@Param() params): Promise<ProgramEntity> {
+    return await this.programService.findOne(params.id);
   }
 
   @ApiBearerAuth()

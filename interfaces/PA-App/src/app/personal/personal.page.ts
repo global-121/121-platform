@@ -21,6 +21,9 @@ export class PersonalPage {
 
   public programs: any;
   public programChoice: number;
+  public program: any;
+  public programTitle: string;
+  public programDistributionChannel: string;
 
   public timeslots: any;
   public timeslotChoice: number;
@@ -62,6 +65,14 @@ export class PersonalPage {
   public getProgramsByCountryId(countryId: number): any {
     this.programsService.getProgramsByCountryId(countryId).subscribe(response => {
       this.programs = response;
+    });
+  }
+
+  public getProgramById(programId: number): any {
+    this.programsService.getProgramById(programId).subscribe(response => {
+      this.program = response;
+      this.programTitle = response.title;
+      this.programDistributionChannel = response.distributionChannel;
     });
   }
 

@@ -63,10 +63,19 @@ export class ProgramsServiceApiService {
 
   getProgramsByCountryId(countryId: number): Observable<Program[]> {
     return this.apiService
-      .get(environment.url_121_service_api, '/programs/country/' + countryId)
+      .get(environment.url_121_service_api, '/programs?countryId=' + countryId)
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response.programs)
+      );
+  }
+
+  getProgramById(programId: number): Observable<Program> {
+    return this.apiService
+      .get(environment.url_121_service_api, '/programs/' + programId)
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
       );
   }
 
