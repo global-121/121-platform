@@ -17,6 +17,8 @@
     Interactive:<br>
     <ion-button (click)="getProgramsByCountryId(countryChoice)">API: GET Programs By Country</ion-button>
     <br>
+    <ion-button (click)="getProgramById(programChoice)">API: GET Program Details By Id</ion-button>
+    <br>
     <ion-button (click)="getTimeslots(programChoice)">API: GET Timeslots</ion-button>
 
   </details>
@@ -68,6 +70,15 @@
     </dialogue-turn>
   </section>
 
+  <section [hidden]="!(programTitle && programChoice)">
+    <dialogue-turn>
+      We'll show you details for <strong>{{programTitle}}</strong>
+      <br>
+      <ul>
+        <li>Distribution channel: {{programDistributionChannel}}</li>
+      </ul>
+    </dialogue-turn>
+  </section>
 
   <section #selectAppointment [hidden]="!(timeslots && programChoice)">
     <dialogue-turn>

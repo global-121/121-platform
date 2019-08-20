@@ -6,4 +6,5 @@ export class Program {
   created: string;
   updated: string;
   author: object;
+  distributionChannel: string;
 }

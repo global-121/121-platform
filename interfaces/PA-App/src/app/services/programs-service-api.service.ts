@@ -70,6 +70,15 @@ export class ProgramsServiceApiService {
       );
   }
 
+  getProgramById(programId: number): Observable<Program> {
+    return this.apiService
+      .get(environment.url_121_service_api, '/programs/' + programId)
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
+
   getInclusionStatus(programId: number, did: string): Observable<InclusionStatus> {
     return this.apiService
       .get(
