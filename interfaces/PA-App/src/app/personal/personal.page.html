@@ -75,7 +75,7 @@
       We'll show you details for <strong>{{programTitle}}</strong>
       <br>
       <ul>
-        <li>Distribution channel: {{programDistributionChannel}}</li>
+        <li ion-item *ngFor="let detail of program">{{detail.key}}: {{detail.value}}</li>
       </ul>
     </dialogue-turn>
   </section>

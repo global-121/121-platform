@@ -23,7 +23,6 @@ export class PersonalPage {
   public programChoice: number;
   public program: any;
   public programTitle: string;
-  public programDistributionChannel: string;
 
   public timeslots: any;
   public timeslotChoice: number;
@@ -70,9 +69,12 @@ export class PersonalPage {
 
   public getProgramById(programId: number): any {
     this.programsService.getProgramById(programId).subscribe(response => {
-      this.program = response;
+      this.program = [];
       this.programTitle = response.title;
-      this.programDistributionChannel = response.distributionChannel;
+      const details = ['description', 'distributionChannel'];
+      for (const detail of details) {
+        this.program.push({ key: detail, value: response[detail] });
+      }
     });
   }
 
