@@ -6,7 +6,7 @@ import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.
 import { CredentialValuesDto } from './dto/credential-values.dto';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DeleteResult } from 'typeorm';
 import { ProgramService } from '../../programs/program/program.service';
 import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
@@ -82,6 +82,13 @@ export class CredentialService {
       where: { did: did },
     });
     return credentials;
+  }
+
+  // AW: delete answers to attributes for a given PA after issuing credentials (identified first through did/QR)
+  public async deletePrefilledAnswers(
+    did: string,
+  ): Promise<DeleteResult> {
+    return await this.credentialAttributesRepository.delete({ did: did });
   }
 
   // Used by PA

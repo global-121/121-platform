@@ -13,6 +13,7 @@ import {
   Param,
   UsePipes,
   ValidationPipe,
+  Delete,
 } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
@@ -21,6 +22,7 @@ import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialIssueDto } from './dto/credential-issue.dto';
+import { DeleteResult } from 'typeorm';
 
 @ApiUseTags('sovrin')
 @Controller('sovrin/credential')
@@ -81,6 +83,22 @@ export class CredentialController {
   ): Promise<CredentialAttributesEntity[]> {
     return await this.credentialService.getPrefilledAnswers(params.did);
   }
+
+  @ApiOperation({ title: 'Delete prefilled answers (for AW, after issuing credential)' })
+  @ApiResponse({ status: 200, description: 'Prefilled answers deleted' })
+  @ApiImplicitParam({
+    name: 'did',
+    required: true,
+    type: 'string',
+    description: 'did:sov:12351352kl',
+  })
+  @Delete('/answers/:did')
+  public async deletePrefilledAnswers(
+    @Param() params,
+  ): Promise<DeleteResult> {
+    return await this.credentialService.deletePrefilledAnswers(params.did);
+  }
+
 
   @ApiOperation({ title: 'Post credential request (for PA)' })
   @ApiResponse({ status: 200, description: 'Credential request received' })
