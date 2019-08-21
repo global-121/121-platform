@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-select-program',
@@ -13,13 +14,16 @@ export class SelectProgramComponent implements OnInit {
   public programTitle: string;
 
   constructor(
-    public programsService: ProgramsServiceApiService
+    public programsService: ProgramsServiceApiService,
+    public storage: Storage
   ) { }
 
-  public getProgramsByCountryId(countryId: number): any {
-    this.programsService.getProgramsByCountryId(countryId).subscribe(response => {
-      this.programs = response;
-    });
+  public getProgramsByCountryId(): any {
+    this.storage.get('countryChoice').then(value => {
+      this.programsService.getProgramsByCountryId(value).subscribe(response => {
+        this.programs = response;
+      });
+    })
   }
 
   ngOnInit() { }

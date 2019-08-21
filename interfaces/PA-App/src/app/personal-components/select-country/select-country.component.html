@@ -7,8 +7,7 @@
   <dialogue-turn actor="self">
     I'm currently located in:
 
-    <ion-radio-group [(ngModel)]="countryChoice"
-                     (ionChange)="setCountryChoiceName(countryChoice)"
+    <ion-radio-group (ionChange)="changeCountry($event)"
     >
       <ion-item *ngFor="let country of countries"
                 color="light"
