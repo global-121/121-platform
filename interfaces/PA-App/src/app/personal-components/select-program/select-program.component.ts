@@ -23,7 +23,7 @@ export class SelectProgramComponent implements OnInit {
       this.programsService.getProgramsByCountryId(value).subscribe(response => {
         this.programs = response;
       });
-    })
+    });
   }
 
   ngOnInit() { }

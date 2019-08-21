@@ -21,7 +21,7 @@ export class ConversationService {
         comp: SelectProgramComponent
       }
     ]
-  }
+  };
 
   constructor() { }
 
