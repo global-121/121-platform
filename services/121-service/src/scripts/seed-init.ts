@@ -1,3 +1,4 @@
+import { ProgramService } from './../programs/program/program.service';
 import { Injectable } from "@nestjs/common";
 import { InterfaceScript } from "./scripts.module";
 import { Connection } from "typeorm";
@@ -92,6 +93,9 @@ export class SeedInit implements InterfaceScript {
     }
 
     await programRepository.save(identitySchema);
+
+    const programService = new ProgramService();
+    programService.publish(1)
 
     // await this.connection.close();
   }
