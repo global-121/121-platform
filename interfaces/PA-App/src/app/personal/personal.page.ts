@@ -12,74 +12,37 @@ import { ConversationService } from '../services/conversation.service';
 })
 export class PersonalPage {
   @ViewChild(IonContent)
-  @ViewChild('processContainer', { read: ViewContainerRef }) container;
-
   public ionContent: IonContent;
 
+  @ViewChild('conversationContainer', { read: ViewContainerRef })
+  public container;
+
   public isDebug: boolean = !environment.production;
-
-  public countries: any;
-  public countryChoice: number;
-  public countryChoiceName: string;
-
-  public programs: any;
-  public programChoice: number;
-  public program: any;
-  public programTitle: string;
 
   public timeslots: any;
   public timeslotChoice: number;
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    public navCtrl: NavController,
-    private componentsService: ComponentsService,
+    private conversationService: ConversationService,
     private resolver: ComponentFactoryResolver
   ) { }
 
   ngOnInit() {
-    const steps = this.componentsService.getComponents();
-
-    for (const step of steps) {
-      const factory = this.resolver.resolveComponentFactory(step.component);
-      this.container.createComponent(factory);
-    }
+    this.loadComponents();
   }
 
   ionViewDidEnter() {
     this.scrollDown();
   }
 
-  public getCountryName(countryId: number): string {
-    const country = this.countries.find(item => {
-      return item.id === countryId;
-    });
+  private loadComponents() {
+    const steps = this.conversationService.getComponents();
 
-    return country ? country.country : '';
-  }
-
-  public setCountryChoiceName(countryChoice: string) {
-    const countryId = parseInt(countryChoice, 10);
-
-    this.countryChoiceName = this.getCountryName(countryId);
-  }
-
-  public getCountries(): any {
-    this.programsService.getCountries().subscribe(response => {
-      this.countries = response;
-    });
-  }
-
-  public getAllPrograms(): any {
-    this.programsService.getAllPrograms().subscribe(response => {
-      this.programs = response;
-    });
-  }
-
-  public getProgramsByCountryId(countryId: number): any {
-    this.programsService.getProgramsByCountryId(countryId).subscribe(response => {
-      this.programs = response;
-    });
+    for (const step of steps) {
+      const factory = this.resolver.resolveComponentFactory(step.component);
+      this.container.createComponent(factory);
+    }
   }
 
   public getProgramById(programId: number): any {
