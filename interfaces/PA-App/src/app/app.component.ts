@@ -37,7 +37,7 @@ export class AppComponent {
   }
 
   initializeUpdateChecker() {
-    // localStorage.setItem('did', 'did:sov:1wJPyULfLLnYTEFYzByfUR');
+    localStorage.setItem('did', 'did:sov:1wJPyULfLLnYTEFYzByfUR');
     // this.updateService.checkInclusion(1);
     // this.updateService.checkCredential(1);
   }

@@ -1,54 +1,28 @@
+import { SeedInit } from './seed-init';
 import { CredentialAttributesEntity } from '../sovrin/credential/credential-attributes.entity';
-import { AppointmentEntity } from './../schedule/appointment/appointment.entity';
-import { ProgramEntity } from './../programs/program/program.entity';
-import { CustomCriterium } from './../programs/program/custom-criterium.entity';
-import { ConnectionEntity } from './../sovrin/create-connection/connection.entity';
-import { USERCONFIG } from './../secrets';
-import { UserEntity } from './../user/user.entity';
+import { AppointmentEntity } from '../schedule/appointment/appointment.entity';
+import { ProgramEntity } from '../programs/program/program.entity';
+import { CustomCriterium } from '../programs/program/custom-criterium.entity';
+import { ConnectionEntity } from '../sovrin/create-connection/connection.entity';
+import { USERCONFIG } from '../secrets';
+import { UserEntity } from '../user/user.entity';
 import { Injectable } from '@nestjs/common';
 import { Connection } from 'typeorm';
-import { InterfaceScript } from './scripts.module';
+import { InterfaceScript, ScriptsModule } from './scripts.module';
 import * as crypto from 'crypto';
 import programExample from '../../examples/program-post.json';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
 import { CountryEntity } from '../programs/country/country.entity';
 
 @Injectable()
-export class Seed implements InterfaceScript {
+export class SeedDev implements InterfaceScript {
   public constructor(private connection: Connection) { }
 
   public async run(): Promise<void> {
-    await this.connection.dropDatabase();
-    await this.connection.synchronize(true);
 
-    // ***** CREATE ADMIN AND FIELDWORKER USER *****
+    const seedInit = await new SeedInit(this.connection);
+    await seedInit.run();
 
-    const userRepository = this.connection.getRepository(UserEntity);
-    await userRepository.save([
-      {
-        username: USERCONFIG.usernameAdmin,
-        role: 'admin',
-        email: USERCONFIG.emailAdmin,
-        countryId: 1,
-        password: crypto
-          .createHmac('sha256', USERCONFIG.passwordAdmin)
-          .digest('hex'),
-        status: 'active',
-      },
-    ]);
-
-    await userRepository.save([
-      {
-        username: USERCONFIG.usernameFieldworker,
-        role: 'aidworker',
-        email: USERCONFIG.emailFieldworker,
-        countryId: 1,
-        password: crypto
-          .createHmac('sha256', USERCONFIG.passwordFieldworker)
-          .digest('hex'),
-        status: 'active',
-      },
-    ]);
 
     // ***** CREATE COUNTRIES *****
 
@@ -82,6 +56,7 @@ export class Seed implements InterfaceScript {
     const programExampleDump = JSON.stringify(programExample);
     const program = JSON.parse(programExampleDump);
 
+    const userRepository = this.connection.getRepository(UserEntity);
     const author = await userRepository.findOne(1);
     program.author = author;
 
@@ -157,4 +132,4 @@ export class Seed implements InterfaceScript {
   }
 }
 
-export default Seed;
+export default SeedDev;
