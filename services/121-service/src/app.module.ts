@@ -12,6 +12,7 @@ import { CreateConnectionModule } from './sovrin/create-connection/create-connec
 import { CredentialModule } from './sovrin/credential/credential.module';
 import { SchemaService } from './sovrin/schema/schema.service';
 import { ProofModule } from './sovrin/proof/proof.module';
+import { SchemaModule } from './sovrin/schema/schema.module';
 
 @Module({
   imports: [
@@ -25,17 +26,14 @@ import { ProofModule } from './sovrin/proof/proof.module';
     CreateConnectionModule,
     CredentialModule,
     ProofModule,
+    SchemaModule,
   ],
   controllers: [
     AppController,
     // CreateConnectionController,
     // CredentialController,
   ],
-  providers: [
-    // CreateConnectionService,
-    // CredentialService,
-    SchemaService,
-  ],
+  providers: [],
 })
 export class ApplicationModule {
   public constructor(private readonly connection: Connection) {}

@@ -1,44 +1,19 @@
 {
-    "location": "Identity",
-    "countryId": 1,
-    "title": "Identity",
-    "description": "Default identity",
-    "startDate": "2000-05-23T18:25:43.511Z",
-    "endDate": "3000-05-23T18:25:43.511Z",
-    "currency": "None",
-    "distributionFrequency": {},
-    "distributionChannel": {},
-    "notifiyPaArea": false,
-    "notificationType": "None",
-    "cashDistributionSites": {
-        "cashDistributionSites": []
-    },
-    "financialServiceProviders": {
-        "financialServiceProviders": []
-    },
-    "inclusionCalculationType": "None",
-    "customCriteria": [{
+    "name": "identity-schema",
+    "version": "1.2",
+    "criteriums": [{
             "criterium": "name",
             "question": {
                 "english": "What is your name?",
                 "nyanja": "Muli ndi ana angati?"
-            },
-            "answerType": "string",
-            "criteriumType": "none",
-            "options": null,
-            "scoring": {}
+            }
         },
         {
             "criterium": "age",
             "question": {
                 "english": "What is your age?",
                 "nyanja": "Denga lanu ndi lotani?"
-            },
-            "answerType": "string",
-            "criteriumType": "none",
-            "options": null,
-            "scoring": {}
+            }
         }
-    ],
-    "minimumScore": 0
+    ]
 }
