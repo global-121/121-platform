@@ -76,6 +76,24 @@ Run the application through:
 Same as bove. But replace '-it' tag in 'docker run' or 'docker start' commands by '-d' to run in detached mode.
 Also, the CMD line of Dockerfile should be changed from CMD ["npm", "run", "start:dev"] to CMD ["npm", "start"].
 
+## Seed the database and create identity schema
+
+To be able to use the functionality of this service an initial admin user is required, so he/she can create new aidworker/admin users and programs. Furthemore an initial 'identity' schema is required which will be used to create generic 'identity' credentials containing age and name. This initial user and schema can be created by running seed script. The initial identity schema is stored in the program database because this already contains the right functionality to publish and create schema’s.
+
+To seed the database for dev mode with an admin, an identiy schema and some inititial testing values run the following command:
+
+```
+docker exec -i 121-service  npx ts-node src/scripts seed-dev
+```
+
+To seed it for production run the following command:
+
+```
+docker exec -i 121-service  npx ts-node src/scripts seed-prod
+```
+
+This user password and username can be customized in secrets.ts
+
 ## How to use Swagger (with authorization features)
 
 Access Swagger API via `http://localhost:3000/docs`
@@ -88,14 +106,6 @@ Access Swagger API via `http://localhost:3000/docs`
 - Click 'Authorize' (top-right) and fill in `Bearer <copied token>`
 - This will now give you access to all hitherto forbidden API-calls.
 - NOTE: for ease of development, if not logged in, it will take the default-user. So you do need to create this default user with email test@test.nl, but the Authorize part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of Swagger, i.e. after each code change.
-
-OPTIONAL: To seed the database with user run the following command:
-
-```
-docker exec -i 121-service  npx ts-node src/scripts seed
-```
-
-This user can be customized in secrets.ts
 
 #### Admin vs Fieldworker
 
