@@ -8,7 +8,7 @@ import { SelectProgramComponent } from '../personal-components/select-program/se
 export class ComponentsItem {
   constructor(public component: any) { }
 }
-export class ComponentsService {
+export class ConversationService {
 
   private dummyJsonResponse = {
     items: [

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { SelectCountryComponent } from './select-country/select-country.component';
 import { SelectProgramComponent } from './select-program/select-program.component';
-import { ComponentsService } from '../services/components.service';
+import { ConversationService } from '../services/conversation.service';
 
 @NgModule({
   declarations: [SelectCountryComponent, SelectProgramComponent],
@@ -16,7 +16,7 @@ import { ComponentsService } from '../services/components.service';
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
-  providers: [ComponentsService]
+  providers: [ConversationService]
 })
 export class PersonalComponentsModule { }
 

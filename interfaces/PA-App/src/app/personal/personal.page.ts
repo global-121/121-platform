@@ -3,8 +3,7 @@ import { IonContent, NavController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { ComponentsService } from '../services/components.service';
-import { ComponentsComponent } from '../personal-components/components';
+import { ConversationService } from '../services/conversation.service';
 
 @Component({
   selector: 'app-personal',
