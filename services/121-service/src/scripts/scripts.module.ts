@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { Seed } from './seed';
+import { SeedDev } from './seed-dev';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { config } from '../config';
 import { Arguments } from 'yargs';
-import { SeedProd } from './seedProd';
+import { SeedInit } from './seed-init';
+import SeedProd from './seed-prod';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { SeedProd } from './seedProd';
       entities: ['src/app/**/*.entity.{ts,js}'],
     }),
   ],
-  providers: [Seed, SeedProd],
+  providers: [SeedDev, SeedInit, SeedProd],
 })
 export class ScriptsModule {}
 

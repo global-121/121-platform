@@ -12,7 +12,7 @@ import identitySchemaInitial from './identity-schema.json';
 
 
 @Injectable()
-export class SeedProd implements InterfaceScript {
+export class SeedInit implements InterfaceScript {
   public constructor(private connection: Connection) { }
 
   public async run(): Promise<void> {
@@ -93,8 +93,8 @@ export class SeedProd implements InterfaceScript {
 
     await programRepository.save(identitySchema);
 
-    await this.connection.close();
+    // await this.connection.close();
   }
 }
 
-export default SeedProd;
+export default SeedInit;
