@@ -1,8 +1,10 @@
-import { Component, ViewChild } from '@angular/core';
-import { IonContent } from '@ionic/angular';
+import { Component, ViewChild, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
+import { IonContent, NavController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { ComponentsService } from '../services/components.service';
+import { ComponentsComponent } from '../personal-components/components';
 
 @Component({
   selector: 'app-personal',
@@ -11,6 +13,8 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
 })
 export class PersonalPage {
   @ViewChild(IonContent)
+  @ViewChild('processContainer', { read: ViewContainerRef }) container;
+
   public ionContent: IonContent;
 
   public isDebug: boolean = !environment.production;
@@ -29,7 +33,19 @@ export class PersonalPage {
 
   constructor(
     public programsService: ProgramsServiceApiService,
+    public navCtrl: NavController,
+    private componentsService: ComponentsService,
+    private resolver: ComponentFactoryResolver
   ) { }
+
+  ngOnInit() {
+    const steps = this.componentsService.getComponents();
+
+    for (const step of steps) {
+      const factory = this.resolver.resolveComponentFactory(step.component);
+      this.container.createComponent(factory);
+    }
+  }
 
   ionViewDidEnter() {
     this.scrollDown();

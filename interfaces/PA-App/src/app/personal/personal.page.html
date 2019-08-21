@@ -23,8 +23,10 @@
 
   </details>
 
+  <div #processContainer></div>
 
-  <section #selectCountry [hidden]="!countries">
+  <!-- <app-select-country></app-select-country> -->
+  <!-- <section #selectCountry [hidden]="!countries">
     <dialogue-turn>
       Where are you currently located?
     </dialogue-turn>
@@ -43,10 +45,10 @@
         </ion-item>
       </ion-radio-group>
     </dialogue-turn>
-  </section>
+  </section> -->
 
-
-  <section #selectProgram [hidden]="!(programs && countryChoice)">
+  <!-- <app-select-program></app-select-program> -->
+  <!-- <section #selectProgram [hidden]="!(programs && countryChoice)">
     <dialogue-turn>
       We'll show you programs from <strong>{{ countryChoiceName }}</strong>.
       <br>
@@ -68,7 +70,7 @@
         </ion-item>
       </ion-radio-group>
     </dialogue-turn>
-  </section>
+  </section> -->
 
   <section [hidden]="!(programTitle && programChoice)">
     <dialogue-turn>

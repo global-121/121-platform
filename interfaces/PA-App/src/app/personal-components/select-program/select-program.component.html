@@ -1,0 +1,25 @@
+<section #selectProgram>
+  <ion-button (click)="getProgramsByCountryId(countryChoice)">API: GET Programs By Country</ion-button>
+  <br>
+  <dialogue-turn>
+    We'll show you programs from <strong>{{ countryChoiceName }}</strong>.
+    <br>
+    Select a program:
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    I'm interested in:
+
+    <ion-radio-group [(ngModel)]="programChoice">
+      <ion-item *ngFor="let program of programs"
+                color="light"
+                class="ion-no-padding ion-text-wrap"
+      >
+        <ion-label>
+          Program #{{ program.id }}<br>
+          <ion-note>{{ program.title }}</ion-note>
+        </ion-label>
+        <ion-radio value="{{ program.id }}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </dialogue-turn>
+</section>

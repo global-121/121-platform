@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PersonalPage } from './personal.page';
 import { SharedModule } from '../shared/shared.module';
+import { PersonalComponentsModule } from '../personal-components/personal-components.module';
 
 @NgModule({
   imports: [
@@ -13,6 +14,7 @@ import { SharedModule } from '../shared/shared.module';
     FormsModule,
     RouterModule.forChild([{ path: '', component: PersonalPage }]),
     SharedModule,
+    PersonalComponentsModule,
   ],
   declarations: [PersonalPage]
 })
