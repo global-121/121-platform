@@ -11,6 +11,9 @@ export class DialogueTurnComponent implements OnInit {
   actor = 'system';
 
   @Input()
+  moment: Date;
+
+  @Input()
   isConnected = false;
 
   isSelf = false;
@@ -20,6 +23,7 @@ export class DialogueTurnComponent implements OnInit {
 
   ngOnInit() {
     this.isSelf = (this.actor === 'self');
+    this.moment = new Date();
   }
 
 }
