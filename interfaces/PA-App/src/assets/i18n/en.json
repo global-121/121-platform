@@ -1,5 +1,10 @@
 {
-  "WORLD": "World",
-  "PERSONAL": "You",
-  "DEVICE": "Device"
+    "WORLD": "World",
+    "PERSONAL": "You",
+    "DEVICE": "Device",
+    "TOAST": {
+        "credential": "Credential received",
+        "inclusion": "Inclusion status received",
+        "close": "close"
+    }
 }
