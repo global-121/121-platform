@@ -3,6 +3,7 @@
     {{ 'personal.get-info.introduction'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self">
+    <ion-button>{{ 'personal.get-info.option1'|translate }}</ion-button>
     <ion-radio-group>
       <ion-item *ngFor="let option of infoOptions"
                 color="light"
@@ -13,7 +14,4 @@
       </ion-item>
     </ion-radio-group>
   </dialogue-turn>
-  <!-- <dialogue-turn>
-    {{ 'personal.select-language.result'|translate }} {{languageChoiceName}}.
-  </dialogue-turn> -->
 </section>

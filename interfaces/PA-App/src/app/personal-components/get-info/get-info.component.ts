@@ -16,7 +16,7 @@ export class GetInfoComponent implements OnInit {
 
   ngOnInit() {
     this.infoOptions = [
-      { id: 1, option: this.customTranslateService.translate('personal.get-info.option1') },
+      // { id: 1, option: this.customTranslateService.translate('personal.get-info.option1') },
       { id: 2, option: this.customTranslateService.translate('personal.get-info.option2') },
       { id: 3, option: this.customTranslateService.translate('personal.get-info.option3') }
     ];
