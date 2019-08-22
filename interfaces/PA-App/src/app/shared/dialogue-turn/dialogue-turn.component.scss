@@ -1,4 +1,6 @@
 .dialogue-turn {
+  --dialogue-turn--margin-around-card-horizontal: -4px;
+
   display: flex;
   padding: 0.5em;
 }
@@ -28,8 +30,17 @@
 
 .dialogue-turn.is-other {
   .dialogue-turn--speech-arrow {
-    left: -4px; // margin-around ion-card
+    left: var(--dialogue-turn--margin-around-card-horizontal);
     border-right-color: var(--ion-color-dark);
+  }
+  // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
+  .dialogue-turn--speech-arrow:dir(rtl) {
+    // Reset LTR-styles first:
+    left: auto;
+    border-right-color: transparent;
+
+    right: var(--dialogue-turn--margin-around-card-horizontal);
+    border-left-color: var(--ion-color-dark);
   }
 }
 
@@ -41,8 +52,17 @@
     order: 1;
   }
   .dialogue-turn--speech-arrow {
-    right: -4px; // margin-around ion-card
+    right: var(--dialogue-turn--margin-around-card-horizontal);
     border-left-color: var(--ion-color-light);
+  }
+  // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
+  .dialogue-turn--speech-arrow:dir(rtl) {
+    // Reset LTR-styles first:
+    right: auto;
+    border-left-color: transparent;
+
+    left: var(--dialogue-turn--margin-around-card-horizontal);
+    border-right-color: var(--ion-color-light);
   }
 }
 
