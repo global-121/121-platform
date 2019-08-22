@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TellNeedsComponent } from './tell-needs.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('TellNeedsComponent', () => {
   let component: TellNeedsComponent;
@@ -9,10 +10,13 @@ describe('TellNeedsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TellNeedsComponent ],
+      declarations: [TellNeedsComponent],
+      imports: [
+        TranslateModule.forRoot(),
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
