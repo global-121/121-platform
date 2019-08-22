@@ -1,5 +1,10 @@
 {
   "WORLD": "Wereld",
   "PERSONAL": "Persoonlijk",
-  "DEVICE": "Apparaat"
+  "DEVICE": "Apparaat",
+  "personal": {
+    "select-language": {
+      "introduction": "Welkom bij 121. Selecteer alstublieft een taal."
+    }
+  }
 }

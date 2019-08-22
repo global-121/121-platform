@@ -2,18 +2,16 @@
   <dialogue-turn>
     {{ 'personal.select-language.introduction'|translate }}
   </dialogue-turn>
-  <!-- <dialogue-turn actor="self">
-    I'm currently located in:
-
-    <ion-radio-group (ionChange)="changeCountry($event)"
+  <dialogue-turn actor="self">
+    <ion-radio-group (ionChange)="changeLanguage($event)"
     >
-      <ion-item *ngFor="let country of countries"
+      <ion-item *ngFor="let language of languages"
                 color="light"
                 class="ion-no-padding ion-text-wrap"
       >
-        <ion-label>{{ country.country }}</ion-label>
-        <ion-radio value="{{ country.id }}"></ion-radio>
+        <ion-label>{{ language.language }}</ion-label>
+        <ion-radio value="{{ language.id }}"></ion-radio>
       </ion-item>
     </ion-radio-group>
-  </dialogue-turn> -->
+  </dialogue-turn>
 </section>
