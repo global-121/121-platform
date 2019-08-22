@@ -1,4 +1,5 @@
 .dialogue-turn {
+  --dialogue-turn--margin-around-card-vertical: 13px;
   --dialogue-turn--margin-around-card-horizontal: -4px;
 
   display: flex;
@@ -21,7 +22,7 @@
 .dialogue-turn--speech-arrow {
   display: block;
   position: absolute;
-  top: 13px; // margin-around ion-card + border-radius
+  top: var(--dialogue-turn--margin-around-card-vertical);
 
   border-width: 0.75em 1em;
   border-style: solid;
