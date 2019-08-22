@@ -5,6 +5,7 @@ import { InclusionStorage } from '../models/local-storage/inclusion-storage.mode
 import { InclusionStatus } from '../models/inclusion-status.model';
 import { catchError } from 'rxjs/operators';
 import { ToastController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 
 
 @Injectable({
@@ -29,10 +30,11 @@ export class UpdateService {
   constructor(
     public programsService: ProgramsServiceApiService,
     public toastController: ToastController,
-    public translate: TranslateService) { }
+    public translate: TranslateService,
+    public storage: Storage) { }
 
-  checkInclusion(programId: number): void {
-    const allInclusion: InclusionStorage[] = this.getLocalStorageArray(this.inclusionStatusStorage);
+  async checkInclusion(programId: number): Promise<void> {
+    const allInclusion: InclusionStorage[] = await this.getLocalStorageArray(this.inclusionStatusStorage);
     for (const inclusion of allInclusion) {
       console.log(inclusion);
       if (inclusion.programId === programId &&
@@ -43,8 +45,8 @@ export class UpdateService {
     this.listenForInclusion(programId, allInclusion);
   }
 
-  checkCredential(programId: number): void {
-    const allCredentialState = this.getLocalStorageArray(this.credentialStatusStorage);
+  async checkCredential(programId: number): Promise<void> {
+    const allCredentialState = await this.getLocalStorageArray(this.credentialStatusStorage);
     console.log(allCredentialState);
     for (const credentialState of allCredentialState) {
       if (credentialState.programId === programId && credentialState.status === this.receivedStatus.received) {
@@ -90,21 +92,21 @@ export class UpdateService {
     this.setLocalStorage(storageName, allState);
   }
 
-  getLocalStorageArray(itemKey: string): any {
+  async getLocalStorageArray(itemKey: string): Promise<any> {
     let value: [];
-    const valueString = localStorage.getItem(itemKey);
+    const valueString = await this.storage.get(itemKey);
     if (valueString) {
       value = JSON.parse(valueString);
     } else {
       value = [];
-      localStorage.setItem(itemKey, JSON.stringify(value));
+      this.storage.set(itemKey, JSON.stringify(value));
     }
     return value;
   }
 
   setLocalStorage(itemKey: string, itemValue: object): void {
     const itemString = JSON.stringify(itemValue);
-    window.localStorage.setItem(
+    this.storage.set(
       itemKey,
       itemString
     );
