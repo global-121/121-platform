@@ -2,10 +2,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { InclusionStorage } from '../models/local-storage/inclusion-storage.model';
-import { InclusionStatus } from '../models/inclusion-status.model';
-import { catchError } from 'rxjs/operators';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { Router } from '@angular/router';
 
 
 @Injectable({
@@ -13,6 +12,7 @@ import { Storage } from '@ionic/storage';
 })
 
 export class UpdateService {
+
   public updateSpeedMs = 3000;
   public inclusionStatus = {
     included: 'included',
@@ -27,16 +27,22 @@ export class UpdateService {
   public credentialStatusStorage = 'credentialStatus';
   public didStorage = 'did';
 
+  public pagesNav = {
+    inclusion: 'tabs/tab1',
+    credential: 'tabs/tab1'
+  };
+
   constructor(
     public programsService: ProgramsServiceApiService,
     public toastController: ToastController,
     public translate: TranslateService,
-    public storage: Storage) { }
+    public storage: Storage,
+    public router: Router) { }
 
   async checkInclusion(programId: number): Promise<void> {
+    this.createUpdateToast('TOAST.inclusion', this.pagesNav.inclusion);
     const allInclusion: InclusionStorage[] = await this.getLocalStorageArray(this.inclusionStatusStorage);
     for (const inclusion of allInclusion) {
-      console.log(inclusion);
       if (inclusion.programId === programId &&
         (inclusion.status === this.inclusionStatus.included || inclusion.status === this.inclusionStatus.included)) {
         return;
@@ -47,7 +53,6 @@ export class UpdateService {
 
   async checkCredential(programId: number): Promise<void> {
     const allCredentialState = await this.getLocalStorageArray(this.credentialStatusStorage);
-    console.log(allCredentialState);
     for (const credentialState of allCredentialState) {
       if (credentialState.programId === programId && credentialState.status === this.receivedStatus.received) {
         return;
@@ -65,7 +70,7 @@ export class UpdateService {
         }, this.updateSpeedMs);
       } else if (response.status === this.inclusionStatus.included || response.status === this.inclusionStatus.excluded) {
         this.storeStatus(response.status, programId, allInclusion, this.inclusionStatusStorage);
-        this.createUpdateToast('TOAST.inclusion');
+        this.createUpdateToast('TOAST.inclusion', this.pagesNav.inclusion);
       }
     });
   }
@@ -74,10 +79,9 @@ export class UpdateService {
     const did = localStorage.getItem(this.didStorage);
     this.programsService.getCredential(did).subscribe(response => {
       this.storeStatus(this.receivedStatus.received, programId, allCredentialState, this.credentialStatusStorage);
-      this.createUpdateToast('TOAST.credentials');
+      this.createUpdateToast('TOAST.credentials', this.pagesNav.credential);
     }, err => {
       setTimeout(() => {
-        console.log('error', err);
         this.listenForCredential(programId, allCredentialState);
       }, this.updateSpeedMs);
     });
@@ -112,16 +116,24 @@ export class UpdateService {
     );
   }
 
-  createUpdateToast(messageKey: string) {
+  createUpdateToast(messageKey: string, pageNav: string) {
     this.translate.get(messageKey).subscribe((message: string) => {
       const closeButtonText = this.translate.instant('TOAST.close');
       this.toastController.create({
-        message,
+        header: message,
         animated: true,
         showCloseButton: true,
         closeButtonText,
         cssClass: 'update-toast',
-        position: 'bottom'
+        position: 'bottom',
+        buttons: [
+          {
+            side: 'start',
+            icon: 'share-alt',
+            handler: () => {
+              this.router.navigate([pageNav]);
+            }
+          }]
       }).then((obj) => {
         obj.present();
       });
