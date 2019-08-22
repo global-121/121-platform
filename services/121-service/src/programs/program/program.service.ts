@@ -2,7 +2,7 @@ import { CredentialService } from './../../sovrin/credential/credential.service'
 import { ProofService } from './../../sovrin/proof/proof.service';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProgramEntity } from './program.entity';
@@ -24,9 +24,13 @@ export class ProgramService {
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(CustomCriterium)
   public customCriteriumRepository: Repository<CustomCriterium>;
-  public constructor() {}
+  public constructor(
+    @Inject(forwardRef(() => CredentialService))
+    private readonly credentialService: CredentialService,
+  ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
+    console.log(where);
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium');
@@ -133,8 +137,7 @@ export class ProgramService {
     const schemaService = new SchemaService();
     const result = await schemaService.create(selectedProgram);
 
-    const credentialService = new CredentialService();
-    const credentialOffer = await credentialService.createOffer(
+    const credentialOffer = await this.credentialService.createOffer(
       result.credDefId,
     );
 
@@ -255,11 +258,11 @@ export class ProgramService {
     if (
       connection.programsIncluded.indexOf(parseInt(String(programId), 10)) > -1
     ) {
-      inclusionStatus = { status : 'included'}
+      inclusionStatus = { status: 'included' };
     } else if (
       connection.programsExcluded.indexOf(parseInt(String(programId), 10)) > -1
     ) {
-      inclusionStatus = { status : 'excluded'}
+      inclusionStatus = { status: 'excluded' };
     } else {
       inclusionStatus = { status: 'unavailable' };
     }

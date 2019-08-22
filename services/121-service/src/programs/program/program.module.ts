@@ -1,9 +1,11 @@
+import { CredentialModule } from './../../sovrin/credential/credential.module';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import {
   MiddlewareConsumer,
   Module,
   NestModule,
   RequestMethod,
+  forwardRef,
 } from '@nestjs/common';
 import { ProgramController } from './program.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -24,10 +26,12 @@ import { AuthMiddlewarePM } from '../../user/auth.middlewarePM';
       CustomCriterium,
       ConnectionEntity,
     ]),
+    forwardRef(() => CredentialModule),
     UserModule,
   ],
   providers: [ProgramService],
   controllers: [ProgramController],
+  exports: [ProgramService]
 })
 export class ProgramModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {

@@ -1,3 +1,4 @@
+import { ProgramService } from './../../programs/program/program.service';
 import { CredentialEntity } from './credential.entity';
 import { UserModule } from '../../user/user.module';
 import {
@@ -5,6 +6,7 @@ import {
   MiddlewareConsumer,
   RequestMethod,
   NestModule,
+  forwardRef,
 } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { CredentialController } from './credential.controller';
@@ -14,6 +16,7 @@ import { UserEntity } from '../../user/user.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialRequestEntity } from './credential-request.entity';
+import { ProgramModule } from '../../programs/program/program.module';
 
 @Module({
   imports: [
@@ -24,6 +27,7 @@ import { CredentialRequestEntity } from './credential-request.entity';
       CredentialRequestEntity,
       CredentialEntity,
     ]),
+    forwardRef(() => ProgramModule),
     UserModule,
   ],
   providers: [CredentialService],
