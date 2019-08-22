@@ -6,5 +6,10 @@
     "select-language": {
       "introduction": "Welcome to 121. Please select your language."
     }
+  },
+  "TOAST": {
+      "credential": "Credential received",
+      "inclusion": "Inclusion status received",
+      "close": "close"
   }
 }
