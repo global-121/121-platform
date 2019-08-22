@@ -19,6 +19,12 @@ export class SelectCountryComponent implements OnInit {
     public storage: Storage,
   ) { }
 
+  public getCountries(): any {
+    this.programsService.getCountries().subscribe(response => {
+      this.countries = response;
+    });
+  }
+
   public getCountryName(countryId: number): string {
     const country = this.countries.find(item => {
       return item.id === countryId;
@@ -35,12 +41,6 @@ export class SelectCountryComponent implements OnInit {
 
   private storeCountry(countryChoice: any) {
     this.storage.set('countryChoice', countryChoice);
-  }
-
-  public getCountries(): any {
-    this.programsService.getCountries().subscribe(response => {
-      this.countries = response;
-    });
   }
 
   public changeCountry($event) {

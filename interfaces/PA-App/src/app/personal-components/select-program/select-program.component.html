@@ -9,7 +9,7 @@
   <dialogue-turn actor="self">
     I'm interested in:
 
-    <ion-radio-group [(ngModel)]="programChoice">
+    <ion-radio-group (ionChange)="changeProgram($event)">
       <ion-item *ngFor="let program of programs"
                 color="light"
                 class="ion-no-padding ion-text-wrap"

@@ -26,6 +26,16 @@ export class SelectProgramComponent implements OnInit {
     });
   }
 
+  private storeProgram(programChoice: any) {
+    this.storage.set('programChoice', programChoice);
+  }
+
+  public changeProgram($event) {
+    const programChoice = $event.detail.value;
+    this.programChoice = programChoice;
+    this.storeProgram(programChoice);
+  }
+
   ngOnInit() { }
 
 }
