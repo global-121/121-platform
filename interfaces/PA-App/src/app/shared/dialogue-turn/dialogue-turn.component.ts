@@ -11,6 +11,9 @@ export class DialogueTurnComponent implements OnInit {
   actor = 'system';
 
   @Input()
+  moment: Date = new Date();
+
+  @Input()
   isConnected = false;
 
   isSelf = false;
