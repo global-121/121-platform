@@ -23,54 +23,9 @@
 
   </details>
 
+  <div #conversationContainer></div>
 
-  <section #selectCountry [hidden]="!countries">
-    <dialogue-turn>
-      Where are you currently located?
-    </dialogue-turn>
-    <dialogue-turn actor="self">
-      I'm currently located in:
-
-      <ion-radio-group [(ngModel)]="countryChoice"
-                       (ionChange)="setCountryChoiceName(countryChoice)"
-      >
-        <ion-item *ngFor="let country of countries"
-                  color="light"
-                  class="ion-no-padding ion-text-wrap"
-        >
-          <ion-label>{{ country.country }}</ion-label>
-          <ion-radio value="{{ country.id }}"></ion-radio>
-        </ion-item>
-      </ion-radio-group>
-    </dialogue-turn>
-  </section>
-
-
-  <section #selectProgram [hidden]="!(programs && countryChoice)">
-    <dialogue-turn>
-      We'll show you programs from <strong>{{ countryChoiceName }}</strong>.
-      <br>
-      Select a program:
-    </dialogue-turn>
-    <dialogue-turn actor="self">
-      I'm interested in:
-
-      <ion-radio-group [(ngModel)]="programChoice">
-        <ion-item *ngFor="let program of programs"
-                  color="light"
-                  class="ion-no-padding ion-text-wrap"
-        >
-          <ion-label>
-            Program #{{ program.id }}<br>
-            <ion-note>{{ program.title }}</ion-note>
-          </ion-label>
-          <ion-radio value="{{ program.id }}"></ion-radio>
-        </ion-item>
-      </ion-radio-group>
-    </dialogue-turn>
-  </section>
-
-  <section [hidden]="!(programTitle && programChoice)">
+    <section [hidden]="!(programTitle && programChoice)">
     <dialogue-turn>
       We'll show you details for <strong>{{programTitle}}</strong>
       <br>

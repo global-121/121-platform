@@ -1,0 +1,21 @@
+<section #selectCountry>
+  <ion-button id="debugGetCountries" (click)="getCountries()">API: GET Countries</ion-button>
+  <br>
+  <dialogue-turn>
+    Where are you currently located?
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    I'm currently located in:
+
+    <ion-radio-group (ionChange)="changeCountry($event)"
+    >
+      <ion-item *ngFor="let country of countries"
+                color="light"
+                class="ion-no-padding ion-text-wrap"
+      >
+        <ion-label>{{ country.country }}</ion-label>
+        <ion-radio value="{{ country.id }}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </dialogue-turn>
+</section>
