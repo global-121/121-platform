@@ -25,42 +25,4 @@
 
   <div #conversationContainer></div>
 
-    <section [hidden]="!(programTitle && programChoice)">
-    <dialogue-turn>
-      We'll show you details for <strong>{{programTitle}}</strong>
-      <br>
-      <ul>
-        <li ion-item *ngFor="let detail of program">{{detail.key}}: {{detail.value}}</li>
-      </ul>
-    </dialogue-turn>
-  </section>
-
-  <section #selectAppointment [hidden]="!(timeslots && programChoice)">
-    <dialogue-turn>
-      Select a timeslot:
-    </dialogue-turn>
-    <dialogue-turn actor="self">
-      I want...:
-
-      <ion-radio-group [(ngModel)]="timeslotChoice">
-        <ion-item *ngFor="let timeslot of timeslots"
-                  color="light"
-                  class="ion-no-padding ion-text-wrap"
-        >
-          <ion-label>
-            Timeslot {{timeslot.id}}:<br>
-            <ion-note>{{timeslot.startDate}} - {{timeslot.endDate}}</ion-note><br>
-            <ion-note>({{ timeslot.location }})</ion-note>
-          </ion-label>
-          <ion-radio value="{{ timeslot.id }}"></ion-radio>
-        </ion-item>
-      </ion-radio-group>
-      <br>
-      <ion-button (click)="postAppointment(timeslotChoice,'did:sov:2wJPyULfLLnYTEFYzByfUR')">
-        Test Post Appointment API
-      </ion-button>
-    </dialogue-turn>
-  </section>
-
-
 </ion-content>

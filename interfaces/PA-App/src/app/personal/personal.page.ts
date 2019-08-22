@@ -47,29 +47,6 @@ export class PersonalPage {
     }
   }
 
-  public getProgramById(programId: number): any {
-    this.programsService.getProgramById(programId).subscribe(response => {
-      this.program = [];
-      this.programTitle = response.title;
-      const details = ['description', 'distributionChannel'];
-      for (const detail of details) {
-        this.program.push({ key: detail, value: response[detail] });
-      }
-    });
-  }
-
-  public getTimeslots(programId: number): any {
-    this.programsService.getTimeslots(programId).subscribe(response => {
-      this.timeslots = response[0];
-    });
-  }
-
-  public postAppointment(timeslotId: number, did: string): any {
-    this.programsService.postAppointment(timeslotId, did).subscribe(response => {
-      console.log('response: ', response);
-    });
-  }
-
   scrollDown() {
     // Wait for elements to be added to the DOM before scrolling down
     setTimeout(() => {

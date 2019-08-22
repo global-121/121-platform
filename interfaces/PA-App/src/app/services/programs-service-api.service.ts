@@ -70,7 +70,7 @@ export class ProgramsServiceApiService {
       );
   }
 
-  getProgramById(programId: number): Observable<Program> {
+  getProgramById(programId: string): Observable<Program> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/' + programId)
       .pipe(
@@ -105,7 +105,7 @@ export class ProgramsServiceApiService {
   }
 
 
-  getTimeslots(programId: number): Observable<Program[]> {
+  getTimeslots(programId: string): Observable<Program[]> {
     return this.apiService.get(
       environment.url_121_service_api,
       '/appointment/availability/' + programId
@@ -115,7 +115,7 @@ export class ProgramsServiceApiService {
     );
   }
 
-  postAppointment(timeslotId: number, did: string): Observable<any> {
+  postAppointment(timeslotId: string, did: string): Observable<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/appointment/register/' + timeslotId,
