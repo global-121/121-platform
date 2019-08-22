@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { CustomTranslateService } from 'src/app/services/custom-translate.service';
 
 @Component({
   selector: 'app-select-language',
@@ -12,14 +13,15 @@ export class SelectLanguageComponent implements OnInit {
   public languageChoiceName: string;
 
   constructor(
-    public storage: Storage
+    public storage: Storage,
+    public customTranslateService: CustomTranslateService
   ) { }
 
   ngOnInit() {
     this.languages = [
-      { id: 1, language: 'English' },
-      { id: 2, language: 'Language 2' },
-      { id: 3, language: 'Language 3' },
+      { id: 1, language: this.customTranslateService.translate('personal.select-language.option1') },
+      { id: 2, language: this.customTranslateService.translate('personal.select-language.option2') },
+      { id: 3, language: this.customTranslateService.translate('personal.select-language.option3') },
     ];
   }
 

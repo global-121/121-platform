@@ -5,12 +5,26 @@
   "personal": {
     "select-language": {
       "introduction": "Welcome to 121. Please select your language.",
+      "option1": "English",
+      "option2": "Language 2",
+      "option3": "Language 3",
       "result": "Thank you. You have selected"
+    },
+    "get-info": {
+      "introduction": "Before we start, would you like to know more about 121?",
+      "option1": "Tell me about 121",
+      "option2": "No, I already know",
+      "option3": "Later"
+    },
+    "tell-needs": {
+      "introduction": "In order to help you as best as possible, please tell us what your needs are.",
+      "input-placeholder": "My needs are...",
+      "submit": "Submit needs"
     }
   },
   "TOAST": {
-      "credential": "Credential received",
-      "inclusion": "Inclusion status received",
-      "close": "close"
+    "credential": "Credential received",
+    "inclusion": "Inclusion status received",
+    "close": "close"
   }
 }
