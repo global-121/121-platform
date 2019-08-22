@@ -1,0 +1,17 @@
+<section #selectLanguage>
+  <dialogue-turn>
+    {{ 'personal.select-language.introduction'|translate }}
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <ion-radio-group (ionChange)="changeLanguage($event)"
+    >
+      <ion-item *ngFor="let language of languages"
+                color="light"
+                class="ion-no-padding ion-text-wrap"
+      >
+        <ion-label>{{ language.language }}</ion-label>
+        <ion-radio value="{{ language.id }}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </dialogue-turn>
+</section>

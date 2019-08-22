@@ -1,10 +1,15 @@
 {
-    "WORLD": "World",
-    "PERSONAL": "You",
-    "DEVICE": "Device",
-    "TOAST": {
-        "credential": "Credential received",
-        "inclusion": "Inclusion status received",
-        "close": "close"
+  "WORLD": "World",
+  "PERSONAL": "You",
+  "DEVICE": "Device",
+  "personal": {
+    "select-language": {
+      "introduction": "Welcome to 121. Please select your language."
     }
+  },
+  "TOAST": {
+      "credential": "Credential received",
+      "inclusion": "Inclusion status received",
+      "close": "close"
+  }
 }
