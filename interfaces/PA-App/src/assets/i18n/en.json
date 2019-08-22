@@ -1,5 +1,10 @@
 {
   "WORLD": "World",
   "PERSONAL": "You",
-  "DEVICE": "Device"
+  "DEVICE": "Device",
+  "personal": {
+    "select-language": {
+      "introduction": "Welcome to 121. Please select your language."
+    }
+  }
 }
