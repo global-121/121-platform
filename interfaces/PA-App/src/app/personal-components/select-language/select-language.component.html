@@ -3,7 +3,7 @@
     {{ 'personal.select-language.introduction'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self">
-    <ion-radio-group (ionChange)="changeLanguage($event)"
+    <ion-radio-group [(ngModel)}]="languageChoice" (ionChange)="changeLanguage($event)"
     >
       <ion-item *ngFor="let language of languages"
                 color="light"
@@ -13,5 +13,8 @@
         <ion-radio value="{{ language.id }}"></ion-radio>
       </ion-item>
     </ion-radio-group>
+  </dialogue-turn>
+  <dialogue-turn>
+    {{ 'personal.select-language.result'|translate }} {{languageChoiceName}}.
   </dialogue-turn>
 </section>

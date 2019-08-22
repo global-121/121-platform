@@ -4,7 +4,8 @@
   "DEVICE": "Device",
   "personal": {
     "select-language": {
-      "introduction": "Welcome to 121. Please select your language."
+      "introduction": "Welcome to 121. Please select your language.",
+      "result": "Thank you. You have selected"
     }
   },
   "TOAST": {
