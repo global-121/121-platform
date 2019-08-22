@@ -5,6 +5,7 @@ import { GetProgramDetailsComponent } from '../personal-components/get-program-d
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
 import { GetInfoComponent } from '../personal-components/get-info/get-info.component';
+import { TellNeedsComponent } from '../personal-components/tell-needs/tell-needs.component';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,9 @@ export class ConversationService {
       },
       {
         comp: GetInfoComponent
+      },
+      {
+        comp: TellNeedsComponent
       },
       {
         comp: SelectCountryComponent
