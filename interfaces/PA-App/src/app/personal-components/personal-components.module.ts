@@ -9,6 +9,7 @@ import { SelectProgramComponent } from './select-program/select-program.componen
 import { GetProgramDetailsComponent } from './get-program-details/get-program-details.component';
 import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
 import { SelectLanguageComponent } from './select-language/select-language.component';
+import { GetInfoComponent } from './get-info/get-info.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { SelectLanguageComponent } from './select-language/select-language.compo
     GetProgramDetailsComponent,
     SelectAppointmentComponent,
     SelectLanguageComponent,
+    GetInfoComponent,
   ],
   imports: [
     CommonModule,
@@ -28,6 +30,7 @@ import { SelectLanguageComponent } from './select-language/select-language.compo
     GetProgramDetailsComponent,
     SelectAppointmentComponent,
     SelectLanguageComponent,
+    GetInfoComponent,
   ],
   exports: [
     SelectCountryComponent,
@@ -35,6 +38,7 @@ import { SelectLanguageComponent } from './select-language/select-language.compo
     GetProgramDetailsComponent,
     SelectAppointmentComponent,
     SelectLanguageComponent,
+    GetInfoComponent,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

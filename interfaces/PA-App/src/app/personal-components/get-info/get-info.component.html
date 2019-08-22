@@ -1,0 +1,19 @@
+<section #getInfo>
+  <dialogue-turn>
+    {{ 'personal.get-info.introduction'|translate }}
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <ion-radio-group>
+      <ion-item *ngFor="let option of infoOptions"
+                color="light"
+                class="ion-no-padding ion-text-wrap"
+      >
+        <ion-label>{{ option.option }}</ion-label>
+        <ion-radio value="{{ option.id }}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+  </dialogue-turn>
+  <!-- <dialogue-turn>
+    {{ 'personal.select-language.result'|translate }} {{languageChoiceName}}.
+  </dialogue-turn> -->
+</section>
