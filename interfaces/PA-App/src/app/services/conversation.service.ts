@@ -3,6 +3,7 @@ import { SelectCountryComponent } from '../personal-components/select-country/se
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
 import { GetProgramDetailsComponent } from '../personal-components/get-program-details/get-program-details.component';
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
+import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
 
 @Injectable({
   providedIn: 'root'
@@ -15,21 +16,20 @@ export class ConversationService {
   private dummyJsonResponse = {
     items: [
       {
-        step: 1,
+        comp: SelectLanguageComponent
+      },
+      {
         comp: SelectCountryComponent
       },
       {
-        step: 2,
         comp: SelectProgramComponent
       },
       {
-        step: 3,
         comp: GetProgramDetailsComponent
       },
       {
-        step: 4,
         comp: SelectAppointmentComponent
-      }
+      },
     ]
   };
 
