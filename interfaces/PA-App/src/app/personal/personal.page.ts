@@ -19,11 +19,6 @@ export class PersonalPage {
 
   public isDebug: boolean = !environment.production;
 
-  public program: any;
-  public programTitle: string;
-  public timeslots: any;
-  public timeslotChoice: number;
-
   constructor(
     public programsService: ProgramsServiceApiService,
     private conversationService: ConversationService,
