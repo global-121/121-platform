@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
 
@@ -7,7 +7,6 @@ import { Storage } from '@ionic/storage';
   templateUrl: './select-country.component.html',
   styleUrls: ['./select-country.component.scss'],
 })
-// export class SelectCountryComponent implements OnInit {
 export class SelectCountryComponent implements OnInit {
 
   public countries: any;

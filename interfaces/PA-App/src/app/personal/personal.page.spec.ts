@@ -14,7 +14,7 @@ describe('PersonalPage', () => {
   beforeEach(async(() => {
     // Mock the used services:
     const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getCountries']);
-    const conversationService = jasmine.createSpyObj('ConversationService', ['getComponents']);
+    const conversationService = jasmine.createSpyObj('ConversationService', { getComponents: [] });
 
     TestBed.configureTestingModule({
       declarations: [PersonalPage],
@@ -41,8 +41,8 @@ describe('PersonalPage', () => {
     fixture.detectChanges();
   });
 
-  // it('should create', () => {
-  //   expect(component).toBeTruthy();
-  // });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 
 });

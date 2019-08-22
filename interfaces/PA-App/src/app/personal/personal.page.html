@@ -11,16 +11,6 @@
   <details class="debug--container" *ngIf="isDebug">
     <summary class="debug--toggle">DEBUG:</summary>
 
-    Init():<br>
-    <ion-button id="debugGetCountries" (click)="getCountries()">API: GET Countries</ion-button>
-    <br>
-    Interactive:<br>
-    <ion-button (click)="getProgramsByCountryId(countryChoice)">API: GET Programs By Country</ion-button>
-    <br>
-    <ion-button (click)="getProgramById(programChoice)">API: GET Program Details By Id</ion-button>
-    <br>
-    <ion-button (click)="getTimeslots(programChoice)">API: GET Timeslots</ion-button>
-
   </details>
 
   <div #conversationContainer></div>
