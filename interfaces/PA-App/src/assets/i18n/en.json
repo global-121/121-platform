@@ -5,6 +5,9 @@
   "personal": {
     "select-language": {
       "introduction": "Welcome to 121. Please select your language.",
+      "option1": "English",
+      "option2": "Language 2",
+      "option3": "Language 3",
       "result": "Thank you. You have selected"
     },
     "get-info": {
