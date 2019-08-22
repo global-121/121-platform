@@ -9,6 +9,7 @@ import { Storage } from '@ionic/storage';
 export class SelectLanguageComponent implements OnInit {
   public languages: any;
   public languageChoice: number;
+  public languageChoiceName: string;
 
   constructor(
     public storage: Storage
@@ -22,6 +23,20 @@ export class SelectLanguageComponent implements OnInit {
     ];
   }
 
+  public getLanguageName(languageId: number): string {
+    const language = this.languages.find(item => {
+      return item.id === languageId;
+    });
+
+    return language ? language.language : '';
+  }
+
+  private setLanguageChoiceName(languageChoice: string) {
+    const languageId = parseInt(languageChoice, 10);
+
+    this.languageChoiceName = this.getLanguageName(languageId);
+  }
+
   private storeLanguage(languageChoice: any) {
     this.storage.set('languageChoice', languageChoice);
   }
@@ -30,6 +45,7 @@ export class SelectLanguageComponent implements OnInit {
     const languageChoice = $event.detail.value;
     this.languageChoice = languageChoice;
     this.storeLanguage(languageChoice);
+    this.setLanguageChoiceName(languageChoice);
   }
 
 
