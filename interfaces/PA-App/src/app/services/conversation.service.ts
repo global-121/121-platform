@@ -44,7 +44,6 @@ export class ConversationService {
     }
 
     return result;
-
   }
 
 }

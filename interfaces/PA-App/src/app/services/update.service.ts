@@ -1,8 +1,10 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { InclusionStorage } from '../models/local-storage/inclusion-storage.model';
 import { InclusionStatus } from '../models/inclusion-status.model';
 import { catchError } from 'rxjs/operators';
+import { ToastController } from '@ionic/angular';
 
 
 @Injectable({
@@ -24,7 +26,10 @@ export class UpdateService {
   public credentialStatusStorage = 'credentialStatus';
   public didStorage = 'did';
 
-  constructor(public programsService: ProgramsServiceApiService) { }
+  constructor(
+    public programsService: ProgramsServiceApiService,
+    public toastController: ToastController,
+    public translate: TranslateService) { }
 
   checkInclusion(programId: number): void {
     const allInclusion: InclusionStorage[] = this.getLocalStorageArray(this.inclusionStatusStorage);
@@ -58,6 +63,7 @@ export class UpdateService {
         }, this.updateSpeedMs);
       } else if (response.status === this.inclusionStatus.included || response.status === this.inclusionStatus.excluded) {
         this.storeStatus(response.status, programId, allInclusion, this.inclusionStatusStorage);
+        this.createUpdateToast('TOAST.inclusion');
       }
     });
   }
@@ -66,6 +72,7 @@ export class UpdateService {
     const did = localStorage.getItem(this.didStorage);
     this.programsService.getCredential(did).subscribe(response => {
       this.storeStatus(this.receivedStatus.received, programId, allCredentialState, this.credentialStatusStorage);
+      this.createUpdateToast('TOAST.credentials');
     }, err => {
       setTimeout(() => {
         console.log('error', err);
@@ -101,5 +108,21 @@ export class UpdateService {
       itemKey,
       itemString
     );
+  }
+
+  createUpdateToast(messageKey: string) {
+    this.translate.get(messageKey).subscribe((message: string) => {
+      const closeButtonText = this.translate.instant('TOAST.close');
+      this.toastController.create({
+        message,
+        animated: true,
+        showCloseButton: true,
+        closeButtonText,
+        cssClass: 'update-toast',
+        position: 'bottom'
+      }).then((obj) => {
+        obj.present();
+      });
+    });
   }
 }

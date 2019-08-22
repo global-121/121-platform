@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
-import { IonContent, NavController } from '@ionic/angular';
+import { IonContent } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
@@ -10,7 +10,7 @@ import { ConversationService } from '../services/conversation.service';
   templateUrl: 'personal.page.html',
   styleUrls: ['personal.page.scss'],
 })
-export class PersonalPage {
+export class PersonalPage implements OnInit {
   @ViewChild(IonContent)
   public ionContent: IonContent;
 
