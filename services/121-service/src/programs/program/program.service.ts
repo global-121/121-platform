@@ -33,7 +33,6 @@ export class ProgramService {
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
-    console.log(where);
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium');
@@ -277,6 +276,7 @@ export class ProgramService {
     const currentProgram = await this.findOne(programId);
     const programCriteria = currentProgram.customCriteria;
     const revealedAttrProof = proof['requested_proof']['revealed_attrs'];
+
     const proofRequest = proofRequestExample;
     const attrRequest = proofRequest['requested_attributes'];
 

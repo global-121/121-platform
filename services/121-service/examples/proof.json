@@ -12,7 +12,7 @@
                             "family_status": "1234",
                             "foster_family": "0",
                             "hh_nr_adult_chron_diseases": "0",
-                            "nr_of_children": "2",
+                            "nr_of_children": "15",
                             "hh_nr_children_chron_diseases": "0",
                             "hh_nr_children_in_hospital": "0",
                             "hh_nr_disabled_adult_cat1": "0",
@@ -1918,8 +1918,8 @@
             },
             "attr4_referent": {
                 "sub_proof_index": 0,
-                "raw": "2",
-                "encoded": "2"
+                "raw": "15",
+                "encoded": "15"
             },
             "attr1_referent": {
                 "sub_proof_index": 0,
