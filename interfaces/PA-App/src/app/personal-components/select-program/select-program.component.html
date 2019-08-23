@@ -2,24 +2,24 @@
   <ion-button (click)="getProgramsByCountryId(countryChoice)">API: GET Programs By Country</ion-button>
   <br>
   <dialogue-turn>
-    We'll show you programs from <strong>{{ countryChoiceName }}</strong>.
-    <br>
-    Select a program:
+    {{ 'personal.select-program.introduction'|translate }} <strong>{{ countryChoiceName }}</strong>.
   </dialogue-turn>
   <dialogue-turn actor="self">
-    I'm interested in:
-
+    {{ 'personal.select-program.step4'|translate }}
+    <br>
+    <ion-button>{{ 'personal.select-program.info-button'|translate }}</ion-button>
     <ion-radio-group (ionChange)="changeProgram($event)">
       <ion-item *ngFor="let program of programs"
                 color="light"
                 class="ion-no-padding ion-text-wrap"
       >
         <ion-label>
-          Program #{{ program.id }}<br>
+          {{ 'personal.select-program.program'|translate }} #{{ program.id }}<br>
           <ion-note>{{ program.title }}</ion-note>
         </ion-label>
         <ion-radio value="{{ program.id }}"></ion-radio>
       </ion-item>
     </ion-radio-group>
+    <ion-button [hidden]="!programChoice">{{ 'shared.submit-button'|translate }}</ion-button>
   </dialogue-turn>
 </section>

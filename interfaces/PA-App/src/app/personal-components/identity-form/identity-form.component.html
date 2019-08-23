@@ -1,0 +1,19 @@
+<section #identityForm>
+  <dialogue-turn>
+    {{ 'personal.identity-form.introduction'|translate }}
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    {{ 'personal.identity-form.step2'|translate }}
+    <br>
+    <ion-button>{{ 'personal.identity-form.info-button'|translate }}</ion-button>
+    <form (ngSubmit)="submitIdentityForm(name,dob)">
+      <ion-input type="text" [placeholder]="namePlaceholder" name="name" [(ngModel)]="name" ngDefaultControl></ion-input>
+      <ion-input type="date" [placeholder]="dobPlaceholder" name="dob" [(ngModel)]="dob" ngDefaultControl></ion-input>
+      <ion-button [hidden]="!name || !dob" type="submit">{{ 'personal.identity-form.submit-button'|translate }}</ion-button>
+    </form>
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!identitySubmitted">
+    {{ 'personal.identity-form.conclusion'|translate }}
+  </dialogue-turn>
+</section>
+     

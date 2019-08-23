@@ -5,7 +5,7 @@
     <dialogue-turn actor="self">
       <form (ngSubmit)="submitNeeds(needs)">
         <ion-input [placeholder]="inputPlaceholder" type="text" name="needs" [(ngModel)]="needs" ngDefaultControl></ion-input>
-        <ion-button type="submit">{{ 'personal.tell-needs.submit'|translate }}</ion-button>
+        <ion-button [hidden]="!needs" type="submit">{{ 'personal.tell-needs.submit'|translate }}</ion-button>
       </form>
     </dialogue-turn>
     <dialogue-turn [hidden]="!needsSubmitted">

@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { SelectCountryComponent } from './select-country.component';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import mockCountriesResponse from '../../mocks/api.countries.mock';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SelectCountryComponent', () => {
   let component: SelectCountryComponent;
@@ -23,6 +24,9 @@ describe('SelectCountryComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [SelectCountryComponent],
+      imports: [
+        TranslateModule.forRoot()
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {

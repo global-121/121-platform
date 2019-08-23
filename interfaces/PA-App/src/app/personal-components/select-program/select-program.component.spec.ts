@@ -1,9 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { SelectProgramComponent } from './select-program.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('SelectProgramComponent', () => {
   let component: SelectProgramComponent;
@@ -21,6 +22,7 @@ describe('SelectProgramComponent', () => {
       declarations: [SelectProgramComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
+        TranslateModule.forRoot(),
         HttpClientTestingModule
       ],
       providers: [

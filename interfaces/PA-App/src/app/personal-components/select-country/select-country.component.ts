@@ -12,6 +12,7 @@ export class SelectCountryComponent implements OnInit {
   public countries: any;
   public countryChoice: number;
   public countryChoiceName: string;
+  public countrySelected: boolean;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -43,10 +44,15 @@ export class SelectCountryComponent implements OnInit {
   }
 
   public changeCountry($event) {
+    this.countrySelected = false;
     const countryChoice = $event.detail.value;
     this.countryChoice = countryChoice;
     this.storeCountry(countryChoice);
     this.setCountryChoiceName(countryChoice);
+  }
+
+  public submitCountry() {
+    this.countrySelected = true;
   }
 
   ngOnInit() { }
