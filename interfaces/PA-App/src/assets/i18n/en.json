@@ -20,12 +20,23 @@
       "introduction": "In order to help you as best as possible, please tell us what your needs are.",
       "input-placeholder": "My needs are...",
       "submit": "Submit needs",
-      "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future. Please select your next step."
+      "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future."
+    },
+    "choose-credential-type": {
+      "introduction": "Please select your next step.",
+      "option1": "Apply to program",
+      "option2": "Create a Digital ID",
+      "option3": "Delete Digital ID",
+      "conclusion-program": "To request inclusion in a program you need to have a valid Digital ID first.",
+      "info-digital-id": "Tell me about Digital ID's"
     }
   },
   "TOAST": {
     "credential": "Credential received",
     "inclusion": "Inclusion status received",
     "close": "close"
+  },
+  "shared": {
+    "submit-button": "Submit"
   }
 }
