@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 
 import { GetProgramDetailsComponent } from './get-program-details.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('GetProgramDetailsComponent', () => {
   let component: GetProgramDetailsComponent;
@@ -18,6 +19,7 @@ describe('GetProgramDetailsComponent', () => {
       declarations: [GetProgramDetailsComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
+        TranslateModule.forRoot(),
         HttpClientTestingModule
       ],
       providers: [

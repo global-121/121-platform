@@ -59,6 +59,9 @@
       "info-button": "Tell me about programs",
       "program": "Program"
     },
+    "get-program-details": {
+      "introduction": "Thank you for selecting this program. Here you see the details of"
+    },
     "select-appointment": {
       "introduction1": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",
       "introduction2": "For this you need to make an appointment",

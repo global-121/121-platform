@@ -2,7 +2,7 @@
   <ion-button (click)="getProgramById()">API: GET Program Details By Id</ion-button>
   <br>
   <dialogue-turn>
-    We'll show you details for <strong>{{programTitle}}</strong>
+      {{ 'personal.get-program-details.introduction'|translate }} <strong>{{programTitle}}</strong>
     <br>
     <ul>
       <li ion-item *ngFor="let detail of program">{{detail.key}}: {{detail.value}}</li>
