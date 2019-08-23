@@ -1,3 +1,9 @@
+import { CredentialEntity } from './../../sovrin/credential/credential.entity';
+import { CredentialAttributesEntity } from './../../sovrin/credential/credential-attributes.entity';
+import { ProofService } from './../../sovrin/proof/proof.service';
+import { ProofController } from './../../sovrin/proof/proof.controller';
+import { CredentialService } from './../../sovrin/credential/credential.service';
+import { SchemaService } from './../../sovrin/schema/schema.service';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import { repositoryMockFactory } from './../../mock/repositoryMock.factory';
 import { CustomCriterium } from './custom-criterium.entity';
@@ -6,6 +12,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProgramEntity } from './program.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
+import { SchemaEntity } from '../../sovrin/schema/schema.entity';
+import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -16,6 +24,9 @@ describe('Program service', (): void => {
       const module: TestingModule = await Test.createTestingModule({
         providers: [
           ProgramService,
+          SchemaService,
+          CredentialService,
+          ProofService,
           {
             provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,
@@ -30,6 +41,22 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(ConnectionEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(SchemaEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(CredentialAttributesEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(CredentialRequestEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(CredentialEntity),
             useFactory: repositoryMockFactory,
           },
         ],

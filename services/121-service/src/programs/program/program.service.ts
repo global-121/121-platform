@@ -1,8 +1,9 @@
+import { SchemaService } from './../../sovrin/schema/schema.service';
 import { CredentialService } from './../../sovrin/credential/credential.service';
 import { ProofService } from './../../sovrin/proof/proof.service';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProgramEntity } from './program.entity';
@@ -10,7 +11,6 @@ import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
-import { SchemaService } from '../../sovrin/schema/schema.service';
 import proofRequestExample from '../../../examples/proof_request.json';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 
@@ -24,9 +24,16 @@ export class ProgramService {
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(CustomCriterium)
   public customCriteriumRepository: Repository<CustomCriterium>;
-  public constructor() {}
+  public constructor(
+    @Inject(forwardRef(() => CredentialService))
+    private readonly credentialService: CredentialService,
+    private readonly schemaService: SchemaService,
+    @Inject(forwardRef(() => ProofService))
+    private readonly proofService: ProofService,
+  ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
+    console.log(where);
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium');
@@ -130,11 +137,9 @@ export class ProgramService {
 
     await this.changeProgramValue(programId, { published: true });
 
-    const schemaService = new SchemaService();
-    const result = await schemaService.create(selectedProgram);
+    const result = await this.schemaService.create(selectedProgram);
 
-    const credentialService = new CredentialService();
-    const credentialOffer = await credentialService.createOffer(
+    const credentialOffer = await this.credentialService.createOffer(
       result.credDefId,
     );
 
@@ -211,8 +216,7 @@ export class ProgramService {
       throw new HttpException({ errors }, 400);
     }
 
-    const proofService = new ProofService();
-    const proof = await proofService.validateProof(
+    const proof = await this.proofService.validateProof(
       programId,
       did,
       encryptedProof,
@@ -255,11 +259,11 @@ export class ProgramService {
     if (
       connection.programsIncluded.indexOf(parseInt(String(programId), 10)) > -1
     ) {
-      inclusionStatus = { status : 'included'}
+      inclusionStatus = { status: 'included' };
     } else if (
       connection.programsExcluded.indexOf(parseInt(String(programId), 10)) > -1
     ) {
-      inclusionStatus = { status : 'excluded'}
+      inclusionStatus = { status: 'excluded' };
     } else {
       inclusionStatus = { status: 'unavailable' };
     }

@@ -10,9 +10,10 @@ import { CreateConnectionController } from './create-connection.controller';
 import { ConnectionEntity } from './connection.entity';
 import { AuthMiddlewareAdmin } from '../../user/auth.middlewareAdmin';
 import { UserModule } from '../../user/user.module';
+import { SovrinSetupModule } from '../setup/setup.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ConnectionEntity]), UserModule],
+  imports: [TypeOrmModule.forFeature([ConnectionEntity]), UserModule, SovrinSetupModule],
   providers: [CreateConnectionService],
   controllers: [CreateConnectionController],
 })

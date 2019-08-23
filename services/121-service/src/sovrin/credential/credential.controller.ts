@@ -35,9 +35,10 @@ export class CredentialController {
   @ApiOperation({ title: 'Get credential offer' })
   @ApiResponse({ status: 200, description: 'Credential offer is sent' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'string' })
-  @Get('/offer')
+  @Get('/offer/:programId')
   public async getOffer(@Param() params): Promise<object> {
-    return await this.credentialService.getOffer(params);
+    console.log(params.programId);
+    return await this.credentialService.getOffer(params.programId);
   }
 
   @ApiOperation({ title: 'PA gets credential attributes' })
@@ -85,7 +86,9 @@ export class CredentialController {
     return await this.credentialService.getPrefilledAnswers(params.did);
   }
 
-  @ApiOperation({ title: 'Delete prefilled answers (for AW, after issuing credential)' })
+  @ApiOperation({
+    title: 'Delete prefilled answers (for AW, after issuing credential)',
+  })
   @ApiResponse({ status: 200, description: 'Prefilled answers deleted' })
   @ApiImplicitParam({
     name: 'did',
@@ -94,12 +97,9 @@ export class CredentialController {
     description: 'did:sov:12351352kl',
   })
   @Delete('/answers/:did')
-  public async deletePrefilledAnswers(
-    @Param() params,
-  ): Promise<DeleteResult> {
+  public async deletePrefilledAnswers(@Param() params): Promise<DeleteResult> {
     return await this.credentialService.deletePrefilledAnswers(params.did);
   }
-
 
   @ApiOperation({ title: 'Post credential request (for PA)' })
   @ApiResponse({ status: 200, description: 'Credential request received' })
