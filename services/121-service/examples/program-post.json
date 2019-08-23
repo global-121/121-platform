@@ -17,8 +17,7 @@
         "financialServiceProviders": []
     },
     "inclusionCalculationType": "standard",
-    "customCriteria": [
-        {
+    "customCriteria": [{
             "criterium": "nr_of_children",
             "question": {
                 "english": "How many children do you have?",
@@ -41,24 +40,25 @@
             },
             "answerType": "dropdown",
             "criteriumType": "standard",
-            "options": [
-                {
-                    "id": 0,
-                    "option": "steel",
-                    "name": {
-                        "english": "steel",
-                        "nyanja": "zitsulo"
+            "options": {
+                "options": [{
+                        "id": 0,
+                        "option": "steel",
+                        "name": {
+                            "english": "steel",
+                            "nyanja": "zitsulo"
+                        }
+                    },
+                    {
+                        "id": 1,
+                        "option": "tiles",
+                        "name": {
+                            "english": "tiles",
+                            "nyanja": "matayala"
+                        }
                     }
-                },
-                {
-                    "id": 1,
-                    "option": "tiles",
-                    "name": {
-                        "english": "tiles",
-                        "nyanja": "matayala"
-                    }
-                }
-            ],
+                ]
+            },
             "scoring": {
                 "0": 3,
                 "1": 6
