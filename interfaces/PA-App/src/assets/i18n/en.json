@@ -47,6 +47,11 @@
       "dob-placeholder": "Your date of birth...",
       "submit-button": "Save your information",
       "conclusion": "We now have all information to  create a Digital ID."
+    },
+    "select-country": {
+      "introduction": "The next step is to select your location, so we can show you programs for that location.",
+      "step3": "Step 3: My location is:",
+      "conclusion": "Thank you, you have selected"
     }
   },
   "TOAST": {
