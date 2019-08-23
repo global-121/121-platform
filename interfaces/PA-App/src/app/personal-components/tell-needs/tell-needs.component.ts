@@ -10,6 +10,7 @@ export class TellNeedsComponent implements OnInit {
 
   public inputPlaceholder: any;
   public needs: any;
+  public needsSubmitted: boolean;
 
   constructor(
     public customTranslateService: CustomTranslateService
@@ -21,6 +22,7 @@ export class TellNeedsComponent implements OnInit {
 
   public submitNeeds(needsInput) {
     console.log('needs-input: ', needsInput);
+    this.needsSubmitted = true;
   }
 
 }

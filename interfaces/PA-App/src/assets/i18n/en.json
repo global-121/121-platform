@@ -19,7 +19,8 @@
     "tell-needs": {
       "introduction": "In order to help you as best as possible, please tell us what your needs are.",
       "input-placeholder": "My needs are...",
-      "submit": "Submit needs"
+      "submit": "Submit needs",
+      "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future. Please select your next step."
     }
   },
   "TOAST": {

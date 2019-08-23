@@ -8,5 +8,8 @@
         <ion-button type="submit">{{ 'personal.tell-needs.submit'|translate }}</ion-button>
       </form>
     </dialogue-turn>
+    <dialogue-turn [hidden]="!needsSubmitted">
+      {{ 'personal.tell-needs.conclusion'|translate }}
+    </dialogue-turn>
   </section>
    
