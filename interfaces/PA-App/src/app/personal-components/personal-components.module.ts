@@ -23,7 +23,7 @@ const personalComponents = [
   SelectProgramComponent,
   GetProgramDetailsComponent,
   SelectAppointmentComponent,
-]
+];
 
 @NgModule({
   declarations: [].concat(personalComponents),
