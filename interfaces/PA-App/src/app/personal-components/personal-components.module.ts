@@ -13,6 +13,7 @@ import { SelectLanguageComponent } from './select-language/select-language.compo
 import { GetInfoComponent } from './get-info/get-info.component';
 import { TellNeedsComponent } from './tell-needs/tell-needs.component';
 import { ChooseCredentialTypeComponent } from './choose-credential-type/choose-credential-type.component';
+import { CreatePasswordComponent } from './create-password/create-password.component';
 
 const personalComponents = [
   SelectLanguageComponent,
@@ -23,6 +24,7 @@ const personalComponents = [
   SelectProgramComponent,
   GetProgramDetailsComponent,
   SelectAppointmentComponent,
+  CreatePasswordComponent,
 ];
 
 @NgModule({

@@ -29,6 +29,15 @@
       "option3": "Delete Digital ID",
       "conclusion-program": "To request inclusion in a program you need to have a valid Digital ID first.",
       "info-digital-id": "Tell me about Digital ID's"
+    },
+    "create-password": {
+      "introduction": "To create a Digital ID you need to complete the following steps.",
+      "step1": "Step 1: Create your password",
+      "info-password": "Tell me about passwords",
+      "create-password": "Create password...",
+      "confirm-password": "Confirm password...",
+      "submit-password": "Create your password",
+      "conclusion": "Great! You have created a password."
     }
   },
   "TOAST": {
