@@ -1,3 +1,4 @@
+import { SchemaService } from './../../sovrin/schema/schema.service';
 import { CredentialService } from './../../sovrin/credential/credential.service';
 import { ProofService } from './../../sovrin/proof/proof.service';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
@@ -10,7 +11,6 @@ import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
-import { SchemaService } from '../../sovrin/schema/schema.service';
 import proofRequestExample from '../../../examples/proof_request.json';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 
@@ -27,6 +27,9 @@ export class ProgramService {
   public constructor(
     @Inject(forwardRef(() => CredentialService))
     private readonly credentialService: CredentialService,
+    private readonly schemaService: SchemaService,
+    @Inject(forwardRef(() => ProofService))
+    private readonly proofService: ProofService,
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
@@ -134,8 +137,7 @@ export class ProgramService {
 
     await this.changeProgramValue(programId, { published: true });
 
-    const schemaService = new SchemaService();
-    const result = await schemaService.create(selectedProgram);
+    const result = await this.schemaService.create(selectedProgram);
 
     const credentialOffer = await this.credentialService.createOffer(
       result.credDefId,
@@ -214,8 +216,7 @@ export class ProgramService {
       throw new HttpException({ errors }, 400);
     }
 
-    const proofService = new ProofService();
-    const proof = await proofService.validateProof(
+    const proof = await this.proofService.validateProof(
       programId,
       did,
       encryptedProof,

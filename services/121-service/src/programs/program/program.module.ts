@@ -1,3 +1,5 @@
+import { ProofModule } from './../../sovrin/proof/proof.module';
+import { SchemaModule } from './../../sovrin/schema/schema.module';
 import { CredentialModule } from './../../sovrin/credential/credential.module';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import {
@@ -28,6 +30,8 @@ import { AuthMiddlewarePM } from '../../user/auth.middlewarePM';
     ]),
     forwardRef(() => CredentialModule),
     UserModule,
+    SchemaModule,
+    forwardRef(() => ProofModule),
   ],
   providers: [ProgramService],
   controllers: [ProgramController],
