@@ -38,6 +38,15 @@
       "confirm-password": "Confirm password...",
       "submit-password": "Create your password",
       "conclusion": "Great! You have created a password."
+    },
+    "identity-form": {
+      "introduction": "Now we need some additional information about you.",
+      "step2": "Step 2: Fill in the following questions about yourself.",
+      "info-button": "Tell me about these questions.",
+      "name-placeholder": "Your full name...",
+      "dob-placeholder": "Your date of birth...",
+      "submit-button": "Save your information",
+      "conclusion": "We now have all information to  create a Digital ID."
     }
   },
   "TOAST": {

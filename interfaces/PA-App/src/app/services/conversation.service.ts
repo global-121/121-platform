@@ -8,6 +8,7 @@ import { GetInfoComponent } from '../personal-components/get-info/get-info.compo
 import { TellNeedsComponent } from '../personal-components/tell-needs/tell-needs.component';
 import { ChooseCredentialTypeComponent } from '../personal-components/choose-credential-type/choose-credential-type.component';
 import { CreatePasswordComponent } from '../personal-components/create-password/create-password.component';
+import { IdentityFormComponent } from '../personal-components/identity-form/identity-form.component';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,9 @@ export class ConversationService {
       },
       {
         comp: CreatePasswordComponent
+      },
+      {
+        comp: IdentityFormComponent
       },
       {
         comp: SelectCountryComponent
