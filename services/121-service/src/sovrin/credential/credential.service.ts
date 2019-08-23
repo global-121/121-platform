@@ -7,7 +7,7 @@ import { ProgramEntity } from '../../programs/program/program.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { ProgramService } from '../../programs/program/program.service';
-import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
+import { PrefilledAnswersDto, PrefilledAnswerDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialEntity } from './credential.entity';
 
@@ -54,7 +54,7 @@ export class CredentialService {
         attributes.push(criterium);
       }
     } else {
-      const errors =  'Program does not exist or is not published' ;
+      const errors = 'Program does not exist or is not published';
       throw new HttpException({ errors }, 401);
     }
     return attributes;
@@ -64,7 +64,7 @@ export class CredentialService {
   public async prefilledAnswers(
     did: string,
     programId: number,
-    prefilledAnswers: PrefilledAnswersDto,
+    prefilledAnswers: PrefilledAnswerDto[],
   ): Promise<any[]> {
     programId = isNaN(programId) ? 0 : programId;
     await this.credentialAttributesRepository.delete({
@@ -72,7 +72,7 @@ export class CredentialService {
       programId: programId,
     });
     let credentials = [];
-    for (let answer of prefilledAnswers.attributes) {
+    for (let answer of prefilledAnswers) {
       let credential = new CredentialAttributesEntity();
       credential.did = did;
       credential.programId = programId;
