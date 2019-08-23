@@ -9,7 +9,7 @@
     <form (ngSubmit)="submitIdentityForm(name,dob)">
       <ion-input type="text" [placeholder]="namePlaceholder" name="name" [(ngModel)]="name" ngDefaultControl></ion-input>
       <ion-input type="date" [placeholder]="dobPlaceholder" name="dob" [(ngModel)]="dob" ngDefaultControl></ion-input>
-      <ion-button type="submit">{{ 'personal.identity-form.submit-button'|translate }}</ion-button>
+      <ion-button [hidden]="!name || !dob" type="submit">{{ 'personal.identity-form.submit-button'|translate }}</ion-button>
     </form>
   </dialogue-turn>
   <dialogue-turn [hidden]="!identitySubmitted">
