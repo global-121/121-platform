@@ -33,7 +33,6 @@ export class ProgramService {
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
-    console.log(where);
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium');
@@ -277,10 +276,7 @@ export class ProgramService {
     const currentProgram = await this.findOne(programId);
     const programCriteria = currentProgram.customCriteria;
     const revealedAttrProof = proof['requested_proof']['revealed_attrs'];
-    console.log(
-      'revealedAttrProofrevealedAttrProofrevealedAttrProof',
-      revealedAttrProof,
-    );
+
     const proofRequest = proofRequestExample;
     const attrRequest = proofRequest['requested_attributes'];
 
@@ -320,7 +316,6 @@ export class ProgramService {
       let criteriumName = criterium.criterium;
       if (scoreList[criteriumName]) {
         let answerPA = scoreList[criteriumName];
-        console.log(scoreList)
         switch (criterium.answerType) {
           case 'dropdown': {
             totalScore =
@@ -332,7 +327,6 @@ export class ProgramService {
         }
       }
     }
-    console.log('totalScore', totalScore);
     return totalScore;
   }
 
@@ -354,7 +348,6 @@ export class ProgramService {
     answerPA: number,
   ): number {
     let score = 0;
-    console.log(criterium, answerPA)
     if (criterium.scoring['multiplier']) {
       score = criterium.scoring['multiplier'] * answerPA;
     }
