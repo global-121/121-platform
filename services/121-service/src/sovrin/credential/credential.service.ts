@@ -49,8 +49,13 @@ export class CredentialService {
   public async getAttributes(programId: number): Promise<any[]> {
     let selectedProgram = await this.programService.findOne(programId);
     let attributes = [];
-    for (let criterium of selectedProgram.customCriteria) {
-      attributes.push(criterium);
+    if (selectedProgram && selectedProgram.published === true) {
+      for (let criterium of selectedProgram.customCriteria) {
+        attributes.push(criterium);
+      }
+    } else {
+      const errors =  'Program does not exist or is not published' ;
+      throw new HttpException({ errors }, 401);
     }
     return attributes;
   }
