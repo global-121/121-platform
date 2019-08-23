@@ -3,8 +3,13 @@
       {{ 'personal.tell-needs.introduction'|translate }}
     </dialogue-turn>
     <dialogue-turn actor="self">
-      <ion-input [placeholder]="inputPlaceholder"></ion-input>
-      <ion-button>{{ 'personal.tell-needs.submit'|translate }}</ion-button>
+      <form (ngSubmit)="submitNeeds(needs)">
+        <ion-input [placeholder]="inputPlaceholder" type="text" name="needs" [(ngModel)]="needs" ngDefaultControl></ion-input>
+        <ion-button type="submit">{{ 'personal.tell-needs.submit'|translate }}</ion-button>
+      </form>
+    </dialogue-turn>
+    <dialogue-turn [hidden]="!needsSubmitted">
+      {{ 'personal.tell-needs.conclusion'|translate }}
     </dialogue-turn>
   </section>
    

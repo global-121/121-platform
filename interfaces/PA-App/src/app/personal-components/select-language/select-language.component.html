@@ -14,7 +14,7 @@
       </ion-item>
     </ion-radio-group>
   </dialogue-turn>
-  <dialogue-turn>
+  <dialogue-turn [hidden]="!languageChoice">
     {{ 'personal.select-language.result'|translate }} {{languageChoiceName}}.
   </dialogue-turn>
 </section>

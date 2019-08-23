@@ -12,40 +12,28 @@ import { SelectAppointmentComponent } from './select-appointment/select-appointm
 import { SelectLanguageComponent } from './select-language/select-language.component';
 import { GetInfoComponent } from './get-info/get-info.component';
 import { TellNeedsComponent } from './tell-needs/tell-needs.component';
+import { ChooseCredentialTypeComponent } from './choose-credential-type/choose-credential-type.component';
+
+const personalComponents = [
+  SelectLanguageComponent,
+  GetInfoComponent,
+  TellNeedsComponent,
+  ChooseCredentialTypeComponent,
+  SelectCountryComponent,
+  SelectProgramComponent,
+  GetProgramDetailsComponent,
+  SelectAppointmentComponent,
+];
 
 @NgModule({
-  declarations: [
-    SelectCountryComponent,
-    SelectProgramComponent,
-    GetProgramDetailsComponent,
-    SelectAppointmentComponent,
-    SelectLanguageComponent,
-    GetInfoComponent,
-    TellNeedsComponent,
-  ],
+  declarations: [].concat(personalComponents),
   imports: [
     CommonModule,
     SharedModule,
     FormsModule
   ],
-  entryComponents: [
-    SelectCountryComponent,
-    SelectProgramComponent,
-    GetProgramDetailsComponent,
-    SelectAppointmentComponent,
-    SelectLanguageComponent,
-    GetInfoComponent,
-    TellNeedsComponent,
-  ],
-  exports: [
-    SelectCountryComponent,
-    SelectProgramComponent,
-    GetProgramDetailsComponent,
-    SelectAppointmentComponent,
-    SelectLanguageComponent,
-    GetInfoComponent,
-    TellNeedsComponent,
-  ],
+  entryComponents: [].concat(personalComponents),
+  exports: [].concat(personalComponents),
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
