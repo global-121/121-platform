@@ -1,19 +1,22 @@
 <section>
   <ion-button (click)="getTimeslots()">API: GET Timeslots</ion-button>
   <br>
-  <dialogue-turn>
-    Select a timeslot:
+  <dialogue-turn actor="ho">
+    {{ 'personal.select-appointment.introduction1'|translate }}
+    <br><br>
+    {{ 'personal.select-appointment.introduction2'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self">
-    I want...:
-
+    {{ 'personal.select-appointment.stepX'|translate }}
+    <br>
+    <ion-button>{{ 'personal.select-appointment.info-button'|translate }}</ion-button>
     <ion-radio-group (ionChange)="changeTimeslot($event)">
       <ion-item *ngFor="let timeslot of timeslots"
                 color="light"
                 class="ion-no-padding ion-text-wrap"
       >
         <ion-label>
-          Timeslot {{timeslot.id}}:<br>
+          {{ 'personal.select-appointment.timeslot'|translate }} {{timeslot.id}}:<br>
           <ion-note>{{timeslot.startDate}} - {{timeslot.endDate}}</ion-note><br>
           <ion-note>({{ timeslot.location }})</ion-note>
         </ion-label>
@@ -21,8 +24,30 @@
       </ion-item>
     </ion-radio-group>
     <br>
-    <ion-button (click)="postAppointment(timeslotChoice,'did:sov:2wJPyULfLLnYTEFYzByfUR')">
-      Test Post Appointment API
-    </ion-button>
+    <ion-button [hidden]="!timeslotChoice" (click)="submitTimeslot()">{{ 'shared.submit-button'|translate }}</ion-button>
+    <br>
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!timeslotSubmitted" actor="ho">
+    {{ 'personal.select-appointment.conclusion1'|translate }} {{timeslotChoiceName}}.
+    <br><br>
+    {{ 'personal.select-appointment.conclusion2'|translate }}
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!timeslotSubmitted" actor="self">
+    {{ 'personal.select-appointment.confirm'|translate }}
+    <br>
+    <ion-button>{{ 'personal.select-appointment.info-documents'|translate }}</ion-button>
+    <ion-radio-group (ionChange)="changeConfirmOption($event)">
+      <ion-item *ngFor="let option of confirmOptions"
+                color="light"
+                class="ion-no-padding ion-text-wrap"
+      >
+        <ion-label>{{option.option}}</ion-label>
+        <ion-radio value="{{ option.id }}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+    <ion-button [hidden]="!confirmOptionChoice" (click)="submitAppointment(confirmOptionChoice)">{{ 'shared.submit-button'|translate }}</ion-button>
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!appointmentConfirmed" actor="ho">
+    {{ 'personal.select-appointment.conclusion'|translate }}
   </dialogue-turn>
 </section>

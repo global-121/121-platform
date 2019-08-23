@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 
 import { SelectAppointmentComponent } from './select-appointment.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SelectAppointmentComponent', () => {
   let component: SelectAppointmentComponent;
@@ -18,6 +19,7 @@ describe('SelectAppointmentComponent', () => {
       declarations: [SelectAppointmentComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
+        TranslateModule.forRoot(),
         HttpClientTestingModule
       ],
       providers: [

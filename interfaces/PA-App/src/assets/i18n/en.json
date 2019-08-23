@@ -58,6 +58,20 @@
       "step4": "Step 4: Select a program:",
       "info-button": "Tell me about programs",
       "program": "Program"
+    },
+    "select-appointment": {
+      "introduction1": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",
+      "introduction2": "For this you need to make an appointment",
+      "stepX": "Step X: Select a timeslot:",
+      "info-button": "Tell me about this meeting",
+      "timeslot": "Timeslot",
+      "conclusion1": "Thank you. You have selected the following timeslot:",
+      "conclusion2": "Please ensure you have the following documents:",
+      "confirm": "Confirm this meeting time.",
+      "info-documents": "Tell me about the documents",
+      "option1": "Confirm meeting time",
+      "option2": "Change meeting time",
+      "conclusion": "Thank you, your verification meeting is confirmed."
     }
   },
   "TOAST": {
