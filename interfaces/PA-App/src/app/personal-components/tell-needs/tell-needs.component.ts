@@ -19,8 +19,8 @@ export class TellNeedsComponent implements OnInit {
     this.inputPlaceholder = this.customTranslateService.translate('personal.tell-needs.input-placeholder');
   }
 
-  public submitNeeds(needs) {
-    console.log(needs);
+  public submitNeeds(needsInput) {
+    console.log('needs-input: ', needsInput);
   }
 
 }
