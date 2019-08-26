@@ -7,4 +7,5 @@ export class Program {
   updated: string;
   author: object;
   distributionChannel: string;
+  meetingDocuments: any;
 }
