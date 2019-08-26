@@ -31,6 +31,12 @@
     {{ 'personal.select-appointment.conclusion1'|translate }} {{timeslotChoiceName}}.
     <br><br>
     {{ 'personal.select-appointment.conclusion2'|translate }}
+    <br>
+    <ion-list>
+      <ion-item *ngFor="let document of meetingDocuments">
+        {{document}}
+      </ion-item>
+    </ion-list>
   </dialogue-turn>
   <dialogue-turn [hidden]="!timeslotSubmitted" actor="self">
     {{ 'personal.select-appointment.confirm'|translate }}

@@ -17,6 +17,7 @@
         "financialServiceProviders": []
     },
     "inclusionCalculationType": "standard",
+    "meetingDocuments": "",
     "customCriteria": [
         {
             "criterium": "nr_of_children",

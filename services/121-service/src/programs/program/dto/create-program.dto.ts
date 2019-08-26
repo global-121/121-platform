@@ -57,6 +57,8 @@ export class CreateProgramDto {
   @ApiModelProperty({ example: 'standard' })
   @IsIn(['standard'])
   public readonly inclusionCalculationType: string;
+  @ApiModelProperty({ example: 'Identity card;Health Insurance;Proof of children' })
+  public readonly meetingDocuments: string;
   @ApiModelProperty({
     example: [
       {

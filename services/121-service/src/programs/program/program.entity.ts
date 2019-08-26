@@ -52,6 +52,9 @@ export class ProgramEntity {
   @Column()
   public inclusionCalculationType: string;
 
+  @Column({ nullable: true })
+  public meetingDocuments: string;
+
   @Column()
   public minimumScore: number;
 

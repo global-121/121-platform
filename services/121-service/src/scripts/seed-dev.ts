@@ -56,7 +56,7 @@ export class SeedDev implements InterfaceScript {
 
     const userRepository = this.connection.getRepository(UserEntity);
     const author = await userRepository.findOne(1);
-    for (let programExample of [programBasicExample, programMvpExample]) {
+    for (let programExample of [programMvpExample, programBasicExample]) {
       const programExampleDump = JSON.stringify(programExample);
       const program = JSON.parse(programExampleDump);
 

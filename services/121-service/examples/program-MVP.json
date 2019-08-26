@@ -17,6 +17,7 @@
         "financialServiceProviders": []
     },
     "inclusionCalculationType": "standard",
+    "meetingDocuments": "Identity card;Health Insurance;Proof of children",
     "customCriteria": [
         {
             "criterium": "accomodation-heating",

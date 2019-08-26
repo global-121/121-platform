@@ -16,6 +16,7 @@ export class SelectAppointmentComponent implements OnInit {
   public confirmOptions: any;
   public confirmOptionChoice: number;
   public appointmentConfirmed: boolean;
+  public meetingDocuments: any;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -34,6 +35,15 @@ export class SelectAppointmentComponent implements OnInit {
     this.storage.get('programChoice').then(value => {
       this.programsService.getTimeslots(value).subscribe(response => {
         this.timeslots = response[0];
+      });
+    });
+    this.getDocuments();
+  }
+
+  public getDocuments(): any {
+    this.storage.get('programChoice').then(value => {
+      this.programsService.getProgramById(value).subscribe(response => {
+        this.meetingDocuments = response.meetingDocuments.split(';');
       });
     });
   }
