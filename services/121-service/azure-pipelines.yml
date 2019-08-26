@@ -35,3 +35,11 @@ steps:
   - script: npm test
     displayName: Tests
     workingDirectory: services/121-service/
+
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.6'
+
+  - script: python test/test-flow.py
+    displayName: test python
+    workingDirectory: services/121-service/
