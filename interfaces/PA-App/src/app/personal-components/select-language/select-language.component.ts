@@ -19,13 +19,13 @@ export class SelectLanguageComponent implements OnInit {
 
   ngOnInit() {
     this.languages = [
-      { id: 1, language: this.customTranslateService.translate('personal.select-language.option1') },
-      { id: 2, language: this.customTranslateService.translate('personal.select-language.option2') },
-      { id: 3, language: this.customTranslateService.translate('personal.select-language.option3') },
+      { id: 'en', language: this.customTranslateService.translate('personal.select-language.option1') },
+      { id: 'la2', language: this.customTranslateService.translate('personal.select-language.option2') },
+      { id: 'la3', language: this.customTranslateService.translate('personal.select-language.option3') },
     ];
   }
 
-  public getLanguageName(languageId: number): string {
+  public getLanguageName(languageId: string): string {
     const language = this.languages.find(item => {
       return item.id === languageId;
     });
@@ -34,7 +34,7 @@ export class SelectLanguageComponent implements OnInit {
   }
 
   private setLanguageChoiceName(languageChoice: string) {
-    const languageId = parseInt(languageChoice, 10);
+    const languageId = languageChoice;
 
     this.languageChoiceName = this.getLanguageName(languageId);
   }

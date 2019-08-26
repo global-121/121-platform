@@ -1,8 +1,12 @@
 {
     "location": "Lilongwe",
     "countryId": 1,
-    "title": "MVP Full program",
-    "description": "Program to help vulnerable people in flood-prone areas in Malawi",
+    "title": {
+        "en": "MVP Full program"
+    },
+    "description": {
+        "en": "Program to help vulnerable people in flood-prone areas in Malawi"
+    },
     "startDate": "2020-10-23T18:25:43.511Z",
     "endDate": "2020-11-23T18:25:43.511Z",
     "currency": "MWK",
@@ -17,7 +21,9 @@
         "financialServiceProviders": []
     },
     "inclusionCalculationType": "standard",
-    "meetingDocuments": "Identity card;Health Insurance;Proof of children",
+    "meetingDocuments": {
+        "en": "Identity card;Health Insurance;Proof of children"
+    },
     "customCriteria": [
         {
             "criterium": "accomodation-heating",

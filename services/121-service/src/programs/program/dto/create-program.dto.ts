@@ -19,10 +19,10 @@ export class CreateProgramDto {
   @IsNotEmpty()
   @IsString()
   public readonly location: string;
-  @ApiModelProperty()
+  @ApiModelProperty({ example: { en: 'title' } })
   @IsNotEmpty()
   @IsString()
-  public readonly title: string;
+  public readonly title: JSON;
   @ApiModelProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
@@ -57,8 +57,8 @@ export class CreateProgramDto {
   @ApiModelProperty({ example: 'standard' })
   @IsIn(['standard'])
   public readonly inclusionCalculationType: string;
-  @ApiModelProperty({ example: 'Identity card;Health Insurance;Proof of children' })
-  public readonly meetingDocuments: string;
+  @ApiModelProperty({ example: { en: 'Identity card;Health Insurance;Proof of children' } })
+  public readonly meetingDocuments: JSON;
   @ApiModelProperty({
     example: [
       {
@@ -116,12 +116,15 @@ export class CreateProgramDto {
   @IsDefined()
   @Type(() => CreateCustomCriteriumDto)
   public readonly customCriteria: CreateCustomCriteriumDto[];
+
   @ApiModelProperty()
   @IsNumber()
   public readonly minimumScore: number;
-  @ApiModelProperty()
+
+  @ApiModelProperty({ example: { en: "description" } })
   @IsString()
-  public readonly description: string;
+  public readonly description: JSON;
+
   @ApiModelProperty({ example: 1 })
   @IsNumber()
   @IsNotEmpty()

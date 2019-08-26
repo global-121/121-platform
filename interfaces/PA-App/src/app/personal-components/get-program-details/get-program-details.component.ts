@@ -10,13 +10,18 @@ import { Storage } from '@ionic/storage';
 export class GetProgramDetailsComponent implements OnInit {
   public program: any;
   public programTitle: string;
+  public languageCode: string;
 
   constructor(
     public programsService: ProgramsServiceApiService,
     public storage: Storage
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.storage.get('languageChoice').then(value => {
+      this.languageCode = value ? value : 'en';
+    });
+  }
 
 
 
@@ -24,10 +29,13 @@ export class GetProgramDetailsComponent implements OnInit {
     this.storage.get('programChoice').then(value => {
       this.programsService.getProgramById(value).subscribe(response => {
         this.program = [];
-        this.programTitle = response.title;
+        this.programTitle = response.title[this.languageCode];
         const details = ['description', 'distributionChannel'];
         for (const detail of details) {
-          this.program.push({ key: detail, value: response[detail] });
+          this.program.push({
+            key: detail,
+            value: response[detail][this.languageCode] ? response[detail][this.languageCode] : response[detail]
+          });
         }
       });
     });

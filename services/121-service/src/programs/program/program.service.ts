@@ -24,7 +24,7 @@ export class ProgramService {
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(CustomCriterium)
   public customCriteriumRepository: Repository<CustomCriterium>;
-  public constructor() {}
+  public constructor() { }
 
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
@@ -255,11 +255,11 @@ export class ProgramService {
     if (
       connection.programsIncluded.indexOf(parseInt(String(programId), 10)) > -1
     ) {
-      inclusionStatus = { status : 'included'}
+      inclusionStatus = { status: 'included' }
     } else if (
       connection.programsExcluded.indexOf(parseInt(String(programId), 10)) > -1
     ) {
-      inclusionStatus = { status : 'excluded'}
+      inclusionStatus = { status: 'excluded' }
     } else {
       inclusionStatus = { status: 'unavailable' };
     }

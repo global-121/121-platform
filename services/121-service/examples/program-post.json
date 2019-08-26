@@ -1,8 +1,12 @@
 {
     "location": "Lilongwe",
     "countryId": 1,
-    "title": "MVP Basic program",
-    "description": "Basic program for testing purposes",
+    "title": {
+        "en": "MVP Basic program"
+    },
+    "description": {
+        "en": "Basic program for testing purposes"
+    },
     "startDate": "2020-05-23T18:25:43.511Z",
     "endDate": "2020-05-23T18:25:43.511Z",
     "currency": "MWK",
@@ -17,7 +21,9 @@
         "financialServiceProviders": []
     },
     "inclusionCalculationType": "standard",
-    "meetingDocuments": "",
+    "meetingDocuments": {
+        "en": ""
+    },
     "customCriteria": [
         {
             "criterium": "nr_of_children",
