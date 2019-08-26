@@ -10,7 +10,8 @@ import { Injectable } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import { InterfaceScript, ScriptsModule } from './scripts.module';
 import * as crypto from 'crypto';
-import programExample from '../../examples/program-post.json';
+import programBasicExample from '../../examples/program-post.json';
+import programMvpExample from '../../examples/program-MVP.json';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
 import { CountryEntity } from '../programs/country/country.entity';
 
@@ -53,23 +54,25 @@ export class SeedDev implements InterfaceScript {
     );
     const programRepository = this.connection.getRepository(ProgramEntity);
 
-    const programExampleDump = JSON.stringify(programExample);
-    const program = JSON.parse(programExampleDump);
-
     const userRepository = this.connection.getRepository(UserEntity);
     const author = await userRepository.findOne(1);
-    program.author = author;
+    for (let programExample of [programBasicExample, programMvpExample]) {
+      const programExampleDump = JSON.stringify(programExample);
+      const program = JSON.parse(programExampleDump);
 
-    // Remove original custom criteria and add it to a sepperate variable
-    const customCriteria = program.customCriteria;
-    program.customCriteria = [];
+      program.author = author;
 
-    for (let customCriterium of customCriteria) {
-      let customReturn = await customCriteriumRepository.save(customCriterium);
-      program.customCriteria.push(customReturn);
+      // Remove original custom criteria and add it to a sepperate variable
+      const customCriteria = program.customCriteria;
+      program.customCriteria = [];
+
+      for (let customCriterium of customCriteria) {
+        let customReturn = await customCriteriumRepository.save(customCriterium);
+        program.customCriteria.push(customReturn);
+      }
+
+      await programRepository.save(program);
     }
-
-    await programRepository.save(program);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
     const program_d = await programRepository.findOne(1); // Assign programId=1 ...
