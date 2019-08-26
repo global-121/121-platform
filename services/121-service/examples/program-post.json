@@ -1,8 +1,8 @@
 {
     "location": "Lilongwe",
     "countryId": 1,
-    "title": "pilot_program_1a",
-    "description": "Program to help people hit by earthquake examplename",
+    "title": "MVP Basic program",
+    "description": "Basic program for testing purposes",
     "startDate": "2020-05-23T18:25:43.511Z",
     "endDate": "2020-05-23T18:25:43.511Z",
     "currency": "MWK",
