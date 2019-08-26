@@ -20,7 +20,7 @@
     "customCriteria": [
         {
             "criterium": "nr_of_children",
-            "question": {
+            "label": {
                 "english": "How many children do you have?",
                 "nyanja": "Muli ndi ana angati?"
             },
@@ -35,7 +35,7 @@
         },
         {
             "criterium": "roof_type",
-            "question": {
+            "label": {
                 "english": "What type is your roof?",
                 "nyanja": "Denga lanu ndi lotani?"
             },
@@ -45,7 +45,7 @@
                 {
                     "id": 0,
                     "option": "steel",
-                    "name": {
+                    "label": {
                         "english": "steel",
                         "nyanja": "zitsulo"
                     }
@@ -53,7 +53,7 @@
                 {
                     "id": 1,
                     "option": "tiles",
-                    "name": {
+                    "label": {
                         "english": "tiles",
                         "nyanja": "matayala"
                     }

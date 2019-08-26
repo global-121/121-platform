@@ -17,7 +17,7 @@ export class CreateCustomCriteriumDto {
   public readonly criterium: string;
   @ApiModelProperty()
   @IsNotEmpty()
-  public readonly question: JSON;
+  public readonly label: JSON;
   @ApiModelProperty()
   @IsNotEmpty()
   @IsString()
