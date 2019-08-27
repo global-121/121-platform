@@ -7,6 +7,7 @@ import {
   RequestMethod,
   NestModule,
   forwardRef,
+  HttpModule,
 } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { CredentialController } from './credential.controller';
@@ -29,6 +30,7 @@ import { ProgramModule } from '../../programs/program/program.module';
     ]),
     forwardRef(() => ProgramModule),
     UserModule,
+    HttpModule,
   ],
   providers: [CredentialService],
   controllers: [CredentialController],

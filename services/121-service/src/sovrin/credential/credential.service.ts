@@ -1,7 +1,7 @@
 import { CredentialIssueDto } from './dto/credential-issue.dto';
 import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialRequestEntity } from './credential-request.entity';
-import { Injectable, HttpException, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, HttpException, Inject, forwardRef, HttpService } from '@nestjs/common';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,6 +10,7 @@ import { ProgramService } from '../../programs/program/program.service';
 import { PrefilledAnswersDto, PrefilledAnswerDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialEntity } from './credential.entity';
+import { API } from '../../config';
 
 @Injectable()
 export class CredentialService {
@@ -29,11 +30,25 @@ export class CredentialService {
   public constructor(
     @Inject(forwardRef(() => ProgramService))
     private readonly programService: ProgramService,
+    private readonly httpService: HttpService,
   ) {}
   // Use by HO is done automatically when a program is published
   public async createOffer(credDefId: string): Promise<object> {
     // const credentialOffer = tyknidtyknid.createCredentialOffer(credDefId)
-    return { example: 'credoffer' };
+    const credentialOfferPost = {
+      credDefID:  credDefId,
+      correlation: {
+        "correlationID": "test"
+      }
+    }
+
+    const response = await this.httpService.post(API.credential.credoffer, credentialOfferPost).toPromise();
+    console.log('credoffer', response.data);
+    if (!response.data) {
+      const errors = 'Credoffer not created';
+      throw new HttpException({ errors }, 400);
+    }
+    return response.data;
   }
 
   // Used by PA

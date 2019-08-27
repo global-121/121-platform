@@ -14,6 +14,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { SchemaEntity } from '../../sovrin/schema/schema.entity';
 import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
+import { HttpModule } from '@nestjs/common';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -22,6 +23,7 @@ describe('Program service', (): void => {
   beforeAll(
     async (): Promise<void> => {
       const module: TestingModule = await Test.createTestingModule({
+        imports: [ HttpModule ],
         providers: [
           ProgramService,
           SchemaService,
