@@ -15,6 +15,9 @@
       "menu-option1": "View appointments",
       "menu-option2": "Check PA's claims",
       "menu-option3": "Change password"
+    },
+    "view-appointments": {
+      "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details."
     }
   },
   "shared": {
