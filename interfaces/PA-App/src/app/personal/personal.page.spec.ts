@@ -14,7 +14,7 @@ describe('PersonalPage', () => {
   beforeEach(async(() => {
     // Mock the used services:
     const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getCountries']);
-    const conversationService = jasmine.createSpyObj('ConversationService', { getComponents: [] });
+    const conversationService = jasmine.createSpyObj('ConversationService', { getConversationUpToNow: [{}, {}] });
 
     TestBed.configureTestingModule({
       declarations: [PersonalPage],
