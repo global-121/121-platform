@@ -63,8 +63,8 @@
                         "english": "tiles",
                         "nyanja": "matayala"
                     }
-                ]
-            },
+                }
+            ],
             "scoring": {
                 "0": 3,
                 "1": 6
