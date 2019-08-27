@@ -13,6 +13,7 @@ import { CredentialRequestEntity } from './credential-request.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { SchemaService } from '../schema/schema.service';
 import { ProofService } from '../proof/proof.service';
+import { HttpService, HttpModule } from '@nestjs/common';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -20,6 +21,7 @@ describe('CredentialService', (): void => {
   beforeEach(
     async (): Promise<void> => {
       const module: TestingModule = await Test.createTestingModule({
+        imports: [ HttpModule ],
         providers: [
           CredentialService,
           ProgramService,

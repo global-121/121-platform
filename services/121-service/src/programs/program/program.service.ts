@@ -134,9 +134,10 @@ export class ProgramService {
       throw new HttpException({ errors }, 401);
     }
 
-    await this.changeProgramValue(programId, { published: true });
 
     const result = await this.schemaService.create(selectedProgram);
+
+    console.log('publish', result)
 
     const credentialOffer = await this.credentialService.createOffer(
       result.credDefId,
@@ -147,6 +148,7 @@ export class ProgramService {
     });
     await this.changeProgramValue(programId, { schemaId: result.schemaId });
     await this.changeProgramValue(programId, { credDefId: result.credDefId });
+    await this.changeProgramValue(programId, { published: true });
 
     const changedProgram = await this.findOne(programId);
     return await this.buildProgramRO(changedProgram);
