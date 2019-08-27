@@ -1,5 +1,6 @@
 import { Injectable, Type } from '@angular/core';
 import { LoginComponent } from '../personal-components/login/login.component';
+import { MainMenuComponent } from '../personal-components/main-menu/main-menu.component';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,9 @@ export class ConversationService {
     items: [
       {
         comp: LoginComponent
+      },
+      {
+        comp: MainMenuComponent
       },
     ]
   };
