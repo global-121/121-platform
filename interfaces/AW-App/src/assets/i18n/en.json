@@ -20,7 +20,10 @@
       "menu-option3": "Change password"
     },
     "view-appointments": {
-      "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details."
+      "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details.",
+      "timeslot": "Timeslot",
+      "submit-button": "See appointments",
+      "appointments": "These are the appointments for the chosen timeslot:"
     }
   },
   "shared": {

@@ -19,7 +19,7 @@ export class AppointmentService {
   @InjectRepository(AppointmentEntity)
   private readonly appointmentRepository: Repository<AppointmentEntity>;
 
-  public constructor() {}
+  public constructor() { }
 
   public async postAvailability(
     userId: number,
@@ -87,12 +87,21 @@ export class AppointmentService {
       where: { aidworker: { id: user.id } },
     });
     let appointments = [];
-    for (let index in timeslots) {
-      appointments.push(
-        await this.appointmentRepository.find({
-          where: { timeslotId: timeslots[index].id },
-        }),
-      );
+    for (let timeslot of timeslots) {
+      let appointmentsPerTimeslot = await this.appointmentRepository.find({
+        where: { timeslotId: timeslot.id },
+        select: ["id", "did"]
+      });
+      if (appointmentsPerTimeslot.length > 0) {
+        let timeslotInclAppointments = {
+          timeslotId: timeslot.id,
+          startDate: timeslot.startDate,
+          endDate: timeslot.endDate,
+          location: timeslot.location,
+          appointments: appointmentsPerTimeslot
+        }
+        appointments.push(timeslotInclAppointments);
+      }
     }
     return appointments;
   }

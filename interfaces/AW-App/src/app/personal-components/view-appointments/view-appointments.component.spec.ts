@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ViewAppointmentsComponent } from './view-appointments.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('ViewAppointmentsComponent', () => {
   let component: ViewAppointmentsComponent;
@@ -12,7 +13,8 @@ describe('ViewAppointmentsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ViewAppointmentsComponent],
       imports: [
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        HttpClientModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
