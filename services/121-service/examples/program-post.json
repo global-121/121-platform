@@ -36,9 +36,7 @@
             "criteriumType": "standard",
             "options": null,
             "scoring": {
-                "0-18": 999,
-                "19-65": 0,
-                "65>": 6
+                "multiplier": 2
             }
         },
         {
@@ -65,8 +63,8 @@
                         "english": "tiles",
                         "nyanja": "matayala"
                     }
-                }
-            ],
+                ]
+            },
             "scoring": {
                 "0": 3,
                 "1": 6

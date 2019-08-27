@@ -3,6 +3,7 @@ import {
   Module,
   NestModule,
   RequestMethod,
+  forwardRef,
 } from '@nestjs/common';
 import { ProofController } from './proof.controller';
 import { ProofService } from './proof.service';
@@ -13,6 +14,7 @@ import { UserEntity } from '../../user/user.entity';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { UserModule } from '../../user/user.module';
 import { ProgramModule } from '../../programs/program/program.module';
+import { SchemaModule } from '../schema/schema.module';
 
 @Module({
   imports: [
@@ -23,9 +25,10 @@ import { ProgramModule } from '../../programs/program/program.module';
       ConnectionEntity,
     ]),
     UserModule,
-    ProgramModule,
+    forwardRef(() => ProgramModule),
   ],
   controllers: [ProofController],
   providers: [ProofService],
+  exports: [ProofService],
 })
 export class ProofModule {}
