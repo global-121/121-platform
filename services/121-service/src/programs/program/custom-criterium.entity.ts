@@ -16,7 +16,7 @@ export class CustomCriterium {
   public criterium: string;
 
   @Column('json')
-  public question: JSON;
+  public label: JSON;
 
   @Column()
   public answerType: string;

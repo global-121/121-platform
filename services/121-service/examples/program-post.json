@@ -1,8 +1,13 @@
 {
     "location": "Lilongwe",
+    "ngo": "Dorcas",
     "countryId": 1,
-    "title": "pilot_program_1a",
-    "description": "Program to help people hit by earthquake examplename",
+    "title": {
+        "en": "MVP Basic program"
+    },
+    "description": {
+        "en": "Basic program for testing purposes"
+    },
     "startDate": "2020-05-23T18:25:43.511Z",
     "endDate": "2020-05-23T18:25:43.511Z",
     "currency": "MWK",
@@ -17,9 +22,13 @@
         "financialServiceProviders": []
     },
     "inclusionCalculationType": "standard",
-    "customCriteria": [{
+    "meetingDocuments": {
+        "en": ""
+    },
+    "customCriteria": [
+        {
             "criterium": "nr_of_children",
-            "question": {
+            "label": {
                 "english": "How many children do you have?",
                 "nyanja": "Muli ndi ana angati?"
             },
@@ -32,28 +41,27 @@
         },
         {
             "criterium": "roof_type",
-            "question": {
+            "label": {
                 "english": "What type is your roof?",
                 "nyanja": "Denga lanu ndi lotani?"
             },
             "answerType": "dropdown",
             "criteriumType": "standard",
-            "options": {
-                "options": [{
-                        "id": 0,
-                        "option": "steel",
-                        "name": {
-                            "english": "steel",
-                            "nyanja": "zitsulo"
-                        }
-                    },
-                    {
-                        "id": 1,
-                        "option": "tiles",
-                        "name": {
-                            "english": "tiles",
-                            "nyanja": "matayala"
-                        }
+            "options": [
+                {
+                    "id": 0,
+                    "option": "steel",
+                    "label": {
+                        "english": "steel",
+                        "nyanja": "zitsulo"
+                    }
+                },
+                {
+                    "id": 1,
+                    "option": "tiles",
+                    "label": {
+                        "english": "tiles",
+                        "nyanja": "matayala"
                     }
                 ]
             },

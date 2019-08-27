@@ -14,8 +14,9 @@
                 class="ion-no-padding ion-text-wrap"
       >
         <ion-label>
-          {{ 'personal.select-program.program'|translate }} #{{ program.id }}<br>
-          <ion-note>{{ program.title }}</ion-note>
+          {{ program.title.en }}
+          <br>
+          <ion-note>{{ program.description.en }}</ion-note>
         </ion-label>
         <ion-radio value="{{ program.id }}"></ion-radio>
       </ion-item>

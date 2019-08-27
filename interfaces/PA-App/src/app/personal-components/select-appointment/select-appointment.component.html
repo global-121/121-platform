@@ -1,7 +1,7 @@
 <section>
   <ion-button (click)="getTimeslots()">API: GET Timeslots</ion-button>
   <br>
-  <dialogue-turn actor="ho">
+  <dialogue-turn actor="{{ngo}}">
     {{ 'personal.select-appointment.introduction1'|translate }}
     <br><br>
     {{ 'personal.select-appointment.introduction2'|translate }}
@@ -27,10 +27,16 @@
     <ion-button [hidden]="!timeslotChoice" (click)="submitTimeslot()">{{ 'shared.submit-button'|translate }}</ion-button>
     <br>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!timeslotSubmitted" actor="ho">
+  <dialogue-turn [hidden]="!timeslotSubmitted" actor="{{ngo}}">
     {{ 'personal.select-appointment.conclusion1'|translate }} {{timeslotChoiceName}}.
     <br><br>
     {{ 'personal.select-appointment.conclusion2'|translate }}
+    <br>
+    <ion-list>
+      <ion-item *ngFor="let document of meetingDocuments">
+        {{document}}
+      </ion-item>
+    </ion-list>
   </dialogue-turn>
   <dialogue-turn [hidden]="!timeslotSubmitted" actor="self">
     {{ 'personal.select-appointment.confirm'|translate }}
@@ -47,7 +53,7 @@
     </ion-radio-group>
     <ion-button [hidden]="!confirmOptionChoice" (click)="submitAppointment(confirmOptionChoice)">{{ 'shared.submit-button'|translate }}</ion-button>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!appointmentConfirmed" actor="ho">
+  <dialogue-turn [hidden]="!appointmentConfirmed" actor="{{ngo}}">
     {{ 'personal.select-appointment.conclusion'|translate }}
   </dialogue-turn>
 </section>

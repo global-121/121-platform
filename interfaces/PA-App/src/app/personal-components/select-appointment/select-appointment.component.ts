@@ -16,6 +16,9 @@ export class SelectAppointmentComponent implements OnInit {
   public confirmOptions: any;
   public confirmOptionChoice: number;
   public appointmentConfirmed: boolean;
+  public meetingDocuments: any;
+  public languageCode: string;
+  public ngo: string;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -28,12 +31,25 @@ export class SelectAppointmentComponent implements OnInit {
       { id: 1, option: this.customTranslateService.translate('personal.select-appointment.option1') },
       { id: 2, option: this.customTranslateService.translate('personal.select-appointment.option2') },
     ];
+    this.storage.get('languageChoice').then(value => {
+      this.languageCode = value ? value : 'en';
+    });
+    this.getProgramProperties();
   }
 
   public getTimeslots(): any {
     this.storage.get('programChoice').then(value => {
       this.programsService.getTimeslots(value).subscribe(response => {
         this.timeslots = response[0];
+      });
+    });
+  }
+
+  public getProgramProperties(): any {
+    this.storage.get('programChoice').then(value => {
+      this.programsService.getProgramById(value).subscribe(response => {
+        this.meetingDocuments = response.meetingDocuments[this.languageCode].split(';');
+        this.ngo = response.ngo;
       });
     });
   }

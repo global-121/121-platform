@@ -19,8 +19,11 @@ export class ProgramEntity {
   @Column()
   public location: string;
 
+  @Column('json')
+  public title: JSON;
+
   @Column()
-  public title: string;
+  public ngo: string;
 
   @Column()
   public startDate: Date;
@@ -52,11 +55,14 @@ export class ProgramEntity {
   @Column()
   public inclusionCalculationType: string;
 
+  @Column('json')
+  public meetingDocuments: JSON;
+
   @Column()
   public minimumScore: number;
 
-  @Column({ default: '' })
-  public description: string;
+  @Column('json')
+  public description: JSON;
 
   @Column()
   public countryId: number;

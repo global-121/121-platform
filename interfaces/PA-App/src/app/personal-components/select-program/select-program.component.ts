@@ -12,11 +12,18 @@ export class SelectProgramComponent implements OnInit {
   public programChoice: number;
   public program: any;
   public programTitle: string;
+  public languageCode: string;
 
   constructor(
     public programsService: ProgramsServiceApiService,
     public storage: Storage
   ) { }
+
+  ngOnInit() {
+    this.storage.get('languageChoice').then(value => {
+      this.languageCode = value ? value : 'en';
+    });
+  }
 
   public getProgramsByCountryId(): any {
     this.storage.get('countryChoice').then(value => {
@@ -36,6 +43,5 @@ export class SelectProgramComponent implements OnInit {
     this.storeProgram(programChoice);
   }
 
-  ngOnInit() { }
 
 }
