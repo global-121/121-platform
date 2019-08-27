@@ -1,0 +1,25 @@
+
+ion-tab-bar {
+  border-bottom: none;
+}
+
+ion-tab-button {
+
+  &#tab-button-tab1 {
+    color: var(--ion-color-secondary-contrast);
+    background: var(--ion-color-secondary-tint);
+
+    &.tab-selected {
+      background: var(--ion-color-secondary);
+    }
+  }
+
+  &#tab-button-personal {
+    color: var(--ion-color-primary-contrast);
+    background: var(--ion-color-primary-tint);
+
+    &.tab-selected {
+      background: var(--ion-color-primary);
+    }
+  }
+}

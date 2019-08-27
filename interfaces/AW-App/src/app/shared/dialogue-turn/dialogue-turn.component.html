@@ -1,0 +1,40 @@
+<div class="dialogue-turn  ion-align-items-start"
+     [ngClass]="{
+       'is-connected': isConnected,
+       'is-other ion-justify-content-start': !isSelf,
+       'is-self ion-justify-content-end': isSelf
+     }"
+>
+  <div class="dialogue-turn--actor">
+    <ion-avatar *ngIf="actor === 'system'">
+      <img src="../../../assets/avatar--121.svg">
+    </ion-avatar>
+    <ion-avatar *ngIf="actor === 'self'">
+      <img src="../../../assets/avatar.svg">
+    </ion-avatar>
+    <ion-avatar *ngIf="actor === 'ho'" style="color:black; background:white; display:flex;">
+      <b style="margin:auto">HO</b>
+    </ion-avatar>
+    <ion-avatar *ngIf="actor !== 'system' && actor !== 'self' && actor !== 'ho'" style="color:black; background:white; display:flex;">
+      <b style="margin:auto">{{actor}}</b>
+    </ion-avatar>
+  </div>
+  <div class="dialogue-turn--content"
+       [ngClass]="isSelf ? 'ion-padding-end' : 'ion-padding-start'"
+  >
+    <ion-card [color]="isSelf ? 'light' : 'dark'">
+      <ion-card-content>
+
+        <ng-content></ng-content>
+
+        <ion-note class="ion-float-end ion-text-end ion-margin-top"
+                  [color]="isSelf ? '' : 'light'"
+        >
+          <small>{{ moment|date:"EEEE, d LLL" }} - <strong>{{ moment|date:"hh:mm" }}</strong></small>
+        </ion-note>
+      </ion-card-content>
+    </ion-card>
+
+    <span class="dialogue-turn--speech-arrow"></span>
+  </div>
+</div>
