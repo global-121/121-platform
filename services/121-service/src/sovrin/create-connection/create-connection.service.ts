@@ -13,7 +13,7 @@ export class CreateConnectionService {
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
 
-  public constructor() { }
+  public constructor(private readonly sovrinSetupService: SovrinSetupService) { }
 
   public async testSDK(): Promise<void> {
     const pathToConfig = '../../integration-tools/tykn-id/ci/sampleconfig.json';
@@ -78,9 +78,8 @@ export class CreateConnectionService {
       nonce: '1234567890',
     };
 
-    const sovrinSetupService = new SovrinSetupService();
-    let poolHandle = await sovrinSetupService.connectPool();
-    let did_for_ho = await sovrinSetupService.createWallet(
+    let poolHandle = await this.sovrinSetupService.connectPool();
+    let did_for_ho = await this.sovrinSetupService.createWallet(
       poolHandle,
       connectionRequest,
       password,

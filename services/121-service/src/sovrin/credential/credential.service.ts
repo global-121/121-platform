@@ -1,14 +1,13 @@
 import { CredentialIssueDto } from './dto/credential-issue.dto';
 import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialRequestEntity } from './credential-request.entity';
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, Inject, forwardRef } from '@nestjs/common';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
-import { CredentialValuesDto } from './dto/credential-values.dto';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { ProgramService } from '../../programs/program/program.service';
-import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
+import { PrefilledAnswersDto, PrefilledAnswerDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialEntity } from './credential.entity';
 
@@ -27,6 +26,10 @@ export class CredentialService {
   @InjectRepository(CredentialEntity)
   private readonly credentialRepository: Repository<CredentialEntity>;
 
+  public constructor(
+    @Inject(forwardRef(() => ProgramService))
+    private readonly programService: ProgramService,
+  ) {}
   // Use by HO is done automatically when a program is published
   public async createOffer(credDefId: string): Promise<object> {
     // const credentialOffer = tyknidtyknid.createCredentialOffer(credDefId)
@@ -35,19 +38,24 @@ export class CredentialService {
 
   // Used by PA
   public async getOffer(programId: number): Promise<object> {
-    const programService = new ProgramService();
-    const program = await programService.findOne(programId);
+    console.log(programId);
+    const program = await this.programService.findOne(programId);
     const result = program.credOffer;
+    console.log('result', result);
     return result;
   }
 
   // PA: get attributes based on programId
   public async getAttributes(programId: number): Promise<any[]> {
-    const programService = new ProgramService();
-    let selectedProgram = await programService.findOne(programId);
+    let selectedProgram = await this.programService.findOne(programId);
     let attributes = [];
-    for (let criterium of selectedProgram.customCriteria) {
-      attributes.push(criterium);
+    if (selectedProgram && selectedProgram.published === true) {
+      for (let criterium of selectedProgram.customCriteria) {
+        attributes.push(criterium);
+      }
+    } else {
+      const errors = 'Program does not exist or is not published';
+      throw new HttpException({ errors }, 401);
     }
     return attributes;
   }
@@ -56,12 +64,15 @@ export class CredentialService {
   public async prefilledAnswers(
     did: string,
     programId: number,
-    prefilledAnswers: PrefilledAnswersDto,
+    prefilledAnswers: PrefilledAnswerDto[],
   ): Promise<any[]> {
     programId = isNaN(programId) ? 0 : programId;
-    await this.credentialAttributesRepository.delete({ did: did, programId: programId });
+    await this.credentialAttributesRepository.delete({
+      did: did,
+      programId: programId,
+    });
     let credentials = [];
-    for (let answer of prefilledAnswers.attributes) {
+    for (let answer of prefilledAnswers) {
       let credential = new CredentialAttributesEntity();
       credential.did = did;
       credential.programId = programId;
@@ -87,9 +98,7 @@ export class CredentialService {
   }
 
   // AW: delete answers to attributes for a given PA after issuing credentials (identified first through did/QR)
-  public async deletePrefilledAnswers(
-    did: string,
-  ): Promise<DeleteResult> {
+  public async deletePrefilledAnswers(did: string): Promise<DeleteResult> {
     return await this.credentialAttributesRepository.delete({ did: did });
   }
 
@@ -97,8 +106,7 @@ export class CredentialService {
   public async request(credRequest: CredentialRequestDto): Promise<void> {
     credRequest;
 
-    const programService = new ProgramService();
-    const program = await programService.findOne(credRequest.programId);
+    const program = await this.programService.findOne(credRequest.programId);
     if (!program) {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, 400);

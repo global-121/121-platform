@@ -1,5 +1,11 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { Length, IsNotEmpty, IsString, IsNumber, IsArray } from 'class-validator';
+import {
+  Length,
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsArray,
+} from 'class-validator';
 
 export class PrefilledAnswerDto {
   @ApiModelProperty()
@@ -17,20 +23,27 @@ export class PrefilledAnswerDto {
 }
 
 export class PrefilledAnswersDto {
+  @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
+  @Length(30, 30)
+  public readonly did: string;
+  @ApiModelProperty({ example: 1 })
+  @IsNotEmpty()
+  @IsNumber()
+  public readonly programId: number;
   @ApiModelProperty({
     example: [
-    {
-      attributeId: 1,
-      attribute: 'nr_of_children',
-      answer: 32
-    },
-    {
-      attributeId: 2,
-      attribute: 'roof_type',
-      answer: 0
-    }
-    ]})
+      {
+        attributeId: 1,
+        attribute: 'nr_of_children',
+        answer: 32,
+      },
+      {
+        attributeId: 2,
+        attribute: 'roof_type',
+        answer: 0,
+      },
+    ],
+  })
   @IsArray()
   public readonly attributes: PrefilledAnswerDto[];
-
 }

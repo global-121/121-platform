@@ -15,6 +15,7 @@ import { UserModule } from '../../user/user.module';
   ],
   providers: [SovrinSetupService],
   controllers: [SovrinSetupController],
+  exports: [SovrinSetupService],
 })
 export class SovrinSetupModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
