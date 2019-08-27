@@ -5,11 +5,50 @@
   <dialogue-turn actor="self">
     {{ 'personal.login.login'|translate }}
     <br>
-    <form (ngSubmit)="submitLogin(username,password)">
-      <ion-input type="text" [placeholder]="usernamePlaceholder" name="username" [(ngModel)]="username" ngDefaultControl></ion-input>
-      <ion-input type="password" [placeholder]="passwordPlaceholder" name="password" [(ngModel)]="password" ngDefaultControl></ion-input>
-      <ion-button type="submit">{{ 'personal.login.login-button'|translate }}</ion-button>
+    <form method="POST" (submit)="doLogin($event)" *ngIf="!isLoggedIn">
+      <ion-item>
+        <ion-input type="email"
+                    name="email"
+                    inputmode="email"
+                    autocomplete="username email"
+                    autocapitalize="off"
+                    autofocus="true"
+                    clearInput="true"
+                    required
+                    [placeholder]="emailPlaceholder"
+                    [(ngModel)]="email" 
+                    ngDefaultControl
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input type="password"
+                    name="password"
+                    autocomplete="current-password"
+                    autocapitalize="off"
+                    clearInput="true"
+                    clearOnEdit="false"
+                    required
+                    [placeholder]="passwordPlaceholder"
+                    [(ngModel)]="password" 
+                    ngDefaultControl
+        ></ion-input>
+      </ion-item>
+
+      <ion-button type="submit"
+                  expand="block"
+      >
+        {{ 'personal.login.login-button'|translate }}
+      </ion-button>
     </form>
+    <ion-button expand="block" [hidden]="!isLoggedIn">
+      {{ 'personal.login.logout-button'|translate }}
+    </ion-button>
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!isLoggedIn">
+    {{ 'personal.login.conclusion'|translate }}
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!wrongCredentials">
+    {{ 'personal.login.wrong-credentials'|translate }}
   </dialogue-turn>
 </section>
    
