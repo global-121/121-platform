@@ -22,7 +22,7 @@ export class MainMenuComponent implements OnInit {
       { id: 1, option: this.customTranslateService.translate('personal.main-menu.menu-option1') },
       { id: 2, option: this.customTranslateService.translate('personal.main-menu.menu-option2') },
       { id: 3, option: this.customTranslateService.translate('personal.main-menu.menu-option3') },
-    ]
+    ];
   }
 
   private storeOption(optionChoice: any) {
