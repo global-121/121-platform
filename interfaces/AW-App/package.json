@@ -5,7 +5,7 @@
   "homepage": "https://www.121.global/",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --port 4201",
     "build": "ng build",
     "test": "ng test --no-watch --browsers=ChromeHeadless",
     "test:dev": "ng test",
