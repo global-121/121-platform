@@ -1,0 +1,78 @@
+.dialogue-turn {
+  --dialogue-turn--margin-around-card-vertical: 13px;
+  --dialogue-turn--margin-around-card-horizontal: -4px;
+
+  display: flex;
+  padding: 0.5em;
+}
+
+.dialogue-turn--actor {
+  order: 1;
+
+  max-width: 25%;
+}
+
+.dialogue-turn--content {
+  position: relative;
+  order: 2;
+
+  width: 75%;
+  max-width: 75%;
+}
+.dialogue-turn--speech-arrow {
+  display: block;
+  position: absolute;
+  top: var(--dialogue-turn--margin-around-card-vertical);
+
+  border-width: 0.75em 1em;
+  border-style: solid;
+  border-color: transparent;
+}
+
+.dialogue-turn.is-other {
+  .dialogue-turn--speech-arrow {
+    left: var(--dialogue-turn--margin-around-card-horizontal);
+    border-right-color: var(--ion-color-dark);
+  }
+  // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
+  .dialogue-turn--speech-arrow:dir(rtl) {
+    // Reset LTR-styles first:
+    left: auto;
+    border-right-color: transparent;
+
+    right: var(--dialogue-turn--margin-around-card-horizontal);
+    border-left-color: var(--ion-color-dark);
+  }
+}
+
+.dialogue-turn.is-self {
+  .dialogue-turn--actor {
+    order: 2;
+  }
+  .dialogue-turn--content {
+    order: 1;
+  }
+  .dialogue-turn--speech-arrow {
+    right: var(--dialogue-turn--margin-around-card-horizontal);
+    border-left-color: var(--ion-color-light);
+  }
+  // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
+  .dialogue-turn--speech-arrow:dir(rtl) {
+    // Reset LTR-styles first:
+    right: auto;
+    border-left-color: transparent;
+
+    left: var(--dialogue-turn--margin-around-card-horizontal);
+    border-right-color: var(--ion-color-light);
+  }
+}
+
+.dialogue-turn.is-connected {
+  padding-top: 0;
+  margin-top: -1em; // Overlap padding-bottom of preceding dialogue-turn
+
+  .dialogue-turn--actor,
+  .dialogue-turn--speech-arrow {
+    visibility: hidden;
+  }
+}

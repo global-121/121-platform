@@ -1,0 +1,32 @@
+{
+  "WORLD": "World",
+  "PERSONAL": "You",
+  "DEVICE": "Device",
+  "personal": {
+    "login": {
+      "introduction": "Welcome to 121. Please log in below.",
+      "login": "Log-in form",
+      "email-placeholder": "Email...",
+      "password-placeholder": "Password...",
+      "login-button": "Log in",
+      "wrong-credentials": "Your email and/or password are not recognized. Please try again.",
+      "logout-button": "Log out",
+      "conclusion": "You are succesfully logged in."
+    },
+    "main-menu": {
+      "introduction": "You have access to the following actions. Please select one.",
+      "menu-option1": "View appointments",
+      "menu-option2": "Check PA's claims",
+      "menu-option3": "Change password"
+    },
+    "view-appointments": {
+      "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details.",
+      "timeslot": "Timeslot",
+      "submit-button": "See appointments",
+      "appointments": "These are the appointments for the chosen timeslot:"
+    }
+  },
+  "shared": {
+    "submit-button": "Submit"
+  }
+}
