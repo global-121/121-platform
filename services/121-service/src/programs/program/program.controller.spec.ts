@@ -7,9 +7,10 @@ import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 
 const newProgramParameters = {
   location: 'Lilongwe',
+  ngo: 'Dorcas',
   countryId: 265,
-  title: 'pilot_program_1a',
-  description: 'Program to help people hit by earthquake examplename',
+  title: JSON.parse('{"en": "pilot_program_1a"}'),
+  description: JSON.parse('{"en": "Program to help people hit by earthquake examplename"}'),
   startDate: new Date(),
   endDate: new Date(),
   currency: 'MWK',
@@ -20,13 +21,14 @@ const newProgramParameters = {
   cashDistributionSites: JSON.parse('{}'), // This nested level is because postgres does not have great support for arrays of json
   financialServiceProviders: JSON.parse('{}'), // This nested level is because postgres does not have great support for arrays of json
   inclusionCalculationType: 'standard', // Only option for now later, it can also be a fancy algorithm
+  meetingDocuments: JSON.parse('{"en": "documents"}'),
   customCriteria: [],
   minimumScore: 25,
 };
 
 const newSimpleProgramRO = {
   id: 1,
-  title: 'title',
+  title: JSON.parse('{"en": "title"}'),
   published: true,
 }
 
