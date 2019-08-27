@@ -8,4 +8,5 @@ export class Program {
   author: object;
   distributionChannel: string;
   meetingDocuments: any;
+  ngo: string;
 }

@@ -15,6 +15,9 @@
     <ion-avatar *ngIf="actor === 'ho'" style="color:black; background:white; display:flex;">
       <b style="margin:auto">HO</b>
     </ion-avatar>
+    <ion-avatar *ngIf="actor !== 'system' && actor !== 'self' && actor !== 'ho'" style="color:black; background:white; display:flex;">
+      <b style="margin:auto">{{actor}}</b>
+    </ion-avatar>
   </div>
   <div class="dialogue-turn--content"
        [ngClass]="isSelf ? 'ion-padding-end' : 'ion-padding-start'"

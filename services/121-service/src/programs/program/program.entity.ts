@@ -23,6 +23,9 @@ export class ProgramEntity {
   public title: JSON;
 
   @Column()
+  public ngo: string;
+
+  @Column()
   public startDate: Date;
 
   @Column()

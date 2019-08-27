@@ -19,10 +19,17 @@ export class CreateProgramDto {
   @IsNotEmpty()
   @IsString()
   public readonly location: string;
+
   @ApiModelProperty({ example: { en: 'title' } })
   @IsNotEmpty()
   @IsString()
   public readonly title: JSON;
+
+  @ApiModelProperty()
+  @IsNotEmpty()
+  @IsString()
+  public readonly ngo: string;
+
   @ApiModelProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
