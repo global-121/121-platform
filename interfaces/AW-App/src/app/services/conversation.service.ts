@@ -1,4 +1,5 @@
 import { Injectable, Type } from '@angular/core';
+import { LoginComponent } from '../personal-components/login/login.component';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,9 @@ export class ConversationService {
 
   private dummyJsonResponse = {
     items: [
+      {
+        comp: LoginComponent
+      },
     ]
   };
 

@@ -4,9 +4,11 @@ import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 
 import { ConversationService } from '../services/conversation.service';
+import { LoginComponent } from './login/login.component';
 
 
 const personalComponents = [
+  LoginComponent
 ];
 
 @NgModule({
