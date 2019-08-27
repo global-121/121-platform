@@ -40,4 +40,14 @@ export class ProgramsServiceApiService {
       );
   }
 
+  getAppointments(): Observable<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      '/appointment/appointments'
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
 }

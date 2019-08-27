@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-view-appointments',
@@ -6,9 +7,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./view-appointments.component.scss'],
 })
 export class ViewAppointmentsComponent implements OnInit {
+  public appointments: any;
 
-  constructor() { }
+  constructor(
+    public programsService: ProgramsServiceApiService
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
+
+  public getAppointments() {
+    this.programsService.getAppointments().subscribe(response => {
+      this.appointments = response;
+    });
+  }
 
 }

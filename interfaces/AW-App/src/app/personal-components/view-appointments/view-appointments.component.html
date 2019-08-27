@@ -1,6 +1,19 @@
 <section #viewAppointments>
+    <ion-button id="debugGetAppointments" (click)="getAppointments()">API: GET Appointments</ion-button>
+    <br>
   <dialogue-turn>
     {{ 'personal.view-appointments.introduction'|translate }}
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <ion-radio-group">
+      <ion-item *ngFor="let appointment of appointments"
+                color="light"
+                class="ion-no-padding ion-text-wrap"
+      >
+        <ion-label>{{ appointment[0].timeslotId }}</ion-label>
+        <ion-radio value="{{ appointment[0].id }}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
   </dialogue-turn>
 </section>
    
