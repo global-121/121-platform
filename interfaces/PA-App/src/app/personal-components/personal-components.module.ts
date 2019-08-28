@@ -5,39 +5,59 @@ import { FormsModule } from '@angular/forms';
 
 import { ConversationService } from '../services/conversation.service';
 
-import { SelectCountryComponent } from './select-country/select-country.component';
-import { SelectProgramComponent } from './select-program/select-program.component';
-import { GetProgramDetailsComponent } from './get-program-details/get-program-details.component';
-import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
-import { SelectLanguageComponent } from './select-language/select-language.component';
-import { GetInfoComponent } from './get-info/get-info.component';
-import { TellNeedsComponent } from './tell-needs/tell-needs.component';
 import { ChooseCredentialTypeComponent } from './choose-credential-type/choose-credential-type.component';
 import { CreatePasswordComponent } from './create-password/create-password.component';
+import { GetInfoComponent } from './get-info/get-info.component';
+import { GetProgramDetailsComponent } from './get-program-details/get-program-details.component';
 import { IdentityFormComponent } from './identity-form/identity-form.component';
-
-const personalComponents = [
-  SelectLanguageComponent,
-  GetInfoComponent,
-  TellNeedsComponent,
-  ChooseCredentialTypeComponent,
-  SelectCountryComponent,
-  SelectProgramComponent,
-  GetProgramDetailsComponent,
-  SelectAppointmentComponent,
-  CreatePasswordComponent,
-  IdentityFormComponent,
-];
+import { InitialNeedsComponent } from './initial-needs/initial-needs.component';
+import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
+import { SelectCountryComponent } from './select-country/select-country.component';
+import { SelectLanguageComponent } from './select-language/select-language.component';
+import { SelectProgramComponent } from './select-program/select-program.component';
 
 @NgModule({
-  declarations: [].concat(personalComponents),
+  declarations: [
+    ChooseCredentialTypeComponent,
+    CreatePasswordComponent,
+    GetInfoComponent,
+    GetProgramDetailsComponent,
+    IdentityFormComponent,
+    InitialNeedsComponent,
+    SelectAppointmentComponent,
+    SelectCountryComponent,
+    SelectLanguageComponent,
+    SelectProgramComponent,
+  ],
   imports: [
     CommonModule,
     SharedModule,
     FormsModule
   ],
-  entryComponents: [].concat(personalComponents),
-  exports: [].concat(personalComponents),
+  entryComponents: [
+    ChooseCredentialTypeComponent,
+    CreatePasswordComponent,
+    GetInfoComponent,
+    GetProgramDetailsComponent,
+    IdentityFormComponent,
+    InitialNeedsComponent,
+    SelectAppointmentComponent,
+    SelectCountryComponent,
+    SelectLanguageComponent,
+    SelectProgramComponent,
+  ],
+  exports: [
+    ChooseCredentialTypeComponent,
+    CreatePasswordComponent,
+    GetInfoComponent,
+    GetProgramDetailsComponent,
+    IdentityFormComponent,
+    InitialNeedsComponent,
+    SelectAppointmentComponent,
+    SelectCountryComponent,
+    SelectLanguageComponent,
+    SelectProgramComponent,
+  ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],

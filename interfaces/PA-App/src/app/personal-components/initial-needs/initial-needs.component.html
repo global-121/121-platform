@@ -1,0 +1,28 @@
+<section #initialNeeds>
+    <dialogue-turn>
+      {{ 'personal.initial-needs.introduction'|translate }}
+    </dialogue-turn>
+    <dialogue-turn actor="self">
+      <form (ngSubmit)="submitNeeds(needs)">
+        <ion-label>{{ 'personal.initial-needs.input-label'|translate }}</ion-label>
+        <ion-textarea name="needs"
+                      [(ngModel)]="needs"
+                      ngDefaultControl
+                      autoGrow="true"
+                      spellcheck="true"
+                      wrap="soft"
+                      rows="4"
+                      placeholder="{{ 'personal.initial-needs.input-placeholder'|translate }}"
+         ></ion-textarea>
+         <p class="ion-margin-top">
+           <ion-button type="submit"
+                       [hidden]="!needs"
+                       size="block"
+           >{{ 'personal.initial-needs.submit'|translate }}</ion-button>
+         </p>
+      </form>
+    </dialogue-turn>
+    <dialogue-turn [hidden]="!needsSubmitted">
+      {{ 'personal.initial-needs.conclusion'|translate }}
+    </dialogue-turn>
+  </section>

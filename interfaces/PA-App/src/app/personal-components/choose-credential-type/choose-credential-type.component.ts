@@ -1,29 +1,45 @@
-import { Component, OnInit } from '@angular/core';
-import { CustomTranslateService } from 'src/app/services/custom-translate.service';
+import { Component } from '@angular/core';
+import { PersonalComponent } from '../personal-component.interface';
+
 import { Storage } from '@ionic/storage';
+import { TranslateService } from '@ngx-translate/core';
+import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
   selector: 'app-choose-credential-type',
   templateUrl: './choose-credential-type.component.html',
   styleUrls: ['./choose-credential-type.component.scss'],
 })
-export class ChooseCredentialTypeComponent implements OnInit {
+export class ChooseCredentialTypeComponent implements PersonalComponent {
 
   public credentialTypes: any;
-  public credentialTypeChoice: number;
+  public credentialTypeChoice: string;
   public programChosen: boolean;
-  public credentialTypeChoiceNew: number;
+  public credentialTypeChoiceNew: string;
 
   constructor(
     public storage: Storage,
-    public customTranslateService: CustomTranslateService
+    public translate: TranslateService,
+    public conversationService: ConversationService,
   ) { }
 
   ngOnInit() {
     this.credentialTypes = [
-      { id: 1, credentialType: this.customTranslateService.translate('personal.choose-credential-type.option1'), disabled: false },
-      { id: 2, credentialType: this.customTranslateService.translate('personal.choose-credential-type.option2'), disabled: false },
-      { id: 3, credentialType: this.customTranslateService.translate('personal.choose-credential-type.option3'), disabled: true },
+      {
+        id: 'apply-to-program',
+        credentialType: this.translate.instant('personal.choose-credential-type.option1'),
+        disabled: false,
+      },
+      {
+        id: 'create-id',
+        credentialType: this.translate.instant('personal.choose-credential-type.option2'),
+        disabled: false,
+      },
+      {
+        id: 'delete-id',
+        credentialType: this.translate.instant('personal.choose-credential-type.option3'),
+        disabled: true,
+      },
     ];
   }
 
@@ -31,13 +47,12 @@ export class ChooseCredentialTypeComponent implements OnInit {
     this.storage.set('credentialTypeChoice', credentialTypeChoice);
   }
 
-  public changeCredentialType($event, iteration) {
-    // tslint:disable: triple-equals
-    if (iteration == 1) {
+  public changeCredentialType($event, iteration: string) {
+    if (iteration === 'apply-to-program') {
       const credentialTypeChoice = $event.detail.value;
       this.credentialTypeChoice = credentialTypeChoice;
       this.storeCredentialType(credentialTypeChoice);
-    } else if (iteration == 2) {
+    } else if (iteration === 'create-id') {
       const credentialTypeChoiceNew = $event.detail.value;
       this.credentialTypeChoiceNew = credentialTypeChoiceNew;
       this.storeCredentialType(credentialTypeChoiceNew);
@@ -45,19 +60,34 @@ export class ChooseCredentialTypeComponent implements OnInit {
   }
 
   public submitCredentialType() {
-    // Here should be checked whether Digital ID already present
-    if (this.credentialTypeChoice == 1) {
-      this.programChosen = true;
-    } else if (this.credentialTypeChoice == 2) {
-      this.programChosen = false;
-    }
     console.log('Chosen credential type: ', this.credentialTypeChoice);
+    // Here should be checked whether Digital ID already present
+    if (this.credentialTypeChoice === 'apply-to-program') {
+      this.programChosen = true;
+    } else if (this.credentialTypeChoice === 'create-id') {
+      this.programChosen = false;
+
+      this.complete();
+    }
   }
 
   public submitCredentialTypeNew() {
     console.log('Chosen credential type: ', this.credentialTypeChoiceNew);
+
+    this.complete();
   }
 
+  getNextSection() {
+    return 'create-identity-password';
+  }
 
-
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: 'choose-credential-type',
+      data: {
+        credentialTypeChoice: this.credentialTypeChoice,
+      },
+      next: this.getNextSection(),
+    });
+  }
 }

@@ -1,69 +1,76 @@
-import { Injectable, Type } from '@angular/core';
-import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
-import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
-import { GetProgramDetailsComponent } from '../personal-components/get-program-details/get-program-details.component';
-import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
-import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
-import { GetInfoComponent } from '../personal-components/get-info/get-info.component';
-import { TellNeedsComponent } from '../personal-components/tell-needs/tell-needs.component';
-import { ChooseCredentialTypeComponent } from '../personal-components/choose-credential-type/choose-credential-type.component';
-import { CreatePasswordComponent } from '../personal-components/create-password/create-password.component';
-import { IdentityFormComponent } from '../personal-components/identity-form/identity-form.component';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ComponentsItem {
-  constructor(public component: any) { }
-}
 export class ConversationService {
 
-  private dummyJsonResponse = {
-    items: [
-      {
-        comp: SelectLanguageComponent
-      },
-      {
-        comp: GetInfoComponent
-      },
-      {
-        comp: TellNeedsComponent
-      },
-      {
-        comp: ChooseCredentialTypeComponent
-      },
-      {
-        comp: CreatePasswordComponent
-      },
-      {
-        comp: IdentityFormComponent
-      },
-      {
-        comp: SelectCountryComponent
-      },
-      {
-        comp: SelectProgramComponent
-      },
-      {
-        comp: GetProgramDetailsComponent
-      },
-      {
-        comp: SelectAppointmentComponent
-      },
-    ]
-  };
+  private history: ConversationHistorySection[] = [];
 
-  constructor() { }
+  private conversation: ConversationSection[] = [];
 
-  public getComponents(): ComponentsItem[] {
-    const result: ComponentsItem[] = [];
+  private sectionCompletedSource = new Subject<ConversationSection>();
+  public sectionCompleted$ = this.sectionCompletedSource.asObservable();
 
-    for (const item of this.dummyJsonResponse.items) {
-      const newItem = new ComponentsItem(item.comp);
-      result.push(newItem);
+  constructor() {
+    console.log('ConversationService()');
+
+    // get History from Storage:
+    this.history = this.getHistory();
+
+    if (this.hasHistory()) {
+      // TODO: Replay/build conversation from history
+    } else {
+      this.startNewConversation();
     }
-
-    return result;
   }
 
+  private getHistory() {
+    // Define a hard-coded history (for now):
+    const history = [
+    ];
+
+
+    return history;
+  }
+
+  private hasHistory() {
+    return (this.history.length > 0);
+  }
+
+  startNewConversation() {
+    this.addSection('select-language');
+  }
+
+  private addSection(sectionName) {
+    console.log('ConverstaionService addSection(): ', sectionName);
+
+    this.conversation.push({
+      name: sectionName
+    });
+  }
+
+  public onSectionCompleted(section: ConversationSection) {
+    console.log('ConverstaionService  onSectionCompleted(): ', section);
+
+    // Instruct PersonalPage to insert the next section
+    this.sectionCompletedSource.next(section);
+  }
+
+  public getConversationUpToNow(): ConversationSection[] {
+    return this.conversation;
+  }
+}
+
+class ConversationHistorySection {
+  readonly name: string;
+  readonly data: any;
+  readonly timestamp: number;
+}
+
+export class ConversationSection {
+  name: string;
+  data?: any;
+  next?: string;
 }

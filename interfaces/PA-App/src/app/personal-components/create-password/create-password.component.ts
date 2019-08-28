@@ -1,31 +1,50 @@
-import { Component, OnInit } from '@angular/core';
-import { CustomTranslateService } from 'src/app/services/custom-translate.service';
+import { Component } from '@angular/core';
+import { PersonalComponent } from '../personal-component.interface';
+
+import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
   selector: 'app-create-password',
   templateUrl: './create-password.component.html',
   styleUrls: ['./create-password.component.scss'],
 })
-export class CreatePasswordComponent implements OnInit {
+export class CreatePasswordComponent implements PersonalComponent {
 
-  public createPasswordPlaceholder: any;
-  public confirmPasswordPlaceholder: any;
+  public initialInput = false;
   public create: any;
   public confirm: any;
   public passwordCreated: boolean;
 
   constructor(
-    public customTranslateService: CustomTranslateService
+    public conversationService: ConversationService,
   ) { }
 
   ngOnInit() {
-    this.createPasswordPlaceholder = this.customTranslateService.translate('personal.create-password.create-password');
-    this.confirmPasswordPlaceholder = this.customTranslateService.translate('personal.create-password.confirm-password');
   }
 
-  public submitPassword(create, confirm) {
+  public submitPassword(create: string, confirm: string) {
+    console.log('submitPassword()', create, confirm);
+
+    if (create !== confirm) {
+      return;
+    }
+
     this.passwordCreated = true;
-    console.log(create, confirm);
+
+    this.complete();
   }
 
+  getNextSection() {
+    return 'create-identity-details';
+  }
+
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: 'create-identity-password',
+      data: {
+        password: this.create,
+      },
+      next: this.getNextSection(),
+    });
+  }
 }

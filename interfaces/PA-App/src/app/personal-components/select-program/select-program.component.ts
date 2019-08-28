@@ -1,13 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { PersonalComponent } from '../personal-component.interface';
+
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
+import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
   selector: 'app-select-program',
   templateUrl: './select-program.component.html',
   styleUrls: ['./select-program.component.scss'],
 })
-export class SelectProgramComponent implements OnInit {
+export class SelectProgramComponent implements PersonalComponent {
+  private countryChoice: string;
   public programs: any;
   public programChoice: number;
   public program: any;
@@ -16,18 +20,22 @@ export class SelectProgramComponent implements OnInit {
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    public storage: Storage
+    public storage: Storage,
+    public conversationService: ConversationService,
   ) { }
 
   ngOnInit() {
     this.storage.get('languageChoice').then(value => {
       this.languageCode = value ? value : 'en';
     });
+    this.getPrograms();
   }
 
-  public getProgramsByCountryId(): any {
+  public getPrograms(): any {
     this.storage.get('countryChoice').then(value => {
-      this.programsService.getProgramsByCountryId(value).subscribe(response => {
+      this.countryChoice = value;
+
+      this.programsService.getProgramsByCountryId(this.countryChoice).subscribe(response => {
         this.programs = response;
       });
     });
@@ -38,10 +46,26 @@ export class SelectProgramComponent implements OnInit {
   }
 
   public changeProgram($event) {
-    const programChoice = $event.detail.value;
-    this.programChoice = programChoice;
-    this.storeProgram(programChoice);
+    this.programChoice = $event.detail.value;
+    this.storeProgram(this.programChoice);
   }
 
+  public submitProgram() {
+    this.complete();
+  }
 
+  getNextSection() {
+    return 'get-program-details';
+  }
+
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: 'select-program',
+      data: {
+        countryChoice: this.countryChoice,
+        programChoice: this.programChoice,
+      },
+      next: this.getNextSection(),
+    });
+  }
 }
