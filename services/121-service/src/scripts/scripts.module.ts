@@ -4,7 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // import { config } from '../config';
 import { Arguments } from 'yargs';
 import { SeedInit } from './seed-init';
-import SeedProd from './seed-prod';
+import { SeedProd } from './seed-prod';
+import { SeedMVP } from './seed-MVP';
 
 @Module({
   imports: [
@@ -13,9 +14,9 @@ import SeedProd from './seed-prod';
       entities: ['src/app/**/*.entity.{ts,js}'],
     }),
   ],
-  providers: [SeedDev, SeedInit, SeedProd],
+  providers: [SeedDev, SeedInit, SeedProd, SeedMVP],
 })
-export class ScriptsModule {}
+export class ScriptsModule { }
 
 export interface InterfaceScript {
   run(argv: Arguments): Promise<void>;

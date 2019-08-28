@@ -17,7 +17,7 @@ import { AvailabilityEntity } from '../schedule/appointment/availability.entity'
 import { CountryEntity } from '../programs/country/country.entity';
 
 @Injectable()
-export class SeedDev implements InterfaceScript {
+export class SeedMVP implements InterfaceScript {
   public constructor(private connection: Connection) { }
 
   public async run(): Promise<void> {
@@ -31,8 +31,8 @@ export class SeedDev implements InterfaceScript {
     const countryRepository = this.connection.getRepository(
       CountryEntity,
     );
-    await countryRepository.save([{ country: 'Malawi' }]);
-    await countryRepository.save([{ country: 'Ethiopia' }]);
+    await countryRepository.save([{ country: 'Country A' }]);
+    await countryRepository.save([{ country: 'Country B' }]);
 
     // ***** CREATE A CONNECTION *****
 
@@ -57,7 +57,7 @@ export class SeedDev implements InterfaceScript {
 
     const userRepository = this.connection.getRepository(UserEntity);
     const author = await userRepository.findOne(1);
-    for (let programExample of [programFullExample, programBasicExample]) {
+    for (let programExample of [programMvpExample, programFullExample, programBasicExample]) {
       const programExampleDump = JSON.stringify(programExample);
       const program = JSON.parse(programExampleDump);
 
@@ -136,4 +136,4 @@ export class SeedDev implements InterfaceScript {
   }
 }
 
-export default SeedDev;
+export default SeedMVP;

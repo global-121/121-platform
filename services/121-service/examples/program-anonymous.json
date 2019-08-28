@@ -3,10 +3,10 @@
     "ngo": "Dorcas",
     "countryId": 1,
     "title": {
-        "en": "MVP Basic program"
+        "en": "MVP Anonymous program"
     },
     "description": {
-        "en": "Basic program for testing purposes"
+        "en": "MVP program with anonymous questions for testing purposes"
     },
     "startDate": "2020-05-23T18:25:43.511Z",
     "endDate": "2020-05-23T18:25:43.511Z",
@@ -27,10 +27,9 @@
     },
     "customCriteria": [
         {
-            "criterium": "nr_of_children",
+            "criterium": "question1",
             "label": {
-                "english": "How many children do you have?",
-                "nyanja": "Muli ndi ana angati?"
+                "en": "Question 1..."
             },
             "answerType": "numeric",
             "criteriumType": "standard",
@@ -40,28 +39,25 @@
             }
         },
         {
-            "criterium": "roof_type",
+            "criterium": "question2",
             "label": {
-                "english": "What type is your roof?",
-                "nyanja": "Denga lanu ndi lotani?"
+                "en": "Question 2..."
             },
             "answerType": "dropdown",
             "criteriumType": "standard",
             "options": [
                 {
                     "id": 0,
-                    "option": "steel",
+                    "option": "optionA",
                     "label": {
-                        "english": "steel",
-                        "nyanja": "zitsulo"
+                        "en": "Option A"
                     }
                 },
                 {
                     "id": 1,
-                    "option": "tiles",
+                    "option": "optionB",
                     "label": {
-                        "english": "tiles",
-                        "nyanja": "matayala"
+                        "en": "Option B"
                     }
                 }
             ],
