@@ -66,7 +66,7 @@ export class PersonalPage implements OnInit {
       'get-program-details': GetProgramDetailsComponent,
       'initial-needs': InitialNeedsComponent,
       'introduction-121': GetInfoComponent,
-      'next-action': ChooseCredentialTypeComponent,
+      'choose-credential-type': ChooseCredentialTypeComponent,
       'select-appointment': SelectAppointmentComponent,
       'select-country': SelectCountryComponent,
       'select-language': SelectLanguageComponent,

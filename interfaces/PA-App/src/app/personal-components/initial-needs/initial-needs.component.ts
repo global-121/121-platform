@@ -28,7 +28,7 @@ export class InitialNeedsComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'select-country';
+    return 'choose-credential-type';
   }
 
   complete() {
