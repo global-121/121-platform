@@ -21,3 +21,9 @@
   left: 0;
   right: 0;
 }
+
+// Override default styles to emphasize where to input
+ion-input,
+ion-textarea {
+  border: 1px solid currentColor;
+}
