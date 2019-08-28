@@ -56,7 +56,7 @@
       "conclusion": "Thank you, you have selected {{country}}."
     },
     "select-program": {
-      "introduction": "You can now select a program. We'll show you programs from",
+      "introduction": "You can now select a program.",
       "step4": "Step 4: Select a program:",
       "info-button": "Tell me about programs",
       "program": "Program"

@@ -4,8 +4,10 @@
   <dialogue-turn>
     {{ 'personal.select-country.introduction'|translate }}
   </dialogue-turn>
-  <dialogue-turn actor="self">
+  <dialogue-turn isConnected="true">
     {{ 'personal.select-country.step3'|translate }}
+  </dialogue-turn>
+  <dialogue-turn actor="self">
     <ion-radio-group (ionChange)="changeCountry($event)"
     >
       <ion-item *ngFor="let country of countries"

@@ -1,13 +1,17 @@
 <section #selectProgram >
-  <ion-button (click)="getProgramsByCountryId(countryChoice)">API: GET Programs By Country</ion-button>
-  <br>
+  <ion-button (click)="getPrograms()">API: GET Programs</ion-button>
+
   <dialogue-turn>
-    {{ 'personal.select-program.introduction'|translate }} <strong>{{ countryChoiceName }}</strong>.
+    {{ 'personal.select-program.introduction'|translate }}
+  </dialogue-turn>
+  <dialogue-turn isConnected="true">
+    {{ 'personal.select-program.step4'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self">
-    {{ 'personal.select-program.step4'|translate }}
-    <br>
-    <ion-button>{{ 'personal.select-program.info-button'|translate }}</ion-button>
+    <p>
+      <ion-button>{{ 'personal.select-program.info-button'|translate }}</ion-button>
+    </p>
+
     <ion-radio-group (ionChange)="changeProgram($event)">
       <ion-item *ngFor="let program of programs"
                 color="light"
@@ -21,6 +25,12 @@
         <ion-radio value="{{ program.id }}"></ion-radio>
       </ion-item>
     </ion-radio-group>
-    <ion-button [hidden]="!programChoice">{{ 'shared.submit-button'|translate }}</ion-button>
+    <div class="ion-margin-top">
+      <ion-button [hidden]="!programChoice"
+                  (click)="submitProgram()"
+                  type="submit"
+                  size="block"
+      >{{ 'shared.submit-button'|translate }}</ion-button>
+    </div>
   </dialogue-turn>
 </section>
