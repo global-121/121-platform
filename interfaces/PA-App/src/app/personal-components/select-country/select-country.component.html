@@ -16,12 +16,14 @@
         <ion-radio value="{{ country.id }}"></ion-radio>
       </ion-item>
     </ion-radio-group>
-    <br>
-    <ion-button [hidden]="!countryChoice"
-                (click)="submitCountry()"
-    >{{ 'shared.submit-button'|translate }}</ion-button>
+    <div class="ion-margin-top">
+      <ion-button [hidden]="!countryChoice"
+                  (click)="submitCountry()"
+                  size="block"
+      >{{ 'shared.submit-button'|translate }}</ion-button>
+    </div>
   </dialogue-turn>
   <dialogue-turn [hidden]="!countrySelected">
-    {{ 'personal.select-country.conclusion'|translate }} {{countryChoiceName}}.
+    {{ countryChoiceResult }}
   </dialogue-turn>
 </section>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
 
+import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
@@ -15,9 +16,11 @@ export class SelectCountryComponent implements PersonalComponent {
   public countries: any;
   public countryChoice: number;
   public countryChoiceName: string;
+  public countryChoiceResult: string;
   public countrySelected: boolean;
 
   constructor(
+    public translate: TranslateService,
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     public storage: Storage,
@@ -48,6 +51,9 @@ export class SelectCountryComponent implements PersonalComponent {
   public changeCountry($event) {
     this.countryChoice = parseInt($event.detail.value, 10);
     this.countryChoiceName = this.getCountryName(this.countryChoice);
+    this.countryChoiceResult = this.translate.instant('personal.select-country.conclusion', {
+      country: this.countryChoiceName,
+    });
     this.countrySelected = false;
     this.storeCountry(this.countryChoice);
   }

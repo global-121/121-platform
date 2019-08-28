@@ -51,7 +51,7 @@
     "select-country": {
       "introduction": "The next step is to select your location, so we can show you programs for that location.",
       "step3": "Step 3: Select your location:",
-      "conclusion": "Thank you, you have selected"
+      "conclusion": "Thank you, you have selected {{country}}."
     },
     "select-program": {
       "introduction": "You can now select a program. We'll show you programs from",
