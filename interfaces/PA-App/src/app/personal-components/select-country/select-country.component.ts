@@ -69,8 +69,6 @@ export class SelectCountryComponent implements PersonalComponent {
   }
 
   complete() {
-    console.log('SelectCountryComponent complete()');
-
     this.conversationService.onSectionCompleted({
       name: 'select-country',
       data: {

@@ -10,11 +10,11 @@ import { CreatePasswordComponent } from '../personal-components/create-password/
 import { GetInfoComponent } from '../personal-components/get-info/get-info.component';
 import { GetProgramDetailsComponent } from '../personal-components/get-program-details/get-program-details.component';
 import { IdentityFormComponent } from '../personal-components/identity-form/identity-form.component';
+import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
 import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
-import { TellNeedsComponent } from '../personal-components/tell-needs/tell-needs.component';
 
 @Component({
   selector: 'app-personal',
@@ -64,7 +64,7 @@ export class PersonalPage implements OnInit {
       'create-identity-details': IdentityFormComponent,
       'create-identity-password': CreatePasswordComponent,
       'get-program-details': GetProgramDetailsComponent,
-      'initial-needs': TellNeedsComponent,
+      'initial-needs': InitialNeedsComponent,
       'introduction-121': GetInfoComponent,
       'next-action': ChooseCredentialTypeComponent,
       'select-appointment': SelectAppointmentComponent,

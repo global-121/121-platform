@@ -16,9 +16,10 @@
       "option2": "No, I already know",
       "option3": "Later"
     },
-    "tell-needs": {
+    "initial-needs": {
       "introduction": "In order to help you as best as possible, please tell us what your needs are.",
-      "input-placeholder": "My needs are...",
+      "input-label": "My needs are:",
+      "input-placeholder": "I need...",
       "submit": "Submit needs",
       "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future."
     },

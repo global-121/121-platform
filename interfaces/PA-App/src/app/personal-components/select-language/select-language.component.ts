@@ -70,7 +70,7 @@ export class SelectLanguageComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'select-country';
+    return 'initial-needs';
   }
 
   complete() {

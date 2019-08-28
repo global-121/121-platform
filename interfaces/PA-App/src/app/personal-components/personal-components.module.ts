@@ -10,11 +10,11 @@ import { CreatePasswordComponent } from './create-password/create-password.compo
 import { GetInfoComponent } from './get-info/get-info.component';
 import { GetProgramDetailsComponent } from './get-program-details/get-program-details.component';
 import { IdentityFormComponent } from './identity-form/identity-form.component';
+import { InitialNeedsComponent } from './initial-needs/initial-needs.component';
 import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
 import { SelectCountryComponent } from './select-country/select-country.component';
 import { SelectLanguageComponent } from './select-language/select-language.component';
 import { SelectProgramComponent } from './select-program/select-program.component';
-import { TellNeedsComponent } from './tell-needs/tell-needs.component';
 
 @NgModule({
   declarations: [
@@ -23,11 +23,11 @@ import { TellNeedsComponent } from './tell-needs/tell-needs.component';
     GetInfoComponent,
     GetProgramDetailsComponent,
     IdentityFormComponent,
+    InitialNeedsComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
-    TellNeedsComponent,
   ],
   imports: [
     CommonModule,
@@ -40,11 +40,11 @@ import { TellNeedsComponent } from './tell-needs/tell-needs.component';
     GetInfoComponent,
     GetProgramDetailsComponent,
     IdentityFormComponent,
+    InitialNeedsComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
-    TellNeedsComponent,
   ],
   exports: [
     ChooseCredentialTypeComponent,
@@ -52,11 +52,11 @@ import { TellNeedsComponent } from './tell-needs/tell-needs.component';
     GetInfoComponent,
     GetProgramDetailsComponent,
     IdentityFormComponent,
+    InitialNeedsComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
-    TellNeedsComponent,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

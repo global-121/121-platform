@@ -1,16 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TellNeedsComponent } from './tell-needs.component';
+import { InitialNeedsComponent } from './initial-needs.component';
 import { TranslateModule } from '@ngx-translate/core';
 
-describe('TellNeedsComponent', () => {
-  let component: TellNeedsComponent;
-  let fixture: ComponentFixture<TellNeedsComponent>;
+describe('InitialNeedsComponent', () => {
+  let component: InitialNeedsComponent;
+  let fixture: ComponentFixture<InitialNeedsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [TellNeedsComponent],
+      declarations: [InitialNeedsComponent],
       imports: [
         TranslateModule.forRoot(),
       ],
@@ -20,7 +20,7 @@ describe('TellNeedsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TellNeedsComponent);
+    fixture = TestBed.createComponent(InitialNeedsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
