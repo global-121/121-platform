@@ -66,6 +66,8 @@ export class ChooseCredentialTypeComponent implements PersonalComponent {
       this.programChosen = true;
     } else if (this.credentialTypeChoice === 'create-id') {
       this.programChosen = false;
+
+      this.complete();
     }
   }
 
