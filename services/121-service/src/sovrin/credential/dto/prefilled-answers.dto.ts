@@ -24,7 +24,7 @@ export class PrefilledAnswerDto {
 
 export class PrefilledAnswersDto {
   @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
-  @Length(30, 30)
+  @Length(29, 30)
   public readonly did: string;
   @ApiModelProperty({ example: 1 })
   @IsNotEmpty()

@@ -137,8 +137,6 @@ export class ProgramService {
 
     const result = await this.schemaService.create(selectedProgram);
 
-    console.log('publish', result)
-
     const credentialOffer = await this.credentialService.createOffer(
       result.credDefId,
     );
