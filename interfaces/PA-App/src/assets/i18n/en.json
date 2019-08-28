@@ -8,7 +8,7 @@
       "option1": "English",
       "option2": "Language 2",
       "option3": "Language 3",
-      "result": "Thank you. You have selected"
+      "result": "Thank you. You have selected {{language}}."
     },
     "get-info": {
       "introduction": "Before we start, would you like to know more about 121?",

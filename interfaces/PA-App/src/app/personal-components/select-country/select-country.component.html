@@ -17,7 +17,9 @@
       </ion-item>
     </ion-radio-group>
     <br>
-    <ion-button [hidden]="!countryChoice" (click)="submitCountry()">{{ 'shared.submit-button'|translate }}</ion-button>
+    <ion-button [hidden]="!countryChoice"
+                (click)="submitCountry()"
+    >{{ 'shared.submit-button'|translate }}</ion-button>
   </dialogue-turn>
   <dialogue-turn [hidden]="!countrySelected">
     {{ 'personal.select-country.conclusion'|translate }} {{countryChoiceName}}.

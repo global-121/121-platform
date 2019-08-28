@@ -3,18 +3,27 @@
     {{ 'personal.select-language.introduction'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self">
-    <ion-radio-group [(ngModel)}]="languageChoice" (ionChange)="changeLanguage($event)"
-    >
-      <ion-item *ngFor="let language of languages"
-                color="light"
-                class="ion-no-padding ion-text-wrap"
-      >
-        <ion-label>{{ language.language }}</ion-label>
-        <ion-radio value="{{ language.id }}"></ion-radio>
-      </ion-item>
-    </ion-radio-group>
+    <form id="selectLanguageForm">
+      <ion-radio-group (ionChange)="changeLanguage($event)">
+        <ion-item *ngFor="let language of languages"
+                  color="light"
+                  class="ion-no-padding ion-text-wrap"
+        >
+          <ion-label>{{ language.language }}</ion-label>
+          <ion-radio value="{{ language.id }}"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <div class="ion-margin-top">
+        <ion-button type="submit"
+                    id="selectLanguageAction"
+                    [hidden]="!languageChoice"
+                    (click)="submitLanguage()"
+                    size="block"
+        >{{ 'shared.submit-button'|translate }}</ion-button>
+      </div>
+    </form>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!languageChoice">
-    {{ 'personal.select-language.result'|translate }} {{languageChoiceName}}.
+  <dialogue-turn [hidden]="!languageSelected">
+    {{ languageChoiceResult }}
   </dialogue-turn>
 </section>
