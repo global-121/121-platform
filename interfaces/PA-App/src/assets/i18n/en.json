@@ -44,10 +44,11 @@
       "introduction": "Now we need some additional information about you.",
       "step2": "Step 2: Fill in the following questions about yourself.",
       "info-button": "Tell me about these questions.",
-      "name-placeholder": "Your full name...",
-      "dob-placeholder": "Your date of birth...",
+      "name-label": "My full name:",
+      "dob-label": "My date of birth:",
+      "dob-format": "dd / mm / yyyy",
       "submit-button": "Save your information",
-      "conclusion": "We now have all information to  create a Digital ID."
+      "conclusion": "We now have all information to create your Digital ID."
     },
     "select-country": {
       "introduction": "The next step is to select your location, so we can show you programs for that location.",
