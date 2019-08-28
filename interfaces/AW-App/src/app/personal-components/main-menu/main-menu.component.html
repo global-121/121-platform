@@ -8,6 +8,7 @@
       <ion-item *ngFor="let option of menuOptions"
                 color="light"
                 class="ion-no-padding ion-text-wrap"
+                [disabled]="option.disabled"
       >
         <ion-label>{{ option.option }}</ion-label>
         <ion-radio value="{{ option.id }}"></ion-radio>

@@ -19,9 +19,9 @@ export class MainMenuComponent implements OnInit {
 
   ngOnInit() {
     this.menuOptions = [
-      { id: 1, option: this.customTranslateService.translate('personal.main-menu.menu-option1') },
-      { id: 2, option: this.customTranslateService.translate('personal.main-menu.menu-option2') },
-      { id: 3, option: this.customTranslateService.translate('personal.main-menu.menu-option3') },
+      { id: 1, option: this.customTranslateService.translate('personal.main-menu.menu-option1'), disabled: false },
+      { id: 2, option: this.customTranslateService.translate('personal.main-menu.menu-option2'), disabled: false },
+      { id: 3, option: this.customTranslateService.translate('personal.main-menu.menu-option3'), disabled: true },
     ];
   }
 
