@@ -7,12 +7,16 @@ import { ConversationService } from '../services/conversation.service';
 import { LoginComponent } from './login/login.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ViewAppointmentsComponent } from './view-appointments/view-appointments.component';
+import { ScanQrComponent } from './scan-qr/scan-qr.component';
+import { StartMeetingComponent } from './start-meeting/start-meeting.component';
 
 
 const personalComponents = [
   LoginComponent,
   MainMenuComponent,
-  ViewAppointmentsComponent
+  ViewAppointmentsComponent,
+  ScanQrComponent,
+  StartMeetingComponent
 ];
 
 @NgModule({

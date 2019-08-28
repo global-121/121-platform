@@ -24,6 +24,10 @@
       "timeslot": "Timeslot",
       "submit-button": "See appointments",
       "appointments": "These are the appointments for the chosen timeslot:"
+    },
+    "scan-qr": {
+      "introduction": "Now scan the QR-code of the PA to identify him/her in the system.",
+      "scan-button": "Scan QR-code"
     }
   },
   "shared": {
