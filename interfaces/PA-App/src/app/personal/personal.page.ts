@@ -81,17 +81,14 @@ export class PersonalPage implements OnInit {
   public insertSection(name: string) {
     console.log('PersonalPage insertSection(): ', name);
 
+    this.scrollDown();
+
     this.container.createComponent(
       this.getComponentFactory(name)
     );
-
-    this.scrollDown();
   }
 
   scrollDown() {
-    // Wait for elements to be added to the DOM before scrolling down
-    setTimeout(() => {
-      this.ionContent.scrollToBottom(300);
-    }, 100);
+    this.ionContent.scrollToBottom(300);
   }
 }
