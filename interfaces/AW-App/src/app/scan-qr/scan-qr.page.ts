@@ -16,6 +16,7 @@ export class ScanQrPage implements OnInit {
   private isBackMode = true;
   private isFlashLightOn = false;
   private scanSub: any;
+  loader: any;
   isValidationMeeting = false;
 
   constructor(
@@ -28,28 +29,33 @@ export class ScanQrPage implements OnInit {
     public alertCtrl: AlertController,
     public router: Router
   ) {
+
   }
 
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
+    this.loader = await this.loadingCtrl.create({
+      message: 'Please wait...'
+    });
+    this.loader.present();
+
     setTimeout(() => {
       this.getOrigins();
     }, 200);
 
-    this.showCamera();
     // Optionally request the permission early
     this.qrScanner.prepare()
       .then((status: QRScannerStatus) => {
+        this.loader.dismiss();
         if (status.authorized) {
           // camera permission was granted
           console.log('Camera Permission Given');
 
           // start scanning
-          this.scanSub = this.qrScanner.scan().subscribe((text: string) => {
-            console.log('camera', text);
+          this.scanSub = this.qrScanner.scan().subscribe((text: any) => {
+            console.log('camera', text.result);
             this.qrScanner.hide(); // hide camera preview
             this.scanSub.unsubscribe(); // stop scanning
-            this.hideCamera();
-            this.startMeeting(text);
+            this.startMeeting(text.result);
           });
 
           // show camera preview
@@ -68,15 +74,14 @@ export class ScanQrPage implements OnInit {
       })
       .catch((e: any) => {
         console.log('Error is', e);
-        // this.loader.dismiss();
+        this.loader.dismiss();
       });
   }
 
   closeModal() {
     this.router.navigate(['/tabs/personal']);
     this.qrScanner.hide(); // hide camera preview
-    // this.scanSub.unsubscribe(); // stop scanning
-    this.hideCamera();
+    this.scanSub.unsubscribe(); // stop scanning
   }
   getOrigins() {
     this.isValidationMeeting = true;
@@ -97,14 +102,6 @@ export class ScanQrPage implements OnInit {
     } else {
       this.qrScanner.useBackCamera();
     }
-  }
-
-  showCamera() {
-    (window.document.querySelector('ion-app') as HTMLElement).style.background = 'none transparent';
-  }
-
-  hideCamera() {
-    (window.document.querySelector('ion-app') as HTMLElement).style.background = '';
   }
 
   startMeeting(did) {
