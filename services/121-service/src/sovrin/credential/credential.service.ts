@@ -43,7 +43,6 @@ export class CredentialService {
     }
 
     const response = await this.httpService.post(API.credential.credoffer, credentialOfferPost).toPromise();
-    console.log('credoffer', response.data);
     if (!response.data) {
       const errors = 'Credoffer not created';
       throw new HttpException({ errors }, 400);
@@ -53,10 +52,8 @@ export class CredentialService {
 
   // Used by PA
   public async getOffer(programId: number): Promise<object> {
-    console.log(programId);
     const program = await this.programService.findOne(programId);
     const result = program.credOffer;
-    console.log('result', result);
     return result;
   }
 
@@ -132,7 +129,7 @@ export class CredentialService {
     credentialRequestInfo.program = program;
     // credentialRequestInfo.credOffer = tykn.decrypt(credRequest.credentialRequest)
     credentialRequestInfo.credentialRequest = JSON.parse(
-      '{ "example": "credentialRequest" }',
+      credRequest.encryptedCredentialRequest,
     );
     this.credentialRequestRepository.save(credentialRequestInfo);
   }
@@ -143,18 +140,32 @@ export class CredentialService {
     const program = await this.getRelatedProgram(payload.programId);
     const credentialOffer = program.credOffer;
 
-    // Get related credential request
     const queryResult = await this.getRelatedCredRequest(
       payload.programId,
       payload.did,
     );
     const credentialRequest = queryResult.credentialRequest;
+    const preFilledAnswers = await this.getPrefilledAnswers(payload.did);
+    let attributesPost = {};
+    for (let answer of preFilledAnswers) {
+      attributesPost[answer.attribute] = answer.answer;
+    }
 
-    credentialOffer;
-    credentialRequest;
-    const credentialJson = payload.credentialJson;
-    // const createdCredential = tyknid.createCredential(credentialOffer,credentialRequest,credentialJson)
-    const createdCredential = 'exampleEncryptedCredential';
+    const credentialPost = {
+      credOfferJsonData: credentialOffer['credOfferJsonData'],
+      credentialRequest: credentialRequest['credentialRequest'],
+      correlation: {
+        correlationID: 'test',
+      },
+      attributes: attributesPost,
+    };
+
+
+
+    const response = await this.httpService
+      .post(API.credential.issue, credentialPost)
+      .toPromise();
+    const createdCredential = response.data;
 
     const credentialData = new CredentialEntity();
     credentialData.credential = createdCredential;

@@ -6,7 +6,7 @@ from termcolor import colored
 import pprint
 
 global PROGRAM_ID
-PROGRAM_ID = '1'
+PROGRAM_ID = '2'
 
 global PRINT_RESPONSE
 PRINT_RESPONSE = True
@@ -19,11 +19,15 @@ def main():
 
     t = testApi(randomDid)
 
+    t.setupProgram()
+
+    t.getWalletDid()
+
     t.setupConnection()
 
     t.getCredentials()
 
-    t.proof()
+    # t.proof()
 
 
 class testApi:
@@ -31,11 +35,44 @@ class testApi:
     def __init__(self, didPA):
         self.r = Request()
         self.didPA = didPA
+        self.storagePA = {}
+
+    def setupProgram(self):
+        printAction('HO', 'Unpublishes a program to reset the sequence')
+        self.r.postRequest('programs/unpublish/' + PROGRAM_ID)
+
+        printAction('HO', 'Publishes a program')
+        self.r.postRequest('programs/publish/' + PROGRAM_ID)
+
+    def getWalletDid(self):
+        printAction(
+            'PA-PHONE', 'PA calls POST to create a wallet sovrin ledger')
+        walletPost = {
+            "wallet": {
+                "id": "test",
+                "passKey": "test"
+            },
+            "correlation": {
+                "correlationID": "test"
+            }
+        }
+        self.r.postSovrin('wallet', walletPost)
+
+        printAction('PA-PHONE', 'PA calls POST to get a DID from sovrin ledger')
+        didPost = {
+            "wallet": {
+                "id": "test",
+                "passKey": "test"
+            },
+            "correlation": {
+                "correlationID": "test"
+            }
+        }
+        didReponse = self.r.postSovrin('did', didPost)
+        self.didPA = "did:sov:" + didReponse['did']
+        self.didPAShort = didReponse['did']
 
     def setupConnection(self):
-        printAction('HO', 'Publishes a program')
-        self.r.postRequest('programs/publish/1')
-
         printAction('PA', 'Calls GET connection request')
         connectionRequest = self.r.getRequest('sovrin/create-connection')
 
@@ -50,24 +87,46 @@ class testApi:
             'sovrin/create-connection', connectionResponse)
 
     def getCredentials(self):
-        printAction('PA', 'Calls POST credential offer')
-        self.r.getRequest('sovrin/credential/offer/' + PROGRAM_ID)
+        printAction('PA', 'Calls GET credential offer')
+        credOfferResponse = self.r.getRequest(
+            'sovrin/credential/offer/' + PROGRAM_ID)
 
-        printAction('PA', 'PA calls GET attributes for credential/program')
+        printAction(
+            'PA', 'PA calls GET attributes for credential/program')
+        programData = self.r.getRequest('programs/' + PROGRAM_ID)
+
+        printAction(
+            'PA', 'PA calls GET program to get program details, such as cred def id')
         self.r.getRequest('sovrin/credential/attributes/' + PROGRAM_ID)
 
-        credentialRequest = {
-            "did": self.didPA,
-            "programId": 1,
-            "encryptedCredentialRequest": "string"
+        printAction(
+            'PA-PHONE', 'PA calls POST to create a credential request on his phone')
+        credRequestPost = {
+            "wallet": {
+                "id": "test",
+                "passKey": "test"
+            },
+            "correlation": {
+                "correlationID": "test"
+            },
+            "credDefID": programData['credDefId'],
+            "credentialOffer": credOfferResponse['credOfferJsonData'],
+            "did": self.didPAShort
         }
+        credentialRequest = self.r.postSovrin(
+            'credential/credreq', credRequestPost)
 
-        printAction('PA', 'calls POST credential-request to system')
-        self.r.postRequest('sovrin/credential/request', credentialRequest)
+        printAction('PA', 'calls POST to store credential-request to server')
+        credentialRequestPost = {
+            "did": self.didPA,
+            "programId": int(PROGRAM_ID),
+            "encryptedCredentialRequest": json.dumps(credentialRequest)
+        }
+        self.r.postRequest('sovrin/credential/request', credentialRequestPost)
 
         prefilledAnswers = {
             "did": self.didPA,
-            "programId": 1,
+            "programId": int(PROGRAM_ID),
             "attributes": [
                 {
                     "attributeId": 1,
@@ -89,15 +148,33 @@ class testApi:
 
         issueCredentialData = {
             "did": self.didPA,
-            "programId": 1,
+            "programId": int(PROGRAM_ID),
             "credentialJson": {}
         }
 
         printAction('AW', 'AW calls POST issue credential')
         self.r.postRequest('sovrin/credential/issue',  issueCredentialData)
 
-        printAction('AW', 'AW calls POST issue credential')
-        self.r.getRequest('sovrin/credential/' + self.didPA)
+        printAction(
+            'PA', 'PA calls get issued credential to get it to his phone')
+        credential = self.r.getRequest('sovrin/credential/' + self.didPA)
+
+        printAction('PA-PHONE', 'PA stores received credential in wallet')
+        credentialFormat = json.loads(credential['message'])
+        storeCredentialData = {
+            "credDefID": programData['credDefId'],
+            "credentialRequestMetadata": credentialRequest['credentialRequestMetadata'],
+            "credential":  credentialFormat['credential'],
+            "wallet": {
+                "id": "test",
+                "passKey": "test"
+            },
+            "correlation": {
+                "correlationID": "test"
+            }
+        }
+        pprint.pprint(storeCredentialData)
+        self.r.postSovrin('credential/store', storeCredentialData)
 
     def proof(self):
         printAction('PA', 'PA gets proof request')
@@ -116,6 +193,7 @@ class testApi:
 class Request:
     def __init__(self):
         self.baseurl = 'http://localhost:3000/api/'
+        self.userIMS = 'http://10.0.0.5:50003/api/'
 
     def getRequest(self, extension, params='{}'):
         completeUrl = self.baseurl + extension
@@ -128,6 +206,14 @@ class Request:
         response = requests.post(completeUrl,
                                  json=data)
 
+        return self.handleResponse(response)
+
+    def postSovrin(self, extension, data):
+        completeUrl = self.userIMS + extension
+        response = requests.post(completeUrl,
+                                 json=data)
+
+        pprint.pprint(response.text)
         return self.handleResponse(response)
 
     def handleResponse(self, response):

@@ -3,7 +3,7 @@ import { Length, IsNotEmpty, IsString } from 'class-validator';
 
 export class ConnectionReponseDto {
   @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
-  @Length(30, 30)
+  @Length(29, 30)
   public readonly did: string;
   @IsNotEmpty()
   @IsString()

@@ -27,7 +27,6 @@ export class SchemaService {
     };
     const api_string = API.schema;
 
-    console.log(schemaPost, api_string);
 
     let responseSchema = await this.httpService.post(api_string, schemaPost).toPromise();
     if (!responseSchema.data) {
@@ -39,7 +38,6 @@ export class SchemaService {
       name: 'test1',
       schema_id: schemaId,
     };
-    console.log(API.credential.definition, credDefPost);
     let responseCreddef = await this.httpService.post(API.credential.definition, credDefPost).toPromise();
     if (!responseCreddef.data) {
       const errors = 'Cred def id not published';

@@ -55,7 +55,6 @@ export class CreateConnectionService {
   public async addLedger(didInfo: DidInfoDto): Promise<void> {
     ` decryptedMessage = await tyknid.decrypt(DidInfoDto)
       tyknid.addDidLedger(decryptedMessage.did, decryptedMessage.verkey)`;
-    console.log(didInfo);
   }
 
   public async getConnections(): Promise<ConnectionEntity[]> {

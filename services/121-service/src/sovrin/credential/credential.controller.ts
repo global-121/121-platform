@@ -37,7 +37,6 @@ export class CredentialController {
   @ApiImplicitParam({ name: 'programId', required: true, type: 'string' })
   @Get('/offer/:programId')
   public async getOffer(@Param() params): Promise<object> {
-    console.log(params.programId);
     return await this.credentialService.getOffer(params.programId);
   }
 

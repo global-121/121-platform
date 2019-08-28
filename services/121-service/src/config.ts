@@ -9,5 +9,6 @@ export const API = {
   credential: {
     definition: orgIMS + 'credential/definition',
     credoffer: orgIMS + 'credential/credoffer',
+    issue: orgIMS + 'credential/issue',
   },
 };
