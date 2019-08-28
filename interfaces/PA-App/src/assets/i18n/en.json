@@ -62,7 +62,7 @@
       "program": "Program"
     },
     "get-program-details": {
-      "introduction": "Thank you for selecting this program. Here you see the details of"
+      "introduction": "Thank you for selecting this program. Here you see the details of <strong>{{programTitle}}</strong>."
     },
     "select-appointment": {
       "introduction1": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",

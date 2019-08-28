@@ -1,11 +1,61 @@
 <section>
-  <ion-button (click)="getProgramById()">API: GET Program Details By Id</ion-button>
-  <br>
+  <ion-button (click)="getProgramDetails()">API: GET Program Details</ion-button>
+
   <dialogue-turn>
-      {{ 'personal.get-program-details.introduction'|translate }} <strong>{{programTitle}}</strong>
-    <br>
-    <ul>
-      <li ion-item *ngFor="let detail of program">{{detail.key}}: {{detail.value}}</li>
+    <p [innerHTML]="getProgramDetailsIntroduction"></p>
+
+    <ul class="ion-no-padding">
+      <li ion-item *ngFor="let detail of program">
+        <strong>{{ detail.key }}:</strong><br>
+        {{ detail.value }}
+      </li>
     </ul>
+
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <p>
+      <ion-button (click)="wantsToEnrol=true;">Enrol!</ion-button>
+    </p>
+  </dialogue-turn>
+  <dialogue-turn actor="Dorcas" [hidden]="!wantsToEnrol">
+    <p>
+      We have received your request to apply for <strong>{{ programTitle }}</strong>.<br>
+      To make sure you get the best possible help, please answer the following questions.
+    </p>
+  </dialogue-turn>
+  <dialogue-turn actor="self" [hidden]="!wantsToEnrol">
+    <p>
+      <ion-button>More about the questions</ion-button>
+    </p>
+    <ul class="ion-no-padding">
+      <li ion-item *ngFor="let question of questions">
+        <code>{{ question.id }}: {{ question.code }}</code><br>
+
+        <ion-label>
+          {{ question.label }}
+        </ion-label>
+        <div *ngIf="question.type === 'numeric'">
+          <ion-input type="text"
+                     [name]="question.code"
+          ></ion-input>
+        </div>
+        <div *ngIf="question.type === 'dropdown'">
+          <ion-radio-group [name]="question.code">
+          <ion-item *ngFor="let option of question.options"
+                    color="light"
+          >
+              <ion-label>{{ option.label }}</ion-label>
+              <ion-radio [value]="option.id"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </div>
+      </li>
+    </ul>
+
+    <p class="ion-margin-top">
+      <ion-button (click)="enrolInProgram()"
+                  size="block"
+      >{{ 'shared.submit-button'|translate }}</ion-button>
+    </p>
   </dialogue-turn>
 </section>

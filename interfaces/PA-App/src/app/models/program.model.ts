@@ -9,4 +9,5 @@ export class Program {
   distributionChannel: string;
   meetingDocuments: any;
   ngo: string;
+  customCriteria: any;
 }
