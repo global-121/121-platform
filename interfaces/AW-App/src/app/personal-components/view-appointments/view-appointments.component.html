@@ -27,17 +27,14 @@
     {{ 'personal.view-appointments.appointments'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self" [hidden]="!timeslotSelected">
-    <ion-radio-group (ionChange)="changeAppointment($event)">
+    <ion-list>
       <ion-item *ngFor="let appointment of appointmentsByTimeslot"
                 color="light"
                 class="ion-no-padding ion-text-wrap"
       >
         <ion-label>{{appointment.did}}</ion-label>
-        <ion-radio value="{{appointment.did}}"></ion-radio>
       </ion-item>
-    </ion-radio-group>
-    <br>
-    <ion-button [hidden]="!appointmentChoice" (click)="submitAppointment(appointmentChoice)">{{ 'personal.view-appointments.submit-button'|translate }}</ion-button>
+    </ion-list>
   </dialogue-turn>
 </section>
    
