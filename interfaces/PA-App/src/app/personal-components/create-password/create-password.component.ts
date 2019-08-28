@@ -40,7 +40,7 @@ export class CreatePasswordComponent implements PersonalComponent {
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'create-identity-details',
+      name: 'create-identity-password',
       data: {
         password: this.create,
       },
