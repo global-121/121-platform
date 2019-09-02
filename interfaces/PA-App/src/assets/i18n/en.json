@@ -79,7 +79,7 @@
       "program": "Program"
     }
   },
-  "TOAST": {
+  "notification": {
     "credential": "Credential received",
     "inclusion": "Inclusion status received",
     "close": "close"

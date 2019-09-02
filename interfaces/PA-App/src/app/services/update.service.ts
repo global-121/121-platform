@@ -40,7 +40,7 @@ export class UpdateService {
     public router: Router) { }
 
   async checkInclusion(programId: number): Promise<void> {
-    this.createUpdateToast('TOAST.inclusion', this.pagesNav.inclusion);
+    this.createUpdateToast('notification.inclusion', this.pagesNav.inclusion);
     const allInclusion: InclusionStorage[] = await this.getLocalStorageArray(this.inclusionStatusStorage);
     for (const inclusion of allInclusion) {
       if (inclusion.programId === programId &&
@@ -70,7 +70,7 @@ export class UpdateService {
         }, this.updateSpeedMs);
       } else if (response.status === this.inclusionStatus.included || response.status === this.inclusionStatus.excluded) {
         this.storeStatus(response.status, programId, allInclusion, this.inclusionStatusStorage);
-        this.createUpdateToast('TOAST.inclusion', this.pagesNav.inclusion);
+        this.createUpdateToast('notification.inclusion', this.pagesNav.inclusion);
       }
     });
   }
@@ -79,7 +79,7 @@ export class UpdateService {
     const did = localStorage.getItem(this.didStorage);
     this.programsService.getCredential(did).subscribe(response => {
       this.storeStatus(this.receivedStatus.received, programId, allCredentialState, this.credentialStatusStorage);
-      this.createUpdateToast('TOAST.credentials', this.pagesNav.credential);
+      this.createUpdateToast('notification.credentials', this.pagesNav.credential);
     }, err => {
       setTimeout(() => {
         this.listenForCredential(programId, allCredentialState);
@@ -118,7 +118,7 @@ export class UpdateService {
 
   createUpdateToast(messageKey: string, pageNav: string) {
     this.translate.get(messageKey).subscribe((message: string) => {
-      const closeButtonText = this.translate.instant('TOAST.close');
+      const closeButtonText = this.translate.instant('notification.close');
       this.toastController.create({
         header: message,
         animated: true,
