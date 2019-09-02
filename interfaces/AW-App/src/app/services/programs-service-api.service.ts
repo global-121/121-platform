@@ -50,4 +50,41 @@ export class ProgramsServiceApiService {
     );
   }
 
+  getPrefilledAnswers(did: string, programId: number): Observable<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      '/sovrin/credential/answers/'.concat(did, programId ? '?programId=' + programId : '')
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
+  issueCredential(did: string, programId: number, credentialJson: any): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/credential/issue',
+      {
+        did,
+        programId,
+        credentialJson
+      },
+      true
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
+  deletePrefilledAnswers(did: string, programId: number): Observable<any> {
+    return this.apiService.delete(
+      environment.url_121_service_api,
+      '/sovrin/credential/answers/'.concat(did, programId ? '?programId=' + programId : ''),
+      true
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
 }

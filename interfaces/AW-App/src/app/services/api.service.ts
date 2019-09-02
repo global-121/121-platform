@@ -56,4 +56,19 @@ export class ApiService {
       }
     );
   }
+
+  delete(
+    endpoint: string,
+    path: string,
+    anonymous: boolean = false
+  ): Observable<any> {
+    console.log(`ApiService DELETE: ${endpoint}${path}`, `Anonymous? ${anonymous}`);
+
+    return this.http.delete(
+      endpoint + path,
+      {
+        headers: this.createHeaders(anonymous),
+      }
+    );
+  }
 }

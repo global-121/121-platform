@@ -198,16 +198,9 @@ export class CredentialService {
   }
 
   private async getRelatedProgram(programId: number): Promise<ProgramEntity> {
-    let program;
-    if (!programId) {
-      program = await this.programRepository.findOne({
-        identityProgram: true,
-      });
-    } else {
-      program = await this.programRepository.findOne({
-        id: programId,
-      });
-    }
+    const program = await this.programRepository.findOne({
+      id: programId,
+    });
     if (!program) {
       const errors = 'Program not found.';
       throw new HttpException(
