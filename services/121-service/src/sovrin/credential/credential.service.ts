@@ -9,6 +9,7 @@ import { Repository, DeleteResult } from 'typeorm';
 import { ProgramService } from '../../programs/program/program.service';
 import { PrefilledAnswersDto, PrefilledAnswerDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
+import { IdentityAttributesEntity } from './identity-attributes.entity';
 import { CredentialEntity } from './credential.entity';
 import { API } from '../../config';
 
@@ -17,9 +18,9 @@ export class CredentialService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(CredentialAttributesEntity)
-  private readonly credentialAttributesRepository: Repository<
-    CredentialAttributesEntity
-  >;
+  private readonly credentialAttributesRepository: Repository<CredentialAttributesEntity>;
+  @InjectRepository(IdentityAttributesEntity)
+  private readonly identityAttributesRepository: Repository<IdentityAttributesEntity>;
   @InjectRepository(CredentialRequestEntity)
   private readonly credentialRequestRepository: Repository<
     CredentialRequestEntity
@@ -31,12 +32,12 @@ export class CredentialService {
     @Inject(forwardRef(() => ProgramService))
     private readonly programService: ProgramService,
     private readonly httpService: HttpService,
-  ) {}
+  ) { }
   // Use by HO is done automatically when a program is published
   public async createOffer(credDefId: string): Promise<object> {
     // const credentialOffer = tyknidtyknid.createCredentialOffer(credDefId)
     const credentialOfferPost = {
-      credDefID:  credDefId,
+      credDefID: credDefId,
       correlation: {
         "correlationID": "test"
       }
@@ -76,24 +77,31 @@ export class CredentialService {
   public async prefilledAnswers(
     did: string,
     programId: number,
+    credentialType: string,
     prefilledAnswers: PrefilledAnswerDto[],
   ): Promise<any[]> {
-    programId = isNaN(programId) ? 0 : programId;
-    await this.credentialAttributesRepository.delete({
-      did: did,
-      programId: programId,
-    });
+    //Delete existing entries for this DID*program first.
+    if (credentialType === 'identity') {
+      await this.identityAttributesRepository.delete({ did: did });
+    } else if (credentialType === 'program') {
+      await this.credentialAttributesRepository.delete({ did: did, programId: programId });
+    }
+
+    //Then save new information
     let credentials = [];
     for (let answer of prefilledAnswers) {
       let credential = new CredentialAttributesEntity();
       credential.did = did;
-      credential.programId = programId;
       credential.attributeId = answer.attributeId;
       credential.attribute = answer.attribute;
       credential.answer = answer.answer;
-      const newCredential = await this.credentialAttributesRepository.save(
-        credential,
-      );
+      let newCredential;
+      if (credentialType === 'identity') {
+        newCredential = await this.identityAttributesRepository.save(credential);
+      } else if (credentialType === 'program') {
+        credential.programId = programId;
+        newCredential = await this.credentialAttributesRepository.save(credential);
+      }
       credentials.push(newCredential);
     }
     return credentials;
@@ -102,16 +110,30 @@ export class CredentialService {
   // AW: get answers to attributes for a given PA (identified first through did/QR)
   public async getPrefilledAnswers(
     did: string,
-  ): Promise<CredentialAttributesEntity[]> {
-    let credentials = await this.credentialAttributesRepository.find({
-      where: { did: did },
-    });
+    programId: number
+  ): Promise<any[]> {
+    const credentialType = isNaN(programId) ? 'identity' : 'program';
+    let credentials;
+    if (credentialType === 'identity') {
+      credentials = await this.identityAttributesRepository.find({
+        where: { did: did },
+      });
+    } else if (credentialType === 'program') {
+      credentials = await this.credentialAttributesRepository.find({
+        where: { did: did, programId: programId },
+      });
+    }
     return credentials;
   }
 
   // AW: delete answers to attributes for a given PA after issuing credentials (identified first through did/QR)
-  public async deletePrefilledAnswers(did: string): Promise<DeleteResult> {
-    return await this.credentialAttributesRepository.delete({ did: did });
+  public async deletePrefilledAnswers(did: string, programId: number): Promise<DeleteResult> {
+    const credentialType = isNaN(programId) ? 'identity' : 'program';
+    if (credentialType === 'identity') {
+      return await this.identityAttributesRepository.delete({ did: did });
+    } else if (credentialType === 'program') {
+      return await this.credentialAttributesRepository.delete({ did: did });
+    }
   }
 
   // Used by PA
@@ -145,7 +167,7 @@ export class CredentialService {
       payload.did,
     );
     const credentialRequest = queryResult.credentialRequest;
-    const preFilledAnswers = await this.getPrefilledAnswers(payload.did);
+    const preFilledAnswers = await this.getPrefilledAnswers(payload.did, payload.programId);
     let attributesPost = {};
     for (let answer of preFilledAnswers) {
       attributesPost[answer.attribute] = answer.answer;
@@ -176,9 +198,16 @@ export class CredentialService {
   }
 
   private async getRelatedProgram(programId: number): Promise<ProgramEntity> {
-    const program = await this.programRepository.findOne({
-      id: programId,
-    });
+    let program;
+    if (!programId) {
+      program = await this.programRepository.findOne({
+        identityProgram: true,
+      });
+    } else {
+      program = await this.programRepository.findOne({
+        id: programId,
+      });
+    }
     if (!program) {
       const errors = 'Program not found.';
       throw new HttpException(
