@@ -10,7 +10,7 @@ export class ConversationService {
 
   private conversation: ConversationSection[] = [];
 
-  private sectionCompletedSource = new Subject<ConversationSection>();
+  private sectionCompletedSource = new Subject<string>();
   public sectionCompleted$ = this.sectionCompletedSource.asObservable();
 
   constructor() {
@@ -55,7 +55,7 @@ export class ConversationService {
     console.log('ConverstaionService  onSectionCompleted(): ', section);
 
     // Instruct PersonalPage to insert the next section
-    this.sectionCompletedSource.next(section);
+    this.sectionCompletedSource.next(section.next);
   }
 
   public getConversationUpToNow(): ConversationSection[] {

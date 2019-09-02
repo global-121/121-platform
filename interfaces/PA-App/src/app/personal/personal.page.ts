@@ -36,8 +36,8 @@ export class PersonalPage implements OnInit {
     private resolver: ComponentFactoryResolver
   ) {
     // Listen for completed sections, to continue with next steps
-    this.conversationService.sectionCompleted$.subscribe((response: ConversationSection) => {
-      this.insertSection(response.next);
+    this.conversationService.sectionCompleted$.subscribe((response: string) => {
+      this.insertSection(response);
     });
   }
 
