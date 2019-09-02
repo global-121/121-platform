@@ -3,43 +3,6 @@
   "PERSONAL": "You",
   "DEVICE": "Device",
   "personal": {
-    "select-language": {
-      "introduction": "Welcome to 121. Please select your language.",
-      "option1": "English",
-      "option2": "Language 2",
-      "option3": "Language 3",
-      "result": "Thank you. You have selected {{language}}."
-    },
-    "get-info": {
-      "introduction": "Before we start, would you like to know more about 121?",
-      "option1": "Tell me about 121",
-      "option2": "No, I already know",
-      "option3": "Later"
-    },
-    "initial-needs": {
-      "introduction": "In order to help you as best as possible, please tell us what your needs are.",
-      "input-label": "My needs are:",
-      "input-placeholder": "I need...",
-      "submit": "Submit needs",
-      "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future."
-    },
-    "choose-credential-type": {
-      "introduction": "Please select your next step.",
-      "option1": "Apply to program",
-      "option2": "Create a Digital ID",
-      "option3": "Delete Digital ID",
-      "conclusion-program": "To request inclusion in a program you need to have a valid Digital ID first.",
-      "info-digital-id": "Tell me about Digital ID's"
-    },
-    "create-password": {
-      "introduction": "To create a Digital ID you need to complete the following steps.",
-      "step1": "Step 1: Create your password.",
-      "info-password": "Tell me about passwords",
-      "create-password": "Create password:",
-      "confirm-password": "Confirm password:",
-      "submit-password": "Create my password",
-      "conclusion": "Great! You have created a password."
-    },
     "identity-form": {
       "introduction": "Now we need some additional information about you.",
       "step2": "Step 2: Fill in the following questions about yourself.",
@@ -50,19 +13,38 @@
       "submit-button": "Save your information",
       "conclusion": "We now have all information to create your Digital ID."
     },
-    "select-country": {
-      "introduction": "The next step is to select your location, so we can show you programs for that location.",
-      "step3": "Step 3: Select your location:",
-      "conclusion": "Thank you, you have selected {{country}}."
-    },
-    "select-program": {
-      "introduction": "You can now select a program.",
-      "step4": "Step 4: Select a program:",
-      "info-button": "Tell me about programs",
-      "program": "Program"
+    "create-password": {
+      "introduction": "To create a Digital ID you need to complete the following steps.",
+      "step1": "Step 1: Create your password.",
+      "info-password": "Tell me about passwords",
+      "create-password": "Create password:",
+      "confirm-password": "Confirm password:",
+      "submit-password": "Create my password",
+      "conclusion": "Great! You have created a password."
     },
     "get-program-details": {
       "introduction": "Thank you for selecting this program. Here you see the details of <strong>{{programTitle}}</strong>."
+    },
+    "initial-needs": {
+      "introduction": "In order to help you as best as possible, please tell us what your needs are.",
+      "input-label": "My needs are:",
+      "input-placeholder": "I need...",
+      "submit": "Submit needs",
+      "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future."
+    },
+    "get-info": {
+      "introduction": "Before we start, would you like to know more about 121?",
+      "option1": "Tell me about 121",
+      "option2": "No, I already know",
+      "option3": "Later"
+    },
+    "choose-credential-type": {
+      "introduction": "Please select your next step.",
+      "option1": "Apply to program",
+      "option2": "Create a Digital ID",
+      "option3": "Delete Digital ID",
+      "conclusion-program": "To request inclusion in a program you need to have a valid Digital ID first.",
+      "info-digital-id": "Tell me about Digital ID's"
     },
     "select-appointment": {
       "introduction1": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",
@@ -77,6 +59,24 @@
       "option1": "Confirm meeting time",
       "option2": "Change meeting time",
       "conclusion": "Thank you, your verification meeting is confirmed."
+    },
+    "select-country": {
+      "introduction": "The next step is to select your location, so we can show you programs for that location.",
+      "step3": "Step 3: Select your location:",
+      "conclusion": "Thank you, you have selected {{country}}."
+    },
+    "select-language": {
+      "introduction": "Welcome to 121. Please select your language.",
+      "option1": "English",
+      "option2": "Language 2",
+      "option3": "Language 3",
+      "result": "Thank you. You have selected {{language}}."
+    },
+    "select-program": {
+      "introduction": "You can now select a program.",
+      "step4": "Step 4: Select a program:",
+      "info-button": "Tell me about programs",
+      "program": "Program"
     }
   },
   "TOAST": {
