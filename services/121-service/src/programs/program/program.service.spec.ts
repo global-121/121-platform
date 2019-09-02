@@ -1,5 +1,6 @@
 import { CredentialEntity } from './../../sovrin/credential/credential.entity';
 import { CredentialAttributesEntity } from './../../sovrin/credential/credential-attributes.entity';
+import { IdentityAttributesEntity } from './../../sovrin/credential/identity-attributes.entity';
 import { ProofService } from './../../sovrin/proof/proof.service';
 import { ProofController } from './../../sovrin/proof/proof.controller';
 import { CredentialService } from './../../sovrin/credential/credential.service';
@@ -23,7 +24,7 @@ describe('Program service', (): void => {
   beforeAll(
     async (): Promise<void> => {
       const module: TestingModule = await Test.createTestingModule({
-        imports: [ HttpModule ],
+        imports: [HttpModule],
         providers: [
           ProgramService,
           SchemaService,
@@ -51,6 +52,10 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(IdentityAttributesEntity),
             useFactory: repositoryMockFactory,
           },
           {
