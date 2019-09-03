@@ -30,6 +30,20 @@ export class PersonalPage implements OnInit {
 
   public isDebug: boolean = !environment.production;
 
+  public availableSections = {
+    'create-identity-details': IdentityFormComponent,
+    'create-identity-password': CreatePasswordComponent,
+    'get-program-details': GetProgramDetailsComponent,
+    'initial-needs': InitialNeedsComponent,
+    introduction: IntroductionComponent,
+    'choose-credential-type': ChooseCredentialTypeComponent,
+    'select-appointment': SelectAppointmentComponent,
+    'select-country': SelectCountryComponent,
+    'select-language': SelectLanguageComponent,
+    'select-program': SelectProgramComponent,
+  };
+  public debugSections = Object.keys(this.availableSections);
+
   constructor(
     public programsService: ProgramsServiceApiService,
     private conversationService: ConversationService,
@@ -60,21 +74,8 @@ export class PersonalPage implements OnInit {
   private getComponentFactory(name: string) {
     console.log('getComponentFactory() ', name);
 
-    const availableSections = {
-      'create-identity-details': IdentityFormComponent,
-      'create-identity-password': CreatePasswordComponent,
-      'get-program-details': GetProgramDetailsComponent,
-      'initial-needs': InitialNeedsComponent,
-      introduction: IntroductionComponent,
-      'choose-credential-type': ChooseCredentialTypeComponent,
-      'select-appointment': SelectAppointmentComponent,
-      'select-country': SelectCountryComponent,
-      'select-language': SelectLanguageComponent,
-      'select-program': SelectProgramComponent,
-    };
-
     return this.resolver.resolveComponentFactory(
-      availableSections[name]
+      this.availableSections[name]
     );
   }
 
