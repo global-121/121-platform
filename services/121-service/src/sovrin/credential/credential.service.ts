@@ -132,7 +132,7 @@ export class CredentialService {
     if (credentialType === 'identity') {
       return await this.identityAttributesRepository.delete({ did: did });
     } else if (credentialType === 'program') {
-      return await this.credentialAttributesRepository.delete({ did: did });
+      return await this.credentialAttributesRepository.delete({ did: did, programId: programId });
     }
   }
 
