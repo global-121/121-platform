@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PersonalComponent } from '../personal-components.interface';
+import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
   selector: 'app-view-appointments',
   templateUrl: './view-appointments.component.html',
   styleUrls: ['./view-appointments.component.scss'],
 })
-export class ViewAppointmentsComponent implements OnInit {
+export class ViewAppointmentsComponent implements PersonalComponent {
   public appointments: any;
   public timeslotChoice: number;
   public appointmentsByTimeslot: any;
@@ -14,7 +16,8 @@ export class ViewAppointmentsComponent implements OnInit {
   public appointmentChoice: number;
 
   constructor(
-    public programsService: ProgramsServiceApiService
+    public programsService: ProgramsServiceApiService,
+    public conversationService: ConversationService,
   ) { }
 
   ngOnInit() { }
@@ -38,12 +41,24 @@ export class ViewAppointmentsComponent implements OnInit {
     this.timeslotSelected = true;
   }
 
-  public changeAppointment($event) {
-    const appointmentChoice = $event.detail.value;
-    this.appointmentChoice = appointmentChoice;
+  public backMainMenu() {
+    this.complete();
   }
 
-  public submitAppointment(appointmentChoice) {
-    console.log('Appointment with DID: ', appointmentChoice, ' selected.');
+  getNextSection() {
+    return 'main-menu';
+  }
+
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: 'view-appointments',
+      data: {
+        appointments: this.appointments,
+        timeslotChoice: this.timeslotChoice,
+        appointmentsByTimeslot: this.appointmentsByTimeslot,
+        timeslotSelected: this.timeslotSelected,
+      },
+      next: this.getNextSection(),
+    });
   }
 }

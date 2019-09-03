@@ -5,6 +5,7 @@ import { ViewController } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
 import { Router, NavigationExtras } from '@angular/router';
+import { ConversationService } from '../services/conversation.service';
 
 @Component({
   selector: 'app-scan-qr',
@@ -27,7 +28,8 @@ export class ScanQrPage implements OnInit {
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
-    public router: Router
+    public router: Router,
+    public conversationService: ConversationService,
   ) {
 
   }

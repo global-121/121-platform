@@ -5,5 +5,8 @@
   <dialogue-turn actor="self">
     <ion-button (click)="scanQrCode()">{{ 'personal.scan-qr.scan-button'|translate }}</ion-button>
   </dialogue-turn>
+  <dialogue-turn [hidden]="!did">
+    {{ 'personal.scan-qr.conclusion'|translate }} {{did}}.
+  </dialogue-turn>
 </section>
      

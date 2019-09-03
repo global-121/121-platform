@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CustomTranslateService } from 'src/app/services/custom-translate.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PersonalComponent } from '../personal-components.interface';
+import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements PersonalComponent {
   public emailPlaceholder: string;
   public passwordPlaceholder: string;
   public isLoggedIn: boolean;
@@ -15,7 +17,8 @@ export class LoginComponent implements OnInit {
 
   constructor(
     public customTranslateService: CustomTranslateService,
-    public programsService: ProgramsServiceApiService
+    public programsService: ProgramsServiceApiService,
+    public conversationService: ConversationService
   ) { }
 
   ngOnInit() {
@@ -38,12 +41,28 @@ export class LoginComponent implements OnInit {
         this.isLoggedIn = true;
         this.wrongCredentials = false;
 
+        this.complete();
+
       },
       (error) => {
         console.log('LoginPage error: ', error);
         this.wrongCredentials = true;
       }
     );
+  }
+
+  getNextSection() {
+    return 'main-menu';
+  }
+
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: 'login',
+      data: {
+        isLoggedIn: this.isLoggedIn
+      },
+      next: this.getNextSection(),
+    });
   }
 
 }
