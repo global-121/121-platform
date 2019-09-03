@@ -2,9 +2,7 @@
   <ion-button id="getPrefilledAnswersIdentity" (click)="getPrefilledAnswersIdentity(did)">API: GET prefilled answers</ion-button>
   <br>
   <dialogue-turn>
-    {{ 'personal.validate-identity.introduction'|translate }} {{did}}.
-    <br><br>
-    {{ 'personal.validate-identity.validate-identity'|translate }}
+    {{ 'personal.validate-identity.introduction'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self" [hidden]="!answers">
     <ion-button [hidden]="!verificationPostponed" expand="block" (click)="getPrefilledAnswersIdentity(did)">{{ 'personal.validate-identity.refresh-button'|translate }}</ion-button>

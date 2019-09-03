@@ -3,7 +3,13 @@ import { IonContent } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { ConversationService } from '../services/conversation.service';
+import { ConversationService, ConversationSection } from '../services/conversation.service';
+import { LoginComponent } from '../personal-components/login/login.component';
+import { MainMenuComponent } from '../personal-components/main-menu/main-menu.component';
+import { ScanQrComponent } from '../personal-components/scan-qr/scan-qr.component';
+import { ViewAppointmentsComponent } from '../personal-components/view-appointments/view-appointments.component';
+import { ValidateIdentityComponent } from '../personal-components/validate-identity/validate-identity.component';
+import { ValidateProgramComponent } from '../personal-components/validate-program/validate-program.component';
 
 @Component({
   selector: 'app-personal',
@@ -23,7 +29,12 @@ export class PersonalPage implements OnInit {
     public programsService: ProgramsServiceApiService,
     private conversationService: ConversationService,
     private resolver: ComponentFactoryResolver
-  ) { }
+  ) {
+    // Listen for completed sections, to continue with next steps
+    this.conversationService.sectionCompleted$.subscribe((response: ConversationSection) => {
+      this.insertSection(response.next);
+    });
+  }
 
   ngOnInit() {
     this.loadComponents();
@@ -34,18 +45,41 @@ export class PersonalPage implements OnInit {
   }
 
   private loadComponents() {
-    const steps = this.conversationService.getComponents();
+    const steps = this.conversationService.getConversationUpToNow();
 
     for (const step of steps) {
-      const factory = this.resolver.resolveComponentFactory(step.component);
-      this.container.createComponent(factory);
+      this.insertSection(step.name);
     }
   }
 
+  private getComponentFactory(name: string) {
+    console.log('getComponentFactory() ', name);
+
+    const availableSections = {
+      login: LoginComponent,
+      'main-menu': MainMenuComponent,
+      'scan-qr': ScanQrComponent,
+      'view-appointments': ViewAppointmentsComponent,
+      'validate-identity': ValidateIdentityComponent,
+      'validate-program': ValidateProgramComponent,
+    };
+
+    return this.resolver.resolveComponentFactory(
+      availableSections[name]
+    );
+  }
+
+  public insertSection(name: string) {
+    console.log('PersonalPage insertSection(): ', name);
+
+    this.scrollDown();
+
+    this.container.createComponent(
+      this.getComponentFactory(name)
+    );
+  }
+
   scrollDown() {
-    // Wait for elements to be added to the DOM before scrolling down
-    setTimeout(() => {
-      this.ionContent.scrollToBottom(300);
-    }, 100);
+    this.ionContent.scrollToBottom(300);
   }
 }

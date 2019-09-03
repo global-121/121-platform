@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
+import { PersonalComponent } from '../personal-components.interface';
+import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
   selector: 'app-validate-program',
   templateUrl: './validate-program.component.html',
   styleUrls: ['./validate-program.component.scss'],
 })
-export class ValidateProgramComponent implements OnInit {
+export class ValidateProgramComponent implements PersonalComponent {
 
   public programId: number;
   public answersProgram: any;
@@ -16,6 +18,7 @@ export class ValidateProgramComponent implements OnInit {
 
   constructor(
     public programsService: ProgramsServiceApiService,
+    public conversationService: ConversationService,
     public storage: Storage
   ) { }
 
@@ -49,7 +52,21 @@ export class ValidateProgramComponent implements OnInit {
         console.log('Program credential issued');
         this.programCredentialIssued = true;
         this.answersProgram = null;
+        this.complete();
       });
+    });
+  }
+
+  getNextSection() {
+    return 'main-menu';
+  }
+
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: 'validate-program',
+      data: {
+      },
+      next: this.getNextSection(),
     });
   }
 

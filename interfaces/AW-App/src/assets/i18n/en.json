@@ -23,15 +23,16 @@
       "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details.",
       "timeslot": "Timeslot",
       "submit-button": "See appointments",
-      "appointments": "These are the appointments for the chosen timeslot:"
+      "appointments": "These are the appointments for the chosen timeslot:",
+      "main-menu": "Finished. Back to main menu."
     },
     "scan-qr": {
       "introduction": "Now scan the QR-code of the PA to identify him/her in the system.",
-      "scan-button": "Scan QR-code"
+      "scan-button": "Scan QR-code",
+      "conclusion": "Thank you. You have scanned the PA with DID"
     },
     "validate-identity": {
-      "introduction": "Thank you. You have scanned the PA with DID",
-      "validate-identity": "Below you see the PA's information for the Digital ID. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",
+      "introduction": "Below you see the PA's information for the Digital ID. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",
       "postpone-button": "Postpone verification",
       "confirm-button": "Issue Identity Credential",
       "refresh-button": "Refresh information",
