@@ -38,7 +38,7 @@ export class ValidateProgramComponent implements OnInit {
 
   public issueIdentityCredential() {
     this.storage.get('scannedDid').then(value => {
-      //DUMMY fix later
+      // DUMMY fix later
       // const credentialJson = {};
       // this.programsService.issueCredential(did, null, credentialJson).subscribe(response => {
       //   console.log('response: ', response);
