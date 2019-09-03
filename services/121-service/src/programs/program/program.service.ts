@@ -29,7 +29,7 @@ export class ProgramService {
     private readonly credentialService: CredentialService,
     private readonly schemaService: SchemaService,
     @Inject(forwardRef(() => ProofService))
-    private readonly proofService: ProofService,
+    private readonly proofService: ProofService
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
@@ -141,11 +141,19 @@ export class ProgramService {
       result.credDefId,
     );
 
+    const proofRequest = await this.proofService.createProofRequest(
+      selectedProgram,
+      result.credDefId,
+    );
+
     await this.changeProgramValue(programId, {
       credOffer: credentialOffer,
     });
     await this.changeProgramValue(programId, { schemaId: result.schemaId });
     await this.changeProgramValue(programId, { credDefId: result.credDefId });
+    await this.changeProgramValue(programId, {
+      proofRequest: proofRequest,
+    });
     await this.changeProgramValue(programId, { published: true });
 
     const changedProgram = await this.findOne(programId);
@@ -201,18 +209,18 @@ export class ProgramService {
     });
     if (!connection) {
       const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
 
     if (connection.programsEnrolled.includes(+programId)) {
       const errors = 'Already enrolled for program';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
 
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
 
     const proof = await this.proofService.validateProof(
@@ -232,7 +240,7 @@ export class ProgramService {
       }
     } else {
       const errors = 'PA already enrolled earlier for this program.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
     const updatedConnection = await this.connectionRepository.save(connection);
     return updatedConnection;
@@ -247,12 +255,12 @@ export class ProgramService {
     });
     if (!connection) {
       const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
     let inclusionStatus: InclusionStatus;
     if (

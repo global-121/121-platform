@@ -31,7 +31,7 @@ export class SchemaService {
     let responseSchema = await this.httpService.post(api_string, schemaPost).toPromise();
     if (!responseSchema.data) {
       const errors = 'Schema not published';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
     const schemaId = responseSchema.data.schema_id;
     const credDefPost = {
@@ -41,7 +41,7 @@ export class SchemaService {
     let responseCreddef = await this.httpService.post(API.credential.definition, credDefPost).toPromise();
     if (!responseCreddef.data) {
       const errors = 'Cred def id not published';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
     const credDefId = responseCreddef.data.credential_definition_id;
 

@@ -18,26 +18,18 @@ export class ProofService {
 
   public constructor() {}
 
-  public async getProofRequest(programId: number): Promise<any> {
-    // let program = this.programRepository.findOne(programId);
-    let criteriums = await this.customCriteriumRepository.find({
-      where: { programId: programId },
-    });
-
-    ` get cref_def_id`;
-
-    let requestedAttributes = [];
+  public createProofRequest(program: ProgramEntity, credDefId: string): Object {
+    const criteriums = program.customCriteria;
+    let requestedAttributes = {};
     for (let i = 0; i < criteriums.length; i++) {
-      let attribute = {};
-      attribute['attr' + (i + 1) + '_referent'] = {
+      requestedAttributes['attr' + (i + 1) + '_referent'] = {
         name: criteriums[i].criterium,
         restrictions: [
           {
-            cred_def_id: 'JzLHazRLRT17EHH51gyizc:3:CL:11726:TAG2',
+            cred_def_id: credDefId,
           },
         ],
       };
-      requestedAttributes.push(attribute);
     }
 
     let proofRequest = {
@@ -47,8 +39,25 @@ export class ProofService {
       requested_attributes: requestedAttributes,
       requested_predicates: {},
     };
-
     return proofRequest;
+  }
+
+  public async getProofRequest(programId: number): Promise<any> {
+    // let program = this.programRepository.findOne(programId);
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 404);
+    }
+    if (program.published === false) {
+      const errors = 'This program is not published';
+      throw new HttpException({ errors }, 404);
+    }
+    if (!program.proofRequest) {
+      const errors = 'This program has no proof request';
+      throw new HttpException({ errors }, 404);
+    }
+    return program.proofRequest;
   }
 
   public async validateProof(
