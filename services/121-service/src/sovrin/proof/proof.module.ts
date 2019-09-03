@@ -4,6 +4,7 @@ import {
   NestModule,
   RequestMethod,
   forwardRef,
+  HttpModule,
 } from '@nestjs/common';
 import { ProofController } from './proof.controller';
 import { ProofService } from './proof.service';
@@ -26,6 +27,7 @@ import { SchemaModule } from '../schema/schema.module';
     ]),
     UserModule,
     forwardRef(() => ProgramModule),
+    HttpModule
   ],
   controllers: [ProofController],
   providers: [ProofService],

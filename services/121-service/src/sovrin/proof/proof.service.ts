@@ -1,11 +1,12 @@
 import { ProgramService } from './../../programs/program/program.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpService } from '@nestjs/common';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { CustomCriterium } from '../../programs/program/custom-criterium.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import proofExample from '../../../examples/proof.json';
+import { API } from '../../config';
 
 @Injectable()
 export class ProofService {
@@ -16,7 +17,7 @@ export class ProofService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
-  public constructor() {}
+  public constructor(private readonly httpService: HttpService) {}
 
   public createProofRequest(program: ProgramEntity, credDefId: string): Object {
     const criteriums = program.customCriteria;
@@ -61,14 +62,21 @@ export class ProofService {
   }
 
   public async validateProof(
-    programId: number,
-    did: string,
-    encryptedProof: string,
+    proofRequest: string,
+    proof: string,
+    correlationID: string,
   ): Promise<object> {
     // tyknid.checkProof(encryptedProof);
-    programId;
-    did;
-    encryptedProof;
-    return proofExample;
+    const validateProofPost = {
+      proofRequestJsonData: proofRequest,
+      proof: proof,
+      correlation: {
+        correlationID: 'test',
+      },
+    };
+    const result = await this.httpService
+      .post(API.proof.verify, validateProofPost)
+      .toPromise();
+    return result;
   }
 }
