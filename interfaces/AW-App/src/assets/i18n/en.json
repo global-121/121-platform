@@ -28,6 +28,21 @@
     "scan-qr": {
       "introduction": "Now scan the QR-code of the PA to identify him/her in the system.",
       "scan-button": "Scan QR-code"
+    },
+    "validate-identity": {
+      "introduction": "Thank you. You have scanned the PA with DID",
+      "validate-identity": "Below you see the PA's information for the Digital ID. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",
+      "postpone-button": "Postpone verification",
+      "confirm-button": "Issue Identity Credential",
+      "refresh-button": "Refresh information",
+      "conclusion": "The Digital ID has been created. As such there is no need, and thus no possibility, for you to see the PA's personal information any more here."
+    },
+    "validate-program": {
+      "introduction": "Thank you. Below you see the PA's information for the specific program. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",
+      "postpone-button": "Postpone verification",
+      "confirm-button": "Issue Program Credential",
+      "refresh-button": "Refresh information",
+      "conclusion": "The Program credential has been created. As such there is no need, and thus no possibility, for you to see the PA's personal information any more here."
     }
   },
   "shared": {

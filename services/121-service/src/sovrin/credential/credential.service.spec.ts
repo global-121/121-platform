@@ -9,6 +9,7 @@ import { CredentialService } from './credential.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
+import { IdentityAttributesEntity } from './identity-attributes.entity';
 import { CredentialRequestEntity } from './credential-request.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { SchemaService } from '../schema/schema.service';
@@ -21,7 +22,7 @@ describe('CredentialService', (): void => {
   beforeEach(
     async (): Promise<void> => {
       const module: TestingModule = await Test.createTestingModule({
-        imports: [ HttpModule ],
+        imports: [HttpModule],
         providers: [
           CredentialService,
           ProgramService,
@@ -29,6 +30,10 @@ describe('CredentialService', (): void => {
           ProofService,
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(IdentityAttributesEntity),
             useFactory: repositoryMockFactory,
           },
           {

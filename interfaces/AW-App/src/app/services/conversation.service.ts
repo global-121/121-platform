@@ -3,7 +3,8 @@ import { LoginComponent } from '../personal-components/login/login.component';
 import { MainMenuComponent } from '../personal-components/main-menu/main-menu.component';
 import { ViewAppointmentsComponent } from '../personal-components/view-appointments/view-appointments.component';
 import { ScanQrComponent } from '../personal-components/scan-qr/scan-qr.component';
-import { StartMeetingComponent } from '../personal-components/start-meeting/start-meeting.component';
+import { ValidateIdentityComponent } from '../personal-components/validate-identity/validate-identity.component';
+import { ValidateProgramComponent } from '../personal-components/validate-program/validate-program.component';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,10 @@ export class ConversationService {
         comp: ScanQrComponent
       },
       {
-        comp: StartMeetingComponent
+        comp: ValidateIdentityComponent
+      },
+      {
+        comp: ValidateProgramComponent
       },
     ]
   };

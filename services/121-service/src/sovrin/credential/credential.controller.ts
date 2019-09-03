@@ -4,6 +4,7 @@ import {
   ApiBearerAuth,
   ApiUseTags,
   ApiImplicitParam,
+  ApiImplicitQuery,
 } from '@nestjs/swagger';
 import {
   Controller,
@@ -14,6 +15,7 @@ import {
   UsePipes,
   ValidationPipe,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
@@ -57,6 +59,7 @@ export class CredentialController {
     return await this.credentialService.prefilledAnswers(
       prefilledAnswers.did,
       prefilledAnswers.programId,
+      prefilledAnswers.credentialType,
       prefilledAnswers.attributes,
     );
   }
@@ -67,13 +70,19 @@ export class CredentialController {
     name: 'did',
     required: true,
     type: 'string',
-    description: 'did:sov:12351352kl',
+    description: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
+  })
+  @ApiImplicitQuery({
+    name: 'programId',
+    required: false,
+    type: 'number'
   })
   @Get('/answers/:did')
   public async getPrefilledAnswers(
     @Param() params,
-  ): Promise<CredentialAttributesEntity[]> {
-    return await this.credentialService.getPrefilledAnswers(params.did);
+    @Query() query
+  ): Promise<any[]> {
+    return await this.credentialService.getPrefilledAnswers(params.did, query.programId);
   }
 
   @ApiOperation({
@@ -86,9 +95,14 @@ export class CredentialController {
     type: 'string',
     description: 'did:sov:12351352kl',
   })
+  @ApiImplicitQuery({
+    name: 'programId',
+    required: false,
+    type: 'number'
+  })
   @Delete('/answers/:did')
-  public async deletePrefilledAnswers(@Param() params): Promise<DeleteResult> {
-    return await this.credentialService.deletePrefilledAnswers(params.did);
+  public async deletePrefilledAnswers(@Param() params, @Query() query): Promise<DeleteResult> {
+    return await this.credentialService.deletePrefilledAnswers(params.did, query.programId);
   }
 
   @ApiOperation({ title: 'Post credential request (for PA)' })
