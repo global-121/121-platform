@@ -1,14 +1,22 @@
 <section #identityForm>
   <dialogue-turn>
-    {{ 'personal.identity-form.introduction'|translate }}
+    <p>
+      {{ 'personal.identity-form.introduction'|translate }}
+    </p>
   </dialogue-turn>
   <dialogue-turn isConnected="true">
-    {{ 'personal.identity-form.step2'|translate }}
+    <p>
+      {{ 'personal.identity-form.step-questions'|translate }}
+    </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.identity-form.more-info-questions'|translate }}
+      </ion-button>
+    </p>
+
   </dialogue-turn>
   <dialogue-turn actor="self">
-    <p>
-      <ion-button>{{ 'personal.identity-form.info-button'|translate }}</ion-button>
-    </p>
     <form (ngSubmit)="submitIdentityForm(name,dob)">
       <div class="ion-margin-top">
         <ion-label>{{ 'personal.identity-form.name-label'|translate }}</ion-label>

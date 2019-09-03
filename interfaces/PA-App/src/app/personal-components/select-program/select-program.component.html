@@ -1,17 +1,21 @@
-<section #selectProgram >
-  <ion-button (click)="getPrograms()">API: GET Programs</ion-button>
-
+<section #selectProgram>
   <dialogue-turn>
-    {{ 'personal.select-program.introduction'|translate }}
+    <p>
+      {{ 'personal.select-program.introduction'|translate }}
+    </p>
   </dialogue-turn>
   <dialogue-turn isConnected="true">
-    {{ 'personal.select-program.step4'|translate }}
+    <p>
+      {{ 'personal.select-program.next-step'|translate }}
+    </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.select-program.more-info-programs'|translate }}
+      </ion-button>
+    </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
-    <p>
-      <ion-button>{{ 'personal.select-program.info-button'|translate }}</ion-button>
-    </p>
-
     <ion-radio-group (ionChange)="changeProgram($event)">
       <ion-item *ngFor="let program of programs"
                 color="light"

@@ -31,7 +31,7 @@ export class SelectProgramComponent implements PersonalComponent {
     this.getPrograms();
   }
 
-  public getPrograms(): any {
+  private getPrograms(): any {
     this.storage.get('countryChoice').then(value => {
       this.countryChoice = value;
 

@@ -5,8 +5,8 @@
   "personal": {
     "identity-form": {
       "introduction": "Now we need some additional information about you.",
-      "step2": "Step 2: Fill in the following questions about yourself.",
-      "info-button": "Tell me about these questions.",
+      "step-questions": "Next step: Fill in the following questions about yourself.",
+      "more-info-questions": "More about these questions",
       "name-label": "My full name:",
       "dob-label": "My date of birth:",
       "dob-format": "dd / mm / yyyy",
@@ -16,7 +16,7 @@
     "create-password": {
       "introduction": "To create a Digital ID you need to complete the following steps.",
       "step1": "Step 1: Create your password.",
-      "info-password": "Tell me about passwords",
+      "more-info-password": "More about passwords",
       "create-password": "Create password:",
       "confirm-password": "Confirm password:",
       "submit-password": "Create my password",
@@ -42,7 +42,7 @@
       "option2": "Create a Digital ID",
       "option3": "Delete Digital ID",
       "conclusion-program": "To request inclusion in a program you need to have a valid Digital ID first.",
-      "info-digital-id": "Tell me about Digital ID's"
+      "more-info-digital-id": "More about Digital ID's"
     },
     "select-appointment": {
       "introduction1": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",
@@ -72,8 +72,8 @@
     },
     "select-program": {
       "introduction": "You can now select a program.",
-      "step4": "Step 4: Select a program:",
-      "info-button": "Tell me about programs",
+      "next-step": "Next step: Select a program:",
+      "more-info-programs": "More about programs",
       "program": "Program"
     }
   },
