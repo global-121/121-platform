@@ -3,14 +3,14 @@ import { IonContent } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { ConversationService, ConversationSection } from '../services/conversation.service';
+import { ConversationService } from '../services/conversation.service';
 
 import { ChooseCredentialTypeComponent } from '../personal-components/choose-credential-type/choose-credential-type.component';
 import { CreatePasswordComponent } from '../personal-components/create-password/create-password.component';
-import { GetInfoComponent } from '../personal-components/get-info/get-info.component';
 import { GetProgramDetailsComponent } from '../personal-components/get-program-details/get-program-details.component';
 import { IdentityFormComponent } from '../personal-components/identity-form/identity-form.component';
 import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
+import { IntroductionComponent } from '../personal-components/introduction/introduction.component';
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
 import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
@@ -30,14 +30,28 @@ export class PersonalPage implements OnInit {
 
   public isDebug: boolean = !environment.production;
 
+  public availableSections = {
+    'create-identity-details': IdentityFormComponent,
+    'create-identity-password': CreatePasswordComponent,
+    'get-program-details': GetProgramDetailsComponent,
+    'initial-needs': InitialNeedsComponent,
+    introduction: IntroductionComponent,
+    'choose-credential-type': ChooseCredentialTypeComponent,
+    'select-appointment': SelectAppointmentComponent,
+    'select-country': SelectCountryComponent,
+    'select-language': SelectLanguageComponent,
+    'select-program': SelectProgramComponent,
+  };
+  public debugSections = Object.keys(this.availableSections);
+
   constructor(
     public programsService: ProgramsServiceApiService,
     private conversationService: ConversationService,
     private resolver: ComponentFactoryResolver
   ) {
     // Listen for completed sections, to continue with next steps
-    this.conversationService.sectionCompleted$.subscribe((response: ConversationSection) => {
-      this.insertSection(response.next);
+    this.conversationService.sectionCompleted$.subscribe((response: string) => {
+      this.insertSection(response);
     });
   }
 
@@ -60,21 +74,8 @@ export class PersonalPage implements OnInit {
   private getComponentFactory(name: string) {
     console.log('getComponentFactory() ', name);
 
-    const availableSections = {
-      'create-identity-details': IdentityFormComponent,
-      'create-identity-password': CreatePasswordComponent,
-      'get-program-details': GetProgramDetailsComponent,
-      'initial-needs': InitialNeedsComponent,
-      'introduction-121': GetInfoComponent,
-      'choose-credential-type': ChooseCredentialTypeComponent,
-      'select-appointment': SelectAppointmentComponent,
-      'select-country': SelectCountryComponent,
-      'select-language': SelectLanguageComponent,
-      'select-program': SelectProgramComponent,
-    };
-
     return this.resolver.resolveComponentFactory(
-      availableSections[name]
+      this.availableSections[name]
     );
   }
 

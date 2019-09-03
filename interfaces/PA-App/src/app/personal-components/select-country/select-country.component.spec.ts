@@ -53,9 +53,6 @@ describe('SelectCountryComponent', () => {
   });
 
   it('should request all countries from the server', () => {
-    const getCountriesButton = document.getElementById('debugGetCountries');
-    getCountriesButton.click();
-
     expect(getAllCountriesSpy.calls.any()).toBe(true, 'getAllCountries called');
   });
 

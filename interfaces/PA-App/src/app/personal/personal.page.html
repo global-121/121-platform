@@ -11,8 +11,19 @@
   <details class="debug--container" *ngIf="isDebug">
     <summary class="debug--toggle">DEBUG:</summary>
 
+    <ion-row class="ion-align-items-center ion-justify-content-between">
+      <ion-button color="danger" size="small" (click)="this.container.clear()">
+        <ion-icon name="trash" size="small" slot="icon-only"></ion-icon>
+      </ion-button>
+
+      <select name="debugSections" (change)="insertSection($event.target.value)">
+        <option *ngFor="let section of debugSections;">{{ section }}</option>
+      </select>
+    </ion-row>
   </details>
 
   <div #conversationContainer></div>
 
+  <!-- Make room to always be able to scroll -->
+  <div id="scroll-space-placeholder" style="height: 50vh;"></div>
 </ion-content>
