@@ -56,7 +56,7 @@ export class PersonalPage implements OnInit {
     console.log('getComponentFactory() ', name);
 
     const availableSections = {
-      'login': LoginComponent,
+      login: LoginComponent,
       'main-menu': MainMenuComponent,
       'scan-qr': ScanQrComponent,
       'view-appointments': ViewAppointmentsComponent,
