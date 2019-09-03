@@ -29,7 +29,7 @@ export class ProgramService {
     private readonly credentialService: CredentialService,
     private readonly schemaService: SchemaService,
     @Inject(forwardRef(() => ProofService))
-    private readonly proofService: ProofService,
+    private readonly proofService: ProofService
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
@@ -141,11 +141,19 @@ export class ProgramService {
       result.credDefId,
     );
 
+    const proofRequest = await this.proofService.createProofRequest(
+      selectedProgram,
+      result.credDefId,
+    );
+
     await this.changeProgramValue(programId, {
       credOffer: credentialOffer,
     });
     await this.changeProgramValue(programId, { schemaId: result.schemaId });
     await this.changeProgramValue(programId, { credDefId: result.credDefId });
+    await this.changeProgramValue(programId, {
+      proofRequest: proofRequest,
+    });
     await this.changeProgramValue(programId, { published: true });
 
     const changedProgram = await this.findOne(programId);
@@ -201,27 +209,30 @@ export class ProgramService {
     });
     if (!connection) {
       const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
 
     if (connection.programsEnrolled.includes(+programId)) {
       const errors = 'Already enrolled for program';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
 
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
 
-    const proof = await this.proofService.validateProof(
-      programId,
-      did,
+    const validProof = await this.proofService.validateProof(
+      program.proofRequest,
       encryptedProof,
+      did,
     );
 
-    let inclusionResult = await this.calculateInclusion(programId, proof);
+    let inclusionResult = await this.calculateInclusion(
+      programId,
+      encryptedProof,
+    );
 
     if (connection.programsEnrolled.indexOf(programId) <= -1) {
       connection.programsEnrolled.push(programId);
@@ -232,7 +243,7 @@ export class ProgramService {
       }
     } else {
       const errors = 'PA already enrolled earlier for this program.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
     const updatedConnection = await this.connectionRepository.save(connection);
     return updatedConnection;
@@ -247,12 +258,12 @@ export class ProgramService {
     });
     if (!connection) {
       const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
     let inclusionStatus: InclusionStatus;
     if (
@@ -271,25 +282,31 @@ export class ProgramService {
 
   public async calculateInclusion(
     programId: number,
-    proof: object,
+    proof: string,
   ): Promise<boolean> {
+
     const currentProgram = await this.findOne(programId);
-    const programCriteria = currentProgram.customCriteria;
-    const revealedAttrProof = proof['requested_proof']['revealed_attrs'];
 
-    const proofRequest = proofRequestExample;
+    // Convert the proof in an array, for some unknown reason it has to be JSON parse multiple times
+    const proofJson = JSON.parse(proof);
+    const proofObject = JSON.parse(proofJson['proof']);
+    const revealedAttrProof = proofObject['requested_proof']['revealed_attrs'];
+
+    // Uses the proof request to relate the revealed_attr from the proof to the corresponding ctriteria'
+    const proofRequest = JSON.parse(currentProgram.proofRequest);
     const attrRequest = proofRequest['requested_attributes'];
-
     const scoreList = this.createCriteriaScoreList(
       revealedAttrProof,
       attrRequest,
     );
 
+    // Calculates the score based on the ctritria of a program and the aggregrated score list
     const totalScore = this.calculateScoreAllCriteria(
-      programCriteria,
+      currentProgram.customCriteria,
       scoreList,
     );
 
+    // Checks if PA is elegible based on the minimum score of the program
     const included = totalScore >= currentProgram.minimumScore;
     return included;
   }
@@ -335,8 +352,9 @@ export class ProgramService {
     answerPA: object,
   ): number {
     let score = 0;
-    for (let value of criterium.options['options']) {
-      if (value.option === answerPA) {
+    const options = JSON.parse(JSON.stringify(criterium.options))
+    for (let value of options) {
+      if (value.id == answerPA) {
         score = criterium.scoring[value.id];
       }
     }

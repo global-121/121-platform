@@ -79,6 +79,9 @@ export class ProgramEntity {
   @Column('json', { default: null })
   public credOffer: JSON;
 
+  @Column({ default: null })
+  public proofRequest: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created: Date;
 

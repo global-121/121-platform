@@ -5,10 +5,13 @@ const orgIMS = 'http://10.0.0.4:50002/api/';
 const userIMS = 'http://10.0.0.5:50003/api/';
 
 export const API = {
-  schema: tyknIMS + 'schema',
-  credential: {
-    definition: orgIMS + 'credential/definition',
-    credoffer: orgIMS + 'credential/credoffer',
-    issue: orgIMS + 'credential/issue',
-  },
-};
+         schema: tyknIMS + 'schema',
+         credential: {
+           definition: orgIMS + 'credential/definition',
+           credoffer: orgIMS + 'credential/credoffer',
+           issue: orgIMS + 'credential/issue',
+         },
+         proof: {
+           verify: orgIMS + 'proof/verify',
+         },
+       };

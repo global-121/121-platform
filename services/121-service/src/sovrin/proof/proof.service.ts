@@ -1,11 +1,12 @@
 import { ProgramService } from './../../programs/program/program.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpService } from '@nestjs/common';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { CustomCriterium } from '../../programs/program/custom-criterium.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import proofExample from '../../../examples/proof.json';
+import { API } from '../../config';
 
 @Injectable()
 export class ProofService {
@@ -16,28 +17,20 @@ export class ProofService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
-  public constructor() {}
+  public constructor(private readonly httpService: HttpService) {}
 
-  public async getProofRequest(programId: number): Promise<any> {
-    // let program = this.programRepository.findOne(programId);
-    let criteriums = await this.customCriteriumRepository.find({
-      where: { programId: programId },
-    });
-
-    ` get cref_def_id`;
-
-    let requestedAttributes = [];
+  public createProofRequest(program: ProgramEntity, credDefId: string): Object {
+    const criteriums = program.customCriteria;
+    let requestedAttributes = {};
     for (let i = 0; i < criteriums.length; i++) {
-      let attribute = {};
-      attribute['attr' + (i + 1) + '_referent'] = {
+      requestedAttributes['attr' + (i + 1) + '_referent'] = {
         name: criteriums[i].criterium,
         restrictions: [
           {
-            cred_def_id: 'JzLHazRLRT17EHH51gyizc:3:CL:11726:TAG2',
+            cred_def_id: credDefId,
           },
         ],
       };
-      requestedAttributes.push(attribute);
     }
 
     let proofRequest = {
@@ -47,19 +40,43 @@ export class ProofService {
       requested_attributes: requestedAttributes,
       requested_predicates: {},
     };
-
     return proofRequest;
   }
 
+  public async getProofRequest(programId: number): Promise<any> {
+    // let program = this.programRepository.findOne(programId);
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 404);
+    }
+    if (program.published === false) {
+      const errors = 'This program is not published';
+      throw new HttpException({ errors }, 404);
+    }
+    if (!program.proofRequest) {
+      const errors = 'This program has no proof request';
+      throw new HttpException({ errors }, 404);
+    }
+    return program.proofRequest;
+  }
+
   public async validateProof(
-    programId: number,
-    did: string,
-    encryptedProof: string,
+    proofRequest: string,
+    proof: string,
+    correlationID: string,
   ): Promise<object> {
     // tyknid.checkProof(encryptedProof);
-    programId;
-    did;
-    encryptedProof;
-    return proofExample;
+    const validateProofPost = {
+      proofRequestJsonData: proofRequest,
+      proof: proof,
+      correlation: {
+        correlationID: 'test',
+      },
+    };
+    const result = await this.httpService
+      .post(API.proof.verify, validateProofPost)
+      .toPromise();
+    return result;
   }
 }

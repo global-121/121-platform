@@ -46,7 +46,7 @@ export class CredentialService {
     const response = await this.httpService.post(API.credential.credoffer, credentialOfferPost).toPromise();
     if (!response.data) {
       const errors = 'Credoffer not created';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
     return response.data;
   }
@@ -143,7 +143,7 @@ export class CredentialService {
     const program = await this.programService.findOne(credRequest.programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 400);
+      throw new HttpException({ errors }, 404);
     }
 
     const credentialRequestInfo = new CredentialRequestEntity();
@@ -207,7 +207,7 @@ export class CredentialService {
         {
           errors,
         },
-        400,
+        404,
       );
     }
     return program;
@@ -229,7 +229,7 @@ export class CredentialService {
         {
           errors,
         },
-        400,
+        404,
       );
     }
     return queryResult;
@@ -252,7 +252,7 @@ export class CredentialService {
         {
           errors,
         },
-        400,
+        404,
       );
     }
   }
@@ -269,7 +269,7 @@ export class CredentialService {
         {
           errors,
         },
-        400,
+        404,
       );
     }
     const encrypyedCredential = { message: queryResult.credential };
