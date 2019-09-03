@@ -27,7 +27,7 @@ def main():
 
     t.getCredentials()
 
-    # t.proof()
+    t.proof()
 
 
 class testApi:
@@ -178,12 +178,26 @@ class testApi:
 
     def proof(self):
         printAction('PA', 'PA gets proof request')
-        self.r.getRequest('sovrin/proof/proofRequest/' + PROGRAM_ID)
+        proofRequest = self.r.getRequest(
+            'sovrin/proof/proofRequest/' + PROGRAM_ID)
+
+        printAction('PA', 'PA gets proof from wallet using the proofrequest')
+        getProofFromWalletPost = {
+            "proofRequestJsonData": json.dumps(proofRequest),
+            "wallet": {
+                "id": "test",
+                "passKey": "test"
+            },
+            "correlation": {
+                "correlationID": "test"
+            }
+        }
+        proof = self.r.postSovrin('proof/request', getProofFromWalletPost)
 
         proofInclusion = {
             "did": self.didPA,
-            "programId": 1,
-            "encryptedProof": "superEncrypted"
+            "programId": int(PROGRAM_ID),
+            "encryptedProof": json.dumps(proof)
         }
 
         printAction('PA', 'PA posts proof and asks for inclusion')
@@ -213,7 +227,6 @@ class Request:
         response = requests.post(completeUrl,
                                  json=data)
 
-        pprint.pprint(response.text)
         return self.handleResponse(response)
 
     def handleResponse(self, response):
