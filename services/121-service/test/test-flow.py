@@ -192,12 +192,13 @@ class testApi:
                 "correlationID": "test"
             }
         }
-        proof = self.r.postSovrin('proof/request', getProofFromWalletPost)
+        proofReturn = self.r.postSovrin(
+            'proof/request', getProofFromWalletPost)
 
         proofInclusion = {
             "did": self.didPA,
             "programId": int(PROGRAM_ID),
-            "encryptedProof": json.dumps(proof)
+            "encryptedProof": proofReturn['proof']
         }
 
         printAction('PA', 'PA posts proof and asks for inclusion')
