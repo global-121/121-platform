@@ -69,7 +69,7 @@ export class ProgramsServiceApiService {
         programId,
         credentialJson
       },
-      true
+      false
     ).pipe(
       tap(response => console.log('response: ', response)),
       map(response => response)
@@ -80,7 +80,7 @@ export class ProgramsServiceApiService {
     return this.apiService.delete(
       environment.url_121_service_api,
       '/sovrin/credential/answers/'.concat(did, programId ? '?programId=' + programId : ''),
-      true
+      false
     ).pipe(
       tap(response => console.log('response: ', response)),
       map(response => response)

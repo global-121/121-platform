@@ -9,6 +9,7 @@ import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ViewAppointmentsComponent } from './view-appointments/view-appointments.component';
 import { ScanQrComponent } from './scan-qr/scan-qr.component';
 import { ValidateIdentityComponent } from './validate-identity/validate-identity.component';
+import { ValidateProgramComponent } from './validate-program/validate-program.component';
 
 
 const personalComponents = [
@@ -16,7 +17,8 @@ const personalComponents = [
   MainMenuComponent,
   ViewAppointmentsComponent,
   ScanQrComponent,
-  ValidateIdentityComponent
+  ValidateIdentityComponent,
+  ValidateProgramComponent
 ];
 
 @NgModule({

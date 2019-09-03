@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-validate-identity',
@@ -17,7 +18,8 @@ export class ValidateIdentityComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    public programsService: ProgramsServiceApiService
+    public programsService: ProgramsServiceApiService,
+    public storage: Storage
   ) {
     this.route.queryParams.subscribe(params => {
       if (params && params.did) {
@@ -26,9 +28,11 @@ export class ValidateIdentityComponent implements OnInit {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.storage.set('scannedDid', this.did);
+  }
 
-  public getPrefilledAnswers(did: string) {
+  public getPrefilledAnswersIdentity(did: string) {
     this.programsService.getPrefilledAnswers(did, null).subscribe(response => {
       this.answers = response;
       this.verificationPostponed = false;
@@ -40,7 +44,7 @@ export class ValidateIdentityComponent implements OnInit {
   }
 
   public issueIdentityCredential(did: string) {
-    //DUMMY fix later
+    // DUMMY fix later
     // const credentialJson = {};
     // this.programsService.issueCredential(did, null, credentialJson).subscribe(response => {
     //   console.log('response: ', response);

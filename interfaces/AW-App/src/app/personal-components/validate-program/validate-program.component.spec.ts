@@ -2,26 +2,23 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
-import { ValidateIdentityComponent } from './validate-identity.component';
+import { ValidateProgramComponent } from './validate-program.component';
 
-describe('ValidateIdentityComponent', () => {
-  let component: ValidateIdentityComponent;
-  let fixture: ComponentFixture<ValidateIdentityComponent>;
+describe('ValidateProgramComponent', () => {
+  let component: ValidateProgramComponent;
+  let fixture: ComponentFixture<ValidateProgramComponent>;
 
   const storageIonicMock: any = {
-    set: () => new Promise<any>((resolve, reject) => resolve('1')),
     get: () => new Promise<any>((resolve, reject) => resolve('1')),
   };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ValidateIdentityComponent],
+      declarations: [ValidateProgramComponent],
       imports: [
         TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
         HttpClientModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -36,7 +33,7 @@ describe('ValidateIdentityComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ValidateIdentityComponent);
+    fixture = TestBed.createComponent(ValidateProgramComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
