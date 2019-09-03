@@ -40,7 +40,7 @@ export class ConversationService {
   }
 
   startNewConversation() {
-    this.addSection('select-language');
+    this.addSection('introduction');
   }
 
   private addSection(sectionName) {

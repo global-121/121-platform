@@ -1,16 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GetInfoComponent } from './get-info.component';
+import { IntroductionComponent } from './introduction.component';
 import { TranslateModule } from '@ngx-translate/core';
 
-describe('GetInfoComponent', () => {
-  let component: GetInfoComponent;
-  let fixture: ComponentFixture<GetInfoComponent>;
+describe('IntroductionComponent', () => {
+  let component: IntroductionComponent;
+  let fixture: ComponentFixture<IntroductionComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [GetInfoComponent],
+      declarations: [IntroductionComponent],
       imports: [
         TranslateModule.forRoot(),
       ],
@@ -20,7 +20,7 @@ describe('GetInfoComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GetInfoComponent);
+    fixture = TestBed.createComponent(IntroductionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

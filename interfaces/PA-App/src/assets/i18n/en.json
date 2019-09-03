@@ -32,11 +32,9 @@
       "submit": "Submit needs",
       "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future."
     },
-    "get-info": {
-      "introduction": "Before we start, would you like to know more about 121?",
-      "option1": "Tell me about 121",
-      "option2": "No, I already know",
-      "option3": "Later"
+    "introduction": {
+      "welcome": "Welcome to 121.",
+      "more-info": "More about 121"
     },
     "choose-credential-type": {
       "introduction": "Please select your next step.",
@@ -66,7 +64,7 @@
       "conclusion": "Thank you, you have selected {{country}}."
     },
     "select-language": {
-      "introduction": "Welcome to 121. Please select your language.",
+      "introduction": "Please select your language.",
       "option1": "English",
       "option2": "Language 2",
       "option3": "Language 3",
