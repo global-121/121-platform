@@ -3,7 +3,7 @@ import { IonContent } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { ConversationService, ConversationSection } from '../services/conversation.service';
+import { ConversationService } from '../services/conversation.service';
 
 import { ChooseCredentialTypeComponent } from '../personal-components/choose-credential-type/choose-credential-type.component';
 import { CreatePasswordComponent } from '../personal-components/create-password/create-password.component';
