@@ -2,7 +2,7 @@ import { SchemaEntity } from './schema.entity';
 import { Injectable, HttpService, HttpException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { API } from '../../config';
+import { API, DEBUG } from '../../config';
 
 @Injectable()
 export class SchemaService {
@@ -20,11 +20,29 @@ export class SchemaService {
     const randomNumber = Math.floor(Math.random() * 1000) + 1;
     const randomDecimal = Math.floor(Math.random() * 10) + 1;
 
+    // Increment version number based on previous version
+    let version : string;
+    if (program.schemaId) {
+      const n = program.schemaId.lastIndexOf(':');
+      const lastVersion = program.schemaId.substring(n + 1);
+      const lastVersionNr = Number(lastVersion.slice(0, -2));
+      const versionNr = lastVersionNr + 1
+      const version = versionNr.toString() + '.0'
+    } else {
+      version = '1.0'
+    }
+    if (DEBUG) {
+      const randomNumber = Math.floor(Math.random() * 1000) + 1;
+      const randomDecimal = Math.floor(Math.random() * 10) + 1;
+      version = randomNumber.toString() + '.' + randomDecimal.toString();
+    }
+
     const schemaPost = {
-      name: "example",
-      version: randomNumber.toString() + '.' + randomDecimal.toString(),
+      name: 'program_' + program.id.toString(),
+      version: version, // + randomDecimal.toString(),
       attributes: attributes,
     };
+    console.log(schemaPost)
     const api_string = API.schema;
 
 

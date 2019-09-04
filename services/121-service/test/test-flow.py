@@ -25,6 +25,8 @@ def main():
 
     t.setupConnection()
 
+    t.getIdCredentials()
+
     t.getCredentials()
 
     t.proof()
@@ -85,6 +87,11 @@ class testApi:
         }
         self.r.postRequest(
             'sovrin/create-connection', connectionResponse)
+
+    def getIdCredentials(self):
+        printAction('PA', 'Calls GET credential offer ID')
+        idCredOfferResponse = self.r.getRequest(
+            'sovrin/credential/offer/' + PROGRAM_ID)
 
     def getCredentials(self):
         printAction('PA', 'Calls GET credential offer')
