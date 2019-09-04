@@ -9,7 +9,4 @@ export class CredentialIssueDto {
   @IsNotEmpty()
   @IsNumber()
   public readonly programId: number;
-  @ApiModelProperty()
-  @IsNotEmpty()
-  public readonly credentialJson: JSON;
 }

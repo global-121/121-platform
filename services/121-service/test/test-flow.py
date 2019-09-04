@@ -150,7 +150,6 @@ class testApi:
         issueCredentialData = {
             "did": self.didPA,
             "programId": int(PROGRAM_ID),
-            "credentialJson": {}
         }
 
         printAction('AW', 'AW calls POST issue credential')
