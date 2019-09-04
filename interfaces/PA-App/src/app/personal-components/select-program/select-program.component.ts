@@ -55,7 +55,7 @@ export class SelectProgramComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'get-program-details';
+    return 'enroll-in-program';
   }
 
   complete() {

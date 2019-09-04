@@ -22,7 +22,7 @@
       "submit-password": "Create my password",
       "conclusion": "Great! You have created a password."
     },
-    "get-program-details": {
+    "enroll-in-program": {
       "introduction": "Thank you for selecting this program. Here you see the details of <strong>{{programTitle}}</strong>."
     },
     "initial-needs": {

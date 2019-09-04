@@ -7,7 +7,7 @@ import { ConversationService } from '../services/conversation.service';
 
 import { ChooseCredentialTypeComponent } from './choose-credential-type/choose-credential-type.component';
 import { CreatePasswordComponent } from './create-password/create-password.component';
-import { GetProgramDetailsComponent } from './get-program-details/get-program-details.component';
+import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
 import { IdentityFormComponent } from './identity-form/identity-form.component';
 import { InitialNeedsComponent } from './initial-needs/initial-needs.component';
 import { IntroductionComponent } from './introduction/introduction.component';
@@ -20,7 +20,7 @@ import { SelectProgramComponent } from './select-program/select-program.componen
   declarations: [
     ChooseCredentialTypeComponent,
     CreatePasswordComponent,
-    GetProgramDetailsComponent,
+    EnrollInProgramComponent,
     IdentityFormComponent,
     InitialNeedsComponent,
     IntroductionComponent,
@@ -37,7 +37,7 @@ import { SelectProgramComponent } from './select-program/select-program.componen
   entryComponents: [
     ChooseCredentialTypeComponent,
     CreatePasswordComponent,
-    GetProgramDetailsComponent,
+    EnrollInProgramComponent,
     IdentityFormComponent,
     InitialNeedsComponent,
     IntroductionComponent,
@@ -49,7 +49,7 @@ import { SelectProgramComponent } from './select-program/select-program.componen
   exports: [
     ChooseCredentialTypeComponent,
     CreatePasswordComponent,
-    GetProgramDetailsComponent,
+    EnrollInProgramComponent,
     IdentityFormComponent,
     InitialNeedsComponent,
     IntroductionComponent,

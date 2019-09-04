@@ -1,23 +1,5 @@
 <section>
-  <ion-button (click)="getProgramDetails()">API: GET Program Details</ion-button>
-
-  <dialogue-turn>
-    <p [innerHTML]="getProgramDetailsIntroduction"></p>
-
-    <ul class="ion-no-padding">
-      <li ion-item *ngFor="let detail of program">
-        <strong>{{ detail.key }}:</strong><br>
-        {{ detail.value }}
-      </li>
-    </ul>
-
-  </dialogue-turn>
-  <dialogue-turn actor="self">
-    <p>
-      <ion-button (click)="wantsToEnrol=true;">Enrol!</ion-button>
-    </p>
-  </dialogue-turn>
-  <dialogue-turn actor="Dorcas" [hidden]="!wantsToEnrol">
+  <dialogue-turn actor="Dorcas">
     <p>
       We have received your request to apply for <strong>{{ programTitle }}</strong>.<br>
       To make sure you get the best possible help, please answer the following questions.

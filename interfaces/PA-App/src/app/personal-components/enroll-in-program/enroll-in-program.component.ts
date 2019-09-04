@@ -9,11 +9,11 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { Program } from 'src/app/models/program.model';
 
 @Component({
-  selector: 'app-get-program-details',
-  templateUrl: './get-program-details.component.html',
-  styleUrls: ['./get-program-details.component.scss'],
+  selector: 'app-enroll-in-program',
+  templateUrl: './enroll-in-program.component.html',
+  styleUrls: ['./enroll-in-program.component.scss'],
 })
-export class GetProgramDetailsComponent implements PersonalComponent {
+export class EnrollInProgramComponent implements PersonalComponent {
   public languageCode: string;
 
   public program: any;
@@ -49,7 +49,7 @@ export class GetProgramDetailsComponent implements PersonalComponent {
     this.programsService.getProgramById(programId).subscribe((response: Program) => {
 
       this.programTitle = response.title[this.languageCode];
-      this.getProgramDetailsIntroduction = this.translate.instant('personal.get-program-details.introduction', {
+      this.getProgramDetailsIntroduction = this.translate.instant('personal.enroll-in-program.introduction', {
         programTitle: this.programTitle,
       });
 
@@ -119,7 +119,7 @@ export class GetProgramDetailsComponent implements PersonalComponent {
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'get-program-details',
+      name: 'enroll-in-program',
       next: this.getNextSection(),
     });
   }

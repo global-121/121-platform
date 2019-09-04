@@ -7,7 +7,7 @@ import { ConversationService } from '../services/conversation.service';
 
 import { ChooseCredentialTypeComponent } from '../personal-components/choose-credential-type/choose-credential-type.component';
 import { CreatePasswordComponent } from '../personal-components/create-password/create-password.component';
-import { GetProgramDetailsComponent } from '../personal-components/get-program-details/get-program-details.component';
+import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { IdentityFormComponent } from '../personal-components/identity-form/identity-form.component';
 import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
 import { IntroductionComponent } from '../personal-components/introduction/introduction.component';
@@ -31,12 +31,12 @@ export class PersonalPage implements OnInit {
   public isDebug: boolean = !environment.production;
 
   public availableSections = {
+    'choose-credential-type': ChooseCredentialTypeComponent,
     'create-identity-details': IdentityFormComponent,
     'create-identity-password': CreatePasswordComponent,
-    'get-program-details': GetProgramDetailsComponent,
+    'enroll-in-program': EnrollInProgramComponent,
     'initial-needs': InitialNeedsComponent,
     introduction: IntroductionComponent,
-    'choose-credential-type': ChooseCredentialTypeComponent,
     'select-appointment': SelectAppointmentComponent,
     'select-country': SelectCountryComponent,
     'select-language': SelectLanguageComponent,
