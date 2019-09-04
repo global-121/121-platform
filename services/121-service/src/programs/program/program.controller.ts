@@ -27,6 +27,7 @@ import { DeleteResult } from 'typeorm';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { InculdeMeDto } from './dto/include-me.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
+import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 
 @ApiUseTags('programs')
 @Controller('programs')
@@ -131,7 +132,7 @@ export class ProgramController {
   @Post('includeMe')
   public async includeMe(
     @Body() inclusionData: InculdeMeDto,
-  ): Promise<ConnectionEntity> {
+  ): Promise<InclusionRequestStatus> {
     return await this.programService.includeMe(
       inclusionData.programId,
       inclusionData.did,
