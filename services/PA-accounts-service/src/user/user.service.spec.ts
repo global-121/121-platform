@@ -1,4 +1,3 @@
-import { AvailabilityEntity } from './../schedule/appointment/availability.entity';
 import { UserService } from './user.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from './user.entity';
@@ -11,18 +10,12 @@ const userRo = {
     username: undefined,
     email: 'test@test.nl',
     token: undefined,
-    role: undefined,
-    status: undefined,
-    countryId: undefined,
   },
 };
 
 const createUserDto = {
   username: undefined,
   email: 'test@test.nl',
-  role: undefined,
-  status: undefined,
-  countryId: undefined,
   password: 'string',
 };
 
