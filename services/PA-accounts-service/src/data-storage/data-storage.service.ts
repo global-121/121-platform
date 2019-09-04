@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DataStorageEntity } from './data-storage.entity';
 import { UserEntity } from '../user/user.entity';
-import { StoreDataDto, GetDataDto } from './dto';
+import { StoreDataDto } from './dto';
 
 @Injectable()
 export class DataStorageService {
