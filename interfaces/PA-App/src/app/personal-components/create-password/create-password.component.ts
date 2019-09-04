@@ -17,6 +17,11 @@ export class CreatePasswordComponent implements PersonalComponent {
   public confirm: any;
   public passwordCreated: boolean;
 
+  private paAccountUsername: string;
+  private paAccountPassword: string;
+  private paWalletName: string;
+  private did = 'empty';  // Replaced after response from UserIMS create-did call
+
   constructor(
     public conversationService: ConversationService,
     public paAccountApiService: PaAccountApiService,
@@ -26,16 +31,17 @@ export class CreatePasswordComponent implements PersonalComponent {
   ngOnInit() {
   }
 
-  public submitPassword(create: string, confirm: string) {
+  public async submitPassword(create: string, confirm: string) {
     console.log('submitPassword()', create, confirm);
 
     if (create !== confirm) {
       return;
     }
 
-    const paAccount = this.createPaAccount(create);
-    const paWalletName = this.storeWalletName(paAccount.paAccountUsername);
-    // this.createWallet(paWalletName, paAccount.paAccountPassword);
+    await this.createPaAccount(create);
+    await this.storeWalletName(this.paAccountUsername);
+    // await this.createWalletDid(this.paWalletName, this.paAccountPassword);
+    await this.storeDid(this.paAccountUsername);
 
     this.passwordCreated = true;
 
@@ -53,24 +59,24 @@ export class CreatePasswordComponent implements PersonalComponent {
   }
 
   createPaAccount(create) {
-    const paAccountUsername = this.makeRandomUsername(16);
-    const paAccountPassword = create;
-    this.paAccountApiService.create(paAccountUsername, paAccountPassword).subscribe((responseCreate) => {
+    this.paAccountUsername = this.makeRandomUsername(16);
+    this.paAccountPassword = create;
+    this.paAccountApiService.create(this.paAccountUsername, this.paAccountPassword).subscribe((responseCreate) => {
       console.log('response: ', responseCreate);
     });
-    return { paAccountUsername, paAccountPassword };
   }
 
   storeWalletName(paAccountUsername) {
-    const paWalletName = this.makeRandomUsername(16);
-    this.paAccountApiService.store(paAccountUsername, 'walletName', paWalletName).subscribe((responseStore) => {
+    this.paWalletName = this.makeRandomUsername(16);
+    this.paAccountApiService.store(paAccountUsername, 'walletName', this.paWalletName).subscribe((responseStore) => {
       console.log('response: ', responseStore);
     });
-    return paWalletName;
   }
 
 
-  createWallet(paWalletName, paWalletPassword) {
+  async createWalletDid(paWalletName, paWalletPassword) {
+
+    // Create input for UserIMS calls
     const wallet = {
       id: paWalletName,
       passKey: paWalletPassword,
@@ -78,12 +84,30 @@ export class CreatePasswordComponent implements PersonalComponent {
     const correlation = {
       correlationID: 'test'
     }
-    this.userImsApiService.createWallet(
+
+    // Create wallet
+    await this.userImsApiService.createWallet(
       JSON.parse(JSON.stringify(wallet)),
       JSON.parse(JSON.stringify(correlation))
-    ).subscribe((responseWallet) => {
-      console.log('response: ', responseWallet);
-    })
+    ).subscribe((response) => {
+      console.log('response: ', response);
+    });
+
+    // Create DID and store in wallet
+    await this.userImsApiService.createStoreDid(
+      JSON.parse(JSON.stringify(wallet)),
+      JSON.parse(JSON.stringify(correlation))
+    ).subscribe((response) => {
+      console.log('response: ', response);
+      this.did = response.did;
+    });
+
+  }
+
+  storeDid(paAccountUsername) {
+    this.paAccountApiService.store(paAccountUsername, 'did', this.did).subscribe((response) => {
+      console.log('response: ', response);
+    });
   }
 
   getNextSection() {

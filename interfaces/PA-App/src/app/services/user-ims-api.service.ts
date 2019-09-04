@@ -31,4 +31,23 @@ export class UserImsApiService {
         map(response => response)
       );
   }
+
+  createStoreDid(wallet: JSON, correlation: JSON): Observable<any> {
+    console.log('UserImsApiService : createStoreDid()');
+
+    return this.apiService
+      .post(
+        environment.url_user_ims_api,
+        '/did',
+        {
+          wallet,
+          correlation
+        },
+        true
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
 }
