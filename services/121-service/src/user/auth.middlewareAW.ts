@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { SECRET } from '../secrets';
-import { AUTH_DEBUG } from '../config';
+import { DEBUG } from '../config';
 import { UserService } from './user.service';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class AuthMiddlewareAW implements NestMiddleware {
       req.user = user.user;
       next();
     } else {
-      if (AUTH_DEBUG) {
+      if (DEBUG) {
         const user = await this.userService.findByEmail('admin@test.nl');
         req.user = user.user;
         next();

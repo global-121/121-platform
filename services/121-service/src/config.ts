@@ -1,4 +1,4 @@
-export const AUTH_DEBUG = true;
+export const DEBUG = true;
 
 const tyknIMS = 'http://10.0.0.3:50001/api/';
 const orgIMS = 'http://10.0.0.4:50002/api/';
