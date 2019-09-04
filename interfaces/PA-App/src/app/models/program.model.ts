@@ -5,9 +5,8 @@ export class Program {
   countryId: number;
   created: string;
   updated: string;
-  author: object;
   distributionChannel: string;
   meetingDocuments: any;
   ngo: string;
-  customCriteria: any;
+  customCriteria: any[];
 }
