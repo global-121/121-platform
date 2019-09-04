@@ -3,18 +3,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { AppController } from './app.controller';
 import { UserModule } from './user/user.module';
+import { DataStorageModule } from './data-storage/data-storage.module';
 import { HealthModule } from './health.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
     UserModule,
+    DataStorageModule,
     HealthModule,
   ],
   controllers: [
-    AppController,
-    // CreateConnectionController,
-    // CredentialController,
+    AppController
   ],
   providers: [],
 })
