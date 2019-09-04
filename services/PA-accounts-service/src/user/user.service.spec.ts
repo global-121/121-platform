@@ -7,20 +7,18 @@ import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 const userRo = {
   user: {
     id: undefined,
-    username: undefined,
-    email: 'test@test.nl',
+    username: 'test-pa',
     token: undefined,
   },
 };
 
 const createUserDto = {
-  username: undefined,
-  email: 'test@test.nl',
+  username: 'test-pa',
   password: 'string',
 };
 
 const LoginUserDto = {
-  email: 'test@test.nl',
+  username: 'test-pa',
   password: 'string',
 };
 
@@ -51,8 +49,8 @@ describe('User service', (): void => {
     expect(result).toMatch(/ey/);
   });
 
-  it('Should find a user using email', async (): Promise<void> => {
-    const result = await service.findByEmail('test@test.nl');
+  it('Should find a user using username', async (): Promise<void> => {
+    const result = await service.findByUsername('test-pa');
     result.user.token = undefined;
 
     expect(result).toStrictEqual(userRo);

@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreatePasswordComponent } from './create-password.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('CreatePasswordComponent', () => {
   let component: CreatePasswordComponent;
@@ -13,6 +14,7 @@ describe('CreatePasswordComponent', () => {
       declarations: [CreatePasswordComponent],
       imports: [
         TranslateModule.forRoot(),
+        HttpClientModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })

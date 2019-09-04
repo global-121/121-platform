@@ -19,7 +19,6 @@ export class SeedInit implements InterfaceScript {
     await userRepository.save([
       {
         username: USERCONFIG.username,
-        email: USERCONFIG.email,
         password: crypto
           .createHmac('sha256', USERCONFIG.password)
           .digest('hex'),
