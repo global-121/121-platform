@@ -66,6 +66,16 @@ Run the application through:
 Same as bove. But replace '-it' tag in 'docker run' or 'docker start' commands by '-d' to run in detached mode.
 Also, the CMD line of Dockerfile should be changed from CMD ["npm", "run", "start:dev"] to CMD ["npm", "start"].
 
+## Seed the database and create identity schema
+
+To be able to use the functionality of this service an initial user is required. To seed the database for dev mode with a user, run the following command:
+
+```
+docker exec -i PA-accounts-service npx ts-node src/scripts seed-init
+```
+
+This user password and username can be customized in secrets.ts
+
 ## How to use Swagger (with authorization features)
 
 Access Swagger API via `http://localhost:3001/docs`
