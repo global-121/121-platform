@@ -5,6 +5,7 @@
   "username": "global121",
   "password": "<secret>",
   "database": "global121",
+  "schema": "121-service",
   "entities": ["src/**/**.entity{.ts,.js}"],
   "dropSchema": true,
   "synchronize": true

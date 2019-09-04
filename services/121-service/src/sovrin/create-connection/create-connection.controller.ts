@@ -21,13 +21,6 @@ export class CreateConnectionController {
     this.createConnectionService = createConnectionService;
   }
 
-  @ApiOperation({ title: 'Test SDK' })
-  @ApiResponse({ status: 200, description: '...' })
-  @Post('/testSDK')
-  public async testSDK(): Promise<void> {
-    await this.createConnectionService.testSDK();
-  }
-
   @ApiOperation({ title: 'Get connection request' })
   @ApiResponse({ status: 200, description: 'Sent connection request' })
   @Get()
