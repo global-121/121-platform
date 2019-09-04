@@ -1,5 +1,5 @@
 <section>
-  <dialogue-turn actor="Dorcas">
+  <dialogue-turn [actor]="program?.ngo">
     <p>
       <span [innerHTML]="introductionText"></span><br>
       {{ 'personal.enroll-in-program.introduction-questions'|translate }}
@@ -46,7 +46,7 @@
     </p>
 
   </dialogue-turn>
-  <dialogue-turn [hidden]="!hasAnswered">
+  <dialogue-turn [actor]="program?.ngo" [hidden]="!hasAnswered">
     <p>
       {{ 'personal.enroll-in-program.please-confirm'|translate }}
     </p>

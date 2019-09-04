@@ -63,6 +63,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
 
   private buildDetails(response: Program, languageCode: string) {
     const details = [
+      'ngo',
       'description',
       'distributionChannel',
     ];
