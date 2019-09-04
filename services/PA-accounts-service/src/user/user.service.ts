@@ -26,7 +26,7 @@ export class UserService {
 
   public async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const findOneOptions = {
-      email: loginUserDto.email,
+      username: loginUserDto.username,
       password: crypto
         .createHmac('sha256', loginUserDto.password)
         .digest('hex'),
@@ -36,17 +36,16 @@ export class UserService {
   }
 
   public async create(dto: CreateUserDto): Promise<UserRO> {
-    // check uniqueness of username/email
-    const { username, email, password } = dto;
+    // check uniqueness of username
+    const { username, password } = dto;
     const qb = await getRepository(UserEntity)
       .createQueryBuilder('user')
-      .where('user.username = :username', { username })
-      .orWhere('user.email = :email', { email });
+      .where('user.username = :username', { username });
 
     const user = await qb.getOne();
 
     if (user) {
-      const errors = { username: 'Username and email must be unique.' };
+      const errors = { username: 'Username must be unique.' };
       throw new HttpException(
         { message: 'Input data validation failed', errors },
         HttpStatus.BAD_REQUEST,
@@ -56,7 +55,6 @@ export class UserService {
     // create new user
     let newUser = new UserEntity();
     newUser.username = username;
-    newUser.email = email;
     newUser.password = password;
 
     const errors = await validate(newUser);
@@ -91,8 +89,8 @@ export class UserService {
     return this.buildUserRO(user);
   }
 
-  public async findByEmail(email: string): Promise<UserRO> {
-    const user = await this.userRepository.findOne({ email: email });
+  public async findByUsername(username: string): Promise<UserRO> {
+    const user = await this.userRepository.findOne({ username: username });
     return this.buildUserRO(user);
   }
 
@@ -105,7 +103,6 @@ export class UserService {
       {
         id: user.id,
         username: user.username,
-        email: user.email,
         exp: exp.getTime() / 1000,
       },
       SECRET,
@@ -118,7 +115,6 @@ export class UserService {
     const userRO = {
       id: user.id,
       username: user.username,
-      email: user.email,
       token: this.generateJWT(user),
     };
 

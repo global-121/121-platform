@@ -1,10 +1,7 @@
 import {
   Get,
   Post,
-  Put,
   Body,
-  Delete,
-  Param,
   Controller,
   UsePipes,
   HttpStatus,
@@ -47,11 +44,10 @@ export class UserController {
     }
 
     const token = await this.userService.generateJWT(_user);
-    const { email, username } = _user;
+    const { username } = _user;
     const user = {
-      email,
-      token,
       username,
+      token,
     };
 
     return { user };
@@ -70,8 +66,8 @@ export class UserController {
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
-  public async findMe(@User('email') email: string): Promise<UserRO> {
-    return await this.userService.findByEmail(email);
+  public async findMe(@User('username') username: string): Promise<UserRO> {
+    return await this.userService.findByUsername(username);
   }
 
 }

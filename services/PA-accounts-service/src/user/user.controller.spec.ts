@@ -9,22 +9,20 @@ import { LoginUserDto } from './dto/login-user.dto';
 
 const userRo = {
   user: {
-    username: 'string',
-    email: 'test@test.nl',
+    username: 'test-pa',
     token:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo',
   },
 };
 
 class UserServiceMock {
-  public async findByEmail(): Promise<UserRO> {
+  public async findByUsername(): Promise<UserRO> {
     return userRo;
   }
   public async create(userData: CreateUserDto): Promise<UserRO> {
     const userRo = {
       user: {
         username: userData.username,
-        email: userData.email,
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo',
       },
@@ -34,8 +32,7 @@ class UserServiceMock {
   public async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const user = new UserEntity();
     user.id = 1;
-    user.username = 'string';
-    user.email = 'test@test.nl';
+    user.username = 'test-pa';
     user.password =
       'c90f86e09c3461da52b3d8bc80ccd6a0d0cb893b1a41bd461e8ed31fa21c9b6e';
     return user;
@@ -68,9 +65,9 @@ describe('UserController', (): void => {
   describe('findMe', (): void => {
     it('should return a user', async (): Promise<void> => {
       const spy = jest
-        .spyOn(userService, 'findByEmail')
+        .spyOn(userService, 'findByUsername')
         .mockImplementation((): Promise<UserRO> => Promise.resolve(userRo));
-      const controllerResult = await userController.findMe('test@test.nl');
+      const controllerResult = await userController.findMe('test-pa');
 
       expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(userRo);
@@ -80,7 +77,7 @@ describe('UserController', (): void => {
   describe('login', (): void => {
     it('should return a user', async (): Promise<void> => {
       const loginParameters = {
-        email: 'test@test.nl',
+        username: 'test-pa',
         password: 'string',
       };
       const controllerResult = await userController.login(loginParameters);
@@ -100,8 +97,7 @@ describe('UserController', (): void => {
   describe('create', (): void => {
     it('should return an a user entity', async (): Promise<void> => {
       const userValue = {
-        username: 'string',
-        email: 'test@test.nl',
+        username: 'test-pa',
         password: 'string',
       };
       const spy = jest

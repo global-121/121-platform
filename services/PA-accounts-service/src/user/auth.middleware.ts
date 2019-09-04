@@ -26,7 +26,7 @@ export class AuthMiddleware implements NestMiddleware {
       next();
     } else {
       if (AUTH_DEBUG) {
-        const user = await this.userService.findByEmail('admin@test.nl');
+        const user = await this.userService.findByUsername('test-pa');
         req.user = user.user;
         next();
       } else {

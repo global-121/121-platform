@@ -6,7 +6,6 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { IsEmail } from 'class-validator';
 import * as crypto from 'crypto';
 
 @Entity('user')
@@ -16,10 +15,6 @@ export class UserEntity {
 
   @Column()
   public username: string;
-
-  @Column()
-  @IsEmail()
-  public email: string;
 
   @Column()
   public password: string;
