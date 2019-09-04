@@ -32,14 +32,17 @@ export class EnrollInProgramComponent implements PersonalComponent {
   ) { }
 
   ngOnInit() {
-    this.storage.get('languageChoice').then(value => {
-      this.languageCode = value ? value : 'en';
-    });
-
+    this.getLanguageChoice();
     this.getProgramDetails();
   }
 
-  public getProgramDetails(): any {
+  private getLanguageChoice() {
+    this.storage.get('languageChoice').then(value => {
+      this.languageCode = value ? value : 'en';
+    });
+  }
+
+  private getProgramDetails() {
     this.storage.get('programChoice').then(value => {
       this.getProgramDetailsById(value);
     });
