@@ -13,6 +13,7 @@ import { CreateProgramDto } from './dto';
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 import proofRequestExample from '../../../examples/proof_request.json';
 import { InclusionStatus } from './dto/inclusion-status.dto';
+import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 
 @Injectable()
 export class ProgramService {
@@ -196,7 +197,7 @@ export class ProgramService {
     programId: number,
     did: string,
     encryptedProof: string,
-  ): Promise<ConnectionEntity> {
+  ): Promise<InclusionRequestStatus> {
     `
     Verifier/HO gets schema_id/cred_def_id from ledger and validates proof.
     Inclusion algorithm is run. (Allocation algorithm as well?)
@@ -228,25 +229,26 @@ export class ProgramService {
       encryptedProof,
       did,
     );
+    connection.programsEnrolled.push(programId);
 
-    let inclusionResult = await this.calculateInclusion(
-      programId,
-      encryptedProof,
-    );
-
-    if (connection.programsEnrolled.indexOf(programId) <= -1) {
-      connection.programsEnrolled.push(programId);
+    let inclusionRequestStatus: InclusionRequestStatus;
+    if (program.inclusionCalculationType === 'standard') {
+        let inclusionResult: boolean = await this.calculateInclusion(
+        programId,
+        encryptedProof,
+      );
       if (inclusionResult) {
         connection.programsIncluded.push(programId);
       } else if (!inclusionResult) {
         connection.programsExcluded.push(programId);
       }
+      inclusionRequestStatus = { "status": 'done' };
     } else {
-      const errors = 'PA already enrolled earlier for this program.';
-      throw new HttpException({ errors }, 404);
+      inclusionRequestStatus = { "status": 'pending' };
     }
-    const updatedConnection = await this.connectionRepository.save(connection);
-    return updatedConnection;
+
+    await this.connectionRepository.save(connection);
+    return inclusionRequestStatus;
   }
 
   public async getInclusionStatus(

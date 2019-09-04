@@ -150,7 +150,6 @@ class testApi:
         issueCredentialData = {
             "did": self.didPA,
             "programId": int(PROGRAM_ID),
-            "credentialJson": {}
         }
 
         printAction('AW', 'AW calls POST issue credential')
@@ -201,9 +200,15 @@ class testApi:
             "programId": int(PROGRAM_ID),
             "encryptedProof": proofReturn['proof']
         }
-
         printAction('PA', 'PA posts proof and asks for inclusion')
         self.r.postRequest('programs/includeMe', proofInclusion)
+
+        inclusionStatusPost = {
+            "did": self.didPA
+        }
+        printAction('PA', 'PA posts proof and asks for inclusion')
+        self.r.postRequest('programs/inclusionStatus/' +
+                           PROGRAM_ID, inclusionStatusPost)
 
 
 class Request:
