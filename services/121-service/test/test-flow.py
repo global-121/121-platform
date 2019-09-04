@@ -127,6 +127,7 @@ class testApi:
         prefilledAnswers = {
             "did": self.didPA,
             "programId": int(PROGRAM_ID),
+            "credentialType": "program",
             "attributes": [
                 {
                     "attributeId": 1,
