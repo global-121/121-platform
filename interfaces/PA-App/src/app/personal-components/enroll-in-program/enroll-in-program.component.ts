@@ -38,7 +38,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
 
   private getLanguageChoice() {
     this.storage.get('languageChoice').then(value => {
-      this.languageCode = value ? value : 'en';
+      this.languageCode = value;
     });
   }
 
@@ -56,29 +56,24 @@ export class EnrollInProgramComponent implements PersonalComponent {
         programTitle: this.programTitle,
       });
 
-      this.buildDetails(response);
-      console.log(this.program);
-      this.buildQuestions(response.customCriteria);
+      this.buildDetails(response, this.languageCode);
+      this.buildQuestions(response.customCriteria, this.languageCode);
     });
   }
 
-  private buildDetails(response: Program) {
+  private buildDetails(response: Program, languageCode: string) {
     const details = [
       'description',
       'distributionChannel',
     ];
     this.program = [];
     for (const detail of details) {
-      this.program.push({
-        key: detail,
-        value: response[detail][this.languageCode] ? response[detail][this.languageCode] : response[detail]
-      });
+      this.program[detail] = response[detail][languageCode] ? response[detail][languageCode] : response[detail];
     }
   }
 
-  private buildQuestions(customCriteria) {
+  private buildQuestions(customCriteria, languageCode: string) {
     this.questions = [];
-    const languageCode = 'english';
 
     for (const criterium of customCriteria) {
       this.questions.push({
@@ -86,13 +81,13 @@ export class EnrollInProgramComponent implements PersonalComponent {
         code: criterium.criterium,
         type: criterium.answerType,
         label: criterium.label[languageCode],
-        options: this.buildOptions(criterium.options),
+        options: this.buildOptions(criterium.options, languageCode),
       });
     }
     console.log('this.questions: ', this.questions);
   }
 
-  private buildOptions(optionsRaw) {
+  private buildOptions(optionsRaw, languageCode: string) {
     if (!optionsRaw) {
       return;
     }
@@ -103,7 +98,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
       options.push({
         id: option.id,
         key: option.option,
-        label: option.label.english,
+        label: option.label[languageCode],
       });
     }
 
