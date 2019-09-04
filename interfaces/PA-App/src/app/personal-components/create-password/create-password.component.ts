@@ -80,10 +80,10 @@ export class CreatePasswordComponent implements PersonalComponent {
     const wallet = {
       id: paWalletName,
       passKey: paWalletPassword,
-    }
+    };
     const correlation = {
       correlationID: 'test'
-    }
+    };
 
     // Create wallet
     await this.userImsApiService.createWallet(
