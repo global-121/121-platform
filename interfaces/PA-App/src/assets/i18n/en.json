@@ -23,7 +23,14 @@
       "conclusion": "Great! You have created a password."
     },
     "enroll-in-program": {
-      "introduction": "Thank you for selecting this program. Here you see the details of <strong>{{programTitle}}</strong>."
+      "introduction": "We have received your request to apply for <strong>{{ programTitle }}</strong>.",
+      "introduction-questions": "To make sure you get the best possible help, please answer the following questions.",
+      "more-info-questions": "More about these questions",
+      "more-info-share": "More about who sees your information",
+      "submit": "Save my answers",
+      "please-confirm": "Thank you. Please confirm and submit your answers.",
+      "submit-confirm": "Submit my answers",
+      "change": "Change my answers"
     },
     "initial-needs": {
       "introduction": "In order to help you as best as possible, please tell us what your needs are.",

@@ -18,11 +18,11 @@ export class EnrollInProgramComponent implements PersonalComponent {
 
   public program: any;
   public programTitle: string;
-  public getProgramDetailsIntroduction: string;
-
-  public wantsToEnrol = false;
+  public introductionText: string;
 
   public questions: any;
+
+  public hasAnswered: boolean;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -52,7 +52,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
     this.programsService.getProgramById(programId).subscribe((response: Program) => {
 
       this.programTitle = response.title[this.languageCode];
-      this.getProgramDetailsIntroduction = this.translate.instant('personal.enroll-in-program.introduction', {
+      this.introductionText = this.translate.instant('personal.enroll-in-program.introduction', {
         programTitle: this.programTitle,
       });
 
@@ -105,8 +105,19 @@ export class EnrollInProgramComponent implements PersonalComponent {
     return options;
   }
 
-  public enrolInProgram() {
-    console.log('enrol!');
+  public change() {
+    console.log('change()');
+
+  }
+
+  public submit() {
+    console.log('submit()');
+
+    this.hasAnswered = true;
+  }
+
+  public submitConfirm() {
+    console.log('submitConfirm()');
 
     this.complete();
   }
