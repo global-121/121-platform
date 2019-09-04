@@ -51,11 +51,16 @@ docker exec -i 121-service npx ts-node src/scripts seed-dev
 docker exec -i PA-accounts-service npx ts-node src/scripts seed-init
 ```
 
-
 ## How to use Swagger (with authorization features)
 
 Access 121-service Swagger API via `http://localhost:3000/docs`
 Access PA-accounts-service Swagger API via `http://localhost:3001/docs`
+
+
+## On development-server
+
+Access 121-service Swagger API via `http://137.117.210.255/121/docs/`
+Access PA-accounts-service Swagger API via `http://137.117.210.255/PA-accounts/docs/`
 
 
 ## Swagger API docs
