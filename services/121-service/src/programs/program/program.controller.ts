@@ -1,3 +1,4 @@
+import { DidDto } from './dto/did.dto';
 import {
   Get,
   Post,
@@ -139,12 +140,14 @@ export class ProgramController {
   }
   @ApiOperation({ title: 'Get inclusion status' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
-  @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
-  @Get('inclusionStatus/:programId/:did')
-  public async inclusionStatus(@Param() params): Promise<InclusionStatus> {
+  @Post('inclusionStatus/:programId')
+  public async inclusionStatus(
+    @Param() params,
+    @Body() data: DidDto,
+  ): Promise<InclusionStatus> {
     return await this.programService.getInclusionStatus(
       params.programId,
-      params.did,
+      data.did,
     );
   }
 }
