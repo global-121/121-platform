@@ -57,10 +57,20 @@ export class SelectAppointmentComponent implements OnInit {
   public getProgramProperties(): any {
     this.storage.get('programChoice').then(value => {
       this.programsService.getProgramById(value).subscribe(response => {
-        this.meetingDocuments = response.meetingDocuments[this.languageCode].split(';');
+        this.meetingDocuments = this.mapLabelByLanguageCode(response.meetingDocuments).split(';');
         this.ngo = response.ngo;
       });
     });
+  }
+
+  private mapLabelByLanguageCode(property: any) {
+    let label = property[this.languageCode];
+
+    if (!label) {
+      label = property[this.fallbackLanguageCode];
+    }
+
+    return label;
   }
 
   public getTimeslotName(timeslotId: number): string {
