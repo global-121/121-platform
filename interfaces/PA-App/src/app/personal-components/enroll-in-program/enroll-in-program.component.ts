@@ -78,7 +78,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
     for (const detail of details) {
       let value = this.mapLabelByLanguageCode(response[detail]);
 
-      if (!value) {
+      if (typeof value === 'undefined') {
         value = response[detail];
       }
 

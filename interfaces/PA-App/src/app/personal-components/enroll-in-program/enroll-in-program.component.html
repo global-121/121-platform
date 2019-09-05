@@ -97,4 +97,12 @@
       </ion-button>
     </p>
   </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo" *ngIf="hasConfirmed" isConnected="true">
+    <p>
+      {{ 'personal.enroll-in-program.prepare-documents'|translate }}
+    </p>
+    <p>
+      {{ program?.meetingDocuments|json }}
+    </p>
+  </dialogue-turn>
 </section>

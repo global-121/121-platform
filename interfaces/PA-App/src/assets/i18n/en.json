@@ -32,7 +32,8 @@
       "submit-confirm": "Submit my answers",
       "change": "Change my answers",
       "confirm-received": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",
-      "more-info-activation": "More about activation"
+      "more-info-activation": "More about activation",
+      "prepare-documents": "Gather your documents. To save time at your meeting, make sure to bring these:"
     },
     "initial-needs": {
       "introduction": "In order to help you as best as possible, please tell us what your needs are.",
