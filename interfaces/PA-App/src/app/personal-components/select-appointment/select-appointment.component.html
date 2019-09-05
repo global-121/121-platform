@@ -1,59 +1,93 @@
 <section>
-  <ion-button (click)="getTimeslots()">API: GET Timeslots</ion-button>
-  <br>
-  <dialogue-turn actor="{{ngo}}">
-    {{ 'personal.select-appointment.introduction1'|translate }}
-    <br><br>
-    {{ 'personal.select-appointment.introduction2'|translate }}
+  <dialogue-turn [actor]="ngo">
+    <p>
+      {{ 'personal.select-appointment.introduction'|translate }}
+    </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
-    {{ 'personal.select-appointment.stepX'|translate }}
-    <br>
-    <ion-button>{{ 'personal.select-appointment.info-button'|translate }}</ion-button>
-    <ion-radio-group (ionChange)="changeTimeslot($event)">
+    <ion-radio-group name="timeslots"
+                     (ionChange)="changeTimeslot($event)"
+    >
       <ion-item *ngFor="let timeslot of timeslots"
                 color="light"
                 class="ion-no-padding ion-text-wrap"
       >
-        <ion-label>
-          {{ 'personal.select-appointment.timeslot'|translate }} {{timeslot.id}}:<br>
-          <ion-note>{{timeslot.startDate}} - {{timeslot.endDate}}</ion-note><br>
-          <ion-note>({{ timeslot.location }})</ion-note>
+        <ion-label class="ion-text-wrap">
+          <p>
+            {{ timeslot.startDate|date:dateFormat }}: {{ timeslot.startDate|date:timeFormat }}
+            -<br>
+            {{ timeslot.endDate|date:dateFormat }}: {{ timeslot.endDate|date:timeFormat }}
+          </p>
+          <ion-note class="ion-text-wrap">
+            {{ timeslot.location }}
+          </ion-note>
         </ion-label>
-        <ion-radio value="{{ timeslot.id }}"></ion-radio>
+        <ion-radio [value]="timeslot.id"></ion-radio>
       </ion-item>
     </ion-radio-group>
-    <br>
-    <ion-button [hidden]="!timeslotChoice" (click)="submitTimeslot()">{{ 'shared.submit-button'|translate }}</ion-button>
-    <br>
+    <p class="ion-margin-top">
+      <ion-button *ngIf="timeslotChoice"
+                  (click)="submitTimeslot()"
+                  size="block"
+      >{{ 'shared.submit-button'|translate }}</ion-button>
+    </p>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!timeslotSubmitted" actor="{{ngo}}">
-    {{ 'personal.select-appointment.conclusion1'|translate }} {{timeslotChoiceName}}.
-    <br><br>
-    {{ 'personal.select-appointment.conclusion2'|translate }}
-    <br>
-    <ion-list>
-      <ion-item *ngFor="let document of meetingDocuments">
-        {{document}}
-      </ion-item>
-    </ion-list>
+  <dialogue-turn [actor]="ngo" *ngIf="timeslotSubmitted">
+    <p>
+      {{ 'personal.select-appointment.thanks-repeat'|translate }}
+    </p>
+    <p>
+      {{ 'personal.select-appointment.from'|translate }}:
+      <strong>
+        {{ chosenTimeslot.startDate|date:dateFormat }}: {{ chosenTimeslot.startDate|date:timeFormat }}
+      </strong>
+      <br>
+      {{ 'personal.select-appointment.till'|translate }}:
+      <strong>
+        {{ chosenTimeslot.endDate|date:dateFormat }}: {{ chosenTimeslot.endDate|date:timeFormat }}
+      </strong>
+      <br>
+      {{ 'personal.select-appointment.at'|translate }}:
+      <strong>{{ chosenTimeslot.location }}</strong>
+    </p>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!timeslotSubmitted" actor="self">
-    {{ 'personal.select-appointment.confirm'|translate }}
-    <br>
-    <ion-button>{{ 'personal.select-appointment.info-documents'|translate }}</ion-button>
-    <ion-radio-group (ionChange)="changeConfirmOption($event)">
-      <ion-item *ngFor="let option of confirmOptions"
-                color="light"
+  <dialogue-turn actor="self" *ngIf="timeslotSubmitted">
+    <ion-radio-group (ionChange)="changeConfirmAction($event)">
+      <ion-item color="light"
                 class="ion-no-padding ion-text-wrap"
       >
-        <ion-label>{{option.option}}</ion-label>
-        <ion-radio value="{{ option.id }}"></ion-radio>
+        <ion-label>{{ 'personal.select-appointment.confirm'|translate }}</ion-label>
+        <ion-radio value="confirm"></ion-radio>
+      </ion-item>
+      <ion-item color="light"
+                class="ion-no-padding ion-text-wrap"
+      >
+        <ion-label>{{ 'personal.select-appointment.change'|translate }}</ion-label>
+        <ion-radio value="change"></ion-radio>
       </ion-item>
     </ion-radio-group>
-    <ion-button [hidden]="!confirmOptionChoice" (click)="submitAppointment(confirmOptionChoice)">{{ 'shared.submit-button'|translate }}</ion-button>
+    <p class="ion-margin-top">
+      <ion-button *ngIf="confirmAction"
+                  (click)="submitConfirmAction(confirmAction)"
+                  size="block"
+      >{{ 'shared.submit-button'|translate }}</ion-button>
+    </p>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!appointmentConfirmed" actor="{{ngo}}">
-    {{ 'personal.select-appointment.conclusion'|translate }}
+  <dialogue-turn [actor]="ngo" *ngIf="appointmentConfirmed">
+    <p>
+      {{ 'personal.select-appointment.conclusion'|translate }}
+    </p>
+    <p>
+      {{ 'personal.select-appointment.documents'|translate }}<br>
+      <span *ngFor="let document of meetingDocuments">
+        {{ document }}<br>
+      </span>
+    </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.select-appointment.more-info-documents'|translate }}
+      </ion-button>
+    </p>
   </dialogue-turn>
 </section>

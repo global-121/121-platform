@@ -8,6 +8,7 @@ import { JwtService } from './jwt.service';
 
 import { Program } from '../models/program.model';
 import { InclusionStatus } from '../models/inclusion-status.model';
+import { Timeslot } from '../models/timeslot.model';
 
 @Injectable({
   providedIn: 'root'
@@ -105,17 +106,22 @@ export class ProgramsServiceApiService {
   }
 
 
-  getTimeslots(programId: string): Observable<Program[]> {
+  getTimeslots(programId: string): Observable<Timeslot[]> {
     return this.apiService.get(
       environment.url_121_service_api,
       '/appointment/availability/' + programId
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => response)
+      map(response => {
+        // First 'unwrap' response:
+        response = response[0];
+
+        return response;
+      })
     );
   }
 
-  postAppointment(timeslotId: string, did: string): Observable<any> {
+  postAppointment(timeslotId: number, did: string): Observable<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/appointment/register/' + timeslotId,
