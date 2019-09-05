@@ -22,9 +22,11 @@
                 class="ion-no-padding ion-text-wrap"
       >
         <ion-label>
-          {{ program.title.en }}
+          {{ program.title }}
           <br>
-          <ion-note>{{ program.description.en }}</ion-note>
+          <ion-note class="ion-text-wrap">
+            {{ program.description }}
+          </ion-note>
         </ion-label>
         <ion-radio value="{{ program.id }}"></ion-radio>
       </ion-item>
