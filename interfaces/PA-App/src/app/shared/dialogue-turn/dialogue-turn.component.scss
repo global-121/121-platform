@@ -1,6 +1,8 @@
 .dialogue-turn {
-  --dialogue-turn--margin-around-card-vertical: 13px;
-  --dialogue-turn--margin-around-card-horizontal: -4px;
+  --dialogue-turn--speech-arrow-width: 12px;
+  --dialogue-turn--speech-arrow-height: 8px;
+  --dialogue-turn--margin-around-card-vertical: 10px;
+  --dialogue-turn--margin-around-card-horizontal: -12px;
 
   display: flex;
   padding: 0.5em;
@@ -9,22 +11,23 @@
 .dialogue-turn--actor {
   order: 1;
 
-  max-width: 25%;
+  max-width: 20%;
 }
 
 .dialogue-turn--content {
   position: relative;
   order: 2;
 
-  width: 75%;
-  max-width: 75%;
+  width: 80%;
+  max-width: 80%;
 }
+
 .dialogue-turn--speech-arrow {
   display: block;
   position: absolute;
   top: var(--dialogue-turn--margin-around-card-vertical);
 
-  border-width: 0.75em 1em;
+  border-width: var(--dialogue-turn--speech-arrow-height) var(--dialogue-turn--speech-arrow-width);
   border-style: solid;
   border-color: transparent;
 }
