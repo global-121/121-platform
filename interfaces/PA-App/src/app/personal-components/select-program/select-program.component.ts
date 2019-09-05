@@ -4,6 +4,9 @@ import { PersonalComponent } from '../personal-component.interface';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { TranslateService } from '@ngx-translate/core';
+
+import { Program } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-select-program',
@@ -11,22 +14,27 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./select-program.component.scss'],
 })
 export class SelectProgramComponent implements PersonalComponent {
+  private languageCode: string;
+  private fallbackLanguageCode: string;
+
   private countryChoice: string;
-  public programs: any;
+
+  public programs: Program[];
   public programChoice: number;
-  public program: any;
-  public programTitle: string;
-  public languageCode: string;
+  public program: Program;
 
   constructor(
     public programsService: ProgramsServiceApiService,
     public storage: Storage,
     public conversationService: ConversationService,
-  ) { }
+    public translate: TranslateService,
+  ) {
+    this.fallbackLanguageCode = this.translate.getDefaultLang();
+  }
 
   ngOnInit() {
     this.storage.get('languageChoice').then(value => {
-      this.languageCode = value ? value : 'en';
+      this.languageCode = value;
     });
     this.getPrograms();
   }
@@ -35,10 +43,25 @@ export class SelectProgramComponent implements PersonalComponent {
     this.storage.get('countryChoice').then(value => {
       this.countryChoice = value;
 
-      this.programsService.getProgramsByCountryId(this.countryChoice).subscribe(response => {
+      this.programsService.getProgramsByCountryId(this.countryChoice).subscribe((response: Program[]) => {
         this.programs = response;
+
+        this.programs.forEach((program: Program, index: number) => {
+          this.programs[index].title = this.mapLabelByLanguageCode(program.title);
+          this.programs[index].description = this.mapLabelByLanguageCode(program.description);
+        });
       });
     });
+  }
+
+  private mapLabelByLanguageCode(property: any) {
+    let label = property[this.languageCode];
+
+    if (!label) {
+      label = property[this.fallbackLanguageCode];
+    }
+
+    return label;
   }
 
   private storeProgram(programChoice: any) {
