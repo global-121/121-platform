@@ -1,29 +1,40 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { PersonalComponent } from '../personal-component.interface';
+
+import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
+
+import { Timeslot } from 'src/app/models/timeslot.model';
+import { Program } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-select-appointment',
   templateUrl: './select-appointment.component.html',
   styleUrls: ['./select-appointment.component.scss'],
 })
-export class SelectAppointmentComponent implements OnInit {
+export class SelectAppointmentComponent implements PersonalComponent {
   public languageCode: string;
   public fallbackLanguageCode: string;
+  public dateFormat = 'EEE, dd-MM-yyyy';
+  public timeFormat = 'HH:mm';
 
-  public timeslots: any;
-  public timeslotChoice: number;
-  public timeslotSubmitted: boolean;
-  public timeslotChoiceName: any;
-  public confirmOptions: any;
-  public confirmOptionChoice: number;
-  public appointmentConfirmed: boolean;
-
-  public meetingDocuments: any;
   public ngo: string;
 
+  public timeslots: Timeslot[];
+  public timeslotChoice: number;
+  public chosenTimeslot: Timeslot;
+
+  public timeslotSubmitted: boolean;
+
+  public confirmAction: string;
+  public appointmentConfirmed: boolean;
+
+  public meetingDocuments: string[];
+
   constructor(
+    public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     public translate: TranslateService,
     public storage: Storage,
@@ -32,12 +43,8 @@ export class SelectAppointmentComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.confirmOptions = [
-      { id: 1, option: this.translate.instant('personal.select-appointment.option1') },
-      { id: 2, option: this.translate.instant('personal.select-appointment.option2') },
-    ];
     this.getLanguageChoice();
-    this.getProgramProperties();
+    this.getProgram();
   }
 
   private getLanguageChoice() {
@@ -46,20 +53,28 @@ export class SelectAppointmentComponent implements OnInit {
     });
   }
 
-  public getTimeslots(): any {
-    this.storage.get('programChoice').then(value => {
-      this.programsService.getTimeslots(value).subscribe(response => {
-        this.timeslots = response[0];
-      });
+  private getProgram() {
+    this.storage.get('programChoice').then(programId => {
+      this.getProgramProperties(programId);
+      this.getTimeslots(programId);
     });
   }
 
-  public getProgramProperties(): any {
-    this.storage.get('programChoice').then(value => {
-      this.programsService.getProgramById(value).subscribe(response => {
-        this.meetingDocuments = this.mapLabelByLanguageCode(response.meetingDocuments).split(';');
+  private getProgramProperties(programId) {
+    this.programsService.getProgramById(programId).subscribe((response: Program) => {
+      if (response.ngo) {
         this.ngo = response.ngo;
-      });
+      }
+      if (response.meetingDocuments) {
+        const documents = this.mapLabelByLanguageCode(response.meetingDocuments);
+        this.meetingDocuments = this.buildDocumentsList(documents);
+      }
+    });
+  }
+
+  private getTimeslots(programId: any) {
+    this.programsService.getTimeslots(programId).subscribe((response: Timeslot[]) => {
+      this.timeslots = response;
     });
   }
 
@@ -73,59 +88,64 @@ export class SelectAppointmentComponent implements OnInit {
     return label;
   }
 
-  public getTimeslotName(timeslotId: number): string {
-    const timeslot = this.timeslots.find(item => {
-      return item.id === timeslotId;
-    });
-
-    return timeslot ? timeslot.startDate.concat(' - ', timeslot.endDate, ' (', timeslot.location, ')') : '';
-  }
-
-  private setTimeslotChoiceName(timeslotChoice: string) {
-    const timeslotId = parseInt(timeslotChoice, 10);
-
-    this.timeslotChoiceName = this.getTimeslotName(timeslotId);
+  private buildDocumentsList(documents: string): string[] {
+    return documents.split(';');
   }
 
   private storeTimeslot(timeslotChoice: any) {
     this.storage.set('timeslotChoice', timeslotChoice);
   }
 
+  private getTimeslotById(timeslotId: number) {
+    return this.timeslots.find((item: Timeslot) => item.id === timeslotId);
+  }
+
   public changeTimeslot($event) {
+    this.timeslotChoice = parseInt($event.detail.value, 10);
     this.timeslotSubmitted = false;
-    const timeslotChoice = $event.detail.value;
-    this.timeslotChoice = timeslotChoice;
-    this.storeTimeslot(timeslotChoice);
-    this.setTimeslotChoiceName(timeslotChoice);
+
+    this.chosenTimeslot = this.getTimeslotById(this.timeslotChoice);
+    this.storeTimeslot(this.timeslotChoice);
   }
 
   public submitTimeslot() {
     this.timeslotSubmitted = true;
   }
 
-  public changeConfirmOption($event) {
-    const confirmOptionChoice = $event.detail.value;
-    this.confirmOptionChoice = confirmOptionChoice;
+  public changeConfirmAction($event) {
+    this.confirmAction = $event.detail.value;
   }
 
-  public postAppointment(did: string): any {
-    this.storage.get('timeslotChoice').then(value => {
-      this.programsService.postAppointment(value, did).subscribe(response => {
-        console.log('response: ', response);
-        this.appointmentConfirmed = true;
-      });
-    });
-  }
-
-  public submitAppointment(confirmOptionChoice) {
+  public submitConfirmAction(action: string) {
     // This needs a check on 'already confirmed for this did' (max 1 timeslot-selection allowed)
-    // tslint:disable: triple-equals
-    if (confirmOptionChoice == 1) {
-      this.postAppointment('did:sov:1235j123lk5');
-    } else if (confirmOptionChoice == 2) {
+    if (action === 'confirm') {
+      this.postAppointment(this.timeslotChoice, 'did:sov:1235j123lk5');
+    } else if (action === 'change') {
       this.timeslotSubmitted = false;
       this.appointmentConfirmed = false;
     }
   }
 
+  public postAppointment(timeslotId: number, did: string) {
+    this.programsService.postAppointment(timeslotId, did).subscribe(() => {
+      this.appointmentConfirmed = true;
+
+      this.complete();
+    });
+  }
+
+  getNextSection() {
+    console.log('Done!');
+    return '';
+  }
+
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: 'select-appointment',
+      data: {
+        timeslot: this.chosenTimeslot,
+      },
+      next: this.getNextSection(),
+    });
+  }
 }

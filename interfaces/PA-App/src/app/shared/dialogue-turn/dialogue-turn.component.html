@@ -19,15 +19,13 @@
       <b style="margin:auto">{{actor}}</b>
     </ion-avatar>
   </div>
-  <div class="dialogue-turn--content"
-       [ngClass]="isSelf ? 'ion-padding-end' : 'ion-padding-start'"
-  >
+  <div class="dialogue-turn--content">
     <ion-card [color]="isSelf ? 'light' : 'dark'">
       <ion-card-content>
 
         <ng-content></ng-content>
 
-        <ion-note class="ion-float-end ion-text-end ion-margin-top"
+        <ion-note class="ion-float-end ion-text-end"
                   [color]="isSelf ? '' : 'light'"
         >
           <small>{{ moment|date:"EEEE, d LLL" }} - <strong>{{ moment|date:"hh:mm" }}</strong></small>

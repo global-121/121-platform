@@ -55,7 +55,9 @@ export class ConversationService {
     console.log('ConverstaionService  onSectionCompleted(): ', section);
 
     // Instruct PersonalPage to insert the next section
-    this.sectionCompletedSource.next(section.next);
+    if (section.next) {
+      this.sectionCompletedSource.next(section.next);
+    }
   }
 
   public getConversationUpToNow(): ConversationSection[] {
