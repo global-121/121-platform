@@ -30,7 +30,9 @@
       "submit": "Save my answers",
       "please-confirm": "Thank you. Please confirm and submit your answers.",
       "submit-confirm": "Submit my answers",
-      "change": "Change my answers"
+      "change": "Change my answers",
+      "confirm-received": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",
+      "more-info-activation": "More about activation"
     },
     "initial-needs": {
       "introduction": "In order to help you as best as possible, please tell us what your needs are.",
@@ -79,7 +81,6 @@
     },
     "select-program": {
       "introduction": "You can now select a program.",
-      "next-step": "Next step: Select a program:",
       "more-info-programs": "More about programs",
       "program": "Program"
     }

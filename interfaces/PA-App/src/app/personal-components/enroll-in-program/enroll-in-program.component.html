@@ -1,7 +1,7 @@
 <section>
   <dialogue-turn [actor]="program?.ngo">
+    <p [innerHTML]="introductionText"></p>
     <p>
-      <span [innerHTML]="introductionText"></span><br>
       {{ 'personal.enroll-in-program.introduction-questions'|translate }}
     </p>
     <p>
@@ -83,6 +83,17 @@
                   fill="outline"
       >
         {{ 'personal.enroll-in-program.change'|translate }}
+      </ion-button>
+    </p>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo" *ngIf="hasConfirmed">
+    <p>
+      {{ 'personal.enroll-in-program.confirm-received'|translate }}
+    </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.enroll-in-program.more-info-activation'|translate }}
       </ion-button>
     </p>
   </dialogue-turn>

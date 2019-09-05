@@ -27,6 +27,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
   public answers: any = {};
 
   public hasAnswered: boolean;
+  public hasConfirmed: boolean;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -178,7 +179,12 @@ export class EnrollInProgramComponent implements PersonalComponent {
   public submitConfirm() {
     console.log('submitConfirm()');
 
-    this.complete();
+    window.setTimeout(() => {
+      this.hasConfirmed = true;
+
+      // TODO: POST answers to API; when successful complete()
+      this.complete();
+    }, 3000);
   }
 
   getNextSection() {
