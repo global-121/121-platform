@@ -33,10 +33,14 @@ export class SelectProgramComponent implements PersonalComponent {
   }
 
   ngOnInit() {
+    this.getLanguageChoice();
+    this.getPrograms();
+  }
+
+  private getLanguageChoice() {
     this.storage.get('languageChoice').then(value => {
       this.languageCode = value;
     });
-    this.getPrograms();
   }
 
   private getPrograms(): any {
