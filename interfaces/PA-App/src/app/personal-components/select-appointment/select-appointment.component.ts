@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { TranslateService } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
-import { CustomTranslateService } from 'src/app/services/custom-translate.service';
 
 @Component({
   selector: 'app-select-appointment',
@@ -9,6 +9,9 @@ import { CustomTranslateService } from 'src/app/services/custom-translate.servic
   styleUrls: ['./select-appointment.component.scss'],
 })
 export class SelectAppointmentComponent implements OnInit {
+  public languageCode: string;
+  public fallbackLanguageCode: string;
+
   public timeslots: any;
   public timeslotChoice: number;
   public timeslotSubmitted: boolean;
@@ -16,25 +19,31 @@ export class SelectAppointmentComponent implements OnInit {
   public confirmOptions: any;
   public confirmOptionChoice: number;
   public appointmentConfirmed: boolean;
+
   public meetingDocuments: any;
-  public languageCode: string;
   public ngo: string;
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    public customTranslateService: CustomTranslateService,
+    public translate: TranslateService,
     public storage: Storage,
-  ) { }
+  ) {
+    this.fallbackLanguageCode = this.translate.getDefaultLang();
+  }
 
   ngOnInit() {
     this.confirmOptions = [
-      { id: 1, option: this.customTranslateService.translate('personal.select-appointment.option1') },
-      { id: 2, option: this.customTranslateService.translate('personal.select-appointment.option2') },
+      { id: 1, option: this.translate.instant('personal.select-appointment.option1') },
+      { id: 2, option: this.translate.instant('personal.select-appointment.option2') },
     ];
-    this.storage.get('languageChoice').then(value => {
-      this.languageCode = value ? value : 'en';
-    });
+    this.getLanguageChoice();
     this.getProgramProperties();
+  }
+
+  private getLanguageChoice() {
+    this.storage.get('languageChoice').then(value => {
+      this.languageCode = value;
+    });
   }
 
   public getTimeslots(): any {
@@ -48,10 +57,20 @@ export class SelectAppointmentComponent implements OnInit {
   public getProgramProperties(): any {
     this.storage.get('programChoice').then(value => {
       this.programsService.getProgramById(value).subscribe(response => {
-        this.meetingDocuments = response.meetingDocuments[this.languageCode].split(';');
+        this.meetingDocuments = this.mapLabelByLanguageCode(response.meetingDocuments).split(';');
         this.ngo = response.ngo;
       });
     });
+  }
+
+  private mapLabelByLanguageCode(property: any) {
+    let label = property[this.languageCode];
+
+    if (!label) {
+      label = property[this.fallbackLanguageCode];
+    }
+
+    return label;
   }
 
   public getTimeslotName(timeslotId: number): string {

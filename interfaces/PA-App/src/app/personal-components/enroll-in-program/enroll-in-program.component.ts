@@ -15,6 +15,7 @@ import { Program } from 'src/app/models/program.model';
 })
 export class EnrollInProgramComponent implements PersonalComponent {
   public languageCode: string;
+  public fallbackLanguageCode: string;
 
   public program: any;
   public programTitle: string;
@@ -32,7 +33,9 @@ export class EnrollInProgramComponent implements PersonalComponent {
     public storage: Storage,
     public translate: TranslateService,
     public conversationService: ConversationService,
-  ) { }
+  ) {
+    this.fallbackLanguageCode = this.translate.getDefaultLang();
+  }
 
   ngOnInit() {
     this.getLanguageChoice();
@@ -54,29 +57,35 @@ export class EnrollInProgramComponent implements PersonalComponent {
   public getProgramDetailsById(programId: string) {
     this.programsService.getProgramById(programId).subscribe((response: Program) => {
 
-      this.programTitle = response.title[this.languageCode];
+      this.programTitle = this.mapLabelByLanguageCode(response.title);
       this.introductionText = this.translate.instant('personal.enroll-in-program.introduction', {
         programTitle: this.programTitle,
       });
 
-      this.buildDetails(response, this.languageCode);
-      this.buildQuestions(response.customCriteria, this.languageCode);
+      this.buildDetails(response);
+      this.buildQuestions(response.customCriteria);
     });
   }
 
-  private buildDetails(response: Program, languageCode: string) {
+  private buildDetails(response: Program) {
     const details = [
       'ngo',
       'description',
-      'distributionChannel',
+      'meetingDocuments',
     ];
     this.program = [];
     for (const detail of details) {
-      this.program[detail] = response[detail][languageCode] ? response[detail][languageCode] : response[detail];
+      let value = this.mapLabelByLanguageCode(response[detail]);
+
+      if (!value) {
+        value = response[detail];
+      }
+
+      this.program[detail] = value;
     }
   }
 
-  private buildQuestions(customCriteria: Program['customCriteria'], languageCode: string) {
+  private buildQuestions(customCriteria: Program['customCriteria']) {
     this.questions = [];
 
     for (const criterium of customCriteria) {
@@ -84,14 +93,14 @@ export class EnrollInProgramComponent implements PersonalComponent {
         id: criterium.id,
         code: criterium.criterium,
         answerType: criterium.answerType,
-        label: criterium.label[languageCode],
-        options: this.buildOptions(criterium.options, languageCode),
+        label: this.mapLabelByLanguageCode(criterium.label),
+        options: this.buildOptions(criterium.options),
       };
       this.questions.push(question);
     }
   }
 
-  private buildOptions(optionsRaw: any[], languageCode: string): QuestionOption[] {
+  private buildOptions(optionsRaw: any[]): QuestionOption[] {
     if (!optionsRaw) {
       return;
     }
@@ -102,12 +111,22 @@ export class EnrollInProgramComponent implements PersonalComponent {
       const questionOption: QuestionOption = {
         id: option.id,
         value: option.option,
-        label: option.label[languageCode],
+        label: this.mapLabelByLanguageCode(option.label),
       };
       options.push(questionOption);
     }
 
     return options;
+  }
+
+  private mapLabelByLanguageCode(property: any) {
+    let label = property[this.languageCode];
+
+    if (!label) {
+      label = property[this.fallbackLanguageCode];
+    }
+
+    return label;
   }
 
   private getQuestionByCode(questionCode: string): Question {
