@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  url_121_service_api: '',
 };
