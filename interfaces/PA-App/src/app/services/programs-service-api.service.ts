@@ -92,6 +92,36 @@ export class ProgramsServiceApiService {
       );
   }
 
+  getConnectionRequest(): Observable<any> {
+    console.log('getConnectionRequest');
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        '/sovrin/create-connection'
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
+
+  postConnectionResponse(did: string, verkey: string, nonce: string, meta: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/create-connection',
+      {
+        did,
+        verkey,
+        nonce,
+        meta
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
   getCredential(did: string): Observable<any> {
     console.log('getCredentials');
     return this.apiService

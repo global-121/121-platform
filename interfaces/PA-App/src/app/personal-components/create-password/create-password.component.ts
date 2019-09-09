@@ -4,6 +4,7 @@ import { PersonalComponent } from '../personal-component.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-create-password',
@@ -21,11 +22,14 @@ export class CreatePasswordComponent implements PersonalComponent {
   private paAccountPassword: string;
   private paWalletName: string;
   private did = 'empty';  // Replaced after response from UserIMS create-did call
+  private wallet: any;
+  private correlation: any;
 
   constructor(
     public conversationService: ConversationService,
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
+    public programsServiceApiService: ProgramsServiceApiService,
   ) { }
 
   ngOnInit() {
@@ -38,14 +42,57 @@ export class CreatePasswordComponent implements PersonalComponent {
       return;
     }
 
-    await this.createPaAccount(create);
-    await this.storeWalletName(this.paAccountUsername);
-    // await this.createWalletDid(this.paWalletName, this.paAccountPassword);
-    await this.storeDid(this.paAccountUsername);
+    this.sovrinSetup(create);
 
     this.passwordCreated = true;
 
     this.complete();
+  }
+
+  async sovrinSetup(password) {
+
+    // 1. Create PA-account using supplied password + random username
+    const paAccountUsername = this.makeRandomUsername(16);
+    const paAccountPassword = password;
+    this.paCreateAccount(paAccountUsername, paAccountPassword);
+
+    // 2. Create (random) wallet-name and store in PA-account
+    const paWalletName = this.makeRandomUsername(16);
+    this.paStoreWalletName(paAccountUsername, paWalletName);
+
+    // 3. Create Sovrin wallet using previously created wallet-name and wallet-password equal to account-password
+    const wallet = {
+      id: paWalletName,
+      passKey: paAccountPassword,
+    };
+    const correlation = {
+      correlationID: 'test'
+    };
+    await this.sovrinCreateWallet(wallet, correlation);
+
+    // 4. Generate Sovrin DID and store in wallet
+    const result = await this.sovrinCreateStoreDid(wallet, correlation);
+
+    // 5. Store Sovrin DID in PA-account
+    const didShort = result.did;
+    const did = 'did:sov:' + didShort;
+    this.storeDid(paAccountUsername, did);
+
+    // Get connection-request (NOTE: in the MVP-setup this is not actually needed/used, because of lack of pairwise connection + encryption)
+    const connectionRequest = this.getConnectionRequest();
+
+    // Post connection-response
+    const connectionResponse = {
+      did: did,
+      verkey: 'verkey:sample',
+      nonce: '123456789',
+      meta: 'meta:sample'
+    };
+    this.postConnectionResponse(connectionResponse);
+
+
+
+
   }
 
   makeRandomUsername(length: number) {
@@ -58,57 +105,64 @@ export class CreatePasswordComponent implements PersonalComponent {
     return result;
   }
 
-  createPaAccount(create) {
-    this.paAccountUsername = this.makeRandomUsername(16);
-    this.paAccountPassword = create;
-    this.paAccountApiService.create(this.paAccountUsername, this.paAccountPassword).subscribe((responseCreate) => {
-      console.log('response: ', responseCreate);
+  paCreateAccount(paAccountUsername, paAccountPassword) {
+    this.paAccountApiService.create(paAccountUsername, paAccountPassword).subscribe((response) => {
+      console.log('response: ', response);
     });
   }
 
-  storeWalletName(paAccountUsername) {
-    this.paWalletName = this.makeRandomUsername(16);
-    this.paAccountApiService.store(paAccountUsername, 'walletName', this.paWalletName).subscribe((responseStore) => {
-      console.log('response: ', responseStore);
+  paStoreWalletName(paAccountUsername, paWalletName) {
+    this.paAccountApiService.store(paAccountUsername, 'walletName', paWalletName).subscribe((response) => {
+      console.log('response: ', response);
     });
   }
 
-
-  async createWalletDid(paWalletName, paWalletPassword) {
-
-    // Create input for UserIMS calls
-    const wallet = {
-      id: paWalletName,
-      passKey: paWalletPassword,
-    };
-    const correlation = {
-      correlationID: 'test'
-    };
-
-    // Create wallet
+  async sovrinCreateWallet(wallet: any, correlation: any): Promise<void> {
     await this.userImsApiService.createWallet(
       JSON.parse(JSON.stringify(wallet)),
       JSON.parse(JSON.stringify(correlation))
-    ).subscribe((response) => {
-      console.log('response: ', response);
-    });
+    ).toPromise();
+    // .subscribe((response) => {
+    //   console.log('response: ', response);
+    // });
+  }
 
-    // Create DID and store in wallet
-    await this.userImsApiService.createStoreDid(
+  // Create DID and store in wallet
+  async sovrinCreateStoreDid(wallet: any, correlation: any): Promise<any> {
+    return await this.userImsApiService.createStoreDid(
       JSON.parse(JSON.stringify(wallet)),
       JSON.parse(JSON.stringify(correlation))
+    ).toPromise();
+    // .subscribe((response2) => {
+    //   console.log('response: ', response2);
+    //   this.did = response2.did;
+    // });
+  }
+
+  storeDid(paAccountUsername, did) {
+    this.paAccountApiService.store(paAccountUsername, 'did', did).subscribe((response) => {
+      console.log('response: ', response);
+    });
+  }
+
+  getConnectionRequest() {
+    this.programsServiceApiService.getConnectionRequest().subscribe((response) => {
+      console.log('response: ', response);
+    });
+  }
+
+  postConnectionResponse(connectionReponse: any) {
+    this.programsServiceApiService.postConnectionResponse(
+      connectionReponse.did,
+      connectionReponse.verkey,
+      connectionReponse.nonce,
+      connectionReponse.meta
     ).subscribe((response) => {
       console.log('response: ', response);
-      this.did = response.did;
-    });
-
-  }
-
-  storeDid(paAccountUsername) {
-    this.paAccountApiService.store(paAccountUsername, 'did', this.did).subscribe((response) => {
-      console.log('response: ', response);
     });
   }
+
+
 
   getNextSection() {
     return 'create-identity-details';
