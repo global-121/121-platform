@@ -158,6 +158,9 @@ export class CredentialService {
 
   // Used by Aidworker
   public async issue(payload: CredentialIssueDto): Promise<void> {
+
+    await this.checkForOldCredential(payload.did, payload.programId);
+
     // Get related credential offer
     const program = await this.getRelatedProgram(payload.programId);
     const credentialOffer = program.credOffer;
@@ -193,8 +196,9 @@ export class CredentialService {
     credentialData.credential = createdCredential;
     credentialData.did = payload.did;
     credentialData.program = program;
-    await this.checkForOldCredential(payload.did, payload.programId);
     await this.credentialRepository.save(credentialData);
+
+    await this.cleanupIssueCredData(payload.did, payload.programId);
   }
 
   private async getRelatedProgram(programId: number): Promise<ProgramEntity> {
@@ -257,6 +261,17 @@ export class CredentialService {
     }
   }
 
+  public async cleanupIssueCredData(did: string, programId: number) {
+    await this.credentialRequestRepository.delete({
+      program: {
+        id: programId,
+      },
+      did: did,
+    });
+    this.deletePrefilledAnswers(did, programId);
+
+  }
+
   // Used by PA
   public async get(did: string): Promise<EncryptedMessageDto> {
     const queryResult = await this.credentialRepository.findOne({
@@ -274,5 +289,11 @@ export class CredentialService {
     }
     const encrypyedCredential = { message: queryResult.credential };
     return encrypyedCredential;
+  }
+
+  public async delete(did: string): Promise<DeleteResult> {
+    const deleteResult = await this.credentialRepository.delete({ did: did });
+    console.log(deleteResult);
+    return deleteResult;
   }
 }
