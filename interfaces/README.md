@@ -34,3 +34,15 @@ Every interface or app will have their own requirements defined in their README 
 Every interface or app will refer to their specific services of APIs.
 
 See the [/services/](../services/)-directory in this repository.
+
+
+## Deployment
+
+### Building native apps
+To create 'native' versions of some of the interfaces, the following steps are required:
+
+- Generate assets for the platform of choice:
+  `npm run cordova -- resources <platform>` (where `<platform>` is `ios` or `android`)
+
+- Create a build:  
+  `npm run cordova -- build`
