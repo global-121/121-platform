@@ -16,13 +16,13 @@
          ></ion-textarea>
          <p class="ion-margin-top">
            <ion-button type="submit"
-                       [hidden]="!needs"
+                       *ngIf="needs"
                        size="block"
            >{{ 'personal.initial-needs.submit'|translate }}</ion-button>
          </p>
       </form>
     </dialogue-turn>
-    <dialogue-turn [hidden]="!needsSubmitted">
+    <dialogue-turn *ngIf="needsSubmitted">
       {{ 'personal.initial-needs.conclusion'|translate }}
     </dialogue-turn>
   </section>

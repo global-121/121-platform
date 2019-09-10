@@ -27,7 +27,7 @@
       </ion-item>
     </ion-radio-group>
     <div class="ion-margin-top">
-      <ion-button [hidden]="!programChoice"
+      <ion-button *ngIf="programChoice"
                   (click)="submitProgram()"
                   type="submit"
                   size="block"
