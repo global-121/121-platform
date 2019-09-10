@@ -5,21 +5,23 @@
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
-    <form id="selectLanguageForm">
+    <form>
       <ion-radio-group (ionChange)="changeLanguage($event)">
         <ion-item *ngFor="let language of languages"
                   color="light"
                   class="ion-no-padding ion-text-wrap"
         >
           <ion-label>{{ language.language }}</ion-label>
-          <ion-radio value="{{ language.id }}"></ion-radio>
+          <ion-radio [value]="language.id"
+                     [disabled]="languageSelected"
+          ></ion-radio>
         </ion-item>
       </ion-radio-group>
       <div class="ion-margin-top">
         <ion-button type="submit"
-                    id="selectLanguageAction"
-                    *ngIf="languageChoice"
+                    *ngIf="languageChoice && !languageSelected"
                     (click)="submitLanguage()"
+                    [disabled]="languageSelected"
                     size="block"
         >{{ 'shared.submit-button'|translate }}</ion-button>
       </div>
