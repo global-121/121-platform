@@ -42,14 +42,14 @@ export class CreatePasswordComponent implements PersonalComponent {
       return;
     }
 
-    this.sovrinSetup(create);
+    this.executeSovrinFlow(create);
 
     this.passwordCreated = true;
 
     this.complete();
   }
 
-  async sovrinSetup(password) {
+  async executeSovrinFlow(password) {
 
     // 1. Create PA-account using supplied password + random username
     const paAccountUsername = this.makeRandomUsername(16);

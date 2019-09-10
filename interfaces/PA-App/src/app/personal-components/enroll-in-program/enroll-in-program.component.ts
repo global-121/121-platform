@@ -179,6 +179,8 @@ export class EnrollInProgramComponent implements PersonalComponent {
   public submitConfirm() {
     console.log('submitConfirm()');
 
+    this.executeSovrinFlow()
+
     window.setTimeout(() => {
       this.hasConfirmed = true;
 
@@ -186,6 +188,22 @@ export class EnrollInProgramComponent implements PersonalComponent {
       this.complete();
     }, 3000);
   }
+
+  private async executeSovrinFlow() {
+
+    // Get Credential Offer for programId
+    const credentialOffer = this.getCredentialOffer();
+
+  }
+
+  getCredentialOffer() {
+    this.storage.get('programChoice').then(value => {
+      this.programsService.getCredentialOffer(value).subscribe((response) => {
+        console.log('response: ', response);
+      });
+    });
+  }
+
 
   getNextSection() {
     return 'select-appointment';

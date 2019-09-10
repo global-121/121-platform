@@ -122,6 +122,19 @@ export class ProgramsServiceApiService {
     );
   }
 
+  getCredentialOffer(programId: string): Observable<any> {
+    console.log('getCredentialOffer');
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        '/sovrin/credential/offer/' + programId
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
+
   getCredential(did: string): Observable<any> {
     console.log('getCredentials');
     return this.apiService
