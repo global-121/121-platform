@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
@@ -188,12 +189,12 @@ export class EnrollInProgramComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'select-appointment';
+    return PersonalComponents.selectAppointment;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'enroll-in-program',
+      name: PersonalComponents.enrollInProgram,
       data: {
         program: this.program,
         questions: this.questions,
