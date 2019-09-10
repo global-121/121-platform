@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
@@ -78,12 +79,12 @@ export class ChooseCredentialTypeComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'create-identity-password';
+    return PersonalComponents.createPassword;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'choose-credential-type',
+      name: PersonalComponents.chooseCredentialType,
       data: {
         credentialTypeChoice: this.credentialTypeChoice,
       },

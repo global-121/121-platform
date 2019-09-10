@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -65,12 +66,12 @@ export class SelectCountryComponent implements PersonalComponent {
   }
 
   getNextSection(): string {
-    return 'select-program';
+    return PersonalComponents.selectProgram;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'select-country',
+      name: PersonalComponents.selectCountry,
       data: {
         countryChoice: this.countryChoice,
         countryChoiceName: this.countryChoiceName,

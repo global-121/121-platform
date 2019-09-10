@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -141,7 +142,7 @@ export class SelectAppointmentComponent implements PersonalComponent {
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'select-appointment',
+      name: PersonalComponents.selectAppointment,
       data: {
         timeslot: this.chosenTimeslot,
       },

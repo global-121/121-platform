@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
@@ -111,12 +112,12 @@ export class CreatePasswordComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'create-identity-details';
+    return PersonalComponents.createIdentity;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'create-identity-password',
+      name: PersonalComponents.createPassword,
       data: {
         password: this.create,
       },

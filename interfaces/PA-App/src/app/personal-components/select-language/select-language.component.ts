@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
@@ -70,12 +71,12 @@ export class SelectLanguageComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'initial-needs';
+    return PersonalComponents.initialNeeds;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'select-language',
+      name: PersonalComponents.selectLanguage,
       data: {
         languageChoice: this.languageChoice,
         languageChoiceName: this.languageChoiceName,

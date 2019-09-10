@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 
@@ -28,12 +29,12 @@ export class InitialNeedsComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'choose-credential-type';
+    return PersonalComponents.chooseCredentialType;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'initial-needs',
+      name: PersonalComponents.initialNeeds,
       data: {
         needs: this.needs,
       },

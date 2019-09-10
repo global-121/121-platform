@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 
@@ -35,12 +36,12 @@ export class IdentityFormComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'select-country';
+    return PersonalComponents.selectCountry;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'create-identity-details',
+      name: PersonalComponents.createIdentity,
       data: {
         name: this.name,
         dob: this.dob,
