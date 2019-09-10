@@ -1,6 +1,79 @@
 version: '3.7'
 
 services:
+  indypool:
+    build:
+      context: ../../TyknSovrinService 
+      dockerfile: indy-pool.dockerfile
+      args:
+        pool_ip: '10.0.0.2'
+    init: true
+    container_name: tykn_indy_pool
+    healthcheck:
+      test: "exit 0"
+    ports:
+      - "9701:9701"
+      - "9702:9702"
+      - "9703:9703"
+      - "9704:9704"
+      - "9705:9705"
+      - "9706:9706"
+      - "9707:9707"
+      - "9708:9708"
+    networks:
+      pool_network:
+        ipv4_address: 10.0.0.2
+  tyknims:
+    build: 
+      context: ../../TyknSovrinService/TyknIMS  
+      dockerfile: Dockerfile
+    init: true
+    container_name: tyknims
+    ports:
+      - "50001:50001"
+    networks:
+      pool_network:
+        ipv4_address: 10.0.0.3
+    healthcheck:
+      test: "exit 0"
+    depends_on:
+      - indypool
+    links:
+      - indypool
+  orgims:
+    build:
+      context: ../../TyknSovrinService/OrgIMS  
+      dockerfile: Dockerfile
+    init: true
+    container_name: orgims
+    ports:
+      - "50002:50002"
+    networks:
+      pool_network:
+        ipv4_address: 10.0.0.4
+    depends_on:
+      - indypool
+      - tyknims
+    links:
+      - indypool
+      - tyknims
+    restart: on-failure
+  userims:
+    build: 
+      context: ../../TyknSovrinService/UserIMS 
+      dockerfile: Dockerfile
+    init: true
+    container_name: userims
+    ports:
+      - "50003:50003"
+    networks:
+      pool_network:
+        ipv4_address: 10.0.0.5
+    depends_on:
+      - indypool
+      - tyknims
+    links:
+      - indypool
   121db:
     image: "postgres:9.6"
     init: true
@@ -16,10 +89,11 @@ services:
       - "5438:5432"
     restart: always
     networks:
-      121network:
+      pool_network:
+        ipv4_address: 10.0.0.6
   121-service:
     build: 
-      context: 121-service  
+      context: 121-service
       dockerfile: Dockerfile
     init: true
     container_name: 121-service
@@ -30,10 +104,11 @@ services:
     stdin_open: true
     tty: true
     networks:
-      121network:
+      pool_network:
+        ipv4_address: 10.0.0.7
   PA-accounts-service:
     build:
-      context: PA-accounts-service 
+      context: PA-accounts-service
       dockerfile: Dockerfile
     image: pa-accounts-node
     init: true
@@ -44,8 +119,14 @@ services:
       - "3001:3001"
     stdin_open: true
     tty: true
-    networks: 
-      121network:
+    networks:
+      pool_network:
+        ipv4_address: 10.0.0.8
 
 networks:
-  121network:
+  pool_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.0.0/24
