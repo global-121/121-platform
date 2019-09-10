@@ -13,6 +13,7 @@ export class InitialNeedsComponent implements PersonalComponent {
 
   public needs: any;
   public needsSubmitted: boolean;
+  public needsReceived: boolean;
 
   constructor(
     public conversationService: ConversationService,
@@ -25,7 +26,12 @@ export class InitialNeedsComponent implements PersonalComponent {
     console.log('needs-input: ', needsInput, this.needs);
     this.needsSubmitted = true;
 
-    this.complete();
+    // TODO: POST answers to API; when successful complete()
+    window.setTimeout(() => {
+      this.needsReceived = true;
+
+      this.complete();
+    }, 1000);
   }
 
   getNextSection() {

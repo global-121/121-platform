@@ -1,6 +1,8 @@
 <section #initialNeeds>
     <dialogue-turn>
-      {{ 'personal.initial-needs.introduction'|translate }}
+      <p>
+        {{ 'personal.initial-needs.introduction'|translate }}
+      </p>
     </dialogue-turn>
     <dialogue-turn actor="self">
       <form (ngSubmit)="submitNeeds(needs)">
@@ -13,16 +15,20 @@
                       wrap="soft"
                       rows="4"
                       placeholder="{{ 'personal.initial-needs.input-placeholder'|translate }}"
+                      [disabled]="needsSubmitted"
          ></ion-textarea>
          <p class="ion-margin-top">
            <ion-button type="submit"
-                       *ngIf="needs"
+                       *ngIf="needs && !needsSubmitted"
                        size="block"
+                       [disabled]="needsSubmitted"
            >{{ 'personal.initial-needs.submit'|translate }}</ion-button>
          </p>
       </form>
     </dialogue-turn>
-    <dialogue-turn *ngIf="needsSubmitted">
-      {{ 'personal.initial-needs.conclusion'|translate }}
+    <dialogue-turn *ngIf="needsReceived">
+      <p>
+        {{ 'personal.initial-needs.conclusion'|translate }}
+      </p>
     </dialogue-turn>
   </section>
