@@ -1,7 +1,7 @@
 AW-App
 ======
 
-The front-end of the application *Aidworker* use to interact with the 121-platform.
+The front-end of the application an *Aid-Worker* uses to interact with the 121-platform.
 
 ## Getting Started
 - Install [environment requirements](../README.md)
