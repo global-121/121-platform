@@ -15,7 +15,6 @@ export class SelectLanguageComponent implements PersonalComponent {
   public languages: any;
   public languageChoice: string;
   public languageChoiceName: string;
-  public languageChoiceResult: string;
   public languageSelected = false;
 
   constructor(
@@ -59,9 +58,6 @@ export class SelectLanguageComponent implements PersonalComponent {
 
     this.storeLanguage(this.languageChoice);
     this.languageChoiceName = this.getLanguageName(this.languageChoice);
-    this.languageChoiceResult = this.translate.instant('personal.select-language.result', {
-      language: this.languageChoiceName,
-    });
   }
 
   public submitLanguage() {

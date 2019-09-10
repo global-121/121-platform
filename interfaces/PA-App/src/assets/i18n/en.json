@@ -76,7 +76,7 @@
       "option1": "English",
       "option2": "Language 2",
       "option3": "Language 3",
-      "result": "Thank you. You have selected {{language}}."
+      "result": "Thank you. You have selected <strong>{{language}}</strong>."
     },
     "select-program": {
       "introduction": "You can now select a program.",

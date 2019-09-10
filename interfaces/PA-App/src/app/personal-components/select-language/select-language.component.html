@@ -1,6 +1,8 @@
 <section #selectLanguage>
   <dialogue-turn isConnected="true">
-    {{ 'personal.select-language.introduction'|translate }}
+    <p>
+      {{ 'personal.select-language.introduction'|translate }}
+    </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
     <form id="selectLanguageForm">
@@ -24,6 +26,6 @@
     </form>
   </dialogue-turn>
   <dialogue-turn *ngIf="languageSelected">
-    {{ languageChoiceResult }}
+    <p [innerHTML]="'personal.select-language.result'|translate:{ language:languageChoiceName }"></p>
   </dialogue-turn>
 </section>
