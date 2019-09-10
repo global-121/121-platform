@@ -2,10 +2,6 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class StoreDataDto {
-  @ApiModelProperty()
-  @IsNotEmpty()
-  @IsString()
-  readonly username: string;
 
   @ApiModelProperty()
   @IsNotEmpty()
