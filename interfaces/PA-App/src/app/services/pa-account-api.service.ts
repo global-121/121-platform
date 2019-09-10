@@ -40,7 +40,7 @@ export class PaAccountApiService {
       );
   }
 
-  store(username: string, type: string, data: string): Observable<any> {
+  store(type: string, data: string): Observable<any> {
     console.log('PaAccountApiService : storeData()');
 
     return this.apiService
@@ -48,11 +48,24 @@ export class PaAccountApiService {
         environment.url_pa_account_service_api,
         '/data-storage',
         {
-          username,
           type,
           data
         },
         false
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
+
+  retrieve(type: string): Observable<any> {
+    console.log('PaAccountApiService : retrieveData()');
+
+    return this.apiService
+      .get(
+        environment.url_pa_account_service_api,
+        '/data-storage',
       )
       .pipe(
         tap(response => console.log('response: ', response)),
