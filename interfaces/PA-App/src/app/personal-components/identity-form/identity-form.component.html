@@ -36,14 +36,14 @@
         ></ion-input>
       </div>
       <div class="ion-margin-top">
-        <ion-button [hidden]="!name || !dob"
+        <ion-button *ngIf="name && dob"
                     type="submit"
                     size="block"
         >{{ 'personal.identity-form.submit-button'|translate }}</ion-button>
       </div>
     </form>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!identitySubmitted">
+  <dialogue-turn *ngIf="identitySubmitted">
     {{ 'personal.identity-form.conclusion'|translate }}
   </dialogue-turn>
 </section>

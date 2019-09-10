@@ -17,13 +17,13 @@
       </ion-item>
     </ion-radio-group>
     <div class="ion-margin-top">
-      <ion-button [hidden]="!countryChoice"
+      <ion-button *ngIf="countryChoice"
                   (click)="submitCountry()"
                   size="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </div>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!countrySelected">
+  <dialogue-turn *ngIf="countrySelected">
     {{ countryChoiceResult }}
   </dialogue-turn>
 </section>

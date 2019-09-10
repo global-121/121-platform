@@ -16,14 +16,14 @@
       <div class="ion-margin-top">
         <ion-button type="submit"
                     id="selectLanguageAction"
-                    [hidden]="!languageChoice"
+                    *ngIf="languageChoice"
                     (click)="submitLanguage()"
                     size="block"
         >{{ 'shared.submit-button'|translate }}</ion-button>
       </div>
     </form>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!languageSelected">
+  <dialogue-turn *ngIf="languageSelected">
     {{ languageChoiceResult }}
   </dialogue-turn>
 </section>
