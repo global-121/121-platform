@@ -2,9 +2,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
 } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
 
 @Entity('data-storage')
 export class DataStorageEntity {
@@ -19,8 +17,5 @@ export class DataStorageEntity {
 
   @Column()
   public data: string;
-
-  @ManyToOne(type => UserEntity, user => user.dataObjects)
-  public user: UserEntity;
 
 }

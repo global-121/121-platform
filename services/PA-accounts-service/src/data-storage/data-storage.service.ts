@@ -19,7 +19,7 @@ export class DataStorageService {
     storeData: StoreDataDto,
   ): Promise<DataStorageEntity> {
     let data = new DataStorageEntity();
-    data.userId = userId; //storeData.username;
+    data.userId = userId;
     data.type = storeData.type;
     data.data = storeData.data;
 
