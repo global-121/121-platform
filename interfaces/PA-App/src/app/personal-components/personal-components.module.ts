@@ -2,6 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
+import { QRCodeModule } from 'angularx-qrcode';
 
 import { ConversationService } from '../services/conversation.service';
 
@@ -32,7 +33,8 @@ import { SelectProgramComponent } from './select-program/select-program.componen
   imports: [
     CommonModule,
     SharedModule,
-    FormsModule
+    FormsModule,
+    QRCodeModule
   ],
   entryComponents: [
     ChooseCredentialTypeComponent,

@@ -28,6 +28,7 @@
     "@ionic/storage": "^2.2.0",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
+    "angularx-qrcode": "^1.6.4",
     "core-js": "2.6.8",
     "rxjs": "~6.5.1",
     "tslib": "^1.10.0",
