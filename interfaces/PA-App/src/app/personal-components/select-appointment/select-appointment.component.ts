@@ -136,8 +136,6 @@ export class SelectAppointmentComponent implements PersonalComponent {
   public postAppointment(timeslotId: number, did: string) {
     this.programsService.postAppointment(timeslotId, did).subscribe(() => {
 
-      this.appointmentConfirmed = true;
-
       this.generateQrCode();
 
       this.complete();
