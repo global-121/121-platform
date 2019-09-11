@@ -135,6 +135,39 @@ export class ProgramsServiceApiService {
       );
   }
 
+  postCredentialRequest(did: string, programId: number, encryptedCredentialRequest: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/credential/request',
+      {
+        did,
+        programId,
+        encryptedCredentialRequest,
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
+  postPrefilledAnswers(did: string, programId: number, credentialType: string, attributes: any): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/credential/attributes',
+      {
+        did,
+        programId,
+        credentialType,
+        attributes
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
   getCredential(did: string): Observable<any> {
     console.log('getCredentials');
     return this.apiService

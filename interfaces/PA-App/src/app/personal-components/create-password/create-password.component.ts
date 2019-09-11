@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Storage } from '@ionic/storage';
 import { PersonalComponent } from '../personal-component.interface';
 
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -30,6 +31,7 @@ export class CreatePasswordComponent implements PersonalComponent {
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public programsServiceApiService: ProgramsServiceApiService,
+    public storage: Storage,
   ) { }
 
   ngOnInit() {
@@ -58,7 +60,7 @@ export class CreatePasswordComponent implements PersonalComponent {
 
     // 2. Create (random) wallet-name and store in PA-account
     const paWalletName = this.makeRandomUsername(16);
-    this.paStoreWalletName(paAccountUsername, paWalletName);
+    this.paStoreData('walletName', paWalletName);
 
     // 3. Create Sovrin wallet using previously created wallet-name and wallet-password equal to account-password
     const wallet = {
@@ -69,6 +71,8 @@ export class CreatePasswordComponent implements PersonalComponent {
       correlationID: 'test'
     };
     await this.sovrinCreateWallet(wallet, correlation);
+    this.paStoreData('wallet', JSON.stringify(wallet));
+    this.paStoreData('correlation', JSON.stringify(correlation));
 
     // 4. Generate Sovrin DID and store in wallet
     const result = await this.sovrinCreateStoreDid(wallet, correlation);
@@ -76,22 +80,21 @@ export class CreatePasswordComponent implements PersonalComponent {
     // 5. Store Sovrin DID in PA-account
     const didShort = result.did;
     const did = 'did:sov:' + didShort;
-    this.storeDid(paAccountUsername, did);
+    this.paStoreData('didShort', didShort);
+    this.paStoreData('did', did);
 
-    // Get connection-request (NOTE: in the MVP-setup this is not actually needed/used, because of lack of pairwise connection + encryption)
+    // 6. Get connection-request (NOTE: in the MVP-setup this is not actually needed/used,
+    // because of lack of pairwise connection + encryption)
     const connectionRequest = this.getConnectionRequest();
 
-    // Post connection-response
+    // 7. Post connection-response
     const connectionResponse = {
-      did: did,
+      did,
       verkey: 'verkey:sample',
       nonce: '123456789',
       meta: 'meta:sample'
     };
     this.postConnectionResponse(connectionResponse);
-
-
-
 
   }
 
@@ -111,8 +114,9 @@ export class CreatePasswordComponent implements PersonalComponent {
     });
   }
 
-  paStoreWalletName(paAccountUsername, paWalletName) {
-    this.paAccountApiService.store(paAccountUsername, 'walletName', paWalletName).subscribe((response) => {
+  // This should become a shared function
+  paStoreData(variableName, paWalletName) {
+    this.paAccountApiService.store(variableName, paWalletName).subscribe((response) => {
       console.log('response: ', response);
     });
   }
@@ -122,9 +126,6 @@ export class CreatePasswordComponent implements PersonalComponent {
       JSON.parse(JSON.stringify(wallet)),
       JSON.parse(JSON.stringify(correlation))
     ).toPromise();
-    // .subscribe((response) => {
-    //   console.log('response: ', response);
-    // });
   }
 
   // Create DID and store in wallet
@@ -133,16 +134,6 @@ export class CreatePasswordComponent implements PersonalComponent {
       JSON.parse(JSON.stringify(wallet)),
       JSON.parse(JSON.stringify(correlation))
     ).toPromise();
-    // .subscribe((response2) => {
-    //   console.log('response: ', response2);
-    //   this.did = response2.did;
-    // });
-  }
-
-  storeDid(paAccountUsername, did) {
-    this.paAccountApiService.store(paAccountUsername, 'did', did).subscribe((response) => {
-      console.log('response: ', response);
-    });
   }
 
   getConnectionRequest() {

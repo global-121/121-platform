@@ -65,7 +65,8 @@ export class PaAccountApiService {
     return this.apiService
       .get(
         environment.url_pa_account_service_api,
-        '/data-storage',
+        '/data-storage/' + type,
+        false
       )
       .pipe(
         tap(response => console.log('response: ', response)),

@@ -50,4 +50,26 @@ export class UserImsApiService {
         map(response => response)
       );
   }
+
+  createCredentialRequest(wallet: JSON, correlation: JSON, credDefID: string, credentialOffer: JSON, did: string): Observable<any> {
+    console.log('UserImsApiService : createCredentialRequest()');
+
+    return this.apiService
+      .post(
+        environment.url_user_ims_api,
+        '/credential/credreq',
+        {
+          wallet,
+          correlation,
+          credDefID,
+          credentialOffer,
+          did
+        },
+        true
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
 }
