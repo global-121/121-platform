@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { ConversationService } from '../services/conversation.service';
 
+import { PersonalComponents } from '../personal-components/personal-components.enum';
 import { ChooseCredentialTypeComponent } from '../personal-components/choose-credential-type/choose-credential-type.component';
 import { CreatePasswordComponent } from '../personal-components/create-password/create-password.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
@@ -31,16 +32,16 @@ export class PersonalPage implements OnInit {
   public isDebug: boolean = !environment.production;
 
   public availableSections = {
-    'choose-credential-type': ChooseCredentialTypeComponent,
-    'create-identity-details': IdentityFormComponent,
-    'create-identity-password': CreatePasswordComponent,
-    'enroll-in-program': EnrollInProgramComponent,
-    'initial-needs': InitialNeedsComponent,
-    introduction: IntroductionComponent,
-    'select-appointment': SelectAppointmentComponent,
-    'select-country': SelectCountryComponent,
-    'select-language': SelectLanguageComponent,
-    'select-program': SelectProgramComponent,
+    [PersonalComponents.chooseCredentialType]: ChooseCredentialTypeComponent,
+    [PersonalComponents.createIdentity]: IdentityFormComponent,
+    [PersonalComponents.createPassword]: CreatePasswordComponent,
+    [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
+    [PersonalComponents.initialNeeds]: InitialNeedsComponent,
+    [PersonalComponents.introduction]: IntroductionComponent,
+    [PersonalComponents.selectAppointment]: SelectAppointmentComponent,
+    [PersonalComponents.selectCountry]: SelectCountryComponent,
+    [PersonalComponents.selectLanguage]: SelectLanguageComponent,
+    [PersonalComponents.selectProgram]: SelectProgramComponent,
   };
   public debugSections = Object.keys(this.availableSections);
 

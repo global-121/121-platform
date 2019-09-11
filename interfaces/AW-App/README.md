@@ -1,7 +1,7 @@
 AW-App
 ======
 
-The front-end of the application *Aidworker* use to interact with the 121-platform.
+The front-end of the application an *Aid-Worker* uses to interact with the 121-platform.
 
 ## Getting Started
 - Install [environment requirements](../README.md)
@@ -9,10 +9,11 @@ The front-end of the application *Aidworker* use to interact with the 121-platfo
   `npm install`
 - Start in development-mode:
   `npm start`
-- Run the app and use the camera: 
-  `ionic cordova run browser`
-- Run the app and use the camera with livereload (NOTE: a browser is automatically opened to port 8000, while in the log you see that you actually need port 8100) 
-  `ionic cordova run browser --livereload`
+- Run the app and use the camera:  
+  `npm run cordova -- run browser`
+- Run the app and use the camera with livereload  
+  (NOTE: a browser is automatically opened to port 8000, while in the log you see that you actually need port 8100)  
+  `npm run cordova -- run browser --livereload`
 
 ## Configuration
 Some specific information need to be configured before use:

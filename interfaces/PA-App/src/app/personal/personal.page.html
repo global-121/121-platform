@@ -17,6 +17,7 @@
       </ion-button>
 
       <select name="debugSections" (change)="insertSection($event.target.value)">
+        <option></option>
         <option *ngFor="let section of debugSections;">{{ section }}</option>
       </select>
     </ion-row>

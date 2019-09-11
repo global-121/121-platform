@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 
@@ -9,9 +10,10 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./initial-needs.component.scss'],
 })
 export class InitialNeedsComponent implements PersonalComponent {
+  public isDisabled = false;
 
   public needs: any;
-  public needsSubmitted: boolean;
+  public needsReceived: boolean;
 
   constructor(
     public conversationService: ConversationService,
@@ -22,18 +24,23 @@ export class InitialNeedsComponent implements PersonalComponent {
 
   public submitNeeds(needsInput) {
     console.log('needs-input: ', needsInput, this.needs);
-    this.needsSubmitted = true;
+    this.isDisabled = true;
 
-    this.complete();
+    // TODO: POST answers to API; when successful complete()
+    window.setTimeout(() => {
+      this.needsReceived = true;
+
+      this.complete();
+    }, 1000);
   }
 
   getNextSection() {
-    return 'choose-credential-type';
+    return PersonalComponents.chooseCredentialType;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'initial-needs',
+      name: PersonalComponents.initialNeeds,
       data: {
         needs: this.needs,
       },

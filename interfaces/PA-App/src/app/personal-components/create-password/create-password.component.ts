@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
@@ -13,11 +14,11 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   styleUrls: ['./create-password.component.scss'],
 })
 export class CreatePasswordComponent implements PersonalComponent {
+  public isDisabled = false;
 
   public initialInput = false;
   public create: any;
   public confirm: any;
-  public passwordCreated: boolean;
 
   private paAccountUsername: string;
   private paAccountPassword: string;
@@ -45,8 +46,6 @@ export class CreatePasswordComponent implements PersonalComponent {
     }
 
     this.executeSovrinFlow(create);
-
-    this.passwordCreated = true;
 
     this.complete();
   }
@@ -156,12 +155,13 @@ export class CreatePasswordComponent implements PersonalComponent {
 
 
   getNextSection() {
-    return 'create-identity-details';
+    return PersonalComponents.createIdentity;
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: 'create-identity-password',
+      name: PersonalComponents.createPassword,
       data: {
         password: this.create,
       },

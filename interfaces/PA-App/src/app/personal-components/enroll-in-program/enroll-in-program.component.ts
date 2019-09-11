@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
@@ -16,6 +17,8 @@ import { UserImsApiService } from 'src/app/services/user-ims-api.service';
   styleUrls: ['./enroll-in-program.component.scss'],
 })
 export class EnrollInProgramComponent implements PersonalComponent {
+  public isDisabled = false;
+
   public languageCode: string;
   public fallbackLanguageCode: string;
 
@@ -31,7 +34,6 @@ export class EnrollInProgramComponent implements PersonalComponent {
   public answers: any = {};
 
   public hasAnswered: boolean;
-  public hasConfirmed: boolean;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -90,6 +92,10 @@ export class EnrollInProgramComponent implements PersonalComponent {
         value = response[detail];
       }
 
+      if (detail === 'meetingDocuments') {
+        value = this.buildDocumentsList(value);
+      }
+
       this.program[detail] = value;
     }
   }
@@ -126,6 +132,10 @@ export class EnrollInProgramComponent implements PersonalComponent {
     }
 
     return options;
+  }
+
+  private buildDocumentsList(documents: string): string[] {
+    return documents.split(';');
   }
 
   private mapLabelByLanguageCode(property: any) {
@@ -175,7 +185,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
 
   public change() {
     console.log('change()');
-
+    this.hasAnswered = false;
   }
 
   public submit() {
@@ -190,11 +200,8 @@ export class EnrollInProgramComponent implements PersonalComponent {
     this.executeSovrinFlow();
 
     window.setTimeout(() => {
-      this.hasConfirmed = true;
-
-      // TODO: POST answers to API; when successful complete()
       this.complete();
-    }, 3000);
+    }, 1000);
   }
 
   private async executeSovrinFlow() {
@@ -297,12 +304,13 @@ export class EnrollInProgramComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'select-appointment';
+    return PersonalComponents.selectAppointment;
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: 'enroll-in-program',
+      name: PersonalComponents.enrollInProgram,
       data: {
         program: this.program,
         questions: this.questions,

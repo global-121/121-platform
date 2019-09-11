@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { PersonalComponents } from '../personal-components/personal-components.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +41,7 @@ export class ConversationService {
   }
 
   startNewConversation() {
-    this.addSection('introduction');
+    this.addSection(PersonalComponents.introduction);
   }
 
   private addSection(sectionName) {

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,9 +12,11 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./choose-credential-type.component.scss'],
 })
 export class ChooseCredentialTypeComponent implements PersonalComponent {
+  public isDisabled = false;
 
   public credentialTypes: any;
   public credentialTypeChoice: string;
+  public typeChosen: boolean;
   public programChosen: boolean;
   public credentialTypeChoiceNew: string;
 
@@ -61,6 +64,8 @@ export class ChooseCredentialTypeComponent implements PersonalComponent {
 
   public submitCredentialType() {
     console.log('Chosen credential type: ', this.credentialTypeChoice);
+    this.typeChosen = true;
+
     // Here should be checked whether Digital ID already present
     if (this.credentialTypeChoice === 'apply-to-program') {
       this.programChosen = true;
@@ -73,17 +78,17 @@ export class ChooseCredentialTypeComponent implements PersonalComponent {
 
   public submitCredentialTypeNew() {
     console.log('Chosen credential type: ', this.credentialTypeChoiceNew);
-
     this.complete();
   }
 
   getNextSection() {
-    return 'create-identity-password';
+    return PersonalComponents.createPassword;
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: 'choose-credential-type',
+      name: PersonalComponents.chooseCredentialType,
       data: {
         credentialTypeChoice: this.credentialTypeChoice,
       },
