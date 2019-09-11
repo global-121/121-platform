@@ -37,7 +37,7 @@ export class DataStorageService {
       const errors = { Data: ' not found' };
       throw new HttpException({ errors }, 401);
     }
-    return data.data;
+    return JSON.stringify(data.data);
   }
 
 
