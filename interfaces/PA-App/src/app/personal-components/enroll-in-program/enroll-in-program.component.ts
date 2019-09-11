@@ -189,7 +189,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
 
       // TODO: POST answers to API; when successful complete()
       this.complete();
-    }, 3000);
+    }, 1000);
   }
 
   getNextSection() {
