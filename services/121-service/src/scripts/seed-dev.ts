@@ -122,14 +122,14 @@ export class SeedDev implements InterfaceScript {
     credential1.programId = 1;
     credential1.attributeId = 1;
     credential1.attribute = 'nr_of_children';
-    credential1.answer = 2;
+    credential1.answer = '2';
     await credentialAttributesRepository.save(credential1);
     let credential2 = new CredentialAttributesEntity();
     credential2.did = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
     credential2.programId = 1;
     credential2.attributeId = 2;
     credential2.attribute = 'roof_type';
-    credential2.answer = 0;
+    credential2.answer = '0';
     await credentialAttributesRepository.save(credential2);
 
     await this.connection.close();
