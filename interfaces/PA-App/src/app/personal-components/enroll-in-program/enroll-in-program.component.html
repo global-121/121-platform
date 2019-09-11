@@ -27,7 +27,9 @@
                     color="light"
           >
             <ion-label>{{ option.label }}</ion-label>
-            <ion-radio [value]="option.value"></ion-radio>
+            <ion-radio [value]="option.value"
+                       [disabled]="hasAnswered"
+            ></ion-radio>
           </ion-item>
         </ion-radio-group>
       </div>
@@ -35,6 +37,7 @@
         <ion-input type="text"
                    [name]="question.code"
                    (change)="changeAnswers($event)"
+                   [disabled]="hasAnswered"
         ></ion-input>
       </div>
     </div>
@@ -43,6 +46,7 @@
     <p>
       <ion-button type="submit"
                   (click)="submit()"
+                  [disabled]="hasAnswered"
                   size="block"
       >
         {{ 'personal.enroll-in-program.submit'|translate }}
@@ -73,12 +77,14 @@
     <p class="ion-margin-top">
       <ion-button type="submit"
                   (click)="submitConfirm()"
+                  [disabled]="hasConfirmed"
                   size="block"
       >
         {{ 'personal.enroll-in-program.submit-confirm'|translate }}
       </ion-button>
       <ion-button type="button"
                   (click)="change()"
+                  [disabled]="hasConfirmed"
                   size="block"
                   fill="outline"
       >

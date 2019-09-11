@@ -172,7 +172,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
 
   public change() {
     console.log('change()');
-
+    this.hasAnswered = false;
   }
 
   public submit() {
