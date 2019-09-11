@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
@@ -11,11 +12,11 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./select-language.component.scss'],
 })
 export class SelectLanguageComponent implements PersonalComponent {
+  public isDisabled = false;
+
   public languages: any;
   public languageChoice: string;
   public languageChoiceName: string;
-  public languageChoiceResult: string;
-  public languageSelected = false;
 
   constructor(
     public storage: Storage,
@@ -54,28 +55,24 @@ export class SelectLanguageComponent implements PersonalComponent {
 
   public changeLanguage($event) {
     this.languageChoice = $event.detail.value;
-    this.languageSelected = false;
+    this.isDisabled = false;
 
     this.storeLanguage(this.languageChoice);
     this.languageChoiceName = this.getLanguageName(this.languageChoice);
-    this.languageChoiceResult = this.translate.instant('personal.select-language.result', {
-      language: this.languageChoiceName,
-    });
   }
 
   public submitLanguage() {
-    this.languageSelected = true;
-
     this.complete();
   }
 
   getNextSection() {
-    return 'initial-needs';
+    return PersonalComponents.initialNeeds;
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: 'select-language',
+      name: PersonalComponents.selectLanguage,
       data: {
         languageChoice: this.languageChoice,
         languageChoiceName: this.languageChoiceName,

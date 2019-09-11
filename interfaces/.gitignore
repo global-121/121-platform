@@ -4,6 +4,26 @@
 node_modules/
 
 
+# Ionic related files
+.ionic/
+www/
+platforms/
+plugins/
+plugins/android.json
+plugins/ios.json
+*/resources/ios/
+*/resources/android/
+
+
 ## Temporary/Generated code/files:
-dist/
+# dist/
 *.js.map
+# .sourcemaps/
+# .sass-cache/
+coverage/
+
+# IDE-specific files
+*.sublime-project
+*.sublime-workspace
+.vscode/
+.idea/

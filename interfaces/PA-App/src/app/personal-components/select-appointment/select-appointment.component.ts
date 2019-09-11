@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -16,6 +17,8 @@ import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
   styleUrls: ['./select-appointment.component.scss'],
 })
 export class SelectAppointmentComponent implements PersonalComponent {
+  public isDisabled = false;
+
   public languageCode: string;
   public fallbackLanguageCode: string;
   public dateFormat = 'EEE, dd-MM-yyyy';
@@ -30,7 +33,6 @@ export class SelectAppointmentComponent implements PersonalComponent {
   public timeslotSubmitted: boolean;
 
   public confirmAction: string;
-  public appointmentConfirmed: boolean;
 
   public meetingDocuments: string[];
 
@@ -127,12 +129,13 @@ export class SelectAppointmentComponent implements PersonalComponent {
       this.postAppointment(this.timeslotChoice, 'did:sov:1235j123lk5');
     } else if (action === 'change') {
       this.timeslotSubmitted = false;
-      this.appointmentConfirmed = false;
+      this.isDisabled = false;
     }
   }
 
   public postAppointment(timeslotId: number, did: string) {
     this.programsService.postAppointment(timeslotId, did).subscribe(() => {
+
       this.appointmentConfirmed = true;
 
       this.generateQrCode();
@@ -168,8 +171,9 @@ export class SelectAppointmentComponent implements PersonalComponent {
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: 'select-appointment',
+      name: PersonalComponents.selectAppointment,
       data: {
         timeslot: this.chosenTimeslot,
       },

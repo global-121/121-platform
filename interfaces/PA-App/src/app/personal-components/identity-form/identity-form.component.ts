@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -12,6 +13,7 @@ import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
   styleUrls: ['./identity-form.component.scss'],
 })
 export class IdentityFormComponent implements PersonalComponent {
+  public isDisabled = false;
 
   public namePlaceholder: any;
   public dobPlaceholder: any;
@@ -84,12 +86,13 @@ export class IdentityFormComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'select-country';
+    return PersonalComponents.selectCountry;
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: 'create-identity-details',
+      name: PersonalComponents.createIdentity,
       data: {
         name: this.name,
         dob: this.dob,

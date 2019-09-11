@@ -23,12 +23,15 @@
             {{ program.description }}
           </ion-note>
         </ion-label>
-        <ion-radio value="{{ program.id }}"></ion-radio>
+        <ion-radio [value]="program.id"
+                   [disabled]="isDisabled"
+        ></ion-radio>
       </ion-item>
     </ion-radio-group>
     <div class="ion-margin-top">
-      <ion-button [hidden]="!programChoice"
+      <ion-button *ngIf="programChoice && !isDisabled"
                   (click)="submitProgram()"
+                  [disabled]="isDisabled"
                   type="submit"
                   size="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>

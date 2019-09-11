@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 
@@ -9,6 +10,8 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./introduction.component.scss'],
 })
 export class IntroductionComponent implements PersonalComponent {
+  isDisabled = false;
+
   constructor(
     public conversationService: ConversationService
   ) { }
@@ -18,12 +21,13 @@ export class IntroductionComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'select-language';
+    return PersonalComponents.selectLanguage;
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: 'introduction',
+      name: PersonalComponents.introduction,
       next: this.getNextSection(),
     });
   }
