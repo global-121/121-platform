@@ -1,29 +1,33 @@
 <section #selectLanguage>
   <dialogue-turn isConnected="true">
-    {{ 'personal.select-language.introduction'|translate }}
+    <p>
+      {{ 'personal.select-language.introduction'|translate }}
+    </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
-    <form id="selectLanguageForm">
+    <form>
       <ion-radio-group (ionChange)="changeLanguage($event)">
         <ion-item *ngFor="let language of languages"
                   color="light"
                   class="ion-no-padding ion-text-wrap"
         >
           <ion-label>{{ language.language }}</ion-label>
-          <ion-radio value="{{ language.id }}"></ion-radio>
+          <ion-radio [value]="language.id"
+                     [disabled]="isDisabled"
+          ></ion-radio>
         </ion-item>
       </ion-radio-group>
       <div class="ion-margin-top">
         <ion-button type="submit"
-                    id="selectLanguageAction"
-                    *ngIf="languageChoice"
+                    *ngIf="languageChoice && !isDisabled"
                     (click)="submitLanguage()"
+                    [disabled]="isDisabled"
                     size="block"
         >{{ 'shared.submit-button'|translate }}</ion-button>
       </div>
     </form>
   </dialogue-turn>
-  <dialogue-turn *ngIf="languageSelected">
-    {{ languageChoiceResult }}
+  <dialogue-turn *ngIf="isDisabled">
+    <p [innerHTML]="'personal.select-language.result'|translate:{ language:languageChoiceName }"></p>
   </dialogue-turn>
 </section>

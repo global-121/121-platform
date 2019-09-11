@@ -15,6 +15,8 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./select-program.component.scss'],
 })
 export class SelectProgramComponent implements PersonalComponent {
+  public isDisabled = false;
+
   private languageCode: string;
   private fallbackLanguageCode: string;
 
@@ -87,6 +89,7 @@ export class SelectProgramComponent implements PersonalComponent {
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.selectProgram,
       data: {

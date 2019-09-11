@@ -12,11 +12,11 @@ import { UserImsApiService } from 'src/app/services/user-ims-api.service';
   styleUrls: ['./create-password.component.scss'],
 })
 export class CreatePasswordComponent implements PersonalComponent {
+  public isDisabled = false;
 
   public initialInput = false;
   public create: any;
   public confirm: any;
-  public passwordCreated: boolean;
 
   private paAccountUsername: string;
   private paAccountPassword: string;
@@ -43,8 +43,6 @@ export class CreatePasswordComponent implements PersonalComponent {
     await this.storeWalletName(this.paAccountUsername);
     // await this.createWalletDid(this.paWalletName, this.paAccountPassword);
     await this.storeDid(this.paAccountUsername);
-
-    this.passwordCreated = true;
 
     this.complete();
   }
@@ -116,6 +114,7 @@ export class CreatePasswordComponent implements PersonalComponent {
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.createPassword,
       data: {

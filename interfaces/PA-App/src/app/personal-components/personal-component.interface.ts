@@ -2,6 +2,12 @@ import { OnInit } from '@angular/core';
 
 export interface PersonalComponent extends OnInit {
   /**
+   * The state of the whole component.
+   * When there is no interaction possible anymore.
+   */
+  isDisabled: boolean;
+
+  /**
    * Angular default component initialisation
    */
   ngOnInit(): void;

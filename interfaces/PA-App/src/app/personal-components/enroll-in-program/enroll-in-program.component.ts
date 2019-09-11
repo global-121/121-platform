@@ -15,12 +15,13 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./enroll-in-program.component.scss'],
 })
 export class EnrollInProgramComponent implements PersonalComponent {
+  public isDisabled = false;
+
   public languageCode: string;
   public fallbackLanguageCode: string;
 
   public program: any;
   public programTitle: string;
-  public introductionText: string;
 
   public questions: any;
   public answerTypes = AnswerType;
@@ -28,7 +29,6 @@ export class EnrollInProgramComponent implements PersonalComponent {
   public answers: any = {};
 
   public hasAnswered: boolean;
-  public hasConfirmed: boolean;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -60,9 +60,6 @@ export class EnrollInProgramComponent implements PersonalComponent {
     this.programsService.getProgramById(programId).subscribe((response: Program) => {
 
       this.programTitle = this.mapLabelByLanguageCode(response.title);
-      this.introductionText = this.translate.instant('personal.enroll-in-program.introduction', {
-        programTitle: this.programTitle,
-      });
 
       this.buildDetails(response);
       this.buildQuestions(response.customCriteria);
@@ -81,6 +78,10 @@ export class EnrollInProgramComponent implements PersonalComponent {
 
       if (typeof value === 'undefined') {
         value = response[detail];
+      }
+
+      if (detail === 'meetingDocuments') {
+        value = this.buildDocumentsList(value);
       }
 
       this.program[detail] = value;
@@ -119,6 +120,10 @@ export class EnrollInProgramComponent implements PersonalComponent {
     }
 
     return options;
+  }
+
+  private buildDocumentsList(documents: string): string[] {
+    return documents.split(';');
   }
 
   private mapLabelByLanguageCode(property: any) {
@@ -168,7 +173,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
 
   public change() {
     console.log('change()');
-
+    this.hasAnswered = false;
   }
 
   public submit() {
@@ -180,12 +185,10 @@ export class EnrollInProgramComponent implements PersonalComponent {
   public submitConfirm() {
     console.log('submitConfirm()');
 
+    // TODO: POST answers to API; when successful complete()
     window.setTimeout(() => {
-      this.hasConfirmed = true;
-
-      // TODO: POST answers to API; when successful complete()
       this.complete();
-    }, 3000);
+    }, 1000);
   }
 
   getNextSection() {
@@ -193,6 +196,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.enrollInProgram,
       data: {

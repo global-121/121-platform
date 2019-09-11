@@ -12,11 +12,11 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./select-language.component.scss'],
 })
 export class SelectLanguageComponent implements PersonalComponent {
+  public isDisabled = false;
+
   public languages: any;
   public languageChoice: string;
   public languageChoiceName: string;
-  public languageChoiceResult: string;
-  public languageSelected = false;
 
   constructor(
     public storage: Storage,
@@ -55,18 +55,13 @@ export class SelectLanguageComponent implements PersonalComponent {
 
   public changeLanguage($event) {
     this.languageChoice = $event.detail.value;
-    this.languageSelected = false;
+    this.isDisabled = false;
 
     this.storeLanguage(this.languageChoice);
     this.languageChoiceName = this.getLanguageName(this.languageChoice);
-    this.languageChoiceResult = this.translate.instant('personal.select-language.result', {
-      language: this.languageChoiceName,
-    });
   }
 
   public submitLanguage() {
-    this.languageSelected = true;
-
     this.complete();
   }
 
@@ -75,6 +70,7 @@ export class SelectLanguageComponent implements PersonalComponent {
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.selectLanguage,
       data: {
