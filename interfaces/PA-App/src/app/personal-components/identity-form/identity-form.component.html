@@ -24,6 +24,7 @@
                    name="name"
                    [(ngModel)]="name"
                    ngDefaultControl
+                   [disabled]="identitySubmitted"
         ></ion-input>
       </div>
       <div class="ion-margin-top">
@@ -33,10 +34,11 @@
                    placeholder="{{ 'personal.identity-form.dob-format' }}"
                    [(ngModel)]="dob"
                    ngDefaultControl
+                   [disabled]="identitySubmitted"
         ></ion-input>
       </div>
       <div class="ion-margin-top">
-        <ion-button *ngIf="name && dob"
+        <ion-button *ngIf="name && dob && !identitySubmitted"
                     type="submit"
                     size="block"
         >{{ 'personal.identity-form.submit-button'|translate }}</ion-button>
