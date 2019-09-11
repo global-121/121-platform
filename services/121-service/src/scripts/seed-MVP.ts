@@ -76,7 +76,7 @@ export class SeedMVP implements InterfaceScript {
     }
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
-    const program_d = await programRepository.findOne(1); // Assign programId=1 ...
+    const program_d = await programRepository.findOne(2); // Assign programId=1 ...
     const user_d = await userRepository.findOne(2); // ... to userId=2 (aidworker)
     user_d.assignedProgram = program_d;
     await userRepository.save(user_d);
