@@ -23,6 +23,7 @@ export class SelectProgramComponent implements PersonalComponent {
   public programs: Program[];
   public programChoice: number;
   public program: Program;
+  public programChosen: boolean;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -79,6 +80,7 @@ export class SelectProgramComponent implements PersonalComponent {
   }
 
   public submitProgram() {
+    this.programChosen = true;
     this.complete();
   }
 
