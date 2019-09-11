@@ -22,12 +22,15 @@
             {{ timeslot.location }}
           </ion-note>
         </ion-label>
-        <ion-radio [value]="timeslot.id"></ion-radio>
+        <ion-radio [value]="timeslot.id"
+                   [disabled]="timeslotSubmitted"
+        ></ion-radio>
       </ion-item>
     </ion-radio-group>
     <p class="ion-margin-top">
-      <ion-button *ngIf="timeslotChoice"
+      <ion-button *ngIf="timeslotChoice && !timeslotSubmitted"
                   (click)="submitTimeslot()"
+                  [disabled]="timeslotSubmitted"
                   size="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
@@ -57,18 +60,23 @@
                 class="ion-no-padding ion-text-wrap"
       >
         <ion-label>{{ 'personal.select-appointment.confirm'|translate }}</ion-label>
-        <ion-radio value="confirm"></ion-radio>
+        <ion-radio value="confirm"
+                   [disabled]="appointmentConfirmed"
+        ></ion-radio>
       </ion-item>
       <ion-item color="light"
                 class="ion-no-padding ion-text-wrap"
       >
         <ion-label>{{ 'personal.select-appointment.change'|translate }}</ion-label>
-        <ion-radio value="change"></ion-radio>
+        <ion-radio value="change"
+                   [disabled]="appointmentConfirmed"
+        ></ion-radio>
       </ion-item>
     </ion-radio-group>
     <p class="ion-margin-top">
-      <ion-button *ngIf="confirmAction"
+      <ion-button *ngIf="confirmAction && !appointmentConfirmed"
                   (click)="submitConfirmAction(confirmAction)"
+                  [disabled]="appointmentConfirmed"
                   size="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
