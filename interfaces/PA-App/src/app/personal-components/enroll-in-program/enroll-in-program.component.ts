@@ -20,7 +20,6 @@ export class EnrollInProgramComponent implements PersonalComponent {
 
   public program: any;
   public programTitle: string;
-  public introductionText: string;
 
   public questions: any;
   public answerTypes = AnswerType;
@@ -60,9 +59,6 @@ export class EnrollInProgramComponent implements PersonalComponent {
     this.programsService.getProgramById(programId).subscribe((response: Program) => {
 
       this.programTitle = this.mapLabelByLanguageCode(response.title);
-      this.introductionText = this.translate.instant('personal.enroll-in-program.introduction', {
-        programTitle: this.programTitle,
-      });
 
       this.buildDetails(response);
       this.buildQuestions(response.customCriteria);

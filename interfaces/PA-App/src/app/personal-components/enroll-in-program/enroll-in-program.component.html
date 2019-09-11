@@ -1,6 +1,6 @@
 <section>
   <dialogue-turn [actor]="program?.ngo">
-    <p [innerHTML]="introductionText"></p>
+    <p [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programTitle }"></p>
     <p>
       {{ 'personal.enroll-in-program.introduction-questions'|translate }}
     </p>
