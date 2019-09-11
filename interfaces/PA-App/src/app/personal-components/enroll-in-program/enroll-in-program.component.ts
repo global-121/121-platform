@@ -79,6 +79,10 @@ export class EnrollInProgramComponent implements PersonalComponent {
         value = response[detail];
       }
 
+      if (detail === 'meetingDocuments') {
+        value = this.buildDocumentsList(value);
+      }
+
       this.program[detail] = value;
     }
   }
@@ -115,6 +119,10 @@ export class EnrollInProgramComponent implements PersonalComponent {
     }
 
     return options;
+  }
+
+  private buildDocumentsList(documents: string): string[] {
+    return documents.split(';');
   }
 
   private mapLabelByLanguageCode(property: any) {

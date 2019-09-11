@@ -78,11 +78,14 @@
       {{ 'personal.select-appointment.conclusion'|translate }}
     </p>
     <p>
-      {{ 'personal.select-appointment.documents'|translate }}<br>
-      <span *ngFor="let document of meetingDocuments">
-        {{ document }}<br>
-      </span>
+      {{ 'personal.select-appointment.documents'|translate }}
     </p>
+    <ul class="ion-no-padding ion-padding-start">
+      <li *ngFor="let document of meetingDocuments">
+        {{ document }}
+      </li>
+    </ul>
+
     <p>
       <ion-button type="button" size="small">
         <ion-icon name="information-circle-outline" slot="start"></ion-icon>
