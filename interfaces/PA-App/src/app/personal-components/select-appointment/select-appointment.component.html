@@ -61,7 +61,7 @@
       >
         <ion-label>{{ 'personal.select-appointment.confirm'|translate }}</ion-label>
         <ion-radio value="confirm"
-                   [disabled]="appointmentConfirmed"
+                   [disabled]="isDisabled"
         ></ion-radio>
       </ion-item>
       <ion-item color="light"
@@ -69,19 +69,19 @@
       >
         <ion-label>{{ 'personal.select-appointment.change'|translate }}</ion-label>
         <ion-radio value="change"
-                   [disabled]="appointmentConfirmed"
+                   [disabled]="isDisabled"
         ></ion-radio>
       </ion-item>
     </ion-radio-group>
     <p class="ion-margin-top">
-      <ion-button *ngIf="confirmAction && !appointmentConfirmed"
+      <ion-button *ngIf="confirmAction && !isDisabled"
                   (click)="submitConfirmAction(confirmAction)"
-                  [disabled]="appointmentConfirmed"
+                  [disabled]="isDisabled"
                   size="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo" *ngIf="appointmentConfirmed">
+  <dialogue-turn [actor]="ngo" *ngIf="isDisabled">
     <p>
       {{ 'personal.select-appointment.conclusion'|translate }}
     </p>

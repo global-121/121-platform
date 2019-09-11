@@ -10,6 +10,8 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./introduction.component.scss'],
 })
 export class IntroductionComponent implements PersonalComponent {
+  isDisabled = false;
+
   constructor(
     public conversationService: ConversationService
   ) { }
@@ -23,6 +25,7 @@ export class IntroductionComponent implements PersonalComponent {
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.introduction,
       next: this.getNextSection(),

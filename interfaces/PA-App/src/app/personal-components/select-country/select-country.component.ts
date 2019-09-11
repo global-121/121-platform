@@ -12,11 +12,11 @@ import { Storage } from '@ionic/storage';
   styleUrls: ['./select-country.component.scss'],
 })
 export class SelectCountryComponent implements PersonalComponent {
+  public isDisabled = false;
 
   public countries: any;
   public countryChoice: number;
   public countryChoiceName: string;
-  public countrySelected: boolean;
 
   constructor(
     public conversationService: ConversationService,
@@ -49,13 +49,11 @@ export class SelectCountryComponent implements PersonalComponent {
   public changeCountry($event) {
     this.countryChoice = parseInt($event.detail.value, 10);
     this.countryChoiceName = this.getCountryName(this.countryChoice);
-    this.countrySelected = false;
+    this.isDisabled = false;
     this.storeCountry(this.countryChoice);
   }
 
   public submitCountry() {
-    this.countrySelected = true;
-
     this.complete();
   }
 
@@ -64,6 +62,7 @@ export class SelectCountryComponent implements PersonalComponent {
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.selectCountry,
       data: {

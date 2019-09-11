@@ -15,13 +15,13 @@
                       wrap="soft"
                       rows="4"
                       placeholder="{{ 'personal.initial-needs.input-placeholder'|translate }}"
-                      [disabled]="needsSubmitted"
+                      [disabled]="isDisabled"
          ></ion-textarea>
          <p class="ion-margin-top">
            <ion-button type="submit"
-                       *ngIf="needs && !needsSubmitted"
+                       *ngIf="needs && !isDisabled"
                        size="block"
-                       [disabled]="needsSubmitted"
+                       [disabled]="isDisabled"
            >{{ 'personal.initial-needs.submit'|translate }}</ion-button>
          </p>
       </form>

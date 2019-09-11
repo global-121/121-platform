@@ -10,12 +10,12 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./identity-form.component.scss'],
 })
 export class IdentityFormComponent implements PersonalComponent {
+  public isDisabled = false;
 
   public namePlaceholder: any;
   public dobPlaceholder: any;
   public name: any;
   public dob: any;
-  public identitySubmitted: boolean;
 
   constructor(
     public conversationService: ConversationService,
@@ -29,7 +29,6 @@ export class IdentityFormComponent implements PersonalComponent {
       return;
     }
 
-    this.identitySubmitted = true;
     console.log(name, dob);
 
     this.complete();
@@ -40,6 +39,7 @@ export class IdentityFormComponent implements PersonalComponent {
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.createIdentity,
       data: {

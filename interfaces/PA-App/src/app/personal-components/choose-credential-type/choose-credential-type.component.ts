@@ -12,13 +12,13 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./choose-credential-type.component.scss'],
 })
 export class ChooseCredentialTypeComponent implements PersonalComponent {
+  public isDisabled = false;
 
   public credentialTypes: any;
   public credentialTypeChoice: string;
   public typeChosen: boolean;
   public programChosen: boolean;
   public credentialTypeChoiceNew: string;
-  public typeChosenNew: boolean;
 
   constructor(
     public storage: Storage,
@@ -78,8 +78,6 @@ export class ChooseCredentialTypeComponent implements PersonalComponent {
 
   public submitCredentialTypeNew() {
     console.log('Chosen credential type: ', this.credentialTypeChoiceNew);
-    this.typeChosenNew = true;
-
     this.complete();
   }
 
@@ -88,6 +86,7 @@ export class ChooseCredentialTypeComponent implements PersonalComponent {
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.chooseCredentialType,
       data: {

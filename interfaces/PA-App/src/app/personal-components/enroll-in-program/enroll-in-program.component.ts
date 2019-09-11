@@ -15,6 +15,8 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./enroll-in-program.component.scss'],
 })
 export class EnrollInProgramComponent implements PersonalComponent {
+  public isDisabled = false;
+
   public languageCode: string;
   public fallbackLanguageCode: string;
 
@@ -27,7 +29,6 @@ export class EnrollInProgramComponent implements PersonalComponent {
   public answers: any = {};
 
   public hasAnswered: boolean;
-  public hasConfirmed: boolean;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -184,10 +185,8 @@ export class EnrollInProgramComponent implements PersonalComponent {
   public submitConfirm() {
     console.log('submitConfirm()');
 
+    // TODO: POST answers to API; when successful complete()
     window.setTimeout(() => {
-      this.hasConfirmed = true;
-
-      // TODO: POST answers to API; when successful complete()
       this.complete();
     }, 1000);
   }
@@ -197,6 +196,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.enrollInProgram,
       data: {

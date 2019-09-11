@@ -13,21 +13,21 @@
         >
           <ion-label>{{ language.language }}</ion-label>
           <ion-radio [value]="language.id"
-                     [disabled]="languageSelected"
+                     [disabled]="isDisabled"
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
       <div class="ion-margin-top">
         <ion-button type="submit"
-                    *ngIf="languageChoice && !languageSelected"
+                    *ngIf="languageChoice && !isDisabled"
                     (click)="submitLanguage()"
-                    [disabled]="languageSelected"
+                    [disabled]="isDisabled"
                     size="block"
         >{{ 'shared.submit-button'|translate }}</ion-button>
       </div>
     </form>
   </dialogue-turn>
-  <dialogue-turn *ngIf="languageSelected">
+  <dialogue-turn *ngIf="isDisabled">
     <p [innerHTML]="'personal.select-language.result'|translate:{ language:languageChoiceName }"></p>
   </dialogue-turn>
 </section>

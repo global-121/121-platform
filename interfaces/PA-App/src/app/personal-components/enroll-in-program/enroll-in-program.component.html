@@ -77,14 +77,14 @@
     <p class="ion-margin-top">
       <ion-button type="submit"
                   (click)="submitConfirm()"
-                  [disabled]="hasConfirmed"
+                  [disabled]="isDisabled"
                   size="block"
       >
         {{ 'personal.enroll-in-program.submit-confirm'|translate }}
       </ion-button>
       <ion-button type="button"
                   (click)="change()"
-                  [disabled]="hasConfirmed"
+                  [disabled]="isDisabled"
                   size="block"
                   fill="outline"
       >
@@ -92,7 +92,9 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo" *ngIf="hasConfirmed">
+  <dialogue-turn *ngIf="isDisabled"
+                 [actor]="program?.ngo"
+  >
     <p>
       {{ 'personal.enroll-in-program.confirm-received'|translate }}
     </p>
@@ -103,7 +105,10 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo" *ngIf="hasConfirmed" isConnected="true">
+  <dialogue-turn *ngIf="isDisabled"
+                 [actor]="program?.ngo"
+                 isConnected="true"
+  >
     <p>
       {{ 'personal.enroll-in-program.prepare-documents'|translate }}
     </p>
