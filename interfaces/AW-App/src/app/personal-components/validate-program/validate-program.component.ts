@@ -11,6 +11,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 })
 export class ValidateProgramComponent implements PersonalComponent {
 
+  public did: string;
   public programId: number;
   public answersProgram: any;
   public programCredentialIssued = false;
@@ -23,15 +24,18 @@ export class ValidateProgramComponent implements PersonalComponent {
   ) { }
 
   ngOnInit() {
-    this.programId = 1; // This needs to be retrieved from somewhere
+    this.storage.get('scannedDid').then(did => {
+      this.storage.get('scannedProgramId').then(programId => {
+        this.did = did;
+        this.programId = programId;
+      });
+    });
   }
 
   public getPrefilledAnswersProgram() {
-    this.storage.get('scannedDid').then(value => {
-      this.programsService.getPrefilledAnswers(value, this.programId).subscribe(response => {
-        this.answersProgram = response;
-        this.verificationPostponed = false;
-      });
+    this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
+      this.answersProgram = response;
+      this.verificationPostponed = false;
     });
   }
 
@@ -39,22 +43,20 @@ export class ValidateProgramComponent implements PersonalComponent {
     this.verificationPostponed = true;
   }
 
-  public issueIdentityCredential() {
-    this.storage.get('scannedDid').then(value => {
-      // DUMMY fix later
-      // const credentialJson = {};
-      // this.programsService.issueCredential(did, null, credentialJson).subscribe(response => {
-      //   console.log('response: ', response);
-      //   this.credentialIssued = true;
-      // });
-      this.programsService.deletePrefilledAnswers(value, this.programId).subscribe(response => {
-        console.log('response: ', response);
-        console.log('Program credential issued');
-        this.programCredentialIssued = true;
-        this.answersProgram = null;
-        this.complete();
-      });
+  public async issueIdentityCredential() {
+    // this.storage.get('scannedDid').then(did => {
+    //   this.storage.get('scannedProgramId').then(programId => {
+    await this.programsService.issueCredential(this.did, this.programId).subscribe(response => {
+      console.log('response: ', response);
     });
+    this.programsService.deletePrefilledAnswers(this.did, this.programId).subscribe(response => {
+      console.log('response: ', response);
+      this.programCredentialIssued = true;
+      this.answersProgram = null;
+      this.complete();
+    });
+    //   });
+    // });
   }
 
   getNextSection() {

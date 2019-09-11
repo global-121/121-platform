@@ -60,14 +60,13 @@ export class ProgramsServiceApiService {
     );
   }
 
-  issueCredential(did: string, programId: number, credentialJson: any): Observable<any> {
+  issueCredential(did: string, programId: number): Observable<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/sovrin/credential/issue',
       {
         did,
-        programId,
-        credentialJson
+        programId
       },
       false
     ).pipe(

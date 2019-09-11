@@ -12,6 +12,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 export class ScanQrComponent implements PersonalComponent {
 
   public did: string;
+  public programId: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -20,13 +21,17 @@ export class ScanQrComponent implements PersonalComponent {
     public conversationService: ConversationService,
   ) {
     this.route.queryParams.subscribe(params => {
-      if (params && params.did) {
+      if (params && params.did && params.programId) {
         this.did = JSON.parse(params.did);
+        this.programId = JSON.parse(params.programId);
         this.storage.set('scannedDid', this.did);
+        this.storage.set('scannedProgramId', this.programId);
         this.complete();
       }
     });
   }
+  // {"did": "did:sov:AdzMb8sH6QTcLUv7hfVJAZ", "programId": 1}
+  // {did: "did:sov:AdzMb8sH6QTcLUv7hfVJAZ", programId: 1}
 
   ngOnInit() { }
 

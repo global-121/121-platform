@@ -76,7 +76,7 @@ export class SeedMVP implements InterfaceScript {
     }
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
-    const program_d = await programRepository.findOne(1); // Assign programId=1 ...
+    const program_d = await programRepository.findOne(2); // Assign programId=1 ...
     const user_d = await userRepository.findOne(2); // ... to userId=2 (aidworker)
     user_d.assignedProgram = program_d;
     await userRepository.save(user_d);
@@ -122,14 +122,14 @@ export class SeedMVP implements InterfaceScript {
     credential1.programId = 1;
     credential1.attributeId = 1;
     credential1.attribute = 'nr_of_children';
-    credential1.answer = 2;
+    credential1.answer = '2';
     await credentialAttributesRepository.save(credential1);
     let credential2 = new CredentialAttributesEntity();
     credential2.did = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
     credential2.programId = 1;
     credential2.attributeId = 2;
     credential2.attribute = 'roof_type';
-    credential2.answer = 0;
+    credential2.answer = '0';
     await credentialAttributesRepository.save(credential2);
 
     await this.connection.close();

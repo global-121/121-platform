@@ -25,7 +25,7 @@
       <section text-center *ngIf="isValidationMeeting" style="background: white;">
         <ion-row padding>
           <ion-col width-25>
-            <ion-input text-center  placeholder='User DID is ....' #id></ion-input>
+            <ion-input text-center value='{"did": "<did>", "programId": <programId>}' placeholder='User DID is ....' #id></ion-input>
             <ion-button class="signin" (click)="startMeeting(id.value)">CONTINUE TO FORM</ion-button>
           </ion-col>
         </ion-row>

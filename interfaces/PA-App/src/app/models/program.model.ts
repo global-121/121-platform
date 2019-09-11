@@ -8,4 +8,5 @@ export class Program {
   meetingDocuments: any;
   ngo: string;
   customCriteria: any[];
+  credDefId: string;
 }

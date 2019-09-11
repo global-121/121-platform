@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage';
 import { SelectAppointmentComponent } from './select-appointment.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { QRCodeModule } from 'angularx-qrcode';
 
 describe('SelectAppointmentComponent', () => {
   let component: SelectAppointmentComponent;
@@ -20,7 +21,8 @@ describe('SelectAppointmentComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         TranslateModule.forRoot(),
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        QRCodeModule
       ],
       providers: [
         {

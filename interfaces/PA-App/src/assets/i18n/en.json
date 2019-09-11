@@ -64,7 +64,8 @@
       "more-info-documents": "More about these documents",
       "confirm": "Confirm meeting time",
       "change": "Change meeting time",
-      "conclusion": "Thank you, your verification meeting is confirmed."
+      "conclusion": "Thank you, your verification meeting is confirmed.",
+      "qr-code": "Please show this QR-code at your meeting."
     },
     "select-country": {
       "introduction": "The next step is to select your location, so we can show you programs for that location.",

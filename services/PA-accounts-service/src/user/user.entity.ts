@@ -3,8 +3,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   BeforeInsert,
-  OneToMany,
-  ManyToOne,
 } from 'typeorm';
 import * as crypto from 'crypto';
 

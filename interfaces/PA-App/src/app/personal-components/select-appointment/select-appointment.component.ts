@@ -9,6 +9,7 @@ import { Storage } from '@ionic/storage';
 
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { Program } from 'src/app/models/program.model';
+import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 
 @Component({
   selector: 'app-select-appointment',
@@ -35,9 +36,13 @@ export class SelectAppointmentComponent implements PersonalComponent {
 
   public meetingDocuments: string[];
 
+  public qrDataString: string;
+  public qrDataShow = false;
+
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
+    public paAccountApiService: PaAccountApiService,
     public translate: TranslateService,
     public storage: Storage,
   ) {
@@ -130,8 +135,32 @@ export class SelectAppointmentComponent implements PersonalComponent {
 
   public postAppointment(timeslotId: number, did: string) {
     this.programsService.postAppointment(timeslotId, did).subscribe(() => {
+
+      this.generateQrCode();
+
       this.complete();
     });
+  }
+
+  async generateQrCode() {
+    const did = await this.paRetrieveData('did');
+    let programId: number;
+    await this.storage.get('programChoice').then((value: string) => {
+      programId = parseInt(value, 10);
+    });
+    const qrData = { did, programId };
+    console.log('generateQrCode()', qrData);
+
+    if (qrData) {
+      this.qrDataString = JSON.stringify(qrData);
+      this.qrDataShow = true;
+    }
+  }
+
+  // NOTE: This should become a shared function
+  async paRetrieveData(variableName: string): Promise<any> {
+    return await this.paAccountApiService.retrieve(variableName)
+      .toPromise();
   }
 
   getNextSection() {

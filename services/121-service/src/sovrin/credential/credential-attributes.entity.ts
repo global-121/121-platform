@@ -18,5 +18,5 @@ export class CredentialAttributesEntity {
   public attribute: string;
 
   @Column()
-  public answer: number;
+  public answer: string;
 }

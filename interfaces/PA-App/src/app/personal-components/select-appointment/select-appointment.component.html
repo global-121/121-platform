@@ -101,4 +101,14 @@
       </ion-button>
     </p>
   </dialogue-turn>
+  <dialogue-turn [hidden]="!qrDataShow">
+    <p>
+        {{ 'personal.select-appointment.qr-code'|translate }}
+    </p>
+    <div text-center margin-vertical style="margin: 1em auto; max-width: 360px;"
+        *ngIf="qrDataString"
+    >
+      <qrcode [qrdata]="this.qrDataString" size="360" level="H"></qrcode>
+    </div>
+  </dialogue-turn>
 </section>
