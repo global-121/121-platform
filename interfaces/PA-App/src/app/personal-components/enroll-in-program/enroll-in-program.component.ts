@@ -246,16 +246,26 @@ export class EnrollInProgramComponent implements PersonalComponent {
     };
     await this.postPrefilledAnswers(prefilledAnswers);
 
+    // 6. Store relevant data to PA-account
+
+
   }
 
-  private async getCredentialOffer(programId: string): Promise<any> {
-    return await this.programsService.getCredentialOffer(programId).toPromise();
+  // This should become a shared function
+  paStoreData(variableName, data) {
+    this.paAccountApiService.store(variableName, data).subscribe((response) => {
+      console.log('response: ', response);
+    });
   }
 
   // NOTE: This should become a shared function
   async paRetrieveData(variableName: string): Promise<any> {
     return await this.paAccountApiService.retrieve(variableName)
       .toPromise();
+  }
+
+  private async getCredentialOffer(programId: string): Promise<any> {
+    return await this.programsService.getCredentialOffer(programId).toPromise();
   }
 
   async createCredentialRequest(credRequestPost): Promise<any> {

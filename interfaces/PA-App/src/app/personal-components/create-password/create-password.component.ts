@@ -115,8 +115,8 @@ export class CreatePasswordComponent implements PersonalComponent {
   }
 
   // This should become a shared function
-  paStoreData(variableName, paWalletName) {
-    this.paAccountApiService.store(variableName, paWalletName).subscribe((response) => {
+  paStoreData(variableName, data) {
+    this.paAccountApiService.store(variableName, data).subscribe((response) => {
       console.log('response: ', response);
     });
   }
