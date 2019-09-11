@@ -15,8 +15,10 @@ export class ChooseCredentialTypeComponent implements PersonalComponent {
 
   public credentialTypes: any;
   public credentialTypeChoice: string;
+  public typeChosen: boolean;
   public programChosen: boolean;
   public credentialTypeChoiceNew: string;
+  public typeChosenNew: boolean;
 
   constructor(
     public storage: Storage,
@@ -62,6 +64,8 @@ export class ChooseCredentialTypeComponent implements PersonalComponent {
 
   public submitCredentialType() {
     console.log('Chosen credential type: ', this.credentialTypeChoice);
+    this.typeChosen = true;
+
     // Here should be checked whether Digital ID already present
     if (this.credentialTypeChoice === 'apply-to-program') {
       this.programChosen = true;
@@ -74,6 +78,7 @@ export class ChooseCredentialTypeComponent implements PersonalComponent {
 
   public submitCredentialTypeNew() {
     console.log('Chosen credential type: ', this.credentialTypeChoiceNew);
+    this.typeChosenNew = true;
 
     this.complete();
   }
