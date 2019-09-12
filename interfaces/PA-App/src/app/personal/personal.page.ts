@@ -16,6 +16,7 @@ import { SelectAppointmentComponent } from '../personal-components/select-appoin
 import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
+import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
 
 @Component({
   selector: 'app-personal',
@@ -42,6 +43,7 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.selectCountry]: SelectCountryComponent,
     [PersonalComponents.selectLanguage]: SelectLanguageComponent,
     [PersonalComponents.selectProgram]: SelectProgramComponent,
+    [PersonalComponents.storeCredential]: StoreCredentialComponent,
   };
   public debugSections = Object.keys(this.availableSections);
 

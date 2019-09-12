@@ -3,7 +3,7 @@ version: '3.7'
 services:
   indypool:
     build:
-      context: ../../TyknSovrinService 
+      context: tykn-ssi-services 
       dockerfile: indy-pool.dockerfile
       args:
         pool_ip: '10.0.0.2'
@@ -25,7 +25,7 @@ services:
         ipv4_address: 10.0.0.2
   tyknims:
     build: 
-      context: ../../TyknSovrinService/TyknIMS  
+      context: tykn-ssi-services/TyknIMS  
       dockerfile: Dockerfile
     init: true
     container_name: tyknims
@@ -42,7 +42,7 @@ services:
       - indypool
   orgims:
     build:
-      context: ../../TyknSovrinService/OrgIMS  
+      context: tykn-ssi-services/OrgIMS  
       dockerfile: Dockerfile
     init: true
     container_name: orgims
@@ -60,7 +60,7 @@ services:
     restart: on-failure
   userims:
     build: 
-      context: ../../TyknSovrinService/UserIMS 
+      context: tykn-ssi-services/UserIMS 
       dockerfile: Dockerfile
     init: true
     container_name: userims

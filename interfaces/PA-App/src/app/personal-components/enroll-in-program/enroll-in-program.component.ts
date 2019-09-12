@@ -254,6 +254,9 @@ export class EnrollInProgramComponent implements PersonalComponent {
     await this.postPrefilledAnswers(prefilledAnswers);
 
     // 6. Store relevant data to PA-account
+    this.paStoreData('credentialRequest', JSON.stringify(credentialRequest));
+    this.paStoreData('credDefId', JSON.stringify(this.credDefId));
+    this.paStoreData('programId', JSON.stringify(this.programId));
 
 
   }
@@ -276,6 +279,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
   }
 
   async createCredentialRequest(credRequestPost): Promise<any> {
+    console.log(credRequestPost);
     return await this.userImsApiService.createCredentialRequest(
       credRequestPost.wallet,
       credRequestPost.correlation,

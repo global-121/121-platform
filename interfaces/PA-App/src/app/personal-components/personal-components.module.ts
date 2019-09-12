@@ -16,6 +16,7 @@ import { SelectAppointmentComponent } from './select-appointment/select-appointm
 import { SelectCountryComponent } from './select-country/select-country.component';
 import { SelectLanguageComponent } from './select-language/select-language.component';
 import { SelectProgramComponent } from './select-program/select-program.component';
+import { StoreCredentialComponent } from './store-credential/store-credential.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { SelectProgramComponent } from './select-program/select-program.componen
     SelectCountryComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
+    StoreCredentialComponent,
   ],
   imports: [
     CommonModule,
@@ -47,6 +49,7 @@ import { SelectProgramComponent } from './select-program/select-program.componen
     SelectCountryComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
+    StoreCredentialComponent,
   ],
   exports: [
     ChooseCredentialTypeComponent,
@@ -59,6 +62,7 @@ import { SelectProgramComponent } from './select-program/select-program.componen
     SelectCountryComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
+    StoreCredentialComponent,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
