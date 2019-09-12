@@ -31,7 +31,7 @@ Run (from /services subfolder):
 
 ## How to use
 
-The 4 tykn-ssi-service containers are started automatically by docker-compose. The others are not. The docker-compose sets up both services interactively, for now (development purposes) an 'npm start' command is not included in the respective Dockerfiles. Instead you have to start both containers:
+The 4 `tykn-ssi-service` containers are started automatically by docker-compose. The others are not. The docker-compose sets up both services interactively, for now (development purposes) an `npm start` command is not included in the respective `Dockerfiles`. Instead you have to start both containers:
 
     docker start -i 121-service
     docker start -i PA-accounts-service
@@ -40,16 +40,15 @@ and from the command-line, run:
 
     npm run start:dev
 
-Or other relevant commands (see Readme's in subfolders).
+Or other relevant commands (see README's in their subfolders).
 
 ## Seed the database
 
-To be able to seed the database, run the following command:
+To seed the database, run the following command(s):  
+Replace `seed` with `seed:dev` to get more data to test with.
 
-```
-docker exec -i 121-service npx ts-node src/scripts seed-dev
-docker exec -i PA-accounts-service npx ts-node src/scripts seed-init
-```
+    docker exec -i 121-service npm run seed
+    docker exec -i PA-accounts-service npm run seed
 
 ## How to use Swagger (with authorization features)
 

@@ -1,71 +1,72 @@
 {
-    "location": "Lilongwe",
-    "ngo": "Dorcas",
-    "countryId": 1,
-    "title": {
-        "en": "MVP Basic program"
+  "published": true,
+  "location": "Location Basic",
+  "ngo": "NGO B",
+  "countryId": 1,
+  "title": {
+    "en": "MVP Basic program"
+  },
+  "description": {
+    "en": "Basic program for development purposes"
+  },
+  "startDate": "2020-01-01T01:00:00Z",
+  "endDate": "2020-05-31T23:00:00Z",
+  "currency": "EUR",
+  "distributionFrequency": "",
+  "distributionChannel": "mobileMoney",
+  "notifiyPaArea": true,
+  "notificationType": "announcement",
+  "cashDistributionSites": {
+    "cashDistributionSites": []
+  },
+  "financialServiceProviders": {
+    "financialServiceProviders": []
+  },
+  "inclusionCalculationType": "standard",
+  "meetingDocuments": {
+    "en": "Document"
+  },
+  "customCriteria": [
+    {
+      "criterium": "nr_of_children",
+      "label": {
+        "en": "How many children do you have?"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {
+        "multiplier": 2
+      }
     },
-    "description": {
-        "en": "Basic program for development purposes"
-    },
-    "startDate": "2020-05-23T18:25:43.511Z",
-    "endDate": "2020-05-23T18:25:43.511Z",
-    "currency": "MWK",
-    "distributionFrequency": "what is this",
-    "distributionChannel": "mobileMoney",
-    "notifiyPaArea": true,
-    "notificationType": "announcement",
-    "cashDistributionSites": {
-        "cashDistributionSites": []
-    },
-    "financialServiceProviders": {
-        "financialServiceProviders": []
-    },
-    "inclusionCalculationType": "standard",
-    "meetingDocuments": {
-        "en": ""
-    },
-    "customCriteria": [
+    {
+      "criterium": "roof_type",
+      "label": {
+        "en": "What type is your roof?"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
         {
-            "criterium": "nr_of_children",
-            "label": {
-                "en": "How many children do you have?"
-            },
-            "answerType": "numeric",
-            "criteriumType": "standard",
-            "options": null,
-            "scoring": {
-                "multiplier": 2
-            }
+          "id": 0,
+          "option": "steel",
+          "label": {
+            "en": "steel"
+          }
         },
         {
-            "criterium": "roof_type",
-            "label": {
-                "en": "What type is your roof?"
-            },
-            "answerType": "dropdown",
-            "criteriumType": "standard",
-            "options": [
-                {
-                    "id": 0,
-                    "option": "steel",
-                    "label": {
-                        "en": "steel"
-                    }
-                },
-                {
-                    "id": 1,
-                    "option": "tiles",
-                    "label": {
-                        "en": "tiles"
-                    }
-                }
-            ],
-            "scoring": {
-                "0": 3,
-                "1": 6
-            }
+          "id": 1,
+          "option": "tiles",
+          "label": {
+            "en": "tiles"
+          }
         }
-    ],
-    "minimumScore": 25
+      ],
+      "scoring": {
+        "0": 3,
+        "1": 6
+      }
+    }
+  ],
+  "minimumScore": 25
 }
