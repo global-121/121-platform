@@ -28,14 +28,15 @@ export class ApiService {
 
   get(
     endpoint: string,
-    path: string
+    path: string,
+    anonymous: boolean = true
   ): Observable<any> {
-    console.log(`ApiService GET: ${endpoint}${path}`);
+    console.log(`ApiService GET: ${endpoint}${path} Anonymous? ${anonymous}`);
 
     return this.http.get(
       endpoint + path,
       {
-        headers: this.createHeaders(true),
+        headers: this.createHeaders(anonymous),
       }
     );
   }

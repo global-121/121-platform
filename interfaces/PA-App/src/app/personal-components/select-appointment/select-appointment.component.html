@@ -22,12 +22,15 @@
             {{ timeslot.location }}
           </ion-note>
         </ion-label>
-        <ion-radio [value]="timeslot.id"></ion-radio>
+        <ion-radio [value]="timeslot.id"
+                   [disabled]="timeslotSubmitted"
+        ></ion-radio>
       </ion-item>
     </ion-radio-group>
     <p class="ion-margin-top">
-      <ion-button *ngIf="timeslotChoice"
+      <ion-button *ngIf="timeslotChoice && !timeslotSubmitted"
                   (click)="submitTimeslot()"
+                  [disabled]="timeslotSubmitted"
                   size="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
@@ -57,37 +60,55 @@
                 class="ion-no-padding ion-text-wrap"
       >
         <ion-label>{{ 'personal.select-appointment.confirm'|translate }}</ion-label>
-        <ion-radio value="confirm"></ion-radio>
+        <ion-radio value="confirm"
+                   [disabled]="isDisabled"
+        ></ion-radio>
       </ion-item>
       <ion-item color="light"
                 class="ion-no-padding ion-text-wrap"
       >
         <ion-label>{{ 'personal.select-appointment.change'|translate }}</ion-label>
-        <ion-radio value="change"></ion-radio>
+        <ion-radio value="change"
+                   [disabled]="isDisabled"
+        ></ion-radio>
       </ion-item>
     </ion-radio-group>
     <p class="ion-margin-top">
-      <ion-button *ngIf="confirmAction"
+      <ion-button *ngIf="confirmAction && !isDisabled"
                   (click)="submitConfirmAction(confirmAction)"
+                  [disabled]="isDisabled"
                   size="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo" *ngIf="appointmentConfirmed">
+  <dialogue-turn [actor]="ngo" *ngIf="isDisabled">
     <p>
       {{ 'personal.select-appointment.conclusion'|translate }}
     </p>
     <p>
-      {{ 'personal.select-appointment.documents'|translate }}<br>
-      <span *ngFor="let document of meetingDocuments">
-        {{ document }}<br>
-      </span>
+      {{ 'personal.select-appointment.documents'|translate }}
     </p>
+    <ul class="ion-no-padding ion-padding-start">
+      <li *ngFor="let document of meetingDocuments">
+        {{ document }}
+      </li>
+    </ul>
+
     <p>
       <ion-button type="button" size="small">
         <ion-icon name="information-circle-outline" slot="start"></ion-icon>
         {{ 'personal.select-appointment.more-info-documents'|translate }}
       </ion-button>
     </p>
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!qrDataShow">
+    <p>
+        {{ 'personal.select-appointment.qr-code'|translate }}
+    </p>
+    <div text-center margin-vertical style="margin: 1em auto; max-width: 360px;"
+        *ngIf="qrDataString"
+    >
+      <qrcode [qrdata]="this.qrDataString" size="360" level="H"></qrcode>
+    </div>
   </dialogue-turn>
 </section>

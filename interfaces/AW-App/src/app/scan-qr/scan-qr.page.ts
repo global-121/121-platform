@@ -106,10 +106,12 @@ export class ScanQrPage implements OnInit {
     }
   }
 
-  startMeeting(did) {
+  startMeeting(qr) {
+    const qrJson = JSON.parse(qr);
     const navigationExtras: NavigationExtras = {
       queryParams: {
-        did: JSON.stringify(did)
+        did: JSON.stringify(qrJson.did),
+        programId: JSON.stringify(qrJson.programId)
       }
     };
     this.router.navigate(['/tabs/personal'], navigationExtras);

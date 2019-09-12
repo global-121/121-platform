@@ -19,7 +19,7 @@ export class DataStorageService {
     storeData: StoreDataDto,
   ): Promise<DataStorageEntity> {
     let data = new DataStorageEntity();
-    data.username = storeData.username;
+    data.userId = userId;
     data.type = storeData.type;
     data.data = storeData.data;
 
@@ -32,12 +32,12 @@ export class DataStorageService {
     userId: number,
     params,
   ): Promise<String> {
-    const data = await this.dataStorageRepository.findOne({ where: { username: params.username, type: params.type } });
+    const data = await this.dataStorageRepository.findOne({ where: { userId: userId, type: params.type } });
     if (!data) {
       const errors = { Data: ' not found' };
       throw new HttpException({ errors }, 401);
     }
-    return data.data;
+    return JSON.stringify(data.data);
   }
 
 

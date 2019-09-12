@@ -23,7 +23,7 @@
       "conclusion": "Great! You have created a password."
     },
     "enroll-in-program": {
-      "introduction": "We have received your request to apply for <strong>{{ programTitle }}</strong>.",
+      "introduction": "We have received your request to apply for <strong>{{programTitle}}</strong>.",
       "introduction-questions": "To make sure you get the best possible help, please answer the following questions.",
       "more-info-questions": "More about these questions",
       "more-info-share": "More about who sees your information",
@@ -64,19 +64,20 @@
       "more-info-documents": "More about these documents",
       "confirm": "Confirm meeting time",
       "change": "Change meeting time",
-      "conclusion": "Thank you, your verification meeting is confirmed."
+      "conclusion": "Thank you, your verification meeting is confirmed.",
+      "qr-code": "Please show this QR-code at your meeting."
     },
     "select-country": {
       "introduction": "The next step is to select your location, so we can show you programs for that location.",
       "step3": "Step 3: Select your location:",
-      "conclusion": "Thank you, you have selected {{country}}."
+      "conclusion": "Thank you, you have selected <strong>{{country}}</strong>."
     },
     "select-language": {
       "introduction": "Please select your language.",
       "option1": "English",
       "option2": "Language 2",
       "option3": "Language 3",
-      "result": "Thank you. You have selected {{language}}."
+      "result": "Thank you. You have selected <strong>{{language}}</strong>."
     },
     "select-program": {
       "introduction": "You can now select a program.",

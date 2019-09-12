@@ -39,9 +39,8 @@ export class DataStorageController {
 
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get data from storage' })
-  @ApiImplicitParam({ name: 'username', description: 'string', required: true, type: 'string' })
   @ApiImplicitParam({ name: 'type', description: 'string', required: true, type: 'string' })
-  @Get('data-storage/:username/:type')
+  @Get('data-storage/:type')
   public async get(
     @User('id') userId: number,
     @Param() params,

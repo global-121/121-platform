@@ -1,6 +1,6 @@
 <section>
   <dialogue-turn [actor]="program?.ngo">
-    <p [innerHTML]="introductionText"></p>
+    <p [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programTitle }"></p>
     <p>
       {{ 'personal.enroll-in-program.introduction-questions'|translate }}
     </p>
@@ -27,7 +27,9 @@
                     color="light"
           >
             <ion-label>{{ option.label }}</ion-label>
-            <ion-radio [value]="option.value"></ion-radio>
+            <ion-radio [value]="option.value"
+                       [disabled]="hasAnswered"
+            ></ion-radio>
           </ion-item>
         </ion-radio-group>
       </div>
@@ -35,6 +37,7 @@
         <ion-input type="text"
                    [name]="question.code"
                    (change)="changeAnswers($event)"
+                   [disabled]="hasAnswered"
         ></ion-input>
       </div>
     </div>
@@ -43,6 +46,7 @@
     <p>
       <ion-button type="submit"
                   (click)="submit()"
+                  [disabled]="hasAnswered"
                   size="block"
       >
         {{ 'personal.enroll-in-program.submit'|translate }}
@@ -73,12 +77,14 @@
     <p class="ion-margin-top">
       <ion-button type="submit"
                   (click)="submitConfirm()"
+                  [disabled]="isDisabled"
                   size="block"
       >
         {{ 'personal.enroll-in-program.submit-confirm'|translate }}
       </ion-button>
       <ion-button type="button"
                   (click)="change()"
+                  [disabled]="isDisabled"
                   size="block"
                   fill="outline"
       >
@@ -86,7 +92,9 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo" *ngIf="hasConfirmed">
+  <dialogue-turn *ngIf="isDisabled"
+                 [actor]="program?.ngo"
+  >
     <p>
       {{ 'personal.enroll-in-program.confirm-received'|translate }}
     </p>
@@ -97,12 +105,17 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo" *ngIf="hasConfirmed" isConnected="true">
+  <dialogue-turn *ngIf="isDisabled"
+                 [actor]="program?.ngo"
+                 isConnected="true"
+  >
     <p>
       {{ 'personal.enroll-in-program.prepare-documents'|translate }}
     </p>
-    <p>
-      {{ program?.meetingDocuments|json }}
-    </p>
+    <ul class="ion-no-padding ion-padding-start">
+      <li *ngFor="let document of program?.meetingDocuments">
+        {{ document }}
+      </li>
+    </ul>
   </dialogue-turn>
 </section>

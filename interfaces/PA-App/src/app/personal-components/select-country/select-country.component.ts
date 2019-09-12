@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
-import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
@@ -12,15 +12,13 @@ import { Storage } from '@ionic/storage';
   styleUrls: ['./select-country.component.scss'],
 })
 export class SelectCountryComponent implements PersonalComponent {
+  public isDisabled = false;
 
   public countries: any;
   public countryChoice: number;
   public countryChoiceName: string;
-  public countryChoiceResult: string;
-  public countrySelected: boolean;
 
   constructor(
-    public translate: TranslateService,
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     public storage: Storage,
@@ -51,26 +49,22 @@ export class SelectCountryComponent implements PersonalComponent {
   public changeCountry($event) {
     this.countryChoice = parseInt($event.detail.value, 10);
     this.countryChoiceName = this.getCountryName(this.countryChoice);
-    this.countryChoiceResult = this.translate.instant('personal.select-country.conclusion', {
-      country: this.countryChoiceName,
-    });
-    this.countrySelected = false;
+    this.isDisabled = false;
     this.storeCountry(this.countryChoice);
   }
 
   public submitCountry() {
-    this.countrySelected = true;
-
     this.complete();
   }
 
   getNextSection(): string {
-    return 'select-program';
+    return PersonalComponents.selectProgram;
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: 'select-country',
+      name: PersonalComponents.selectCountry,
       data: {
         countryChoice: this.countryChoice,
         countryChoiceName: this.countryChoiceName,

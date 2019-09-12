@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponents } from '../personal-components.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
@@ -14,6 +15,8 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./select-program.component.scss'],
 })
 export class SelectProgramComponent implements PersonalComponent {
+  public isDisabled = false;
+
   private languageCode: string;
   private fallbackLanguageCode: string;
 
@@ -82,12 +85,13 @@ export class SelectProgramComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'enroll-in-program';
+    return PersonalComponents.enrollInProgram;
   }
 
   complete() {
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: 'select-program',
+      name: PersonalComponents.selectProgram,
       data: {
         countryChoice: this.countryChoice,
         programChoice: this.programChoice,

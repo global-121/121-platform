@@ -40,12 +40,7 @@ export class ValidateIdentityComponent implements PersonalComponent {
 
   public issueIdentityCredential(did: string) {
     this.storage.get('scannedDid').then(value => {
-      // DUMMY fix later
-      // const credentialJson = {};
-      // this.programsService.issueCredential(did, null, credentialJson).subscribe(response => {
-      //   console.log('response: ', response);
-      //   this.credentialIssued = true;
-      // });
+      // MVP: For identity no credential is issued. So only answers are read in frontend, and then deleted.
       this.programsService.deletePrefilledAnswers(value, null).subscribe(response => {
         console.log('response: ', response);
         console.log('Identity credential issued');

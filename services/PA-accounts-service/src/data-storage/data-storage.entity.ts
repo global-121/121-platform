@@ -10,7 +10,7 @@ export class DataStorageEntity {
   public id: number;
 
   @Column()
-  public username: string;
+  public userId: number;
 
   @Column()
   public type: string;

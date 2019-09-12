@@ -24,11 +24,8 @@ The tools to run or build all interfaces:
 
       nvm install && nvm install-latest-npm
 
-- [Node.js](https://nodejs.org/) **v10+ LTS**  
+- (When not using NVM) [Node.js](https://nodejs.org/) **v10+ LTS**  
   With NPM **v6.9+**
-
-- [Ionic CLI](https://ionicframework.com/docs/installation/cli) **v4+**  
-  Install with: `npm install -g ionic@^4`
 
 ### Specific requirements
 Every interface or app will have their own requirements defined in their README file.
@@ -37,3 +34,15 @@ Every interface or app will have their own requirements defined in their README 
 Every interface or app will refer to their specific services of APIs.
 
 See the [/services/](../services/)-directory in this repository.
+
+
+## Deployment
+
+### Building native apps
+To create 'native' versions of some of the interfaces, the following steps are required:
+
+- Generate assets for the platform of choice:
+  `npm run cordova -- resources <platform>` (where `<platform>` is `ios` or `android`)
+
+- Create a build:  
+  `npm run cordova -- build`

@@ -7,7 +7,7 @@ import { StoreDataDto } from './dto';
 const data = 'string';
 const testDataStorage = {
   id: 1,
-  username: 'string',
+  userId: 1,
   type: 'string',
   data: 'string',
 };
@@ -19,7 +19,7 @@ class DataStorageServiceMock {
   public async post(storeData: StoreDataDto): Promise<DataStorageEntity> {
     const testDataStorage = {
       id: 1,
-      username: storeData.username,
+      userId: 1,
       type: storeData.type,
       data: storeData.data,
     };
@@ -50,7 +50,6 @@ describe('UserController', (): void => {
   describe('get', (): void => {
     it('should return data', async (): Promise<void> => {
       const getDataParameters = {
-        username: 'string',
         type: 'string'
       };
       const spy = jest
@@ -66,7 +65,6 @@ describe('UserController', (): void => {
   describe('post', (): void => {
     xit('should return data', async (): Promise<void> => {
       const storeDataParameters = {
-        username: 'string',
         type: 'string',
         data: 'string',
       };

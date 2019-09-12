@@ -92,6 +92,82 @@ export class ProgramsServiceApiService {
       );
   }
 
+  getConnectionRequest(): Observable<any> {
+    console.log('getConnectionRequest');
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        '/sovrin/create-connection'
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
+
+  postConnectionResponse(did: string, verkey: string, nonce: string, meta: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/create-connection',
+      {
+        did,
+        verkey,
+        nonce,
+        meta
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
+  getCredentialOffer(programId: string): Observable<any> {
+    console.log('getCredentialOffer');
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        '/sovrin/credential/offer/' + programId
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
+
+  postCredentialRequest(did: string, programId: number, encryptedCredentialRequest: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/credential/request',
+      {
+        did,
+        programId,
+        encryptedCredentialRequest,
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
+  postPrefilledAnswers(did: string, programId: number, credentialType: string, attributes: any): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/credential/attributes',
+      {
+        did,
+        programId,
+        credentialType,
+        attributes
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
   getCredential(did: string): Observable<any> {
     console.log('getCredentials');
     return this.apiService

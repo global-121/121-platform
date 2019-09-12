@@ -23,7 +23,7 @@
 }
 
 // Override default styles to emphasize where to input
-ion-input,
-ion-textarea {
-  border: 1px solid currentColor;
+ion-input .native-input,
+ion-textarea .native-textarea {
+  border: 1px solid currentColor !important;
 }
