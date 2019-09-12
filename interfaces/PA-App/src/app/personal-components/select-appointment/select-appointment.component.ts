@@ -164,8 +164,7 @@ export class SelectAppointmentComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    console.log('Done!');
-    return '';
+    return 'store-credential';
   }
 
   complete() {

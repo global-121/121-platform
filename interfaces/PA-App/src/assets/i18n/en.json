@@ -83,6 +83,10 @@
       "introduction": "You can now select a program.",
       "more-info-programs": "More about programs",
       "program": "Program"
+    },
+    "store-credential": {
+      "received": "Credential is received. (TO DO: this should only appear after credential is received.)",
+      "stored": "Credential is stored."
     }
   },
   "notification": {

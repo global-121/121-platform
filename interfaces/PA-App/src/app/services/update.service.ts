@@ -27,9 +27,11 @@ export class UpdateService {
   public credentialStatusStorage = 'credentialStatus';
   public didStorage = 'did';
 
+  public credential: any;
+
   public pagesNav = {
     inclusion: 'tabs/tab1',
-    credential: 'tabs/tab1'
+    credential: 'tabs/personal'
   };
 
   constructor(
@@ -51,14 +53,16 @@ export class UpdateService {
     this.listenForInclusion(programId, allInclusion);
   }
 
-  async checkCredential(programId: number): Promise<void> {
+  async checkCredential(programId: number, did: string): Promise<any> {
     const allCredentialState = await this.getLocalStorageArray(this.credentialStatusStorage);
     for (const credentialState of allCredentialState) {
-      if (credentialState.programId === programId && credentialState.status === this.receivedStatus.received) {
+      if (credentialState.programId === programId
+        && credentialState.did === did
+        && credentialState.status === this.receivedStatus.received) {
         return;
       }
     }
-    this.listenForCredential(programId, allCredentialState);
+    return await this.listenForCredential(programId, did, allCredentialState);
   }
 
   listenForInclusion(programId: number, allInclusion: InclusionStorage[]): void {
@@ -69,27 +73,30 @@ export class UpdateService {
           this.listenForInclusion(programId, allInclusion);
         }, this.updateSpeedMs);
       } else if (response.status === this.inclusionStatus.included || response.status === this.inclusionStatus.excluded) {
-        this.storeStatus(response.status, programId, allInclusion, this.inclusionStatusStorage);
+        this.storeStatus(response.status, programId, did, allInclusion, this.inclusionStatusStorage);
         this.createUpdateToast('notification.inclusion', this.pagesNav.inclusion);
       }
     });
   }
 
-  listenForCredential(programId: number, allCredentialState: any): void {
-    const did = localStorage.getItem(this.didStorage);
+  listenForCredential(programId: number, did: string, allCredentialState: any): any {
+    let credential: any;
     this.programsService.getCredential(did).subscribe(response => {
-      this.storeStatus(this.receivedStatus.received, programId, allCredentialState, this.credentialStatusStorage);
+      credential = response;
+      this.storeStatus(this.receivedStatus.received, programId, did, allCredentialState, this.credentialStatusStorage);
       this.createUpdateToast('notification.credentials', this.pagesNav.credential);
     }, err => {
       setTimeout(() => {
-        this.listenForCredential(programId, allCredentialState);
+        this.listenForCredential(programId, did, allCredentialState);
       }, this.updateSpeedMs);
     });
+    return credential;
   }
 
-  storeStatus(status: string, programId: number, allState: InclusionStorage[], storageName: string): void {
+  storeStatus(status: string, programId: number, did: string, allState: InclusionStorage[], storageName: string): void {
     const state: InclusionStorage = {
       programId,
+      did,
       status,
     };
     allState.push(state);

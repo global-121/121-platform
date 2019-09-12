@@ -72,4 +72,26 @@ export class UserImsApiService {
         map(response => response)
       );
   }
+
+  storeCredential(credDefID: string, credentialRequestMetadata: any, credential: any, wallet: JSON, correlation: JSON): Observable<any> {
+    console.log('UserImsApiService : storeCredential()');
+
+    return this.apiService
+      .post(
+        environment.url_user_ims_api,
+        '/credential/store',
+        {
+          credDefID,
+          credentialRequestMetadata,
+          credential,
+          wallet,
+          correlation,
+        },
+        true
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
 }
