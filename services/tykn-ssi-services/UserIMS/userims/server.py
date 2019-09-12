@@ -3,6 +3,7 @@ import traceback
 
 from aiohttp import web
 from aiohttp_swagger import *
+import aiohttp_cors
 
 from . import WalletAlreadyExists, WalletDoesNotExist, ServiceError, InvalidWalletCredentials
 
@@ -23,6 +24,17 @@ class Server:
         self._port = port
         self._service = service
         self._logger = logger
+
+        # Add CORS
+        cors = aiohttp_cors.setup(self._app, defaults={
+          "*": aiohttp_cors.ResourceOptions(
+            allow_credentials=True,
+            expose_headers="*",
+            allow_headers="*",
+          )
+        })
+        for route in list(self._app.router.routes()):
+          cors.add(route)
 
     def start(self):
         # self._logger.info(f'Starting HTTP server on {self._address}:{self._port}')

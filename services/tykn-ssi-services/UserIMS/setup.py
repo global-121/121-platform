@@ -8,6 +8,7 @@ setup(
         'python3-indy==1.6.7',
         'aiohttp',
         'aiohttp-swagger',
+        'aiohttp-cors',
         'loggly-python-handler'
     ],
     url='',

@@ -9,4 +9,5 @@ export enum PersonalComponents {
   selectCountry = 'select-country',
   selectLanguage = 'select-language',
   selectProgram = 'select-program',
+  storeCredential = 'store-credential',
 }
