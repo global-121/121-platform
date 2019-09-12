@@ -14,6 +14,7 @@
   <dialogue-turn actor="self"
                  *ngFor="let question of questions; let i=index"
                 [isConnected]="i > 0"
+                [isSpoken]="i >= 0"
   >
     <ion-label>
       {{ question.label }}
@@ -52,14 +53,19 @@
         {{ 'personal.enroll-in-program.submit'|translate }}
       </ion-button>
     </p>
-
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo" *ngIf="hasAnswered">
+  <dialogue-turn [actor]="program?.ngo"
+                 *ngIf="hasAnswered"
+                 [isSpoken]="hasAnswered"
+  >
     <p>
       {{ 'personal.enroll-in-program.please-confirm'|translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self" *ngIf="hasAnswered">
+  <dialogue-turn actor="self"
+                 *ngIf="hasAnswered"
+                 [isSpoken]="hasAnswered"
+  >
     <ul class="ion-no-padding">
       <li *ngFor="let question of questions">
         {{ question.label }}<br>
@@ -93,6 +99,7 @@
     </p>
   </dialogue-turn>
   <dialogue-turn *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
                  [actor]="program?.ngo"
   >
     <p>
@@ -106,6 +113,7 @@
     </p>
   </dialogue-turn>
   <dialogue-turn *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
                  [actor]="program?.ngo"
                  isConnected="true"
   >

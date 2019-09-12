@@ -35,7 +35,10 @@
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo" *ngIf="timeslotSubmitted">
+  <dialogue-turn [actor]="ngo"
+                 *ngIf="timeslotSubmitted"
+                 [isSpoken]="timeslotSubmitted"
+  >
     <p>
       {{ 'personal.select-appointment.thanks-repeat'|translate }}
     </p>
@@ -54,7 +57,10 @@
       <strong>{{ chosenTimeslot.location }}</strong>
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self" *ngIf="timeslotSubmitted">
+  <dialogue-turn actor="self"
+                 *ngIf="timeslotSubmitted"
+                 [isSpoken]="timeslotSubmitted"
+  >
     <ion-radio-group (ionChange)="changeConfirmAction($event)">
       <ion-item color="light"
                 class="ion-no-padding ion-text-wrap"
@@ -81,7 +87,10 @@
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo" *ngIf="isDisabled">
+  <dialogue-turn [actor]="ngo"
+                 *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
+  >
     <p>
       {{ 'personal.select-appointment.conclusion'|translate }}
     </p>
@@ -101,7 +110,9 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!qrDataShow">
+  <dialogue-turn *ngIf="!qrDataShow"
+                 [isSpoken]="!qrDataShow"
+  >
     <p>
         {{ 'personal.select-appointment.qr-code'|translate }}
     </p>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -9,15 +9,15 @@ import { ConversationService } from 'src/app/services/conversation.service';
   templateUrl: './initial-needs.component.html',
   styleUrls: ['./initial-needs.component.scss'],
 })
-export class InitialNeedsComponent implements PersonalComponent {
-  public isDisabled = false;
-
+export class InitialNeedsComponent extends PersonalComponent {
   public needs: any;
   public needsReceived: boolean;
 
   constructor(
     public conversationService: ConversationService,
-  ) { }
+  ) {
+    super();
+   }
 
   ngOnInit() {
   }

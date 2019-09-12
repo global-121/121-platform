@@ -2,7 +2,9 @@
      [ngClass]="{
        'is-connected': isConnected,
        'is-other ion-justify-content-start': !isSelf,
-       'is-self ion-justify-content-end': isSelf
+       'is-self ion-justify-content-end': isSelf,
+       'is-pending': !isSpoken,
+       'is-spoken': isSpoken
      }"
 >
   <div class="dialogue-turn--actor">
