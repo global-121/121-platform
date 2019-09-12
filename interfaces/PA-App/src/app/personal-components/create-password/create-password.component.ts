@@ -45,7 +45,7 @@ export class CreatePasswordComponent implements PersonalComponent {
       return;
     }
 
-    this.executeSovrinFlow(create);
+    await this.executeSovrinFlow(create);
 
     this.complete();
   }
@@ -59,7 +59,6 @@ export class CreatePasswordComponent implements PersonalComponent {
 
     // 2. Create (random) wallet-name and store in PA-account
     const paWalletName = this.makeRandomUsername(16);
-    this.paStoreData('walletName', paWalletName);
 
     // 3. Create Sovrin wallet using previously created wallet-name and wallet-password equal to account-password
     const wallet = {
@@ -70,8 +69,6 @@ export class CreatePasswordComponent implements PersonalComponent {
       correlationID: 'test'
     };
     await this.sovrinCreateWallet(wallet, correlation);
-    this.paStoreData('wallet', JSON.stringify(wallet));
-    this.paStoreData('correlation', JSON.stringify(correlation));
 
     // 4. Generate Sovrin DID and store in wallet
     const result = await this.sovrinCreateStoreDid(wallet, correlation);
@@ -79,8 +76,6 @@ export class CreatePasswordComponent implements PersonalComponent {
     // 5. Store Sovrin DID in PA-account
     const didShort = result.did;
     const did = 'did:sov:' + didShort;
-    this.paStoreData('didShort', didShort);
-    this.paStoreData('did', did);
 
     // 6. Get connection-request (NOTE: in the MVP-setup this is not actually needed/used,
     // because of lack of pairwise connection + encryption)
@@ -94,6 +89,13 @@ export class CreatePasswordComponent implements PersonalComponent {
       meta: 'meta:sample'
     };
     this.postConnectionResponse(connectionResponse);
+
+    // 8. Store relevant data in PA-account
+    // this.paStoreData('walletName', paWalletName);
+    this.paStoreData('wallet', JSON.stringify(wallet));
+    this.paStoreData('correlation', JSON.stringify(correlation));
+    this.paStoreData('didShort', didShort);
+    this.paStoreData('did', did);
 
   }
 
