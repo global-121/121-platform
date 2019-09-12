@@ -1,6 +1,6 @@
-# Programs-Service
+# 121-Service
 
-The Programs Service is the backend for the _Humanitarian Organization_ web portal, where 121-programs can be created and monitored, etc.
+The 121-Service is the backend where 121-programs can be created and monitored, etc.
 
 ---
 
@@ -73,32 +73,28 @@ Run the application through:
 
 ## Start application on VM
 
-Same as bove. But replace '-it' tag in 'docker run' or 'docker start' commands by '-d' to run in detached mode.
-Also, the CMD line of Dockerfile should be changed from CMD ["npm", "run", "start:dev"] to CMD ["npm", "start"].
+Same as above. But replace `-it` tag in `docker run` or `docker start` commands by `-d` to run in detached mode.
+Also, the CMD line of Dockerfile should be changed from: `CMD ["npm", "run", "start:dev"]` to: `CMD ["npm", "start"]`.
 
 ## Seed the database and create identity schema
 
-To be able to use the functionality of this service an initial admin user is required, so he/she can create new aidworker/admin users and programs. Furthemore an initial 'identity' schema is required which will be used to create generic 'identity' credentials containing age and name. This initial user and schema can be created by running seed script. The initial identity schema is stored in the program database because this already contains the right functionality to publish and create schema’s.
+To be able to use the functionality of this service an initial admin user is required, so he/she can create new aid-worker/admin users and programs. Furthermore an initial 'identity' schema is required which will be used to create generic 'identity' credentials containing age and name. This initial user and schema can be created by running seed script. The initial identity schema is stored in the program database because this already contains the right functionality to publish and create schema’s.
 
-To seed the database for dev mode with an admin, an identiy schema and some inititial testing values run the following command:
+To seed the database for dev mode with an admin, an identity schema and some initial testing values run the following command:
 
-```
-docker exec -i 121-service  npx ts-node src/scripts seed-dev
-```
+    docker exec -i 121-service npm run seed:dev
 
 To seed it for production run the following command:
 
-```
-docker exec -i 121-service  npx ts-node src/scripts seed-prod
-```
+    docker exec -i 121-service npm run seed
 
-This user password and username can be customized in secrets.ts
+This user password and username can be customized in `secrets.ts`
 
 ## How to use Swagger (with authorization features)
 
 Access Swagger API via `http://localhost:3000/docs`
 
-#### Signup/Signin
+### Sign-up/Sign-in
 
 - If you have no users in your database yet, start with 'USER /POST user'. Leave the default input as is, and execute.
 - If you already have created the above user earlier, start with 'USER /POST user/login'. Leave the default input as is, and execute.
@@ -110,11 +106,11 @@ Access Swagger API via `http://localhost:3000/docs`
 #### Admin vs Fieldworker
 
 - Different authorizations for admin or fieldworker are added.
-- In USER /POST you can set role='admin' or role='aidworker'.
-- With 'admin' you have access to all API-calls
-- With 'aidworker' you have access only to (most) GET requests
+- In USER /POST you can set `role='admin'` or `role='aidworker'`.
+- With `admin` you have access to all API-calls
+- With `aidworker` you have access only to (most) GET requests
 - Only the USER /POST call is completely open at the moment, as otherwise you cannot create a first admin-user. To improve in the future.
-- NOTE: this admin/aidworker distinction is only working if you're using the Bearer authentication described above. If not, then the default-user will be used, which will have admin-rights automatically (even if you haven't specified role='admin' for that user initially).
+- NOTE: this `admin/aidworker` distinction is only working if you're using the Bearer authentication described above. If not, then the default-user will be used, which will have admin-rights automatically (even if you haven't specified `role='admin'` for that user initially).
 
 #### Using other endpoints
 

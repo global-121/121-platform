@@ -1,7 +1,6 @@
 # PA-accounts-Service
 
 The PA-accounts Service is the service for PA's who cannot store their wallet on their own device.
-(TO DO: explain more)
 
 ---
 
@@ -54,7 +53,7 @@ If you've already created the container before and just want to start again:
 
     docker start -i PA-accounts-service
 
-The Docker container currently in development phase does NOT run an `npm start` command.
+The Docker container currently in development phase does NOT run a `npm start` command.
 
 Run the application through:
 
@@ -63,24 +62,22 @@ Run the application through:
 
 ## Start application on VM
 
-Same as bove. But replace '-it' tag in 'docker run' or 'docker start' commands by '-d' to run in detached mode.
-Also, the CMD line of Dockerfile should be changed from CMD ["npm", "run", "start:dev"] to CMD ["npm", "start"].
+Same as above. But replace `-it` tag in `docker run` or `docker start` commands by `-d` to run in detached mode.
+Also, the CMD line of Dockerfile should be changed from: `CMD ["npm", "run", "start:dev"]` to `CMD ["npm", "start"]`.
 
 ## Seed the database and create identity schema
 
 To be able to use the functionality of this service an initial user is required. To seed the database for dev mode with a user, run the following command:
 
-```
-docker exec -i PA-accounts-service npx ts-node src/scripts seed-init
-```
+    docker exec -i PA-accounts-service npm run seed
 
-This user password and username can be customized in secrets.ts
+This user password and username can be customized in `secrets.ts`
 
 ## How to use Swagger (with authorization features)
 
 Access Swagger API via `http://localhost:3001/docs`
 
-#### Signup/Signin
+### Sign-up/Sign-in
 
 - If you have no users in your database yet, start with 'USER /POST user'. Leave the default input as is, and execute.
 - If you already have created the above user earlier, start with 'USER /POST user/login'. Leave the default input as is, and execute.
