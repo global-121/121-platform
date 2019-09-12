@@ -75,14 +75,17 @@ export class CredentialController {
   @ApiImplicitQuery({
     name: 'programId',
     required: false,
-    type: 'number'
+    type: 'number',
   })
   @Get('/answers/:did')
   public async getPrefilledAnswers(
     @Param() params,
-    @Query() query
+    @Query() query,
   ): Promise<any[]> {
-    return await this.credentialService.getPrefilledAnswers(params.did, query.programId);
+    return await this.credentialService.getPrefilledAnswers(
+      params.did,
+      query.programId,
+    );
   }
 
   @ApiOperation({
@@ -98,11 +101,17 @@ export class CredentialController {
   @ApiImplicitQuery({
     name: 'programId',
     required: false,
-    type: 'number'
+    type: 'number',
   })
   @Delete('/answers/:did')
-  public async deletePrefilledAnswers(@Param() params, @Query() query): Promise<DeleteResult> {
-    return await this.credentialService.deletePrefilledAnswers(params.did, query.programId);
+  public async deletePrefilledAnswers(
+    @Param() params,
+    @Query() query,
+  ): Promise<DeleteResult> {
+    return await this.credentialService.deletePrefilledAnswers(
+      params.did,
+      query.programId,
+    );
   }
 
   @ApiOperation({ title: 'Post credential request (for PA)' })
@@ -131,5 +140,13 @@ export class CredentialController {
   @Get(':did')
   public async get(@Param() params): Promise<EncryptedMessageDto> {
     return await this.credentialService.get(params.did);
+  }
+
+  @ApiOperation({ title: 'Delete credentials (For AP)' })
+  @ApiResponse({ status: 200, description: 'Credentials deleted' })
+  @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
+  @Delete(':did')
+  public async delete(@Param() params): Promise<DeleteResult> {
+    return await this.credentialService.delete(params.did);
   }
 }
