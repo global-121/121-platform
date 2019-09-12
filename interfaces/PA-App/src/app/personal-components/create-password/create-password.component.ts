@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -13,9 +13,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   templateUrl: './create-password.component.html',
   styleUrls: ['./create-password.component.scss'],
 })
-export class CreatePasswordComponent implements PersonalComponent {
-  public isDisabled = false;
-
+export class CreatePasswordComponent extends PersonalComponent {
   public initialInput = false;
   public create: any;
   public confirm: any;
@@ -33,7 +31,9 @@ export class CreatePasswordComponent implements PersonalComponent {
     public userImsApiService: UserImsApiService,
     public programsServiceApiService: ProgramsServiceApiService,
     public storage: Storage,
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
   }

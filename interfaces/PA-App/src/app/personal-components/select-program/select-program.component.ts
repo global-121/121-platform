@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -14,9 +14,7 @@ import { Program } from 'src/app/models/program.model';
   templateUrl: './select-program.component.html',
   styleUrls: ['./select-program.component.scss'],
 })
-export class SelectProgramComponent implements PersonalComponent {
-  public isDisabled = false;
-
+export class SelectProgramComponent extends PersonalComponent {
   private languageCode: string;
   private fallbackLanguageCode: string;
 
@@ -32,6 +30,7 @@ export class SelectProgramComponent implements PersonalComponent {
     public conversationService: ConversationService,
     public translate: TranslateService,
   ) {
+    super();
     this.fallbackLanguageCode = this.translate.getDefaultLang();
   }
 

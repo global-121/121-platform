@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { Storage } from '@ionic/storage';
@@ -11,9 +11,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
   templateUrl: './choose-credential-type.component.html',
   styleUrls: ['./choose-credential-type.component.scss'],
 })
-export class ChooseCredentialTypeComponent implements PersonalComponent {
-  public isDisabled = false;
-
+export class ChooseCredentialTypeComponent extends PersonalComponent {
   public credentialTypes: any;
   public credentialTypeChoice: string;
   public typeChosen: boolean;
@@ -24,7 +22,9 @@ export class ChooseCredentialTypeComponent implements PersonalComponent {
     public storage: Storage,
     public translate: TranslateService,
     public conversationService: ConversationService,
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.credentialTypes = [

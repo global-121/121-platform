@@ -30,7 +30,9 @@
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </div>
   </dialogue-turn>
-  <dialogue-turn *ngIf="isDisabled">
+  <dialogue-turn *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
+  >
     <p [innerHTML]="'personal.select-country.conclusion'|translate:{ country:countryChoiceName }"></p>
   </dialogue-turn>
 </section>

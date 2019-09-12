@@ -45,7 +45,9 @@
       </div>
     </form>
   </dialogue-turn>
-  <dialogue-turn *ngIf="isDisabled">
+  <dialogue-turn *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
+  >
     {{ 'personal.identity-form.conclusion'|translate }}
   </dialogue-turn>
 </section>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -11,9 +11,7 @@ import { Storage } from '@ionic/storage';
   templateUrl: './select-country.component.html',
   styleUrls: ['./select-country.component.scss'],
 })
-export class SelectCountryComponent implements PersonalComponent {
-  public isDisabled = false;
-
+export class SelectCountryComponent extends PersonalComponent {
   public countries: any;
   public countryChoice: number;
   public countryChoiceName: string;
@@ -22,7 +20,9 @@ export class SelectCountryComponent implements PersonalComponent {
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     public storage: Storage,
-  ) { }
+  ) {
+    super();
+   }
 
   ngOnInit() {
     this.getCountries();

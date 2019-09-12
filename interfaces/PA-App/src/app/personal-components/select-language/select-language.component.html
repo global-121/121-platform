@@ -27,7 +27,9 @@
       </div>
     </form>
   </dialogue-turn>
-  <dialogue-turn *ngIf="isDisabled">
+  <dialogue-turn *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
+  >
     <p [innerHTML]="'personal.select-language.result'|translate:{ language:languageChoiceName }"></p>
   </dialogue-turn>
 </section>

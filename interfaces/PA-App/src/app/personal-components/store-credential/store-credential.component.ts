@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import { Component } from '@angular/core';
+import { PersonalComponent } from '../personal-component.class';
+
 import { UpdateService } from 'src/app/services/update.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-store-credential',
   templateUrl: './store-credential.component.html',
   styleUrls: ['./store-credential.component.scss'],
 })
-export class StoreCredentialComponent implements OnInit {
+export class StoreCredentialComponent extends PersonalComponent {
 
   public credentialReceived = false;
   public credentialStored = false;
@@ -19,7 +21,9 @@ export class StoreCredentialComponent implements OnInit {
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public storage: Storage,
-  ) { }
+  ) {
+    super();
+   }
 
   ngOnInit() {
     this.startListenCredential();
