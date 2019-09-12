@@ -1,7 +1,6 @@
 # Services
 
 This Readme deals with how to run all services simultaneously using docker-compose. For more information on individual services, see the Readme's in the respective subfolders.
-UPDATE: this now involves also the Python containers: UserIMS, OrgIMS, TyknIMS.
 
 ---
 
@@ -32,7 +31,7 @@ Run (from /services subfolder):
 
 ## How to use
 
-The 4 Tykn-containers are started automatically by docker-compose. The others are not. The docker-compose sets up both services interactively, for now (development purposes) an 'npm start' command is not included in the respective Dockerfiles. Instead you have to start both containers:
+The 4 tykn-ssi-service containers are started automatically by docker-compose. The others are not. The docker-compose sets up both services interactively, for now (development purposes) an 'npm start' command is not included in the respective Dockerfiles. Instead you have to start both containers:
 
     docker start -i 121-service
     docker start -i PA-accounts-service
