@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage';
 import { StoreCredentialComponent } from './store-credential.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
 
 describe('StoreCredentialComponent', () => {
   let component: StoreCredentialComponent;
@@ -19,6 +20,7 @@ describe('StoreCredentialComponent', () => {
       declarations: [StoreCredentialComponent],
       imports: [
         TranslateModule.forRoot(),
+        RouterModule.forRoot([]),
         HttpClientModule,
       ],
       providers: [
@@ -26,7 +28,7 @@ describe('StoreCredentialComponent', () => {
           provide: Storage,
           useValue: storageIonicMock
         }
-      ]
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
       .compileComponents();
