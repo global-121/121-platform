@@ -1,0 +1,19 @@
+{
+    "name": "identity-schema",
+    "version": "1.2",
+    "criteriums": [{
+            "criterium": "name",
+            "question": {
+                "english": "What is your name?",
+                "nyanja": "Muli ndi ana angati?"
+            }
+        },
+        {
+            "criterium": "age",
+            "question": {
+                "english": "What is your age?",
+                "nyanja": "Denga lanu ndi lotani?"
+            }
+        }
+    ]
+}

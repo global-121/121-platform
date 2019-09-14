@@ -1,0 +1,7 @@
+{
+  "name": "PA-App",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

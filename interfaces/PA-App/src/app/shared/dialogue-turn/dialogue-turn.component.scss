@@ -1,0 +1,125 @@
+.dialogue-turn {
+  --dialogue-turn--speech-arrow-width: 12px;
+  --dialogue-turn--speech-arrow-height: 8px;
+  --dialogue-turn--margin-around-card-vertical: 10px;
+  --dialogue-turn--margin-around-card-horizontal: -12px;
+
+  display: flex;
+  padding: 0.5em;
+}
+
+.dialogue-turn--actor {
+  order: 1;
+
+  max-width: 20%;
+}
+
+.dialogue-turn--content {
+  position: relative;
+  order: 2;
+  transform-origin: top left;
+
+  width: 80%;
+  max-width: 80%;
+}
+
+.dialogue-turn--speech-arrow {
+  display: block;
+  position: absolute;
+  top: var(--dialogue-turn--margin-around-card-vertical);
+
+  border-width: var(--dialogue-turn--speech-arrow-height) var(--dialogue-turn--speech-arrow-width);
+  border-style: solid;
+  border-color: transparent;
+}
+
+.dialogue-turn.is-other {
+  .dialogue-turn--speech-arrow {
+    left: var(--dialogue-turn--margin-around-card-horizontal);
+    border-right-color: var(--ion-color-dark);
+  }
+
+  // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
+  .dialogue-turn--speech-arrow:dir(rtl) {
+    // Reset LTR-styles first:
+    left: auto;
+    border-right-color: transparent;
+
+    right: var(--dialogue-turn--margin-around-card-horizontal);
+    border-left-color: var(--ion-color-dark);
+  }
+}
+
+.dialogue-turn.is-self {
+  .dialogue-turn--actor {
+    order: 2;
+  }
+
+  .dialogue-turn--content {
+    order: 1;
+    transform-origin: top right;
+  }
+
+  .dialogue-turn--speech-arrow {
+    right: var(--dialogue-turn--margin-around-card-horizontal);
+    border-left-color: var(--ion-color-light);
+  }
+
+  // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
+  .dialogue-turn--speech-arrow:dir(rtl) {
+    // Reset LTR-styles first:
+    right: auto;
+    border-left-color: transparent;
+
+    left: var(--dialogue-turn--margin-around-card-horizontal);
+    border-right-color: var(--ion-color-light);
+  }
+}
+
+.dialogue-turn.is-connected {
+  padding-top: 0;
+  margin-top: -1em; // Overlap padding-bottom of preceding dialogue-turn
+
+  .dialogue-turn--actor,
+  .dialogue-turn--speech-arrow {
+    visibility: hidden;
+  }
+
+  .dialogue-turn--content {
+    transform-origin: top center;
+  }
+}
+
+.dialogue-turn.is-pending {
+  opacity: 0;
+
+  .dialogue-turn--content {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+
+.dialogue-turn.is-spoken {
+  .dialogue-turn--content {
+    animation-name: speak;
+    animation-duration: .3s;
+    animation-direction: forwards;
+    animation-iteration-count: 1;
+  }
+}
+
+@keyframes speak {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  95% {
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

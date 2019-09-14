@@ -1,0 +1,37 @@
+# See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema
+# See: https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - 'services/PA-accounts-service/*'
+pr:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - 'services/PA-accounts-service/*'
+
+pool:
+  vmImage: 'ubuntu-16.04'
+
+steps:
+  - task: CmdLine@2
+    inputs:
+      script: cp services/PA-accounts-service/src/secrets.ts.example services/PA-accounts-service/src/secrets.ts
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '10.x'
+
+  - script: npm ci
+    displayName: Install
+    workingDirectory: services/PA-accounts-service/
+
+  - script: npm test
+    displayName: Tests
+    workingDirectory: services/PA-accounts-service/

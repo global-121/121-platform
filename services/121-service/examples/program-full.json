@@ -1,0 +1,364 @@
+{
+  "published": true,
+  "location": "Lilongwe",
+  "ngo": "Dorcas",
+  "countryId": 1,
+  "title": {
+    "en": "MVP Full program"
+  },
+  "description": {
+    "en": "Program to help vulnerable people in flood-prone areas in Malawi"
+  },
+  "startDate": "2020-06-01T12:00:00Z",
+  "endDate": "2020-09-30T12:00:00Z",
+  "currency": "MWK",
+  "distributionFrequency": "Once per month",
+  "distributionChannel": "Mobile Money",
+  "notifiyPaArea": true,
+  "notificationType": "announcement",
+  "cashDistributionSites": {
+    "cashDistributionSites": []
+  },
+  "financialServiceProviders": {
+    "financialServiceProviders": []
+  },
+  "inclusionCalculationType": "standard",
+  "meetingDocuments": {
+    "en": "Identity card;Health Insurance;Proof of children"
+  },
+  "customCriteria": [
+    {
+      "criterium": "accomodation-heating",
+      "label": {
+        "en": "The heating where you live is:"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "id": "0",
+          "option": "Central heating/Gas",
+          "label": {
+            "en": "Central heating/Gas"
+          }
+        },
+        {
+          "id": "1",
+          "option": "Coal/Wood",
+          "label": {
+            "en": "Coal/Wood"
+          }
+        },
+        {
+          "id": "2",
+          "option": "No heating system",
+          "label": {
+            "en": "No heating system"
+          }
+        },
+        {
+          "id": "3",
+          "option": "Electrical heating",
+          "label": {
+            "en": "Electrical heating"
+          }
+        }
+      ],
+      "scoring": {
+        "0": 0,
+        "1": 2,
+        "2": 3,
+        "3": 3
+      }
+    },
+    {
+      "criterium": "accomodation-ownership",
+      "label": {
+        "en": "Do you own the place where you live?"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "id": "0",
+          "option": "Yes, I own it",
+          "label": {
+            "en": "Yes, I own it"
+          }
+        },
+        {
+          "id": "1",
+          "option": "No, I rent it",
+          "label": {
+            "en": "No, I rent it"
+          }
+        }
+      ],
+      "scoring": {
+        "0": 0,
+        "1": 4
+      }
+    },
+    {
+      "criterium": "accomodation-type",
+      "label": {
+        "en": "You live in a..."
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "id": "0",
+          "option": "Flat or house",
+          "label": {
+            "en": "Flat or house"
+          }
+        },
+        {
+          "id": "1",
+          "option": "Collective shelter",
+          "label": {
+            "en": "Collective shelter"
+          }
+        }
+      ],
+      "scoring": {
+        "0": 0,
+        "1": 2
+      }
+    },
+    {
+      "criterium": "family-status",
+      "label": {
+        "en": "Your family situation. You are:"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "id": "0",
+          "option": "Married or in a civil marriage",
+          "label": {
+            "en": "Married or in a civil marriage"
+          }
+        },
+        {
+          "id": "1",
+          "option": "Divorced, Widow(er) or not married",
+          "label": {
+            "en": "Divorced, Widow(er) or not married"
+          }
+        },
+        {
+          "id": "2",
+          "option": "A single parent",
+          "label": {
+            "en": "A single parent"
+          }
+        },
+        {
+          "id": "3",
+          "option": "A child",
+          "label": {
+            "en": "A child"
+          }
+        }
+      ],
+      "scoring": {
+        "0": 0,
+        "1": 1,
+        "2": 3,
+        "3": 6
+      }
+    },
+    {
+      "criterium": "household-children",
+      "label": {
+        "en": "Number of children (under 18) in your household:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 2
+      }
+    },
+    {
+      "criterium": "household-children-adopted",
+      "label": {
+        "en": "Are there any adopted children in your household?"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "id": "0",
+          "option": "No",
+          "label": {
+            "en": "No"
+          }
+        },
+        {
+          "id": "1",
+          "option": "Yes",
+          "label": {
+            "en": "Yes"
+          }
+        }
+      ],
+      "scoring": {
+        "0": 0,
+        "1": 2
+      }
+    },
+    {
+      "criterium": "household-children-chronical-diseases",
+      "label": {
+        "en": "Number of children with chronical diseases:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 4
+      }
+    },
+    {
+      "criterium": "household-children-disabled",
+      "label": {
+        "en": "Number of children with disabilities:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 6
+      }
+    },
+    {
+      "criterium": "household-children-hospital",
+      "label": {
+        "en": "Number of children currently in a hospital:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 4
+      }
+    },
+    {
+      "criterium": "household-chronical-diseases",
+      "label": {
+        "en": "Number of adults with chronical diseases:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 2
+      }
+    },
+    {
+      "criterium": "household-disabled-category-1",
+      "label": {
+        "en": "Number of adults fully or partially unable to self-care? (Or according to official certificate):"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 6
+      }
+    },
+    {
+      "criterium": "household-disabled-category-2",
+      "label": {
+        "en": "Number of adults with 'severe limitations' in your household:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 4
+      }
+    },
+    {
+      "criterium": "household-disabled-category-3",
+      "label": {
+        "en": "Number of adults with a 'permanent moderate impairment' in your household:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 2
+      }
+    },
+    {
+      "criterium": "household-elderly",
+      "label": {
+        "en": "Number of elderly (above 60) in your household:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 3
+      }
+    },
+    {
+      "criterium": "household-lactating",
+      "label": {
+        "en": "Number of women currently nursing in your household:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 3
+      }
+    },
+    {
+      "criterium": "household-pregnant",
+      "label": {
+        "en": "Number of women currently pregnant in your household:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": [],
+      "scoring": {
+        "number_of": 2
+      }
+    },
+    {
+      "criterium": "idp-status",
+      "label": {
+        "en": "Are you an Internally Displaced Person (IDP)?"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "id": "0",
+          "option": "No",
+          "label": {
+            "en": "No"
+          }
+        },
+        {
+          "id": "1",
+          "option": "Yes",
+          "label": {
+            "en": "Yes"
+          }
+        }
+      ],
+      "scoring": {
+        "0": 2,
+        "1": 0
+      }
+    }
+  ],
+  "minimumScore": 25
+}

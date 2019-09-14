@@ -1,0 +1,53 @@
+<section #identityForm>
+  <dialogue-turn>
+    <p>
+      {{ 'personal.identity-form.introduction'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn isConnected="true">
+    <p>
+      {{ 'personal.identity-form.step-questions'|translate }}
+    </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.identity-form.more-info-questions'|translate }}
+      </ion-button>
+    </p>
+
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <form (ngSubmit)="submitIdentityForm(name,dob)">
+      <div class="ion-margin-top">
+        <ion-label>{{ 'personal.identity-form.name-label'|translate }}</ion-label>
+        <ion-input type="text"
+                   name="name"
+                   [(ngModel)]="name"
+                   ngDefaultControl
+                   [disabled]="isDisabled"
+        ></ion-input>
+      </div>
+      <div class="ion-margin-top">
+        <ion-label>{{ 'personal.identity-form.dob-label'|translate }}</ion-label>
+        <ion-input type="date"
+                   name="dob"
+                   placeholder="{{ 'personal.identity-form.dob-format' }}"
+                   [(ngModel)]="dob"
+                   ngDefaultControl
+                   [disabled]="isDisabled"
+        ></ion-input>
+      </div>
+      <div class="ion-margin-top">
+        <ion-button *ngIf="name && dob && !isDisabled"
+                    type="submit"
+                    size="block"
+        >{{ 'personal.identity-form.submit-button'|translate }}</ion-button>
+      </div>
+    </form>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
+  >
+    {{ 'personal.identity-form.conclusion'|translate }}
+  </dialogue-turn>
+</section>

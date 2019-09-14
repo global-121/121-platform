@@ -1,0 +1,72 @@
+{
+  "published": true,
+  "location": "Location A",
+  "ngo": "NGO A",
+  "countryId": 1,
+  "title": {
+    "en": "MVP Anonymous program"
+  },
+  "description": {
+    "en": "MVP program with anonymous questions for testing purposes"
+  },
+  "startDate": "2020-01-01T12:00:00Z",
+  "endDate": "2020-12-31T12:00:00Z",
+  "currency": "EUR",
+  "distributionFrequency": "",
+  "distributionChannel": "mobileMoney",
+  "notifiyPaArea": true,
+  "notificationType": "announcement",
+  "cashDistributionSites": {
+    "cashDistributionSites": []
+  },
+  "financialServiceProviders": {
+    "financialServiceProviders": []
+  },
+  "inclusionCalculationType": "standard",
+  "meetingDocuments": {
+    "en": "Document 1; Document 2; Document 3;"
+  },
+  "customCriteria": [
+    {
+      "criterium": "question1",
+      "label": {
+        "en": "Question 1..."
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {
+        "multiplier": 2
+      }
+    },
+    {
+      "criterium": "question2",
+      "label": {
+        "en": "Question 2..."
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "id": 0,
+          "option": "optionA",
+          "label": {
+            "en": "Option A"
+          }
+        },
+        {
+          "id": 1,
+          "option": "optionB",
+          "label": {
+            "en": "Option B"
+          }
+        }
+      ],
+      "scoring": {
+        "0": 3,
+        "1": 6
+      }
+    }
+  ],
+  "minimumScore": 25
+}

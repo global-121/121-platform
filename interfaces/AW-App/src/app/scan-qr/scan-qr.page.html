@@ -1,0 +1,36 @@
+<ion-header style="background: white">
+  <ion-buttons end>
+    <ion-button (click)="closeModal()">
+      <ion-icon name="close"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+</ion-header>
+  
+<ion-content padding style="background: transparent!important">
+  <ion-fab vertical="bottom" horizontal="end" margin style="margin-bottom: 15%;">
+    <ion-fab-button>
+      <ion-icon name="md-options"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-list side="top">
+      <ion-fab-button (click)="toggleFlashLight()">
+        <ion-icon name="flash"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button (click)="toggleCamera()">
+        <ion-icon name="reverse-camera"></ion-icon>
+      </ion-fab-button>
+    </ion-fab-list>
+  </ion-fab>
+  <div center text-center>
+    <ion-footer style="background: white;">
+      <section text-center *ngIf="isValidationMeeting" style="background: white;">
+        <ion-row padding>
+          <ion-col width-25>
+            <ion-input text-center value='{"did": "<did>", "programId": <programId>}' placeholder='User DID is ....' #id></ion-input>
+            <ion-button class="signin" (click)="startMeeting(id.value)">CONTINUE TO FORM</ion-button>
+          </ion-col>
+        </ion-row>
+      </section>
+    </ion-footer>
+  </div>
+</ion-content>
+  

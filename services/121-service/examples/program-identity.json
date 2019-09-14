@@ -1,0 +1,49 @@
+{
+    "identityProgram": true,
+    "id": 0,
+    "location": "",
+    "ngo": "",
+    "countryId": 0,
+    "title": {
+        "en": "Identity program"
+    },
+    "description": {
+        "en": "Identity program (not a real program)"
+    },
+    "startDate": "2020-05-23T18:25:43.511Z",
+    "endDate": "2020-05-23T18:25:43.511Z",
+    "currency": "",
+    "distributionFrequency": "",
+    "distributionChannel": "",
+    "notifiyPaArea": true,
+    "notificationType": "",
+    "cashDistributionSites": {},
+    "financialServiceProviders": {},
+    "inclusionCalculationType": "",
+    "meetingDocuments": {
+        "en": ""
+    },
+    "customCriteria": [
+        {
+            "criterium": "name",
+            "label": {
+                "en": "What is your name?"
+            },
+            "answerType": "string",
+            "criteriumType": "",
+            "options": null,
+            "scoring": {}
+        },
+        {
+            "criterium": "dob",
+            "label": {
+                "en": "What is your date of birth?"
+            },
+            "answerType": "date",
+            "criteriumType": "",
+            "options": null,
+            "scoring": {}
+        }
+    ],
+    "minimumScore": 0
+}

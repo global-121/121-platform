@@ -1,0 +1,38 @@
+<section #selectCountry>
+  <dialogue-turn>
+    <p>
+      {{ 'personal.select-country.introduction'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn isConnected="true">
+    <p>
+      {{ 'personal.select-country.step3'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <ion-radio-group (ionChange)="changeCountry($event)"
+    >
+      <ion-item *ngFor="let country of countries"
+                color="light"
+                class="ion-no-padding ion-text-wrap"
+      >
+        <ion-label>{{ country.country }}</ion-label>
+        <ion-radio [value]="country.id"
+                   [disabled]="isDisabled"
+        ></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+    <div class="ion-margin-top">
+      <ion-button *ngIf="countryChoice && !isDisabled"
+                  (click)="submitCountry()"
+                  size="block"
+                  [disabled]="isDisabled"
+      >{{ 'shared.submit-button'|translate }}</ion-button>
+    </div>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
+  >
+    <p [innerHTML]="'personal.select-country.conclusion'|translate:{ country:countryChoiceName }"></p>
+  </dialogue-turn>
+</section>

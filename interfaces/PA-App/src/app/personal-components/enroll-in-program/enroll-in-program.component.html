@@ -1,0 +1,129 @@
+<section>
+  <dialogue-turn [actor]="program?.ngo">
+    <p [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programTitle }"></p>
+    <p>
+      {{ 'personal.enroll-in-program.introduction-questions'|translate }}
+    </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.enroll-in-program.more-info-questions'|translate }}
+      </ion-button>
+    </p>
+  </dialogue-turn>
+  <dialogue-turn actor="self"
+                 *ngFor="let question of questions; let i=index"
+                [isConnected]="i > 0"
+                [isSpoken]="i >= 0"
+  >
+    <ion-label>
+      {{ question.label }}
+    </ion-label>
+    <div [ngSwitch]="question.answerType">
+      <div *ngSwitchCase="answerTypes.Enum">
+        <ion-radio-group [name]="question.code"
+                         (ionChange)="changeAnswers($event)"
+        >
+          <ion-item *ngFor="let option of question.options"
+                    color="light"
+          >
+            <ion-label>{{ option.label }}</ion-label>
+            <ion-radio [value]="option.value"
+                       [disabled]="hasAnswered"
+            ></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </div>
+      <div *ngSwitchDefault>
+        <ion-input type="text"
+                   [name]="question.code"
+                   (change)="changeAnswers($event)"
+                   [disabled]="hasAnswered"
+        ></ion-input>
+      </div>
+    </div>
+  </dialogue-turn>
+  <dialogue-turn actor="self" isConnected="true">
+    <p>
+      <ion-button type="submit"
+                  (click)="submit()"
+                  [disabled]="hasAnswered"
+                  size="block"
+      >
+        {{ 'personal.enroll-in-program.submit'|translate }}
+      </ion-button>
+    </p>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                 *ngIf="hasAnswered"
+                 [isSpoken]="hasAnswered"
+  >
+    <p>
+      {{ 'personal.enroll-in-program.please-confirm'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn actor="self"
+                 *ngIf="hasAnswered"
+                 [isSpoken]="hasAnswered"
+  >
+    <ul class="ion-no-padding">
+      <li *ngFor="let question of questions">
+        {{ question.label }}<br>
+        <strong>{{ answers[question.code]?.label }}</strong>
+      </li>
+    </ul>
+
+    <p class="ion-margin-top">
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.enroll-in-program.more-info-share'|translate }}
+      </ion-button>
+    </p>
+
+    <p class="ion-margin-top">
+      <ion-button type="submit"
+                  (click)="submitConfirm()"
+                  [disabled]="isDisabled"
+                  size="block"
+      >
+        {{ 'personal.enroll-in-program.submit-confirm'|translate }}
+      </ion-button>
+      <ion-button type="button"
+                  (click)="change()"
+                  [disabled]="isDisabled"
+                  size="block"
+                  fill="outline"
+      >
+        {{ 'personal.enroll-in-program.change'|translate }}
+      </ion-button>
+    </p>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
+                 [actor]="program?.ngo"
+  >
+    <p>
+      {{ 'personal.enroll-in-program.confirm-received'|translate }}
+    </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.enroll-in-program.more-info-activation'|translate }}
+      </ion-button>
+    </p>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
+                 [actor]="program?.ngo"
+                 isConnected="true"
+  >
+    <p>
+      {{ 'personal.enroll-in-program.prepare-documents'|translate }}
+    </p>
+    <ul class="ion-no-padding ion-padding-start">
+      <li *ngFor="let document of program?.meetingDocuments">
+        {{ document }}
+      </li>
+    </ul>
+  </dialogue-turn>
+</section>

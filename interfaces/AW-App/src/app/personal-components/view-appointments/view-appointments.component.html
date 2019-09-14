@@ -1,0 +1,41 @@
+<section #viewAppointments>
+    <ion-button id="debugGetAppointments" (click)="getAppointments()">API: GET Appointments</ion-button>
+    <br>
+  <dialogue-turn>
+    {{ 'personal.view-appointments.introduction'|translate }}
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <ion-radio-group (ionChange)="changeTimeslot($event)">
+      <ion-item *ngFor="let appointment of appointments"
+                color="light"
+                class="ion-no-padding ion-text-wrap"
+      >
+        <ion-label>
+            <ion-label>
+              {{ 'personal.view-appointments.timeslot'|translate }} {{appointment.timeslotId}}:<br>
+              <ion-note>{{appointment.startDate}} - {{appointment.endDate}}</ion-note><br>
+              <ion-note>({{ appointment.location }})</ion-note>
+            </ion-label>
+        </ion-label>
+        <ion-radio value="{{appointment.timeslotId}}"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+    <br>
+    <ion-button [hidden]="!timeslotChoice" (click)="submitTimeslot(timeslotChoice)">{{ 'personal.view-appointments.submit-button'|translate }}</ion-button>
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!timeslotSelected">
+    {{ 'personal.view-appointments.appointments'|translate }}
+  </dialogue-turn>
+  <dialogue-turn actor="self" [hidden]="!timeslotSelected">
+    <ion-list>
+      <ion-item *ngFor="let appointment of appointmentsByTimeslot"
+                color="light"
+                class="ion-no-padding ion-text-wrap"
+      >
+        <ion-label>{{appointment.did}}</ion-label>
+      </ion-item>
+    </ion-list>
+    <ion-button (click)="backMainMenu()">{{ 'personal.view-appointments.main-menu'|translate }}</ion-button>
+  </dialogue-turn>
+</section>
+   
