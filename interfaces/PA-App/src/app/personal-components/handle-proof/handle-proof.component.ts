@@ -14,6 +14,8 @@ import { resolve } from 'url';
 export class HandleProofComponent implements OnInit {
 
   public creatingProof = false;
+  public inclusionStatusPositive = false;
+  public inclusionStatusNegative = false;
 
   constructor(
     public storage: Storage,
@@ -31,7 +33,18 @@ export class HandleProofComponent implements OnInit {
     const proofRequest = await this.getProofRequest();
     console.log('proofRequest', proofRequest);
     const proof = await this.getProof(proofRequest);
-    console.log('proof', proof);
+    const status = await this.sendProof(proof);
+    let inclusionStatus;
+    if (status === 'done') {
+      inclusionStatus = await this.getInclusionStatus();
+    }
+    if (inclusionStatus === 'included') {
+      console.log('jeuj');
+      this.inclusionStatusPositive = true;
+    } else if (inclusionStatus === 'excluded') {
+      this.inclusionStatusNegative = true;
+      console.log('nooh');
+    }
 
   }
 
@@ -41,13 +54,31 @@ export class HandleProofComponent implements OnInit {
     const programId = await this.paRetrieveData('programId');
     return this.programService.getProofRequest(programId).toPromise();
   }
-  async getProof(proofRequest: string): Promise<object> {
+
+  async getProof(proofRequest: string): Promise<string> {
     console.log('getting proof from wallet');
     const proofRequestJson = JSON.stringify(proofRequest)
     const wallet = JSON.parse(await this.paRetrieveData('wallet'));
     const correlation = JSON.parse(await this.paRetrieveData('correlation'));
-    return this.userImsApiService.getProofFromWallet(proofRequestJson, wallet, correlation).toPromise();
+    const generatedProof = await this.userImsApiService.getProofFromWallet(proofRequestJson, wallet, correlation).toPromise();
+    const proof = generatedProof.proof;
+    return proof;
+  }
 
+  async sendProof(proof: string): Promise<string> {
+    const did = await this.paRetrieveData('did');
+    const programId = Number(await this.paRetrieveData('programId'));
+    console.log('sending', proof, did, programId);
+    const response = await this.programService.postIncludeMe(did, programId, proof).toPromise();
+    return response.status;
+  }
+
+  async getInclusionStatus(): Promise<string> {
+    const did = await this.paRetrieveData('did');
+    const programId = Number(await this.paRetrieveData('programId'));
+    const response = await this.programService.postInclusionStatus(did, programId).toPromise();
+    console.log('Inclusie status', response)
+    return response.status;
   }
 
   async paRetrieveData(variableName: string): Promise<any> {

@@ -194,6 +194,38 @@ export class ProgramsServiceApiService {
       );
   }
 
+  postIncludeMe(did: string, programId: number, encryptedProof: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/programs/includeMe',
+      {
+        did,
+        programId,
+        encryptedProof
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
+
+  postInclusionStatus(did: string, programId: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/programs/inclusionStatus/' + programId,
+      {
+        did
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
+
 
   getTimeslots(programId: string): Observable<Timeslot[]> {
     return this.apiService.get(
