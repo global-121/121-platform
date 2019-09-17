@@ -21,13 +21,23 @@ export class PersonalComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log('turns:', this.turns);
-
+    // Delay appearance of each turn so it feels more like a 'natural' conversation.
     this.turns.forEach((turn, index) => {
       window.setTimeout(() => {
         turn.isSpoken = true;
       }, 300 * (index + 1));
     });
+  }
+
+  /**
+   * Show a specific, previously hidden, Dialogue-Turn
+   */
+  showTurn(index: number) {
+    const turn = this.turns.toArray()[index];
+
+    if (turn) {
+      turn.isSpoken = true;
+    }
   }
 
   /**
