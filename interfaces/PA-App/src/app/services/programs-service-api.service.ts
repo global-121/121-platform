@@ -181,6 +181,19 @@ export class ProgramsServiceApiService {
       );
   }
 
+  getProofRequest(programId: number): Observable<any> {
+    console.log('getProofRequest');
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        '/sovrin/proof/proofRequest/' + programId
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
+
 
   getTimeslots(programId: string): Observable<Timeslot[]> {
     return this.apiService.get(

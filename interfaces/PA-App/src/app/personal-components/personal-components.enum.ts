@@ -5,6 +5,7 @@ export enum PersonalComponents {
   enrollInProgram = 'enroll-in-program',
   initialNeeds = 'initial-needs',
   introduction = 'introduction',
+  handleProof = 'handle-proof',
   selectAppointment = 'select-appointment',
   selectCountry = 'select-country',
   selectLanguage = 'select-language',

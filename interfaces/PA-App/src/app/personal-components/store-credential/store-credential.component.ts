@@ -4,6 +4,8 @@ import { UpdateService } from 'src/app/services/update.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PersonalComponents } from '../personal-components.enum';
+import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
   selector: 'app-store-credential',
@@ -16,6 +18,7 @@ export class StoreCredentialComponent implements OnInit {
   public credentialStored = false;
 
   constructor(
+    public conversationService: ConversationService,
     public updateService: UpdateService,
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
@@ -73,5 +76,19 @@ export class StoreCredentialComponent implements OnInit {
       storeCredentialData.correlation
     ).toPromise();
     this.credentialStored = true;
+    this.complete();
+  }
+
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: PersonalComponents.initialNeeds,
+      data: {},
+      next: this.getNextSection(),
+    });
+  }
+
+  getNextSection() {
+    console.log('next!!!!');
+    return PersonalComponents.handleProof;
   }
 }
