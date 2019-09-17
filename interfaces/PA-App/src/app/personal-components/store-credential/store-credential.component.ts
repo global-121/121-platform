@@ -45,8 +45,6 @@ export class StoreCredentialComponent implements OnInit {
     });
   }
 
-
-
   // NOTE: This should become a shared function
   async paRetrieveData(variableName: string): Promise<any> {
     return await this.paAccountApiService.retrieve(variableName)
@@ -55,11 +53,10 @@ export class StoreCredentialComponent implements OnInit {
 
   async storeCredential(credential): Promise<void> {
     console.log('Trying to store this credential', credential);
-
-    const wallet = await this.paRetrieveData('wallet');
-    const correlation = await this.paRetrieveData('correlation');
-    const credentialRequest = await this.paRetrieveData('credentialRequest');
-    const credDefID = await this.paRetrieveData('credDefId');
+    const wallet = JSON.parse(await this.paRetrieveData('wallet'));
+    const correlation = JSON.parse(await this.paRetrieveData('correlation'));
+    const credentialRequest = JSON.parse(await this.paRetrieveData('credentialRequest'));
+    const credDefID = JSON.parse(await this.paRetrieveData('credDefId'));
     const credentialFormat = JSON.parse(credential.message);
     const storeCredentialData = {
       credDefID,
@@ -75,8 +72,6 @@ export class StoreCredentialComponent implements OnInit {
       storeCredentialData.wallet,
       storeCredentialData.correlation
     ).toPromise();
-
     this.credentialStored = true;
   }
-
 }
