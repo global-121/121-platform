@@ -18,12 +18,7 @@ export class CreatePasswordComponent extends PersonalComponent {
   public create: any;
   public confirm: any;
 
-  private paAccountUsername: string;
-  private paAccountPassword: string;
-  private paWalletName: string;
-  private did = 'empty';  // Replaced after response from UserIMS create-did call
-  private wallet: any;
-  private correlation: any;
+  public isInProgress = false;
 
   constructor(
     public conversationService: ConversationService,
@@ -44,6 +39,8 @@ export class CreatePasswordComponent extends PersonalComponent {
     if (create !== confirm) {
       return;
     }
+
+    this.isInProgress = true;
 
     await this.executeSovrinFlow(create);
 
