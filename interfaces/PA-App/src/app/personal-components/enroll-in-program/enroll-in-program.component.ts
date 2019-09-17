@@ -210,14 +210,11 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.hasAnswered = true;
   }
 
-  public submitConfirm() {
+  public async submitConfirm() {
     console.log('submitConfirm()');
 
-    this.executeSovrinFlow();
-
-    window.setTimeout(() => {
-      this.complete();
-    }, 1000);
+    await this.executeSovrinFlow();
+    this.complete();
   }
 
   private async executeSovrinFlow() {
