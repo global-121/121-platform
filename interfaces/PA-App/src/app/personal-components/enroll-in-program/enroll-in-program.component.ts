@@ -26,11 +26,12 @@ export class EnrollInProgramComponent extends PersonalComponent {
   private credDefId: string;
   private programId: number;
 
-  public questions: any;
+  public questions: Question[];
   public answerTypes = AnswerType;
 
   public answers: any = {};
 
+  public allQuestionsShown = false;
   public hasAnswered: boolean;
 
   constructor(
@@ -180,6 +181,22 @@ export class EnrollInProgramComponent extends PersonalComponent {
     }
 
     this.answers[questionCode] = answer;
+
+    const answersArray = Object.keys(this.answers);
+
+    if (answersArray.length === this.questions.length) {
+      this.allQuestionsShown = true;
+    } else {
+      this.allQuestionsShown = false;
+      this.showNextQuestion(answersArray.indexOf(questionCode));
+    }
+  }
+
+  private showNextQuestion(currentIndex: number) {
+    const initialTurns = 1; // Turns shown before the 'first question'-turn.
+    const nextIndex = currentIndex + initialTurns + 1;
+
+    this.showTurn(nextIndex);
   }
 
   public change() {
