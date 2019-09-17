@@ -279,13 +279,7 @@ export class CredentialService {
     });
 
     if (!queryResult) {
-      const errors = 'Credential not found.';
-      throw new HttpException(
-        {
-          errors,
-        },
-        404,
-      );
+      return { message: ''}
     }
     const encrypyedCredential = { message: queryResult.credential };
     return encrypyedCredential;

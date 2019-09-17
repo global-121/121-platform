@@ -6,7 +6,7 @@ from termcolor import colored
 import pprint
 
 global PROGRAM_ID
-PROGRAM_ID = '2'
+PROGRAM_ID = '3'
 
 global PRINT_RESPONSE
 PRINT_RESPONSE = True
@@ -152,7 +152,8 @@ class testApi:
         self.r.postRequest('sovrin/credential/attributes', prefilledAnswers)
 
         printAction('AW', 'AW calls GET prefilled-answers')
-        self.r.getRequest('sovrin/credential/answers/' + self.didPA)
+        getJson = {'programId': int(PROGRAM_ID)}
+        self.r.getRequest('sovrin/credential/answers/' + self.didPA, getJson)
 
         issueCredentialData = {
             "did": self.didPA,
@@ -182,6 +183,10 @@ class testApi:
         }
         pprint.pprint(storeCredentialData)
         self.r.postSovrin('credential/store', storeCredentialData)
+
+        printAction(
+            'PA', 'PA asks the server to delete his credentials after they are safely stored in his wallet')
+        self.r.deleteRequest('sovrin/credential/' + self.didPA)
 
     def proof(self):
         printAction('PA', 'PA gets proof request')
@@ -227,6 +232,12 @@ class Request:
         completeUrl = self.baseurl + extension
         response = requests.get(completeUrl,
                                 params=params)
+        return self.handleResponse(response)
+
+    def deleteRequest(self, extension, params='{}'):
+        completeUrl = self.baseurl + extension
+        response = requests.delete(completeUrl,
+                                   params=params)
         return self.handleResponse(response)
 
     def postRequest(self, extension, data=None):
