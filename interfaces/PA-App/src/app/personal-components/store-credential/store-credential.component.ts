@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { UpdateService } from 'src/app/services/update.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-store-credential',
@@ -19,6 +20,7 @@ export class StoreCredentialComponent implements OnInit {
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public storage: Storage,
+    public programsService: ProgramsServiceApiService,
   ) { }
 
   ngOnInit() {
@@ -26,18 +28,21 @@ export class StoreCredentialComponent implements OnInit {
   }
 
   async startListenCredential() {
+    console.log('startListenCredential');
 
     // 1. Listen until credential is received
     const did = await this.paRetrieveData('did');
+    console.log('did', did);
     const programId = await this.paRetrieveData('programId');
-    const credential = await this.updateService.checkCredential(parseInt(programId, 10), did);
-
-    // This stuff should wait until the above 'await' is finished and credential is available, but it doesn't
-    this.credentialReceived = true;
-
-    this.storeCredential(credential);
-
-
+    console.log('programId', programId);
+    this.updateService.checkCredential(parseInt(programId, 10), did).then(res => {
+      let credential;
+      this.programsService.getCredential(did).subscribe(response => {
+        credential = response;
+        this.credentialReceived = true;
+        this.storeCredential(credential);
+      });
+    });
   }
 
 
@@ -49,6 +54,7 @@ export class StoreCredentialComponent implements OnInit {
   }
 
   async storeCredential(credential): Promise<void> {
+    console.log('Trying to store this credential', credential);
 
     const wallet = await this.paRetrieveData('wallet');
     const correlation = await this.paRetrieveData('correlation');
