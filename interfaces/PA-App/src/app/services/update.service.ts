@@ -16,15 +16,6 @@ import { concatMap, map, filter, take, switchMap, takeWhile } from 'rxjs/operato
 export class UpdateService {
 
   public updateSpeedMs = 3000;
-  public inclusionStatus = {
-    included: 'included',
-    excluded: 'excluded',
-    unavailable: 'unavailable'
-  };
-  public receivedStatus = {
-    received: 'received',
-    unavailable: 'unavailable'
-  };
 
   public credential: any;
 

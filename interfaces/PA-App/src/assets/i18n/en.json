@@ -1,105 +1,105 @@
 {
-    "WORLD": "World",
-    "PERSONAL": "You",
-    "DEVICE": "Device",
-    "personal": {
-        "identity-form": {
-            "introduction": "Now we need some additional information about you.",
-            "step-questions": "Next step: Fill in the following questions about yourself.",
-            "more-info-questions": "More about these questions",
-            "name-label": "My full name:",
-            "dob-label": "My date of birth:",
-            "dob-format": "dd / mm / yyyy",
-            "submit-button": "Save your information",
-            "conclusion": "We now have all information to create your Digital ID."
-        },
-        "create-password": {
-            "introduction": "To create a Digital ID you need to complete the following steps.",
-            "step1": "Step 1: Create your password.",
-            "more-info-password": "More about passwords",
-            "create-password": "Create password:",
-            "confirm-password": "Confirm password:",
-            "submit-password": "Create my password",
-            "conclusion": "Great! You have created a password."
-        },
-        "enroll-in-program": {
-            "introduction": "We have received your request to apply for <strong>{{programTitle}}</strong>.",
-            "introduction-questions": "To make sure you get the best possible help, please answer the following questions.",
-            "more-info-questions": "More about these questions",
-            "more-info-share": "More about who sees your information",
-            "submit": "Save my answers",
-            "please-confirm": "Thank you. Please confirm and submit your answers.",
-            "submit-confirm": "Submit my answers",
-            "change": "Change my answers",
-            "confirm-received": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",
-            "more-info-activation": "More about activation",
-            "prepare-documents": "Gather your documents. To save time at your meeting, make sure to bring these:"
-        },
-        "initial-needs": {
-            "introduction": "In order to help you as best as possible, please tell us what your needs are.",
-            "input-label": "My needs are:",
-            "input-placeholder": "I need...",
-            "submit": "Submit needs",
-            "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future."
-        },
-        "introduction": {
-            "welcome": "Welcome to 121.",
-            "more-info": "More about 121"
-        },
-        "choose-credential-type": {
-            "introduction": "Please select your next step.",
-            "option1": "Apply to program",
-            "option2": "Create a Digital ID",
-            "option3": "Delete Digital ID",
-            "conclusion-program": "To request inclusion in a program you need to have a valid Digital ID first.",
-            "more-info-digital-id": "More about Digital ID's"
-        },
-        "select-appointment": {
-            "introduction": "To make an appointment, select a timeslot:",
-            "thanks-repeat": "Thank you. You have selected the following timeslot:",
-            "documents": "Please ensure you have the following documents:",
-            "from": "From",
-            "till": "Till",
-            "at": "At",
-            "more-info-documents": "More about these documents",
-            "confirm": "Confirm meeting time",
-            "change": "Change meeting time",
-            "conclusion": "Thank you, your verification meeting is confirmed.",
-            "qr-code": "Please show this QR-code at your meeting."
-        },
-        "select-country": {
-            "introduction": "The next step is to select your location, so we can show you programs for that location.",
-            "step3": "Step 3: Select your location:",
-            "conclusion": "Thank you, you have selected <strong>{{country}}</strong>."
-        },
-        "select-language": {
-            "introduction": "Please select your language.",
-            "option1": "English",
-            "option2": "Language 2",
-            "option3": "Language 3",
-            "result": "Thank you. You have selected <strong>{{language}}</strong>."
-        },
-        "select-program": {
-            "introduction": "You can now select a program.",
-            "more-info-programs": "More about programs",
-            "program": "Program"
-        },
-        "store-credential": {
-            "received": "Credential is received. (TO DO: this should only appear after credential is received.)",
-            "stored": "Credential is stored."
-        },
-        "handle-proof": {
-            "creating": "Sending your data to apply for program.",
-            "inclusion-status-postive": "You have been included in this program.",
-            "inclusion-status-negative": "You have not been included in this program."
-        }
+  "WORLD": "World",
+  "PERSONAL": "You",
+  "DEVICE": "Device",
+  "personal": {
+    "identity-form": {
+      "introduction": "Now we need some additional information about you.",
+      "step-questions": "Next step: Fill in the following questions about yourself.",
+      "more-info-questions": "More about these questions",
+      "name-label": "My full name:",
+      "dob-label": "My date of birth:",
+      "dob-format": "dd / mm / yyyy",
+      "submit-button": "Save your information",
+      "conclusion": "We now have all information to create your Digital ID."
     },
-    "notification": {
-        "credential": "Credential received",
-        "inclusion": "Inclusion status received",
-        "close": "close"
+    "create-password": {
+      "introduction": "To create a Digital ID you need to complete the following steps.",
+      "step1": "Step 1: Create your password.",
+      "more-info-password": "More about passwords",
+      "create-password": "Create password:",
+      "confirm-password": "Confirm password:",
+      "submit-password": "Create my password",
+      "conclusion": "Great! You have created a password."
     },
-    "shared": {
-        "submit-button": "Submit"
+    "enroll-in-program": {
+      "introduction": "We have received your request to apply for <strong>{{programTitle}}</strong>.",
+      "introduction-questions": "To make sure you get the best possible help, please answer the following questions.",
+      "more-info-questions": "More about these questions",
+      "more-info-share": "More about who sees your information",
+      "submit": "Save my answers",
+      "please-confirm": "Thank you. Please confirm and submit your answers.",
+      "submit-confirm": "Submit my answers",
+      "change": "Change my answers",
+      "confirm-received": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",
+      "more-info-activation": "More about activation",
+      "prepare-documents": "Gather your documents. To save time at your meeting, make sure to bring these:"
+    },
+    "initial-needs": {
+      "introduction": "In order to help you as best as possible, please tell us what your needs are.",
+      "input-label": "My needs are:",
+      "input-placeholder": "I need...",
+      "submit": "Submit needs",
+      "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future."
+    },
+    "introduction": {
+      "welcome": "Welcome to 121.",
+      "more-info": "More about 121"
+    },
+    "choose-credential-type": {
+      "introduction": "Please select your next step.",
+      "option1": "Apply to program",
+      "option2": "Create a Digital ID",
+      "option3": "Delete Digital ID",
+      "conclusion-program": "To request inclusion in a program you need to have a valid Digital ID first.",
+      "more-info-digital-id": "More about Digital ID's"
+    },
+    "select-appointment": {
+      "introduction": "To make an appointment, select a timeslot:",
+      "thanks-repeat": "Thank you. You have selected the following timeslot:",
+      "documents": "Please ensure you have the following documents:",
+      "from": "From",
+      "till": "Till",
+      "at": "At",
+      "more-info-documents": "More about these documents",
+      "confirm": "Confirm meeting time",
+      "change": "Change meeting time",
+      "conclusion": "Thank you, your verification meeting is confirmed.",
+      "qr-code": "Please show this QR-code at your meeting."
+    },
+    "select-country": {
+      "introduction": "The next step is to select your location, so we can show you programs for that location.",
+      "step3": "Step 3: Select your location:",
+      "conclusion": "Thank you, you have selected <strong>{{country}}</strong>."
+    },
+    "select-language": {
+      "introduction": "Please select your language.",
+      "option1": "English",
+      "option2": "Language 2",
+      "option3": "Language 3",
+      "result": "Thank you. You have selected <strong>{{language}}</strong>."
+    },
+    "select-program": {
+      "introduction": "You can now select a program.",
+      "more-info-programs": "More about programs",
+      "program": "Program"
+    },
+    "store-credential": {
+      "received": "Credential is received on phone",
+      "stored": "Credential is stored in the wallet"
+    },
+    "handle-proof": {
+      "creating": "Sending your data to apply for program.",
+      "inclusion-status-postive": "You have been included in this program.",
+      "inclusion-status-negative": "You have not been included in this program."
     }
+  },
+  "notification": {
+    "credential": "Credential received",
+    "inclusion": "Inclusion status received",
+    "close": "close"
+  },
+  "shared": {
+    "submit-button": "Submit"
+  }
 }
