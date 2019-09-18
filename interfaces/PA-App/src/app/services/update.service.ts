@@ -36,7 +36,7 @@ export class UpdateService {
     return new Promise(resolve => {
       const subscription = this.listenForCredential(programId, did).subscribe(isCredAvailable => {
         console.log('isCredAvailable', isCredAvailable);
-        if (isCredAvailable.message != '') {
+        if (isCredAvailable.message !== '') {
           subscription.unsubscribe();
           this.createUpdateToast('notification.credential', this.pagesNav.credential);
           resolve();
