@@ -52,7 +52,7 @@
       <ion-button type="submit"
                   (click)="submit()"
                   [disabled]="hasAnswered"
-                  size="block"
+                  expand="block"
       >
         {{ 'personal.enroll-in-program.submit'|translate }}
       </ion-button>
@@ -88,14 +88,14 @@
       <ion-button type="submit"
                   (click)="submitConfirm()"
                   [disabled]="isDisabled"
-                  size="block"
+                  expand="block"
       >
         {{ 'personal.enroll-in-program.submit-confirm'|translate }}
       </ion-button>
       <ion-button type="button"
                   (click)="change()"
                   [disabled]="isDisabled"
-                  size="block"
+                  expand="block"
                   fill="outline"
       >
         {{ 'personal.enroll-in-program.change'|translate }}

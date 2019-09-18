@@ -31,7 +31,7 @@
       <ion-button *ngIf="timeslotChoice && !timeslotSubmitted"
                   (click)="submitTimeslot()"
                   [disabled]="timeslotSubmitted"
-                  size="block"
+                  expand="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
@@ -83,7 +83,7 @@
       <ion-button *ngIf="confirmAction && !isDisabled"
                   (click)="submitConfirmAction(confirmAction)"
                   [disabled]="isDisabled"
-                  size="block"
+                  expand="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
