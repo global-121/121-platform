@@ -50,6 +50,7 @@ export class StoreCredentialComponent extends PersonalComponent {
       this.programsService.getCredential(did).subscribe(response => {
         credential = response;
         this.credentialReceived = true;
+        console.log('credentialReceived: ', this.credentialReceived);
         this.storeCredential(credential);
       });
     });
@@ -88,7 +89,7 @@ export class StoreCredentialComponent extends PersonalComponent {
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.initialNeeds,
+      name: PersonalComponents.storeCredential,
       data: {},
       next: this.getNextSection(),
     });
