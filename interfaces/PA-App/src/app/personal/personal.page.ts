@@ -9,6 +9,7 @@ import { PersonalComponents } from '../personal-components/personal-components.e
 import { ChooseCredentialTypeComponent } from '../personal-components/choose-credential-type/choose-credential-type.component';
 import { CreatePasswordComponent } from '../personal-components/create-password/create-password.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
+import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
 import { IdentityFormComponent } from '../personal-components/identity-form/identity-form.component';
 import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
 import { IntroductionComponent } from '../personal-components/introduction/introduction.component';
@@ -37,6 +38,7 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.createIdentity]: IdentityFormComponent,
     [PersonalComponents.createPassword]: CreatePasswordComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
+    [PersonalComponents.handleProof]: HandleProofComponent,
     [PersonalComponents.initialNeeds]: InitialNeedsComponent,
     [PersonalComponents.introduction]: IntroductionComponent,
     [PersonalComponents.selectAppointment]: SelectAppointmentComponent,

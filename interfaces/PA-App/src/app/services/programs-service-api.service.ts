@@ -181,6 +181,51 @@ export class ProgramsServiceApiService {
       );
   }
 
+  getProofRequest(programId: number): Observable<any> {
+    console.log('getProofRequest');
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        '/sovrin/proof/proofRequest/' + programId
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      );
+  }
+
+  postIncludeMe(did: string, programId: number, encryptedProof: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/programs/includeMe',
+      {
+        did,
+        programId,
+        encryptedProof
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
+
+  postInclusionStatus(did: string, programId: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/programs/inclusionStatus/' + programId,
+      {
+        did
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
+
 
   getTimeslots(programId: string): Observable<Timeslot[]> {
     return this.apiService.get(

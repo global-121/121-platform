@@ -5,6 +5,8 @@ import { InclusionStorage } from '../models/local-storage/inclusion-storage.mode
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
+import { Observable, of, interval, timer, from } from 'rxjs';
+import { concatMap, map, filter, take, switchMap, takeWhile } from 'rxjs/operators';
 
 
 @Injectable({
@@ -23,9 +25,6 @@ export class UpdateService {
     received: 'received',
     unavailable: 'unavailable'
   };
-  public inclusionStatusStorage = 'inclusionStatus';
-  public credentialStatusStorage = 'credentialStatus';
-  public didStorage = 'did';
 
   public credential: any;
 
@@ -41,85 +40,25 @@ export class UpdateService {
     public storage: Storage,
     public router: Router) { }
 
-  async checkInclusion(programId: number): Promise<void> {
-    this.createUpdateToast('notification.inclusion', this.pagesNav.inclusion);
-    const allInclusion: InclusionStorage[] = await this.getLocalStorageArray(this.inclusionStatusStorage);
-    for (const inclusion of allInclusion) {
-      if (inclusion.programId === programId &&
-        (inclusion.status === this.inclusionStatus.included || inclusion.status === this.inclusionStatus.included)) {
-        return;
-      }
-    }
-    this.listenForInclusion(programId, allInclusion);
-  }
 
-  async checkCredential(programId: number, did: string): Promise<any> {
-    const allCredentialState = await this.getLocalStorageArray(this.credentialStatusStorage);
-    for (const credentialState of allCredentialState) {
-      if (credentialState.programId === programId
-        && credentialState.did === did
-        && credentialState.status === this.receivedStatus.received) {
-        return;
-      }
-    }
-    return await this.listenForCredential(programId, did, allCredentialState);
-  }
-
-  listenForInclusion(programId: number, allInclusion: InclusionStorage[]): void {
-    const did = localStorage.getItem(this.didStorage);
-    this.programsService.getInclusionStatus(programId, did).subscribe(response => {
-      if (response.status === this.inclusionStatus.unavailable) {
-        setTimeout(() => {
-          this.listenForInclusion(programId, allInclusion);
-        }, this.updateSpeedMs);
-      } else if (response.status === this.inclusionStatus.included || response.status === this.inclusionStatus.excluded) {
-        this.storeStatus(response.status, programId, did, allInclusion, this.inclusionStatusStorage);
-        this.createUpdateToast('notification.inclusion', this.pagesNav.inclusion);
-      }
+  checkCredential(programId: number, did: string) {
+    return new Promise(resolve => {
+      const subscription = this.listenForCredential(programId, did).subscribe(isCredAvailable => {
+        console.log('isCredAvailable', isCredAvailable);
+        if (isCredAvailable.message !== '') {
+          subscription.unsubscribe();
+          this.createUpdateToast('notification.credential', this.pagesNav.credential);
+          resolve();
+        }
+      });
     });
   }
 
-  listenForCredential(programId: number, did: string, allCredentialState: any): any {
-    let credential: any;
-    this.programsService.getCredential(did).subscribe(response => {
-      credential = response;
-      this.storeStatus(this.receivedStatus.received, programId, did, allCredentialState, this.credentialStatusStorage);
-      this.createUpdateToast('notification.credentials', this.pagesNav.credential);
-    }, err => {
-      setTimeout(() => {
-        this.listenForCredential(programId, did, allCredentialState);
-      }, this.updateSpeedMs);
-    });
-    return credential;
-  }
-
-  storeStatus(status: string, programId: number, did: string, allState: InclusionStorage[], storageName: string): void {
-    const state: InclusionStorage = {
-      programId,
-      did,
-      status,
-    };
-    allState.push(state);
-    this.setLocalStorage(storageName, allState);
-  }
-
-  async getLocalStorageArray(itemKey: string): Promise<any> {
-    let value: [];
-    const valueString = await this.storage.get(itemKey);
-    if (valueString) {
-      value = JSON.parse(valueString);
-    } else {
-      value = [];
-      this.storage.set(itemKey, JSON.stringify(value));
-    }
-    return value;
-  }
-
-  setLocalStorage(itemKey: string, itemValue: object): void {
-    const itemString = JSON.stringify(itemValue);
-    this.storage.set(
-      itemKey,
-      itemString
+  listenForCredential(programId: number, did: string) {
+    console.log('testListenForCredential');
+    let subscription;
+    return subscription = interval(this.updateSpeedMs).pipe(
+      switchMap(() => this.programsService.getCredential(did))
     );
   }
 

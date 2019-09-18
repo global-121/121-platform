@@ -17,12 +17,14 @@ import { SelectCountryComponent } from './select-country/select-country.componen
 import { SelectLanguageComponent } from './select-language/select-language.component';
 import { SelectProgramComponent } from './select-program/select-program.component';
 import { StoreCredentialComponent } from './store-credential/store-credential.component';
+import { HandleProofComponent } from './handle-proof/handle-proof.component';
 
 @NgModule({
   declarations: [
     ChooseCredentialTypeComponent,
     CreatePasswordComponent,
     EnrollInProgramComponent,
+    HandleProofComponent,
     IdentityFormComponent,
     InitialNeedsComponent,
     IntroductionComponent,
@@ -42,6 +44,7 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     ChooseCredentialTypeComponent,
     CreatePasswordComponent,
     EnrollInProgramComponent,
+    HandleProofComponent,
     IdentityFormComponent,
     InitialNeedsComponent,
     IntroductionComponent,
@@ -55,6 +58,7 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     ChooseCredentialTypeComponent,
     CreatePasswordComponent,
     EnrollInProgramComponent,
+    HandleProofComponent,
     IdentityFormComponent,
     InitialNeedsComponent,
     IntroductionComponent,

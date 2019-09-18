@@ -1,0 +1,17 @@
+<section>
+    <dialogue-turn [hidden]="!creatingProof">
+        <p>
+            {{ 'personal.handle-proof.creating'|translate }}
+        </p>
+    </dialogue-turn>
+    <dialogue-turn [hidden]="!inclusionStatusNegative">
+        <p>
+            {{ 'personal.handle-proof.inclusion-status-negative'|translate }}
+        </p>
+    </dialogue-turn>
+    <dialogue-turn [hidden]="!inclusionStatusPositive">
+        <p>
+            {{ 'personal.handle-proof.inclusion-status-positive'|translate }}
+        </p>
+    </dialogue-turn>
+</section>
