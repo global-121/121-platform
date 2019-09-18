@@ -34,7 +34,7 @@ export class IdentityFormComponent extends PersonalComponent {
   ngOnInit() {
   }
 
-  public async submitIdentityForm(name, dob) {
+  public async submitIdentityForm(name: string, dob: string) {
     if (!name || !dob) {
       return;
     }

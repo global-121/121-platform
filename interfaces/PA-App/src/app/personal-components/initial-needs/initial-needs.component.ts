@@ -17,7 +17,7 @@ export class InitialNeedsComponent extends PersonalComponent {
     public conversationService: ConversationService,
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
   }
