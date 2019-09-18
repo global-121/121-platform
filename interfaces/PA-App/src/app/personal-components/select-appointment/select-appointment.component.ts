@@ -1,3 +1,4 @@
+import { StorageService } from './../../services/storage.service';
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -43,6 +44,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
     public paAccountApiService: PaAccountApiService,
     public translate: TranslateService,
     public storage: Storage,
+    public storageService: StorageService,
   ) {
     super();
     this.fallbackLanguageCode = this.translate.getDefaultLang();
@@ -142,7 +144,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   async generateQrCode() {
-    const did = await this.paRetrieveData('did');
+    const did = await this.storageService.retrieve('did');
     let programId: number;
     await this.storage.get('programChoice').then((value: string) => {
       programId = parseInt(value, 10);
@@ -156,11 +158,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
     }
   }
 
-  // NOTE: This should become a shared function
-  async paRetrieveData(variableName: string): Promise<any> {
-    return await this.paAccountApiService.retrieve(variableName)
-      .toPromise();
-  }
+
 
   getNextSection() {
     return 'store-credential';

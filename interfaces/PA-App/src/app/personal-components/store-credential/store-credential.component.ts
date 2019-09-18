@@ -1,3 +1,4 @@
+import { StorageService } from './../../services/storage.service';
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 
@@ -28,6 +29,7 @@ export class StoreCredentialComponent extends PersonalComponent {
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public storage: Storage,
+    public storageService: StorageService,
     public programsService: ProgramsServiceApiService,
   ) {
     super();
@@ -41,9 +43,9 @@ export class StoreCredentialComponent extends PersonalComponent {
     console.log('startListenCredential');
 
     // 1. Listen until credential is received
-    const did = await this.paRetrieveData('did');
+    const did = await this.storageService.retrieve('did');
     console.log('did', did);
-    const programId = await this.paRetrieveData('programId');
+    const programId = await this.storageService.retrieve('programId');
     console.log('programId', programId);
     this.updateService.checkCredential(parseInt(programId, 10), did).then(res => {
       let credential;
@@ -56,18 +58,14 @@ export class StoreCredentialComponent extends PersonalComponent {
     });
   }
 
-  // NOTE: This should become a shared function
-  async paRetrieveData(variableName: string): Promise<any> {
-    return await this.paAccountApiService.retrieve(variableName)
-      .toPromise();
-  }
+
 
   async storeCredential(credential): Promise<void> {
     console.log('Trying to store this credential', credential);
-    const wallet = JSON.parse(await this.paRetrieveData('wallet'));
-    const correlation = JSON.parse(await this.paRetrieveData('correlation'));
-    const credentialRequest = JSON.parse(await this.paRetrieveData('credentialRequest'));
-    const credDefID = JSON.parse(await this.paRetrieveData('credDefId'));
+    const wallet = JSON.parse(await this.storageService.retrieve('wallet'));
+    const correlation = JSON.parse(await this.storageService.retrieve('correlation'));
+    const credentialRequest = JSON.parse(await this.storageService.retrieve('credentialRequest'));
+    const credDefID = JSON.parse(await this.storageService.retrieve('credDefId'));
     const credentialFormat = JSON.parse(credential.message);
     const storeCredentialData = {
       credDefID,

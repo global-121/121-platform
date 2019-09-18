@@ -1,3 +1,4 @@
+import { StorageService } from 'src/app/services/storage.service';
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { PersonalComponent } from '../personal-component.class';
@@ -25,6 +26,7 @@ export class IdentityFormComponent extends PersonalComponent {
     public programsService: ProgramsServiceApiService,
     public paAccountApiService: PaAccountApiService,
     public storage: Storage,
+    public storageService: StorageService,
   ) {
     super();
   }
@@ -45,16 +47,9 @@ export class IdentityFormComponent extends PersonalComponent {
     this.complete();
   }
 
-  // NOTE: This should maybe become a shared function
-  async paRetrieveData(variableName: string): Promise<any> {
-    return await this.paAccountApiService.retrieve(variableName)
-      .toPromise();
-  }
-
-  // NOTE This should maybe become a shared function
   async postPrefilledAnswers(name, dob): Promise<void> {
 
-    const did = await this.paRetrieveData('did');
+    const did = await this.storageService.retrieve('did');
     await this.storage.get('programChoice').then(value => {
       this.programId = value;
     });

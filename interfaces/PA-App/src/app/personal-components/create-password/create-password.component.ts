@@ -7,6 +7,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-create-password',
@@ -26,6 +27,7 @@ export class CreatePasswordComponent extends PersonalComponent {
     public userImsApiService: UserImsApiService,
     public programsServiceApiService: ProgramsServiceApiService,
     public storage: Storage,
+    public storageService: StorageService
   ) {
     super();
   }
@@ -52,7 +54,7 @@ export class CreatePasswordComponent extends PersonalComponent {
     // 1. Create PA-account using supplied password + random username
     const paAccountUsername = this.makeRandomUsername(16);
     const paAccountPassword = password;
-    this.paCreateAccount(paAccountUsername, paAccountPassword);
+    await this.storageService.create(paAccountUsername, paAccountPassword);
 
     // 2. Create (random) wallet-name and store in PA-account
     const paWalletName = this.makeRandomUsername(16);
@@ -89,10 +91,10 @@ export class CreatePasswordComponent extends PersonalComponent {
 
     // 8. Store relevant data in PA-account
     // this.paStoreData('walletName', paWalletName);
-    this.paStoreData('wallet', JSON.stringify(wallet));
-    this.paStoreData('correlation', JSON.stringify(correlation));
-    this.paStoreData('didShort', didShort);
-    this.paStoreData('did', did);
+    this.storageService.store('wallet', JSON.stringify(wallet));
+    this.storageService.store('correlation', JSON.stringify(correlation));
+    this.storageService.store('didShort', didShort);
+    this.storageService.store('did', did);
 
   }
 
@@ -106,18 +108,6 @@ export class CreatePasswordComponent extends PersonalComponent {
     return result;
   }
 
-  paCreateAccount(paAccountUsername, paAccountPassword) {
-    this.paAccountApiService.create(paAccountUsername, paAccountPassword).subscribe((response) => {
-      console.log('response: ', response);
-    });
-  }
-
-  // This should become a shared function
-  paStoreData(variableName, data) {
-    this.paAccountApiService.store(variableName, data).subscribe((response) => {
-      console.log('response: ', response);
-    });
-  }
 
   async sovrinCreateWallet(wallet: any, correlation: any): Promise<void> {
     await this.userImsApiService.createWallet(

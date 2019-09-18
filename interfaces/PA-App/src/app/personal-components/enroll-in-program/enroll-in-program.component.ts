@@ -10,6 +10,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { Program } from 'src/app/models/program.model';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -38,6 +39,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     public programsService: ProgramsServiceApiService,
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
+    public storageService: StorageService,
     public storage: Storage,
     public translate: TranslateService,
     public conversationService: ConversationService,
@@ -223,10 +225,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const credentialOffer = await this.getCredentialOffer(String(this.programId));
 
     // 2. Retrieve other necessary data from PA-account
-    const wallet = await this.paRetrieveData('wallet');
-    const correlation = await this.paRetrieveData('correlation');
-    const didShort = await this.paRetrieveData('didShort');
-    const did = await this.paRetrieveData('did');
+    const wallet = await this.storageService.retrieve('wallet');
+    const correlation = await this.storageService.retrieve('correlation');
+    const didShort = await this.storageService.retrieve('didShort');
+    const did = await this.storageService.retrieve('did');
 
     // 3. Post Credential Request to create credential request in PA-app
     const credRequestPost = {
@@ -267,24 +269,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
     await this.postPrefilledAnswers(prefilledAnswers);
 
     // 6. Store relevant data to PA-account
-    this.paStoreData('credentialRequest', JSON.stringify(credentialRequest));
-    this.paStoreData('credDefId', JSON.stringify(this.credDefId));
-    this.paStoreData('programId', JSON.stringify(this.programId));
-
-
-  }
-
-  // This should become a shared function
-  paStoreData(variableName, data) {
-    this.paAccountApiService.store(variableName, data).subscribe((response) => {
-      console.log('response: ', response);
-    });
-  }
-
-  // NOTE: This should become a shared function
-  async paRetrieveData(variableName: string): Promise<any> {
-    return await this.paAccountApiService.retrieve(variableName)
-      .toPromise();
+    this.storageService.store('credentialRequest', JSON.stringify(credentialRequest));
+    this.storageService.store('credDefId', JSON.stringify(this.credDefId));
+    this.storageService.store('programId', JSON.stringify(this.programId));
   }
 
   private async getCredentialOffer(programId: string): Promise<any> {
