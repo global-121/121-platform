@@ -57,7 +57,7 @@ export class HandleProofComponent implements OnInit {
 
   async getProof(proofRequest: string): Promise<string> {
     console.log('getting proof from wallet');
-    const proofRequestJson = JSON.stringify(proofRequest)
+    const proofRequestJson = JSON.stringify(proofRequest);
     const wallet = JSON.parse(await this.paRetrieveData('wallet'));
     const correlation = JSON.parse(await this.paRetrieveData('correlation'));
     const generatedProof = await this.userImsApiService.getProofFromWallet(proofRequestJson, wallet, correlation).toPromise();
@@ -75,9 +75,9 @@ export class HandleProofComponent implements OnInit {
 
   async getInclusionStatus(): Promise<string> {
     const did = await this.paRetrieveData('did');
-    const programId = Number(await this.paRetrieveData('programId'));
+    const programId = await this.paRetrieveData('programId');
     const response = await this.programService.postInclusionStatus(did, programId).toPromise();
-    console.log('Inclusie status', response)
+    console.log('Inclusie status', response);
     return response.status;
   }
 

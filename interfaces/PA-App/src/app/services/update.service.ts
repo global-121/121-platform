@@ -40,31 +40,6 @@ export class UpdateService {
     public storage: Storage,
     public router: Router) { }
 
-  async checkInclusion(programId: number): Promise<void> {
-    this.createUpdateToast('notification.inclusion', this.pagesNav.inclusion);
-    const allInclusion: InclusionStorage[] = await this.getLocalStorageArray(this.inclusionStatusStorage);
-    for (const inclusion of allInclusion) {
-      if (inclusion.programId === programId &&
-        (inclusion.status === this.inclusionStatus.included || inclusion.status === this.inclusionStatus.included)) {
-        return;
-      }
-    }
-    this.listenForInclusion(programId, allInclusion);
-  }
-
-  listenForInclusion(programId: number, allInclusion: InclusionStorage[]): void {
-    const did = localStorage.getItem(this.didStorage);
-    this.programsService.getInclusionStatus(programId, did).subscribe(response => {
-      if (response.status === this.inclusionStatus.unavailable) {
-        setTimeout(() => {
-          this.listenForInclusion(programId, allInclusion);
-        }, this.updateSpeedMs);
-      } else if (response.status === this.inclusionStatus.included || response.status === this.inclusionStatus.excluded) {
-        this.storeStatus(response.status, programId, did, allInclusion, this.inclusionStatusStorage);
-        this.createUpdateToast('notification.inclusion', this.pagesNav.inclusion);
-      }
-    });
-  }
 
   checkCredential(programId: number, did: string) {
     return new Promise(resolve => {
