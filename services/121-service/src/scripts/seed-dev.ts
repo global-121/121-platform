@@ -21,21 +21,16 @@ const EXAMPLE_DID = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
 
 @Injectable()
 export class SeedDev implements InterfaceScript {
-  public constructor(private connection: Connection) { }
+  public constructor(private connection: Connection) {}
 
   public async run(): Promise<void> {
-
     const seedInit = await new SeedInit(this.connection);
     await seedInit.run();
 
-
     // ***** CREATE COUNTRIES *****
-    const countryRepository = this.connection.getRepository(
-      CountryEntity,
-    );
+    const countryRepository = this.connection.getRepository(CountryEntity);
     await countryRepository.save([{ country: 'Country A' }]);
     await countryRepository.save([{ country: 'Country B' }]);
-
 
     // ***** CREATE A CONNECTION *****
     const connectionRepository = this.connection.getRepository(
@@ -49,7 +44,6 @@ export class SeedDev implements InterfaceScript {
         programsExcluded: [],
       },
     ]);
-
 
     // ***** CREATE A PROGRAM WITH CUSTOM CRITERIA *****
     const customCriteriumRepository = this.connection.getRepository(
@@ -76,20 +70,25 @@ export class SeedDev implements InterfaceScript {
       program.customCriteria = [];
 
       for (let customCriterium of customCriteria) {
-        let customReturn = await customCriteriumRepository.save(customCriterium);
+        let customReturn = await customCriteriumRepository.save(
+          customCriterium,
+        );
         program.customCriteria.push(customReturn);
       }
 
       await programRepository.save(program);
     }
 
-
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
-    const program_d = await programRepository.findOne(2); // Assign programId=1 ...
-    const user_d = await userRepository.findOne(2); // ... to userId=2 (aidworker)
-    user_d.assignedProgram = program_d;
-    await userRepository.save(user_d);
 
+    await this.assignAidworker(2 ,1)
+    await this.assignAidworker(2, 2);
+    await this.assignAidworker(2, 3);
+
+    // const program_d = await programRepository.findOne(2); // Assign programId=1 ...
+    // const user_d = await userRepository.findOne(2); // ... to userId=2 (aidworker)
+    // user_d.assignedProgram = program_d;
+    // await userRepository.save(user_d);
 
     // ***** CREATE AVAILABILITY FOR AN AIDWORKER *****
     const availabilityRepository = this.connection.getRepository(
@@ -115,7 +114,6 @@ export class SeedDev implements InterfaceScript {
       newAvailability = await availabilityRepository.save(availability);
     }
 
-
     // ***** CREATE APPOINTMENT *****
     const appointmentRepository = this.connection.getRepository(
       AppointmentEntity,
@@ -125,7 +123,6 @@ export class SeedDev implements InterfaceScript {
     appointment.timeslotId = newAvailability.id;
     appointment.did = EXAMPLE_DID;
     await appointmentRepository.save(appointment);
-
 
     // ***** CREATE PREFILLED ANSWERS *****
     const credentialAttributesRepository = this.connection.getRepository(
@@ -149,6 +146,17 @@ export class SeedDev implements InterfaceScript {
     await credentialAttributesRepository.save(credential2);
 
     await this.connection.close();
+  }
+  public async assignAidworker(userId: number, programId: number) {
+
+    const userRepository = this.connection.getRepository(UserEntity);
+    const programRepository = this.connection.getRepository(ProgramEntity);
+    const program_d = await programRepository.findOne(programId); // Assign programId=1 ...
+    const user_d = await userRepository.findOne(userId); // ... to userId=2 (aidworker)
+    user_d.assignedProgram = program_d;
+    await userRepository.save(user_d);
+
+
   }
 }
 
