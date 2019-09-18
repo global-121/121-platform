@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -16,9 +16,7 @@ import { UserImsApiService } from 'src/app/services/user-ims-api.service';
   templateUrl: './enroll-in-program.component.html',
   styleUrls: ['./enroll-in-program.component.scss'],
 })
-export class EnrollInProgramComponent implements PersonalComponent {
-  public isDisabled = false;
-
+export class EnrollInProgramComponent extends PersonalComponent {
   public languageCode: string;
   public fallbackLanguageCode: string;
 
@@ -28,11 +26,12 @@ export class EnrollInProgramComponent implements PersonalComponent {
   private credDefId: string;
   private programId: number;
 
-  public questions: any;
+  public questions: Question[];
   public answerTypes = AnswerType;
 
   public answers: any = {};
 
+  public allQuestionsShown = false;
   public hasAnswered: boolean;
 
   constructor(
@@ -43,6 +42,7 @@ export class EnrollInProgramComponent implements PersonalComponent {
     public translate: TranslateService,
     public conversationService: ConversationService,
   ) {
+    super();
     this.fallbackLanguageCode = this.translate.getDefaultLang();
   }
 
@@ -181,6 +181,22 @@ export class EnrollInProgramComponent implements PersonalComponent {
     }
 
     this.answers[questionCode] = answer;
+
+    const answersArray = Object.keys(this.answers);
+
+    if (answersArray.length === this.questions.length) {
+      this.allQuestionsShown = true;
+    } else {
+      this.allQuestionsShown = false;
+      this.showNextQuestion(answersArray.indexOf(questionCode));
+    }
+  }
+
+  private showNextQuestion(currentIndex: number) {
+    const initialTurns = 1; // Turns shown before the 'first question'-turn.
+    const nextIndex = currentIndex + initialTurns + 1;
+
+    this.showTurn(nextIndex);
   }
 
   public change() {
@@ -194,14 +210,11 @@ export class EnrollInProgramComponent implements PersonalComponent {
     this.hasAnswered = true;
   }
 
-  public submitConfirm() {
+  public async submitConfirm() {
     console.log('submitConfirm()');
 
-    this.executeSovrinFlow();
-
-    window.setTimeout(() => {
-      this.complete();
-    }, 1000);
+    await this.executeSovrinFlow();
+    this.complete();
   }
 
   private async executeSovrinFlow() {

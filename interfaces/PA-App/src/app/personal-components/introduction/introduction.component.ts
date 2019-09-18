@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -9,12 +9,12 @@ import { ConversationService } from 'src/app/services/conversation.service';
   templateUrl: './introduction.component.html',
   styleUrls: ['./introduction.component.scss'],
 })
-export class IntroductionComponent implements PersonalComponent {
-  isDisabled = false;
-
+export class IntroductionComponent extends PersonalComponent {
   constructor(
     public conversationService: ConversationService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.complete();

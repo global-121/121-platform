@@ -15,9 +15,6 @@ describe('SelectProgramComponent', () => {
   };
 
   beforeEach(async(() => {
-    // Mock the used service:
-    const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getCountries']);
-
     TestBed.configureTestingModule({
       declarations: [SelectProgramComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

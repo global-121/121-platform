@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { Storage } from '@ionic/storage';
@@ -11,9 +11,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
   templateUrl: './select-language.component.html',
   styleUrls: ['./select-language.component.scss'],
 })
-export class SelectLanguageComponent implements PersonalComponent {
-  public isDisabled = false;
-
+export class SelectLanguageComponent extends PersonalComponent {
   public languages: any;
   public languageChoice: string;
   public languageChoiceName: string;
@@ -22,7 +20,9 @@ export class SelectLanguageComponent implements PersonalComponent {
     public storage: Storage,
     public translate: TranslateService,
     public conversationService: ConversationService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.languages = [

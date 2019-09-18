@@ -6,6 +6,8 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./dialogue-turn.component.scss'],
 })
 export class DialogueTurnComponent implements OnInit {
+  @Input()
+  isSpoken = false;
 
   @Input()
   actor = 'system';
@@ -25,5 +27,4 @@ export class DialogueTurnComponent implements OnInit {
     this.isSelf = (this.actor === 'self');
     this.moment = new Date();
   }
-
 }

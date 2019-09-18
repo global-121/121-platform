@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -12,9 +12,7 @@ import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
   templateUrl: './identity-form.component.html',
   styleUrls: ['./identity-form.component.scss'],
 })
-export class IdentityFormComponent implements PersonalComponent {
-  public isDisabled = false;
-
+export class IdentityFormComponent extends PersonalComponent {
   public namePlaceholder: any;
   public dobPlaceholder: any;
   public name: any;
@@ -27,7 +25,9 @@ export class IdentityFormComponent implements PersonalComponent {
     public programsService: ProgramsServiceApiService,
     public paAccountApiService: PaAccountApiService,
     public storage: Storage,
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
   }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -13,19 +13,12 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   templateUrl: './create-password.component.html',
   styleUrls: ['./create-password.component.scss'],
 })
-export class CreatePasswordComponent implements PersonalComponent {
-  public isDisabled = false;
-
+export class CreatePasswordComponent extends PersonalComponent {
   public initialInput = false;
   public create: any;
   public confirm: any;
 
-  private paAccountUsername: string;
-  private paAccountPassword: string;
-  private paWalletName: string;
-  private did = 'empty';  // Replaced after response from UserIMS create-did call
-  private wallet: any;
-  private correlation: any;
+  public isInProgress = false;
 
   constructor(
     public conversationService: ConversationService,
@@ -33,7 +26,9 @@ export class CreatePasswordComponent implements PersonalComponent {
     public userImsApiService: UserImsApiService,
     public programsServiceApiService: ProgramsServiceApiService,
     public storage: Storage,
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
   }
@@ -44,6 +39,8 @@ export class CreatePasswordComponent implements PersonalComponent {
     if (create !== confirm) {
       return;
     }
+
+    this.isInProgress = true;
 
     await this.executeSovrinFlow(create);
 

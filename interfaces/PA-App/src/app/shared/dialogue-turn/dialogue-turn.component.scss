@@ -17,6 +17,7 @@
 .dialogue-turn--content {
   position: relative;
   order: 2;
+  transform-origin: top left;
 
   width: 80%;
   max-width: 80%;
@@ -37,6 +38,7 @@
     left: var(--dialogue-turn--margin-around-card-horizontal);
     border-right-color: var(--ion-color-dark);
   }
+
   // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
   .dialogue-turn--speech-arrow:dir(rtl) {
     // Reset LTR-styles first:
@@ -52,13 +54,17 @@
   .dialogue-turn--actor {
     order: 2;
   }
+
   .dialogue-turn--content {
     order: 1;
+    transform-origin: top right;
   }
+
   .dialogue-turn--speech-arrow {
     right: var(--dialogue-turn--margin-around-card-horizontal);
     border-left-color: var(--ion-color-light);
   }
+
   // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
   .dialogue-turn--speech-arrow:dir(rtl) {
     // Reset LTR-styles first:
@@ -77,5 +83,43 @@
   .dialogue-turn--actor,
   .dialogue-turn--speech-arrow {
     visibility: hidden;
+  }
+
+  .dialogue-turn--content {
+    transform-origin: top center;
+  }
+}
+
+.dialogue-turn.is-pending {
+  opacity: 0;
+
+  .dialogue-turn--content {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+
+.dialogue-turn.is-spoken {
+  .dialogue-turn--content {
+    animation-name: speak;
+    animation-duration: .3s;
+    animation-direction: forwards;
+    animation-iteration-count: 1;
+  }
+}
+
+@keyframes speak {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  95% {
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }

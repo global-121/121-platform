@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PersonalComponent } from '../personal-component.interface';
+import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -16,9 +16,7 @@ import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
   templateUrl: './select-appointment.component.html',
   styleUrls: ['./select-appointment.component.scss'],
 })
-export class SelectAppointmentComponent implements PersonalComponent {
-  public isDisabled = false;
-
+export class SelectAppointmentComponent extends PersonalComponent {
   public languageCode: string;
   public fallbackLanguageCode: string;
   public dateFormat = 'EEE, dd-MM-yyyy';
@@ -46,6 +44,7 @@ export class SelectAppointmentComponent implements PersonalComponent {
     public translate: TranslateService,
     public storage: Storage,
   ) {
+    super();
     this.fallbackLanguageCode = this.translate.getDefaultLang();
   }
 
