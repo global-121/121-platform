@@ -3,25 +3,50 @@
     <ion-title>
       {{ 'PERSONAL'|translate }}
     </ion-title>
+    <ion-buttons slot="end" *ngIf="isDebug">
+      <ion-button (click)="showDebug=!showDebug;"
+                  [color]="showDebug ? 'warning' : ''"
+                  fill="clear"
+                  title="Toggle Debug-tools"
+      >
+        <ion-icon name="construct" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
+<div class="ion-padding"
+     *ngIf="isDebug"
+     [hidden]="!showDebug"
+>
+  <ion-row class="ion-align-items-center ion-justify-content-between">
+    <ion-button color="danger" size="small"
+                title="Clear conversation"
+                (click)="this.container.clear()"
+    >
+      <ion-icon name="trash" size="small" slot="icon-only"></ion-icon>
+    </ion-button>
+
+    <select name="debugSections"
+            title="Add section"
+            (change)="insertSection($event.target.value); $event.target.value='';"
+    >
+      <option value="">Add section...</option>
+      <option *ngFor="let section of debugSections;">{{ section }}</option>
+    </select>
+  </ion-row>
+  <ion-row>
+    <ion-button color="tertiary" size="small" fill="clear"
+                title="Scroll to bottom"
+                (click)="scrollDown()"
+    >
+      <ion-icon name="arrow-round-down" size="small" slot="icon-only"></ion-icon>
+    </ion-button>
+  </ion-row>
+</div>
+
+
 <ion-content color="medium" class="ion-padding-vertical">
-
-  <details class="debug--container" *ngIf="isDebug">
-    <summary class="debug--toggle">DEBUG:</summary>
-
-    <ion-row class="ion-align-items-center ion-justify-content-between">
-      <ion-button color="danger" size="small" (click)="this.container.clear()">
-        <ion-icon name="trash" size="small" slot="icon-only"></ion-icon>
-      </ion-button>
-
-      <select name="debugSections" (change)="insertSection($event.target.value)">
-        <option></option>
-        <option *ngFor="let section of debugSections;">{{ section }}</option>
-      </select>
-    </ion-row>
-  </details>
 
   <div #conversationContainer></div>
 

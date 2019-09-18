@@ -5,22 +5,7 @@
 // file can hold Sass mixins, functions, and placeholder classes to be imported
 // and used throughout the application.
 
-.debug--container {
-  position: relative;
-  margin: 1em;
-  color: var(--ion-color-medium-shade);
 
-  &[open] {
-    outline: 2px dashed;
-    padding: 1em;
-  }
-}
-.debug--toggle {
-  position: absolute;
-  top: -1.5em;
-  left: 0;
-  right: 0;
-}
 
 // Override default styles to emphasize where to input
 ion-input .native-input,
