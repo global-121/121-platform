@@ -47,10 +47,8 @@ export class SelectAppointmentComponent extends PersonalComponent {
     public storageService: StorageService,
   ) {
     super();
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-  }
 
-  ngOnInit() {
+    this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.getLanguageChoice();
     this.getProgram();
   }
@@ -62,6 +60,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   private getProgram() {
+    this.conversationService.startLoading();
     this.storage.get('programChoice').then(programId => {
       this.getProgramProperties(programId);
       this.getTimeslots(programId);
@@ -83,6 +82,8 @@ export class SelectAppointmentComponent extends PersonalComponent {
   private getTimeslots(programId: any) {
     this.programsService.getTimeslots(programId).subscribe((response: Timeslot[]) => {
       this.timeslots = response;
+
+      this.conversationService.stopLoading();
     });
   }
 
@@ -135,10 +136,12 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   public postAppointment(timeslotId: number, did: string) {
+    this.conversationService.startLoading();
     this.programsService.postAppointment(timeslotId, did).subscribe(() => {
 
       this.generateQrCode();
 
+      this.conversationService.stopLoading();
       this.complete();
     });
   }

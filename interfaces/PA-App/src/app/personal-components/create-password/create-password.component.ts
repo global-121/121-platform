@@ -43,9 +43,11 @@ export class CreatePasswordComponent extends PersonalComponent {
     }
 
     this.isInProgress = true;
+    this.conversationService.startLoading();
 
     await this.executeSovrinFlow(create);
 
+    this.conversationService.stopLoading();
     this.complete();
   }
 

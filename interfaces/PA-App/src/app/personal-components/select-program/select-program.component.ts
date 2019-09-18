@@ -31,10 +31,8 @@ export class SelectProgramComponent extends PersonalComponent {
     public translate: TranslateService,
   ) {
     super();
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-  }
 
-  ngOnInit() {
+    this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.getLanguageChoice();
     this.getPrograms();
   }
@@ -46,6 +44,8 @@ export class SelectProgramComponent extends PersonalComponent {
   }
 
   private getPrograms(): any {
+    this.conversationService.startLoading();
+
     this.storage.get('countryChoice').then(value => {
       this.countryChoice = value;
 
@@ -56,6 +56,8 @@ export class SelectProgramComponent extends PersonalComponent {
           this.programs[index].title = this.mapLabelByLanguageCode(program.title);
           this.programs[index].description = this.mapLabelByLanguageCode(program.description);
         });
+
+        this.conversationService.stopLoading();
       });
     });
   }

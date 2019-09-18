@@ -39,10 +39,12 @@ export class IdentityFormComponent extends PersonalComponent {
       return;
     }
 
+    this.conversationService.startLoading();
+
     await this.postPrefilledAnswers(name, dob);
 
+    this.conversationService.stopLoading();
     this.identitySubmitted = true;
-    console.log(name, dob);
 
     this.complete();
   }

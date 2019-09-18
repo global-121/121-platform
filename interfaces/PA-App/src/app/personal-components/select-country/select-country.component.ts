@@ -22,15 +22,15 @@ export class SelectCountryComponent extends PersonalComponent {
     public storage: Storage,
   ) {
     super();
-   }
 
-  ngOnInit() {
     this.getCountries();
   }
 
   private getCountries(): any {
+    this.conversationService.startLoading();
     this.programsService.getCountries().subscribe(response => {
       this.countries = response;
+      this.conversationService.stopLoading();
     });
   }
 

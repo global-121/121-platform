@@ -45,10 +45,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
     public conversationService: ConversationService,
   ) {
     super();
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-  }
 
-  ngOnInit() {
+    this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.getLanguageChoice();
     this.getProgramDetails();
   }
@@ -60,6 +58,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private getProgramDetails() {
+    this.conversationService.startLoading();
+
     this.storage.get('programChoice').then(value => {
       this.getProgramDetailsById(value);
       this.programId = value;
@@ -77,6 +77,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
       this.buildDetails(response);
       this.buildQuestions(response.customCriteria);
+
+      this.conversationService.stopLoading();
     });
   }
 
@@ -215,7 +217,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public async submitConfirm() {
     console.log('submitConfirm()');
 
+    this.conversationService.startLoading();
     await this.executeSovrinFlow();
+    this.conversationService.stopLoading();
     this.complete();
   }
 

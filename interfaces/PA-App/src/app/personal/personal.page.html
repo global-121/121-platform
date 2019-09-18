@@ -61,7 +61,7 @@
 
   <div class="loading-indicator">
     <ion-spinner name="dots"
-                 *ngIf="conversationService?.state?.isLoading"
+                 [hidden]="!conversationService.state.isLoading"
                  class="loading-indicator--spinner"
     ></ion-spinner>
   </div>

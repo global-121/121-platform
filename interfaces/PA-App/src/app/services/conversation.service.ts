@@ -30,6 +30,14 @@ export class ConversationService {
     }
   }
 
+  public startLoading() {
+    this.state.isLoading = true;
+  }
+
+  public stopLoading() {
+    this.state.isLoading = false;
+  }
+
   private getHistory() {
     // Define a hard-coded history (for now):
     const history = [
