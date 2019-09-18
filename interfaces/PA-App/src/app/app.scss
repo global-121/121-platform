@@ -5,7 +5,16 @@
 // file can hold Sass mixins, functions, and placeholder classes to be imported
 // and used throughout the application.
 
+.loading-indicator {
+  display: flex;
+  min-height: 100px;
+  justify-content: center;
+}
+.loading-indicator--spinner {
+  margin: auto;
+}
 
+// ----------------------------------------------------------------------------
 
 // Override default styles to emphasize where to input
 ion-input .native-input,

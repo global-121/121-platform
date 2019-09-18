@@ -6,6 +6,9 @@ import { PersonalComponents } from '../personal-components/personal-components.e
   providedIn: 'root'
 })
 export class ConversationService {
+  public state = {
+    isLoading: false,
+  };
 
   private history: ConversationHistorySection[] = [];
 

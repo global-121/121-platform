@@ -52,7 +52,7 @@ export class PersonalPage implements OnInit {
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    private conversationService: ConversationService,
+    public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver
   ) {
     // Listen for completed sections, to continue with next steps
