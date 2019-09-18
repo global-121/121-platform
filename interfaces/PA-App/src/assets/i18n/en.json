@@ -1,7 +1,7 @@
 {
-  "WORLD": "World",
+  "WORLD": "",
   "PERSONAL": "You",
-  "DEVICE": "Device",
+  "DEVICE": "",
   "personal": {
     "identity-form": {
       "introduction": "Now we need some additional information about you.",
