@@ -6,6 +6,9 @@ import { PersonalComponents } from '../personal-components/personal-components.e
   providedIn: 'root'
 })
 export class ConversationService {
+  public state = {
+    isLoading: false,
+  };
 
   private history: ConversationHistorySection[] = [];
 
@@ -25,6 +28,14 @@ export class ConversationService {
     } else {
       this.startNewConversation();
     }
+  }
+
+  public startLoading() {
+    this.state.isLoading = true;
+  }
+
+  public stopLoading() {
+    this.state.isLoading = false;
   }
 
   private getHistory() {

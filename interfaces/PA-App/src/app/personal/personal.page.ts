@@ -32,6 +32,7 @@ export class PersonalPage implements OnInit {
   public container;
 
   public isDebug: boolean = !environment.production;
+  public showDebug: boolean = !environment.production;
 
   public availableSections = {
     [PersonalComponents.chooseCredentialType]: ChooseCredentialTypeComponent,
@@ -51,7 +52,7 @@ export class PersonalPage implements OnInit {
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    private conversationService: ConversationService,
+    public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver
   ) {
     // Listen for completed sections, to continue with next steps
@@ -85,6 +86,10 @@ export class PersonalPage implements OnInit {
   }
 
   public insertSection(name: string) {
+    if (!name) {
+      return;
+    }
+
     console.log('PersonalPage insertSection(): ', name);
 
     this.scrollDown();
@@ -95,6 +100,6 @@ export class PersonalPage implements OnInit {
   }
 
   scrollDown() {
-    this.ionContent.scrollToBottom(300);
+    this.ionContent.scrollToBottom(600);
   }
 }

@@ -34,15 +34,17 @@ export class IdentityFormComponent extends PersonalComponent {
   ngOnInit() {
   }
 
-  public async submitIdentityForm(name, dob) {
+  public async submitIdentityForm(name: string, dob: string) {
     if (!name || !dob) {
       return;
     }
 
+    this.conversationService.startLoading();
+
     await this.postPrefilledAnswers(name, dob);
 
+    this.conversationService.stopLoading();
     this.identitySubmitted = true;
-    console.log(name, dob);
 
     this.complete();
   }

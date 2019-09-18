@@ -17,7 +17,7 @@ export class InitialNeedsComponent extends PersonalComponent {
     public conversationService: ConversationService,
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
   }
@@ -25,11 +25,12 @@ export class InitialNeedsComponent extends PersonalComponent {
   public submitNeeds(needsInput) {
     console.log('needs-input: ', needsInput, this.needs);
     this.isDisabled = true;
+    this.conversationService.startLoading();
 
     // TODO: POST answers to API; when successful complete()
     window.setTimeout(() => {
       this.needsReceived = true;
-
+      this.conversationService.stopLoading();
       this.complete();
     }, 1000);
   }
