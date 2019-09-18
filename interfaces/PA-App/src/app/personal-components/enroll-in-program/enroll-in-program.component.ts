@@ -225,10 +225,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const credentialOffer = await this.getCredentialOffer(String(this.programId));
 
     // 2. Retrieve other necessary data from PA-account
-    const wallet = await this.storageService.retrieve('wallet');
-    const correlation = await this.storageService.retrieve('correlation');
-    const didShort = await this.storageService.retrieve('didShort');
-    const did = await this.storageService.retrieve('did');
+    const wallet = await this.storageService.retrieve(this.storageService.type.wallet);
+    const correlation = await this.storageService.retrieve(this.storageService.type.correlation);
+    const didShort = await this.storageService.retrieve(this.storageService.type.didShort);
+    const did = await this.storageService.retrieve(this.storageService.type.did);
 
     // 3. Post Credential Request to create credential request in PA-app
     const credRequestPost = {
@@ -269,9 +269,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
     await this.postPrefilledAnswers(prefilledAnswers);
 
     // 6. Store relevant data to PA-account
-    this.storageService.store('credentialRequest', JSON.stringify(credentialRequest));
-    this.storageService.store('credDefId', JSON.stringify(this.credDefId));
-    this.storageService.store('programId', JSON.stringify(this.programId));
+    this.storageService.store(this.storageService.type.credentialRequest, JSON.stringify(credentialRequest));
+    this.storageService.store(this.storageService.type.credDefId, JSON.stringify(this.credDefId));
+    this.storageService.store(this.storageService.type.programId, JSON.stringify(this.programId));
   }
 
   private async getCredentialOffer(programId: string): Promise<any> {

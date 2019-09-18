@@ -5,11 +5,22 @@ import { PaAccountApiService } from './pa-account-api.service';
 @Injectable({
   providedIn: 'root'
 })
+
 export class StorageService {
 
   constructor(
     public paAccountApiService: PaAccountApiService,
   ) { }
+
+  public type = {
+    did: 'did',
+    didShort: 'didShort',
+    wallet: 'wallet',
+    correlation: 'correlation',
+    credentialRequest: 'credentialRequest',
+    programId: 'programId',
+    credDefId: 'credDefId'
+  };
 
   async create(username: string, password: string) {
     if (environment.localStorage) {

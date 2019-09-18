@@ -43,9 +43,9 @@ export class StoreCredentialComponent extends PersonalComponent {
     console.log('startListenCredential');
 
     // 1. Listen until credential is received
-    const did = await this.storageService.retrieve('did');
+    const did = await this.storageService.retrieve(this.storageService.type.did);
     console.log('did', did);
-    const programId = await this.storageService.retrieve('programId');
+    const programId = await this.storageService.retrieve(this.storageService.type.programId);
     console.log('programId', programId);
     this.updateService.checkCredential(parseInt(programId, 10), did).then(res => {
       let credential;
@@ -62,10 +62,10 @@ export class StoreCredentialComponent extends PersonalComponent {
 
   async storeCredential(credential): Promise<void> {
     console.log('Trying to store this credential', credential);
-    const wallet = JSON.parse(await this.storageService.retrieve('wallet'));
-    const correlation = JSON.parse(await this.storageService.retrieve('correlation'));
-    const credentialRequest = JSON.parse(await this.storageService.retrieve('credentialRequest'));
-    const credDefID = JSON.parse(await this.storageService.retrieve('credDefId'));
+    const wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
+    const correlation = JSON.parse(await this.storageService.retrieve(this.storageService.type.correlation));
+    const credentialRequest = JSON.parse(await this.storageService.retrieve(this.storageService.type.credentialRequest));
+    const credDefID = JSON.parse(await this.storageService.retrieve(this.storageService.type.credDefId));
     const credentialFormat = JSON.parse(credential.message);
     const storeCredentialData = {
       credDefID,

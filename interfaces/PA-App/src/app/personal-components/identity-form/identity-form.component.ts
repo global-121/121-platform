@@ -49,7 +49,7 @@ export class IdentityFormComponent extends PersonalComponent {
 
   async postPrefilledAnswers(name, dob): Promise<void> {
 
-    const did = await this.storageService.retrieve('did');
+    const did = await this.storageService.retrieve(this.storageService.type.did);
     await this.storage.get('programChoice').then(value => {
       this.programId = value;
     });

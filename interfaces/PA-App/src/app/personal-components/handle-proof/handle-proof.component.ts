@@ -59,15 +59,15 @@ export class HandleProofComponent extends PersonalComponent {
   async getProofRequest(): Promise<string> {
     console.log('getProofRequest');
     this.creatingProof = true;
-    const programId = await this.storageService.retrieve('programId');
+    const programId = await this.storageService.retrieve(this.storageService.type.programId);
     return this.programService.getProofRequest(programId).toPromise();
   }
 
   async getProof(proofRequest: string): Promise<string> {
     console.log('getProof');
     const proofRequestJson = JSON.stringify(proofRequest);
-    const wallet = JSON.parse(await this.storageService.retrieve('wallet'));
-    const correlation = JSON.parse(await this.storageService.retrieve('correlation'));
+    const wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
+    const correlation = JSON.parse(await this.storageService.retrieve(this.storageService.type.correlation));
     const generatedProof = await this.userImsApiService.getProofFromWallet(proofRequestJson, wallet, correlation).toPromise();
     const proof = generatedProof.proof;
     return proof;
@@ -75,16 +75,16 @@ export class HandleProofComponent extends PersonalComponent {
 
   async sendProof(proof: string): Promise<string> {
     console.log('sendProof');
-    const did = await this.storageService.retrieve('did');
-    const programId = Number(await this.storageService.retrieve('programId'));
+    const did = await this.storageService.retrieve(this.storageService.type.did);
+    const programId = Number(await this.storageService.retrieve(this.storageService.type.programId));
     const response = await this.programService.postIncludeMe(did, programId, proof).toPromise();
     return response.status;
   }
 
   async getInclusionStatus(): Promise<string> {
     console.log('getInclusionStatus');
-    const did = await this.storageService.retrieve('did');
-    const programId = await this.storageService.retrieve('programId');
+    const did = await this.storageService.retrieve(this.storageService.type.did);
+    const programId = await this.storageService.retrieve(this.storageService.type.programId);
     const response = await this.programService.postInclusionStatus(did, programId).toPromise();
     return response.status;
   }

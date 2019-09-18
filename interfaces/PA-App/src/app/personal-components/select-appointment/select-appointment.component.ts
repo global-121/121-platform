@@ -144,7 +144,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   async generateQrCode() {
-    const did = await this.storageService.retrieve('did');
+    const did = await this.storageService.retrieve(this.storageService.type.did);
     let programId: number;
     await this.storage.get('programChoice').then((value: string) => {
       programId = parseInt(value, 10);
