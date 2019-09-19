@@ -37,6 +37,8 @@ export class HandleProofComponent extends PersonalComponent {
     public userImsApiService: UserImsApiService,
   ) {
     super();
+
+    this.conversationService.startLoading();
   }
 
   ngAfterContentInit() {
@@ -45,7 +47,6 @@ export class HandleProofComponent extends PersonalComponent {
 
   async handleProof() {
     console.log('handleProof');
-    this.conversationService.startLoading();
 
     const proofRequest = await this.getProofRequest();
     const proof = await this.getProof(proofRequest);
@@ -97,5 +98,4 @@ export class HandleProofComponent extends PersonalComponent {
     const response = await this.programService.postInclusionStatus(did, programId).toPromise();
     return response.status;
   }
-
 }
