@@ -1,10 +1,10 @@
-import { ViewChildren, QueryList, OnInit, AfterViewInit } from '@angular/core';
+import { ViewChildren, QueryList, OnInit, AfterViewInit, AfterContentInit } from '@angular/core';
 
 import { environment } from 'src/environments/environment';
 
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
-export class PersonalComponent implements OnInit, AfterViewInit {
+export class PersonalComponent implements OnInit, AfterViewInit, AfterContentInit {
   @ViewChildren(DialogueTurnComponent)
   private turns: QueryList<DialogueTurnComponent>;
 
@@ -31,6 +31,9 @@ export class PersonalComponent implements OnInit, AfterViewInit {
         turn.isSpoken = true;
       }, this.turnSpeed * (index + 1));
     });
+  }
+
+  ngAfterContentInit() {
   }
 
   /**
