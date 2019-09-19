@@ -208,20 +208,27 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  postIncludeMe(did: string, programId: number, encryptedProof: string): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/programs/includeMe',
-      {
-        did,
-        programId,
-        encryptedProof
-      },
-      false
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    );
+  includeMe(
+    did: string,
+    programId: number,
+    encryptedProof: string,
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/programs/includeMe',
+        {
+          did,
+          programId,
+          encryptedProof
+        },
+        false
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response.status)
+      )
+      .toPromise();
   }
 
 
