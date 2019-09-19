@@ -232,18 +232,24 @@ export class ProgramsServiceApiService {
   }
 
 
-  postInclusionStatus(did: string, programId: string): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/programs/inclusionStatus/' + programId,
-      {
-        did
-      },
-      false
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    );
+  checkInclusionStatus(
+    did: string,
+    programId: number,
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/programs/inclusionStatus/' + programId,
+        {
+          did
+        },
+        false
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response.status)
+      )
+      .toPromise();
   }
 
 

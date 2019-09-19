@@ -62,7 +62,7 @@ export class HandleProofComponent extends PersonalComponent {
     const status = await this.programService.includeMe(this.did, this.programId, proof);
 
     if (status === 'done') {
-      this.inclusionStatus = await this.getInclusionStatus();
+      this.inclusionStatus = await this.programService.checkInclusionStatus(this.did, this.programId);
     }
 
     if (this.inclusionStatus === InclusionStates.included) {
@@ -79,13 +79,5 @@ export class HandleProofComponent extends PersonalComponent {
     this.did = await this.storageService.retrieve(this.storageService.type.did);
     this.wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
     this.correlation = JSON.parse(await this.storageService.retrieve(this.storageService.type.correlation));
-  }
-
-  async getInclusionStatus(): Promise<string> {
-    console.log('getInclusionStatus');
-    const did = await this.storageService.retrieve(this.storageService.type.did);
-    const programId = await this.storageService.retrieve(this.storageService.type.programId);
-    const response = await this.programService.postInclusionStatus(did, programId).toPromise();
-    return response.status;
   }
 }
