@@ -3,6 +3,7 @@ import { CustomTranslateService } from 'src/app/services/custom-translate.servic
 import { Storage } from '@ionic/storage';
 import { PersonalComponent } from '../personal-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-menu',
@@ -18,14 +19,22 @@ export class MainMenuComponent implements PersonalComponent {
     public customTranslateService: CustomTranslateService,
     public storage: Storage,
     public conversationService: ConversationService,
+    public router: Router,
   ) { }
 
   ngOnInit() {
+    this.resetParams();
     this.menuOptions = [
       { id: 'view-appointments', option: this.customTranslateService.translate('personal.main-menu.menu-option1'), disabled: true },
       { id: 'scan-qr', option: this.customTranslateService.translate('personal.main-menu.menu-option2'), disabled: false },
       { id: 'change-password', option: this.customTranslateService.translate('personal.main-menu.menu-option3'), disabled: true },
     ];
+  }
+
+  resetParams() {
+    this.router.navigate([], {
+      queryParams: {},
+    });
   }
 
   private storeOption(optionChoice: any) {

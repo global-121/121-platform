@@ -14,14 +14,32 @@ export class ScanQrComponent implements PersonalComponent {
   public did: string;
   public programId: number;
 
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     public storage: Storage,
     public conversationService: ConversationService,
   ) {
+  }
+  // {"did": "did:sov:AdzMb8sH6QTcLUv7hfVJAZ", "programId": 1}
+  // {did: "did:sov:AdzMb8sH6QTcLUv7hfVJAZ", programId: 1}
+
+  ngOnInit() {
+    this.getRouteParams();
+  }
+
+  public scanQrCode() {
+    this.router.navigate(['/scan-qr']);
+  }
+
+  public getRouteParams() {
+
     this.route.queryParams.subscribe(params => {
-      if (params && params.did && params.programId) {
+      console.log('params: ', params);
+      console.log('this.route.queryParams.subscribe');
+      if (params && params.did  && params.programId) {
+        console.log('Found programid and did params');
         this.did = JSON.parse(params.did);
         this.programId = JSON.parse(params.programId);
         this.storage.set('scannedDid', this.did);
@@ -29,14 +47,6 @@ export class ScanQrComponent implements PersonalComponent {
         this.complete();
       }
     });
-  }
-  // {"did": "did:sov:AdzMb8sH6QTcLUv7hfVJAZ", "programId": 1}
-  // {did: "did:sov:AdzMb8sH6QTcLUv7hfVJAZ", programId: 1}
-
-  ngOnInit() { }
-
-  public scanQrCode() {
-    this.router.navigate(['/scan-qr']);
   }
 
   getNextSection() {

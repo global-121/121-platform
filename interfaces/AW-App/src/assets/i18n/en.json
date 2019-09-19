@@ -35,7 +35,7 @@
     "validate-identity": {
       "introduction": "Below you see the PA's information for the Digital ID. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",
       "postpone-button": "Postpone verification",
-      "confirm-button": "Issue Identity Credential",
+      "confirm-button": "Confirm verification",
       "refresh-button": "Refresh information",
       "conclusion": "The Digital ID has been created. As such there is no need, and thus no possibility, for you to see the PA's personal information any more here."
     },
