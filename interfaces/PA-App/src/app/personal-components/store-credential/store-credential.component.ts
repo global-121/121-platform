@@ -33,16 +33,16 @@ export class StoreCredentialComponent extends PersonalComponent {
     public programsService: ProgramsServiceApiService,
   ) {
     super();
+
+    this.conversationService.startLoading();
   }
 
-  ngAfterViewInit() {
+  ngOnInit() {
     this.startListenCredential();
   }
 
   async startListenCredential() {
     console.log('startListenCredential');
-
-    this.conversationService.startLoading();
 
     // 1. Listen until credential is received
     const did = await this.storageService.retrieve(this.storageService.type.did);

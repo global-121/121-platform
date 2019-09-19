@@ -1,24 +1,17 @@
 <section>
-  <dialogue-turn *ngIf="creatingProof"
-                 [isSpoken]="creatingProof"
-  >
+  <dialogue-turn>
     <p>
       {{ 'personal.handle-proof.creating'|translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn *ngIf="inclusionStatusNegative"
-                 [isSpoken]="inclusionStatusNegative"
+  <dialogue-turn *ngIf="inclusionStatus"
+                 [isSpoken]="inclusionStatus"
                  isConnected="true"
   >
-    <p>
+    <p *ngIf="inclusionStatusNegative">
       {{ 'personal.handle-proof.inclusion-status-negative'|translate }}
     </p>
-  </dialogue-turn>
-  <dialogue-turn *ngIf="inclusionStatusPositive"
-                 [isSpoken]="inclusionStatusPositive"
-                 isConnected="true"
-  >
-    <p>
+    <p *ngIf="inclusionStatusPositive">
       {{ 'personal.handle-proof.inclusion-status-positive'|translate }}
     </p>
   </dialogue-turn>

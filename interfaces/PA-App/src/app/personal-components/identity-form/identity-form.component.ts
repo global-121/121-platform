@@ -49,17 +49,18 @@ export class IdentityFormComponent extends PersonalComponent {
     this.complete();
   }
 
-  async postPrefilledAnswers(name, dob): Promise<void> {
+  async postPrefilledAnswers(name: string, dob: string): Promise<void> {
 
     const did = await this.storageService.retrieve(this.storageService.type.did);
     await this.storage.get('programChoice').then(value => {
       this.programId = value;
     });
-    const prefilledAnswers = {
+
+    await this.programsService.postPrefilledAnswers(
       did,
-      programId: this.programId,
-      credentialType: 'identity',
-      attributes: [
+      this.programId,
+      'identity',
+      [
         {
           attributeId: 1,
           attribute: 'name',
@@ -69,17 +70,9 @@ export class IdentityFormComponent extends PersonalComponent {
           attributeId: 2,
           attribute: 'dob',
           answer: dob
-        }
-      ]
-    };
-
-    await this.programsService.postPrefilledAnswers(
-      prefilledAnswers.did,
-      prefilledAnswers.programId,
-      prefilledAnswers.credentialType,
-      prefilledAnswers.attributes
-    ).toPromise();
-
+        },
+      ],
+    );
   }
 
   getNextSection() {

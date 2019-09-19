@@ -122,8 +122,7 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getCredentialOffer(programId: string): Observable<any> {
-    console.log('getCredentialOffer');
+  getCredentialOffer(programId: number): Promise<any> {
     return this.apiService
       .get(
         environment.url_121_service_api,
@@ -132,44 +131,59 @@ export class ProgramsServiceApiService {
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
-  postCredentialRequest(did: string, programId: number, encryptedCredentialRequest: string): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/credential/request',
-      {
-        did,
-        programId,
-        encryptedCredentialRequest,
-      },
-      false
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    );
+  postCredentialRequest(
+    did: string,
+    programId: number,
+    encryptedCredentialRequest: string,
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/credential/request',
+        {
+          did,
+          programId,
+          encryptedCredentialRequest,
+        },
+        false
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      )
+      .toPromise();
   }
 
-  postPrefilledAnswers(did: string, programId: number, credentialType: string, attributes: any): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/credential/attributes',
-      {
-        did,
-        programId,
-        credentialType,
-        attributes
-      },
-      false
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    );
+  postPrefilledAnswers(
+    did: string,
+    programId: number,
+    credentialType: string,
+    attributes: any,
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/credential/attributes',
+        {
+          did,
+          programId,
+          credentialType,
+          attributes
+        },
+        false
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      )
+      .toPromise();
   }
 
   getCredential(did: string): Observable<any> {
-    console.log('getCredentials');
     return this.apiService
       .get(
         environment.url_121_service_api,
@@ -181,8 +195,7 @@ export class ProgramsServiceApiService {
       );
   }
 
-  getProofRequest(programId: number): Observable<any> {
-    console.log('getProofRequest');
+  getProofRequest(programId: number): Promise<any> {
     return this.apiService
       .get(
         environment.url_121_service_api,
@@ -191,38 +204,52 @@ export class ProgramsServiceApiService {
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
-  postIncludeMe(did: string, programId: number, encryptedProof: string): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/programs/includeMe',
-      {
-        did,
-        programId,
-        encryptedProof
-      },
-      false
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    );
+  includeMe(
+    did: string,
+    programId: number,
+    encryptedProof: string,
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/programs/includeMe',
+        {
+          did,
+          programId,
+          encryptedProof
+        },
+        false
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response.status)
+      )
+      .toPromise();
   }
 
 
-  postInclusionStatus(did: string, programId: string): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/programs/inclusionStatus/' + programId,
-      {
-        did
-      },
-      false
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    );
+  checkInclusionStatus(
+    did: string,
+    programId: number,
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/programs/inclusionStatus/' + programId,
+        {
+          did
+        },
+        false
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response.status)
+      )
+      .toPromise();
   }
 
 
