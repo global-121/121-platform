@@ -62,7 +62,6 @@ export class StoreCredentialComponent extends PersonalComponent {
   async storeCredential(credential): Promise<void> {
     console.log('Trying to store this credential', credential);
     const wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
-    const correlation = JSON.parse(await this.storageService.retrieve(this.storageService.type.correlation));
     const credentialRequest = JSON.parse(await this.storageService.retrieve(this.storageService.type.credentialRequest));
     const credDefID = JSON.parse(await this.storageService.retrieve(this.storageService.type.credDefId));
     const credentialFormat = JSON.parse(credential.message);
@@ -72,15 +71,13 @@ export class StoreCredentialComponent extends PersonalComponent {
       credentialRequestMetadata: credentialRequest.credentialRequestMetadata,
       credential: credentialFormat.credential,
       wallet,
-      correlation,
     };
     await this.userImsApiService.storeCredential(
       storeCredentialData.credDefID,
       storeCredentialData.credentialRequestMetadata,
       storeCredentialData.credential,
       storeCredentialData.wallet,
-      storeCredentialData.correlation
-    ).toPromise();
+    );
     this.credentialStored = true;
     this.conversationService.stopLoading();
     this.complete();

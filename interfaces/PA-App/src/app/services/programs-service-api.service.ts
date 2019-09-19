@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
+
 import { ApiService } from './api.service';
-import { JwtService } from './jwt.service';
 
 import { Program } from '../models/program.model';
-import { InclusionStatus } from '../models/inclusion-status.model';
 import { Timeslot } from '../models/timeslot.model';
 
 @Injectable({
@@ -16,33 +15,7 @@ import { Timeslot } from '../models/timeslot.model';
 export class ProgramsServiceApiService {
   constructor(
     private apiService: ApiService,
-    private jwtService: JwtService
   ) { }
-
-  login(email: string, password: string): Observable<any> {
-    console.log('ProgramsService : login()');
-
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/user/login',
-        {
-          email,
-          password
-        },
-        true
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
-        map(response => {
-          const user = response.user;
-
-          if (user && user.token) {
-            this.jwtService.saveToken(user.token);
-          }
-        })
-      );
-  }
 
   getCountries(): Observable<any[]> {
     return this.apiService
@@ -80,19 +53,7 @@ export class ProgramsServiceApiService {
       );
   }
 
-  getInclusionStatus(programId: number, did: string): Observable<InclusionStatus> {
-    return this.apiService
-      .get(
-        environment.url_121_service_api,
-        '/programs/inclusionStatus/' + programId + '/' + did
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
-        map(response => response)
-      );
-  }
-
-  getConnectionRequest(): Observable<any> {
+  getConnectionRequest(): Promise<any> {
     console.log('getConnectionRequest');
     return this.apiService
       .get(
@@ -102,24 +63,27 @@ export class ProgramsServiceApiService {
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
-  postConnectionResponse(did: string, verkey: string, nonce: string, meta: string): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/create-connection',
-      {
-        did,
-        verkey,
-        nonce,
-        meta
-      },
-      false
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    );
+  postConnectionResponse(did: string, verkey: string, nonce: string, meta: string): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection',
+        {
+          did,
+          verkey,
+          nonce,
+          meta
+        },
+        false
+      ).pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      )
+      .toPromise();
   }
 
   getCredentialOffer(programId: number): Promise<any> {
@@ -138,8 +102,10 @@ export class ProgramsServiceApiService {
   postCredentialRequest(
     did: string,
     programId: number,
-    encryptedCredentialRequest: string,
+    credentialRequest: string,
   ): Promise<any> {
+    const encryptedCredentialRequest = JSON.stringify(credentialRequest);
+
     return this.apiService
       .post(
         environment.url_121_service_api,
@@ -231,7 +197,6 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-
   checkInclusionStatus(
     did: string,
     programId: number,
@@ -251,8 +216,6 @@ export class ProgramsServiceApiService {
       )
       .toPromise();
   }
-
-
 
   getTimeslots(programId: string): Observable<Timeslot[]> {
     return this.apiService.get(

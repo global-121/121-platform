@@ -8,7 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
 import { Program } from 'src/app/models/program.model';
-import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { StorageService } from 'src/app/services/storage.service';
 
@@ -37,7 +36,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public storageService: StorageService,
     public storage: Storage,
@@ -224,14 +222,12 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     // 2. Retrieve other necessary data from PA-account
     const wallet = await this.storageService.retrieve(this.storageService.type.wallet);
-    const correlation = await this.storageService.retrieve(this.storageService.type.correlation);
     const didShort = await this.storageService.retrieve(this.storageService.type.didShort);
     const did = await this.storageService.retrieve(this.storageService.type.did);
 
     // 3. Post Credential Request to create credential request in PA-app
     const credentialRequest = await this.userImsApiService.createCredentialRequest(
       JSON.parse(wallet),
-      JSON.parse(correlation),
       this.credDefId,
       credentialOffer.credOfferJsonData,
       didShort,
@@ -241,7 +237,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     await this.programsService.postCredentialRequest(
       did,
       this.programId,
-      JSON.stringify(credentialRequest),
+      credentialRequest,
     );
 
     // 5. Form prefilled answers

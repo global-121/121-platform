@@ -1,56 +1,56 @@
 import { Injectable } from '@angular/core';
+
 import { environment } from 'src/environments/environment';
+
 import { PaAccountApiService } from './pa-account-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class StorageService {
-
-  constructor(
-    public paAccountApiService: PaAccountApiService,
-  ) { }
 
   public type = {
     did: 'did',
     didShort: 'didShort',
     wallet: 'wallet',
-    correlation: 'correlation',
     credentialRequest: 'credentialRequest',
     programId: 'programId',
     credDefId: 'credDefId'
   };
 
-  async create(username: string, password: string) {
+  constructor(
+    public paAccountApiService: PaAccountApiService,
+  ) { }
+
+  async createAccount(username: string, password: string): Promise<any> {
     if (environment.localStorage) {
       // use local sotrage
     } else {
-      return this.paAccountApiService.create(username, password).toPromise();
+      return this.paAccountApiService.createAccount(username, password);
     }
   }
 
-  async store(type: string, data: string) {
+  async store(type: string, data: string): Promise<any> {
     if (environment.localStorage) {
       // use local sotrage
     } else {
-      return this.paAccountApiService.store(type, data).toPromise();
+      return this.paAccountApiService.store(type, data);
     }
   }
 
-  async retrieve(type: string) {
+  async retrieve(type: string): Promise<any> {
     if (environment.localStorage) {
       // use local sotrage
     } else {
-      return this.paAccountApiService.retrieve(type).toPromise();
+      return this.paAccountApiService.retrieve(type);
     }
   }
 
-  login(username: string, password: string) {
+  async login(username: string, password: string): Promise<any> {
     if (environment.localStorage) {
       // use local sotrage
     } else {
-      return this.paAccountApiService.login(username, password).toPromise();
+      return this.paAccountApiService.login(username, password);
     }
   }
 

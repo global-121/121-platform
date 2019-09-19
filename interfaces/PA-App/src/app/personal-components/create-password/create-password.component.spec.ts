@@ -10,10 +10,6 @@ describe('CreatePasswordComponent', () => {
   let component: CreatePasswordComponent;
   let fixture: ComponentFixture<CreatePasswordComponent>;
 
-  const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve, reject) => resolve('1')),
-  };
-
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [CreatePasswordComponent],
@@ -23,10 +19,6 @@ describe('CreatePasswordComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        {
-          provide: Storage,
-          useValue: storageIonicMock
-        }
       ]
     })
       .compileComponents();
