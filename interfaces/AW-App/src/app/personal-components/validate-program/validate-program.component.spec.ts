@@ -8,7 +8,7 @@ import { ValidateProgramComponent } from './validate-program.component';
 import { RouterModule } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { of } from 'rxjs';
-import { IonContent } from '@ionic/angular';
+import { IonContent, IonicModule } from '@ionic/angular';
 
 
 describe('ValidateProgramComponent', () => {
@@ -30,6 +30,7 @@ describe('ValidateProgramComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
+        IonicModule.forRoot(),
         HttpClientModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -42,6 +43,7 @@ describe('ValidateProgramComponent', () => {
           provide: Storage,
           useValue: storageIonicMock
         },
+        IonContent,
       ]
     })
       .compileComponents();
