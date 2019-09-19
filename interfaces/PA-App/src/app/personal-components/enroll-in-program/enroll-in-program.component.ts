@@ -232,22 +232,20 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const did = await this.storageService.retrieve(this.storageService.type.did);
 
     // 3. Post Credential Request to create credential request in PA-app
-    const credRequestPost = {
+    const credentialRequest = await this.createCredentialRequest({
       wallet: JSON.parse(wallet),
       correlation: JSON.parse(correlation),
       credDefID: this.credDefId,
       credentialOffer: credentialOffer.credOfferJsonData,
       did: didShort,
-    };
-    const credentialRequest = await this.createCredentialRequest(credRequestPost);
+    });
 
     // 4. Post credential request to program-service
-    const credentialRequestPost = {
+    await this.postCredentialRequest({
       did,
       programId: this.programId,
       encryptedCredentialRequest: JSON.stringify(credentialRequest)
-    };
-    await this.postCredentialRequest(credentialRequestPost);
+    });
 
     // 5. Form prefilled answers
     const attributes = [];
@@ -280,7 +278,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   async createCredentialRequest(credRequestPost): Promise<any> {
-    console.log(credRequestPost);
     return await this.userImsApiService.createCredentialRequest(
       credRequestPost.wallet,
       credRequestPost.correlation,
