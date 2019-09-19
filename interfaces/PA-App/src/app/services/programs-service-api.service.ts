@@ -184,7 +184,6 @@ export class ProgramsServiceApiService {
   }
 
   getCredential(did: string): Observable<any> {
-    console.log('getCredentials');
     return this.apiService
       .get(
         environment.url_121_service_api,
@@ -197,7 +196,6 @@ export class ProgramsServiceApiService {
   }
 
   getProofRequest(programId: number): Observable<any> {
-    console.log('getProofRequest');
     return this.apiService
       .get(
         environment.url_121_service_api,

@@ -200,13 +200,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   public change() {
-    console.log('change()');
     this.hasAnswered = false;
   }
 
   public submit() {
-    console.log('submit()');
-
     this.hasAnswered = true;
   }
 
