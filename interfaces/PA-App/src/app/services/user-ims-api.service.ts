@@ -101,8 +101,15 @@ export class UserImsApiService {
         map(response => response)
       );
   }
-  getProofFromWallet(proofRequestJsonData: string, wallet: JSON, correlation: JSON): Observable<any> {
-    console.log('UserImsApiService : storeCredential()');
+
+  getProofFromWallet(
+    proofRequest: any,
+    wallet: JSON,
+    correlation: JSON,
+  ): Promise<any> {
+    console.log('UserImsApiService : getProofFromWallet()');
+
+    const proofRequestJsonData = JSON.stringify(proofRequest);
 
     return this.apiService
       .post(
@@ -117,7 +124,8 @@ export class UserImsApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
-      );
+        map(response => response.proof)
+      )
+      .toPromise();
   }
 }

@@ -56,8 +56,8 @@ export class HandleProofComponent extends PersonalComponent {
 
     // Create proof
     const proofRequest = await this.programService.getProofRequest(this.programId);
+    const proof = await this.userImsApiService.getProofFromWallet(proofRequest, this.wallet, this.correlation);
 
-    const proof = await this.getProof(proofRequest);
     const status = await this.sendProof(proof);
 
 
@@ -79,16 +79,6 @@ export class HandleProofComponent extends PersonalComponent {
     this.did = await this.storageService.retrieve(this.storageService.type.did);
     this.wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
     this.correlation = JSON.parse(await this.storageService.retrieve(this.storageService.type.correlation));
-  }
-
-  async getProof(proofRequest: string): Promise<string> {
-    console.log('getProof');
-    const proofRequestJson = JSON.stringify(proofRequest);
-    const wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
-    const correlation = JSON.parse(await this.storageService.retrieve(this.storageService.type.correlation));
-    const generatedProof = await this.userImsApiService.getProofFromWallet(proofRequestJson, wallet, correlation).toPromise();
-    const proof = generatedProof.proof;
-    return proof;
   }
 
   async sendProof(proof: string): Promise<string> {
