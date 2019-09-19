@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'dialogue-turn',
@@ -19,6 +20,7 @@ export class DialogueTurnComponent implements OnInit {
   isConnected = false;
 
   isSelf = false;
+  animate = environment.useAnimation;
 
   constructor() {
   }
