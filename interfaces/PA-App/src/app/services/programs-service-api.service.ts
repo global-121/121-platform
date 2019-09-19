@@ -195,7 +195,7 @@ export class ProgramsServiceApiService {
       );
   }
 
-  getProofRequest(programId: number): Observable<any> {
+  getProofRequest(programId: number): Promise<any> {
     return this.apiService
       .get(
         environment.url_121_service_api,
@@ -204,7 +204,8 @@ export class ProgramsServiceApiService {
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
   postIncludeMe(did: string, programId: number, encryptedProof: string): Observable<any> {
