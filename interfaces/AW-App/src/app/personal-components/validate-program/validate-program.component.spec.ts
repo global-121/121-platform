@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 
 import { ValidateProgramComponent } from './validate-program.component';
+import { RouterModule } from '@angular/router';
 
 describe('ValidateProgramComponent', () => {
   let component: ValidateProgramComponent;
@@ -19,6 +20,7 @@ describe('ValidateProgramComponent', () => {
       declarations: [ValidateProgramComponent],
       imports: [
         TranslateModule.forRoot(),
+        RouterModule.forRoot([]),
         HttpClientModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
