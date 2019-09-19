@@ -10,12 +10,11 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 
 import { PersonalComponent } from '../personal-component.class';
 
-enum InclusionStatusEnum {
+enum InclusionStates {
   included = 'inlcluded',
   excluded = 'excluded',
   unavailable = 'unavailable'
 }
-
 
 @Component({
   selector: 'app-handle-proof',
@@ -24,7 +23,8 @@ enum InclusionStatusEnum {
 })
 export class HandleProofComponent extends PersonalComponent {
 
-  public creatingProof = false;
+
+  public inclusionStatus: string;
   public inclusionStatusPositive = false;
   public inclusionStatusNegative = false;
 
@@ -51,15 +51,14 @@ export class HandleProofComponent extends PersonalComponent {
     const proof = await this.getProof(proofRequest);
     const status = await this.sendProof(proof);
 
-    let inclusionStatus;
 
     if (status === 'done') {
-      inclusionStatus = await this.getInclusionStatus();
+      this.inclusionStatus = await this.getInclusionStatus();
     }
 
-    if (inclusionStatus === InclusionStatusEnum.included) {
+    if (this.inclusionStatus === InclusionStates.included) {
       this.inclusionStatusPositive = true;
-    } else if (inclusionStatus === InclusionStatusEnum.excluded) {
+    } else if (this.inclusionStatus === InclusionStates.excluded) {
       this.inclusionStatusNegative = true;
     }
 
