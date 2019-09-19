@@ -78,8 +78,6 @@ export class PersonalPage implements OnInit {
   }
 
   private getComponentFactory(name: string) {
-    console.log('getComponentFactory() ', name);
-
     return this.resolver.resolveComponentFactory(
       this.availableSections[name]
     );
@@ -99,7 +97,7 @@ export class PersonalPage implements OnInit {
     );
   }
 
-  scrollDown() {
+  public scrollDown() {
     this.ionContent.scrollToBottom(600);
   }
 }
