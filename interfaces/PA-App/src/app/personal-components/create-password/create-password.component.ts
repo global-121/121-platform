@@ -54,7 +54,7 @@ export class CreatePasswordComponent extends PersonalComponent {
     // 1. Create PA-account using supplied password + random username
     const paAccountUsername = this.makeRandomUsername(16);
     const paAccountPassword = password;
-    await this.storageService.create(paAccountUsername, paAccountPassword);
+    await this.storageService.createAccount(paAccountUsername, paAccountPassword);
 
     // 2. Create (random) wallet-name and store in PA-account
     const paWalletName = this.makeRandomUsername(16);
@@ -75,19 +75,18 @@ export class CreatePasswordComponent extends PersonalComponent {
 
     // 6. Get connection-request (NOTE: in the MVP-setup this is not actually needed/used,
     // because of lack of pairwise connection + encryption)
-    const connectionRequest = this.getConnectionRequest();
+    const connectionRequest = await this.getConnectionRequest();
+    console.log('connectionRequest: ', connectionRequest);
 
     // 7. Post connection-response
-    const connectionResponse = {
+    this.postConnectionResponse({
       did,
       verkey: 'verkey:sample',
       nonce: '123456789',
       meta: 'meta:sample'
-    };
-    this.postConnectionResponse(connectionResponse);
+    });
 
     // 8. Store relevant data in PA-account
-    // this.paStoreData('walletName', paWalletName);
     this.storageService.store(this.storageService.type.wallet, JSON.stringify(wallet));
     this.storageService.store(this.storageService.type.didShort, didShort);
     this.storageService.store(this.storageService.type.did, did);
@@ -104,38 +103,27 @@ export class CreatePasswordComponent extends PersonalComponent {
     return result;
   }
 
-
   async sovrinCreateWallet(wallet: any): Promise<void> {
-    await this.userImsApiService.createWallet(
-      JSON.parse(JSON.stringify(wallet)),
-    ).toPromise();
+    await this.userImsApiService.createWallet(wallet);
   }
 
   // Create DID and store in wallet
   async sovrinCreateStoreDid(wallet: any): Promise<any> {
-    return await this.userImsApiService.createStoreDid(
-      JSON.parse(JSON.stringify(wallet)),
-    ).toPromise();
+    return await this.userImsApiService.createStoreDid(wallet);
   }
 
-  getConnectionRequest() {
-    this.programsServiceApiService.getConnectionRequest().subscribe((response) => {
-      console.log('response: ', response);
-    });
+  async getConnectionRequest() {
+    return await this.programsServiceApiService.getConnectionRequest();
   }
 
-  postConnectionResponse(connectionReponse: any) {
-    this.programsServiceApiService.postConnectionResponse(
+  async postConnectionResponse(connectionReponse: any) {
+    return await this.programsServiceApiService.postConnectionResponse(
       connectionReponse.did,
       connectionReponse.verkey,
       connectionReponse.nonce,
       connectionReponse.meta
-    ).subscribe((response) => {
-      console.log('response: ', response);
-    });
+    );
   }
-
-
 
   getNextSection() {
     return PersonalComponents.createIdentity;

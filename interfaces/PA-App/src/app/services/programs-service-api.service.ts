@@ -92,7 +92,7 @@ export class ProgramsServiceApiService {
       );
   }
 
-  getConnectionRequest(): Observable<any> {
+  getConnectionRequest(): Promise<any> {
     console.log('getConnectionRequest');
     return this.apiService
       .get(
@@ -102,24 +102,27 @@ export class ProgramsServiceApiService {
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
-  postConnectionResponse(did: string, verkey: string, nonce: string, meta: string): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/create-connection',
-      {
-        did,
-        verkey,
-        nonce,
-        meta
-      },
-      false
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    );
+  postConnectionResponse(did: string, verkey: string, nonce: string, meta: string): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection',
+        {
+          did,
+          verkey,
+          nonce,
+          meta
+        },
+        false
+      ).pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      )
+      .toPromise();
   }
 
   getCredentialOffer(programId: number): Promise<any> {
@@ -138,8 +141,10 @@ export class ProgramsServiceApiService {
   postCredentialRequest(
     did: string,
     programId: number,
-    encryptedCredentialRequest: string,
+    credentialRequest: string,
   ): Promise<any> {
+    const encryptedCredentialRequest = JSON.stringify(credentialRequest);
+
     return this.apiService
       .post(
         environment.url_121_service_api,

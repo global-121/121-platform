@@ -1,9 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
+
 import { ApiService } from './api.service';
+
+class Wallet {
+  id: string;
+  passKey: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +20,10 @@ export class UserImsApiService {
   };
 
   constructor(
-    private apiService: ApiService
+    private apiService: ApiService,
   ) { }
 
-  createWallet(wallet: JSON): Observable<any> {
+  createWallet(wallet: Wallet): Promise<any> {
     console.log('UserImsApiService : createWallet()');
 
     return this.apiService
@@ -34,10 +39,11 @@ export class UserImsApiService {
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
-  createStoreDid(wallet: JSON): Observable<any> {
+  createStoreDid(wallet: Wallet): Promise<any> {
     console.log('UserImsApiService : createStoreDid()');
 
     return this.apiService
@@ -53,11 +59,12 @@ export class UserImsApiService {
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
   createCredentialRequest(
-    wallet: JSON,
+    wallet: Wallet,
     credDefID: string,
     credentialOffer: JSON,
     did: string,
@@ -73,7 +80,7 @@ export class UserImsApiService {
           correlation: this.correlation,
           credDefID,
           credentialOffer,
-          did
+          did,
         },
         true
       )
@@ -88,8 +95,8 @@ export class UserImsApiService {
     credDefID: string,
     credentialRequestMetadata: any,
     credential: any,
-    wallet: JSON,
-  ): Observable<any> {
+    wallet: Wallet,
+  ): Promise<any> {
     console.log('UserImsApiService : storeCredential()');
 
     return this.apiService
@@ -108,12 +115,13 @@ export class UserImsApiService {
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
   getProofFromWallet(
     proofRequest: any,
-    wallet: JSON,
+    wallet: Wallet,
   ): Promise<any> {
     console.log('UserImsApiService : getProofFromWallet()');
 

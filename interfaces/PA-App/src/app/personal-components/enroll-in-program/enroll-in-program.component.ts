@@ -239,7 +239,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     await this.programsService.postCredentialRequest(
       did,
       this.programId,
-      JSON.stringify(credentialRequest),
+      credentialRequest,
     );
 
     // 5. Form prefilled answers

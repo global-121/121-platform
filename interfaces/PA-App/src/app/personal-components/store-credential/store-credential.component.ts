@@ -77,7 +77,7 @@ export class StoreCredentialComponent extends PersonalComponent {
       storeCredentialData.credentialRequestMetadata,
       storeCredentialData.credential,
       storeCredentialData.wallet,
-    ).toPromise();
+    );
     this.credentialStored = true;
     this.conversationService.stopLoading();
     this.complete();
