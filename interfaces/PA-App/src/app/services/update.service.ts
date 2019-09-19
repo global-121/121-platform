@@ -1,12 +1,11 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
 import { ProgramsServiceApiService } from './programs-service-api.service';
-import { InclusionStorage } from '../models/local-storage/inclusion-storage.model';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
-import { Observable, of, interval, timer, from } from 'rxjs';
-import { concatMap, map, filter, take, switchMap, takeWhile } from 'rxjs/operators';
+import { interval } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 
 @Injectable({
@@ -29,7 +28,8 @@ export class UpdateService {
     public toastController: ToastController,
     public translate: TranslateService,
     public storage: Storage,
-    public router: Router) { }
+    public router: Router,
+  ) { }
 
 
   checkCredential(programId: number, did: string) {
@@ -46,9 +46,8 @@ export class UpdateService {
   }
 
   listenForCredential(programId: number, did: string) {
-    console.log('testListenForCredential');
-    let subscription;
-    return subscription = interval(this.updateSpeedMs).pipe(
+    console.log('listenForCredential()');
+    return interval(this.updateSpeedMs).pipe(
       switchMap(() => this.programsService.getCredential(did))
     );
   }

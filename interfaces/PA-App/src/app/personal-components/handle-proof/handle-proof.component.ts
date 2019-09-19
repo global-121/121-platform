@@ -1,10 +1,13 @@
-import { StorageService } from './../../services/storage.service';
-import { Component, OnInit } from '@angular/core';
-import { Storage } from '@ionic/storage';
+import { Component } from '@angular/core';
+
+import { ConversationService } from 'src/app/services/conversation.service';
+import { StorageService } from 'src/app/services/storage.service';
 import { UpdateService } from 'src/app/services/update.service';
+
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+
 import { PersonalComponent } from '../personal-component.class';
 
 enum InclusionStatusEnum {
@@ -26,34 +29,41 @@ export class HandleProofComponent extends PersonalComponent {
   public inclusionStatusNegative = false;
 
   constructor(
-    public storage: Storage,
+    public conversationService: ConversationService,
+    public storageService: StorageService,
     public updateService: UpdateService,
     public programService: ProgramsServiceApiService,
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
-    public storageService: StorageService
   ) {
     super();
   }
 
-  ngOnInit() {
+  ngAfterContentInit() {
     this.handleProof();
   }
+
   async handleProof() {
     console.log('handleProof');
+    this.conversationService.startLoading();
+
     const proofRequest = await this.getProofRequest();
     const proof = await this.getProof(proofRequest);
     const status = await this.sendProof(proof);
 
     let inclusionStatus;
+
     if (status === 'done') {
       inclusionStatus = await this.getInclusionStatus();
     }
+
     if (inclusionStatus === InclusionStatusEnum.included) {
       this.inclusionStatusPositive = true;
     } else if (inclusionStatus === InclusionStatusEnum.excluded) {
       this.inclusionStatusNegative = true;
     }
+
+    this.conversationService.stopLoading();
   }
 
   async getProofRequest(): Promise<string> {

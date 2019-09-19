@@ -35,24 +35,23 @@ export class StoreCredentialComponent extends PersonalComponent {
     super();
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.startListenCredential();
   }
 
   async startListenCredential() {
     console.log('startListenCredential');
 
+    this.conversationService.startLoading();
+
     // 1. Listen until credential is received
     const did = await this.storageService.retrieve(this.storageService.type.did);
-    console.log('did', did);
-    const programId = await this.storageService.retrieve(this.storageService.type.programId);
-    console.log('programId', programId);
-    this.updateService.checkCredential(parseInt(programId, 10), did).then(res => {
-      let credential;
+    const programId = parseInt(await this.storageService.retrieve(this.storageService.type.programId), 10);
+
+    this.updateService.checkCredential(programId, did).then(() => {
       this.programsService.getCredential(did).subscribe(response => {
-        credential = response;
+        const credential = response;
         this.credentialReceived = true;
-        console.log('credentialReceived: ', this.credentialReceived);
         this.storeCredential(credential);
       });
     });
@@ -67,6 +66,7 @@ export class StoreCredentialComponent extends PersonalComponent {
     const credentialRequest = JSON.parse(await this.storageService.retrieve(this.storageService.type.credentialRequest));
     const credDefID = JSON.parse(await this.storageService.retrieve(this.storageService.type.credDefId));
     const credentialFormat = JSON.parse(credential.message);
+
     const storeCredentialData = {
       credDefID,
       credentialRequestMetadata: credentialRequest.credentialRequestMetadata,
@@ -82,7 +82,12 @@ export class StoreCredentialComponent extends PersonalComponent {
       storeCredentialData.correlation
     ).toPromise();
     this.credentialStored = true;
+    this.conversationService.stopLoading();
     this.complete();
+  }
+
+  getNextSection() {
+    return PersonalComponents.handleProof;
   }
 
   complete() {
@@ -91,10 +96,5 @@ export class StoreCredentialComponent extends PersonalComponent {
       data: {},
       next: this.getNextSection(),
     });
-  }
-
-  getNextSection() {
-    console.log('next!!!!');
-    return PersonalComponents.handleProof;
   }
 }

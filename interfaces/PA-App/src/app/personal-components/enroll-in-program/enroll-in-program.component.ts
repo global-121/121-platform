@@ -214,6 +214,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     console.log('submitConfirm()');
 
     this.conversationService.startLoading();
+    this.isDisabled = true;
     await this.executeSovrinFlow();
     this.conversationService.stopLoading();
     this.complete();
@@ -312,7 +313,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   complete() {
-    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.enrollInProgram,
       data: {
