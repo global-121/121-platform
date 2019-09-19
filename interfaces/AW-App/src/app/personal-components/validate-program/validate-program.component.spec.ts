@@ -6,6 +6,8 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { ValidateProgramComponent } from './validate-program.component';
 import { RouterModule } from '@angular/router';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { of } from 'rxjs';
 
 describe('ValidateProgramComponent', () => {
   let component: ValidateProgramComponent;
@@ -16,6 +18,11 @@ describe('ValidateProgramComponent', () => {
   };
 
   beforeEach(async(() => {
+
+    const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getPrefilledAnswers']);
+    const prefilledAnswersSpy = programsServiceApiService.getPrefilledAnswers.and.returnValue(of({}));
+
+
     TestBed.configureTestingModule({
       declarations: [ValidateProgramComponent],
       imports: [
@@ -25,6 +32,10 @@ describe('ValidateProgramComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        {
+          provide: ProgramsServiceApiService,
+          useValue: programsServiceApiService,
+        },
         {
           provide: Storage,
           useValue: storageIonicMock
