@@ -248,29 +248,31 @@ export class EnrollInProgramComponent extends PersonalComponent {
     });
 
     // 5. Form prefilled answers
-    const attributes = [];
-    Object.entries(this.answers).forEach(
-      ([key, value]) => {
-        const value2: any = value;
-        const attribute = {} as Attribute;
-        attribute.attributeId = 0;
-        attribute.attribute = value2.code;
-        attribute.answer = value2.value;
-        attributes.push(attribute);
-      }
-    );
-    const prefilledAnswers = {
+    await this.postPrefilledAnswers({
       did,
       programId: this.programId,
       credentialType: 'program',
-      attributes,
-    };
-    await this.postPrefilledAnswers(prefilledAnswers);
+      attributes: this.createAttributes(Object.values(this.answers)),
+    });
 
     // 6. Store relevant data to PA-account
     this.storageService.store(this.storageService.type.credentialRequest, JSON.stringify(credentialRequest));
     this.storageService.store(this.storageService.type.credDefId, JSON.stringify(this.credDefId));
     this.storageService.store(this.storageService.type.programId, JSON.stringify(this.programId));
+  }
+
+  private createAttributes(answers: Answer[]): Attribute[] {
+    const attributes = [];
+
+    answers.forEach((item: Answer) => {
+      attributes.push({
+        attributeId: 0,
+        attribute: item.code,
+        answer: item.value,
+      });
+    });
+
+    return attributes;
   }
 
   private async getCredentialOffer(programId: string): Promise<any> {
