@@ -9,11 +9,16 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class UserImsApiService {
+  // Some endpoints require this object as a parameter
+  private correlation = {
+    correlationID: 'test',
+  };
+
   constructor(
     private apiService: ApiService
   ) { }
 
-  createWallet(wallet: JSON, correlation: JSON): Observable<any> {
+  createWallet(wallet: JSON): Observable<any> {
     console.log('UserImsApiService : createWallet()');
 
     return this.apiService
@@ -22,7 +27,7 @@ export class UserImsApiService {
         '/wallet',
         {
           wallet,
-          correlation
+          correlation: this.correlation,
         },
         true
       )
@@ -32,7 +37,7 @@ export class UserImsApiService {
       );
   }
 
-  createStoreDid(wallet: JSON, correlation: JSON): Observable<any> {
+  createStoreDid(wallet: JSON): Observable<any> {
     console.log('UserImsApiService : createStoreDid()');
 
     return this.apiService
@@ -41,7 +46,7 @@ export class UserImsApiService {
         '/did',
         {
           wallet,
-          correlation
+          correlation: this.correlation,
         },
         true
       )
@@ -53,7 +58,6 @@ export class UserImsApiService {
 
   createCredentialRequest(
     wallet: JSON,
-    correlation: JSON,
     credDefID: string,
     credentialOffer: JSON,
     did: string,
@@ -66,7 +70,7 @@ export class UserImsApiService {
         '/credential/credreq',
         {
           wallet,
-          correlation,
+          correlation: this.correlation,
           credDefID,
           credentialOffer,
           did
@@ -80,7 +84,12 @@ export class UserImsApiService {
       .toPromise();
   }
 
-  storeCredential(credDefID: string, credentialRequestMetadata: any, credential: any, wallet: JSON, correlation: JSON): Observable<any> {
+  storeCredential(
+    credDefID: string,
+    credentialRequestMetadata: any,
+    credential: any,
+    wallet: JSON,
+  ): Observable<any> {
     console.log('UserImsApiService : storeCredential()');
 
     return this.apiService
@@ -92,7 +101,7 @@ export class UserImsApiService {
           credentialRequestMetadata,
           credential,
           wallet,
-          correlation,
+          correlation: this.correlation,
         },
         true
       )
@@ -105,7 +114,6 @@ export class UserImsApiService {
   getProofFromWallet(
     proofRequest: any,
     wallet: JSON,
-    correlation: JSON,
   ): Promise<any> {
     console.log('UserImsApiService : getProofFromWallet()');
 
@@ -118,7 +126,7 @@ export class UserImsApiService {
         {
           proofRequestJsonData,
           wallet,
-          correlation,
+          correlation: this.correlation,
         },
         true
       )

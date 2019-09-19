@@ -16,7 +16,6 @@ export class StorageService {
     did: 'did',
     didShort: 'didShort',
     wallet: 'wallet',
-    correlation: 'correlation',
     credentialRequest: 'credentialRequest',
     programId: 'programId',
     credDefId: 'credDefId'

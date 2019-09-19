@@ -26,7 +26,6 @@ export class HandleProofComponent extends PersonalComponent {
   private programId: number;
   private did: string;
   private wallet: any;
-  private correlation: any;
 
   public inclusionStatus: string;
   public inclusionStatusPositive = false;
@@ -56,7 +55,7 @@ export class HandleProofComponent extends PersonalComponent {
 
     // Create proof
     const proofRequest = await this.programService.getProofRequest(this.programId);
-    const proof = await this.userImsApiService.getProofFromWallet(proofRequest, this.wallet, this.correlation);
+    const proof = await this.userImsApiService.getProofFromWallet(proofRequest, this.wallet);
 
     // Use proof
     const status = await this.programService.includeMe(this.did, this.programId, proof);
@@ -78,6 +77,5 @@ export class HandleProofComponent extends PersonalComponent {
     this.programId = Number(await this.storageService.retrieve(this.storageService.type.programId));
     this.did = await this.storageService.retrieve(this.storageService.type.did);
     this.wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
-    this.correlation = JSON.parse(await this.storageService.retrieve(this.storageService.type.correlation));
   }
 }

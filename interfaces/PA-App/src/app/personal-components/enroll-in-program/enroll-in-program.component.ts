@@ -224,14 +224,12 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     // 2. Retrieve other necessary data from PA-account
     const wallet = await this.storageService.retrieve(this.storageService.type.wallet);
-    const correlation = await this.storageService.retrieve(this.storageService.type.correlation);
     const didShort = await this.storageService.retrieve(this.storageService.type.didShort);
     const did = await this.storageService.retrieve(this.storageService.type.did);
 
     // 3. Post Credential Request to create credential request in PA-app
     const credentialRequest = await this.userImsApiService.createCredentialRequest(
       JSON.parse(wallet),
-      JSON.parse(correlation),
       this.credDefId,
       credentialOffer.credOfferJsonData,
       didShort,

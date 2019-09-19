@@ -66,13 +66,10 @@ export class CreatePasswordComponent extends PersonalComponent {
       id: paWalletName,
       passKey: paAccountPassword,
     };
-    const correlation = {
-      correlationID: 'test'
-    };
-    await this.sovrinCreateWallet(wallet, correlation);
+    await this.sovrinCreateWallet(wallet);
 
     // 4. Generate Sovrin DID and store in wallet
-    const result = await this.sovrinCreateStoreDid(wallet, correlation);
+    const result = await this.sovrinCreateStoreDid(wallet);
 
     // 5. Store Sovrin DID in PA-account
     const didShort = result.did;
@@ -94,7 +91,6 @@ export class CreatePasswordComponent extends PersonalComponent {
     // 8. Store relevant data in PA-account
     // this.paStoreData('walletName', paWalletName);
     this.storageService.store(this.storageService.type.wallet, JSON.stringify(wallet));
-    this.storageService.store(this.storageService.type.correlation, JSON.stringify(correlation));
     this.storageService.store(this.storageService.type.didShort, didShort);
     this.storageService.store(this.storageService.type.did, did);
 
@@ -111,18 +107,16 @@ export class CreatePasswordComponent extends PersonalComponent {
   }
 
 
-  async sovrinCreateWallet(wallet: any, correlation: any): Promise<void> {
+  async sovrinCreateWallet(wallet: any): Promise<void> {
     await this.userImsApiService.createWallet(
       JSON.parse(JSON.stringify(wallet)),
-      JSON.parse(JSON.stringify(correlation))
     ).toPromise();
   }
 
   // Create DID and store in wallet
-  async sovrinCreateStoreDid(wallet: any, correlation: any): Promise<any> {
+  async sovrinCreateStoreDid(wallet: any): Promise<any> {
     return await this.userImsApiService.createStoreDid(
       JSON.parse(JSON.stringify(wallet)),
-      JSON.parse(JSON.stringify(correlation))
     ).toPromise();
   }
 
