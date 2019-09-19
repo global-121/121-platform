@@ -51,7 +51,13 @@ export class UserImsApiService {
       );
   }
 
-  createCredentialRequest(wallet: JSON, correlation: JSON, credDefID: string, credentialOffer: JSON, did: string): Observable<any> {
+  createCredentialRequest(
+    wallet: JSON,
+    correlation: JSON,
+    credDefID: string,
+    credentialOffer: JSON,
+    did: string,
+  ): Promise<any> {
     console.log('UserImsApiService : createCredentialRequest()');
 
     return this.apiService
@@ -70,7 +76,8 @@ export class UserImsApiService {
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
   storeCredential(credDefID: string, credentialRequestMetadata: any, credential: any, wallet: JSON, correlation: JSON): Observable<any> {

@@ -223,7 +223,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   private async executeSovrinFlow() {
 
     // 1. Get Credential Offer for programId
-    const credentialOffer = await this.getCredentialOffer(String(this.programId));
+    const credentialOffer = await this.programsService.getCredentialOffer(this.programId);
 
     // 2. Retrieve other necessary data from PA-account
     const wallet = await this.storageService.retrieve(this.storageService.type.wallet);
@@ -232,28 +232,28 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const did = await this.storageService.retrieve(this.storageService.type.did);
 
     // 3. Post Credential Request to create credential request in PA-app
-    const credentialRequest = await this.createCredentialRequest({
-      wallet: JSON.parse(wallet),
-      correlation: JSON.parse(correlation),
-      credDefID: this.credDefId,
-      credentialOffer: credentialOffer.credOfferJsonData,
-      did: didShort,
-    });
+    const credentialRequest = await this.userImsApiService.createCredentialRequest(
+      JSON.parse(wallet),
+      JSON.parse(correlation),
+      this.credDefId,
+      credentialOffer.credOfferJsonData,
+      didShort,
+    );
 
     // 4. Post credential request to program-service
-    await this.postCredentialRequest({
+    await this.programsService.postCredentialRequest(
       did,
-      programId: this.programId,
-      encryptedCredentialRequest: JSON.stringify(credentialRequest)
-    });
+      this.programId,
+      JSON.stringify(credentialRequest),
+    );
 
     // 5. Form prefilled answers
-    await this.postPrefilledAnswers({
+    await this.programsService.postPrefilledAnswers(
       did,
-      programId: this.programId,
-      credentialType: 'program',
-      attributes: this.createAttributes(Object.values(this.answers)),
-    });
+      this.programId,
+      'program',
+      this.createAttributes(Object.values(this.answers)),
+    );
 
     // 6. Store relevant data to PA-account
     this.storageService.store(this.storageService.type.credentialRequest, JSON.stringify(credentialRequest));
@@ -273,38 +273,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
     });
 
     return attributes;
-  }
-
-  private async getCredentialOffer(programId: string): Promise<any> {
-    return await this.programsService.getCredentialOffer(programId).toPromise();
-  }
-
-  async createCredentialRequest(credRequestPost): Promise<any> {
-    return await this.userImsApiService.createCredentialRequest(
-      credRequestPost.wallet,
-      credRequestPost.correlation,
-      credRequestPost.credDefID,
-      credRequestPost.credentialOffer,
-      credRequestPost.did
-    ).toPromise();
-  }
-
-  async postCredentialRequest(credentialRequestPost): Promise<void> {
-    await this.programsService.postCredentialRequest(
-      credentialRequestPost.did,
-      parseInt(credentialRequestPost.programId, 10),
-      credentialRequestPost.encryptedCredentialRequest
-    ).toPromise();
-  }
-
-  // NOTE this function should be shared
-  async postPrefilledAnswers(prefilledAnswers: any): Promise<void> {
-    await this.programsService.postPrefilledAnswers(
-      prefilledAnswers.did,
-      prefilledAnswers.programId,
-      prefilledAnswers.credentialType,
-      prefilledAnswers.attributes
-    ).toPromise();
   }
 
   getNextSection() {
