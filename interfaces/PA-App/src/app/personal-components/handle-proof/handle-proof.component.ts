@@ -23,6 +23,10 @@ enum InclusionStates {
 })
 export class HandleProofComponent extends PersonalComponent {
 
+  private programId: number;
+  private did: string;
+  private wallet: any;
+  private correlation: any;
 
   public inclusionStatus: string;
   public inclusionStatusPositive = false;
@@ -47,6 +51,7 @@ export class HandleProofComponent extends PersonalComponent {
 
   async handleProof() {
     console.log('handleProof');
+    await this.gatherData();
 
     const proofRequest = await this.getProofRequest();
     const proof = await this.getProof(proofRequest);
@@ -64,6 +69,13 @@ export class HandleProofComponent extends PersonalComponent {
     }
 
     this.conversationService.stopLoading();
+  }
+
+  private async gatherData() {
+    this.programId = await this.storageService.retrieve(this.storageService.type.programId);
+    this.did = await this.storageService.retrieve(this.storageService.type.did);
+    this.wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
+    this.correlation = JSON.parse(await this.storageService.retrieve(this.storageService.type.correlation));
   }
 
   async getProofRequest(): Promise<string> {
