@@ -11,7 +11,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PersonalComponent } from '../personal-component.class';
 
 enum InclusionStates {
-  included = 'inlcluded',
+  included = 'included',
   excluded = 'excluded',
   unavailable = 'unavailable'
 }
