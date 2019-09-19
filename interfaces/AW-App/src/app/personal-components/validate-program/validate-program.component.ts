@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
@@ -20,7 +21,8 @@ export class ValidateProgramComponent implements PersonalComponent {
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
-    public storage: Storage
+    public storage: Storage,
+    public router: Router,
   ) { }
 
   ngOnInit() {
@@ -28,6 +30,7 @@ export class ValidateProgramComponent implements PersonalComponent {
       this.storage.get('scannedProgramId').then(programId => {
         this.did = did;
         this.programId = programId;
+        this.getPrefilledAnswersProgram();
       });
     });
   }
@@ -49,19 +52,28 @@ export class ValidateProgramComponent implements PersonalComponent {
     await this.programsService.issueCredential(this.did, this.programId).subscribe(response => {
       console.log('response: ', response);
     });
-    this.programsService.deletePrefilledAnswers(this.did, this.programId).subscribe(response => {
-      console.log('response: ', response);
-      this.programCredentialIssued = true;
-      this.answersProgram = null;
-      this.complete();
-    });
-    //   });
+    // this.programsService.deletePrefilledAnswers(this.did, this.programId).subscribe(response => {
+    //   console.log('response: ', response);
+    //   this.programCredentialIssued = true;
+    //   this.answersProgram = null;
+    //   this.complete();
     // });
+    this.programCredentialIssued = true;
+    this.answersProgram = null;
+    this.resetParams();
+    this.complete();
+  }
+
+  resetParams() {
+    this.router.navigate([], {
+      queryParams: {},
+    });
   }
 
   getNextSection() {
     return 'main-menu';
   }
+
 
   complete() {
     this.conversationService.onSectionCompleted({

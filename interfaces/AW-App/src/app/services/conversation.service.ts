@@ -61,6 +61,11 @@ export class ConversationService {
   public getConversationUpToNow(): ConversationSection[] {
     return this.conversation;
   }
+
+  public continueAfterScan() {
+    console.log('continueAfterScan');
+  }
+
 }
 
 class ConversationHistorySection {

@@ -1,11 +1,9 @@
 <section #startMeeting>
-  <ion-button id="getPrefilledAnswersIdentity" (click)="getPrefilledAnswersIdentity(did)">API: GET prefilled answers</ion-button>
   <br>
   <dialogue-turn>
     {{ 'personal.validate-identity.introduction'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self" [hidden]="!answers">
-    <ion-button [hidden]="!verificationPostponed" expand="block" (click)="getPrefilledAnswersIdentity(did)">{{ 'personal.validate-identity.refresh-button'|translate }}</ion-button>
     <ion-list>
       <ion-item *ngFor="let answer of answers"
                 class="ion-no-padding ion-text-wrap"
@@ -20,4 +18,3 @@
     {{ 'personal.validate-identity.conclusion'|translate }}
   </dialogue-turn>
 </section>
-       

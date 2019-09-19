@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 
 import { ValidateIdentityComponent } from './validate-identity.component';
+import { of } from 'rxjs';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 describe('ValidateIdentityComponent', () => {
   let component: ValidateIdentityComponent;
@@ -17,6 +19,11 @@ describe('ValidateIdentityComponent', () => {
   };
 
   beforeEach(async(() => {
+
+    const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getPrefilledAnswers']);
+    const prefilledAnswersSpy = programsServiceApiService.getPrefilledAnswers.and.returnValue(of({}));
+
+
     TestBed.configureTestingModule({
       declarations: [ValidateIdentityComponent],
       imports: [
@@ -26,6 +33,10 @@ describe('ValidateIdentityComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        {
+          provide: ProgramsServiceApiService,
+          useValue: programsServiceApiService,
+        },
         {
           provide: Storage,
           useValue: storageIonicMock
