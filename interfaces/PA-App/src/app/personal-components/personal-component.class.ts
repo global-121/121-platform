@@ -1,5 +1,7 @@
 import { ViewChildren, QueryList, OnInit, AfterViewInit } from '@angular/core';
 
+import { environment } from 'src/environments/environment';
+
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
 export class PersonalComponent implements OnInit, AfterViewInit {
@@ -11,6 +13,8 @@ export class PersonalComponent implements OnInit, AfterViewInit {
    * When there is no interaction possible anymore.
    */
   isDisabled: boolean;
+
+  private turnSpeed = (environment.useAnimation) ? 300 : 1;
 
   constructor() { }
 
@@ -25,7 +29,7 @@ export class PersonalComponent implements OnInit, AfterViewInit {
     this.turns.forEach((turn, index) => {
       window.setTimeout(() => {
         turn.isSpoken = true;
-      }, 300 * (index + 1));
+      }, this.turnSpeed * (index + 1));
     });
   }
 

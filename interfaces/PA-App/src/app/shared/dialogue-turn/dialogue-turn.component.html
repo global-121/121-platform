@@ -3,8 +3,8 @@
        'is-connected': isConnected,
        'is-other ion-justify-content-start': !isSelf,
        'is-self ion-justify-content-end': isSelf,
-       'is-pending': !isSpoken,
-       'is-spoken': isSpoken
+       'is-pending': animate && !isSpoken,
+       'is-spoken': animate && isSpoken
      }"
 >
   <div class="dialogue-turn--actor">
