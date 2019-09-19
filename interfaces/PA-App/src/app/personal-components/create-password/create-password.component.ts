@@ -49,7 +49,7 @@ export class CreatePasswordComponent extends PersonalComponent {
     this.complete();
   }
 
-  async executeSovrinFlow(password) {
+  async executeSovrinFlow(password: string) {
 
     // 1. Create PA-account using supplied password + random username
     const paAccountUsername = this.makeRandomUsername(16);

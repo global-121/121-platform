@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
+
 import { environment } from 'src/environments/environment';
+
 import { PaAccountApiService } from './pa-account-api.service';
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class StorageService {
-
-  constructor(
-    public paAccountApiService: PaAccountApiService,
-  ) { }
 
   public type = {
     did: 'did',
@@ -20,6 +17,10 @@ export class StorageService {
     programId: 'programId',
     credDefId: 'credDefId'
   };
+
+  constructor(
+    public paAccountApiService: PaAccountApiService,
+  ) { }
 
   async create(username: string, password: string) {
     if (environment.localStorage) {

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
+
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
 
@@ -12,7 +13,7 @@ import { JwtService } from './jwt.service';
 export class PaAccountApiService {
   constructor(
     private apiService: ApiService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) { }
 
   create(username: string, password: string): Observable<any> {
