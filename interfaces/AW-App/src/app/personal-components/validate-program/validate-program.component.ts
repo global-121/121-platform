@@ -4,6 +4,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { Storage } from '@ionic/storage';
 import { PersonalComponent } from '../personal-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { IonContent } from '@ionic/angular';
 
 @Component({
   selector: 'app-validate-program',
@@ -23,6 +24,7 @@ export class ValidateProgramComponent implements PersonalComponent {
     public conversationService: ConversationService,
     public storage: Storage,
     public router: Router,
+    public ionContent: IonContent,
   ) { }
 
   ngOnInit() {
@@ -39,6 +41,7 @@ export class ValidateProgramComponent implements PersonalComponent {
     this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
       this.answersProgram = response;
       this.verificationPostponed = false;
+      this.ionContent.scrollToBottom(300);
     });
   }
 

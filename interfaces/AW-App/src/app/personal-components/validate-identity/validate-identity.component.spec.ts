@@ -1,3 +1,4 @@
+import { PersonalPage } from './../../personal/personal.page';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
@@ -8,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ValidateIdentityComponent } from './validate-identity.component';
 import { of } from 'rxjs';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { IonContent, IonicModule } from '@ionic/angular';
+import { AppModule } from 'src/app/app.module';
 
 describe('ValidateIdentityComponent', () => {
   let component: ValidateIdentityComponent;
@@ -29,7 +32,8 @@ describe('ValidateIdentityComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
-        HttpClientModule
+        IonicModule.forRoot(),
+        HttpClientModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -40,7 +44,8 @@ describe('ValidateIdentityComponent', () => {
         {
           provide: Storage,
           useValue: storageIonicMock
-        }
+        },
+        IonContent
       ]
     })
       .compileComponents();
