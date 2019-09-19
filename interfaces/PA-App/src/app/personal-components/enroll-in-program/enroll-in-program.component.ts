@@ -8,7 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
 import { Program } from 'src/app/models/program.model';
-import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { StorageService } from 'src/app/services/storage.service';
 
@@ -37,7 +36,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public storageService: StorageService,
     public storage: Storage,
