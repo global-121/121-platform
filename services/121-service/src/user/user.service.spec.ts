@@ -16,7 +16,7 @@ const userRo = {
     role: undefined,
     status: undefined,
     countryId: undefined,
-    assignedProgramId: null,
+    assignedProgramId: undefined,
   },
 };
 
