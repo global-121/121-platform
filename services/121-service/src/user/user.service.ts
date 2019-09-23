@@ -65,6 +65,7 @@ export class UserService {
     newUser.countryId = countryId;
 
     newUser.programs = [];
+    newUser.assignedProgram=[];
 
     const errors = await validate(newUser);
     if (errors.length > 0) {
@@ -80,7 +81,9 @@ export class UserService {
   }
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
-    let toUpdate = await this.userRepository.findOne(id);
+    let toUpdate = await this.userRepository.findOne(id, {
+      relations: ['assignedProgram'],
+    });
     let updated = toUpdate;
     updated.password = crypto.createHmac('sha256', dto.password).digest('hex');
     const updatedUser = await this.userRepository.save(updated);
@@ -88,7 +91,9 @@ export class UserService {
   }
 
   public async deactivate(id: number): Promise<UserRO> {
-    let updated = await this.userRepository.findOne(id);
+    let updated = await this.userRepository.findOne(id, {
+      relations: ['assignedProgram'],
+    });
     if (updated.role == 'admin') {
       const _errors = { username: 'Cannot change status of admin-user.' };
       throw new HttpException(
@@ -103,7 +108,9 @@ export class UserService {
   }
 
   public async activate(id: number): Promise<UserRO> {
-    let updated = await this.userRepository.findOne(id);
+    let updated = await this.userRepository.findOne(id, {
+      relations: ['assignedProgram'],
+    });
     if (updated.role == 'admin') {
       const _errors = { username: 'Cannot change status of admin-user.' };
       throw new HttpException(
@@ -118,7 +125,9 @@ export class UserService {
   }
 
   public async assignProgram(userId: number, programId: number) {
-    let user = await this.userRepository.findOne(userId);
+    let user = await this.userRepository.findOne(userId, {
+      relations: ['assignedProgram'],
+    });
     if (!user) {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, 401);
@@ -128,7 +137,11 @@ export class UserService {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, 401);
     }
-    user.assignedProgram = program;
+    if (!user.assignedProgram){
+      console.log('No program assigend')
+      user.assignedProgram = []
+    }
+    user.assignedProgram.push(program);
     const updatedUser = await this.userRepository.save(user);
     return this.buildUserRO(updatedUser);
   }
@@ -180,9 +193,8 @@ export class UserService {
       role: user.role,
       status: user.status,
       countryId: user.countryId,
-      assignedProgramId: user.assignedProgram ? user.assignedProgram.id : null,
+      assignedProgramId: user.assignedProgram,
     };
-
     return { user: userRO };
   }
 }
