@@ -52,7 +52,7 @@ export class ConversationService {
   }
 
   startNewConversation() {
-    this.addSection(PersonalComponents.introduction);
+    this.addSection(PersonalComponents.selectLanguage);
   }
 
   private addSection(sectionName) {

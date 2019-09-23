@@ -4,8 +4,7 @@
   "DEVICE": "",
   "personal": {
     "identity-form": {
-      "introduction": "Now we need some additional information about you.",
-      "step-questions": "Next step: Fill in the following questions about yourself.",
+      "introduction": "Next step: Fill in the following questions about yourself.",
       "more-info-questions": "More about these questions",
       "name-label": "My full name:",
       "dob-label": "My date of birth:",
@@ -15,7 +14,7 @@
     },
     "create-password": {
       "introduction": "To create a Digital ID you need to complete the following steps.",
-      "step1": "Step 1: Create your password.",
+      "step1": "Step 1: Create a password.",
       "more-info-password": "More about passwords",
       "create-password": "Create password:",
       "confirm-password": "Confirm password:",
@@ -33,30 +32,26 @@
       "change": "Change my answers",
       "confirm-received": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",
       "more-info-activation": "More about activation",
-      "prepare-documents": "Gather your documents. To save time at your meeting, make sure to bring these:"
+      "prepare-documents": "To save time at your appointment, make sure to bring these documents:"
     },
     "initial-needs": {
       "introduction": "In order to help you as best as possible, please tell us what your needs are.",
       "input-label": "My needs are:",
       "input-placeholder": "I need...",
-      "submit": "Submit needs",
-      "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future."
-    },
-    "introduction": {
-      "welcome": "Welcome to 121.",
-      "more-info": "More about 121"
+      "submit": "Submit my needs",
+      "conclusion": "Thank you for sharing. Understanding your needs will help us create better programs in your area."
     },
     "choose-credential-type": {
       "introduction": "Please select your next step.",
       "option1": "Apply to program",
       "option2": "Create a Digital ID",
       "option3": "Delete Digital ID",
-      "conclusion-program": "To request inclusion in a program you need to have a valid Digital ID first.",
-      "more-info-digital-id": "More about Digital ID's"
+      "conclusion-program": "To apply to a program you need to have a valid Digital ID.",
+      "more-info-digital-id": "More about Digital ID"
     },
     "select-appointment": {
-      "introduction": "To make an appointment, select a timeslot:",
-      "thanks-repeat": "Thank you. You have selected the following timeslot:",
+      "introduction": "To make an appointment, select a date and time:",
+      "thanks-repeat": "You have selected the following date and time:",
       "documents": "Please ensure you have the following documents:",
       "from": "From",
       "till": "Till",
@@ -64,23 +59,23 @@
       "more-info-documents": "More about these documents",
       "confirm": "Confirm meeting time",
       "change": "Change meeting time",
-      "conclusion": "Thank you, your verification meeting is confirmed.",
+      "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed.",
       "qr-code": "Please show this QR-code at your meeting."
     },
     "select-country": {
       "introduction": "The next step is to select your location, so we can show you programs for that location.",
-      "step3": "Step 3: Select your location:",
       "conclusion": "Thank you, you have selected <strong>{{country}}</strong>."
     },
     "select-language": {
-      "introduction": "Please select your language.",
+      "introduction": "Welcome to 121. Please select your language.<br><br>Bienvenu chez 121. Choisi votre langue<br><br>Welcome bij 121. Selecteer uw Taal",
+      "more-info": "More about 121",
       "option1": "English",
       "option2": "Language 2",
       "option3": "Language 3",
       "result": "Thank you. You have selected <strong>{{language}}</strong>."
     },
     "select-program": {
-      "introduction": "You can now select a program.",
+      "introduction": "Next step: Select a program.",
       "more-info-programs": "More about programs",
       "program": "Program"
     },
@@ -89,7 +84,7 @@
       "stored": "Credential is stored in the wallet"
     },
     "handle-proof": {
-      "creating": "Sending your data to apply for program.",
+      "creating": "You have given us sufficient personal information to see if you can be part of the program. We will notify you if you have been included.",
       "inclusion-status-postive": "You have been included in this program.",
       "inclusion-status-negative": "You have not been included in this program."
     }
