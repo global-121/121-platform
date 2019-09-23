@@ -16,7 +16,7 @@ import { SeedInit } from './seed-init';
 
 import programBasicExample from '../../examples/program-basic.json';
 import programFullExample from '../../examples/program-full.json';
-import programAnonymousExample from '../../examples/program-anonymous.json';
+import programAnonymousExample from '../../examples/program-anonymous1.json';
 
 const EXAMPLE_DID = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
 
@@ -49,38 +49,15 @@ export class SeedDev implements InterfaceScript {
     ]);
 
     // ***** CREATE A PROGRAM WITH CUSTOM CRITERIA *****
-    const customCriteriumRepository = this.connection.getRepository(
-      CustomCriterium,
-    );
-    const programRepository = this.connection.getRepository(ProgramEntity);
-
     const userRepository = this.connection.getRepository(UserEntity);
-    const author = await userRepository.findOne(1);
+
     const examplePrograms = [
       programAnonymousExample,
       programFullExample,
       programBasicExample,
     ];
 
-    for (let programExample of examplePrograms) {
-      const programExampleDump = JSON.stringify(programExample);
-      const program = JSON.parse(programExampleDump);
-
-      program.author = author;
-
-      // Remove original custom criteria and add it to a sepperate variable
-      const customCriteria = program.customCriteria;
-      program.customCriteria = [];
-
-      for (let customCriterium of customCriteria) {
-        let customReturn = await customCriteriumRepository.save(
-          customCriterium,
-        );
-        program.customCriteria.push(customReturn);
-      }
-
-      await programRepository.save(program);
-    }
+    this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
 

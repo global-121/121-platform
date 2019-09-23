@@ -7,16 +7,19 @@ import { CustomCriterium } from '../programs/program/custom-criterium.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { UserEntity } from '../user/user.entity';
 
-import programAnonymousExample from '../../examples/program-anonymous.json';
+import programAnonymousExample1 from '../../examples/program-anonymous1.json';
+import programAnonymousExample2 from '../../examples/program-anonymous2.json';
 import { SeedHelper } from './seed-helper';
 import { AppointmentEntity } from '../schedule/appointment/appointment.entity';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
 
 @Injectable()
 export class SeedProd implements InterfaceScript {
-  public constructor(private connection: Connection, private readonly seedHelper: SeedHelper) {}
+  public constructor(
+    private connection: Connection,
+  ) {}
 
-  // private readonly seedHelper = new SeedHelper(this.connection);
+  private readonly seedHelper = new SeedHelper(this.connection);
 
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.connection);
@@ -28,16 +31,9 @@ export class SeedProd implements InterfaceScript {
     await countryRepository.save([{ country: 'Country B' }]);
 
     // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
-    const customCriteriumRepository = this.connection.getRepository(
-      CustomCriterium,
-    );
-    const programRepository = this.connection.getRepository(ProgramEntity);
 
     const userRepository = this.connection.getRepository(UserEntity);
-    const author = await userRepository.findOne(1);
 
-    const programAnonymousExample1 = { ...programAnonymousExample };
-    const programAnonymousExample2 = { ...programAnonymousExample };
     const programAnonymousExample3 = { ...programAnonymousExample1 };
     programAnonymousExample3.countryId = 2;
     const programAnonymousExample4 = { ...programAnonymousExample2 };
@@ -50,24 +46,7 @@ export class SeedProd implements InterfaceScript {
       programAnonymousExample4,
     ];
 
-    for (let programExample of examplePrograms) {
-      const programExampleDump = JSON.stringify(programExample);
-      const program = JSON.parse(programExampleDump);
-      program.author = author;
-
-      // Remove original custom criteria and add it to a sepperate variable
-      const customCriteria = program.customCriteria;
-      program.customCriteria = [];
-
-      for (let customCriterium of customCriteria) {
-        let customReturn = await customCriteriumRepository.save(
-          customCriterium,
-        );
-        program.customCriteria.push(customReturn);
-      }
-
-      await programRepository.save(program);
-    }
+    this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
 
