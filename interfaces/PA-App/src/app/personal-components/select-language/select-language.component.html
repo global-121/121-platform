@@ -1,7 +1,11 @@
 <section #selectLanguage>
   <dialogue-turn isConnected="true">
+    <p [innerHTML]="'personal.select-language.introduction'|translate"></p>
     <p>
-      {{ 'personal.select-language.introduction'|translate }}
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.select-language.more-info'|translate }}
+      </ion-button>
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self">

@@ -12,7 +12,6 @@ import { EnrollInProgramComponent } from '../personal-components/enroll-in-progr
 import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
 import { IdentityFormComponent } from '../personal-components/identity-form/identity-form.component';
 import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
-import { IntroductionComponent } from '../personal-components/introduction/introduction.component';
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
 import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
@@ -41,7 +40,6 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
     [PersonalComponents.handleProof]: HandleProofComponent,
     [PersonalComponents.initialNeeds]: InitialNeedsComponent,
-    [PersonalComponents.introduction]: IntroductionComponent,
     [PersonalComponents.selectAppointment]: SelectAppointmentComponent,
     [PersonalComponents.selectCountry]: SelectCountryComponent,
     [PersonalComponents.selectLanguage]: SelectLanguageComponent,

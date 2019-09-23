@@ -6,6 +6,7 @@ import { PersonalComponent } from '../personal-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { IonContent } from '@ionic/angular';
 
 @Component({
   selector: 'app-validate-identity',
@@ -25,6 +26,7 @@ export class ValidateIdentityComponent implements PersonalComponent {
     public programsService: ProgramsServiceApiService,
     public storage: Storage,
     public conversationService: ConversationService,
+    public ionContent: IonContent,
   ) { }
 
   ngOnInit() {
@@ -40,6 +42,7 @@ export class ValidateIdentityComponent implements PersonalComponent {
       this.programsService.getPrefilledAnswers(value, null).subscribe(response => {
         this.answers = response;
         this.verificationPostponed = false;
+        this.ionContent.scrollToBottom(300);
       });
     });
   }
