@@ -22,7 +22,6 @@ export class CreateProgramDto {
 
   @ApiModelProperty({ example: { en: 'title' } })
   @IsNotEmpty()
-  @IsString()
   public readonly title: JSON;
 
   @ApiModelProperty()
@@ -64,13 +63,19 @@ export class CreateProgramDto {
   @ApiModelProperty({ example: 'standard' })
   @IsIn(['standard'])
   public readonly inclusionCalculationType: string;
-  @ApiModelProperty({ example: { en: 'Identity card;Health Insurance;Proof of children' } })
+  @ApiModelProperty({
+    example: { en: 'Identity card;Health Insurance;Proof of children' },
+  })
   public readonly meetingDocuments: JSON;
+  @ApiModelProperty({
+    example: { en: 'Please follow these instructions to join out program' },
+  })
+  public readonly joiningInstructions: JSON;
   @ApiModelProperty({
     example: [
       {
         criterium: 'nr_of_children',
-        question: {
+        label: {
           english: 'How many children do you have?',
           nyanja: 'Zaka zanu ndi zingati?',
         },
@@ -85,7 +90,7 @@ export class CreateProgramDto {
       },
       {
         criterium: 'roof_type',
-        question: {
+        label: {
           english: 'What type is your roof?',
           nyanja: 'Denga lanu ndi lotani?',
         },
@@ -128,8 +133,7 @@ export class CreateProgramDto {
   @IsNumber()
   public readonly minimumScore: number;
 
-  @ApiModelProperty({ example: { en: "description" } })
-  @IsString()
+  @ApiModelProperty({ example: { en: 'description' } })
   public readonly description: JSON;
 
   @ApiModelProperty({ example: 1 })

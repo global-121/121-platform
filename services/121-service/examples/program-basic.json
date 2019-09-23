@@ -26,6 +26,9 @@
   "meetingDocuments": {
     "en": "Document"
   },
+  "joiningInstructions": {
+    "en": "Please follow these instructions to join out program"
+  },
   "customCriteria": [
     {
       "criterium": "nr_of_children",
