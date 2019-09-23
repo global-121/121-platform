@@ -75,7 +75,7 @@
       "result": "Thank you. You have selected <strong>{{language}}</strong>."
     },
     "select-program": {
-      "introduction": "You can now select a program.",
+      "introduction": "Next step: Select a program.",
       "more-info-programs": "More about programs",
       "program": "Program"
     },
