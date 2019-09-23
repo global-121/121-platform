@@ -81,21 +81,21 @@ export class PersonalPage implements OnInit {
     );
   }
 
-  public insertSection(name: string) {
+  public async insertSection(name: string) {
     if (!name) {
       return;
     }
 
     console.log('PersonalPage insertSection(): ', name);
 
-    this.scrollDown();
+    await this.scrollDown();
 
     this.container.createComponent(
       this.getComponentFactory(name)
     );
   }
 
-  public scrollDown() {
-    this.ionContent.scrollToBottom(600);
+  public async scrollDown() {
+    await this.ionContent.scrollToBottom(600);
   }
 }
