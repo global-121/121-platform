@@ -4,6 +4,8 @@
 
 export const environment = {
   // Feature-switches:
+  isDebug: true,
+  showDebug: true,
   production: false, // Controls debugging features
   localStorage: false, // Use local or remote wallet/account
   useAnimation: false, // Use animations and delays in the interface

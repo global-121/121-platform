@@ -30,8 +30,8 @@ export class PersonalPage implements OnInit {
   @ViewChild('conversationContainer', { read: ViewContainerRef })
   public container;
 
-  public isDebug: boolean = !environment.production;
-  public showDebug: boolean = !environment.production;
+  public isDebug: boolean = environment.isDebug;
+  public showDebug: boolean = environment.showDebug;
 
   public availableSections = {
     [PersonalComponents.chooseCredentialType]: ChooseCredentialTypeComponent,
