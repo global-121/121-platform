@@ -1,3 +1,4 @@
+import { SeedHelper } from './seed-helper';
 import { Injectable } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import { InterfaceScript } from './scripts.module';
@@ -22,6 +23,8 @@ const EXAMPLE_DID = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
 @Injectable()
 export class SeedDev implements InterfaceScript {
   public constructor(private connection: Connection) {}
+
+  private readonly seedHelper = new SeedHelper(this.connection);
 
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.connection);
@@ -81,9 +84,9 @@ export class SeedDev implements InterfaceScript {
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
 
-    await this.assignAidworker(2 ,1)
-    await this.assignAidworker(2, 2);
-    await this.assignAidworker(2, 3);
+    await this.seedHelper.assignAidworker(2, 1);
+    await this.seedHelper.assignAidworker(2, 2);
+    await this.seedHelper.assignAidworker(2, 3);
 
     // const program_d = await programRepository.findOne(2); // Assign programId=1 ...
     // const user_d = await userRepository.findOne(2); // ... to userId=2 (aidworker)
@@ -146,17 +149,6 @@ export class SeedDev implements InterfaceScript {
     await credentialAttributesRepository.save(credential2);
 
     await this.connection.close();
-  }
-  public async assignAidworker(userId: number, programId: number) {
-
-    const userRepository = this.connection.getRepository(UserEntity);
-    const programRepository = this.connection.getRepository(ProgramEntity);
-    const program_d = await programRepository.findOne(programId); // Assign programId=1 ...
-    const user_d = await userRepository.findOne(userId); // ... to userId=2 (aidworker)
-    user_d.assignedProgram = program_d;
-    await userRepository.save(user_d);
-
-
   }
 }
 
