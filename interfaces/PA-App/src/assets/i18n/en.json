@@ -42,10 +42,6 @@
       "submit": "Submit needs",
       "conclusion": "Thank you for sharing your needs. This will help us create better programs for the future."
     },
-    "introduction": {
-      "welcome": "Welcome to 121.",
-      "more-info": "More about 121"
-    },
     "choose-credential-type": {
       "introduction": "Please select your next step.",
       "option1": "Apply to program",
@@ -73,7 +69,8 @@
       "conclusion": "Thank you, you have selected <strong>{{country}}</strong>."
     },
     "select-language": {
-      "introduction": "Please select your language.",
+      "introduction": "Welcome to 121. Please select your language.<br><br>Bienvenu chez 121. Choisi votre langue<br><br>Welcome bij 121. Selecteer uw Taal",
+      "more-info": "More about 121",
       "option1": "English",
       "option2": "Language 2",
       "option3": "Language 3",

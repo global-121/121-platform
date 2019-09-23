@@ -11,7 +11,6 @@ import { CreatePasswordComponent } from './create-password/create-password.compo
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
 import { IdentityFormComponent } from './identity-form/identity-form.component';
 import { InitialNeedsComponent } from './initial-needs/initial-needs.component';
-import { IntroductionComponent } from './introduction/introduction.component';
 import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
 import { SelectCountryComponent } from './select-country/select-country.component';
 import { SelectLanguageComponent } from './select-language/select-language.component';
@@ -27,7 +26,6 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
     HandleProofComponent,
     IdentityFormComponent,
     InitialNeedsComponent,
-    IntroductionComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
@@ -47,7 +45,6 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
     HandleProofComponent,
     IdentityFormComponent,
     InitialNeedsComponent,
-    IntroductionComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
@@ -61,7 +58,6 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
     HandleProofComponent,
     IdentityFormComponent,
     InitialNeedsComponent,
-    IntroductionComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
