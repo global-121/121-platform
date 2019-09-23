@@ -90,7 +90,7 @@
     },
     "handle-proof": {
       "creating": "Sending your data to apply for program.",
-      "inclusion-status-postive": "You have been included in this program.",
+      "inclusion-status-positive": "You have been included in this program.",
       "inclusion-status-negative": "You have not been included in this program."
     }
   },
