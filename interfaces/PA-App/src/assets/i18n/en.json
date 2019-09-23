@@ -32,7 +32,7 @@
       "change": "Change my answers",
       "confirm-received": "Thank you. We have received your request. To process your request we need to verify your information for both the Digital ID and the Program.",
       "more-info-activation": "More about activation",
-      "prepare-documents": "Gather your documents. To save time at your meeting, make sure to bring these:"
+      "prepare-documents": "To save time at your appointment, make sure to bring these documents:"
     },
     "initial-needs": {
       "introduction": "In order to help you as best as possible, please tell us what your needs are.",
@@ -50,8 +50,8 @@
       "more-info-digital-id": "More about Digital ID"
     },
     "select-appointment": {
-      "introduction": "To make an appointment, select a timeslot:",
-      "thanks-repeat": "Thank you. You have selected the following timeslot:",
+      "introduction": "To make an appointment, select a date and time:",
+      "thanks-repeat": "You have selected the following date and time:",
       "documents": "Please ensure you have the following documents:",
       "from": "From",
       "till": "Till",
@@ -59,7 +59,7 @@
       "more-info-documents": "More about these documents",
       "confirm": "Confirm meeting time",
       "change": "Change meeting time",
-      "conclusion": "Thank you, your verification meeting is confirmed.",
+      "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed.",
       "qr-code": "Please show this QR-code at your meeting."
     },
     "select-country": {
@@ -84,7 +84,7 @@
       "stored": "Credential is stored in the wallet"
     },
     "handle-proof": {
-      "creating": "Sending your data to apply for program.",
+      "creating": "You have given us sufficient personal information to see if you can be part of the program. We will notify you if you have been included.",
       "inclusion-status-postive": "You have been included in this program.",
       "inclusion-status-negative": "You have not been included in this program."
     }
