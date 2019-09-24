@@ -21,6 +21,13 @@ Copy a few secret files and get the right passwords from someone who knows:
     cp PA-accounts-service/src/secrets.ts.example PA-accounts-service/src/secrets.ts
     cp PA-accounts-service/ormconfig.json.example PA-accounts-service/ormconfig.json
 
+Copy the two Dockerfile.templates ...
+
+    cp 121-service/Dockerfile.template 121-service/Dockerfile
+    cp PA-accounts-service/Dockerfile.template PA-accounts-service/Dockerfile 
+
+... and uncomment the appropriate last CMD line.
+
 ---
 
 ## Docker-compose
