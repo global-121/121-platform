@@ -226,7 +226,7 @@ class testApi:
 class Request:
     def __init__(self):
         self.baseurl = 'http://localhost:3000/api/'
-        self.userIMS = 'http://10.0.0.5:50003/api/'
+        self.userIMS = 'http://11.0.0.5:50003/api/'
 
     def getRequest(self, extension, params='{}'):
         completeUrl = self.baseurl + extension

@@ -15,4 +15,8 @@ export const environment = {
   url_pa_account_service_api: 'http://localhost:3001/api',
   url_user_ims_api: 'http://localhost:50003/api',
 
+  // APIs:
+  // url_121_service_api: 'http://23.97.236.236/121-service/api',
+  // url_pa_account_service_api: 'http://23.97.236.236/PA-accounts/api',
+  // url_user_ims_api: 'http://23.97.236.236/UserIMS/api',
 };
