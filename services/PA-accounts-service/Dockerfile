@@ -24,5 +24,6 @@ COPY package*.json ./
 RUN npm ci
 
 #CMD ["npm", "run", "start:dev"]
+#CMD ["npm", "start"]
 
 

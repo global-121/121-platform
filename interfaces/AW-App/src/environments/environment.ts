@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  url_121_service_api: 'http://localhost:3000/api',
+  // url_121_service_api: 'http://localhost:3000/api',
+  url_121_service_api: 'http://23.97.236.236/121-service/api',
 };
 
 /*
