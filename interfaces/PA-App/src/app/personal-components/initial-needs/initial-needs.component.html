@@ -19,7 +19,7 @@
          ></ion-textarea>
          <p class="ion-margin-top">
            <ion-button type="submit"
-                       *ngIf="needs && !isDisabled"
+                       *ngIf="!isDisabled"
                        expand="block"
                        [disabled]="isDisabled"
            >{{ 'personal.initial-needs.submit'|translate }}</ion-button>

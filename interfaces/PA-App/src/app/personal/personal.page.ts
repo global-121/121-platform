@@ -30,8 +30,8 @@ export class PersonalPage implements OnInit {
   @ViewChild('conversationContainer', { read: ViewContainerRef })
   public container;
 
-  public isDebug: boolean = !environment.production;
-  public showDebug: boolean = !environment.production;
+  public isDebug: boolean = environment.isDebug;
+  public showDebug: boolean = environment.showDebug;
 
   public availableSections = {
     [PersonalComponents.chooseCredentialType]: ChooseCredentialTypeComponent,
@@ -81,21 +81,21 @@ export class PersonalPage implements OnInit {
     );
   }
 
-  public insertSection(name: string) {
+  public async insertSection(name: string) {
     if (!name) {
       return;
     }
 
     console.log('PersonalPage insertSection(): ', name);
 
-    this.scrollDown();
+    await this.scrollDown();
 
     this.container.createComponent(
       this.getComponentFactory(name)
     );
   }
 
-  public scrollDown() {
-    this.ionContent.scrollToBottom(600);
+  public async scrollDown() {
+    await this.ionContent.scrollToBottom(600);
   }
 }
