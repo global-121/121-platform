@@ -4,6 +4,11 @@ Interfaces on the 121-platform
 - [PA-App](./PA-App/)  
   (Native-)app used by *People Affected* to interact with the 121-platform.  
 
+  Primary target(s): Mobile/Smartphone (Android/Web)
+
+- [AW-App](./AW-App/)  
+  (Native-)app used by *AidWorkers* to validate/verify PA and issue credentials.
+
   Primary target(s): Mobile/Smartphone (Android)
 
 - [HO-Portal](./HO-Portal/)  
@@ -39,10 +44,16 @@ See the [/services/](../services/)-directory in this repository.
 ## Deployment
 
 ### Building native apps
-To create 'native' versions of some of the interfaces, the following steps are required:
+To create 'native' versions of some of the interfaces, the following steps are required:  
+Run these commands from every app's own 'root'-folder.  
+(`<platform>` is `ios` or `android`)  
+
+- Confirm all requirements are met for the platform of choice:
+  `npm run ionic -- cordova requirements <platform>`
 
 - Generate assets for the platform of choice:
-  `npm run cordova -- resources <platform>` (where `<platform>` is `ios` or `android`)
+  `npm run ionic -- cordova resources <platform>`
 
 - Create a build:  
-  `npm run cordova -- build`
+  `npm run cordova -- build <platform>`
+

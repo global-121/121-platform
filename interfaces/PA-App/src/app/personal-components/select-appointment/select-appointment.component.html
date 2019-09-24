@@ -123,20 +123,11 @@
     <div *ngIf="qrDataString"
          text-center
          margin-vertical
-         style="margin: 1em auto; max-width: 360px;"
+         style="margin: 1em auto; max-width: 360px; padding: 1em; background: white;"
     >
-      <!--
-        {#
-          QR-code colors are inverted to be scanned more easily.
-          `#001e60` is `--ion-color-dark`
-        #}
-      -->
       <qrcode [qrdata]="qrDataString"
-              [attr.title]=""
               size="360"
               level="H"
-              colorlight="#001e60"
-              colordark="#ffffff"
       ></qrcode>
     </div>
   </dialogue-turn>
