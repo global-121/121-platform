@@ -80,11 +80,11 @@ Also, the CMD line of Dockerfile should be changed from: `CMD ["npm", "run", "st
 
 To be able to use the functionality of this service an initial admin user is required, so he/she can create new aid-worker/admin users and programs. Furthermore an initial 'identity' schema is required which will be used to create generic 'identity' credentials containing age and name. This initial user and schema can be created by running seed script. The initial identity schema is stored in the program database because this already contains the right functionality to publish and create schema’s.
 
-To seed the database for dev mode with an admin, an identity schema and some initial testing values run the following command:
+To seed the database for dev mode with an admin, an identity schema and some initial testing values run the following command (make sure that application is running: `npm run start:dev` before seeding):
 
     docker exec -i 121-service npm run seed:dev
 
-To seed it for production run the following command:
+To seed it for production run the following command (the appilcation does not have to be running for this):
 
     docker exec -i 121-service npm run seed
 

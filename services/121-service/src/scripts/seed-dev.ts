@@ -57,7 +57,7 @@ export class SeedDev implements InterfaceScript {
       programBasicExample,
     ];
 
-    this.seedHelper.addPrograms(examplePrograms, 1);
+    await this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
 
@@ -65,10 +65,6 @@ export class SeedDev implements InterfaceScript {
     await this.seedHelper.assignAidworker(2, 2);
     await this.seedHelper.assignAidworker(2, 3);
 
-    // const program_d = await programRepository.findOne(2); // Assign programId=1 ...
-    // const user_d = await userRepository.findOne(2); // ... to userId=2 (aidworker)
-    // user_d.assignedProgram = program_d;
-    // await userRepository.save(user_d);
 
     // ***** CREATE AVAILABILITY FOR AN AIDWORKER *****
     const availabilityRepository = this.connection.getRepository(
