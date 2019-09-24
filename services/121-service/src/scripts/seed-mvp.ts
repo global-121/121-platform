@@ -11,10 +11,8 @@ import { SeedHelper } from './seed-helper';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
 
 @Injectable()
-export class SeedProd implements InterfaceScript {
-  public constructor(
-    private connection: Connection,
-  ) {}
+export class SeedMvp implements InterfaceScript {
+  public constructor(private connection: Connection) {}
 
   private readonly seedHelper = new SeedHelper(this.connection);
 
@@ -77,4 +75,4 @@ export class SeedProd implements InterfaceScript {
   }
 }
 
-export default SeedProd;
+export default SeedMvp;
