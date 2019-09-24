@@ -70,7 +70,7 @@
                  *ngIf="hasAnswered"
                  [isSpoken]="hasAnswered"
   >
-    <ul class="ion-no-padding">
+    <ul>
       <li *ngFor="let question of questions">
         {{ question.label }}<br>
         <strong>{{ answers[question.code]?.label }}</strong>
