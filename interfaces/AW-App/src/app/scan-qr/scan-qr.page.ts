@@ -54,10 +54,10 @@ export class ScanQrPage implements OnInit {
 
           // start scanning
           this.scanSub = this.qrScanner.scan().subscribe((text: any) => {
-            console.log('camera', text.result);
+            console.log('camera text', text);
             this.qrScanner.hide(); // hide camera preview
             this.scanSub.unsubscribe(); // stop scanning
-            this.startMeeting(text.result);
+            this.startMeeting(text);
           });
 
           // show camera preview
