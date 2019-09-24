@@ -22,7 +22,7 @@ pool:
 steps:
   - task: CmdLine@2
     inputs:
-      script: cp services/121-service/src/secrets.ts.example services/121-service/src/secrets.ts
+      script: cp services/121-service/src/secrets.example.ts services/121-service/src/secrets.ts
 
   - task: NodeTool@0
     inputs:

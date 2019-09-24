@@ -13,7 +13,7 @@ import { SchemaEntity } from '../sovrin/schema/schema.entity';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
-  public constructor(private connection: Connection) {}
+  public constructor(private connection: Connection) { }
 
   public async run(): Promise<void> {
     await this.connection.dropDatabase();
@@ -52,7 +52,7 @@ export class SeedInit implements InterfaceScript {
     ]);
 
 
-    // ***** CREATE ADMIN AND FIELDWORKER USER *****
+    // ***** CREATE ADMIN AND AIDWORKER USER *****
 
     const userRepository = this.connection.getRepository(UserEntity);
     await userRepository.save([
@@ -60,7 +60,7 @@ export class SeedInit implements InterfaceScript {
         username: USERCONFIG.usernameAdmin,
         role: 'admin',
         email: USERCONFIG.emailAdmin,
-        countryId: 1,
+        countryId: USERCONFIG.countryIdAdmin,
         password: crypto
           .createHmac('sha256', USERCONFIG.passwordAdmin)
           .digest('hex'),
@@ -70,12 +70,12 @@ export class SeedInit implements InterfaceScript {
 
     await userRepository.save([
       {
-        username: USERCONFIG.usernameFieldworker,
+        username: USERCONFIG.usernameAidWorker,
         role: 'aidworker',
-        email: USERCONFIG.emailFieldworker,
-        countryId: 1,
+        email: USERCONFIG.emailAidWorker,
+        countryId: USERCONFIG.countryIdAidWorker,
         password: crypto
-          .createHmac('sha256', USERCONFIG.passwordFieldworker)
+          .createHmac('sha256', USERCONFIG.passwordAidWorker)
           .digest('hex'),
         status: 'active',
       },

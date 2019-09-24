@@ -29,7 +29,7 @@ export class AuthMiddlewareAW implements NestMiddleware {
       next();
     } else {
       if (DEBUG) {
-        const user = await this.userService.findByEmail('admin@test.nl');
+        const user = await this.userService.findByEmail('admin@example.org');
         req.user = user.user;
         next();
       } else {

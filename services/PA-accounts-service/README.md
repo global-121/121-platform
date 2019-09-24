@@ -16,8 +16,8 @@ Switch to the repository folder
 
 Copy a few secret files and get the right passwords from someone who knows:
 
-    cp src/secrets.ts.example src/secrets.ts
-    cp ormconfig.json.example ormconfig.json
+    cp src/secrets.example.ts src/secrets.ts
+    cp ormconfig.example.json ormconfig.json
 
 ---
 
@@ -84,7 +84,7 @@ Access Swagger API via `http://localhost:3001/docs`
 - In either case, copy the value of the Token-attribute from the output.
 - Click 'Authorize' (top-right) and fill in `Bearer <copied token>`
 - This will now give you access to all hitherto forbidden API-calls.
-- NOTE: for ease of development, if not logged in, it will take the default-user. So you do need to create this default user with email test@test.nl, but the Authorize part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of Swagger, i.e. after each code change.
+- NOTE: for ease of development, if not logged in, it will take the default-user. So you do need to create this default user with email `test@example.org`, but the Authorize part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of Swagger, i.e. after each code change.
 
 ## Other relevant NPM scripts
 

@@ -13,7 +13,7 @@ export class SeedInit implements InterfaceScript {
     await this.connection.dropDatabase();
     await this.connection.synchronize(true);
 
-    // ***** CREATE ADMIN AND FIELDWORKER USER *****
+    // ***** CREATE ADMIN USER *****
 
     const userRepository = this.connection.getRepository(UserEntity);
     await userRepository.save([

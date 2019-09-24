@@ -16,10 +16,10 @@ Switch to the repository folder
 
 Copy a few secret files and get the right passwords from someone who knows:
 
-    cp 121-service/src/secrets.ts.example 121-service/src/secrets.ts
-    cp 121-service/ormconfig.json.example 121-service/ormconfig.json
-    cp PA-accounts-service/src/secrets.ts.example PA-accounts-service/src/secrets.ts
-    cp PA-accounts-service/ormconfig.json.example PA-accounts-service/ormconfig.json
+    cp 121-service/src/secrets.example.ts 121-service/src/secrets.ts
+    cp 121-service/ormconfig.example.json 121-service/ormconfig.json
+    cp PA-accounts-service/src/secrets.example.ts PA-accounts-service/src/secrets.ts
+    cp PA-accounts-service/ormconfig.example.json PA-accounts-service/ormconfig.json
 
 ---
 
