@@ -36,7 +36,6 @@ RUN cd "secrets/DID_generation/" && chmod +x setup_env.sh
 RUN cd "secrets/DID_generation/" && ./setup_env.sh
 RUN cd "secrets/DID_generation/" && indy-cli import-HO-wallet.txt
 
-#CMD ["npm", "run", "test:watch"]
 #CMD ["npm", "run", "start:dev"]
-
+#CMD ["npm", "start"]
 
