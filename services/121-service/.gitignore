@@ -26,3 +26,5 @@ dist
 
 # HO-wallet
 secrets/DID_generation/import-HO-wallet.txt
+
+Dockerfile
