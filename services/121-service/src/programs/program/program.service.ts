@@ -87,6 +87,7 @@ export class ProgramService {
   ): Promise<ProgramEntity> {
     let program = new ProgramEntity();
     program.location = programData.location;
+    program.ngo = programData.ngo;
     program.title = programData.title;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
@@ -98,6 +99,8 @@ export class ProgramService {
     program.cashDistributionSites = programData.cashDistributionSites;
     program.financialServiceProviders = programData.financialServiceProviders;
     program.inclusionCalculationType = programData.inclusionCalculationType;
+    program.meetingDocuments = programData.meetingDocuments;
+    program.joiningInstructions = programData.joiningInstructions;
     program.minimumScore = programData.minimumScore;
     program.description = programData.description;
     program.countryId = programData.countryId;

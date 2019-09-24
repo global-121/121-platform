@@ -26,6 +26,9 @@
   "meetingDocuments": {
     "en": "Identity card;Health Insurance;Proof of children"
   },
+  "joiningInstructions": {
+    "en": "Please follow these instructions to join our program"
+  },
   "customCriteria": [
     {
       "criterium": "accomodation-heating",

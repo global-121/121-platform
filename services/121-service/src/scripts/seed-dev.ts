@@ -1,3 +1,4 @@
+import { SeedHelper } from './seed-helper';
 import { Injectable } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import { InterfaceScript } from './scripts.module';
@@ -15,13 +16,15 @@ import { SeedInit } from './seed-init';
 
 import programBasicExample from '../../examples/program-basic.json';
 import programFullExample from '../../examples/program-full.json';
-import programAnonymousExample from '../../examples/program-anonymous.json';
+import programAnonymousExample from '../../examples/program-anonymous1.json';
 
 const EXAMPLE_DID = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
 
 @Injectable()
 export class SeedDev implements InterfaceScript {
   public constructor(private connection: Connection) {}
+
+  private readonly seedHelper = new SeedHelper(this.connection);
 
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.connection);
@@ -46,44 +49,21 @@ export class SeedDev implements InterfaceScript {
     ]);
 
     // ***** CREATE A PROGRAM WITH CUSTOM CRITERIA *****
-    const customCriteriumRepository = this.connection.getRepository(
-      CustomCriterium,
-    );
-    const programRepository = this.connection.getRepository(ProgramEntity);
-
     const userRepository = this.connection.getRepository(UserEntity);
-    const author = await userRepository.findOne(1);
+
     const examplePrograms = [
       programAnonymousExample,
       programFullExample,
       programBasicExample,
     ];
 
-    for (let programExample of examplePrograms) {
-      const programExampleDump = JSON.stringify(programExample);
-      const program = JSON.parse(programExampleDump);
-
-      program.author = author;
-
-      // Remove original custom criteria and add it to a sepperate variable
-      const customCriteria = program.customCriteria;
-      program.customCriteria = [];
-
-      for (let customCriterium of customCriteria) {
-        let customReturn = await customCriteriumRepository.save(
-          customCriterium,
-        );
-        program.customCriteria.push(customReturn);
-      }
-
-      await programRepository.save(program);
-    }
+    this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
 
-    await this.assignAidworker(2 ,1)
-    await this.assignAidworker(2, 2);
-    await this.assignAidworker(2, 3);
+    await this.seedHelper.assignAidworker(2, 1);
+    await this.seedHelper.assignAidworker(2, 2);
+    await this.seedHelper.assignAidworker(2, 3);
 
     // const program_d = await programRepository.findOne(2); // Assign programId=1 ...
     // const user_d = await userRepository.findOne(2); // ... to userId=2 (aidworker)
@@ -146,17 +126,6 @@ export class SeedDev implements InterfaceScript {
     await credentialAttributesRepository.save(credential2);
 
     await this.connection.close();
-  }
-  public async assignAidworker(userId: number, programId: number) {
-
-    const userRepository = this.connection.getRepository(UserEntity);
-    const programRepository = this.connection.getRepository(ProgramEntity);
-    const program_d = await programRepository.findOne(programId); // Assign programId=1 ...
-    const user_d = await userRepository.findOne(userId); // ... to userId=2 (aidworker)
-    user_d.assignedProgram = program_d;
-    await userRepository.save(user_d);
-
-
   }
 }
 

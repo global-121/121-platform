@@ -57,11 +57,10 @@ export class AppointmentService {
     }
     let availabilities = [];
     for (let index in aidworkers) {
-      availabilities.push(
-        await this.availabilityRepository.find({
-          where: { aidworker: { id: aidworkers[index].id } },
-        }),
-      );
+      const availabilityOneAidworker = await this.availabilityRepository.find({
+        where: { aidworker: { id: aidworkers[index].id } },
+      })
+      availabilities.push(...availabilityOneAidworker);
     }
     if (availabilities.length == 0) {
       const errors = { Message: 'No available time-windows posted yet.' };

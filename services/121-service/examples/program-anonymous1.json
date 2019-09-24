@@ -1,16 +1,16 @@
 {
   "published": false,
-  "location": "Location Basic",
-  "ngo": "NGO B",
+  "location": "Location A",
+  "ngo": "NGO A",
   "countryId": 1,
   "title": {
-    "en": "MVP Basic program"
+    "en": "MVP Anonymous program 1"
   },
   "description": {
-    "en": "Basic program for development purposes"
+    "en": "MVP program with anonymous questions for testing purposes"
   },
-  "startDate": "2020-01-01T01:00:00Z",
-  "endDate": "2020-05-31T23:00:00Z",
+  "startDate": "2020-01-01T12:00:00Z",
+  "endDate": "2020-12-31T12:00:00Z",
   "currency": "EUR",
   "distributionFrequency": "",
   "distributionChannel": "mobileMoney",
@@ -24,16 +24,16 @@
   },
   "inclusionCalculationType": "standard",
   "meetingDocuments": {
-    "en": "Document"
+    "en": "Document 1; Document 2; Document 3;"
   },
   "joiningInstructions": {
     "en": "Please follow these instructions to join our program"
   },
   "customCriteria": [
     {
-      "criterium": "nr_of_children",
+      "criterium": "question1",
       "label": {
-        "en": "How many children do you have?"
+        "en": "Question 1..."
       },
       "answerType": "numeric",
       "criteriumType": "standard",
@@ -43,25 +43,25 @@
       }
     },
     {
-      "criterium": "roof_type",
+      "criterium": "question2",
       "label": {
-        "en": "What type is your roof?"
+        "en": "Question 2..."
       },
       "answerType": "dropdown",
       "criteriumType": "standard",
       "options": [
         {
           "id": 0,
-          "option": "steel",
+          "option": "optionA",
           "label": {
-            "en": "steel"
+            "en": "Option A"
           }
         },
         {
           "id": 1,
-          "option": "tiles",
+          "option": "optionB",
           "label": {
-            "en": "tiles"
+            "en": "Option B"
           }
         }
       ],
@@ -71,5 +71,5 @@
       }
     }
   ],
-  "minimumScore": 25
+  "minimumScore": 0
 }

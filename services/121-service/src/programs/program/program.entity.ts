@@ -5,6 +5,8 @@ import {
   ManyToOne,
   OneToMany,
   BeforeUpdate,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { CustomCriterium } from './custom-criterium.entity';
@@ -58,6 +60,9 @@ export class ProgramEntity {
   @Column('json')
   public meetingDocuments: JSON;
 
+  @Column('json')
+  public joiningInstructions: JSON;
+
   @Column()
   public minimumScore: number;
 
@@ -99,7 +104,8 @@ export class ProgramEntity {
   @OneToMany(type => CustomCriterium, customCriteria => customCriteria.program)
   public customCriteria: CustomCriterium[];
 
-  @OneToMany(type => UserEntity, aidworker => aidworker.assignedProgram)
+  @ManyToMany(type => UserEntity, aidworker => aidworker.assignedProgram)
+  @JoinTable()
   public aidworkers: UserEntity[];
 
   @OneToMany(

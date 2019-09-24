@@ -1,4 +1,3 @@
-import { ProgramService } from './../programs/program/program.service';
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';

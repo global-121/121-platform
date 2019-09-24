@@ -224,8 +224,6 @@ export class ProgramsServiceApiService {
     ).pipe(
       tap(response => console.log('response: ', response)),
       map(response => {
-        // First 'unwrap' response:
-        response = response[0];
 
         return response;
       })
