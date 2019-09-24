@@ -68,7 +68,7 @@ export class CreateProgramDto {
   })
   public readonly meetingDocuments: JSON;
   @ApiModelProperty({
-    example: { en: 'Please follow these instructions to join out program' },
+    example: { en: 'Please follow these instructions to join our program' },
   })
   public readonly joiningInstructions: JSON;
   @ApiModelProperty({
