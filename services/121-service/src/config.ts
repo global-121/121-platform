@@ -2,9 +2,9 @@ export const DEBUG = true;
 
 export const PORT = 3000;
 
-const tyknIMS = 'http://10.0.0.3:50001/api/';
-const orgIMS = 'http://10.0.0.4:50002/api/';
-const userIMS = 'http://10.0.0.5:50003/api/';
+const tyknIMS = 'http://11.0.0.3:50001/api/';
+const orgIMS = 'http://11.0.0.4:50002/api/';
+const userIMS = 'http://11.0.0.5:50003/api/';
 
 
 export const API = {

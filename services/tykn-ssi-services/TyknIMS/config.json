@@ -1,5 +1,5 @@
 {
-    "address": "10.0.0.3",
+    "address": "11.0.0.3",
     "port": 50001,
     "wallet_name": "tykn-wallet",
     "wallet_passphrase": "test-passphrase",
