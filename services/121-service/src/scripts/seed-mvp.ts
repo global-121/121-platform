@@ -41,7 +41,7 @@ export class SeedMvp implements InterfaceScript {
       programAnonymousExample4,
     ];
 
-    this.seedHelper.addPrograms(examplePrograms, 1);
+    await this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
 
