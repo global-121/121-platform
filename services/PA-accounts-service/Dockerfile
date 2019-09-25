@@ -23,7 +23,9 @@ WORKDIR /home/121/services/PA-accounts-service/
 COPY package*.json ./
 RUN npm ci
 
-CMD ["npm", "run", "start:dev"]
+ARG NODE_ENV=development
+ENV NODE_ENV="${NODE_ENV}"
+#CMD ["npm", "run", "start:dev"]
 #CMD ["npm", "start"]
 
 

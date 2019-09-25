@@ -1,5 +1,7 @@
 # 121-Service
 
+WARNING: This readme is outdated. Please look at the main Readme in /services folder.
+
 The 121-Service is the backend where 121-programs can be created and monitored, etc.
 
 ---

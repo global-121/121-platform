@@ -1,5 +1,7 @@
 # PA-accounts-Service
 
+WARNING: This readme is outdated. Please look at the main Readme in /services folder.
+
 The PA-accounts Service is the service for PA's who cannot store their wallet on their own device.
 
 ---
