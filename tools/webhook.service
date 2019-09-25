@@ -1,0 +1,16 @@
+[Unit]
+Description=Github webhook
+After=network.target
+
+[Service]
+Environment=NODE_PORT=3099
+Type=simple
+#Fill in the right user here, based on which server (global121 / global121production)
+User=global121production
+ExecStart=/usr/bin/nodejs /home/121-platform/tools/webhook.js
+#StandardOutput=/var/log/webhook_out_log.log
+#StandardError=/var/log/webhook_err_log.log
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
