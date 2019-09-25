@@ -26,7 +26,8 @@ Copy the two Dockerfile.templates ...
     cp 121-service/Dockerfile.template 121-service/Dockerfile
     cp PA-accounts-service/Dockerfile.template PA-accounts-service/Dockerfile 
 
-... and uncomment the appropriate last CMD line.
+... and uncomment the appropriate last CMD line (or leave as is, in which case you will need to start the containers and start the applications from within: see below).
+... Also note the NODE_ENV-variable. Leave this as 'development' for local environment. 'Production' is used for production-server.
 
 ---
 

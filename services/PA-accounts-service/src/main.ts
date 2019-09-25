@@ -1,4 +1,4 @@
-import { PORT } from './config';
+import { PORT, SUBDOMAIN } from './config';
 import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -13,7 +13,7 @@ async function bootstrap(): Promise<void> {
     .setTitle('121 - PA-accounts-service')
     .setDescription('API description')
     .setVersion('1.0')
-    .setBasePath('api')
+    .setBasePath(SUBDOMAIN + 'api')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
