@@ -11,25 +11,36 @@ import { ScanQrComponent } from './scan-qr/scan-qr.component';
 import { ValidateIdentityComponent } from './validate-identity/validate-identity.component';
 import { ValidateProgramComponent } from './validate-program/validate-program.component';
 
-
-const personalComponents = [
-  LoginComponent,
-  MainMenuComponent,
-  ViewAppointmentsComponent,
-  ScanQrComponent,
-  ValidateIdentityComponent,
-  ValidateProgramComponent
-];
-
 @NgModule({
-  declarations: [].concat(personalComponents),
+  declarations: [
+    LoginComponent,
+    MainMenuComponent,
+    ViewAppointmentsComponent,
+    ScanQrComponent,
+    ValidateIdentityComponent,
+    ValidateProgramComponent
+  ],
   imports: [
     CommonModule,
     SharedModule,
     FormsModule
   ],
-  entryComponents: [].concat(personalComponents),
-  exports: [].concat(personalComponents),
+  entryComponents: [
+    LoginComponent,
+    MainMenuComponent,
+    ViewAppointmentsComponent,
+    ScanQrComponent,
+    ValidateIdentityComponent,
+    ValidateProgramComponent
+  ],
+  exports: [
+    LoginComponent,
+    MainMenuComponent,
+    ViewAppointmentsComponent,
+    ScanQrComponent,
+    ValidateIdentityComponent,
+    ValidateProgramComponent
+  ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
