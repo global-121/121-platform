@@ -1,16 +1,21 @@
 .dialogue-turn {
-  --dialogue-turn--speech-arrow-width: 12px;
+  --dialogue-turn--speech-arrow-width: 8px;
   --dialogue-turn--speech-arrow-height: 8px;
-  --dialogue-turn--margin-around-card-vertical: 10px;
-  --dialogue-turn--margin-around-card-horizontal: -12px;
+  --dialogue-turn--margin-around-card-vertical: 22px; // Align with 121-logo vertically
+  --dialogue-turn--margin-around-card-horizontal: -6px;
 
   display: flex;
   padding: 0.5em;
+
+  ion-card {
+    box-shadow: none;
+  }
 }
 
 .dialogue-turn--actor {
   order: 1;
 
+  margin-top: 0.5em; // inner-padding of .dialogue-turn
   max-width: 20%;
 }
 

@@ -22,8 +22,8 @@ export class SeedMvp implements InterfaceScript {
 
     // ***** CREATE COUNTRIES *****
     const countryRepository = this.connection.getRepository(CountryEntity);
-    await countryRepository.save([{ country: 'Country A' }]);
-    await countryRepository.save([{ country: 'Country B' }]);
+    await countryRepository.save([{ country: 'Location A' }]);
+    await countryRepository.save([{ country: 'Location B' }]);
 
     // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
 
