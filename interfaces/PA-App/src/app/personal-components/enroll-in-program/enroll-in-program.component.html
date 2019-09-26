@@ -65,6 +65,12 @@
     <p>
       {{ 'personal.enroll-in-program.please-confirm'|translate }}
     </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.enroll-in-program.more-info-share'|translate }}
+      </ion-button>
+    </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="hasAnswered"
@@ -76,13 +82,6 @@
         <strong>{{ answers[question.code]?.label }}</strong>
       </li>
     </ul>
-
-    <p class="ion-margin-top">
-      <ion-button type="button" size="small">
-        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-        {{ 'personal.enroll-in-program.more-info-share'|translate }}
-      </ion-button>
-    </p>
 
     <p class="ion-margin-top">
       <ion-button type="submit"

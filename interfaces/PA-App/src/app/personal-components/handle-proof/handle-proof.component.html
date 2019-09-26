@@ -1,12 +1,16 @@
 <section>
-  <dialogue-turn>
+  <dialogue-turn actor="NGO">
     <p>
       {{ 'personal.handle-proof.creating'|translate }}
     </p>
+    <p>
+      {{ 'personal.handle-proof.notify'|translate }}
+    </p>
   </dialogue-turn>
-  <dialogue-turn *ngIf="inclusionStatus"
+
+  <dialogue-turn actor="NGO"
+                 *ngIf="inclusionStatus"
                  [isSpoken]="inclusionStatus"
-                 isConnected="true"
   >
     <p *ngIf="inclusionStatusNegative">
       {{ 'personal.handle-proof.inclusion-status-negative'|translate }}

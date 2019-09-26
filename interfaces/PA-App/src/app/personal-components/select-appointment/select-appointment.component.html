@@ -18,8 +18,12 @@
         <ion-label class="ion-text-wrap">
           <p>
             {{ timeslot.startDate|date:dateFormat }}: {{ timeslot.startDate|date:timeFormat }}
-            -<br>
-            {{ timeslot.endDate|date:dateFormat }}: {{ timeslot.endDate|date:timeFormat }}
+            -
+            <span *ngIf="timeslot.startDate|date:dateFormat === timeslot.endDate|date:timeFormat">
+              <br>
+              {{ timeslot.endDate|date:dateFormat }}:
+            </span>
+            {{ timeslot.endDate|date:timeFormat }}
           </p>
           <ion-note class="ion-text-wrap">
             {{ timeslot.location }}
@@ -58,6 +62,9 @@
       <br>
       {{ 'personal.select-appointment.at'|translate }}:
       <strong>{{ chosenTimeslot.location }}</strong>
+    </p>
+    <p>
+      {{ 'personal.select-appointment.please-confirm'|translate }}
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
