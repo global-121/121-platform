@@ -1,9 +1,0 @@
-{
-    "walletName": "HO-wallet",
-    "walletKey": "HO-password",
-    "walletPath": "~/.indy_client/wallet",
-    "orgSeed": "LUwaxYVEqHtr2e4Jt3kV0IBfvM8k3e8K",
-    "orgDID": "Er1f8SgUxi5kRCHtMRXDxo",
-    "orgVerKey": "Er1f8SgUxi5kRCHtMRXDxoS91zM2eGx97x5E38KfChXW",
-    "poolconfig": ""
-}
