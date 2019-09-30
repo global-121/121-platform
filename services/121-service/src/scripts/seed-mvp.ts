@@ -62,8 +62,10 @@ export class SeedMvp implements InterfaceScript {
       exampleDate.setHours(12 + item, 0);
 
       availability.startDate = exampleDate;
-      availability.endDate = exampleDate;
+      availability.endDate = new Date(exampleDate.valueOf());
+      console.log('availability.endDate: ', availability.endDate);
       availability.endDate.setHours(17 + item);
+
 
       availability.location = 'Location ' + item;
 
