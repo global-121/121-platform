@@ -21,6 +21,13 @@
 >
   <ion-row class="ion-align-items-center ion-justify-content-between">
     <ion-button color="danger" size="small"
+                title="Clear storage"
+                (click)="debugClearAllStorage()"
+    >
+      <ion-icon name="nuclear" size="small" slot="icon-only"></ion-icon>
+    </ion-button>
+
+    <ion-button color="danger" size="small"
                 title="Clear conversation"
                 (click)="this.container.clear()"
     >

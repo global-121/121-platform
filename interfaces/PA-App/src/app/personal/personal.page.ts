@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
+import { Storage } from '@ionic/storage';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { ConversationService } from '../services/conversation.service';
@@ -51,7 +52,8 @@ export class PersonalPage implements OnInit {
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
-    private resolver: ComponentFactoryResolver
+    private resolver: ComponentFactoryResolver,
+    private storage: Storage,
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.sectionCompleted$.subscribe((response: string) => {
@@ -97,5 +99,11 @@ export class PersonalPage implements OnInit {
 
   public scrollDown() {
     this.ionContent.scrollToBottom(600);
+  }
+
+  public debugClearAllStorage() {
+    this.storage.clear();
+    window.localStorage.clear();
+    window.sessionStorage.clear();
   }
 }
