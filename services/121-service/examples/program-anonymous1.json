@@ -39,21 +39,18 @@
       "criteriumType": "standard",
       "options": [
         {
-          "id": 0,
           "option": "optionA",
           "label": {
             "en": "Option A"
           }
         },
         {
-          "id": 1,
           "option": "optionB",
           "label": {
             "en": "Option B"
           }
         },
         {
-          "id": 2,
           "option": "optionC",
           "label": {
             "en": "Option C"
@@ -61,9 +58,9 @@
         }
       ],
       "scoring": {
-        "0": 3,
-        "1": 6,
-        "2": 9
+        "optionA": 3,
+        "optionB": 6,
+        "optionC": 9
       }
     },
     {
@@ -75,21 +72,18 @@
       "criteriumType": "standard",
       "options": [
         {
-          "id": 0,
           "option": "optionA",
           "label": {
             "en": "Option A"
           }
         },
         {
-          "id": 1,
           "option": "optionB",
           "label": {
             "en": "Option B"
           }
         },
         {
-          "id": 2,
           "option": "optionC",
           "label": {
             "en": "Option C"
@@ -97,9 +91,9 @@
         }
       ],
       "scoring": {
-        "0": 3,
-        "1": 6,
-        "2": 9
+        "optionA": 3,
+        "optionB": 6,
+        "optionC": 9
       }
     },
     {

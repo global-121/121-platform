@@ -359,8 +359,8 @@ export class ProgramService {
     let score = 0;
     const options = JSON.parse(JSON.stringify(criterium.options))
     for (let value of options) {
-      if (value.id == answerPA) {
-        score = criterium.scoring[value.id];
+      if (value.option == answerPA) {
+        score = criterium.scoring[value.option];
       }
     }
     return score;
@@ -372,6 +372,9 @@ export class ProgramService {
   ): number {
     let score = 0;
     if (criterium.scoring['multiplier']) {
+      if (isNaN(answerPA)) {
+        answerPA = 0
+      }
       score = criterium.scoring['multiplier'] * answerPA;
     }
     return score;
