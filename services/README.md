@@ -16,6 +16,7 @@ Switch to the repository folder
 
 Copy a few secret files and get the right passwords from someone who knows:
 
+    cp .env.example .env
     cp 121-service/src/secrets.ts.example 121-service/src/secrets.ts
     cp 121-service/ormconfig.json.example 121-service/ormconfig.json
     cp PA-accounts-service/src/secrets.ts.example PA-accounts-service/src/secrets.ts

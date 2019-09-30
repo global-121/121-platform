@@ -80,7 +80,7 @@ services:
     container_name: 121db
     environment:
       - POSTGRES_USER=global121
-      - POSTGRES_PASSWORD=global121
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=global121
     volumes:
       - "./postgresql.conf:/etc/postgresql.conf"
