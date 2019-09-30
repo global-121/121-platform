@@ -51,14 +51,12 @@
       "criteriumType": "standard",
       "options": [
         {
-          "id": 0,
           "option": "steel",
           "label": {
             "en": "steel"
           }
         },
         {
-          "id": 1,
           "option": "tiles",
           "label": {
             "en": "tiles"
@@ -66,8 +64,8 @@
         }
       ],
       "scoring": {
-        "0": 3,
-        "1": 6
+        "steel": 3,
+        "tiles": 6
       }
     }
   ],

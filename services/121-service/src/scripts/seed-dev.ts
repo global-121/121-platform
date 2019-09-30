@@ -15,7 +15,6 @@ import { UserEntity } from '../user/user.entity';
 import { SeedInit } from './seed-init';
 
 import programBasicExample from '../../examples/program-basic.json';
-import programFullExample from '../../examples/program-full.json';
 import programAnonymousExample from '../../examples/program-anonymous1.json';
 
 const EXAMPLE_DID = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
@@ -53,7 +52,6 @@ export class SeedDev implements InterfaceScript {
 
     const examplePrograms = [
       programAnonymousExample,
-      programFullExample,
       programBasicExample,
     ];
 
@@ -63,7 +61,6 @@ export class SeedDev implements InterfaceScript {
 
     await this.seedHelper.assignAidworker(2, 1);
     await this.seedHelper.assignAidworker(2, 2);
-    await this.seedHelper.assignAidworker(2, 3);
 
 
     // ***** CREATE AVAILABILITY FOR AN AIDWORKER *****
@@ -79,7 +76,7 @@ export class SeedDev implements InterfaceScript {
       exampleDate.setHours(12 + item, 0);
 
       availability.startDate = exampleDate;
-      availability.endDate = exampleDate;
+      availability.endDate = new Date(exampleDate.valueOf());
       availability.endDate.setHours(17 + item);
 
       availability.location = 'Location ' + item;
