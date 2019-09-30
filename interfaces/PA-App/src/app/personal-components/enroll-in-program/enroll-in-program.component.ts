@@ -182,12 +182,12 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     const answersArray = Object.keys(this.answers);
 
-    if (answersArray.length === this.questions.length) {
+    if (answersArray.length >= (this.questions.length - 1)) {
       this.allQuestionsShown = true;
     } else {
       this.allQuestionsShown = false;
-      this.showNextQuestion(answersArray.indexOf(questionCode));
     }
+    this.showNextQuestion(answersArray.indexOf(questionCode));
   }
 
   private showNextQuestion(currentIndex: number) {
