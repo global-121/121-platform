@@ -34,6 +34,15 @@
           </ion-item>
         </ion-radio-group>
       </div>
+      <div *ngSwitchCase="answerTypes.Number">
+        <ion-input type="number"
+                   inputmode="numeric"
+                   pattern="[0-9]*"
+                   [name]="question.code"
+                   (change)="changeAnswers($event)"
+                   [disabled]="hasAnswered"
+        ></ion-input>
+      </div>
       <div *ngSwitchDefault>
         <ion-input type="text"
                    [name]="question.code"
