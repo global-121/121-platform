@@ -132,6 +132,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
   public submitTimeslot() {
     this.timeslotSubmitted = true;
+    this.conversationService.scrollToEnd();
   }
 
   public changeConfirmAction($event) {

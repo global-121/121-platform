@@ -17,6 +17,9 @@ export class ConversationService {
   private sectionCompletedSource = new Subject<string>();
   public sectionCompleted$ = this.sectionCompletedSource.asObservable();
 
+  private shouldScrollSource = new Subject<number>();
+  public shouldScroll$ = this.shouldScrollSource.asObservable();
+
   constructor() {
     console.log('ConversationService()');
 
@@ -32,10 +35,15 @@ export class ConversationService {
 
   public startLoading() {
     this.state.isLoading = true;
+    this.scrollToEnd();
   }
 
   public stopLoading() {
     this.state.isLoading = false;
+  }
+
+  public scrollToEnd() {
+    this.shouldScrollSource.next(-1);
   }
 
   private getHistory() {

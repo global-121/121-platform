@@ -203,6 +203,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public submit() {
     this.hasAnswered = true;
+    this.conversationService.scrollToEnd();
   }
 
   public async submitConfirm() {

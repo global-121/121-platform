@@ -34,6 +34,8 @@ export class PersonalPage implements OnInit {
   public isDebug: boolean = environment.isDebug;
   public showDebug: boolean = environment.showDebug;
 
+  private scrollSpeed = environment.useAnimation ? 600 : 0;
+
   public availableSections = {
     [PersonalComponents.chooseCredentialType]: ChooseCredentialTypeComponent,
     [PersonalComponents.createIdentity]: IdentityFormComponent,
@@ -58,6 +60,14 @@ export class PersonalPage implements OnInit {
     // Listen for completed sections, to continue with next steps
     this.conversationService.sectionCompleted$.subscribe((response: string) => {
       this.insertSection(response);
+    });
+    // Listen for scroll events
+    this.conversationService.shouldScroll$.subscribe((toY: number) => {
+      if (toY === -1) {
+        return this.ionContent.scrollToBottom(this.scrollSpeed);
+      }
+
+      this.ionContent.scrollToPoint(0, toY, this.scrollSpeed);
     });
   }
 
@@ -98,7 +108,7 @@ export class PersonalPage implements OnInit {
   }
 
   public scrollDown() {
-    this.ionContent.scrollToBottom(600);
+    this.ionContent.scrollToBottom(this.scrollSpeed);
   }
 
   public debugClearAllStorage() {
