@@ -35,3 +35,11 @@ steps:
 - script: npm test
   displayName: Tests
   workingDirectory: interfaces/AW-App/
+
+- script: npm run ionic -- cordova requirements android
+  displayName: Prepare build - Check requirements
+  workingDirectory: interfaces/AW-App/
+
+- script: npm run build:native -- --debug
+  displayName: Build (debug version)
+  workingDirectory: interfaces/AW-App/
