@@ -65,6 +65,7 @@ export class ChooseCredentialTypeComponent extends PersonalComponent {
   public submitCredentialType() {
     console.log('Chosen credential type: ', this.credentialTypeChoice);
     this.typeChosen = true;
+    this.conversationService.scrollToEnd();
 
     // Here should be checked whether Digital ID already present
     if (this.credentialTypeChoice === 'apply-to-program') {
