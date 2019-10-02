@@ -16,7 +16,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
-import { IdentityAttributesEntity } from './identity-attributes.entity';
 import { CredentialRequestEntity } from './credential-request.entity';
 import { ProgramModule } from '../../programs/program/program.module';
 
@@ -26,7 +25,6 @@ import { ProgramModule } from '../../programs/program/program.module';
       UserEntity,
       ProgramEntity,
       CredentialAttributesEntity,
-      IdentityAttributesEntity,
       CredentialRequestEntity,
       CredentialEntity,
     ]),
