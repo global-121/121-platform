@@ -44,7 +44,7 @@ export class ConversationService {
   }
 
   private addSection(sectionName) {
-    console.log('ConverstaionService addSection(): ', sectionName);
+    console.log('ConversationService addSection(): ', sectionName);
 
     this.conversation.push({
       name: sectionName
@@ -52,7 +52,7 @@ export class ConversationService {
   }
 
   public onSectionCompleted(section: ConversationSection) {
-    console.log('ConverstaionService  onSectionCompleted(): ', section);
+    console.log('ConversationService  onSectionCompleted(): ', section);
 
     // Instruct PersonalPage to insert the next section
     this.sectionCompletedSource.next(section);

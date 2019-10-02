@@ -13,7 +13,7 @@
       </ion-item>
     </ion-list>
     <ion-button expand="block" (click)="postponeVerification()">{{ 'personal.validate-program.postpone-button'|translate }}</ion-button>
-    <ion-button expand="block" (click)="issueIdentityCredential()">{{ 'personal.validate-program.confirm-button'|translate }}</ion-button>
+    <ion-button expand="block" (click)="issueCredential()">{{ 'personal.validate-program.confirm-button'|translate }}</ion-button>
   </dialogue-turn>
   <dialogue-turn actor="self" [hidden]="!programCredentialIssued">
     {{ 'personal.validate-program.conclusion'|translate }}

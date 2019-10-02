@@ -49,18 +49,10 @@ export class ValidateProgramComponent implements PersonalComponent {
     this.verificationPostponed = true;
   }
 
-  public async issueIdentityCredential() {
-    // this.storage.get('scannedDid').then(did => {
-    //   this.storage.get('scannedProgramId').then(programId => {
+  public async issueCredential() {
     await this.programsService.issueCredential(this.did, this.programId).subscribe(response => {
       console.log('response: ', response);
     });
-    // this.programsService.deletePrefilledAnswers(this.did, this.programId).subscribe(response => {
-    //   console.log('response: ', response);
-    //   this.programCredentialIssued = true;
-    //   this.answersProgram = null;
-    //   this.complete();
-    // });
     this.programCredentialIssued = true;
     this.answersProgram = null;
     this.resetParams();
