@@ -43,6 +43,14 @@
                    [disabled]="hasAnswered"
         ></ion-input>
       </div>
+      <div *ngSwitchCase="answerTypes.Date">
+        <ion-input type="date"
+                   placeholder="dd-mm-yyyy"
+                   [name]="question.code"
+                   (change)="changeAnswers($event)"
+                   [disabled]="hasAnswered"
+        ></ion-input>
+      </div>
       <div *ngSwitchDefault>
         <ion-input type="text"
                    [name]="question.code"
