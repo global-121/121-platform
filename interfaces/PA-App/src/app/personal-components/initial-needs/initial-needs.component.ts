@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
+import { environment } from 'src/environments/environment';
 import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
@@ -32,7 +33,7 @@ export class InitialNeedsComponent extends PersonalComponent {
       this.needsReceived = true;
       this.conversationService.stopLoading();
       this.complete();
-    }, 1000);
+    }, environment.isDebug ? 0 : 1000);
   }
 
   getNextSection() {
