@@ -38,7 +38,7 @@
       "answerType": "text",
       "criteriumType": "standard",
       "options": null,
-      "scoring": null
+      "scoring": {}
     },
     {
       "criterium": "dob",
@@ -48,7 +48,7 @@
       "answerType": "date",
       "criteriumType": "standard",
       "options": null,
-      "scoring": null
+      "scoring": {}
     },
     {
       "criterium": "nr_of_children",
