@@ -1,8 +1,6 @@
 import { CredentialEntity } from './../../sovrin/credential/credential.entity';
 import { CredentialAttributesEntity } from './../../sovrin/credential/credential-attributes.entity';
-import { IdentityAttributesEntity } from './../../sovrin/credential/identity-attributes.entity';
 import { ProofService } from './../../sovrin/proof/proof.service';
-import { ProofController } from './../../sovrin/proof/proof.controller';
 import { CredentialService } from './../../sovrin/credential/credential.service';
 import { SchemaService } from './../../sovrin/schema/schema.service';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
@@ -52,10 +50,6 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(IdentityAttributesEntity),
             useFactory: repositoryMockFactory,
           },
           {

@@ -9,7 +9,6 @@ import { Repository, DeleteResult } from 'typeorm';
 import { ProgramService } from '../../programs/program/program.service';
 import { PrefilledAnswersDto, PrefilledAnswerDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
-import { IdentityAttributesEntity } from './identity-attributes.entity';
 import { CredentialEntity } from './credential.entity';
 import { API } from '../../config';
 
@@ -19,8 +18,6 @@ export class CredentialService {
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(CredentialAttributesEntity)
   private readonly credentialAttributesRepository: Repository<CredentialAttributesEntity>;
-  @InjectRepository(IdentityAttributesEntity)
-  private readonly identityAttributesRepository: Repository<IdentityAttributesEntity>;
   @InjectRepository(CredentialRequestEntity)
   private readonly credentialRequestRepository: Repository<
     CredentialRequestEntity
@@ -77,15 +74,12 @@ export class CredentialService {
   public async prefilledAnswers(
     did: string,
     programId: number,
-    credentialType: string,
     prefilledAnswers: PrefilledAnswerDto[],
   ): Promise<any[]> {
     //Delete existing entries for this DID*program first.
-    if (credentialType === 'identity') {
-      await this.identityAttributesRepository.delete({ did: did });
-    } else if (credentialType === 'program') {
-      await this.credentialAttributesRepository.delete({ did: did, programId: programId });
-    }
+
+    await this.credentialAttributesRepository.delete({ did: did, programId: programId });
+
 
     //Then save new information
     let credentials = [];
@@ -96,12 +90,8 @@ export class CredentialService {
       credential.attribute = answer.attribute;
       credential.answer = answer.answer;
       let newCredential;
-      if (credentialType === 'identity') {
-        newCredential = await this.identityAttributesRepository.save(credential);
-      } else if (credentialType === 'program') {
-        credential.programId = programId;
-        newCredential = await this.credentialAttributesRepository.save(credential);
-      }
+      credential.programId = programId;
+      newCredential = await this.credentialAttributesRepository.save(credential);
       credentials.push(newCredential);
     }
     return credentials;
@@ -112,28 +102,16 @@ export class CredentialService {
     did: string,
     programId: number
   ): Promise<any[]> {
-    const credentialType = isNaN(programId) ? 'identity' : 'program';
     let credentials;
-    if (credentialType === 'identity') {
-      credentials = await this.identityAttributesRepository.find({
-        where: { did: did },
-      });
-    } else if (credentialType === 'program') {
-      credentials = await this.credentialAttributesRepository.find({
-        where: { did: did, programId: programId },
-      });
-    }
+    credentials = await this.credentialAttributesRepository.find({
+      where: { did: did, programId: programId },
+    })
     return credentials;
   }
 
   // AW: delete answers to attributes for a given PA after issuing credentials (identified first through did/QR)
   public async deletePrefilledAnswers(did: string, programId: number): Promise<DeleteResult> {
-    const credentialType = isNaN(programId) ? 'identity' : 'program';
-    if (credentialType === 'identity') {
-      return await this.identityAttributesRepository.delete({ did: did });
-    } else if (credentialType === 'program') {
-      return await this.credentialAttributesRepository.delete({ did: did, programId: programId });
-    }
+    return await this.credentialAttributesRepository.delete({ did: did, programId: programId });
   }
 
   // Used by PA

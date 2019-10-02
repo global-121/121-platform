@@ -31,9 +31,9 @@
   },
   "customCriteria": [
     {
-      "criterium": "My full name:",
+      "criterium": "name",
       "label": {
-        "en": "My date of birth:"
+        "en": "My full name:"
       },
       "answerType": "text",
       "criteriumType": "standard",

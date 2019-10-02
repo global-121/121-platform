@@ -19,9 +19,7 @@ import {
 } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
-import { CredentialValuesDto } from './dto/credential-values.dto';
 import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
-import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialIssueDto } from './dto/credential-issue.dto';
 import { DeleteResult } from 'typeorm';
@@ -59,7 +57,6 @@ export class CredentialController {
     return await this.credentialService.prefilledAnswers(
       prefilledAnswers.did,
       prefilledAnswers.programId,
-      prefilledAnswers.credentialType,
       prefilledAnswers.attributes,
     );
   }
