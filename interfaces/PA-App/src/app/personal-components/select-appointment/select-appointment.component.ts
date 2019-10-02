@@ -100,6 +100,13 @@ export class SelectAppointmentComponent extends PersonalComponent {
     });
   }
 
+  public isSameDay(startDate: string, endDate: string) {
+    const startDay = new Date(startDate).toDateString();
+    const endDay = new Date(endDate).toDateString();
+
+    return (startDay === endDay);
+  }
+
   private mapLabelByLanguageCode(property: any) {
     let label = property[this.languageCode];
 
@@ -160,7 +167,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
     });
   }
 
-  async generateQrCode(did: string, programId: number) {
+  private generateQrCode(did: string, programId: number) {
     const qrData = {
       did,
       programId,
