@@ -16,7 +16,7 @@
                     clearInput="true"
                     required
                     [placeholder]="emailPlaceholder"
-                    [(ngModel)]="email" 
+                    [(ngModel)]="email"
                     ngDefaultControl
         ></ion-input>
       </ion-item>
@@ -29,7 +29,7 @@
                     clearOnEdit="false"
                     required
                     [placeholder]="passwordPlaceholder"
-                    [(ngModel)]="password" 
+                    [(ngModel)]="password"
                     ngDefaultControl
         ></ion-input>
       </ion-item>
@@ -50,5 +50,7 @@
   <dialogue-turn [hidden]="!wrongCredentials">
     {{ 'personal.login.wrong-credentials'|translate }}
   </dialogue-turn>
+    <dialogue-turn [hidden]="!noConnection">
+      {{ 'personal.login.no-connection'|translate }}
+    </dialogue-turn>
 </section>
-   
