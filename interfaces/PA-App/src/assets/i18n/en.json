@@ -3,15 +3,6 @@
   "PERSONAL": "You",
   "DEVICE": "Device",
   "personal": {
-    "identity-form": {
-      "introduction": "Next step: Fill in the following questions about yourself.",
-      "more-info-questions": "About these questions",
-      "name-label": "My full name:",
-      "dob-label": "My date of birth:",
-      "dob-format": "dd / mm / yyyy",
-      "submit-button": "Save my information",
-      "conclusion": "Thank you, your device has stored your information."
-    },
     "create-password": {
       "introduction": "To create a Digital ID you need to complete the following steps.",
       "more-info-digital-id": "About Digital ID",

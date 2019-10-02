@@ -9,7 +9,6 @@ import { ConversationService } from '../services/conversation.service';
 import { ChooseCredentialTypeComponent } from './choose-credential-type/choose-credential-type.component';
 import { CreatePasswordComponent } from './create-password/create-password.component';
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
-import { IdentityFormComponent } from './identity-form/identity-form.component';
 import { InitialNeedsComponent } from './initial-needs/initial-needs.component';
 import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
 import { SelectCountryComponent } from './select-country/select-country.component';
@@ -24,7 +23,6 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
     CreatePasswordComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
-    IdentityFormComponent,
     InitialNeedsComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
@@ -43,7 +41,6 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
     CreatePasswordComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
-    IdentityFormComponent,
     InitialNeedsComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
@@ -56,7 +53,6 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
     CreatePasswordComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
-    IdentityFormComponent,
     InitialNeedsComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,

@@ -8,7 +8,6 @@ import { LoginComponent } from './login/login.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ViewAppointmentsComponent } from './view-appointments/view-appointments.component';
 import { ScanQrComponent } from './scan-qr/scan-qr.component';
-import { ValidateIdentityComponent } from './validate-identity/validate-identity.component';
 import { ValidateProgramComponent } from './validate-program/validate-program.component';
 
 @NgModule({
@@ -17,7 +16,6 @@ import { ValidateProgramComponent } from './validate-program/validate-program.co
     MainMenuComponent,
     ViewAppointmentsComponent,
     ScanQrComponent,
-    ValidateIdentityComponent,
     ValidateProgramComponent
   ],
   imports: [
@@ -30,7 +28,6 @@ import { ValidateProgramComponent } from './validate-program/validate-program.co
     MainMenuComponent,
     ViewAppointmentsComponent,
     ScanQrComponent,
-    ValidateIdentityComponent,
     ValidateProgramComponent
   ],
   exports: [
@@ -38,7 +35,6 @@ import { ValidateProgramComponent } from './validate-program/validate-program.co
     MainMenuComponent,
     ViewAppointmentsComponent,
     ScanQrComponent,
-    ValidateIdentityComponent,
     ValidateProgramComponent
   ],
   schemas: [

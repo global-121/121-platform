@@ -10,7 +10,6 @@ import { ChooseCredentialTypeComponent } from '../personal-components/choose-cre
 import { CreatePasswordComponent } from '../personal-components/create-password/create-password.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
-import { IdentityFormComponent } from '../personal-components/identity-form/identity-form.component';
 import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
 import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
@@ -35,7 +34,6 @@ export class PersonalPage implements OnInit {
 
   public availableSections = {
     [PersonalComponents.chooseCredentialType]: ChooseCredentialTypeComponent,
-    [PersonalComponents.createIdentity]: IdentityFormComponent,
     [PersonalComponents.createPassword]: CreatePasswordComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
     [PersonalComponents.handleProof]: HandleProofComponent,

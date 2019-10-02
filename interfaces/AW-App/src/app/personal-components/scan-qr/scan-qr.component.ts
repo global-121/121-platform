@@ -38,7 +38,7 @@ export class ScanQrComponent implements PersonalComponent {
     this.route.queryParams.subscribe(params => {
       console.log('params: ', params);
       console.log('this.route.queryParams.subscribe');
-      if (params && params.did  && params.programId) {
+      if (params && params.did && params.programId) {
         console.log('Found programid and did params');
         this.did = JSON.parse(params.did);
         this.programId = JSON.parse(params.programId);
@@ -50,7 +50,7 @@ export class ScanQrComponent implements PersonalComponent {
   }
 
   getNextSection() {
-    return 'validate-identity';
+    return 'validate-program';
   }
 
   complete() {
