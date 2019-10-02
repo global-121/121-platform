@@ -31,6 +31,26 @@
   },
   "customCriteria": [
     {
+      "criterium": "My full name:",
+      "label": {
+        "en": "My date of birth:"
+      },
+      "answerType": "text",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": null
+    },
+    {
+      "criterium": "dob",
+      "label": {
+        "en": "My date of birth:"
+      },
+      "answerType": "date",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": null
+    },
+    {
       "criterium": "nr_of_children",
       "label": {
         "en": "How many children do you have?"
