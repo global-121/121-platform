@@ -27,7 +27,6 @@ export class MainMenuComponent implements PersonalComponent {
     this.menuOptions = [
       { id: 'view-appointments', option: this.customTranslateService.translate('personal.main-menu.menu-option1'), disabled: true },
       { id: 'scan-qr', option: this.customTranslateService.translate('personal.main-menu.menu-option2'), disabled: false },
-      { id: 'change-password', option: this.customTranslateService.translate('personal.main-menu.menu-option3'), disabled: true },
     ];
   }
 
