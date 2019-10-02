@@ -14,6 +14,7 @@ export class LoginComponent implements PersonalComponent {
   public passwordPlaceholder: string;
   public isLoggedIn: boolean;
   public wrongCredentials: boolean;
+  public noConnection: boolean;
 
   constructor(
     public customTranslateService: CustomTranslateService,
@@ -45,8 +46,14 @@ export class LoginComponent implements PersonalComponent {
 
       },
       (error) => {
-        console.log('LoginPage error: ', error);
-        this.wrongCredentials = true;
+        console.log('LoginPage error: ', error.status);
+        if (error.status === 401) {
+          this.wrongCredentials = true;
+          this.noConnection = false;
+        } else {
+          this.wrongCredentials = false;
+          this.noConnection = true;
+        }
       }
     );
   }
