@@ -19,7 +19,7 @@
           <p>
             {{ timeslot.startDate|date:dateFormat }}: {{ timeslot.startDate|date:timeFormat }}
             -
-            <span *ngIf="timeslot.startDate|date:dateFormat === timeslot.endDate|date:timeFormat">
+            <span *ngIf="!isSameDay(timeslot.startDate, timeslot.endDate)">
               <br>
               {{ timeslot.endDate|date:dateFormat }}:
             </span>
