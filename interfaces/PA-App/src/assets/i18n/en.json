@@ -44,9 +44,9 @@
     },
     "choose-credential-type": {
       "introduction": "Please select your next step.",
-      "option1": "Apply to program",
-      "option2": "Create a Digital ID",
-      "option3": "Delete Digital ID",
+      "apply-to-program": "Apply to program",
+      "create-id": "Create a Digital ID",
+      "delete-id": "Delete Digital ID",
       "conclusion-program": "To apply to a program you need to have a valid Digital ID.",
       "more-info-digital-id": "About Digital ID"
     },
