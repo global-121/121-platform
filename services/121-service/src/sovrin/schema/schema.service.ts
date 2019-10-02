@@ -69,11 +69,4 @@ export class SchemaService {
     };
     return result;
   }
-  public async findIdentitySchema(): Promise<Object> {
-    const schemas = await this.schemaRepository.find();
-    const identitySchema = schemas[0];
-    identitySchema.criteriums = JSON.parse(identitySchema.criteriums);
-    identitySchema.attributes = JSON.parse(identitySchema.attributes);
-    return identitySchema;
-  }
 }

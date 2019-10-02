@@ -27,13 +27,7 @@ export class PrefilledAnswersDto {
   @Length(29, 30)
   public readonly did: string;
   @ApiModelProperty({ example: 1 })
-  // @IsNotEmpty()
-  // @IsNumber()
   public readonly programId: number;
-  @ApiModelProperty({ example: 'identity / program' })
-  @IsNotEmpty()
-  @IsString()
-  public readonly credentialType: string;
   @ApiModelProperty({
     example: [
       {
