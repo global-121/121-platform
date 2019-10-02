@@ -8,7 +8,6 @@ import { LoginComponent } from '../personal-components/login/login.component';
 import { MainMenuComponent } from '../personal-components/main-menu/main-menu.component';
 import { ScanQrComponent } from '../personal-components/scan-qr/scan-qr.component';
 import { ViewAppointmentsComponent } from '../personal-components/view-appointments/view-appointments.component';
-import { ValidateIdentityComponent } from '../personal-components/validate-identity/validate-identity.component';
 import { ValidateProgramComponent } from '../personal-components/validate-program/validate-program.component';
 
 @Component({
@@ -60,7 +59,6 @@ export class PersonalPage implements OnInit {
       'main-menu': MainMenuComponent,
       'scan-qr': ScanQrComponent,
       'view-appointments': ViewAppointmentsComponent,
-      'validate-identity': ValidateIdentityComponent,
       'validate-program': ValidateProgramComponent,
     };
 
