@@ -13,6 +13,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { SchemaEntity } from '../../sovrin/schema/schema.entity';
 import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
+import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { HttpModule } from '@nestjs/common';
 
 describe('Program service', (): void => {
@@ -58,6 +59,10 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(CredentialEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(AppointmentEntity),
             useFactory: repositoryMockFactory,
           },
         ],
