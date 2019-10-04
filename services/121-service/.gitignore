@@ -18,5 +18,4 @@ coverage
 # (local) Configuration files + Secrets
 ormconfig.json
 src/secrets.ts
-secrets/DID_generation/import-HO-wallet.txt
 Dockerfile

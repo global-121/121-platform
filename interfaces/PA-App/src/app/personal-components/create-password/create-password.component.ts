@@ -126,7 +126,6 @@ export class CreatePasswordComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    // return PersonalComponents.createIdentity;
     return PersonalComponents.selectCountry;
   }
 

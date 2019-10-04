@@ -22,8 +22,6 @@ export class ScanQrComponent implements PersonalComponent {
     public conversationService: ConversationService,
   ) {
   }
-  // {"did": "did:sov:AdzMb8sH6QTcLUv7hfVJAZ", "programId": 1}
-  // {did: "did:sov:AdzMb8sH6QTcLUv7hfVJAZ", programId: 1}
 
   ngOnInit() {
     this.getRouteParams();
