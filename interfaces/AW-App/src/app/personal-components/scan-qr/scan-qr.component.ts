@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PersonalComponent } from '../personal-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-scan-qr',
@@ -13,6 +14,8 @@ export class ScanQrComponent implements PersonalComponent {
 
   public did: string;
   public programId: number;
+  public scanError = false;
+  public didResult = false;
 
 
   constructor(
@@ -20,6 +23,7 @@ export class ScanQrComponent implements PersonalComponent {
     private router: Router,
     public storage: Storage,
     public conversationService: ConversationService,
+    public programsService: ProgramsServiceApiService,
   ) {
   }
 
@@ -31,7 +35,7 @@ export class ScanQrComponent implements PersonalComponent {
     this.router.navigate(['/scan-qr']);
   }
 
-  public getRouteParams() {
+  public async getRouteParams() {
 
     this.route.queryParams.subscribe(params => {
       console.log('params: ', params);
@@ -40,9 +44,18 @@ export class ScanQrComponent implements PersonalComponent {
         console.log('Found programid and did params');
         this.did = JSON.parse(params.did);
         this.programId = JSON.parse(params.programId);
-        this.storage.set('scannedDid', this.did);
-        this.storage.set('scannedProgramId', this.programId);
-        this.complete();
+        this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
+          if (response.length === 0) {
+            this.scanError = true;
+            return;
+          } else {
+            this.storage.set('scannedDid', this.did);
+            this.storage.set('scannedProgramId', this.programId);
+            this.didResult = true;
+            this.scanError = false;
+            this.complete();
+          }
+        });
       }
     });
   }

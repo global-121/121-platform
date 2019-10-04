@@ -40,7 +40,7 @@ export class ConversationService {
   }
 
   startNewConversation() {
-    this.addSection('login');
+    this.addSection('main-menu');
   }
 
   private addSection(sectionName) {

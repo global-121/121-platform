@@ -1,0 +1,108 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-title>
+      Account
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <dialogue-turn [hidden]="isLoggedIn">
+    {{ 'account.introduction'|translate }}
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!isLoggedIn">
+    {{ 'account.conclusion'|translate }}
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <form method="POST" (submit)="doLogin($event)" *ngIf="!isLoggedIn">
+      <ion-item>
+        <ion-input type="email"
+                    name="email"
+                    inputmode="email"
+                    autocomplete="username email"
+                    autocapitalize="off"
+                    autofocus="true"
+                    clearInput="true"
+                    required
+                    [placeholder]="emailPlaceholder"
+                    [(ngModel)]="email"
+                    ngDefaultControl
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input type="password"
+                    name="password"
+                    autocomplete="current-password"
+                    autocapitalize="off"
+                    clearInput="true"
+                    clearOnEdit="false"
+                    required
+                    [placeholder]="passwordPlaceholder"
+                    [(ngModel)]="password"
+                    ngDefaultControl
+        ></ion-input>
+      </ion-item>
+
+      <ion-button type="submit"
+                  expand="block"
+      >
+        {{ 'account.login-button'|translate }}
+      </ion-button>
+    </form>
+    <ion-button expand="block" [hidden]="!isLoggedIn" (click)="logout()">
+      {{ 'account.logout-button'|translate }}
+    </ion-button>
+    <ion-button expand="block" [hidden]="!isLoggedIn || (isLoggedIn && changePasswordForm)" (click)="openChangePassword()">
+      {{ 'account.change-password'|translate }}
+    </ion-button>
+    <ion-button expand="block" [hidden]="!isLoggedIn || (isLoggedIn && !changePasswordForm)" (click)="closeChangePassword()">
+      {{ 'account.close-change-password'|translate }}
+    </ion-button>
+    <form method="POST" (submit)="doChangePassword($event)" *ngIf="changePasswordForm">
+      <ion-item>
+        <ion-input type="password"
+                    name="create"
+                    autocomplete="current-password"
+                    autocapitalize="off"
+                    clearInput="true"
+                    clearOnEdit="false"
+                    required
+                    [placeholder]="createPlaceholder"
+                    [(ngModel)]="create"
+                    ngDefaultControl
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input type="password"
+                    name="confirm"
+                    autocomplete="current-password"
+                    autocapitalize="off"
+                    clearInput="true"
+                    clearOnEdit="false"
+                    required
+                    [placeholder]="confirmPlaceholder"
+                    [(ngModel)]="confirm"
+                    ngDefaultControl
+        ></ion-input>
+      </ion-item>
+
+      <ion-button type="submit"
+                  expand="block"
+      >
+        {{ 'account.change-password'|translate }}
+      </ion-button>
+    </form>
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!wrongCredentials">
+    {{ 'account.wrong-credentials'|translate }}
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!noConnection">
+    {{ 'account.no-connection'|translate }}
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!unequalPasswords">
+    {{ 'account.unequal-passwords'|translate }}
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!changedPassword">
+    {{ 'account.changed-password'|translate }}
+  </dialogue-turn>
+</ion-content>

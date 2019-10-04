@@ -7,9 +7,10 @@ import { ProgramEntity } from '../../programs/program/program.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult } from 'typeorm';
 import { ProgramService } from '../../programs/program/program.service';
-import { PrefilledAnswersDto, PrefilledAnswerDto } from './dto/prefilled-answers.dto';
+import { PrefilledAnswerDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialEntity } from './credential.entity';
+import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { API } from '../../config';
 
 @Injectable()
@@ -19,11 +20,11 @@ export class CredentialService {
   @InjectRepository(CredentialAttributesEntity)
   private readonly credentialAttributesRepository: Repository<CredentialAttributesEntity>;
   @InjectRepository(CredentialRequestEntity)
-  private readonly credentialRequestRepository: Repository<
-    CredentialRequestEntity
-  >;
+  private readonly credentialRequestRepository: Repository<CredentialRequestEntity>;
   @InjectRepository(CredentialEntity)
   private readonly credentialRepository: Repository<CredentialEntity>;
+  @InjectRepository(AppointmentEntity)
+  private readonly appointmentRepository: Repository<AppointmentEntity>;
 
   public constructor(
     @Inject(forwardRef(() => ProgramService))
@@ -177,6 +178,10 @@ export class CredentialService {
     await this.credentialRepository.save(credentialData);
 
     await this.cleanupIssueCredData(payload.did, payload.programId);
+
+    let appointmentUpdated = await this.appointmentRepository.findOne(({ did: payload.did }));
+    appointmentUpdated.status = 'validated';
+    await this.appointmentRepository.save(appointmentUpdated);
   }
 
   private async getRelatedProgram(programId: number): Promise<ProgramEntity> {
@@ -257,7 +262,7 @@ export class CredentialService {
     });
 
     if (!queryResult) {
-      return { message: ''}
+      return { message: '' }
     }
     const encrypyedCredential = { message: queryResult.credential };
     return encrypyedCredential;

@@ -25,7 +25,7 @@ export class MainMenuComponent implements PersonalComponent {
   ngOnInit() {
     this.resetParams();
     this.menuOptions = [
-      { id: 'view-appointments', option: this.customTranslateService.translate('personal.main-menu.menu-option1'), disabled: true },
+      { id: 'view-appointments', option: this.customTranslateService.translate('personal.main-menu.menu-option1'), disabled: false },
       { id: 'scan-qr', option: this.customTranslateService.translate('personal.main-menu.menu-option2'), disabled: false },
     ];
   }
