@@ -19,7 +19,6 @@ export class ViewAppointmentsComponent implements PersonalComponent {
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
-    public storage: Storage,
   ) { }
 
   ngOnInit() {
@@ -29,7 +28,6 @@ export class ViewAppointmentsComponent implements PersonalComponent {
   public getAppointments() {
     this.programsService.getAppointments().subscribe(response => {
       this.appointments = response;
-      this.storage.set('appointments', this.appointments);
     });
   }
 
