@@ -10,4 +10,7 @@ export class AppointmentEntity {
 
   @Column()
   public timeslotId: number;
+
+  @Column()
+  public status: string;
 }
