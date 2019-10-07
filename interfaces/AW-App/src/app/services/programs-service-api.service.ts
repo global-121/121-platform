@@ -40,6 +40,25 @@ export class ProgramsServiceApiService {
       );
   }
 
+  logout() {
+    console.log('ProgramsService : logout()');
+    this.jwtService.destroyToken();
+  }
+
+  changePassword(password: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/user/change-password',
+      {
+        password
+      },
+      false
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
   getAppointments(): Observable<any> {
     return this.apiService.get(
       environment.url_121_service_api,

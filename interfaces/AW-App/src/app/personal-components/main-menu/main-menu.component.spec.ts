@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 
 import { MainMenuComponent } from './main-menu.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { RouterModule } from '@angular/router';
 
 describe('MainMenuComponent', () => {
   let component: MainMenuComponent;
@@ -17,7 +18,8 @@ describe('MainMenuComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MainMenuComponent],
       imports: [
-        TranslateModule.forRoot()
+        TranslateModule.forRoot(),
+        RouterModule.forRoot([]),
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

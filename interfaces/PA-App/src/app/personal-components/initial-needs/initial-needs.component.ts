@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
+import { environment } from 'src/environments/environment';
 import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
@@ -17,7 +18,7 @@ export class InitialNeedsComponent extends PersonalComponent {
     public conversationService: ConversationService,
   ) {
     super();
-   }
+  }
 
   ngOnInit() {
   }
@@ -25,13 +26,14 @@ export class InitialNeedsComponent extends PersonalComponent {
   public submitNeeds(needsInput) {
     console.log('needs-input: ', needsInput, this.needs);
     this.isDisabled = true;
+    this.conversationService.startLoading();
 
     // TODO: POST answers to API; when successful complete()
     window.setTimeout(() => {
       this.needsReceived = true;
-
+      this.conversationService.stopLoading();
       this.complete();
-    }, 1000);
+    }, environment.isDebug ? 0 : 1000);
   }
 
   getNextSection() {

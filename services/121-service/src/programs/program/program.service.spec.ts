@@ -1,8 +1,6 @@
 import { CredentialEntity } from './../../sovrin/credential/credential.entity';
 import { CredentialAttributesEntity } from './../../sovrin/credential/credential-attributes.entity';
-import { IdentityAttributesEntity } from './../../sovrin/credential/identity-attributes.entity';
 import { ProofService } from './../../sovrin/proof/proof.service';
-import { ProofController } from './../../sovrin/proof/proof.controller';
 import { CredentialService } from './../../sovrin/credential/credential.service';
 import { SchemaService } from './../../sovrin/schema/schema.service';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
@@ -15,6 +13,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { SchemaEntity } from '../../sovrin/schema/schema.entity';
 import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
+import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { HttpModule } from '@nestjs/common';
 
 describe('Program service', (): void => {
@@ -55,15 +54,15 @@ describe('Program service', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
-            provide: getRepositoryToken(IdentityAttributesEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
             provide: getRepositoryToken(CredentialRequestEntity),
             useFactory: repositoryMockFactory,
           },
           {
             provide: getRepositoryToken(CredentialEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(AppointmentEntity),
             useFactory: repositoryMockFactory,
           },
         ],

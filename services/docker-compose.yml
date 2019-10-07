@@ -6,7 +6,7 @@ services:
       context: tykn-ssi-services 
       dockerfile: indy-pool.dockerfile
       args:
-        pool_ip: '10.0.0.2'
+        pool_ip: '11.0.0.2'
     init: true
     container_name: tykn_indy_pool
     healthcheck:
@@ -22,7 +22,7 @@ services:
       - "9708:9708"
     networks:
       pool_network:
-        ipv4_address: 10.0.0.2
+        ipv4_address: 11.0.0.2
   tyknims:
     build: 
       context: tykn-ssi-services/TyknIMS  
@@ -33,7 +33,7 @@ services:
       - "50001:50001"
     networks:
       pool_network:
-        ipv4_address: 10.0.0.3
+        ipv4_address: 11.0.0.3
     healthcheck:
       test: "exit 0"
     depends_on:
@@ -50,7 +50,7 @@ services:
       - "50002:50002"
     networks:
       pool_network:
-        ipv4_address: 10.0.0.4
+        ipv4_address: 11.0.0.4
     depends_on:
       - indypool
       - tyknims
@@ -68,7 +68,7 @@ services:
       - "50003:50003"
     networks:
       pool_network:
-        ipv4_address: 10.0.0.5
+        ipv4_address: 11.0.0.5
     depends_on:
       - indypool
       - tyknims
@@ -80,7 +80,7 @@ services:
     container_name: 121db
     environment:
       - POSTGRES_USER=global121
-      - POSTGRES_PASSWORD=global121
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=global121
     volumes:
       - "./postgresql.conf:/etc/postgresql.conf"
@@ -90,7 +90,7 @@ services:
     restart: always
     networks:
       pool_network:
-        ipv4_address: 10.0.0.6
+        ipv4_address: 11.0.0.6
   121-service:
     build: 
       context: 121-service
@@ -105,7 +105,7 @@ services:
     tty: true
     networks:
       pool_network:
-        ipv4_address: 10.0.0.7
+        ipv4_address: 11.0.0.7
   PA-accounts-service:
     build:
       context: PA-accounts-service
@@ -121,7 +121,7 @@ services:
     tty: true
     networks:
       pool_network:
-        ipv4_address: 10.0.0.8
+        ipv4_address: 11.0.0.8
 
 networks:
   pool_network:
@@ -129,4 +129,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 10.0.0.0/24
+        - subnet: 11.0.0.0/24

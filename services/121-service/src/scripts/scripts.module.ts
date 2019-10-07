@@ -5,6 +5,10 @@ import { Arguments } from 'yargs';
 import { SeedInit } from './seed-init';
 import { SeedDev } from './seed-dev';
 import { SeedProd } from './seed-prod';
+import { SeedHelper } from './seed-helper';
+import { SeedMvp } from './seed-mvp';
+import { SeedPublish } from './seed-publish';
+
 
 @Module({
   imports: [
@@ -13,7 +17,7 @@ import { SeedProd } from './seed-prod';
       entities: ['src/app/**/*.entity.{ts,js}'],
     }),
   ],
-  providers: [SeedDev, SeedInit, SeedProd],
+  providers: [SeedDev, SeedInit, SeedProd, SeedHelper, SeedPublish, SeedMvp],
 })
 export class ScriptsModule { }
 

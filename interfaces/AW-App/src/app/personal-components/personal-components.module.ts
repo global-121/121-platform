@@ -4,32 +4,35 @@ import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 
 import { ConversationService } from '../services/conversation.service';
-import { LoginComponent } from './login/login.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { ViewAppointmentsComponent } from './view-appointments/view-appointments.component';
 import { ScanQrComponent } from './scan-qr/scan-qr.component';
-import { ValidateIdentityComponent } from './validate-identity/validate-identity.component';
 import { ValidateProgramComponent } from './validate-program/validate-program.component';
 
-
-const personalComponents = [
-  LoginComponent,
-  MainMenuComponent,
-  ViewAppointmentsComponent,
-  ScanQrComponent,
-  ValidateIdentityComponent,
-  ValidateProgramComponent
-];
-
 @NgModule({
-  declarations: [].concat(personalComponents),
+  declarations: [
+    MainMenuComponent,
+    ViewAppointmentsComponent,
+    ScanQrComponent,
+    ValidateProgramComponent
+  ],
   imports: [
     CommonModule,
     SharedModule,
     FormsModule
   ],
-  entryComponents: [].concat(personalComponents),
-  exports: [].concat(personalComponents),
+  entryComponents: [
+    MainMenuComponent,
+    ViewAppointmentsComponent,
+    ScanQrComponent,
+    ValidateProgramComponent
+  ],
+  exports: [
+    MainMenuComponent,
+    ViewAppointmentsComponent,
+    ScanQrComponent,
+    ValidateProgramComponent
+  ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],

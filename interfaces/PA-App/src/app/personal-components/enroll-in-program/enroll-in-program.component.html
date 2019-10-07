@@ -12,9 +12,9 @@
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
-                 *ngFor="let question of questions; let i=index"
-                [isConnected]="i > 0"
-                [isSpoken]="i >= 0"
+                 *ngFor="let question of questions; let i=index; first as isFirst;"
+                [isConnected]="!isFirst"
+                [isSpoken]="isFirst"
   >
     <ion-label>
       {{ question.label }}
@@ -34,6 +34,23 @@
           </ion-item>
         </ion-radio-group>
       </div>
+      <div *ngSwitchCase="answerTypes.Number">
+        <ion-input type="number"
+                   inputmode="numeric"
+                   pattern="[0-9]*"
+                   [name]="question.code"
+                   (change)="changeAnswers($event)"
+                   [disabled]="hasAnswered"
+        ></ion-input>
+      </div>
+      <div *ngSwitchCase="answerTypes.Date">
+        <ion-input type="date"
+                   placeholder="dd-mm-yyyy"
+                   [name]="question.code"
+                   (change)="changeAnswers($event)"
+                   [disabled]="hasAnswered"
+        ></ion-input>
+      </div>
       <div *ngSwitchDefault>
         <ion-input type="text"
                    [name]="question.code"
@@ -43,12 +60,16 @@
       </div>
     </div>
   </dialogue-turn>
-  <dialogue-turn actor="self" isConnected="true">
+  <dialogue-turn actor="self"
+                 isConnected="true"
+                 *ngIf="allQuestionsShown"
+                 [isSpoken]="allQuestionsShown"
+  >
     <p>
       <ion-button type="submit"
                   (click)="submit()"
                   [disabled]="hasAnswered"
-                  size="block"
+                  expand="block"
       >
         {{ 'personal.enroll-in-program.submit'|translate }}
       </ion-button>
@@ -61,12 +82,18 @@
     <p>
       {{ 'personal.enroll-in-program.please-confirm'|translate }}
     </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.enroll-in-program.more-info-share'|translate }}
+      </ion-button>
+    </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="hasAnswered"
                  [isSpoken]="hasAnswered"
   >
-    <ul class="ion-no-padding">
+    <ul>
       <li *ngFor="let question of questions">
         {{ question.label }}<br>
         <strong>{{ answers[question.code]?.label }}</strong>
@@ -74,24 +101,17 @@
     </ul>
 
     <p class="ion-margin-top">
-      <ion-button type="button" size="small">
-        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-        {{ 'personal.enroll-in-program.more-info-share'|translate }}
-      </ion-button>
-    </p>
-
-    <p class="ion-margin-top">
       <ion-button type="submit"
                   (click)="submitConfirm()"
                   [disabled]="isDisabled"
-                  size="block"
+                  expand="block"
       >
         {{ 'personal.enroll-in-program.submit-confirm'|translate }}
       </ion-button>
       <ion-button type="button"
                   (click)="change()"
                   [disabled]="isDisabled"
-                  size="block"
+                  expand="block"
                   fill="outline"
       >
         {{ 'personal.enroll-in-program.change'|translate }}

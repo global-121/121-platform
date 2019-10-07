@@ -87,6 +87,7 @@ export class ProgramService {
   ): Promise<ProgramEntity> {
     let program = new ProgramEntity();
     program.location = programData.location;
+    program.ngo = programData.ngo;
     program.title = programData.title;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
@@ -98,6 +99,8 @@ export class ProgramService {
     program.cashDistributionSites = programData.cashDistributionSites;
     program.financialServiceProviders = programData.financialServiceProviders;
     program.inclusionCalculationType = programData.inclusionCalculationType;
+    program.meetingDocuments = programData.meetingDocuments;
+    program.joiningInstructions = programData.joiningInstructions;
     program.minimumScore = programData.minimumScore;
     program.description = programData.description;
     program.countryId = programData.countryId;
@@ -356,8 +359,8 @@ export class ProgramService {
     let score = 0;
     const options = JSON.parse(JSON.stringify(criterium.options))
     for (let value of options) {
-      if (value.id == answerPA) {
-        score = criterium.scoring[value.id];
+      if (value.option == answerPA) {
+        score = criterium.scoring[value.option];
       }
     }
     return score;
@@ -369,6 +372,9 @@ export class ProgramService {
   ): number {
     let score = 0;
     if (criterium.scoring['multiplier']) {
+      if (isNaN(answerPA)) {
+        answerPA = 0
+      }
       score = criterium.scoring['multiplier'] * answerPA;
     }
     return score;

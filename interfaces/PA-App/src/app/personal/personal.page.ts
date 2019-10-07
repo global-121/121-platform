@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
+import { Storage } from '@ionic/storage';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { ConversationService } from '../services/conversation.service';
@@ -9,9 +10,8 @@ import { PersonalComponents } from '../personal-components/personal-components.e
 import { ChooseCredentialTypeComponent } from '../personal-components/choose-credential-type/choose-credential-type.component';
 import { CreatePasswordComponent } from '../personal-components/create-password/create-password.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
-import { IdentityFormComponent } from '../personal-components/identity-form/identity-form.component';
+import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
 import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
-import { IntroductionComponent } from '../personal-components/introduction/introduction.component';
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
 import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
@@ -30,15 +30,17 @@ export class PersonalPage implements OnInit {
   @ViewChild('conversationContainer', { read: ViewContainerRef })
   public container;
 
-  public isDebug: boolean = !environment.production;
+  public isDebug: boolean = environment.isDebug;
+  public showDebug: boolean = environment.showDebug;
+
+  private scrollSpeed = environment.useAnimation ? 600 : 0;
 
   public availableSections = {
     [PersonalComponents.chooseCredentialType]: ChooseCredentialTypeComponent,
-    [PersonalComponents.createIdentity]: IdentityFormComponent,
     [PersonalComponents.createPassword]: CreatePasswordComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
+    [PersonalComponents.handleProof]: HandleProofComponent,
     [PersonalComponents.initialNeeds]: InitialNeedsComponent,
-    [PersonalComponents.introduction]: IntroductionComponent,
     [PersonalComponents.selectAppointment]: SelectAppointmentComponent,
     [PersonalComponents.selectCountry]: SelectCountryComponent,
     [PersonalComponents.selectLanguage]: SelectLanguageComponent,
@@ -49,12 +51,21 @@ export class PersonalPage implements OnInit {
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    private conversationService: ConversationService,
-    private resolver: ComponentFactoryResolver
+    public conversationService: ConversationService,
+    private resolver: ComponentFactoryResolver,
+    private storage: Storage,
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.sectionCompleted$.subscribe((response: string) => {
       this.insertSection(response);
+    });
+    // Listen for scroll events
+    this.conversationService.shouldScroll$.subscribe((toY: number) => {
+      if (toY === -1) {
+        return this.ionContent.scrollToBottom(this.scrollSpeed);
+      }
+
+      this.ionContent.scrollToPoint(0, toY, this.scrollSpeed);
     });
   }
 
@@ -75,14 +86,16 @@ export class PersonalPage implements OnInit {
   }
 
   private getComponentFactory(name: string) {
-    console.log('getComponentFactory() ', name);
-
     return this.resolver.resolveComponentFactory(
       this.availableSections[name]
     );
   }
 
   public insertSection(name: string) {
+    if (!name) {
+      return;
+    }
+
     console.log('PersonalPage insertSection(): ', name);
 
     this.scrollDown();
@@ -92,7 +105,13 @@ export class PersonalPage implements OnInit {
     );
   }
 
-  scrollDown() {
-    this.ionContent.scrollToBottom(300);
+  public scrollDown() {
+    this.ionContent.scrollToBottom(this.scrollSpeed);
+  }
+
+  public debugClearAllStorage() {
+    this.storage.clear();
+    window.localStorage.clear();
+    window.sessionStorage.clear();
   }
 }

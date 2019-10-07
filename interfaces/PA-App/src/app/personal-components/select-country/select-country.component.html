@@ -4,11 +4,6 @@
       {{ 'personal.select-country.introduction'|translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn isConnected="true">
-    <p>
-      {{ 'personal.select-country.step3'|translate }}
-    </p>
-  </dialogue-turn>
   <dialogue-turn actor="self">
     <ion-radio-group (ionChange)="changeCountry($event)"
     >
@@ -25,7 +20,7 @@
     <div class="ion-margin-top">
       <ion-button *ngIf="countryChoice && !isDisabled"
                   (click)="submitCountry()"
-                  size="block"
+                  expand="block"
                   [disabled]="isDisabled"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </div>

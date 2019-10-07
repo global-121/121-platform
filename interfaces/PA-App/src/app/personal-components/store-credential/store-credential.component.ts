@@ -1,10 +1,17 @@
+import { StorageService } from './../../services/storage.service';
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 
 import { UpdateService } from 'src/app/services/update.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PersonalComponents } from '../personal-components.enum';
+import { ConversationService } from 'src/app/services/conversation.service';
+
 import { Storage } from '@ionic/storage';
+
 
 @Component({
   selector: 'app-store-credential',
@@ -17,64 +24,74 @@ export class StoreCredentialComponent extends PersonalComponent {
   public credentialStored = false;
 
   constructor(
+    public conversationService: ConversationService,
     public updateService: UpdateService,
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public storage: Storage,
+    public storageService: StorageService,
+    public programsService: ProgramsServiceApiService,
   ) {
     super();
-   }
+
+    this.conversationService.startLoading();
+  }
 
   ngOnInit() {
     this.startListenCredential();
   }
 
   async startListenCredential() {
+    console.log('startListenCredential');
 
     // 1. Listen until credential is received
-    const did = await this.paRetrieveData('did');
-    const programId = await this.paRetrieveData('programId');
-    const credential = await this.updateService.checkCredential(parseInt(programId, 10), did);
+    const did = await this.storageService.retrieve(this.storageService.type.did);
+    const programId = parseInt(await this.storageService.retrieve(this.storageService.type.programId), 10);
 
-    // This stuff should wait until the above 'await' is finished and credential is available, but it doesn't
-    this.credentialReceived = true;
-
-    this.storeCredential(credential);
-
-
+    this.updateService.checkCredential(programId, did).then(() => {
+      this.programsService.getCredential(did).subscribe(response => {
+        const credential = response;
+        this.credentialReceived = true;
+        this.storeCredential(credential);
+      });
+    });
   }
 
 
-
-  // NOTE: This should become a shared function
-  async paRetrieveData(variableName: string): Promise<any> {
-    return await this.paAccountApiService.retrieve(variableName)
-      .toPromise();
-  }
 
   async storeCredential(credential): Promise<void> {
-
-    const wallet = await this.paRetrieveData('wallet');
-    const correlation = await this.paRetrieveData('correlation');
-    const credentialRequest = await this.paRetrieveData('credentialRequest');
-    const credDefID = await this.paRetrieveData('credDefId');
+    console.log('Trying to store this credential', credential);
+    const wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
+    const credentialRequest = JSON.parse(await this.storageService.retrieve(this.storageService.type.credentialRequest));
+    const credDefID = JSON.parse(await this.storageService.retrieve(this.storageService.type.credDefId));
     const credentialFormat = JSON.parse(credential.message);
+
     const storeCredentialData = {
       credDefID,
       credentialRequestMetadata: credentialRequest.credentialRequestMetadata,
       credential: credentialFormat.credential,
       wallet,
-      correlation,
     };
     await this.userImsApiService.storeCredential(
       storeCredentialData.credDefID,
       storeCredentialData.credentialRequestMetadata,
       storeCredentialData.credential,
       storeCredentialData.wallet,
-      storeCredentialData.correlation
-    ).toPromise();
-
+    );
     this.credentialStored = true;
+    this.conversationService.stopLoading();
+    this.complete();
   }
 
+  getNextSection() {
+    return PersonalComponents.handleProof;
+  }
+
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: PersonalComponents.storeCredential,
+      data: {},
+      next: this.getNextSection(),
+    });
+  }
 }

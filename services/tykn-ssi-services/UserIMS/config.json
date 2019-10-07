@@ -1,5 +1,5 @@
 {
-    "address": "10.0.0.5",
+    "address": "11.0.0.5",
     "port": 50003,
     "wallet_path": "/tmp/.indy_client/user_wallet",
     "genesis_tx_path": "/docker_pool_transactions_genesis"

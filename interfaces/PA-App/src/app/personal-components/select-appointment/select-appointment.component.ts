@@ -1,3 +1,4 @@
+import { StorageService } from './../../services/storage.service';
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -17,12 +18,14 @@ import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
   styleUrls: ['./select-appointment.component.scss'],
 })
 export class SelectAppointmentComponent extends PersonalComponent {
+  private did: string;
   public languageCode: string;
   public fallbackLanguageCode: string;
   public dateFormat = 'EEE, dd-MM-yyyy';
   public timeFormat = 'HH:mm';
 
   public ngo: string;
+  private programChoice: number;
 
   public timeslots: Timeslot[];
   public timeslotChoice: number;
@@ -43,14 +46,23 @@ export class SelectAppointmentComponent extends PersonalComponent {
     public paAccountApiService: PaAccountApiService,
     public translate: TranslateService,
     public storage: Storage,
+    public storageService: StorageService,
   ) {
     super();
+
     this.fallbackLanguageCode = this.translate.getDefaultLang();
+    this.getProgram();
   }
 
   ngOnInit() {
     this.getLanguageChoice();
-    this.getProgram();
+    this.getDid();
+  }
+
+  private getDid() {
+    this.storageService.retrieve(this.storageService.type.did).then((value) => {
+      this.did = value;
+    });
   }
 
   private getLanguageChoice() {
@@ -60,7 +72,9 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   private getProgram() {
+    this.conversationService.startLoading();
     this.storage.get('programChoice').then(programId => {
+      this.programChoice = programId;
       this.getProgramProperties(programId);
       this.getTimeslots(programId);
     });
@@ -81,7 +95,16 @@ export class SelectAppointmentComponent extends PersonalComponent {
   private getTimeslots(programId: any) {
     this.programsService.getTimeslots(programId).subscribe((response: Timeslot[]) => {
       this.timeslots = response;
+
+      this.conversationService.stopLoading();
     });
+  }
+
+  public isSameDay(startDate: string, endDate: string) {
+    const startDay = new Date(startDate).toDateString();
+    const endDay = new Date(endDate).toDateString();
+
+    return (startDay === endDay);
   }
 
   private mapLabelByLanguageCode(property: any) {
@@ -116,6 +139,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
   public submitTimeslot() {
     this.timeslotSubmitted = true;
+    this.conversationService.scrollToEnd();
   }
 
   public changeConfirmAction($event) {
@@ -125,30 +149,29 @@ export class SelectAppointmentComponent extends PersonalComponent {
   public submitConfirmAction(action: string) {
     // This needs a check on 'already confirmed for this did' (max 1 timeslot-selection allowed)
     if (action === 'confirm') {
-      this.postAppointment(this.timeslotChoice, 'did:sov:1235j123lk5');
+      this.postAppointment(this.timeslotChoice, this.did, this.programChoice);
     } else if (action === 'change') {
       this.timeslotSubmitted = false;
       this.isDisabled = false;
     }
   }
 
-  public postAppointment(timeslotId: number, did: string) {
+  public postAppointment(timeslotId: number, did: string, programId: number) {
+    this.conversationService.startLoading();
     this.programsService.postAppointment(timeslotId, did).subscribe(() => {
 
-      this.generateQrCode();
+      this.generateQrCode(did, programId);
 
+      this.conversationService.stopLoading();
       this.complete();
     });
   }
 
-  async generateQrCode() {
-    const did = await this.paRetrieveData('did');
-    let programId: number;
-    await this.storage.get('programChoice').then((value: string) => {
-      programId = parseInt(value, 10);
-    });
-    const qrData = { did, programId };
-    console.log('generateQrCode()', qrData);
+  private generateQrCode(did: string, programId: number) {
+    const qrData = {
+      did,
+      programId,
+    };
 
     if (qrData) {
       this.qrDataString = JSON.stringify(qrData);
@@ -156,14 +179,8 @@ export class SelectAppointmentComponent extends PersonalComponent {
     }
   }
 
-  // NOTE: This should become a shared function
-  async paRetrieveData(variableName: string): Promise<any> {
-    return await this.paAccountApiService.retrieve(variableName)
-      .toPromise();
-  }
-
   getNextSection() {
-    return 'store-credential';
+    return PersonalComponents.storeCredential;
   }
 
   complete() {

@@ -1,8 +1,10 @@
-import { ViewChildren, QueryList, OnInit, AfterViewInit } from '@angular/core';
+import { ViewChildren, QueryList, OnInit, AfterViewInit, AfterContentInit } from '@angular/core';
+
+import { environment } from 'src/environments/environment';
 
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
-export class PersonalComponent implements OnInit, AfterViewInit {
+export class PersonalComponent implements OnInit, AfterViewInit, AfterContentInit {
   @ViewChildren(DialogueTurnComponent)
   private turns: QueryList<DialogueTurnComponent>;
 
@@ -11,6 +13,8 @@ export class PersonalComponent implements OnInit, AfterViewInit {
    * When there is no interaction possible anymore.
    */
   isDisabled: boolean;
+
+  private turnSpeed = (environment.useAnimation) ? 300 : 1;
 
   constructor() { }
 
@@ -21,13 +25,26 @@ export class PersonalComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    console.log('turns:', this.turns);
-
+    // Delay appearance of each turn so it feels more like a 'natural' conversation.
     this.turns.forEach((turn, index) => {
       window.setTimeout(() => {
         turn.isSpoken = true;
-      }, 300 * (index + 1));
+      }, this.turnSpeed * (index + 1));
     });
+  }
+
+  ngAfterContentInit() {
+  }
+
+  /**
+   * Show a specific, previously hidden, Dialogue-Turn
+   */
+  showTurn(index: number) {
+    const turn = this.turns.toArray()[index];
+
+    if (turn) {
+      turn.isSpoken = true;
+    }
   }
 
   /**

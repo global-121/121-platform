@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -7,6 +6,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-create-password',
@@ -18,19 +18,14 @@ export class CreatePasswordComponent extends PersonalComponent {
   public create: any;
   public confirm: any;
 
-  private paAccountUsername: string;
-  private paAccountPassword: string;
-  private paWalletName: string;
-  private did = 'empty';  // Replaced after response from UserIMS create-did call
-  private wallet: any;
-  private correlation: any;
+  public isInProgress = false;
 
   constructor(
     public conversationService: ConversationService,
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public programsServiceApiService: ProgramsServiceApiService,
-    public storage: Storage,
+    public storageService: StorageService
   ) {
     super();
   }
@@ -45,33 +40,35 @@ export class CreatePasswordComponent extends PersonalComponent {
       return;
     }
 
+    this.isInProgress = true;
+    this.conversationService.startLoading();
+
     await this.executeSovrinFlow(create);
 
+    this.conversationService.stopLoading();
     this.complete();
   }
 
-  async executeSovrinFlow(password) {
+  async executeSovrinFlow(password: string) {
 
     // 1. Create PA-account using supplied password + random username
-    const paAccountUsername = this.makeRandomUsername(16);
+    const paAccountUsername = this.makeRandomString(16);
     const paAccountPassword = password;
-    this.paCreateAccount(paAccountUsername, paAccountPassword);
+    await this.storageService.createAccount(paAccountUsername, paAccountPassword);
 
-    // 2. Create (random) wallet-name and store in PA-account
-    const paWalletName = this.makeRandomUsername(16);
+    // 2. Create (random) wallet-name and password and store in PA-account
+    const paWalletName = this.makeRandomString(16);
+    const paWalletPassword = this.makeRandomString(16);
 
     // 3. Create Sovrin wallet using previously created wallet-name and wallet-password equal to account-password
     const wallet = {
       id: paWalletName,
-      passKey: paAccountPassword,
+      passKey: paWalletPassword,
     };
-    const correlation = {
-      correlationID: 'test'
-    };
-    await this.sovrinCreateWallet(wallet, correlation);
+    await this.sovrinCreateWallet(wallet);
 
     // 4. Generate Sovrin DID and store in wallet
-    const result = await this.sovrinCreateStoreDid(wallet, correlation);
+    const result = await this.sovrinCreateStoreDid(wallet);
 
     // 5. Store Sovrin DID in PA-account
     const didShort = result.did;
@@ -79,27 +76,25 @@ export class CreatePasswordComponent extends PersonalComponent {
 
     // 6. Get connection-request (NOTE: in the MVP-setup this is not actually needed/used,
     // because of lack of pairwise connection + encryption)
-    const connectionRequest = this.getConnectionRequest();
+    const connectionRequest = await this.getConnectionRequest();
+    console.log('connectionRequest: ', connectionRequest);
 
     // 7. Post connection-response
-    const connectionResponse = {
+    this.postConnectionResponse({
       did,
       verkey: 'verkey:sample',
       nonce: '123456789',
       meta: 'meta:sample'
-    };
-    this.postConnectionResponse(connectionResponse);
+    });
 
     // 8. Store relevant data in PA-account
-    // this.paStoreData('walletName', paWalletName);
-    this.paStoreData('wallet', JSON.stringify(wallet));
-    this.paStoreData('correlation', JSON.stringify(correlation));
-    this.paStoreData('didShort', didShort);
-    this.paStoreData('did', did);
+    this.storageService.store(this.storageService.type.wallet, JSON.stringify(wallet));
+    this.storageService.store(this.storageService.type.didShort, didShort);
+    this.storageService.store(this.storageService.type.did, did);
 
   }
 
-  makeRandomUsername(length: number) {
+  makeRandomString(length: number) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
@@ -109,55 +104,30 @@ export class CreatePasswordComponent extends PersonalComponent {
     return result;
   }
 
-  paCreateAccount(paAccountUsername, paAccountPassword) {
-    this.paAccountApiService.create(paAccountUsername, paAccountPassword).subscribe((response) => {
-      console.log('response: ', response);
-    });
-  }
-
-  // This should become a shared function
-  paStoreData(variableName, data) {
-    this.paAccountApiService.store(variableName, data).subscribe((response) => {
-      console.log('response: ', response);
-    });
-  }
-
-  async sovrinCreateWallet(wallet: any, correlation: any): Promise<void> {
-    await this.userImsApiService.createWallet(
-      JSON.parse(JSON.stringify(wallet)),
-      JSON.parse(JSON.stringify(correlation))
-    ).toPromise();
+  async sovrinCreateWallet(wallet: any): Promise<void> {
+    await this.userImsApiService.createWallet(wallet);
   }
 
   // Create DID and store in wallet
-  async sovrinCreateStoreDid(wallet: any, correlation: any): Promise<any> {
-    return await this.userImsApiService.createStoreDid(
-      JSON.parse(JSON.stringify(wallet)),
-      JSON.parse(JSON.stringify(correlation))
-    ).toPromise();
+  async sovrinCreateStoreDid(wallet: any): Promise<any> {
+    return await this.userImsApiService.createStoreDid(wallet);
   }
 
-  getConnectionRequest() {
-    this.programsServiceApiService.getConnectionRequest().subscribe((response) => {
-      console.log('response: ', response);
-    });
+  async getConnectionRequest() {
+    return await this.programsServiceApiService.getConnectionRequest();
   }
 
-  postConnectionResponse(connectionReponse: any) {
-    this.programsServiceApiService.postConnectionResponse(
+  async postConnectionResponse(connectionReponse: any) {
+    return await this.programsServiceApiService.postConnectionResponse(
       connectionReponse.did,
       connectionReponse.verkey,
       connectionReponse.nonce,
       connectionReponse.meta
-    ).subscribe((response) => {
-      console.log('response: ', response);
-    });
+    );
   }
 
-
-
   getNextSection() {
-    return PersonalComponents.createIdentity;
+    return PersonalComponents.selectCountry;
   }
 
   complete() {

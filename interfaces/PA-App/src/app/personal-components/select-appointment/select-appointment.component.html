@@ -4,7 +4,10 @@
       {{ 'personal.select-appointment.introduction'|translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self">
+  <dialogue-turn actor="self"
+                 *ngIf="timeslots"
+                 [isSpoken]="timeslots"
+  >
     <ion-radio-group name="timeslots"
                      (ionChange)="changeTimeslot($event)"
     >
@@ -15,8 +18,12 @@
         <ion-label class="ion-text-wrap">
           <p>
             {{ timeslot.startDate|date:dateFormat }}: {{ timeslot.startDate|date:timeFormat }}
-            -<br>
-            {{ timeslot.endDate|date:dateFormat }}: {{ timeslot.endDate|date:timeFormat }}
+            -
+            <span *ngIf="!isSameDay(timeslot.startDate, timeslot.endDate)">
+              <br>
+              {{ timeslot.endDate|date:dateFormat }}:
+            </span>
+            {{ timeslot.endDate|date:timeFormat }}
           </p>
           <ion-note class="ion-text-wrap">
             {{ timeslot.location }}
@@ -31,7 +38,7 @@
       <ion-button *ngIf="timeslotChoice && !timeslotSubmitted"
                   (click)="submitTimeslot()"
                   [disabled]="timeslotSubmitted"
-                  size="block"
+                  expand="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
@@ -55,6 +62,9 @@
       <br>
       {{ 'personal.select-appointment.at'|translate }}:
       <strong>{{ chosenTimeslot.location }}</strong>
+    </p>
+    <p>
+      {{ 'personal.select-appointment.please-confirm'|translate }}
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
@@ -83,7 +93,7 @@
       <ion-button *ngIf="confirmAction && !isDisabled"
                   (click)="submitConfirmAction(confirmAction)"
                   [disabled]="isDisabled"
-                  size="block"
+                  expand="block"
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
@@ -110,16 +120,21 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn *ngIf="!qrDataShow"
-                 [isSpoken]="!qrDataShow"
+  <dialogue-turn [actor]="ngo"
+                 *ngIf="qrDataShow"
+                 [isSpoken]="qrDataShow"
   >
     <p>
-        {{ 'personal.select-appointment.qr-code'|translate }}
+      {{ 'personal.select-appointment.qr-code'|translate }}
     </p>
-    <div text-center margin-vertical style="margin: 1em auto; max-width: 360px;"
-        *ngIf="qrDataString"
+    <div *ngIf="qrDataString"
+         text-center
+         margin-vertical
+         style="margin: 1em auto; max-width: 360px; padding: 1em; background: white;"
     >
-      <qrcode [qrdata]="this.qrDataString" size="360" level="H"></qrcode>
+      <qrcode [qrdata]="qrDataString"
+              level="H"
+      ></qrcode>
     </div>
   </dialogue-turn>
 </section>

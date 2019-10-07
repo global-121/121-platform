@@ -1,7 +1,24 @@
 {
+  "ACCOUNT": "Account",
+  "PERSONAL": "Validation",
   "WORLD": "World",
-  "PERSONAL": "You",
-  "DEVICE": "Device",
+  "account": {
+    "introduction": "Welcome to 121. Please log in below.",
+    "login": "Log-in form",
+    "email-placeholder": "Email...",
+    "password-placeholder": "Password...",
+    "create-placeholder": "Create new password...",
+    "confirm-placeholder": "Confirm new password...",
+    "login-button": "Log in",
+    "wrong-credentials": "Your email and/or password are not recognized. Please try again.",
+    "no-connection": "Not able to access the server. Please check your internet connection and try again later.",
+    "logout-button": "Log out",
+    "change-password": "Change password",
+    "close-change-password": "Cancel change password",
+    "conclusion": "You are succesfully logged in.",
+    "unequal-passwords": "The passwords you provided are not the same. Please try again.",
+    "changed-password": "Your password is changed succesfully."
+  },
   "personal": {
     "login": {
       "introduction": "Welcome to 121. Please log in below.",
@@ -10,6 +27,7 @@
       "password-placeholder": "Password...",
       "login-button": "Log in",
       "wrong-credentials": "Your email and/or password are not recognized. Please try again.",
+      "no-connection": "Not able to access the server. Please check your internet connection and try again later.",
       "logout-button": "Log out",
       "conclusion": "You are succesfully logged in."
     },
@@ -29,18 +47,11 @@
     "scan-qr": {
       "introduction": "Now scan the QR-code of the PA to identify him/her in the system.",
       "scan-button": "Scan QR-code",
-      "conclusion1": "Thank you. You have scanned the PA with DID",
-      "conclusion2": "applying for program"
-    },
-    "validate-identity": {
-      "introduction": "Below you see the PA's information for the Digital ID. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",
-      "postpone-button": "Postpone verification",
-      "confirm-button": "Issue Identity Credential",
-      "refresh-button": "Refresh information",
-      "conclusion": "The Digital ID has been created. As such there is no need, and thus no possibility, for you to see the PA's personal information any more here."
+      "error": "The scanned QR-code did not contain a valid combination of DID and program-ID. You can try scanning another QR-code.",
+      "conclusion": "Thank you. You have scanned a valid combination of DID and program-ID."
     },
     "validate-program": {
-      "introduction": "Thank you. Below you see the PA's information for the specific program. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",
+      "introduction": "Below you see the PA's information for the specific program. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",
       "postpone-button": "Postpone verification",
       "confirm-button": "Issue Program Credential",
       "refresh-button": "Refresh information",

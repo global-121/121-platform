@@ -8,8 +8,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
 import { Program } from 'src/app/models/program.model';
-import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+import { StorageService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -22,30 +22,29 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public program: any;
   public programTitle: string;
-  public introductionText: string;
+
   private credDefId: string;
   private programId: number;
 
-  public questions: any;
+  public questions: Question[];
   public answerTypes = AnswerType;
 
   public answers: any = {};
 
+  public allQuestionsShown = false;
   public hasAnswered: boolean;
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
+    public storageService: StorageService,
     public storage: Storage,
     public translate: TranslateService,
     public conversationService: ConversationService,
   ) {
     super();
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-  }
 
-  ngOnInit() {
+    this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.getLanguageChoice();
     this.getProgramDetails();
   }
@@ -57,6 +56,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private getProgramDetails() {
+    this.conversationService.startLoading();
+
     this.storage.get('programChoice').then(value => {
       this.getProgramDetailsById(value);
       this.programId = value;
@@ -65,15 +66,13 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public getProgramDetailsById(programId: string) {
     this.programsService.getProgramById(programId).subscribe((response: Program) => {
-
       this.programTitle = this.mapLabelByLanguageCode(response.title);
-      this.introductionText = this.translate.instant('personal.enroll-in-program.introduction', {
-        programTitle: this.programTitle,
-      });
       this.credDefId = response.credDefId;
 
       this.buildDetails(response);
       this.buildQuestions(response.customCriteria);
+
+      this.conversationService.stopLoading();
     });
   }
 
@@ -180,130 +179,94 @@ export class EnrollInProgramComponent extends PersonalComponent {
     }
 
     this.answers[questionCode] = answer;
+
+    const answersArray = Object.keys(this.answers);
+
+    if (answersArray.length >= (this.questions.length - 1)) {
+      this.allQuestionsShown = true;
+    } else {
+      this.allQuestionsShown = false;
+    }
+    this.showNextQuestion(answersArray.indexOf(questionCode));
+  }
+
+  private showNextQuestion(currentIndex: number) {
+    const initialTurns = 1; // Turns shown before the 'first question'-turn.
+    const nextIndex = currentIndex + initialTurns + 1;
+
+    this.showTurn(nextIndex);
   }
 
   public change() {
-    console.log('change()');
     this.hasAnswered = false;
   }
 
   public submit() {
-    console.log('submit()');
-
     this.hasAnswered = true;
+    this.conversationService.scrollToEnd();
   }
 
-  public submitConfirm() {
+  public async submitConfirm() {
     console.log('submitConfirm()');
 
-    this.executeSovrinFlow();
-
-    window.setTimeout(() => {
-      this.complete();
-    }, 1000);
+    this.conversationService.startLoading();
+    this.isDisabled = true;
+    await this.executeSovrinFlow();
+    this.conversationService.stopLoading();
+    this.complete();
   }
 
   private async executeSovrinFlow() {
 
     // 1. Get Credential Offer for programId
-    const credentialOffer = await this.getCredentialOffer(String(this.programId));
+    const credentialOffer = await this.programsService.getCredentialOffer(this.programId);
 
     // 2. Retrieve other necessary data from PA-account
-    const wallet = await this.paRetrieveData('wallet');
-    const correlation = await this.paRetrieveData('correlation');
-    const didShort = await this.paRetrieveData('didShort');
-    const did = await this.paRetrieveData('did');
+    const wallet = await this.storageService.retrieve(this.storageService.type.wallet);
+    const didShort = await this.storageService.retrieve(this.storageService.type.didShort);
+    const did = await this.storageService.retrieve(this.storageService.type.did);
 
     // 3. Post Credential Request to create credential request in PA-app
-    const credRequestPost = {
-      wallet: JSON.parse(wallet),
-      correlation: JSON.parse(correlation),
-      credDefID: this.credDefId,
-      credentialOffer: credentialOffer.credOfferJsonData,
-      did: didShort,
-    };
-    const credentialRequest = await this.createCredentialRequest(credRequestPost);
+    const credentialRequest = await this.userImsApiService.createCredentialRequest(
+      JSON.parse(wallet),
+      this.credDefId,
+      credentialOffer.credOfferJsonData,
+      didShort,
+    );
 
     // 4. Post credential request to program-service
-    const credentialRequestPost = {
+    await this.programsService.postCredentialRequest(
       did,
-      programId: this.programId,
-      encryptedCredentialRequest: JSON.stringify(credentialRequest)
-    };
-    await this.postCredentialRequest(credentialRequestPost);
+      this.programId,
+      credentialRequest,
+    );
 
     // 5. Form prefilled answers
-    const attributes = [];
-    Object.entries(this.answers).forEach(
-      ([key, value]) => {
-        const value2: any = value;
-        const attribute = {} as Attribute;
-        attribute.attributeId = 0;
-        attribute.attribute = value2.code;
-        attribute.answer = value2.value;
-        attributes.push(attribute);
-      }
-    );
-    const prefilledAnswers = {
+    await this.programsService.postPrefilledAnswers(
       did,
-      programId: this.programId,
-      credentialType: 'program',
-      attributes,
-    };
-    await this.postPrefilledAnswers(prefilledAnswers);
+      this.programId,
+      'program',
+      this.createAttributes(Object.values(this.answers)),
+    );
 
     // 6. Store relevant data to PA-account
-    this.paStoreData('credentialRequest', JSON.stringify(credentialRequest));
-    this.paStoreData('credDefId', JSON.stringify(this.credDefId));
-    this.paStoreData('programId', JSON.stringify(this.programId));
-
-
+    this.storageService.store(this.storageService.type.credentialRequest, JSON.stringify(credentialRequest));
+    this.storageService.store(this.storageService.type.credDefId, JSON.stringify(this.credDefId));
+    this.storageService.store(this.storageService.type.programId, JSON.stringify(this.programId));
   }
 
-  // This should become a shared function
-  paStoreData(variableName, data) {
-    this.paAccountApiService.store(variableName, data).subscribe((response) => {
-      console.log('response: ', response);
+  private createAttributes(answers: Answer[]): Attribute[] {
+    const attributes = [];
+
+    answers.forEach((item: Answer) => {
+      attributes.push({
+        attributeId: 0,
+        attribute: item.code,
+        answer: item.value,
+      });
     });
-  }
 
-  // NOTE: This should become a shared function
-  async paRetrieveData(variableName: string): Promise<any> {
-    return await this.paAccountApiService.retrieve(variableName)
-      .toPromise();
-  }
-
-  private async getCredentialOffer(programId: string): Promise<any> {
-    return await this.programsService.getCredentialOffer(programId).toPromise();
-  }
-
-  async createCredentialRequest(credRequestPost): Promise<any> {
-    console.log(credRequestPost);
-    return await this.userImsApiService.createCredentialRequest(
-      credRequestPost.wallet,
-      credRequestPost.correlation,
-      credRequestPost.credDefID,
-      credRequestPost.credentialOffer,
-      credRequestPost.did
-    ).toPromise();
-  }
-
-  async postCredentialRequest(credentialRequestPost): Promise<void> {
-    await this.programsService.postCredentialRequest(
-      credentialRequestPost.did,
-      parseInt(credentialRequestPost.programId, 10),
-      credentialRequestPost.encryptedCredentialRequest
-    ).toPromise();
-  }
-
-  // NOTE this function should be shared
-  async postPrefilledAnswers(prefilledAnswers: any): Promise<void> {
-    await this.programsService.postPrefilledAnswers(
-      prefilledAnswers.did,
-      prefilledAnswers.programId,
-      prefilledAnswers.credentialType,
-      prefilledAnswers.attributes
-    ).toPromise();
+    return attributes;
   }
 
   getNextSection() {
@@ -311,7 +274,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   complete() {
-    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.enrollInProgram,
       data: {
@@ -335,6 +297,7 @@ enum AnswerType {
   // Translate the types used in the API to internal, proper types:
   Number = 'numeric',
   Text = 'text',
+  Date = 'date',
   Enum = 'dropdown',
 }
 class QuestionOption {

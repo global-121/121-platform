@@ -1,0 +1,133 @@
+{
+  "published": false,
+  "location": "Location A",
+  "ngo": "NGO A",
+  "countryId": 1,
+  "title": {
+    "en": "NGO A: Program 1"
+  },
+  "description": {
+    "en": "Short description."
+  },
+  "startDate": "2020-01-01T12:00:00Z",
+  "endDate": "2020-12-31T12:00:00Z",
+  "currency": "EUR",
+  "distributionFrequency": "",
+  "distributionChannel": "mobileMoney",
+  "notifiyPaArea": true,
+  "notificationType": "announcement",
+  "cashDistributionSites": {
+    "cashDistributionSites": []
+  },
+  "financialServiceProviders": {
+    "financialServiceProviders": []
+  },
+  "inclusionCalculationType": "standard",
+  "meetingDocuments": {
+    "en": "Document 1; Document 2; Document 3"
+  },
+  "joiningInstructions": {
+    "en": "Please follow these instructions to join our program"
+  },
+  "customCriteria": [
+    {
+      "criterium": "name",
+      "label": {
+        "en": "My full name:"
+      },
+      "answerType": "text",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {}
+    },
+    {
+      "criterium": "dob",
+      "label": {
+        "en": "My date of birth:"
+      },
+      "answerType": "date",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {}
+    },
+    {
+      "criterium": "question1",
+      "label": {
+        "en": "1. I am..."
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "optionA",
+          "label": {
+            "en": "Option A"
+          }
+        },
+        {
+          "option": "optionB",
+          "label": {
+            "en": "Option B"
+          }
+        },
+        {
+          "option": "optionC",
+          "label": {
+            "en": "Option C"
+          }
+        }
+      ],
+      "scoring": {
+        "optionA": 3,
+        "optionB": 6,
+        "optionC": 9
+      }
+    },
+    {
+      "criterium": "question2",
+      "label": {
+        "en": "2. I am.."
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "optionA",
+          "label": {
+            "en": "Option A"
+          }
+        },
+        {
+          "option": "optionB",
+          "label": {
+            "en": "Option B"
+          }
+        },
+        {
+          "option": "optionC",
+          "label": {
+            "en": "Option C"
+          }
+        }
+      ],
+      "scoring": {
+        "optionA": 3,
+        "optionB": 6,
+        "optionC": 9
+      }
+    },
+    {
+      "criterium": "question3",
+      "label": {
+        "en": "Question 3..."
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {
+        "multiplier": 2
+      }
+    }
+  ],
+  "minimumScore": 0
+}

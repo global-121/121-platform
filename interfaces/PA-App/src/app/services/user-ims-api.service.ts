@@ -1,19 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
+
 import { ApiService } from './api.service';
+
+class Wallet {
+  id: string;
+  passKey: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserImsApiService {
+  // Some endpoints require this object as a parameter
+  private correlation = {
+    correlationID: 'test',
+  };
+
   constructor(
-    private apiService: ApiService
+    private apiService: ApiService,
   ) { }
 
-  createWallet(wallet: JSON, correlation: JSON): Observable<any> {
+  createWallet(wallet: Wallet): Promise<any> {
     console.log('UserImsApiService : createWallet()');
 
     return this.apiService
@@ -22,17 +32,18 @@ export class UserImsApiService {
         '/wallet',
         {
           wallet,
-          correlation
+          correlation: this.correlation,
         },
         true
       )
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
-  createStoreDid(wallet: JSON, correlation: JSON): Observable<any> {
+  createStoreDid(wallet: Wallet): Promise<any> {
     console.log('UserImsApiService : createStoreDid()');
 
     return this.apiService
@@ -41,17 +52,23 @@ export class UserImsApiService {
         '/did',
         {
           wallet,
-          correlation
+          correlation: this.correlation,
         },
         true
       )
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
-  createCredentialRequest(wallet: JSON, correlation: JSON, credDefID: string, credentialOffer: JSON, did: string): Observable<any> {
+  createCredentialRequest(
+    wallet: Wallet,
+    credDefID: string,
+    credentialOffer: JSON,
+    did: string,
+  ): Promise<any> {
     console.log('UserImsApiService : createCredentialRequest()');
 
     return this.apiService
@@ -60,20 +77,26 @@ export class UserImsApiService {
         '/credential/credreq',
         {
           wallet,
-          correlation,
+          correlation: this.correlation,
           credDefID,
           credentialOffer,
-          did
+          did,
         },
         true
       )
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
-  storeCredential(credDefID: string, credentialRequestMetadata: any, credential: any, wallet: JSON, correlation: JSON): Observable<any> {
+  storeCredential(
+    credDefID: string,
+    credentialRequestMetadata: any,
+    credential: any,
+    wallet: Wallet,
+  ): Promise<any> {
     console.log('UserImsApiService : storeCredential()');
 
     return this.apiService
@@ -85,13 +108,40 @@ export class UserImsApiService {
           credentialRequestMetadata,
           credential,
           wallet,
-          correlation,
+          correlation: this.correlation,
         },
         true
       )
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
+  }
+
+  getProofFromWallet(
+    proofRequest: any,
+    wallet: Wallet,
+  ): Promise<any> {
+    console.log('UserImsApiService : getProofFromWallet()');
+
+    const proofRequestJsonData = JSON.stringify(proofRequest);
+
+    return this.apiService
+      .post(
+        environment.url_user_ims_api,
+        '/proof/request',
+        {
+          proofRequestJsonData,
+          wallet,
+          correlation: this.correlation,
+        },
+        true
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response.proof)
+      )
+      .toPromise();
   }
 }

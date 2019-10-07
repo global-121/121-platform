@@ -19,7 +19,8 @@ RUN python3.6 --version
 RUN python3.6 -m virtualenv --python=/usr/bin/python3.6 $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-RUN wget "https://raw.githubusercontent.com/hyperledger/indy-sdk/master/cli/docker_pool_transactions_genesis"
+# Replaced by local docker_pool_transactions_genesis
+# RUN wget "https://raw.githubusercontent.com/hyperledger/indy-sdk/master/cli/docker_pool_transactions_genesis"
 
 ADD . .
 RUN ls -la && pwd

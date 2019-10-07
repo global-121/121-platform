@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# git hook to run a command before actually committing when running `git commit`:
+#
+
+check_if_need_to_lint() {
+  if git diff --cached --name-only | grep --quiet "$1*"
+  then
+    cd $1 && npm run lint
+  fi
+}
+
+# Include all packages/applications that support an `npm run lint` task:
+check_if_need_to_lint "interfaces/PA-App/"
+check_if_need_to_lint "interfaces/AW-App/"
+check_if_need_to_lint "interfaces/HO-Portal/"

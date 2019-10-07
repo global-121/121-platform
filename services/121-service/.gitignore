@@ -2,27 +2,20 @@
 logs
 *.log
 .DS_Store
-
 npm-debug.log*
 
 # Dependency directory
 node_modules
 
-# Optional npm cache directory
+# Generated assets / caches
 .npm
+dist
+coverage
 
 #IDEs
 .idea
 
-#config files
+# (local) Configuration files + Secrets
 ormconfig.json
 src/secrets.ts
-
-# code testing coverage
-coverage
-
-# generated assets
-dist
-
-# HO-wallet
-secrets/DID_generation/import-HO-wallet.txt
+Dockerfile

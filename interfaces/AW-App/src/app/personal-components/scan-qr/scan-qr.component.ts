@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PersonalComponent } from '../personal-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-scan-qr',
@@ -13,34 +14,54 @@ export class ScanQrComponent implements PersonalComponent {
 
   public did: string;
   public programId: number;
+  public scanError = false;
+  public didResult = false;
+
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     public storage: Storage,
     public conversationService: ConversationService,
+    public programsService: ProgramsServiceApiService,
   ) {
-    this.route.queryParams.subscribe(params => {
-      if (params && params.did && params.programId) {
-        this.did = JSON.parse(params.did);
-        this.programId = JSON.parse(params.programId);
-        this.storage.set('scannedDid', this.did);
-        this.storage.set('scannedProgramId', this.programId);
-        this.complete();
-      }
-    });
   }
-  // {"did": "did:sov:AdzMb8sH6QTcLUv7hfVJAZ", "programId": 1}
-  // {did: "did:sov:AdzMb8sH6QTcLUv7hfVJAZ", programId: 1}
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.getRouteParams();
+  }
 
   public scanQrCode() {
     this.router.navigate(['/scan-qr']);
   }
 
+  public async getRouteParams() {
+
+    this.route.queryParams.subscribe(params => {
+      console.log('params: ', params);
+      console.log('this.route.queryParams.subscribe');
+      if (params && params.did && params.programId) {
+        console.log('Found programid and did params');
+        this.did = JSON.parse(params.did);
+        this.programId = JSON.parse(params.programId);
+        this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
+          if (response.length === 0) {
+            this.scanError = true;
+            return;
+          } else {
+            this.storage.set('scannedDid', this.did);
+            this.storage.set('scannedProgramId', this.programId);
+            this.didResult = true;
+            this.scanError = false;
+            this.complete();
+          }
+        });
+      }
+    });
+  }
+
   getNextSection() {
-    return 'validate-identity';
+    return 'validate-program';
   }
 
   complete() {

@@ -1,0 +1,22 @@
+<section>
+  <dialogue-turn actor="NGO">
+    <p>
+      {{ 'personal.handle-proof.creating'|translate }}
+    </p>
+    <p>
+      {{ 'personal.handle-proof.notify'|translate }}
+    </p>
+  </dialogue-turn>
+
+  <dialogue-turn actor="NGO"
+                 *ngIf="inclusionStatus"
+                 [isSpoken]="inclusionStatus"
+  >
+    <p *ngIf="inclusionStatusNegative">
+      {{ 'personal.handle-proof.inclusion-status-negative'|translate }}
+    </p>
+    <p *ngIf="inclusionStatusPositive">
+      {{ 'personal.handle-proof.inclusion-status-positive'|translate }}
+    </p>
+  </dialogue-turn>
+</section>

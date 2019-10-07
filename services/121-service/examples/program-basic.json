@@ -1,5 +1,5 @@
 {
-  "published": true,
+  "published": false,
   "location": "Location Basic",
   "ngo": "NGO B",
   "countryId": 1,
@@ -26,7 +26,30 @@
   "meetingDocuments": {
     "en": "Document"
   },
+  "joiningInstructions": {
+    "en": "Please follow these instructions to join our program"
+  },
   "customCriteria": [
+    {
+      "criterium": "name",
+      "label": {
+        "en": "My full name:"
+      },
+      "answerType": "text",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {}
+    },
+    {
+      "criterium": "dob",
+      "label": {
+        "en": "My date of birth:"
+      },
+      "answerType": "date",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {}
+    },
     {
       "criterium": "nr_of_children",
       "label": {
@@ -48,14 +71,12 @@
       "criteriumType": "standard",
       "options": [
         {
-          "id": 0,
           "option": "steel",
           "label": {
             "en": "steel"
           }
         },
         {
-          "id": 1,
           "option": "tiles",
           "label": {
             "en": "tiles"
@@ -63,8 +84,8 @@
         }
       ],
       "scoring": {
-        "0": 3,
-        "1": 6
+        "steel": 3,
+        "tiles": 6
       }
     }
   ],

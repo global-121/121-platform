@@ -16,10 +16,19 @@ Switch to the repository folder
 
 Copy a few secret files and get the right passwords from someone who knows:
 
+    cp .env.example .env
     cp 121-service/src/secrets.ts.example 121-service/src/secrets.ts
     cp 121-service/ormconfig.json.example 121-service/ormconfig.json
     cp PA-accounts-service/src/secrets.ts.example PA-accounts-service/src/secrets.ts
     cp PA-accounts-service/ormconfig.json.example PA-accounts-service/ormconfig.json
+
+Copy the two Dockerfile.templates ...
+
+    cp 121-service/Dockerfile.template 121-service/Dockerfile
+    cp PA-accounts-service/Dockerfile.template PA-accounts-service/Dockerfile 
+
+... and uncomment the appropriate last CMD line (or leave as is, in which case you will need to start the containers and start the applications from within: see below).
+... Also note the NODE_ENV-variable. Leave this as 'development' for local environment. 'Production' is used for production-server.
 
 ---
 

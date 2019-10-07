@@ -10,7 +10,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 const userRo = {
   user: {
     username: 'string',
-    email: 'test@test.nl',
+    email: 'test@example.org',
     token:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo',
     role: 'aidworker',
@@ -44,7 +44,7 @@ class UserServiceMock {
     const user = new UserEntity();
     user.id = 1;
     user.username = 'string';
-    user.email = 'test@test.nl';
+    user.email = 'test@example.org';
     user.password =
       'c90f86e09c3461da52b3d8bc80ccd6a0d0cb893b1a41bd461e8ed31fa21c9b6e';
     user.role = 'aidworker';
@@ -82,7 +82,7 @@ describe('UserController', (): void => {
       const spy = jest
         .spyOn(userService, 'findByEmail')
         .mockImplementation((): Promise<UserRO> => Promise.resolve(userRo));
-      const controllerResult = await userController.findMe('test@test.nl');
+      const controllerResult = await userController.findMe('test@example.org');
 
       expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(userRo);
@@ -92,7 +92,7 @@ describe('UserController', (): void => {
   describe('login', (): void => {
     it('should return a user', async (): Promise<void> => {
       const loginParameters = {
-        email: 'test@test.nl',
+        email: 'test@example.org',
         password: 'string',
       };
       const controllerResult = await userController.login(loginParameters);
@@ -113,7 +113,7 @@ describe('UserController', (): void => {
     it('should return an a user entity', async (): Promise<void> => {
       const userValue = {
         username: 'string',
-        email: 'test@test.nl',
+        email: 'test@example.org',
         password: 'string',
         role: 'aidworker',
         status: 'active',

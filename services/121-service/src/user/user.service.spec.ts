@@ -11,18 +11,18 @@ const userRo = {
   user: {
     id: undefined,
     username: undefined,
-    email: 'test@test.nl',
+    email: 'test@example.org',
     token: undefined,
     role: undefined,
     status: undefined,
     countryId: undefined,
-    assignedProgramId: null,
+    assignedProgramId: undefined,
   },
 };
 
 const createUserDto = {
   username: undefined,
-  email: 'test@test.nl',
+  email: 'test@example.org',
   role: undefined,
   status: undefined,
   countryId: undefined,
@@ -30,7 +30,7 @@ const createUserDto = {
 };
 
 const LoginUserDto = {
-  email: 'test@test.nl',
+  email: 'test@example.org',
   password: 'string',
 };
 
@@ -74,7 +74,7 @@ describe('User service', (): void => {
   });
 
   it('Should find a user using email', async (): Promise<void> => {
-    const result = await service.findByEmail('test@test.nl');
+    const result = await service.findByEmail('test@example.org');
     result.user.token = undefined;
 
     expect(result).toStrictEqual(userRo);

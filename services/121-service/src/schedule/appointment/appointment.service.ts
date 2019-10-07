@@ -57,11 +57,10 @@ export class AppointmentService {
     }
     let availabilities = [];
     for (let index in aidworkers) {
-      availabilities.push(
-        await this.availabilityRepository.find({
-          where: { aidworker: { id: aidworkers[index].id } },
-        }),
-      );
+      const availabilityOneAidworker = await this.availabilityRepository.find({
+        where: { aidworker: { id: aidworkers[index].id } },
+      })
+      availabilities.push(...availabilityOneAidworker);
     }
     if (availabilities.length == 0) {
       const errors = { Message: 'No available time-windows posted yet.' };
@@ -77,6 +76,7 @@ export class AppointmentService {
     let appointment = new AppointmentEntity();
     appointment.timeslotId = timeslotId;
     appointment.did = didData.did;
+    appointment.status = 'waiting';
     const newAppointment = await this.appointmentRepository.save(appointment);
     return newAppointment;
   }
@@ -90,7 +90,7 @@ export class AppointmentService {
     for (let timeslot of timeslots) {
       let appointmentsPerTimeslot = await this.appointmentRepository.find({
         where: { timeslotId: timeslot.id },
-        select: ["id", "did"]
+        select: ["id", "did", "status"]
       });
       if (appointmentsPerTimeslot.length > 0) {
         let timeslotInclAppointments = {
@@ -104,5 +104,11 @@ export class AppointmentService {
       }
     }
     return appointments;
+  }
+
+  public async changeAppointmentStatus(timeslotId: number, didData: RegisterTimeslotDto, newStatus: string): Promise<void> {
+    let appointment = await this.appointmentRepository.findOne({ where: { timeslotId: timeslotId, did: didData.did } });
+    appointment.status = newStatus;
+    this.appointmentRepository.save(appointment);
   }
 }

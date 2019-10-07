@@ -40,11 +40,11 @@ export class ConversationService {
   }
 
   startNewConversation() {
-    this.addSection('login');
+    this.addSection('main-menu');
   }
 
   private addSection(sectionName) {
-    console.log('ConverstaionService addSection(): ', sectionName);
+    console.log('ConversationService addSection(): ', sectionName);
 
     this.conversation.push({
       name: sectionName
@@ -52,7 +52,7 @@ export class ConversationService {
   }
 
   public onSectionCompleted(section: ConversationSection) {
-    console.log('ConverstaionService  onSectionCompleted(): ', section);
+    console.log('ConversationService  onSectionCompleted(): ', section);
 
     // Instruct PersonalPage to insert the next section
     this.sectionCompletedSource.next(section);
@@ -61,6 +61,11 @@ export class ConversationService {
   public getConversationUpToNow(): ConversationSection[] {
     return this.conversation;
   }
+
+  public continueAfterScan() {
+    console.log('continueAfterScan');
+  }
+
 }
 
 class ConversationHistorySection {
