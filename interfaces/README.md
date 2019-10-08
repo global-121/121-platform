@@ -49,11 +49,14 @@ Run these commands from every app's own 'root'-folder.
 (`<platform>` is `ios` or `android`)  
 
 - Confirm all requirements are met for the platform of choice:
-  `npm run ionic -- cordova requirements <platform>`
+
+      npm run ionic -- cordova requirements <platform>
 
 - Generate assets for the platform of choice:
-  `npm run ionic -- cordova resources <platform>`
 
-- Create a build:  
-  `npm run cordova -- build <platform>`
+      npm run ionic -- cordova resources <platform>
+
+- Create a build:
+
+      npm run cordova -- build <platform>
 
