@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Events } from '@ionic/angular';
+import { Events, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { CustomTranslateService } from '../services/custom-translate.service';
@@ -16,11 +16,13 @@ export class AccountPage {
   public createPlaceholder: string;
   public confirmPlaceholder: string;
   public isLoggedIn: boolean;
-  public wrongCredentials: boolean;
-  public noConnection: boolean;
+  public loggedIn: string;
+  public loggedOut: string;
+  public wrongCredentials: string;
+  public noConnection: string;
   public changePasswordForm = false;
-  public changedPassword: boolean;
-  public unequalPasswords: boolean;
+  public changedPassword: string;
+  public unequalPasswords: string;
 
   constructor(
     public customTranslateService: CustomTranslateService,
@@ -28,6 +30,7 @@ export class AccountPage {
     public conversationService: ConversationService,
     private router: Router,
     public events: Events,
+    public toastController: ToastController,
   ) { }
 
   ngOnInit() {
@@ -35,6 +38,12 @@ export class AccountPage {
     this.passwordPlaceholder = this.customTranslateService.translate('account.password-placeholder');
     this.createPlaceholder = this.customTranslateService.translate('account.create-placeholder');
     this.confirmPlaceholder = this.customTranslateService.translate('account.confirm-placeholder');
+    this.changedPassword = this.customTranslateService.translate('account.changed-password');
+    this.unequalPasswords = this.customTranslateService.translate('account.unequal-passwords');
+    this.wrongCredentials = this.customTranslateService.translate('account.wrong-credentials');
+    this.noConnection = this.customTranslateService.translate('account.no-connection');
+    this.loggedIn = this.customTranslateService.translate('account.logged-in');
+    this.loggedOut = this.customTranslateService.translate('account.logged-out');
   }
 
   toggleValidation() {
@@ -54,8 +63,8 @@ export class AccountPage {
         console.log('LoginPage subscribe:', response);
 
         this.isLoggedIn = true;
-        this.wrongCredentials = false;
 
+        this.createToast(this.loggedIn);
         this.toggleValidation();
         this.router.navigate(['/tabs/validation']);
 
@@ -63,11 +72,9 @@ export class AccountPage {
       (error) => {
         console.log('LoginPage error: ', error.status);
         if (error.status === 401) {
-          this.wrongCredentials = true;
-          this.noConnection = false;
+          this.createToast(this.wrongCredentials);
         } else {
-          this.wrongCredentials = false;
-          this.noConnection = true;
+          this.createToast(this.noConnection);
         }
       }
     );
@@ -76,10 +83,9 @@ export class AccountPage {
   public async logout() {
     this.programsService.logout();
     this.isLoggedIn = false;
-    this.unequalPasswords = false;
-    this.changedPassword = false;
     this.changePasswordForm = false;
     this.toggleValidation();
+    this.createToast(this.loggedOut);
   }
 
   public async openChangePassword() {
@@ -90,6 +96,28 @@ export class AccountPage {
     this.changePasswordForm = false;
   }
 
+  createToast(message) {
+    this.toastController.create({
+      header: message,
+      animated: true,
+      showCloseButton: true,
+      closeButtonText: 'Close',
+      cssClass: 'update-toast',
+      duration: 3000,
+      position: 'bottom',
+      buttons: [
+        {
+          side: 'start',
+          icon: 'share-alt',
+          handler: () => {
+            this.router.navigate(['tabs/validation']);
+          }
+        }]
+    }).then((obj) => {
+      obj.present();
+    });
+  }
+
   public async doChangePassword(event) {
     const create = event.target.elements.create.value;
     const confirm = event.target.elements.confirm.value;
@@ -97,11 +125,10 @@ export class AccountPage {
       this.programsService.changePassword(create).subscribe((response) => {
         console.log('Password changed succesfully');
         this.changePasswordForm = false;
-        this.changedPassword = true;
-        this.unequalPasswords = false;
+        this.createToast(this.changedPassword);
       });
     } else {
-      this.unequalPasswords = true;
+      this.createToast(this.unequalPasswords);
     }
   }
 

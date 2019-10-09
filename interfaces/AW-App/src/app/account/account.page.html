@@ -93,16 +93,4 @@
       </ion-button>
     </form>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!wrongCredentials">
-    {{ 'account.wrong-credentials'|translate }}
-  </dialogue-turn>
-  <dialogue-turn [hidden]="!noConnection">
-    {{ 'account.no-connection'|translate }}
-  </dialogue-turn>
-  <dialogue-turn [hidden]="!unequalPasswords">
-    {{ 'account.unequal-passwords'|translate }}
-  </dialogue-turn>
-  <dialogue-turn [hidden]="!changedPassword">
-    {{ 'account.changed-password'|translate }}
-  </dialogue-turn>
 </ion-content>
