@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
-import { PersonalComponent } from '../personal-components.interface';
+import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonContent } from '@ionic/angular';
 
@@ -11,7 +11,7 @@ import { IonContent } from '@ionic/angular';
   templateUrl: './validate-program.component.html',
   styleUrls: ['./validate-program.component.scss'],
 })
-export class ValidateProgramComponent implements PersonalComponent {
+export class ValidateProgramComponent implements ValidationComponent {
 
   public did: string;
   public programId: number;

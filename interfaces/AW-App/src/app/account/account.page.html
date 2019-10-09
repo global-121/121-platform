@@ -6,7 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content color="medium" class="ion-padding-vertical">
   <dialogue-turn [hidden]="isLoggedIn">
     {{ 'account.introduction'|translate }}
   </dialogue-turn>
@@ -92,17 +92,5 @@
         {{ 'account.change-password'|translate }}
       </ion-button>
     </form>
-  </dialogue-turn>
-  <dialogue-turn [hidden]="!wrongCredentials">
-    {{ 'account.wrong-credentials'|translate }}
-  </dialogue-turn>
-  <dialogue-turn [hidden]="!noConnection">
-    {{ 'account.no-connection'|translate }}
-  </dialogue-turn>
-  <dialogue-turn [hidden]="!unequalPasswords">
-    {{ 'account.unequal-passwords'|translate }}
-  </dialogue-turn>
-  <dialogue-turn [hidden]="!changedPassword">
-    {{ 'account.changed-password'|translate }}
   </dialogue-turn>
 </ion-content>

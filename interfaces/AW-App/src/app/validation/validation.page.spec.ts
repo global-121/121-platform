@@ -1,15 +1,15 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PersonalPage } from './personal.page';
+import { ValidationPage } from './validation.page';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { ConversationService } from '../services/conversation.service';
 
-describe('PersonalPage', () => {
-  let component: PersonalPage;
-  let fixture: ComponentFixture<PersonalPage>;
+describe('ValidationPage', () => {
+  let component: ValidationPage;
+  let fixture: ComponentFixture<ValidationPage>;
 
   beforeEach(async(() => {
     // Mock the used services:
@@ -17,7 +17,7 @@ describe('PersonalPage', () => {
     const conversationService = jasmine.createSpyObj('ConversationService', { getConversationUpToNow: [{}, {}] });
 
     TestBed.configureTestingModule({
-      declarations: [PersonalPage],
+      declarations: [ValidationPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         TranslateModule.forRoot(),
@@ -36,7 +36,7 @@ describe('PersonalPage', () => {
   }));
 
   beforeEach(async () => {
-    fixture = await TestBed.createComponent(PersonalPage);
+    fixture = await TestBed.createComponent(ValidationPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

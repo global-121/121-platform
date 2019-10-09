@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { PersonalComponent } from '../personal-components.interface';
+import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { Storage } from '@ionic/storage';
 
@@ -9,7 +9,7 @@ import { Storage } from '@ionic/storage';
   templateUrl: './view-appointments.component.html',
   styleUrls: ['./view-appointments.component.scss'],
 })
-export class ViewAppointmentsComponent implements PersonalComponent {
+export class ViewAppointmentsComponent implements ValidationComponent {
   public appointments: any;
   public timeslotChoice: number;
   public appointmentsByTimeslot: any;

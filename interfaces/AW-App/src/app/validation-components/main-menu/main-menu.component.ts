@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CustomTranslateService } from 'src/app/services/custom-translate.service';
 import { Storage } from '@ionic/storage';
-import { PersonalComponent } from '../personal-components.interface';
+import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { Router } from '@angular/router';
 
@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   templateUrl: './main-menu.component.html',
   styleUrls: ['./main-menu.component.scss'],
 })
-export class MainMenuComponent implements PersonalComponent {
+export class MainMenuComponent implements ValidationComponent {
   public menuOptions: any;
   public optionChoice: string;
   public optionSelected: boolean;
@@ -25,8 +25,8 @@ export class MainMenuComponent implements PersonalComponent {
   ngOnInit() {
     this.resetParams();
     this.menuOptions = [
-      { id: 'view-appointments', option: this.customTranslateService.translate('personal.main-menu.menu-option1'), disabled: false },
-      { id: 'scan-qr', option: this.customTranslateService.translate('personal.main-menu.menu-option2'), disabled: false },
+      { id: 'view-appointments', option: this.customTranslateService.translate('validation.main-menu.menu-option1'), disabled: false },
+      { id: 'scan-qr', option: this.customTranslateService.translate('validation.main-menu.menu-option2'), disabled: false },
     ];
   }
 

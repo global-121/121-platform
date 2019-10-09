@@ -1,6 +1,6 @@
 import { OnInit } from '@angular/core';
 
-export interface PersonalComponent extends OnInit {
+export interface ValidationComponent extends OnInit {
   /**
    * Angular default component initialisation
    */

@@ -54,7 +54,7 @@ export class ConversationService {
   public onSectionCompleted(section: ConversationSection) {
     console.log('ConversationService  onSectionCompleted(): ', section);
 
-    // Instruct PersonalPage to insert the next section
+    // Instruct ValidationPage to insert the next section
     this.sectionCompletedSource.next(section);
   }
 

@@ -1,6 +1,6 @@
 {
   "ACCOUNT": "Account",
-  "PERSONAL": "Validation",
+  "VALIDATION": "Validation",
   "WORLD": "World",
   "account": {
     "introduction": "Welcome to 121. Please log in below.",
@@ -10,16 +10,18 @@
     "create-placeholder": "Create new password...",
     "confirm-placeholder": "Confirm new password...",
     "login-button": "Log in",
+    "logged-in": "You are succesfully logged in.",
+    "logged-out": "You are succesfully logged out.",
     "wrong-credentials": "Your email and/or password are not recognized. Please try again.",
     "no-connection": "Not able to access the server. Please check your internet connection and try again later.",
     "logout-button": "Log out",
     "change-password": "Change password",
     "close-change-password": "Cancel change password",
-    "conclusion": "You are succesfully logged in.",
+    "conclusion": "You are currently logged in.",
     "unequal-passwords": "The passwords you provided are not the same. Please try again.",
     "changed-password": "Your password is changed succesfully."
   },
-  "personal": {
+  "validation": {
     "login": {
       "introduction": "Welcome to 121. Please log in below.",
       "login": "Log-in form",

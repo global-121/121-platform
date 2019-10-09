@@ -38,5 +38,5 @@ import { ValidateProgramComponent } from './validate-program/validate-program.co
   ],
   providers: [ConversationService]
 })
-export class PersonalComponentsModule { }
+export class ValidationComponentsModule { }
 

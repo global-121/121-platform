@@ -1,0 +1,17 @@
+<section #scanQr>
+  <dialogue-turn>
+    {{ 'validation.scan-qr.introduction'|translate }}
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <ion-button expand="block" (click)="scanQrCode()">{{ 'validation.scan-qr.scan-button'|translate }}</ion-button>
+  </dialogue-turn>
+  <dialogue-turn [hidden]="!scanError">
+    {{ 'validation.scan-qr.error'|translate }}
+  </dialogue-turn>
+    <dialogue-turn [hidden]="!unknownDidCombination">
+      {{ 'validation.scan-qr.unknownDidCombination'|translate }}
+    </dialogue-turn>
+  <dialogue-turn [hidden]="!didResult">
+    {{ 'validation.scan-qr.conclusion'|translate }}
+  </dialogue-turn>
+</section>

@@ -1,8 +1,8 @@
 {
   "WORLD": "Wereld",
-  "PERSONAL": "Persoonlijk",
+  "VALIDATION": "Persoonlijk",
   "DEVICE": "Apparaat",
-  "personal": {
+  "validation": {
     "select-language": {
       "introduction": "Welkom bij 121. Selecteer alstublieft een taal."
     }
