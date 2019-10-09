@@ -81,7 +81,7 @@ export class ScanQrPage implements OnInit {
   }
 
   closeModal() {
-    this.router.navigate(['/tabs/personal']);
+    this.router.navigate(['/tabs/validation']);
     this.qrScanner.hide(); // hide camera preview
     this.scanSub.unsubscribe(); // stop scanning
   }
@@ -114,7 +114,7 @@ export class ScanQrPage implements OnInit {
         programId: JSON.stringify(qrJson.programId)
       }
     };
-    this.router.navigate(['/tabs/personal'], navigationExtras);
+    this.router.navigate(['/tabs/validation'], navigationExtras);
   }
 
   ngOnInit() {

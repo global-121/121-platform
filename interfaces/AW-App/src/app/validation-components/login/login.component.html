@@ -1,9 +1,9 @@
 <section #login>
   <dialogue-turn>
-    {{ 'personal.login.introduction'|translate }}
+    {{ 'validation.login.introduction'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self">
-    {{ 'personal.login.login'|translate }}
+    {{ 'validation.login.login'|translate }}
     <br>
     <form method="POST" (submit)="doLogin($event)" *ngIf="!isLoggedIn">
       <ion-item>
@@ -37,20 +37,20 @@
       <ion-button type="submit"
                   expand="block"
       >
-        {{ 'personal.login.login-button'|translate }}
+        {{ 'validation.login.login-button'|translate }}
       </ion-button>
     </form>
     <ion-button expand="block" [hidden]="!isLoggedIn">
-      {{ 'personal.login.logout-button'|translate }}
+      {{ 'validation.login.logout-button'|translate }}
     </ion-button>
   </dialogue-turn>
   <dialogue-turn [hidden]="!isLoggedIn">
-    {{ 'personal.login.conclusion'|translate }}
+    {{ 'validation.login.conclusion'|translate }}
   </dialogue-turn>
   <dialogue-turn [hidden]="!wrongCredentials">
-    {{ 'personal.login.wrong-credentials'|translate }}
+    {{ 'validation.login.wrong-credentials'|translate }}
   </dialogue-turn>
     <dialogue-turn [hidden]="!noConnection">
-      {{ 'personal.login.no-connection'|translate }}
+      {{ 'validation.login.no-connection'|translate }}
     </dialogue-turn>
 </section>

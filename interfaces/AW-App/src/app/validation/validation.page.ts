@@ -4,18 +4,17 @@ import { environment } from 'src/environments/environment';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { ConversationService, ConversationSection } from '../services/conversation.service';
-import { LoginComponent } from '../personal-components/login/login.component';
-import { MainMenuComponent } from '../personal-components/main-menu/main-menu.component';
-import { ScanQrComponent } from '../personal-components/scan-qr/scan-qr.component';
-import { ViewAppointmentsComponent } from '../personal-components/view-appointments/view-appointments.component';
-import { ValidateProgramComponent } from '../personal-components/validate-program/validate-program.component';
+import { MainMenuComponent } from '../validation-components/main-menu/main-menu.component';
+import { ScanQrComponent } from '../validation-components/scan-qr/scan-qr.component';
+import { ViewAppointmentsComponent } from '../validation-components/view-appointments/view-appointments.component';
+import { ValidateProgramComponent } from '../validation-components/validate-program/validate-program.component';
 
 @Component({
-  selector: 'app-personal',
-  templateUrl: 'personal.page.html',
-  styleUrls: ['personal.page.scss'],
+  selector: 'app-validation',
+  templateUrl: 'validation.page.html',
+  styleUrls: ['validation.page.scss'],
 })
-export class PersonalPage implements OnInit {
+export class ValidationPage implements OnInit {
   @ViewChild(IonContent)
   public ionContent: IonContent;
 
@@ -67,7 +66,7 @@ export class PersonalPage implements OnInit {
   }
 
   public insertSection(name: string) {
-    console.log('PersonalPage insertSection(): ', name);
+    console.log('ValidationPage insertSection(): ', name);
 
     this.scrollDown();
 

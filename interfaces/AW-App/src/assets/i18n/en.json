@@ -1,6 +1,6 @@
 {
   "ACCOUNT": "Account",
-  "PERSONAL": "Validation",
+  "VALIDATION": "Validation",
   "WORLD": "World",
   "account": {
     "introduction": "Welcome to 121. Please log in below.",
@@ -19,7 +19,7 @@
     "unequal-passwords": "The passwords you provided are not the same. Please try again.",
     "changed-password": "Your password is changed succesfully."
   },
-  "personal": {
+  "validation": {
     "login": {
       "introduction": "Welcome to 121. Please log in below.",
       "login": "Log-in form",

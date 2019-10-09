@@ -50,7 +50,7 @@ export class AccountPage {
         this.isLoggedIn = true;
         this.wrongCredentials = false;
 
-        this.router.navigate(['/tabs/personal']);
+        this.router.navigate(['/tabs/validation']);
 
       },
       (error) => {

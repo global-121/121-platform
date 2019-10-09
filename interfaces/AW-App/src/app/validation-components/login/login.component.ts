@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CustomTranslateService } from 'src/app/services/custom-translate.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { PersonalComponent } from '../personal-components.interface';
+import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements PersonalComponent {
+export class LoginComponent implements ValidationComponent {
   public emailPlaceholder: string;
   public passwordPlaceholder: string;
   public isLoggedIn: boolean;
@@ -23,8 +23,8 @@ export class LoginComponent implements PersonalComponent {
   ) { }
 
   ngOnInit() {
-    this.emailPlaceholder = this.customTranslateService.translate('personal.login.email-placeholder');
-    this.passwordPlaceholder = this.customTranslateService.translate('personal.login.password-placeholder');
+    this.emailPlaceholder = this.customTranslateService.translate('validation.login.email-placeholder');
+    this.passwordPlaceholder = this.customTranslateService.translate('validation.login.password-placeholder');
   }
 
   public async doLogin(event) {

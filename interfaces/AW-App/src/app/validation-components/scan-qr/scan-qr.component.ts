@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Router, ActivatedRoute } from '@angular/router';
-import { PersonalComponent } from '../personal-components.interface';
+import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -10,7 +10,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   templateUrl: './scan-qr.component.html',
   styleUrls: ['./scan-qr.component.scss'],
 })
-export class ScanQrComponent implements PersonalComponent {
+export class ScanQrComponent implements ValidationComponent {
 
   public did: string;
   public programId: number;
