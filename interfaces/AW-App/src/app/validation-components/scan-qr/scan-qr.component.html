@@ -8,8 +8,10 @@
   <dialogue-turn [hidden]="!scanError">
     {{ 'validation.scan-qr.error'|translate }}
   </dialogue-turn>
+    <dialogue-turn [hidden]="!unknownDidCombination">
+      {{ 'validation.scan-qr.unknownDidCombination'|translate }}
+    </dialogue-turn>
   <dialogue-turn [hidden]="!didResult">
     {{ 'validation.scan-qr.conclusion'|translate }}
   </dialogue-turn>
 </section>
-     

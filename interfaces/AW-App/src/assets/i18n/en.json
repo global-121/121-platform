@@ -49,7 +49,8 @@
     "scan-qr": {
       "introduction": "Now scan the QR-code of the PA to identify him/her in the system.",
       "scan-button": "Scan QR-code",
-      "error": "The scanned QR-code did not contain a valid combination of DID and program-ID. You can try scanning another QR-code.",
+      "error": "The scanned QR code did nog contain a DID or program number. You may have scanned the a wrong QR-code",
+      "unknownDidCombination": "The scanned QR-code did not contain a valid combination of DID and program-ID. You can try scanning another QR-code.",
       "conclusion": "Thank you. You have scanned a valid combination of DID and program-ID."
     },
     "validate-program": {

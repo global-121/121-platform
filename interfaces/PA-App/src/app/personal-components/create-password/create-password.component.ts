@@ -52,17 +52,18 @@ export class CreatePasswordComponent extends PersonalComponent {
   async executeSovrinFlow(password: string) {
 
     // 1. Create PA-account using supplied password + random username
-    const paAccountUsername = this.makeRandomUsername(16);
+    const paAccountUsername = this.makeRandomString(42);
     const paAccountPassword = password;
     await this.storageService.createAccount(paAccountUsername, paAccountPassword);
 
-    // 2. Create (random) wallet-name and store in PA-account
-    const paWalletName = this.makeRandomUsername(16);
+    // 2. Create (random) wallet-name and password and store in PA-account
+    const paWalletName = this.makeRandomString(42);
+    const paWalletPassword = this.makeRandomString(42);
 
     // 3. Create Sovrin wallet using previously created wallet-name and wallet-password equal to account-password
     const wallet = {
       id: paWalletName,
-      passKey: paAccountPassword,
+      passKey: paWalletPassword,
     };
     await this.sovrinCreateWallet(wallet);
 
@@ -93,7 +94,7 @@ export class CreatePasswordComponent extends PersonalComponent {
 
   }
 
-  makeRandomUsername(length: number) {
+  makeRandomString(length: number) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
