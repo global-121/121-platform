@@ -6,7 +6,7 @@
       <ion-label>{{ 'ACCOUNT'|translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="validation">
+    <ion-tab-button tab="validation" [disabled]="validationDisabled">
       <ion-icon name="phone-portrait"></ion-icon>
       <ion-label>{{ 'VALIDATION'|translate }}</ion-label>
     </ion-tab-button>

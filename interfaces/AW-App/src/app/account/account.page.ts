@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Events } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { CustomTranslateService } from '../services/custom-translate.service';
 import { ConversationService } from '../services/conversation.service';
@@ -26,6 +27,7 @@ export class AccountPage {
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
     private router: Router,
+    public events: Events,
   ) { }
 
   ngOnInit() {
@@ -33,6 +35,10 @@ export class AccountPage {
     this.passwordPlaceholder = this.customTranslateService.translate('account.password-placeholder');
     this.createPlaceholder = this.customTranslateService.translate('account.create-placeholder');
     this.confirmPlaceholder = this.customTranslateService.translate('account.confirm-placeholder');
+  }
+
+  toggleValidation() {
+    this.events.publish('toggleValidation');
   }
 
   public async doLogin(event) {
@@ -50,6 +56,7 @@ export class AccountPage {
         this.isLoggedIn = true;
         this.wrongCredentials = false;
 
+        this.toggleValidation();
         this.router.navigate(['/tabs/validation']);
 
       },
@@ -72,6 +79,7 @@ export class AccountPage {
     this.unequalPasswords = false;
     this.changedPassword = false;
     this.changePasswordForm = false;
+    this.toggleValidation();
   }
 
   public async openChangePassword() {
