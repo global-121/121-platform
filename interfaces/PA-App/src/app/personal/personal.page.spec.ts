@@ -4,6 +4,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { PersonalPage } from './personal.page';
 import { TranslateModule } from '@ngx-translate/core';
 
+import { Storage } from '@ionic/storage';
+import { MockIonicStorage } from '../mocks/ionic.storage.mock';
+
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { ConversationService } from '../services/conversation.service';
 
@@ -30,7 +33,11 @@ describe('PersonalPage', () => {
         {
           provide: ConversationService,
           useValue: conversationService,
-        }
+        },
+        {
+          provide: Storage,
+          useValue: MockIonicStorage,
+        },
       ]
     }).compileComponents();
   }));

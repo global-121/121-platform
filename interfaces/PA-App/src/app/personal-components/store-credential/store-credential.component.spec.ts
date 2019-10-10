@@ -6,16 +6,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
 import { Storage } from '@ionic/storage';
+import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 
 import { StoreCredentialComponent } from './store-credential.component';
 
 describe('StoreCredentialComponent', () => {
   let component: StoreCredentialComponent;
   let fixture: ComponentFixture<StoreCredentialComponent>;
-
-  const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve, reject) => resolve('1')),
-  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -28,7 +25,7 @@ describe('StoreCredentialComponent', () => {
       providers: [
         {
           provide: Storage,
-          useValue: storageIonicMock
+          useValue: MockIonicStorage,
         }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -42,7 +39,7 @@ describe('StoreCredentialComponent', () => {
     fixture.detectChanges();
   });
 
-  xit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

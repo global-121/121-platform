@@ -1,6 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
+import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
+import { StorageService } from 'src/app/services/storage.service';
 
 import { SelectAppointmentComponent } from './select-appointment.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -10,10 +12,6 @@ import { QRCodeModule } from 'angularx-qrcode';
 describe('SelectAppointmentComponent', () => {
   let component: SelectAppointmentComponent;
   let fixture: ComponentFixture<SelectAppointmentComponent>;
-
-  const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve, reject) => resolve('1')),
-  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -27,8 +25,9 @@ describe('SelectAppointmentComponent', () => {
       providers: [
         {
           provide: Storage,
-          useValue: storageIonicMock
-        }
+          useValue: MockIonicStorage,
+        },
+        StorageService,
       ]
     })
       .compileComponents();
