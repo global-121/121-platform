@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { ConversationService } from 'src/app/services/conversation.service';
-import { PaDataService } from 'src/app/services/storage.service';
+import { PaDataService } from 'src/app/services/padata.service';
 import { UpdateService } from 'src/app/services/update.service';
 
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';

@@ -1,4 +1,4 @@
-import { PaDataService } from './../../services/storage.service';
+import { PaDataService } from 'src/app/services/padata.service';
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 

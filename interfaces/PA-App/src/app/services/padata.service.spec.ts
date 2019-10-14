@@ -4,7 +4,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from '../mocks/ionic.storage.mock';
 
-import { PaDataService } from './storage.service';
+import { PaDataService } from './padata.service';
 
 describe('PaDataService', () => {
   beforeEach(() => TestBed.configureTestingModule({

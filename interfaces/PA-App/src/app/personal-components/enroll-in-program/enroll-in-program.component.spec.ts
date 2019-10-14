@@ -5,7 +5,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
-import { PaDataService } from 'src/app/services/storage.service';
+import { PaDataService } from 'src/app/services/padata.service';
 
 import { EnrollInProgramComponent } from './enroll-in-program.component';
 
