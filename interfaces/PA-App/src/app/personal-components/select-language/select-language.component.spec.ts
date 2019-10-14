@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 import { TranslateModule } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { SelectLanguageComponent } from './select-language.component';
 
@@ -15,6 +16,7 @@ describe('SelectLanguageComponent', () => {
       declarations: [SelectLanguageComponent],
       imports: [
         TranslateModule.forRoot(),
+        HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

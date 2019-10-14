@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
@@ -17,7 +17,7 @@ describe('CreatePasswordComponent', () => {
       declarations: [CreatePasswordComponent],
       imports: [
         TranslateModule.forRoot(),
-        HttpClientModule
+        HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
