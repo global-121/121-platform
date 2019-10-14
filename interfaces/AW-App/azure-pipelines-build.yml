@@ -35,3 +35,10 @@ steps:
 - script: npm run ionic -- build android
   displayName: BuildAndroid
   workingDirectory: interfaces/AW-App/
+
+
+- task: CordovaBuild@1
+  inputs:
+    platform: 'android'
+    configuration: '$(Configuration)'
+    outputPattern: 'bin'
