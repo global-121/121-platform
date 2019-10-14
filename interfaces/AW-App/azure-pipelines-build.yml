@@ -12,3 +12,26 @@ pr:
   paths:
     include:
     - 'interfaces/AW-App/*'
+
+
+pool:
+  vmImage: 'macOS-10.14'
+
+steps:
+- script: echo hello from macOS
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+
+- script: npm ci
+  displayName: Install
+  workingDirectory: interfaces/AW-App/
+
+- script: npm run ionic -- cordova resources android
+  displayName: GenerateAssest
+  workingDirectory: interfaces/AW-App/
+
+- script: npm run ionic -- build android
+  displayName: BuildAndroid
+  workingDirectory: interfaces/AW-App/
