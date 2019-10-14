@@ -32,6 +32,13 @@ steps:
   displayName: GenerateAssest
   workingDirectory: interfaces/AW-App/
 
-- script: npm run ionic -- build android
+- script: npm run ionic -- cordova build android
   displayName: BuildAndroid
   workingDirectory: interfaces/AW-App/
+
+# Publish pipeline artifact
+# Publish (upload) a file or directory as a named artifact for the current run
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: interfaces/AW-App/platforms/android/app/build/outputs/apk/debug/app-debug.apk
+    artifactName: AW-app
