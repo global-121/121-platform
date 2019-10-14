@@ -1,0 +1,14 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - 'interfaces/AW-App/*'
+pr:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - 'interfaces/AW-App/*'
