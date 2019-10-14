@@ -6,7 +6,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { StorageService } from 'src/app/services/storage.service';
+import { PaDataService } from 'src/app/services/storage.service';
 
 import { createRandomString } from 'src/app/helpers/createRandomString';
 
@@ -27,7 +27,7 @@ export class CreatePasswordComponent extends PersonalComponent {
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public programsServiceApiService: ProgramsServiceApiService,
-    public storageService: StorageService
+    public storageService: PaDataService
   ) {
     super();
   }

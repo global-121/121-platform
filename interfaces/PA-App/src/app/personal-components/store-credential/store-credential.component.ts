@@ -1,4 +1,4 @@
-import { StorageService } from './../../services/storage.service';
+import { PaDataService } from './../../services/storage.service';
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 
@@ -29,7 +29,7 @@ export class StoreCredentialComponent extends PersonalComponent {
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public storage: Storage,
-    public storageService: StorageService,
+    public storageService: PaDataService,
     public programsService: ProgramsServiceApiService,
   ) {
     super();

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { ConversationService } from 'src/app/services/conversation.service';
-import { StorageService } from 'src/app/services/storage.service';
+import { PaDataService } from 'src/app/services/storage.service';
 import { UpdateService } from 'src/app/services/update.service';
 
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
@@ -33,7 +33,7 @@ export class HandleProofComponent extends PersonalComponent {
 
   constructor(
     public conversationService: ConversationService,
-    public storageService: StorageService,
+    public storageService: PaDataService,
     public updateService: UpdateService,
     public programService: ProgramsServiceApiService,
     public paAccountApiService: PaAccountApiService,

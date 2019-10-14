@@ -4,9 +4,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from '../mocks/ionic.storage.mock';
 
-import { StorageService } from './storage.service';
+import { PaDataService } from './storage.service';
 
-describe('StorageService', () => {
+describe('PaDataService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       HttpClientTestingModule,
@@ -20,7 +20,7 @@ describe('StorageService', () => {
   }));
 
   it('should create', () => {
-    const service: StorageService = TestBed.get(StorageService);
+    const service: PaDataService = TestBed.get(PaDataService);
     expect(service).toBeTruthy();
   });
 });

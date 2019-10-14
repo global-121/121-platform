@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
-import { StorageService } from 'src/app/services/storage.service';
+import { PaDataService } from 'src/app/services/storage.service';
 
 import { SelectAppointmentComponent } from './select-appointment.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -27,7 +27,7 @@ describe('SelectAppointmentComponent', () => {
           provide: Storage,
           useValue: MockIonicStorage,
         },
-        StorageService,
+        PaDataService,
       ]
     })
       .compileComponents();

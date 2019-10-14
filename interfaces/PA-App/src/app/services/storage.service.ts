@@ -8,7 +8,8 @@ import { PaAccountApiService } from './pa-account-api.service';
 @Injectable({
   providedIn: 'root'
 })
-export class StorageService {
+export class PaDataService {
+
   private useLocalStorage: boolean;
 
   public type = {

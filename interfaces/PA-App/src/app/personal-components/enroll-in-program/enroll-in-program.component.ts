@@ -9,7 +9,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 
 import { Program } from 'src/app/models/program.model';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
-import { StorageService } from 'src/app/services/storage.service';
+import { PaDataService } from 'src/app/services/storage.service';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -37,7 +37,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   constructor(
     public programsService: ProgramsServiceApiService,
     public userImsApiService: UserImsApiService,
-    public storageService: StorageService,
+    public storageService: PaDataService,
     public storage: Storage,
     public translate: TranslateService,
     public conversationService: ConversationService,
