@@ -13,6 +13,8 @@ plugins/android.json
 plugins/ios.json
 */resources/ios/
 */resources/android/
+*.keystore
+*.apk
 
 
 ## Temporary/Generated code/files:
@@ -21,6 +23,7 @@ plugins/ios.json
 # .sourcemaps/
 # .sass-cache/
 coverage/
+
 
 # IDE-specific files
 *.sublime-project

@@ -29,7 +29,7 @@ steps:
   displayName: BuildAndroid
   workingDirectory: interfaces/AW-App/
 
-- script: npm run build:native -- --prod
+- script: npm run build:native -- --prod -- --release
   displayName: BuildAndroidProd
   workingDirectory: interfaces/AW-App/
 
