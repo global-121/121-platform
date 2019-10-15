@@ -6,6 +6,7 @@ import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { jsonpCallbackContext } from '@angular/common/http/src/module';
+import { ValidationComponents } from '../validation-components.enum';
 
 @Component({
   selector: 'app-scan-qr',
@@ -41,8 +42,8 @@ export class ScanQrComponent implements ValidationComponent {
       console.log('sessionStorageService.watchStorage');
       this.checkScannedDid();
       storageSubscription.unsubscribe();
-    // this will call whenever your localStorage data changes
-    // use localStorage code here and set your data here for ngFor
+      // this will call whenever your localStorage data changes
+      // use localStorage code here and set your data here for ngFor
     });
     this.router.navigate(['/scan-qr']);
   }
@@ -59,9 +60,9 @@ export class ScanQrComponent implements ValidationComponent {
 
 
       if (!jsonData && !jsonData.did && !jsonData.programId) {
-            this.scanError = true;
-            console.log('this.scanError: ', this.scanError);
-            return;
+        this.scanError = true;
+        console.log('this.scanError: ', this.scanError);
+        return;
       }
 
       this.did = jsonData.did;
@@ -96,21 +97,21 @@ export class ScanQrComponent implements ValidationComponent {
 
 
   getNextSection() {
-    return 'validate-program';
+    return ValidationComponents.validateProgram;
   }
 
   isNotJson(str: string): boolean {
     try {
-        JSON.parse(str);
+      JSON.parse(str);
     } catch (e) {
-        return true;
+      return true;
     }
     return false;
-}
+  }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'main-menu',
+      name: ValidationComponents.mainMenu,
       data: {
       },
       next: this.getNextSection(),

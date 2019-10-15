@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonContent } from '@ionic/angular';
+import { ValidationComponents } from '../validation-components.enum';
 
 @Component({
   selector: 'app-validate-program',
@@ -66,13 +67,13 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   getNextSection() {
-    return 'main-menu';
+    return ValidationComponents.mainMenu;
   }
 
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'validate-program',
+      name: ValidationComponents.validateProgram,
       data: {
       },
       next: this.getNextSection(),
