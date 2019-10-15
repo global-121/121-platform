@@ -11,6 +11,7 @@
       "create-password": "Create password:",
       "confirm-password": "Confirm password:",
       "submit-password": "Create my password",
+      "unequal-passwords": "The passwords you provided are not the same. Please try again.",
       "conclusion": "Great! You have created a password."
     },
     "enroll-in-program": {
