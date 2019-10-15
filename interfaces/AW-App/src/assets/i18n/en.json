@@ -30,6 +30,7 @@
     },
     "view-appointments": {
       "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details.",
+      "no-appointments": "No appointments have been scheduled yet. Returning to main menu.",
       "timeslot": "Timeslot",
       "submit-button": "See appointments",
       "appointments": "These are the appointments for the chosen timeslot:",
@@ -40,7 +41,8 @@
       "scan-button": "Scan QR-code",
       "error": "The scanned QR code did nog contain a DID or program number. You may have scanned the a wrong QR-code",
       "unknownDidCombination": "The scanned QR-code did not contain a valid combination of DID and program-ID. You can try scanning another QR-code.",
-      "conclusion": "Thank you. You have scanned a valid combination of DID and program-ID."
+      "conclusion": "Thank you. You have scanned a valid combination of DID and program-ID.",
+      "main-menu": "Back to main menu"
     },
     "validate-program": {
       "introduction": "Below you see the PA's information for the specific program. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",

@@ -16,7 +16,8 @@
     </ion-radio-group>
     <br>
     <ion-button [hidden]="!optionChoice" 
-                expand="block" 
+                expand="block"
+                [disabled]="optionSelected"
                 (click)="submitOption()">{{ 'shared.submit-button'|translate }}</ion-button>
   </dialogue-turn>
 </section>

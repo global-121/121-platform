@@ -20,6 +20,7 @@ export class ScanQrComponent implements ValidationComponent {
   public scanError = false;
   public didResult = false;
   public unknownDidCombination = false;
+  public returnMainMenu = false;
 
 
   constructor(
@@ -95,6 +96,15 @@ export class ScanQrComponent implements ValidationComponent {
     this.sessionStorageService.destroyItem(this.sessionStorageService.type.scannedDid);
   }
 
+  public backMainMenu() {
+    this.returnMainMenu = true;
+    this.conversationService.onSectionCompleted({
+      name: ValidationComponents.scanQr,
+      data: {
+      },
+      next: ValidationComponents.mainMenu,
+    });
+  }
 
   getNextSection() {
     return ValidationComponents.validateProgram;
@@ -111,7 +121,7 @@ export class ScanQrComponent implements ValidationComponent {
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: ValidationComponents.mainMenu,
+      name: ValidationComponents.scanQr,
       data: {
       },
       next: this.getNextSection(),
