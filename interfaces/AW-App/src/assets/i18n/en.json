@@ -22,17 +22,6 @@
     "changed-password": "Your password is changed succesfully."
   },
   "validation": {
-    "login": {
-      "introduction": "Welcome to 121. Please log in below.",
-      "login": "Log-in form",
-      "email-placeholder": "Email...",
-      "password-placeholder": "Password...",
-      "login-button": "Log in",
-      "wrong-credentials": "Your email and/or password are not recognized. Please try again.",
-      "no-connection": "Not able to access the server. Please check your internet connection and try again later.",
-      "logout-button": "Log out",
-      "conclusion": "You are succesfully logged in."
-    },
     "main-menu": {
       "introduction": "You have access to the following actions. Please select one.",
       "menu-option1": "View appointments",
