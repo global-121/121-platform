@@ -79,7 +79,7 @@ export class ConversationService {
   }
 
   public onSectionCompleted(section: ConversationSection) {
-    console.log('ConverstaionService  onSectionCompleted(): ', section);
+    console.log('ConversationService  onSectionCompleted(): ', section);
 
     // Record completion date/time:
     section.moment = new Date();
@@ -96,10 +96,6 @@ export class ConversationService {
   public getConversationUpToNow(): ConversationSection[] {
     return this.conversation;
   }
-
-  // public continueAfterScan() {
-  //   console.log('continueAfterScan');
-  // }
 
 }
 
