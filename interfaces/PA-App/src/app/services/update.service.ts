@@ -7,11 +7,9 @@ import { Router } from '@angular/router';
 import { interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-
 @Injectable({
   providedIn: 'root'
 })
-
 export class UpdateService {
 
   public updateSpeedMs = 3000;

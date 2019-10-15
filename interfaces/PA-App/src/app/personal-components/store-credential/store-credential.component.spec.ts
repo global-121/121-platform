@@ -2,34 +2,44 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
-
 import { Storage } from '@ionic/storage';
+import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
+import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
+import { UpdateService } from 'src/app/services/update.service';
 
 import { StoreCredentialComponent } from './store-credential.component';
 
 describe('StoreCredentialComponent', () => {
   let component: StoreCredentialComponent;
   let fixture: ComponentFixture<StoreCredentialComponent>;
-
-  const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve, reject) => resolve('1')),
-  };
+  let mockUpdateService: UpdateService;
 
   beforeEach(async(() => {
+    mockUpdateService = jasmine.createSpyObj('UpdateService', ['checkCredential']);
+
     TestBed.configureTestingModule({
       declarations: [StoreCredentialComponent],
       imports: [
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
-        HttpClientModule,
+        HttpClientTestingModule,
       ],
       providers: [
         {
           provide: Storage,
-          useValue: storageIonicMock
-        }
+          useValue: MockIonicStorage,
+        },
+        {
+          provide: PaDataService,
+          useValue: MockPaDataService,
+        },
+        {
+          provide: UpdateService,
+          useValue: mockUpdateService,
+        },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
@@ -42,7 +52,7 @@ describe('StoreCredentialComponent', () => {
     fixture.detectChanges();
   });
 
-  xit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

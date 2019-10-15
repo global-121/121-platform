@@ -1,25 +1,30 @@
 import { TestBed, async, inject } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { UpdateService } from './update.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
-import { RouterTestingModule } from '@angular/router/testing';
+import { MockIonicStorage } from '../mocks/ionic.storage.mock';
+
+import { UpdateService } from './update.service';
 
 describe('UpdateService', () => {
 
-  const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve, reject) => resolve('1')),
-  };
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [HttpClientTestingModule, TranslateModule.forRoot(), RouterTestingModule],
-    providers: [UpdateService, {
-      provide: Storage,
-      useValue: storageIonicMock
-    }]
+    imports: [
+      HttpClientTestingModule,
+      RouterTestingModule,
+      TranslateModule.forRoot(),
+    ],
+    providers: [
+      UpdateService,
+      {
+        provide: Storage,
+        useValue: MockIonicStorage,
+      },
+    ],
   }));
 
-
-  it('should be created', async(inject([HttpClientTestingModule, UpdateService],
+  it('should create', async(inject([HttpClientTestingModule, UpdateService],
     (httpClient: HttpClientTestingModule, service: UpdateService) => {
       expect(service).toBeTruthy();
     })));

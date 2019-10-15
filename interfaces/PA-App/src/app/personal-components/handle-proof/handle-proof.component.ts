@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 
 import { ConversationService } from 'src/app/services/conversation.service';
-import { StorageService } from 'src/app/services/storage.service';
+import { PaDataService } from 'src/app/services/padata.service';
 import { UpdateService } from 'src/app/services/update.service';
 
-import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -33,10 +32,9 @@ export class HandleProofComponent extends PersonalComponent {
 
   constructor(
     public conversationService: ConversationService,
-    public storageService: StorageService,
+    public paData: PaDataService,
     public updateService: UpdateService,
     public programService: ProgramsServiceApiService,
-    public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
   ) {
     super();
@@ -74,8 +72,8 @@ export class HandleProofComponent extends PersonalComponent {
   }
 
   private async gatherData() {
-    this.programId = Number(await this.storageService.retrieve(this.storageService.type.programId));
-    this.did = await this.storageService.retrieve(this.storageService.type.did);
-    this.wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
+    this.programId = Number(await this.paData.retrieve(this.paData.type.programId));
+    this.did = await this.paData.retrieve(this.paData.type.did);
+    this.wallet = JSON.parse(await this.paData.retrieve(this.paData.type.wallet));
   }
 }
