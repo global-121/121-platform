@@ -30,6 +30,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   public timeslots: Timeslot[];
   public timeslotChoice: number;
   public chosenTimeslot: Timeslot;
+  public daysToMeeting: string;
 
   public timeslotSubmitted: boolean;
 
@@ -57,6 +58,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   ngOnInit() {
     this.getLanguageChoice();
     this.getDid();
+    this.getDaysToAppointment();
   }
 
   private getDid() {
@@ -95,6 +97,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   private getTimeslots(programId: any) {
     this.programsService.getTimeslots(programId).subscribe((response: Timeslot[]) => {
       this.timeslots = response;
+      console.log('timeslots: ', this.timeslots);
 
       this.conversationService.stopLoading();
     });
@@ -161,6 +164,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
     this.programsService.postAppointment(timeslotId, did).subscribe(() => {
 
       this.generateQrCode(did, programId);
+      this.getDaysToAppointment();
 
       this.conversationService.stopLoading();
       this.complete();
@@ -177,6 +181,27 @@ export class SelectAppointmentComponent extends PersonalComponent {
       this.qrDataString = JSON.stringify(qrData);
       this.qrDataShow = true;
     }
+  }
+
+  private getDaysToAppointment() {
+    if (this.qrDataShow) {
+      let daysToMeetingNumber: number;
+
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      const chosenDate = new Date(this.chosenTimeslot.startDate.valueOf());
+      chosenDate.setHours(0, 0, 0, 0);
+      const diff = chosenDate.getTime() - currentDate.getTime();
+      if (diff < 0) {
+        daysToMeetingNumber = 0; // The meeting already happend
+      } else {
+        daysToMeetingNumber = Math.ceil(diff / (1000 * 3600 * 24));
+      }
+      this.daysToMeeting = String(daysToMeetingNumber);
+      console.log('this.daysToMeeting: ', this.daysToMeeting);
+    }
+
+
   }
 
   getNextSection() {
