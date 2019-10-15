@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { Storage } from '@ionic/storage';
 import { ValidationComponents } from '../validation-components.enum';
 
 @Component({

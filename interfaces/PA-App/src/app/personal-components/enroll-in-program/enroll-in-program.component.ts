@@ -203,7 +203,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   public submit() {
-    console.log(this.answers.dob);
     if (!this.answers.dob) {
       this.dobFeedback = true;
     } else {
