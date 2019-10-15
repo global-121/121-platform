@@ -41,7 +41,7 @@ export class PaDataService {
       return this.ionStorage.set(type, data);
     }
 
-    return this.paAccountApi.store(type, data);
+    return this.paAccountApi.store(type, String(data));
   }
 
   async retrieve(type: string, forceLocalOnly = false): Promise<string> {
@@ -55,7 +55,7 @@ export class PaDataService {
   /////////////////////////////////////////////////////////////////////////////
   // ONLY for WEB users:
   /////////////////////////////////////////////////////////////////////////////
-  private featureNotAvailable(): Promise<any>  {
+  private featureNotAvailable(): Promise<any> {
     return new Promise((resolve, reject) => {
       return reject('Not available with local storage');
     });
