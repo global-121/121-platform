@@ -3,13 +3,12 @@ import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
 import { Program } from 'src/app/models/program.model';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
-import { StorageService } from 'src/app/services/storage.service';
+import { PaDataService } from 'src/app/services/padata.service';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -37,30 +36,23 @@ export class EnrollInProgramComponent extends PersonalComponent {
   constructor(
     public programsService: ProgramsServiceApiService,
     public userImsApiService: UserImsApiService,
-    public storageService: StorageService,
-    public storage: Storage,
+    public paData: PaDataService,
     public translate: TranslateService,
     public conversationService: ConversationService,
   ) {
     super();
 
     this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.getLanguageChoice();
+    this.languageCode = this.translate.currentLang;
     this.getProgramDetails();
-  }
-
-  private getLanguageChoice() {
-    this.storage.get('languageChoice').then(value => {
-      this.languageCode = value;
-    });
   }
 
   private getProgramDetails() {
     this.conversationService.startLoading();
 
-    this.storage.get('programChoice').then(value => {
+    this.paData.retrieve(this.paData.type.programId).then(value => {
+      this.programId = Number(value);
       this.getProgramDetailsById(value);
-      this.programId = value;
     });
   }
 
@@ -222,9 +214,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const credentialOffer = await this.programsService.getCredentialOffer(this.programId);
 
     // 2. Retrieve other necessary data from PA-account
-    const wallet = await this.storageService.retrieve(this.storageService.type.wallet);
-    const didShort = await this.storageService.retrieve(this.storageService.type.didShort);
-    const did = await this.storageService.retrieve(this.storageService.type.did);
+    const wallet = await this.paData.retrieve(this.paData.type.wallet);
+    const didShort = await this.paData.retrieve(this.paData.type.didShort);
+    const did = await this.paData.retrieve(this.paData.type.did);
 
     // 3. Post Credential Request to create credential request in PA-app
     const credentialRequest = await this.userImsApiService.createCredentialRequest(
@@ -250,9 +242,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
     );
 
     // 6. Store relevant data to PA-account
-    this.storageService.store(this.storageService.type.credentialRequest, JSON.stringify(credentialRequest));
-    this.storageService.store(this.storageService.type.credDefId, JSON.stringify(this.credDefId));
-    this.storageService.store(this.storageService.type.programId, JSON.stringify(this.programId));
+    this.paData.store(this.paData.type.credentialRequest, JSON.stringify(credentialRequest));
+    this.paData.store(this.paData.type.credDefId, JSON.stringify(this.credDefId));
+    this.paData.store(this.paData.type.programId, JSON.stringify(this.programId));
   }
 
   private createAttributes(answers: Answer[]): Attribute[] {

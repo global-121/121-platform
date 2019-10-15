@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
+import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 
 import { HandleProofComponent } from './handle-proof.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -10,10 +11,6 @@ import { RouterModule } from '@angular/router';
 describe('HandleProofComponent', () => {
   let component: HandleProofComponent;
   let fixture: ComponentFixture<HandleProofComponent>;
-
-  const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve, reject) => resolve('1')),
-  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -27,8 +24,8 @@ describe('HandleProofComponent', () => {
       providers: [
         {
           provide: Storage,
-          useValue: storageIonicMock
-        }
+          useValue: MockIonicStorage,
+        },
       ]
     })
       .compileComponents();
