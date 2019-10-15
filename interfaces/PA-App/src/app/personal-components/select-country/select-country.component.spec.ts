@@ -7,7 +7,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import mockCountriesResponse from '../../mocks/api.countries.mock';
 import { TranslateModule } from '@ngx-translate/core';
 import { PaDataService } from 'src/app/services/padata.service';
-import { MockPaDataService } from 'src/app/mocks/paData.service.mock';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 
 describe('SelectCountryComponent', () => {
   let component: SelectCountryComponent;

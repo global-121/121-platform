@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 import { PaDataService } from 'src/app/services/padata.service';
-import { MockPaDataService } from 'src/app/mocks/paData.service.mock';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { UpdateService } from 'src/app/services/update.service';
 
 import { StoreCredentialComponent } from './store-credential.component';
