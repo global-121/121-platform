@@ -4,7 +4,6 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { UpdateService } from 'src/app/services/update.service';
 
-import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -36,7 +35,6 @@ export class HandleProofComponent extends PersonalComponent {
     public paData: PaDataService,
     public updateService: UpdateService,
     public programService: ProgramsServiceApiService,
-    public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
   ) {
     super();

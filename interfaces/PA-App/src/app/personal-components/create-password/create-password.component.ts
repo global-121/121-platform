@@ -3,7 +3,6 @@ import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
-import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -24,7 +23,6 @@ export class CreatePasswordComponent extends PersonalComponent {
 
   constructor(
     public conversationService: ConversationService,
-    public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public programsServiceApiService: ProgramsServiceApiService,
     public paData: PaDataService

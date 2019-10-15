@@ -3,7 +3,6 @@ import { PersonalComponent } from '../personal-component.class';
 
 import { PaDataService } from 'src/app/services/padata.service';
 import { UpdateService } from 'src/app/services/update.service';
-import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -23,7 +22,6 @@ export class StoreCredentialComponent extends PersonalComponent {
   constructor(
     public conversationService: ConversationService,
     public updateService: UpdateService,
-    public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public paData: PaDataService,
     public programsService: ProgramsServiceApiService,

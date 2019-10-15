@@ -9,7 +9,6 @@ import { PaDataService } from 'src/app/services/padata.service';
 
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { Program } from 'src/app/models/program.model';
-import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 
 @Component({
   selector: 'app-select-appointment',
@@ -42,7 +41,6 @@ export class SelectAppointmentComponent extends PersonalComponent {
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
-    public paAccountApiService: PaAccountApiService,
     public translate: TranslateService,
     public paData: PaDataService,
   ) {
