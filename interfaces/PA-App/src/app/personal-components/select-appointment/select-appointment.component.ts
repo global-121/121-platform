@@ -1,4 +1,3 @@
-import { PaDataService } from 'src/app/services/padata.service';
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -6,7 +5,7 @@ import { PersonalComponents } from '../personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Storage } from '@ionic/storage';
+import { PaDataService } from 'src/app/services/padata.service';
 
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { Program } from 'src/app/models/program.model';
@@ -45,8 +44,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
     public programsService: ProgramsServiceApiService,
     public paAccountApiService: PaAccountApiService,
     public translate: TranslateService,
-    public storage: Storage,
-    public storageService: PaDataService,
+    public paData: PaDataService,
   ) {
     super();
 
@@ -60,15 +58,15 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   private getDid() {
-    this.storageService.retrieve(this.storageService.type.did).then((value) => {
+    this.paData.retrieve(this.paData.type.did).then((value) => {
       this.did = value;
     });
   }
 
   private getProgram() {
     this.conversationService.startLoading();
-    this.storage.get('programChoice').then(programId => {
-      this.programChoice = programId;
+    this.paData.retrieve(this.paData.type.programId).then(programId => {
+      this.programChoice = Number(programId);
       this.getProgramProperties(programId);
       this.getTimeslots(programId);
     });
@@ -116,7 +114,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   private storeTimeslot(timeslotChoice: any) {
-    this.storage.set('timeslotChoice', timeslotChoice);
+    this.paData.store(this.paData.type.timeslot, timeslotChoice);
   }
 
   private getTimeslotById(timeslotId: number) {

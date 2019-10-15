@@ -33,7 +33,7 @@ export class HandleProofComponent extends PersonalComponent {
 
   constructor(
     public conversationService: ConversationService,
-    public storageService: PaDataService,
+    public paData: PaDataService,
     public updateService: UpdateService,
     public programService: ProgramsServiceApiService,
     public paAccountApiService: PaAccountApiService,
@@ -74,8 +74,8 @@ export class HandleProofComponent extends PersonalComponent {
   }
 
   private async gatherData() {
-    this.programId = Number(await this.storageService.retrieve(this.storageService.type.programId));
-    this.did = await this.storageService.retrieve(this.storageService.type.did);
-    this.wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
+    this.programId = Number(await this.paData.retrieve(this.paData.type.programId));
+    this.did = await this.paData.retrieve(this.paData.type.did);
+    this.wallet = JSON.parse(await this.paData.retrieve(this.paData.type.wallet));
   }
 }

@@ -1,13 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Storage } from '@ionic/storage';
-import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 import { of } from 'rxjs';
 
 import { SelectCountryComponent } from './select-country.component';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import mockCountriesResponse from '../../mocks/api.countries.mock';
 import { TranslateModule } from '@ngx-translate/core';
+import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/paData.service.mock';
 
 describe('SelectCountryComponent', () => {
   let component: SelectCountryComponent;
@@ -32,8 +32,8 @@ describe('SelectCountryComponent', () => {
           useValue: programsServiceApiService,
         },
         {
-          provide: Storage,
-          useValue: MockIonicStorage,
+          provide: PaDataService,
+          useValue: MockPaDataService,
         },
       ]
     })

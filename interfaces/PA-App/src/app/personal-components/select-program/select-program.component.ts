@@ -3,7 +3,7 @@ import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Storage } from '@ionic/storage';
+import { PaDataService } from 'src/app/services/padata.service';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -26,7 +26,7 @@ export class SelectProgramComponent extends PersonalComponent {
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    public storage: Storage,
+    public paData: PaDataService,
     public conversationService: ConversationService,
     public translate: TranslateService,
   ) {
@@ -40,7 +40,7 @@ export class SelectProgramComponent extends PersonalComponent {
   private getPrograms(): any {
     this.conversationService.startLoading();
 
-    this.storage.get('countryChoice').then(value => {
+    this.paData.retrieve(this.paData.type.country).then(value => {
       this.countryChoice = value;
 
       this.programsService.getProgramsByCountryId(this.countryChoice).subscribe((response: Program[]) => {
@@ -66,13 +66,9 @@ export class SelectProgramComponent extends PersonalComponent {
     return label;
   }
 
-  private storeProgram(programChoice: any) {
-    this.storage.set('programChoice', programChoice);
-  }
-
   public changeProgram($event) {
     this.programChoice = $event.detail.value;
-    this.storeProgram(this.programChoice);
+    this.paData.store(this.paData.type.programId, this.programChoice);
   }
 
   public submitProgram() {

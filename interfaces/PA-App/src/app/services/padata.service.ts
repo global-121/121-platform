@@ -14,12 +14,14 @@ export class PaDataService {
 
   public type = {
     language: 'languageCode',
+    country: 'countryId',
     did: 'did',
     didShort: 'didShort',
     wallet: 'wallet',
     credentialRequest: 'credentialRequest',
     programId: 'programId',
-    credDefId: 'credDefId'
+    credDefId: 'credDefId',
+    timeslot: 'timeslotChoice',
   };
 
   constructor(
@@ -34,7 +36,7 @@ export class PaDataService {
   // ALL types of storage:
   /////////////////////////////////////////////////////////////////////////////
 
-  async store(type: string, data: string, forceLocalOnly = false): Promise<any> {
+  async store(type: string, data: any, forceLocalOnly = false): Promise<any> {
     if (this.useLocalStorage || forceLocalOnly) {
       return this.ionStorage.set(type, data);
     }
@@ -42,7 +44,7 @@ export class PaDataService {
     return this.paAccountApi.store(type, data);
   }
 
-  async retrieve(type: string, forceLocalOnly = false): Promise<any> {
+  async retrieve(type: string, forceLocalOnly = false): Promise<string> {
     if (this.useLocalStorage || forceLocalOnly) {
       return this.ionStorage.get(type);
     }

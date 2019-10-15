@@ -3,7 +3,6 @@ import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
@@ -37,8 +36,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   constructor(
     public programsService: ProgramsServiceApiService,
     public userImsApiService: UserImsApiService,
-    public storageService: PaDataService,
-    public storage: Storage,
+    public paData: PaDataService,
     public translate: TranslateService,
     public conversationService: ConversationService,
   ) {
@@ -52,9 +50,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
   private getProgramDetails() {
     this.conversationService.startLoading();
 
-    this.storage.get('programChoice').then(value => {
+    this.paData.retrieve(this.paData.type.programId).then(value => {
+      this.programId = Number(value);
       this.getProgramDetailsById(value);
-      this.programId = value;
     });
   }
 
@@ -216,9 +214,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const credentialOffer = await this.programsService.getCredentialOffer(this.programId);
 
     // 2. Retrieve other necessary data from PA-account
-    const wallet = await this.storageService.retrieve(this.storageService.type.wallet);
-    const didShort = await this.storageService.retrieve(this.storageService.type.didShort);
-    const did = await this.storageService.retrieve(this.storageService.type.did);
+    const wallet = await this.paData.retrieve(this.paData.type.wallet);
+    const didShort = await this.paData.retrieve(this.paData.type.didShort);
+    const did = await this.paData.retrieve(this.paData.type.did);
 
     // 3. Post Credential Request to create credential request in PA-app
     const credentialRequest = await this.userImsApiService.createCredentialRequest(
@@ -244,9 +242,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
     );
 
     // 6. Store relevant data to PA-account
-    this.storageService.store(this.storageService.type.credentialRequest, JSON.stringify(credentialRequest));
-    this.storageService.store(this.storageService.type.credDefId, JSON.stringify(this.credDefId));
-    this.storageService.store(this.storageService.type.programId, JSON.stringify(this.programId));
+    this.paData.store(this.paData.type.credentialRequest, JSON.stringify(credentialRequest));
+    this.paData.store(this.paData.type.credDefId, JSON.stringify(this.credDefId));
+    this.paData.store(this.paData.type.programId, JSON.stringify(this.programId));
   }
 
   private createAttributes(answers: Answer[]): Attribute[] {

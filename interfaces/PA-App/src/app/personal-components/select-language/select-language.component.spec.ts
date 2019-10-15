@@ -4,6 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/paData.service.mock';
 
 import { SelectLanguageComponent } from './select-language.component';
 
@@ -22,7 +23,7 @@ describe('SelectLanguageComponent', () => {
       providers: [
         {
           provide: PaDataService,
-          useValue: PaDataService,
+          useValue: MockPaDataService,
         },
       ]
     })

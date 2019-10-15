@@ -27,7 +27,7 @@ export class CreatePasswordComponent extends PersonalComponent {
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
     public programsServiceApiService: ProgramsServiceApiService,
-    public storageService: PaDataService
+    public paData: PaDataService
   ) {
     super();
   }
@@ -56,7 +56,7 @@ export class CreatePasswordComponent extends PersonalComponent {
     // 1. Create PA-account using supplied password + random username
     const paAccountUsername = createRandomString(42);
     const paAccountPassword = password;
-    await this.storageService.createAccount(paAccountUsername, paAccountPassword);
+    await this.paData.createAccount(paAccountUsername, paAccountPassword);
 
     // 2. Create (random) wallet-name and password and store in PA-account
     const paWalletName = createRandomString(42);
@@ -90,9 +90,9 @@ export class CreatePasswordComponent extends PersonalComponent {
     });
 
     // 8. Store relevant data in PA-account
-    this.storageService.store(this.storageService.type.wallet, JSON.stringify(wallet));
-    this.storageService.store(this.storageService.type.didShort, didShort);
-    this.storageService.store(this.storageService.type.did, did);
+    this.paData.store(this.paData.type.wallet, JSON.stringify(wallet));
+    this.paData.store(this.paData.type.didShort, didShort);
+    this.paData.store(this.paData.type.did, did);
 
   }
 

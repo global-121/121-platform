@@ -4,17 +4,22 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
-
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
+import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/paData.service.mock';
+import { UpdateService } from 'src/app/services/update.service';
 
 import { StoreCredentialComponent } from './store-credential.component';
 
 describe('StoreCredentialComponent', () => {
   let component: StoreCredentialComponent;
   let fixture: ComponentFixture<StoreCredentialComponent>;
+  let mockUpdateService: UpdateService;
 
   beforeEach(async(() => {
+    mockUpdateService = jasmine.createSpyObj('UpdateService', ['checkCredential']);
+
     TestBed.configureTestingModule({
       declarations: [StoreCredentialComponent],
       imports: [
@@ -26,7 +31,15 @@ describe('StoreCredentialComponent', () => {
         {
           provide: Storage,
           useValue: MockIonicStorage,
-        }
+        },
+        {
+          provide: PaDataService,
+          useValue: MockPaDataService,
+        },
+        {
+          provide: UpdateService,
+          useValue: mockUpdateService,
+        },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })

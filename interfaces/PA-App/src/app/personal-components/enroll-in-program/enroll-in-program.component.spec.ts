@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/paData.service.mock';
 
 import { EnrollInProgramComponent } from './enroll-in-program.component';
 
@@ -28,7 +29,7 @@ describe('EnrollInProgramComponent', () => {
         },
         {
           provide: PaDataService,
-          useValue: PaDataService,
+          useValue: MockPaDataService,
         },
       ]
     })

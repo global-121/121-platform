@@ -1,7 +1,7 @@
-import { PaDataService } from 'src/app/services/padata.service';
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 
+import { PaDataService } from 'src/app/services/padata.service';
 import { UpdateService } from 'src/app/services/update.service';
 import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 import { UserImsApiService } from 'src/app/services/user-ims-api.service';
@@ -9,9 +9,6 @@ import { UserImsApiService } from 'src/app/services/user-ims-api.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PersonalComponents } from '../personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
-
-import { Storage } from '@ionic/storage';
-
 
 @Component({
   selector: 'app-store-credential',
@@ -28,8 +25,7 @@ export class StoreCredentialComponent extends PersonalComponent {
     public updateService: UpdateService,
     public paAccountApiService: PaAccountApiService,
     public userImsApiService: UserImsApiService,
-    public storage: Storage,
-    public storageService: PaDataService,
+    public paData: PaDataService,
     public programsService: ProgramsServiceApiService,
   ) {
     super();
@@ -45,8 +41,8 @@ export class StoreCredentialComponent extends PersonalComponent {
     console.log('startListenCredential');
 
     // 1. Listen until credential is received
-    const did = await this.storageService.retrieve(this.storageService.type.did);
-    const programId = parseInt(await this.storageService.retrieve(this.storageService.type.programId), 10);
+    const did = await this.paData.retrieve(this.paData.type.did);
+    const programId = parseInt(await this.paData.retrieve(this.paData.type.programId), 10);
 
     this.updateService.checkCredential(programId, did).then(() => {
       this.programsService.getCredential(did).subscribe(response => {
@@ -61,9 +57,9 @@ export class StoreCredentialComponent extends PersonalComponent {
 
   async storeCredential(credential): Promise<void> {
     console.log('Trying to store this credential', credential);
-    const wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
-    const credentialRequest = JSON.parse(await this.storageService.retrieve(this.storageService.type.credentialRequest));
-    const credDefID = JSON.parse(await this.storageService.retrieve(this.storageService.type.credDefId));
+    const wallet = JSON.parse(await this.paData.retrieve(this.paData.type.wallet));
+    const credentialRequest = JSON.parse(await this.paData.retrieve(this.paData.type.credentialRequest));
+    const credDefID = JSON.parse(await this.paData.retrieve(this.paData.type.credDefId));
     const credentialFormat = JSON.parse(credential.message);
 
     const storeCredentialData = {
