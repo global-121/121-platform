@@ -18,6 +18,7 @@ export class CreatePasswordComponent extends PersonalComponent {
   public initialInput = false;
   public create: any;
   public confirm: any;
+  public unequalPasswords = false;
 
   public isInProgress = false;
 
@@ -37,9 +38,11 @@ export class CreatePasswordComponent extends PersonalComponent {
     console.log('submitPassword()', create, confirm);
 
     if (create !== confirm) {
+      this.unequalPasswords = true;
       return;
     }
 
+    this.unequalPasswords = false;
     this.isInProgress = true;
     this.conversationService.startLoading();
 

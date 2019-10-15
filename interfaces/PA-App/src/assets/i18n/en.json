@@ -11,6 +11,7 @@
       "create-password": "Create password:",
       "confirm-password": "Confirm password:",
       "submit-password": "Create my password",
+      "unequal-passwords": "The passwords you provided are not the same. Please try again.",
       "conclusion": "Great! You have created a password."
     },
     "enroll-in-program": {
@@ -19,6 +20,7 @@
       "more-info-questions": "About this",
       "more-info-share": "Who sees your information",
       "submit": "Save my answers",
+      "dob-feedback": "Your date of birth does not have a valid format. Please adjust and save again.",
       "please-confirm": "Below is an overview of your information. Please confirm and submit.",
       "submit-confirm": "Submit my information",
       "change": "Change my information",

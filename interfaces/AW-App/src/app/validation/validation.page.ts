@@ -1,9 +1,12 @@
 import { Component, ViewChild, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
+import { Storage } from '@ionic/storage';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { ConversationService, ConversationSection } from '../services/conversation.service';
+import { ConversationService } from '../services/conversation.service';
+
+import { ValidationComponents } from '../validation-components/validation-components.enum';
 import { MainMenuComponent } from '../validation-components/main-menu/main-menu.component';
 import { ScanQrComponent } from '../validation-components/scan-qr/scan-qr.component';
 import { ViewAppointmentsComponent } from '../validation-components/view-appointments/view-appointments.component';
@@ -21,16 +24,36 @@ export class ValidationPage implements OnInit {
   @ViewChild('conversationContainer', { read: ViewContainerRef })
   public container;
 
-  public isDebug: boolean = !environment.production;
+  public isDebug: boolean = environment.isDebug;
+  public showDebug: boolean = environment.showDebug;
+
+  private scrollSpeed = environment.useAnimation ? 600 : 0;
+
+  public availableSections = {
+    [ValidationComponents.mainMenu]: MainMenuComponent,
+    [ValidationComponents.scanQr]: ScanQrComponent,
+    [ValidationComponents.validateProgram]: ValidateProgramComponent,
+    [ValidationComponents.viewAppointments]: ViewAppointmentsComponent,
+  };
+  public debugSections = Object.keys(this.availableSections);
 
   constructor(
     public programsService: ProgramsServiceApiService,
     private conversationService: ConversationService,
-    private resolver: ComponentFactoryResolver
+    private resolver: ComponentFactoryResolver,
+    private storage: Storage,
   ) {
     // Listen for completed sections, to continue with next steps
-    this.conversationService.sectionCompleted$.subscribe((response: ConversationSection) => {
-      this.insertSection(response.next);
+    this.conversationService.sectionCompleted$.subscribe((response: string) => {
+      this.insertSection(response);
+    });
+    // Listen for scroll events
+    this.conversationService.shouldScroll$.subscribe((toY: number) => {
+      if (toY === -1) {
+        return this.ionContent.scrollToBottom(this.scrollSpeed);
+      }
+
+      this.ionContent.scrollToPoint(0, toY, this.scrollSpeed);
     });
   }
 
@@ -51,21 +74,16 @@ export class ValidationPage implements OnInit {
   }
 
   private getComponentFactory(name: string) {
-    console.log('getComponentFactory() ', name);
-
-    const availableSections = {
-      'main-menu': MainMenuComponent,
-      'scan-qr': ScanQrComponent,
-      'view-appointments': ViewAppointmentsComponent,
-      'validate-program': ValidateProgramComponent,
-    };
-
     return this.resolver.resolveComponentFactory(
-      availableSections[name]
+      this.availableSections[name]
     );
   }
 
   public insertSection(name: string) {
+    if (!name) {
+      return;
+    }
+
     console.log('ValidationPage insertSection(): ', name);
 
     this.scrollDown();
@@ -75,7 +93,13 @@ export class ValidationPage implements OnInit {
     );
   }
 
-  scrollDown() {
-    this.ionContent.scrollToBottom(300);
+  public scrollDown() {
+    this.ionContent.scrollToBottom(this.scrollSpeed);
+  }
+
+  public debugClearAllStorage() {
+    this.storage.clear();
+    window.localStorage.clear();
+    window.sessionStorage.clear();
   }
 }

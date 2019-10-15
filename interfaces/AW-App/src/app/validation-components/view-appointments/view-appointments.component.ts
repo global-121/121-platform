@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { Storage } from '@ionic/storage';
+import { ValidationComponents } from '../validation-components.enum';
 
 @Component({
   selector: 'app-view-appointments',
@@ -15,6 +15,7 @@ export class ViewAppointmentsComponent implements ValidationComponent {
   public appointmentsByTimeslot: any;
   public timeslotSelected: boolean;
   public appointmentChoice: number;
+  public noAppointments = false;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -28,6 +29,7 @@ export class ViewAppointmentsComponent implements ValidationComponent {
   public getAppointments() {
     this.programsService.getAppointments().subscribe(response => {
       this.appointments = response;
+      if (this.appointments.length === 0) { this.noAppointments = true; this.complete(); }
     });
   }
 
@@ -56,12 +58,12 @@ export class ViewAppointmentsComponent implements ValidationComponent {
   }
 
   getNextSection() {
-    return 'main-menu';
+    return ValidationComponents.mainMenu;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'view-appointments',
+      name: ValidationComponents.viewAppointments,
       data: {
         appointments: this.appointments,
         timeslotChoice: this.timeslotChoice,

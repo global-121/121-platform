@@ -3,7 +3,16 @@
     {{ 'validation.scan-qr.introduction'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self">
-    <ion-button expand="block" (click)="scanQrCode()">{{ 'validation.scan-qr.scan-button'|translate }}</ion-button>
+    <ion-button expand="block"
+                [disabled]="didResult || returnMainMenu"
+                (click)="scanQrCode()">
+      {{ 'validation.scan-qr.scan-button'|translate }}
+    </ion-button>
+    <ion-button expand="block"
+                [disabled]="didResult || returnMainMenu"
+                (click)="backMainMenu()">
+      {{ 'validation.scan-qr.main-menu'|translate }}
+    </ion-button>
   </dialogue-turn>
   <dialogue-turn [hidden]="!scanError">
     {{ 'validation.scan-qr.error'|translate }}

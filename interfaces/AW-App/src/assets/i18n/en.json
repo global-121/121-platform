@@ -22,17 +22,6 @@
     "changed-password": "Your password is changed succesfully."
   },
   "validation": {
-    "login": {
-      "introduction": "Welcome to 121. Please log in below.",
-      "login": "Log-in form",
-      "email-placeholder": "Email...",
-      "password-placeholder": "Password...",
-      "login-button": "Log in",
-      "wrong-credentials": "Your email and/or password are not recognized. Please try again.",
-      "no-connection": "Not able to access the server. Please check your internet connection and try again later.",
-      "logout-button": "Log out",
-      "conclusion": "You are succesfully logged in."
-    },
     "main-menu": {
       "introduction": "You have access to the following actions. Please select one.",
       "menu-option1": "View appointments",
@@ -41,6 +30,7 @@
     },
     "view-appointments": {
       "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details.",
+      "no-appointments": "No appointments have been scheduled yet. Returning to main menu.",
       "timeslot": "Timeslot",
       "submit-button": "See appointments",
       "appointments": "These are the appointments for the chosen timeslot:",
@@ -51,7 +41,8 @@
       "scan-button": "Scan QR-code",
       "error": "The scanned QR code did nog contain a DID or program number. You may have scanned the a wrong QR-code",
       "unknownDidCombination": "The scanned QR-code did not contain a valid combination of DID and program-ID. You can try scanning another QR-code.",
-      "conclusion": "Thank you. You have scanned a valid combination of DID and program-ID."
+      "conclusion": "Thank you. You have scanned a valid combination of DID and program-ID.",
+      "main-menu": "Back to main menu"
     },
     "validate-program": {
       "introduction": "Below you see the PA's information for the specific program. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",

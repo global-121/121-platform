@@ -1,8 +1,11 @@
 <section #viewAppointments>
-  <dialogue-turn>
+  <dialogue-turn [hidden]="!noAppointments">
+    {{ 'validation.view-appointments.no-appointments'|translate }}
+  </dialogue-turn>
+  <dialogue-turn [hidden]="noAppointments">
     {{ 'validation.view-appointments.introduction'|translate }}
   </dialogue-turn>
-  <dialogue-turn actor="self">
+  <dialogue-turn [hidden]="noAppointments" actor="self">
     <ion-radio-group (ionChange)="changeTimeslot($event)">
       <ion-item *ngFor="let timeslot of appointments"
                 color="light"
@@ -26,7 +29,12 @@
       </ion-item>
     </ion-radio-group>
     <br>
-    <ion-button [hidden]="!timeslotChoice" expand="block" (click)="submitTimeslot(timeslotChoice)">{{ 'validation.view-appointments.submit-button'|translate }}</ion-button>
+    <ion-button [hidden]="!timeslotChoice" 
+                expand="block"
+                [disabled]="timeslotSelected"
+                (click)="submitTimeslot(timeslotChoice)">
+      {{ 'validation.view-appointments.submit-button'|translate }}
+    </ion-button>
   </dialogue-turn>
   <dialogue-turn [hidden]="!timeslotSelected">
     {{ 'validation.view-appointments.appointments'|translate }}

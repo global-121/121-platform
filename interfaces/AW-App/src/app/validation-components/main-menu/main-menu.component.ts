@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { Router } from '@angular/router';
+import { ValidationComponents } from '../validation-components.enum';
 
 @Component({
   selector: 'app-main-menu',
@@ -53,12 +54,16 @@ export class MainMenuComponent implements ValidationComponent {
   }
 
   getNextSection() {
-    return this.optionChoice;
+    if (this.optionChoice === 'view-appointments') {
+      return ValidationComponents.viewAppointments;
+    } else if (this.optionChoice === 'scan-qr') {
+      return ValidationComponents.scanQr;
+    }
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: 'main-menu',
+      name: ValidationComponents.mainMenu,
       data: {
         option: this.optionChoice,
       },
