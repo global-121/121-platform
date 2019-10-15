@@ -31,7 +31,6 @@
     <br>
     <ion-button [hidden]="!timeslotChoice" 
                 expand="block"
-                [disabled]="timeslotSelected"
                 (click)="submitTimeslot(timeslotChoice)">
       {{ 'validation.view-appointments.submit-button'|translate }}
     </ion-button>

@@ -21,6 +21,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public program: any;
   public programTitle: string;
+  public ngo: string;
 
   private credDefId: string;
   private programId: number;
@@ -60,6 +61,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public getProgramDetailsById(programId: string) {
     this.programsService.getProgramById(programId).subscribe((response: Program) => {
       this.programTitle = this.mapLabelByLanguageCode(response.title);
+      this.ngo = response.ngo;
       this.credDefId = response.credDefId;
 
       this.buildDetails(response);
