@@ -33,6 +33,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public allQuestionsShown = false;
   public hasAnswered: boolean;
+  public dobFeedback = false;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -202,8 +203,14 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   public submit() {
-    this.hasAnswered = true;
-    this.conversationService.scrollToEnd();
+    console.log(this.answers.dob);
+    if (!this.answers.dob) {
+      this.dobFeedback = true;
+    } else {
+      this.hasAnswered = true;
+      this.dobFeedback = false;
+      this.conversationService.scrollToEnd();
+    }
   }
 
   public async submitConfirm() {

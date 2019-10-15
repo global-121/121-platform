@@ -76,6 +76,14 @@
     </p>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"
+                 *ngIf="dobFeedback"
+                 [isSpoken]="dobFeedback"
+  >
+    <p>
+      {{ 'personal.enroll-in-program.dob-feedback'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
                  *ngIf="hasAnswered"
                  [isSpoken]="hasAnswered"
   >
