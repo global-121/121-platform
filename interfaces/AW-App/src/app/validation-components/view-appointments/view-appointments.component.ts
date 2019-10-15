@@ -4,13 +4,19 @@ import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ValidationComponents } from '../validation-components.enum';
 
+import { Appointment } from 'src/app/models/appointment.model';
+
 @Component({
   selector: 'app-view-appointments',
   templateUrl: './view-appointments.component.html',
   styleUrls: ['./view-appointments.component.scss'],
 })
 export class ViewAppointmentsComponent implements ValidationComponent {
-  public appointments: any;
+
+  public dateFormat = 'EEE, dd-MM-yyyy';
+  public timeFormat = 'HH:mm';
+
+  public appointments: Appointment[];
   public timeslotChoice: number;
   public appointmentsByTimeslot: any;
   public timeslotSelected: boolean;
@@ -27,7 +33,7 @@ export class ViewAppointmentsComponent implements ValidationComponent {
   }
 
   public getAppointments() {
-    this.programsService.getAppointments().subscribe(response => {
+    this.programsService.getAppointments().subscribe((response: Appointment[]) => {
       this.appointments = response;
       if (this.appointments.length === 0) { this.noAppointments = true; this.complete(); }
     });
