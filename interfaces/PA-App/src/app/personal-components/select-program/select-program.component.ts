@@ -33,14 +33,8 @@ export class SelectProgramComponent extends PersonalComponent {
     super();
 
     this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.getLanguageChoice();
+    this.languageCode = this.translate.currentLang;
     this.getPrograms();
-  }
-
-  private getLanguageChoice() {
-    this.storage.get('languageChoice').then(value => {
-      this.languageCode = value;
-    });
   }
 
   private getPrograms(): any {

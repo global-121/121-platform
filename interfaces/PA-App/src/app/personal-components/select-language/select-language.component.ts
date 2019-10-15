@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
-import { Storage } from '@ionic/storage';
+import { PaDataService } from 'src/app/services/padata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
@@ -17,7 +17,7 @@ export class SelectLanguageComponent extends PersonalComponent {
   public languageChoiceName: string;
 
   constructor(
-    public storage: Storage,
+    public paData: PaDataService,
     public translate: TranslateService,
     public conversationService: ConversationService
   ) {
@@ -49,16 +49,14 @@ export class SelectLanguageComponent extends PersonalComponent {
     return language ? language.language : '';
   }
 
-  private storeLanguage(languageChoice: any) {
-    this.storage.set('languageChoice', languageChoice);
-  }
-
   public changeLanguage($event) {
     this.languageChoice = $event.detail.value;
     this.isDisabled = false;
 
-    this.storeLanguage(this.languageChoice);
+    this.translate.use(this.languageChoice);
     this.languageChoiceName = this.getLanguageName(this.languageChoice);
+
+    this.paData.store(this.paData.type.language, this.languageChoice, true);
   }
 
   public submitLanguage() {

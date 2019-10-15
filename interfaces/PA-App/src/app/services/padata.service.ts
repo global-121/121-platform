@@ -13,6 +13,7 @@ export class PaDataService {
   private useLocalStorage: boolean;
 
   public type = {
+    language: 'languageCode',
     did: 'did',
     didShort: 'didShort',
     wallet: 'wallet',
@@ -33,16 +34,16 @@ export class PaDataService {
   // ALL types of storage:
   /////////////////////////////////////////////////////////////////////////////
 
-  async store(type: string, data: string): Promise<any> {
-    if (this.useLocalStorage) {
+  async store(type: string, data: string, forceLocalOnly = false): Promise<any> {
+    if (this.useLocalStorage || forceLocalOnly) {
       return this.ionStorage.set(type, data);
     }
 
     return this.paAccountApi.store(type, data);
   }
 
-  async retrieve(type: string): Promise<any> {
-    if (this.useLocalStorage) {
+  async retrieve(type: string, forceLocalOnly = false): Promise<any> {
+    if (this.useLocalStorage || forceLocalOnly) {
       return this.ionStorage.get(type);
     }
 

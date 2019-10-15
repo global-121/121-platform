@@ -1,9 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Storage } from '@ionic/storage';
-import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { PaDataService } from 'src/app/services/padata.service';
 
 import { SelectLanguageComponent } from './select-language.component';
 
@@ -21,8 +21,8 @@ describe('SelectLanguageComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
-          provide: Storage,
-          useValue: MockIonicStorage,
+          provide: PaDataService,
+          useValue: PaDataService,
         },
       ]
     })

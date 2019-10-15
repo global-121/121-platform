@@ -51,23 +51,17 @@ export class SelectAppointmentComponent extends PersonalComponent {
     super();
 
     this.fallbackLanguageCode = this.translate.getDefaultLang();
+    this.languageCode = this.translate.currentLang;
     this.getProgram();
   }
 
   ngOnInit() {
-    this.getLanguageChoice();
     this.getDid();
   }
 
   private getDid() {
     this.storageService.retrieve(this.storageService.type.did).then((value) => {
       this.did = value;
-    });
-  }
-
-  private getLanguageChoice() {
-    this.storage.get('languageChoice').then(value => {
-      this.languageCode = value;
     });
   }
 
