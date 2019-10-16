@@ -16,6 +16,7 @@ pr:
     include:
     - 'interfaces/PA-App/*'
 
+
 pool:
   vmImage: 'ubuntu-16.04'
 
