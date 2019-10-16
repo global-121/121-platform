@@ -36,22 +36,17 @@ steps:
   workingDirectory: interfaces/PA-App/
 
 - script: npm run build:native --debug
-  displayName: 'Build Android APK - debug'
+  displayName: 'Build Android APK - Debug'
   workingDirectory: interfaces/PA-App/
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: interfaces/PA-App/platforms/android/app/build/outputs/apk/
-    artifactName: 'PA-app - debug'
-
-- script: npm run build:native -- --prod -- --release
+- script: npm run build:native -- --prod --release
   displayName: 'Build Android APK - Production'
   workingDirectory: interfaces/PA-App/
 
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: interfaces/PA-App/platforms/android/app/build/outputs/apk/
-    artifactName: 'PA-app - prod'
+    artifactName: 'PA-App'
 
 
 

@@ -32,21 +32,21 @@ steps:
   workingDirectory: interfaces/AW-App/
 
 - script: npm run ionic -- cordova resources android
-  displayName: GenerateAssest
+  displayName: 'Generate Assests'
   workingDirectory: interfaces/AW-App/
 
 - script: npm run build:native --debug
-  displayName: BuildAndroid
+  displayName: 'Build Android APK - Debug'
   workingDirectory: interfaces/AW-App/
 
-- script: npm run build:native -- --prod -- --release
-  displayName: BuildAndroidProd
+- script: npm run build:native -- --prod --release
+  displayName: 'Build Android APK - Production'
   workingDirectory: interfaces/AW-App/
 
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: interfaces/AW-App/platforms/android/app/build/outputs/apk/
-    artifactName: 'AW-app'
+    artifactName: 'AW-App'
 
 
 
