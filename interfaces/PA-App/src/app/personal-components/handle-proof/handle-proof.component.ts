@@ -22,6 +22,8 @@ enum InclusionStates {
 })
 export class HandleProofComponent extends PersonalComponent {
 
+  public ngo: string;
+
   private programId: number;
   private did: string;
   private wallet: any;
@@ -50,6 +52,7 @@ export class HandleProofComponent extends PersonalComponent {
     console.log('handleProof');
 
     await this.gatherData();
+    this.ngo = this.paData.myPrograms[this.programId].ngo;
 
     // Create proof
     const proofRequest = await this.programService.getProofRequest(this.programId);

@@ -18,6 +18,7 @@ export class StoreCredentialComponent extends PersonalComponent {
 
   public credentialReceived = false;
   public credentialStored = false;
+  public ngo: string;
 
   constructor(
     public conversationService: ConversationService,
@@ -40,6 +41,7 @@ export class StoreCredentialComponent extends PersonalComponent {
     // 1. Listen until credential is received
     const did = await this.paData.retrieve(this.paData.type.did);
     const programId = parseInt(await this.paData.retrieve(this.paData.type.programId), 10);
+    this.ngo = this.paData.myPrograms[programId].ngo;
 
     this.updateService.checkCredential(programId, did).then(() => {
       this.programsService.getCredential(did).subscribe(response => {

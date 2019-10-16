@@ -22,6 +22,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   public dateFormat = 'EEE, dd-MM-yyyy';
   public timeFormat = 'HH:mm';
 
+  public program: any;
   public ngo: string;
   private programChoice: number;
 
@@ -76,15 +77,9 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   private getProgramProperties(programId) {
-    this.programsService.getProgramById(programId).subscribe((response: Program) => {
-      if (response.ngo) {
-        this.ngo = response.ngo;
-      }
-      if (response.meetingDocuments) {
-        const documents = this.mapLabelByLanguageCode(response.meetingDocuments);
-        this.meetingDocuments = this.buildDocumentsList(documents);
-      }
-    });
+    this.program = this.paData.myPrograms[programId];
+    const documents = this.mapLabelByLanguageCode(this.program.meetingDocuments);
+    this.meetingDocuments = this.buildDocumentsList(documents);
   }
 
   private getTimeslots(programId: any) {

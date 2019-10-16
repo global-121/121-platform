@@ -64,7 +64,7 @@ export class PaDataService {
       return this.ionStorage.get(type);
     }
 
-    return this.paAccountApi.retrieve(JSON.parse(type));
+    return JSON.parse(await this.paAccountApi.retrieve(type));
   }
 
   /////////////////////////////////////////////////////////////////////////////
