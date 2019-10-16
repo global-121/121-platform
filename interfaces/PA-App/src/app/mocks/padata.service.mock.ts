@@ -9,6 +9,8 @@ export const MockPaDataService = {
     programId: '',
     credDefId: '',
     timeslot: '',
+    myPrograms: '',
+    myAnswers: '',
   },
   store: () => new Promise<any>((resolve) => resolve('')),
   retrieve: () => new Promise<string>((resolve) => resolve('')),
