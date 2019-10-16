@@ -39,7 +39,7 @@ export class ValidationPage implements OnInit {
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    private conversationService: ConversationService,
+    public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
     private storage: Storage,
   ) {
