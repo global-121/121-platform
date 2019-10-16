@@ -1,4 +1,15 @@
+
+# See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema
+# See: https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/android
+
 trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - 'interfaces/AW-App/*'
+pr:
   branches:
     include:
     - master
