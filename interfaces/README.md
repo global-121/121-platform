@@ -40,6 +40,14 @@ Every interface or app will refer to their specific services of APIs.
 
 See the [/services/](../services/)-directory in this repository.
 
+### Continuous Integration (CI)
+Every interface has its own Azure Pipeline set up to run tests and generate 'builds'.  
+See their status on the [main README](../README.md#status).
+
+The appropriate tests will run automatically when relevant files are changed in a PR.
+
+To explicitly trigger a *native* build of the code (for Android), make sure to name your PR branch with the prefix `native` or `android`.
+
 
 ## Deployment
 

@@ -1,0 +1,58 @@
+
+# See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema
+# See: https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/android
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - 'interfaces/PA-App/*'
+pr:
+  branches:
+    include:
+    - native*
+    - android*
+  paths:
+    include:
+    - 'interfaces/PA-App/*'
+
+
+pool:
+  vmImage: 'macOS-10.14'
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+
+- script: npm ci
+  displayName: Install
+  workingDirectory: interfaces/PA-App/
+
+- script: npm run ionic -- cordova resources android
+  displayName: 'Generate Assests'
+  workingDirectory: interfaces/PA-App/
+
+- script: npm run build:native --debug
+  displayName: 'Build Android APK - debug'
+  workingDirectory: interfaces/PA-App/
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: interfaces/PA-App/platforms/android/app/build/outputs/apk/
+    artifactName: 'PA-app - debug'
+
+- script: npm run build:native -- --prod -- --release
+  displayName: 'Build Android APK - Production'
+  workingDirectory: interfaces/PA-App/
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: interfaces/PA-App/platforms/android/app/build/outputs/apk/
+    artifactName: 'PA-app - prod'
+
+
+
+
