@@ -56,7 +56,10 @@
       "change": "Change appointment",
       "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed.",
       "qr-code": "Please show this QR-code at your meeting.",
-      "meeting-count-down": "Your meeting appointment takes place in the following number of days: "
+      "meeting-reminder": "Here is everything you need to know about your meeting:",
+      "meeting-count-down": "Your meeting appointment takes place in <strong><big>{{daysToMeeting}}</big></strong> days.",
+      "meeting-tomorrow": "Your meeting appointment takes place tomorrow.",
+      "meeting-today": "Your meeting appointment takes place today."
     },
     "select-country": {
       "introduction": " Next step: Select your location.",

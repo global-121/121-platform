@@ -29,6 +29,9 @@ export class SelectAppointmentComponent extends PersonalComponent {
   public timeslotChoice: number;
   public chosenTimeslot: Timeslot;
   public daysToMeeting: string;
+  public meetingTomorrow: boolean;
+  public meetingToday: boolean;
+  public meetingPast: boolean;
 
   public timeslotSubmitted: boolean;
 
@@ -182,13 +185,11 @@ export class SelectAppointmentComponent extends PersonalComponent {
       const chosenDate = new Date(this.chosenTimeslot.startDate.valueOf());
       chosenDate.setHours(0, 0, 0, 0);
       const diff = chosenDate.getTime() - currentDate.getTime();
-      if (diff < 0) {
-        daysToMeetingNumber = 0; // The meeting already happend
-      } else {
-        daysToMeetingNumber = Math.ceil(diff / (1000 * 3600 * 24));
-      }
+      daysToMeetingNumber = Math.ceil(diff / (1000 * 3600 * 24));
       this.daysToMeeting = String(daysToMeetingNumber);
-      console.log('this.daysToMeeting: ', this.daysToMeeting);
+      this.meetingTomorrow = daysToMeetingNumber === 1 ? true : false;
+      this.meetingToday = daysToMeetingNumber === 0 ? true : false;
+      this.meetingPast = daysToMeetingNumber < 0 ? true : false;
     }
 
 
