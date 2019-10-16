@@ -57,14 +57,14 @@ export class SeedMvp implements InterfaceScript {
     let newAvailability;
     const items = [
       {
-        startDate: 0,
-        endDate: 0,
+        startDate: 30,
+        endDate: 30,
         startTime: 12,
         location: 'A'
       },
       {
-        startDate: 1,
-        endDate: 2,
+        startDate: 31,
+        endDate: 32,
         startTime: 13,
         location: 'B'
       }

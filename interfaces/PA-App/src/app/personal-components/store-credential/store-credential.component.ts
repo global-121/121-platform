@@ -28,7 +28,6 @@ export class StoreCredentialComponent extends PersonalComponent {
   ) {
     super();
 
-    this.conversationService.startLoading();
   }
 
   ngOnInit() {
@@ -46,6 +45,7 @@ export class StoreCredentialComponent extends PersonalComponent {
       this.programsService.getCredential(did).subscribe(response => {
         const credential = response;
         this.credentialReceived = true;
+        this.conversationService.startLoading();
         this.storeCredential(credential);
       });
     });
