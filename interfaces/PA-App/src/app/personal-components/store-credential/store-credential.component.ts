@@ -57,22 +57,16 @@ export class StoreCredentialComponent extends PersonalComponent {
 
   async storeCredential(credential): Promise<void> {
     console.log('Trying to store this credential', credential);
-    const wallet = JSON.parse(await this.paData.retrieve(this.paData.type.wallet));
-    const credentialRequest = JSON.parse(await this.paData.retrieve(this.paData.type.credentialRequest));
-    const credDefID = JSON.parse(await this.paData.retrieve(this.paData.type.credDefId));
-    const credentialFormat = JSON.parse(credential.message);
+    const wallet = await this.paData.retrieve(this.paData.type.wallet);
+    const credentialRequest = await this.paData.retrieve(this.paData.type.credentialRequest);
+    const credDefID = await this.paData.retrieve(this.paData.type.credDefId);
+    const credentialFormat = credential.message;
 
-    const storeCredentialData = {
-      credDefID,
-      credentialRequestMetadata: credentialRequest.credentialRequestMetadata,
-      credential: credentialFormat.credential,
-      wallet,
-    };
     await this.userImsApiService.storeCredential(
-      storeCredentialData.credDefID,
-      storeCredentialData.credentialRequestMetadata,
-      storeCredentialData.credential,
-      storeCredentialData.wallet,
+      credDefID,
+      credentialRequest.credentialRequestMetadata,
+      credentialFormat.credential,
+      wallet,
     );
     this.credentialStored = true;
     this.conversationService.stopLoading();

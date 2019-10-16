@@ -46,7 +46,7 @@ export class SelectCountryComponent extends PersonalComponent {
     this.countryChoice = parseInt($event.detail.value, 10);
     this.countryChoiceName = this.getCountryName(this.countryChoice);
     this.isDisabled = false;
-    this.paData.store(this.paData.type.country, String(this.countryChoice));
+    this.paData.store(this.paData.type.country, this.countryChoice);
   }
 
   public submitCountry() {

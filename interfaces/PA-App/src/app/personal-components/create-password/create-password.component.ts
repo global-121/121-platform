@@ -91,7 +91,7 @@ export class CreatePasswordComponent extends PersonalComponent {
     });
 
     // 8. Store relevant data in PA-account
-    this.paData.store(this.paData.type.wallet, JSON.stringify(wallet));
+    this.paData.store(this.paData.type.wallet, wallet);
     this.paData.store(this.paData.type.didShort, didShort);
     this.paData.store(this.paData.type.did, did);
 
