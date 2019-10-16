@@ -126,6 +126,9 @@
   >
     <p>
       {{ 'personal.select-appointment.qr-code'|translate }}
+      {{ 'personal.select-appointment.meeting-count-down'|translate }}
+      {{ daysToMeeting }}
+
     </p>
     <div *ngIf="qrDataString"
          text-center
