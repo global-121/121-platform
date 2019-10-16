@@ -233,7 +233,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     // 3. Post Credential Request to create credential request in PA-app
     const credentialRequest = await this.userImsApiService.createCredentialRequest(
-      JSON.parse(wallet),
+      wallet,
       this.credDefId,
       credentialOffer.credOfferJsonData,
       didShort,
@@ -255,9 +255,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
     );
 
     // 6. Store relevant data to PA-account
-    this.paData.store(this.paData.type.credentialRequest, JSON.stringify(credentialRequest));
-    this.paData.store(this.paData.type.credDefId, JSON.stringify(this.credDefId));
-    this.paData.store(this.paData.type.programId, JSON.stringify(this.programId));
+    this.paData.store(this.paData.type.credentialRequest, credentialRequest);
+    this.paData.store(this.paData.type.credDefId, this.credDefId);
+    this.paData.store(this.paData.type.programId, this.programId);
   }
 
   private createAttributes(answers: Answer[]): Attribute[] {

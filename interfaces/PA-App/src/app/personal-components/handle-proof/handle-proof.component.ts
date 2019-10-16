@@ -74,6 +74,6 @@ export class HandleProofComponent extends PersonalComponent {
   private async gatherData() {
     this.programId = Number(await this.paData.retrieve(this.paData.type.programId));
     this.did = await this.paData.retrieve(this.paData.type.did);
-    this.wallet = JSON.parse(await this.paData.retrieve(this.paData.type.wallet));
+    this.wallet = await this.paData.retrieve(this.paData.type.wallet);
   }
 }

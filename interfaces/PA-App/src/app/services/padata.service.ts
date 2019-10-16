@@ -56,15 +56,15 @@ export class PaDataService {
       return this.ionStorage.set(type, data);
     }
 
-    return this.paAccountApi.store(type, String(data));
+    return this.paAccountApi.store(type, JSON.stringify(data));
   }
 
-  async retrieve(type: string, forceLocalOnly = false): Promise<string> {
+  async retrieve(type: string, forceLocalOnly = false): Promise<any> {
     if (this.useLocalStorage || forceLocalOnly) {
       return this.ionStorage.get(type);
     }
 
-    return this.paAccountApi.retrieve(type);
+    return this.paAccountApi.retrieve(JSON.parse(type));
   }
 
   /////////////////////////////////////////////////////////////////////////////
