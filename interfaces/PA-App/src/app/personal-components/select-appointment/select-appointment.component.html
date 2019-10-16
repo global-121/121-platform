@@ -1,5 +1,5 @@
 <section>
-  <dialogue-turn [actor]="ngo">
+  <dialogue-turn [actor]="program?.ngo">
     <p>
       {{ 'personal.select-appointment.introduction'|translate }}
     </p>
@@ -42,7 +42,7 @@
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo"
+  <dialogue-turn [actor]="program?.ngo"
                  *ngIf="timeslotSubmitted"
                  [isSpoken]="timeslotSubmitted"
   >
@@ -97,7 +97,7 @@
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo"
+  <dialogue-turn [actor]="program?.ngo"
                  *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
@@ -105,7 +105,7 @@
       {{ 'personal.select-appointment.conclusion'|translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo"
+  <dialogue-turn [actor]="program?.ngo"
                  *ngIf="qrDataShow"
                  [isSpoken]="qrDataShow"
   >
@@ -154,7 +154,7 @@
       ></qrcode>
     </div>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo"
+  <dialogue-turn [actor]="program?.ngo"
                   *ngIf="qrDataShow && !meetingPast"
                   [isSpoken]="qrDataShow">
     <p *ngIf="!meetingTomorrow && !meetingToday" [innerHTML]="'personal.select-appointment.meeting-count-down'|translate:{ daysToMeeting:daysToMeeting, dayDays:dayDays }"></p>
