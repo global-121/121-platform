@@ -37,26 +37,3 @@ After that, run: (with `<type>` as `--prod` or `--debug`)
 
     npm run build:native -- <type>
 
-
-## Sign production build
-
-- Install zipalign 
-
-      sudo apt install zipalign
-
-- Get the unsigned apk from the Artifacts from the AW-App-Build pipeline or by building it locally using
-platforms/android/app/build/outputs/apk/release/app-release-unsigned.apk 
-
-      npm run build:native -- --prod -- --release
-
-- Get the `my-release-key.keystore` from someone who has access to it and put it in the same folder as the apk
-
-- Sign the apk 
-
-      jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore app-release-unsigned.apk alias_name
-
-- Optimize the APK 
-
-      zipalign -v 4 app-release-unsigned.apk  Aidworker-121.apk
-
-- TODO: Submit the app to the google play store. Reference https://ionicframework.com/docs/publishing/play-store#submitting-an-app-to-the-google-play-store 

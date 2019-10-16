@@ -46,7 +46,8 @@ See the [/services/](../services/)-directory in this repository.
 ### Building native apps
 To create 'native' versions of some of the interfaces, the following steps are required:  
 Run these commands from every app's own 'root'-folder.  
-(`<platform>` is `ios` or `android`)  
+(`<platform>` is `ios` or `android` or `browser`)  
+(`<type>` as `--prod` or `--debug`)  
 
 - Confirm all requirements are met for the platform of choice:
 
@@ -58,5 +59,29 @@ Run these commands from every app's own 'root'-folder.
 
 - Create a build:
 
-      npm run cordova -- build <platform>
+      npm run ionic -- cordova build <platform> <type>
 
+
+### Sign a production build
+
+- Install `zipalign`
+  For Ubuntu:
+
+      sudo apt install zipalign
+
+- Get the unsigned `apk` from the Artifacts of the Azure-pipeline or by building it locally by:
+
+      npm run build:native -- --prod -- --release
+
+- Get the `my-release-key.keystore` from someone who has access to it and put it in the same folder as the `apk`
+
+- Sign the APK
+
+      jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore app-release-unsigned.apk alias_name
+
+- Optimize the APK
+
+      zipalign -v 4 app-release-unsigned.apk  <insert-app-name>.apk
+
+- Submit the app to the Google Play Store.  
+  See: <https://ionicframework.com/docs/publishing/play-store#submitting-an-app-to-the-google-play-store>
