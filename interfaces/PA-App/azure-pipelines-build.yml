@@ -8,14 +8,14 @@ trigger:
     - master
   paths:
     include:
-    - 'interfaces/AW-App/*'
+    - 'interfaces/PA-App/*'
 pr:
   branches:
     include:
     - native*
   paths:
     include:
-    - 'interfaces/AW-App/*'
+    - 'interfaces/PA-App/*'
 
 
 pool:
@@ -28,24 +28,29 @@ steps:
 
 - script: npm ci
   displayName: Install
-  workingDirectory: interfaces/AW-App/
+  workingDirectory: interfaces/PA-App/
 
 - script: npm run ionic -- cordova resources android
-  displayName: GenerateAssest
-  workingDirectory: interfaces/AW-App/
+  displayName: 'Generate Assests'
+  workingDirectory: interfaces/PA-App/
 
 - script: npm run build:native --debug
-  displayName: BuildAndroid
-  workingDirectory: interfaces/AW-App/
-
-- script: npm run build:native -- --prod -- --release
-  displayName: BuildAndroidProd
-  workingDirectory: interfaces/AW-App/
+  displayName: 'Build Android APK - debug'
+  workingDirectory: interfaces/PA-App/
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: interfaces/AW-App/platforms/android/app/build/outputs/apk/
-    artifactName: 'AW-app'
+    pathtoPublish: interfaces/PA-App/platforms/android/app/build/outputs/apk/
+    artifactName: 'PA-app - debug'
+
+- script: npm run build:native -- --prod -- --release
+  displayName: 'Build Android APK - Production'
+  workingDirectory: interfaces/PA-App/
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: interfaces/PA-App/platforms/android/app/build/outputs/apk/
+    artifactName: 'PA-app - prod'
 
 
 
