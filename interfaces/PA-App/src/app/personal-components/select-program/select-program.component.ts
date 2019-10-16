@@ -72,6 +72,8 @@ export class SelectProgramComponent extends PersonalComponent {
   }
 
   public submitProgram() {
+    this.paData.saveProgram(this.programChoice, {});
+
     this.complete();
   }
 

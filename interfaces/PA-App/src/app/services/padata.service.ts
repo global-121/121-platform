@@ -22,7 +22,12 @@ export class PaDataService {
     programId: 'programId',
     credDefId: 'credDefId',
     timeslot: 'timeslotChoice',
+    myPrograms: 'myPrograms',
+    myAnswers: 'myAnswers',
   };
+
+  public myPrograms: any = {};
+  public myAnswers: any = {};
 
   constructor(
     private ionStorage: Storage,
@@ -30,6 +35,16 @@ export class PaDataService {
   ) {
     this.useLocalStorage = environment.localStorage;
 
+  }
+
+  async saveProgram(programId: number, program: any): Promise<any> {
+    this.myPrograms[programId] = program;
+    return this.store(this.type.myPrograms, this.myPrograms);
+  }
+
+  async saveAnswers(programId: number, answers: any): Promise<any> {
+    this.myAnswers[programId] = answers;
+    return this.store(this.type.myAnswers, this.myAnswers);
   }
 
   /////////////////////////////////////////////////////////////////////////////

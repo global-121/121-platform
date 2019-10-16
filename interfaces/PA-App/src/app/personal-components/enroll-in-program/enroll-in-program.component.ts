@@ -67,6 +67,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
       this.buildDetails(response);
       this.buildQuestions(response.customCriteria);
 
+      this.paData.saveProgram(response.id, response);
+
       this.conversationService.stopLoading();
     });
   }
@@ -197,6 +199,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   public submit() {
+
+    this.paData.saveAnswers(this.programId, this.answers);
+
     if (!this.answers.dob) {
       this.dobFeedback = true;
     } else {
