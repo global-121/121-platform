@@ -2,6 +2,10 @@
 # See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema
 # See: https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/android
 
+variables:
+  workingDir: interfaces/PA-App/
+
+
 trigger:
   branches:
     include:
@@ -29,25 +33,21 @@ steps:
 
 - script: npm ci
   displayName: Install
-  workingDirectory: interfaces/PA-App/
+  workingDirectory: $(workingDir)
 
 - script: npm run ionic -- cordova resources android
   displayName: 'Generate Assests'
-  workingDirectory: interfaces/PA-App/
+  workingDirectory: $(workingDir)
 
 - script: npm run build:native --debug
   displayName: 'Build Android APK - Debug'
-  workingDirectory: interfaces/PA-App/
+  workingDirectory: $(workingDir)
 
 - script: npm run build:native -- --prod --release
   displayName: 'Build Android APK - Production'
-  workingDirectory: interfaces/PA-App/
+  workingDirectory: $(workingDir)
 
 - task: PublishBuildArtifacts@1
   inputs:
     pathtoPublish: interfaces/PA-App/platforms/android/app/build/outputs/apk/
     artifactName: 'PA-App'
-
-
-
-
