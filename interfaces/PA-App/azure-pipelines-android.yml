@@ -16,8 +16,8 @@ trigger:
 pr:
   branches:
     include:
-    - native*
-    - android*
+    - 'native*'
+    - 'android*'
   paths:
     include:
     - 'interfaces/PA-App/*'
