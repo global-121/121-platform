@@ -2,7 +2,7 @@
 # See: https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 variables:
-  workingDir: interfaces/PA-App/
+  workingDir: interfaces/AW-App/
 
 
 trigger:
@@ -11,14 +11,14 @@ trigger:
     - master
   paths:
     include:
-    - 'interfaces/PA-App/*'
+    - 'interfaces/AW-App/*'
 pr:
   branches:
     include:
     - master
   paths:
     include:
-    - 'interfaces/PA-App/*'
+    - 'interfaces/AW-App/*'
 
 
 pool:
