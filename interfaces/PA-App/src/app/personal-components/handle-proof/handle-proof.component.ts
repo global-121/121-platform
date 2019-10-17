@@ -4,7 +4,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { UpdateService } from 'src/app/services/update.service';
 
-import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+import { SovrinService } from 'src/app/services/sovrin.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 import { PersonalComponent } from '../personal-component.class';
@@ -37,7 +37,7 @@ export class HandleProofComponent extends PersonalComponent {
     public paData: PaDataService,
     public updateService: UpdateService,
     public programService: ProgramsServiceApiService,
-    public userImsApiService: UserImsApiService,
+    public sovrinService: SovrinService,
   ) {
     super();
 
@@ -56,7 +56,7 @@ export class HandleProofComponent extends PersonalComponent {
 
     // Create proof
     const proofRequest = await this.programService.getProofRequest(this.programId);
-    const proof = await this.userImsApiService.getProofFromWallet(proofRequest, this.wallet);
+    const proof = await this.sovrinService.getProofFromWallet(proofRequest, this.wallet);
 
     // Use proof
     const status = await this.programService.includeMe(this.did, this.programId, proof);

@@ -3,7 +3,7 @@ import { PersonalComponent } from '../personal-component.class';
 
 import { PaDataService } from 'src/app/services/padata.service';
 import { UpdateService } from 'src/app/services/update.service';
-import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+import { SovrinService } from 'src/app/services/sovrin.service';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PersonalComponents } from '../personal-components.enum';
@@ -23,7 +23,7 @@ export class StoreCredentialComponent extends PersonalComponent {
   constructor(
     public conversationService: ConversationService,
     public updateService: UpdateService,
-    public userImsApiService: UserImsApiService,
+    public sovrinService: SovrinService,
     public paData: PaDataService,
     public programsService: ProgramsServiceApiService,
   ) {
@@ -62,7 +62,7 @@ export class StoreCredentialComponent extends PersonalComponent {
     const credDefID = await this.paData.retrieve(this.paData.type.credDefId);
     const credentialFormat = credential.message;
 
-    await this.userImsApiService.storeCredential(
+    await this.sovrinService.storeCredential(
       credDefID,
       credentialRequest.credentialRequestMetadata,
       credentialFormat.credential,

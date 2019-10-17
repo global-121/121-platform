@@ -71,8 +71,8 @@ export class PaDataService {
   // ONLY for WEB users:
   /////////////////////////////////////////////////////////////////////////////
   private featureNotAvailable(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      return reject('Not available with local storage');
+    return new Promise((resolve) => {
+      return resolve('Not available with local storage');
     });
   }
 
