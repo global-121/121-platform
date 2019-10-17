@@ -7,7 +7,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
 import { Program } from 'src/app/models/program.model';
-import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
 
 @Component({
@@ -37,7 +37,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    public userImsApiService: UserImsApiService,
+    public sovrinService: SovrinService,
     public paData: PaDataService,
     public translate: TranslateService,
     public conversationService: ConversationService,
@@ -232,7 +232,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const did = await this.paData.retrieve(this.paData.type.did);
 
     // 3. Post Credential Request to create credential request in PA-app
-    const credentialRequest = await this.userImsApiService.createCredentialRequest(
+    const credentialRequest = await this.sovrinService.createCredentialRequest(
       wallet,
       this.credDefId,
       credentialOffer.credOfferJsonData,

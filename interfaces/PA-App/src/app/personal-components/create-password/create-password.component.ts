@@ -3,7 +3,7 @@ import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
-import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+import { SovrinService } from 'src/app/services/sovrin.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaDataService } from 'src/app/services/padata.service';
 
@@ -24,7 +24,7 @@ export class CreatePasswordComponent extends PersonalComponent {
 
   constructor(
     public conversationService: ConversationService,
-    public userImsApiService: UserImsApiService,
+    public sovrinService: SovrinService,
     public programsServiceApiService: ProgramsServiceApiService,
     public paData: PaDataService
   ) {
@@ -68,10 +68,10 @@ export class CreatePasswordComponent extends PersonalComponent {
       id: paWalletName,
       passKey: paWalletPassword,
     };
-    await this.sovrinCreateWallet(wallet);
+    await this.sovrinService.createWallet(wallet);
 
     // 4. Generate Sovrin DID and store in wallet
-    const result = await this.sovrinCreateStoreDid(wallet);
+    const result = await this.sovrinService.createStoreDid(wallet);
 
     // 5. Store Sovrin DID in PA-account
     const didShort = result.did;
@@ -79,44 +79,21 @@ export class CreatePasswordComponent extends PersonalComponent {
 
     // 6. Get connection-request (NOTE: in the MVP-setup this is not actually needed/used,
     // because of lack of pairwise connection + encryption)
-    const connectionRequest = await this.getConnectionRequest();
-    console.log('connectionRequest: ', connectionRequest);
+    const connectionRequest = await this.programsServiceApiService.getConnectionRequest();
 
     // 7. Post connection-response
-    this.postConnectionResponse({
+    this.programsServiceApiService.postConnectionResponse(
       did,
-      verkey: 'verkey:sample',
-      nonce: '123456789',
-      meta: 'meta:sample'
-    });
+      'verkey:sample',
+      connectionRequest.nonce,
+      'meta:sample',
+    );
 
     // 8. Store relevant data in PA-account
     this.paData.store(this.paData.type.wallet, wallet);
     this.paData.store(this.paData.type.didShort, didShort);
     this.paData.store(this.paData.type.did, did);
 
-  }
-
-  async sovrinCreateWallet(wallet: any): Promise<void> {
-    await this.userImsApiService.createWallet(wallet);
-  }
-
-  // Create DID and store in wallet
-  async sovrinCreateStoreDid(wallet: any): Promise<any> {
-    return await this.userImsApiService.createStoreDid(wallet);
-  }
-
-  async getConnectionRequest() {
-    return await this.programsServiceApiService.getConnectionRequest();
-  }
-
-  async postConnectionResponse(connectionReponse: any) {
-    return await this.programsServiceApiService.postConnectionResponse(
-      connectionReponse.did,
-      connectionReponse.verkey,
-      connectionReponse.nonce,
-      connectionReponse.meta
-    );
   }
 
   getNextSection() {
