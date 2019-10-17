@@ -69,5 +69,5 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: interfaces/PA-App/platforms/android/app/build/outputs/apk/
+    pathtoPublish: interfaces/AW-App/platforms/android/app/build/outputs/apk/
     artifactName: 'AW-App'
