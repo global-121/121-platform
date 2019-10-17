@@ -51,6 +51,17 @@ To explicitly trigger a *native* build of the code (for Android), make sure to n
 
 ## Deployment
 
+### Building for production
+To generate a 'production ready' build of an interface, some environment-variables need to be set.
+The convention by [dotenv](https://www.npmjs.com/package/dotenv) is used.
+
+Possible variables are available in `.env.example` files for each interface. Make a local copy to set them:
+
+    cp .env.example .env
+
+When creating a production build, they are automatically used and inserted into the build.
+
+
 ### Building native apps
 To create 'native' versions of some of the interfaces, the following steps are required:  
 Run these commands from every app's own 'root'-folder.  

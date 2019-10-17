@@ -1,4 +1,10 @@
 # Rules for all interfaces:
+# -------------------------
+
+# Build Configuration/secrets:
+.env
+environment.prod.ts
+
 
 ## Third-party code:
 node_modules/
@@ -18,10 +24,7 @@ plugins/ios.json
 
 
 ## Temporary/Generated code/files:
-# dist/
 *.js.map
-# .sourcemaps/
-# .sass-cache/
 coverage/
 
 
