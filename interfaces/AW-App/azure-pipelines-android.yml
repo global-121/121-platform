@@ -16,8 +16,9 @@ trigger:
 pr:
   branches:
     include:
-    - 'native*'
-    - 'android*'
+    - master
+    - native/*
+    - android/*
   paths:
     include:
     - 'interfaces/AW-App/*'
