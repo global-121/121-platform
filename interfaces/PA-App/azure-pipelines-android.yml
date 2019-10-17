@@ -39,12 +39,38 @@ steps:
   displayName: 'Generate Assests'
   workingDirectory: $(workingDir)
 
-- script: npm run build:native --debug
+- script: echo 'Set Environment variables' && printenv
+  displayName: 'Set Environment variables - Debug'
+  workingDirectory: $(workingDir)
+  env:
+    NG_PRODUCTION: $(ng_production)
+    NG_IS_DEBUG: $(ng_is_debug)
+    NG_SHOW_DEBUG: $(ng_show_debug)
+    NG_LOCAL_STORAGE: $(ng_local_storage)
+    NG_USE_ANIMATION: $(ng_use_animation)
+    NG_URL_121_SERVICE_API: $(test_ng_url_121_service_api)
+    NG_URL_PA_ACCOUNT_SERVICE_API: $(test_ng_url_pa_account_service_api)
+    NG_URL_USER_IMS_API: $(test_url_user_ims_api)
+
+- script: npm run build:native -- --prod
   displayName: 'Build Android APK - Debug'
   workingDirectory: $(workingDir)
 
+- script: echo 'Set Environment variables' && printenv
+  displayName: 'Set Environment variables - Production'
+  workingDirectory: $(workingDir)
+  env:
+    NG_PRODUCTION: $(ng_production)
+    NG_IS_DEBUG: $(ng_is_debug)
+    NG_SHOW_DEBUG: $(ng_show_debug)
+    NG_LOCAL_STORAGE: $(ng_local_storage)
+    NG_USE_ANIMATION: $(ng_use_animation)
+    NG_URL_121_SERVICE_API: $(production_ng_url_121_service_api)
+    NG_URL_PA_ACCOUNT_SERVICE_API: $(production_ng_url_pa_account_service_api)
+    NG_URL_USER_IMS_API: $(production_ng_url_user_ims_api)
+
 - script: npm run build:native -- --prod --release
-  displayName: 'Build Android APK - Production'
+  displayName: 'Build Android APK - Production Release'
   workingDirectory: $(workingDir)
 
 - task: PublishBuildArtifacts@1
