@@ -3,6 +3,11 @@ import logging
 
 from orgims import Service, Config
 
+from argparse import ArgumentParser
+parser = ArgumentParser()
+parser.add_argument("-c", "--config", dest="config",
+                    help="Specify config-file", metavar="FILE")
+args = parser.parse_args()
 
 svc = None
 
@@ -12,7 +17,7 @@ async def setup():
     service_logger.addHandler(logging.StreamHandler())
     service_logger.setLevel(logging.DEBUG)
 
-    with open('config.json', 'r') as f:
+    with open(args.config, 'r') as f:
         config_data = f.read()
 
     config = Config.load(config_data)
