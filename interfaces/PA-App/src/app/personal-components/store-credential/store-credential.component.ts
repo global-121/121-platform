@@ -60,7 +60,7 @@ export class StoreCredentialComponent extends PersonalComponent {
     const wallet = await this.paData.retrieve(this.paData.type.wallet);
     const credentialRequest = await this.paData.retrieve(this.paData.type.credentialRequest);
     const credDefID = await this.paData.retrieve(this.paData.type.credDefId);
-    const credentialFormat = credential.message;
+    const credentialFormat = JSON.parse(credential.message);
 
     await this.sovrinService.storeCredential(
       credDefID,

@@ -11,6 +11,7 @@ export const environment = {
   useAnimation: false, // Use animations and delays in the interface
 
   // APIs:
+  // url_121_service_api: 'http://137.117.210.255/121-service/api',
   url_121_service_api: 'http://localhost:3000/api',
 
 };

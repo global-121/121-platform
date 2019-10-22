@@ -24,7 +24,7 @@ http.createServer(function (req, res) {
                         ' && sudo docker-compose up -d --build' +
 			' && cd ' + repo_pa +
 			' && sudo npm ci --unsafe-perm && sudo npm run build -- --prod' +
-			' && sudo rm -rf /var/www/html/PA-app && sudo cp -r www/ /var/www/html/PA-app'
+			' && sudo rm -rf /var/www/121-platform/PA-app && sudo cp -r www/ /var/www/121-platform/PA-app'
                 , function(error, stdout, stderr) {
                 if (error) {
                         console.log(stderr);
