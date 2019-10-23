@@ -159,6 +159,13 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return option ? option.label : '';
   }
 
+  public inputAnswers($event) {
+    const questionCode = $event.target.name;
+    this.answers[questionCode] = new Answer();
+    const answersArray = Object.keys(this.answers);
+    this.showNextQuestion(answersArray.indexOf(questionCode));
+  }
+
   public changeAnswers($event) {
     const questionCode = $event.target.name;
     const answerValue = $event.target.value;
@@ -184,7 +191,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
     } else {
       this.allQuestionsShown = false;
     }
-    this.showNextQuestion(answersArray.indexOf(questionCode));
   }
 
   private showNextQuestion(currentIndex: number) {
