@@ -6,6 +6,7 @@ import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonContent } from '@ionic/angular';
 import { ValidationComponents } from '../validation-components.enum';
+import { SessionStorageService } from 'src/app/services/session-storage.service';
 
 @Component({
   selector: 'app-validate-program',
@@ -23,18 +24,20 @@ export class ValidateProgramComponent implements ValidationComponent {
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
+    public sessionStorageService: SessionStorageService,
     public storage: Storage,
     public router: Router,
     public ionContent: IonContent,
   ) { }
 
   ngOnInit() {
-    this.storage.get('scannedDid').then(did => {
-      this.storage.get('scannedProgramId').then(programId => {
-        this.did = did;
-        this.programId = programId;
-        this.getPrefilledAnswersProgram();
-      });
+    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedDid).then(data => {
+      console.log(data);
+      const jsonData = JSON.parse(data);
+      this.did = jsonData.did;
+      this.programId = jsonData.programId;
+      this.getPrefilledAnswersProgram();
+      this.sessionStorageService.destroyItem(this.sessionStorageService.type.scannedDid);
     });
   }
 

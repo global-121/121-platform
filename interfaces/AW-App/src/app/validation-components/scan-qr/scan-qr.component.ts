@@ -67,8 +67,8 @@ export class ScanQrComponent implements ValidationComponent {
       }
 
       this.did = jsonData.did;
-
       this.programId = jsonData.programId;
+
       this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
         if (response.length === 0) {
           this.unknownDidCombination = true;
@@ -79,7 +79,8 @@ export class ScanQrComponent implements ValidationComponent {
         this.storage.set('scannedDid', this.did);
         this.storage.set('scannedProgramId', this.programId);
         this.didResult = true;
-        this.cleanup();
+        this.unknownDidCombination = false;
+        this.scanError = false;
 
         this.complete();
 
@@ -88,12 +89,6 @@ export class ScanQrComponent implements ValidationComponent {
 
 
     });
-  }
-
-  cleanup() {
-    this.unknownDidCombination = false;
-    this.scanError = false;
-    this.sessionStorageService.destroyItem(this.sessionStorageService.type.scannedDid);
   }
 
   public backMainMenu() {
