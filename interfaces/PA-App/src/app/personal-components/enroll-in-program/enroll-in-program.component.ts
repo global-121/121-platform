@@ -194,6 +194,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     } else {
       this.allQuestionsShown = false;
     }
+    this.showNextQuestion(answersArray.indexOf(questionCode));
   }
 
   private showNextQuestion(currentIndex: number) {
