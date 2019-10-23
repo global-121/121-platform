@@ -39,7 +39,8 @@
                    inputmode="numeric"
                    pattern="[0-9]*"
                    [name]="question.code"
-                   (input)="changeAnswers($event)"
+                   (input)="inputAnswers($event)"
+                   (change)="changeAnswers($event)"
                    [disabled]="hasAnswered"
         ></ion-input>
       </div>
@@ -54,7 +55,8 @@
       <div *ngSwitchDefault>
         <ion-input type="text"
                    [name]="question.code"
-                   (input)="changeAnswers($event)"
+                   (input)="inputAnswers($event)"
+                   (change)="changeAnswers($event)"
                    [disabled]="hasAnswered"
         ></ion-input>
       </div>
