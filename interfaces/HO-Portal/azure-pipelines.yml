@@ -1,6 +1,10 @@
 # See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema
 # See: https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
+variables:
+  workingDir: interfaces/HO-Portal/
+
+
 trigger:
   branches:
     include:
@@ -16,8 +20,10 @@ pr:
     include:
     - 'interfaces/HO-Portal/*'
 
+
 pool:
   vmImage: 'ubuntu-16.04'
+
 
 steps:
 - task: NodeTool@0
@@ -26,12 +32,12 @@ steps:
 
 - script: npm ci
   displayName: Install
-  workingDirectory: interfaces/HO-Portal/
+  workingDirectory: $(workingDir)
 
 - script: npm run lint
   displayName: Linting
-  workingDirectory: interfaces/HO-Portal/
+  workingDirectory: $(workingDir)
 
 - script: npm test
   displayName: Tests
-  workingDirectory: interfaces/HO-Portal/
+  workingDirectory: $(workingDir)
