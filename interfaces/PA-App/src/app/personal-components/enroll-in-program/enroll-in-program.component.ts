@@ -164,14 +164,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     // Fill this.answers with an empty answer. For this functionality, the actual answer is not yet needed.
     this.answers[questionCode] = new Answer();
-
     const answersArray = Object.keys(this.answers);
 
-    if (answersArray.length >= (this.questions.length - 1)) {
-      this.allQuestionsShown = true;
-    } else {
-      this.allQuestionsShown = false;
-    }
     this.showNextQuestion(answersArray.indexOf(questionCode));
   }
 
@@ -193,6 +187,13 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     this.answers[questionCode] = answer;
 
+    const answersArray = Object.keys(this.answers);
+
+    if (answersArray.length >= (this.questions.length - 1)) {
+      this.allQuestionsShown = true;
+    } else {
+      this.allQuestionsShown = false;
+    }
   }
 
   private showNextQuestion(currentIndex: number) {

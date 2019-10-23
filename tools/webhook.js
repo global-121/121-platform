@@ -1,4 +1,6 @@
-var secret = "plukuwplan1";
+var secrets = require("./secrets");
+
+var secret = secrets.secret;
 var repo_services = "/home/121-platform/services";
 var repo_pa = "/home/121-platform/interfaces/PA-App";
 

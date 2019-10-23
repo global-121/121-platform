@@ -7,6 +7,8 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./dialogue-turn.component.scss'],
 })
 export class DialogueTurnComponent implements OnInit {
+  public imgPath: string;
+
   @Input()
   isSpoken = false;
 
@@ -26,6 +28,7 @@ export class DialogueTurnComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.imgPath = '../../..' + environment.subDirPath + '/assets/avatar--121.svg';
     this.isSelf = (this.actor === 'self');
     this.moment = new Date();
   }
