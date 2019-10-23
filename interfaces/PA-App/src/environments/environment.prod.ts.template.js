@@ -11,6 +11,9 @@ export const environment = {
   useAnimation: ${process.env.NG_USE_ANIMATION || 'true'},
   localStorage: ${process.env.NG_LOCAL_STORAGE || 'false'},
 
+  // Extra:
+  subDirPath: '${process.env.NG_SUB_DIR_PATH || '\'/PA-app\''}',
+
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API}',
   url_pa_account_service_api: '${process.env.NG_URL_PA_ACCOUNT_SERVICE_API}',
