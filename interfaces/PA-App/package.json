@@ -40,6 +40,8 @@
     "cordova-android": "^8.1.0",
     "cordova-browser": "^6.0.0",
     "cordova-ios": "^5.0.1",
+    "cordova-plugin-add-swift-support": "^2.0.2",
+    "cordova-plugin-global-121-indy": "github:global-121/121-indy-wrapper-ios#platform-agnostic",
     "core-js": "2.6.8",
     "rxjs": "~6.5.1",
     "tslib": "^1.10.0",
@@ -89,7 +91,8 @@
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-device": {}
+      "cordova-plugin-device": {},
+      "cordova-plugin-global-121-indy": {}
     },
     "platforms": [
       "browser",
