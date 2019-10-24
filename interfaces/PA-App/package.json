@@ -39,6 +39,7 @@
     "angularx-qrcode": "^1.6.4",
     "cordova-android": "^8.1.0",
     "cordova-browser": "^6.0.0",
+    "cordova-ios": "^5.0.1",
     "core-js": "2.6.8",
     "rxjs": "~6.5.1",
     "tslib": "^1.10.0",
@@ -92,7 +93,8 @@
     },
     "platforms": [
       "browser",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }
