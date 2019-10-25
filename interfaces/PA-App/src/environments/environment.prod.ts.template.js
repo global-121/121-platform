@@ -12,7 +12,7 @@ export const environment = {
   localStorage: ${process.env.NG_LOCAL_STORAGE || 'false'},
 
   // Extra:
-  subDirPath: '${process.env.NG_SUB_DIR_PATH}',
+  subDirPath: ${process.env.NG_SUB_DIR_PATH_PA || '\'/PA-app\''},
 
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API}',

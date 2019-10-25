@@ -10,6 +10,9 @@ export const environment = {
   showDebug: ${process.env.NG_SHOW_DEBUG || 'false'},
   useAnimation: ${process.env.NG_USE_ANIMATION || 'true'},
 
+  // Extra:
+  subDirPath: ${process.env.NG_SUB_DIR_PATH_AW || '\'/AW-app\''},
+
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API}',
 
