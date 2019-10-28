@@ -295,5 +295,35 @@ class Service:
 
         return attr_values
 
+    async def backup_wallet(self, backup_file_storage_path, wallet_key):
+        wallet_export_config = {
+            "path": backup_file_storage_path,
+            "key" : wallet_key
+        }
+        try:
+            wallet.export_wallet(self._wallet_handle,wallet_export_config)
+            self._logger.debug(f'Wallet backup created at {backup_file_storage_path}')
+        except IndyError as e:
+            self._logger.error(f'Failed to create backup of the wallet with config: {wallet_export_config}')
+            raise ServiceError('Failed to create backup of wallet') from e
+        return False
+
+    async def restore_wallet(self, wallet_name, wallet_key, backup_file_storage_path):
+        wallet_import_config = {
+            'path': backup_file_storage_path,
+            'key' : wallet_key
+        }
+        try:
+            wallet.import_wallet(
+                {"id":wallet_name},
+                {"key",wallet_key}, 
+                wallet_import_config
+                )
+            self._logger.debug(f'Wallet restored successfully!')
+        except IndyError as e:
+            self._logger.error(f'Failed to retore wallet from backup with config: {wallet_import_config}')
+            raise ServiceError('Failed to restore wallet from backup') from e
+        return False
+
 def _format_data(data):
     return pprint.pformat(json.loads(data))
