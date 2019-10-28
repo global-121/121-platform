@@ -14,11 +14,15 @@ This folder contains code not directly related to the applications, but for exam
 ### Apache2
 
 All applications from /services folder are running as local applications on various ports of localhost. To expose them to be reached by frontend-apps, we need Apache2.
-Note that not all applications need to be exposed. E.g. UserIMS yes, as it is directly called from PA-app, but e.g. OrgIMS not, because it is called from 121-service, which is called from PA-app.
+Note that not all applications need to be exposed. E.g. UserIMS yes, as it is directly called from PA-app, but e.g. OrgIMS not, because it is called from 121-service, which is called from PA-app. Also the PA-app and the AW-app are served as web-apps through Apache2.
+
+First, get the right certificates (SSLCertificateFile and SSLCACertificateFile) and place them in /tools/certificates/.
 
 On Ubuntu server do:
 
     cp tools/121-platform.conf /etc/apache2/sites-enabled/121-platform.conf
+    cp tools/121-platform-https.conf /etc/apache2/sites-enabled/121-platform-https.conf
+    a2enmod ssl
     service apache2 restart
     service apache2 status
 
