@@ -1,4 +1,4 @@
-import { PORT, SUBDOMAIN } from './config';
+import { PORT, SUBDOMAIN, SCHEME } from './config';
 import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -14,6 +14,7 @@ async function bootstrap(): Promise<void> {
     .setDescription('API description')
     .setVersion('1.0')
     .setBasePath(SUBDOMAIN + 'api')
+    .setSchemes(SCHEME)
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
