@@ -1,4 +1,10 @@
 # Rules for all interfaces:
+# -------------------------
+
+# Build Configuration/secrets:
+.env
+environment.prod.ts
+
 
 ## Third-party code:
 node_modules/
@@ -13,14 +19,14 @@ plugins/android.json
 plugins/ios.json
 */resources/ios/
 */resources/android/
+*.keystore
+*.apk
 
 
 ## Temporary/Generated code/files:
-# dist/
 *.js.map
-# .sourcemaps/
-# .sass-cache/
 coverage/
+
 
 # IDE-specific files
 *.sublime-project

@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 
 import { ConversationService } from 'src/app/services/conversation.service';
-import { StorageService } from 'src/app/services/storage.service';
+import { PaDataService } from 'src/app/services/padata.service';
 import { UpdateService } from 'src/app/services/update.service';
 
-import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
-import { UserImsApiService } from 'src/app/services/user-ims-api.service';
+import { SovrinService } from 'src/app/services/sovrin.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 import { PersonalComponent } from '../personal-component.class';
@@ -23,6 +22,8 @@ enum InclusionStates {
 })
 export class HandleProofComponent extends PersonalComponent {
 
+  public ngo: string;
+
   private programId: number;
   private did: string;
   private wallet: any;
@@ -33,11 +34,10 @@ export class HandleProofComponent extends PersonalComponent {
 
   constructor(
     public conversationService: ConversationService,
-    public storageService: StorageService,
+    public paData: PaDataService,
     public updateService: UpdateService,
     public programService: ProgramsServiceApiService,
-    public paAccountApiService: PaAccountApiService,
-    public userImsApiService: UserImsApiService,
+    public sovrinService: SovrinService,
   ) {
     super();
 
@@ -52,10 +52,11 @@ export class HandleProofComponent extends PersonalComponent {
     console.log('handleProof');
 
     await this.gatherData();
+    this.ngo = this.paData.myPrograms[this.programId].ngo;
 
     // Create proof
     const proofRequest = await this.programService.getProofRequest(this.programId);
-    const proof = await this.userImsApiService.getProofFromWallet(proofRequest, this.wallet);
+    const proof = await this.sovrinService.getProofFromWallet(proofRequest, this.wallet);
 
     // Use proof
     const status = await this.programService.includeMe(this.did, this.programId, proof);
@@ -74,8 +75,8 @@ export class HandleProofComponent extends PersonalComponent {
   }
 
   private async gatherData() {
-    this.programId = Number(await this.storageService.retrieve(this.storageService.type.programId));
-    this.did = await this.storageService.retrieve(this.storageService.type.did);
-    this.wallet = JSON.parse(await this.storageService.retrieve(this.storageService.type.wallet));
+    this.programId = Number(await this.paData.retrieve(this.paData.type.programId));
+    this.did = await this.paData.retrieve(this.paData.type.did);
+    this.wallet = await this.paData.retrieve(this.paData.type.wallet);
   }
 }

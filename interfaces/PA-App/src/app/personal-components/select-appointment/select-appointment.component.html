@@ -1,5 +1,5 @@
 <section>
-  <dialogue-turn [actor]="ngo">
+  <dialogue-turn [actor]="program?.ngo">
     <p>
       {{ 'personal.select-appointment.introduction'|translate }}
     </p>
@@ -42,7 +42,7 @@
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo"
+  <dialogue-turn [actor]="program?.ngo"
                  *ngIf="timeslotSubmitted"
                  [isSpoken]="timeslotSubmitted"
   >
@@ -97,12 +97,34 @@
       >{{ 'shared.submit-button'|translate }}</ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo"
+  <dialogue-turn [actor]="program?.ngo"
                  *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
     <p>
       {{ 'personal.select-appointment.conclusion'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                 *ngIf="qrDataShow"
+                 [isSpoken]="qrDataShow"
+  >
+    <p>
+      {{ 'personal.select-appointment.meeting-reminder'|translate }}
+    </p>
+    <p>
+      {{ 'personal.select-appointment.from'|translate }}:
+      <strong>
+        {{ chosenTimeslot.startDate|date:dateFormat }}: {{ chosenTimeslot.startDate|date:timeFormat }}
+      </strong>
+      <br>
+      {{ 'personal.select-appointment.till'|translate }}:
+      <strong>
+        {{ chosenTimeslot.endDate|date:dateFormat }}: {{ chosenTimeslot.endDate|date:timeFormat }}
+      </strong>
+      <br>
+      {{ 'personal.select-appointment.at'|translate }}:
+      <strong>{{ chosenTimeslot.location }}</strong>
     </p>
     <p>
       {{ 'personal.select-appointment.documents'|translate }}
@@ -119,11 +141,6 @@
         {{ 'personal.select-appointment.more-info-documents'|translate }}
       </ion-button>
     </p>
-  </dialogue-turn>
-  <dialogue-turn [actor]="ngo"
-                 *ngIf="qrDataShow"
-                 [isSpoken]="qrDataShow"
-  >
     <p>
       {{ 'personal.select-appointment.qr-code'|translate }}
     </p>
@@ -136,5 +153,16 @@
               level="H"
       ></qrcode>
     </div>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                  *ngIf="qrDataShow && !meetingPast"
+                  [isSpoken]="qrDataShow">
+    <p *ngIf="!meetingTomorrow && !meetingToday" [innerHTML]="'personal.select-appointment.meeting-count-down'|translate:{ daysToMeeting:daysToMeeting, dayDays:dayDays }"></p>
+    <p *ngIf="meetingTomorrow">
+      {{ 'personal.select-appointment.meeting-tomorrow'|translate }}
+    </p>
+    <p *ngIf="meetingToday">
+      {{ 'personal.select-appointment.meeting-today'|translate }}
+    </p>
   </dialogue-turn>
 </section>

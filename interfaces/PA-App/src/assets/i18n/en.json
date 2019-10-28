@@ -11,14 +11,16 @@
       "create-password": "Create password:",
       "confirm-password": "Confirm password:",
       "submit-password": "Create my password",
+      "unequal-passwords": "The passwords you provided are not the same. Please try again.",
       "conclusion": "Great! You have created a password."
     },
     "enroll-in-program": {
-      "introduction": "We have received your request to apply for <strong>{{programTitle}}</strong>.",
+      "introduction": "We have received your request to apply for <strong>{{programTitle}}</strong> of <strong>{{ngo}}</strong>.",
       "introduction-questions": "To make sure you get the best possible help and a fair process, we need some personal information.",
       "more-info-questions": "About this",
       "more-info-share": "Who sees your information",
       "submit": "Save my answers",
+      "dob-feedback": "Your date of birth does not have a valid format. Please adjust and save again.",
       "please-confirm": "Below is an overview of your information. Please confirm and submit.",
       "submit-confirm": "Submit my information",
       "change": "Change my information",
@@ -53,7 +55,11 @@
       "confirm": "Confirm appointment",
       "change": "Change appointment",
       "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed.",
-      "qr-code": "Please show this QR-code at your meeting."
+      "qr-code": "Please show this QR-code at your meeting.",
+      "meeting-reminder": "Here is everything you need to know about your meeting:",
+      "meeting-count-down": "Your meeting appointment takes place in <strong><big>{{daysToMeeting}}</big></strong> days.",
+      "meeting-tomorrow": "Your meeting appointment takes place tomorrow.",
+      "meeting-today": "Your meeting appointment takes place today."
     },
     "select-country": {
       "introduction": " Next step: Select your location.",

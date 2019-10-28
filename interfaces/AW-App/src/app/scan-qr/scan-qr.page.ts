@@ -1,3 +1,4 @@
+import { SessionStorageService } from './../services/session-storage.service';
 import { Component, OnInit } from '@angular/core';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { NavController, NavParams, LoadingController, AlertController, ToastController } from '@ionic/angular';
@@ -30,6 +31,7 @@ export class ScanQrPage implements OnInit {
     public alertCtrl: AlertController,
     public router: Router,
     public conversationService: ConversationService,
+    public sessionStorageService: SessionStorageService
   ) {
 
   }
@@ -81,7 +83,7 @@ export class ScanQrPage implements OnInit {
   }
 
   closeModal() {
-    this.router.navigate(['/tabs/personal']);
+    this.router.navigate(['/tabs/validation']);
     this.qrScanner.hide(); // hide camera preview
     this.scanSub.unsubscribe(); // stop scanning
   }
@@ -107,14 +109,9 @@ export class ScanQrPage implements OnInit {
   }
 
   startMeeting(qr) {
-    const qrJson = JSON.parse(qr);
-    const navigationExtras: NavigationExtras = {
-      queryParams: {
-        did: JSON.stringify(qrJson.did),
-        programId: JSON.stringify(qrJson.programId)
-      }
-    };
-    this.router.navigate(['/tabs/personal'], navigationExtras);
+    this.sessionStorageService.store(this.sessionStorageService.type.scannedDid, qr);
+
+    this.router.navigate(['/tabs/validation']);
   }
 
   ngOnInit() {

@@ -1,4 +1,3 @@
-import { StorageService } from './../../services/storage.service';
 import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -6,11 +5,10 @@ import { PersonalComponents } from '../personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Storage } from '@ionic/storage';
+import { PaDataService } from 'src/app/services/padata.service';
 
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { Program } from 'src/app/models/program.model';
-import { PaAccountApiService } from 'src/app/services/pa-account-api.service';
 
 @Component({
   selector: 'app-select-appointment',
@@ -24,12 +22,17 @@ export class SelectAppointmentComponent extends PersonalComponent {
   public dateFormat = 'EEE, dd-MM-yyyy';
   public timeFormat = 'HH:mm';
 
+  public program: any;
   public ngo: string;
   private programChoice: number;
 
   public timeslots: Timeslot[];
   public timeslotChoice: number;
   public chosenTimeslot: Timeslot;
+  public daysToMeeting: string;
+  public meetingTomorrow: boolean;
+  public meetingToday: boolean;
+  public meetingPast: boolean;
 
   public timeslotSubmitted: boolean;
 
@@ -43,58 +46,46 @@ export class SelectAppointmentComponent extends PersonalComponent {
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
-    public paAccountApiService: PaAccountApiService,
     public translate: TranslateService,
-    public storage: Storage,
-    public storageService: StorageService,
+    public paData: PaDataService,
   ) {
     super();
 
     this.fallbackLanguageCode = this.translate.getDefaultLang();
+    this.languageCode = this.translate.currentLang;
     this.getProgram();
   }
 
   ngOnInit() {
-    this.getLanguageChoice();
     this.getDid();
+    this.getDaysToAppointment();
   }
 
   private getDid() {
-    this.storageService.retrieve(this.storageService.type.did).then((value) => {
+    this.paData.retrieve(this.paData.type.did).then((value) => {
       this.did = value;
-    });
-  }
-
-  private getLanguageChoice() {
-    this.storage.get('languageChoice').then(value => {
-      this.languageCode = value;
     });
   }
 
   private getProgram() {
     this.conversationService.startLoading();
-    this.storage.get('programChoice').then(programId => {
-      this.programChoice = programId;
+    this.paData.retrieve(this.paData.type.programId).then(programId => {
+      this.programChoice = Number(programId);
       this.getProgramProperties(programId);
       this.getTimeslots(programId);
     });
   }
 
   private getProgramProperties(programId) {
-    this.programsService.getProgramById(programId).subscribe((response: Program) => {
-      if (response.ngo) {
-        this.ngo = response.ngo;
-      }
-      if (response.meetingDocuments) {
-        const documents = this.mapLabelByLanguageCode(response.meetingDocuments);
-        this.meetingDocuments = this.buildDocumentsList(documents);
-      }
-    });
+    this.program = this.paData.myPrograms[programId];
+    const documents = this.mapLabelByLanguageCode(this.program.meetingDocuments);
+    this.meetingDocuments = this.buildDocumentsList(documents);
   }
 
   private getTimeslots(programId: any) {
     this.programsService.getTimeslots(programId).subscribe((response: Timeslot[]) => {
       this.timeslots = response;
+      console.log('timeslots: ', this.timeslots);
 
       this.conversationService.stopLoading();
     });
@@ -122,7 +113,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   private storeTimeslot(timeslotChoice: any) {
-    this.storage.set('timeslotChoice', timeslotChoice);
+    this.paData.store(this.paData.type.timeslot, timeslotChoice);
   }
 
   private getTimeslotById(timeslotId: number) {
@@ -161,6 +152,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
     this.programsService.postAppointment(timeslotId, did).subscribe(() => {
 
       this.generateQrCode(did, programId);
+      this.getDaysToAppointment();
 
       this.conversationService.stopLoading();
       this.complete();
@@ -177,6 +169,25 @@ export class SelectAppointmentComponent extends PersonalComponent {
       this.qrDataString = JSON.stringify(qrData);
       this.qrDataShow = true;
     }
+  }
+
+  private getDaysToAppointment() {
+    if (this.qrDataShow) {
+      let daysToMeetingNumber: number;
+
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      const chosenDate = new Date(this.chosenTimeslot.startDate.valueOf());
+      chosenDate.setHours(0, 0, 0, 0);
+      const diff = chosenDate.getTime() - currentDate.getTime();
+      daysToMeetingNumber = Math.ceil(diff / (1000 * 3600 * 24));
+      this.daysToMeeting = String(daysToMeetingNumber);
+      this.meetingTomorrow = daysToMeetingNumber === 1 ? true : false;
+      this.meetingToday = daysToMeetingNumber === 0 ? true : false;
+      this.meetingPast = daysToMeetingNumber < 0 ? true : false;
+    }
+
+
   }
 
   getNextSection() {

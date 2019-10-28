@@ -1,6 +1,6 @@
 <section>
-  <dialogue-turn [actor]="program?.ngo">
-    <p [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programTitle }"></p>
+  <dialogue-turn [actor]="program?.ngo" [hidden]="!programTitle">
+    <p [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programTitle, ngo:ngo }"></p>
     <p>
       {{ 'personal.enroll-in-program.introduction-questions'|translate }}
     </p>
@@ -39,6 +39,7 @@
                    inputmode="numeric"
                    pattern="[0-9]*"
                    [name]="question.code"
+                   (input)="inputAnswers($event)"
                    (change)="changeAnswers($event)"
                    [disabled]="hasAnswered"
         ></ion-input>
@@ -54,6 +55,7 @@
       <div *ngSwitchDefault>
         <ion-input type="text"
                    [name]="question.code"
+                   (input)="inputAnswers($event)"
                    (change)="changeAnswers($event)"
                    [disabled]="hasAnswered"
         ></ion-input>
@@ -73,6 +75,14 @@
       >
         {{ 'personal.enroll-in-program.submit'|translate }}
       </ion-button>
+    </p>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                 *ngIf="dobFeedback"
+                 [isSpoken]="dobFeedback"
+  >
+    <p>
+      {{ 'personal.enroll-in-program.dob-feedback'|translate }}
     </p>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"

@@ -17,11 +17,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'personal',
+        path: 'validation',
         children: [
           {
             path: '',
-            loadChildren: '../personal/personal.module#PersonalPageModule'
+            loadChildren: '../validation/validation.module#ValidationPageModule'
           }
         ]
       },

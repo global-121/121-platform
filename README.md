@@ -11,7 +11,9 @@
 | Interfaces | Build Status |
 |------------|--------------|
 | PA-App  | [![Build Status](https://dev.azure.com/global121/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/global121/121%20Platform/_build/latest?definitionId=17&branchName=master) |
+| PA-App (Android)  | [![Build Status](https://dev.azure.com/global121/121%20Platform/_apis/build/status/Interfaces/PA-App%20--%20Android?branchName=master)](https://dev.azure.com/global121/121%20Platform/_build/latest?definitionId=23&branchName=master) |
 | AW-App  | [![Build Status](https://dev.azure.com/global121/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/global121/121%20Platform/_build/latest?definitionId=18&branchName=master) |
+| AW-App (Android) | [![Build Status](https://dev.azure.com/global121/121%20Platform/_apis/build/status/Interfaces/AW-App%20--%20Android?branchName=master)](https://dev.azure.com/global121/121%20Platform/_build/latest?definitionId=22&branchName=master) |
 | HO-Portal  | [![Build Status](https://dev.azure.com/global121/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/global121/121%20Platform/_build/latest?definitionId=13&branchName=master) |
 
 | Services | Build Status |

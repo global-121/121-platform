@@ -4,7 +4,7 @@ import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Storage } from '@ionic/storage';
+import { PaDataService } from 'src/app/services/padata.service';
 
 @Component({
   selector: 'app-select-country',
@@ -19,7 +19,7 @@ export class SelectCountryComponent extends PersonalComponent {
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
-    public storage: Storage,
+    public paData: PaDataService,
   ) {
     super();
 
@@ -42,15 +42,11 @@ export class SelectCountryComponent extends PersonalComponent {
     return country ? country.country : '';
   }
 
-  private storeCountry(countryChoice: number) {
-    this.storage.set('countryChoice', countryChoice);
-  }
-
   public changeCountry($event) {
     this.countryChoice = parseInt($event.detail.value, 10);
     this.countryChoiceName = this.getCountryName(this.countryChoice);
     this.isDisabled = false;
-    this.storeCountry(this.countryChoice);
+    this.paData.store(this.paData.type.country, this.countryChoice);
   }
 
   public submitCountry() {

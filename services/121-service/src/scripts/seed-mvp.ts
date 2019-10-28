@@ -12,7 +12,7 @@ import { AvailabilityEntity } from '../schedule/appointment/availability.entity'
 
 @Injectable()
 export class SeedMvp implements InterfaceScript {
-  public constructor(private connection: Connection) {}
+  public constructor(private connection: Connection) { }
 
   private readonly seedHelper = new SeedHelper(this.connection);
 
@@ -55,18 +55,33 @@ export class SeedMvp implements InterfaceScript {
     );
 
     let newAvailability;
-    for (var item of [0, 1]) {
+    const items = [
+      {
+        startDate: 30,
+        endDate: 30,
+        startTime: 12,
+        location: 'A'
+      },
+      {
+        startDate: 31,
+        endDate: 32,
+        startTime: 13,
+        location: 'B'
+      }
+    ]
+    for (var item of items) {
       let availability = new AvailabilityEntity();
-      let exampleDate = new Date();
-      exampleDate.setDate(exampleDate.getDate() + item);
-      exampleDate.setHours(12 + item, 0);
+      let startDate = new Date();
+      let endDate = new Date();
+      startDate.setDate(startDate.getDate() + item.startDate);
+      endDate.setDate(endDate.getDate() + item.endDate);
+      startDate.setHours(item.startTime, 0);
+      endDate.setHours(item.startTime + 5, 0);
 
-      availability.startDate = exampleDate;
-      availability.endDate = new Date(exampleDate.valueOf());
-      availability.endDate.setHours(17 + item);
+      availability.startDate = startDate;
+      availability.endDate = endDate;
 
-
-      availability.location = 'Location ' + item;
+      availability.location = 'Location ' + item.location;
 
       let aidworker = await userRepository.findOne(2);
       availability.aidworker = aidworker;

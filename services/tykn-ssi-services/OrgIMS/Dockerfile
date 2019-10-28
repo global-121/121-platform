@@ -27,5 +27,10 @@ RUN ls -la && pwd
 # Install dependencies:
 RUN pip install -e .
 
+# Define config-file per HO
+ARG CONFIG
+ENV CONFIG=${CONFIG}
+
 # Run the application:
-CMD ["python3.6", "start.py"]
+#CMD ["python3.6", "start.py"]
+CMD python3.6 start.py -c ${CONFIG}

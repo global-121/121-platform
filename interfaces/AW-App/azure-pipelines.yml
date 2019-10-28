@@ -1,6 +1,10 @@
 # See: https://docs.microsoft.com/azure/devops/pipelines/yaml-schema
 # See: https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
+variables:
+  workingDir: interfaces/AW-App/
+
+
 trigger:
   branches:
     include:
@@ -16,6 +20,7 @@ pr:
     include:
     - 'interfaces/AW-App/*'
 
+
 pool:
   vmImage: 'ubuntu-16.04'
 
@@ -26,12 +31,12 @@ steps:
 
 - script: npm ci
   displayName: Install
-  workingDirectory: interfaces/AW-App/
+  workingDirectory: $(workingDir)
 
 - script: npm run lint
   displayName: Linting
-  workingDirectory: interfaces/AW-App/
+  workingDirectory: $(workingDir)
 
 - script: npm test
   displayName: Tests
-  workingDirectory: interfaces/AW-App/
+  workingDirectory: $(workingDir)

@@ -3,13 +3,12 @@ import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
 import { Program } from 'src/app/models/program.model';
-import { UserImsApiService } from 'src/app/services/user-ims-api.service';
-import { StorageService } from 'src/app/services/storage.service';
+import { SovrinService } from 'src/app/services/sovrin.service';
+import { PaDataService } from 'src/app/services/padata.service';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -22,6 +21,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public program: any;
   public programTitle: string;
+  public ngo: string;
 
   private credDefId: string;
   private programId: number;
@@ -33,44 +33,41 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public allQuestionsShown = false;
   public hasAnswered: boolean;
+  public dobFeedback = false;
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    public userImsApiService: UserImsApiService,
-    public storageService: StorageService,
-    public storage: Storage,
+    public sovrinService: SovrinService,
+    public paData: PaDataService,
     public translate: TranslateService,
     public conversationService: ConversationService,
   ) {
     super();
 
     this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.getLanguageChoice();
+    this.languageCode = this.translate.currentLang;
     this.getProgramDetails();
-  }
-
-  private getLanguageChoice() {
-    this.storage.get('languageChoice').then(value => {
-      this.languageCode = value;
-    });
   }
 
   private getProgramDetails() {
     this.conversationService.startLoading();
 
-    this.storage.get('programChoice').then(value => {
+    this.paData.retrieve(this.paData.type.programId).then(value => {
+      this.programId = Number(value);
       this.getProgramDetailsById(value);
-      this.programId = value;
     });
   }
 
   public getProgramDetailsById(programId: string) {
     this.programsService.getProgramById(programId).subscribe((response: Program) => {
       this.programTitle = this.mapLabelByLanguageCode(response.title);
+      this.ngo = response.ngo;
       this.credDefId = response.credDefId;
 
       this.buildDetails(response);
       this.buildQuestions(response.customCriteria);
+
+      this.paData.saveProgram(response.id, response);
 
       this.conversationService.stopLoading();
     });
@@ -162,6 +159,16 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return option ? option.label : '';
   }
 
+  public inputAnswers($event) {
+    const questionCode = $event.target.name;
+
+    // Fill this.answers with an empty answer. For this functionality, the actual answer is not yet needed.
+    this.answers[questionCode] = new Answer();
+    const answersArray = Object.keys(this.answers);
+
+    this.showNextQuestion(answersArray.indexOf(questionCode));
+  }
+
   public changeAnswers($event) {
     const questionCode = $event.target.name;
     const answerValue = $event.target.value;
@@ -202,8 +209,16 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   public submit() {
-    this.hasAnswered = true;
-    this.conversationService.scrollToEnd();
+
+    this.paData.saveAnswers(this.programId, this.answers);
+
+    if (!this.answers.dob) {
+      this.dobFeedback = true;
+    } else {
+      this.hasAnswered = true;
+      this.dobFeedback = false;
+      this.conversationService.scrollToEnd();
+    }
   }
 
   public async submitConfirm() {
@@ -222,13 +237,13 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const credentialOffer = await this.programsService.getCredentialOffer(this.programId);
 
     // 2. Retrieve other necessary data from PA-account
-    const wallet = await this.storageService.retrieve(this.storageService.type.wallet);
-    const didShort = await this.storageService.retrieve(this.storageService.type.didShort);
-    const did = await this.storageService.retrieve(this.storageService.type.did);
+    const wallet = await this.paData.retrieve(this.paData.type.wallet);
+    const didShort = await this.paData.retrieve(this.paData.type.didShort);
+    const did = await this.paData.retrieve(this.paData.type.did);
 
     // 3. Post Credential Request to create credential request in PA-app
-    const credentialRequest = await this.userImsApiService.createCredentialRequest(
-      JSON.parse(wallet),
+    const credentialRequest = await this.sovrinService.createCredentialRequest(
+      wallet,
       this.credDefId,
       credentialOffer.credOfferJsonData,
       didShort,
@@ -250,9 +265,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
     );
 
     // 6. Store relevant data to PA-account
-    this.storageService.store(this.storageService.type.credentialRequest, JSON.stringify(credentialRequest));
-    this.storageService.store(this.storageService.type.credDefId, JSON.stringify(this.credDefId));
-    this.storageService.store(this.storageService.type.programId, JSON.stringify(this.programId));
+    this.paData.store(this.paData.type.credentialRequest, credentialRequest);
+    this.paData.store(this.paData.type.credDefId, this.credDefId);
+    this.paData.store(this.paData.type.programId, this.programId);
   }
 
   private createAttributes(answers: Answer[]): Attribute[] {

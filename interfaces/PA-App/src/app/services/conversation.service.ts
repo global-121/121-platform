@@ -64,7 +64,7 @@ export class ConversationService {
   }
 
   private addSection(sectionName) {
-    console.log('ConverstaionService addSection(): ', sectionName);
+    console.log('ConversationService addSection(): ', sectionName);
 
     this.conversation.push({
       name: sectionName
