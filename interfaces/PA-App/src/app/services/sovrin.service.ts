@@ -4,6 +4,8 @@ import { environment } from 'src/environments/environment';
 
 import { UserImsApiService } from './user-ims-api.service';
 
+declare var Global121: any;
+
 class Wallet {
   id: string;
   passKey: string;
@@ -19,8 +21,33 @@ export class SovrinService {
   constructor(
     private userImsApi: UserImsApiService,
   ) {
-    this.useLocalStorage = environment.localStorage;
+    this.useLocalStorage = environment.localStorage && this.hasSdkInstalled();
 
+    // Check/Perform initial Sovrin setup:
+    if (this.hasSdkInstalled() && !this.isSovrinSetupDone()) {
+      this.initialSovrinSetup();
+    }
+  }
+
+  private hasSdkInstalled() {
+    return ('Global121' in window);
+  }
+
+  private isSovrinSetupDone() {
+    return window.localStorage.getItem('isSovrinSetupDone') === 'yes';
+  }
+
+  private initialSovrinSetup() {
+    Global121.Indy.setup(
+      (result) => {
+        console.log('Success!', result);
+        window.localStorage.setItem('isSovrinSetupDone', 'yes');
+      },
+      (error) => {
+        console.log('Fail!', error);
+        window.localStorage.setItem('isSovrinSetupDone', 'no');
+      }
+    );
   }
 
   private toDoSDK(message: string): Promise<any> {
