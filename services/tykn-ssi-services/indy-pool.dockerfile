@@ -28,8 +28,10 @@ ARG indy_plenum_ver=1.9.1~dev856
 ARG indy_node_ver=1.9.1~dev1043
 ARG python3_indy_crypto_ver=0.4.5
 ARG indy_crypto_ver=0.4.5
+ARG python3_pyzmq_ver=17.0.0
 
 RUN apt-get update -y && apt-get install -y \
+        python3-pyzmq=${python3_pyzmq_ver} \
         indy-plenum=${indy_plenum_ver} \
         indy-node=${indy_node_ver} \
         python3-indy-crypto=${python3_indy_crypto_ver} \
@@ -90,3 +92,4 @@ RUN generate_indy_pool_transactions --nodes 4 --clients 5 --nodeNum 1 2 3 4 --ip
 EXPOSE 9701 9702 9703 9704 9705 9706 9707 9708
 
 CMD ["/usr/bin/supervisord"]
+
