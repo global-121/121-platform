@@ -4,6 +4,9 @@
   "author": "121.global",
   "homepage": "https://www.121.global/",
   "scripts": {
+    "dev:plugin-add": "npm run ionic -- cordova plugin add github:global-121/121-indy-wrapper-ios#platform-agnostic",
+    "dev:plugin-remove": "npm run ionic -- cordova plugin remove cordova-plugin-global-121-indy",
+    "dev:plugin-refresh": "npm run dev:plugin-remove && npm run dev:plugin-add",
     "dev:on-device": "npm run ionic -- cordova run android --device --consolelogs --livereload",
     "dev:local": "npm run ionic -- cordova run browser --consolelogs --livereload",
     "cordova": "cordova",
