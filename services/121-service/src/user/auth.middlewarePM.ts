@@ -6,12 +6,13 @@ import * as jwt from 'jsonwebtoken';
 import { SECRET } from '../secrets';
 import { DEBUG } from '../config';
 import { UserService } from './user.service';
+import { IGetUserAuthInfoRequest } from './get-user-auth-info-request';
 
 @Injectable()
 export class AuthMiddlewarePM implements NestMiddleware {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
+  async use(req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) {
     const authHeaders = req.headers.authorization;
     if (authHeaders && (authHeaders as string).split(' ')[1]) {
       const token = (authHeaders as string).split(' ')[1];
@@ -21,7 +22,10 @@ export class AuthMiddlewarePM implements NestMiddleware {
       if (!user) {
         throw new HttpException('User not found.', HttpStatus.UNAUTHORIZED);
       } else if (user.user.status == 'inactive') {
-        throw new HttpException('Account deactivated. Contact organization administration.', HttpStatus.UNAUTHORIZED);
+        throw new HttpException(
+          'Account deactivated. Contact organization administration.',
+          HttpStatus.UNAUTHORIZED,
+        );
       }
 
       if (user.user.role == 'admin' || user.user.role == 'program-manager') {
@@ -38,7 +42,6 @@ export class AuthMiddlewarePM implements NestMiddleware {
           HttpStatus.UNAUTHORIZED,
         );
       }
-
     } else {
       if (DEBUG) {
         const user = await this.userService.findByEmail('admin@example.org');

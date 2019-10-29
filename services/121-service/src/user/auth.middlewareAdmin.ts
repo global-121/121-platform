@@ -1,18 +1,19 @@
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
-import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request, Response, NextFunction } from 'express';
+
 import * as jwt from 'jsonwebtoken';
 import { SECRET } from '../secrets';
 import { DEBUG } from '../config';
 import { UserService } from './user.service';
+import { IGetUserAuthInfoRequest } from './get-user-auth-info-request';
 
 @Injectable()
 export class AuthMiddlewareAdmin implements NestMiddleware {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   public async use(
-    req: Request,
+    req: IGetUserAuthInfoRequest,
     res: Response,
     next: NextFunction,
   ): Promise<void> {

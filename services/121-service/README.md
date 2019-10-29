@@ -145,3 +145,11 @@ This applications uses [JSON Web Token](https://jwt.io/) (JWT) to handle authent
 ## Swagger API docs
 
 We use the NestJS swagger module for API documentation. [NestJS Swagger](https://github.com/nestjs/swagger) - [swagger.io](https://swagger.io/)
+
+## Set up twilio for development
+
+- Get up to date secrets.ts file from someone who has it
+- Download ngrok https://ngrok.com/download
+- Unzip ngrok `unzip /path/to/ngrok.zip`
+- Setup nrok http `./ngrok http 3000` in the folder where you uzipped ngrok
+- Copy paste forwarding url to secrets.ts TWILIO.ngrok
