@@ -22,7 +22,6 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
       callbackUrl,
       req.body,
     );
-    console.log('valid: ', valid);
     if (valid) {
       next();
     } else {

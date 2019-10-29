@@ -27,7 +27,7 @@ export class SmsService {
 
     // Overwrite recipient phone number for testing phase
     console.log('recipientPhoneNr: ', recipientPhoneNr);
-    recipientPhoneNr = TWILIO.testToNumber;console.log('url', callbackUrl);
+    recipientPhoneNr = TWILIO.testToNumber;
     console.log('url', callbackUrl);
     twilioClient.messages
       .create({
