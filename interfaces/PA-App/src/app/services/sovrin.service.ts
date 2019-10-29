@@ -30,6 +30,7 @@ export class SovrinService {
   }
 
   private hasSdkInstalled() {
+    console.log('SovrinService: hasSdkInstalled()?');
     return ('Global121' in window);
   }
 
@@ -38,13 +39,16 @@ export class SovrinService {
   }
 
   private initialSovrinSetup() {
-    Global121.Indy.setup(
+    console.log('SovrinService: initialSovrinSetup()');
+
+    Global121.Indy.setup()
+    .then(
       (result) => {
-        console.log('Success!', result);
+        console.log('SovrinService: initialSovrinSetup: Success!', result);
         window.localStorage.setItem('isSovrinSetupDone', 'yes');
       },
       (error) => {
-        console.log('Fail!', error);
+        console.log('SovrinService: initialSovrinSetup: Fail!', error);
         window.localStorage.setItem('isSovrinSetupDone', 'no');
       }
     );
