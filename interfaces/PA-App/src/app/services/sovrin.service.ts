@@ -24,34 +24,23 @@ export class SovrinService {
     this.useLocalStorage = environment.localStorage && this.hasSdkInstalled();
 
     // Check/Perform initial Sovrin setup:
-    if (this.hasSdkInstalled() && !this.isSovrinSetupDone()) {
+    if (this.useLocalStorage) {
       this.initialSovrinSetup();
     }
   }
 
   private hasSdkInstalled() {
-    console.log('SovrinService: hasSdkInstalled()?');
-    return ('Global121' in window);
-  }
+    const sdkInstalled = ('Global121' in window);
+    console.log('SovrinService: hasSdkInstalled?', sdkInstalled);
 
-  private isSovrinSetupDone() {
-    return window.localStorage.getItem('isSovrinSetupDone') === 'yes';
+    return sdkInstalled;
   }
 
   private initialSovrinSetup() {
     console.log('SovrinService: initialSovrinSetup()');
 
     Global121.Indy.setup()
-    .then(
-      (result) => {
-        console.log('SovrinService: initialSovrinSetup: Success!', result);
-        window.localStorage.setItem('isSovrinSetupDone', 'yes');
-      },
-      (error) => {
-        console.log('SovrinService: initialSovrinSetup: Fail!', error);
-        window.localStorage.setItem('isSovrinSetupDone', 'no');
-      }
-    );
+    .then(this.sdkSuccessHandler, this.sdkErrorHandler);
   }
 
   private toDoSDK(message: string): Promise<any> {
@@ -60,11 +49,28 @@ export class SovrinService {
     });
   }
 
-  createWallet(wallet: Wallet): Promise<any> {
+  private sdkSuccessHandler(success: any) {
+    console.log('SDK Result:', success);
+  }
+
+  private sdkErrorHandler(error: any) {
+    console.warn('SDK Error:', error);
+  }
+
+  async createWallet(wallet: Wallet): Promise<any> {
     console.log('SovrinService : createWallet()');
 
     if (this.useLocalStorage) {
-      return this.toDoSDK('SDK: createWallet');
+      console.log('SDK: createWallet');
+      await Global121.Indy.createWallet({
+        password: wallet.passKey,
+      })
+      .then(this.sdkSuccessHandler, this.sdkErrorHandler);
+      console.log('SDK: createMasterSecret');
+      return Global121.Indy.createMasterSecret({
+        password: wallet.passKey,
+      })
+      .then(this.sdkSuccessHandler, this.sdkErrorHandler);
     }
 
     return this.userImsApi.createWallet(wallet);
