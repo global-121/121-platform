@@ -46,7 +46,7 @@ export class ChooseCredentialTypeComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.createPassword;
+    return PersonalComponents.createIdentity;
   }
 
   complete() {

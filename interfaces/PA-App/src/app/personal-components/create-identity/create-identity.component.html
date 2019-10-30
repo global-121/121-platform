@@ -10,9 +10,9 @@
         </ion-button>
       </p>
     </dialogue-turn>
-    <dialogue-turn isConnected="true">
+    <dialogue-turn *ngIf="useLocalStorage">
       <p>
-        {{ 'personal.create-password.step1'|translate }}
+        {{ 'personal.create-password.password-only'|translate }}
       </p>
       <p>
         <ion-button type="button" size="small">
@@ -21,9 +21,39 @@
         </ion-button>
       </p>
     </dialogue-turn>
+    <dialogue-turn *ngIf="!useLocalStorage">
+      <p>
+        {{ 'personal.create-password.username-password'|translate }}
+      </p>
+      <p>
+        <ion-button type="button" size="small">
+          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+          {{ 'personal.create-password.more-info-username-pw'|translate }}
+        </ion-button>
+      </p>
+    </dialogue-turn>
     <dialogue-turn actor="self">
-      <form (ngSubmit)="submitPassword(create,confirm)">
-        <div class="ion-margin-bottom">
+      <form (ngSubmit)="submitCredentials(username,create,confirm)">
+        <div *ngIf="!useLocalStorage">
+          <div>
+            <ion-label>{{ 'personal.create-password.create-username'|translate }}</ion-label>
+            <ion-input type="text"
+                        name="username"
+                        [(ngModel)]="username"
+                        ngDefaultControl
+                        [disabled]="isDisabled"
+            ></ion-input>
+          </div>
+          <div class="ion-margin-top">
+            <ion-button *ngIf="username && !usernameSubmitted"
+                        [disabled]="isInProgress || isDisabled"
+                        (click)="usernameSubmitted=true;"
+                        type="button"
+                        expand="block"
+            >{{ 'personal.create-password.submit-username'|translate }}</ion-button>
+          </div>
+        </div>
+        <div *ngIf="usernameSubmitted || useLocalStorage" class="ion-margin-bottom">
           <ion-label>{{ 'personal.create-password.create-password'|translate }}</ion-label>
           <ion-input type="password"
                      name="create"

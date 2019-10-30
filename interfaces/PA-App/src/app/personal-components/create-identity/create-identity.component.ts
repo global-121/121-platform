@@ -8,14 +8,20 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PaDataService } from 'src/app/services/padata.service';
 
 import { createRandomString } from 'src/app/helpers/createRandomString';
+import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-create-password',
-  templateUrl: './create-password.component.html',
-  styleUrls: ['./create-password.component.scss'],
+  selector: 'app-create-identity',
+  templateUrl: './create-identity.component.html',
+  styleUrls: ['./create-identity.component.scss'],
 })
-export class CreatePasswordComponent extends PersonalComponent {
+export class CreateIdentityComponent extends PersonalComponent {
+
+  private useLocalStorage: boolean;
+
   public initialInput = false;
+  public usernameSubmitted = false;
+  public username: string;
   public create: any;
   public confirm: any;
   public unequalPasswords = false;
@@ -29,13 +35,15 @@ export class CreatePasswordComponent extends PersonalComponent {
     public paData: PaDataService
   ) {
     super();
+    // this.useLocalStorage = environment.localStorage;
+    this.useLocalStorage = environment.localStorageTest;
   }
 
   ngOnInit() {
   }
 
-  public async submitPassword(create: string, confirm: string) {
-    console.log('submitPassword()', create, confirm);
+  public async submitCredentials(username: string, create: string, confirm: string) {
+    console.log('submitCredentials()', username, create, confirm);
 
     if (create !== confirm) {
       this.unequalPasswords = true;
@@ -46,16 +54,16 @@ export class CreatePasswordComponent extends PersonalComponent {
     this.isInProgress = true;
     this.conversationService.startLoading();
 
-    await this.executeSovrinFlow(create);
+    await this.executeSovrinFlow(this.username, create);
 
     this.conversationService.stopLoading();
     this.complete();
   }
 
-  async executeSovrinFlow(password: string) {
+  async executeSovrinFlow(username: string, password: string) {
 
     // 1. Create PA-account using supplied password + random username
-    const paAccountUsername = createRandomString(42);
+    const paAccountUsername = this.useLocalStorage ? createRandomString(42) : username;
     const paAccountPassword = password;
     await this.paData.createAccount(paAccountUsername, paAccountPassword);
 
@@ -103,7 +111,7 @@ export class CreatePasswordComponent extends PersonalComponent {
   complete() {
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.createPassword,
+      name: PersonalComponents.createIdentity,
       data: {
         password: this.create,
       },

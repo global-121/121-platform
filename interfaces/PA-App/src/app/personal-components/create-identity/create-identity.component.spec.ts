@@ -6,15 +6,15 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 
-import { CreatePasswordComponent } from './create-password.component';
+import { CreateIdentityComponent } from './create-identity.component';
 
 describe('CreatePasswordComponent', () => {
-  let component: CreatePasswordComponent;
-  let fixture: ComponentFixture<CreatePasswordComponent>;
+  let component: CreateIdentityComponent;
+  let fixture: ComponentFixture<CreateIdentityComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CreatePasswordComponent],
+      declarations: [CreateIdentityComponent],
       imports: [
         TranslateModule.forRoot(),
         HttpClientTestingModule,
@@ -31,7 +31,7 @@ describe('CreatePasswordComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CreatePasswordComponent);
+    fixture = TestBed.createComponent(CreateIdentityComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
