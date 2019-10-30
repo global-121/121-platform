@@ -4,7 +4,13 @@
   "author": "121.global",
   "homepage": "https://www.121.global/",
   "scripts": {
+    "dev:plugin-add-local": "npm run cordova -- plugin add --link ../../../121-indy-wrapper-ios",
+    "dev:plugin-add": "npm run ionic -- cordova plugin add github:global-121/121-indy-wrapper-ios#enable-121-pool",
+    "dev:plugin-remove": "npm run ionic -- cordova plugin remove cordova-plugin-global-121-indy",
+    "dev:plugin-refresh": "npm run dev:plugin-remove && npm run dev:plugin-add && npm run cordova plugins save",
     "dev:on-device": "npm run ionic -- cordova run android --device --consolelogs --livereload",
+    "dev:local-android": "npm run ionic -- cordova run android --emulator --consolelogs --livereload",
+    "dev:local-ios": "npm run ionic -- cordova run ios --consolelogs --livereload",
     "dev:local": "npm run ionic -- cordova run browser --consolelogs --livereload",
     "cordova": "cordova",
     "ionic": "ionic",
@@ -39,6 +45,9 @@
     "angularx-qrcode": "^1.6.4",
     "cordova-android": "^8.1.0",
     "cordova-browser": "^6.0.0",
+    "cordova-ios": "^5.0.1",
+    "cordova-plugin-add-swift-support": "^2.0.2",
+    "cordova-plugin-global-121-indy": "github:global-121/121-indy-wrapper-ios#enable-121-pool",
     "core-js": "2.6.8",
     "rxjs": "~6.5.1",
     "tslib": "^1.10.0",
@@ -59,12 +68,12 @@
     "@types/node": "^12.6.2",
     "codelyzer": "~5.1.0",
     "cordova": "^9.0.0",
-    "cordova-plugin-device": "^2.0.2",
+    "cordova-plugin-device": "^2.0.3",
     "cordova-plugin-ionic-keyboard": "^2.2.0",
     "cordova-plugin-ionic-webview": "^4.1.2",
-    "cordova-plugin-splashscreen": "^5.0.2",
-    "cordova-plugin-statusbar": "^2.4.2",
-    "cordova-plugin-whitelist": "^1.3.3",
+    "cordova-plugin-splashscreen": "^5.0.3",
+    "cordova-plugin-statusbar": "^2.4.3",
+    "cordova-plugin-whitelist": "^1.3.4",
     "cordova-res": "^0.6.0",
     "dotenv": "^8.2.0",
     "ionic": "^5.4.4",
@@ -85,14 +94,16 @@
     "plugins": {
       "cordova-plugin-whitelist": {},
       "cordova-plugin-statusbar": {},
-      "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
       "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-ionic-keyboard": {}
+      "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-device": {},
+      "cordova-plugin-global-121-indy": {}
     },
     "platforms": [
       "browser",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

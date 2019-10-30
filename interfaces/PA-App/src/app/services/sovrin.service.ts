@@ -4,6 +4,8 @@ import { environment } from 'src/environments/environment';
 
 import { UserImsApiService } from './user-ims-api.service';
 
+declare var Global121: any;
+
 class Wallet {
   id: string;
   passKey: string;
@@ -19,8 +21,26 @@ export class SovrinService {
   constructor(
     private userImsApi: UserImsApiService,
   ) {
-    this.useLocalStorage = environment.localStorage;
+    this.useLocalStorage = environment.localStorage && this.hasSdkInstalled();
 
+    // Check/Perform initial Sovrin setup:
+    if (this.useLocalStorage) {
+      this.initialSovrinSetup();
+    }
+  }
+
+  private hasSdkInstalled() {
+    const sdkInstalled = ('Global121' in window);
+    console.log('SovrinService: hasSdkInstalled?', sdkInstalled);
+
+    return sdkInstalled;
+  }
+
+  private initialSovrinSetup() {
+    console.log('SovrinService: initialSovrinSetup()');
+
+    Global121.Indy.setup()
+    .then(this.sdkSuccessHandler, this.sdkErrorHandler);
   }
 
   private toDoSDK(message: string): Promise<any> {
@@ -29,11 +49,28 @@ export class SovrinService {
     });
   }
 
-  createWallet(wallet: Wallet): Promise<any> {
+  private sdkSuccessHandler(success: any) {
+    console.log('SDK Result:', success);
+  }
+
+  private sdkErrorHandler(error: any) {
+    console.warn('SDK Error:', error);
+  }
+
+  async createWallet(wallet: Wallet): Promise<any> {
     console.log('SovrinService : createWallet()');
 
     if (this.useLocalStorage) {
-      return this.toDoSDK('SDK: createWallet');
+      console.log('SDK: createWallet');
+      await Global121.Indy.createWallet({
+        password: wallet.passKey,
+      })
+      .then(this.sdkSuccessHandler, this.sdkErrorHandler);
+      console.log('SDK: createMasterSecret');
+      return Global121.Indy.createMasterSecret({
+        password: wallet.passKey,
+      })
+      .then(this.sdkSuccessHandler, this.sdkErrorHandler);
     }
 
     return this.userImsApi.createWallet(wallet);
