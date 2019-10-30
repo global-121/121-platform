@@ -97,6 +97,13 @@
         {{ 'personal.create-password.unequal-passwords'|translate }}
       </p>
     </dialogue-turn>
+    <dialogue-turn *ngIf="usernameNotUnique"
+                   [isSpoken]="usernameNotUnique"
+    >
+      <p>
+        {{ 'personal.create-password.username-not-unique'|translate }}
+      </p>
+    </dialogue-turn>
     <dialogue-turn *ngIf="isDisabled"
                    [isSpoken]="isDisabled"
     >

@@ -25,6 +25,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   public create: any;
   public confirm: any;
   public unequalPasswords = false;
+  public usernameNotUnique = false;
 
   public isInProgress = false;
 
@@ -49,23 +50,34 @@ export class CreateIdentityComponent extends PersonalComponent {
       this.unequalPasswords = true;
       return;
     }
-
     this.unequalPasswords = false;
-    this.isInProgress = true;
-    this.conversationService.startLoading();
 
-    await this.executeSovrinFlow(this.username, create);
+    // 1. Create PA-account using supplied password + random username
+    // (moved outside of executeSovrinFlow because of unique-username-check)
+    const paAccountUsername = this.useLocalStorage ? createRandomString(42) : username;
+    const paAccountPassword = create;
+    await this.paData.createAccount(paAccountUsername, paAccountPassword).then(
+      async (response) => {
+        this.usernameNotUnique = false;
+        this.isInProgress = true;
+        this.conversationService.startLoading();
+        await this.executeSovrinFlow(paAccountUsername, paAccountPassword);
+        this.conversationService.stopLoading();
+        this.complete();
+      },
+      (error) => {
+        if (error.status === 400) {
+          this.usernameNotUnique = true;
+          console.log('Username is not unique: ', error.status);
+        } else {
+          console.log('Other error: ', error.status);
+        }
+      }
+    );
 
-    this.conversationService.stopLoading();
-    this.complete();
   }
 
   async executeSovrinFlow(username: string, password: string) {
-
-    // 1. Create PA-account using supplied password + random username
-    const paAccountUsername = this.useLocalStorage ? createRandomString(42) : username;
-    const paAccountPassword = password;
-    await this.paData.createAccount(paAccountUsername, paAccountPassword);
 
     // 2. Create (random) wallet-name and password and store in PA-account
     const paWalletName = createRandomString(42);
@@ -113,6 +125,7 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.createIdentity,
       data: {
+        username: this.username,
         password: this.create,
       },
       next: this.getNextSection(),

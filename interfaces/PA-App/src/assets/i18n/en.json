@@ -15,6 +15,7 @@
       "create-password": "Create password:",
       "confirm-password": "Confirm password:",
       "submit-password": "Create my password",
+      "username-not-unique": "The username you provide is not unique. Please try again.",
       "unequal-passwords": "The passwords you provided are not the same. Please try again.",
       "conclusion": "Great! You have created a password."
     },
