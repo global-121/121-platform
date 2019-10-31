@@ -14,7 +14,6 @@ export const environment = {
   subDirPath: '', // Is needed for correctly serving built app on server via Apache2
 
   // APIs:
-  // url_121_service_api: 'http://137.117.210.255/121-service/api',
   url_121_service_api: 'http://localhost:3000/api',
 
 };

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CustomTranslateService } from 'src/app/services/custom-translate.service';
 import { Storage } from '@ionic/storage';
 import { ValidationComponent } from '../validation-components.interface';

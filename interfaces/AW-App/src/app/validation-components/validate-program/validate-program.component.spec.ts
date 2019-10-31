@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ValidateProgramComponent } from './validate-program.component';
 import { RouterModule } from '@angular/router';
@@ -16,13 +16,13 @@ describe('ValidateProgramComponent', () => {
   let fixture: ComponentFixture<ValidateProgramComponent>;
 
   const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve, reject) => resolve('1')),
+    get: () => new Promise<any>((resolve) => resolve('1')),
   };
 
   beforeEach(async(() => {
 
     const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getPrefilledAnswers']);
-    const prefilledAnswersSpy = programsServiceApiService.getPrefilledAnswers.and.returnValue(of({}));
+    programsServiceApiService.getPrefilledAnswers.and.returnValue(of({}));
 
 
     TestBed.configureTestingModule({
@@ -31,7 +31,7 @@ describe('ValidateProgramComponent', () => {
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
         IonicModule.forRoot(),
-        HttpClientModule,
+        HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

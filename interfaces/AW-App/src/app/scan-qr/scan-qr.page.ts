@@ -1,11 +1,10 @@
 import { SessionStorageService } from './../services/session-storage.service';
 import { Component, OnInit } from '@angular/core';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
-import { NavController, NavParams, LoadingController, AlertController, ToastController } from '@ionic/angular';
-import { ViewController } from '@ionic/core';
+import { NavController, LoadingController, AlertController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router } from '@angular/router';
 import { ConversationService } from '../services/conversation.service';
 
 @Component({

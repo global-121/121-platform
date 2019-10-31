@@ -1,11 +1,10 @@
 import { SessionStorageService } from './../../services/session-storage.service';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { jsonpCallbackContext } from '@angular/common/http/src/module';
 import { ValidationComponents } from '../validation-components.enum';
 
 @Component({
@@ -24,7 +23,6 @@ export class ScanQrComponent implements ValidationComponent {
 
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     public storage: Storage,
     public conversationService: ConversationService,
@@ -38,7 +36,7 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   public scanQrCode() {
-    const storageSubscription = this.sessionStorageService.watchStorage().subscribe((data: string) => {
+    const storageSubscription = this.sessionStorageService.watchStorage().subscribe(() => {
       console.log('bla');
       console.log('sessionStorageService.watchStorage');
       this.checkScannedDid();
