@@ -44,7 +44,7 @@ export class UpdateService {
   }
 
   listenForCredential(programId: number, did: string) {
-    console.log('listenForCredential()');
+    console.log('listenForCredential()', programId, did);
     return interval(this.updateSpeedMs).pipe(
       switchMap(() => this.programsService.getCredential(did))
     );

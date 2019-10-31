@@ -1,4 +1,4 @@
-import { TestBed, async, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,8 +24,8 @@ describe('UpdateService', () => {
     ],
   }));
 
-  it('should create', async(inject([HttpClientTestingModule, UpdateService],
-    (httpClient: HttpClientTestingModule, service: UpdateService) => {
-      expect(service).toBeTruthy();
-    })));
+  it('should create', () => {
+    const service: UpdateService = TestBed.get(UpdateService);
+    expect(service).toBeTruthy();
+  });
 });
