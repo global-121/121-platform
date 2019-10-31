@@ -72,7 +72,10 @@ export class SelectProgramComponent extends PersonalComponent {
   }
 
   public submitProgram() {
-    this.paData.saveProgram(this.programChoice, {});
+    const initialProgram = new Program();
+    initialProgram.id = this.programChoice;
+
+    this.paData.saveProgram(this.programChoice, initialProgram);
 
     this.complete();
   }

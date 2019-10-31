@@ -1,12 +1,16 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Storage } from '@ionic/storage';
-import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 
-import { HandleProofComponent } from './handle-proof.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
+
+import { Storage } from '@ionic/storage';
+import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
+import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
+
+import { HandleProofComponent } from './handle-proof.component';
 
 describe('HandleProofComponent', () => {
   let component: HandleProofComponent;
@@ -25,6 +29,10 @@ describe('HandleProofComponent', () => {
         {
           provide: Storage,
           useValue: MockIonicStorage,
+        },
+        {
+          provide: PaDataService,
+          useValue: MockPaDataService,
         },
       ]
     })

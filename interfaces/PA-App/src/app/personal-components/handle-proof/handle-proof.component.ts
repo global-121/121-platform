@@ -8,6 +8,7 @@ import { SovrinService } from 'src/app/services/sovrin.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 import { PersonalComponent } from '../personal-component.class';
+import { Program } from 'src/app/models/program.model';
 
 enum InclusionStates {
   included = 'included',
@@ -52,7 +53,13 @@ export class HandleProofComponent extends PersonalComponent {
     console.log('handleProof');
 
     await this.gatherData();
-    this.ngo = this.paData.myPrograms[this.programId].ngo;
+    const currentProgram: Program = this.paData.myPrograms[this.programId];
+
+    if (!currentProgram) {
+      return;
+    }
+
+    this.ngo = currentProgram.ngo;
 
     // Create proof
     const proofRequest = await this.programService.getProofRequest(this.programId);
