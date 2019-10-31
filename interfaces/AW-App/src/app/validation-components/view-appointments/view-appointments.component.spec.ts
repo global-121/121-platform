@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ViewAppointmentsComponent } from './view-appointments.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import mockAppointmentsResponse from '../../mocks/api.appointments.mock';
 import { of } from 'rxjs';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -21,7 +21,7 @@ describe('ViewAppointmentsComponent', () => {
       declarations: [ViewAppointmentsComponent],
       imports: [
         TranslateModule.forRoot(),
-        HttpClientModule
+        HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
