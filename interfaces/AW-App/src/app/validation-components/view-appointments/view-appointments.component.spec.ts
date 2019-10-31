@@ -12,12 +12,10 @@ describe('ViewAppointmentsComponent', () => {
   let component: ViewAppointmentsComponent;
   let fixture: ComponentFixture<ViewAppointmentsComponent>;
 
-  let getAllAppointmentsSpy;
-
   beforeEach(async(() => {
     // Mock the used service:
     const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getAppointments']);
-    getAllAppointmentsSpy = programsServiceApiService.getAppointments.and.returnValue(of(mockAppointmentsResponse.appointments));
+    programsServiceApiService.getAppointments.and.returnValue(of(mockAppointmentsResponse.appointments));
 
     TestBed.configureTestingModule({
       declarations: [ViewAppointmentsComponent],

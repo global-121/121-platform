@@ -16,13 +16,13 @@ describe('ValidateProgramComponent', () => {
   let fixture: ComponentFixture<ValidateProgramComponent>;
 
   const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve, reject) => resolve('1')),
+    get: () => new Promise<any>((resolve) => resolve('1')),
   };
 
   beforeEach(async(() => {
 
     const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getPrefilledAnswers']);
-    const prefilledAnswersSpy = programsServiceApiService.getPrefilledAnswers.and.returnValue(of({}));
+    programsServiceApiService.getPrefilledAnswers.and.returnValue(of({}));
 
 
     TestBed.configureTestingModule({

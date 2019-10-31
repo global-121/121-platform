@@ -11,7 +11,7 @@ describe('MainMenuComponent', () => {
   let fixture: ComponentFixture<MainMenuComponent>;
 
   const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve, reject) => resolve('1')),
+    get: () => new Promise<any>((resolve) => resolve('1')),
   };
 
   beforeEach(async(() => {

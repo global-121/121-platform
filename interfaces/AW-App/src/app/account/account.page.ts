@@ -123,7 +123,7 @@ export class AccountPage {
     const confirm = event.target.elements.confirm.value;
     if (create === confirm) {
       this.programsService.changePassword(create).subscribe((response) => {
-        console.log('Password changed succesfully');
+        console.log('Password changed succesfully', response);
         this.changePasswordForm = false;
         this.createToast(this.changedPassword);
       });
