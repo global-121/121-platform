@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 
 import { Storage } from '@ionic/storage';
 import { PaAccountApiService } from './pa-account-api.service';
+import { Program } from '../models/program.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,7 @@ export class PaDataService {
 
   }
 
-  async saveProgram(programId: number, program: any): Promise<any> {
+  async saveProgram(programId: number, program: Program): Promise<any> {
     this.myPrograms[programId] = program;
     return this.store(this.type.myPrograms, this.myPrograms);
   }
