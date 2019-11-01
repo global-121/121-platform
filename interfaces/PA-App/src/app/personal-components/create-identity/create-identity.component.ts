@@ -57,11 +57,11 @@ export class CreateIdentityComponent extends PersonalComponent {
     const paAccountUsername = this.useLocalStorage ? createRandomString(42) : username;
     const paAccountPassword = create;
     await this.paData.createAccount(paAccountUsername, paAccountPassword).then(
-      async (response) => {
+      async () => {
         this.usernameNotUnique = false;
         this.isInProgress = true;
         this.conversationService.startLoading();
-        await this.executeSovrinFlow(paAccountUsername, paAccountPassword);
+        await this.executeSovrinFlow();
         this.conversationService.stopLoading();
         this.complete();
       },
@@ -77,7 +77,7 @@ export class CreateIdentityComponent extends PersonalComponent {
 
   }
 
-  async executeSovrinFlow(username: string, password: string) {
+  async executeSovrinFlow() {
 
     // 2. Create (random) wallet-name and password and store in PA-account
     const paWalletName = createRandomString(42);
