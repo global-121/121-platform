@@ -3,7 +3,7 @@
   "PERSONAL": "You",
   "DEVICE": "Device",
   "personal": {
-    "create-password": {
+    "create-identity": {
       "introduction": "To create a Digital ID you need to complete the following steps.",
       "more-info-digital-id": "About Digital ID",
       "username-password": "First step: create a username and a password. You will need to remember these.",
@@ -17,7 +17,7 @@
       "submit-password": "Create my password",
       "username-not-unique": "The username you provide is not unique. Please try again.",
       "unequal-passwords": "The passwords you provided are not the same. Please try again.",
-      "conclusion": "Great! You have created a password."
+      "conclusion": "Great! You have created a Digital ID."
     },
     "enroll-in-program": {
       "introduction": "We have received your request to apply for <strong>{{programTitle}}</strong> of <strong>{{ngo}}</strong>.",

@@ -1,34 +1,34 @@
 <section #createPassword>
     <dialogue-turn>
       <p>
-        {{ 'personal.create-password.introduction'|translate }}
+        {{ 'personal.create-identity.introduction'|translate }}
       </p>
       <p>
         <ion-button type="button" size="small">
           <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-          {{ 'personal.create-password.more-info-digital-id'|translate }}
+          {{ 'personal.create-identity.more-info-digital-id'|translate }}
         </ion-button>
       </p>
     </dialogue-turn>
     <dialogue-turn *ngIf="useLocalStorage">
       <p>
-        {{ 'personal.create-password.password-only'|translate }}
+        {{ 'personal.create-identity.password-only'|translate }}
       </p>
       <p>
         <ion-button type="button" size="small">
           <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-          {{ 'personal.create-password.more-info-password'|translate }}
+          {{ 'personal.create-identity.more-info-password'|translate }}
         </ion-button>
       </p>
     </dialogue-turn>
     <dialogue-turn *ngIf="!useLocalStorage">
       <p>
-        {{ 'personal.create-password.username-password'|translate }}
+        {{ 'personal.create-identity.username-password'|translate }}
       </p>
       <p>
         <ion-button type="button" size="small">
           <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-          {{ 'personal.create-password.more-info-username-pw'|translate }}
+          {{ 'personal.create-identity.more-info-username-pw'|translate }}
         </ion-button>
       </p>
     </dialogue-turn>
@@ -36,7 +36,7 @@
       <form (ngSubmit)="submitCredentials(username,create,confirm)">
         <div *ngIf="!useLocalStorage">
           <div>
-            <ion-label>{{ 'personal.create-password.create-username'|translate }}</ion-label>
+            <ion-label>{{ 'personal.create-identity.create-username'|translate }}</ion-label>
             <ion-input type="text"
                         name="username"
                         [(ngModel)]="username"
@@ -50,11 +50,11 @@
                         (click)="usernameSubmitted=true;"
                         type="button"
                         expand="block"
-            >{{ 'personal.create-password.submit-username'|translate }}</ion-button>
+            >{{ 'personal.create-identity.submit-username'|translate }}</ion-button>
           </div>
         </div>
         <div *ngIf="usernameSubmitted || useLocalStorage" class="ion-margin-bottom">
-          <ion-label>{{ 'personal.create-password.create-password'|translate }}</ion-label>
+          <ion-label>{{ 'personal.create-identity.create-password'|translate }}</ion-label>
           <ion-input type="password"
                      name="create"
                      [(ngModel)]="create"
@@ -68,11 +68,11 @@
                       (click)="initialInput=true;"
                       type="button"
                       expand="block"
-          >{{ 'personal.create-password.submit-password'|translate }}</ion-button>
+          >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
         </div>
         <div *ngIf="initialInput">
           <div>
-            <ion-label>{{ 'personal.create-password.confirm-password'|translate }}</ion-label>
+            <ion-label>{{ 'personal.create-identity.confirm-password'|translate }}</ion-label>
             <ion-input type="password"
                        name="confirm"
                        [(ngModel)]="confirm"
@@ -85,7 +85,7 @@
                         [disabled]="isInProgress || isDisabled"
                         type="submit"
                         expand="block"
-            >{{ 'personal.create-password.submit-password'|translate }}</ion-button>
+            >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
           </div>
         </div>
       </form>
@@ -94,21 +94,21 @@
                    [isSpoken]="unequalPasswords"
     >
       <p>
-        {{ 'personal.create-password.unequal-passwords'|translate }}
+        {{ 'personal.create-identity.unequal-passwords'|translate }}
       </p>
     </dialogue-turn>
     <dialogue-turn *ngIf="usernameNotUnique"
                    [isSpoken]="usernameNotUnique"
     >
       <p>
-        {{ 'personal.create-password.username-not-unique'|translate }}
+        {{ 'personal.create-identity.username-not-unique'|translate }}
       </p>
     </dialogue-turn>
     <dialogue-turn *ngIf="isDisabled"
                    [isSpoken]="isDisabled"
     >
       <p>
-        {{ 'personal.create-password.conclusion'|translate }}
+        {{ 'personal.create-identity.conclusion'|translate }}
       </p>
     </dialogue-turn>
   </section>
