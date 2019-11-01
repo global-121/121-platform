@@ -8,7 +8,7 @@ import { ConversationService } from '../services/conversation.service';
 
 import { PersonalComponents } from '../personal-components/personal-components.enum';
 import { ChooseCredentialTypeComponent } from '../personal-components/choose-credential-type/choose-credential-type.component';
-import { CreatePasswordComponent } from '../personal-components/create-password/create-password.component';
+import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
 import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
@@ -37,7 +37,7 @@ export class PersonalPage implements OnInit {
 
   public availableSections = {
     [PersonalComponents.chooseCredentialType]: ChooseCredentialTypeComponent,
-    [PersonalComponents.createPassword]: CreatePasswordComponent,
+    [PersonalComponents.createIdentity]: CreateIdentityComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
     [PersonalComponents.handleProof]: HandleProofComponent,
     [PersonalComponents.initialNeeds]: InitialNeedsComponent,

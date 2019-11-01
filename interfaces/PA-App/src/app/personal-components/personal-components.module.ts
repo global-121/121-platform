@@ -7,7 +7,7 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { ConversationService } from '../services/conversation.service';
 
 import { ChooseCredentialTypeComponent } from './choose-credential-type/choose-credential-type.component';
-import { CreatePasswordComponent } from './create-password/create-password.component';
+import { CreateIdentityComponent } from './create-identity/create-identity.component';
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
 import { InitialNeedsComponent } from './initial-needs/initial-needs.component';
 import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
@@ -20,7 +20,7 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
 @NgModule({
   declarations: [
     ChooseCredentialTypeComponent,
-    CreatePasswordComponent,
+    CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
     InitialNeedsComponent,
@@ -38,7 +38,7 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
   ],
   entryComponents: [
     ChooseCredentialTypeComponent,
-    CreatePasswordComponent,
+    CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
     InitialNeedsComponent,
@@ -50,7 +50,7 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
   ],
   exports: [
     ChooseCredentialTypeComponent,
-    CreatePasswordComponent,
+    CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
     InitialNeedsComponent,
