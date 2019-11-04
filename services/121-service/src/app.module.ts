@@ -13,9 +13,9 @@ import { CredentialModule } from './sovrin/credential/credential.module';
 import { SchemaService } from './sovrin/schema/schema.service';
 import { ProofModule } from './sovrin/proof/proof.module';
 import { SchemaModule } from './sovrin/schema/schema.module';
-import { SmsService } from './sms/sms/sms.service';
-import { SmsController } from './sms/sms/sms.controller';
-import { SmsModule } from './sms/sms/sms.module';
+import { SmsService } from './notifications/sms/sms.service';
+import { SmsController } from './notifications/sms/sms.controller';
+import { SmsModule } from './notifications/sms/sms.module';
 
 @Module({
   imports: [
