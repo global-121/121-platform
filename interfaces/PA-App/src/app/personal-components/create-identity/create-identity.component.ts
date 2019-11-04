@@ -117,7 +117,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.selectCountry;
+    return PersonalComponents.initialNeeds;
   }
 
   complete() {
