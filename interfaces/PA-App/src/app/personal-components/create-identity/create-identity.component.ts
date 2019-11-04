@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
 })
 export class CreateIdentityComponent extends PersonalComponent {
 
-  private useLocalStorage: boolean;
+  public useLocalStorage: boolean;
 
   public initialInput = false;
   public usernameSubmitted = false;

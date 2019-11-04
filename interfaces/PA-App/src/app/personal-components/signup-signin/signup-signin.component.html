@@ -21,7 +21,7 @@
         </ion-item>
         <ion-item color="light"
                   class="ion-no-padding ion-text-wrap"
-                  [disabled]="typeChosen"
+                  [disabled]="useLocalStorage || typeChosen"
         >
           <ion-label>{{ 'personal.signup-signin.login-id'|translate }}</ion-label>
           <ion-radio value="login-id"></ion-radio>
