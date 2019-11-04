@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PersonalComponents } from '../personal-components.enum';
 import { PersonalComponent } from '../personal-component.class';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-signup-signin',
@@ -9,6 +10,7 @@ import { PersonalComponent } from '../personal-component.class';
   styleUrls: ['./signup-signin.component.scss'],
 })
 export class SignupSigninComponent extends PersonalComponent {
+  public useLocalStorage: boolean;
   public signupSigninChoice: string;
   public typeChosen: boolean;
   public programChosen: boolean;
@@ -17,6 +19,7 @@ export class SignupSigninComponent extends PersonalComponent {
     public conversationService: ConversationService,
   ) {
     super();
+    this.useLocalStorage = environment.localStorage;
   }
 
   ngOnInit() { }
