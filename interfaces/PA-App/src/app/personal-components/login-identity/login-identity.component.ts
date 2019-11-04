@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { environment } from 'src/environments/environment';
 import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
@@ -11,8 +10,6 @@ import { PersonalComponents } from '../personal-components.enum';
   styleUrls: ['./login-identity.component.scss'],
 })
 export class LoginIdentityComponent extends PersonalComponent {
-
-  private useLocalStorage: boolean;
 
   public initialInput = false;
   public usernameSubmitted = false;
@@ -27,7 +24,6 @@ export class LoginIdentityComponent extends PersonalComponent {
     public paData: PaDataService
   ) {
     super();
-    this.useLocalStorage = environment.localStorage;
   }
 
   ngOnInit() { }
