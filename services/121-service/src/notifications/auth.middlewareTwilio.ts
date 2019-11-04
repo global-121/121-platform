@@ -1,4 +1,3 @@
-import { TWILIO } from './../../secrets';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
@@ -6,8 +5,9 @@ import { twilioClient, twilio } from './twilio.client';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TwilioMessageEntity } from './twilio.entity';
 import { Repository } from 'typeorm';
-import { SmsService, callbackUrl } from './sms.service';
 import bodyParser = require('body-parser');
+import { SmsService, callbackUrl } from './sms/sms.service';
+import { TWILIO } from '../secrets';
 
 
 @Injectable()

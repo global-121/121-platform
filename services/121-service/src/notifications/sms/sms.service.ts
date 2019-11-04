@@ -2,10 +2,10 @@ import { STAGING_URL } from './../../config';
 import { Injectable } from '@nestjs/common';
 import { TWILIO } from '../../secrets';
 import { DEBUG, PRODUCTION_URL } from '../../config';
-import { twilioClient } from './twilio.client';
-import { TwilioMessageEntity } from './twilio.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { TwilioMessageEntity } from '../twilio.entity';
+import { twilioClient } from '../twilio.client';
 
 let appUrl: string;
 if (process.env.NODE_ENV == 'production') {
