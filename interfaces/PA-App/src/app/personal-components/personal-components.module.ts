@@ -16,6 +16,7 @@ import { SelectProgramComponent } from './select-program/select-program.componen
 import { StoreCredentialComponent } from './store-credential/store-credential.component';
 import { HandleProofComponent } from './handle-proof/handle-proof.component';
 import { SignupSigninComponent } from './signup-signin/signup-signin.component';
+import { LoginIdentityComponent } from './login-identity/login-identity.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     EnrollInProgramComponent,
     HandleProofComponent,
     InitialNeedsComponent,
+    LoginIdentityComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
@@ -41,6 +43,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     EnrollInProgramComponent,
     HandleProofComponent,
     InitialNeedsComponent,
+    LoginIdentityComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
@@ -53,6 +56,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     EnrollInProgramComponent,
     HandleProofComponent,
     InitialNeedsComponent,
+    LoginIdentityComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,

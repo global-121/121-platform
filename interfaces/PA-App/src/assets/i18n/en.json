@@ -19,6 +19,15 @@
       "unequal-passwords": "The passwords you provided are not the same. Please try again.",
       "conclusion": "Great! You have created a Digital ID."
     },
+    "login-identity": {
+      "introduction": "To use an existing Digital ID you need to log in with your username and password.",
+      "supply-username": "Your username:",
+      "submit-username": "Submit my username",
+      "supply-password": "Your password:",
+      "submit-password": "Submit my password",
+      "incorrect-credentials": "The combination of username and password you provided is not recognized. Please try again.",
+      "conclusion": "Great! You have now returned to your existing Digital ID."
+    },
     "enroll-in-program": {
       "introduction": "We have received your request to apply for <strong>{{programTitle}}</strong> of <strong>{{ngo}}</strong>.",
       "introduction-questions": "To make sure you get the best possible help and a fair process, we need some personal information.",

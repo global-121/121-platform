@@ -7,7 +7,6 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
 import { ConversationService } from '../services/conversation.service';
 
 import { PersonalComponents } from '../personal-components/personal-components.enum';
-import { ChooseCredentialTypeComponent } from '../personal-components/choose-credential-type/choose-credential-type.component';
 import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
@@ -18,6 +17,7 @@ import { SelectLanguageComponent } from '../personal-components/select-language/
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
 import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
+import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
 
 @Component({
   selector: 'app-personal',
@@ -41,6 +41,7 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
     [PersonalComponents.handleProof]: HandleProofComponent,
     [PersonalComponents.initialNeeds]: InitialNeedsComponent,
+    [PersonalComponents.loginIdentity]: LoginIdentityComponent,
     [PersonalComponents.selectAppointment]: SelectAppointmentComponent,
     [PersonalComponents.selectCountry]: SelectCountryComponent,
     [PersonalComponents.selectLanguage]: SelectLanguageComponent,

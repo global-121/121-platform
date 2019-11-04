@@ -1,0 +1,61 @@
+<section #loginIdentity>
+  <dialogue-turn>
+    <p>
+      {{ 'personal.login-identity.introduction'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <form (ngSubmit)="submitLoginCredentials(username,password)">
+      <div>
+        <div>
+          <ion-label>{{ 'personal.login-identity.supply-username'|translate }}</ion-label>
+          <ion-input type="text"
+                      name="username"
+                      [(ngModel)]="username"
+                      ngDefaultControl
+                      [disabled]="isDisabled"
+          ></ion-input>
+        </div>
+        <div class="ion-margin-top">
+          <ion-button *ngIf="username && !usernameSubmitted"
+                      [disabled]="isInProgress || isDisabled"
+                      (click)="usernameSubmitted=true;"
+                      type="button"
+                      expand="block"
+          >{{ 'personal.login-identity.submit-username'|translate }}</ion-button>
+        </div>
+      </div>
+      <div *ngIf="usernameSubmitted" class="ion-margin-bottom">
+        <ion-label>{{ 'personal.login-identity.supply-password'|translate }}</ion-label>
+        <ion-input type="password"
+                   name="password"
+                   [(ngModel)]="password"
+                   ngDefaultControl
+                   [disabled]="isDisabled"
+                   autocomplete="new-password"
+        ></ion-input>
+      </div>
+      <div class="ion-margin-top">
+        <ion-button *ngIf="password && !isDisabled"
+                    [disabled]="isInProgress || isDisabled"
+                    type="submit"
+                    expand="block"
+        >{{ 'personal.login-identity.submit-password'|translate }}</ion-button>
+      </div>
+    </form>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="incorrectCredentials"
+                 [isSpoken]="incorrectCredentials"
+  >
+    <p>
+      {{ 'personal.login-identity.incorrect-credentials'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="isDisabled"
+                 [isSpoken]="isDisabled"
+  >
+    <p>
+      {{ 'personal.login-identity.conclusion'|translate }}
+    </p>
+  </dialogue-turn>
+</section>
