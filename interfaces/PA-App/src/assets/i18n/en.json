@@ -40,12 +40,10 @@
       "submit": "Submit my needs",
       "conclusion": "Thank you for sharing. Understanding your needs will help us create better programs in your area."
     },
-    "choose-credential-type": {
+    "signup-signin": {
       "introduction": "Please select your next step.",
-      "apply-to-program": "Apply to program",
       "create-id": "Create a Digital ID",
-      "delete-id": "Delete Digital ID",
-      "conclusion-program": "To apply to a program you need to have a valid Digital ID.",
+      "login-id": "Use existing Digital ID",
       "more-info-digital-id": "About Digital ID"
     },
     "select-appointment": {

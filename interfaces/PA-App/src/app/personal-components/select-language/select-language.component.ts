@@ -64,7 +64,7 @@ export class SelectLanguageComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.chooseCredentialType;
+    return PersonalComponents.signupSignin;
   }
 
   complete() {

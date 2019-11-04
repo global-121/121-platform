@@ -6,7 +6,6 @@ import { QRCodeModule } from 'angularx-qrcode';
 
 import { ConversationService } from '../services/conversation.service';
 
-import { ChooseCredentialTypeComponent } from './choose-credential-type/choose-credential-type.component';
 import { CreateIdentityComponent } from './create-identity/create-identity.component';
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
 import { InitialNeedsComponent } from './initial-needs/initial-needs.component';
@@ -16,10 +15,10 @@ import { SelectLanguageComponent } from './select-language/select-language.compo
 import { SelectProgramComponent } from './select-program/select-program.component';
 import { StoreCredentialComponent } from './store-credential/store-credential.component';
 import { HandleProofComponent } from './handle-proof/handle-proof.component';
+import { SignupSigninComponent } from './signup-signin/signup-signin.component';
 
 @NgModule({
   declarations: [
-    ChooseCredentialTypeComponent,
     CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
@@ -28,6 +27,7 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
     SelectCountryComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
+    SignupSigninComponent,
     StoreCredentialComponent,
   ],
   imports: [
@@ -37,7 +37,6 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
     QRCodeModule
   ],
   entryComponents: [
-    ChooseCredentialTypeComponent,
     CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
@@ -46,10 +45,10 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
     SelectCountryComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
+    SignupSigninComponent,
     StoreCredentialComponent,
   ],
   exports: [
-    ChooseCredentialTypeComponent,
     CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
@@ -58,6 +57,7 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
     SelectCountryComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
+    SignupSigninComponent,
     StoreCredentialComponent,
   ],
   schemas: [

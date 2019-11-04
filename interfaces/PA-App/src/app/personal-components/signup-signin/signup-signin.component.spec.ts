@@ -1,29 +1,26 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { SignupSigninComponent } from './signup-signin.component';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { ChooseCredentialTypeComponent } from './choose-credential-type.component';
-
-describe('ChooseCredentialTypeComponent', () => {
-  let component: ChooseCredentialTypeComponent;
-  let fixture: ComponentFixture<ChooseCredentialTypeComponent>;
+describe('SignupSigninComponent', () => {
+  let component: SignupSigninComponent;
+  let fixture: ComponentFixture<SignupSigninComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ChooseCredentialTypeComponent],
+      declarations: [SignupSigninComponent],
       imports: [
         TranslateModule.forRoot(),
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-      ]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ChooseCredentialTypeComponent);
+    fixture = TestBed.createComponent(SignupSigninComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
