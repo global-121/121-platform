@@ -16,6 +16,8 @@ import { SchemaModule } from './sovrin/schema/schema.module';
 import { SmsService } from './notifications/sms/sms.service';
 import { SmsController } from './notifications/sms/sms.controller';
 import { SmsModule } from './notifications/sms/sms.module';
+import { VoiceService } from './notifications/voice/voice.service';
+import { VoiceController } from './notifications/voice/voice.controller';
 
 @Module({
   imports: [
@@ -35,10 +37,11 @@ import { SmsModule } from './notifications/sms/sms.module';
   controllers: [
     AppController,
     SmsController,
+    VoiceController,
     // CreateConnectionController,
     // CredentialController,
   ],
-  providers: [],
+  providers: [VoiceService],
 })
 export class ApplicationModule {
   public constructor(private readonly connection: Connection) {}

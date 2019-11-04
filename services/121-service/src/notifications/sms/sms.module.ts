@@ -1,3 +1,4 @@
+import { VoiceService } from './../voice/voice.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import { Module, MiddlewareConsumer, RequestMethod, NestModule } from '@nestjs/common';
@@ -12,7 +13,7 @@ import { TwilioMessageEntity } from '../twilio.entity';
       TwilioMessageEntity
     ]),
   ],
-  providers: [SmsService],
+  providers: [SmsService, VoiceService],
   controllers: [SmsController],
   exports: [SmsService],
 })

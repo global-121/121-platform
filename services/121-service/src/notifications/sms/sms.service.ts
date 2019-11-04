@@ -5,24 +5,19 @@ import { DEBUG, PRODUCTION_URL } from '../../config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { twilioClient } from '../twilio.client';
+import appUrl, { twilioClient, callbackUrl } from '../twilio.client';
 
-let appUrl: string;
-if (process.env.NODE_ENV == 'production') {
-  appUrl = PRODUCTION_URL;
-} else if (process.env.NODE_ENV == 'staging') {
-  appUrl = STAGING_URL;
-} else {
-  appUrl = TWILIO.ngrok;
-}
-export const callbackUrl = appUrl + 'api/sms/status';
+
+// export const callbackUrl = appUrl + 'api/sms/status';
 @Injectable()
 export class SmsService {
+
+
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   public constructor() {}
 
-  public sendSms(message : string, recipientPhoneNr: string) {
+  public sendSms(message: string, recipientPhoneNr: string) {
     console.log('Send sms');
 
     // Overwrite recipient phone number for testing phase
@@ -34,7 +29,7 @@ export class SmsService {
         body: message,
         from: TWILIO.testFromNumber, // This parameter could be specifief per program
         statusCallback: callbackUrl,
-        to: TWILIO.testToNumber,
+        to: recipientPhoneNr,
       })
       .then(message => this.storeSendSms(message));
   }
@@ -63,6 +58,5 @@ export class SmsService {
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus },
     );
-
   }
 }
