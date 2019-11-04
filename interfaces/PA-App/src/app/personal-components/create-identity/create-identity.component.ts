@@ -36,8 +36,7 @@ export class CreateIdentityComponent extends PersonalComponent {
     public paData: PaDataService
   ) {
     super();
-    // this.useLocalStorage = environment.localStorage;
-    this.useLocalStorage = environment.localStorageTest;
+    this.useLocalStorage = environment.localStorage;
   }
 
   ngOnInit() {
@@ -117,7 +116,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.selectCountry;
+    return PersonalComponents.initialNeeds;
   }
 
   complete() {

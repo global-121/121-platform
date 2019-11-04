@@ -9,8 +9,6 @@ export const environment = {
   isDebug: true, // Controls debugging features
   showDebug: false, // Controls debugging features
   localStorage: false, // Use local or remote wallet/account
-  // Use for TESTING purposes to simulate native scenario (for e.g. username) while still calling server-functions
-  localStorageTest: false,
   useAnimation: false, // Use animations and delays in the interface
 
   // Extra:

@@ -1,12 +1,13 @@
 export enum PersonalComponents {
-  chooseCredentialType = 'choose-credential-type',
   createIdentity = 'create-identity',
   enrollInProgram = 'enroll-in-program',
-  initialNeeds = 'initial-needs',
   handleProof = 'handle-proof',
+  initialNeeds = 'initial-needs',
+  loginIdentity = 'login-identity',
   selectAppointment = 'select-appointment',
   selectCountry = 'select-country',
   selectLanguage = 'select-language',
   selectProgram = 'select-program',
+  signupSignin = 'signup-signin',
   storeCredential = 'store-credential',
 }

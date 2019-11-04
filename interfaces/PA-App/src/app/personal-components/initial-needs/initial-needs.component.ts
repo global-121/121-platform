@@ -37,7 +37,7 @@ export class InitialNeedsComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.chooseCredentialType;
+    return PersonalComponents.selectCountry;
   }
 
   complete() {

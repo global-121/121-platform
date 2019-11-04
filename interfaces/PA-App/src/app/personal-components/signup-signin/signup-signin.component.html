@@ -1,0 +1,38 @@
+<section #signupSignin>
+  <dialogue-turn>
+    <p>
+      {{ 'personal.signup-signin.introduction'|translate }}
+    </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.signup-signin.more-info-digital-id'|translate }}
+      </ion-button>
+    </p>
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+      <ion-radio-group (ionChange)="changeSignupSignin($event.detail.value)">
+        <ion-item color="light"
+                  class="ion-no-padding ion-text-wrap"
+                  [disabled]="typeChosen"
+        >
+          <ion-label>{{ 'personal.signup-signin.create-id'|translate }}</ion-label>
+          <ion-radio value="create-id"></ion-radio>
+        </ion-item>
+        <ion-item color="light"
+                  class="ion-no-padding ion-text-wrap"
+                  [disabled]="typeChosen"
+        >
+          <ion-label>{{ 'personal.signup-signin.login-id'|translate }}</ion-label>
+          <ion-radio value="login-id"></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <p class="ion-margin-top">
+        <ion-button *ngIf="signupSigninChoice && !typeChosen"
+                    (click)="submitSignupSignin()"
+                    [disabled]="typeChosen"
+                    expand="block"
+        >{{ 'shared.submit-button'|translate }}</ion-button>
+      </p>
+  </dialogue-turn>
+</section>
