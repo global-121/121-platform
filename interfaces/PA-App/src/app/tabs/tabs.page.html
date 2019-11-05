@@ -2,11 +2,11 @@
 
   <ion-tab-bar slot="top">
     <ion-tab-button tab="personal" color="dark" layout="label-hide">
-      <ion-icon name="person" size="large"></ion-icon>
+      <ion-icon name="chatboxes" size="large"></ion-icon>
       <ion-label>{{ 'PERSONAL'|translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="tab1" color="primary" layout="label-hide">
+    <ion-tab-button tab="tab1" [disabled]="!isLoggedIn" color="primary" layout="label-hide">
       <ion-icon name="people" size="large"></ion-icon>
       <ion-label>{{ 'WORLD'|translate }}</ion-label>
     </ion-tab-button>
@@ -15,6 +15,13 @@
       <ion-icon name="cash" size="large"></ion-icon>
       <ion-label>{{ 'DEVICE'|translate }}</ion-label>
     </ion-tab-button>
-  </ion-tab-bar>
 
+    <ion-fab-button size="small" 
+                    [color]="accountBtnColor" 
+                    (click)="accountPopover()"
+    >
+      <ion-icon name="person" size="large"></ion-icon>
+    </ion-fab-button>
+
+  </ion-tab-bar>
 </ion-tabs>

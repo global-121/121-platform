@@ -2,6 +2,13 @@
   "WORLD": "Community",
   "PERSONAL": "You",
   "DEVICE": "Device",
+  "account": {
+    "logout": "Log out",
+    "change-password": "Change password",
+    "delete-digital-id": "Delete Digital ID",
+    "close": "Close",
+    "logged-out": "You are succesfully logged out."
+  },
   "personal": {
     "create-identity": {
       "introduction": "To create a Digital ID you need to complete the following steps.",

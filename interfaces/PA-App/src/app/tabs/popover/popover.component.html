@@ -1,0 +1,20 @@
+<ion-content>
+  <ion-list>
+    <ion-item [disabled]="!isLoggedIn" 
+              (click)="logout()"
+    >
+      {{ 'account.logout'|translate}}
+    </ion-item>
+    <ion-item disabled>
+      {{ 'account.change-password'|translate}}
+    </ion-item>
+    <ion-item disabled>
+      {{ 'account.delete-digital-id'|translate}}
+    </ion-item>
+    <ion-button (click)="close()"
+                expand="block"
+    >
+      {{ 'account.close'|translate}}
+    </ion-button>
+  </ion-list>
+</ion-content>

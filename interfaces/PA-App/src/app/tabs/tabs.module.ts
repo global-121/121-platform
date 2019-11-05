@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TabsPageRoutingModule } from './tabs.router.module';
 
 import { TabsPage } from './tabs.page';
+import { PopoverComponent } from './popover/popover.component';
 
 @NgModule({
   imports: [
@@ -16,6 +17,12 @@ import { TabsPage } from './tabs.page';
     TabsPageRoutingModule,
     TranslateModule.forChild(),
   ],
-  declarations: [TabsPage]
+  declarations: [
+    TabsPage,
+    PopoverComponent
+  ],
+  entryComponents: [
+    PopoverComponent
+  ]
 })
 export class TabsPageModule { }
