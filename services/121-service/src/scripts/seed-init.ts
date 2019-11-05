@@ -5,6 +5,7 @@ import { UserEntity } from '../user/user.entity';
 import { USERCONFIG } from '../secrets';
 import * as crypto from 'crypto';
 
+
 @Injectable()
 export class SeedInit implements InterfaceScript {
   public constructor(private connection: Connection) { }

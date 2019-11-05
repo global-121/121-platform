@@ -7,10 +7,8 @@ import { ApiResponse, ApiUseTags } from '@nestjs/swagger';
 @Controller('sms')
 export class SmsController {
   private readonly smsService: SmsService;
-  private readonly voiceService: VoiceService;
-  public constructor(smsService: SmsService, voiceService: VoiceService) {
+  public constructor(smsService: SmsService) {
     this.smsService = smsService;
-    this.voiceService = voiceService;
   }
 
   @ApiResponse({ status: 200, description: 'Test controller to test sending sms' })
