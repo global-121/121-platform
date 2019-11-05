@@ -1,34 +1,40 @@
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { twilioClient, twilio, callbackUrl } from './twilio.client';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TwilioMessageEntity } from './twilio.entity';
-import { Repository } from 'typeorm';
-import bodyParser = require('body-parser');
-import { SmsService } from './sms/sms.service';
+import { twilioClient, twilio, callbackUrlSms, callbackUrlVoice } from './twilio.client';
 import { TWILIO } from '../secrets';
 
 
 @Injectable()
 export class AuthMiddlewareTwilio implements NestMiddleware {
-  constructor(private readonly smsService: SmsService) {}
+  constructor() {}
 
   async use(req: Request, res: Response, next: NextFunction) {
-    const twilioSignature = req.headers['x-twilio-signature'];;
-    const valid = twilio.validateRequest(
+    const twilioSignature = req.headers['x-twilio-signature'];
+    const validSms = twilio.validateRequest(
       TWILIO.authToken,
       twilioSignature,
-      callbackUrl,
+      callbackUrlSms,
       req.body,
     );
-    if (valid) {
+    if (validSms) {
       next();
-    } else {
+    }
+
+    const validVoice = twilio.validateRequest(
+      TWILIO.authToken,
+      twilioSignature,
+      callbackUrlVoice,
+      req.body,
+      );
+    if (validVoice) {
+      next();
+    }
+
+    if (!validSms && !validVoice)
       throw new HttpException(
         'Could not validate request',
         HttpStatus.UNAUTHORIZED,
       );
-    }
   }
 }

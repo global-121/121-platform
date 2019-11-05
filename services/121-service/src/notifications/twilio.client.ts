@@ -13,7 +13,8 @@ if (process.env.NODE_ENV == 'production') {
   appUrl = TWILIO.ngrok;
 }
 export default appUrl;
-export const callbackUrl = appUrl + 'api/sms/status';
+export const callbackUrlSms = appUrl + 'api/sms/status';
+export const callbackUrlVoice = appUrl + 'api/voice/status';
 export const voiceXmlUrl = appUrl + 'api/voice/xml/';
 
 export const TWILIO_MP3 = {

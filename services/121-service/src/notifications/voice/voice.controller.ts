@@ -1,5 +1,5 @@
 import { TWILIO_MP3 } from './../twilio.client';
-import { Controller, Get, Header, Req, Res, Post, Param } from '@nestjs/common';
+import { Controller, Get, Header, Req, Res, Post, Param, Body } from '@nestjs/common';
 import {
   ApiUseTags,
   ApiResponse,
@@ -36,5 +36,10 @@ export class VoiceController {
     const twimlString = this.voiceService.xmlTest(response, params.mp3);
     response.set('Content-Type', 'text/xml');
     response.send(twimlString);
+  }
+
+  @Post('status')
+  public async statusCallback(@Body() callbackData: any): Promise<void> {
+    return await this.voiceService.statusCallback(callbackData);
   }
 }
