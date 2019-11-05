@@ -18,6 +18,7 @@ import { SmsController } from './notifications/sms/sms.controller';
 import { SmsModule } from './notifications/sms/sms.module';
 import { VoiceService } from './notifications/voice/voice.service';
 import { VoiceController } from './notifications/voice/voice.controller';
+import { VoiceModule } from './notifications/voice/voice.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { VoiceController } from './notifications/voice/voice.controller';
     ProofModule,
     SchemaModule,
     SmsModule,
+    VoiceModule,
   ],
   controllers: [
     AppController,
@@ -41,7 +43,7 @@ import { VoiceController } from './notifications/voice/voice.controller';
     // CreateConnectionController,
     // CredentialController,
   ],
-  providers: [VoiceService],
+  providers: [],
 })
 export class ApplicationModule {
   public constructor(private readonly connection: Connection) {}

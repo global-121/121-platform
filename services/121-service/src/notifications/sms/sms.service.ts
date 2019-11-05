@@ -4,15 +4,12 @@ import { TWILIO } from '../../secrets';
 import { DEBUG, PRODUCTION_URL } from '../../config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { TwilioMessageEntity } from '../twilio.entity';
-import appUrl, { twilioClient, callbackUrl } from '../twilio.client';
+import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
+import { twilioClient, callbackUrlSms } from '../twilio.client';
 
 
-// export const callbackUrl = appUrl + 'api/sms/status';
 @Injectable()
 export class SmsService {
-
-
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   public constructor() {}
@@ -21,14 +18,13 @@ export class SmsService {
     console.log('Send sms');
 
     // Overwrite recipient phone number for testing phase
-    console.log('recipientPhoneNr: ', recipientPhoneNr);
     recipientPhoneNr = TWILIO.testToNumber;
-    console.log('url', callbackUrl);
+
     twilioClient.messages
       .create({
         body: message,
         from: TWILIO.testFromNumber, // This parameter could be specifief per program
-        statusCallback: callbackUrl,
+        statusCallback: callbackUrlSms,
         to: recipientPhoneNr,
       })
       .then(message => this.storeSendSms(message));
@@ -42,6 +38,7 @@ export class SmsService {
     twilioMessage.from = message.from;
     twilioMessage.sid = message.sid;
     twilioMessage.status = message.status;
+    twilioMessage.type = NotificationType.Sms;
     twilioMessage.dateCreated = message.dateCreated;
     this.twilioMessageRepository.save(twilioMessage);
   }

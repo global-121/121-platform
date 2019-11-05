@@ -19,6 +19,7 @@ export class SmsController {
       '+0031600000000',
     );
   }
+
   @Post('status')
   public async statusCallback(@Body() callbackData: any): Promise<void> {
     return await this.smsService.statusCallback(callbackData);
