@@ -5,6 +5,8 @@ import { environment } from 'src/environments/environment';
 import { Storage } from '@ionic/storage';
 import { PaAccountApiService } from './pa-account-api.service';
 import { Program } from '../models/program.model';
+import { JwtService } from './jwt.service';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -30,12 +32,15 @@ export class PaDataService {
   public myPrograms: any = {};
   public myAnswers: any = {};
 
+  private authenticationStateSource = new Subject<boolean>();
+  public authenticationState$ = this.authenticationStateSource.asObservable();
+
   constructor(
     private ionStorage: Storage,
     private paAccountApi: PaAccountApiService,
+    private jwtService: JwtService
   ) {
     this.useLocalStorage = environment.localStorage;
-
   }
 
   async saveProgram(programId: number, program: Program): Promise<any> {
@@ -82,7 +87,12 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
-    return this.paAccountApi.createAccount(username, password);
+    return this.paAccountApi.createAccount(username, password).then(
+      () => {
+        this.store('isLoggedIn', true, true);
+        this.authenticationStateSource.next(true);
+      }
+    );
   }
 
   async login(username: string, password: string): Promise<any> {
@@ -90,7 +100,22 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
-    return this.paAccountApi.login(username, password);
+    return this.paAccountApi.login(username, password).then(
+      () => {
+        this.store('isLoggedIn', true, true);
+        this.authenticationStateSource.next(true);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+  }
+
+  async logout() {
+    console.log('PA-accounts-service : logout()');
+    this.jwtService.destroyToken();
+    this.store('isLoggedIn', false, true);
+    this.authenticationStateSource.next(false);
   }
 
 }

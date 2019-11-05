@@ -4,7 +4,15 @@ ion-tab-bar {
 }
 
 ion-tab-button {
+  &#tab-button-personal {
+    color: var(--ion-color-dark-contrast);
+    background: var(--ion-color-dark-tint);
 
+    &.tab-selected {
+      background: var(--ion-color-dark);
+    }
+  }
+ 
   &#tab-button-tab1 {
     color: var(--ion-color-primary-contrast);
     background: var(--ion-color-primary-tint);
@@ -14,12 +22,4 @@ ion-tab-button {
     }
   }
 
-  &#tab-button-personal {
-    color: var(--ion-color-dark-contrast);
-    background: var(--ion-color-dark-tint);
-
-    &.tab-selected {
-      background: var(--ion-color-dark);
-    }
-  }
 }
