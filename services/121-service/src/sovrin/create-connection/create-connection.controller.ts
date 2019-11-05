@@ -12,6 +12,7 @@ import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { DidInfoDto } from './dto/did-info.dto';
 import { ConnectionEntity } from './connection.entity';
 import { PasswordDto } from './dto/password.dto';
+import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 
 @ApiUseTags('sovrin')
 @Controller('sovrin/create-connection')
@@ -35,6 +36,15 @@ export class CreateConnectionController {
     @Body() didVerMeta: ConnectionReponseDto,
   ): Promise<ConnectionEntity> {
     return await this.createConnectionService.create(didVerMeta);
+  }
+
+  @ApiOperation({ title: 'Set phone number' })
+  @ApiResponse({ status: 200, description: 'Phone set for connection' })
+  @Post('/phone')
+  public async addPhone(
+    @Body() setPhoneRequest: SetPhoneRequestDto,
+  ): Promise<void> {
+    return await this.createConnectionService.addPhone(setPhoneRequest.did, setPhoneRequest.phonenumber);
   }
 
   @ApiOperation({ title: 'Add connection to ledger' })

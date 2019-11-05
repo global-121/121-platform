@@ -8,6 +8,9 @@ export class ConnectionEntity {
   @Column()
   public did: string;
 
+  @Column({ nullable: true })
+  public phoneNumber: string;
+
   @Column('numeric', {
     array: true,
     default: () => 'array[]::integer[]',

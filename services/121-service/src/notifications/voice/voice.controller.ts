@@ -33,7 +33,6 @@ export class VoiceController {
   @Get('/xml/:mp3')
   @Header('resonse-type', 'text/xml')
   public getXml(@Param() params, @Res() response: Response): any {
-    console.log('params.param1: ', params.mp3);
     const twimlString = this.voiceService.xmlTest(response, params.mp3);
     response.set('Content-Type', 'text/xml');
     response.send(twimlString);

@@ -41,6 +41,7 @@ export class SeedDev implements InterfaceScript {
     await connectionRepository.save([
       {
         did: EXAMPLE_DID,
+        phoneNumber: '0031600000000',
         programsEnrolled: [1],
         programsIncluded: [1],
         programsExcluded: [],
@@ -95,6 +96,7 @@ export class SeedDev implements InterfaceScript {
     const appointment = new AppointmentEntity();
     appointment.timeslotId = newAvailability.id;
     appointment.did = EXAMPLE_DID;
+    appointment.status = 'waiting'
     await appointmentRepository.save(appointment);
 
     // ***** CREATE PREFILLED ANSWERS *****
