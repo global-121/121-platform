@@ -44,6 +44,23 @@ export class CreateConnectionService {
     return newConnection;
   }
 
+  public async addPhone(did: string, phoneNumber: string) {
+    const connection = await this.findOne(did);
+    connection.phoneNumber = phoneNumber;
+    await this.connectionRepository.save(connection);
+  }
+
+  public async findOne(did: string): Promise<ConnectionEntity> {
+    let connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+    if (!connection) {
+      const errors = 'No connection found for PA.';
+      throw new HttpException({ errors }, 404);
+    }
+    return connection
+  }
+
   public async addLedger(didInfo: DidInfoDto): Promise<void> {
     ` decryptedMessage = await tyknid.decrypt(DidInfoDto)
       tyknid.addDidLedger(decryptedMessage.did, decryptedMessage.verkey)`;

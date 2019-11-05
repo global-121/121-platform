@@ -3,12 +3,8 @@ import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { USERCONFIG } from '../secrets';
-import { CountryEntity } from '../programs/country/country.entity';
-import { ConnectionEntity } from '../sovrin/create-connection/connection.entity';
-import { CustomCriterium } from '../programs/program/custom-criterium.entity';
-import { ProgramEntity } from '../programs/program/program.entity';
 import * as crypto from 'crypto';
-import { SchemaEntity } from '../sovrin/schema/schema.entity';
+
 
 @Injectable()
 export class SeedInit implements InterfaceScript {

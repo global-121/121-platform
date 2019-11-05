@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SmsService } from './sms.service';
-import { TwilioMessageEntity } from './twilio.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
+import { TwilioMessageEntity } from '../twilio.entity';
 
 describe('SmsService', () => {
   let service: SmsService;
