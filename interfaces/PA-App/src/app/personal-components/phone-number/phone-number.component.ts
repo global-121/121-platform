@@ -34,8 +34,8 @@ export class PhoneNumberComponent extends PersonalComponent {
   }
 
   ngOnInit() {
-    this.paData.retrieve('ngo').then(value => {
-      this.ngo = value;
+    this.paData.retrieve(this.paData.type.programId).then(programId => {
+      this.ngo = this.paData.myPrograms[parseInt(programId, 10)].ngo;
     });
   }
 

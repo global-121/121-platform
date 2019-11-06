@@ -32,12 +32,19 @@ export class DataStorageService {
     userId: number,
     params,
   ): Promise<String> {
-    const data = await this.dataStorageRepository.findOne({ where: { userId: userId, type: params.type } });
+    const data = await this.dataStorageRepository.find({
+      where: {
+        userId: userId,
+        type: params.type
+      },
+      order: { created: "DESC" }
+    });
+    console.log(data);
     if (!data) {
       const errors = { Data: ' not found' };
       throw new HttpException({ errors }, 401);
     }
-    return JSON.stringify(data.data);
+    return JSON.stringify(data[0].data);
   }
 
 

@@ -10,6 +10,7 @@ const testDataStorage = {
   userId: 1,
   type: 'string',
   data: 'string',
+  created: new Date(Date.UTC(2017, 1, 14))
 };
 
 class DataStorageServiceMock {
@@ -22,6 +23,7 @@ class DataStorageServiceMock {
       userId: 1,
       type: storeData.type,
       data: storeData.data,
+      created: new Date(Date.UTC(2017, 1, 14))
     };
     return testDataStorage;
   }
