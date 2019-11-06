@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+
+import { PaDataService } from './padata.service';
+
 import { PersonalComponents } from '../personal-components/personal-components.enum';
 
 @Injectable({
@@ -20,11 +23,16 @@ export class ConversationService {
   private shouldScrollSource = new Subject<number>();
   public shouldScroll$ = this.shouldScrollSource.asObservable();
 
-  constructor() {
+  constructor(
+    private paData: PaDataService,
+  ) {
     console.log('ConversationService()');
 
-    // get History from Storage:
-    this.history = this.getHistory();
+    this.init();
+  }
+
+  private async init() {
+    this.history = await this.getHistory();
 
     if (this.hasHistory()) {
       // TODO: Replay/build conversation from history
@@ -46,11 +54,12 @@ export class ConversationService {
     this.shouldScrollSource.next(-1);
   }
 
-  private getHistory() {
-    // Define a hard-coded history (for now):
-    const history = [
-    ];
+  private async getHistory() {
+    let history = await this.paData.retrieve(this.paData.type.conversationHistory);
 
+    if (!history) {
+      history = [];
+    }
 
     return history;
   }
@@ -74,8 +83,8 @@ export class ConversationService {
   private storeSection(section: ConversationSection) {
     console.log('storeSection(): ', section);
 
-    // addToHistory
-    // storeHistory
+    this.history.push(section);
+    this.paData.store(this.paData.type.conversationHistory, this.history);
   }
 
   public onSectionCompleted(section: ConversationSection) {

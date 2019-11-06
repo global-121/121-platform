@@ -27,6 +27,7 @@ export class PaDataService {
     timeslot: 'timeslotChoice',
     myPrograms: 'myPrograms',
     myAnswers: 'myAnswers',
+    conversationHistory: 'conversationHistory',
   };
 
   public myPrograms: any = {};
