@@ -5,8 +5,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { QRCodeModule } from 'angularx-qrcode';
 
-import { Storage } from '@ionic/storage';
-import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 
@@ -26,10 +24,6 @@ describe('SelectAppointmentComponent', () => {
         QRCodeModule
       ],
       providers: [
-        {
-          provide: Storage,
-          useValue: MockIonicStorage,
-        },
         {
           provide: PaDataService,
           useValue: MockPaDataService,

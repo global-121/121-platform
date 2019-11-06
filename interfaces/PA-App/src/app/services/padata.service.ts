@@ -108,6 +108,7 @@ export class PaDataService {
     this.jwtService.destroyToken();
     this.store('isLoggedIn', false, true);
     this.authenticationStateSource.next(false);
+    this.ionStorage.clear();
   }
 
 }

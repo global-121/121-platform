@@ -5,12 +5,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
 
-import { Storage } from '@ionic/storage';
-import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 
 import { HandleProofComponent } from './handle-proof.component';
+import { Storage } from '@ionic/storage';
+import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 
 describe('HandleProofComponent', () => {
   let component: HandleProofComponent;
@@ -28,7 +28,7 @@ describe('HandleProofComponent', () => {
       providers: [
         {
           provide: Storage,
-          useValue: MockIonicStorage,
+          useValue: MockIonicStorage
         },
         {
           provide: PaDataService,

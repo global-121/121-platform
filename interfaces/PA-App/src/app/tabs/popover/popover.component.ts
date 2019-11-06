@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { PaDataService } from 'src/app/services/padata.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-popover',
@@ -17,7 +16,6 @@ export class PopoverComponent implements OnInit {
     private popoverController: PopoverController,
     private paData: PaDataService,
     public translate: TranslateService,
-    private ionStorage: Storage,
   ) {
 
   }
@@ -36,7 +34,6 @@ export class PopoverComponent implements OnInit {
     this.paData.logout();
     this.paData.store('isLoggedIn', false, true);
     this.popoverController.dismiss();
-    await this.ionStorage.clear();
     window.location.reload();
   }
 

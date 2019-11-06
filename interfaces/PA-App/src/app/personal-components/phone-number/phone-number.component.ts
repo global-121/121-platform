@@ -5,6 +5,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-phone-number',
@@ -12,6 +13,9 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   styleUrls: ['./phone-number.component.scss'],
 })
 export class PhoneNumberComponent extends PersonalComponent {
+
+  public useLocalStorage: boolean;
+
   public phoneSkipped: boolean;
   public choiceMade = false;
   public phoneNumber: number;
@@ -26,6 +30,7 @@ export class PhoneNumberComponent extends PersonalComponent {
     public programService: ProgramsServiceApiService,
   ) {
     super();
+    this.useLocalStorage = environment.localStorage;
   }
 
   ngOnInit() {
@@ -37,7 +42,7 @@ export class PhoneNumberComponent extends PersonalComponent {
   public async submitPhoneNumber(phone: any) {
     this.choiceMade = true;
     this.phoneSkipped = false;
-    this.phoneNumber = await phone;
+    this.phoneNumber = phone;
 
     this.paData.retrieve(this.paData.type.did).then(async (did) => {
       await this.programService.postPhoneNumber(did, String(this.phoneNumber)).subscribe(() => {

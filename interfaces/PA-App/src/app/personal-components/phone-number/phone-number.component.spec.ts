@@ -3,9 +3,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PhoneNumberComponent } from './phone-number.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { Storage } from '@ionic/storage';
-import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 
 describe('PhoneNumberComponent', () => {
   let component: PhoneNumberComponent;
@@ -21,8 +21,8 @@ describe('PhoneNumberComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
-          provide: Storage,
-          useValue: MockIonicStorage,
+          provide: PaDataService,
+          useValue: MockPaDataService,
         },
       ]
     })

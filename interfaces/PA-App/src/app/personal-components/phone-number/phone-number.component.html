@@ -46,6 +46,7 @@
   </dialogue-turn>
   <dialogue-turn [actor]="ngo"
                 *ngIf="choiceMade"
+                [isSpoken]="choideMade"
   >
     <p *ngIf="!phoneSkipped"
        [innerHTML]="'personal.phone-number.conclusion1'|translate:{ phone:phoneNumber }">
@@ -53,7 +54,7 @@
     <p *ngIf="phoneSkipped">
       {{ 'personal.phone-number.conclusion2'|translate }}
     </p><br>
-    <p>
+    <p *ngIf="!useLocalStorage">
       {{ 'personal.phone-number.logout-info'|translate }}
     </p>
   </dialogue-turn>
