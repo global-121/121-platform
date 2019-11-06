@@ -18,6 +18,8 @@ import { SelectProgramComponent } from '../personal-components/select-program/se
 import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
 import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
+import { MeetingReminderComponent } from '../personal-components/meeting-reminder/meeting-reminder.component';
+import { PhoneNumberComponent } from '../personal-components/phone-number/phone-number.component';
 
 @Component({
   selector: 'app-personal',
@@ -42,6 +44,8 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.handleProof]: HandleProofComponent,
     [PersonalComponents.initialNeeds]: InitialNeedsComponent,
     [PersonalComponents.loginIdentity]: LoginIdentityComponent,
+    [PersonalComponents.meetingReminder]: MeetingReminderComponent,
+    [PersonalComponents.phoneNumber]: PhoneNumberComponent,
     [PersonalComponents.selectAppointment]: SelectAppointmentComponent,
     [PersonalComponents.selectCountry]: SelectCountryComponent,
     [PersonalComponents.selectLanguage]: SelectLanguageComponent,

@@ -17,6 +17,8 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
 import { HandleProofComponent } from './handle-proof/handle-proof.component';
 import { SignupSigninComponent } from './signup-signin/signup-signin.component';
 import { LoginIdentityComponent } from './login-identity/login-identity.component';
+import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.component';
+import { PhoneNumberComponent } from './phone-number/phone-number.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,8 @@ import { LoginIdentityComponent } from './login-identity/login-identity.componen
     HandleProofComponent,
     InitialNeedsComponent,
     LoginIdentityComponent,
+    MeetingReminderComponent,
+    PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
@@ -44,6 +48,8 @@ import { LoginIdentityComponent } from './login-identity/login-identity.componen
     HandleProofComponent,
     InitialNeedsComponent,
     LoginIdentityComponent,
+    MeetingReminderComponent,
+    PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
@@ -57,6 +63,8 @@ import { LoginIdentityComponent } from './login-identity/login-identity.componen
     HandleProofComponent,
     InitialNeedsComponent,
     LoginIdentityComponent,
+    MeetingReminderComponent,
+    PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,

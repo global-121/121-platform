@@ -1,0 +1,60 @@
+<section>
+  <dialogue-turn [actor]="program?.ngo">
+    <p>
+      {{ 'personal.phone-number.introduction1'|translate }}
+    </p>
+    <ul>
+      <li>
+        {{ 'personal.phone-number.introduction2'|translate }}
+      </li>
+      <li>
+        {{ 'personal.phone-number.introduction3'|translate }}
+      </li>
+      <li>
+        {{ 'personal.phone-number.introduction4'|translate }}
+      </li>
+    </ul>  
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <form (ngSubmit)="submitPhoneNumber(phone)">
+      <ion-label>{{ 'personal.phone-number.input-label'|translate }}</ion-label>
+      <ion-input type="number"
+                 name="phone"
+                 [(ngModel)]="phone"
+                 ngDefaultControl
+                 [disabled]="isDisabled"
+      ></ion-input>
+      <p class="ion-margin-top">
+        <ion-button type="submit"
+                    *ngIf="!isDisabled"
+                    expand="block"
+                    [disabled]="isDisabled"
+        >{{ 'personal.phone-number.submit'|translate }}</ion-button>
+      </p>
+      <p class="ion-margin-top">
+        <ion-button (click)="skipPhone();"
+                    expand="block"
+                    *ngIf="!isDisabled"
+                    [disabled]="isDisabled"
+                    color="light"
+        >
+          {{ 'personal.phone-number.skip'|translate }}
+        </ion-button>
+      </p>
+    </form>
+    
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                *ngIf="choiceMade"
+  >
+    <p *ngIf="!phoneSkipped"
+       [innerHTML]="'personal.phone-number.conclusion1'|translate:{ phone:phoneNumber }">
+    </p>
+    <p *ngIf="phoneSkipped">
+      {{ 'personal.phone-number.conclusion2'|translate }}
+    </p><br>
+    <p>
+      {{ 'personal.phone-number.logout-info'|translate }}
+    </p>
+  </dialogue-turn>
+</section>

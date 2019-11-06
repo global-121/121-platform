@@ -24,7 +24,7 @@
       "submit-password": "Create my password",
       "username-not-unique": "The username you provide is not unique. Please try again.",
       "unequal-passwords": "The passwords you provided are not the same. Please try again.",
-      "conclusion": "Great! You have created a Digital ID."
+      "conclusion": "Great! You have created a Digital ID and are currently logged in. You can log out, and find other account-features, under the green account-button in the top right."
     },
     "login-identity": {
       "introduction": "To use an existing Digital ID you need to log in with your username and password.",
@@ -33,7 +33,7 @@
       "supply-password": "Your password:",
       "submit-password": "Submit my password",
       "incorrect-credentials": "The combination of username and password you provided is not recognized. Please try again.",
-      "conclusion": "Great! You have now returned to your existing Digital ID."
+      "conclusion": "Great! You have now returned to your existing Digital ID. You can log out, and find other account-features, under the green account-button in the top right."
     },
     "enroll-in-program": {
       "introduction": "We have received your request to apply for <strong>{{programTitle}}</strong> of <strong>{{ngo}}</strong>.",
@@ -73,7 +73,27 @@
       "more-info-documents": "About these documents",
       "confirm": "Confirm appointment",
       "change": "Change appointment",
-      "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed.",
+      "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed."
+    },
+    "phone-number": {
+      "introduction1": "You have the option of entering your phone number.",
+      "introduction2": "We use this to send you text-notifications when you are included or not and when you receive money.",
+      "introduction3": "If you do not want to enter your phone number, you will have to log in here yourself regularly for updates.",
+      "introduction4": "At the end of the program, your number will be deleted again.",
+      "input-label": "Phone number",
+      "input-placeholder": "Your phone number",
+      "submit": "Submit phone number",
+      "skip": "Skip",
+      "conclusion1": "Thank you. You will now receive notifications on this phone number: <strong>{{phone}}</strong>",
+      "conclusion2": "You have chosen not to leave a phone number. Please log in back here regularly, to check on updates.",
+      "logout-info": "If you want, you can now log out, under the account-button on the top right. When you return here, you can log in with your username and password."
+    },
+    "meeting-reminder": {
+      "documents": "Please ensure you have the following documents:",
+      "from": "From",
+      "till": "Till",
+      "at": "At",
+      "more-info-documents": "About these documents",
       "qr-code": "Please show this QR-code at your meeting.",
       "meeting-reminder": "Here is everything you need to know about your meeting:",
       "meeting-count-down": "Your meeting appointment takes place in <strong><big>{{daysToMeeting}}</big></strong> days.",
