@@ -87,12 +87,7 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
-    return this.paAccountApi.createAccount(username, password).then(
-      () => {
-        this.store('isLoggedIn', true, true);
-        this.authenticationStateSource.next(true);
-      }
-    );
+    return this.paAccountApi.createAccount(username, password);
   }
 
   async login(username: string, password: string): Promise<any> {
@@ -100,15 +95,12 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
-    return this.paAccountApi.login(username, password).then(
-      () => {
-        this.store('isLoggedIn', true, true);
-        this.authenticationStateSource.next(true);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    return this.paAccountApi.login(username, password);
+  }
+
+  async setLoggedIn(): Promise<void> {
+    this.store('isLoggedIn', true, true);
+    this.authenticationStateSource.next(true);
   }
 
   async logout() {
