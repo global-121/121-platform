@@ -1,10 +1,16 @@
-import { ViewChildren, QueryList, OnInit, AfterViewInit, AfterContentInit } from '@angular/core';
+import { ViewChildren, QueryList, OnInit, AfterViewInit, AfterContentInit, Input } from '@angular/core';
 
 import { environment } from 'src/environments/environment';
 
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
 export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterContentInit {
+  /**
+   * The data required to 'reinstate' the component from history
+   */
+  @Input()
+  data: any;
+
   @ViewChildren(DialogueTurnComponent)
   private turns: QueryList<DialogueTurnComponent>;
 
@@ -28,6 +34,17 @@ export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterC
   }
 
   ngAfterContentInit() { }
+
+  /**
+   * Initialize the component for the first time
+   */
+  initNew(): void { }
+
+  /**
+   * Initialize the component from history
+   */
+  initHistory(): void { }
+
 
   private setupTurns() {
     this.turns.forEach((turn: DialogueTurnComponent, index: number) => {
