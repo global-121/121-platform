@@ -62,6 +62,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.programsService.getProgramById(programId).subscribe((response: Program) => {
       this.programTitle = this.mapLabelByLanguageCode(response.title);
       this.ngo = response.ngo;
+      this.paData.store('ngo', this.ngo);
       this.credDefId = response.credDefId;
 
       this.buildDetails(response);
