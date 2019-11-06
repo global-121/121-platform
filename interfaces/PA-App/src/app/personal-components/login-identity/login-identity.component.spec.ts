@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Storage } from '@ionic/storage';
-import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { LoginIdentityComponent } from './login-identity.component';
+import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 
 describe('LoginIdentityComponent', () => {
   let component: LoginIdentityComponent;
@@ -22,9 +22,9 @@ describe('LoginIdentityComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
-          provide: Storage,
-          useValue: MockIonicStorage,
-        }
+          provide: PaDataService,
+          useValue: MockPaDataService,
+        },
       ]
     })
       .compileComponents();

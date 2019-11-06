@@ -42,7 +42,7 @@ export class PhoneNumberComponent extends PersonalComponent {
   public async submitPhoneNumber(phone: any) {
     this.choiceMade = true;
     this.phoneSkipped = false;
-    this.phoneNumber = await phone;
+    this.phoneNumber = phone;
 
     this.paData.retrieve(this.paData.type.did).then(async (did) => {
       await this.programService.postPhoneNumber(did, String(this.phoneNumber)).subscribe(() => {

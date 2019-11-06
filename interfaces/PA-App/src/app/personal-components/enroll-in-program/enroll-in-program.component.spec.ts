@@ -3,8 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { TranslateModule } from '@ngx-translate/core';
-import { Storage } from '@ionic/storage';
-import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
 import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 
@@ -23,10 +21,6 @@ describe('EnrollInProgramComponent', () => {
         HttpClientTestingModule
       ],
       providers: [
-        {
-          provide: Storage,
-          useValue: MockIonicStorage,
-        },
         {
           provide: PaDataService,
           useValue: MockPaDataService,

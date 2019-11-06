@@ -1,11 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Storage } from '@ionic/storage';
-import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
-
 import { PopoverComponent } from './popover.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 
 describe('PopoverComponent', () => {
   let component: PopoverComponent;
@@ -20,8 +19,8 @@ describe('PopoverComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
-          provide: Storage,
-          useValue: MockIonicStorage,
+          provide: PaDataService,
+          useValue: MockPaDataService,
         }
       ]
     })

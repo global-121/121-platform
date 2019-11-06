@@ -5,8 +5,8 @@ import { MeetingReminderComponent } from './meeting-reminder.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { QRCodeModule } from 'angularx-qrcode';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Storage } from '@ionic/storage';
-import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
+import { PaDataService } from 'src/app/services/padata.service';
 
 describe('MeetingReminderComponent', () => {
   let component: MeetingReminderComponent;
@@ -23,8 +23,8 @@ describe('MeetingReminderComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
-          provide: Storage,
-          useValue: MockIonicStorage,
+          provide: PaDataService,
+          useValue: MockPaDataService,
         },
       ]
     })
