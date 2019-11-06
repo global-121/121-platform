@@ -158,7 +158,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
 
   getNextSection() {
-    return PersonalComponents.meetingReminder;
+    return PersonalComponents.phoneNumber;
   }
 
   complete() {

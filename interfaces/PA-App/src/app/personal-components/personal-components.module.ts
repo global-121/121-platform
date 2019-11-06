@@ -18,6 +18,7 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
 import { SignupSigninComponent } from './signup-signin/signup-signin.component';
 import { LoginIdentityComponent } from './login-identity/login-identity.component';
 import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.component';
+import { PhoneNumberComponent } from './phone-number/phone-number.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.co
     InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
+    PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
@@ -47,6 +49,7 @@ import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.co
     InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
+    PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,
@@ -61,6 +64,7 @@ import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.co
     InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
+    PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectLanguageComponent,

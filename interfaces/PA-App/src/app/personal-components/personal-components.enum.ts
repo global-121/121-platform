@@ -5,6 +5,7 @@ export enum PersonalComponents {
   initialNeeds = 'initial-needs',
   loginIdentity = 'login-identity',
   meetingReminder = 'meeting-reminder',
+  phoneNumber = 'phone-number',
   selectAppointment = 'select-appointment',
   selectCountry = 'select-country',
   selectLanguage = 'select-language',
