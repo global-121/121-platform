@@ -109,6 +109,9 @@
     >
       <p>
         {{ 'personal.create-identity.conclusion'|translate }}
+      </p><br>
+      <p *ngIf="!useLocalStorage">
+        {{ 'personal.create-identity.conclusion-web'|translate }}
       </p>
     </dialogue-turn>
   </section>

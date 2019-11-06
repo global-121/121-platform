@@ -16,7 +16,8 @@
       <ion-label>{{ 'DEVICE'|translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-fab-button size="small" 
+    <ion-fab-button *ngIf="!useLocalStorage"
+                    size="small" 
                     [color]="accountBtnColor" 
                     (click)="accountPopover($event)"
     >

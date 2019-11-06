@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { PopoverComponent } from './popover/popover.component';
 import { PaDataService } from '../services/padata.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -14,6 +15,8 @@ export class TabsPage {
   public isLoggedIn = false;
   events: any;
 
+  public useLocalStorage: boolean;
+
   constructor(
     public popoverController: PopoverController,
     public paData: PaDataService,
@@ -22,6 +25,7 @@ export class TabsPage {
     this.paData.authenticationState$.subscribe((isLoggedIn: boolean) => {
       this.adjustAuthProperties(isLoggedIn);
     });
+    this.useLocalStorage = environment.localStorage;
   }
 
   ngOnInit() {
