@@ -243,4 +243,19 @@ export class ProgramsServiceApiService {
       map(response => response)
     );
   }
+
+  postPhoneNumber(did: string, phonenumber: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/create-connection/phone',
+      {
+        did,
+        phonenumber
+      },
+      true
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
 }
