@@ -1,0 +1,62 @@
+<section #meetingReminder>
+  <dialogue-turn [actor]="program?.ngo"
+                 *ngIf="qrDataShow"
+                 [isSpoken]="qrDataShow"
+  >
+    <p>
+      {{ 'personal.meeting-reminder.meeting-reminder'|translate }}
+    </p>
+    <p>
+      {{ 'personal.meeting-reminder.from'|translate }}:
+      <strong>
+        {{ chosenTimeslot.startDate|date:dateFormat }}: {{ chosenTimeslot.startDate|date:timeFormat }}
+      </strong>
+      <br>
+      {{ 'personal.meeting-reminder.till'|translate }}:
+      <strong>
+        {{ chosenTimeslot.endDate|date:dateFormat }}: {{ chosenTimeslot.endDate|date:timeFormat }}
+      </strong>
+      <br>
+      {{ 'personal.meeting-reminder.at'|translate }}:
+      <strong>{{ chosenTimeslot.location }}</strong>
+    </p>
+    <p>
+      {{ 'personal.meeting-reminder.documents'|translate }}
+    </p>
+    <ul class="ion-no-padding ion-padding-start">
+      <li *ngFor="let document of meetingDocuments">
+        {{ document }}
+      </li>
+    </ul>
+
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.meeting-reminder.more-info-documents'|translate }}
+      </ion-button>
+    </p>
+    <p>
+      {{ 'personal.meeting-reminder.qr-code'|translate }}
+    </p>
+    <div *ngIf="qrDataString"
+         text-center
+         margin-vertical
+         style="margin: 1em auto; max-width: 360px; padding: 1em; background: white;"
+    >
+      <qrcode [qrdata]="qrDataString"
+              level="H"
+      ></qrcode>
+    </div>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                  *ngIf="qrDataShow && !meetingPast"
+                  [isSpoken]="qrDataShow">
+    <p *ngIf="!meetingTomorrow && !meetingToday" [innerHTML]="'personal.meeting-reminder.meeting-count-down'|translate:{ daysToMeeting:daysToMeeting, dayDays:dayDays }"></p>
+    <p *ngIf="meetingTomorrow">
+      {{ 'personal.meeting-reminder.meeting-tomorrow'|translate }}
+    </p>
+    <p *ngIf="meetingToday">
+      {{ 'personal.meeting-reminder.meeting-today'|translate }}
+    </p>
+  </dialogue-turn>
+</section>

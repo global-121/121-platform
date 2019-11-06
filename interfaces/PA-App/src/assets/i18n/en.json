@@ -73,7 +73,14 @@
       "more-info-documents": "About these documents",
       "confirm": "Confirm appointment",
       "change": "Change appointment",
-      "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed.",
+      "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed."
+    },
+    "meeting-reminder": {
+      "documents": "Please ensure you have the following documents:",
+      "from": "From",
+      "till": "Till",
+      "at": "At",
+      "more-info-documents": "About these documents",
       "qr-code": "Please show this QR-code at your meeting.",
       "meeting-reminder": "Here is everything you need to know about your meeting:",
       "meeting-count-down": "Your meeting appointment takes place in <strong><big>{{daysToMeeting}}</big></strong> days.",

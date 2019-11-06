@@ -4,6 +4,7 @@ export enum PersonalComponents {
   handleProof = 'handle-proof',
   initialNeeds = 'initial-needs',
   loginIdentity = 'login-identity',
+  meetingReminder = 'meeting-reminder',
   selectAppointment = 'select-appointment',
   selectCountry = 'select-country',
   selectLanguage = 'select-language',

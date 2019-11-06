@@ -11,11 +11,11 @@ import { Timeslot } from 'src/app/models/timeslot.model';
 import { Program } from 'src/app/models/program.model';
 
 @Component({
-  selector: 'app-select-appointment',
-  templateUrl: './select-appointment.component.html',
-  styleUrls: ['./select-appointment.component.scss'],
+  selector: 'app-meeting-reminder',
+  templateUrl: './meeting-reminder.component.html',
+  styleUrls: ['./meeting-reminder.component.scss'],
 })
-export class SelectAppointmentComponent extends PersonalComponent {
+export class MeetingReminderComponent extends PersonalComponent {
   private did: string;
   public languageCode: string;
   public fallbackLanguageCode: string;
@@ -24,7 +24,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
   public program: Program;
   public ngo: string;
-  public programChoice: number;
+  private programChoice: number;
 
   public timeslots: Timeslot[];
   public timeslotChoice: number;
@@ -40,6 +40,9 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
   public meetingDocuments: string[];
 
+  public qrDataString: string;
+  public qrDataShow = false;
+
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
@@ -54,21 +57,21 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   ngOnInit() {
-    this.getDid();
+    this.generateContent();
+    this.getDaysToAppointment();
   }
 
-  private getDid() {
+  private async getDid() {
     this.paData.retrieve(this.paData.type.did).then((value) => {
       this.did = value;
     });
   }
 
-  private getProgram() {
+  private async getProgram() {
     this.conversationService.startLoading();
     this.paData.retrieve(this.paData.type.programId).then(programId => {
       this.programChoice = Number(programId);
       this.getProgramProperties(programId);
-      this.getTimeslots(programId);
     });
   }
 
@@ -81,22 +84,6 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
     const documents = this.mapLabelByLanguageCode(this.program.meetingDocuments);
     this.meetingDocuments = this.buildDocumentsList(documents);
-  }
-
-  private getTimeslots(programId: any) {
-    this.programsService.getTimeslots(programId).subscribe((response: Timeslot[]) => {
-      this.timeslots = response;
-      console.log('timeslots: ', this.timeslots);
-
-      this.conversationService.stopLoading();
-    });
-  }
-
-  public isSameDay(startDate: string, endDate: string) {
-    const startDay = new Date(startDate).toDateString();
-    const endDay = new Date(endDate).toDateString();
-
-    return (startDay === endDay);
   }
 
   private mapLabelByLanguageCode(property: any) {
@@ -113,52 +100,53 @@ export class SelectAppointmentComponent extends PersonalComponent {
     return documents.split(';');
   }
 
-  private storeTimeslot(chosenTimeslot: any) {
-    this.paData.store(this.paData.type.timeslot, chosenTimeslot);
-  }
+  private generateQrCode(did: string, programId: number) {
+    const qrData = {
+      did,
+      programId,
+    };
 
-  private getTimeslotById(timeslotId: number) {
-    return this.timeslots.find((item: Timeslot) => item.id === timeslotId);
-  }
-
-  public changeTimeslot($event) {
-    this.timeslotChoice = parseInt($event.detail.value, 10);
-    this.timeslotSubmitted = false;
-
-    this.chosenTimeslot = this.getTimeslotById(this.timeslotChoice);
-    this.storeTimeslot(this.chosenTimeslot);
-  }
-
-  public submitTimeslot() {
-    this.timeslotSubmitted = true;
-    this.conversationService.scrollToEnd();
-  }
-
-  public changeConfirmAction($event) {
-    this.confirmAction = $event.detail.value;
-  }
-
-  public submitConfirmAction(action: string) {
-    // This needs a check on 'already confirmed for this did' (max 1 timeslot-selection allowed)
-    if (action === 'confirm') {
-      this.postAppointment(this.timeslotChoice, this.did);
-    } else if (action === 'change') {
-      this.timeslotSubmitted = false;
-      this.isDisabled = false;
+    if (qrData) {
+      this.qrDataString = JSON.stringify(qrData);
+      this.qrDataShow = true;
     }
   }
 
-  public postAppointment(timeslotId: number, did: string) {
+  private getDaysToAppointment() {
+    if (this.qrDataShow) {
+      let daysToMeetingNumber: number;
+
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      const chosenDate = new Date(this.chosenTimeslot.startDate.valueOf());
+      chosenDate.setHours(0, 0, 0, 0);
+      const diff = chosenDate.getTime() - currentDate.getTime();
+      daysToMeetingNumber = Math.ceil(diff / (1000 * 3600 * 24));
+      this.daysToMeeting = String(daysToMeetingNumber);
+      this.meetingTomorrow = daysToMeetingNumber === 1 ? true : false;
+      this.meetingToday = daysToMeetingNumber === 0 ? true : false;
+      this.meetingPast = daysToMeetingNumber < 0 ? true : false;
+    }
+  }
+
+  public async generateContent() {
     this.conversationService.startLoading();
-    this.programsService.postAppointment(timeslotId, did).subscribe(() => {
+    this.paData.retrieve(this.paData.type.timeslot).then(async (value) => {
+      this.chosenTimeslot = value;
+      console.log(this.chosenTimeslot);
+      await this.getDid();
+      await this.getProgram();
+
+      await this.generateQrCode(this.did, this.programChoice);
+      await this.getDaysToAppointment();
+
       this.conversationService.stopLoading();
       this.complete();
     });
   }
 
-
   getNextSection() {
-    return PersonalComponents.meetingReminder;
+    return PersonalComponents.storeCredential;
   }
 
   complete() {
@@ -171,4 +159,5 @@ export class SelectAppointmentComponent extends PersonalComponent {
       next: this.getNextSection(),
     });
   }
+
 }
