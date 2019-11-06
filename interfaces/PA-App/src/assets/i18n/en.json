@@ -85,7 +85,8 @@
       "submit": "Submit phone number",
       "skip": "Skip",
       "conclusion1": "Thank you. You will now receive notifications on this phone number: <strong>{{phone}}</strong>",
-      "conclusion2": "You have chosen not to leave a phone number. Please log in back here regularly, to check on updates."
+      "conclusion2": "You have chosen not to leave a phone number. Please log in back here regularly, to check on updates.",
+      "logout-info": "If you want, you can now log out, under the account-button on the top right. When you return here, you can log in with your username and password."
     },
     "meeting-reminder": {
       "documents": "Please ensure you have the following documents:",
