@@ -27,8 +27,11 @@ export class ConversationService {
     private paData: PaDataService,
   ) {
     console.log('ConversationService()');
+  }
 
-    this.init();
+  public async getConversationUpToNow(): Promise<ConversationSection[]> {
+    await this.init();
+    return this.conversation;
   }
 
   private async init() {
@@ -107,10 +110,6 @@ export class ConversationService {
     if (section.next) {
       this.sectionCompletedSource.next(section.next);
     }
-  }
-
-  public getConversationUpToNow(): ConversationSection[] {
-    return this.conversation;
   }
 }
 
