@@ -93,7 +93,11 @@ export class ConversationService {
   private storeSection(section: ConversationSection) {
     console.log('storeSection(): ', section);
 
-    this.history.push(section);
+    this.history.push({
+      name: section.name,
+      data: section.data,
+      moment: section.moment,
+    });
     this.paData.store(this.paData.type.conversationHistory, this.history);
   }
 
