@@ -35,7 +35,7 @@ export class ConversationService {
     this.history = await this.getHistory();
 
     if (this.hasHistory()) {
-      // TODO: Replay/build conversation from history
+      this.replayHistory();
     } else {
       this.startNewConversation();
     }
@@ -68,15 +68,22 @@ export class ConversationService {
     return (this.history.length > 0);
   }
 
+  private replayHistory() {
+    this.history.forEach((section: ConversationSection) => {
+      this.addSection(section.name, section.data);
+    });
+  }
+
   private startNewConversation() {
     this.addSection(PersonalComponents.selectLanguage);
   }
 
-  private addSection(sectionName) {
-    console.log('ConversationService addSection(): ', sectionName);
+  private addSection(name: string, data?: any) {
+    console.log('ConversationService addSection(): ', name, data);
 
     this.conversation.push({
-      name: sectionName
+      name,
+      data,
     });
   }
 

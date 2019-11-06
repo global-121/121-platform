@@ -4,7 +4,8 @@ import { environment } from 'src/environments/environment';
 import { Storage } from '@ionic/storage';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { ConversationService } from '../services/conversation.service';
+import { ConversationService, ConversationSection } from '../services/conversation.service';
+import { PersonalComponent } from '../personal-components/personal-component.class';
 
 import { PersonalComponents } from '../personal-components/personal-components.enum';
 import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
@@ -83,12 +84,12 @@ export class PersonalPage implements OnInit {
     this.scrollDown();
   }
 
-  private loadComponents() {
-    const steps = this.conversationService.getConversationUpToNow();
+  private async loadComponents() {
+    const conversation = await this.conversationService.getConversationUpToNow();
 
-    for (const step of steps) {
-      this.insertSection(step.name);
-    }
+    conversation.forEach((section: ConversationSection) => {
+      this.insertSection(section.name, section.data);
+    });
   }
 
   private getComponentFactory(name: string) {
@@ -97,7 +98,7 @@ export class PersonalPage implements OnInit {
     );
   }
 
-  public insertSection(name: string) {
+  public insertSection(name: string, data?: any) {
     if (!name) {
       return;
     }
@@ -106,9 +107,13 @@ export class PersonalPage implements OnInit {
 
     this.scrollDown();
 
-    this.container.createComponent(
+    const componentRef = this.container.createComponent(
       this.getComponentFactory(name)
     );
+
+    if (data) {
+      (componentRef.instance as PersonalComponent).data = data;
+    }
   }
 
   public scrollDown() {
