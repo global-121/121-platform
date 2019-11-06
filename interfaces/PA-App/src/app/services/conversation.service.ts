@@ -10,7 +10,7 @@ export class ConversationService {
     isLoading: false,
   };
 
-  private history: ConversationHistorySection[] = [];
+  private history: ConversationSection[] = [];
 
   private conversation: ConversationSection[] = [];
 
@@ -59,7 +59,7 @@ export class ConversationService {
     return (this.history.length > 0);
   }
 
-  startNewConversation() {
+  private startNewConversation() {
     this.addSection(PersonalComponents.selectLanguage);
   }
 
@@ -82,7 +82,7 @@ export class ConversationService {
     console.log('ConverstaionService  onSectionCompleted(): ', section);
 
     // Record completion date/time:
-    section.moment = new Date();
+    section.moment = Date.now();
 
     // Store all data from this section in history
     this.storeSection(section);
@@ -98,15 +98,9 @@ export class ConversationService {
   }
 }
 
-class ConversationHistorySection {
-  readonly name: string;
-  readonly data: any;
-  readonly timestamp: number;
-}
-
 export class ConversationSection {
   name: string;
-  moment?: Date;
+  moment?: number;
   data?: any;
   next?: string;
 }
