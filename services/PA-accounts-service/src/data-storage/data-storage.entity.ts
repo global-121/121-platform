@@ -18,4 +18,8 @@ export class DataStorageEntity {
   @Column()
   public data: string;
 
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  public created: Date;
+
+
 }
