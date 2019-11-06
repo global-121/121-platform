@@ -58,7 +58,7 @@ export class ConversationService {
   }
 
   private async getHistory() {
-    let history = await this.paData.retrieve(this.paData.type.conversationHistory);
+    let history = await this.paData.retrieve(this.paData.type.conversationHistory, true);
 
     if (!history) {
       history = [];
@@ -91,14 +91,12 @@ export class ConversationService {
   }
 
   private storeSection(section: ConversationSection) {
-    console.log('storeSection(): ', section);
+    console.log('storeSection()');
 
-    this.history.push({
-      name: section.name,
-      data: section.data,
-      moment: section.moment,
-    });
-    this.paData.store(this.paData.type.conversationHistory, this.history);
+    this.history.push(section);
+
+    // Only stored locally (for now)
+    this.paData.store(this.paData.type.conversationHistory, this.history, true);
   }
 
   public onSectionCompleted(section: ConversationSection) {
