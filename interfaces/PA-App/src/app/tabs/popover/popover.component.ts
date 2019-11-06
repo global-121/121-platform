@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { PopoverController, ToastController } from '@ionic/angular';
+import { PopoverController } from '@ionic/angular';
 import { PaDataService } from 'src/app/services/padata.service';
-import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-popover',
@@ -16,9 +16,8 @@ export class PopoverComponent implements OnInit {
   constructor(
     private popoverController: PopoverController,
     private paData: PaDataService,
-    private toastController: ToastController,
-    private router: Router,
     public translate: TranslateService,
+    private ionStorage: Storage,
   ) {
 
   }
@@ -33,32 +32,12 @@ export class PopoverComponent implements OnInit {
     this.popoverController.dismiss();
   }
 
-  logout() {
+  async logout() {
     this.paData.logout();
     this.paData.store('isLoggedIn', false, true);
     this.popoverController.dismiss();
-    this.createToast(this.translate.instant('account.logged-out'));
+    await this.ionStorage.clear();
+    window.location.reload();
   }
 
-  createToast(message: string) {
-    this.toastController.create({
-      header: message,
-      animated: true,
-      showCloseButton: true,
-      closeButtonText: 'Close',
-      cssClass: 'update-toast',
-      duration: 3000,
-      position: 'bottom',
-      buttons: [
-        {
-          side: 'start',
-          icon: 'share-alt',
-          handler: () => {
-            this.router.navigate(['tabs/personal']);
-          }
-        }]
-    }).then((obj) => {
-      obj.present();
-    });
-  }
 }

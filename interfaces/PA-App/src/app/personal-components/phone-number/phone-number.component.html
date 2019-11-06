@@ -1,5 +1,5 @@
 <section>
-  <dialogue-turn [actor]="program?.ngo">
+  <dialogue-turn [actor]="ngo">
     <p>
       {{ 'personal.phone-number.introduction1'|translate }}
     </p>
@@ -44,7 +44,7 @@
     </form>
     
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo"
+  <dialogue-turn [actor]="ngo"
                 *ngIf="choiceMade"
   >
     <p *ngIf="!phoneSkipped"

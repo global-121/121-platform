@@ -37,6 +37,7 @@ export class LoginIdentityComponent extends PersonalComponent {
         this.isInProgress = true;
         this.conversationService.startLoading();
         // Here goes something that retrieves up-to-date conversation-history??
+        this.paData.setLoggedIn();
         this.conversationService.stopLoading();
         this.complete();
       },

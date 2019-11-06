@@ -3,6 +3,8 @@ import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { TranslateService } from '@ngx-translate/core';
+import { PaDataService } from 'src/app/services/padata.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-phone-number',
@@ -14,22 +16,35 @@ export class PhoneNumberComponent extends PersonalComponent {
   public choiceMade = false;
   public phoneNumber: number;
   public phone: any;
+  public ngo: string;
+  public did: string;
 
   constructor(
     private conversationService: ConversationService,
     public translate: TranslateService,
+    public paData: PaDataService,
+    public programService: ProgramsServiceApiService,
   ) {
     super();
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.paData.retrieve('ngo').then(value => {
+      this.ngo = value;
+    });
+  }
 
-  public submitPhoneNumber(phone: any) {
+  public async submitPhoneNumber(phone: any) {
     this.choiceMade = true;
     this.phoneSkipped = false;
-    this.phoneNumber = phone;
-    console.log('PHONE: ', this.phoneNumber);
-    this.complete();
+    this.phoneNumber = await phone;
+
+    this.paData.retrieve(this.paData.type.did).then(async (did) => {
+      await this.programService.postPhoneNumber(did, String(this.phoneNumber)).subscribe(() => {
+        console.log('Phone number posted');
+      });
+      this.complete();
+    });
   }
 
   public skipPhone() {

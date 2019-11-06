@@ -133,7 +133,6 @@ export class MeetingReminderComponent extends PersonalComponent {
     this.conversationService.startLoading();
     this.paData.retrieve(this.paData.type.timeslot).then(async (value) => {
       this.chosenTimeslot = value;
-      console.log(this.chosenTimeslot);
       await this.getDid();
       await this.getProgram();
 
