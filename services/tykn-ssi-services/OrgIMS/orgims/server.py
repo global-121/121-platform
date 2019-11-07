@@ -485,6 +485,8 @@ class Server:
                 type: string
               walletPath:
                 type: string
+                default: ""
+                description: "Empty field means the wallet will be created at path present in config.json"
         responses:
           "200":
             produces:
@@ -538,7 +540,7 @@ class Server:
 
       if wallet_path is "":
             wallet_path = self._walletPath
-            
+
       try:
             operation_result = await self._service.restore_wallet(
               wallet_name,
