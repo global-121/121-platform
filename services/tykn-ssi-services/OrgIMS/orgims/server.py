@@ -8,19 +8,22 @@ from . import ServiceError
 
 
 class Server:
-    def __init__(self, address, port, service, logger, loop):
+    def __init__(self, address, port, service, logger, loop, walletPath):
         self._app = web.Application(loop=loop)
         self._app.add_routes([
             web.post("/api/credential/definition", self._credential_definition_post_handler),
             web.post("/api/credential/credoffer", self._credential_offer_post_handler),
             web.post("/api/credential/issue", self._credential_issuance_post_handler),
             web.post("/api/proof/verify", self._verify_proof_handler),
+            web.post("/api/wallet/backup", self._backup_wallet),
+            web.post("/api/wallet/restore", self._restore_wallet),
         ])
         self._address = address
         self._port = port
         self._service = service
         self._logger = logger
         self._loop = loop
+        self._walletPath = walletPath
 
     def start(self):
         self._logger.info(f'Starting HTTP server on {self._address}:{self._port}')
@@ -384,3 +387,175 @@ class Server:
         }
 
         return web.json_response(response)
+
+    async def _backup_wallet(self, request):
+      """
+        ---
+        summary: Create wallet backup
+        description: Backs up the wallet to a specified location
+        produces:
+        - application/json
+        parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              backupFileStoragePath:
+                type: string
+              walletKey:
+                type: string
+        responses:
+          "200":
+            produces:
+            - application/json
+            name: body
+            required: true
+            schema:
+              type: object
+              properties:
+                operation_result:
+                  type: string
+          "400":
+            description: if input is invalid
+          "500":
+            description: if indy operation fails
+        """
+      try:
+          request_content = await request.text()
+      except Exception as e:
+          self._logger.error(f'Failed to get request body: {e}')
+          raise web.HTTPInternalServerError from e
+
+      self._logger.debug(f'Got request to create wallet backup. Content: {request_content}')
+      try:
+          request_data = json.loads(request_content)
+      except ValueError as e:
+          self._logger.error(f'Failed to decode request as JSON: {e}')
+          # TODO - differentiate if bad json, or wrong content-type
+          raise web.HTTPBadRequest
+
+      try:
+          # backup_request = json.loads(request_data['backup-wallet'])
+          backup_file_storage_path = request_data['backupFileStoragePath']
+          wallet_key = request_data['walletKey']
+      except KeyError as e:
+          self._logger.error(f'Missing request field {e}')
+          raise web.HTTPBadRequest
+
+      if not isinstance(backup_file_storage_path, str):
+            raise web.HTTPBadRequest
+
+      if not isinstance(wallet_key, str):
+            raise web.HTTPBadRequest
+
+      try:
+            operation_result = await self._service.backup_wallet(backup_file_storage_path, wallet_key)
+      except ServiceError as e:
+            self._logger.error(f'Failed to craete backup. Returning 500. Exception: {traceback.format_exc()}')
+            raise web.HTTPInternalServerError
+
+
+      response = {
+            'message': operation_result,
+        }
+
+      return web.json_response(response)
+    
+    async def _restore_wallet(self, request):
+      """
+        ---
+        summary: Restore wallet from backup
+        description: Restore wallet from the backup file
+        produces:
+        - application/json
+        parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              walletName:
+                type: string
+              walletKey:
+                type: string
+              backupFileStoragePath:
+                type: string
+              walletPath:
+                type: string
+                default: ""
+                description: "Empty field means the wallet will be created at path present in config.json"
+        responses:
+          "200":
+            produces:
+            - application/json
+            name: body
+            required: true
+            schema:
+              type: object
+              properties:
+                operation_result:
+                  type: string
+          "400":
+            description: if input is invalid
+          "500":
+            description: if indy operation fails
+        """
+      try:
+          request_content = await request.text()
+      except Exception as e:
+          self._logger.error(f'Failed to get request body: {e}')
+          raise web.HTTPInternalServerError from e
+
+      self._logger.debug(f'Got request to create wallet backup. Content: {request_content}')
+      try:
+          request_data = json.loads(request_content)
+      except ValueError as e:
+          self._logger.error(f'Failed to decode request as JSON: {e}')
+          # TODO - differentiate if bad json, or wrong content-type
+          raise web.HTTPBadRequest
+
+      try:
+          wallet_name = request_data['walletName']
+          wallet_key = request_data['walletKey']
+          backup_file_storage_path = request_data['backupFileStoragePath']
+          wallet_path = request_data['walletPath']
+      except KeyError as e:
+          self._logger.error(f'Missing request field {e}')
+          raise web.HTTPBadRequest
+
+      if not isinstance(backup_file_storage_path, str):
+            raise web.HTTPBadRequest
+
+      if not isinstance(wallet_key, str):
+            raise web.HTTPBadRequest
+
+      if not isinstance(wallet_name, str):
+            raise web.HTTPBadRequest
+
+      if not isinstance(wallet_path, str):
+            raise web.HTTPBadRequest
+
+      if wallet_path is "":
+            wallet_path = self._walletPath
+
+      try:
+            operation_result = await self._service.restore_wallet(
+              wallet_name,
+              wallet_key,
+              backup_file_storage_path,
+              wallet_path)
+
+      except ServiceError as e:
+            self._logger.error(f'Failed to craete backup. Returning 500. Exception: {traceback.format_exc()}')
+            raise web.HTTPInternalServerError
+
+
+      response = {
+            'message': operation_result,
+        }
+
+      return web.json_response(response)
+    
