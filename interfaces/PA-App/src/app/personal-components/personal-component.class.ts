@@ -22,6 +22,11 @@ export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterC
    */
   isDisabled: boolean;
 
+  /**
+   * Timestamp of when the component was completed
+   */
+  moment: number;
+
   constructor() { }
 
   /**
@@ -57,8 +62,8 @@ export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterC
    * Set the 'spoken' date/time to recorded date/time
    */
   private setTurnDateTime(turn: DialogueTurnComponent) {
-    if (this.data && this.data.moment) {
-      turn.moment = new Date(this.data.moment);
+    if (this.moment) {
+      turn.moment = new Date(this.moment);
     }
   }
 

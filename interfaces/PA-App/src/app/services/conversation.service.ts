@@ -73,7 +73,7 @@ export class ConversationService {
 
   private replayHistory() {
     this.history.forEach((section: ConversationSection, index: number) => {
-      this.addSection(section.name, section.data);
+      this.addSection(section.name, section.moment, section.data);
 
       // Activate the next-section from the last-section-from-history
       if (index === this.history.length - 1) {
@@ -86,11 +86,12 @@ export class ConversationService {
     this.addSection(PersonalComponents.selectLanguage);
   }
 
-  private addSection(name: string, data?: any) {
+  private addSection(name: string, moment?: number, data?: any) {
     console.log('ConversationService addSection(): ', name, data);
 
     this.conversation.push({
       name,
+      moment,
       data,
     });
   }

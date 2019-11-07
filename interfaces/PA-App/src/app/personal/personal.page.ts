@@ -63,8 +63,8 @@ export class PersonalPage implements OnInit {
     private storage: Storage,
   ) {
     // Listen for completed sections, to continue with next steps
-    this.conversationService.sectionCompleted$.subscribe((response: string) => {
-      this.insertSection(response);
+    this.conversationService.sectionCompleted$.subscribe((nextSectionName: string) => {
+      this.insertSection(nextSectionName);
     });
     // Listen for scroll events
     this.conversationService.shouldScroll$.subscribe((toY: number) => {
@@ -88,7 +88,7 @@ export class PersonalPage implements OnInit {
     const conversation = await this.conversationService.getConversationUpToNow();
 
     conversation.forEach((section: ConversationSection) => {
-      this.insertSection(section.name, section.data);
+      this.insertSection(section.name, section.moment, section.data);
     });
   }
 
@@ -98,7 +98,7 @@ export class PersonalPage implements OnInit {
     );
   }
 
-  public insertSection(name: string, data?: any) {
+  public insertSection(name: string, moment?: number, data?: any) {
     if (!name) {
       return;
     }
@@ -110,10 +110,10 @@ export class PersonalPage implements OnInit {
     const componentRef = this.container.createComponent(
       this.getComponentFactory(name)
     );
+    const componentInstance: PersonalComponent = componentRef.instance;
 
-    if (data) {
-      (componentRef.instance as PersonalComponent).data = data;
-    }
+    componentInstance.moment = moment;
+    componentInstance.data = data;
   }
 
   public scrollDown() {
