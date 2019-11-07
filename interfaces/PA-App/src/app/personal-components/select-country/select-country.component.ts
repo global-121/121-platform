@@ -37,7 +37,9 @@ export class SelectCountryComponent extends PersonalComponent {
   }
 
   async initNew() {
+    this.conversationService.startLoading();
     this.countries = await this.programsService.getCountries();
+    this.conversationService.stopLoading();
   }
 
   initHistory() {

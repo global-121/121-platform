@@ -47,9 +47,7 @@
                 title="Toggle state: loading"
                 (click)="conversationService.state.isLoading=!conversationService.state.isLoading;"
     >
-      <ion-icon size="small" slot="icon-only"
-                [name]="conversationService.state.isLoading ? 'pause' : 'hourglass'"
-      ></ion-icon>
+        <ion-icon size="small" slot="icon-only" name="hourglass"></ion-icon>
     </ion-button>
 
     <ion-button color="tertiary" size="small" fill="clear"
