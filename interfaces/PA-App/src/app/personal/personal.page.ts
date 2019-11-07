@@ -8,19 +8,20 @@ import { ConversationService, ConversationSection } from '../services/conversati
 import { PersonalComponent } from '../personal-components/personal-component.class';
 
 import { PersonalComponents } from '../personal-components/personal-components.enum';
+
 import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
 import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
+import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
+import { MeetingReminderComponent } from '../personal-components/meeting-reminder/meeting-reminder.component';
+import { PhoneNumberComponent } from '../personal-components/phone-number/phone-number.component';
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
 import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
-import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
-import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
-import { MeetingReminderComponent } from '../personal-components/meeting-reminder/meeting-reminder.component';
-import { PhoneNumberComponent } from '../personal-components/phone-number/phone-number.component';
+import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
 
 @Component({
   selector: 'app-personal',
