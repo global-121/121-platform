@@ -54,7 +54,7 @@ class Service:
         await self._obtain_trust_anchor()
 
     def start(self):
-        self._server = Server(self._config.address, self._config.port, self, self._logger, self._loop)
+        self._server = Server(self._config.address, self._config.port, self, self._logger, self._loop, self._config.wallet_path)
         self._server.start()
 
     async def _connect_to_pool(self):
@@ -301,25 +301,34 @@ class Service:
             "key" : wallet_key
         }
         try:
-            wallet.export_wallet(self._wallet_handle,wallet_export_config)
+            await wallet.export_wallet(self._wallet_handle,json.dumps(wallet_export_config))
             self._logger.debug(f'Wallet backup created at {backup_file_storage_path}')
+            return True
         except IndyError as e:
             self._logger.error(f'Failed to create backup of the wallet with config: {wallet_export_config}')
             raise ServiceError('Failed to create backup of wallet') from e
         return False
 
-    async def restore_wallet(self, wallet_name, wallet_key, backup_file_storage_path):
+    async def restore_wallet(self, wallet_name, wallet_key, backup_file_storage_path, wallet_path):
         wallet_import_config = {
             'path': backup_file_storage_path,
             'key' : wallet_key
         }
+
+        wallet_confg = {
+                    "id":wallet_name,
+                    "storage_config": {
+                        "path" : wallet_path
+                        }
+                    }
         try:
-            wallet.import_wallet(
-                {"id":wallet_name},
-                {"key",wallet_key}, 
-                wallet_import_config
+            await wallet.import_wallet(
+                json.dumps(wallet_confg),
+                json.dumps({"key":wallet_key}), 
+                json.dumps(wallet_import_config)
                 )
             self._logger.debug(f'Wallet restored successfully!')
+            return True
         except IndyError as e:
             self._logger.error(f'Failed to retore wallet from backup with config: {wallet_import_config}')
             raise ServiceError('Failed to restore wallet from backup') from e

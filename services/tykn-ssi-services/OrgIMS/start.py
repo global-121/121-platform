@@ -13,6 +13,7 @@ svc = None
 
 async def setup():
     global svc
+    logging.basicConfig(level=logging.DEBUG)
     service_logger = logging.getLogger('orgims')
     service_logger.addHandler(logging.StreamHandler())
     service_logger.setLevel(logging.DEBUG)
