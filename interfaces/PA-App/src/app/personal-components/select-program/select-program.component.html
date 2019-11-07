@@ -18,13 +18,14 @@
                   class="ion-no-padding ion-text-wrap"
         >
           <ion-label>
-            {{program.ngo}}: {{ program.title }}
+            {{ program.ngo }}: {{ program.title }}
             <br>
             <ion-note class="ion-text-wrap">
               {{ program.description }}
             </ion-note>
           </ion-label>
           <ion-radio [value]="program.id"
+                     [checked]="(program.id === programChoice)"
                      [disabled]="isDisabled"
           ></ion-radio>
         </ion-item>
@@ -32,7 +33,6 @@
       <div class="ion-margin-top">
         <ion-button type="submit"
                     *ngIf="programChoice && !isDisabled"
-                    [disabled]="isDisabled"
                     expand="block"
         >{{ 'shared.submit-button'|translate }}</ion-button>
       </div>

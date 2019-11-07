@@ -8,6 +8,9 @@ import { SelectProgramComponent } from './select-program.component';
 import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 
+import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
+
 describe('SelectProgramComponent', () => {
   let component: SelectProgramComponent;
   let fixture: ComponentFixture<SelectProgramComponent>;
@@ -24,7 +27,7 @@ describe('SelectProgramComponent', () => {
         {
           provide: PaDataService,
           useValue: MockPaDataService,
-        }
+        },
       ]
     })
       .compileComponents();
