@@ -201,7 +201,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const initialTurns = 1; // Turns shown before the 'first question'-turn.
     const nextIndex = currentIndex + initialTurns + 1;
 
-    this.showTurn(nextIndex);
+    this.showTurnByIndex(nextIndex);
   }
 
   public change() {

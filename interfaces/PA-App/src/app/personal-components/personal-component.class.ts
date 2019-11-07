@@ -72,18 +72,18 @@ export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterC
    */
   private animateTurn(turn: DialogueTurnComponent, delay: number) {
     window.setTimeout(() => {
-      turn.isSpoken = true;
+      turn.show();
     }, delay);
   }
 
   /**
    * Show a specific, previously hidden, Dialogue-Turn
    */
-  showTurn(index: number) {
+  showTurnByIndex(index: number) {
     const turn = this.turns.toArray()[index];
 
     if (turn) {
-      turn.isSpoken = true;
+      turn.show();
     }
   }
 
