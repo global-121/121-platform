@@ -5,25 +5,26 @@
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
-    <ion-radio-group (ionChange)="changeCountry($event)"
-    >
-      <ion-item *ngFor="let country of countries"
-                color="light"
-                class="ion-no-padding ion-text-wrap"
-      >
-        <ion-label>{{ country.country }}</ion-label>
-        <ion-radio [value]="country.id"
-                   [disabled]="isDisabled"
-        ></ion-radio>
-      </ion-item>
-    </ion-radio-group>
-    <div class="ion-margin-top">
-      <ion-button *ngIf="countryChoice && !isDisabled"
-                  (click)="submitCountry()"
-                  expand="block"
-                  [disabled]="isDisabled"
-      >{{ 'shared.submit-button'|translate }}</ion-button>
-    </div>
+    <form (submit)="submitCountry()">
+      <ion-radio-group (ionChange)="changeCountry($event)">
+        <ion-item *ngFor="let country of countries"
+                  color="light"
+                  class="ion-no-padding ion-text-wrap"
+        >
+          <ion-label>{{ country.country }}</ion-label>
+          <ion-radio [value]="country.id"
+                     [checked]="(country.id == countryChoice)"
+                     [disabled]="isDisabled"
+          ></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <div class="ion-margin-top">
+        <ion-button type="submit"
+                    *ngIf="countryChoice && !isDisabled"
+                    expand="block"
+        >{{ 'shared.submit-button'|translate }}</ion-button>
+      </div>
+    </form>
   </dialogue-turn>
   <dialogue-turn *ngIf="isDisabled"
                  [isSpoken]="isDisabled"

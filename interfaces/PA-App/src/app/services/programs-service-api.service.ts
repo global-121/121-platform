@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 
 import { ApiService } from './api.service';
 
+import { Country } from '../models/country.model';
 import { Program } from '../models/program.model';
 import { Timeslot } from '../models/timeslot.model';
 
@@ -17,13 +18,14 @@ export class ProgramsServiceApiService {
     private apiService: ApiService,
   ) { }
 
-  getCountries(): Observable<any[]> {
+  getCountries(): Promise<Country[]> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/countries/all')
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
   getAllPrograms(): Observable<Program[]> {
