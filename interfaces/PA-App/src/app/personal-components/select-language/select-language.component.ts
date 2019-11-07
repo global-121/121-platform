@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -12,6 +12,9 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./select-language.component.scss'],
 })
 export class SelectLanguageComponent extends PersonalComponent {
+  @Input()
+  public data: any;
+
   public languages: any;
   public languageChoice: string;
   public languageChoiceName: string;
@@ -39,6 +42,16 @@ export class SelectLanguageComponent extends PersonalComponent {
         language: this.translate.instant('personal.select-language.option3'),
       },
     ];
+
+    if (this.data) {
+      this.initHistory();
+    }
+  }
+
+  initHistory() {
+    this.languageChoice = this.data.languageChoice;
+    this.languageChoiceName = this.getLanguageName(this.data.languageChoice);
+    this.isDisabled = true;
   }
 
   public getLanguageName(languageId: string): string {
@@ -73,7 +86,6 @@ export class SelectLanguageComponent extends PersonalComponent {
       name: PersonalComponents.selectLanguage,
       data: {
         languageChoice: this.languageChoice,
-        languageChoiceName: this.languageChoiceName,
       },
       next: this.getNextSection(),
     });
