@@ -12,7 +12,7 @@
                  *ngIf="!isDisabled"
                  [isSpoken]="!isDisabled"
   >
-    <form>
+    <form (submit)="submitLanguage()">
       <ion-radio-group (ionChange)="changeLanguage($event)">
         <ion-item *ngFor="let language of languages"
                   color="light"
@@ -25,7 +25,6 @@
       <div class="ion-margin-top">
         <ion-button type="submit"
                     *ngIf="languageChoice"
-                    (click)="submitLanguage()"
                     expand="block"
         >{{ 'shared.submit-button'|translate }}</ion-button>
       </div>
