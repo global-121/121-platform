@@ -72,8 +72,13 @@ export class ConversationService {
   }
 
   private replayHistory() {
-    this.history.forEach((section: ConversationSection) => {
+    this.history.forEach((section: ConversationSection, index: number) => {
       this.addSection(section.name, section.data);
+
+      // Activate the next-section from the last-section-from-history
+      if (index === this.history.length - 1) {
+        this.addSection(section.next);
+      }
     });
   }
 
