@@ -244,13 +244,14 @@ export class ProgramsServiceApiService {
     );
   }
 
-  postPhoneNumber(did: string, phonenumber: string): Observable<any> {
+  postPhoneNumber(did: string, phonenumber: string, language?: string): Observable<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/sovrin/create-connection/phone',
       {
         did,
-        phonenumber
+        phonenumber,
+        language
       },
       true
     ).pipe(
