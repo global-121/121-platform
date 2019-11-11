@@ -191,11 +191,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     const answersArray = Object.keys(this.answers);
 
-    if (answersArray.length >= (this.questions.length - 1)) {
-      this.allQuestionsShown = true;
-    } else {
-      this.allQuestionsShown = false;
-    }
+    this.checkAllQuestionsShown(this.questions, answersArray);
+
     this.showNextQuestion(answersArray.indexOf(questionCode));
   }
 
@@ -204,6 +201,14 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const nextIndex = currentIndex + initialTurns + 1;
 
     this.showTurnByIndex(nextIndex);
+  }
+
+  private checkAllQuestionsShown(questions: Question[], answers: string[]) {
+    if (answers.length >= (questions.length - 1)) {
+      this.allQuestionsShown = true;
+    } else {
+      this.allQuestionsShown = false;
+    }
   }
 
   public change() {
