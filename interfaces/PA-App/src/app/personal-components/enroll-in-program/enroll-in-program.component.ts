@@ -19,9 +19,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public languageCode: string;
   public fallbackLanguageCode: string;
 
-  public program: any;
+  public programDetails: any;
   public programTitle: string;
-  public ngo: string;
 
   private credDefId: string;
   private programId: number;
@@ -61,11 +60,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public getProgramDetailsById(programId: string) {
     this.programsService.getProgramById(programId).subscribe((response: Program) => {
       this.programTitle = this.mapLabelByLanguageCode(response.title);
-      this.ngo = response.ngo;
       this.credDefId = response.credDefId;
 
-      this.buildDetails(response);
-      this.buildQuestions(response.customCriteria);
+      this.programDetails = this.buildDetails(response);
+      this.questions = this.buildQuestions(response.customCriteria);
 
       this.paData.saveProgram(response.id, response);
 
@@ -74,12 +72,12 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private buildDetails(response: Program) {
+    const programDetails = [];
     const details = [
       'ngo',
       'description',
       'meetingDocuments',
     ];
-    this.program = [];
     for (const detail of details) {
       let value = this.mapLabelByLanguageCode(response[detail]);
 
@@ -91,12 +89,14 @@ export class EnrollInProgramComponent extends PersonalComponent {
         value = this.buildDocumentsList(value);
       }
 
-      this.program[detail] = value;
+      programDetails[detail] = value;
     }
+
+    return programDetails;
   }
 
   private buildQuestions(customCriteria: Program['customCriteria']) {
-    this.questions = [];
+    const questions = [];
 
     for (const criterium of customCriteria) {
       const question: Question = {
@@ -106,8 +106,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
         label: this.mapLabelByLanguageCode(criterium.label),
         options: this.buildOptions(criterium.options),
       };
-      this.questions.push(question);
+      questions.push(question);
     }
+
+    return questions;
   }
 
   private buildOptions(optionsRaw: any[]): QuestionOption[] {
@@ -292,8 +294,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.enrollInProgram,
       data: {
-        program: this.program,
-        questions: this.questions,
+        programDetails: this.programDetails,
         answers: this.answers,
       },
       next: this.getNextSection(),

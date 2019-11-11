@@ -1,6 +1,8 @@
 <section>
-  <dialogue-turn [actor]="program?.ngo" [hidden]="!programTitle">
-    <p [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programTitle, ngo:ngo }"></p>
+  <dialogue-turn [actor]="programDetails?.ngo"
+                 [hidden]="!programTitle"
+  >
+    <p [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programTitle, ngo:programDetails?.ngo }"></p>
     <p>
       {{ 'personal.enroll-in-program.introduction-questions'|translate }}
     </p>
@@ -77,7 +79,7 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo"
+  <dialogue-turn [actor]="programDetails?.ngo"
                  *ngIf="dobFeedback"
                  [isSpoken]="dobFeedback"
   >
@@ -85,7 +87,7 @@
       {{ 'personal.enroll-in-program.dob-feedback'|translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo"
+  <dialogue-turn [actor]="programDetails?.ngo"
                  *ngIf="hasAnswered"
                  [isSpoken]="hasAnswered"
   >
@@ -130,7 +132,7 @@
   </dialogue-turn>
   <dialogue-turn *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
-                 [actor]="program?.ngo"
+                 [actor]="programDetails?.ngo"
   >
     <p>
       {{ 'personal.enroll-in-program.confirm-received'|translate }}
@@ -144,14 +146,14 @@
   </dialogue-turn>
   <dialogue-turn *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
-                 [actor]="program?.ngo"
+                 [actor]="programDetails?.ngo"
                  isConnected="true"
   >
     <p>
       {{ 'personal.enroll-in-program.prepare-documents'|translate }}
     </p>
     <ul class="ion-no-padding ion-padding-start">
-      <li *ngFor="let document of program?.meetingDocuments">
+      <li *ngFor="let document of programDetails?.meetingDocuments">
         {{ document }}
       </li>
     </ul>
