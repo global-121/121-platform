@@ -44,12 +44,16 @@ export class PhoneNumberComponent extends PersonalComponent {
     this.phoneSkipped = false;
     this.phoneNumber = phone;
 
-    this.paData.retrieve(this.paData.type.did).then(async (did) => {
-      await this.programService.postPhoneNumber(did, String(this.phoneNumber)).subscribe(() => {
-        console.log('Phone number posted');
+    this.paData.retrieve(this.paData.type.language, true).then(async (language) => {
+      await this.paData.retrieve(this.paData.type.did).then(async (did) => {
+        await this.programService.postPhoneNumber(did, String(this.phoneNumber), language).subscribe(() => {
+          console.log('Phone number posted');
+        });
+        this.complete();
       });
-      this.complete();
     });
+
+
   }
 
   public skipPhone() {
