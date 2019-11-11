@@ -16,6 +16,7 @@ export default appUrl;
 export const callbackUrlSms = appUrl + 'api/sms/status';
 export const callbackUrlVoice = appUrl + 'api/voice/status';
 export const voiceXmlUrl = appUrl + 'api/voice/xml/';
+export const voiceMp3lUrl = appUrl + 'api/voice/mp3/';
 
 export const TWILIO_MP3 = {
   negativeInclusion : {

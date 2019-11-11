@@ -6,7 +6,6 @@ import { TwilioMessageEntity } from '../twilio.entity';
 
 describe('SmsService', () => {
   let service: SmsService;
-  let module: TestingModule;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

@@ -13,10 +13,12 @@ export class SmsController {
 
   @ApiResponse({ status: 200, description: 'Test controller to test sending sms' })
   @Get()
-  public sendSms(): void {
-    return this.smsService.sendSms(
-      'Meer Smsjes is meer beter',
+  public async sendSms(): Promise<void> {
+    return await this.smsService.notifyBySms(
       '+0031600000000',
+      'en',
+      'included',
+      1
     );
   }
 

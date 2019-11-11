@@ -63,6 +63,9 @@ export class ProgramEntity {
   @Column('json')
   public joiningInstructions: JSON;
 
+  @Column('json')
+  public notifications: JSON;
+
   @Column()
   public minimumScore: number;
 

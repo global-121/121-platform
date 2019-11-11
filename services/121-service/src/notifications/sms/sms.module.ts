@@ -1,3 +1,4 @@
+import { ProgramModule } from './../../programs/program/program.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import {
@@ -11,7 +12,7 @@ import { SmsController } from './sms.controller';
 import { TwilioMessageEntity } from '../twilio.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TwilioMessageEntity])],
+  imports: [TypeOrmModule.forFeature([TwilioMessageEntity]), ProgramModule],
   providers: [SmsService],
   controllers: [SmsController],
   exports: [SmsService],
