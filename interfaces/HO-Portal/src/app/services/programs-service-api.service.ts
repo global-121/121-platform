@@ -21,7 +21,7 @@ export class ProgramsServiceApiService {
     console.log('ProgramsService : login()');
 
     return this.apiService.post(
-      environment.programs_service_api,
+      environment.url_121_service_api,
       '/user/login',
       {
         email,
@@ -43,7 +43,7 @@ export class ProgramsServiceApiService {
 
   getAllPrograms(): Observable<Program[]> {
     return this.apiService.get(
-      environment.programs_service_api,
+      environment.url_121_service_api,
       '/programs'
     ).pipe(
       map((response) => {

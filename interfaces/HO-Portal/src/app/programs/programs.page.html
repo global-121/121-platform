@@ -13,10 +13,10 @@
   <ion-list class="ion-padding">
     <ion-item *ngFor="let item of items">
       <ion-label position="stacked">
-        {{ item.title }}
+        {{ item.title.en }}
       </ion-label>
       <ion-note>
-        {{ item.description }}
+        {{ item.description.en }}
       </ion-note>
       <ion-note slot="end">
         {{ item.updated|date:"dd-MM-y - H:m" }}
