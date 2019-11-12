@@ -1,5 +1,4 @@
-import { voiceXmlUrl, TWILIO_MP3, callbackUrlVoice } from './../twilio.client';
-import fs from 'fs';
+import { voiceXmlUrl, TWILIO_MP3, callbackUrlVoice, voiceMp3lUrl } from './../twilio.client';
 import { Injectable } from '@nestjs/common';
 import { TWILIO } from '../../secrets';
 import { twilioClient, twilio } from '../twilio.client';
@@ -7,6 +6,7 @@ import { Request, Response, NextFunction } from 'express';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import fs from 'fs'
 
 @Injectable()
 export class VoiceService {
@@ -14,10 +14,22 @@ export class VoiceService {
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   public constructor() {}
 
-  public makeVoiceCall(mp3Param: string, recipientPhoneNr: string) {
+  public notifyByVoice(
+    recipientPhoneNr: string,
+    language: string,
+    key: string,
+    programId: number,
+  ): void {
+    const mp3Param = programId.toString() + '%2F' + language + '%2F' + key;
+    this.makeVoiceCall(mp3Param, recipientPhoneNr);
+  }
+
+  public makeVoiceCall(
+    mp3Param: string,
+    recipientPhoneNr: string,
+  ) {
     // Overwrite recipient phone number for testing phase
     recipientPhoneNr = TWILIO.testToNumber;
-
     twilioClient.calls
       .create({
         method: 'GET',
@@ -29,6 +41,7 @@ export class VoiceService {
       .then(call => this.storeCall(call, mp3Param))
       .catch(err => {
         console.log(err);
+        // Do we need error handling here?
       });
   }
 
@@ -45,21 +58,25 @@ export class VoiceService {
     this.twilioMessageRepository.save(twilioMessage);
   }
 
-  public xmlTest(response, mp3Param) {
+  public xmlResponse(mp3Param: string) {
     const VoiceResponse = twilio.twiml.VoiceResponse;
     const twiml = new VoiceResponse();
-    let mp3Url: string;
-    for (let key in TWILIO_MP3) {
-      let value = TWILIO_MP3[key];
-      if (value.param === mp3Param) {
-        mp3Url = value.url;
-      }
-    }
+    const re = new RegExp('/', 'g');
+    const mp3Escaped = mp3Param.replace(re, '%2F');
+    const mp3Url = voiceMp3lUrl + mp3Escaped;
     twiml.play(mp3Url);
-    response.type('text/xml');
-    response.set('Content-Type', 'text/xml');
     return twiml.toString();
   }
+
+  public returnMp3Stream(mp3Param) {
+    const re = new RegExp('%2F', 'g');
+    const subpath = mp3Param.replace(re, '/');
+    const filePath = './voice/' + subpath + '.mp3';
+    const stat = fs.statSync(filePath);
+    const readStream = fs.createReadStream(filePath);
+    return {'stat': stat, 'readStream': readStream};
+  }
+
   public async statusCallback(callbackData) {
     await this.twilioMessageRepository.update(
       { sid: callbackData.CallSid },

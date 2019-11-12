@@ -11,7 +11,9 @@ import { VoiceController } from './voice.controller';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TwilioMessageEntity])],
+  imports: [TypeOrmModule.forFeature([
+    TwilioMessageEntity
+  ])],
   providers: [VoiceService],
   controllers: [VoiceController],
   exports: [VoiceService],

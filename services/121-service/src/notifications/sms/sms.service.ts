@@ -6,17 +6,29 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient, callbackUrlSms } from '../twilio.client';
+import { ProgramService } from '../../programs/program/program.service';
 
 
 @Injectable()
 export class SmsService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  public constructor() {}
+  private readonly programService: ProgramService;
+  public constructor(programService: ProgramService) {
+    this.programService = programService;
+  }
 
-  public sendSms(message: string, recipientPhoneNr: string) {
-    console.log('Send sms');
+  public async notifyBySms(
+    recipientPhoneNr: string,
+    language: string,
+    key: string,
+    programId: number,
+  ): Promise<void> {
+    const smsText = await this.getSmsText(language, key, programId);
+    this.sendSms(smsText, recipientPhoneNr);
+  }
 
+  public async sendSms(message: string, recipientPhoneNr: string) {
     // Overwrite recipient phone number for testing phase
     recipientPhoneNr = TWILIO.testToNumber;
 
@@ -28,6 +40,15 @@ export class SmsService {
         to: recipientPhoneNr,
       })
       .then(message => this.storeSendSms(message));
+  }
+
+  public async getSmsText(
+    language: string,
+    key: string,
+    programId: number,
+  ): Promise<string> {
+    const program = await this.programService.findOne(programId);
+    return program.notifications[language][key];
   }
 
   public storeSendSms(message) {

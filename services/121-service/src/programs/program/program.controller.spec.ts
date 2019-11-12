@@ -35,7 +35,7 @@ const newSimpleProgramRO = {
   published: true,
 }
 
-class ProgramServiceMock {
+export class ProgramServiceMock {
   public async findOne(query): Promise<ProgramEntity> {
     query;
     return new ProgramEntity();

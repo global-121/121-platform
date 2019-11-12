@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { VoiceService } from './voice.service';
 import { Request, Response } from 'express-serve-static-core';
+import fs from 'fs';
 
 @ApiUseTags('voice')
 @Controller('voice')
@@ -18,10 +19,12 @@ export class VoiceController {
   }
   @ApiResponse({ status: 200, description: 'Returns xml' })
   @Get()
-  public makeVoiceCall(): void {
-    return this.voiceService.makeVoiceCall(
-      TWILIO_MP3.negativeInclusion.param,
+  public notifyByVoice(): void {
+    return this.voiceService.notifyByVoice(
       '+0031600000000',
+      'en',
+      'included',
+      1,
     );
   }
 
@@ -32,10 +35,26 @@ export class VoiceController {
   @ApiResponse({ status: 200, description: 'Returns xml' })
   @Get('/xml/:mp3')
   @Header('resonse-type', 'text/xml')
-  public getXml(@Param() params, @Res() response: Response): any {
-    const twimlString = this.voiceService.xmlTest(response, params.mp3);
+  public getXml(@Param() params, @Res() response: Response): void {
+    const twimlString = this.voiceService.xmlResponse(params.mp3);
     response.set('Content-Type', 'text/xml');
     response.send(twimlString);
+  }
+
+  @ApiOperation({
+    title: 'Returns mp3 to play in call',
+  })
+  @ApiImplicitParam({ name: 'mp3', description: '1%2Fen%2Fincluded' })
+  @ApiResponse({ status: 200, description: 'Returns xml' })
+  @Get('/mp3/:mp3')
+  @Header('resonse-type', 'audio/mpeg')
+  public returnMp3(@Param() params, @Res() response: Response): void {
+    const mp3Stream = this.voiceService.returnMp3Stream(params.mp3)
+    response.writeHead(200, {
+      'Content-Type': 'audio/mpeg',
+      'Content-Length': mp3Stream.stat.size,
+    });
+    mp3Stream.readStream.pipe(response);
   }
 
   @Post('status')
