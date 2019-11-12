@@ -20,7 +20,7 @@ export class VoiceService {
     key: string,
     programId: number,
   ): void {
-    const mp3Param = programId.toString() + '%2F' + language + '%2F' + key;
+    const mp3Param = programId.toString() + '%252F' + language + '%252F' + key;
     this.makeVoiceCall(mp3Param, recipientPhoneNr);
   }
 
@@ -62,14 +62,14 @@ export class VoiceService {
     const VoiceResponse = twilio.twiml.VoiceResponse;
     const twiml = new VoiceResponse();
     const re = new RegExp('/', 'g');
-    const mp3Escaped = mp3Param.replace(re, '%2F');
+    const mp3Escaped = mp3Param.replace(re, '%252F');
     const mp3Url = TWILIO_API.voiceMp3lUrl + mp3Escaped;
     twiml.play(mp3Url);
     return twiml.toString();
   }
 
   public returnMp3Stream(mp3Param) {
-    const re = new RegExp('%2F', 'g');
+    const re = new RegExp('%252F', 'g');
     const subpath = mp3Param.replace(re, '/');
     const filePath = './voice/' + subpath + '.mp3';
     const stat = fs.statSync(filePath);

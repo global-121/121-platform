@@ -44,6 +44,7 @@ export class CreateConnectionController {
   public async addPhone(
     @Body() setPhoneRequest: SetPhoneRequestDto,
   ): Promise<void> {
+    console.log('setPhoneRequest.phonenumber;: ', setPhoneRequest.phonenumber);
     return await this.createConnectionService.addPhone(
       setPhoneRequest.did,
       setPhoneRequest.phonenumber,
