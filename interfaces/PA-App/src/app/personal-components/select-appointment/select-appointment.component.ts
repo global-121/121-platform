@@ -57,10 +57,9 @@ export class SelectAppointmentComponent extends PersonalComponent {
     this.getDid();
   }
 
-  private getDid() {
-    this.paData.retrieve(this.paData.type.did).then((value) => {
-      this.did = value;
-    });
+
+  private async getDid() {
+    this.did = await this.paData.retrieve(this.paData.type.did);
   }
 
   private async getProgram() {
