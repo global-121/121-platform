@@ -6,10 +6,10 @@ export class SetPhoneRequestDto {
          @Length(29, 30)
          public readonly did: string;
          @ApiModelProperty({ example: '0031600000000' })
-         @ValidateIf(o => o.length > 0)
+         @ValidateIf(o => o.phonenumber)
          @IsString()
          public readonly phonenumber: string;
-         @ValidateIf(o => o.length > 0)
+         @ValidateIf(o => o.language)
          @ApiModelProperty({ example: 'en' })
          @IsString()
          @Length(2, 5)
