@@ -39,7 +39,7 @@ export class VoiceController {
   @ApiOperation({
     title: 'Returns mp3 to play in call',
   })
-  @ApiImplicitParam({ name: 'mp3', description: '1%252Fen%252Fincluded' })
+  @ApiImplicitParam({ name: 'mp3', description: '1REPLACEenREPLACEincluded' })
   @ApiResponse({ status: 200, description: 'Returns xml' })
   @Get('/mp3/:mp3')
   @Header('resonse-type', 'audio/mpeg')
