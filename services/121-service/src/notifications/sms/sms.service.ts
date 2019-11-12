@@ -1,11 +1,11 @@
-import { STAGING_URL } from './../../config';
-import { Injectable } from '@nestjs/common';
+import { STAGING_URL, TWILIO_API } from './../../config';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { TWILIO } from '../../secrets';
 import { DEBUG, PRODUCTION_URL } from '../../config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
-import { twilioClient, callbackUrlSms } from '../twilio.client';
+import { twilioClient } from '../twilio.client';
 import { ProgramService } from '../../programs/program/program.service';
 
 
@@ -13,10 +13,11 @@ import { ProgramService } from '../../programs/program/program.service';
 export class SmsService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  private readonly programService: ProgramService;
-  public constructor(programService: ProgramService) {
-    this.programService = programService;
-  }
+
+  public constructor(
+    @Inject(forwardRef(() => ProgramService))
+    private readonly programService: ProgramService,
+  ) {}
 
   public async notifyBySms(
     recipientPhoneNr: string,
@@ -30,13 +31,13 @@ export class SmsService {
 
   public async sendSms(message: string, recipientPhoneNr: string) {
     // Overwrite recipient phone number for testing phase
-    recipientPhoneNr = TWILIO.testToNumber;
+    // recipientPhoneNr = TWILIO.testToNumber;
 
     twilioClient.messages
       .create({
         body: message,
-        from: TWILIO.testFromNumber, // This parameter could be specifief per program
-        statusCallback: callbackUrlSms,
+        from: TWILIO.testFromNumberSms, // This parameter could be specifief per program
+        statusCallback: TWILIO_API.callbackUrlSms,
         to: recipientPhoneNr,
       })
       .then(message => this.storeSendSms(message));

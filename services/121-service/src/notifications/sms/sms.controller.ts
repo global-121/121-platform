@@ -1,9 +1,9 @@
 import { VoiceService } from './../voice/voice.service';
 import { SmsService } from './sms.service';
-import { Controller, Get, Post, Body } from '@nestjs/common';
-import { ApiResponse, ApiUseTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { ApiResponse, ApiUseTags, ApiImplicitParam } from '@nestjs/swagger';
 
-@ApiUseTags('sms')
+@ApiUseTags('notifications')
 @Controller('sms')
 export class SmsController {
   private readonly smsService: SmsService;
@@ -11,14 +11,18 @@ export class SmsController {
     this.smsService = smsService;
   }
 
-  @ApiResponse({ status: 200, description: 'Test controller to test sending sms' })
-  @Get()
-  public async sendSms(): Promise<void> {
+  @ApiResponse({
+    status: 200,
+    description: 'Test controller to test sending sms',
+  })
+  @ApiImplicitParam({ name: 'number' })
+  @Get(':number')
+  public async sendSms(@Param() params): Promise<void> {
     return await this.smsService.notifyBySms(
-      '+0031600000000',
+      params.number,
       'en',
       'included',
-      1
+      1,
     );
   }
 

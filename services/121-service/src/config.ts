@@ -1,3 +1,5 @@
+import { TWILIO } from "./secrets";
+
 export const DEBUG = true;
 
 export const PORT = 3000;
@@ -22,3 +24,20 @@ export const API = {
     verify: orgIMS + 'proof/verify',
   },
 };
+
+
+let appUrl: string;
+if (process.env.NODE_ENV == 'production') {
+  appUrl = PRODUCTION_URL;
+} else if (process.env.NODE_ENV == 'staging') {
+  appUrl = STAGING_URL;
+} else {
+  appUrl = TWILIO.ngrok;
+}
+export default appUrl;
+export const TWILIO_API = {
+  callbackUrlSms : appUrl + 'api/sms/status',
+  callbackUrlVoice : appUrl + 'api/voice/status',
+  voiceXmlUrl : appUrl + 'api/voice/xml/',
+  voiceMp3lUrl : appUrl + 'api/voice/mp3/',
+}
