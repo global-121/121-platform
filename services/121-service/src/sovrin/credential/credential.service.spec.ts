@@ -1,3 +1,6 @@
+import { SmsService } from './../../notifications/sms/sms.service';
+import { VoiceService } from './../../notifications/voice/voice.service';
+import { TwilioMessageEntity } from './../../notifications/twilio.entity';
 import { UserEntity } from './../../user/user.entity';
 import { CustomCriterium } from './../../programs/program/custom-criterium.entity';
 import { ConnectionEntity } from './../create-connection/connection.entity';
@@ -28,6 +31,8 @@ describe('CredentialService', (): void => {
           ProgramService,
           SchemaService,
           ProofService,
+          VoiceService,
+          SmsService,
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
             useFactory: repositoryMockFactory,
@@ -66,6 +71,10 @@ describe('CredentialService', (): void => {
           },
           {
             provide: getRepositoryToken(AppointmentEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(TwilioMessageEntity),
             useFactory: repositoryMockFactory,
           },
         ],
