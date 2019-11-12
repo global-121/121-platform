@@ -11,6 +11,9 @@ export class ConnectionEntity {
   @Column({ nullable: true })
   public phoneNumber: string;
 
+  @Column({ nullable: true })
+  public preferredLanguage: string;
+
   @Column('numeric', {
     array: true,
     default: () => 'array[]::integer[]',

@@ -44,14 +44,11 @@ export class CreateConnectionController {
   public async addPhone(
     @Body() setPhoneRequest: SetPhoneRequestDto,
   ): Promise<void> {
-    return await this.createConnectionService.addPhone(setPhoneRequest.did, setPhoneRequest.phonenumber);
-  }
-
-  @ApiOperation({ title: 'Add connection to ledger' })
-  @ApiResponse({ status: 200, description: 'Added connection to ledget' })
-  @Post('/add')
-  public async addLedger(@Body() didVerMeta: DidInfoDto): Promise<void> {
-    return await this.createConnectionService.addLedger(didVerMeta);
+    return await this.createConnectionService.addPhone(
+      setPhoneRequest.did,
+      setPhoneRequest.phonenumber,
+      setPhoneRequest.language
+    );
   }
 
   @ApiBearerAuth()
