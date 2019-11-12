@@ -221,7 +221,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getTimeslots(programId: string): Observable<Timeslot[]> {
+  getTimeslots(programId: number): Promise<Timeslot[]> {
     return this.apiService.get(
       environment.url_121_service_api,
       '/appointment/availability/' + programId
@@ -231,7 +231,8 @@ export class ProgramsServiceApiService {
 
         return response;
       })
-    );
+    )
+    .toPromise();
   }
 
   postAppointment(timeslotId: number, did: string): Observable<any> {

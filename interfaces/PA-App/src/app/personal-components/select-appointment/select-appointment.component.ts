@@ -63,13 +63,12 @@ export class SelectAppointmentComponent extends PersonalComponent {
     });
   }
 
-  private getProgram() {
+  private async getProgram() {
     this.conversationService.startLoading();
-    this.paData.retrieve(this.paData.type.programId).then(programId => {
-      this.programChoice = Number(programId);
-      this.getProgramProperties(programId);
-      this.getTimeslots(programId);
-    });
+    this.programChoice = Number(await this.paData.retrieve(this.paData.type.programId));
+    this.getProgramProperties(this.programChoice);
+    this.timeslots = await this.programsService.getTimeslots(this.programChoice);
+    this.conversationService.stopLoading();
   }
 
   private getProgramProperties(programId) {
@@ -81,15 +80,6 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
     const documents = this.mapLabelByLanguageCode(this.program.meetingDocuments);
     this.meetingDocuments = this.buildDocumentsList(documents);
-  }
-
-  private getTimeslots(programId: any) {
-    this.programsService.getTimeslots(programId).subscribe((response: Timeslot[]) => {
-      this.timeslots = response;
-      console.log('timeslots: ', this.timeslots);
-
-      this.conversationService.stopLoading();
-    });
   }
 
   public isSameDay(startDate: string, endDate: string) {
