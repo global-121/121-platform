@@ -96,6 +96,10 @@ export class SelectAppointmentComponent extends PersonalComponent {
       label = property[this.fallbackLanguageCode];
     }
 
+    if (!label) {
+      label = property;
+    }
+
     return label;
   }
 
