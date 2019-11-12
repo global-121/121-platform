@@ -1,4 +1,3 @@
-import { TWILIO_MP3 } from './../twilio.client';
 import { Controller, Get, Header, Req, Res, Post, Param, Body } from '@nestjs/common';
 import {
   ApiUseTags,
@@ -10,22 +9,18 @@ import { VoiceService } from './voice.service';
 import { Request, Response } from 'express-serve-static-core';
 import fs from 'fs';
 
-@ApiUseTags('voice')
+@ApiUseTags('notifications')
 @Controller('voice')
 export class VoiceController {
   private readonly voiceService: VoiceService;
   public constructor(voiceService: VoiceService) {
     this.voiceService = voiceService;
   }
-  @ApiResponse({ status: 200, description: 'Returns xml' })
-  @Get()
-  public notifyByVoice(): void {
-    return this.voiceService.notifyByVoice(
-      '+0031600000000',
-      'en',
-      'included',
-      1,
-    );
+  @ApiResponse({ status: 200, description: 'Test voice call' })
+  @ApiImplicitParam({ name: 'number' })
+  @Get(':number')
+  public notifyByVoice(@Param() params): void {
+    return this.voiceService.notifyByVoice(params.number, 'en', 'included', 1);
   }
 
   @ApiOperation({
@@ -49,7 +44,7 @@ export class VoiceController {
   @Get('/mp3/:mp3')
   @Header('resonse-type', 'audio/mpeg')
   public returnMp3(@Param() params, @Res() response: Response): void {
-    const mp3Stream = this.voiceService.returnMp3Stream(params.mp3)
+    const mp3Stream = this.voiceService.returnMp3Stream(params.mp3);
     response.writeHead(200, {
       'Content-Type': 'audio/mpeg',
       'Content-Length': mp3Stream.stat.size,

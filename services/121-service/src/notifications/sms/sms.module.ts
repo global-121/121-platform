@@ -6,13 +6,16 @@ import {
   MiddlewareConsumer,
   RequestMethod,
   NestModule,
+  forwardRef,
 } from '@nestjs/common';
 import { SmsService } from './sms.service';
 import { SmsController } from './sms.controller';
 import { TwilioMessageEntity } from '../twilio.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TwilioMessageEntity]), ProgramModule],
+  imports: [
+    TypeOrmModule.forFeature([TwilioMessageEntity]),
+    forwardRef(() => ProgramModule)],
   providers: [SmsService],
   controllers: [SmsController],
   exports: [SmsService],
