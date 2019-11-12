@@ -1,8 +1,8 @@
 <section>
   <dialogue-turn [actor]="programDetails?.ngo"
-                 [hidden]="!programTitle"
+                 [hidden]="!programDetails?.title"
   >
-    <p [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programTitle, ngo:programDetails?.ngo }"></p>
+    <p [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programDetails?.title, ngo:programDetails?.ngo }"></p>
     <p>
       {{ 'personal.enroll-in-program.introduction-questions'|translate }}
     </p>
@@ -16,7 +16,7 @@
   <dialogue-turn actor="self"
                  *ngFor="let question of questions; let i=index; first as isFirst;"
                 [isConnected]="!isFirst"
-                [isSpoken]="isFirst"
+                [isSpoken]="isFirst || hasAnswered"
   >
     <ion-label>
       {{ question.label }}
@@ -31,6 +31,7 @@
           >
             <ion-label>{{ option.label }}</ion-label>
             <ion-radio [value]="option.value"
+                       [checked]="(option.value === answers[question.code].value)"
                        [disabled]="hasAnswered"
             ></ion-radio>
           </ion-item>
@@ -43,6 +44,7 @@
                    [name]="question.code"
                    (input)="inputAnswers($event)"
                    (change)="changeAnswers($event)"
+                   [value]="answers[question.code].value"
                    [disabled]="hasAnswered"
         ></ion-input>
       </div>
@@ -51,6 +53,7 @@
                    placeholder="dd-mm-yyyy"
                    [name]="question.code"
                    (change)="changeAnswers($event)"
+                   [value]="answers[question.code].value"
                    [disabled]="hasAnswered"
         ></ion-input>
       </div>
@@ -59,6 +62,7 @@
                    [name]="question.code"
                    (input)="inputAnswers($event)"
                    (change)="changeAnswers($event)"
+                   [value]="answers[question.code].value"
                    [disabled]="hasAnswered"
         ></ion-input>
       </div>
