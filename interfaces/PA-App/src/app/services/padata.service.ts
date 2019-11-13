@@ -49,6 +49,21 @@ export class PaDataService {
     return this.store(this.type.myPrograms, this.myPrograms);
   }
 
+  async getProgram(programId: number): Promise<Program> {
+    if (!this.myPrograms[programId]) {
+      // Fall back to get it from the server
+      this.myPrograms = await this.retrieve(this.type.myPrograms);
+    }
+
+    return new Promise<Program>((resolve, reject) => {
+      if (!this.myPrograms[programId]) {
+        return reject();
+      }
+
+      return resolve(this.myPrograms[programId]);
+    });
+  }
+
   async saveAnswers(programId: number, answers: any): Promise<any> {
     this.myAnswers[programId] = answers;
     return this.store(this.type.myAnswers, this.myAnswers);

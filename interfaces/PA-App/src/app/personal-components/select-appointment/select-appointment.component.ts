@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -16,6 +16,9 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./select-appointment.component.scss'],
 })
 export class SelectAppointmentComponent extends PersonalComponent {
+  @Input()
+  public data: any;
+
   private did: string;
   public languageCode: string;
   public fallbackLanguageCode: string;
@@ -23,7 +26,6 @@ export class SelectAppointmentComponent extends PersonalComponent {
   public timeFormat = 'HH:mm';
 
   public program: Program;
-  public ngo: string;
   public programChoice: number;
 
   public timeslots: Timeslot[];
@@ -36,6 +38,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
   public timeslotSubmitted: boolean;
 
+  public confirmActions = ConfirmAction;
   public confirmAction: string;
 
   public meetingDocuments: string[];
@@ -47,28 +50,42 @@ export class SelectAppointmentComponent extends PersonalComponent {
     public paData: PaDataService,
   ) {
     super();
-
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
-    this.getProgram();
   }
 
   ngOnInit() {
-    this.getDid();
+    this.fallbackLanguageCode = this.translate.getDefaultLang();
+    this.languageCode = this.translate.currentLang;
+
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+
+    this.initNew();
   }
 
-
-  private async getDid() {
+  async initNew() {
+    this.conversationService.startLoading();
+    await this.getProgram();
     this.did = await this.paData.retrieve(this.paData.type.did);
+    this.timeslots = await this.programsService.getTimeslots(this.programChoice);
+    this.conversationService.stopLoading();
+  }
+
+  async initHistory() {
+    this.isDisabled = true;
+    this.timeslotSubmitted = true;
+    this.chosenTimeslot = this.data.timeslot;
+    this.timeslotChoice = this.data.timeslot.id;
+    this.timeslots = [this.data.timeslot];
+    await this.getProgram();
+    this.confirmAction = ConfirmAction.confirm;
   }
 
   private async getProgram() {
-    this.conversationService.startLoading();
     this.programChoice = Number(await this.paData.retrieve(this.paData.type.programId));
     this.program = await this.paData.getProgram(this.programChoice);
     this.prepareProgramProperties(this.program);
-    this.timeslots = await this.programsService.getTimeslots(this.programChoice);
-    this.conversationService.stopLoading();
   }
 
   private prepareProgramProperties(program: Program) {
@@ -110,6 +127,10 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   public changeTimeslot($event) {
+    if (this.isDisabled) {
+      return;
+    }
+
     this.timeslotChoice = parseInt($event.detail.value, 10);
     this.timeslotSubmitted = false;
 
@@ -128,9 +149,9 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
   public submitConfirmAction(action: string) {
     // This needs a check on 'already confirmed for this did' (max 1 timeslot-selection allowed)
-    if (action === 'confirm') {
+    if (action === ConfirmAction.confirm) {
       this.postAppointment(this.timeslotChoice, this.did);
-    } else if (action === 'change') {
+    } else if (action === ConfirmAction.change) {
       this.timeslotSubmitted = false;
       this.isDisabled = false;
     }
@@ -159,4 +180,9 @@ export class SelectAppointmentComponent extends PersonalComponent {
       next: this.getNextSection(),
     });
   }
+}
+
+enum ConfirmAction {
+  confirm = 'confirm',
+  change = 'change',
 }
