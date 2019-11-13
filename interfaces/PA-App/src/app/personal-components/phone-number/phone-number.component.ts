@@ -49,13 +49,16 @@ export class PhoneNumberComponent extends PersonalComponent {
   public async submitPhoneNumber(phone: any) {
     this.choiceMade = true;
     this.phoneSkipped = false;
-    this.phoneNumber = phone;
+    this.phoneNumber = this.sanitizePhoneNumber(phone);
 
     this.programService.postPhoneNumber(this.did, this.phoneNumber, this.languageCode).subscribe(() => {
       this.complete();
     });
   }
 
+  private sanitizePhoneNumber(phoneNumber: string): string {
+    // TODO: add more complex rules to 'clean' messy input
+    return phoneNumber.trim();
   }
 
   public skipPhone() {
@@ -66,7 +69,6 @@ export class PhoneNumberComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    // Here goes something that you move to end of up-to-date conversation history??
     return PersonalComponents.meetingReminder;
   }
 
@@ -75,8 +77,8 @@ export class PhoneNumberComponent extends PersonalComponent {
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.phoneNumber,
       data: {
-        username: this.phoneSkipped,
-        password: this.phoneNumber,
+        phoneSkipped: this.phoneSkipped,
+        phoneNumber: this.phoneNumber,
       },
       next: this.getNextSection(),
     });

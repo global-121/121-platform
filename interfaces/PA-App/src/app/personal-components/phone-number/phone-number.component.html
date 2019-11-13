@@ -13,7 +13,7 @@
       <li>
         {{ 'personal.phone-number.introduction4'|translate }}
       </li>
-    </ul>  
+    </ul>
   </dialogue-turn>
   <dialogue-turn actor="self">
     <form (ngSubmit)="submitPhoneNumber(phone)">
@@ -42,11 +42,11 @@
         </ion-button>
       </p>
     </form>
-    
+
   </dialogue-turn>
   <dialogue-turn [actor]="ngo"
-                *ngIf="choiceMade"
-                [isSpoken]="choiceMade"
+                 *ngIf="choiceMade"
+                 [isSpoken]="choiceMade"
   >
     <p *ngIf="!phoneSkipped"
        [innerHTML]="'personal.phone-number.conclusion1'|translate:{ phone:phoneNumber }">
