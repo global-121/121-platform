@@ -65,19 +65,14 @@ export class SelectAppointmentComponent extends PersonalComponent {
   private async getProgram() {
     this.conversationService.startLoading();
     this.programChoice = Number(await this.paData.retrieve(this.paData.type.programId));
-    this.getProgramProperties(this.programChoice);
+    this.program = await this.paData.getProgram(this.programChoice);
+    this.prepareProgramProperties(this.program);
     this.timeslots = await this.programsService.getTimeslots(this.programChoice);
     this.conversationService.stopLoading();
   }
 
-  private getProgramProperties(programId) {
-    this.program = this.paData.myPrograms[programId];
-
-    if (!this.program) {
-      return;
-    }
-
-    const documents = this.mapLabelByLanguageCode(this.program.meetingDocuments);
+  private prepareProgramProperties(program: Program) {
+    const documents = this.mapLabelByLanguageCode(program.meetingDocuments);
     this.meetingDocuments = this.buildDocumentsList(documents);
   }
 
