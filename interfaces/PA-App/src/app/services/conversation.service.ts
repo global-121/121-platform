@@ -119,6 +119,11 @@ export class ConversationService {
       this.sectionCompletedSource.next(section.next);
     }
   }
+
+  public debugUndoLastStep() {
+    this.history.pop();
+    this.paData.store(this.paData.type.conversationHistory, this.history, true);
+  }
 }
 
 export class ConversationSection {

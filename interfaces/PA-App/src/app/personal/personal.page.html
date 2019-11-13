@@ -27,6 +27,13 @@
       <ion-icon name="nuclear" size="small" slot="icon-only"></ion-icon>
     </ion-button>
 
+    <ion-button color="danger" size="small" fill="outline"
+                title="Step back in Conversation History"
+                (click)="conversationService.debugUndoLastStep()"
+    >
+      <ion-icon name="undo" size="small" slot="icon-only"></ion-icon>
+    </ion-button>
+
     <ion-button color="danger" size="small"
                 title="Clear conversation"
                 (click)="this.container.clear()"
