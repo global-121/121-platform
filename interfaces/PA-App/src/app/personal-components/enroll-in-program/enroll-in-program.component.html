@@ -31,7 +31,7 @@
           >
             <ion-label>{{ option.label }}</ion-label>
             <ion-radio [value]="option.value"
-                       [checked]="(option.value === answers[question.code].value)"
+                       [checked]="(option.value === answers[question.code]?.value)"
                        [disabled]="hasAnswered"
             ></ion-radio>
           </ion-item>
@@ -44,7 +44,7 @@
                    [name]="question.code"
                    (input)="inputAnswers($event)"
                    (change)="changeAnswers($event)"
-                   [value]="answers[question.code].value"
+                   [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
         ></ion-input>
       </div>
@@ -53,7 +53,7 @@
                    placeholder="dd-mm-yyyy"
                    [name]="question.code"
                    (change)="changeAnswers($event)"
-                   [value]="answers[question.code].value"
+                   [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
         ></ion-input>
       </div>
@@ -62,7 +62,7 @@
                    [name]="question.code"
                    (input)="inputAnswers($event)"
                    (change)="changeAnswers($event)"
-                   [value]="answers[question.code].value"
+                   [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
         ></ion-input>
       </div>
