@@ -16,9 +16,11 @@ export class PhoneNumberComponent extends PersonalComponent {
 
   public useLocalStorage: boolean;
 
+  public languageCode: string;
+
   public phoneSkipped: boolean;
   public choiceMade = false;
-  public phoneNumber: number;
+  public phoneNumber: string;
   public phone: any;
   public ngo: string;
   public did: string;
@@ -33,10 +35,15 @@ export class PhoneNumberComponent extends PersonalComponent {
     this.useLocalStorage = environment.localStorage;
   }
 
-  ngOnInit() {
-    this.paData.retrieve(this.paData.type.programId).then(programId => {
-      this.ngo = this.paData.myPrograms[parseInt(programId, 10)].ngo;
-    });
+  async ngOnInit() {
+    this.languageCode = this.translate.currentLang;
+    this.did = await this.paData.retrieve(this.paData.type.did);
+    this.ngo = await this.getNgo();
+  }
+
+  async getNgo() {
+    const currentProgram = await this.paData.getCurrentProgram();
+    return currentProgram.ngo;
   }
 
   public async submitPhoneNumber(phone: any) {
@@ -44,15 +51,10 @@ export class PhoneNumberComponent extends PersonalComponent {
     this.phoneSkipped = false;
     this.phoneNumber = phone;
 
-    this.paData.retrieve(this.paData.type.language, true).then(async (language) => {
-      await this.paData.retrieve(this.paData.type.did).then(async (did) => {
-        await this.programService.postPhoneNumber(did, String(this.phoneNumber), language).subscribe(() => {
-          console.log('Phone number posted');
-        });
-        this.complete();
-      });
+    this.programService.postPhoneNumber(this.did, this.phoneNumber, this.languageCode).subscribe(() => {
+      this.complete();
     });
-
+  }
 
   }
 

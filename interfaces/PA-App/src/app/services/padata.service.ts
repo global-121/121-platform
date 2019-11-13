@@ -64,6 +64,12 @@ export class PaDataService {
     });
   }
 
+  async getCurrentProgram() {
+    const currentProgramId = await this.retrieve(this.type.programId);
+
+    return this.getProgram(currentProgramId);
+  }
+
   async saveAnswers(programId: number, answers: any): Promise<any> {
     this.myAnswers[programId] = answers;
     return this.store(this.type.myAnswers, this.myAnswers);
