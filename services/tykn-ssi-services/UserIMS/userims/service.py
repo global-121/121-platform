@@ -340,6 +340,42 @@ class Service:
             raise ServiceError('Failed to open wallet') from e
 
         return wallet_handle
+    async def backup_wallet(self, backup_file_storage_path,wallet_id, wallet_key):
+        wallet_export_config = {
+            "path": backup_file_storage_path,
+            "key" : wallet_key
+        }
+        try:
+            wallet_name = Service._wallet_name(wallet_id)
+            self._logger.debug(f'Creating backup for {wallet_name}')
 
+            wallet_handle = await self._open_wallet(wallet_name, wallet_key)
+            await wallet.export_wallet(self._wallet_handle,json.dumps(wallet_export_config))
+            self._logger.debug(f'Wallet backup created at {backup_file_storage_path}')
+            return True
+        except IndyError as e:
+            self._logger.error(f'Failed to create backup of the wallet with config: {wallet_export_config}')
+            raise ServiceError('Failed to create backup of wallet') from e
+        return False
+
+    async def restore_wallet(self, wallet_id, wallet_key, backup_file_storage_path):
+        wallet_import_config = {
+            'path': backup_file_storage_path,
+            'key' : wallet_key
+        }
+        wallet_name = Service._wallet_name(wallet_id)
+        wallet_confg = (wallet_name, wallet_key, self._config.wallet_path)
+        try:
+            await wallet.import_wallet(
+                json.dumps(wallet_confg),
+                json.dumps({"key":wallet_key}), 
+                json.dumps(wallet_import_config)
+                )
+            self._logger.debug(f'Wallet restored successfully!')
+            return True
+        except IndyError as e:
+            self._logger.error(f'Failed to retore wallet from backup with config: {wallet_import_config}')
+            raise ServiceError('Failed to restore wallet from backup') from e
+        return False
 def _format_data(data):
     return pprint.pformat(json.loads(data))
