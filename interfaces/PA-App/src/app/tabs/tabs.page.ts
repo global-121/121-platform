@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { PopoverController } from '@ionic/angular';
-import { PopoverComponent } from './popover/popover.component';
-import { PaDataService } from '../services/padata.service';
 import { environment } from 'src/environments/environment';
 
+import { PaDataService } from '../services/padata.service';
+
+import { PopoverController } from '@ionic/angular';
+import { UserMenuComponent } from '../user-menu/user-menu.component';
 
 @Component({
   selector: 'app-tabs',
@@ -40,9 +41,9 @@ export class TabsPage {
     this.accountBtnColor = this.isLoggedIn ? 'success' : 'medium';
   }
 
-  async accountPopover(ev: any) {
+  async openUserMenu(ev: any) {
     const popover = await this.popoverController.create({
-      component: PopoverComponent,
+      component: UserMenuComponent,
       event: ev,
       componentProps: { page: 'Login' },
       cssClass: 'popover_class',
