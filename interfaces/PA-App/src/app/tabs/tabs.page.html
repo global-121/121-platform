@@ -17,9 +17,9 @@
     </ion-tab-button>
 
     <ion-fab-button *ngIf="!useLocalStorage"
-                    size="small" 
-                    [color]="accountBtnColor" 
-                    (click)="accountPopover($event)"
+                    size="small"
+                    [color]="accountBtnColor"
+                    (click)="openUserMenu($event)"
     >
       <ion-icon name="person" size="large"></ion-icon>
     </ion-fab-button>

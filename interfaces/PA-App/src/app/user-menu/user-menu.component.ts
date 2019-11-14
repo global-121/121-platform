@@ -4,11 +4,11 @@ import { PaDataService } from 'src/app/services/padata.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-popover',
-  templateUrl: './popover.component.html',
-  styleUrls: ['./popover.component.scss']
+  selector: 'app-user-menu',
+  templateUrl: './user-menu.component.html',
+  styleUrls: ['./user-menu.component.scss']
 })
-export class PopoverComponent implements OnInit {
+export class UserMenuComponent implements OnInit {
   public isLoggedIn: boolean;
   page;
 
@@ -36,5 +36,4 @@ export class PopoverComponent implements OnInit {
     this.popoverController.dismiss();
     window.location.reload();
   }
-
 }
