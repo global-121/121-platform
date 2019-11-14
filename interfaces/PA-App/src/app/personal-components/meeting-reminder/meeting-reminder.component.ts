@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -16,6 +16,9 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./meeting-reminder.component.scss'],
 })
 export class MeetingReminderComponent extends PersonalComponent {
+  @Input()
+  public data: any;
+
   private did: string;
   public languageCode: string;
   public fallbackLanguageCode: string;
@@ -53,12 +56,24 @@ export class MeetingReminderComponent extends PersonalComponent {
 
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
-    this.getProgram();
   }
 
   ngOnInit() {
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+    this.initNew();
+  }
+
+  initNew() {
+    this.getProgram();
     this.generateContent();
     this.getDaysToAppointment();
+  }
+
+  initHistory() {
+
   }
 
   private async getDid() {
