@@ -18,7 +18,11 @@
   <dialogue-turn actor="self">
     <form (ngSubmit)="submitPhoneNumber(phone)">
       <ion-label>{{ 'personal.phone-number.input-label'|translate }}</ion-label>
-      <ion-input type="text"
+      <ion-input type="tel"
+                 inputmode="tel"
+                 pattern=""
+                 autocomplete="tel"
+                 placeholder="+0 000 000 000"
                  name="phone"
                  [(ngModel)]="phone"
                  ngDefaultControl
@@ -32,11 +36,12 @@
         >{{ 'personal.phone-number.submit'|translate }}</ion-button>
       </p>
       <p class="ion-margin-top">
-        <ion-button (click)="skipPhone();"
+        <ion-button type="reset"
+                    fill="outline"
                     expand="block"
+                    (click)="skipPhone();"
                     *ngIf="!isDisabled"
                     [disabled]="isDisabled"
-                    color="light"
         >
           {{ 'personal.phone-number.skip'|translate }}
         </ion-button>

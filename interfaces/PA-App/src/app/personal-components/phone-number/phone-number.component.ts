@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -13,6 +13,8 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./phone-number.component.scss'],
 })
 export class PhoneNumberComponent extends PersonalComponent {
+  @Input()
+  public data: any;
 
   public useLocalStorage: boolean;
 
@@ -36,9 +38,26 @@ export class PhoneNumberComponent extends PersonalComponent {
   }
 
   async ngOnInit() {
+    this.ngo = await this.getNgo();
+
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+
+    this.initNew();
+  }
+
+  async initNew() {
     this.languageCode = this.translate.currentLang;
     this.did = await this.paData.retrieve(this.paData.type.did);
-    this.ngo = await this.getNgo();
+  }
+
+  initHistory() {
+    this.isDisabled = true;
+    this.choiceMade = true;
+    this.phoneSkipped = this.data.phoneSkipped;
+    this.phoneNumber = this.data.phoneNumber;
   }
 
   async getNgo() {
@@ -56,9 +75,9 @@ export class PhoneNumberComponent extends PersonalComponent {
     });
   }
 
-  private sanitizePhoneNumber(phoneNumber: string): string {
-    // TODO: add more complex rules to 'clean' messy input
-    return phoneNumber.trim();
+  public sanitizePhoneNumber(phoneNumber: string): string {
+    // Remove any non-digit character exept the '+' sign
+    return phoneNumber.replace(/[^\d+]/g, '');
   }
 
   public skipPhone() {
