@@ -98,6 +98,10 @@ export class MeetingReminderComponent extends PersonalComponent {
       label = property[this.fallbackLanguageCode];
     }
 
+    if (!label) {
+      label = property;
+    }
+
     return label;
   }
 

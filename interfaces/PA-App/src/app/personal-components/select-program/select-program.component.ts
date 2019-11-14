@@ -83,6 +83,10 @@ export class SelectProgramComponent extends PersonalComponent {
       label = property[this.fallbackLanguageCode];
     }
 
+    if (!label) {
+      label = property;
+    }
+
     return label;
   }
 
