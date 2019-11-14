@@ -7,6 +7,7 @@ import { UpdateService } from 'src/app/services/update.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
+import { PersonalComponents } from '../personal-components.enum';
 import { PersonalComponent } from '../personal-component.class';
 import { Program } from 'src/app/models/program.model';
 
@@ -85,5 +86,19 @@ export class HandleProofComponent extends PersonalComponent {
     this.programId = Number(await this.paData.retrieve(this.paData.type.programId));
     this.did = await this.paData.retrieve(this.paData.type.did);
     this.wallet = await this.paData.retrieve(this.paData.type.wallet);
+  }
+
+  getNextSection() {
+    return '';
+  }
+
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: PersonalComponents.handleProof,
+      data: {
+        inclusionStatus: this.inclusionStatus,
+      },
+      next: this.getNextSection(),
+    });
   }
 }

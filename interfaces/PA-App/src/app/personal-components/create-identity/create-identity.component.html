@@ -10,7 +10,10 @@
         </ion-button>
       </p>
     </dialogue-turn>
-    <dialogue-turn *ngIf="useLocalStorage">
+    <dialogue-turn isConnected="true"
+                   *ngIf="useLocalStorage"
+                   [isSpoken]="useLocalStorage"
+    >
       <p>
         {{ 'personal.create-identity.password-only'|translate }}
       </p>
@@ -21,7 +24,10 @@
         </ion-button>
       </p>
     </dialogue-turn>
-    <dialogue-turn *ngIf="!useLocalStorage">
+    <dialogue-turn isConnected="true"
+                   *ngIf="!useLocalStorage"
+                   [isSpoken]="!useLocalStorage"
+    >
       <p>
         {{ 'personal.create-identity.username-password'|translate }}
       </p>

@@ -4,22 +4,24 @@ import { environment } from 'src/environments/environment';
 import { Storage } from '@ionic/storage';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { ConversationService } from '../services/conversation.service';
+import { ConversationService, ConversationSection } from '../services/conversation.service';
+import { PersonalComponent } from '../personal-components/personal-component.class';
 
 import { PersonalComponents } from '../personal-components/personal-components.enum';
+
 import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
 import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
+import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
+import { MeetingReminderComponent } from '../personal-components/meeting-reminder/meeting-reminder.component';
+import { PhoneNumberComponent } from '../personal-components/phone-number/phone-number.component';
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
 import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
-import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
-import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
-import { MeetingReminderComponent } from '../personal-components/meeting-reminder/meeting-reminder.component';
-import { PhoneNumberComponent } from '../personal-components/phone-number/phone-number.component';
+import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
 
 @Component({
   selector: 'app-personal',
@@ -62,8 +64,8 @@ export class PersonalPage implements OnInit {
     private storage: Storage,
   ) {
     // Listen for completed sections, to continue with next steps
-    this.conversationService.sectionCompleted$.subscribe((response: string) => {
-      this.insertSection(response);
+    this.conversationService.sectionCompleted$.subscribe((nextSectionName: string) => {
+      this.insertSection(nextSectionName);
     });
     // Listen for scroll events
     this.conversationService.shouldScroll$.subscribe((toY: number) => {
@@ -83,12 +85,12 @@ export class PersonalPage implements OnInit {
     this.scrollDown();
   }
 
-  private loadComponents() {
-    const steps = this.conversationService.getConversationUpToNow();
+  private async loadComponents() {
+    const conversation = await this.conversationService.getConversationUpToNow();
 
-    for (const step of steps) {
-      this.insertSection(step.name);
-    }
+    conversation.forEach((section: ConversationSection) => {
+      this.insertSection(section.name, section.moment, section.data);
+    });
   }
 
   private getComponentFactory(name: string) {
@@ -97,7 +99,7 @@ export class PersonalPage implements OnInit {
     );
   }
 
-  public insertSection(name: string) {
+  public insertSection(name: string, moment?: number, data?: any) {
     if (!name) {
       return;
     }
@@ -106,9 +108,13 @@ export class PersonalPage implements OnInit {
 
     this.scrollDown();
 
-    this.container.createComponent(
+    const componentRef = this.container.createComponent(
       this.getComponentFactory(name)
     );
+    const componentInstance: PersonalComponent = componentRef.instance;
+
+    componentInstance.moment = moment;
+    componentInstance.data = data;
   }
 
   public scrollDown() {

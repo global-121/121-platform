@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -16,15 +16,17 @@ import { PaDataService } from 'src/app/services/padata.service';
   styleUrls: ['./enroll-in-program.component.scss'],
 })
 export class EnrollInProgramComponent extends PersonalComponent {
+  @Input()
+  public data: any;
+
   public languageCode: string;
   public fallbackLanguageCode: string;
 
-  public program: any;
-  public programTitle: string;
-  public ngo: string;
-
-  private credDefId: string;
   private programId: number;
+  private currentProgram: Program;
+  private credDefId: string;
+
+  public programDetails: any;
 
   public questions: Question[];
   public answerTypes = AnswerType;
@@ -43,60 +45,78 @@ export class EnrollInProgramComponent extends PersonalComponent {
     public conversationService: ConversationService,
   ) {
     super();
+  }
 
+  ngOnInit() {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
+
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+
+    this.initNew();
+  }
+
+  initHistory() {
+    this.isDisabled = true;
+    this.currentProgram = this.data.currentProgram;
+    this.prepareProgramDetails(this.data.currentProgram);
+    this.checkAllQuestionsShown(this.questions, Object.keys(this.data.answers));
+    this.answers = this.data.answers;
+    this.hasAnswered = true;
+  }
+
+  initNew() {
     this.getProgramDetails();
   }
 
-  private getProgramDetails() {
+  private async getProgramDetails() {
     this.conversationService.startLoading();
 
-    this.paData.retrieve(this.paData.type.programId).then(value => {
-      this.programId = Number(value);
-      this.getProgramDetailsById(value);
-    });
+    this.programId = Number(await this.paData.retrieve(this.paData.type.programId));
+    this.currentProgram = await this.programsService.getProgramById(this.programId);
+    this.prepareProgramDetails(this.currentProgram);
+    this.paData.saveProgram(this.programId, this.currentProgram);
+
+    this.conversationService.stopLoading();
   }
 
-  public getProgramDetailsById(programId: string) {
-    this.programsService.getProgramById(programId).subscribe((response: Program) => {
-      this.programTitle = this.mapLabelByLanguageCode(response.title);
-      this.ngo = response.ngo;
-      this.credDefId = response.credDefId;
+  public prepareProgramDetails(program: Program) {
+    this.credDefId = program.credDefId;
 
-      this.buildDetails(response);
-      this.buildQuestions(response.customCriteria);
-
-      this.paData.saveProgram(response.id, response);
-
-      this.conversationService.stopLoading();
-    });
+    this.programDetails = this.buildDetails(program);
+    this.questions = this.buildQuestions(program.customCriteria);
   }
 
   private buildDetails(response: Program) {
+    const programDetails = [];
     const details = [
       'ngo',
+      'title',
       'description',
       'meetingDocuments',
     ];
-    this.program = [];
     for (const detail of details) {
       let value = this.mapLabelByLanguageCode(response[detail]);
+
+      if (detail === 'meetingDocuments' && typeof value === 'string') {
+        value = this.buildDocumentsList(value);
+      }
 
       if (typeof value === 'undefined') {
         value = response[detail];
       }
 
-      if (detail === 'meetingDocuments') {
-        value = this.buildDocumentsList(value);
-      }
-
-      this.program[detail] = value;
+      programDetails[detail] = value;
     }
+
+    return programDetails;
   }
 
   private buildQuestions(customCriteria: Program['customCriteria']) {
-    this.questions = [];
+    const questions = [];
 
     for (const criterium of customCriteria) {
       const question: Question = {
@@ -106,8 +126,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
         label: this.mapLabelByLanguageCode(criterium.label),
         options: this.buildOptions(criterium.options),
       };
-      this.questions.push(question);
+      questions.push(question);
     }
+
+    return questions;
   }
 
   private buildOptions(optionsRaw: any[]): QuestionOption[] {
@@ -138,6 +160,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     if (!label) {
       label = property[this.fallbackLanguageCode];
+    }
+
+    if (!label) {
+      label = property;
     }
 
     return label;
@@ -189,11 +215,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     const answersArray = Object.keys(this.answers);
 
-    if (answersArray.length >= (this.questions.length - 1)) {
-      this.allQuestionsShown = true;
-    } else {
-      this.allQuestionsShown = false;
-    }
+    this.checkAllQuestionsShown(this.questions, answersArray);
+
     this.showNextQuestion(answersArray.indexOf(questionCode));
   }
 
@@ -201,7 +224,15 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const initialTurns = 1; // Turns shown before the 'first question'-turn.
     const nextIndex = currentIndex + initialTurns + 1;
 
-    this.showTurn(nextIndex);
+    this.showTurnByIndex(nextIndex);
+  }
+
+  private checkAllQuestionsShown(questions: Question[], answers: string[]) {
+    if (answers.length >= (questions.length - 1)) {
+      this.allQuestionsShown = true;
+    } else {
+      this.allQuestionsShown = false;
+    }
   }
 
   public change() {
@@ -209,21 +240,17 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   public submit() {
-
-    this.paData.saveAnswers(this.programId, this.answers);
-
     if (!this.answers.dob) {
       this.dobFeedback = true;
-    } else {
-      this.hasAnswered = true;
-      this.dobFeedback = false;
-      this.conversationService.scrollToEnd();
+      return;
     }
+    this.hasAnswered = true;
+    this.dobFeedback = false;
+    this.conversationService.scrollToEnd();
+    this.paData.saveAnswers(this.programId, this.answers);
   }
 
   public async submitConfirm() {
-    console.log('submitConfirm()');
-
     this.conversationService.startLoading();
     this.isDisabled = true;
     await this.executeSovrinFlow();
@@ -292,8 +319,15 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.enrollInProgram,
       data: {
-        program: this.program,
-        questions: this.questions,
+        currentProgram: {
+          id: this.currentProgram.id,
+          ngo: this.currentProgram.ngo,
+          title: this.currentProgram.title,
+          description: this.currentProgram.description,
+          meetingDocuments: this.currentProgram.meetingDocuments,
+          customCriteria: this.currentProgram.customCriteria,
+          credDefId: this.currentProgram.credDefId,
+        },
         answers: this.answers,
       },
       next: this.getNextSection(),

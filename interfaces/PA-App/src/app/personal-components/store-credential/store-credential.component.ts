@@ -1,13 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
+import { PersonalComponents } from '../personal-components.enum';
 
+import { environment } from 'src/environments/environment';
+
+import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { UpdateService } from 'src/app/services/update.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { PersonalComponents } from '../personal-components.enum';
-import { ConversationService } from 'src/app/services/conversation.service';
+import { Program } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-store-credential',
@@ -15,10 +18,14 @@ import { ConversationService } from 'src/app/services/conversation.service';
   styleUrls: ['./store-credential.component.scss'],
 })
 export class StoreCredentialComponent extends PersonalComponent {
+  @Input()
+  public data: any;
 
+  public isDebug = environment.isDebug;
+
+  public currentProgram: Program;
   public credentialReceived = false;
   public credentialStored = false;
-  public ngo: string;
 
   constructor(
     public conversationService: ConversationService,
@@ -28,34 +35,47 @@ export class StoreCredentialComponent extends PersonalComponent {
     public programsService: ProgramsServiceApiService,
   ) {
     super();
-
   }
 
-  ngOnInit() {
-    this.startListenCredential();
+  async ngOnInit() {
+    this.currentProgram = await this.paData.getCurrentProgram();
+
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+    await this.initNew();
   }
 
-  async startListenCredential() {
-    console.log('startListenCredential');
-
-    // 1. Listen until credential is received
+  async initNew() {
     const did = await this.paData.retrieve(this.paData.type.did);
-    const programId = parseInt(await this.paData.retrieve(this.paData.type.programId), 10);
-    this.ngo = this.paData.myPrograms[programId].ngo;
 
-    this.updateService.checkCredential(programId, did).then(() => {
-      this.programsService.getCredential(did).subscribe(response => {
-        const credential = response;
-        this.credentialReceived = true;
-        this.conversationService.startLoading();
-        this.storeCredential(credential);
-      });
+    console.log('Start listening for Credential...');
+    const credentialAvailable = await this.updateService.checkCredential(this.currentProgram.id, did);
+    if (credentialAvailable) {
+      console.log('Credential available!');
+      this.getCredential(did);
+    }
+  }
+
+  initHistory() {
+    this.isDisabled = true;
+    this.credentialReceived = this.data.credentialReceived;
+    this.credentialStored = this.data.credentialStored;
+  }
+
+  async getCredential(did: string) {
+    console.log('getCredential()');
+    this.programsService.getCredential(did).subscribe(response => {
+      const credential = response;
+      console.log('credential Received:', credential);
+      this.credentialReceived = true;
+      this.storeCredential(credential);
     });
   }
 
-
-
-  async storeCredential(credential): Promise<void> {
+  async storeCredential(credential) {
+    this.conversationService.startLoading();
     console.log('Trying to store this credential', credential);
     const wallet = await this.paData.retrieve(this.paData.type.wallet);
     const credentialRequest = await this.paData.retrieve(this.paData.type.credentialRequest);
@@ -78,9 +98,17 @@ export class StoreCredentialComponent extends PersonalComponent {
   }
 
   complete() {
+    if (this.isDisabled) {
+      return;
+    }
+
+    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.storeCredential,
-      data: {},
+      data: {
+        credentialReceived: this.credentialReceived,
+        credentialStored: this.credentialStored,
+      },
       next: this.getNextSection(),
     });
   }

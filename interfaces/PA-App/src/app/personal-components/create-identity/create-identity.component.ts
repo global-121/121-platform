@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -16,14 +16,16 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./create-identity.component.scss'],
 })
 export class CreateIdentityComponent extends PersonalComponent {
+  @Input()
+  public data: any;
 
   public useLocalStorage: boolean;
 
   public initialInput = false;
   public usernameSubmitted = false;
   public username: string;
-  public create: any;
-  public confirm: any;
+  public create: string;
+  public confirm: string;
   public unequalPasswords = false;
   public usernameNotUnique = false;
 
@@ -40,6 +42,19 @@ export class CreateIdentityComponent extends PersonalComponent {
   }
 
   ngOnInit() {
+    if (this.data) {
+      this.initHistory();
+    }
+  }
+
+  initHistory() {
+    this.isDisabled = true;
+    this.username = this.data.username;
+    this.create = this.data.password;
+    this.confirm = this.data.password;
+    this.usernameSubmitted = true;
+    this.initialInput = true;
+
   }
 
   public async submitCredentials(username: string, create: string, confirm: string) {
@@ -113,7 +128,6 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.paData.store(this.paData.type.wallet, wallet);
     this.paData.store(this.paData.type.didShort, didShort);
     this.paData.store(this.paData.type.did, did);
-
   }
 
   getNextSection() {
@@ -126,7 +140,7 @@ export class CreateIdentityComponent extends PersonalComponent {
       name: PersonalComponents.createIdentity,
       data: {
         username: this.username,
-        password: this.create,
+        password: '****************',
       },
       next: this.getNextSection(),
     });

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -15,6 +15,9 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./select-program.component.scss'],
 })
 export class SelectProgramComponent extends PersonalComponent {
+  @Input()
+  public data;
+
   private languageCode: string;
   private fallbackLanguageCode: string;
 
@@ -22,7 +25,6 @@ export class SelectProgramComponent extends PersonalComponent {
 
   public programs: Program[];
   public programChoice: number;
-  public program: Program;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -34,26 +36,44 @@ export class SelectProgramComponent extends PersonalComponent {
 
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
-    this.getPrograms();
   }
 
-  private getPrograms(): any {
+  ngOnInit() {
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+    this.initNew();
+  }
+
+  initHistory() {
+    this.isDisabled = true;
+    const chosenProgram = this.data.chosenProgram;
+
+    this.programChoice = this.data.chosenProgram.id;
+    this.programs = [chosenProgram];
+  }
+
+  async initNew() {
+    await this.getPrograms();
+  }
+
+  private async getPrograms() {
     this.conversationService.startLoading();
 
-    this.paData.retrieve(this.paData.type.country).then(value => {
-      this.countryChoice = value;
+    this.countryChoice = await this.paData.retrieve(this.paData.type.country);
+    this.programs = await this.programsService.getProgramsByCountryId(this.countryChoice);
+    this.programs = this.filterProgramsByLanguageCode(this.programs);
 
-      this.programsService.getProgramsByCountryId(this.countryChoice).subscribe((response: Program[]) => {
-        this.programs = response;
+    this.conversationService.stopLoading();
+  }
 
-        this.programs.forEach((program: Program, index: number) => {
-          this.programs[index].title = this.mapLabelByLanguageCode(program.title);
-          this.programs[index].description = this.mapLabelByLanguageCode(program.description);
-        });
-
-        this.conversationService.stopLoading();
-      });
+  private filterProgramsByLanguageCode(programs: Program[]) {
+    programs.forEach((program: Program, index: number) => {
+      programs[index].title = this.mapLabelByLanguageCode(program.title);
+      programs[index].description = this.mapLabelByLanguageCode(program.description);
     });
+    return programs;
   }
 
   private mapLabelByLanguageCode(property: any) {
@@ -63,7 +83,17 @@ export class SelectProgramComponent extends PersonalComponent {
       label = property[this.fallbackLanguageCode];
     }
 
+    if (!label) {
+      label = property;
+    }
+
     return label;
+  }
+
+  private findProgramById(programId: number) {
+    return this.programs.find((item: Program) => {
+      return (item.id === programId);
+    });
   }
 
   public changeProgram($event) {
@@ -86,11 +116,17 @@ export class SelectProgramComponent extends PersonalComponent {
 
   complete() {
     this.isDisabled = true;
+    const chosenProgram = this.findProgramById(this.programChoice);
+
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.selectProgram,
       data: {
-        countryChoice: this.countryChoice,
-        programChoice: this.programChoice,
+        chosenProgram: {
+          id: chosenProgram.id,
+          ngo: chosenProgram.ngo,
+          title: chosenProgram.title,
+          description: chosenProgram.description,
+        },
       },
       next: this.getNextSection(),
     });

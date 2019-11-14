@@ -32,4 +32,8 @@ export class DialogueTurnComponent implements OnInit {
     this.isSelf = (this.actor === 'self');
     this.moment = new Date();
   }
+
+  show() {
+    this.isSpoken = true;
+  }
 }
