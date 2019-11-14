@@ -17,6 +17,7 @@ describe('MeetingReminderComponent', () => {
     const conversationService = jasmine.createSpyObj('ConversationService', {
       startLoading: jasmine.createSpy(),
       stopLoading: jasmine.createSpy(),
+      onSectionCompleted: jasmine.createSpy(),
     });
 
     TestBed.configureTestingModule({
