@@ -118,20 +118,22 @@ export class MeetingReminderComponent extends PersonalComponent {
   }
 
   private getDaysToAppointment() {
-    if (this.qrDataShow) {
-      let daysToMeetingNumber: number;
-
-      const currentDate = new Date();
-      currentDate.setHours(0, 0, 0, 0);
-      const chosenDate = new Date(this.chosenTimeslot.startDate.valueOf());
-      chosenDate.setHours(0, 0, 0, 0);
-      const diff = chosenDate.getTime() - currentDate.getTime();
-      daysToMeetingNumber = Math.ceil(diff / (1000 * 3600 * 24));
-      this.daysToMeeting = String(daysToMeetingNumber);
-      this.meetingTomorrow = daysToMeetingNumber === 1 ? true : false;
-      this.meetingToday = daysToMeetingNumber === 0 ? true : false;
-      this.meetingPast = daysToMeetingNumber < 0 ? true : false;
+    if (!this.qrDataShow) {
+      return;
     }
+
+    let daysToMeetingNumber: number;
+
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    const chosenDate = new Date(this.chosenTimeslot.startDate.valueOf());
+    chosenDate.setHours(0, 0, 0, 0);
+    const diff = chosenDate.getTime() - currentDate.getTime();
+    daysToMeetingNumber = Math.ceil(diff / (1000 * 3600 * 24));
+    this.daysToMeeting = String(daysToMeetingNumber);
+    this.meetingTomorrow = daysToMeetingNumber === 1 ? true : false;
+    this.meetingToday = daysToMeetingNumber === 0 ? true : false;
+    this.meetingPast = daysToMeetingNumber < 0 ? true : false;
   }
 
   public async generateContent() {
