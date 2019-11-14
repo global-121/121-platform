@@ -26,7 +26,6 @@ export class SelectAppointmentComponent extends PersonalComponent {
   public timeFormat = 'HH:mm';
 
   public program: Program;
-  public programChoice: number;
 
   public timeslots: Timeslot[];
   public timeslotChoice: number;
@@ -68,7 +67,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
     this.conversationService.startLoading();
     await this.getProgram();
     this.did = await this.paData.retrieve(this.paData.type.did);
-    this.timeslots = await this.programsService.getTimeslots(this.programChoice);
+    this.timeslots = await this.programsService.getTimeslots(this.program.id);
     this.conversationService.stopLoading();
   }
 
@@ -83,8 +82,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   private async getProgram() {
-    this.programChoice = Number(await this.paData.retrieve(this.paData.type.programId));
-    this.program = await this.paData.getProgram(this.programChoice);
+    this.program = await this.paData.getCurrentProgram();
     this.prepareProgramProperties(this.program);
   }
 
