@@ -1,4 +1,5 @@
 import { Program } from '../models/program.model';
+import { mockProgram } from './api.program.mock';
 
 export const MockPaDataService = {
   type: {
@@ -15,8 +16,8 @@ export const MockPaDataService = {
     myAnswers: 'myAnswers',
   },
   myPrograms: {},
-  getProgram: () => new Promise<any>((resolve) => resolve(new Program())),
-  getCurrentProgram: () => new Promise<any>((resolve) => resolve(new Program())),
+  getProgram: () => new Promise<Program>((resolve) => resolve(mockProgram)),
+  getCurrentProgram: () => new Promise<Program>((resolve) => resolve(mockProgram)),
   store: () => new Promise<any>((resolve) => resolve('')),
   retrieve: () => new Promise<string>((resolve) => resolve('')),
   createAccount: () => new Promise<any>((resolve) => resolve('')),

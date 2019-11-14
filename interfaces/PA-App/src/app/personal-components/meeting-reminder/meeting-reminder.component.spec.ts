@@ -5,6 +5,7 @@ import { MeetingReminderComponent } from './meeting-reminder.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { QRCodeModule } from 'angularx-qrcode';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ConversationService } from 'src/app/services/conversation.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { PaDataService } from 'src/app/services/padata.service';
 
@@ -13,6 +14,10 @@ describe('MeetingReminderComponent', () => {
   let fixture: ComponentFixture<MeetingReminderComponent>;
 
   beforeEach(async(() => {
+    const conversationService = jasmine.createSpyObj('ConversationService', {
+      startLoading: jasmine.createSpy(),
+    });
+
     TestBed.configureTestingModule({
       declarations: [MeetingReminderComponent],
       imports: [
@@ -22,6 +27,10 @@ describe('MeetingReminderComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        {
+          provide: ConversationService,
+          useValue: conversationService,
+        },
         {
           provide: PaDataService,
           useValue: MockPaDataService,
