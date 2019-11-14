@@ -26,8 +26,6 @@ export class MeetingReminderComponent extends PersonalComponent {
   public timeFormat = 'HH:mm';
 
   public program: Program;
-  public ngo: string;
-  private programChoice: number;
 
   public timeslots: Timeslot[];
   public timeslotChoice: number;
@@ -84,20 +82,12 @@ export class MeetingReminderComponent extends PersonalComponent {
 
   private async getProgram() {
     this.conversationService.startLoading();
-    this.paData.retrieve(this.paData.type.programId).then(programId => {
-      this.programChoice = Number(programId);
-      this.getProgramProperties(programId);
-    });
+    this.program = await this.paData.getCurrentProgram();
+    this.getProgramProperties(this.program);
   }
 
-  private getProgramProperties(programId) {
-    this.program = this.paData.myPrograms[programId];
-
-    if (!this.program) {
-      return;
-    }
-
-    const documents = this.mapLabelByLanguageCode(this.program.meetingDocuments);
+  private getProgramProperties(program: Program) {
+    const documents = this.mapLabelByLanguageCode(program.meetingDocuments);
     this.meetingDocuments = this.buildDocumentsList(documents);
   }
 
@@ -151,7 +141,7 @@ export class MeetingReminderComponent extends PersonalComponent {
       await this.getDid();
       await this.getProgram();
 
-      await this.generateQrCode(this.did, this.programChoice);
+      await this.generateQrCode(this.did, this.program.id);
       await this.getDaysToAppointment();
 
       this.conversationService.stopLoading();
