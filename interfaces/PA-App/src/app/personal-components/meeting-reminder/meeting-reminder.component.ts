@@ -22,24 +22,15 @@ export class MeetingReminderComponent extends PersonalComponent {
   private did: string;
   public languageCode: string;
   public fallbackLanguageCode: string;
+
   public dateFormat = 'EEE, dd-MM-yyyy';
   public timeFormat = 'HH:mm';
 
   public program: Program;
-
-  public timeslots: Timeslot[];
-  public timeslotChoice: number;
-  public chosenTimeslot: Timeslot;
-  public daysToMeeting: string;
-  public meetingTomorrow: boolean;
-  public meetingToday: boolean;
-  public meetingPast: boolean;
-
-  public timeslotSubmitted: boolean;
-
-  public confirmAction: string;
-
   public meetingDocuments: string[];
+
+  public chosenTimeslot: Timeslot;
+  public daysToMeeting: number;
 
   public qrDataString: string;
   public qrDataShow = false;
@@ -64,20 +55,21 @@ export class MeetingReminderComponent extends PersonalComponent {
     this.initNew();
   }
 
-  initNew() {
-    this.getProgram();
-    this.generateContent();
-    this.getDaysToAppointment();
+  async initNew() {
+    await this.getDid();
+    await this.getProgram();
+    await this.generateContent();
   }
 
-  initHistory() {
+  async initHistory() {
+    this.isDisabled = this.data.isDisabled;
 
+    // There is no difference between first use and future use of this component:
+    this.initNew();
   }
 
   private async getDid() {
-    this.paData.retrieve(this.paData.type.did).then((value) => {
-      this.did = value;
-    });
+    this.did = await this.paData.retrieve(this.paData.type.did);
   }
 
   private async getProgram() {
@@ -115,44 +107,33 @@ export class MeetingReminderComponent extends PersonalComponent {
       programId,
     };
 
-    if (qrData) {
-      this.qrDataString = JSON.stringify(qrData);
-      this.qrDataShow = true;
-    }
+    this.qrDataString = JSON.stringify(qrData);
+    this.qrDataShow = true;
   }
 
-  private getDaysToAppointment() {
-    if (!this.qrDataShow) {
-      return;
-    }
-
-    let daysToMeetingNumber: number;
-
+  private getDaysToAppointment(appointmentDate: Date) {
     const currentDate = new Date();
+    const chosenDate = new Date(appointmentDate);
+    const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
+
     currentDate.setHours(0, 0, 0, 0);
-    const chosenDate = new Date(this.chosenTimeslot.startDate.valueOf());
     chosenDate.setHours(0, 0, 0, 0);
+
     const diff = chosenDate.getTime() - currentDate.getTime();
-    daysToMeetingNumber = Math.ceil(diff / (1000 * 3600 * 24));
-    this.daysToMeeting = String(daysToMeetingNumber);
-    this.meetingTomorrow = daysToMeetingNumber === 1 ? true : false;
-    this.meetingToday = daysToMeetingNumber === 0 ? true : false;
-    this.meetingPast = daysToMeetingNumber < 0 ? true : false;
+
+    return Math.round(Math.abs(diff / oneDay));
   }
 
   public async generateContent() {
     this.conversationService.startLoading();
-    this.paData.retrieve(this.paData.type.timeslot).then(async (value) => {
-      this.chosenTimeslot = value;
-      await this.getDid();
-      await this.getProgram();
 
-      await this.generateQrCode(this.did, this.program.id);
-      await this.getDaysToAppointment();
+    this.generateQrCode(this.did, this.program.id);
 
-      this.conversationService.stopLoading();
-      this.complete();
-    });
+    this.chosenTimeslot = await this.paData.retrieve(this.paData.type.timeslot);
+    this.daysToMeeting = this.getDaysToAppointment(this.chosenTimeslot.startDate);
+
+    this.conversationService.stopLoading();
+    this.complete();
   }
 
   getNextSection() {
@@ -160,11 +141,15 @@ export class MeetingReminderComponent extends PersonalComponent {
   }
 
   complete() {
+    if (this.isDisabled) {
+      return;
+    }
+
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.selectAppointment,
+      name: PersonalComponents.meetingReminder,
       data: {
-        timeslot: this.chosenTimeslot,
+        isDisabled: this.isDisabled,
       },
       next: this.getNextSection(),
     });

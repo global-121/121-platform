@@ -16,6 +16,7 @@ describe('MeetingReminderComponent', () => {
   beforeEach(async(() => {
     const conversationService = jasmine.createSpyObj('ConversationService', {
       startLoading: jasmine.createSpy(),
+      stopLoading: jasmine.createSpy(),
     });
 
     TestBed.configureTestingModule({
@@ -46,7 +47,7 @@ describe('MeetingReminderComponent', () => {
     fixture.detectChanges();
   });
 
-  xit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

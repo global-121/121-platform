@@ -96,7 +96,7 @@
       "more-info-documents": "About these documents",
       "qr-code": "Please show this QR-code at your meeting.",
       "meeting-reminder": "Here is everything you need to know about your meeting:",
-      "meeting-count-down": "Your meeting appointment takes place in <strong><big>{{daysToMeeting}}</big></strong> days.",
+      "meeting-count-down": "Your meeting appointment takes place in <strong>{{daysToMeeting}}</strong> days.",
       "meeting-tomorrow": "Your meeting appointment takes place tomorrow.",
       "meeting-today": "Your meeting appointment takes place today."
     },

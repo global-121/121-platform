@@ -9,16 +9,16 @@
     <p>
       {{ 'personal.meeting-reminder.from'|translate }}:
       <strong>
-        {{ chosenTimeslot.startDate|date:dateFormat }}: {{ chosenTimeslot.startDate|date:timeFormat }}
+        {{ chosenTimeslot?.startDate|date:dateFormat }}: {{ chosenTimeslot?.startDate|date:timeFormat }}
       </strong>
       <br>
       {{ 'personal.meeting-reminder.till'|translate }}:
       <strong>
-        {{ chosenTimeslot.endDate|date:dateFormat }}: {{ chosenTimeslot.endDate|date:timeFormat }}
+        {{ chosenTimeslot?.endDate|date:dateFormat }}: {{ chosenTimeslot?.endDate|date:timeFormat }}
       </strong>
       <br>
       {{ 'personal.meeting-reminder.at'|translate }}:
-      <strong>{{ chosenTimeslot.location }}</strong>
+      <strong>{{ chosenTimeslot?.location }}</strong>
     </p>
     <p>
       {{ 'personal.meeting-reminder.documents'|translate }}
@@ -49,13 +49,17 @@
     </div>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"
-                  *ngIf="qrDataShow && !meetingPast"
-                  [isSpoken]="qrDataShow">
-    <p *ngIf="!meetingTomorrow && !meetingToday" [innerHTML]="'personal.meeting-reminder.meeting-count-down'|translate:{ daysToMeeting:daysToMeeting, dayDays:dayDays }"></p>
-    <p *ngIf="meetingTomorrow">
+                 *ngIf="qrDataShow && (daysToMeeting > 0)"
+                 [isSpoken]="qrDataShow && (daysToMeeting > 0)"
+                 isConnected="true"
+  >
+    <p *ngIf="daysToMeeting > 1"
+       [innerHTML]="'personal.meeting-reminder.meeting-count-down'|translate:{ daysToMeeting:daysToMeeting }"
+    ></p>
+    <p *ngIf="daysToMeeting === 1">
       {{ 'personal.meeting-reminder.meeting-tomorrow'|translate }}
     </p>
-    <p *ngIf="meetingToday">
+    <p *ngIf="daysToMeeting === 0">
       {{ 'personal.meeting-reminder.meeting-today'|translate }}
     </p>
   </dialogue-turn>
