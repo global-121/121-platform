@@ -8,6 +8,8 @@ import { Program } from '../models/program.model';
 import { JwtService } from './jwt.service';
 import { Subject } from 'rxjs';
 
+import { PaDataTypes } from './padata-types.enum';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,20 +17,7 @@ export class PaDataService {
 
   private useLocalStorage: boolean;
 
-  public type = {
-    language: 'languageCode',
-    country: 'countryId',
-    did: 'did',
-    didShort: 'didShort',
-    wallet: 'wallet',
-    credentialRequest: 'credentialRequest',
-    programId: 'programId',
-    credDefId: 'credDefId',
-    timeslot: 'timeslotChoice',
-    myPrograms: 'myPrograms',
-    myAnswers: 'myAnswers',
-    conversationHistory: 'conversationHistory',
-  };
+  public type = PaDataTypes;
 
   public myPrograms: any = {};
   public myAnswers: any = {};

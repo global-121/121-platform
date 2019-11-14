@@ -1,20 +1,10 @@
 import { Program } from '../models/program.model';
+import { PaDataTypes } from '../services/padata-types.enum';
+
 import { mockProgram } from './api.program.mock';
 
 export const MockPaDataService = {
-  type: {
-    language: 'languageCode',
-    country: 'countryId',
-    did: 'did',
-    didShort: 'didShort',
-    wallet: 'wallet',
-    credentialRequest: 'credentialRequest',
-    programId: 'programId',
-    credDefId: 'credDefId',
-    timeslot: 'timeslotChoice',
-    myPrograms: 'myPrograms',
-    myAnswers: 'myAnswers',
-  },
+  type: PaDataTypes,
   myPrograms: {},
   getProgram: () => new Promise<Program>((resolve) => resolve(mockProgram)),
   getCurrentProgram: () => new Promise<Program>((resolve) => resolve(mockProgram)),

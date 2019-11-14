@@ -1,0 +1,15 @@
+export enum PaDataTypes {
+    language = 'languageCode',
+    country = 'countryId',
+    did = 'did',
+    didShort = 'didShort',
+    wallet = 'wallet',
+    credentialRequest = 'credentialRequest',
+    programId = 'programId',
+    credDefId = 'credDefId',
+    timeslot = 'timeslotChoice',
+    myPrograms = 'myPrograms',
+    myAnswers = 'myAnswers',
+    myAppointments = 'myAppointments',
+    conversationHistory = 'conversationHistory',
+}
