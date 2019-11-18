@@ -9,25 +9,46 @@
   "description": {
     "en": "Short description."
   },
+  "descLocation": {
+    "en": "Location such and such."
+  },
+  "descHumanitarianObjective": {
+    "en": "Humanitarian objective of program is such and such."
+  },
+  "descCashType": {
+    "en": "Unconditional multi-purpose"
+  },
   "startDate": "2020-01-01T12:00:00Z",
   "endDate": "2020-12-31T12:00:00Z",
-  "currency": "EUR",
-  "distributionFrequency": "",
-  "distributionChannel": "mobileMoney",
-  "notifiyPaArea": true,
-  "notificationType": "announcement",
-  "cashDistributionSites": {
-    "cashDistributionSites": []
-  },
-  "financialServiceProviders": {
-    "financialServiceProviders": []
-  },
-  "inclusionCalculationType": "standard",
+  "currency": "MWK",
+  "distributionFrequency": "month",
+  "distributionDuration": 3,
+  "fixedTransferValue": [
+    500,
+    500,
+    500
+  ],
+  "financialServiceProviders": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ],
+  "protectionServiceProviders": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ],
+  "inclusionCalculationType": "highestScoresX",
+  "minimumScore": 0,
+  "highestScoresX": 250,
   "meetingDocuments": {
     "en": "Document 1; Document 2; Document 3"
-  },
-  "joiningInstructions": {
-    "en": "Please follow these instructions to join our program"
   },
   "customCriteria": [
     {
@@ -128,6 +149,5 @@
         "multiplier": 2
       }
     }
-  ],
-  "minimumScore": 0
+  ]
 }

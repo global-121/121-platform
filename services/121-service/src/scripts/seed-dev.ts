@@ -16,12 +16,14 @@ import { SeedInit } from './seed-init';
 
 import programBasicExample from '../../examples/program-basic.json';
 import programAnonymousExample from '../../examples/program-anonymous1.json';
+import { FinancialServiceProviderEntity } from '../programs/program/financial-service-provider.entity';
+import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
 
 const EXAMPLE_DID = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
 
 @Injectable()
 export class SeedDev implements InterfaceScript {
-  public constructor(private connection: Connection) {}
+  public constructor(private connection: Connection) { }
 
   private readonly seedHelper = new SeedHelper(this.connection);
 
@@ -33,6 +35,16 @@ export class SeedDev implements InterfaceScript {
     const countryRepository = this.connection.getRepository(CountryEntity);
     await countryRepository.save([{ country: 'Country A' }]);
     await countryRepository.save([{ country: 'Country B' }]);
+
+    // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
+    const financialServiceProviderRepository = this.connection.getRepository(FinancialServiceProviderEntity);
+    await financialServiceProviderRepository.save([{ fsp: 'Bank A' }]);
+    await financialServiceProviderRepository.save([{ fsp: 'Mobile Money Provider B' }]);
+
+    // ***** CREATE PROTECTION SERVICE PROVIDERS *****
+    const protectionServiceProviderRepository = this.connection.getRepository(ProtectionServiceProviderEntity);
+    await protectionServiceProviderRepository.save([{ psp: 'Protection Service Provider A' }]);
+    await protectionServiceProviderRepository.save([{ psp: 'Protection Service Provider B' }]);
 
     // ***** CREATE A CONNECTION *****
     const connectionRepository = this.connection.getRepository(
