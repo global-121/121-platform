@@ -19,6 +19,8 @@ import { AuthMiddlewareAdmin } from '../../user/auth.middlewareAdmin';
 import { UserModule } from '../../user/user.module';
 import { CustomCriterium } from './custom-criterium.entity';
 import { AuthMiddlewarePM } from '../../user/auth.middlewarePM';
+import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
+import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { AuthMiddlewarePM } from '../../user/auth.middlewarePM';
       UserEntity,
       CustomCriterium,
       ConnectionEntity,
+      FinancialServiceProviderEntity,
+      ProtectionServiceProviderEntity,
     ]),
     forwardRef(() => CredentialModule),
     UserModule,

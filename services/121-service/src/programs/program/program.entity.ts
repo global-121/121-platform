@@ -12,6 +12,8 @@ import { UserEntity } from '../../user/user.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
 import { CredentialEntity } from '../../sovrin/credential/credential.entity';
+import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
+import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 
 @Entity('program')
 export class ProgramEntity {
@@ -36,38 +38,46 @@ export class ProgramEntity {
   @Column()
   public currency: string;
 
-  @Column('json')
+  @Column()
   public distributionFrequency: string;
 
   @Column()
-  public distributionChannel: string;
-
-  @Column({ default: false })
-  public notifiyPaArea: boolean;
-
-  @Column({ default: null })
-  public notificationType: string;
+  public distributionDuration: number;
 
   @Column('json')
-  public cashDistributionSites: JSON;
+  public fixedTransferValue: JSON;
 
-  @Column('json')
-  public financialServiceProviders: JSON;
+  @ManyToMany(type => FinancialServiceProviderEntity, financialServiceProviders => financialServiceProviders.program)
+  @JoinTable()
+  public financialServiceProviders: FinancialServiceProviderEntity[];
+
+  @ManyToMany(type => ProtectionServiceProviderEntity, protectionServiceProviders => protectionServiceProviders.program)
+  @JoinTable()
+  public protectionServiceProviders: ProtectionServiceProviderEntity[];
 
   @Column()
   public inclusionCalculationType: string;
+
+  @Column()
+  public minimumScore: number;
+
+  @Column()
+  public highestScoresX: number;
 
   @Column('json')
   public meetingDocuments: JSON;
 
   @Column('json')
-  public joiningInstructions: JSON;
-
-  @Column()
-  public minimumScore: number;
+  public description: JSON;
 
   @Column('json')
-  public description: JSON;
+  public descLocation: JSON;
+
+  @Column('json')
+  public descHumanitarianObjective: JSON;
+
+  @Column('json')
+  public descCashType: JSON;
 
   @Column()
   public countryId: number;
