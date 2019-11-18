@@ -1,3 +1,4 @@
+import { VoiceModule } from './../../notifications/voice/voice.module';
 import { ProofModule } from './../../sovrin/proof/proof.module';
 import { SchemaModule } from './../../sovrin/schema/schema.module';
 import { CredentialModule } from './../../sovrin/credential/credential.module';
@@ -21,6 +22,7 @@ import { CustomCriterium } from './custom-criterium.entity';
 import { AuthMiddlewarePM } from '../../user/auth.middlewarePM';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
+import { SmsModule } from '../../notifications/sms/sms.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
     forwardRef(() => CredentialModule),
     UserModule,
     SchemaModule,
+    forwardRef(() => SmsModule),
+    VoiceModule,
     forwardRef(() => ProofModule),
   ],
   providers: [ProgramService],

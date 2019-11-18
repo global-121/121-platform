@@ -8,39 +8,42 @@
                  *ngIf="timeslots"
                  [isSpoken]="timeslots"
   >
-    <ion-radio-group name="timeslots"
-                     (ionChange)="changeTimeslot($event)"
-    >
-      <ion-item *ngFor="let timeslot of timeslots"
-                color="light"
-                class="ion-no-padding ion-text-wrap"
+    <form (submit)="submitTimeslot()">
+      <ion-radio-group name="timeslots"
+                       (ionChange)="changeTimeslot($event)"
       >
-        <ion-label class="ion-text-wrap">
-          <p>
-            {{ timeslot.startDate|date:dateFormat }}: {{ timeslot.startDate|date:timeFormat }}
-            -
-            <span *ngIf="!isSameDay(timeslot.startDate, timeslot.endDate)">
-              <br>
-              {{ timeslot.endDate|date:dateFormat }}:
-            </span>
-            {{ timeslot.endDate|date:timeFormat }}
-          </p>
-          <ion-note class="ion-text-wrap">
-            {{ timeslot.location }}
-          </ion-note>
-        </ion-label>
-        <ion-radio [value]="timeslot.id"
-                   [disabled]="timeslotSubmitted"
-        ></ion-radio>
-      </ion-item>
-    </ion-radio-group>
-    <p class="ion-margin-top">
-      <ion-button *ngIf="timeslotChoice && !timeslotSubmitted"
-                  (click)="submitTimeslot()"
-                  [disabled]="timeslotSubmitted"
-                  expand="block"
-      >{{ 'shared.submit-button'|translate }}</ion-button>
-    </p>
+        <ion-item *ngFor="let timeslot of timeslots"
+                  color="light"
+                  class="ion-no-padding ion-text-wrap"
+        >
+          <ion-label class="ion-text-wrap">
+            <p>
+              {{ timeslot.startDate|date:dateFormat }}: {{ timeslot.startDate|date:timeFormat }}
+              -
+              <span *ngIf="!isSameDay(timeslot.startDate, timeslot.endDate)">
+                <br>
+                {{ timeslot.endDate|date:dateFormat }}:
+              </span>
+              {{ timeslot.endDate|date:timeFormat }}
+            </p>
+            <ion-note class="ion-text-wrap">
+              {{ timeslot.location }}
+            </ion-note>
+          </ion-label>
+          <ion-radio [value]="timeslot.id"
+                     [checked]="(timeslot.id === timeslotChoice)"
+                     [disabled]="timeslotSubmitted"
+          ></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <p class="ion-margin-top">
+        <ion-button type="submit"
+                     *ngIf="timeslotChoice && !timeslotSubmitted"
+                    [disabled]="timeslotSubmitted || isDisabled"
+                    expand="block"
+        >{{ 'shared.submit-button'|translate }}</ion-button>
+      </p>
+    </form>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"
                  *ngIf="timeslotSubmitted"
@@ -71,31 +74,35 @@
                  *ngIf="timeslotSubmitted"
                  [isSpoken]="timeslotSubmitted"
   >
-    <ion-radio-group (ionChange)="changeConfirmAction($event)">
-      <ion-item color="light"
-                class="ion-no-padding ion-text-wrap"
-      >
-        <ion-label>{{ 'personal.select-appointment.confirm'|translate }}</ion-label>
-        <ion-radio value="confirm"
-                   [disabled]="isDisabled"
-        ></ion-radio>
-      </ion-item>
-      <ion-item color="light"
-                class="ion-no-padding ion-text-wrap"
-      >
-        <ion-label>{{ 'personal.select-appointment.change'|translate }}</ion-label>
-        <ion-radio value="change"
-                   [disabled]="isDisabled"
-        ></ion-radio>
-      </ion-item>
-    </ion-radio-group>
-    <p class="ion-margin-top">
-      <ion-button *ngIf="confirmAction && !isDisabled"
-                  (click)="submitConfirmAction(confirmAction)"
-                  [disabled]="isDisabled"
-                  expand="block"
-      >{{ 'shared.submit-button'|translate }}</ion-button>
-    </p>
+    <form (submit)="submitConfirmAction(confirmAction)">
+      <ion-radio-group (ionChange)="changeConfirmAction($event)">
+        <ion-item color="light"
+                  class="ion-no-padding ion-text-wrap"
+        >
+          <ion-label>{{ 'personal.select-appointment.confirm'|translate }}</ion-label>
+          <ion-radio [value]="confirmActions.confirm"
+                     [checked]="(confirmAction === confirmActions.confirm)"
+                     [disabled]="isDisabled"
+          ></ion-radio>
+        </ion-item>
+        <ion-item color="light"
+                  class="ion-no-padding ion-text-wrap"
+        >
+          <ion-label>{{ 'personal.select-appointment.change'|translate }}</ion-label>
+          <ion-radio [value]="confirmActions.change"
+                     [checked]="(confirmAction === confirmActions.change)"
+                     [disabled]="isDisabled"
+          ></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <p class="ion-margin-top">
+        <ion-button type="submit"
+                    *ngIf="confirmAction && !isDisabled"
+                    [disabled]="isDisabled"
+                    expand="block"
+        >{{ 'shared.submit-button'|translate }}</ion-button>
+      </p>
+    </form>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"
                  *ngIf="isDisabled"

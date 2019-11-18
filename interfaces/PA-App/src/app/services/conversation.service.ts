@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+
+import { PaDataService } from './padata.service';
+
 import { PersonalComponents } from '../personal-components/personal-components.enum';
 
 @Injectable({
@@ -10,7 +13,7 @@ export class ConversationService {
     isLoading: false,
   };
 
-  private history: ConversationHistorySection[] = [];
+  private history: ConversationSection[] = [];
 
   private conversation: ConversationSection[] = [];
 
@@ -20,14 +23,22 @@ export class ConversationService {
   private shouldScrollSource = new Subject<number>();
   public shouldScroll$ = this.shouldScrollSource.asObservable();
 
-  constructor() {
+  constructor(
+    private paData: PaDataService,
+  ) {
     console.log('ConversationService()');
+  }
 
-    // get History from Storage:
-    this.history = this.getHistory();
+  public async getConversationUpToNow(): Promise<ConversationSection[]> {
+    await this.init();
+    return this.conversation;
+  }
+
+  private async init() {
+    this.history = await this.getHistory();
 
     if (this.hasHistory()) {
-      // TODO: Replay/build conversation from history
+      this.replayHistory();
     } else {
       this.startNewConversation();
     }
@@ -46,11 +57,12 @@ export class ConversationService {
     this.shouldScrollSource.next(-1);
   }
 
-  private getHistory() {
-    // Define a hard-coded history (for now):
-    const history = [
-    ];
+  private async getHistory() {
+    let history = await this.paData.retrieve(this.paData.type.conversationHistory, true);
 
+    if (!history) {
+      history = [];
+    }
 
     return history;
   }
@@ -59,30 +71,45 @@ export class ConversationService {
     return (this.history.length > 0);
   }
 
-  startNewConversation() {
+  private replayHistory() {
+    this.history.forEach((section: ConversationSection, index: number) => {
+      this.addSection(section.name, section.moment, section.data);
+
+      // Activate the next-section from the last-section-from-history
+      if (index === this.history.length - 1) {
+        this.addSection(section.next);
+      }
+    });
+  }
+
+  private startNewConversation() {
     this.addSection(PersonalComponents.selectLanguage);
   }
 
-  private addSection(sectionName) {
-    console.log('ConversationService addSection(): ', sectionName);
+  private addSection(name: string, moment?: number, data?: any) {
+    console.log('ConversationService addSection(): ', name, data);
 
     this.conversation.push({
-      name: sectionName
+      name,
+      moment,
+      data,
     });
   }
 
   private storeSection(section: ConversationSection) {
-    console.log('storeSection(): ', section);
+    console.log('storeSection()');
 
-    // addToHistory
-    // storeHistory
+    this.history.push(section);
+
+    // Only stored locally (for now)
+    this.paData.store(this.paData.type.conversationHistory, this.history, true);
   }
 
   public onSectionCompleted(section: ConversationSection) {
     console.log('ConverstaionService  onSectionCompleted(): ', section);
 
     // Record completion date/time:
-    section.moment = new Date();
+    section.moment = Date.now();
 
     // Store all data from this section in history
     this.storeSection(section);
@@ -93,20 +120,15 @@ export class ConversationService {
     }
   }
 
-  public getConversationUpToNow(): ConversationSection[] {
-    return this.conversation;
+  public debugUndoLastStep() {
+    this.history.pop();
+    this.paData.store(this.paData.type.conversationHistory, this.history, true);
   }
-}
-
-class ConversationHistorySection {
-  readonly name: string;
-  readonly data: any;
-  readonly timestamp: number;
 }
 
 export class ConversationSection {
   name: string;
-  moment?: Date;
+  moment?: number;
   data?: any;
   next?: string;
 }

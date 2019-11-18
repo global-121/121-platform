@@ -17,14 +17,18 @@
                   [disabled]="typeChosen"
         >
           <ion-label>{{ 'personal.signup-signin.create-id'|translate }}</ion-label>
-          <ion-radio value="create-id"></ion-radio>
+          <ion-radio [value]="idChoices.create"
+                     [checked]="signupSigninChoice === idChoices.create"
+          ></ion-radio>
         </ion-item>
         <ion-item color="light"
                   class="ion-no-padding ion-text-wrap"
                   [disabled]="useLocalStorage || typeChosen"
         >
           <ion-label>{{ 'personal.signup-signin.login-id'|translate }}</ion-label>
-          <ion-radio value="login-id"></ion-radio>
+          <ion-radio [value]="idChoices.login"
+                     [checked]="signupSigninChoice === idChoices.login"
+          ></ion-radio>
         </ion-item>
       </ion-radio-group>
       <p class="ion-margin-top">

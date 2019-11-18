@@ -77,12 +77,11 @@
       "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed."
     },
     "phone-number": {
-      "introduction1": "You have the option of entering your phone number.",
+      "introduction1": "It is optional to enter your phone number.",
       "introduction2": "We use this to send you text-notifications when you are included or not and when you receive money.",
-      "introduction3": "If you do not want to enter your phone number, you will have to log in here yourself regularly for updates.",
-      "introduction4": "At the end of the program, your number will be deleted again.",
-      "input-label": "Phone number",
-      "input-placeholder": "Your phone number",
+      "introduction3": "If you do not want to enter your phone number, you have to log in here for updates.",
+      "introduction4": "At the end of the program, we will not keep your number.",
+      "input-label": "Phone number (with country-code)",
       "submit": "Submit phone number",
       "skip": "Skip",
       "conclusion1": "Thank you. You will now receive notifications on this phone number: <strong>{{phone}}</strong>",
@@ -97,7 +96,7 @@
       "more-info-documents": "About these documents",
       "qr-code": "Please show this QR-code at your meeting.",
       "meeting-reminder": "Here is everything you need to know about your meeting:",
-      "meeting-count-down": "Your meeting appointment takes place in <strong><big>{{daysToMeeting}}</big></strong> days.",
+      "meeting-count-down": "Your meeting appointment takes place in <strong>{{daysToMeeting}}</strong> days.",
       "meeting-tomorrow": "Your meeting appointment takes place tomorrow.",
       "meeting-today": "Your meeting appointment takes place today."
     },
@@ -119,7 +118,7 @@
       "program": "Program"
     },
     "store-credential": {
-      "done": "Your Digital ID has been activated by NGO.",
+      "done": "Your Digital ID has been activated by <strong>{{ngo}}</strong>.",
       "received": "Your Digital ID is received on your device.",
       "stored": "Your Digital ID is stored in your wallet."
     },

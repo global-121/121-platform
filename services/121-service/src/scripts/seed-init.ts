@@ -4,6 +4,7 @@ import { Connection } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { USERCONFIG } from '../secrets';
 import * as crypto from 'crypto';
+import fs from 'fs'
 
 
 @Injectable()

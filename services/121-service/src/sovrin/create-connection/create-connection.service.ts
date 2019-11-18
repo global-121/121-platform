@@ -12,7 +12,7 @@ export class CreateConnectionService {
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
 
-  public constructor(private readonly sovrinSetupService: SovrinSetupService) { }
+  public constructor(private readonly sovrinSetupService: SovrinSetupService) {}
 
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
@@ -44,9 +44,14 @@ export class CreateConnectionService {
     return newConnection;
   }
 
-  public async addPhone(did: string, phoneNumber: string) {
+  public async addPhone(
+    did: string,
+    phoneNumber: string,
+    preferredLanguage: string,
+  ) {
     const connection = await this.findOne(did);
     connection.phoneNumber = phoneNumber;
+    connection.preferredLanguage = preferredLanguage;
     await this.connectionRepository.save(connection);
   }
 
@@ -58,12 +63,7 @@ export class CreateConnectionService {
       const errors = 'No connection found for PA.';
       throw new HttpException({ errors }, 404);
     }
-    return connection
-  }
-
-  public async addLedger(didInfo: DidInfoDto): Promise<void> {
-    ` decryptedMessage = await tyknid.decrypt(DidInfoDto)
-      tyknid.addDidLedger(decryptedMessage.did, decryptedMessage.verkey)`;
+    return connection;
   }
 
   public async getConnections(): Promise<ConnectionEntity[]> {

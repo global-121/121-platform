@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TabsPageRoutingModule } from './tabs.router.module';
 
 import { TabsPage } from './tabs.page';
-import { PopoverComponent } from './popover/popover.component';
+import { UserMenuComponent } from '../user-menu/user-menu.component';
 
 @NgModule({
   imports: [
@@ -19,10 +19,10 @@ import { PopoverComponent } from './popover/popover.component';
   ],
   declarations: [
     TabsPage,
-    PopoverComponent
+    UserMenuComponent
   ],
   entryComponents: [
-    PopoverComponent
+    UserMenuComponent
   ]
 })
 export class TabsPageModule { }

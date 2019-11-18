@@ -1,8 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PersonalComponents } from '../personal-components.enum';
 import { PersonalComponent } from '../personal-component.class';
 import { environment } from 'src/environments/environment';
+
+export enum idChoices {
+  create = 'create-id',
+  login = 'login-id',
+}
 
 @Component({
   selector: 'app-signup-signin',
@@ -10,10 +15,13 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./signup-signin.component.scss'],
 })
 export class SignupSigninComponent extends PersonalComponent {
+  @Input()
+  public data: any;
+
   public useLocalStorage: boolean;
+  public idChoices = idChoices;
   public signupSigninChoice: string;
   public typeChosen: boolean;
-  public programChosen: boolean;
 
   constructor(
     public conversationService: ConversationService,
@@ -22,7 +30,17 @@ export class SignupSigninComponent extends PersonalComponent {
     this.useLocalStorage = environment.localStorage;
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    if (this.data) {
+      this.initHistory();
+    }
+  }
+
+  initHistory() {
+    this.typeChosen = true;
+    this.signupSigninChoice = this.data.signupSigninChoice;
+    this.isDisabled = true;
+  }
 
   public changeSignupSignin(value: string) {
     this.signupSigninChoice = value;
@@ -35,9 +53,9 @@ export class SignupSigninComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    if (this.signupSigninChoice === 'create-id') {
+    if (this.signupSigninChoice === idChoices.create) {
       return PersonalComponents.createIdentity;
-    } else if (this.signupSigninChoice === 'login-id') {
+    } else if (this.signupSigninChoice === idChoices.login) {
       return PersonalComponents.loginIdentity;
     }
   }

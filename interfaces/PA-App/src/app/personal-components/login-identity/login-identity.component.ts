@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -10,6 +10,8 @@ import { PersonalComponents } from '../personal-components.enum';
   styleUrls: ['./login-identity.component.scss'],
 })
 export class LoginIdentityComponent extends PersonalComponent {
+  @Input()
+  public data;
 
   public initialInput = false;
   public usernameSubmitted = false;
@@ -21,12 +23,23 @@ export class LoginIdentityComponent extends PersonalComponent {
 
   constructor(
     public conversationService: ConversationService,
-    public paData: PaDataService
+    public paData: PaDataService,
   ) {
     super();
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    if (this.data) {
+      this.initHistory();
+    }
+  }
+
+  initHistory() {
+    this.isDisabled = true;
+    this.username = this.data.username;
+    this.password = this.data.password;
+    this.usernameSubmitted = true;
+  }
 
   public async submitLoginCredentials(username: string, password: string) {
     console.log('submitCredentials()', username, password);
@@ -64,7 +77,7 @@ export class LoginIdentityComponent extends PersonalComponent {
       name: PersonalComponents.loginIdentity,
       data: {
         username: this.username,
-        password: this.password,
+        password: '****************',
       },
       next: this.getNextSection(),
     });

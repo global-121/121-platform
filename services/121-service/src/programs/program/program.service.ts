@@ -1,3 +1,4 @@
+import { VoiceService } from './../../notifications/voice/voice.service';
 import { SchemaService } from './../../sovrin/schema/schema.service';
 import { CredentialService } from './../../sovrin/credential/credential.service';
 import { ProofService } from './../../sovrin/proof/proof.service';
@@ -16,6 +17,7 @@ import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
+import { SmsService } from '../../notifications/sms/sms.service';
 
 @Injectable()
 export class ProgramService {
@@ -34,6 +36,9 @@ export class ProgramService {
   public constructor(
     @Inject(forwardRef(() => CredentialService))
     private readonly credentialService: CredentialService,
+    private readonly voiceService: VoiceService,
+    @Inject(forwardRef(() => SmsService))
+    private readonly smsService: SmsService,
     private readonly schemaService: SchemaService,
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService
@@ -162,7 +167,6 @@ export class ProgramService {
       throw new HttpException({ errors }, 401);
     }
 
-
     const result = await this.schemaService.create(selectedProgram);
 
     const credentialOffer = await this.credentialService.createOffer(
@@ -266,15 +270,35 @@ export class ProgramService {
       );
       if (inclusionResult) {
         connection.programsIncluded.push(programId);
+        this.smsService.notifyBySms(connection.phoneNumber, connection.preferredLanguage, 'included', programId);
+        this.voiceService.notifyByVoice(
+          connection.phoneNumber,
+          connection.preferredLanguage,
+          'included',
+          programId,
+        );
       } else if (!inclusionResult) {
+        this.smsService.notifyBySms(
+          connection.phoneNumber,
+          connection.preferredLanguage,
+          'excluded',
+          programId,
+        );
+        this.voiceService.notifyByVoice(
+          connection.phoneNumber,
+          connection.preferredLanguage,
+          'excluded',
+          programId,
+        );
         connection.programsExcluded.push(programId);
       }
-      inclusionRequestStatus = { "status": 'done' };
+      inclusionRequestStatus = { status: 'done' };
     } else {
-      inclusionRequestStatus = { "status": 'pending' };
+      inclusionRequestStatus = { status: 'pending' };
     }
 
     await this.connectionRepository.save(connection);
+
     return inclusionRequestStatus;
   }
 
@@ -313,7 +337,6 @@ export class ProgramService {
     programId: number,
     proof: string,
   ): Promise<boolean> {
-
     const currentProgram = await this.findOne(programId);
 
     // Convert the proof in an array, for some unknown reason it has to be JSON parse multiple times
@@ -381,7 +404,7 @@ export class ProgramService {
     answerPA: object,
   ): number {
     let score = 0;
-    const options = JSON.parse(JSON.stringify(criterium.options))
+    const options = JSON.parse(JSON.stringify(criterium.options));
     for (let value of options) {
       if (value.option == answerPA) {
         score = criterium.scoring[value.option];
@@ -397,7 +420,7 @@ export class ProgramService {
     let score = 0;
     if (criterium.scoring['multiplier']) {
       if (isNaN(answerPA)) {
-        answerPA = 0
+        answerPA = 0;
       }
       score = criterium.scoring['multiplier'] * answerPA;
     }

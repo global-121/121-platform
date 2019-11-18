@@ -16,7 +16,9 @@ describe('StoreCredentialComponent', () => {
   let mockUpdateService: UpdateService;
 
   beforeEach(async(() => {
-    mockUpdateService = jasmine.createSpyObj('UpdateService', ['checkCredential']);
+    mockUpdateService = jasmine.createSpyObj('UpdateService', {
+      checkCredential: jasmine.createSpy(),
+    });
 
     TestBed.configureTestingModule({
       declarations: [StoreCredentialComponent],
@@ -46,7 +48,7 @@ describe('StoreCredentialComponent', () => {
     fixture.detectChanges();
   });
 
-  xit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

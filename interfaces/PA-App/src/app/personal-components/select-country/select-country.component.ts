@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaDataService } from 'src/app/services/padata.service';
+import { Country } from 'src/app/models/country.model';
 
 @Component({
   selector: 'app-select-country',
@@ -12,7 +13,10 @@ import { PaDataService } from 'src/app/services/padata.service';
   styleUrls: ['./select-country.component.scss'],
 })
 export class SelectCountryComponent extends PersonalComponent {
-  public countries: any;
+  @Input()
+  data: any;
+
+  public countries: Country[];
   public countryChoice: number;
   public countryChoiceName: string;
 
@@ -22,20 +26,34 @@ export class SelectCountryComponent extends PersonalComponent {
     public paData: PaDataService,
   ) {
     super();
-
-    this.getCountries();
   }
 
-  private getCountries(): any {
+  ngOnInit() {
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+    this.initNew();
+  }
+
+  async initNew() {
     this.conversationService.startLoading();
-    this.programsService.getCountries().subscribe(response => {
-      this.countries = response;
-      this.conversationService.stopLoading();
-    });
+    this.countries = await this.programsService.getCountries();
+    this.conversationService.stopLoading();
+  }
+
+  initHistory() {
+    this.isDisabled = true;
+    this.countryChoice = this.data.countryChoice;
+    this.countryChoiceName = this.data.countryChoiceName;
+    this.countries = [{
+      id: this.data.countryChoice,
+      country: this.data.countryChoiceName,
+    }];
   }
 
   private getCountryName(countryId: number): string {
-    const country = this.countries.find(item => {
+    const country = this.countries.find((item: Country) => {
       return item.id === countryId;
     });
 
@@ -45,7 +63,6 @@ export class SelectCountryComponent extends PersonalComponent {
   public changeCountry($event) {
     this.countryChoice = parseInt($event.detail.value, 10);
     this.countryChoiceName = this.getCountryName(this.countryChoice);
-    this.isDisabled = false;
     this.paData.store(this.paData.type.country, this.countryChoice);
   }
 

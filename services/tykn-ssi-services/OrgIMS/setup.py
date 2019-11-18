@@ -11,7 +11,7 @@ setup(
     ],
     url='',
     license='',
-    author='Tykn',
-    author_email='hello@tykn.tech',
+    author='Sami',
+    author_email='sami@tykn.tech',
     description=''
 )

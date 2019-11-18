@@ -1,12 +1,20 @@
-import { ViewChildren, QueryList, OnInit, AfterViewInit, AfterContentInit } from '@angular/core';
+import { ViewChildren, QueryList, OnInit, AfterViewInit, AfterContentInit, Input } from '@angular/core';
 
 import { environment } from 'src/environments/environment';
 
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
-export class PersonalComponent implements OnInit, AfterViewInit, AfterContentInit {
+export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterContentInit {
+  /**
+   * The data required to 'reinstate' the component from history
+   */
+  @Input()
+  data: any;
+
   @ViewChildren(DialogueTurnComponent)
   private turns: QueryList<DialogueTurnComponent>;
+
+  private turnSpeed = (environment.useAnimation) ? 300 : 1;
 
   /**
    * The state of the whole component.
@@ -14,36 +22,68 @@ export class PersonalComponent implements OnInit, AfterViewInit, AfterContentIni
    */
   isDisabled: boolean;
 
-  private turnSpeed = (environment.useAnimation) ? 300 : 1;
+  /**
+   * Timestamp of when the component was completed
+   */
+  moment: number;
 
   constructor() { }
 
   /**
    * Angular default component initialisation
    */
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   ngAfterViewInit() {
-    // Delay appearance of each turn so it feels more like a 'natural' conversation.
-    this.turns.forEach((turn, index) => {
-      window.setTimeout(() => {
-        turn.isSpoken = true;
-      }, this.turnSpeed * (index + 1));
+    this.setupTurns();
+  }
+
+  ngAfterContentInit() { }
+
+  /**
+   * Initialize the component for the first time
+   */
+  initNew(): void { }
+
+  /**
+   * Initialize the component from history
+   */
+  initHistory(): void { }
+
+
+  private setupTurns() {
+    this.turns.forEach((turn: DialogueTurnComponent, index: number) => {
+      this.setTurnDateTime(turn);
+      this.animateTurn(turn, this.turnSpeed * (index + 1));
     });
   }
 
-  ngAfterContentInit() {
+  /**
+   * Set the 'spoken' date/time to recorded date/time
+   */
+  private setTurnDateTime(turn: DialogueTurnComponent) {
+    if (this.moment) {
+      turn.moment = new Date(this.moment);
+    }
+  }
+
+  /**
+   * Delay appearance of each turn so it feels more like a 'natural' conversation
+   */
+  private animateTurn(turn: DialogueTurnComponent, delay: number) {
+    window.setTimeout(() => {
+      turn.show();
+    }, delay);
   }
 
   /**
    * Show a specific, previously hidden, Dialogue-Turn
    */
-  showTurn(index: number) {
+  showTurnByIndex(index: number) {
     const turn = this.turns.toArray()[index];
 
     if (turn) {
-      turn.isSpoken = true;
+      turn.show();
     }
   }
 
@@ -51,15 +91,11 @@ export class PersonalComponent implements OnInit, AfterViewInit, AfterContentIni
    * Provide the name of the next section to be loaded/shown.
    * This can contain logic to base the decision on user input, etc.
    */
-  getNextSection(): string {
-    return '';
-  }
+  abstract getNextSection(): string;
 
   /**
    * Mark the component as 'done'.
    * This should include a call to `this.conversationService.onSectionCompleted()`
    */
-  complete(): void {
-
-  }
+  abstract complete(): void;
 }

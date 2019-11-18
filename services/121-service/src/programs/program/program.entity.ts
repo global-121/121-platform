@@ -68,6 +68,9 @@ export class ProgramEntity {
   public meetingDocuments: JSON;
 
   @Column('json')
+  public notifications: JSON;
+  
+  @Column('json')
   public description: JSON;
 
   @Column('json')

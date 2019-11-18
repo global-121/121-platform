@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 
 import { ApiService } from './api.service';
 
+import { Country } from '../models/country.model';
 import { Program } from '../models/program.model';
 import { Timeslot } from '../models/timeslot.model';
 
@@ -17,13 +18,14 @@ export class ProgramsServiceApiService {
     private apiService: ApiService,
   ) { }
 
-  getCountries(): Observable<any[]> {
+  getCountries(): Promise<Country[]> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/countries/all')
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
   getAllPrograms(): Observable<Program[]> {
@@ -35,22 +37,24 @@ export class ProgramsServiceApiService {
       );
   }
 
-  getProgramsByCountryId(countryId: string): Observable<Program[]> {
+  getProgramsByCountryId(countryId: string): Promise<Program[]> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/country/' + countryId)
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response.programs)
-      );
+      )
+      .toPromise();
   }
 
-  getProgramById(programId: string): Observable<Program> {
+  getProgramById(programId: number): Promise<Program> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/' + programId)
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
-      );
+      )
+      .toPromise();
   }
 
   getConnectionRequest(): Promise<any> {
@@ -217,7 +221,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getTimeslots(programId: string): Observable<Timeslot[]> {
+  getTimeslots(programId: number): Promise<Timeslot[]> {
     return this.apiService.get(
       environment.url_121_service_api,
       '/appointment/availability/' + programId
@@ -227,7 +231,8 @@ export class ProgramsServiceApiService {
 
         return response;
       })
-    );
+    )
+    .toPromise();
   }
 
   postAppointment(timeslotId: number, did: string): Observable<any> {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -16,29 +16,21 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./meeting-reminder.component.scss'],
 })
 export class MeetingReminderComponent extends PersonalComponent {
+  @Input()
+  public data: any;
+
   private did: string;
   public languageCode: string;
   public fallbackLanguageCode: string;
+
   public dateFormat = 'EEE, dd-MM-yyyy';
   public timeFormat = 'HH:mm';
 
   public program: Program;
-  public ngo: string;
-  private programChoice: number;
-
-  public timeslots: Timeslot[];
-  public timeslotChoice: number;
-  public chosenTimeslot: Timeslot;
-  public daysToMeeting: string;
-  public meetingTomorrow: boolean;
-  public meetingToday: boolean;
-  public meetingPast: boolean;
-
-  public timeslotSubmitted: boolean;
-
-  public confirmAction: string;
-
   public meetingDocuments: string[];
+
+  public chosenTimeslot: Timeslot;
+  public daysToMeeting: number;
 
   public qrDataString: string;
   public qrDataShow = false;
@@ -53,36 +45,41 @@ export class MeetingReminderComponent extends PersonalComponent {
 
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
-    this.getProgram();
   }
 
   ngOnInit() {
-    this.generateContent();
-    this.getDaysToAppointment();
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+    this.initNew();
+  }
+
+  async initNew() {
+    await this.getDid();
+    await this.getProgram();
+    await this.generateContent();
+  }
+
+  async initHistory() {
+    this.isDisabled = this.data.isDisabled;
+
+    // There is no difference between first use and future use of this component:
+    this.initNew();
   }
 
   private async getDid() {
-    this.paData.retrieve(this.paData.type.did).then((value) => {
-      this.did = value;
-    });
+    this.did = await this.paData.retrieve(this.paData.type.did);
   }
 
   private async getProgram() {
     this.conversationService.startLoading();
-    this.paData.retrieve(this.paData.type.programId).then(programId => {
-      this.programChoice = Number(programId);
-      this.getProgramProperties(programId);
-    });
+    this.program = await this.paData.getCurrentProgram();
+    this.getProgramProperties(this.program);
   }
 
-  private getProgramProperties(programId) {
-    this.program = this.paData.myPrograms[programId];
-
-    if (!this.program) {
-      return;
-    }
-
-    const documents = this.mapLabelByLanguageCode(this.program.meetingDocuments);
+  private getProgramProperties(program: Program) {
+    const documents = this.mapLabelByLanguageCode(program.meetingDocuments);
     this.meetingDocuments = this.buildDocumentsList(documents);
   }
 
@@ -91,6 +88,10 @@ export class MeetingReminderComponent extends PersonalComponent {
 
     if (!label) {
       label = property[this.fallbackLanguageCode];
+    }
+
+    if (!label) {
+      label = property;
     }
 
     return label;
@@ -106,42 +107,33 @@ export class MeetingReminderComponent extends PersonalComponent {
       programId,
     };
 
-    if (qrData) {
-      this.qrDataString = JSON.stringify(qrData);
-      this.qrDataShow = true;
-    }
+    this.qrDataString = JSON.stringify(qrData);
+    this.qrDataShow = true;
   }
 
-  private getDaysToAppointment() {
-    if (this.qrDataShow) {
-      let daysToMeetingNumber: number;
+  private getDaysToAppointment(appointmentDate: Date) {
+    const currentDate = new Date();
+    const chosenDate = new Date(appointmentDate);
+    const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
 
-      const currentDate = new Date();
-      currentDate.setHours(0, 0, 0, 0);
-      const chosenDate = new Date(this.chosenTimeslot.startDate.valueOf());
-      chosenDate.setHours(0, 0, 0, 0);
-      const diff = chosenDate.getTime() - currentDate.getTime();
-      daysToMeetingNumber = Math.ceil(diff / (1000 * 3600 * 24));
-      this.daysToMeeting = String(daysToMeetingNumber);
-      this.meetingTomorrow = daysToMeetingNumber === 1 ? true : false;
-      this.meetingToday = daysToMeetingNumber === 0 ? true : false;
-      this.meetingPast = daysToMeetingNumber < 0 ? true : false;
-    }
+    currentDate.setHours(0, 0, 0, 0);
+    chosenDate.setHours(0, 0, 0, 0);
+
+    const diff = chosenDate.getTime() - currentDate.getTime();
+
+    return Math.round(Math.abs(diff / oneDay));
   }
 
   public async generateContent() {
     this.conversationService.startLoading();
-    this.paData.retrieve(this.paData.type.timeslot).then(async (value) => {
-      this.chosenTimeslot = value;
-      await this.getDid();
-      await this.getProgram();
 
-      await this.generateQrCode(this.did, this.programChoice);
-      await this.getDaysToAppointment();
+    this.generateQrCode(this.did, this.program.id);
 
-      this.conversationService.stopLoading();
-      this.complete();
-    });
+    this.chosenTimeslot = await this.paData.retrieve(this.paData.type.timeslot);
+    this.daysToMeeting = this.getDaysToAppointment(this.chosenTimeslot.startDate);
+
+    this.conversationService.stopLoading();
+    this.complete();
   }
 
   getNextSection() {
@@ -149,11 +141,15 @@ export class MeetingReminderComponent extends PersonalComponent {
   }
 
   complete() {
+    if (this.isDisabled) {
+      return;
+    }
+
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.selectAppointment,
+      name: PersonalComponents.meetingReminder,
       data: {
-        timeslot: this.chosenTimeslot,
+        isDisabled: this.isDisabled,
       },
       next: this.getNextSection(),
     });

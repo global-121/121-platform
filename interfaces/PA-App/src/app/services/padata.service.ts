@@ -8,6 +8,8 @@ import { Program } from '../models/program.model';
 import { JwtService } from './jwt.service';
 import { Subject } from 'rxjs';
 
+import { PaDataTypes } from './padata-types.enum';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,19 +17,7 @@ export class PaDataService {
 
   private useLocalStorage: boolean;
 
-  public type = {
-    language: 'languageCode',
-    country: 'countryId',
-    did: 'did',
-    didShort: 'didShort',
-    wallet: 'wallet',
-    credentialRequest: 'credentialRequest',
-    programId: 'programId',
-    credDefId: 'credDefId',
-    timeslot: 'timeslotChoice',
-    myPrograms: 'myPrograms',
-    myAnswers: 'myAnswers',
-  };
+  public type = PaDataTypes;
 
   public myPrograms: any = {};
   public myAnswers: any = {};
@@ -46,6 +36,27 @@ export class PaDataService {
   async saveProgram(programId: number, program: Program): Promise<any> {
     this.myPrograms[programId] = program;
     return this.store(this.type.myPrograms, this.myPrograms);
+  }
+
+  async getProgram(programId: number): Promise<Program> {
+    if (!this.myPrograms[programId]) {
+      // Fall back to get it from the server
+      this.myPrograms = await this.retrieve(this.type.myPrograms);
+    }
+
+    return new Promise<Program>((resolve, reject) => {
+      if (!this.myPrograms[programId]) {
+        return reject();
+      }
+
+      return resolve(this.myPrograms[programId]);
+    });
+  }
+
+  async getCurrentProgram() {
+    const currentProgramId = await this.retrieve(this.type.programId);
+
+    return this.getProgram(currentProgramId);
   }
 
   async saveAnswers(programId: number, answers: any): Promise<any> {

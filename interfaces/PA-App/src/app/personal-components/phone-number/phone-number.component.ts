@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -13,12 +13,16 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./phone-number.component.scss'],
 })
 export class PhoneNumberComponent extends PersonalComponent {
+  @Input()
+  public data: any;
 
   public useLocalStorage: boolean;
 
+  public languageCode: string;
+
   public phoneSkipped: boolean;
   public choiceMade = false;
-  public phoneNumber: number;
+  public phoneNumber: string;
   public phone: any;
   public ngo: string;
   public did: string;
@@ -33,27 +37,47 @@ export class PhoneNumberComponent extends PersonalComponent {
     this.useLocalStorage = environment.localStorage;
   }
 
-  ngOnInit() {
-    this.paData.retrieve(this.paData.type.programId).then(programId => {
-      this.ngo = this.paData.myPrograms[parseInt(programId, 10)].ngo;
-    });
+  async ngOnInit() {
+    this.ngo = await this.getNgo();
+
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+
+    this.initNew();
+  }
+
+  async initNew() {
+    this.languageCode = this.translate.currentLang;
+    this.did = await this.paData.retrieve(this.paData.type.did);
+  }
+
+  initHistory() {
+    this.isDisabled = true;
+    this.choiceMade = true;
+    this.phoneSkipped = this.data.phoneSkipped;
+    this.phoneNumber = this.data.phoneNumber;
+  }
+
+  async getNgo() {
+    const currentProgram = await this.paData.getCurrentProgram();
+    return currentProgram.ngo;
   }
 
   public async submitPhoneNumber(phone: any) {
     this.choiceMade = true;
     this.phoneSkipped = false;
-    this.phoneNumber = phone;
+    this.phoneNumber = this.sanitizePhoneNumber(phone);
 
-    this.paData.retrieve(this.paData.type.language, true).then(async (language) => {
-      await this.paData.retrieve(this.paData.type.did).then(async (did) => {
-        await this.programService.postPhoneNumber(did, String(this.phoneNumber), language).subscribe(() => {
-          console.log('Phone number posted');
-        });
-        this.complete();
-      });
+    this.programService.postPhoneNumber(this.did, this.phoneNumber, this.languageCode).subscribe(() => {
+      this.complete();
     });
+  }
 
-
+  public sanitizePhoneNumber(phoneNumber: string): string {
+    // Remove any non-digit character exept the '+' sign
+    return phoneNumber.replace(/[^\d+]/g, '');
   }
 
   public skipPhone() {
@@ -64,7 +88,6 @@ export class PhoneNumberComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    // Here goes something that you move to end of up-to-date conversation history??
     return PersonalComponents.meetingReminder;
   }
 
@@ -73,8 +96,8 @@ export class PhoneNumberComponent extends PersonalComponent {
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.phoneNumber,
       data: {
-        username: this.phoneSkipped,
-        password: this.phoneNumber,
+        phoneSkipped: this.phoneSkipped,
+        phoneNumber: this.phoneNumber,
       },
       next: this.getNextSection(),
     });
