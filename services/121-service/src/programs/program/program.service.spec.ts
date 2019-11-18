@@ -17,6 +17,8 @@ import { SchemaEntity } from '../../sovrin/schema/schema.entity';
 import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { HttpModule } from '@nestjs/common';
+import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
+import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 
 describe('Program service', (): void => {
@@ -68,6 +70,14 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(AppointmentEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(FinancialServiceProviderEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ProtectionServiceProviderEntity),
             useFactory: repositoryMockFactory,
           },
           {

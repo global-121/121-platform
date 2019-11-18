@@ -9,6 +9,8 @@ import programAnonymousExample1 from '../../examples/program-anonymous1.json';
 import programAnonymousExample2 from '../../examples/program-anonymous2.json';
 import { SeedHelper } from './seed-helper';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
+import { FinancialServiceProviderEntity } from '../programs/program/financial-service-provider.entity';
+import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
 
 @Injectable()
 export class SeedMvp implements InterfaceScript {
@@ -24,6 +26,16 @@ export class SeedMvp implements InterfaceScript {
     const countryRepository = this.connection.getRepository(CountryEntity);
     await countryRepository.save([{ country: 'Location A' }]);
     await countryRepository.save([{ country: 'Location B' }]);
+
+    // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
+    const financialServiceProviderRepository = this.connection.getRepository(FinancialServiceProviderEntity);
+    await financialServiceProviderRepository.save([{ fsp: 'Bank A' }]);
+    await financialServiceProviderRepository.save([{ fsp: 'Mobile Money Provider B' }]);
+
+    // ***** CREATE PROTECTION SERVICE PROVIDERS *****
+    const protectionServiceProviderRepository = this.connection.getRepository(ProtectionServiceProviderEntity);
+    await protectionServiceProviderRepository.save([{ psp: 'Protection Service Provider A' }]);
+    await protectionServiceProviderRepository.save([{ psp: 'Protection Service Provider B' }]);
 
     // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
 

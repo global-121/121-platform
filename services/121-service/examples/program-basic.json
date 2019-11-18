@@ -1,33 +1,54 @@
 {
   "published": false,
   "location": "Location Basic",
-  "ngo": "NGO B",
+  "ngo": "Test",
   "countryId": 1,
   "title": {
-    "en": "MVP Basic program"
+    "en": "Basic program"
   },
   "description": {
-    "en": "Basic program for development purposes"
+    "en": "For testing purposes."
   },
-  "startDate": "2020-01-01T01:00:00Z",
-  "endDate": "2020-05-31T23:00:00Z",
-  "currency": "EUR",
-  "distributionFrequency": "",
-  "distributionChannel": "mobileMoney",
-  "notifiyPaArea": true,
-  "notificationType": "announcement",
-  "cashDistributionSites": {
-    "cashDistributionSites": []
+  "descLocation": {
+    "en": "Location such and such."
   },
-  "financialServiceProviders": {
-    "financialServiceProviders": []
+  "descHumanitarianObjective": {
+    "en": "Humanitarian objective of program is such and such."
   },
-  "inclusionCalculationType": "standard",
+  "descCashType": {
+    "en": "Unconditional multi-purpose"
+  },
+  "startDate": "2020-01-01T12:00:00Z",
+  "endDate": "2020-12-31T12:00:00Z",
+  "currency": "MWK",
+  "distributionFrequency": "month",
+  "distributionDuration": 3,
+  "fixedTransferValue": [
+    500,
+    500,
+    500
+  ],
+  "financialServiceProviders": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ],
+  "protectionServiceProviders": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ],
+  "inclusionCalculationType": "highestScoresX",
+  "minimumScore": 0,
+  "highestScoresX": 250,
   "meetingDocuments": {
-    "en": "Document"
-  },
-  "joiningInstructions": {
-    "en": "Please follow these instructions to join our program"
+    "en": "Document 1; Document 2; Document 3"
   },
   "notifications": {
     "en": {
@@ -61,9 +82,75 @@
       "scoring": {}
     },
     {
-      "criterium": "nr_of_children",
+      "criterium": "question1",
       "label": {
-        "en": "How many children do you have?"
+        "en": "1. I am..."
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "optionA",
+          "label": {
+            "en": "Option A"
+          }
+        },
+        {
+          "option": "optionB",
+          "label": {
+            "en": "Option B"
+          }
+        },
+        {
+          "option": "optionC",
+          "label": {
+            "en": "Option C"
+          }
+        }
+      ],
+      "scoring": {
+        "optionA": 3,
+        "optionB": 6,
+        "optionC": 9
+      }
+    },
+    {
+      "criterium": "question2",
+      "label": {
+        "en": "2. I am.."
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "optionA",
+          "label": {
+            "en": "Option A"
+          }
+        },
+        {
+          "option": "optionB",
+          "label": {
+            "en": "Option B"
+          }
+        },
+        {
+          "option": "optionC",
+          "label": {
+            "en": "Option C"
+          }
+        }
+      ],
+      "scoring": {
+        "optionA": 3,
+        "optionB": 6,
+        "optionC": 9
+      }
+    },
+    {
+      "criterium": "question3",
+      "label": {
+        "en": "Question 3..."
       },
       "answerType": "numeric",
       "criteriumType": "standard",
@@ -71,33 +158,6 @@
       "scoring": {
         "multiplier": 2
       }
-    },
-    {
-      "criterium": "roof_type",
-      "label": {
-        "en": "What type is your roof?"
-      },
-      "answerType": "dropdown",
-      "criteriumType": "standard",
-      "options": [
-        {
-          "option": "steel",
-          "label": {
-            "en": "steel"
-          }
-        },
-        {
-          "option": "tiles",
-          "label": {
-            "en": "tiles"
-          }
-        }
-      ],
-      "scoring": {
-        "steel": 3,
-        "tiles": 6
-      }
     }
-  ],
-  "minimumScore": 25
+  ]
 }

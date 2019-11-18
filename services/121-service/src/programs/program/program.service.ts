@@ -15,6 +15,8 @@ import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 import proofRequestExample from '../../../examples/proof_request.json';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
+import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
+import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
 
 @Injectable()
@@ -27,6 +29,10 @@ export class ProgramService {
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(CustomCriterium)
   public customCriteriumRepository: Repository<CustomCriterium>;
+  @InjectRepository(FinancialServiceProviderEntity)
+  public financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
+  @InjectRepository(ProtectionServiceProviderEntity)
+  public protectionServiceProviderRepository: Repository<ProtectionServiceProviderEntity>;
   public constructor(
     @Inject(forwardRef(() => CredentialService))
     private readonly credentialService: CredentialService,
@@ -35,8 +41,8 @@ export class ProgramService {
     private readonly smsService: SmsService,
     private readonly schemaService: SchemaService,
     @Inject(forwardRef(() => ProofService))
-    private readonly proofService: ProofService,
-  ) {}
+    private readonly proofService: ProofService
+  ) { }
 
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
@@ -98,18 +104,20 @@ export class ProgramService {
     program.endDate = programData.endDate;
     program.currency = programData.currency;
     program.distributionFrequency = programData.distributionFrequency;
-    program.distributionChannel = programData.distributionChannel;
-    program.notifiyPaArea = programData.notifiyPaArea;
-    program.notificationType = programData.notificationType;
-    program.cashDistributionSites = programData.cashDistributionSites;
-    program.financialServiceProviders = programData.financialServiceProviders;
+    program.distributionDuration = programData.distributionDuration;
+    program.fixedTransferValue = programData.fixedTransferValue;
     program.inclusionCalculationType = programData.inclusionCalculationType;
-    program.meetingDocuments = programData.meetingDocuments;
-    program.joiningInstructions = programData.joiningInstructions;
     program.minimumScore = programData.minimumScore;
+    program.highestScoresX = programData.highestScoresX;
+    program.meetingDocuments = programData.meetingDocuments;
     program.description = programData.description;
+    program.descLocation = programData.descLocation;
+    program.descHumanitarianObjective = programData.descHumanitarianObjective;
+    program.descCashType = programData.descCashType;
     program.countryId = programData.countryId;
     program.customCriteria = [];
+    program.financialServiceProviders = [];
+    program.protectionServiceProviders = [];
 
     const author = await this.userRepository.findOne(userId);
     program.author = author;
@@ -119,6 +127,22 @@ export class ProgramService {
         customCriterium,
       );
       program.customCriteria.push(customReturn);
+    }
+    for (let item of programData.financialServiceProviders) {
+      let fsp = await this.financialServiceProviderRepository.find({
+        relations: ['program'],
+        where: { id: item.id },
+      })[0];
+      fsp.program.push(program);
+      await this.financialServiceProviderRepository.save(fsp);
+    }
+    for (let item of programData.protectionServiceProviders) {
+      let psp = await this.protectionServiceProviderRepository.find({
+        relations: ['program'],
+        where: { id: item.id },
+      })[0];
+      psp.program.push(program);
+      await this.protectionServiceProviderRepository.save(psp);
     }
 
     const newProgram = await this.programRepository.save(program);

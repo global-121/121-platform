@@ -18,6 +18,8 @@ import { AppointmentEntity } from '../../schedule/appointment/appointment.entity
 import { SchemaService } from '../schema/schema.service';
 import { ProofService } from '../proof/proof.service';
 import { HttpModule } from '@nestjs/common';
+import { FinancialServiceProviderEntity } from '../../programs/program/financial-service-provider.entity';
+import { ProtectionServiceProviderEntity } from '../../programs/program/protection-service-provider.entity';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -71,6 +73,18 @@ describe('CredentialService', (): void => {
           },
           {
             provide: getRepositoryToken(AppointmentEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(AppointmentEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(FinancialServiceProviderEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ProtectionServiceProviderEntity),
             useFactory: repositoryMockFactory,
           },
           {

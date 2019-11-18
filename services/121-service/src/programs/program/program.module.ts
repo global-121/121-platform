@@ -20,6 +20,8 @@ import { AuthMiddlewareAdmin } from '../../user/auth.middlewareAdmin';
 import { UserModule } from '../../user/user.module';
 import { CustomCriterium } from './custom-criterium.entity';
 import { AuthMiddlewarePM } from '../../user/auth.middlewarePM';
+import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
+import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { SmsModule } from '../../notifications/sms/sms.module';
 
 @Module({
@@ -29,6 +31,8 @@ import { SmsModule } from '../../notifications/sms/sms.module';
       UserEntity,
       CustomCriterium,
       ConnectionEntity,
+      FinancialServiceProviderEntity,
+      ProtectionServiceProviderEntity,
     ]),
     forwardRef(() => CredentialModule),
     UserModule,

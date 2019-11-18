@@ -13,6 +13,8 @@ import {
 } from 'class-validator';
 import { CreateCustomCriteriumDto } from './create-custom-criterium.dto';
 import { Type } from 'class-transformer';
+import { FinancialServiceProviderEntity } from '../financial-service-provider.entity';
+import { ProtectionServiceProviderEntity } from '../protection-service-provider.entity';
 
 export class CreateProgramDto {
   @ApiModelProperty()
@@ -33,10 +35,12 @@ export class CreateProgramDto {
   @IsNotEmpty()
   @IsDateString()
   public readonly startDate: Date;
+
   @ApiModelProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
   public readonly endDate: Date;
+
   @ApiModelProperty({ example: 'MWK' })
   @IsNotEmpty()
   @IsString()
@@ -44,33 +48,68 @@ export class CreateProgramDto {
     message: 'Currency should be a 3 letter abbreviation',
   })
   public readonly currency: string;
+
   @ApiModelProperty()
   @IsString()
   public readonly distributionFrequency: string;
+
   @ApiModelProperty()
-  @IsString()
-  public readonly distributionChannel: string;
-  @ApiModelProperty()
-  @IsBoolean()
-  public readonly notifiyPaArea: boolean;
-  @ApiModelProperty()
-  @IsString()
-  public readonly notificationType: string;
-  @ApiModelProperty()
-  public readonly cashDistributionSites: JSON;
-  @ApiModelProperty()
-  public readonly financialServiceProviders: JSON;
-  @ApiModelProperty({ example: 'standard' })
-  @IsIn(['standard'])
+  @IsNumber()
+  public readonly distributionDuration: number;
+
+  @ApiModelProperty({ example: [500, 500, 500] })
+  // @IsArray()
+  public readonly fixedTransferValue: JSON;
+
+  @ApiModelProperty({
+    example: [
+      {
+        id: 1
+      },
+      {
+        id: 2
+      },
+    ],
+  })
+  @IsArray()
+  @ValidateNested()
+  @IsDefined()
+  @Type(() => FinancialServiceProviderEntity)
+  public readonly financialServiceProviders: FinancialServiceProviderEntity[];
+
+  @ApiModelProperty({
+    example: [
+      {
+        id: 1
+      },
+      {
+        id: 2
+      },
+    ],
+  })
+  @IsArray()
+  @ValidateNested()
+  @IsDefined()
+  @Type(() => ProtectionServiceProviderEntity)
+  public readonly protectionServiceProviders: ProtectionServiceProviderEntity[];
+
+  @ApiModelProperty({ example: 'minimumScore' })
+  @IsIn(['minimumScore', 'highestScoresX'])
   public readonly inclusionCalculationType: string;
+
+  @ApiModelProperty()
+  @IsNumber()
+  public readonly minimumScore: number;
+
+  @ApiModelProperty()
+  @IsNumber()
+  public readonly highestScoresX: number;
+
   @ApiModelProperty({
     example: { en: 'Identity card;Health Insurance;Proof of children' },
   })
   public readonly meetingDocuments: JSON;
-  @ApiModelProperty({
-    example: { en: 'Please follow these instructions to join our program' },
-  })
-  public readonly joiningInstructions: JSON;
+
   @ApiModelProperty({
     example: [
       {
@@ -129,12 +168,17 @@ export class CreateProgramDto {
   @Type(() => CreateCustomCriteriumDto)
   public readonly customCriteria: CreateCustomCriteriumDto[];
 
-  @ApiModelProperty()
-  @IsNumber()
-  public readonly minimumScore: number;
-
   @ApiModelProperty({ example: { en: 'description' } })
   public readonly description: JSON;
+
+  @ApiModelProperty({ example: { en: 'descLocation' } })
+  public readonly descLocation: JSON;
+
+  @ApiModelProperty({ example: { en: 'descHumanitarianObjective' } })
+  public readonly descHumanitarianObjective: JSON;
+
+  @ApiModelProperty({ example: { en: 'descCashType' } })
+  public readonly descCashType: JSON;
 
   @ApiModelProperty({ example: 1 })
   @IsNumber()
