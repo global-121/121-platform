@@ -59,27 +59,6 @@ services:
     links:
       - indypool
       - tyknims
-    restart: on-failure
-  orgims-ho2:
-    build:
-      context: tykn-ssi-services/OrgIMS  
-      dockerfile: Dockerfile
-      args:
-        - CONFIG=config-HO2.json
-    init: true
-    container_name: orgims-ho2
-    ports:
-      - "50004:50004"
-    networks:
-      pool_network:
-        ipv4_address: 11.0.0.9
-    depends_on:
-      - indypool
-      - tyknims
-    links:
-      - indypool
-      - tyknims
-    restart: on-failure
   userims:
     build: 
       context: tykn-ssi-services/UserIMS 
