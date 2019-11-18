@@ -13,20 +13,28 @@ const newProgramParameters = {
   description: JSON.parse(
     '{"en": "Program to help people hit by earthquake examplename"}',
   ),
+  descLocation: JSON.parse(
+    '{"en": "Specification of location"}',
+  ),
+  descHumanitarianObjective: JSON.parse(
+    '{"en": "Specification of hum. obj."}',
+  ),
+  descCashType: JSON.parse(
+    '{"en": "Specification of cash type: Unconditional multi-purpose"}',
+  ),
   startDate: new Date(),
   endDate: new Date(),
   currency: 'MWK',
-  distributionFrequency: 'what is this',
-  distributionChannel: 'mobileMoney',
-  notifiyPaArea: true,
-  notificationType: 'announcement',
-  cashDistributionSites: JSON.parse('{}'), // This nested level is because postgres does not have great support for arrays of json
-  financialServiceProviders: JSON.parse('{}'), // This nested level is because postgres does not have great support for arrays of json
-  inclusionCalculationType: 'standard', // Only option for now later, it can also be a fancy algorithm
+  distributionFrequency: 'month',
+  distributionDuration: 3,
+  fixedTransferValue: JSON.parse('[500, 500, 500]'),
+  financialServiceProviders: JSON.parse('{}'),
+  protectionServiceProviders: JSON.parse('{}'),
+  inclusionCalculationType: 'highestScoresX', // Only option for now later, it can also be a fancy algorithm
+  minimumScore: 0,
+  highestScoresX: 500,
   meetingDocuments: JSON.parse('{"en": "documents"}'),
-  joiningInstructions: JSON.parse('{"en": "documents"}'),
   customCriteria: [],
-  minimumScore: 25,
 };
 
 const newSimpleProgramRO = {
