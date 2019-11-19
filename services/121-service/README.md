@@ -153,3 +153,8 @@ We use the NestJS swagger module for API documentation. [NestJS Swagger](https:/
 - Unzip ngrok `unzip /path/to/ngrok.zip`
 - Setup nrok http `./ngrok http 3000` in the folder where you uzipped ngrok
 - Copy paste forwarding url to secrets.ts TWILIO.ngrok
+
+## Upload voice mp3
+
+- Mp3's that are used when sending voice notifcation (`src/notifications/voice/voice.service.ts`) can be added to the service putting files in this github in the voice folder.
+- The folder struture follows this pattern: `voice/<programId>/<language>/<notification-key>.mp3`
