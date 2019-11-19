@@ -18,7 +18,15 @@ export class ProgramDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    this.programsService.getProgramById(id).subscribe((response) => {
+      this.program = this.generateArray(response);
+      console.log(this.program);
+    });
   }
 
+  public generateArray(obj) {
+    return Object.keys(obj).map((key) => { return { key: key, value: obj[key] } });
+  }
 
 }
