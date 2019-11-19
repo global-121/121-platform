@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -7,34 +7,17 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  public isLoggedIn = false;
+
 
   constructor(
-    public programsService: ProgramsServiceApiService
+    private authService: AuthService,
   ) { }
 
   ngOnInit() {
   }
-
   public async doLogin(event) {
     console.log('doLogin()');
+    this.authService.login(event);
 
-    event.preventDefault();
-
-    this.programsService.login(
-      event.target.elements.email.value,
-      event.target.elements.password.value
-    ).subscribe(
-      (response) => {
-        console.log('LoginPage subscribe:', response);
-
-        this.isLoggedIn = true;
-
-        window.location.href = '/home';
-      },
-      (error) => {
-        console.log('LoginPage error: ', error);
-      }
-    );
   }
 }
