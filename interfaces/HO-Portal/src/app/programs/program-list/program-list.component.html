@@ -13,6 +13,9 @@
   <ion-list class="ion-padding">
     <ion-item *ngFor="let item of items">
       <ion-label position="stacked">
+        <a [routerLink]="['/program', item.id]">
+          {{ item.title.en }}
+        </a>
       </ion-label>
       <ion-note>
         {{ item.description.en }}
