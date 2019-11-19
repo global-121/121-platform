@@ -9,18 +9,13 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'login',
+    loadChildren: './login/login.module#LoginPageModule'
+  },
+  {
     path: 'home',
     loadChildren: './home/home.module#HomePageModule',
     canActivate: [AuthGuard],
-  },
-  {
-    path: 'programs',
-    loadChildren: './programs/programs.module#ProgramsPageModule',
-    canActivate: [AuthGuard],
-  },
-  {
-    path: 'login',
-    loadChildren: './login/login.module#LoginPageModule'
   },
 ];
 
@@ -30,4 +25,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

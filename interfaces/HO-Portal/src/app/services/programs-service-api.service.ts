@@ -51,4 +51,15 @@ export class ProgramsServiceApiService {
       })
     );
   }
+
+  getProgramById(programId: string): Observable<Program> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      '/programs/' + programId
+    ).pipe(
+      map((response) => {
+        return response;
+      })
+    );
+  }
 }

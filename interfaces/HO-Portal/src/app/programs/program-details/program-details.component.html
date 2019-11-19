@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      {{ 'page.programs.PROGRAM_DETAILS'|translate }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-list *ngFor="let item of program" class="ion-padding">
+    {{item.key}}: {{item.value}}
+  </ion-list>
+</ion-content>
