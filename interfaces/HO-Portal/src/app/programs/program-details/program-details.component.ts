@@ -26,7 +26,7 @@ export class ProgramDetailsComponent implements OnInit {
   }
 
   public generateArray(obj) {
-    return Object.keys(obj).map((key) => { return { key: key, value: obj[key] } });
+    return Object.keys(obj).map((key) => ({ key, value: obj[key] }));
   }
 
 }
