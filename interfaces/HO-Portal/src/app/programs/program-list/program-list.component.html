@@ -4,7 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      {{ 'PROGRAMS'|translate }}
+      {{ 'page.programs.PROGRAMS'|translate }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -13,7 +13,6 @@
   <ion-list class="ion-padding">
     <ion-item *ngFor="let item of items">
       <ion-label position="stacked">
-        {{ item.title.en }}
       </ion-label>
       <ion-note>
         {{ item.description.en }}

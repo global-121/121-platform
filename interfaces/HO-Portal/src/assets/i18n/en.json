@@ -2,7 +2,6 @@
   "LOGIN": "Log in",
   "MENU": "Menu",
   "HOME": "Home",
-  "PROGRAMS": "All Programs",
   "page": {
     "login": {
       "form": {
@@ -16,6 +15,10 @@
           "label": "Log in"
         }
       }
+    },
+    "programs": {
+      "PROGRAMS": "All Programs",
+      "PROGRAM_DETAILS": "Program details"
     }
   }
 }
