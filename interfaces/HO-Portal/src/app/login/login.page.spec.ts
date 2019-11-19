@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginPage } from './login.page';
 import { TranslateModule } from '@ngx-translate/core';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { AuthService } from '../auth/auth.service';
 
 describe('LoginPage', () => {
   let component: LoginPage;
@@ -18,7 +18,7 @@ describe('LoginPage', () => {
       ],
       providers: [
         {
-          provide: ProgramsServiceApiService,
+          provide: AuthService,
         },
       ]
     })
