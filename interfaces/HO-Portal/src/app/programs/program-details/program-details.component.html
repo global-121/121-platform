@@ -6,17 +6,17 @@
     <ion-title>
       <ion-icon name="arrow-round-back" [routerLink]="['/programs']"></ion-icon>
       {{ 'page.programs.program-details.pageTitle'|translate }} - {{programTitle}}
-      <ion-button (click)="openModal()"
-                  size="small"
-      >
-        {{ 'page.programs.program-details.more'|translate }}
-      </ion-button>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 
 <ion-content>
+  <ion-item>
+    <ion-button (click)="openModal()">
+      {{ 'page.programs.program-details.more'|translate }}
+    </ion-button>
+  </ion-item>
   <ion-list *ngFor="let item of programArray" class="ion-padding">
       <ion-item *ngIf="!item.isArray">
           <ion-label><strong>{{item.key}}:</strong> <pre>{{item.value | json}}</pre></ion-label>
