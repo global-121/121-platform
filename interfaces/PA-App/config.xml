@@ -92,5 +92,4 @@
     <plugin name="cordova-plugin-ionic-webview" spec="^4.1.2" />
     <plugin name="cordova-plugin-ionic-keyboard" spec="^2.2.0" />
     <plugin name="cordova-plugin-device" spec="^2.0.3" />
-    <plugin name="cordova-plugin-global-121-indy" spec="~0.2.0" />
 </widget>
