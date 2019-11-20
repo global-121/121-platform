@@ -6,7 +6,7 @@ export const environment = {
   production: false,
 
   // APIs
-  // url_121_service_api: 'http://localhost:3000/api',
-  url_121_service_api: 'https://test-vm.121.global/121-service/api',
+  url_121_service_api: 'http://localhost:3000/api',
+  // url_121_service_api: 'https://test-vm.121.global/121-service/api',
 
 };
