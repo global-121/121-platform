@@ -4,7 +4,12 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      {{ 'page.programs.PROGRAM_DETAILS'|translate }}
+      {{ 'page.programs.program-details.pageTitle'|translate }} - {{programTitle}}
+      <ion-button (click)="openModal()"
+                  size="small"
+      >
+        {{ 'page.programs.program-details.more'|translate }}
+      </ion-button>
     </ion-title>
   </ion-toolbar>
 </ion-header>

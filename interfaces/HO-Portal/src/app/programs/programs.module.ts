@@ -6,6 +6,7 @@ import { ProgramDetailsComponent } from './program-details/program-details.compo
 
 import { ProgramsRoutingModule } from './programs-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ProgramModalPageModule } from './program-modal/program-modal.module';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     ProgramsRoutingModule,
+    ProgramModalPageModule,
     TranslateModule.forChild()
   ],
   schemas: [

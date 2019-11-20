@@ -17,8 +17,16 @@
       }
     },
     "programs": {
-      "PROGRAMS": "All Programs",
-      "PROGRAM_DETAILS": "Program details"
+      "program-list": {
+        "title": "All Programs"
+      },
+      "program-details": {
+        "pageTitle": "Program details",
+        "more": "More",
+      },
+      "program-modal": {
+        "title": "Program JSON"
+      }
     }
   }
 }
