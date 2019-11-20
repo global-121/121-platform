@@ -20,6 +20,13 @@ export class ProgramDetailsComponent implements OnInit {
   public programTitle: string;
   public programArray: any;
 
+  private techFeatures = [
+    'countryId',
+    'schemaId',
+    'credDefId',
+    'credOffer',
+    'proofRequest',
+  ];
 
 
   constructor(
@@ -48,6 +55,7 @@ export class ProgramDetailsComponent implements OnInit {
   public generateArray(obj) {
     const result = [];
     for (const key in obj) {
+      if (this.techFeatures.indexOf(key) <= -1) {
 
         const keyNew = this.translate.instant('page.programs.program-details.' + key);
         const valueNew = this.mapLabelByLanguageCode(obj[key]);
@@ -60,6 +68,7 @@ export class ProgramDetailsComponent implements OnInit {
           }
         }
         result.push(({ key: keyNew, value: valueNew, isArray }));
+      }
     }
     return result;
   }
