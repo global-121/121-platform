@@ -4,6 +4,7 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
+      <ion-icon name="arrow-round-back" [routerLink]="['/programs']"></ion-icon>
       {{ 'page.programs.program-details.pageTitle'|translate }} - {{programTitle}}
       <ion-button (click)="openModal()"
                   size="small"
