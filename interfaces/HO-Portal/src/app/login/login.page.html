@@ -9,7 +9,7 @@
     <ion-row class="ion-align-items-center ion-justify-content-center">
       <ion-col size="4" class="">
 
-          <form method="POST" (submit)="doLogin($event)" *ngIf="!isLoggedIn">
+          <form method="POST" (submit)="doLogin($event)">
 
             <ion-item>
               <ion-label position="stacked">{{ 'page.login.form.email.label'|translate }}</ion-label>
