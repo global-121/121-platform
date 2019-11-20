@@ -10,12 +10,11 @@ describe('ProgramModalPage', () => {
   let fixture: ComponentFixture<ProgramModalPage>;
 
   const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-  let modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-  modalCtrlSpy.create.and.callFake(function () {
-      return modalSpy;
+  const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+  modalCtrlSpy.create.and.callFake(() => {
+    return modalSpy;
   });
-
-  const navParamsMock = new NavParams({data: 'foo'});
+  const navParamsMock = new NavParams({ data: 'foo' });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
