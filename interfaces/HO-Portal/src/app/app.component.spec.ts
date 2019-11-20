@@ -55,7 +55,7 @@ describe('AppComponent', () => {
     const menuItems = app.querySelectorAll('ion-menu ion-list ion-label');
     expect(menuItems.length).toEqual(2);
     expect(menuItems[0].textContent).toContain('HOME');
-    expect(menuItems[1].textContent).toContain('PROGRAMS');
+    expect(menuItems[1].textContent).toContain('page.programs.program-list.title');
   });
 
   it('should have urls', async () => {

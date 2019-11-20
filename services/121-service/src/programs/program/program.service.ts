@@ -47,7 +47,8 @@ export class ProgramService {
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
-      .leftJoinAndSelect('program.customCriteria', 'customCriterium');
+      .leftJoinAndSelect('program.customCriteria', 'customCriterium')
+      .leftJoinAndSelect('program.aidworkers', 'aidworker');
     qb.whereInIds([where]);
     const program = qb.getOne();
     return program;

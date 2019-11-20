@@ -17,8 +17,40 @@
       }
     },
     "programs": {
-      "PROGRAMS": "All Programs",
-      "PROGRAM_DETAILS": "Program details"
+      "program-list": {
+        "title": "All Programs"
+      },
+      "program-details": {
+        "pageTitle": "Program details",
+        "more": "More",
+        "id": "ID",
+        "location": "Location",
+        "title": "Title",
+        "ngo": "NGO",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "currency": "Currency",
+        "distributionFrequency": "Distribution frequency",
+        "distributionDuration": "Distribution duration",
+        "fixedTransferValue": "Fixed Transfer Value (per installment)",
+        "inclusionCalculationType": "Inclusion calculation type",
+        "minimumScore": "Minimum score needed",
+        "highestScoresX": "Top X highest scores included",
+        "meetingDocuments": "Meeting documents",
+        "notifications": "Notification messages",
+        "description": "Description: general",
+        "descLocation": "Description: location",
+        "descHumanitarianObjective": "Description: Humanatarian objective",
+        "descCashType": "Description: Cash Type",
+        "published": "Published",
+        "created": "Program created at",
+        "updated": "Program last updated at",
+        "customCriteria": "Inclusion criteria",
+        "aidworkers": "Assigned aidworkers"
+      },
+      "program-modal": {
+        "title": "Program JSON"
+      }
     }
   }
 }

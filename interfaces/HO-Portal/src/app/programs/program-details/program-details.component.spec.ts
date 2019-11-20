@@ -5,6 +5,7 @@ import { ProgramDetailsComponent } from './program-details.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ProgramModalPageModule } from '../program-modal/program-modal.module';
 
 describe('ProgramDetailsComponent', () => {
   let component: ProgramDetailsComponent;
@@ -12,11 +13,14 @@ describe('ProgramDetailsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ProgramDetailsComponent],
+      declarations: [
+        ProgramDetailsComponent,
+      ],
       imports: [
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
         HttpClientTestingModule,
+        ProgramModalPageModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
