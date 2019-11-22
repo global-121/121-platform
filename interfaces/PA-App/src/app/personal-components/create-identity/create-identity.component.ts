@@ -76,7 +76,6 @@ export class CreateIdentityComponent extends PersonalComponent {
         this.isInProgress = true;
         this.conversationService.startLoading();
         await this.executeSovrinFlow();
-        await this.paData.setLoggedIn();
         this.conversationService.stopLoading();
         this.complete();
       },

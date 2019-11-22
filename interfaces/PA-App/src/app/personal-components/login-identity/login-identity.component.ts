@@ -11,7 +11,7 @@ import { PersonalComponents } from '../personal-components.enum';
 })
 export class LoginIdentityComponent extends PersonalComponent {
   @Input()
-  public data;
+  public data: any;
 
   public initialInput = false;
   public usernameSubmitted = false;
@@ -21,11 +21,21 @@ export class LoginIdentityComponent extends PersonalComponent {
 
   public isInProgress = false;
 
+  private isLoggedIn = false;
+
   constructor(
     public conversationService: ConversationService,
     public paData: PaDataService,
   ) {
     super();
+
+    this.paData.authenticationState$.subscribe((authState) => {
+      this.isLoggedIn = authState;
+
+      if (this.isLoggedIn) {
+        this.isDisabled = true;
+      }
+    });
   }
 
   ngOnInit() {
@@ -50,7 +60,6 @@ export class LoginIdentityComponent extends PersonalComponent {
         this.isInProgress = true;
         this.conversationService.startLoading();
         // Here goes something that retrieves up-to-date conversation-history??
-        this.paData.setLoggedIn();
         this.conversationService.stopLoading();
         this.complete();
       },
