@@ -101,8 +101,7 @@ export class ConversationService {
 
     this.history.push(section);
 
-    // Only stored locally (for now)
-    this.paData.store(this.paData.type.conversationHistory, this.history, true);
+    this.paData.store(this.paData.type.conversationHistory, this.history);
   }
 
   public onSectionCompleted(section: ConversationSection) {

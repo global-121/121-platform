@@ -1,14 +1,17 @@
 <ion-content>
-  <ion-list>
-    <ion-item [disabled]="!isLoggedIn" 
+  <ion-list lines="full">
+    <ion-item button="true"
+              [disabled]="!isLoggedIn"
               (click)="logout()"
+              detail="true"
+              detail-icon="log-out"
     >
       {{ 'account.logout'|translate}}
     </ion-item>
-    <ion-item disabled>
+    <ion-item button="true" disabled>
       {{ 'account.change-password'|translate}}
     </ion-item>
-    <ion-item disabled>
+    <ion-item button="true" disabled>
       {{ 'account.delete-digital-id'|translate}}
     </ion-item>
     <ion-button (click)="close()"

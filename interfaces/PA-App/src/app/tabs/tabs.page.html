@@ -18,7 +18,8 @@
 
     <ion-fab-button *ngIf="!useLocalStorage"
                     size="small"
-                    [color]="accountBtnColor"
+                    [color]="isLoggedIn ? 'success' : 'medium'"
+                    [disabled]="!isLoggedIn"
                     (click)="openUserMenu($event)"
     >
       <ion-icon name="person" size="large"></ion-icon>

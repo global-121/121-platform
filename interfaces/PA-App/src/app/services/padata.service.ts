@@ -6,7 +6,7 @@ import { Storage } from '@ionic/storage';
 import { PaAccountApiService } from './pa-account-api.service';
 import { Program } from '../models/program.model';
 import { JwtService } from './jwt.service';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 import { PaDataTypes } from './padata-types.enum';
 
@@ -19,10 +19,11 @@ export class PaDataService {
 
   public type = PaDataTypes;
 
+  public hasAccount = false;
   public myPrograms: any = {};
   public myAnswers: any = {};
 
-  private authenticationStateSource = new Subject<boolean>();
+  private authenticationStateSource = new BehaviorSubject<boolean>(false);
   public authenticationState$ = this.authenticationStateSource.asObservable();
 
   constructor(
@@ -31,6 +32,8 @@ export class PaDataService {
     private jwtService: JwtService
   ) {
     this.useLocalStorage = environment.localStorage;
+
+    this.retrieveLoggedInState();
   }
 
   async saveProgram(programId: number, program: Program): Promise<any> {
@@ -69,7 +72,7 @@ export class PaDataService {
   /////////////////////////////////////////////////////////////////////////////
 
   async store(type: string, data: any, forceLocalOnly = false): Promise<any> {
-    if (this.useLocalStorage || forceLocalOnly) {
+    if (this.useLocalStorage || forceLocalOnly || !this.hasAccount) {
       return this.ionStorage.set(type, data);
     }
 
@@ -77,7 +80,7 @@ export class PaDataService {
   }
 
   async retrieve(type: string, forceLocalOnly = false): Promise<any> {
-    if (this.useLocalStorage || forceLocalOnly) {
+    if (this.useLocalStorage || forceLocalOnly || !this.hasAccount) {
       return this.ionStorage.get(type);
     }
 
@@ -98,7 +101,13 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
-    return this.paAccountApi.createAccount(username, password);
+    console.log('PaData: createAccount()');
+    return this.paAccountApi.createAccount(username, password).then(
+      () => {
+        console.log('Account created.');
+        this.setLoggedIn();
+      }
+    );
   }
 
   async login(username: string, password: string): Promise<any> {
@@ -106,19 +115,54 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
-    return this.paAccountApi.login(username, password);
+    console.log('PaData: login()');
+    return new Promise((resolve, reject) => {
+      this.paAccountApi.login(username, password)
+      .then(
+        (response) => {
+          console.log('PaData: login successful', response);
+          this.setLoggedIn();
+          return resolve(response);
+        },
+        (error) => {
+          console.log('PaData: login error', error);
+          this.setLoggedOut();
+          return reject(error);
+        }
+      );
+    });
   }
 
-  async setLoggedIn(): Promise<void> {
-    this.store('isLoggedIn', true, true);
+  private setLoggedIn() {
+    console.log('PaData: setLoggedIn()');
+    this.hasAccount = true;
     this.authenticationStateSource.next(true);
   }
 
-  async logout() {
-    console.log('PA-accounts-service : logout()');
-    this.jwtService.destroyToken();
-    this.store('isLoggedIn', false, true);
+  private setLoggedOut() {
+    console.log('PaData: setLoggedOut()');
+    this.hasAccount = false;
     this.authenticationStateSource.next(false);
+  }
+
+  private retrieveLoggedInState() {
+    const token = this.jwtService.getToken();
+
+    if (!token) {
+      return;
+    }
+
+    this.authenticationStateSource.next(true);
+  }
+
+  public logout() {
+    if (this.useLocalStorage) {
+      return this.featureNotAvailable();
+    }
+
+    console.log('PaData: logout()');
+    this.jwtService.destroyToken();
+    this.setLoggedOut();
     this.ionStorage.clear();
   }
 
