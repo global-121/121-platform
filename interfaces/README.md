@@ -32,6 +32,22 @@ The tools to run or build all interfaces:
 - (When not using NVM) [Node.js](https://nodejs.org/) **v10+ LTS**  
   With NPM **v6.9+**
 
+
+### Native environments
+
+#### Android
+When testing/debugging on Android and using the 'livereload' functionality, it is required to add the following security exception in the app's `config.xml`, by adding the `<edit-config>`-block into the `<platform>`-block:
+
+```xml
+<platform name="android">
+  <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
+    <application android:usesCleartextTraffic="true" />
+  </edit-config>
+  <!-- ... -->
+</platform>
+```
+
+
 ### Specific requirements
 Every interface or app will have their own requirements defined in their README file.
 
