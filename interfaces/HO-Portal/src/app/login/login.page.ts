@@ -15,9 +15,14 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
   }
+
   public async doLogin(event) {
     console.log('doLogin()');
-    this.authService.login(event);
+
+    this.authService.login(
+      event.target.elements.email.value,
+      event.target.elements.password.value
+    );
 
   }
 }

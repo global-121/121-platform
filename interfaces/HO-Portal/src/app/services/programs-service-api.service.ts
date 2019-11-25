@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
-import { JwtService } from './jwt.service';
 
 import { Program } from '../models/program.model';
 
@@ -14,7 +13,6 @@ import { Program } from '../models/program.model';
 export class ProgramsServiceApiService {
   constructor(
     private apiService: ApiService,
-    private jwtService: JwtService
   ) { }
 
   login(email: string, password: string): Observable<any> {
@@ -29,15 +27,7 @@ export class ProgramsServiceApiService {
       },
       true
     ).pipe(
-      map((response) => {
-        console.log('response: ', response);
-
-        const user = response.user;
-
-        if (user && user.token) {
-          this.jwtService.saveToken(user.token);
-        }
-      })
+      tap((response) => console.log(response)),
     );
   }
 
@@ -46,6 +36,7 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       '/programs'
     ).pipe(
+      tap((response) => console.log(response)),
       map((response) => {
         return response.programs;
       })
@@ -57,6 +48,7 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       '/programs/' + programId
     ).pipe(
+      tap((response) => console.log(response)),
       map((response) => {
         return response;
       })
