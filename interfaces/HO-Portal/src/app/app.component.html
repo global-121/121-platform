@@ -14,7 +14,7 @@
             >
               <ion-icon slot="start" name="home"></ion-icon>
               <ion-label>
-                {{ 'HOME'|translate }}
+                {{ 'page.home.pageTitle'|translate }}
               </ion-label>
             </ion-item>
             <ion-item routerLink="/programs"
@@ -22,7 +22,15 @@
             >
               <ion-icon slot="start" name="list"></ion-icon>
               <ion-label>
-                {{ 'page.programs.program-list.title'|translate }}
+                {{ 'page.programs.program-list.pageTitle'|translate }}
+              </ion-label>
+            </ion-item>
+            <ion-item routerLink="/help"
+                      routerDirection="root"
+            >
+              <ion-icon slot="start" name="help"></ion-icon>
+              <ion-label>
+                {{ 'page.help.pageTitle'|translate }}
               </ion-label>
             </ion-item>
           </ion-menu-toggle>

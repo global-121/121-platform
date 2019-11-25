@@ -1,7 +1,6 @@
 {
   "LOGIN": "Log in",
   "MENU": "Menu",
-  "HOME": "Home",
   "page": {
     "login": {
       "form": {
@@ -16,9 +15,12 @@
         }
       }
     },
+    "home": {
+      "pageTitle": "Home"
+    },
     "programs": {
       "program-list": {
-        "title": "All Programs"
+        "pageTitle": "All Programs"
       },
       "program-details": {
         "pageTitle": "Program details",
@@ -49,8 +51,13 @@
         "aidworkers": "Assigned aidworkers"
       },
       "program-modal": {
-        "title": "Program JSON"
+        "pageTitle": "Program JSON"
       }
+    },
+    "help": {
+      "pageTitle": "Help",
+      "user-manual": "User manual for HO-user",
+      "user-manual-content": "This is a user manual to help HO-users with all steps they can undertake in this HO-portal.",
     }
   }
 }
