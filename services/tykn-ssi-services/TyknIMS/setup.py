@@ -5,7 +5,7 @@ setup(
     version='0.01',
     packages=['tyknims'],
     install_requires=[
-        'python3-indy==1.6.7',
+        'python3-indy==1.9.0',
         'aiohttp',
         'aiohttp-swagger',
     ],

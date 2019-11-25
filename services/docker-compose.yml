@@ -75,54 +75,54 @@ services:
       - tyknims
     links:
       - indypool
-  121db:
-    image: "postgres:9.6"
-    init: true
-    container_name: 121db
-    environment:
-      - POSTGRES_USER=global121
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=global121
-    volumes:
-      - "./postgresql.conf:/etc/postgresql.conf"
-      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
-    ports:
-      - "5438:5432"
-    restart: always
-    networks:
-      pool_network:
-        ipv4_address: 11.0.0.6
-  121-service:
-    build: 
-      context: 121-service
-      dockerfile: Dockerfile
-    init: true
-    container_name: 121-service
-    volumes: 
-      - "./121-service:/home/121/services/121-service"
-    ports:
-      - "3000:3000"
-    stdin_open: true
-    tty: true
-    networks:
-      pool_network:
-        ipv4_address: 11.0.0.7
-  PA-accounts-service:
-    build:
-      context: PA-accounts-service
-      dockerfile: Dockerfile
-    image: pa-accounts-node
-    init: true
-    container_name: PA-accounts-service
-    volumes:
-      - "./PA-accounts-service:/home/121/services/PA-accounts-service"
-    ports:
-      - "3001:3001"
-    stdin_open: true
-    tty: true
-    networks:
-      pool_network:
-        ipv4_address: 11.0.0.8
+  # 121db:
+  #   image: "postgres:9.6"
+  #   init: true
+  #   container_name: 121db
+  #   environment:
+  #     - POSTGRES_USER=global121
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  #     - POSTGRES_DB=global121
+  #   volumes:
+  #     - "./postgresql.conf:/etc/postgresql.conf"
+  #     - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+  #   ports:
+  #     - "5438:5432"
+  #   restart: always
+  #   networks:
+  #     pool_network:
+  #       ipv4_address: 11.0.0.6
+  # 121-service:
+  #   build: 
+  #     context: 121-service
+  #     dockerfile: Dockerfile
+  #   init: true
+  #   container_name: 121-service
+  #   volumes: 
+  #     - "./121-service:/home/121/services/121-service"
+  #   ports:
+  #     - "3000:3000"
+  #   stdin_open: true
+  #   tty: true
+  #   networks:
+  #     pool_network:
+  #       ipv4_address: 11.0.0.7
+  # PA-accounts-service:
+  #   build:
+  #     context: PA-accounts-service
+  #     dockerfile: Dockerfile
+  #   image: pa-accounts-node
+  #   init: true
+  #   container_name: PA-accounts-service
+  #   volumes:
+  #     - "./PA-accounts-service:/home/121/services/PA-accounts-service"
+  #   ports:
+  #     - "3001:3001"
+  #   stdin_open: true
+  #   tty: true
+  #   networks:
+  #     pool_network:
+  #       ipv4_address: 11.0.0.8
 
 networks:
   pool_network:
