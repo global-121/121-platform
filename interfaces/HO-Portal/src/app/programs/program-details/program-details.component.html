@@ -2,10 +2,18 @@
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
+      <ion-button type="button"
+                  fill="clear"
+                  shape="round"
+                  size="large"
+                  routerLink="/programs"
+                  routerDirection="back"
+      >
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>
-      <ion-icon name="arrow-round-back" [routerLink]="['/programs']"></ion-icon>
-      {{ 'page.programs.program-details.pageTitle'|translate }} - {{programTitle}}
+      {{ 'page.programs.program-details.pageTitle'|translate }}: {{ programTitle }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -17,12 +25,20 @@
       {{ 'page.programs.program-details.more'|translate }}
     </ion-button>
   </ion-item>
-  <ion-list *ngFor="let item of programArray" class="ion-padding">
+  <ion-list *ngFor="let item of programArray"
+            class="ion-padding"
+  >
       <ion-item *ngIf="!item.isArray">
-          <ion-label><strong>{{item.key}}:</strong> <pre>{{item.value | json}}</pre></ion-label>
-        </ion-item>
+        <ion-label>
+          <strong>{{ item.key }}:</strong>
+          <pre>{{ item.value | json }}</pre>
+        </ion-label>
+      </ion-item>
       <ion-item *ngIf="item.isArray">
-        <ion-label><strong>{{item.key}}:</strong> <pre>{{item.value | json}}</pre></ion-label>
+        <ion-label>
+          <strong>{{ item.key }}:</strong>
+          <pre>{{ item.value | json }}</pre>
+        </ion-label>
       </ion-item>
   </ion-list>
 </ion-content>
