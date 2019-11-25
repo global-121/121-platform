@@ -32,7 +32,6 @@ export class DataStorageService {
     userId: number,
     params,
   ): Promise<String> {
-    console.log(userId)
     const data = await this.dataStorageRepository.find({
       where: {
         userId: userId,
