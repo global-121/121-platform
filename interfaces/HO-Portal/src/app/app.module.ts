@@ -4,8 +4,6 @@ import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -15,8 +13,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { AuthService } from './auth/auth.service';
-import { AuthGuard } from './auth/auth.guard';
 import { ProgramsModule } from './programs/programs.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -45,9 +41,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateModule
   ],
   providers: [
-    StatusBar,
-    SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    {
+      provide: RouteReuseStrategy,
+      useClass: IonicRouteStrategy,
+    },
   ],
   bootstrap: [AppComponent]
 })
