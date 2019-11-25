@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ModalController, NavParams } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { Program } from 'src/app/models/program.model';
 
 @Component({
@@ -8,16 +8,13 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./program-modal.page.scss'],
 })
 export class ProgramModalPage {
-
   program: Program;
 
   constructor(
-    private modalController: ModalController,
-    private navParams: NavParams
+    private modalController: ModalController
   ) { }
 
   ionViewWillEnter() {
-    this.program = this.navParams.get('program');
   }
 
   async myDismiss() {

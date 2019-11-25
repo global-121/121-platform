@@ -17,6 +17,12 @@ const routes: Routes = [
     loadChildren: './home/home.module#HomePageModule',
     canActivate: [AuthGuard],
   },
+  {
+    path: 'help',
+    loadChildren: './help/help.module#HelpPageModule',
+    canActivate: [AuthGuard],
+  },
+
 ];
 
 @NgModule({

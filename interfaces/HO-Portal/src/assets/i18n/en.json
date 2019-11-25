@@ -1,7 +1,6 @@
 {
   "LOGIN": "Log in",
   "MENU": "Menu",
-  "HOME": "Home",
   "page": {
     "login": {
       "form": {
@@ -16,9 +15,12 @@
         }
       }
     },
+    "home": {
+      "pageTitle": "Home"
+    },
     "programs": {
       "program-list": {
-        "title": "All Programs"
+        "pageTitle": "All Programs"
       },
       "program-details": {
         "pageTitle": "Program details",
@@ -49,8 +51,21 @@
         "aidworkers": "Assigned aidworkers"
       },
       "program-modal": {
-        "title": "Program JSON"
+        "pageTitle": "Program JSON"
       }
+    },
+    "help": {
+      "pageTitle": "Help",
+      "user-manual": "User manual for HO-user",
+      "user-manual-content": "This is a user manual to help HO-users with all steps they can undertake in this HO-portal.",
+      "create-program-title": "Creating a Program",
+      "create-program-content1": "Creating a new program is currently unsupported in this interface. Instead a template-file must be filled in with all program properties, which can be submitted by an admin-user. Ask an admin-user for help both on getting the template and on submitting it.",
+      "create-program-content2": "Here follow some specific instructions for some of the program-properties:",
+      "create-program-distributionFrequency": "This specifies the frequency. Eligible values are 'week', 'month', 'quarter'.",
+      "create-program-fixedTransferValue": "This value should be an array-list, like the example in the template. The length of the list should coincide with the elsewhere listed 'distribution duration'. Each item of the list represents the transfer value per installment. Generally, this value is the same for each installment.",
+      "create-program-inclusionCalculationType": "This is either 'minimumScore' or 'highestScoresX', meaning respectively: a Person Affected must reach an absolute minimum score of (e.g.) 25 points (based on the answers to the inclusion-criteria), to be included; or the Persons Affected with the highest (e.g.) 250 scores are included. The example values of 25 and 250 are specified respectively in properties 'minimumScore' and 'highestScoresX'. Note that in the first option, a Person Affected can be notified immediately of his/her inclusion status. While in the second option, the inclusion-decision can only be made when all PA's are registered.",
+      "create-program-description": "Give here a short description of the program. Note that there are separate description-fields to tell sometihg more about 'Location' and 'Humanitarian Objective'.",
+      "create-program-descCashType": "This specifies both the conditionality and the purpose of the program. It must be one of the following values: 'Unconditional Multi-purpose', 'Conditional Multi-purpose', 'Unconditional Single-purpose', 'Conditional Single-purpose'."
     }
   }
 }
