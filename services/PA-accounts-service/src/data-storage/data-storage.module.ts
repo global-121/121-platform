@@ -26,8 +26,8 @@ export class DataStorageModule implements NestModule {
     consumer
       .apply(AuthMiddleware)
       .forRoutes(
+        { path: 'data-storage/:type', method: RequestMethod.GET },
         { path: 'data-storage', method: RequestMethod.POST },
-        { path: 'data-storage', method: RequestMethod.GET },
       );
   }
 }
