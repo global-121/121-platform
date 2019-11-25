@@ -154,7 +154,7 @@ class Service:
                 _, cred_def_json = await ledger.parse_get_cred_def_response(get_cred_def_response_json)
                 self._logger.debug(f'Credential Definition for id: {cred_def_id}: {_format_data(cred_def_json)}')
             except IndyError as e:
-                raise ServiceError('Failed to get Credental Definition') from e
+                raise ServiceError('Failed to get Credential Definition') from e
 
             try:
                 cred_request_json, cred_request_metadata_json = \
@@ -186,7 +186,7 @@ class Service:
                 get_cred_def_response_json = await ledger.submit_request(self._pool_handle, get_cred_def_request_json)
                 _, cred_def_json = await ledger.parse_get_cred_def_response(get_cred_def_response_json)
             except IndyError as e:
-                raise ServiceError('Failed to get Credental Definition') from e
+                raise ServiceError('Failed to get Credential Definition') from e
 
             try:
                 await anoncreds.prover_store_credential(wallet_handle=wallet_handle,
@@ -341,34 +341,45 @@ class Service:
 
         return wallet_handle
     async def backup_wallet(self, backup_file_storage_path,wallet_id, wallet_key):
-        wallet_export_config = {
+        try:
+            wallet_export_config = {
             "path": backup_file_storage_path,
             "key" : wallet_key
-        }
-        try:
+            }
             wallet_name = Service._wallet_name(wallet_id)
-            self._logger.debug(f'Creating backup for {wallet_name}')
+            self._logger.debug(f'Creating backup with config >>>')
+            self._logger.debug(json.dumps(wallet_export_config))
 
             wallet_handle = await self._open_wallet(wallet_name, wallet_key)
-            await wallet.export_wallet(self._wallet_handle,json.dumps(wallet_export_config))
+            await wallet.export_wallet(wallet_handle,json.dumps(wallet_export_config))
             self._logger.debug(f'Wallet backup created at {backup_file_storage_path}')
             return True
         except IndyError as e:
             self._logger.error(f'Failed to create backup of the wallet with config: {wallet_export_config}')
             raise ServiceError('Failed to create backup of wallet') from e
+        finally:
+            try:
+                await wallet.close_wallet(wallet_handle)
+            except IndyError as e:
+                self._logger.error(f'Failed to close wallet {wallet_name}: {e}')
         return False
 
-    async def restore_wallet(self, wallet_id, wallet_key, backup_file_storage_path):
+    async def restore_wallet(self, wallet_id, old_wallet_key, new_wallet_key, backup_file_storage_path):
         wallet_import_config = {
-            'path': backup_file_storage_path,
-            'key' : wallet_key
+        'path': backup_file_storage_path,
+        'key' : old_wallet_key
         }
         wallet_name = Service._wallet_name(wallet_id)
-        wallet_confg = (wallet_name, wallet_key, self._config.wallet_path)
+        wallet_config_json, wallet_credentials_json = \
+            _get_wallet_config_and_creds(wallet_name, new_wallet_key, self._config.wallet_path)
+        self._logger.debug(f'creating new wallet with config >>>')
+        self._logger.debug(wallet_config_json)
+        self._logger.debug(f'Restoring backup with config >>>')
+        self._logger.debug(json.dumps(wallet_import_config))
         try:
             await wallet.import_wallet(
-                json.dumps(wallet_confg),
-                json.dumps({"key":wallet_key}), 
+                wallet_config_json,
+                wallet_credentials_json, 
                 json.dumps(wallet_import_config)
                 )
             self._logger.debug(f'Wallet restored successfully!')

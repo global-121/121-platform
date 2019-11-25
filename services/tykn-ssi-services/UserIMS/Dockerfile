@@ -12,7 +12,7 @@ RUN apt-get install -y python3-virtualenv
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CE7709D068DB5E88
 RUN add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial stable"
-RUN apt-get update && apt-get install -y libindy=1.6.7
+RUN apt-get update && apt-get install -y libindy=1.9.0
 
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3.6 --version
@@ -23,7 +23,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 # RUN wget "https://raw.githubusercontent.com/hyperledger/indy-sdk/master/cli/docker_pool_transactions_genesis"
 
 ADD . .
-RUN ls -la && pwd
 # Install dependencies:
 RUN pip install -e .
 

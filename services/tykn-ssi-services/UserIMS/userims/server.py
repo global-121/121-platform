@@ -114,7 +114,8 @@ class Server:
         try:
             await self._service.create_wallet(wallet_id, wallet_key)
         except WalletAlreadyExists:
-            self._logger.error(f'Wallet already exists. Returning 200')
+            self._logger.error(f'Wallet already exists. Returning Bad Request')
+            raise web.HTTPBadRequest
         except ServiceError as e:
             self._logger.error(f'Failed to create wallet. Returning 500. Exception: {traceback.format_exc()}')
             raise web.HTTPInternalServerError
@@ -728,7 +729,7 @@ class Server:
               wallet_key)
 
       except ServiceError as e:
-            self._logger.error(f'Failed to craete backup. Returning 500. Exception: {traceback.format_exc()}')
+            self._logger.error(f'Failed to create backup. Returning 500. Exception: {traceback.format_exc()}')
             raise web.HTTPInternalServerError
 
 
@@ -757,7 +758,9 @@ class Server:
                   properties:
                     id:
                       type: string
-                    passKey:
+                    oldWalletPassKey:
+                      type: string
+                    newWalletPassKey:
                       type: string
               backupFileStoragePath:
                 type: string
@@ -783,7 +786,7 @@ class Server:
           self._logger.error(f'Failed to get request body: {e}')
           raise web.HTTPInternalServerError from e
 
-      self._logger.debug(f'Got request to create wallet backup. Content: {request_content}')
+      self._logger.debug(f'Got request to restore wallet backup. Content: {request_content}')
       try:
           request_data = json.loads(request_content)
       except ValueError as e:
@@ -794,7 +797,8 @@ class Server:
       try:
           wallet = request_data['wallet']
           wallet_id = wallet['id']
-          wallet_key = wallet['passKey']
+          old_wallet_key = wallet['oldWalletPassKey']
+          new_wallet_key = wallet['newWalletPassKey']
           backup_file_storage_path = request_data['backupFileStoragePath']
       except KeyError as e:
           self._logger.error(f'Missing request field {e}')
@@ -803,8 +807,13 @@ class Server:
       if not isinstance(backup_file_storage_path, str):
             raise web.HTTPBadRequest
 
-      if not isinstance(wallet_key, str):
-            raise web.HTTPBadRequest
+      if not isinstance(old_wallet_key, str):
+          self._logger.error(f'Invalid wallet key field oldWalletPassKey: {old_wallet_key}')
+          raise web.HTTPBadRequest
+
+      if not isinstance(new_wallet_key, str):
+          self._logger.error(f'Invalid wallet key field newWalletPassKey: {new_wallet_key}')
+          raise web.HTTPBadRequest
 
       if not isinstance(wallet_id, str):
             raise web.HTTPBadRequest
@@ -812,11 +821,12 @@ class Server:
       try:
             operation_result = await self._service.restore_wallet(
               wallet_id,
-              wallet_key,
+              old_wallet_key,
+              new_wallet_key,
               backup_file_storage_path)
 
       except ServiceError as e:
-            self._logger.error(f'Failed to craete backup. Returning 500. Exception: {traceback.format_exc()}')
+            self._logger.error(f'Failed to create backup. Returning 500. Exception: {traceback.format_exc()}')
             raise web.HTTPInternalServerError
 
 

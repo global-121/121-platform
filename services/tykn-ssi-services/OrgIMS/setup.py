@@ -6,7 +6,7 @@ setup(
     packages=['orgims'],
     install_requires=[
         'aiohttp',
-        'python3-indy==1.6.7',
+        'python3-indy==1.9.0',
         'aiohttp_swagger'
     ],
     url='',
