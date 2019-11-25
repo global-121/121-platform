@@ -39,10 +39,9 @@ export class DataStorageService {
       },
       order: { created: "DESC" }
     });
-    console.log(data);
-    if (!data) {
+    if (!data || data.length === 0 ) {
       const errors = { Data: ' not found' };
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, 404);
     }
     return JSON.stringify(data[0].data);
   }
