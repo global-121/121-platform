@@ -9,6 +9,9 @@ import { ProgramsRoutingModule } from './programs-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
+  entryComponents: [
+    ProgramJsonComponent
+  ],
   declarations: [
     ProgramListComponent,
     ProgramDetailsComponent,
