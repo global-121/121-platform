@@ -388,5 +388,22 @@ class Service:
             self._logger.error(f'Failed to retore wallet from backup with config: {wallet_import_config}')
             raise ServiceError('Failed to restore wallet from backup') from e
         return False
+    
+    async def delete_wallet(self, wallet_id, wallet_key):
+        wallet_name = Service._wallet_name(wallet_id)
+        wallet_config_json, wallet_credentials_json = \
+            _get_wallet_config_and_creds(wallet_name, wallet_key, self._config.wallet_path)
+            
+        try:
+            await wallet.delete_wallet(
+                wallet_config_json,
+                wallet_credentials_json
+                )
+            self._logger.debug(f'Wallet deleted successfully!')
+            return True
+        except IndyError as e:
+            raise ServiceError('Failed to delete wallet') from e
+        return False
+
 def _format_data(data):
     return pprint.pformat(json.loads(data))
