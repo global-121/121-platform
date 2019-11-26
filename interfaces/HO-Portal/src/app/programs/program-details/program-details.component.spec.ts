@@ -1,11 +1,17 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ModalController, NavParams } from '@ionic/angular';
 
 import { ProgramDetailsComponent } from './program-details.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ProgramModalPageModule } from '../program-modal/program-modal.module';
+
+const modalSpy = jasmine.createSpyObj('Modal', ['present']);
+const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+modalCtrlSpy.create.and.callFake(() => {
+  return modalSpy;
+});
 
 describe('ProgramDetailsComponent', () => {
   let component: ProgramDetailsComponent;
@@ -19,10 +25,15 @@ describe('ProgramDetailsComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
-        HttpClientTestingModule,
-        ProgramModalPageModule
+        HttpClientTestingModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ModalController,
+          useValue: modalCtrlSpy
+        },
+      ]
     })
       .compileComponents();
   }));
