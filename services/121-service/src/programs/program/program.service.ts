@@ -111,6 +111,7 @@ export class ProgramService {
     program.minimumScore = programData.minimumScore;
     program.highestScoresX = programData.highestScoresX;
     program.meetingDocuments = programData.meetingDocuments;
+    program.notifications = programData.notifications;
     program.description = programData.description;
     program.descLocation = programData.descLocation;
     program.descHumanitarianObjective = programData.descHumanitarianObjective;
@@ -130,18 +131,27 @@ export class ProgramService {
       program.customCriteria.push(customReturn);
     }
     for (let item of programData.financialServiceProviders) {
-      let fsp = await this.financialServiceProviderRepository.find({
+      let fsp = await this.financialServiceProviderRepository.findOne({
         relations: ['program'],
         where: { id: item.id },
-      })[0];
+      });
+      if (!fsp) {
+        const errors = `No fsp found with id ${item.id}`;
+        throw new HttpException({ errors }, 404);
+      }
       fsp.program.push(program);
       await this.financialServiceProviderRepository.save(fsp);
     }
     for (let item of programData.protectionServiceProviders) {
-      let psp = await this.protectionServiceProviderRepository.find({
+      console.log('item: ', item);
+      let psp = await this.protectionServiceProviderRepository.findOne({
         relations: ['program'],
         where: { id: item.id },
-      })[0];
+      });
+      if (!psp) {
+        const errors = `No psp found with id ${item.id}`;
+        throw new HttpException({ errors }, 404);
+      }
       psp.program.push(program);
       await this.protectionServiceProviderRepository.save(psp);
     }
