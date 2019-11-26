@@ -34,8 +34,12 @@ export class UserService {
         .createHmac('sha256', loginUserDto.password)
         .digest('hex'),
     };
-
-    return await this.userRepository.findOne(findOneOptions);
+    const user = await getRepository(UserEntity)
+    .createQueryBuilder()
+    .addSelect('password')
+    .where(findOneOptions)
+    .getOne()
+    return user;
   }
 
   public async create(dto: CreateUserDto): Promise<UserRO> {

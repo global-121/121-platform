@@ -35,6 +35,7 @@ const newProgramParameters = {
   highestScoresX: 500,
   meetingDocuments: JSON.parse('{"en": "documents"}'),
   customCriteria: [],
+  notifications: JSON.parse('{}')
 };
 
 const newSimpleProgramRO = {

@@ -25,7 +25,7 @@ export class UserEntity {
   @IsEmail()
   public email: string;
 
-  @Column()
+  @Column({ select: false })
   public password: string;
 
   @Column()
