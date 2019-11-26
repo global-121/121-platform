@@ -1,24 +1,23 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalController, NavParams } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 
-import { ProgramModalPage } from './program-modal.page';
+import { ProgramJsonComponent } from './program-json.component';
 import { TranslateModule } from '@ngx-translate/core';
 
-describe('ProgramModalPage', () => {
-  let component: ProgramModalPage;
-  let fixture: ComponentFixture<ProgramModalPage>;
+const modalSpy = jasmine.createSpyObj('Modal', ['present']);
+const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
+modalCtrlSpy.create.and.callFake(() => {
+  return modalSpy;
+});
 
-  const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-  const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-  modalCtrlSpy.create.and.callFake(() => {
-    return modalSpy;
-  });
-  const navParamsMock = new NavParams({ data: 'foo' });
+describe('ProgramJsonComponent', () => {
+  let component: ProgramJsonComponent;
+  let fixture: ComponentFixture<ProgramJsonComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ProgramModalPage],
+      declarations: [ProgramJsonComponent],
       imports: [
         TranslateModule.forRoot(),
       ],
@@ -28,17 +27,13 @@ describe('ProgramModalPage', () => {
           provide: ModalController,
           useValue: modalCtrlSpy
         },
-        {
-          provide: NavParams,
-          useValue: navParamsMock
-        }
       ]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProgramModalPage);
+    fixture = TestBed.createComponent(ProgramJsonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
