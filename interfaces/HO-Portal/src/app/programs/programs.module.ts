@@ -3,20 +3,20 @@ import { CommonModule } from '@angular/common';
 
 import { ProgramListComponent } from './program-list/program-list.component';
 import { ProgramDetailsComponent } from './program-details/program-details.component';
+import { ProgramJsonComponent } from './program-json/program-json.component';
 
 import { ProgramsRoutingModule } from './programs-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { ProgramModalPageModule } from './program-modal/program-modal.module';
 
 @NgModule({
   declarations: [
     ProgramListComponent,
-    ProgramDetailsComponent
+    ProgramDetailsComponent,
+    ProgramJsonComponent
   ],
   imports: [
     CommonModule,
     ProgramsRoutingModule,
-    ProgramModalPageModule,
     TranslateModule.forChild()
   ],
   schemas: [

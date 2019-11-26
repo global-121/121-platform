@@ -3,9 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Program } from 'src/app/models/program.model';
 import { ModalController } from '@ionic/angular';
-import { ProgramModalPage } from '../program-modal/program-modal.page';
-import { OverlayEventDetail } from '@ionic/core';
 import { TranslateService } from '@ngx-translate/core';
+import { ProgramJsonComponent } from '../program-json/program-json.component';
 
 @Component({
   selector: 'app-program-details',
@@ -53,13 +52,11 @@ export class ProgramDetailsComponent implements OnInit {
 
 
   public generateArray(obj) {
-    const result = [];
-    for (const key in obj) {
-      if (this.techFeatures.indexOf(key) <= -1) {
-
+    return Object.keys(obj)
+      .filter((key) => this.techFeatures.indexOf(key) <= -1)
+      .map((key) => {
         const keyNew = this.translate.instant('page.programs.program-details.' + key);
         const valueNew = this.mapLabelByLanguageCode(obj[key]);
-
         let isArray = false;
         if (valueNew instanceof Array) {
           if (typeof valueNew[0] === 'object') {
@@ -67,10 +64,8 @@ export class ProgramDetailsComponent implements OnInit {
             // Enter code here to visualize array-properties (like Criteria/Aidworkers) differently
           }
         }
-        result.push(({ key: keyNew, value: valueNew, isArray }));
-      }
-    }
-    return result;
+        return ({ key: keyNew, value: valueNew, isArray });
+      });
   }
 
   private mapLabelByLanguageCode(property: any) {
@@ -87,20 +82,14 @@ export class ProgramDetailsComponent implements OnInit {
     return label;
   }
 
-  async openModal() {
+  async openProgramJson() {
     const modal: HTMLIonModalElement =
       await this.modalController.create({
-        component: ProgramModalPage,
+        component: ProgramJsonComponent,
         componentProps: {
           program: this.program,
         }
       });
-
-    modal.onDidDismiss().then((detail: OverlayEventDetail) => {
-      if (detail !== null) {
-        console.log('The result:', detail.data);
-      }
-    });
 
     await modal.present();
   }
