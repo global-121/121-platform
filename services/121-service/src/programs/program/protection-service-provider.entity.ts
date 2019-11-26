@@ -2,7 +2,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
+  ManyToMany,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 
@@ -14,6 +14,6 @@ export class ProtectionServiceProviderEntity {
   @Column()
   public psp: string;
 
-  @ManyToOne(_type => ProgramEntity, program => program.protectionServiceProviders)
+  @ManyToMany(_type => ProgramEntity, program => program.protectionServiceProviders)
   public program: ProgramEntity[];
 }

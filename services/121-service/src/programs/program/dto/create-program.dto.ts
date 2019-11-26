@@ -111,6 +111,20 @@ export class CreateProgramDto {
   public readonly meetingDocuments: JSON;
 
   @ApiModelProperty({
+    example: {
+      en: {
+        included: "You have been included in this program please wait for further instructions",
+        excluded: "Unfortunately you have not been included for this program"
+      },
+      nl: {
+        included: "Je zit wel in het programma",
+        excluded: "Je zit niet in het programma"
+      },
+    }
+  })
+  public readonly notifications: JSON;
+
+  @ApiModelProperty({
     example: [
       {
         criterium: 'nr_of_children',
