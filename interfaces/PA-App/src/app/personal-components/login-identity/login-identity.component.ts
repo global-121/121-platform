@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
   selector: 'app-login-identity',
@@ -54,16 +53,19 @@ export class LoginIdentityComponent extends PersonalComponent {
   public async submitLoginCredentials(username: string, password: string) {
     console.log('submitCredentials()', username, password);
 
+    this.conversationService.startLoading();
+
     await this.paData.login(username, password).then(
-      async () => {
+      () => {
         this.incorrectCredentials = false;
         this.isInProgress = true;
-        this.conversationService.startLoading();
-        // Here goes something that retrieves up-to-date conversation-history??
-        this.conversationService.stopLoading();
+        this.isDisabled = true;
         this.complete();
+        this.conversationService.restoreAfterLogin();
       },
       (error) => {
+        this.conversationService.stopLoading();
+
         if (error.status === 401) {
           this.incorrectCredentials = true;
           console.log('Incorrect credentials: ', error.status);
@@ -76,19 +78,11 @@ export class LoginIdentityComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    // Here goes something that you move to end of up-to-date conversation history??
-    return PersonalComponents.initialNeeds;
+    // The next-section will be defined by the retrieved conversationHistory, not here.
+    return '';
   }
 
   complete() {
-    this.isDisabled = true;
-    this.conversationService.onSectionCompleted({
-      name: PersonalComponents.loginIdentity,
-      data: {
-        username: this.username,
-        password: '****************',
-      },
-      next: this.getNextSection(),
-    });
+    // This section doesn't really need to 'completed', as it will be replaced by the state from history.
   }
 }
