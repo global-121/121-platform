@@ -132,6 +132,17 @@ export class ConversationService {
     this.history.pop();
     this.paData.store(this.paData.type.conversationHistory, this.history, true);
   }
+
+  public debugFillHistory() {
+    const fillWith = window.prompt('Fill history with:', JSON.stringify(this.history));
+
+    if (!fillWith) {
+      return;
+    }
+
+    this.history = JSON.parse(fillWith);
+    this.paData.store(this.paData.type.conversationHistory, this.history);
+  }
 }
 
 export class ConversationSection {
