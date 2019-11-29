@@ -119,8 +119,9 @@ export class PaDataService {
     return new Promise((resolve, reject) => {
       this.paAccountApi.login(username, password)
       .then(
-        (response) => {
+        async (response) => {
           console.log('PaData: login successful', response);
+          this.ionStorage.clear();
           this.setLoggedIn();
           return resolve(response);
         },
@@ -152,7 +153,7 @@ export class PaDataService {
       return;
     }
 
-    this.authenticationStateSource.next(true);
+    this.setLoggedIn();
   }
 
   public logout() {
@@ -162,8 +163,8 @@ export class PaDataService {
 
     console.log('PaData: logout()');
     this.jwtService.destroyToken();
-    this.setLoggedOut();
     this.ionStorage.clear();
+    this.setLoggedOut();
   }
 
 }

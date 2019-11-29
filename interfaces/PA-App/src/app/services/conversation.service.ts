@@ -17,8 +17,11 @@ export class ConversationService {
 
   private conversation: ConversationSection[] = [];
 
-  private sectionCompletedSource = new Subject<string>();
-  public sectionCompleted$ = this.sectionCompletedSource.asObservable();
+  private updateConversationSource = new Subject<string>();
+  public updateConversation$ = this.updateConversationSource.asObservable();
+  public conversationActions = {
+    afterLogin: 'after-login',
+  };
 
   private shouldScrollSource = new Subject<number>();
   public shouldScroll$ = this.shouldScrollSource.asObservable();
@@ -58,7 +61,7 @@ export class ConversationService {
   }
 
   private async getHistory() {
-    let history = await this.paData.retrieve(this.paData.type.conversationHistory, true);
+    let history = await this.paData.retrieve(this.paData.type.conversationHistory);
 
     if (!history) {
       history = [];
@@ -72,6 +75,9 @@ export class ConversationService {
   }
 
   private replayHistory() {
+    // Always start with a clean slate:
+    this.conversation = [];
+
     this.history.forEach((section: ConversationSection, index: number) => {
       this.addSection(section.name, section.moment, section.data);
 
@@ -83,6 +89,7 @@ export class ConversationService {
   }
 
   private startNewConversation() {
+    this.conversation = [];
     this.addSection(PersonalComponents.selectLanguage);
   }
 
@@ -97,8 +104,6 @@ export class ConversationService {
   }
 
   private storeSection(section: ConversationSection) {
-    console.log('storeSection()');
-
     this.history.push(section);
 
     this.paData.store(this.paData.type.conversationHistory, this.history);
@@ -115,8 +120,12 @@ export class ConversationService {
 
     // Instruct PersonalPage to insert the next section
     if (section.next) {
-      this.sectionCompletedSource.next(section.next);
+      this.updateConversationSource.next(section.next);
     }
+  }
+
+  public async restoreAfterLogin() {
+    this.updateConversationSource.next(this.conversationActions.afterLogin);
   }
 
   public debugUndoLastStep() {
