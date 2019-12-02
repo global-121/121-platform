@@ -1,3 +1,4 @@
+import { DataStorageEntity } from './../data-storage/data-storage.entity';
 import { UserService } from './user.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from './user.entity';
@@ -33,6 +34,10 @@ describe('User service', (): void => {
           UserService,
           {
             provide: getRepositoryToken(UserEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(DataStorageEntity),
             useFactory: repositoryMockFactory,
           },
         ],

@@ -9,9 +9,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 import { AuthMiddleware } from './auth.middleware';
+import { DataStorageModule } from '../data-storage/data-storage.module';
+import { DataStorageEntity } from '../data-storage/data-storage.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity])],
+  imports: [
+    TypeOrmModule.forFeature([DataStorageEntity, UserEntity]),
+  ],
   providers: [UserService],
   controllers: [UserController],
   exports: [UserService],

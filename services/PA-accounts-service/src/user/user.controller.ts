@@ -5,6 +5,7 @@ import {
   Controller,
   UsePipes,
   HttpStatus,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
@@ -13,11 +14,8 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { User } from './user.decorator';
 import { ValidationPipe } from '../shared/pipes/validation.pipe';
 
-import {
-  ApiUseTags,
-  ApiBearerAuth,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiUseTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { DeleteUserDto } from './dto/delete-user.dts';
 
 @ApiUseTags('user')
 @Controller()
@@ -70,4 +68,13 @@ export class UserController {
     return await this.userService.findByUsername(username);
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({ title: 'Delete current user and storage' })
+  @Delete('user')
+  public async deleteAccount(
+    @User('id') userId: number,
+    @Body() passwordData: DeleteUserDto,
+  ): Promise<void> {
+    return await this.userService.deleteAccount(userId, passwordData);
+  }
 }
