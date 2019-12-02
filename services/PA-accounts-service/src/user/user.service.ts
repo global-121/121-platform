@@ -11,12 +11,16 @@ import { HttpStatus } from '@nestjs/common';
 import * as crypto from 'crypto';
 
 import jwt = require('jsonwebtoken');
+import { DeleteUserDto } from './dto/delete-user.dts';
+import { DataStorageEntity } from '../data-storage/data-storage.entity';
 
 
 @Injectable()
 export class UserService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
+  @InjectRepository(DataStorageEntity)
+  private readonly dataStorageRepository: Repository<DataStorageEntity>;
 
   public constructor() { }
 
@@ -78,9 +82,31 @@ export class UserService {
     return this.buildUserRO(updatedUser);
   }
 
+  public async deleteAccount(id: number, passwordData: DeleteUserDto): Promise<void> {
+    const findOneOptions = {
+      id: id,
+    };
+    const user = await this.userRepository.findOne(findOneOptions)
+    if (!user) {
+      const errors = 'User not found or already deleted';
+      throw new HttpException({ errors }, 400)
+    }
+
+    const hashedpassword = crypto.createHmac('sha256', passwordData.password).digest('hex')
+    if (user.password !== hashedpassword) {
+      const errors = 'Password for user is incorrect';
+      throw new HttpException({ errors }, 400)
+    }
+    await this.dataStorageRepository.delete(
+      {
+        userId: user.id,
+      }
+    );
+    await this.userRepository.delete(user.id);
+  }
+
   public async findById(id: number): Promise<UserRO> {
     const user = await this.userRepository.findOne(id);
-
     if (!user) {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, 401);
