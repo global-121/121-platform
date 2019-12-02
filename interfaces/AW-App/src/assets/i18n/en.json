@@ -45,10 +45,12 @@
       "main-menu": "Back to main menu"
     },
     "validate-program": {
-      "introduction": "Below you see the PA's information for the specific program. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",
-      "postpone-button": "Postpone verification",
+      "introduction": "Below you see the PA's information for the specific program. Check it with the PA, adapt where necessary, and confirm.",
+      "submit": "Submit answers",
+      "dob-feedback": "The date of birth does not have a valid format. Please adjust and save again.",
+      "please-confirm": "Below is an overview of the PA's information. Please confirm and submit.",
+      "change": "Change information",
       "confirm-button": "Issue Program Credential",
-      "refresh-button": "Refresh information",
       "conclusion": "The Program credential has been created. As such there is no need, and thus no possibility, for you to see the PA's personal information any more here."
     }
   },

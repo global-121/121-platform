@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
+import { Program } from '../models/program.model';
+
 import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
@@ -57,6 +59,17 @@ export class ProgramsServiceApiService {
       tap(response => console.log('response: ', response)),
       map(response => response)
     );
+  }
+
+  getProgramById(programId: number): Promise<Program> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      '/programs/' + programId
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    )
+      .toPromise();
   }
 
   getAppointments(): Observable<any> {

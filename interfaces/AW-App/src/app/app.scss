@@ -21,3 +21,12 @@
   left: 0;
   right: 0;
 }
+
+
+// ----------------------------------------------------------------------------
+
+// Override default styles to emphasize where to input
+ion-input .native-input,
+ion-textarea .native-textarea {
+  background-color: #DFE5FE !important;
+}
