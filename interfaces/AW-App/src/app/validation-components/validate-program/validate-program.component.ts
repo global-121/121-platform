@@ -44,6 +44,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   public getPrefilledAnswersProgram() {
     this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
       this.answersProgram = response;
+      this.initialAnswers(this.answersProgram);
       this.verificationPostponed = false;
       this.ionContent.scrollToBottom(300);
     });
