@@ -59,6 +59,7 @@ services:
     links:
       - indypool
       - tyknims
+    restart: on-failure
   userims:
     build: 
       context: tykn-ssi-services/UserIMS 
