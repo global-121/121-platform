@@ -11,9 +11,7 @@
       >
         <ion-label>{{answer.attribute}}: <strong>{{answer.answer}}</strong></ion-label>
       </ion-item>
-    </ion-list>
-    <ion-button expand="block" (click)="postponeVerification()">{{ 'validation.validate-program.postpone-button'|translate }}</ion-button>
-    <ion-button expand="block" (click)="issueCredential()">{{ 'validation.validate-program.confirm-button'|translate }}</ion-button>
+                  [disabled]="hasAnswered || !allQuestionsAnswered"
   </dialogue-turn>
   <dialogue-turn actor="self" [hidden]="!programCredentialIssued">
     {{ 'validation.validate-program.conclusion'|translate }}

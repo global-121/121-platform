@@ -41,6 +41,15 @@ export class ValidateProgramComponent implements ValidationComponent {
     });
   }
 
+  private checkAllQuestionsAnswered(answers) {
+    for (const key in answers) {
+      if (answers[key].value === '') {
+        this.allQuestionsAnswered = false;
+        return;
+      }
+    }
+    this.allQuestionsAnswered = true;
+  }
   public getPrefilledAnswersProgram() {
     this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
       this.answersProgram = response;
