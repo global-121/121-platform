@@ -3,19 +3,120 @@
   <dialogue-turn>
     {{ 'validation.validate-program.introduction'|translate }}
   </dialogue-turn>
-  <dialogue-turn actor="self" [hidden]="!answersProgram">
-    <ion-button [hidden]="!verificationPostponed" expand="block" (click)="getPrefilledAnswersProgram()">{{ 'validation.validate-program.refresh-button'|translate }}</ion-button>
-    <ion-list>
-      <ion-item *ngFor="let answer of answersProgram"
-                class="ion-no-padding ion-text-wrap"
+  <dialogue-turn actor="self"
+                 *ngFor="let question of questions; let i=index; first as isFirst;"
+                [isConnected]="!isFirst"
+                [isSpoken]="isFirst || hasAnswered || changedAnswers"
+  >
+    <ion-label>
+      {{ question.label }}
+    </ion-label>
+    <div [ngSwitch]="question.answerType">
+      <div *ngSwitchCase="answerTypes.Enum">
+        <ion-radio-group [name]="question.code"
+                         (ionChange)="changeAnswers($event)"
+        >
+          <ion-item *ngFor="let option of question.options"
+                    color="light"
+          >
+            <ion-label>{{ option.label }}</ion-label>
+            <ion-radio [value]="option.value"
+                       [checked]="(option.value === answers[question.code]?.value)"
+                       [disabled]="hasAnswered"
+            ></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </div>
+      <div *ngSwitchCase="answerTypes.Number">
+        <ion-input type="number"
+                   inputmode="numeric"
+                   pattern="[0-9]*"
+                   [name]="question.code"
+                   (input)="inputAnswers($event)"
+                   (change)="changeAnswers($event)"
+                   [value]="answers[question.code]?.value"
+                   [disabled]="hasAnswered"
+        ></ion-input>
+      </div>
+      <div *ngSwitchCase="answerTypes.Date">
+        <ion-input type="date"
+                   placeholder="dd-mm-yyyy"
+                   [name]="question.code"
+                   (change)="changeAnswers($event)"
+                   [value]="answers[question.code]?.value"
+                   [disabled]="hasAnswered"
+        ></ion-input>
+      </div>
+      <div *ngSwitchDefault>
+        <ion-input type="text"
+                   [name]="question.code"
+                   (input)="inputAnswers($event)"
+                   (change)="changeAnswers($event)"
+                   [value]="answers[question.code]?.value"
+                   [disabled]="hasAnswered"
+        ></ion-input>
+      </div>
+    </div>
+  </dialogue-turn>
+  <dialogue-turn actor="self"
+                 isConnected="true"
+                 *ngIf="!programCredentialIssued"
+  >
+    <p>
+      <ion-button type="submit"
+                  (click)="submit()"
+                  [disabled]="hasAnswered || !allQuestionsAnswered"
+                  expand="block"
       >
-        <ion-label>{{answer.attribute}}: <strong>{{answer.answer}}</strong></ion-label>
-      </ion-item>
-    </ion-list>
-    <ion-button expand="block" (click)="postponeVerification()">{{ 'validation.validate-program.postpone-button'|translate }}</ion-button>
-    <ion-button expand="block" (click)="issueCredential()">{{ 'validation.validate-program.confirm-button'|translate }}</ion-button>
+        {{ 'validation.validate-program.submit'|translate }}
+      </ion-button>
+    </p>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="dobFeedback"
+                 [isSpoken]="dobFeedback"
+  >
+    <p>
+      {{ 'validation.validate-program.dob-feedback'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="hasAnswered && !programCredentialIssued"
+                 [isSpoken]="hasAnswered"
+  >
+    <p>
+      {{ 'validation.validate-program.please-confirm'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn actor="self"
+                 *ngIf="hasAnswered && !programCredentialIssued"
+                 [isSpoken]="hasAnswered"
+  >
+    <ul>
+      <li *ngFor="let question of questions">
+        {{ question.label }}<br>
+        <strong>{{ answers[question.code]?.label }}</strong>
+      </li>
+    </ul>
+
+    <p class="ion-margin-top">
+      <ion-button type="submit"
+                  (click)="issueCredential()"
+                  [disabled]="isDisabled"
+                  expand="block"
+      >
+        {{ 'validation.validate-program.confirm-button'|translate }}
+      </ion-button>
+      <ion-button type="button"
+                  (click)="change()"
+                  [disabled]="isDisabled"
+                  expand="block"
+                  fill="outline"
+      >
+        {{ 'validation.validate-program.change'|translate }}
+      </ion-button>
+    </p>
   </dialogue-turn>
   <dialogue-turn actor="self" [hidden]="!programCredentialIssued">
     {{ 'validation.validate-program.conclusion'|translate }}
   </dialogue-turn>
+
 </section>
