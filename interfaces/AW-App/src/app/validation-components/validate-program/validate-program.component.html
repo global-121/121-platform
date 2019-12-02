@@ -12,6 +12,8 @@
         <ion-label>{{answer.attribute}}: <strong>{{answer.answer}}</strong></ion-label>
       </ion-item>
                   [disabled]="hasAnswered || !allQuestionsAnswered"
+  <dialogue-turn *ngIf="hasAnswered && !programCredentialIssued"
+                 *ngIf="hasAnswered && !programCredentialIssued"
   </dialogue-turn>
   <dialogue-turn actor="self" [hidden]="!programCredentialIssued">
     {{ 'validation.validate-program.conclusion'|translate }}

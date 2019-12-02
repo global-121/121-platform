@@ -69,6 +69,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     });
     this.programCredentialIssued = true;
     this.answersProgram = null;
+    this.answers = {};
     this.resetParams();
     this.complete();
   }
