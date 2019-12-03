@@ -49,24 +49,29 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
 
-    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedDid).then(data => {
-      const jsonData = JSON.parse(data);
-      this.did = jsonData.did;
-      this.programId = jsonData.programId;
-      this.getProgramQuestionsAndAnswers();
+    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedDid).then(async data => {
+      this.handleScannedData(data);
+      await this.getProgramQuestionsAndAnswers();
       this.sessionStorageService.destroyItem(this.sessionStorageService.type.scannedDid);
     });
   }
 
-  private async getProgramQuestionsAndAnswers() {
-    this.currentProgram = await this.programsService.getProgramById(this.programId);
-    await this.prepareProgramDetails(this.currentProgram);
-    this.getPrefilledAnswersProgram();
+  private handleScannedData(data: string) {
+    const jsonData = JSON.parse(data);
 
+    this.did = jsonData.did;
+    this.programId = jsonData.programId;
   }
 
-  public async prepareProgramDetails(program: Program) {
-    this.questions = this.buildQuestions(program.customCriteria);
+  private async getProgramQuestionsAndAnswers() {
+    this.currentProgram = await this.programsService.getProgramById(this.programId);
+    this.questions = this.buildQuestions(this.currentProgram.customCriteria);
+
+    this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
+      this.initialAnswers(response);
+      this.verificationPostponed = false;
+      this.ionContent.scrollToBottom(300);
+    });
   }
 
   private buildQuestions(customCriteria: Program['customCriteria']) {
@@ -140,8 +145,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.answers[questionCode] = new Answer();
   }
 
-  public async buildAnswers(questionCode: string, answerValue: string) {
-
+  private buildAnswers(questionCode: string, answerValue: string) {
     const question = this.getQuestionByCode(questionCode);
     const answer: Answer = {
       code: questionCode,
@@ -155,18 +159,15 @@ export class ValidateProgramComponent implements ValidationComponent {
     }
 
     this.answers[questionCode] = answer;
-
   }
 
-
-  public async changeAnswers($event) {
+  public changeAnswers($event) {
     const questionCode = $event.target.name;
     const answerValue = $event.target.value;
 
-    await this.buildAnswers(questionCode, answerValue);
+    this.buildAnswers(questionCode, answerValue);
 
     this.checkAllQuestionsAnswered(this.answers);
-
   }
 
   public initialAnswers(answers) {
@@ -200,31 +201,15 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.dobFeedback = false;
   }
 
-  public getPrefilledAnswersProgram() {
-    this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
-      this.initialAnswers(response);
-      this.verificationPostponed = false;
-      this.ionContent.scrollToBottom(300);
-    });
-  }
-
   public postponeVerification() {
     this.verificationPostponed = true;
   }
 
-  public async issueCredential() {
-    await this.programsService.issueCredential(this.did, this.programId).subscribe(response => {
-      console.log('response: ', response);
-    });
-    this.programCredentialIssued = true;
-    this.answers = {};
-    this.resetParams();
-    this.complete();
-  }
-
-  resetParams() {
-    this.router.navigate([], {
-      queryParams: {},
+  public issueCredential() {
+    this.programsService.issueCredential(this.did, this.programId).subscribe(() => {
+      this.programCredentialIssued = true;
+      this.answers = {};
+      this.complete();
     });
   }
 

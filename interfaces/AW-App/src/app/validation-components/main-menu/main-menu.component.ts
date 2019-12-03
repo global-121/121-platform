@@ -24,17 +24,10 @@ export class MainMenuComponent implements ValidationComponent {
   ) { }
 
   ngOnInit() {
-    this.resetParams();
     this.menuOptions = [
       { id: 'view-appointments', option: this.customTranslateService.translate('validation.main-menu.menu-option1'), disabled: false },
       { id: 'scan-qr', option: this.customTranslateService.translate('validation.main-menu.menu-option2'), disabled: false },
     ];
-  }
-
-  resetParams() {
-    this.router.navigate([], {
-      queryParams: {},
-    });
   }
 
   private storeOption(optionChoice: any) {
