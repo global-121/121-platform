@@ -1,3 +1,4 @@
+import { DidDto } from './dto/did.dto';
 import { CreateConnectionService } from './create-connection.service';
 import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import {
@@ -36,6 +37,15 @@ export class CreateConnectionController {
     @Body() didVerMeta: ConnectionReponseDto,
   ): Promise<ConnectionEntity> {
     return await this.createConnectionService.create(didVerMeta);
+  }
+
+  @ApiOperation({ title: 'Delete connection' })
+  @ApiResponse({ status: 200, description: 'Deleted connection' })
+  @Post('/delete')
+  public async delete(
+    @Body() didObject: DidDto,
+  ): Promise<void> {
+    return await this.createConnectionService.delete(didObject);
   }
 
   @ApiOperation({ title: 'Set phone number' })
