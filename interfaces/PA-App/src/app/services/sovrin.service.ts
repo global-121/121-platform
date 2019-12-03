@@ -40,7 +40,7 @@ export class SovrinService {
     console.log('SovrinService: initialSovrinSetup()');
 
     Global121.Indy.setup()
-    .then(this.sdkSuccessHandler, this.sdkErrorHandler);
+      .then(this.sdkSuccessHandler, this.sdkErrorHandler);
   }
 
   private toDoSDK(message: string): Promise<any> {
@@ -65,12 +65,12 @@ export class SovrinService {
       await Global121.Indy.createWallet({
         password: wallet.passKey,
       })
-      .then(this.sdkSuccessHandler, this.sdkErrorHandler);
+        .then(this.sdkSuccessHandler, this.sdkErrorHandler);
       console.log('SDK: createMasterSecret');
       return Global121.Indy.createMasterSecret({
         password: wallet.passKey,
       })
-      .then(this.sdkSuccessHandler, this.sdkErrorHandler);
+        .then(this.sdkSuccessHandler, this.sdkErrorHandler);
     }
 
     return this.userImsApi.createWallet(wallet);
@@ -138,6 +138,20 @@ export class SovrinService {
 
     return this.userImsApi.getProofFromWallet(
       proofRequest,
+      wallet,
+    );
+  }
+
+  deleteWallet(
+    wallet: Wallet,
+  ): Promise<any> {
+    console.log('SovrinService : deleteWallet()');
+
+    if (this.useLocalStorage) {
+      return this.toDoSDK('SDK: deleteWallet');
+    }
+
+    return this.userImsApi.deleteWallet(
       wallet,
     );
   }

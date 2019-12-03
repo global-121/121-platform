@@ -115,22 +115,21 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
-    console.log('PaData: login()');
     return new Promise((resolve, reject) => {
       this.paAccountApi.login(username, password)
-      .then(
-        async (response) => {
-          console.log('PaData: login successful', response);
-          this.ionStorage.clear();
-          this.setLoggedIn();
-          return resolve(response);
-        },
-        (error) => {
-          console.log('PaData: login error', error);
-          this.setLoggedOut();
-          return reject(error);
-        }
-      );
+        .then(
+          async (response) => {
+            console.log('PaData: login successful', response);
+            this.ionStorage.clear();
+            this.setLoggedIn();
+            return resolve(response);
+          },
+          (error) => {
+            console.log('PaData: login error', error);
+            this.setLoggedOut();
+            return reject(error);
+          }
+        );
     });
   }
 
@@ -167,4 +166,19 @@ export class PaDataService {
     this.setLoggedOut();
   }
 
+  public async deleteAccount(password: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.paAccountApi.deleteAccount(password)
+        .then(
+          async (response) => {
+            console.log('PaData: delete succesful', response);
+            return resolve(response);
+          },
+          (error) => {
+            console.log('PaData: delete error', error);
+            return reject(error);
+          }
+        );
+    });
+  }
 }
