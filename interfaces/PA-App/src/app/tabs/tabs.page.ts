@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
 import { PaDataService } from '../services/padata.service';
+import { UiService } from '../services/ui.service';
 
 import { PopoverController } from '@ionic/angular';
 import { UserMenuComponent } from '../user-menu/user-menu.component';
@@ -12,22 +13,28 @@ import { UserMenuComponent } from '../user-menu/user-menu.component';
   styleUrls: ['tabs.page.scss']
 })
 export class TabsPage {
-  public isLoggedIn = false;
-
   public useLocalStorage: boolean;
+
+  public isLoggedIn = false;
+  public userMenuShown = false;
 
   constructor(
     public popoverController: PopoverController,
     public paData: PaDataService,
+    public uiService: UiService,
   ) {
     this.useLocalStorage = environment.localStorage;
+
+    if (this.useLocalStorage) {
+      return;
+    }
 
     this.paData.authenticationState$.subscribe((authState) => {
       this.isLoggedIn = authState;
     });
-  }
-
-  ngOnInit() {
+    this.uiService.userMenuState$.subscribe((state) => {
+      this.userMenuShown = state;
+    });
   }
 
   async openUserMenu(ev: any) {
