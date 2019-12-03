@@ -23,7 +23,6 @@ export class ValidateProgramComponent implements ValidationComponent {
   public did: string;
   public programId: number;
   private currentProgram: Program;
-  public answersProgram: any;
   public programCredentialIssued = false;
   public verificationPostponed = false;
 
@@ -141,9 +140,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.answers[questionCode] = new Answer();
   }
 
-  public changeAnswers($event) {
-    const questionCode = $event.target.name;
-    const answerValue = $event.target.value;
+  public async buildAnswers(questionCode: string, answerValue: string) {
 
     const question = this.getQuestionByCode(questionCode);
     const answer: Answer = {
@@ -159,29 +156,23 @@ export class ValidateProgramComponent implements ValidationComponent {
 
     this.answers[questionCode] = answer;
 
+  }
+
+
+  public async changeAnswers($event) {
+    const questionCode = $event.target.name;
+    const answerValue = $event.target.value;
+
+    await this.buildAnswers(questionCode, answerValue);
+
     this.checkAllQuestionsAnswered(this.answers);
 
   }
 
-  public initialAnswers(answersProgram) {
-    for (const answerItem of answersProgram) {
-      const questionCode = answerItem.attribute;
-      const answerValue = answerItem.answer;
-
-      const question = this.getQuestionByCode(questionCode);
-      const answer: Answer = {
-        code: questionCode,
-        value: answerValue,
-        label: answerValue,
-      };
-
-      // Convert the answerValue to a human-readable label
-      if (question.answerType === AnswerType.Enum) {
-        answer.label = this.getAnswerOptionLabelByValue(question.options, answerValue);
-      }
-      this.answers[questionCode] = answer;
+  public initialAnswers(answers) {
+    for (const answerItem of answers) {
+      this.buildAnswers(answerItem.attribute, answerItem.answer);
     }
-
   }
 
   private checkAllQuestionsAnswered(answers) {
@@ -211,8 +202,7 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   public getPrefilledAnswersProgram() {
     this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
-      this.answersProgram = response;
-      this.initialAnswers(this.answersProgram);
+      this.initialAnswers(response);
       this.verificationPostponed = false;
       this.ionContent.scrollToBottom(300);
     });
@@ -227,7 +217,6 @@ export class ValidateProgramComponent implements ValidationComponent {
       console.log('response: ', response);
     });
     this.programCredentialIssued = true;
-    this.answersProgram = null;
     this.answers = {};
     this.resetParams();
     this.complete();
