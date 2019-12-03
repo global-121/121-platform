@@ -72,7 +72,11 @@ export class PaDataService {
   /////////////////////////////////////////////////////////////////////////////
 
   async store(type: string, data: any, forceLocalOnly = false): Promise<any> {
-    if (this.useLocalStorage || forceLocalOnly || !this.hasAccount) {
+    if (!this.useLocalStorage && !this.hasAccount) {
+      return;
+    }
+
+    if (this.useLocalStorage || forceLocalOnly) {
       return this.ionStorage.set(type, data);
     }
 
@@ -80,7 +84,11 @@ export class PaDataService {
   }
 
   async retrieve(type: string, forceLocalOnly = false): Promise<any> {
-    if (this.useLocalStorage || forceLocalOnly || !this.hasAccount) {
+    if (!this.useLocalStorage && !this.hasAccount) {
+      return;
+    }
+
+    if (this.useLocalStorage || forceLocalOnly) {
       return this.ionStorage.get(type);
     }
 
