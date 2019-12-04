@@ -132,6 +132,7 @@ export class PaDataService {
         async (response) => {
           console.log('PaData: login successful', response);
           this.ionStorage.clear();
+          this.uiService.showUserMenu();
           this.setLoggedIn();
           return resolve(response);
         },
