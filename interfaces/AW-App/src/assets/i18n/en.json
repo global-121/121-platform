@@ -5,10 +5,10 @@
   "account": {
     "introduction": "Welcome to 121. Please log in below.",
     "login": "Log-in form",
-    "email-placeholder": "Email...",
-    "password-placeholder": "Password...",
-    "create-placeholder": "Create new password...",
-    "confirm-placeholder": "Confirm new password...",
+    "email-label": "E-mail",
+    "password-label": "Password",
+    "create-label": "New password",
+    "confirm-label": "Confirm new password",
     "login-button": "Log in",
     "logged-in": "You are succesfully logged in.",
     "logged-out": "You are succesfully logged out.",
@@ -16,7 +16,7 @@
     "no-connection": "Not able to access the server. Please check your internet connection and try again later.",
     "logout-button": "Log out",
     "change-password": "Change password",
-    "close-change-password": "Cancel change password",
+    "close-change-password": "Cancel",
     "conclusion": "You are currently logged in.",
     "unequal-passwords": "The passwords you provided are not the same. Please try again.",
     "changed-password": "Your password is changed succesfully."
