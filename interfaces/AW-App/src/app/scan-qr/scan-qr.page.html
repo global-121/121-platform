@@ -5,7 +5,7 @@
     </ion-button>
   </ion-buttons>
 </ion-header>
-  
+
 <ion-content padding style="background: transparent!important">
   <ion-fab vertical="bottom" horizontal="end" margin style="margin-bottom: 15%;">
     <ion-fab-button>
@@ -20,17 +20,14 @@
       </ion-fab-button>
     </ion-fab-list>
   </ion-fab>
-  <div center text-center>
-    <ion-footer style="background: white;">
-      <section text-center *ngIf="isValidationMeeting" style="background: white;">
-        <ion-row padding>
-          <ion-col width-25>
-            <ion-input text-center value='{"did": "<did>", "programId": <programId>}' placeholder='User DID is ....' #id></ion-input>
-            <ion-button class="signin" (click)="startMeeting(id.value)">CONTINUE TO FORM</ion-button>
-          </ion-col>
-        </ion-row>
-      </section>
-    </ion-footer>
-  </div>
+  <ion-footer style="background: white;" class="ion-padding" *ngIf="isValidationMeeting">
+    <ion-textarea #scanData
+                  auto-grow="true"
+                  style="font-family: monospace"
+                  value='{"did": "_did_", "programId": _programId_ }'
+    ></ion-textarea>
+    <ion-button expand="block"
+                (click)="startMeeting(scanData.value)"
+    >CONTINUE TO FORM</ion-button>
+  </ion-footer>
 </ion-content>
-  

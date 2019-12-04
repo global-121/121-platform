@@ -1,6 +1,5 @@
 import { SessionStorageService } from './../../services/session-storage.service';
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -24,7 +23,6 @@ export class ScanQrComponent implements ValidationComponent {
 
   constructor(
     private router: Router,
-    public storage: Storage,
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     public sessionStorageService: SessionStorageService
@@ -33,13 +31,12 @@ export class ScanQrComponent implements ValidationComponent {
 
   ngOnInit() {
     console.log('init scan qr');
+    this.scanQrCode();
   }
 
   public scanQrCode() {
     const storageSubscription = this.sessionStorageService.watchStorage().subscribe(() => {
-      console.log('bla');
-      console.log('sessionStorageService.watchStorage');
-      this.checkScannedDid();
+      this.checkScannedData();
       storageSubscription.unsubscribe();
       // this will call whenever your localStorage data changes
       // use localStorage code here and set your data here for ngFor
@@ -47,16 +44,14 @@ export class ScanQrComponent implements ValidationComponent {
     this.router.navigate(['/scan-qr']);
   }
 
-  public async checkScannedDid() {
-    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedDid).then(data => {
-
+  public async checkScannedData() {
+    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(data => {
       if (this.isNotJson(data)) {
         this.scanError = true;
         return;
       }
 
       const jsonData = JSON.parse(data);
-
 
       if (!jsonData && !jsonData.did && !jsonData.programId) {
         this.scanError = true;
@@ -70,22 +65,16 @@ export class ScanQrComponent implements ValidationComponent {
       this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
         if (response.length === 0) {
           this.unknownDidCombination = true;
-          console.log('this.scanError: ', this.unknownDidCombination);
+          console.log('this.scanError: unknownDidCombination');
           return;
         }
 
-        this.storage.set('scannedDid', this.did);
-        this.storage.set('scannedProgramId', this.programId);
         this.didResult = true;
         this.unknownDidCombination = false;
         this.scanError = false;
 
         this.complete();
-
       });
-
-
-
     });
   }
 

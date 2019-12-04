@@ -49,10 +49,10 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
 
-    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedDid).then(async data => {
+    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(async data => {
       this.handleScannedData(data);
       await this.getProgramQuestionsAndAnswers();
-      this.sessionStorageService.destroyItem(this.sessionStorageService.type.scannedDid);
+      this.sessionStorageService.destroyItem(this.sessionStorageService.type.scannedData);
     });
   }
 
