@@ -1,11 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ValidateProgramComponent } from './validate-program.component';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { of } from 'rxjs';
 import { IonContent, IonicModule } from '@ionic/angular';
@@ -14,10 +13,6 @@ import { IonContent, IonicModule } from '@ionic/angular';
 describe('ValidateProgramComponent', () => {
   let component: ValidateProgramComponent;
   let fixture: ComponentFixture<ValidateProgramComponent>;
-
-  const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve) => resolve('1')),
-  };
 
   beforeEach(async(() => {
 
@@ -29,9 +24,9 @@ describe('ValidateProgramComponent', () => {
       declarations: [ValidateProgramComponent],
       imports: [
         TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
         IonicModule.forRoot(),
         HttpClientTestingModule,
+        RouterTestingModule.withRoutes([]),
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -40,10 +35,9 @@ describe('ValidateProgramComponent', () => {
           useValue: programsServiceApiService,
         },
         {
-          provide: Storage,
-          useValue: storageIonicMock
+          provide: IonContent,
+          useValue: IonContent,
         },
-        IonContent,
       ]
     })
       .compileComponents();
@@ -55,7 +49,7 @@ describe('ValidateProgramComponent', () => {
     fixture.detectChanges();
   });
 
-  xit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });
