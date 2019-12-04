@@ -1,7 +1,6 @@
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Storage } from '@ionic/storage';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonContent } from '@ionic/angular';
@@ -36,23 +35,22 @@ export class ValidateProgramComponent implements ValidationComponent {
   public dobFeedback = false;
 
   constructor(
+    public translate: TranslateService,
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
     public sessionStorageService: SessionStorageService,
-    public storage: Storage,
     public router: Router,
     public ionContent: IonContent,
-    public translate: TranslateService,
   ) { }
 
   ngOnInit() {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
 
-    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedDid).then(async data => {
+    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(async data => {
       this.handleScannedData(data);
       await this.getProgramQuestionsAndAnswers();
-      this.sessionStorageService.destroyItem(this.sessionStorageService.type.scannedDid);
+      this.sessionStorageService.destroyItem(this.sessionStorageService.type.scannedData);
     });
   }
 

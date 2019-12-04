@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { AccountPage } from './account.page';
 
@@ -14,6 +15,7 @@ describe('AccountPage', () => {
       declarations: [AccountPage],
       imports: [
         TranslateModule.forRoot(),
+        RouterTestingModule.withRoutes([]),
         HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -26,7 +28,7 @@ describe('AccountPage', () => {
     fixture.detectChanges();
   });
 
-  xit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });

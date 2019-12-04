@@ -11,10 +11,6 @@ import { ConversationService } from '../services/conversation.service';
   styleUrls: ['account.page.scss']
 })
 export class AccountPage {
-  public emailPlaceholder: string;
-  public passwordPlaceholder: string;
-  public createPlaceholder: string;
-  public confirmPlaceholder: string;
   public isLoggedIn: boolean;
   public loggedIn: string;
   public loggedOut: string;
@@ -34,10 +30,6 @@ export class AccountPage {
   ) { }
 
   ngOnInit() {
-    this.emailPlaceholder = this.customTranslateService.translate('account.email-placeholder');
-    this.passwordPlaceholder = this.customTranslateService.translate('account.password-placeholder');
-    this.createPlaceholder = this.customTranslateService.translate('account.create-placeholder');
-    this.confirmPlaceholder = this.customTranslateService.translate('account.confirm-placeholder');
     this.changedPassword = this.customTranslateService.translate('account.changed-password');
     this.unequalPasswords = this.customTranslateService.translate('account.unequal-passwords');
     this.wrongCredentials = this.customTranslateService.translate('account.wrong-credentials');
