@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
 import { Storage } from '@ionic/storage';
 import { PaAccountApiService } from './pa-account-api.service';
-import { Program } from '../models/program.model';
 import { JwtService } from './jwt.service';
-import { BehaviorSubject } from 'rxjs';
+import { UiService } from './ui.service';
 
+import { Program } from '../models/program.model';
 import { PaDataTypes } from './padata-types.enum';
 
 @Injectable({
@@ -29,7 +30,8 @@ export class PaDataService {
   constructor(
     private ionStorage: Storage,
     private paAccountApi: PaAccountApiService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private uiService: UiService,
   ) {
     this.useLocalStorage = environment.localStorage;
 
@@ -162,6 +164,7 @@ export class PaDataService {
     }
 
     this.setLoggedIn();
+    this.uiService.showUserMenu();
   }
 
   public logout() {
