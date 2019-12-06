@@ -20,8 +20,10 @@ export class VoiceService {
     key: string,
     programId: number,
   ): void {
-    const mp3Param = programId.toString() + 'REPLACE' + language + 'REPLACE' + key;
-    this.makeVoiceCall(mp3Param, recipientPhoneNr);
+    if (recipientPhoneNr) {
+      const mp3Param = programId.toString() + 'REPLACE' + language + 'REPLACE' + key;
+      this.makeVoiceCall(mp3Param, recipientPhoneNr);
+    }
   }
 
   public makeVoiceCall(
