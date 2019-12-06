@@ -274,7 +274,8 @@ export class ProgramService {
     connection.programsEnrolled.push(programId);
 
     let inclusionRequestStatus: InclusionRequestStatus;
-    if (program.inclusionCalculationType === 'standard') {
+    // For now always minimum-score approach: this will need to be split for the pilot
+    if (program.inclusionCalculationType === 'minimumScore' || program.inclusionCalculationType === 'highestScoresX') {
       let inclusionResult: boolean = await this.calculateInclusion(
         programId,
         encryptedProof,
