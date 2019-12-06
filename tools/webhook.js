@@ -3,7 +3,8 @@ var secrets = require("./secrets");
 var secret = secrets.secret;
 var repo_services = "/home/121-platform/services";
 var repo_pa = "/home/121-platform/interfaces/PA-App";
-var repo_ho = "/home/121-platform/interfaces/HO-portal";
+var repo_ho = "/home/121-platform/interfaces/HO-Portal";
+var repo_aw = "/home/121-platform/interfaces/AW-App";
 
 let http = require('http');
 let crypto = require('crypto');
@@ -30,7 +31,10 @@ http.createServer(function (req, res) {
                         ' && sudo rm -rf /var/www/121-platform/PA-app && sudo cp -r www/ /var/www/121-platform/PA-app' +
                         ' && cd ' + repo_ho +
                         ' && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /HO-portal/' +
-                        ' && sudo rm -rf /var/www/121-platform/HO-portal && sudo cp -r www/ /var/www/121-platform/HO-portal'
+                        ' && sudo rm -rf /var/www/121-platform/HO-portal && sudo cp -r www/ /var/www/121-platform/HO-portal' + 
+                        ' && cd ' + repo_aw +
+                        ' && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /AW-app/' +
+                        ' && sudo rm -rf /var/www/121-platform/AW-app && sudo cp -r www/ /var/www/121-platform/AW-app'
                 , function(error, stdout, stderr) {
                 if (error) {
                         console.log(stderr);
