@@ -111,19 +111,35 @@ class Server:
 
         if not isinstance(wallet_key, str):
             raise web.HTTPBadRequest
-
+        wallet_handle =  -1
         try:
-            await self._service.create_wallet(wallet_id, wallet_key)
+            wallet_handle = await self._service.create_wallet(wallet_id, wallet_key)
         except WalletAlreadyExists:
             self._logger.error(f'Wallet already exists. Returning Bad Request')
-            raise web.HTTPBadRequest
+            response = {
+            'message': "wallet already exists",
+            }
+            return web.json_response(response,status=400)
         except ServiceError as e:
             self._logger.error(f'Failed to create wallet. Returning 500. Exception: {traceback.format_exc()}')
-            raise web.HTTPInternalServerError
+            response = {
+            'message': f'Failed to create wallet. Exception: {traceback.format_exc()}',
+            }
+            return web.json_response(response,status=500)
 
         self._logger.debug(f'Created wallet. Correlation ID: {correlation_id}')
-
-        return web.Response()
+        if wallet_handle == -1:
+          response = {
+            'message': "could not create wallet",
+          }
+          return web.json_response(response,status=500)
+        else:
+          response = {
+            'message': True,
+          }
+          return web.json_response(response)
+        
+        
 
     async def _wallet_key_rotation_handler(self, request):
         """
@@ -914,5 +930,5 @@ class Server:
         response = {
             'message': operation_result,
         }
-        return web.Response(response)
+        return web.json_response(response)
 
