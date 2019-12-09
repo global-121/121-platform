@@ -50,6 +50,9 @@ services:
     container_name: orgims
     ports:
       - "50002:50002"
+    healthcheck:
+      test: "exit 0"
+    restart: on-failure
     networks:
       pool_network:
         ipv4_address: 11.0.0.4
@@ -66,6 +69,9 @@ services:
       dockerfile: Dockerfile
     init: true
     container_name: userims
+    healthcheck:
+      test: "exit 0"
+    restart: on-failure
     ports:
       - "50003:50003"
     networks:
