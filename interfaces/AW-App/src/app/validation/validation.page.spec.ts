@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ValidationPage } from './validation.page';
 import { TranslateModule } from '@ngx-translate/core';
-
+import { Storage } from '@ionic/storage';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { ConversationService } from '../services/conversation.service';
 
@@ -14,7 +14,15 @@ describe('ValidationPage', () => {
   beforeEach(async(() => {
     // Mock the used services:
     const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getCountries']);
-    const conversationService = jasmine.createSpyObj('ConversationService', { getConversationUpToNow: [{}, {}] });
+    const conversationService = jasmine.createSpyObj('ConversationService', {
+      state: { isLoading: false, },
+      sectionCompleted$: jasmine.createSpy(),
+      shouldScroll$: jasmine.createSpy(),
+      getConversationUpToNow: [{}, {}],
+    });
+    const storageIonicMock: any = {
+      get: () => new Promise<any>((resolve) => resolve('1')),
+    };
 
     TestBed.configureTestingModule({
       declarations: [ValidationPage],
@@ -30,7 +38,11 @@ describe('ValidationPage', () => {
         {
           provide: ConversationService,
           useValue: conversationService,
-        }
+        },
+        {
+          provide: Storage,
+          useValue: storageIonicMock,
+        },
       ]
     }).compileComponents();
   }));

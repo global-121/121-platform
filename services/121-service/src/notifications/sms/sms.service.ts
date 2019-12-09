@@ -25,8 +25,10 @@ export class SmsService {
     key: string,
     programId: number,
   ): Promise<void> {
-    const smsText = await this.getSmsText(language, key, programId);
-    this.sendSms(smsText, recipientPhoneNr);
+    if (recipientPhoneNr) {
+      const smsText = await this.getSmsText(language, key, programId);
+      this.sendSms(smsText, recipientPhoneNr);
+    }
   }
 
   public async sendSms(message: string, recipientPhoneNr: string) {

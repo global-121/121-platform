@@ -15,8 +15,9 @@ class Server:
         self._app.add_routes([
             web.post('/api/wallet', self._wallet_post_handler),
             web.post('/api/wallet_key_rotation', self._wallet_key_rotation_handler),
-            web.post("/api/wallet/backup", self._backup_wallet),
-            web.post("/api/wallet/restore", self._restore_wallet),
+            web.post("/api/wallet/backup", self._backup_wallet_handler),
+            web.post("/api/wallet/restore", self._restore_wallet_handler),
+            web.post('/api/wallet/delete', self._wallet_delete_handler),
             web.post('/api/did', self._did_handler),
             web.post('/api/credential/credreq', self._credential_request_handler),
             web.post('/api/credential/store', self._credential_handler),
@@ -110,19 +111,35 @@ class Server:
 
         if not isinstance(wallet_key, str):
             raise web.HTTPBadRequest
-
+        wallet_handle =  -1
         try:
-            await self._service.create_wallet(wallet_id, wallet_key)
+            wallet_handle = await self._service.create_wallet(wallet_id, wallet_key)
         except WalletAlreadyExists:
             self._logger.error(f'Wallet already exists. Returning Bad Request')
-            raise web.HTTPBadRequest
+            response = {
+            'message': "wallet already exists",
+            }
+            return web.json_response(response,status=400)
         except ServiceError as e:
             self._logger.error(f'Failed to create wallet. Returning 500. Exception: {traceback.format_exc()}')
-            raise web.HTTPInternalServerError
+            response = {
+            'message': f'Failed to create wallet. Exception: {traceback.format_exc()}',
+            }
+            return web.json_response(response,status=500)
 
         self._logger.debug(f'Created wallet. Correlation ID: {correlation_id}')
-
-        return web.Response()
+        if wallet_handle == -1:
+          response = {
+            'message': "could not create wallet",
+          }
+          return web.json_response(response,status=500)
+        else:
+          response = {
+            'message': True,
+          }
+          return web.json_response(response)
+        
+        
 
     async def _wallet_key_rotation_handler(self, request):
         """
@@ -648,7 +665,7 @@ class Server:
 
         return web.json_response(response)
     
-    async def _backup_wallet(self, request):
+    async def _backup_wallet_handler(self, request):
       """
         ---
         summary: Create wallet backup
@@ -739,7 +756,7 @@ class Server:
 
       return web.json_response(response)
     
-    async def _restore_wallet(self, request):
+    async def _restore_wallet_handler(self, request):
       """
         ---
         summary: Restore wallet from backup
@@ -835,4 +852,83 @@ class Server:
         }
 
       return web.json_response(response)
+
+    async def _wallet_delete_handler(self, request):
+        """
+        ---
+        summary: Delete user wallet
+        description: Delete user wallet
+        produces:
+        - application/json
+        parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              wallet:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  passKey:
+                    type: string
+        responses:
+          responses:
+          "200":
+            produces:
+            - application/json
+            name: body
+            required: true
+            schema:
+              type: object
+              properties:
+                operation_result:
+                  type: string
+          "400":
+            description: if input is invalid
+          "500":
+            description: if indy operation fails
+        """
+        try:
+            request_content = await request.text()
+        except Exception as e:
+            self._logger.error(f'Failed to get request body: {e}')
+            raise web.HTTPInternalServerError from e
+
+        self._logger.debug(f'Got request at /api/wallet/delete endpoint. Content: {request_content}')
+
+        try:
+            request_data = json.loads(request_content)
+        except ValueError as e:
+            self._logger.error(f'Failed to decode request as JSON: {e}')
+            raise web.HTTPBadRequest
+
+        try:
+            wallet = request_data['wallet']
+            wallet_id = wallet['id']
+            wallet_key = wallet['passKey']
+        except KeyError as e:
+            self._logger.error(f'Missing request field {e}')
+            raise web.HTTPBadRequest
+
+        if not isinstance(wallet_id, str):
+            raise web.HTTPBadRequest
+
+        if not isinstance(wallet_key, str):
+            raise web.HTTPBadRequest
+
+        operation_result = False
+        try:
+            operation_result = await self._service.delete_wallet(wallet_id, wallet_key)
+        except ServiceError as e:
+            self._logger.error(f'Failed to delete wallet. Returning 500. Exception: {traceback.format_exc()}')
+            raise web.HTTPInternalServerError
+
+        self._logger.debug(f'Deleted wallet.')
+        response = {
+            'message': operation_result,
+        }
+        return web.json_response(response)
 

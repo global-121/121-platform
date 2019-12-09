@@ -240,7 +240,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public change() {
     this.hasAnswered = false;
     this.changedAnswers = true;
-    console.log(this.changedAnswers);
   }
 
   public submit() {

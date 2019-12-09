@@ -16,7 +16,7 @@
       <ion-label>{{ 'DEVICE'|translate }}</ion-label>
     </ion-tab-button>
 
-    <ion-fab-button *ngIf="!useLocalStorage"
+    <ion-fab-button *ngIf="userMenuShown"
                     size="small"
                     [color]="isLoggedIn ? 'success' : 'medium'"
                     [disabled]="!isLoggedIn"

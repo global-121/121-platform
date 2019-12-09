@@ -7,39 +7,35 @@
 </ion-header>
 
 <ion-content color="medium" class="ion-padding-vertical">
-  <dialogue-turn [hidden]="isLoggedIn">
+  <dialogue-turn *ngIf="!isLoggedIn">
     {{ 'account.introduction'|translate }}
   </dialogue-turn>
-  <dialogue-turn [hidden]="!isLoggedIn">
+  <dialogue-turn *ngIf="isLoggedIn">
     {{ 'account.conclusion'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self">
     <form method="POST" (submit)="doLogin($event)" *ngIf="!isLoggedIn">
-      <ion-item>
+      <ion-item color="light">
+        <ion-label position="stacked">{{ 'account.email-label'|translate }}</ion-label>
         <ion-input type="email"
-                    name="email"
-                    inputmode="email"
-                    autocomplete="username email"
-                    autocapitalize="off"
-                    autofocus="true"
-                    clearInput="true"
-                    required
-                    [placeholder]="emailPlaceholder"
-                    [(ngModel)]="email"
-                    ngDefaultControl
+                   name="email"
+                   inputmode="email"
+                   autocomplete="username email"
+                   autocapitalize="off"
+                   autofocus="true"
+                   clearInput="true"
+                   required
         ></ion-input>
       </ion-item>
-      <ion-item>
+      <ion-item color="light">
+        <ion-label position="stacked">{{ 'account.password-label'|translate }}</ion-label>
         <ion-input type="password"
-                    name="password"
-                    autocomplete="current-password"
-                    autocapitalize="off"
-                    clearInput="true"
-                    clearOnEdit="false"
-                    required
-                    [placeholder]="passwordPlaceholder"
-                    [(ngModel)]="password"
-                    ngDefaultControl
+                   name="password"
+                   autocomplete="current-password"
+                   autocapitalize="off"
+                   clearInput="true"
+                   clearOnEdit="false"
+                   required
         ></ion-input>
       </ion-item>
 
@@ -49,40 +45,43 @@
         {{ 'account.login-button'|translate }}
       </ion-button>
     </form>
-    <ion-button expand="block" [hidden]="!isLoggedIn" (click)="logout()">
+    <ion-button expand="block" *ngIf="isLoggedIn" (click)="logout()">
       {{ 'account.logout-button'|translate }}
     </ion-button>
-    <ion-button expand="block" [hidden]="!isLoggedIn || (isLoggedIn && changePasswordForm)" (click)="openChangePassword()">
+    <ion-button expand="block"
+                *ngIf="isLoggedIn"
+                [disabled]="isLoggedIn && changePasswordForm"
+                (click)="openChangePassword()"
+    >
       {{ 'account.change-password'|translate }}
     </ion-button>
-    <ion-button expand="block" [hidden]="!isLoggedIn || (isLoggedIn && !changePasswordForm)" (click)="closeChangePassword()">
-      {{ 'account.close-change-password'|translate }}
-    </ion-button>
-    <form method="POST" (submit)="doChangePassword($event)" *ngIf="changePasswordForm">
-      <ion-item>
+  </dialogue-turn>
+  <dialogue-turn actor="self"
+                 isConnected="true"
+                 *ngIf="changePasswordForm"
+  >
+    <strong>{{ 'account.change-password'|translate }}:</strong>
+    <form method="POST" (submit)="doChangePassword($event)">
+      <ion-item color="light">
+        <ion-label position="stacked">{{ 'account.create-label'|translate }}</ion-label>
         <ion-input type="password"
-                    name="create"
-                    autocomplete="current-password"
-                    autocapitalize="off"
-                    clearInput="true"
-                    clearOnEdit="false"
-                    required
-                    [placeholder]="createPlaceholder"
-                    [(ngModel)]="create"
-                    ngDefaultControl
+                   name="create"
+                   autocomplete="new-password"
+                   autocapitalize="off"
+                   clearInput="true"
+                   clearOnEdit="false"
+                   required
         ></ion-input>
       </ion-item>
-      <ion-item>
-        <ion-input type="password"
-                    name="confirm"
-                    autocomplete="current-password"
-                    autocapitalize="off"
-                    clearInput="true"
-                    clearOnEdit="false"
-                    required
-                    [placeholder]="confirmPlaceholder"
-                    [(ngModel)]="confirm"
-                    ngDefaultControl
+      <ion-item color="light">
+          <ion-label position="stacked">{{ 'account.confirm-label'|translate }}</ion-label>
+          <ion-input type="password"
+                     name="confirm"
+                     autocomplete="off"
+                     autocapitalize="off"
+                     clearInput="true"
+                     clearOnEdit="false"
+                     required
         ></ion-input>
       </ion-item>
 
@@ -91,6 +90,13 @@
       >
         {{ 'account.change-password'|translate }}
       </ion-button>
+      <ion-button expand="block"
+                  fill="outline"
+                  (click)="closeChangePassword()"
+      >
+          {{ 'account.close-change-password'|translate }}
+      </ion-button>
+
     </form>
   </dialogue-turn>
 </ion-content>

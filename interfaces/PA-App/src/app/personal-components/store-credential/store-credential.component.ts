@@ -51,11 +51,10 @@ export class StoreCredentialComponent extends PersonalComponent {
     const did = await this.paData.retrieve(this.paData.type.did);
 
     console.log('Start listening for Credential...');
-    const credentialAvailable = await this.updateService.checkCredential(this.currentProgram.id, did);
-    if (credentialAvailable) {
-      console.log('Credential available!');
+    this.updateService.checkCredential(this.currentProgram.id, did).then(() => {
       this.getCredential(did);
-    }
+    });
+
   }
 
   initHistory() {

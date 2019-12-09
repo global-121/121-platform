@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 import { environment } from 'src/environments/environment';
 
 import { Storage } from '@ionic/storage';
 import { PaAccountApiService } from './pa-account-api.service';
-import { Program } from '../models/program.model';
 import { JwtService } from './jwt.service';
-import { BehaviorSubject } from 'rxjs';
+import { UiService } from './ui.service';
 
+import { Program } from '../models/program.model';
 import { PaDataTypes } from './padata-types.enum';
 
 @Injectable({
@@ -29,7 +30,8 @@ export class PaDataService {
   constructor(
     private ionStorage: Storage,
     private paAccountApi: PaAccountApiService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private uiService: UiService,
   ) {
     this.useLocalStorage = environment.localStorage;
 
@@ -72,7 +74,11 @@ export class PaDataService {
   /////////////////////////////////////////////////////////////////////////////
 
   async store(type: string, data: any, forceLocalOnly = false): Promise<any> {
-    if (this.useLocalStorage || forceLocalOnly || !this.hasAccount) {
+    if (!this.useLocalStorage && !this.hasAccount) {
+      return;
+    }
+
+    if (this.useLocalStorage || forceLocalOnly) {
       return this.ionStorage.set(type, data);
     }
 
@@ -80,7 +86,11 @@ export class PaDataService {
   }
 
   async retrieve(type: string, forceLocalOnly = false): Promise<any> {
-    if (this.useLocalStorage || forceLocalOnly || !this.hasAccount) {
+    if (!this.useLocalStorage && !this.hasAccount) {
+      return;
+    }
+
+    if (this.useLocalStorage || forceLocalOnly) {
       return this.ionStorage.get(type);
     }
 
@@ -117,19 +127,21 @@ export class PaDataService {
 
     return new Promise((resolve, reject) => {
       this.paAccountApi.login(username, password)
-        .then(
-          async (response) => {
-            console.log('PaData: login successful', response);
-            this.ionStorage.clear();
-            this.setLoggedIn();
-            return resolve(response);
-          },
-          (error) => {
-            console.log('PaData: login error', error);
-            this.setLoggedOut();
-            return reject(error);
-          }
-        );
+
+      .then(
+        async (response) => {
+          console.log('PaData: login successful', response);
+          this.ionStorage.clear();
+          this.uiService.showUserMenu();
+          this.setLoggedIn();
+          return resolve(response);
+        },
+        (error) => {
+          console.log('PaData: login error', error);
+          this.setLoggedOut();
+          return reject(error);
+        }
+      );
     });
   }
 
@@ -153,6 +165,7 @@ export class PaDataService {
     }
 
     this.setLoggedIn();
+    this.uiService.showUserMenu();
   }
 
   public logout() {

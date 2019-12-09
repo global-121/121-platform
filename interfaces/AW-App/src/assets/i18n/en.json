@@ -5,10 +5,10 @@
   "account": {
     "introduction": "Welcome to 121. Please log in below.",
     "login": "Log-in form",
-    "email-placeholder": "Email...",
-    "password-placeholder": "Password...",
-    "create-placeholder": "Create new password...",
-    "confirm-placeholder": "Confirm new password...",
+    "email-label": "E-mail",
+    "password-label": "Password",
+    "create-label": "New password",
+    "confirm-label": "Confirm new password",
     "login-button": "Log in",
     "logged-in": "You are succesfully logged in.",
     "logged-out": "You are succesfully logged out.",
@@ -16,7 +16,7 @@
     "no-connection": "Not able to access the server. Please check your internet connection and try again later.",
     "logout-button": "Log out",
     "change-password": "Change password",
-    "close-change-password": "Cancel change password",
+    "close-change-password": "Cancel",
     "conclusion": "You are currently logged in.",
     "unequal-passwords": "The passwords you provided are not the same. Please try again.",
     "changed-password": "Your password is changed succesfully."
@@ -45,10 +45,12 @@
       "main-menu": "Back to main menu"
     },
     "validate-program": {
-      "introduction": "Below you see the PA's information for the specific program. Check it and if correct, confirm it. If not correct, tell the PA to change and resend it.",
-      "postpone-button": "Postpone verification",
+      "introduction": "Below you see the PA's information for the specific program. Check it with the PA, adapt where necessary, and confirm.",
+      "submit": "Submit answers",
+      "dob-feedback": "The date of birth does not have a valid format. Please adjust and save again.",
+      "please-confirm": "Below is an overview of the PA's information. Please confirm and submit.",
+      "change": "Change information",
       "confirm-button": "Issue Program Credential",
-      "refresh-button": "Refresh information",
       "conclusion": "The Program credential has been created. As such there is no need, and thus no possibility, for you to see the PA's personal information any more here."
     }
   },

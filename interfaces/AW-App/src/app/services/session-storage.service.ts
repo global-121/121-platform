@@ -8,7 +8,7 @@ export class SessionStorageService {
   private storageSub = new Subject<string>();
 
   public type = {
-    scannedDid: 'scannedDid'
+    scannedData: 'scannedData',
   };
 
 

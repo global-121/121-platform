@@ -108,7 +108,7 @@ export class ScanQrPage implements OnInit {
   }
 
   startMeeting(qr) {
-    this.sessionStorageService.store(this.sessionStorageService.type.scannedDid, qr);
+    this.sessionStorageService.store(this.sessionStorageService.type.scannedData, qr);
 
     this.router.navigate(['/tabs/validation']);
   }
