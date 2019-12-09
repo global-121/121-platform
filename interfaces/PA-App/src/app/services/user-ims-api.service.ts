@@ -144,4 +144,25 @@ export class UserImsApiService {
       )
       .toPromise();
   }
+
+  deleteWallet(
+    wallet: Wallet,
+  ): Promise<any> {
+    console.log('UserImsApiService : deleteWallet()');
+
+    return this.apiService
+      .post(
+        environment.url_user_ims_api,
+        '/wallet/delete',
+        {
+          wallet
+        },
+        true
+      )
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      )
+      .toPromise();
+  }
 }

@@ -7,7 +7,9 @@
     "change-password": "Change password",
     "delete-digital-id": "Delete Digital ID",
     "close": "Close",
-    "logged-out": "You are succesfully logged out."
+    "logged-out": "You are succesfully logged out.",
+    "enter-password": "Your Password",
+    "delete-account-id": "Enter your password to delete your account"
   },
   "personal": {
     "create-identity": {
@@ -135,6 +137,7 @@
     "close": "close"
   },
   "shared": {
-    "submit-button": "Submit"
+    "submit-button": "Submit",
+    "close-buttion": "Close"
   }
 }

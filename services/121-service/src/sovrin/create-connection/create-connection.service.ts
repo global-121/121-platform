@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
 import { Repository } from 'typeorm';
 import { SovrinSetupService } from '../setup/setup.service';
+import { DidDto } from '../../programs/program/dto/did.dto';
 
 @Injectable()
 export class CreateConnectionService {
@@ -43,6 +44,17 @@ export class CreateConnectionService {
     const newConnection = await this.connectionRepository.save(connection);
     return newConnection;
   }
+
+  public async delete(
+    didObject: DidDto,
+  ) {
+    await this.connectionRepository.delete(
+      {
+        did: didObject.did,
+      }
+    );
+  }
+
 
   public async addPhone(
     did: string,

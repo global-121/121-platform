@@ -125,9 +125,9 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
-    console.log('PaData: login()');
     return new Promise((resolve, reject) => {
       this.paAccountApi.login(username, password)
+
       .then(
         async (response) => {
           console.log('PaData: login successful', response);
@@ -179,4 +179,7 @@ export class PaDataService {
     this.setLoggedOut();
   }
 
+  public async deleteAccount(password: string): Promise<any> {
+    return this.paAccountApi.deleteAccount(password);
+  }
 }

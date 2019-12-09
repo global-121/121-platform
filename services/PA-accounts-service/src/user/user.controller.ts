@@ -70,7 +70,7 @@ export class UserController {
 
   @ApiBearerAuth()
   @ApiOperation({ title: 'Delete current user and storage' })
-  @Delete('user')
+  @Post('user/delete')
   public async deleteAccount(
     @User('id') userId: number,
     @Body() passwordData: DeleteUserDto,

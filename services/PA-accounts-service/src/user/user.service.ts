@@ -87,6 +87,7 @@ export class UserService {
       id: id,
     };
     const user = await this.userRepository.findOne(findOneOptions)
+
     if (!user) {
       const errors = 'User not found or already deleted';
       throw new HttpException({ errors }, 400)
@@ -95,7 +96,7 @@ export class UserService {
     const hashedpassword = crypto.createHmac('sha256', passwordData.password).digest('hex')
     if (user.password !== hashedpassword) {
       const errors = 'Password for user is incorrect';
-      throw new HttpException({ errors }, 400)
+      throw new HttpException({ errors }, 401)
     }
     await this.dataStorageRepository.delete(
       {
@@ -117,6 +118,11 @@ export class UserService {
 
   public async findByUsername(username: string): Promise<UserRO> {
     const user = await this.userRepository.findOne({ username: username });
+    if (!user) {
+      const errors = { 'username': username + ' not found' };
+      console.log(errors)
+      throw new HttpException({ errors }, 404);
+    }
     return this.buildUserRO(user);
   }
 
