@@ -167,18 +167,6 @@ export class PaDataService {
   }
 
   public async deleteAccount(password: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.paAccountApi.deleteAccount(password)
-        .then(
-          async (response) => {
-            console.log('PaData: delete succesful', response);
-            return resolve(response);
-          },
-          (error) => {
-            console.log('PaData: delete error', error);
-            return reject(error);
-          }
-        );
-    });
+    return this.paAccountApi.deleteAccount(password);
   }
 }

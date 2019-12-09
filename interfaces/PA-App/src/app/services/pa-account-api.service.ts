@@ -104,7 +104,7 @@ export class PaAccountApiService {
   }
 
   deleteAccount(password: string): Promise<any> {
-    console.log('PaAccountApiService : delete()');
+    console.log('PaAccountApiService : deleteAccount()');
 
     return this.apiService
       .post(

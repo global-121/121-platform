@@ -1,3 +1,4 @@
+import { ProgramsServiceApiService } from './../services/programs-service-api.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -20,6 +21,7 @@ export class UserMenuComponent implements OnInit {
     private popoverController: PopoverController,
     private paData: PaDataService,
     public sovrinService: SovrinService,
+    public programService: ProgramsServiceApiService,
     public translate: TranslateService,
     public alertController: AlertController
   ) {
@@ -73,10 +75,12 @@ export class UserMenuComponent implements OnInit {
   public async deleteAccountId(password: string) {
     console.log('password', password);
     const wallet = await this.paData.retrieve(this.paData.type.wallet);
+    const did = await this.paData.retrieve(this.paData.type.did);
     await this.paData.deleteAccount(password).then(
       async () => {
         console.log('Delete wallet', wallet);
         await this.deleteWallet(wallet);
+        await this.deleteDidConnection(did);
         this.logout();
       },
       (error) => {
@@ -99,5 +103,19 @@ export class UserMenuComponent implements OnInit {
         console.log('Error status', error.status, error);
       }
     );
+  }
+
+  public async deleteDidConnection(did: string): Promise<any> {
+    console.log('deleteDidConnection did: ', did);
+    if (did) {
+      await this.programService.deleteConnection(did).subscribe(
+        () => {
+          console.log('Deleted connection info');
+        },
+        (error) => {
+          console.log('Error status', error.status, error);
+        }
+      );
+    }
   }
 }

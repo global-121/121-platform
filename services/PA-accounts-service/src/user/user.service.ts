@@ -86,9 +86,7 @@ export class UserService {
     const findOneOptions = {
       id: id,
     };
-    console.log('findOneOptions', findOneOptions)
     const user = await this.userRepository.findOne(findOneOptions)
-    console.log('user: ', user);
 
     if (!user) {
       const errors = 'User not found or already deleted';

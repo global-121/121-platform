@@ -148,15 +148,14 @@ export class UserImsApiService {
   deleteWallet(
     wallet: Wallet,
   ): Promise<any> {
-    console.log('UserImsApiService : storeCredential()');
+    console.log('UserImsApiService : deleteWallet()');
 
     return this.apiService
       .post(
         environment.url_user_ims_api,
-        '/wallet/backup', // TODO change this to delete wallet endpoint when it's finished
+        '/wallet/delete',
         {
-          wallet,
-          backupFileStoragePath: '/tmp/sdf', // TODO remove this after changing endpoint
+          wallet
         },
         true
       )
