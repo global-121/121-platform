@@ -9,7 +9,9 @@
     "close": "Close",
     "logged-out": "You are succesfully logged out.",
     "enter-password": "Your Password",
-    "delete-account-id": "Enter your password to delete your account"
+    "delete-account-header": "Deleting your Digital ID is irreversible, all your data will be lost!",
+    "delete-account-message": "Enter your password if you are sure you want to delete your Digital ID",
+    "delete-succes": "Your account has been succesfully deleted. You will now logout"
   },
   "personal": {
     "create-identity": {

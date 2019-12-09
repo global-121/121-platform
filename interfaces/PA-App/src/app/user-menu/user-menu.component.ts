@@ -5,6 +5,7 @@ import { PaDataService } from 'src/app/services/padata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController } from '@ionic/angular';
 import { SovrinService } from '../services/sovrin.service';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-user-menu',
@@ -16,6 +17,9 @@ export class UserMenuComponent implements OnInit {
   public data: any;
 
   public isLoggedIn = false;
+  public incorrectCredentials = false;
+  public deletePasswordAlert;
+  public deleteSuccesAlert;
 
   constructor(
     private popoverController: PopoverController,
@@ -23,6 +27,7 @@ export class UserMenuComponent implements OnInit {
     public sovrinService: SovrinService,
     public programService: ProgramsServiceApiService,
     public translate: TranslateService,
+    public toastController: ToastController,
     public alertController: AlertController
   ) {
   }
@@ -44,22 +49,25 @@ export class UserMenuComponent implements OnInit {
   }
 
   async deletePrompt() {
-    const alert = await this.alertController.create({
-      header: this.translate.instant('account.delete-account-id'),
+    this.deletePasswordAlert = await this.alertController.create({
+      header: this.translate.instant('account.delete-account-header'),
+      message: this.translate.instant('account.delete-account-message'),
       inputs: [
         {
           name: 'password',
-          type: 'text',
+          type: 'password',
           placeholder: this.translate.instant('account.enter-password')
         },
       ],
       buttons: [
         {
           text: this.translate.instant('shared.submit-button'),
-          handler: async data => {
+          handler: data => {
             console.log('Confirm Ok');
-            await this.deleteAccountId(data.password);
+            this.deleteAccountId(data.password);
+            return false;
           },
+          role: null,
         },
         {
           text: this.translate.instant('account.close'),
@@ -67,31 +75,44 @@ export class UserMenuComponent implements OnInit {
             this.alertController.dismiss();
           }
         }
-      ]
+      ],
     });
-    await alert.present();
+    await this.deletePasswordAlert.present();
   }
 
-  public async deleteAccountId(password: string) {
-    console.log('password', password);
+  public async passwordIncorrectToast() {
+    this.toastController.create({
+      header: this.translate.instant('personal.login-identity.incorrect-credentials'),
+      animated: true,
+      showCloseButton: true,
+      closeButtonText: this.translate.instant('account.close'),
+      position: 'bottom',
+    }).then((obj) => {
+      obj.present();
+    });
+  }
+
+  public async deleteAccountId(password: string): Promise<boolean> {
     const wallet = await this.paData.retrieve(this.paData.type.wallet);
     const did = await this.paData.retrieve(this.paData.type.did);
     await this.paData.deleteAccount(password).then(
       async () => {
-        console.log('Delete wallet', wallet);
         await this.deleteWallet(wallet);
         await this.deleteDidConnection(did);
-        this.logout();
+        this.deletePasswordAlert.dismiss();
+        this.deleteSuccesPrompt();
+        return true;
       },
       (error) => {
         if (error.status === 401) {
-          // TODO: show feedback to user here
           console.log('Incorrect credentials: ', error.status);
+          this.passwordIncorrectToast();
         } else if (error.status === 400) {
           console.log('Account already deleted ', error.status, error);
         }
       }
     );
+    return false;
   }
 
   public async deleteWallet(wallet: any): Promise<any> {
@@ -117,5 +138,22 @@ export class UserMenuComponent implements OnInit {
         }
       );
     }
+  }
+
+  public deleteSuccesPrompt() {
+    console.log('deleteSuccesPrompt');
+    this.alertController.create({
+      message: this.translate.instant('account.delete-succes'),
+      buttons: [
+        {
+          text: this.translate.instant('account.close'),
+          handler: () => {
+            this.logout();
+          },
+        },
+      ],
+    }).then((obj) => {
+      obj.present();
+    });
   }
 }
