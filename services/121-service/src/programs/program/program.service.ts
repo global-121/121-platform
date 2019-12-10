@@ -246,6 +246,7 @@ export class ProgramService {
     Inclusion result is added to db (connectionRepository)?
     When done (time-loop): run getInclusionStatus from PA.
     `;
+    const proof =  encryptedProof; // this should actually be decrypted in a future scenario
 
     let connection = await this.connectionRepository.findOne({
       where: { did: did },
@@ -260,7 +261,7 @@ export class ProgramService {
       throw new HttpException({ errors }, 404);
     }
 
-    let program = await this.programRepository.findOne(programId);
+    let program = await this.programRepository.findOne(programId, { relations: ["customCriteria"] });
     if (!program) {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, 404);
@@ -268,17 +269,27 @@ export class ProgramService {
 
     const validProof = await this.proofService.validateProof(
       program.proofRequest,
-      encryptedProof,
+      proof,
       did,
     );
-    connection.programsEnrolled.push(programId);
 
     let inclusionRequestStatus: InclusionRequestStatus;
+
+    const questionAnswerList = this.createQuestionAnswerList(
+      program,
+      proof,
+    )
+    connection.customData = this.getPersitentDataFromProof(
+      connection.customData,
+      questionAnswerList,
+      program.customCriteria,
+    );
+
     // For now always minimum-score approach: this will need to be split for the pilot
     if (program.inclusionCalculationType === 'minimumScore' || program.inclusionCalculationType === 'highestScoresX') {
       let inclusionResult: boolean = await this.calculateInclusion(
-        programId,
-        encryptedProof,
+        program,
+        questionAnswerList,
       );
       if (inclusionResult) {
         connection.programsIncluded.push(programId);
@@ -345,11 +356,29 @@ export class ProgramService {
     return inclusionStatus;
   }
 
+
+
   public async calculateInclusion(
-    programId: number,
-    proof: string,
+    program: ProgramEntity,
+    questionAnswerList: object,
   ): Promise<boolean> {
-    const currentProgram = await this.findOne(programId);
+
+    // Calculates the score based on the ctritria of a program and the aggregrated score list
+    const totalScore = this.calculateScoreAllCriteria(
+      program.customCriteria,
+      questionAnswerList,
+    );
+
+    // Checks if PA is elegible based on the minimum score of the program
+    const included = totalScore >= program.minimumScore;
+    return included;
+  }
+
+  private createQuestionAnswerList(
+    program: ProgramEntity,
+    proof: string,
+  ): object {
+
 
     // Convert the proof in an array, for some unknown reason it has to be JSON parse multiple times
     const proofJson = JSON.parse(proof);
@@ -357,28 +386,10 @@ export class ProgramService {
     const revealedAttrProof = proofObject['requested_proof']['revealed_attrs'];
 
     // Uses the proof request to relate the revealed_attr from the proof to the corresponding ctriteria'
-    const proofRequest = JSON.parse(currentProgram.proofRequest);
+    const proofRequest = JSON.parse(program.proofRequest);
     const attrRequest = proofRequest['requested_attributes'];
-    const scoreList = this.createCriteriaScoreList(
-      revealedAttrProof,
-      attrRequest,
-    );
 
-    // Calculates the score based on the ctritria of a program and the aggregrated score list
-    const totalScore = this.calculateScoreAllCriteria(
-      currentProgram.customCriteria,
-      scoreList,
-    );
 
-    // Checks if PA is elegible based on the minimum score of the program
-    const included = totalScore >= currentProgram.minimumScore;
-    return included;
-  }
-
-  private createCriteriaScoreList(
-    revealedAttrProof: object,
-    attrRequest: object,
-  ): object {
     const inclusionCriteriaAnswers = {};
     for (let attrKey in revealedAttrProof) {
       let attrValue = revealedAttrProof[attrKey];
@@ -437,5 +448,14 @@ export class ProgramService {
       score = criterium.scoring['multiplier'] * answerPA;
     }
     return score;
+  }
+  private getPersitentDataFromProof(customData: Object, questionAnswerList: Object,  programCriteria: CustomCriterium[]): any {
+    for (let criterium of programCriteria) {
+      if (criterium.persistence) {
+        let criteriumName = criterium.criterium
+        customData[criteriumName] = questionAnswerList[criteriumName]
+      }
+    }
+    return customData
   }
 }

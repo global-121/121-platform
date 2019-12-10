@@ -127,10 +127,22 @@ export class CreateProgramDto {
   @ApiModelProperty({
     example: [
       {
+        criterium: 'id_number',
+        label: {
+          en: 'What is your id number?',
+          ny: 'Zaka zanu ndi id?',
+        },
+        answerType: 'numeric',
+        criteriumType: 'standard',
+        options: null,
+        persistence: true,
+        scoring: {},
+      },
+      {
         criterium: 'nr_of_children',
         label: {
-          english: 'How many children do you have?',
-          nyanja: 'Zaka zanu ndi zingati?',
+          en: 'How many children do you have?',
+          ny: 'Zaka zanu ndi zingati?',
         },
         answerType: 'numeric',
         criteriumType: 'standard',
@@ -144,8 +156,8 @@ export class CreateProgramDto {
       {
         criterium: 'roof_type',
         label: {
-          english: 'What type is your roof?',
-          nyanja: 'Denga lanu ndi lotani?',
+          en: 'What type is your roof?',
+          ny: 'Denga lanu ndi lotani?',
         },
         answerType: 'dropdown',
         criteriumType: 'standard',
@@ -155,16 +167,16 @@ export class CreateProgramDto {
               id: 0,
               option: 'steel',
               name: {
-                english: 'steel',
-                nyanja: 'zitsulo',
+                en: 'steel',
+                ny: 'zitsulo',
               },
             },
             {
               id: 1,
               option: 'tiles',
               name: {
-                english: 'tiles',
-                nyanja: 'matayala',
+                en: 'tiles',
+                ny: 'matayala',
               },
             },
           ],

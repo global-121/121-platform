@@ -35,4 +35,5 @@ export class CreateCustomCriteriumDto {
   @ApiModelProperty()
   @IsNotEmpty()
   public readonly scoring: JSON;
+  public readonly persistence: boolean;
 }
