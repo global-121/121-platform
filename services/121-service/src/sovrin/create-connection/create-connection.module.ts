@@ -11,9 +11,23 @@ import { ConnectionEntity } from './connection.entity';
 import { AuthMiddlewareAdmin } from '../../user/auth.middlewareAdmin';
 import { UserModule } from '../../user/user.module';
 import { SovrinSetupModule } from '../setup/setup.module';
+import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
+import { CredentialRequestEntity } from '../credential/credential-request.entity';
+import { CredentialEntity } from '../credential/credential.entity';
+import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ConnectionEntity]), UserModule, SovrinSetupModule],
+  imports: [
+    TypeOrmModule.forFeature([
+      AppointmentEntity,
+      ConnectionEntity,
+      CredentialAttributesEntity,
+      CredentialRequestEntity,
+      CredentialEntity,
+    ]),
+    UserModule,
+    SovrinSetupModule,
+  ],
   providers: [CreateConnectionService],
   controllers: [CreateConnectionController],
 })
