@@ -8,14 +8,18 @@
     >
       {{ 'account.logout'|translate}}
     </ion-item>
-    <ion-item button="true" disabled>
+    <ion-item button="true" 
+              disabled
+              detail="true"
+              detail-icon="key"
+    >
       {{ 'account.change-password'|translate}}
     </ion-item>
     <ion-item button="true"
               [disabled]="!isLoggedIn"
               (click)="deletePrompt()"
               detail="true"
-              detail-icon="log-out"
+              detail-icon="trash"
     >
       {{ 'account.delete-digital-id'|translate}}
     </ion-item>

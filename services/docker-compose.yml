@@ -29,6 +29,8 @@ services:
       dockerfile: Dockerfile
     init: true
     container_name: tyknims
+    volumes:
+      - "./tykn-ssi-services/TyknIMS/wallet-volume:/tmp/.indy_client/wallet"
     ports:
       - "50001:50001"
     networks:
@@ -48,6 +50,8 @@ services:
         - CONFIG=config.json
     init: true
     container_name: orgims
+    volumes:
+      - "./tykn-ssi-services/OrgIMS/wallet-volume:/tmp/wallet"
     ports:
       - "50002:50002"
     healthcheck:
