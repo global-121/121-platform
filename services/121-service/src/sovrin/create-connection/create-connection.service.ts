@@ -7,11 +7,23 @@ import { ConnectionEntity } from './connection.entity';
 import { Repository } from 'typeorm';
 import { SovrinSetupService } from '../setup/setup.service';
 import { DidDto } from '../../programs/program/dto/did.dto';
+import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
+import { CredentialRequestEntity } from '../credential/credential-request.entity';
+import { CredentialEntity } from '../credential/credential.entity';
+import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 
 @Injectable()
 export class CreateConnectionService {
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
+  @InjectRepository(CredentialAttributesEntity)
+  private readonly credentialAttributesRepository: Repository<CredentialAttributesEntity>;
+  @InjectRepository(CredentialRequestEntity)
+  private readonly credentialRequestRepository: Repository<CredentialRequestEntity>;
+  @InjectRepository(CredentialEntity)
+  private readonly credentialRepository: Repository<CredentialEntity>;
+  @InjectRepository(AppointmentEntity)
+  private readonly appointmentRepository: Repository<AppointmentEntity>;
 
   public constructor(private readonly sovrinSetupService: SovrinSetupService) {}
 
@@ -49,6 +61,26 @@ export class CreateConnectionService {
     didObject: DidDto,
   ) {
     await this.connectionRepository.delete(
+      {
+        did: didObject.did,
+      }
+    );
+    await this.credentialAttributesRepository.delete(
+      {
+        did: didObject.did,
+      }
+    );
+    await this.credentialRequestRepository.delete(
+      {
+        did: didObject.did,
+      }
+    );
+    await this.appointmentRepository.delete(
+      {
+        did: didObject.did,
+      }
+    );
+    await this.credentialRepository.delete(
       {
         did: didObject.did,
       }
