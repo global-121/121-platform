@@ -34,4 +34,9 @@ export class ConnectionEntity {
     nullable: true,
   })
   public programsExcluded: number[];
+
+  @Column('json', {
+    default: {}
+  })
+  public customData: JSON;
 }

@@ -1,6 +1,6 @@
 import { ProgramsServiceApiService } from './../services/programs-service-api.service';
 import { Component, OnInit, Input } from '@angular/core';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, LoadingController } from '@ionic/angular';
 import { PaDataService } from 'src/app/services/padata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController } from '@ionic/angular';
@@ -20,6 +20,7 @@ export class UserMenuComponent implements OnInit {
   public incorrectCredentials = false;
   public deletePasswordAlert;
   public deleteSuccesAlert;
+  public loadingDelete;
 
   constructor(
     private popoverController: PopoverController,
@@ -28,7 +29,8 @@ export class UserMenuComponent implements OnInit {
     public programService: ProgramsServiceApiService,
     public translate: TranslateService,
     public toastController: ToastController,
-    public alertController: AlertController
+    public alertController: AlertController,
+    public loadingController: LoadingController,
   ) {
   }
 
@@ -93,6 +95,7 @@ export class UserMenuComponent implements OnInit {
   }
 
   public async deleteAccountId(password: string): Promise<boolean> {
+    await this.presentLoadingDelete();
     const wallet = await this.paData.retrieve(this.paData.type.wallet);
     const did = await this.paData.retrieve(this.paData.type.did);
     await this.paData.deleteAccount(password).then(
@@ -101,9 +104,11 @@ export class UserMenuComponent implements OnInit {
         await this.deleteDidConnection(did);
         this.deletePasswordAlert.dismiss();
         this.deleteSuccesPrompt();
+        this.loadingDelete.dismiss();
         return true;
       },
       (error) => {
+        this.loadingDelete.dismiss();
         if (error.status === 401) {
           console.log('Incorrect credentials: ', error.status);
           this.passwordIncorrectToast();
@@ -139,6 +144,14 @@ export class UserMenuComponent implements OnInit {
       );
     }
   }
+
+
+  public async presentLoadingDelete() {
+    this.loadingDelete = await this.loadingController.create({
+    });
+    await this.loadingDelete.present();
+  }
+
 
   public deleteSuccesPrompt() {
     console.log('deleteSuccesPrompt');
