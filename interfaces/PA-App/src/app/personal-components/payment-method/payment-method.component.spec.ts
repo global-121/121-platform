@@ -5,6 +5,7 @@ import { PaymentMethodComponent } from './payment-method.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('PaymentMethodComponent', () => {
   let component: PaymentMethodComponent;
@@ -15,6 +16,7 @@ describe('PaymentMethodComponent', () => {
       declarations: [PaymentMethodComponent],
       imports: [
         TranslateModule.forRoot(),
+        HttpClientTestingModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

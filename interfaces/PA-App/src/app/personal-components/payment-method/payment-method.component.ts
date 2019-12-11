@@ -7,6 +7,7 @@ import { PaDataService } from 'src/app/services/padata.service';
 import { Program } from 'src/app/models/program.model';
 import { Fsp } from 'src/app/models/fsp.model';
 import { PersonalComponent } from '../personal-component.class';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-payment-method',
@@ -17,6 +18,7 @@ export class PaymentMethodComponent extends PersonalComponent {
   @Input()
   public data: any;
 
+  private did: string;
   public program: Program;
   public fsps: Fsp[];
 
@@ -26,6 +28,7 @@ export class PaymentMethodComponent extends PersonalComponent {
 
   constructor(
     public conversationService: ConversationService,
+    public programsService: ProgramsServiceApiService,
     public paData: PaDataService,
   ) {
     super();
@@ -44,6 +47,7 @@ export class PaymentMethodComponent extends PersonalComponent {
     this.conversationService.startLoading();
     await this.getProgram();
     this.fsps = this.program.financialServiceProviders;
+    this.did = await this.paData.retrieve(this.paData.type.did);
     this.conversationService.stopLoading();
   }
 
@@ -80,9 +84,11 @@ export class PaymentMethodComponent extends PersonalComponent {
     this.storeFsp(this.chosenFsp);
   }
 
-  public submitFsp() {
+  public async submitFsp() {
     this.fspSubmitted = true;
-    this.complete();
+    this.programsService.postFsp(this.did, this.fspChoice).subscribe(() => {
+      this.complete();
+    });
   }
 
   getNextSection() {
