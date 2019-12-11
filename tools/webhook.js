@@ -111,7 +111,7 @@ function buildHoPortal() {
 
 function buildServices() {
   exec(
-    `echo "Build services:" && sudo docker - compose up - d--build `,
+    `echo "Build services:" && sudo docker-compose up -d --build `,
     {
       shell: true,
       stdio: "inherit",
