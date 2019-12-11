@@ -1,3 +1,5 @@
+import { Fsp } from './fsp.model';
+
 export class Program {
   id: number;
   title: string;
@@ -8,5 +10,6 @@ export class Program {
   meetingDocuments: any;
   ngo: string;
   customCriteria: any[];
+  financialServiceProviders: Fsp[];
   credDefId: string;
 }

@@ -5,6 +5,7 @@ export enum PaDataTypes {
     credentialRequest = 'credentialRequest',
     did = 'did',
     didShort = 'didShort',
+    fsp = 'fsp',
     language = 'languageCode',
     myAnswers = 'myAnswers',
     myAppointments = 'myAppointments',

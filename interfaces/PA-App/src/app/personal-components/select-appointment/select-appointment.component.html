@@ -3,6 +3,17 @@
     <p>
       {{ 'personal.select-appointment.introduction'|translate }}
     </p>
+    <p>
+      <ion-button type="button" size="small">
+        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        {{ 'personal.select-appointment.more-info-activation'|translate }}
+      </ion-button>
+    </p>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo">
+    <p>
+      {{ 'personal.select-appointment.select'|translate }}
+    </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="timeslots"

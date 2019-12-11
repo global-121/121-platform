@@ -19,6 +19,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
 import { LoginIdentityComponent } from './login-identity/login-identity.component';
 import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.component';
 import { PhoneNumberComponent } from './phone-number/phone-number.component';
+import { PaymentMethodComponent } from './payment-method/payment-method.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { PhoneNumberComponent } from './phone-number/phone-number.component';
     InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
+    PaymentMethodComponent,
     PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
@@ -49,6 +51,7 @@ import { PhoneNumberComponent } from './phone-number/phone-number.component';
     InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
+    PaymentMethodComponent,
     PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
@@ -64,6 +67,7 @@ import { PhoneNumberComponent } from './phone-number/phone-number.component';
     InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
+    PaymentMethodComponent,
     PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,

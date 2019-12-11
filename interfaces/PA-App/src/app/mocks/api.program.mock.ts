@@ -10,5 +10,6 @@ export const mockProgram: Program = {
   meetingDocuments: 'document;document;',
   ngo: 'NGO',
   customCriteria: [],
+  financialServiceProviders: [],
   credDefId: '',
 };

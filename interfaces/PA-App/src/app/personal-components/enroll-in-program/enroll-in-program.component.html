@@ -134,32 +134,4 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn *ngIf="isDisabled"
-                 [isSpoken]="isDisabled"
-                 [actor]="programDetails?.ngo"
-  >
-    <p>
-      {{ 'personal.enroll-in-program.confirm-received'|translate }}
-    </p>
-    <p>
-      <ion-button type="button" size="small">
-        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-        {{ 'personal.enroll-in-program.more-info-activation'|translate }}
-      </ion-button>
-    </p>
-  </dialogue-turn>
-  <dialogue-turn *ngIf="isDisabled"
-                 [isSpoken]="isDisabled"
-                 [actor]="programDetails?.ngo"
-                 isConnected="true"
-  >
-    <p>
-      {{ 'personal.enroll-in-program.prepare-documents'|translate }}
-    </p>
-    <ul class="ion-no-padding ion-padding-start">
-      <li *ngFor="let document of programDetails?.meetingDocuments">
-        {{ document }}
-      </li>
-    </ul>
-  </dialogue-turn>
 </section>
