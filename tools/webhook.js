@@ -47,10 +47,7 @@ function buildPaApp() {
     {
       shell: true,
       stdio: "inherit",
-      cwd: repo_pa,
-      env: {
-        NG_SUB_DIR_PATH: "/PA-app"
-      }
+      cwd: repo_pa
     }
   );
   console.log("Built PA-App.");
@@ -66,10 +63,7 @@ function buildAwApp() {
     {
       shell: true,
       stdio: "inherit",
-      cwd: repo_aw,
-      env: {
-        NG_SUB_DIR_PATH: "/AW-app"
-      }
+      cwd: repo_aw
     }
   );
   console.log("Built AW-App.");
