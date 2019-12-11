@@ -1,14 +1,27 @@
-var secrets = require("./secrets");
+const http = require("http");
+const crypto = require("crypto");
+const child_process = require("child_process");
+const exec = child_process.exec;
+const execSync = child_process.execSync;
 
-var secret = secrets.secret;
-var repo_services = "/home/121-platform/services";
-var repo_pa = "/home/121-platform/interfaces/PA-App";
-var repo_ho = "/home/121-platform/interfaces/HO-Portal";
-var repo_aw = "/home/121-platform/interfaces/AW-App";
+const secrets = require("./secrets");
 
-let http = require("http");
-let crypto = require("crypto");
-const exec = require("child_process").exec;
+const secret = secrets.secret;
+const repo = "/home/121-platform";
+const repo_services = `${repo}/services`;
+const repo_interfaces = `${repo}/interfaces`;
+const repo_pa = `${repo_interfaces}/PA-App`;
+const repo_ho = `${repo_interfaces}/HO-Portal`;
+const repo_aw = `${repo_interfaces}/AW-App`;
+const web_root = "/var/www/121-platform";
+
+function logOutput(error, stdout, stderr) {
+  if (error) {
+    return console.error(stderr);
+  }
+
+  console.log(stdout);
+}
 
 http
   .createServer(function(req, res) {
@@ -32,33 +45,82 @@ http
         payload.action == "closed" &&
         payload.pull_request.merged
       ) {
+        // Update local state
+        execSync(`echo "Update local state:" && sudo git pull`, {
+          cwd: repo
+        });
+
+        // Build PA-App
         exec(
-          "cd " +
-            repo_services +
-            " && sudo git pull " +
-            " && sudo docker-compose up -d --build" +
-            " && cd " +
-            repo_pa +
-            ' && export NG_SUB_DIR_PATH="PA-app/"' +
-            " && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /PA-app/" +
-            " && sudo rm -rf /var/www/121-platform/PA-app && sudo cp -r www/ /var/www/121-platform/PA-app" +
-            " && cd " +
-            repo_ho +
-            ' && export NG_SUB_DIR_PATH="HO-portal/"' +
-            " && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /HO-portal/" +
-            " && sudo rm -rf /var/www/121-platform/HO-portal && sudo cp -r www/ /var/www/121-platform/HO-portal" +
-            " && cd " +
-            repo_aw +
-            ' && export NG_SUB_DIR_PATH="AW-app/"' +
-            " && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /AW-app/" +
-            " && sudo rm -rf /var/www/121-platform/AW-app && sudo cp -r www/ /var/www/121-platform/AW-app",
-          function(error, stdout, stderr) {
-            if (error) {
-              console.log(stderr);
-            } else {
-              console.log("Execution completed");
-              console.log(stdout);
+          `echo "Build PA-App:" ` +
+            ` && sudo npm ci --unsafe-perm ` +
+            ` && sudo npm run build -- --prod --base-href /PA-app/ ` +
+            ` && sudo rm -rf ${web_root}/PA-app ` +
+            ` && sudo cp -r www/ ${web_root}/PA-app `,
+          {
+            shell: true,
+            stdio: "inherit",
+            cwd: repo_pa,
+            env: {
+              NG_SUB_DIR_PATH: "/PA-app"
             }
+          },
+          function(error, stdout, stderr) {
+            console.log("Built PA-App");
+            logOutput(error, stdout, stderr);
+          }
+        );
+
+        // Build AW-App
+        exec(
+          `echo "Build AW-App:" ` +
+            `&& sudo npm ci --unsafe-perm ` +
+            `&& sudo npm run build -- --prod --base-href /AW-app/ ` +
+            `&& sudo rm -rf ${web_root}/AW-app ` +
+            `&& sudo cp -r www/ ${web_root}/AW-app `,
+          {
+            shell: true,
+            stdio: "inherit",
+            cwd: repo_aw,
+            env: {
+              NG_SUB_DIR_PATH: "/AW-app"
+            }
+          },
+          function(error, stdout, stderr) {
+            console.log("Built AW-App");
+            logOutput(error, stdout, stderr);
+          }
+        );
+
+        // Build HO-Portal
+        exec(
+          `echo "Build HO-Portal:" ` +
+            `&& sudo npm ci --unsafe-perm ` +
+            `&& sudo npm run build -- --prod --base-href /HO-portal/ ` +
+            `&& sudo rm -rf ${web_root}/HO-portal ` +
+            `&& sudo cp -r www/ ${web_root}/HO-portal `,
+          {
+            shell: true,
+            stdio: "inherit",
+            cwd: repo_ho
+          },
+          function(error, stdout, stderr) {
+            console.log("Built HO-Portal");
+            logOutput(error, stdout, stderr);
+          }
+        );
+
+        // Build services
+        exec(
+          `echo "Build services:" && sudo docker - compose up - d--build `,
+          {
+            shell: true,
+            stdio: "inherit",
+            cwd: repo_services
+          },
+          function(error, stdout, stderr) {
+            console.log("Built services");
+            logOutput(error, stdout, stderr);
           }
         );
       }
