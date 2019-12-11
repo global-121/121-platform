@@ -14,6 +14,9 @@ export class ConnectionEntity {
   @Column({ nullable: true })
   public preferredLanguage: string;
 
+  @Column({ nullable: true })
+  public fspId: number;
+
   @Column('numeric', {
     array: true,
     default: () => 'array[]::integer[]',

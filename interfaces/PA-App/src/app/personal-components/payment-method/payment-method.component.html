@@ -1,0 +1,43 @@
+<section>
+  <dialogue-turn [actor]="program?.ngo">
+    <p>
+      {{ 'personal.payment-method.introduction'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn actor="self"
+                 *ngIf="fsps"
+                 [isSpoken]="fsps"
+  >
+    <form (submit)="submitFsp()">
+      <ion-radio-group name="fsps"
+                       (ionChange)="changeFsp($event)"
+      >
+        <ion-item *ngFor="let fsp of fsps"
+                  color="light"
+                  class="ion-no-padding ion-text-wrap"
+        >
+          <ion-label class="ion-text-wrap">
+            {{ fsp.fsp }}
+          </ion-label>
+          <ion-radio [value]="fsp.id" 
+                     [checked]="(fsp.id === fspChoice)"
+                     [disabled]="fspSubmitted"
+          ></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <p class="ion-margin-top">
+        <ion-button type="submit"
+                     *ngIf="fspChoice && !fspSubmitted"
+                    [disabled]="fspSubmitted || isDisabled"
+                    expand="block"
+        >{{ 'shared.submit-button'|translate }}</ion-button>
+      </p>
+    </form>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                 *ngIf="fspSubmitted"
+                 [isSpoken]="fspSubmitted"
+  >
+    <p [innerHTML]="'personal.payment-method.conclusion'|translate:{ fspName:chosenFsp?.fsp }"></p>
+  </dialogue-turn>
+</section>

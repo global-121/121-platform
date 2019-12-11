@@ -48,6 +48,7 @@ export class ProgramService {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium')
+      .leftJoinAndSelect('program.financialServiceProviders', 'financialServiceProvider')
       .leftJoinAndSelect('program.aidworkers', 'aidworker');
     qb.whereInIds([where]);
     const program = qb.getOne();

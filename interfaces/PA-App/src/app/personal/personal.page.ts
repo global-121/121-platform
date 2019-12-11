@@ -22,6 +22,7 @@ import { SelectLanguageComponent } from '../personal-components/select-language/
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
 import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
+import { PaymentMethodComponent } from '../personal-components/payment-method/payment-method.component';
 
 @Component({
   selector: 'app-personal',
@@ -47,6 +48,7 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.initialNeeds]: InitialNeedsComponent,
     [PersonalComponents.loginIdentity]: LoginIdentityComponent,
     [PersonalComponents.meetingReminder]: MeetingReminderComponent,
+    [PersonalComponents.paymentMethod]: PaymentMethodComponent,
     [PersonalComponents.phoneNumber]: PhoneNumberComponent,
     [PersonalComponents.selectAppointment]: SelectAppointmentComponent,
     [PersonalComponents.selectCountry]: SelectCountryComponent,

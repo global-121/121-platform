@@ -14,6 +14,7 @@ import { DidInfoDto } from './dto/did-info.dto';
 import { ConnectionEntity } from './connection.entity';
 import { PasswordDto } from './dto/password.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
+import { SetFspDto } from './dto/set-fsp.dto';
 
 @ApiUseTags('sovrin')
 @Controller('sovrin/create-connection')
@@ -58,6 +59,18 @@ export class CreateConnectionController {
       setPhoneRequest.did,
       setPhoneRequest.phonenumber,
       setPhoneRequest.language
+    );
+  }
+
+  @ApiOperation({ title: 'Set Financial Service Provider (FSP)' })
+  @ApiResponse({ status: 200, description: 'FSP set for connection' })
+  @Post('/fsp')
+  public async addFsp(
+    @Body() setFsp: SetFspDto,
+  ): Promise<ConnectionEntity> {
+    return await this.createConnectionService.addFsp(
+      setFsp.did,
+      setFsp.fspId
     );
   }
 

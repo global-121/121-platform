@@ -25,7 +25,7 @@ export class CreateConnectionService {
   @InjectRepository(AppointmentEntity)
   private readonly appointmentRepository: Repository<AppointmentEntity>;
 
-  public constructor(private readonly sovrinSetupService: SovrinSetupService) {}
+  public constructor(private readonly sovrinSetupService: SovrinSetupService) { }
 
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
@@ -97,6 +97,15 @@ export class CreateConnectionService {
     connection.phoneNumber = phoneNumber;
     connection.preferredLanguage = preferredLanguage;
     await this.connectionRepository.save(connection);
+  }
+
+  public async addFsp(
+    did: string,
+    fspId: number,
+  ): Promise<ConnectionEntity> {
+    const connection = await this.findOne(did);
+    connection.fspId = fspId;
+    return await this.connectionRepository.save(connection);
   }
 
   public async findOne(did: string): Promise<ConnectionEntity> {

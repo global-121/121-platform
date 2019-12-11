@@ -264,6 +264,22 @@ export class ProgramsServiceApiService {
       map(response => response)
     );
   }
+
+  postFsp(did: string, fspId: number): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/create-connection/fsp',
+      {
+        did,
+        fspId
+      },
+      true
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
   deleteConnection(did: string): Observable<any> {
     return this.apiService.post(
       environment.url_121_service_api,

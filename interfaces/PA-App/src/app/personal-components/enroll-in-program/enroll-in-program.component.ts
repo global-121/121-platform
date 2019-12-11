@@ -98,14 +98,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
       'ngo',
       'title',
       'description',
-      'meetingDocuments',
     ];
     for (const detail of details) {
       let value = this.mapLabelByLanguageCode(response[detail]);
-
-      if (detail === 'meetingDocuments' && typeof value === 'string') {
-        value = this.buildDocumentsList(value);
-      }
 
       if (typeof value === 'undefined') {
         value = response[detail];
@@ -151,10 +146,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
     }
 
     return options;
-  }
-
-  private buildDocumentsList(documents: string): string[] {
-    return documents.split(';');
   }
 
   private mapLabelByLanguageCode(property: any) {
@@ -316,7 +307,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.selectAppointment;
+    return PersonalComponents.paymentMethod;
   }
 
   complete() {
@@ -328,7 +319,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
           ngo: this.currentProgram.ngo,
           title: this.currentProgram.title,
           description: this.currentProgram.description,
-          meetingDocuments: this.currentProgram.meetingDocuments,
           customCriteria: this.currentProgram.customCriteria,
           credDefId: this.currentProgram.credDefId,
         },

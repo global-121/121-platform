@@ -67,8 +67,14 @@
       "login-id": "Use existing Digital ID",
       "more-info-digital-id": "About Digital ID"
     },
+    "payment-method": {
+      "introduction": "If you are included in the program, how would you like to receive your money?",
+      "conclusion": "Thank you. You have selected payment option <strong>{{fspName}}</strong>."
+    },
     "select-appointment": {
-      "introduction": "Select a date and time:",
+      "introduction": "Next step: Make an appointment for Digital ID activation and program application.",
+      "more-info-activation": "About activation",
+      "select": "Select a date and time:",
       "thanks-repeat": "You have selected the following date and time:",
       "documents": "Please ensure you have the following documents:",
       "from": "From",
