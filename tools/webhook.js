@@ -27,12 +27,15 @@ http.createServer(function (req, res) {
                         ' && sudo git pull ' +
                         ' && sudo docker-compose up -d --build' +
                         ' && cd ' + repo_pa +
+                        ' && export NG_SUB_DIR_PATH="PA-app/"' +
                         ' && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /PA-app/' +
                         ' && sudo rm -rf /var/www/121-platform/PA-app && sudo cp -r www/ /var/www/121-platform/PA-app' +
                         ' && cd ' + repo_ho +
+                        ' && export NG_SUB_DIR_PATH="HO-portal/"' +
                         ' && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /HO-portal/' +
                         ' && sudo rm -rf /var/www/121-platform/HO-portal && sudo cp -r www/ /var/www/121-platform/HO-portal' + 
                         ' && cd ' + repo_aw +
+                        ' && export NG_SUB_DIR_PATH="AW-app/"' +
                         ' && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /AW-app/' +
                         ' && sudo rm -rf /var/www/121-platform/AW-app && sudo cp -r www/ /var/www/121-platform/AW-app'
                 , function(error, stdout, stderr) {

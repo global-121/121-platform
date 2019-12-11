@@ -11,7 +11,7 @@ export const environment = {
   useAnimation: ${process.env.NG_USE_ANIMATION || 'true'},
 
   // Extra:
-  subDirPath: '${process.env.NG_SUB_DIR_PATH_AW}',
+  subDirPath: '${process.env.NG_SUB_DIR_PATH || ''}',
 
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API}',
