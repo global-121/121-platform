@@ -6,6 +6,10 @@ const execSync = child_process.execSync;
 
 const secrets = require("./secrets");
 
+// ----------------------------------------------------------------------------
+//   Configuration:
+// ----------------------------------------------------------------------------
+
 const secret = secrets.secret;
 const repo = "/home/121-platform";
 const repo_services = `${repo}/services`;
@@ -15,6 +19,10 @@ const repo_ho = `${repo_interfaces}/HO-Portal`;
 const repo_aw = `${repo_interfaces}/AW-App`;
 const web_root = "/var/www/121-platform";
 
+// ----------------------------------------------------------------------------
+//   Functions/Methods/etc:
+// ----------------------------------------------------------------------------
+
 function logOutput(error, stdout, stderr) {
   if (error) {
     return console.error(stderr);
@@ -22,6 +30,103 @@ function logOutput(error, stdout, stderr) {
 
   console.log(stdout);
 }
+
+function onMerge() {
+  // Update local state
+  execSync(`echo "Update local state:" && sudo git pull`, {
+    cwd: repo
+  });
+
+  buildPaApp();
+
+  buildAwApp();
+
+  buildHoPortal();
+
+  buildServices();
+}
+
+function buildPaApp() {
+  exec(
+    `echo "Build PA-App:" ` +
+      ` && sudo npm ci --unsafe-perm ` +
+      ` && sudo npm run build -- --prod --base-href /PA-app/ ` +
+      ` && sudo rm -rf ${web_root}/PA-app ` +
+      ` && sudo cp -r www/ ${web_root}/PA-app `,
+    {
+      shell: true,
+      stdio: "inherit",
+      cwd: repo_pa,
+      env: {
+        NG_SUB_DIR_PATH: "/PA-app"
+      }
+    },
+    function(error, stdout, stderr) {
+      console.log("Built PA-App");
+      logOutput(error, stdout, stderr);
+    }
+  );
+}
+
+function buildAwApp() {
+  exec(
+    `echo "Build AW-App:" ` +
+      `&& sudo npm ci --unsafe-perm ` +
+      `&& sudo npm run build -- --prod --base-href /AW-app/ ` +
+      `&& sudo rm -rf ${web_root}/AW-app ` +
+      `&& sudo cp -r www/ ${web_root}/AW-app `,
+    {
+      shell: true,
+      stdio: "inherit",
+      cwd: repo_aw,
+      env: {
+        NG_SUB_DIR_PATH: "/AW-app"
+      }
+    },
+    function(error, stdout, stderr) {
+      console.log("Built AW-App");
+      logOutput(error, stdout, stderr);
+    }
+  );
+}
+
+function buildHoPortal() {
+  exec(
+    `echo "Build HO-Portal:" ` +
+      `&& sudo npm ci --unsafe-perm ` +
+      `&& sudo npm run build -- --prod --base-href /HO-portal/ ` +
+      `&& sudo rm -rf ${web_root}/HO-portal ` +
+      `&& sudo cp -r www/ ${web_root}/HO-portal `,
+    {
+      shell: true,
+      stdio: "inherit",
+      cwd: repo_ho
+    },
+    function(error, stdout, stderr) {
+      console.log("Built HO-Portal");
+      logOutput(error, stdout, stderr);
+    }
+  );
+}
+
+function buildServices() {
+  exec(
+    `echo "Build services:" && sudo docker - compose up - d--build `,
+    {
+      shell: true,
+      stdio: "inherit",
+      cwd: repo_services
+    },
+    function(error, stdout, stderr) {
+      console.log("Built services");
+      logOutput(error, stdout, stderr);
+    }
+  );
+}
+
+// ----------------------------------------------------------------------------
+//   Webhook Service:
+// ----------------------------------------------------------------------------
 
 http
   .createServer(function(req, res) {
@@ -45,84 +150,7 @@ http
         payload.action == "closed" &&
         payload.pull_request.merged
       ) {
-        // Update local state
-        execSync(`echo "Update local state:" && sudo git pull`, {
-          cwd: repo
-        });
-
-        // Build PA-App
-        exec(
-          `echo "Build PA-App:" ` +
-            ` && sudo npm ci --unsafe-perm ` +
-            ` && sudo npm run build -- --prod --base-href /PA-app/ ` +
-            ` && sudo rm -rf ${web_root}/PA-app ` +
-            ` && sudo cp -r www/ ${web_root}/PA-app `,
-          {
-            shell: true,
-            stdio: "inherit",
-            cwd: repo_pa,
-            env: {
-              NG_SUB_DIR_PATH: "/PA-app"
-            }
-          },
-          function(error, stdout, stderr) {
-            console.log("Built PA-App");
-            logOutput(error, stdout, stderr);
-          }
-        );
-
-        // Build AW-App
-        exec(
-          `echo "Build AW-App:" ` +
-            `&& sudo npm ci --unsafe-perm ` +
-            `&& sudo npm run build -- --prod --base-href /AW-app/ ` +
-            `&& sudo rm -rf ${web_root}/AW-app ` +
-            `&& sudo cp -r www/ ${web_root}/AW-app `,
-          {
-            shell: true,
-            stdio: "inherit",
-            cwd: repo_aw,
-            env: {
-              NG_SUB_DIR_PATH: "/AW-app"
-            }
-          },
-          function(error, stdout, stderr) {
-            console.log("Built AW-App");
-            logOutput(error, stdout, stderr);
-          }
-        );
-
-        // Build HO-Portal
-        exec(
-          `echo "Build HO-Portal:" ` +
-            `&& sudo npm ci --unsafe-perm ` +
-            `&& sudo npm run build -- --prod --base-href /HO-portal/ ` +
-            `&& sudo rm -rf ${web_root}/HO-portal ` +
-            `&& sudo cp -r www/ ${web_root}/HO-portal `,
-          {
-            shell: true,
-            stdio: "inherit",
-            cwd: repo_ho
-          },
-          function(error, stdout, stderr) {
-            console.log("Built HO-Portal");
-            logOutput(error, stdout, stderr);
-          }
-        );
-
-        // Build services
-        exec(
-          `echo "Build services:" && sudo docker - compose up - d--build `,
-          {
-            shell: true,
-            stdio: "inherit",
-            cwd: repo_services
-          },
-          function(error, stdout, stderr) {
-            console.log("Built services");
-            logOutput(error, stdout, stderr);
-          }
-        );
+        onMerge();
       }
     });
     res.end();
