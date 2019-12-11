@@ -1,4 +1,4 @@
-import { Length, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import { Length, IsString, ValidateIf } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class SetPhoneRequestDto {
