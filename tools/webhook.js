@@ -1,7 +1,6 @@
 const http = require("http");
 const crypto = require("crypto");
 const child_process = require("child_process");
-const exec = child_process.exec;
 const execSync = child_process.execSync;
 
 const secrets = require("./secrets");
@@ -23,31 +22,23 @@ const web_root = "/var/www/121-platform";
 //   Functions/Methods/etc:
 // ----------------------------------------------------------------------------
 
-function logOutput(error, stdout, stderr) {
-  if (error) {
-    return console.error(stderr);
-  }
-
-  console.log(stdout);
-}
-
 function onMerge() {
   // Update local state
   execSync(`echo "Update local state:" && sudo git pull`, {
     cwd: repo
   });
 
+  buildServices();
+
   buildPaApp();
 
   buildAwApp();
 
   buildHoPortal();
-
-  buildServices();
 }
 
 function buildPaApp() {
-  exec(
+  execSync(
     `echo "Build PA-App:" ` +
       ` && sudo npm ci --unsafe-perm ` +
       ` && sudo npm run build -- --prod --base-href /PA-app/ ` +
@@ -60,16 +51,13 @@ function buildPaApp() {
       env: {
         NG_SUB_DIR_PATH: "/PA-app"
       }
-    },
-    function(error, stdout, stderr) {
-      console.log("Built PA-App");
-      logOutput(error, stdout, stderr);
     }
   );
+  console.log("Built PA-App.");
 }
 
 function buildAwApp() {
-  exec(
+  execSync(
     `echo "Build AW-App:" ` +
       `&& sudo npm ci --unsafe-perm ` +
       `&& sudo npm run build -- --prod --base-href /AW-app/ ` +
@@ -82,16 +70,13 @@ function buildAwApp() {
       env: {
         NG_SUB_DIR_PATH: "/AW-app"
       }
-    },
-    function(error, stdout, stderr) {
-      console.log("Built AW-App");
-      logOutput(error, stdout, stderr);
     }
   );
+  console.log("Built AW-App.");
 }
 
 function buildHoPortal() {
-  exec(
+  execSync(
     `echo "Build HO-Portal:" ` +
       `&& sudo npm ci --unsafe-perm ` +
       `&& sudo npm run build -- --prod --base-href /HO-portal/ ` +
@@ -101,27 +86,21 @@ function buildHoPortal() {
       shell: true,
       stdio: "inherit",
       cwd: repo_ho
-    },
-    function(error, stdout, stderr) {
-      console.log("Built HO-Portal");
-      logOutput(error, stdout, stderr);
     }
   );
+  console.log("Built HO-Portal.");
 }
 
 function buildServices() {
-  exec(
-    `echo "Build services:" && sudo docker-compose up -d --build `,
+  execSync(
+    `echo "Build services:" && sudo docker-compose up -d --build && sudo docker restart 121-service PA-accounts-service `,
     {
       shell: true,
       stdio: "inherit",
       cwd: repo_services
-    },
-    function(error, stdout, stderr) {
-      console.log("Built services");
-      logOutput(error, stdout, stderr);
     }
   );
+  console.log("Built services.");
 }
 
 // ----------------------------------------------------------------------------
