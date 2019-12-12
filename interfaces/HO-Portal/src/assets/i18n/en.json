@@ -48,7 +48,8 @@
         "created": "Program created at",
         "updated": "Program last updated at",
         "customCriteria": "Inclusion criteria",
-        "aidworkers": "Assigned aidworkers"
+        "aidworkers": "Assigned aidworkers",
+        "financialServiceProviders": "Financial Service-providers"
       },
       "program-modal": {
         "pageTitle": "Program JSON"
