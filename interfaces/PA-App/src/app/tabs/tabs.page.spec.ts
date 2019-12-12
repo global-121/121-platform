@@ -1,8 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TabsPage } from './tabs.page';
 import { TranslateModule } from '@ngx-translate/core';
+import { PopoverController } from '@ionic/angular';
+import { PaDataService } from '../services/padata.service';
+import { MockPaDataService } from '../mocks/padata.service.mock';
+
+import { TabsPage } from './tabs.page';
 
 describe('TabsPage', () => {
   let component: TabsPage;
@@ -15,6 +19,15 @@ describe('TabsPage', () => {
       imports: [
         TranslateModule.forRoot(),
       ],
+      providers: [
+        {
+          provide: PopoverController,
+        },
+        {
+          provide: PaDataService,
+          useValue: MockPaDataService,
+        },
+      ],
     }).compileComponents();
   }));
 
@@ -24,7 +37,7 @@ describe('TabsPage', () => {
     fixture.detectChanges();
   });
 
-  xit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });
