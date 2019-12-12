@@ -63,20 +63,19 @@ export class UserMenuComponent implements OnInit {
       ],
       buttons: [
         {
+          role: 'cancel',
+          text: this.translate.instant('shared.cancel-button'),
+          cssClass: 'ion-outline ion-color-secondary',
+        },
+        {
+          role: 'destructive',
           text: this.translate.instant('shared.submit-button'),
           handler: data => {
             console.log('Confirm Ok');
             this.deleteAccountId(data.password);
             return false;
           },
-          role: null,
         },
-        {
-          text: this.translate.instant('account.close'),
-          handler: () => {
-            this.alertController.dismiss();
-          }
-        }
       ],
     });
     await this.deletePasswordAlert.present();
@@ -87,7 +86,7 @@ export class UserMenuComponent implements OnInit {
       header: this.translate.instant('personal.login-identity.incorrect-credentials'),
       animated: true,
       showCloseButton: true,
-      closeButtonText: this.translate.instant('account.close'),
+      closeButtonText: this.translate.instant('shared.close-button'),
       position: 'bottom',
     }).then((obj) => {
       obj.present();
@@ -152,20 +151,17 @@ export class UserMenuComponent implements OnInit {
     await this.loadingDelete.present();
   }
 
-
   public deleteSuccesPrompt() {
     console.log('deleteSuccesPrompt');
     this.alertController.create({
       message: this.translate.instant('account.delete-succes'),
       buttons: [
         {
-          text: this.translate.instant('account.close'),
-          handler: () => {
-            this.logout();
-          },
+          text: this.translate.instant('shared.close-button'),
         },
       ],
     }).then((obj) => {
+      obj.onDidDismiss().then(() => this.logout());
       obj.present();
     });
   }
