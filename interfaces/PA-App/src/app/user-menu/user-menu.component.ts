@@ -61,7 +61,7 @@ export class UserMenuComponent implements OnInit {
           text: this.translate.instant('shared.submit-button'),
           handler: (data) => {
             if (!data || !data.password) {
-              const passowordInput: HTMLInputElement = this.deletePasswordAlert.querySelector('[type=password');
+              const passowordInput: HTMLInputElement = this.deletePasswordAlert.querySelector('[type=password]');
               if (passowordInput) {
                 passowordInput.focus();
               }
