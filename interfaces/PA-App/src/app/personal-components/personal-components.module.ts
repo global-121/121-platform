@@ -8,18 +8,18 @@ import { ConversationService } from '../services/conversation.service';
 
 import { CreateIdentityComponent } from './create-identity/create-identity.component';
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
+import { HandleProofComponent } from './handle-proof/handle-proof.component';
 import { InitialNeedsComponent } from './initial-needs/initial-needs.component';
+import { LoginIdentityComponent } from './login-identity/login-identity.component';
+import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.component';
+import { PaymentMethodComponent } from './payment-method/payment-method.component';
+import { PhoneNumberComponent } from './phone-number/phone-number.component';
 import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
 import { SelectCountryComponent } from './select-country/select-country.component';
 import { SelectLanguageComponent } from './select-language/select-language.component';
 import { SelectProgramComponent } from './select-program/select-program.component';
-import { StoreCredentialComponent } from './store-credential/store-credential.component';
-import { HandleProofComponent } from './handle-proof/handle-proof.component';
 import { SignupSigninComponent } from './signup-signin/signup-signin.component';
-import { LoginIdentityComponent } from './login-identity/login-identity.component';
-import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.component';
-import { PhoneNumberComponent } from './phone-number/phone-number.component';
-import { PaymentMethodComponent } from './payment-method/payment-method.component';
+import { StoreCredentialComponent } from './store-credential/store-credential.component';
 
 @NgModule({
   declarations: [
