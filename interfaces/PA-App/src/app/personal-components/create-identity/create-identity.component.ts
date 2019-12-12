@@ -72,11 +72,11 @@ export class CreateIdentityComponent extends PersonalComponent {
     // (moved outside of executeSovrinFlow because of unique-username-check)
     const paAccountUsername = this.useLocalStorage ? createRandomString(42) : username;
     const paAccountPassword = create;
+    this.conversationService.startLoading();
     await this.paData.createAccount(paAccountUsername, paAccountPassword).then(
       async () => {
         this.usernameNotUnique = false;
         this.isInProgress = true;
-        this.conversationService.startLoading();
         await this.executeSovrinFlow();
         this.uiService.showUserMenu();
         this.conversationService.stopLoading();

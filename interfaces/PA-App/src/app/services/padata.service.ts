@@ -10,6 +10,8 @@ import { UiService } from './ui.service';
 
 import { Program } from '../models/program.model';
 import { PaDataTypes } from './padata-types.enum';
+import { ProgramsServiceApiService } from './programs-service-api.service';
+import { SovrinService } from './sovrin.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +32,8 @@ export class PaDataService {
   constructor(
     private ionStorage: Storage,
     private paAccountApi: PaAccountApiService,
+    private programService: ProgramsServiceApiService,
+    private sovrinService: SovrinService,
     private jwtService: JwtService,
     private uiService: UiService,
   ) {
@@ -127,21 +131,20 @@ export class PaDataService {
 
     return new Promise((resolve, reject) => {
       this.paAccountApi.login(username, password)
-
-      .then(
-        async (response) => {
-          console.log('PaData: login successful', response);
-          this.ionStorage.clear();
-          this.uiService.showUserMenu();
-          this.setLoggedIn();
-          return resolve(response);
-        },
-        (error) => {
-          console.log('PaData: login error', error);
-          this.setLoggedOut();
-          return reject(error);
-        }
-      );
+        .then(
+          (response) => {
+            console.log('PaData: login successful', response);
+            this.ionStorage.clear();
+            this.uiService.showUserMenu();
+            this.setLoggedIn();
+            return resolve(response);
+          },
+          (error) => {
+            console.log('PaData: login error', error);
+            this.setLoggedOut();
+            return reject(error);
+          }
+        );
     });
   }
 
@@ -179,7 +182,47 @@ export class PaDataService {
     this.setLoggedOut();
   }
 
-  public async deleteAccount(password: string): Promise<any> {
-    return this.paAccountApi.deleteAccount(password);
+  public async deleteIdentity(password: string): Promise<any> {
+    if (this.useLocalStorage) {
+      return this.featureNotAvailable();
+    }
+
+    const wallet = await this.retrieve(this.type.wallet);
+    const did = await this.retrieve(this.type.did);
+
+    // All requests are dependent on their predecessors!
+    // A wallet should only be deleted if the account is already succesfully deleted
+    // A connection should only be deleted if the wallet is already succesfully deleted
+    return new Promise(async (resolve, reject) => {
+      if (!this.hasAccount) {
+        return reject('');
+      }
+
+      await this.paAccountApi.deleteAccount(password)
+        .then(
+          async () => {
+            let deleteWalletResult = false;
+            let deleteConnectionResult = false;
+
+            await this.sovrinService.deleteWallet(wallet)
+              .then(
+                () => deleteWalletResult = true,
+                (error) => reject(error)
+              );
+
+            await this.programService.deleteConnection(did)
+              .then(
+                () => deleteConnectionResult = true,
+                (error) => reject(error)
+              );
+
+            if (deleteWalletResult && deleteConnectionResult) {
+              this.setLoggedOut();
+              return resolve(true);
+            }
+          },
+          (error) => reject(error)
+        );
+    });
   }
 }
