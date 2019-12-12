@@ -5,6 +5,7 @@ import { UserMenuComponent } from './user-menu.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
+import { PopoverController, LoadingController } from '@ionic/angular';
 
 describe('UserMenuComponent', () => {
   let component: UserMenuComponent;
@@ -21,7 +22,13 @@ describe('UserMenuComponent', () => {
         {
           provide: PaDataService,
           useValue: MockPaDataService,
-        }
+        },
+        {
+          provide: PopoverController,
+        },
+        {
+          provide: LoadingController,
+        },
       ]
     })
       .compileComponents();
@@ -33,7 +40,7 @@ describe('UserMenuComponent', () => {
     fixture.detectChanges();
   });
 
-  xit('should create', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 });
