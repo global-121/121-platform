@@ -22,3 +22,8 @@
 | PA-accounts-service | [![Build Status](https://dev.azure.com/global121/121%20Platform/_apis/build/status/Services/PA-accounts-service?branchName=master)](https://dev.azure.com/global121/121%20Platform/_build/latest?definitionId=19&branchName=master) |
 | Tykn-SSI-Services | [![Build Status](https://dev.azure.com/global121/121%20Platform/_apis/build/status/Services/Tykn%20SSI%20Services?branchName=master)](https://dev.azure.com/global121/121%20Platform/_build/latest?definitionId=20&branchName=master) |
 
+## Deployment
+
+- Merged PR's to 'master' branch are automatically deployed to the test-server.
+- To deploy to the production-server create+merge a PR from global-121:master to global-121:production.
+
