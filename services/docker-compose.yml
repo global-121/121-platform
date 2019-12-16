@@ -73,6 +73,8 @@ services:
       dockerfile: Dockerfile
     init: true
     container_name: userims
+    volumes:
+      - "./tykn-ssi-services/UserIMS/wallet-volume:/tmp/.indy_client"
     healthcheck:
       test: "exit 0"
     restart: on-failure
