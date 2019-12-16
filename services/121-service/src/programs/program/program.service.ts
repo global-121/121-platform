@@ -468,8 +468,7 @@ export class ProgramService {
     // TO DO: call Disberse-API here, for now static data.
     const fundsDisberse = {
       totalFunds: 1000,
-      transferredFunds: 400,
-      availableFunds: 600
+      transferredFunds: 400
     };
 
     const program = await this.programRepository.findOne({ where: { id: programId } });
@@ -483,7 +482,7 @@ export class ProgramService {
     }
     funds.totalFunds = fundsDisberse.totalFunds;
     funds.transferredFunds = fundsDisberse.transferredFunds;
-    funds.availableFunds = fundsDisberse.availableFunds;
+    funds.availableFunds = fundsDisberse.totalFunds - fundsDisberse.transferredFunds;
     funds.program = program;
     await this.fundsRepository.save(funds);
 
