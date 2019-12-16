@@ -1,7 +1,7 @@
 import { Get, Param, Controller, Post, Body } from '@nestjs/common';
 import { ApiUseTags, ApiOperation, ApiImplicitParam } from '@nestjs/swagger';
 import { ProofService } from './proof.service';
-import { InculdeMeDto } from '../../programs/program/dto/include-me.dto';
+import { IncludeMeDto } from '../../programs/program/dto/include-me.dto';
 
 @ApiUseTags('sovrin')
 @Controller('sovrin')
@@ -23,7 +23,7 @@ export class ProofController {
   // @ApiOperation({ title: 'Post proof' })
   // @Post('proof')
   // public async validateProof(
-  //   @Body() inclusionData: InculdeMeDto,
+  //   @Body() inclusionData: IncludeMeDto,
   // ): Promise<object> {
   //   return await this.proofService.validateProof(
   //     inclusionData.programId,

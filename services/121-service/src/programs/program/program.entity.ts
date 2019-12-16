@@ -7,6 +7,7 @@ import {
   BeforeUpdate,
   ManyToMany,
   JoinTable,
+  OneToOne,
 } from 'typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { CustomCriterium } from './custom-criterium.entity';
@@ -14,6 +15,7 @@ import { CredentialRequestEntity } from '../../sovrin/credential/credential-requ
 import { CredentialEntity } from '../../sovrin/credential/credential.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
+import { FundsEntity } from './funds.entity';
 
 @Entity('program')
 export class ProgramEntity {
@@ -69,7 +71,7 @@ export class ProgramEntity {
 
   @Column('json')
   public notifications: JSON;
-  
+
   @Column('json')
   public description: JSON;
 
@@ -121,12 +123,12 @@ export class ProgramEntity {
   @JoinTable()
   public aidworkers: UserEntity[];
 
-  @OneToMany(
-    type => CredentialRequestEntity,
-    credentialRequest => credentialRequest.program,
-  )
+  @OneToMany(type => CredentialRequestEntity, credentialRequest => credentialRequest.program)
   public credentialRequests: CredentialRequestEntity[];
 
   @OneToMany(type => CredentialEntity, credential => credential.program)
   public credentials: CredentialEntity[];
+
+  @OneToOne(type => FundsEntity, funds => funds.program)
+  public funds: FundsEntity;
 }
