@@ -2,10 +2,11 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
+import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 
 @Entity('fsp')
 export class FinancialServiceProviderEntity {
@@ -17,4 +18,7 @@ export class FinancialServiceProviderEntity {
 
   @ManyToMany(_type => ProgramEntity, program => program.financialServiceProviders)
   public program: ProgramEntity[];
+
+  @OneToMany(_type => ConnectionEntity, connection => connection.fsp)
+  public connection: ConnectionEntity[];
 }

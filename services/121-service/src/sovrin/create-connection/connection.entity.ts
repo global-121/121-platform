@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { FinancialServiceProviderEntity } from '../../programs/program/financial-service-provider.entity';
 
 @Entity('connection')
 export class ConnectionEntity {
@@ -14,8 +15,8 @@ export class ConnectionEntity {
   @Column({ nullable: true })
   public preferredLanguage: string;
 
-  @Column({ nullable: true })
-  public fspId: number;
+  @ManyToOne(type => FinancialServiceProviderEntity, financialServiceProvider => financialServiceProvider.connection)
+  public fsp: FinancialServiceProviderEntity;
 
   @Column('numeric', {
     array: true,
