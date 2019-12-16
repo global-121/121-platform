@@ -12,12 +12,12 @@ import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
-import proofRequestExample from '../../../examples/proof_request.json';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
+import { FundsEntity } from './funds.entity';
 
 @Injectable()
 export class ProgramService {
@@ -33,6 +33,9 @@ export class ProgramService {
   public financialServiceProviderRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(ProtectionServiceProviderEntity)
   public protectionServiceProviderRepository: Repository<ProtectionServiceProviderEntity>;
+  @InjectRepository(FundsEntity)
+  public fundsRepository: Repository<FundsEntity>;
+
   public constructor(
     @Inject(forwardRef(() => CredentialService))
     private readonly credentialService: CredentialService,
@@ -247,7 +250,7 @@ export class ProgramService {
     Inclusion result is added to db (connectionRepository)?
     When done (time-loop): run getInclusionStatus from PA.
     `;
-    const proof =  encryptedProof; // this should actually be decrypted in a future scenario
+    const proof = encryptedProof; // this should actually be decrypted in a future scenario
 
     let connection = await this.connectionRepository.findOne({
       where: { did: did },
@@ -450,7 +453,8 @@ export class ProgramService {
     }
     return score;
   }
-  private getPersitentDataFromProof(customData: Object, questionAnswerList: Object,  programCriteria: CustomCriterium[]): any {
+
+  private getPersitentDataFromProof(customData: Object, questionAnswerList: Object, programCriteria: CustomCriterium[]): any {
     for (let criterium of programCriteria) {
       if (criterium.persistence) {
         let criteriumName = criterium.criterium
@@ -459,4 +463,31 @@ export class ProgramService {
     }
     return customData
   }
+
+  public async getFunds(programId: number): Promise<any> {
+    // TO DO: call Disberse-API here, for now static data.
+    const fundsDisberse = {
+      totalFunds: 1000,
+      transferredFunds: 400,
+      availableFunds: 600
+    };
+
+    const program = await this.programRepository.findOne({ where: { id: programId } });
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 404);
+    }
+    let funds = await this.fundsRepository.findOne({ where: { program: { id: programId } } });
+    if (!funds) {
+      funds = new FundsEntity();
+    }
+    funds.totalFunds = fundsDisberse.totalFunds;
+    funds.transferredFunds = fundsDisberse.transferredFunds;
+    funds.availableFunds = fundsDisberse.availableFunds;
+    funds.program = program;
+    await this.fundsRepository.save(funds);
+
+    return this.fundsRepository.findOne({ select: ["totalFunds", "transferredFunds", "availableFunds", "timestamp"], where: { program: { id: programId } } });
+  }
+
 }

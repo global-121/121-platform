@@ -23,6 +23,7 @@ import { AuthMiddlewarePM } from '../../user/auth.middlewarePM';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { SmsModule } from '../../notifications/sms/sms.module';
+import { FundsEntity } from './funds.entity';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { SmsModule } from '../../notifications/sms/sms.module';
       ConnectionEntity,
       FinancialServiceProviderEntity,
       ProtectionServiceProviderEntity,
+      FundsEntity
     ]),
     forwardRef(() => CredentialModule),
     UserModule,
