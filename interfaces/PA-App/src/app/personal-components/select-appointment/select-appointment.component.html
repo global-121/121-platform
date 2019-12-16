@@ -10,7 +10,9 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo">
+  <dialogue-turn [actor]="program?.ngo"
+                 isConnected="true"
+  >
     <p>
       {{ 'personal.select-appointment.select'|translate }}
     </p>

@@ -11,6 +11,7 @@ import { CredentialAttributesEntity } from '../credential/credential-attributes.
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
 import { CredentialEntity } from '../credential/credential.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
+import { FinancialServiceProviderEntity } from '../../programs/program/financial-service-provider.entity';
 
 @Injectable()
 export class CreateConnectionService {
@@ -24,6 +25,8 @@ export class CreateConnectionService {
   private readonly credentialRepository: Repository<CredentialEntity>;
   @InjectRepository(AppointmentEntity)
   private readonly appointmentRepository: Repository<AppointmentEntity>;
+  @InjectRepository(FinancialServiceProviderEntity)
+  private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
 
   public constructor(private readonly sovrinSetupService: SovrinSetupService) { }
 
@@ -104,7 +107,8 @@ export class CreateConnectionService {
     fspId: number,
   ): Promise<ConnectionEntity> {
     const connection = await this.findOne(did);
-    connection.fspId = fspId;
+    const fsp = await this.fspRepository.findOne(fspId);
+    connection.fsp = fsp;
     return await this.connectionRepository.save(connection);
   }
 

@@ -15,6 +15,7 @@ import { CredentialAttributesEntity } from '../credential/credential-attributes.
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
 import { CredentialEntity } from '../credential/credential.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
+import { FinancialServiceProviderEntity } from '../../programs/program/financial-service-provider.entity';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AppointmentEntity } from '../../schedule/appointment/appointment.entity
       CredentialAttributesEntity,
       CredentialRequestEntity,
       CredentialEntity,
+      FinancialServiceProviderEntity
     ]),
     UserModule,
     SovrinSetupModule,
