@@ -21,7 +21,7 @@ async def setup():
     log_file_size = 2*1024*1024*1024 # 2 GB
     file_handler = RotatingFileHandler(log_file, mode='a', maxBytes= log_file_size, backupCount=1, encoding=None, delay=0)
     file_handler.setFormatter(log_formatter)
-    file_handler.setLevel(logging.INFO)
+    file_handler.setLevel(logging.DEBUG)
 
     service_logger = logging.getLogger('orgims')
     service_logger.addHandler(logging.StreamHandler())
