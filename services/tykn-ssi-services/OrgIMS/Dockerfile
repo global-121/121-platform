@@ -33,4 +33,4 @@ ENV CONFIG=${CONFIG}
 
 # Run the application:
 #CMD ["python3.6", "start.py"]
-CMD python3.6 start.py -c ${CONFIG}
+# CMD python3.6 start.py -c ${CONFIG}
