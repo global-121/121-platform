@@ -14,6 +14,7 @@ import { CredentialRequestEntity } from '../../sovrin/credential/credential-requ
 import { CredentialEntity } from '../../sovrin/credential/credential.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
+import { TransactionEntity } from './transactions.entity';
 
 @Entity('program')
 export class ProgramEntity {
@@ -129,4 +130,7 @@ export class ProgramEntity {
 
   @OneToMany(type => CredentialEntity, credential => credential.program)
   public credentials: CredentialEntity[];
+
+  @OneToMany(type => TransactionEntity, transactions => transactions.program)
+  public transactions: TransactionEntity[];
 }

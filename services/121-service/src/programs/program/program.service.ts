@@ -1,3 +1,4 @@
+import { TransactionEntity } from './transactions.entity';
 import { VoiceService } from './../../notifications/voice/voice.service';
 import { SchemaService } from './../../sovrin/schema/schema.service';
 import { CredentialService } from './../../sovrin/credential/credential.service';
@@ -44,6 +45,10 @@ export class ProgramService {
   public protectionServiceProviderRepository: Repository<
     ProtectionServiceProviderEntity
   >;
+  @InjectRepository(TransactionEntity)
+  public transactionRepository:  Repository<
+  TransactionEntity
+>;
   public constructor(
     private readonly httpService: HttpService,
     @Inject(forwardRef(() => CredentialService))
@@ -506,7 +511,7 @@ export class ProgramService {
     }
 
     for (let fsp of program.financialServiceProviders) {
-      await this.createSendPaymentListFsp(fsp, includedConnections, amount);
+      await this.createSendPaymentListFsp(fsp, includedConnections, amount, program);
     }
   }
 
@@ -514,16 +519,19 @@ export class ProgramService {
     fsp: FinancialServiceProviderEntity,
     includedConnections: ConnectionEntity[],
     amount: number,
+    program: ProgramEntity
   ) {
     const paymentList = [];
+    const connectionsForFsp = []
     for (let connection of includedConnections) {
       if (connection.fspId === fsp.id) {
         let paymentDetails = {
-          phone: connection.phoneNumber,
-          id_number: connection.customData['id_number'],
+          // phone: connection.phoneNumber,
+          id_details: connection.customData['id_number'],
           amount: amount,
         };
         paymentList.push(paymentDetails);
+        connectionsForFsp.push(connection)
       }
     }
 
@@ -537,7 +545,20 @@ export class ProgramService {
         const errors = 'Payment instruction not send';
         throw new HttpException({ errors }, 404);
       }
-      return response.data;
+      for (let connection of connectionsForFsp) {
+        this.storeTransaction(amount, connection, fsp, program)
+      }
     }
+  }
+  private storeTransaction(amount, connection, fsp, program) {
+    const transaction = new TransactionEntity()
+    transaction.amount = amount
+    transaction.created = new Date()
+    transaction.connection = connection
+    transaction.financialServiceProvider = fsp
+    transaction.program = program
+    transaction.status = 'send-order'
+
+    this.transactionRepository.save(transaction);
   }
 }

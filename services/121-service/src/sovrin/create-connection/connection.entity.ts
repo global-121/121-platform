@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { TransactionEntity } from '../../programs/program/transactions.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 @Entity('connection')
 export class ConnectionEntity {
@@ -42,4 +43,7 @@ export class ConnectionEntity {
     default: {}
   })
   public customData: JSON;
+
+  @OneToMany(type => TransactionEntity, transactions => transactions.connection)
+  public transactions: TransactionEntity[];
 }

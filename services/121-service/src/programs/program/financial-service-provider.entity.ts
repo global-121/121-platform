@@ -4,8 +4,10 @@ import {
   Column,
   ManyToOne,
   ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
+import { TransactionEntity } from './transactions.entity';
 
 @Entity('fsp')
 export class FinancialServiceProviderEntity {
@@ -17,4 +19,7 @@ export class FinancialServiceProviderEntity {
 
   @ManyToMany(_type => ProgramEntity, program => program.financialServiceProviders)
   public program: ProgramEntity[];
+
+  @OneToMany(type => TransactionEntity, transactions => transactions.financialServiceProvider)
+  public transactions: TransactionEntity[];
 }
