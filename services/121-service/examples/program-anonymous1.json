@@ -23,11 +23,7 @@
   "currency": "MWK",
   "distributionFrequency": "month",
   "distributionDuration": 3,
-  "fixedTransferValue": [
-    500,
-    500,
-    500
-  ],
+  "fixedTransferValue": 500,
   "financialServiceProviders": [
     {
       "id": 1

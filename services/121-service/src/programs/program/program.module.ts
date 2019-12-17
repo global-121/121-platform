@@ -1,3 +1,4 @@
+import { FundingModule } from './../../funding/funding.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
 import { ProofModule } from './../../sovrin/proof/proof.module';
 import { SchemaModule } from './../../sovrin/schema/schema.module';
@@ -9,6 +10,7 @@ import {
   NestModule,
   RequestMethod,
   forwardRef,
+  HttpModule,
 } from '@nestjs/common';
 import { ProgramController } from './program.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -23,7 +25,9 @@ import { AuthMiddlewarePM } from '../../user/auth.middlewarePM';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { SmsModule } from '../../notifications/sms/sms.module';
+import { TransactionEntity } from './transactions.entity';
 import { FundsEntity } from './funds.entity';
+
 
 @Module({
   imports: [
@@ -34,6 +38,7 @@ import { FundsEntity } from './funds.entity';
       ConnectionEntity,
       FinancialServiceProviderEntity,
       ProtectionServiceProviderEntity,
+      TransactionEntity
       FundsEntity
     ]),
     forwardRef(() => CredentialModule),
@@ -42,6 +47,8 @@ import { FundsEntity } from './funds.entity';
     forwardRef(() => SmsModule),
     VoiceModule,
     forwardRef(() => ProofModule),
+    FundingModule,
+    HttpModule,
   ],
   providers: [ProgramService],
   controllers: [ProgramController],

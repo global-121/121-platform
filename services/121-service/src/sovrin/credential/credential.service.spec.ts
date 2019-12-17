@@ -1,3 +1,4 @@
+import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
 import { TwilioMessageEntity } from './../../notifications/twilio.entity';
@@ -20,6 +21,7 @@ import { ProofService } from '../proof/proof.service';
 import { HttpModule } from '@nestjs/common';
 import { FinancialServiceProviderEntity } from '../../programs/program/financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from '../../programs/program/protection-service-provider.entity';
+import { TransactionEntity } from '../../programs/program/transactions.entity';
 import { FundsEntity } from '../../programs/program/funds.entity';
 
 describe('CredentialService', (): void => {
@@ -36,6 +38,7 @@ describe('CredentialService', (): void => {
           ProofService,
           VoiceService,
           SmsService,
+          FundingService,
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
             useFactory: repositoryMockFactory,
@@ -93,7 +96,11 @@ describe('CredentialService', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
+
+            provide: getRepositoryToken(TransactionEntity),
+
             provide: getRepositoryToken(FundsEntity),
+
             useFactory: repositoryMockFactory,
           },
         ],

@@ -19,6 +19,8 @@ import { SmsModule } from './notifications/sms/sms.module';
 import { VoiceService } from './notifications/voice/voice.service';
 import { VoiceController } from './notifications/voice/voice.controller';
 import { VoiceModule } from './notifications/voice/voice.module';
+import { FundingService } from './funding/funding.service';
+import { FundingModule } from './funding/funding.module';
 
 @Module({
   imports: [
@@ -35,6 +37,7 @@ import { VoiceModule } from './notifications/voice/voice.module';
     SchemaModule,
     SmsModule,
     VoiceModule,
+    FundingModule,
   ],
   controllers: [
     AppController,

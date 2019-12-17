@@ -57,9 +57,9 @@ export class CreateProgramDto {
   @IsNumber()
   public readonly distributionDuration: number;
 
-  @ApiModelProperty({ example: [500, 500, 500] })
+  @ApiModelProperty({ example: 500 })
   // @IsArray()
-  public readonly fixedTransferValue: JSON;
+  public readonly fixedTransferValue: number;
 
   @ApiModelProperty({
     example: [

@@ -6,7 +6,10 @@ import {
   OneToMany,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
+
+import { TransactionEntity } from './transactions.entity';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+
 
 @Entity('fsp')
 export class FinancialServiceProviderEntity {
@@ -19,6 +22,10 @@ export class FinancialServiceProviderEntity {
   @ManyToMany(_type => ProgramEntity, program => program.financialServiceProviders)
   public program: ProgramEntity[];
 
+  @OneToMany(type => TransactionEntity, transactions => transactions.financialServiceProvider)
+  public transactions: TransactionEntity[];
+
   @OneToMany(_type => ConnectionEntity, connection => connection.fsp)
   public connection: ConnectionEntity[];
+
 }
