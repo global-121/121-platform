@@ -32,7 +32,7 @@
         <ion-button type="submit"
                     *ngIf="!isDisabled"
                     expand="block"
-                    [disabled]="isDisabled"
+                    [disabled]="isDisabled || !phone"
         >{{ 'personal.phone-number.submit'|translate }}</ion-button>
       </p>
       <p class="ion-margin-top">
