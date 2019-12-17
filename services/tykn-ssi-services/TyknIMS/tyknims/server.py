@@ -12,6 +12,7 @@ class Server:
         self._app.add_routes([
             web.post("/api/trust_anchor", self._trust_anchor_post_handler),
             web.post("/api/schema", self._schema_post_handler),
+            web.post("/api/status-check", self._status_check),
         ])
         self._address = address
         self._port = port
@@ -175,6 +176,29 @@ class Server:
 
         response = {
             'schema_id': schema_id,
+        }
+
+        return web.json_response(response)
+    
+    async def _status_check(self, request):
+        """
+        ---
+        summary: Returns 200 if the apis are working
+        description: Check the status of the service
+        produces:
+        - application/json
+        responses:
+          "200":
+            produces:
+            - application/json
+            status:
+              type: int
+          "500":
+            description: if service is not up
+        """
+
+        response = {
+            'status': schema_id,
         }
 
         return web.json_response(response)

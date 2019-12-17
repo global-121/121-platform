@@ -1,5 +1,7 @@
 import asyncio
+
 import logging
+from logging.handlers import RotatingFileHandler
 
 from orgims import Service, Config
 
@@ -13,9 +15,17 @@ svc = None
 
 async def setup():
     global svc
-    logging.basicConfig(level=logging.DEBUG)
+
+    log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
+    log_file = '/var/log/orgims/orgims.log'
+    log_file_size = 2*1024*1024*1024 # 2 GB
+    file_handler = RotatingFileHandler(log_file, mode='a', maxBytes= log_file_size, backupCount=1, encoding=None, delay=0)
+    file_handler.setFormatter(log_formatter)
+    file_handler.setLevel(logging.DEBUG)
+
     service_logger = logging.getLogger('orgims')
     service_logger.addHandler(logging.StreamHandler())
+    service_logger.addHandler(file_handler)
     service_logger.setLevel(logging.DEBUG)
 
     with open(args.config, 'r') as f:
