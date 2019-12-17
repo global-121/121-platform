@@ -20,7 +20,6 @@ import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
-import proofRequestExample from '../../../examples/proof_request.json';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
@@ -28,6 +27,7 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { SmsService } from '../../notifications/sms/sms.service';
 import { API } from '../../config';
 import { Length } from 'class-validator';
+import { FundsEntity } from './funds.entity';
 
 @Injectable()
 export class ProgramService {
@@ -44,11 +44,17 @@ export class ProgramService {
     FinancialServiceProviderEntity
   >;
   @InjectRepository(ProtectionServiceProviderEntity)
+
   public protectionServiceProviderRepository: Repository<
     ProtectionServiceProviderEntity
   >;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
+  public protectionServiceProviderRepository: Repository<ProtectionServiceProviderEntity>;
+  @InjectRepository(FundsEntity)
+  public fundsRepository: Repository<FundsEntity>;
+
+
   public constructor(
     private readonly httpService: HttpService,
     @Inject(forwardRef(() => CredentialService))
@@ -471,11 +477,13 @@ export class ProgramService {
     }
     return score;
   }
+
   private getPersitentDataFromProof(
     customData: Object,
     questionAnswerList: Object,
     programCriteria: CustomCriterium[],
   ): any {
+
     for (let criterium of programCriteria) {
       if (criterium.persistence) {
         let criteriumName = criterium.criterium;
@@ -578,4 +586,30 @@ export class ProgramService {
 
     this.transactionRepository.save(transaction);
   }
+
+  public async getFunds(programId: number): Promise<any> {
+    // TO DO: call Disberse-API here, for now static data.
+    const fundsDisberse = {
+      totalFunds: 1000,
+      transferredFunds: 400
+    };
+
+    const program = await this.programRepository.findOne({ where: { id: programId } });
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 404);
+    }
+    let funds = await this.fundsRepository.findOne({ where: { program: { id: programId } } });
+    if (!funds) {
+      funds = new FundsEntity();
+    }
+    funds.totalFunds = fundsDisberse.totalFunds;
+    funds.transferredFunds = fundsDisberse.transferredFunds;
+    funds.availableFunds = fundsDisberse.totalFunds - fundsDisberse.transferredFunds;
+    funds.program = program;
+    await this.fundsRepository.save(funds);
+
+    return this.fundsRepository.findOne({ select: ["totalFunds", "transferredFunds", "availableFunds", "timestamp"], where: { program: { id: programId } } });
+  }
+
 }

@@ -23,9 +23,9 @@ import {
   ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
+import { FundsEntity } from './funds.entity';
 import { DeleteResult } from 'typeorm';
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
-import { InculdeMeDto } from './dto/include-me.dto';
+import { IncludeMeDto } from './dto/include-me.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { PayoutDto } from './dto/payout.dto';
@@ -45,6 +45,15 @@ export class ProgramController {
   @Get(':id')
   public async findOne(@Param() params): Promise<ProgramEntity> {
     return await this.programService.findOne(params.id);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ title: 'Get funds by programId' })
+  @ApiImplicitParam({ name: 'id', required: true })
+  @ApiResponse({ status: 200, description: 'Return funds by program id.' })
+  @Get('funds/:id')
+  public async getFunds(@Param() params): Promise<FundsEntity> {
+    return await this.programService.getFunds(params.id);
   }
 
   @ApiBearerAuth()
@@ -132,7 +141,7 @@ export class ProgramController {
   @ApiOperation({ title: 'Post proof' })
   @Post('includeMe')
   public async includeMe(
-    @Body() inclusionData: InculdeMeDto,
+    @Body() inclusionData: IncludeMeDto,
   ): Promise<InclusionRequestStatus> {
     return await this.programService.includeMe(
       inclusionData.programId,
@@ -140,6 +149,7 @@ export class ProgramController {
       inclusionData.encryptedProof,
     );
   }
+
   @ApiOperation({ title: 'Get inclusion status' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('inclusionStatus/:programId')
@@ -152,6 +162,7 @@ export class ProgramController {
       data.did,
     );
   }
+
   @ApiOperation({ title: 'Sent payout instruction to financial service provider' })
   @Post('payout')
   public async payout(
