@@ -1,3 +1,4 @@
+import { FundingModule } from './../../funding/funding.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
 import { ProofModule } from './../../sovrin/proof/proof.module';
 import { SchemaModule } from './../../sovrin/schema/schema.module';
@@ -43,6 +44,7 @@ import { TransactionEntity } from './transactions.entity';
     forwardRef(() => SmsModule),
     VoiceModule,
     forwardRef(() => ProofModule),
+    FundingModule,
     HttpModule,
   ],
   providers: [ProgramService],

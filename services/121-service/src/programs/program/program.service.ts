@@ -1,3 +1,4 @@
+import { FundingService } from './../../funding/funding.service';
 import { TransactionEntity } from './transactions.entity';
 import { VoiceService } from './../../notifications/voice/voice.service';
 import { SchemaService } from './../../sovrin/schema/schema.service';
@@ -26,6 +27,7 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
 import { API } from '../../config';
+import { Length } from 'class-validator';
 
 @Injectable()
 export class ProgramService {
@@ -46,9 +48,7 @@ export class ProgramService {
     ProtectionServiceProviderEntity
   >;
   @InjectRepository(TransactionEntity)
-  public transactionRepository:  Repository<
-  TransactionEntity
->;
+  public transactionRepository: Repository<TransactionEntity>;
   public constructor(
     private readonly httpService: HttpService,
     @Inject(forwardRef(() => CredentialService))
@@ -59,6 +59,7 @@ export class ProgramService {
     private readonly schemaService: SchemaService,
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
+    private readonly fundingService: FundingService,
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
@@ -164,7 +165,6 @@ export class ProgramService {
       await this.financialServiceProviderRepository.save(fsp);
     }
     for (let item of programData.protectionServiceProviders) {
-      console.log('item: ', item);
       let psp = await this.protectionServiceProviderRepository.findOne({
         relations: ['program'],
         where: { id: item.id },
@@ -485,9 +485,13 @@ export class ProgramService {
     return customData;
   }
   public async payout(programId: number, amount: number) {
-    // const connections = await this.connectionRepository.find({
-    //   where: { programsIncluded: Like(programId.toString() ) },
-    // });
+    let program = await this.programRepository.findOne(programId, {
+      relations: ['financialServiceProviders'],
+    });
+    if (!program || !program.published) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 404);
+    }
 
     const connections = await this.connectionRepository
       .createQueryBuilder('table')
@@ -496,22 +500,30 @@ export class ProgramService {
 
     const includedConnections = [];
     for (let connection of connections) {
-      console.log(connection.programsIncluded);
       if (connection.programsIncluded.includes(programId)) {
         includedConnections.push(connection);
       }
     }
-
-    let program = await this.programRepository.findOne(programId, {
-      relations: ['financialServiceProviders'],
-    });
-    if (!program) {
-      const errors = 'Program not found.';
+    if (includedConnections.length < 1){
+      const errors = 'There are no included PA for this program';
       throw new HttpException({ errors }, 404);
     }
 
+    const availableFunds = await this.fundingService.getProgramFunds(programId)
+    const fundsNeeded = amount * includedConnections.length
+    if (fundsNeeded > availableFunds) {
+      const errors = 'Not enough available funds';
+      throw new HttpException({ errors }, 404);
+    }
+
+
     for (let fsp of program.financialServiceProviders) {
-      await this.createSendPaymentListFsp(fsp, includedConnections, amount, program);
+      await this.createSendPaymentListFsp(
+        fsp,
+        includedConnections,
+        amount,
+        program,
+      );
     }
   }
 
@@ -519,10 +531,10 @@ export class ProgramService {
     fsp: FinancialServiceProviderEntity,
     includedConnections: ConnectionEntity[],
     amount: number,
-    program: ProgramEntity
+    program: ProgramEntity,
   ) {
     const paymentList = [];
-    const connectionsForFsp = []
+    const connectionsForFsp = [];
     for (let connection of includedConnections) {
       if (connection.fspId === fsp.id) {
         let paymentDetails = {
@@ -531,7 +543,7 @@ export class ProgramService {
           amount: amount,
         };
         paymentList.push(paymentDetails);
-        connectionsForFsp.push(connection)
+        connectionsForFsp.push(connection);
       }
     }
 
@@ -546,18 +558,23 @@ export class ProgramService {
         throw new HttpException({ errors }, 404);
       }
       for (let connection of connectionsForFsp) {
-        this.storeTransaction(amount, connection, fsp, program)
+        this.storeTransaction(amount, connection, fsp, program);
       }
     }
   }
-  private storeTransaction(amount, connection, fsp, program) {
-    const transaction = new TransactionEntity()
-    transaction.amount = amount
-    transaction.created = new Date()
-    transaction.connection = connection
-    transaction.financialServiceProvider = fsp
-    transaction.program = program
-    transaction.status = 'send-order'
+  private storeTransaction(
+    amount: number,
+    connection: ConnectionEntity,
+    fsp: FinancialServiceProviderEntity,
+    program: ProgramEntity,
+  ) {
+    const transaction = new TransactionEntity();
+    transaction.amount = amount;
+    transaction.created = new Date();
+    transaction.connection = connection;
+    transaction.financialServiceProvider = fsp;
+    transaction.program = program;
+    transaction.status = 'send-order';
 
     this.transactionRepository.save(transaction);
   }

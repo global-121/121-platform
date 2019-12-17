@@ -1,3 +1,4 @@
+import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
 import { CredentialEntity } from './../../sovrin/credential/credential.entity';
@@ -37,6 +38,7 @@ describe('Program service', (): void => {
           VoiceService,
           SmsService,
           ProofService,
+          FundingService,
           {
             provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,

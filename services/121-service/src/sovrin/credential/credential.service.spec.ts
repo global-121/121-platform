@@ -1,3 +1,4 @@
+import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
 import { TwilioMessageEntity } from './../../notifications/twilio.entity';
@@ -36,6 +37,7 @@ describe('CredentialService', (): void => {
           ProofService,
           VoiceService,
           SmsService,
+          FundingService,
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
             useFactory: repositoryMockFactory,

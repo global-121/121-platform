@@ -15,7 +15,7 @@ export class TransactionEntity {
   public id: number;
 
   @Column()
-  public amount: string;
+  public amount: number;
 
   @Column()
   public created: Date;
