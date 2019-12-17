@@ -9,6 +9,7 @@ import {
   NestModule,
   RequestMethod,
   forwardRef,
+  HttpModule,
 } from '@nestjs/common';
 import { ProgramController } from './program.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -40,6 +41,7 @@ import { SmsModule } from '../../notifications/sms/sms.module';
     forwardRef(() => SmsModule),
     VoiceModule,
     forwardRef(() => ProofModule),
+    HttpModule,
   ],
   providers: [ProgramService],
   controllers: [ProgramController],
