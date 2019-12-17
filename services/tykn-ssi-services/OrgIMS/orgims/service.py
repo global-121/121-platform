@@ -47,10 +47,10 @@ class Service:
         await self._connect_to_pool()
         wallet_path = os.path.join(self._config.wallet_path, self._config.wallet_name)
         if os.path.exists(wallet_path):
-            # Fresh run every time for demo purpose
-            await self._delete_wallet()
-        await self._create_wallet()
-        await self._open_wallet()
+            await self._open_wallet()
+        else:
+            await self._create_wallet()
+            await self._open_wallet()
         await self._obtain_trust_anchor()
 
     def start(self):

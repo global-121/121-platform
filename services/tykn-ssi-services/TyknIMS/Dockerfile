@@ -22,7 +22,6 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 #RUN wget "https://raw.githubusercontent.com/hyperledger/indy-sdk/master/cli/docker_pool_transactions_genesis"
 
 ADD . .
-RUN ls -la && pwd
 # Install dependencies:
 RUN pip install -e .
 
