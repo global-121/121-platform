@@ -44,8 +44,8 @@ export class ProgramEntity {
   @Column()
   public distributionDuration: number;
 
-  @Column('json')
-  public fixedTransferValue: JSON;
+  @Column()
+  public fixedTransferValue: number;
 
   @ManyToMany(type => FinancialServiceProviderEntity, financialServiceProviders => financialServiceProviders.program)
   @JoinTable()
@@ -69,7 +69,7 @@ export class ProgramEntity {
 
   @Column('json')
   public notifications: JSON;
-  
+
   @Column('json')
   public description: JSON;
 
