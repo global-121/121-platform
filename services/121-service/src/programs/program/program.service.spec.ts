@@ -1,3 +1,4 @@
+import { FundsEntity } from './funds.entity';
 import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
@@ -22,7 +23,6 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { TransactionEntity } from './transactions.entity';
-import { FundsEntity } from './funds.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -89,11 +89,11 @@ describe('Program service', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
-
             provide: getRepositoryToken(TransactionEntity),
-
+            useFactory: repositoryMockFactory,
+          },
+          {
             provide: getRepositoryToken(FundsEntity),
-
             useFactory: repositoryMockFactory,
           },
         ],

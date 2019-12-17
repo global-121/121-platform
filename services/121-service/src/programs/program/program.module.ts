@@ -38,7 +38,7 @@ import { FundsEntity } from './funds.entity';
       ConnectionEntity,
       FinancialServiceProviderEntity,
       ProtectionServiceProviderEntity,
-      TransactionEntity
+      TransactionEntity,
       FundsEntity
     ]),
     forwardRef(() => CredentialModule),
