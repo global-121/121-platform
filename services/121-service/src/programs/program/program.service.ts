@@ -459,4 +459,9 @@ export class ProgramService {
     }
     return customData
   }
+  public async payout(programId: number, amount: number) {
+    console.log(programId, amount)
+
+
+  }
 }

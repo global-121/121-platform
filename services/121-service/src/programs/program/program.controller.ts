@@ -28,6 +28,7 @@ import { ConnectionEntity } from '../../sovrin/create-connection/connection.enti
 import { InculdeMeDto } from './dto/include-me.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
+import { PayoutDto } from './dto/payout.dto';
 
 @ApiUseTags('programs')
 @Controller('programs')
@@ -149,6 +150,16 @@ export class ProgramController {
     return await this.programService.getInclusionStatus(
       params.programId,
       data.did,
+    );
+  }
+  @ApiOperation({ title: 'Sent payout instruction to financial service provider' })
+  @Post('payout')
+  public async payout(
+    @Body() data: PayoutDto,
+  ): Promise<void> {
+    return await this.programService.payout(
+      data.programId,
+      data.amount,
     );
   }
 }
