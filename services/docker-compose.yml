@@ -31,6 +31,7 @@ services:
     container_name: tyknims
     volumes:
       - "./tykn-ssi-services/TyknIMS/wallet-volume:/tmp/.indy_client/wallet"
+      - "/tmp/logs:/var/log/tyknims"
     ports:
       - "50001:50001"
     networks:
@@ -52,6 +53,7 @@ services:
     container_name: orgims
     volumes:
       - "./tykn-ssi-services/OrgIMS/wallet-volume:/tmp/wallet"
+      - "/tmp/logs:/var/log/orgims"
     ports:
       - "50002:50002"
     healthcheck:
@@ -76,6 +78,7 @@ services:
     container_name: userims
     volumes:
       - "./tykn-ssi-services/UserIMS/wallet-volume:/tmp/.indy_client"
+      - "/tmp/logs:/var/log/userims"
     healthcheck:
       test: "exit 0"
     restart: on-failure

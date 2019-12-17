@@ -15,7 +15,6 @@ RUN add-apt-repository "deb https://repo.sovrin.org/sdk/deb xenial stable"
 RUN apt-get update && apt-get install -y libindy=1.9.0
 
 ENV VIRTUAL_ENV=/opt/venv
-# ENV RUST_LOG=indy=trace
 RUN python3.6 --version
 RUN python3.6 -m virtualenv --python=/usr/bin/python3.6 $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
