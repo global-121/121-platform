@@ -20,6 +20,7 @@ import { HttpModule } from '@nestjs/common';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
+import { TransactionEntity } from './transactions.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -82,6 +83,10 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(TwilioMessageEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(TransactionEntity),
             useFactory: repositoryMockFactory,
           },
         ],
