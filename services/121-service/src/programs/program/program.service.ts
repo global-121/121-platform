@@ -50,7 +50,6 @@ export class ProgramService {
   >;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
-  public protectionServiceProviderRepository: Repository<ProtectionServiceProviderEntity>;
   @InjectRepository(FundsEntity)
   public fundsRepository: Repository<FundsEntity>;
 
@@ -544,7 +543,7 @@ export class ProgramService {
     const paymentList = [];
     const connectionsForFsp = [];
     for (let connection of includedConnections) {
-      if (connection.fspId === fsp.id) {
+      if (connection.fsp.id === fsp.id) {
         let paymentDetails = {
           // phone: connection.phoneNumber,
           id_details: connection.customData['id_number'],
