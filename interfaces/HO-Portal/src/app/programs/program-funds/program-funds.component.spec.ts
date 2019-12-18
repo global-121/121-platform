@@ -1,27 +1,45 @@
-import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { ProgramFundsComponent } from './program-funds.component';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ProgramFunds } from 'src/app/models/program-funds.model';
 
-describe('ProgramFundsComponent', () => {
-  let component: ProgramFundsComponent;
-  let fixture: ComponentFixture<ProgramFundsComponent>;
+import { ProgramFundsComponent } from './program-funds.component';
 
-  const mockProgramsApi = jasmine.createSpyObj('ProgramsServiceApiService', [
-    'getFundsById',
-  ]);
-  mockProgramsApi.getFundsById.and.returnValue('');
+@Component({
+  template: `<app-program-funds [programId]="programId"></app-program-funds>`,
+})
+class TestHostComponent {
+  programId: number;
+}
+
+describe('ProgramFundsComponent (in host)', () => {
+  let fixture: ComponentFixture<TestHostComponent>;
+  let testHost: TestHostComponent;
+  let componentElement: HTMLElement;
 
   const fixtureProgramId = 1;
+  let mockProgramsApi;
+  const mockProgramFunds: ProgramFunds = {
+    totalRaised: 10,
+    totalTransferred: 7,
+    totalAvailable: 3,
+    updated: new Date().toISOString(),
+  };
 
   beforeEach(async(() => {
+    mockProgramsApi = jasmine.createSpyObj('ProgramsServiceApiService', [
+      'getFundsById',
+    ]);
+    mockProgramsApi.getFundsById.and.returnValue(mockProgramFunds);
+
     TestBed.configureTestingModule({
       declarations: [
         ProgramFundsComponent,
+        TestHostComponent,
       ],
       imports: [
         TranslateModule.forRoot(),
@@ -39,36 +57,39 @@ describe('ProgramFundsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProgramFundsComponent);
-    component = fixture.componentInstance;
+    fixture = TestBed.createComponent(TestHostComponent);
+    testHost = fixture.componentInstance;
+    componentElement = fixture.nativeElement.querySelector('app-program-funds');
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(testHost).toBeTruthy();
   });
 
-  xit('should NOT request the funds when no program-id is provided', () => {
-    component.programId = undefined;
+  it('should NOT request the funds when no program-id is provided', () => {
+    testHost.programId = undefined;
     fixture.detectChanges();
 
     expect(mockProgramsApi.getFundsById).not.toHaveBeenCalled();
   });
 
-  xit('should request the funds for the provided program-id', () => {
-    component.programId = fixtureProgramId;
+  it('should request the funds for the provided program-id', () => {
+    testHost.programId = fixtureProgramId;
     fixture.detectChanges();
 
     expect(mockProgramsApi.getFundsById).toHaveBeenCalledWith(fixtureProgramId);
   });
 
   it('should request the funds when triggered from the interface', () => {
-    component.programId = fixtureProgramId;
-
-    // Calling the public method, instead of 'clicking' the actual button
-    component.update();
+    testHost.programId = fixtureProgramId;
+    fixture.detectChanges();
 
     expect(mockProgramsApi.getFundsById).toHaveBeenCalledTimes(1);
+
+    componentElement.querySelector('ion-button').click();
+
+    expect(mockProgramsApi.getFundsById).toHaveBeenCalledTimes(2);
     expect(mockProgramsApi.getFundsById).toHaveBeenCalledWith(fixtureProgramId);
   });
 });

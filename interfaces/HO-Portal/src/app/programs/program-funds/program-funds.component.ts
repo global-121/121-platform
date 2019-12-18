@@ -21,7 +21,7 @@ export class ProgramFundsComponent implements OnChanges {
   private totalRaised: number;
   private totalTransferred: number;
   private totalAvailable: number;
-  private lastUpdated: Date;
+  private lastUpdated: string;
 
   public totalRaisedDisplay: string;
   public totalTransferredDisplay: string;
