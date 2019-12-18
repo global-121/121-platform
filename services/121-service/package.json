@@ -11,14 +11,14 @@
     "start:dev": "tsc-watch --onSuccess \"  node index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json",
     "start:watch": "nodemon",
     "prestart:prod": "tsc",
+    "start:prod": "node dist/main.js",
     "seed:dev": "npx ts-node src/scripts seed-dev && npm run seed:publish",
     "seed:mvp": "npx ts-node src/scripts seed-mvp && npm run seed:publish",
     "seed:pilot": "npx ts-node src/scripts seed-pilot && npm run seed:publish",
     "seed:publish": "npx ts-node src/scripts seed-publish",
-    "start:prod": "node dist/main.js",
     "test": "jest --config=jest.json",
-    "test:watch": "jest --watchAll --config=jest.json",
-    "test:coverage": "jest --config=jest.json --coverage --coverageDirectory=coverage"
+    "test:watch": "npm test -- --watchAll",
+    "test:coverage": "npm test -- --coverage --coverageDirectory=coverage"
   },
   "private": true,
   "dependencies": {
