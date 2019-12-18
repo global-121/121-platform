@@ -173,4 +173,16 @@ export class ProgramController {
       data.amount,
     );
   }
+
+  @ApiOperation({ title: 'Get total number of included per program' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Total number of included per program',
+  })
+  @Get('total-included/:programId')
+  public async getTotalIncluded(@Param() param): Promise<number> {
+    return await this.programService.getTotalIncluded(param.programId);
+  }
+
 }
