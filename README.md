@@ -27,7 +27,7 @@
 
 
 ## Testing
-- Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/README.md).
+- Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).
 - Each component has its own individual tests:
   - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
   - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
@@ -39,12 +39,15 @@
 - Merged PR's to 'master' branch are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
 
 ### To "production" environment
-- To deploy to the production-server create+merge a PR from global-121:master to global-121:production.
 
-## Seeding with Data
+#### On initial deployment (only)
+- Configure environment(s) as described in [/services > Getting started / Installation](services/README.md#getting-started-installation).
+  - Checkout code
+  - Install dependencies / tools
+  - Set secrets, configure ENV-variables, etc
+- Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2).
+- (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database).
 
-Before going live with the 121-platform, some data needs to be inserted in the database: e.g. the programs for the pilot.
-Currently, such pre-production seeding of data is only done in 121-service, so see the README in services/121-services for more information.
-
-
+#### On next deployments
+- Create and merge a PR from `global-121:master` to `global-121:production` branches.
 

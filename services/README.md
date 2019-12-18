@@ -51,24 +51,11 @@ and from the command-line, run:
 
 Or other relevant commands (see README's in their subfolders).
 
-## Seed the database
-
-To seed the database, run the following command(s):  
-Replace `seed` with `seed:dev` to get more data to test with.
-
-    docker exec -i 121-service npm run seed
-    docker exec -i PA-accounts-service npm run seed
 
 ## How to use Swagger (with authorization features)
 
 Access 121-service Swagger API via `http://localhost:3000/docs`
 Access PA-accounts-service Swagger API via `http://localhost:3001/docs`
-
-
-## On development-server
-
-Access 121-service Swagger API via `http://137.117.210.255/121/docs/`
-Access PA-accounts-service Swagger API via `http://137.117.210.255/PA-accounts/docs/`
 
 
 ## Swagger API docs
