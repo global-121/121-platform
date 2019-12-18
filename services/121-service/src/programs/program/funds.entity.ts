@@ -15,20 +15,20 @@ export class FundsEntity {
   public id: number;
 
   @Column()
-  public totalFunds: number;
+  public totalRaised: number;
 
   @Column()
-  public transferredFunds: number;
+  public totalTransferred: number;
 
   @Column()
-  public availableFunds: number;
+  public totalAvailable: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public timestamp: Date;
+  public updated: Date;
 
   @BeforeUpdate()
   public updateTimestamp(): void {
-    this.timestamp = new Date();
+    this.updated = new Date();
   }
 
   @OneToOne(type => ProgramEntity, program => program.funds)

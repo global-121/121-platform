@@ -19,26 +19,30 @@
 </ion-header>
 
 
-<ion-content>
-  <ion-item>
-    <ion-button (click)="openProgramJson()">
-      {{ 'page.programs.program-details.more'|translate }}
-    </ion-button>
-  </ion-item>
-  <ion-list *ngFor="let item of programArray"
-            class="ion-padding"
-  >
-      <ion-item *ngIf="!item.isArray">
+<ion-content class="ion-padding">
+  <section>
+    <h2>{{ 'page.programs.program-details.section-funds'|translate }}</h2>
+
+    <app-program-funds [programId]="program?.id"
+                       [currencyCode]="program?.currency"
+    ></app-program-funds>
+
+  </section>
+  <section>
+    <h2>{{ 'page.programs.program-details.section-details'|translate }}</h2>
+
+    <ion-list lines="full">
+      <ion-item>
+        <ion-button (click)="openProgramJson()">
+          {{ 'page.programs.program-details.all'|translate }}
+        </ion-button>
+      </ion-item>
+      <ion-item *ngFor="let item of programArray">
         <ion-label>
           <strong>{{ item.key }}:</strong>
           <pre>{{ item.value | json }}</pre>
         </ion-label>
       </ion-item>
-      <ion-item *ngIf="item.isArray">
-        <ion-label>
-          <strong>{{ item.key }}:</strong>
-          <pre>{{ item.value | json }}</pre>
-        </ion-label>
-      </ion-item>
-  </ion-list>
+    </ion-list>
+  </section>
 </ion-content>

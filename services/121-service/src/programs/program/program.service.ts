@@ -589,8 +589,8 @@ export class ProgramService {
   public async getFunds(programId: number): Promise<any> {
     // TO DO: call Disberse-API here, for now static data.
     const fundsDisberse = {
-      totalFunds: 1000,
-      transferredFunds: 400
+      totalRaised: 1000,
+      totalTransferred: 400
     };
 
     const program = await this.programRepository.findOne({ where: { id: programId } });
@@ -602,13 +602,13 @@ export class ProgramService {
     if (!funds) {
       funds = new FundsEntity();
     }
-    funds.totalFunds = fundsDisberse.totalFunds;
-    funds.transferredFunds = fundsDisberse.transferredFunds;
-    funds.availableFunds = fundsDisberse.totalFunds - fundsDisberse.transferredFunds;
+    funds.totalRaised = fundsDisberse.totalRaised;
+    funds.totalTransferred = fundsDisberse.totalTransferred;
+    funds.totalAvailable = fundsDisberse.totalRaised - fundsDisberse.totalTransferred;
     funds.program = program;
     await this.fundsRepository.save(funds);
 
-    return this.fundsRepository.findOne({ select: ["totalFunds", "transferredFunds", "availableFunds", "timestamp"], where: { program: { id: programId } } });
+    return this.fundsRepository.findOne({ select: ["totalRaised", "totalTransferred", "totalAvailable", "updated"], where: { program: { id: programId } } });
   }
 
 }

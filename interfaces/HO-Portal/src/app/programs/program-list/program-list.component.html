@@ -10,21 +10,29 @@
 </ion-header>
 
 <ion-content>
-  <ion-list class="ion-padding">
-    <ion-item *ngFor="let item of items"
+  <div *ngIf="!items"
+       class="ion-padding ion-text-center"
+  >
+    <ion-icon name="sad" size="large"></ion-icon><br>
+    {{ 'page.programs.program-list.not-available'|translate }}
+  </div>
+  <ion-list *ngIf="items"
+            class="ion-padding"
+  >
+    <ion-item *ngFor="let program of items"
               detail="true"
               button="true"
-              [routerLink]="'/program/' + item.id"
+              [routerLink]="'/program/' + program.id"
     >
       <ion-label>
-        {{ item.title.en }}
+        {{ program.title.en }}
         <br>
         <ion-note>
-          {{ item.description.en }}
+          {{ program.description.en }}
         </ion-note>
         <ion-note class="ion-float-end ion-padding-end"
         >
-          {{ item.updated|date:"dd-MM-y - H:m" }}
+          {{ program.updated|date:"dd-MM-y - H:m" }}
         </ion-note>
       </ion-label>
     </ion-item>

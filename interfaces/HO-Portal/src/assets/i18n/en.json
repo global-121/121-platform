@@ -20,11 +20,14 @@
     },
     "programs": {
       "program-list": {
-        "pageTitle": "All Programs"
+        "pageTitle": "All Programs",
+        "not-available": "No programs available."
       },
       "program-details": {
         "pageTitle": "Program details",
-        "more": "More",
+        "section-funds": "Funds overview",
+        "section-details": "Details overview",
+        "all": "All details",
         "id": "ID",
         "location": "Location",
         "title": "Title",
@@ -51,6 +54,12 @@
         "aidworkers": "Assigned aidworkers",
         "financialServiceProviders": "Financial Service-providers"
       },
+      "program-funds": {
+        "total-raised": "Total funds raised:",
+        "total-transferred": "Transferred to FSPs:",
+        "total-available": "Funds available:",
+        "last-updated": "Last updated: {{date}}"
+      },
       "program-modal": {
         "pageTitle": "Program JSON"
       }
@@ -68,5 +77,8 @@
       "create-program-description": "Give here a short description of the program. Note that there are separate description-fields to tell sometihg more about 'Location' and 'Humanitarian Objective'.",
       "create-program-descCashType": "This specifies both the conditionality and the purpose of the program. It must be one of the following values: 'Unconditional Multi-purpose', 'Conditional Multi-purpose', 'Unconditional Single-purpose', 'Conditional Single-purpose'."
     }
+  },
+  "common": {
+    "update": "Update"
   }
 }

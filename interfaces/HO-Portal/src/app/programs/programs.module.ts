@@ -2,6 +2,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ProgramListComponent } from './program-list/program-list.component';
+import { ProgramFundsComponent } from './program-funds/program-funds.component';
 import { ProgramDetailsComponent } from './program-details/program-details.component';
 import { ProgramJsonComponent } from './program-json/program-json.component';
 
@@ -14,6 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
   declarations: [
     ProgramListComponent,
+    ProgramFundsComponent,
     ProgramDetailsComponent,
     ProgramJsonComponent
   ],
