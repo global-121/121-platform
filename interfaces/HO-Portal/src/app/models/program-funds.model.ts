@@ -1,5 +1,5 @@
 export class ProgramFunds {
-  updated: Date;
+  updated: string;
   totalRaised: number;
   totalTransferred: number;
   totalAvailable: number;
