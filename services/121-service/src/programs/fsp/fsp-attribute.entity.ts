@@ -2,13 +2,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToMany,
-  OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { ProgramEntity } from '../program/program.entity';
-import { TransactionEntity } from '../program/transactions.entity';
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
 
@@ -25,6 +20,9 @@ export class FspAttributeEntity {
 
   @Column('json', { nullable: true })
   public options: JSON;
+
+  @Column()
+  public answerType: string
 
   @ManyToOne(_type => FinancialServiceProviderEntity, fsp => fsp.attributes)
   public fsp: FinancialServiceProviderEntity;

@@ -1,3 +1,5 @@
+import { FinancialServiceProviderEntity } from './../programs/fsp/financial-service-provider.entity';
+import { FspAttributeEntity } from './../programs/fsp/fsp-attribute.entity';
 import { Connection } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
@@ -24,6 +26,7 @@ export class SeedHelper {
       const customCriteria = program.customCriteria;
       program.customCriteria = [];
 
+
       for (let customCriterium of customCriteria) {
         let customReturn = await customCriteriumRepository.save(
           customCriterium,
@@ -31,8 +34,45 @@ export class SeedHelper {
         program.customCriteria.push(customReturn);
       }
 
+      // Remove original fsp criteria and add it to a sepperate variable
+      const fsps = program.financialServiceProviders;
+      program.customCriteria = [];
+
+      for (let fsp of fsps) {
+        let fspReturn = await customCriteriumRepository.findOne(
+          fsp.id
+        );
+        program.financialServiceProviders.push(fspReturn);
+      }
+
       await programRepository.save(program);
     }
+  }
+
+  public async addFsp(fspInput: any) {
+    const exampleDump = JSON.stringify(fspInput);
+    const fsp = JSON.parse(exampleDump);
+
+    const fspRepository = this.connection.getRepository(
+      FinancialServiceProviderEntity,
+    );
+
+    const fspAttributesRepository = this.connection.getRepository(
+      FspAttributeEntity,
+    );
+
+    // Remove original custom criteria and add it to a sepperate variable
+    const attributes = fsp.attributes;
+    fsp.attributes = [];
+
+    for (let attribute of attributes) {
+      let customReturn = await fspAttributesRepository.save(
+        attribute,
+      );
+      fsp.attributes.push(customReturn);
+    }
+
+    await fspRepository.save(fsp);
   }
 
   public async assignAidworker(userId: number, programId: number) {
