@@ -19,9 +19,6 @@ RUN python3.6 --version
 RUN python3.6 -m virtualenv --python=/usr/bin/python3.6 $VIRTUAL_ENV
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Replaced by local docker_pool_transactions_genesis
-#RUN wget "https://raw.githubusercontent.com/hyperledger/indy-sdk/master/cli/docker_pool_transactions_genesis"
-
 ADD . .
 # Install dependencies:
 RUN pip install -e .
@@ -31,5 +28,4 @@ ARG CONFIG
 ENV CONFIG=${CONFIG}
 
 # Run the application:
-#CMD ["python3.6", "start.py"]
-# CMD python3.6 start.py -c ${CONFIG}
+CMD python3.6 start.py -c ${CONFIG}
