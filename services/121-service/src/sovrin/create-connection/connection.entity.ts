@@ -1,8 +1,7 @@
 
 import { TransactionEntity } from '../../programs/program/transactions.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
-import { FinancialServiceProviderEntity } from '../../programs/program/financial-service-provider.entity';
-
+import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 
 @Entity('connection')
 export class ConnectionEntity {

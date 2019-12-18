@@ -10,8 +10,8 @@ import programAnonymousExample1 from '../../examples/program-anonymous1.json';
 import programAnonymousExample2 from '../../examples/program-anonymous2.json';
 import { SeedHelper } from './seed-helper';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
-import { FinancialServiceProviderEntity } from '../programs/program/financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 
 @Injectable()
 export class SeedMvp implements InterfaceScript {

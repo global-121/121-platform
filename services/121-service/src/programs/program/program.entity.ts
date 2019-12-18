@@ -13,9 +13,9 @@ import { UserEntity } from '../../user/user.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
 import { CredentialEntity } from '../../sovrin/credential/credential.entity';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { TransactionEntity } from './transactions.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 
 
 @Entity('program')

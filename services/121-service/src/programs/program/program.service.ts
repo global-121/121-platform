@@ -23,10 +23,10 @@ import { CreateProgramDto } from './dto';
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
 import { API } from '../../config';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 
 @Injectable()
 export class ProgramService {
