@@ -167,7 +167,7 @@ export class ProgramController {
   @Post('payout')
   public async payout(
     @Body() data: PayoutDto,
-  ): Promise<void> {
+  ): Promise<any> {
     return await this.programService.payout(
       data.programId,
       data.amount,

@@ -506,15 +506,13 @@ export class ProgramService {
     const includedConnections = await this.getIncludedConnections(programId);
 
     if (includedConnections.length < 1) {
-      const errors = 'There are no included PA for this program';
-      throw new HttpException({ errors }, 404);
+      return { status: 'error', message: 'There are no included PA for this program' }
     }
 
-    const availableFunds = await this.fundingService.getProgramFunds(programId);
+    const fundingOverview = await this.fundingService.getProgramFunds(programId);
     const fundsNeeded = amount * includedConnections.length;
-    if (fundsNeeded > availableFunds) {
-      const errors = 'Not enough available funds';
-      throw new HttpException({ errors }, 404);
+    if (fundsNeeded > fundingOverview.totalAvailable) {
+      return { status: 'error', message: 'Insufficient funds' }
     }
 
     for (let fsp of program.financialServiceProviders) {
@@ -525,15 +523,13 @@ export class ProgramService {
         program,
       );
     }
+    return { status: 'succes', message: 'Send instructions to FSP' }
   }
 
   private async getIncludedConnections(
     programId: number,
   ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository
-      .createQueryBuilder('table')
-      .where('1 =1')
-      .getMany();
+    const connections = await this.connectionRepository.find( {relations: ['fsp']})
     const includedConnections = [];
     for (let connection of connections) {
       if (connection.programsIncluded.includes(+programId)) {
@@ -597,10 +593,7 @@ export class ProgramService {
 
   public async getFunds(programId: number): Promise<any> {
     // TO DO: call Disberse-API here, for now static data.
-    const fundsDisberse = {
-      totalRaised: 1000,
-      totalTransferred: 400
-    };
+    const fundsDisberse = await this.fundingService.getProgramFunds(programId);
 
     const program = await this.programRepository.findOne({
       where: { id: programId },
