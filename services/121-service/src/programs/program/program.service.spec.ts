@@ -1,4 +1,3 @@
-import { FundsEntity } from './funds.entity';
 import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
@@ -90,10 +89,6 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(TransactionEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(FundsEntity),
             useFactory: repositoryMockFactory,
           },
         ],
