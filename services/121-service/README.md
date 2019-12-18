@@ -78,15 +78,23 @@ Run the application through:
 Same as above. But replace `-it` tag in `docker run` or `docker start` commands by `-d` to run in detached mode.
 Also, the CMD line of Dockerfile should be changed from: `CMD ["npm", "run", "start:dev"]` to: `CMD ["npm", "start"]`.
 
+
 ## Seed the database
 
 Upon application start, automatically a basic seed-script is run which adds 1 admin-user and 1 aidworker-user. It will only do so, if no existing users are found. The password and username for these users can be customized in `secrets.ts`
 
-To seed the database with more data (e.g. programs) additional seed-scripts can be run manually. NOTE: these seed-scripts delete all existing data. As such, they cannot be run on production, and when run locally or on test-server, you are prompted first with an 'Are you sure? (y/n)'.
+To seed the database with more data (e.g. programs) additional seed-scripts can be run manually.  
+**NOTE:** These seed-scripts delete _all existing data_. They cannot be run on production; When run locally or on test-environment, you are prompted with '`Are you sure? (y/n)`'.
 
-    docker exec -i 121-service npm run seed:mvp (For basic testing)
-    docker exec -i 121-service npm run seed:dev (Includes more testing data)
-    docker exec -i 121-service npm run seed:pilot (For pilot March 2020; current empty)
+- For basic testing:  
+  `docker exec -i 121-service npm run seed:mvp`
+
+- Include more testing data:  
+  `docker exec -i 121-service npm run seed:dev`
+
+- For pilot March 2020:  
+  `docker exec -i 121-service npm run seed:pilot`
+
 
 ## How to use Swagger (with authorization features)
 
