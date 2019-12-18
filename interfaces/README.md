@@ -36,7 +36,7 @@ The tools to run or build all interfaces:
 ### Native environments
 
 #### Android
-When testing/debugging on Android and using the 'livereload' functionality, it is required to add the following security exception in the app's `config.xml`, by adding the `<edit-config>`-block into the `<platform>`-block:
+When testing/debugging on Android and using the '`livereload`' functionality, it is required to add the following security exception in the app's `config.xml`, by adding the `<edit-config>`-block into the `<platform>`-block:
 
 ```xml
 <platform name="android">
@@ -69,7 +69,7 @@ To explicitly trigger a *native* build of the code (for Android), make sure to n
 
 ### Building for production
 To generate a 'production ready' build of an interface, some environment-variables need to be set.
-The convention by [dotenv](https://www.npmjs.com/package/dotenv) is used.
+The convention by [`dotenv`](https://www.npmjs.com/package/dotenv) is used.
 
 Possible variables are available in `.env.example` files for each interface. Make a local copy to set them:
 

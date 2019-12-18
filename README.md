@@ -4,6 +4,7 @@
 121 is working towards an open source platform that allows safe, fast and fair humanitarian cash based aid programs using blockchain.  -- Learn more about the platform: <https://www.121.global/>
 
 ---
+
 - [List of API endpoints](./API%20Reference.md)  
 
 
@@ -26,7 +27,10 @@
 
 ## Deployment
 
-- Merged PR's to 'master' branch are automatically deployed to the test-server.
+### To "test" environment
+- Merged PR's to 'master' branch are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
+
+### To "production" environment
 - To deploy to the production-server create+merge a PR from global-121:master to global-121:production.
 
 ## Seeding with Data
