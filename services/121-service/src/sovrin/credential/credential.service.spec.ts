@@ -96,11 +96,11 @@ describe('CredentialService', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
-
             provide: getRepositoryToken(TransactionEntity),
-
+            useFactory: repositoryMockFactory,
+          },
+          {
             provide: getRepositoryToken(FundsEntity),
-
             useFactory: repositoryMockFactory,
           },
         ],
