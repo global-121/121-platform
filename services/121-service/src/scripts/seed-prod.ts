@@ -2,20 +2,22 @@ import SeedInit from './seed-init';
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
-
-import { SeedHelper } from './seed-helper';
+import { UserEntity } from '../user/user.entity';
 
 @Injectable()
 export class SeedProd implements InterfaceScript {
   public constructor(
     private connection: Connection,
-  ) {}
-
-  private readonly seedHelper = new SeedHelper(this.connection);
+  ) { }
 
   public async run(): Promise<void> {
-    const seedInit = await new SeedInit(this.connection);
-    await seedInit.run();
+    const userRepository = this.connection.getRepository(UserEntity);
+    if ((await userRepository.find({ take: 1 })).length === 0) {
+      const seedInit = await new SeedInit(this.connection);
+      await seedInit.run();
+    } else {
+      console.log('----------------NOTE: Users were found in database already, so init-script is not run.------------------');
+    }
 
   }
 }

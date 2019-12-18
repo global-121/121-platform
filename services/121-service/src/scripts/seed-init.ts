@@ -3,8 +3,7 @@ import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { USERCONFIG } from '../secrets';
-import * as crypto from 'crypto';
-import fs from 'fs'
+import crypto from 'crypto';
 
 
 @Injectable()

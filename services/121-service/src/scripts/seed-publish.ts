@@ -10,12 +10,12 @@ export class SeedPublish implements InterfaceScript {
   address = this.host + ':' + PORT + '/api/'
   private readonly httpService = new HttpService();
 
-  public constructor() {}
+  public constructor() { }
   public async run(): Promise<void> {
     console.log('Checking if 121 service is online');
     const apiStringCheck = this.address + 'programs/country/1';
     let response = await this.httpService.get(apiStringCheck).toPromise();
-    if (response.status !== 200){
+    if (response.status !== 200) {
       Error('Service is offline')
     }
 

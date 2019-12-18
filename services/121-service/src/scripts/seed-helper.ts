@@ -1,15 +1,10 @@
-import { CredentialService } from './../sovrin/credential/credential.service';
-import { ProgramService } from './../programs/program/program.service';
 import { Connection } from 'typeorm';
-
 import { UserEntity } from '../user/user.entity';
-
 import { ProgramEntity } from '../programs/program/program.entity';
-import { ProgramRO } from '../programs/program/program.interface';
 import { CustomCriterium } from '../programs/program/custom-criterium.entity';
 
 export class SeedHelper {
-  public constructor(private connection: Connection) {}
+  public constructor(private connection: Connection) { }
 
   public async addPrograms(examplePrograms: Object[], authorId: number) {
     const programRepository = this.connection.getRepository(ProgramEntity);

@@ -8,16 +8,14 @@ import { AvailabilityEntity } from '../schedule/appointment/availability.entity'
 import { ConnectionEntity } from '../sovrin/create-connection/connection.entity';
 import { CountryEntity } from '../programs/country/country.entity';
 import { CredentialAttributesEntity } from '../sovrin/credential/credential-attributes.entity';
-import { CustomCriterium } from '../programs/program/custom-criterium.entity';
-import { ProgramEntity } from '../programs/program/program.entity';
 import { UserEntity } from '../user/user.entity';
+import { FinancialServiceProviderEntity } from '../programs/program/financial-service-provider.entity';
+import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
 
 import { SeedInit } from './seed-init';
 
 import programBasicExample from '../../examples/program-basic.json';
 import programAnonymousExample from '../../examples/program-anonymous1.json';
-import { FinancialServiceProviderEntity } from '../programs/program/financial-service-provider.entity';
-import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
 
 const EXAMPLE_DID = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
 
