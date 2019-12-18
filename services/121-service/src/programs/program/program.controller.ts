@@ -1,3 +1,4 @@
+import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { DidDto } from './dto/did.dto';
 import {
   Get,
@@ -23,7 +24,6 @@ import {
   ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
-import { FundsEntity } from './funds.entity';
 import { DeleteResult } from 'typeorm';
 import { IncludeMeDto } from './dto/include-me.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
@@ -52,7 +52,7 @@ export class ProgramController {
   @ApiImplicitParam({ name: 'id', required: true })
   @ApiResponse({ status: 200, description: 'Return funds by program id.' })
   @Get('funds/:id')
-  public async getFunds(@Param() params): Promise<FundsEntity> {
+  public async getFunds(@Param() params): Promise<FundingOverview> {
     return await this.programService.getFunds(params.id);
   }
 

@@ -1,3 +1,4 @@
+import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { FundingService } from './../../funding/funding.service';
 import { TransactionEntity } from './transactions.entity';
 import { VoiceService } from './../../notifications/voice/voice.service';
@@ -26,8 +27,6 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
 import { API } from '../../config';
-import { Length } from 'class-validator';
-import { FundsEntity } from './funds.entity';
 
 @Injectable()
 export class ProgramService {
@@ -49,8 +48,6 @@ export class ProgramService {
   >;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(FundsEntity)
-  public fundsRepository: Repository<FundsEntity>;
 
   public constructor(
     private readonly httpService: HttpService,
@@ -488,11 +485,10 @@ export class ProgramService {
     }
     return customData;
   }
-  public async getTotalIncluded (programId): Promise<number> {
+  public async getTotalIncluded(programId): Promise<number> {
     const includedConnections = await this.getIncludedConnections(programId);
     return includedConnections.length;
   }
-
 
   public async payout(programId: number, amount: number) {
     let program = await this.programRepository.findOne(programId, {
@@ -510,7 +506,9 @@ export class ProgramService {
       throw new HttpException({ errors }, 404);
     }
 
-    const fundingOverview = await this.fundingService.getProgramFunds(programId);
+    const fundingOverview = await this.fundingService.getProgramFunds(
+      programId,
+    );
     const fundsNeeded = amount * includedConnections.length;
     if (fundsNeeded > fundingOverview.totalAvailable) {
       const errors = 'Not enough available funds';
@@ -595,9 +593,8 @@ export class ProgramService {
     this.transactionRepository.save(transaction);
   }
 
-  public async getFunds(programId: number): Promise<any> {
+  public async getFunds(programId: number): Promise<FundingOverview> {
     // TO DO: call Disberse-API here, for now static data.
-    const fundsDisberse = await this.fundingService.getProgramFunds(programId);
 
     const program = await this.programRepository.findOne({
       where: { id: programId },
@@ -606,18 +603,8 @@ export class ProgramService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, 404);
     }
-    let funds = await this.fundsRepository.findOne({
-      where: { program: { id: programId } },
-    });
-    if (!funds) {
-      funds = new FundsEntity();
-    }
-    funds.totalRaised = fundsDisberse.totalRaised;
-    funds.totalTransferred = fundsDisberse.totalTransferred;
-    funds.totalAvailable = fundsDisberse.totalRaised - fundsDisberse.totalTransferred;
-    funds.program = program;
-    await this.fundsRepository.save(funds);
 
-    return this.fundsRepository.findOne({ select: ["totalRaised", "totalTransferred", "totalAvailable", "updated"], where: { program: { id: programId } } });
+    const fundsDisberse = await this.fundingService.getProgramFunds(programId);
+    return fundsDisberse
   }
 }
