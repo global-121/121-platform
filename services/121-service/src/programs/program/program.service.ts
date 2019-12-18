@@ -510,9 +510,9 @@ export class ProgramService {
       throw new HttpException({ errors }, 404);
     }
 
-    const availableFunds = await this.fundingService.getProgramFunds(programId);
+    const fundingOverview = await this.fundingService.getProgramFunds(programId);
     const fundsNeeded = amount * includedConnections.length;
-    if (fundsNeeded > availableFunds) {
+    if (fundsNeeded > fundingOverview.totalAvailable) {
       const errors = 'Not enough available funds';
       throw new HttpException({ errors }, 404);
     }
@@ -597,10 +597,7 @@ export class ProgramService {
 
   public async getFunds(programId: number): Promise<any> {
     // TO DO: call Disberse-API here, for now static data.
-    const fundsDisberse = {
-      totalRaised: 1000,
-      totalTransferred: 400
-    };
+    const fundsDisberse = await this.fundingService.getProgramFunds(programId);
 
     const program = await this.programRepository.findOne({
       where: { id: programId },
