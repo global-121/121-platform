@@ -9,7 +9,6 @@ export class FundingService {
 
   public async getProgramFunds(programId: number): Promise<FundingOverview> {
     console.log(programId)
-
     const totalRaised = Math.floor(Math.random() * (1000 - 500 + 1)) + 500;
     const totalTransferred = Math.floor(Math.random() * (499 - 1 + 1)) + 1;
 
