@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,8 @@ export class AppComponent {
   public currentLanguage: string;
 
   constructor(
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService,
   ) {
     this.initializeApp();
     this.initializeLanguages();
@@ -26,7 +28,11 @@ export class AppComponent {
     this.currentLanguage = this.translate.currentLang;
   }
 
-  switchLanguage(event: any) {
+  public switchLanguage(event: any) {
     this.translate.use(event.detail.value);
+  }
+
+  public logout() {
+    this.authService.logout();
   }
 }

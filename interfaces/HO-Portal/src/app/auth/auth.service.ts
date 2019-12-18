@@ -54,4 +54,10 @@ export class AuthService {
       }
     );
   }
+
+  public logout() {
+    this.jwtService.destroyToken();
+    this.loggedIn = false;
+    this.router.navigate(['/']);
+  }
 }
