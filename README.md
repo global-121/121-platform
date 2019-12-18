@@ -25,6 +25,14 @@
 | Tykn-SSI-Services | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/Tykn%20SSI%20Services?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=20&branchName=master) |
 
 
+
+## Testing
+- Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/README.md).
+- Each component has its own individual tests:
+  - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
+  - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
+
+
 ## Deployment
 
 ### To "test" environment
