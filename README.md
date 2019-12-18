@@ -29,3 +29,10 @@
 - Merged PR's to 'master' branch are automatically deployed to the test-server.
 - To deploy to the production-server create+merge a PR from global-121:master to global-121:production.
 
+## Seeding with Data
+
+Before going live with the 121-platform, some data needs to be inserted in the database: e.g. the programs for the pilot.
+Currently, such pre-production seeding of data is only done in 121-service, so see the README in services/121-services for more information.
+
+
+

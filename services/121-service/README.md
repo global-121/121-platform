@@ -80,17 +80,13 @@ Also, the CMD line of Dockerfile should be changed from: `CMD ["npm", "run", "st
 
 ## Seed the database
 
-To be able to use the functionality of this service an initial admin user is required, so he/she can create new aid-worker/admin users and programs. This initial user and schema can be created by running seed script.
+Upon application start, automatically a basic seed-script is run which adds 1 admin-user and 1 aidworker-user. It will only do so, if no existing users are found. The password and username for these users can be customized in `secrets.ts`
 
-To seed the database for dev mode with an admin and some initial testing values run the following command (make sure that application is running: `npm run start:dev` before seeding):
+To seed the database with more data (e.g. programs) additional seed-scripts can be run manually. NOTE: these seed-scripts delete all existing data. As such, they cannot be run on production, and when run locally or on test-server, you are prompted first with an 'Are you sure? (y/n)'.
 
-    docker exec -i 121-service npm run seed:dev
-
-To seed it for production run the following command (the appilcation does not have to be running for this):
-
-    docker exec -i 121-service npm run seed
-
-This user password and username can be customized in `secrets.ts`
+    docker exec -i 121-service npm run seed:mvp (For basic testing)
+    docker exec -i 121-service npm run seed:dev (Includes more testing data)
+    docker exec -i 121-service npm run seed:pilot (For pilot March 2020; current empty)
 
 ## How to use Swagger (with authorization features)
 

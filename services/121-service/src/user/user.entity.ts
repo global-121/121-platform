@@ -8,7 +8,7 @@ import {
   ManyToMany,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { StandardCriteriumEntity } from '../programs/standard-criterium/standard-criterium.entity';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';

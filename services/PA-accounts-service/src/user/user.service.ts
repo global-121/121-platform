@@ -8,7 +8,7 @@ import { UserRO } from './user.interface';
 import { validate } from 'class-validator';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
 import jwt = require('jsonwebtoken');
 import { DeleteUserDto } from './dto/delete-user.dts';

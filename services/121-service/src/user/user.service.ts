@@ -8,7 +8,7 @@ import { UserRO } from './user.interface';
 import { validate } from 'class-validator';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
 import jwt = require('jsonwebtoken');
 import { ProgramEntity } from '../programs/program/program.entity';
@@ -21,7 +21,7 @@ export class UserService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
-  public constructor() {}
+  public constructor() { }
 
   public async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
@@ -35,10 +35,10 @@ export class UserService {
         .digest('hex'),
     };
     const user = await getRepository(UserEntity)
-    .createQueryBuilder()
-    .addSelect('password')
-    .where(findOneOptions)
-    .getOne()
+      .createQueryBuilder()
+      .addSelect('password')
+      .where(findOneOptions)
+      .getOne()
     return user;
   }
 
@@ -69,7 +69,7 @@ export class UserService {
     newUser.countryId = countryId;
 
     newUser.programs = [];
-    newUser.assignedProgram=[];
+    newUser.assignedProgram = [];
 
     const errors = await validate(newUser);
     if (errors.length > 0) {
@@ -141,7 +141,7 @@ export class UserService {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, 401);
     }
-    if (!user.assignedProgram){
+    if (!user.assignedProgram) {
       console.log('No program assigend')
       user.assignedProgram = []
     }

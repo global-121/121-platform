@@ -4,7 +4,7 @@ import {
   Column,
   BeforeInsert,
 } from 'typeorm';
-import * as crypto from 'crypto';
+import crypto from 'crypto';
 
 @Entity('user')
 export class UserEntity {
