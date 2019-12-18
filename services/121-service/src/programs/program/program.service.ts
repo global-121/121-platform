@@ -44,7 +44,6 @@ export class ProgramService {
     FinancialServiceProviderEntity
   >;
   @InjectRepository(ProtectionServiceProviderEntity)
-
   public protectionServiceProviderRepository: Repository<
     ProtectionServiceProviderEntity
   >;
@@ -52,7 +51,6 @@ export class ProgramService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(FundsEntity)
   public fundsRepository: Repository<FundsEntity>;
-
 
   public constructor(
     private readonly httpService: HttpService,
@@ -482,7 +480,6 @@ export class ProgramService {
     questionAnswerList: Object,
     programCriteria: CustomCriterium[],
   ): any {
-
     for (let criterium of programCriteria) {
       if (criterium.persistence) {
         let criteriumName = criterium.criterium;
@@ -491,6 +488,12 @@ export class ProgramService {
     }
     return customData;
   }
+  public async getTotalIncluded (programId): Promise<number> {
+    const includedConnections = await this.getIncludedConnections(programId);
+    return includedConnections.length;
+  }
+
+
   public async payout(programId: number, amount: number) {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
@@ -500,29 +503,19 @@ export class ProgramService {
       throw new HttpException({ errors }, 404);
     }
 
-    const connections = await this.connectionRepository
-      .createQueryBuilder('table')
-      .where('1 =1')
-      .getMany();
+    const includedConnections = await this.getIncludedConnections(programId);
 
-    const includedConnections = [];
-    for (let connection of connections) {
-      if (connection.programsIncluded.includes(programId)) {
-        includedConnections.push(connection);
-      }
-    }
-    if (includedConnections.length < 1){
+    if (includedConnections.length < 1) {
       const errors = 'There are no included PA for this program';
       throw new HttpException({ errors }, 404);
     }
 
-    const availableFunds = await this.fundingService.getProgramFunds(programId)
-    const fundsNeeded = amount * includedConnections.length
+    const availableFunds = await this.fundingService.getProgramFunds(programId);
+    const fundsNeeded = amount * includedConnections.length;
     if (fundsNeeded > availableFunds) {
       const errors = 'Not enough available funds';
       throw new HttpException({ errors }, 404);
     }
-
 
     for (let fsp of program.financialServiceProviders) {
       await this.createSendPaymentListFsp(
@@ -532,6 +525,22 @@ export class ProgramService {
         program,
       );
     }
+  }
+
+  private async getIncludedConnections(
+    programId: number,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository
+      .createQueryBuilder('table')
+      .where('1 =1')
+      .getMany();
+    const includedConnections = [];
+    for (let connection of connections) {
+      if (connection.programsIncluded.includes(+programId)) {
+        includedConnections.push(connection);
+      }
+    }
+    return includedConnections;
   }
 
   private async createSendPaymentListFsp(
@@ -590,25 +599,32 @@ export class ProgramService {
     // TO DO: call Disberse-API here, for now static data.
     const fundsDisberse = {
       totalFunds: 1000,
-      transferredFunds: 400
+      transferredFunds: 400,
     };
 
-    const program = await this.programRepository.findOne({ where: { id: programId } });
+    const program = await this.programRepository.findOne({
+      where: { id: programId },
+    });
     if (!program) {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, 404);
     }
-    let funds = await this.fundsRepository.findOne({ where: { program: { id: programId } } });
+    let funds = await this.fundsRepository.findOne({
+      where: { program: { id: programId } },
+    });
     if (!funds) {
       funds = new FundsEntity();
     }
     funds.totalFunds = fundsDisberse.totalFunds;
     funds.transferredFunds = fundsDisberse.transferredFunds;
-    funds.availableFunds = fundsDisberse.totalFunds - fundsDisberse.transferredFunds;
+    funds.availableFunds =
+      fundsDisberse.totalFunds - fundsDisberse.transferredFunds;
     funds.program = program;
     await this.fundsRepository.save(funds);
 
-    return this.fundsRepository.findOne({ select: ["totalFunds", "transferredFunds", "availableFunds", "timestamp"], where: { program: { id: programId } } });
+    return this.fundsRepository.findOne({
+      select: ['totalFunds', 'transferredFunds', 'availableFunds', 'timestamp'],
+      where: { program: { id: programId } },
+    });
   }
-
 }
