@@ -26,7 +26,6 @@
     "@angular/pwa": "^0.12.4",
     "@angular/router": "^7.x.x",
     "@angular/service-worker": "^7.x.x",
-    "@ionic-native/core": "^5.15.1",
     "@ionic/angular": "^4.11.2",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
