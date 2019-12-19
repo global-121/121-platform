@@ -60,13 +60,7 @@ export class ProgramsServiceApiService {
       `/programs/funds/${programId}`,
     ).pipe(
       tap((response) => console.log(response)),
-      map((response) => {
-        response.totalRaised = Math.random() * 1000000;
-        response.totalTransferred = Math.random() * 1000000;
-        response.totalAvailable = response.totalRaised - response.totalTransferred;
-
-        return response;
-      }),
+      map((response) => response),
     ).toPromise();
   }
 
