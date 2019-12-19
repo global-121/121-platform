@@ -70,6 +70,16 @@ export class ProgramsServiceApiService {
     ).toPromise();
   }
 
+  getTotalIncluded(programId: number | string): Promise<number> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/total-included/${programId}`,
+    ).pipe(
+      tap((response) => console.log(response)),
+      map((response) => response),
+    ).toPromise();
+  }
+
   submitPayout(programId: number, amount: number): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
