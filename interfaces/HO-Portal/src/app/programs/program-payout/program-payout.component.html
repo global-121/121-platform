@@ -1,0 +1,31 @@
+<form method="POST"
+      (submit)="submitPayout()"
+>
+  <ion-row class="ion-align-items-center">
+    <ion-item class="ion-margin-end">
+      <ion-label position="stacked">
+        {{ 'page.programs.program-details.fixedTransferValue'|translate }}
+      </ion-label>
+      <ion-input type="number"
+                 inputmode="decimal"
+                 min="0"
+                 max="10000"
+                 name="transferValue"
+                 readonly
+                 required
+                 [value]="fixedTransferValue"
+      ></ion-input>
+    </ion-item>
+
+    <ion-button type="submit"
+                [disabled]="!isEnabled"
+    >
+      {{ 'page.programs.program-payout.start-payout'|translate }}
+    </ion-button>
+
+    <ion-spinner *ngIf="isInProgress"
+                 color="primary"
+                 class="ion-margin-start"
+    ></ion-spinner>
+  </ion-row>
+</form>

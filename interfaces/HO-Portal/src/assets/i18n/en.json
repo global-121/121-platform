@@ -27,6 +27,7 @@
       "program-details": {
         "pageTitle": "Program details",
         "section-funds": "Funds overview",
+        "section-payout": "Payout",
         "section-details": "Details overview",
         "all": "All details",
         "id": "ID",
@@ -61,6 +62,11 @@
         "total-available": "Funds available:",
         "last-updated": "Last updated: {{date}}"
       },
+      "program-payout": {
+        "start-payout": "Start payout now",
+        "payout-success": "Payout successful.",
+        "payout-error": "Payout unsuccessful."
+      },
       "program-modal": {
         "pageTitle": "Program JSON"
       }
@@ -80,6 +86,9 @@
     }
   },
   "common": {
-    "update": "Update"
+    "update": "Update",
+    "confirm": "Are you sure?",
+    "cancel": "Cancel",
+    "ok": "OK"
   }
 }

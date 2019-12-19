@@ -4,6 +4,7 @@ export class Program {
   description: string;
   countryId: number;
   currency: string;
+  fixedTransferValue: number;
   created: string;
   updated: string;
   author: object;
