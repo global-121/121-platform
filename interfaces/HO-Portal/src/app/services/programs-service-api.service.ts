@@ -60,13 +60,17 @@ export class ProgramsServiceApiService {
       `/programs/funds/${programId}`,
     ).pipe(
       tap((response) => console.log(response)),
-      map((response) => {
-        response.totalRaised = Math.random() * 1000000;
-        response.totalTransferred = Math.random() * 1000000;
-        response.totalAvailable = response.totalRaised - response.totalTransferred;
+      map((response) => response),
+    ).toPromise();
+  }
 
-        return response;
-      }),
+  getTotalIncluded(programId: number | string): Promise<number> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/total-included/${programId}`,
+    ).pipe(
+      tap((response) => console.log(response)),
+      map((response) => response),
     ).toPromise();
   }
 
