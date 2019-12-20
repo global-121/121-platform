@@ -6,7 +6,7 @@
       "label": {
         "en": "What is your phonenumber, so we can send you mobile money"
       },
-      "answerType": "text",
+      "answerType": "tel",
       "option": null
     }
   ]
