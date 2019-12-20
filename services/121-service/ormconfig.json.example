@@ -7,6 +7,13 @@
   "database": "global121",
   "schema": "121-service",
   "entities": ["src/**/**.entity{.ts,.js}"],
+  "migrationsTableName": "custom_migration_table",
+  "migrations": [
+    "migration/*.ts"
+  ],
+  "cli": {
+    "migrationsDir": "migration"
+  },
   "dropSchema": true,
   "synchronize": true
 }

@@ -4,11 +4,10 @@ import {
   Column,
   BeforeInsert,
   OneToMany,
-  ManyToOne,
   ManyToMany,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
-import crypto from 'crypto';
+const crypto = require('crypto');
 import { ProgramEntity } from '../programs/program/program.entity';
 import { StandardCriteriumEntity } from '../programs/standard-criterium/standard-criterium.entity';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
