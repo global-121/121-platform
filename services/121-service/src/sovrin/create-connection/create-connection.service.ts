@@ -112,6 +112,16 @@ export class CreateConnectionService {
     return await this.connectionRepository.save(connection);
   }
 
+  public async addCustomData(
+    did: string,
+    customDataKey: string,
+    customDataValue: string,
+  ): Promise<ConnectionEntity> {
+    const connection = await this.findOne(did);
+    connection.customData[customDataKey] = customDataValue
+    return await this.connectionRepository.save(connection);
+  }
+
   public async findOne(did: string): Promise<ConnectionEntity> {
     let connection = await this.connectionRepository.findOne({
       where: { did: did },
