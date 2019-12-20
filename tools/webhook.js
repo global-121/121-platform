@@ -27,7 +27,7 @@ function onMerge() {
   exec(
     `cd ` + repo_services +
     ` && sudo git pull ` +
-    ` && sudo docker-compose up -d --build && docker restart 121-service PA-accounts-service` +
+    ` && sudo docker-compose up -d --build && sudo docker restart 121-service PA-accounts-service` +
     ` && cd ` + repo_pa +
     ` && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /PA-app/` +
     ` && sudo rm -rf /var/www/121-platform/PA-app && sudo cp -r www/ ${web_root}/PA-app` +
