@@ -9,6 +9,7 @@ import { ApiService } from './api.service';
 import { Country } from '../models/country.model';
 import { Program } from '../models/program.model';
 import { Timeslot } from '../models/timeslot.model';
+import { Fsp } from '../models/fsp.model';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +51,16 @@ export class ProgramsServiceApiService {
   getProgramById(programId: number): Promise<Program> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/' + programId)
+      .pipe(
+        tap(response => console.log('response: ', response)),
+        map(response => response)
+      )
+      .toPromise();
+  }
+
+  getFspById(fspId: number): Promise<Fsp> {
+    return this.apiService
+      .get(environment.url_121_service_api, '/programs/fsp/' + fspId)
       .pipe(
         tap(response => console.log('response: ', response)),
         map(response => response)
@@ -241,6 +252,22 @@ export class ProgramsServiceApiService {
       '/appointment/register/' + timeslotId,
       {
         did
+      },
+      true
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    );
+  }
+
+  postConnectionCustomAttribute(did: string, key: string, value: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/create-connection/custom-data',
+      {
+        did,
+        key,
+        value
       },
       true
     ).pipe(
