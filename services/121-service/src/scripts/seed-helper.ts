@@ -10,6 +10,9 @@ export class SeedHelper {
 
   public async addPrograms(examplePrograms: Object[], authorId: number) {
     const programRepository = this.connection.getRepository(ProgramEntity);
+    const fspRepository = this.connection.getRepository(
+      FinancialServiceProviderEntity,
+    );
 
     const userRepository = this.connection.getRepository(UserEntity);
     const author = await userRepository.findOne(authorId);
@@ -36,16 +39,16 @@ export class SeedHelper {
 
       // Remove original fsp criteria and add it to a sepperate variable
       const fsps = program.financialServiceProviders;
-      program.customCriteria = [];
+      program.financialServiceProviders = [];
 
       for (let fsp of fsps) {
-        let fspReturn = await customCriteriumRepository.findOne(
+        let fspReturn = await fspRepository.findOne(
           fsp.id
         );
         program.financialServiceProviders.push(fspReturn);
       }
-
       await programRepository.save(program);
+
     }
   }
 

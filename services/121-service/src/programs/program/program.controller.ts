@@ -1,3 +1,4 @@
+import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { DidDto } from './dto/did.dto';
 import {
@@ -183,6 +184,18 @@ export class ProgramController {
   @Get('total-included/:programId')
   public async getTotalIncluded(@Param() param): Promise<number> {
     return await this.programService.getTotalIncluded(param.programId);
+  }
+
+
+  @ApiOperation({ title: 'Get fsp' })
+  @ApiImplicitParam({ name: 'fspId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Fsp with attributes',
+  })
+  @Get('fsp/:fspId')
+  public async getFspById(@Param() param): Promise<FinancialServiceProviderEntity> {
+    return await this.programService.getFspById(param.fspId);
   }
 
 }
