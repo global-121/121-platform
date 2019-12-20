@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint '**/*.ts'",
-    "prestart": "npx ts-node src/scripts seed-prod",
+    "prestart": "npm run migration:run && npx ts-node src/scripts seed-prod",
     "start": "node index.js",
     "start:dev": "tsc-watch --onSuccess \"  node index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json",
     "start:watch": "nodemon",

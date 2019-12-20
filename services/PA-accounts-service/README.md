@@ -67,13 +67,17 @@ Run the application through:
 Same as above. But replace `-it` tag in `docker run` or `docker start` commands by `-d` to run in detached mode.
 Also, the CMD line of Dockerfile should be changed from: `CMD ["npm", "run", "start:dev"]` to `CMD ["npm", "start"]`.
 
-## Seed the database and create identity schema
+## Database migrations
 
-To be able to use the functionality of this service an initial user is required. To seed the database for dev mode with a user, run the following command:
+During product development it sometimes happens that the database-structure changes (e.g. an extra column in a table), while there is already production-data stored that cannot be lost. In this case we have to apply a migration.
 
-    docker exec -i PA-accounts-service npm run seed
+Any time, the database-structure is adapted, before pushing, run:
+`docker exec -it PA-accounts npm run migration:generate <name>`
 
-This user password and username can be customized in `secrets.ts`
+This stores all edits in a migration-file, which is pushed along with your code.
+On test- and production-server, this file is automatically run within the 'npm prestart' command.
+To run this file locally, do:
+`docker exec -it PA-accounts-service npm run migration:run`
 
 ## How to use Swagger (with authorization features)
 
