@@ -18,7 +18,10 @@
     "seed:publish": "npx ts-node src/scripts seed-publish",
     "test": "jest --config=jest.json",
     "test:watch": "npm test -- --watchAll",
-    "test:coverage": "npm test -- --coverage --coverageDirectory=coverage"
+    "test:coverage": "npm test -- --coverage --coverageDirectory=coverage",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:generate": "npm run typeorm migration:generate -- -n",
+    "migration:run": "npm run typeorm migration:run"
   },
   "private": true,
   "dependencies": {
@@ -67,6 +70,7 @@
     "supertest": "^4.0.2",
     "swagger-ui-express": "^4.0.6",
     "ts-jest": "^24.0.0",
-    "ts-node": "~8.3.0"
+    "ts-node": "~8.3.0",
+    "tsconfig-paths": "^3.9.0"
   }
 }
