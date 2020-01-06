@@ -3,7 +3,7 @@ version: '3.7'
 services:
   indypool:
     build:
-      context: tykn-ssi-services 
+      context: tykn-ssi-services
       dockerfile: indy-pool.dockerfile
       args:
         pool_ip: '11.0.0.2'
@@ -25,8 +25,8 @@ services:
         ipv4_address: 11.0.0.2
     restart: unless-stopped
   tyknims:
-    build: 
-      context: tykn-ssi-services/TyknIMS  
+    build:
+      context: tykn-ssi-services/TyknIMS
       dockerfile: Dockerfile
     init: true
     container_name: tyknims
@@ -47,7 +47,7 @@ services:
     restart: unless-stopped
   orgims:
     build:
-      context: tykn-ssi-services/OrgIMS  
+      context: tykn-ssi-services/OrgIMS
       dockerfile: Dockerfile
       args:
         - CONFIG=config.json
@@ -72,8 +72,8 @@ services:
       - tyknims
     restart: unless-stopped
   userims:
-    build: 
-      context: tykn-ssi-services/UserIMS 
+    build:
+      context: tykn-ssi-services/UserIMS
       dockerfile: Dockerfile
     init: true
     container_name: userims
@@ -107,18 +107,17 @@ services:
       - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
     ports:
       - "5438:5432"
-    restart: always
     networks:
       pool_network:
         ipv4_address: 11.0.0.6
     restart: unless-stopped
   121-service:
-    build: 
+    build:
       context: 121-service
       dockerfile: Dockerfile
     init: true
     container_name: 121-service
-    volumes: 
+    volumes:
       - "./121-service:/home/121/services/121-service"
     ports:
       - "3000:3000"
