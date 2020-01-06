@@ -78,17 +78,6 @@
       "scoring": {}
     },
     {
-      "criterium": "id_number",
-      "label": {
-        "en": "What is your id number?"
-      },
-      "answerType": "text",
-      "criteriumType": "standard",
-      "options": null,
-      "persistence": true,
-      "scoring": {}
-    },
-    {
       "criterium": "question1",
       "label": {
         "en": "1. I am..."
