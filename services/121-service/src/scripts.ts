@@ -23,6 +23,7 @@ function confirmRun(scriptName) {
     process.stdin.pause();
     if (result !== 'y') {
       console.log('Operation aborted.')
+      process.exit()
       return;
     } else {
       runScript(scriptName);

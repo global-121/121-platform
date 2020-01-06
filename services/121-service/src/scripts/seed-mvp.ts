@@ -1,3 +1,4 @@
+import { SeedPublish } from './seed-publish';
 import SeedInit from './seed-init';
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
@@ -17,6 +18,7 @@ export class SeedMvp implements InterfaceScript {
   public constructor(private connection: Connection) { }
 
   private readonly seedHelper = new SeedHelper(this.connection);
+  private readonly seedPublish = new SeedPublish();
 
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.connection);
@@ -100,6 +102,8 @@ export class SeedMvp implements InterfaceScript {
 
       newAvailability = await availabilityRepository.save(availability);
     }
+
+    await this.seedPublish.run();
   }
 }
 
