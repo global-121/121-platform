@@ -45,7 +45,9 @@ This is currently set up. To reproduce, you would follow these steps:
    And fill in the right secret.
 
 2. Create `systemd-service`.  
-   First fill in the right User in `webhook.service`. This should reflect a user-account on that server with the appropriate permissions.
+   First fill in, in `webhook.service`:
+   * The right User ('global121' or 'global121production'). This should reflect a user-account on that server with the appropriate permissions. 
+   * Also choose 'staging' or 'production' for NODE_ENV, depending on the server.
 
        cp tools/webhook.service /etc/systemd/system/webhook.service
        sudo service webhook start

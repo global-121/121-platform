@@ -3,6 +3,8 @@ Description=Github webhook
 After=network.target
 
 [Service]
+#Fill in the right server here (staging/production)
+Environment=NODE_ENV=production
 Environment=NODE_PORT=3099
 Type=simple
 #Fill in the right user here, based on which server (global121 / global121production)
