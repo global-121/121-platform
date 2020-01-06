@@ -16,6 +16,7 @@ import { SeedInit } from './seed-init';
 
 import programBasicExample from '../../examples/program-basic.json';
 import programAnonymousExample from '../../examples/program-anonymous1.json';
+import SeedPublish from './seed-publish';
 
 const EXAMPLE_DID = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
 
@@ -24,6 +25,7 @@ export class SeedDev implements InterfaceScript {
   public constructor(private connection: Connection) { }
 
   private readonly seedHelper = new SeedHelper(this.connection);
+  private readonly seedPublish = new SeedPublish();
 
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.connection);
@@ -130,6 +132,7 @@ export class SeedDev implements InterfaceScript {
     credential2.answer = '0';
     await credentialAttributesRepository.save(credential2);
 
+    await this.seedPublish.run();
     await this.connection.close();
   }
 }
