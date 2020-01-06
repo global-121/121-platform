@@ -18,10 +18,10 @@ import { SchemaEntity } from '../../sovrin/schema/schema.entity';
 import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { HttpModule } from '@nestjs/common';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { TransactionEntity } from './transactions.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
