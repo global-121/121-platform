@@ -1,7 +1,6 @@
 const http = require("http");
 const crypto = require("crypto");
 const child_process = require("child_process");
-const execSync = child_process.execSync;
 const exec = child_process.exec;
 
 const secrets = require("./secrets");
@@ -44,78 +43,6 @@ function onMerge() {
         console.log(stdout);
     }
   });
-  // Update local state
-  // execSync(`echo "Update local state:" && sudo git pull`, {
-  //   cwd: repo
-  // });
-
-  // buildServices();
-
-  // buildPaApp();
-
-  // buildAwApp();
-
-  // buildHoPortal();
-}
-
-function buildPaApp() {
-  execSync(
-    `echo "Build PA-App:" ` +
-      ` && sudo npm ci --unsafe-perm ` +
-      ` && sudo npm run build -- --prod --base-href /PA-app/ ` +
-      ` && sudo rm -rf ${web_root}/PA-app ` +
-      ` && sudo cp -r www/ ${web_root}/PA-app `,
-    {
-      shell: true,
-      stdio: "inherit",
-      cwd: repo_pa
-    }
-  );
-  console.log("Built PA-App.");
-}
-
-function buildAwApp() {
-  execSync(
-    `echo "Build AW-App:" ` +
-      `&& sudo npm ci --unsafe-perm ` +
-      `&& sudo npm run build -- --prod --base-href /AW-app/ ` +
-      `&& sudo rm -rf ${web_root}/AW-app ` +
-      `&& sudo cp -r www/ ${web_root}/AW-app `,
-    {
-      shell: true,
-      stdio: "inherit",
-      cwd: repo_aw
-    }
-  );
-  console.log("Built AW-App.");
-}
-
-function buildHoPortal() {
-  execSync(
-    `echo "Build HO-Portal:" ` +
-      `&& sudo npm ci --unsafe-perm ` +
-      `&& sudo npm run build -- --prod --base-href /HO-portal/ ` +
-      `&& sudo rm -rf ${web_root}/HO-portal ` +
-      `&& sudo cp -r www/ ${web_root}/HO-portal `,
-    {
-      shell: true,
-      stdio: "inherit",
-      cwd: repo_ho
-    }
-  );
-  console.log("Built HO-Portal.");
-}
-
-function buildServices() {
-  execSync(
-    `echo "Build services:" && sudo docker-compose up -d --build && sudo docker restart 121-service PA-accounts-service `,
-    {
-      shell: true,
-      stdio: "inherit",
-      cwd: repo_services
-    }
-  );
-  console.log("Built services.");
 }
 
 // ----------------------------------------------------------------------------
@@ -142,7 +69,11 @@ http
       if (
         req.headers["x-hub-signature"] == sig &&
         payload.action == "closed" &&
-        payload.pull_request.merged
+        payload.pull_request.merged &&
+        (
+          (payload.pull_request.base.ref == "production" && process.env.NODE_ENV == "production")
+          || process.env.NODE_ENV == "staging"
+        )
       ) {
         onMerge();
       }
