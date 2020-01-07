@@ -14,7 +14,7 @@ export class ProgramPayoutComponent implements OnChanges {
   public programId: number;
 
   @Input()
-  public fixedTransferValue;
+  public fixedTransferValue: number;
 
   @Input()
   public currencyCode: string;
