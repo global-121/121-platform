@@ -163,6 +163,32 @@ export class ProgramController {
     );
   }
 
+  @ApiOperation({ title: 'Include set of PAs' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @Post('include/:programId')
+  public async include(
+    @Param() params,
+    @Body() data: DidDto[],
+  ): Promise<void> {
+    await this.programService.include(
+      params.programId,
+      data,
+    );
+  }
+
+  @ApiOperation({ title: 'Exclude set of PAs' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @Post('exclude/:programId')
+  public async exclude(
+    @Param() params,
+    @Body() data: DidDto[],
+  ): Promise<void> {
+    await this.programService.exclude(
+      params.programId,
+      data,
+    );
+  }
+
   @ApiOperation({ title: 'Sent payout instruction to financial service provider' })
   @Post('payout')
   public async payout(

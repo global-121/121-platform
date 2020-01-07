@@ -27,6 +27,7 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
 import { API } from '../../config';
+import { DidDto } from './dto/did.dto';
 
 @Injectable()
 export class ProgramService {
@@ -381,6 +382,69 @@ export class ProgramService {
       inclusionStatus = { status: 'unavailable' };
     }
     return inclusionStatus;
+  }
+
+  public async include(programId: number, dids: DidDto[]): Promise<void> {
+
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 404);
+    }
+
+    for (let did of dids) {
+      let connection = await this.connectionRepository.findOne({
+        where: { did: did.did },
+      });
+      if (!connection) {
+        continue;
+      }
+
+      // Add to inclusion-array, if not yet present
+      const indexIn = connection.programsIncluded.indexOf(parseInt(String(programId), 10));
+      if (indexIn <= -1) {
+        connection.programsIncluded.push(programId);
+      }
+      // Remove from exclusion-array, if present
+      const indexEx = connection.programsExcluded.indexOf(parseInt(String(programId), 10));
+      if (indexEx > -1) {
+        connection.programsExcluded.splice(indexEx, 1);
+      }
+      await this.connectionRepository.save(connection);
+    }
+
+  }
+
+  public async exclude(programId: number, dids: DidDto[]): Promise<void> {
+
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, 404);
+    }
+
+    for (let did of dids) {
+
+      let connection = await this.connectionRepository.findOne({
+        where: { did: did.did },
+      });
+      if (!connection) {
+        continue;
+      }
+
+      // Add to exclusion-array, if not yet present
+      const indexEx = connection.programsExcluded.indexOf(parseInt(String(programId), 10));
+      if (indexEx <= -1) {
+        connection.programsExcluded.push(programId);
+      }
+      // Remove from inclusion-array, if present
+      const indexIn = connection.programsIncluded.indexOf(parseInt(String(programId), 10));
+      if (indexIn > -1) {
+        connection.programsIncluded.splice(indexIn, 1);
+      }
+      await this.connectionRepository.save(connection);
+    }
+
   }
 
   private createQuestionAnswerList(
