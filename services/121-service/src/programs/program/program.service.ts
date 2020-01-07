@@ -314,7 +314,7 @@ export class ProgramService {
     connection.inclusionScore = totalScore;
 
     // For now always minimum-score approach: this will need to be split for the pilot
-    if (program.inclusionCalculationType === 'highestScoresX') {
+    if (program.inclusionCalculationType === 'minimumScore') {
       // Checks if PA is elegible based on the minimum score of the program
       let inclusionResult = totalScore >= program.minimumScore;
 
