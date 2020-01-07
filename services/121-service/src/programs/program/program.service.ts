@@ -404,6 +404,7 @@ export class ProgramService {
       const indexIn = connection.programsIncluded.indexOf(parseInt(String(programId), 10));
       if (indexIn <= -1) {
         connection.programsIncluded.push(programId);
+        this.notifyInclusionStatus(connection, programId, true);
       }
       // Remove from exclusion-array, if present
       const indexEx = connection.programsExcluded.indexOf(parseInt(String(programId), 10));
@@ -436,6 +437,7 @@ export class ProgramService {
       const indexEx = connection.programsExcluded.indexOf(parseInt(String(programId), 10));
       if (indexEx <= -1) {
         connection.programsExcluded.push(programId);
+        this.notifyInclusionStatus(connection, programId, false);
       }
       // Remove from inclusion-array, if present
       const indexIn = connection.programsIncluded.indexOf(parseInt(String(programId), 10));
