@@ -101,16 +101,20 @@ export class PaymentMethodComponent extends PersonalComponent {
       await this.submitCustomAttribute(customValue);
     }
 
-    // this.complete();
+    this.complete();
   }
 
   private async askCustomAttribute(): Promise<string> {
     if (this.fspChoiceWithDetails.attributes[0].name === 'phoneNumber') {
-      return '+1234567890';
+      const phoneNumber = '+1234567890';
+      await this.paData.store(this.paData.type.phoneNumber, phoneNumber);
+      return phoneNumber;
     } else if (this.fspChoiceWithDetails.attributes[0].name === 'idNumber') {
       return 'BSN:244672027';
     }
   }
+
+
 
   private async submitCustomAttribute(customValue: string) {
     console.log('customValue: ', customValue);
