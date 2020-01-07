@@ -60,7 +60,7 @@ export class ProgramService {
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
-  ) {}
+  ) { }
 
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
@@ -305,52 +305,51 @@ export class ProgramService {
       program.customCriteria,
     );
 
+    // Calculates the score based on the ctritria of a program and the aggregrated score list
+    const totalScore = this.calculateScoreAllCriteria(
+      program.customCriteria,
+      questionAnswerList,
+    );
+    connection.inclusionScore = totalScore;
+
     // For now always minimum-score approach: this will need to be split for the pilot
-    if (
-      program.inclusionCalculationType === 'minimumScore' ||
-      program.inclusionCalculationType === 'highestScoresX'
-    ) {
-      let inclusionResult: boolean = await this.calculateInclusion(
-        program,
-        questionAnswerList,
-      );
+    if (program.inclusionCalculationType === 'highestScoresX') {
+      // Checks if PA is elegible based on the minimum score of the program
+      let inclusionResult = totalScore >= program.minimumScore;
+
       if (inclusionResult) {
         connection.programsIncluded.push(programId);
-        this.smsService.notifyBySms(
-          connection.phoneNumber,
-          connection.preferredLanguage,
-          'included',
-          programId,
-        );
-        this.voiceService.notifyByVoice(
-          connection.phoneNumber,
-          connection.preferredLanguage,
-          'included',
-          programId,
-        );
+        this.notifyInclusionStatus(connection, programId, inclusionResult);
       } else if (!inclusionResult) {
-        this.smsService.notifyBySms(
-          connection.phoneNumber,
-          connection.preferredLanguage,
-          'excluded',
-          programId,
-        );
-        this.voiceService.notifyByVoice(
-          connection.phoneNumber,
-          connection.preferredLanguage,
-          'excluded',
-          programId,
-        );
         connection.programsExcluded.push(programId);
+        this.notifyInclusionStatus(connection, programId, inclusionResult);
       }
       inclusionRequestStatus = { status: 'done' };
-    } else {
+    } else if (program.inclusionCalculationType === 'highestScoresX') {
+
+      // In this case an inclusion-status can only be given later. 
       inclusionRequestStatus = { status: 'pending' };
+
     }
 
     await this.connectionRepository.save(connection);
 
     return inclusionRequestStatus;
+  }
+
+  private async notifyInclusionStatus(connection, programId, inclusionResult) {
+    this.smsService.notifyBySms(
+      connection.phoneNumber,
+      connection.preferredLanguage,
+      inclusionResult ? 'included' : 'excluded',
+      programId,
+    );
+    this.voiceService.notifyByVoice(
+      connection.phoneNumber,
+      connection.preferredLanguage,
+      inclusionResult ? 'included' : 'excluded',
+      programId,
+    );
   }
 
   public async getInclusionStatus(
@@ -382,21 +381,6 @@ export class ProgramService {
       inclusionStatus = { status: 'unavailable' };
     }
     return inclusionStatus;
-  }
-
-  public async calculateInclusion(
-    program: ProgramEntity,
-    questionAnswerList: object,
-  ): Promise<boolean> {
-    // Calculates the score based on the ctritria of a program and the aggregrated score list
-    const totalScore = this.calculateScoreAllCriteria(
-      program.customCriteria,
-      questionAnswerList,
-    );
-
-    // Checks if PA is elegible based on the minimum score of the program
-    const included = totalScore >= program.minimumScore;
-    return included;
   }
 
   private createQuestionAnswerList(
@@ -527,7 +511,7 @@ export class ProgramService {
   private async getIncludedConnections(
     programId: number,
   ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find( {relations: ['fsp']})
+    const connections = await this.connectionRepository.find({ relations: ['fsp'] })
     const includedConnections = [];
     for (let connection of connections) {
       if (connection.programsIncluded.includes(+programId)) {

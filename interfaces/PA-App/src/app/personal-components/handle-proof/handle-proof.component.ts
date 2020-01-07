@@ -31,6 +31,7 @@ export class HandleProofComponent extends PersonalComponent {
   private wallet: any;
 
   public inclusionStatus: string;
+  public inclusionStatusReceived = false;
   public inclusionStatusPositive = false;
   public inclusionStatusNegative = false;
 
@@ -70,7 +71,11 @@ export class HandleProofComponent extends PersonalComponent {
     const status = await this.programService.includeMe(this.did, this.programId, proof);
 
     if (status === 'done') {
-      this.inclusionStatus = await this.programService.checkInclusionStatus(this.did, this.programId);
+      this.inclusionStatus = await this.programService.checkInclusionStatus(this.did, this.programId).toPromise();
+    } else {
+      this.updateService.checkInclusionStatus(this.programId, this.did).then(() => {
+        this.getInclusionStatus(this.did, this.programId);
+      });
     }
 
     if (this.inclusionStatus === InclusionStates.included) {
@@ -86,6 +91,15 @@ export class HandleProofComponent extends PersonalComponent {
     this.programId = Number(await this.paData.retrieve(this.paData.type.programId));
     this.did = await this.paData.retrieve(this.paData.type.did);
     this.wallet = await this.paData.retrieve(this.paData.type.wallet);
+  }
+
+  async getInclusionStatus(did: string, programId: number) {
+    console.log('getInclusionStatus()');
+    this.programService.checkInclusionStatus(did, programId).subscribe(response => {
+      const credential = response;
+      console.log('Status Received:', credential);
+      this.inclusionStatusReceived = true;
+    });
   }
 
   getNextSection() {
