@@ -14,7 +14,7 @@ export class ProgramPayoutComponent implements OnChanges {
   public programId: number;
 
   @Input()
-  public fixedTransferValue: number;
+  public fixedTransferValue;
 
   @Input()
   public currencyCode: string;
@@ -32,6 +32,12 @@ export class ProgramPayoutComponent implements OnChanges {
   ) {
     this.locale = this.translate.getBrowserCultureLang();
   }
+
+
+  async getValueAndSubmit(value: number) {
+      this.fixedTransferValue  = value;
+      await this.submitPayout();
+    }
 
   async ngOnChanges(changes: SimpleChanges) {
     if (typeof changes.programId.currentValue === 'number') {
