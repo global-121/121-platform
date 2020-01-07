@@ -48,10 +48,12 @@ This is currently set up. To reproduce, you would follow these steps:
    First fill in, in `webhook.service`:
    * The right User ('global121' or 'global121production'). This should reflect a user-account on that server with the appropriate permissions. 
    * Also choose 'staging' or 'production' for NODE_ENV, depending on the server.
-
+    
+    ```
        cp tools/webhook.service /etc/systemd/system/webhook.service
        sudo service webhook start
        sudo service webhook status
+    ```
 
    The last command checks that the service runs correctly.
 

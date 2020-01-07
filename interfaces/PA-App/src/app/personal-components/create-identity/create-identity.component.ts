@@ -62,8 +62,11 @@ export class CreateIdentityComponent extends PersonalComponent {
   public async submitCredentials(username: string, create: string, confirm: string) {
     console.log('submitCredentials()', username, create, confirm);
 
+    this.isInProgress = true;
+
     if (create !== confirm) {
       this.unequalPasswords = true;
+      this.isInProgress = false;
       return;
     }
     this.unequalPasswords = false;
@@ -76,7 +79,6 @@ export class CreateIdentityComponent extends PersonalComponent {
     await this.paData.createAccount(paAccountUsername, paAccountPassword).then(
       async () => {
         this.usernameNotUnique = false;
-        this.isInProgress = true;
         await this.executeSovrinFlow();
         this.uiService.showUserMenu();
         this.conversationService.stopLoading();
