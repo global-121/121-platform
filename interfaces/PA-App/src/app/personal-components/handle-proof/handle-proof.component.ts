@@ -31,7 +31,6 @@ export class HandleProofComponent extends PersonalComponent {
   private wallet: any;
 
   public inclusionStatus: string;
-  public inclusionStatusReceived = false;
   public inclusionStatusPositive = false;
   public inclusionStatusNegative = false;
 
@@ -78,14 +77,20 @@ export class HandleProofComponent extends PersonalComponent {
       });
     }
 
-    if (this.inclusionStatus === InclusionStates.included) {
-      this.inclusionStatusPositive = true;
-    } else if (this.inclusionStatus === InclusionStates.excluded) {
-      this.inclusionStatusNegative = true;
-    }
+    this.setStatus(this.inclusionStatus);
 
     this.conversationService.stopLoading();
   }
+
+  private async setStatus(inclusionStatus: string) {
+    if (inclusionStatus === InclusionStates.included) {
+      this.inclusionStatusPositive = true;
+    } else if (inclusionStatus === InclusionStates.excluded) {
+      this.inclusionStatusNegative = true;
+    }
+  }
+
+
 
   private async gatherData() {
     this.programId = Number(await this.paData.retrieve(this.paData.type.programId));
@@ -96,9 +101,9 @@ export class HandleProofComponent extends PersonalComponent {
   async getInclusionStatus(did: string, programId: number) {
     console.log('getInclusionStatus()');
     this.programService.checkInclusionStatus(did, programId).subscribe(response => {
-      const credential = response;
-      console.log('Status Received:', credential);
-      this.inclusionStatusReceived = true;
+      this.inclusionStatus = response;
+      this.setStatus(this.inclusionStatus);
+      console.log('Status Received:', this.inclusionStatus);
     });
   }
 
