@@ -22,6 +22,7 @@ They are grouped by their (most important) actor.
 
 ### For Humanitarian Organization (HO)
 1. [View funds overview](View_funds_overview.feature)
+2. [Send payment instructions](Send_payment_instructions.feature)
 
 
 ### For Person/People Affected (PA)
