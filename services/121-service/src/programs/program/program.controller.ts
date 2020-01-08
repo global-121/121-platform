@@ -191,7 +191,7 @@ export class ProgramController {
   @Post('include/:programId')
   public async include(
     @Param() params,
-    @Body() data: DidDto[],
+    @Body() data: object,
   ): Promise<void> {
     await this.programService.include(
       params.programId,
@@ -204,7 +204,7 @@ export class ProgramController {
   @Post('exclude/:programId')
   public async exclude(
     @Param() params,
-    @Body() data: DidDto[],
+    @Body() data: object,
   ): Promise<void> {
     await this.programService.exclude(
       params.programId,

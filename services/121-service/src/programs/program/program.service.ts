@@ -390,7 +390,7 @@ export class ProgramService {
     return inclusionStatus;
   }
 
-  public async include(programId: number, dids: DidDto[]): Promise<void> {
+  public async include(programId: number, dids: object): Promise<void> {
 
     let program = await this.programRepository.findOne(programId);
     if (!program) {
@@ -398,7 +398,7 @@ export class ProgramService {
       throw new HttpException({ errors }, 404);
     }
 
-    for (let did of dids) {
+    for (let did of JSON.parse(dids['dids'])) {
       let connection = await this.connectionRepository.findOne({
         where: { did: did.did },
       });
@@ -422,7 +422,7 @@ export class ProgramService {
 
   }
 
-  public async exclude(programId: number, dids: DidDto[]): Promise<void> {
+  public async exclude(programId: number, dids: object): Promise<void> {
 
     let program = await this.programRepository.findOne(programId);
     if (!program) {
@@ -430,8 +430,7 @@ export class ProgramService {
       throw new HttpException({ errors }, 404);
     }
 
-    for (let did of dids) {
-
+    for (let did of JSON.parse(dids['dids'])) {
       let connection = await this.connectionRepository.findOne({
         where: { did: did.did },
       });
@@ -590,7 +589,7 @@ export class ProgramService {
     programId: number,
     privacy: boolean
   ): Promise<any[]> {
-    const connections = await this.connectionRepository.find();
+    const connections = await this.connectionRepository.find({ order: { inclusionScore: "DESC" } });
     const enrolledConnections = [];
     for (let connection of connections) {
       if (connection.programsEnrolled.includes(+programId)) {

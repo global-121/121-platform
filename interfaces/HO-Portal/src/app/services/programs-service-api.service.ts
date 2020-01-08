@@ -97,4 +97,17 @@ export class ProgramsServiceApiService {
       map((response) => response),
     );
   }
+
+  include(programId: number | string, dids: string): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/include/${programId}`,
+      {
+        dids
+      },
+    ).pipe(
+      tap((response) => console.log(response)),
+      map((response) => response),
+    ).toPromise();
+  }
 }
