@@ -29,6 +29,14 @@
 
   </section>
   <section>
+    <h2>{{ 'page.programs.program-details.section-people'|translate }}</h2>
+
+    <ion-button (click)="goToPeoplePage()">
+      {{ 'page.programs.program-details.go-to-people-page'|translate }}
+    </ion-button>
+
+  </section>
+  <section>
     <h2>{{ 'page.programs.program-details.section-payout'|translate }}</h2>
 
     <app-program-payout [programId]="program?.id"

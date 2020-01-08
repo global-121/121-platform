@@ -87,4 +87,27 @@ export class ProgramsServiceApiService {
       map((response) => response),
     ).toPromise();
   }
+
+  getEnrolled(programId: number | string): Observable<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/enrolled/${programId}`,
+    ).pipe(
+      tap((response) => console.log(response)),
+      map((response) => response),
+    );
+  }
+
+  include(programId: number | string, dids: string): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/include/${programId}`,
+      {
+        dids
+      },
+    ).pipe(
+      tap((response) => console.log(response)),
+      map((response) => response),
+    ).toPromise();
+  }
 }
