@@ -78,11 +78,10 @@ export class HandleProofComponent extends PersonalComponent {
     }
 
     // Check if the enrollment was done earlier ..
-    let statusRetrieved, status: string;
+    let statusRetrieved: string, status: string;
     try {
       statusRetrieved = await this.paData.retrieve('status');
-    }
-    catch (Exception) {
+    } catch {
       statusRetrieved = '';
     }
     if (!statusRetrieved) {
