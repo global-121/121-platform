@@ -85,4 +85,11 @@ export class ProgramPeopleComponent implements OnInit {
     }
     return result;
   }
+
+  public submitInclusion() {
+    console.log(this.selected);
+    this.programsService.include(this.programId, JSON.stringify(this.selected)).then((response) => {
+      console.log(response);
+    })
+  }
 }
