@@ -1,5 +1,5 @@
 <form method="POST"
-      (submit)="submitPayout()"
+      (ngSubmit)="submitPayout()"
 >
   <ion-row class="ion-align-items-center">
     <ion-item class="ion-margin-end">
@@ -9,9 +9,10 @@
       <ion-input type="number"
                  inputmode="decimal"
                  min="0"
-                 name="transferValue"
-                 readonly
                  required
+                 name="transferValue"
+                 [(ngModel)]="transferValue"
+                 ngDefaultControl
                  [value]="fixedTransferValue"
       ></ion-input>
     </ion-item>

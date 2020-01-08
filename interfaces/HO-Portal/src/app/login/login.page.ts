@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
@@ -6,22 +6,21 @@ import { AuthService } from '../auth/auth.service';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage {
 
+  public email: any;
+  public password: any;
 
   constructor(
     private authService: AuthService,
   ) { }
 
-  ngOnInit() {
-  }
-
-  public async doLogin(event) {
+  public doLogin() {
     console.log('doLogin()');
 
     this.authService.login(
-      event.target.elements.email.value,
-      event.target.elements.password.value
+      this.email,
+      this.password
     );
 
   }

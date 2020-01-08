@@ -22,6 +22,8 @@ export class ProgramPayoutComponent implements OnChanges {
   public isEnabled = true;
   public isInProgress = false;
 
+  public transferValue: any;
+
   private locale: string;
   private totalIncluded: number;
 
@@ -48,11 +50,11 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   private createTotalAmountMessage() {
-    const totalCost = this.totalIncluded * this.fixedTransferValue;
+    const totalCost = this.totalIncluded * this.transferValue;
     const symbol = `${this.currencyCode} `;
     const totalCostFormatted = formatCurrency(totalCost, this.locale, symbol, this.currencyCode);
 
-    return `${this.totalIncluded} * ${this.fixedTransferValue} = ${totalCostFormatted}`;
+    return `${this.totalIncluded} * ${this.transferValue} = ${totalCostFormatted}`;
   }
 
   private async payoutConfirm() {
@@ -87,8 +89,8 @@ export class ProgramPayoutComponent implements OnChanges {
 
   private async performPayout() {
     this.isInProgress = true;
-    console.log('Paying out...', this.fixedTransferValue);
-    this.programsService.submitPayout(this.programId, this.fixedTransferValue)
+    console.log('Paying out...', this.transferValue);
+    this.programsService.submitPayout(this.programId, this.transferValue)
       .then(
         () => {
           this.isInProgress = false;
