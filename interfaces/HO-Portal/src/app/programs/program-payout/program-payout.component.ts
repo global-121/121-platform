@@ -33,6 +33,12 @@ export class ProgramPayoutComponent implements OnChanges {
     this.locale = this.translate.getBrowserCultureLang();
   }
 
+
+  async getValueAndSubmit(value: number) {
+      this.fixedTransferValue  = value;
+      await this.submitPayout();
+    }
+
   async ngOnChanges(changes: SimpleChanges) {
     if (typeof changes.programId.currentValue === 'number') {
       this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);

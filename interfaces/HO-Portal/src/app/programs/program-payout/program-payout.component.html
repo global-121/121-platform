@@ -1,22 +1,17 @@
-<form method="POST"
-      (submit)="submitPayout()"
->
+<form method="POST">
   <ion-row class="ion-align-items-center">
     <ion-item class="ion-margin-end">
       <ion-label position="stacked">
         {{ 'page.programs.program-details.fixedTransferValue'|translate }}
       </ion-label>
       <ion-input type="number"
-                 inputmode="decimal"
-                 min="0"
-                 name="transferValue"
-                 readonly
+                 name="testvalue"
                  required
-                 [value]="fixedTransferValue"
+                 #inputFixedTransferValue
       ></ion-input>
     </ion-item>
 
-    <ion-button type="submit"
+    <ion-button (click) ="getValueAndSubmit(inputFixedTransferValue.value)"
                 [disabled]="!isEnabled"
     >
       {{ 'page.programs.program-payout.start-payout'|translate }}
