@@ -23,7 +23,9 @@ export class ProgramPeopleComponent implements OnInit {
     this.languageCode = this.translate.currentLang;
 
     const id = this.route.snapshot.paramMap.get('id');
-    console.log('ID: ', id);
+    this.programsService.getEnrolled(id).subscribe((response) => {
+      console.log(response);
+    });
   }
 
 }
