@@ -77,12 +77,27 @@ export class HandleProofComponent extends PersonalComponent {
       return;
     }
 
-    // Create proof
-    const proofRequest = await this.programService.getProofRequest(this.programId);
-    const proof = await this.sovrinService.getProofFromWallet(proofRequest, this.wallet);
+    // Check if the enrollment was done earlier ..
+    let statusRetrieved, status: string;
+    try {
+      statusRetrieved = await this.paData.retrieve('status');
+    }
+    catch (Exception) {
+      statusRetrieved = '';
+    }
+    if (!statusRetrieved) {
+      // .. IF NO, THEN:
+      // Create proof
+      const proofRequest = await this.programService.getProofRequest(this.programId);
+      const proof = await this.sovrinService.getProofFromWallet(proofRequest, this.wallet);
 
-    // Use proof
-    const status = await this.programService.includeMe(this.did, this.programId, proof);
+      // Use proof
+      status = await this.programService.includeMe(this.did, this.programId, proof);
+      this.paData.store('status', status);
+    } else {
+      // .. IF YES, THEN CONTINUE
+      status = statusRetrieved;
+    }
 
     if (status === 'done') {
       this.inclusionStatus = await this.programService.checkInclusionStatus(this.did, this.programId).toPromise();
