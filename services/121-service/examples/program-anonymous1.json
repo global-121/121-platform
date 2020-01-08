@@ -65,6 +65,7 @@
       "answerType": "text",
       "criteriumType": "standard",
       "options": null,
+      "persistence": true,
       "scoring": {}
     },
     {
@@ -75,6 +76,7 @@
       "answerType": "date",
       "criteriumType": "standard",
       "options": null,
+      "persistence": true,
       "scoring": {}
     },
     {

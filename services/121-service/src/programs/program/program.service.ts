@@ -297,7 +297,6 @@ export class ProgramService {
       did,
     );
 
-    let inclusionRequestStatus: InclusionRequestStatus;
 
     const questionAnswerList = this.createQuestionAnswerList(program, proof);
     connection.customData = this.getPersitentDataFromProof(
@@ -313,7 +312,14 @@ export class ProgramService {
     );
     connection.inclusionScore = totalScore;
 
-    // For now always minimum-score approach: this will need to be split for the pilot
+    // Add to enrolled-array, if not yet present
+    const index = connection.programsEnrolled.indexOf(parseInt(String(programId), 10));
+    if (index <= -1) {
+      connection.programsEnrolled.push(programId);
+    }
+
+    // Depending on method: immediately determine inclusionStatus (minimumScore) or later (highestScoresX)
+    let inclusionRequestStatus: InclusionRequestStatus;
     if (program.inclusionCalculationType === 'minimumScore') {
       // Checks if PA is elegible based on the minimum score of the program
       let inclusionResult = totalScore >= program.minimumScore;
@@ -535,9 +541,15 @@ export class ProgramService {
     }
     return customData;
   }
+
   public async getTotalIncluded(programId): Promise<number> {
     const includedConnections = await this.getIncludedConnections(programId);
     return includedConnections.length;
+  }
+
+  public async getEnrolled(programId: number, privacy: boolean): Promise<any[]> {
+    const enrolledConnections = await this.getEnrolledConnections(programId, privacy);
+    return enrolledConnections;
   }
 
   public async payout(programId: number, amount: number) {
@@ -574,10 +586,38 @@ export class ProgramService {
     return { status: 'succes', message: 'Send instructions to FSP' }
   }
 
+  private async getEnrolledConnections(
+    programId: number,
+    privacy: boolean
+  ): Promise<any[]> {
+    const connections = await this.connectionRepository.find();
+    const enrolledConnections = [];
+    for (let connection of connections) {
+      if (connection.programsEnrolled.includes(+programId)) {
+        let connectionNew: any;
+        if (privacy) {
+          connectionNew = {
+            did: connection.did,
+            score: connection.inclusionScore,
+            name: connection.customData['name'],
+            dob: connection.customData['dob'],
+          };
+        } else {
+          connectionNew = {
+            did: connection.did,
+            score: connection.inclusionScore
+          };
+        }
+        enrolledConnections.push(connectionNew);
+      }
+    }
+    return enrolledConnections;
+  }
+
   private async getIncludedConnections(
     programId: number,
   ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({ relations: ['fsp'] })
+    const connections = await this.connectionRepository.find({ relations: ['fsp'] });
     const includedConnections = [];
     for (let connection of connections) {
       if (connection.programsIncluded.includes(+programId)) {

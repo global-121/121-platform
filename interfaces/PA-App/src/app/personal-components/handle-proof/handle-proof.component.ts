@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -23,9 +23,10 @@ enum InclusionStates {
   styleUrls: ['./handle-proof.component.scss'],
 })
 export class HandleProofComponent extends PersonalComponent {
+  @Input()
+  public data: any;
 
-  public ngo: string;
-
+  public currentProgram: Program;
   private programId: number;
   private did: string;
   private wallet: any;
@@ -46,8 +47,24 @@ export class HandleProofComponent extends PersonalComponent {
     this.conversationService.startLoading();
   }
 
-  ngAfterContentInit() {
+  async ngOnInit() {
+    this.currentProgram = await this.paData.getCurrentProgram();
+
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+    await this.initNew();
+  }
+
+  async initNew() {
     this.handleProof();
+  }
+
+  initHistory() {
+    this.isDisabled = true;
+    this.inclusionStatus = this.data.inclusionStatus;
+    this.processStatus(this.inclusionStatus);
   }
 
   async handleProof() {
@@ -60,29 +77,43 @@ export class HandleProofComponent extends PersonalComponent {
       return;
     }
 
-    this.ngo = currentProgram.ngo;
+    // Check if the enrollment was done earlier ..
+    let statusRetrieved: string, status: string;
+    try {
+      statusRetrieved = await this.paData.retrieve('status');
+    } catch {
+      statusRetrieved = '';
+    }
+    if (!statusRetrieved) {
+      // .. IF NO, THEN:
+      // Create proof
+      const proofRequest = await this.programService.getProofRequest(this.programId);
+      const proof = await this.sovrinService.getProofFromWallet(proofRequest, this.wallet);
 
-    // Create proof
-    const proofRequest = await this.programService.getProofRequest(this.programId);
-    const proof = await this.sovrinService.getProofFromWallet(proofRequest, this.wallet);
-
-    // Use proof
-    const status = await this.programService.includeMe(this.did, this.programId, proof);
+      // Use proof
+      status = await this.programService.includeMe(this.did, this.programId, proof);
+      this.paData.store('status', status);
+    } else {
+      // .. IF YES, THEN CONTINUE
+      status = statusRetrieved;
+    }
 
     if (status === 'done') {
       this.inclusionStatus = await this.programService.checkInclusionStatus(this.did, this.programId).toPromise();
+      this.processStatus(this.inclusionStatus);
+      this.conversationService.stopLoading();
+      this.complete();
     } else {
+      this.conversationService.stopLoading();
       this.updateService.checkInclusionStatus(this.programId, this.did).then(() => {
         this.getInclusionStatus(this.did, this.programId);
       });
     }
 
-    this.setStatus(this.inclusionStatus);
 
-    this.conversationService.stopLoading();
   }
 
-  private async setStatus(inclusionStatus: string) {
+  private async processStatus(inclusionStatus: string) {
     if (inclusionStatus === InclusionStates.included) {
       this.inclusionStatusPositive = true;
     } else if (inclusionStatus === InclusionStates.excluded) {
@@ -102,8 +133,10 @@ export class HandleProofComponent extends PersonalComponent {
     console.log('getInclusionStatus()');
     this.programService.checkInclusionStatus(did, programId).subscribe(response => {
       this.inclusionStatus = response;
-      this.setStatus(this.inclusionStatus);
       console.log('Status Received:', this.inclusionStatus);
+      this.processStatus(this.inclusionStatus);
+      this.conversationService.stopLoading();
+      this.complete();
     });
   }
 
