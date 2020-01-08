@@ -40,4 +40,4 @@ Feature: Send payment instructions
     Given the user clicks the button "start payout now"
     Given the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
-    Then the message "Connection to Financial Service Provider is unavailable" is shown
+    Then the message "Payout unsuccessful" is shown
