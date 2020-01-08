@@ -27,6 +27,8 @@
       "program-details": {
         "pageTitle": "Program details",
         "section-funds": "Funds overview",
+        "section-people": "Manage people included",
+        "go-to-people-page": "Go to Page",
         "section-payout": "Payout",
         "section-details": "Details overview",
         "all": "All details",
@@ -68,6 +70,9 @@
         "total-amount": "Total amount to payout:",
         "payout-success": "Payout successful.",
         "payout-error": "Payout unsuccessful."
+      },
+      "program-people": {
+        "pageTitle": "Manage included people"
       },
       "program-modal": {
         "pageTitle": "Program JSON"

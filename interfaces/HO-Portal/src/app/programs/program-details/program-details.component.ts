@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Program } from 'src/app/models/program.model';
 import { ModalController } from '@ionic/angular';
@@ -19,6 +19,8 @@ export class ProgramDetailsComponent implements OnInit {
   public programTitle: string;
   public programArray: any;
 
+  private id: string;
+
   private techFeatures = [
     'countryId',
     'schemaId',
@@ -30,6 +32,7 @@ export class ProgramDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private programsService: ProgramsServiceApiService,
     public modalController: ModalController,
     public translate: TranslateService,
@@ -41,12 +44,16 @@ export class ProgramDetailsComponent implements OnInit {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
 
-    const id = this.route.snapshot.paramMap.get('id');
-    this.programsService.getProgramById(id).subscribe((response) => {
+    this.id = this.route.snapshot.paramMap.get('id');
+    this.programsService.getProgramById(this.id).subscribe((response) => {
       this.program = response;
       this.programTitle = this.mapLabelByLanguageCode(this.program.title);
       this.programArray = this.generateArray(this.program);
     });
+  }
+
+  public goToPeoplePage() {
+    this.router.navigateByUrl('/program/' + this.id + '/people');
   }
 
 
