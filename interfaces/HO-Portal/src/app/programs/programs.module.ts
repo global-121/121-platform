@@ -1,5 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 import { ProgramDetailsComponent } from './program-details/program-details.component';
 import { ProgramFundsComponent } from './program-funds/program-funds.component';
@@ -23,6 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
   ],
   imports: [
     CommonModule,
+    FormsModule,
     ProgramsRoutingModule,
     TranslateModule.forChild()
   ],
