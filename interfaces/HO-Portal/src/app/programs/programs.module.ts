@@ -10,6 +10,7 @@ import { ProgramPeopleComponent } from './program-people/program-people.componen
 
 import { ProgramsRoutingModule } from './programs-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   entryComponents: [
@@ -26,7 +27,8 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     ProgramsRoutingModule,
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
+    NgxDatatableModule
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
