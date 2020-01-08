@@ -547,8 +547,8 @@ export class ProgramService {
     return includedConnections.length;
   }
 
-  public async getEnrolled(programId): Promise<ConnectionEntity[]> {
-    const enrolledConnections = await this.getEnrolledConnections(programId);
+  public async getEnrolled(programId: number, privacy: boolean): Promise<any[]> {
+    const enrolledConnections = await this.getEnrolledConnections(programId, privacy);
     return enrolledConnections;
   }
 
@@ -588,12 +588,27 @@ export class ProgramService {
 
   private async getEnrolledConnections(
     programId: number,
-  ): Promise<ConnectionEntity[]> {
+    privacy: boolean
+  ): Promise<any[]> {
     const connections = await this.connectionRepository.find();
     const enrolledConnections = [];
     for (let connection of connections) {
       if (connection.programsEnrolled.includes(+programId)) {
-        enrolledConnections.push({ did: connection.did, score: connection.inclusionScore });
+        let connectionNew: any;
+        if (privacy) {
+          connectionNew = {
+            did: connection.did,
+            score: connection.inclusionScore,
+            name: connection.customData['name'],
+            dob: connection.customData['dob'],
+          };
+        } else {
+          connectionNew = {
+            did: connection.did,
+            score: connection.inclusionScore
+          };
+        }
+        enrolledConnections.push(connectionNew);
       }
     }
     return enrolledConnections;

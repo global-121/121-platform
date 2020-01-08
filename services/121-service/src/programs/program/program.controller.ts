@@ -171,8 +171,19 @@ export class ProgramController {
     description: 'Total number of included per program',
   })
   @Get('enrolled/:programId')
-  public async getEnrolled(@Param() param): Promise<ConnectionEntity[]> {
-    return await this.programService.getEnrolled(param.programId);
+  public async getEnrolled(@Param() param): Promise<any[]> {
+    return await this.programService.getEnrolled(param.programId, false);
+  }
+
+  @ApiOperation({ title: 'Get all enrolled PAs INCLUDING name/dob in HO-portal' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Total number of included per program',
+  })
+  @Get('enrolledPrivacy/:programId')
+  public async getEnrolledWithNames(@Param() param): Promise<any[]> {
+    return await this.programService.getEnrolled(param.programId, true);
   }
 
   @ApiOperation({ title: 'Include set of PAs' })
