@@ -57,13 +57,13 @@ export class ProgramPeopleComponent implements OnInit {
 
   private createTableData(response) {
     const result = [];
-    for (let index in response) {
+    for (const [index, value] of response.entries()) {
       const nrPerson = +index + 1;
       const person = {
         pa: 'PA #' + nrPerson,
-        score: response[index].score,
-        did: response[index].did
-      }
+        score: value.score,
+        did: value.did
+      };
       result.push(person);
     }
     return result;
@@ -72,14 +72,14 @@ export class ProgramPeopleComponent implements OnInit {
   private defaultSelectedPeople(response) {
     const result = [];
     const nrIncluded = 3;
-    for (let index in response) {
+    for (const [index, value] of response.entries()) {
       const nrPerson = +index + 1;
       if (nrPerson <= nrIncluded) {
         const person = {
           pa: 'PA #' + nrPerson,
-          score: response[index].score,
-          did: response[index].did
-        }
+          score: value.score,
+          did: value.did
+        };
         result.push(person);
       }
     }
@@ -90,6 +90,6 @@ export class ProgramPeopleComponent implements OnInit {
     console.log(this.selected);
     this.programsService.include(this.programId, JSON.stringify(this.selected)).then((response) => {
       console.log(response);
-    })
+    });
   }
 }
