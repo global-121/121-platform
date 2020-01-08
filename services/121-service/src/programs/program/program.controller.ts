@@ -29,6 +29,7 @@ import { IncludeMeDto } from './dto/include-me.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { PayoutDto } from './dto/payout.dto';
+import { ConnectionEntity } from 'src/sovrin/create-connection/connection.entity';
 
 @ApiUseTags('programs')
 @Controller('programs')
@@ -161,6 +162,17 @@ export class ProgramController {
       params.programId,
       data.did,
     );
+  }
+
+  @ApiOperation({ title: 'Get all enrolled PAs in HO-portal' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Total number of included per program',
+  })
+  @Get('enrolled/:programId')
+  public async getEnrolled(@Param() param): Promise<ConnectionEntity[]> {
+    return await this.programService.getEnrolled(param.programId);
   }
 
   @ApiOperation({ title: 'Include set of PAs' })
