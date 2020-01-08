@@ -14,15 +14,13 @@ export class ProgramPayoutComponent implements OnChanges {
   public programId: number;
 
   @Input()
-  public fixedTransferValue: number;
+  public transferValue: any;
 
   @Input()
   public currencyCode: string;
 
   public isEnabled = true;
   public isInProgress = false;
-
-  public transferValue: any;
 
   private locale: string;
   private totalIncluded: number;
