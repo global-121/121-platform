@@ -1,95 +1,81 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Person } from 'src/app/models/person.model';
 
 @Component({
   selector: 'app-program-people',
   templateUrl: './program-people.component.html',
   styleUrls: ['./program-people.component.scss'],
-  encapsulation: ViewEncapsulation.None
 })
 export class ProgramPeopleComponent implements OnInit {
   public languageCode: string;
   public fallbackLanguageCode: string;
 
-  public programId: string;
+  public programId: number;
 
   public columns: any;
-  public enrolledPeople = [];
-  public defaultSelection = [];
-  public selected = [];
+
+  public enrolledPeople: Person[] = [];
+  public defaultSelection: Person[] = [];
+  public selectedPeople: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService
   ) {
+
     this.columns = [
-      { prop: 'pa', name: 'Person Affected', canAutoResize: false },
-      { prop: 'score', name: 'Inclusion Score', canAutoResize: false },
+      {
+        prop: 'pa',
+        name: this.translate.instant('page.programs.program-people.column.person'),
+        sortable: false,
+      },
+      {
+        prop: 'score',
+        name: this.translate.instant('page.programs.program-people.column.score'),
+      },
       {
         prop: 'selected',
-        name: 'Include',
-        sortable: false,
-        canAutoResize: true,
-        draggable: false,
-        resizable: false,
-        headerCheckboxable: false,
+        name: this.translate.instant('page.programs.program-people.column.include'),
+        headerCheckboxable: true,
         checkboxable: true,
-        width: 30
+        sortable: false,
       },
     ];
 
-
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
 
-    this.programId = this.route.snapshot.paramMap.get('id');
-    this.programsService.getEnrolled(this.programId).subscribe((response) => {
-      this.enrolledPeople = this.createTableData(response);
-      this.defaultSelection = this.defaultSelectedPeople(response);
+    this.programId = Number(this.route.snapshot.params.id);
+
+    this.enrolledPeople = this.createTableData(await this.programsService.getEnrolled(this.programId));
+
+    this.selectedPeople = this.defaultSelectedPeople(this.enrolledPeople);
+  }
+
+  private createTableData(source: Person[]) {
+    return source.map((person, index) => {
+      return {
+        pa: `PA #${index + 1}`,
+        score: person.score,
+        did: person.did
+      };
     });
   }
 
-  private createTableData(response) {
-    const result = [];
-    for (const [index, value] of response.entries()) {
-      const nrPerson = +index + 1;
-      const person = {
-        pa: 'PA #' + nrPerson,
-        score: value.score,
-        did: value.did
-      };
-      result.push(person);
-    }
-    return result;
-  }
-
-  private defaultSelectedPeople(response) {
-    const result = [];
-    const nrIncluded = 3;
-    for (const [index, value] of response.entries()) {
-      const nrPerson = +index + 1;
-      if (nrPerson <= nrIncluded) {
-        const person = {
-          pa: 'PA #' + nrPerson,
-          score: value.score,
-          did: value.did
-        };
-        result.push(person);
-      }
-    }
-    return result;
+  private defaultSelectedPeople(source: Person[]) {
+    return source.filter((person) => (person.score >= 3));
   }
 
   public submitInclusion() {
-    console.log(this.selected);
-    this.programsService.include(this.programId, JSON.stringify(this.selected)).then((response) => {
-      console.log(response);
-    });
+    console.log('submitInclusion:', this.selectedPeople);
+
+    this.programsService.include(this.programId, this.selectedPeople);
   }
 }

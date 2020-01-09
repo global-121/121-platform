@@ -72,7 +72,12 @@
         "payout-error": "Payout unsuccessful."
       },
       "program-people": {
-        "pageTitle": "Manage included people",
+        "pageTitle": "Manage people",
+        "column": {
+          "person": "Person",
+          "score": "Inclusion score",
+          "include": "Include"
+        },
         "submit": "Include selected people"
       },
       "program-modal": {
