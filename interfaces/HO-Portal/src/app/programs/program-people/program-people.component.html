@@ -6,7 +6,7 @@
                   fill="clear"
                   shape="round"
                   size="large"
-                  routerLink="/programs"
+                  [routerLink]="['/program', programId]"
                   routerDirection="back"
       >
         <ion-icon name="arrow-back"></ion-icon>
@@ -26,7 +26,6 @@
   <div class="ion-padding">
     <!-- Theme classes dark, material, bootstrap -->
     <ngx-datatable  #people
-      class="material"
       [limit]="50"
       [rows]="enrolledPeople"
       [rowHeight]="auto"

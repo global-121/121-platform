@@ -44,14 +44,13 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getProgramById(programId: number | string): Observable<Program> {
+  getProgramById(programId: number | string): Promise<Program> {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}`,
     ).pipe(
       tap((response) => console.log(response)),
-      map((response) => response),
-    );
+    ).toPromise();
   }
 
   getFundsById(programId: number | string): Promise<ProgramFunds> {
@@ -60,7 +59,6 @@ export class ProgramsServiceApiService {
       `/programs/funds/${programId}`,
     ).pipe(
       tap((response) => console.log(response)),
-      map((response) => response),
     ).toPromise();
   }
 
@@ -70,7 +68,6 @@ export class ProgramsServiceApiService {
       `/programs/total-included/${programId}`,
     ).pipe(
       tap((response) => console.log(response)),
-      map((response) => response),
     ).toPromise();
   }
 
@@ -84,7 +81,6 @@ export class ProgramsServiceApiService {
       },
     ).pipe(
       tap((response) => console.log(response)),
-      map((response) => response),
     ).toPromise();
   }
 
