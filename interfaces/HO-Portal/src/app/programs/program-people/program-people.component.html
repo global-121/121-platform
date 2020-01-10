@@ -6,7 +6,7 @@
                   fill="clear"
                   shape="round"
                   size="large"
-                  routerLink="/programs"
+                  [routerLink]="['/program', programId]"
                   routerDirection="back"
       >
         <ion-icon name="arrow-back"></ion-icon>
@@ -20,27 +20,27 @@
 
 
 <ion-content class="ion-padding">
-  <ion-button (click)="submitInclusion()">
+
+  <ngx-datatable #people
+                 class="bootstrap"
+                 limit="50"
+                 columnMode="force"
+                 rowHeight="auto"
+                 headerHeight="50"
+                 footerHeight="50"
+                 reorderable="false"
+                 sortType="multi"
+                 selectionType="checkbox"
+                 loadingIndicator="true"
+                 [columns]="columns"
+                 [rows]="enrolledPeople"
+                 [selected]="selectedPeople"
+  ></ngx-datatable>
+
+  <ion-button (click)="submitInclusion()"
+              class="ion-float-end"
+  >
     {{ 'page.programs.program-people.submit'|translate }}
   </ion-button>
-  <div class="ion-padding">
-    <!-- Theme classes dark, material, bootstrap -->
-    <ngx-datatable  #people
-      class="material"
-      [limit]="50"
-      [rows]="enrolledPeople"
-      [rowHeight]="auto"
-      [columns]="columns"
-      [columnMode]="'flex'"
-      [columnWidth]="30"
-      [sortType]="'multi'"
-      [headerHeight]="50"
-      [footerHeight]="50"
-      [selected]="selected"
-      [selectionType]="'checkbox'"
-    >
-    </ngx-datatable>
-
-  </div>
 
 </ion-content>

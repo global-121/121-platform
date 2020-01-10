@@ -29,20 +29,20 @@
 
   </section>
   <section>
-    <h2>{{ 'page.programs.program-details.section-people'|translate }}</h2>
-
-    <ion-button (click)="goToPeoplePage()">
-      {{ 'page.programs.program-details.go-to-people-page'|translate }}
-    </ion-button>
-
-  </section>
-  <section>
     <h2>{{ 'page.programs.program-details.section-payout'|translate }}</h2>
 
     <app-program-payout [programId]="program?.id"
                         [transferValue]="program?.fixedTransferValue"
                         [currencyCode]="program?.currency"
     ></app-program-payout>
+
+  </section>
+  <section>
+    <h2>{{ 'page.programs.program-details.section-people'|translate }}</h2>
+
+    <ion-button [routerLink]="['/program', program?.id, 'people']">
+      {{ 'page.programs.program-details.manage-people'|translate }}
+    </ion-button>
 
   </section>
   <section>
