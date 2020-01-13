@@ -78,7 +78,7 @@
           "score": "Inclusion score",
           "include": "Include"
         },
-        "submit": "Include selected people"
+        "submit": "Confirm inclusion decision"
       },
       "program-modal": {
         "pageTitle": "Program JSON"

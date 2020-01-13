@@ -21,6 +21,7 @@ export class ProgramPeopleComponent implements OnInit {
 
   public enrolledPeople: Person[] = [];
   public selectedPeople: any[] = [];
+  public excludedPeople: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -88,5 +89,9 @@ export class ProgramPeopleComponent implements OnInit {
     console.log('submitInclusion:', this.selectedPeople);
 
     this.programsService.include(this.programId, this.selectedPeople);
+
+    this.excludedPeople = this.enrolledPeople.filter(x => !this.selectedPeople.includes(x));
+    this.programsService.exclude(this.programId, this.excludedPeople);
+
   }
 }
