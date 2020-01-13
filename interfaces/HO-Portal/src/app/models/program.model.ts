@@ -8,4 +8,6 @@ export class Program {
   created: string;
   updated: string;
   author: object;
+  inclusionCalculationType: string;
+  highestScoresX: number;
 }

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
+import { Program } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-program-people',
@@ -14,11 +15,11 @@ export class ProgramPeopleComponent implements OnInit {
   public fallbackLanguageCode: string;
 
   public programId: number;
+  public program: Program;
 
   public columns: any;
 
   public enrolledPeople: Person[] = [];
-  public defaultSelection: Person[] = [];
   public selectedPeople: any[] = [];
 
   constructor(
@@ -53,24 +54,30 @@ export class ProgramPeopleComponent implements OnInit {
     this.languageCode = this.translate.currentLang;
 
     this.programId = Number(this.route.snapshot.params.id);
+    this.program = await this.programsService.getProgramById(this.programId);
 
     this.enrolledPeople = this.createTableData(await this.programsService.getEnrolled(this.programId));
-
     this.selectedPeople = this.defaultSelectedPeople(this.enrolledPeople);
   }
 
   private createTableData(source: Person[]) {
-    return source.map((person, index) => {
-      return {
-        pa: `PA #${index + 1}`,
-        score: person.score,
-        did: person.did
-      };
-    });
+    return source
+      .sort((a, b) => (a.score > b.score) ? -1 : 1)
+      .map((person, index) => {
+        return {
+          pa: `PA #${index + 1}`,
+          score: person.score,
+          did: person.did
+        };
+      });
   }
 
   private defaultSelectedPeople(source: Person[]) {
-    return source.filter((person) => (person.score >= 3));
+    if (this.program.inclusionCalculationType === 'highestScoresX') {
+      const nrToInclude = this.program.highestScoresX;
+      // const nrToInclude = 3;
+      return source.slice(0, nrToInclude);
+    }
   }
 
   public submitInclusion() {
