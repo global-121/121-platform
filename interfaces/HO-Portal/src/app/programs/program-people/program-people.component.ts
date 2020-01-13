@@ -36,17 +36,22 @@ export class ProgramPeopleComponent implements OnInit {
       {
         prop: 'pa',
         name: this.translate.instant('page.programs.program-people.column.person'),
+        draggable: false,
+        resizeable: false,
         sortable: false,
       },
       {
         prop: 'score',
         name: this.translate.instant('page.programs.program-people.column.score'),
+        draggable: false,
+        resizeable: false,
       },
       {
         prop: 'selected',
         name: this.translate.instant('page.programs.program-people.column.include'),
-        headerCheckboxable: true,
         checkboxable: true,
+        draggable: false,
+        resizeable: false,
         sortable: false,
       },
     ];
