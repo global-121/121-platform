@@ -12,14 +12,23 @@
         <ion-icon name="arrow-back"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>
+    <ion-title *ngIf="!privacy">
       {{ 'page.programs.program-people.pageTitle'|translate }}
+    </ion-title>
+    <ion-title *ngIf="privacy">
+      {{ 'page.programs.program-people.pageTitlePrivacy'|translate }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 
 <ion-content class="ion-padding">
+  <p *ngIf="noConnections">
+    {{ 'page.programs.program-people.noConnections'|translate }}
+  </p>
+  <p *ngIf="noConnectionsPrivacy">
+    {{ 'page.programs.program-people.noConnectionsPrivacy'|translate }}
+  </p>
 
   <ngx-datatable #people
                  class="bootstrap"
@@ -39,7 +48,7 @@
   ></ngx-datatable>
 
   <ion-button (click)="submitInclusion()"
-              [disabled]="!selectedPeople.length"
+              [disabled]="!enrolledPeople.length"
               class="ion-float-end"
   >
     {{ 'page.programs.program-people.submit'|translate }}

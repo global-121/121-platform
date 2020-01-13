@@ -592,23 +592,34 @@ export class ProgramService {
     const connections = await this.connectionRepository.find({ order: { inclusionScore: "DESC" } });
     const enrolledConnections = [];
     for (let connection of connections) {
-      if (connection.programsEnrolled.includes(+programId)) {
-        let connectionNew: any;
-        if (privacy) {
+      let connectionNew: any;
+      if (!privacy) {
+        if (
+          connection.programsEnrolled.includes(+programId) &&
+          !connection.programsIncluded.includes(+programId) &&
+          !connection.programsExcluded.includes(+programId)
+        ) {
+          connectionNew = {
+            did: connection.did,
+            score: connection.inclusionScore,
+          };
+          enrolledConnections.push(connectionNew);
+        };
+      } else {
+        if (
+          connection.programsIncluded.includes(+programId) ||
+          connection.programsExcluded.includes(+programId)
+        ) {
           connectionNew = {
             did: connection.did,
             score: connection.inclusionScore,
             name: connection.customData['name'],
             dob: connection.customData['dob'],
+            included: connection.programsIncluded.includes(+programId)
           };
-        } else {
-          connectionNew = {
-            did: connection.did,
-            score: connection.inclusionScore
-          };
-        }
-        enrolledConnections.push(connectionNew);
-      }
+          enrolledConnections.push(connectionNew);
+        };
+      };
     }
     return enrolledConnections;
   }

@@ -94,6 +94,15 @@ export class ProgramsServiceApiService {
     ).toPromise();
   }
 
+  getEnrolledPrivacy(programId: number | string): Promise<Person[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/enrolledPrivacy/${programId}`,
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
   include(programId: number | string, dids: string[]): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
