@@ -35,9 +35,11 @@
                  [columns]="columns"
                  [rows]="enrolledPeople"
                  [selected]="selectedPeople"
+                 [messages]="tableMessages"
   ></ngx-datatable>
 
   <ion-button (click)="submitInclusion()"
+              [disabled]="!selectedPeople.length"
               class="ion-float-end"
   >
     {{ 'page.programs.program-people.submit'|translate }}

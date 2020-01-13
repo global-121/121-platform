@@ -10,7 +10,12 @@
         <ion-list>
           <ion-menu-toggle auto-hide="false">
             <ion-item routerLink="/home"
+                      routerLinkActive
                       routerDirection="root"
+                      routerLinkActive
+                      #rlaHome="routerLinkActive"
+                      [detail]="rlaHome.isActive"
+                      [color]="rlaHome.isActive ? 'primary' : ''"
             >
               <ion-icon slot="start" name="home"></ion-icon>
               <ion-label>
@@ -19,6 +24,10 @@
             </ion-item>
             <ion-item routerLink="/programs"
                       routerDirection="root"
+                      routerLinkActive
+                      #rlaProgams="routerLinkActive"
+                      [detail]="rlaProgams.isActive"
+                      [color]="rlaProgams.isActive ? 'primary' : ''"
             >
               <ion-icon slot="start" name="list"></ion-icon>
               <ion-label>
@@ -26,7 +35,12 @@
               </ion-label>
             </ion-item>
             <ion-item routerLink="/help"
+                      routerLinkActive
                       routerDirection="root"
+                      routerLinkActive
+                      #rlaHelp="routerLinkActive"
+                      [detail]="rlaHelp.isActive"
+                      [color]="rlaHelp.isActive ? 'primary' : ''"
             >
               <ion-icon slot="start" name="help"></ion-icon>
               <ion-label>

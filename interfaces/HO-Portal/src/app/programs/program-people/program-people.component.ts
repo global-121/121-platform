@@ -11,13 +11,12 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./program-people.component.scss'],
 })
 export class ProgramPeopleComponent implements OnInit {
-  public languageCode: string;
-  public fallbackLanguageCode: string;
 
   public programId: number;
   public program: Program;
 
   public columns: any;
+  public tableMessages: any;
 
   public enrolledPeople: Person[] = [];
   public selectedPeople: any[] = [];
@@ -29,21 +28,32 @@ export class ProgramPeopleComponent implements OnInit {
     public translate: TranslateService
   ) {
 
+    this.tableMessages = {
+      emptyMessage: this.translate.instant('common.table.no-data'),
+      totalMessage: this.translate.instant('common.table.total'),
+      selectedMessage: this.translate.instant('common.table.selected'),
+    };
+
     this.columns = [
       {
         prop: 'pa',
         name: this.translate.instant('page.programs.program-people.column.person'),
+        draggable: false,
+        resizeable: false,
         sortable: false,
       },
       {
         prop: 'score',
         name: this.translate.instant('page.programs.program-people.column.score'),
+        draggable: false,
+        resizeable: false,
       },
       {
         prop: 'selected',
         name: this.translate.instant('page.programs.program-people.column.include'),
-        headerCheckboxable: true,
         checkboxable: true,
+        draggable: false,
+        resizeable: false,
         sortable: false,
       },
     ];
@@ -51,8 +61,6 @@ export class ProgramPeopleComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
 
     this.programId = Number(this.route.snapshot.params.id);
     this.program = await this.programsService.getProgramById(this.programId);
