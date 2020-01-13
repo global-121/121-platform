@@ -105,4 +105,16 @@ export class ProgramsServiceApiService {
       tap((response) => console.log(response)),
     ).toPromise();
   }
+
+  exclude(programId: number | string, dids: string[]): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/exclude/${programId}`,
+      {
+        dids: JSON.stringify(dids),
+      },
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
 }
