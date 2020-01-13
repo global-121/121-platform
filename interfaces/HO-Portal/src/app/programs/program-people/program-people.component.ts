@@ -50,7 +50,7 @@ export class ProgramPeopleComponent implements OnInit {
 
     this.determineColumns();
 
-  };
+  }
 
   async ionViewWillEnter() {
     this.loadData();
@@ -59,10 +59,10 @@ export class ProgramPeopleComponent implements OnInit {
   private async loadData() {
     if (!this.privacy) {
       this.enrolledPeople = this.createTableData(await this.programsService.getEnrolled(this.programId));
-      if (this.enrolledPeople.length) { this.selectedPeople = this.defaultSelectedPeople(this.enrolledPeople); };
+      if (this.enrolledPeople.length) { this.selectedPeople = this.defaultSelectedPeople(this.enrolledPeople); }
     } else {
       this.enrolledPeople = this.createTableDataPrivacy(await this.programsService.getEnrolledPrivacy(this.programId));
-      if (this.enrolledPeople.length) { this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.enrolledPeople); };
+      if (this.enrolledPeople.length) { this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.enrolledPeople); }
     }
     this.includedPeople = [].concat(this.selectedPeople);
     console.log('Data loaded');
