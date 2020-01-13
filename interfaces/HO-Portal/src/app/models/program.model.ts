@@ -10,4 +10,5 @@ export class Program {
   author: object;
   inclusionCalculationType: string;
   highestScoresX: number;
+  minimumScore: number;
 }

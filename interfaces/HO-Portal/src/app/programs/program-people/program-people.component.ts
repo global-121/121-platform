@@ -77,6 +77,10 @@ export class ProgramPeopleComponent implements OnInit {
       const nrToInclude = this.program.highestScoresX;
       // const nrToInclude = 3;
       return source.slice(0, nrToInclude);
+    } else {
+      const minimumScore = this.program.minimumScore;
+      // const minimumScore = 20;
+      return source.filter((person) => person.score >= minimumScore);
     }
   }
 
