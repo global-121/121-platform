@@ -28,7 +28,8 @@
         "pageTitle": "Program details",
         "section-funds": "Funds overview",
         "section-people": "People overview",
-        "manage-people": "Manage people",
+        "manage-people": "Manage people (Regular)",
+        "manage-people-privacy": "Manage people (Privacy Officer)",
         "section-payout": "Payout",
         "section-details": "Details overview",
         "all": "All details",
@@ -73,10 +74,15 @@
       },
       "program-people": {
         "pageTitle": "Manage people",
+        "pageTitlePrivacy": "Manage people (Privacy Officer)",
+        "noConnections": "There are no new enrolled Persons Affected.",
+        "noConnectionsPrivacy": "There are no included or excluded Persons Affected yet.",
         "column": {
           "person": "Person",
           "score": "Inclusion score",
-          "include": "Include"
+          "include": "Include",
+          "name": "Name",
+          "dob": "Date of birth"
         },
         "submit": "Confirm inclusion decision"
       },

@@ -12,29 +12,64 @@ import { Program } from 'src/app/models/program.model';
 })
 export class ProgramPeopleComponent implements OnInit {
 
+  public privacy: boolean;
   public programId: number;
   public program: Program;
 
   public columns: any;
   public tableMessages: any;
 
+  public noConnections = false;
+  public noConnectionsPrivacy = false;
+
   public enrolledPeople: Person[] = [];
   public selectedPeople: any[] = [];
-  public excludedPeople: any[] = [];
+  public includedPeople: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService
   ) {
-
     this.tableMessages = {
       emptyMessage: this.translate.instant('common.table.no-data'),
       totalMessage: this.translate.instant('common.table.total'),
       selectedMessage: this.translate.instant('common.table.selected'),
     };
+  }
 
-    this.columns = [
+
+
+  async ngOnInit() {
+
+    // Determine version of page (Privacy Officer or not)
+    this.privacy = this.route.snapshot.url[2].path === 'people-privacy';
+
+    this.programId = Number(this.route.snapshot.params.id);
+    this.program = await this.programsService.getProgramById(this.programId);
+
+    this.determineColumns();
+
+  };
+
+  async ionViewWillEnter() {
+    this.loadData();
+  }
+
+  private async loadData() {
+    if (!this.privacy) {
+      this.enrolledPeople = this.createTableData(await this.programsService.getEnrolled(this.programId));
+      if (this.enrolledPeople.length) { this.selectedPeople = this.defaultSelectedPeople(this.enrolledPeople); };
+    } else {
+      this.enrolledPeople = this.createTableDataPrivacy(await this.programsService.getEnrolledPrivacy(this.programId));
+      if (this.enrolledPeople.length) { this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.enrolledPeople); };
+    }
+    this.includedPeople = [].concat(this.selectedPeople);
+    console.log('Data loaded');
+  }
+
+  private determineColumns() {
+    const columnsRegular = [
       {
         prop: 'pa',
         name: this.translate.instant('page.programs.program-people.column.person'),
@@ -58,27 +93,66 @@ export class ProgramPeopleComponent implements OnInit {
       },
     ];
 
-  }
+    const columnsPrivacy = [
+      {
+        prop: 'name',
+        name: this.translate.instant('page.programs.program-people.column.name'),
+        sortable: true,
+        draggable: false,
+        resizeable: false,
+      },
+      {
+        prop: 'dob',
+        name: this.translate.instant('page.programs.program-people.column.dob'),
+        sortable: true,
+        draggable: false,
+        resizeable: false,
+      }
+    ];
 
-  async ngOnInit() {
-
-    this.programId = Number(this.route.snapshot.params.id);
-    this.program = await this.programsService.getProgramById(this.programId);
-
-    this.enrolledPeople = this.createTableData(await this.programsService.getEnrolled(this.programId));
-    this.selectedPeople = this.defaultSelectedPeople(this.enrolledPeople);
+    if (!this.privacy) {
+      this.columns = columnsRegular;
+    } else {
+      this.columns = columnsRegular.concat(columnsPrivacy);
+    }
   }
 
   private createTableData(source: Person[]) {
-    return source
-      .sort((a, b) => (a.score > b.score) ? -1 : 1)
-      .map((person, index) => {
-        return {
-          pa: `PA #${index + 1}`,
-          score: person.score,
-          did: person.did
-        };
-      });
+    if (source.length === 0) {
+      this.noConnections = true;
+      return [];
+    } else {
+      return source
+        .sort((a, b) => (a.score > b.score) ? -1 : 1)
+        .map((person, index) => {
+          return {
+            pa: `PA #${index + 1}`,
+            score: person.score,
+            did: person.did
+          };
+        });
+    }
+
+  }
+
+  private createTableDataPrivacy(source: Person[]) {
+    if (source.length === 0) {
+      this.noConnectionsPrivacy = true;
+      return [];
+    } else {
+      return source
+        .sort((a, b) => (a.score > b.score) ? -1 : 1)
+        .map((person, index) => {
+          return {
+            pa: `PA #${index + 1}`,
+            score: person.score,
+            name: person.name,
+            dob: person.dob,
+            did: person.did,
+            included: person.included
+          };
+        });
+    }
   }
 
   private defaultSelectedPeople(source: Person[]) {
@@ -93,13 +167,35 @@ export class ProgramPeopleComponent implements OnInit {
     }
   }
 
-  public submitInclusion() {
-    console.log('submitInclusion:', this.selectedPeople);
+  private defaultSelectedPeoplePrivacy(source: Person[]) {
+    return source.filter((person) => person.included);
+  }
 
-    this.programsService.include(this.programId, this.selectedPeople);
+  public async submitInclusion() {
 
-    this.excludedPeople = this.enrolledPeople.filter(x => !this.selectedPeople.includes(x));
-    this.programsService.exclude(this.programId, this.excludedPeople);
+    if (!this.privacy) {
+
+      const includedPeople = this.selectedPeople;
+      console.log('submitInclusion:', includedPeople);
+      await this.programsService.include(this.programId, includedPeople);
+
+      const excludedPeople: any[] = this.enrolledPeople.filter(x => !this.selectedPeople.includes(x));
+      console.log('submitExclusion:', excludedPeople);
+      await this.programsService.exclude(this.programId, excludedPeople);
+
+    } else {
+
+      const changedToExcluded = this.includedPeople.filter(x => !this.selectedPeople.includes(x));
+      console.log('submitChangedToExcluded:', changedToExcluded);
+      await this.programsService.exclude(this.programId, changedToExcluded);
+
+      const changedToIncluded = this.selectedPeople.filter(x => !this.includedPeople.includes(x));
+      console.log('submitChangedToIncluded:', changedToIncluded);
+      await this.programsService.include(this.programId, changedToIncluded);
+
+    }
+
+    this.loadData();
 
   }
 }

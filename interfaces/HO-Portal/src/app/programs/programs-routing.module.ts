@@ -22,6 +22,11 @@ const programRoutes: Routes = [
     path: 'program/:id/people',
     component: ProgramPeopleComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'program/:id/people-privacy',
+    component: ProgramPeopleComponent,
+    canActivate: [AuthGuard],
   }
 ];
 
