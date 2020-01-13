@@ -99,6 +99,11 @@
     }
   },
   "common": {
+    "table": {
+      "no-data": "No data to display",
+      "total": "total",
+      "selected": "selected"
+    },
     "update": "Update",
     "confirm": "Are you sure?",
     "cancel": "Cancel",

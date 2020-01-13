@@ -10,12 +10,11 @@ import { Person } from 'src/app/models/person.model';
   styleUrls: ['./program-people.component.scss'],
 })
 export class ProgramPeopleComponent implements OnInit {
-  public languageCode: string;
-  public fallbackLanguageCode: string;
 
   public programId: number;
 
   public columns: any;
+  public tableMessages: any;
 
   public enrolledPeople: Person[] = [];
   public defaultSelection: Person[] = [];
@@ -26,6 +25,12 @@ export class ProgramPeopleComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService
   ) {
+
+    this.tableMessages = {
+      emptyMessage: this.translate.instant('common.table.no-data'),
+      totalMessage: this.translate.instant('common.table.total'),
+      selectedMessage: this.translate.instant('common.table.selected'),
+    };
 
     this.columns = [
       {
@@ -49,8 +54,6 @@ export class ProgramPeopleComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
 
     this.programId = Number(this.route.snapshot.params.id);
 
