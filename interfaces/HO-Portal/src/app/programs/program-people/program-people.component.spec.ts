@@ -1,31 +1,30 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ProgramPeopleComponent } from './program-people.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { ProgramPayoutComponent } from './program-payout.component';
-
-describe('ProgramPayoutComponent', () => {
-  let component: ProgramPayoutComponent;
-  let fixture: ComponentFixture<ProgramPayoutComponent>;
+describe('ProgramPeopleComponent', () => {
+  let component: ProgramPeopleComponent;
+  let fixture: ComponentFixture<ProgramPeopleComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProgramPayoutComponent ],
+      declarations: [ProgramPeopleComponent],
       imports: [
         TranslateModule.forRoot(),
-        FormsModule,
-        HttpClientTestingModule,
+        RouterModule.forRoot([]),
+        HttpClientTestingModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProgramPayoutComponent);
+    fixture = TestBed.createComponent(ProgramPeopleComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

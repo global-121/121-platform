@@ -32,9 +32,21 @@
     <h2>{{ 'page.programs.program-details.section-payout'|translate }}</h2>
 
     <app-program-payout [programId]="program?.id"
-                        [fixedTransferValue]="program?.fixedTransferValue"
+                        [transferValue]="program?.fixedTransferValue"
                         [currencyCode]="program?.currency"
     ></app-program-payout>
+
+  </section>
+  <section>
+    <h2>{{ 'page.programs.program-details.section-people'|translate }}</h2>
+
+    <ion-button [routerLink]="['/program', program?.id, 'people']">
+      {{ 'page.programs.program-details.manage-people'|translate }}
+    </ion-button>
+
+    <ion-button [routerLink]="['/program', program?.id, 'people-privacy']">
+      {{ 'page.programs.program-details.manage-people-privacy'|translate }}
+    </ion-button>
 
   </section>
   <section>

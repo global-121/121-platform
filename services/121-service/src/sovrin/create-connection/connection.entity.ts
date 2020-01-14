@@ -20,6 +20,9 @@ export class ConnectionEntity {
   @ManyToOne(type => FinancialServiceProviderEntity, financialServiceProvider => financialServiceProvider.connection)
   public fsp: FinancialServiceProviderEntity;
 
+  @Column({ nullable: true })
+  public inclusionScore: number;
+
   @Column('numeric', {
     array: true,
     default: () => 'array[]::integer[]',

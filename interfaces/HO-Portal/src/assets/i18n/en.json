@@ -27,6 +27,9 @@
       "program-details": {
         "pageTitle": "Program details",
         "section-funds": "Funds overview",
+        "section-people": "People overview",
+        "manage-people": "Manage people (Regular)",
+        "manage-people-privacy": "Manage people (Privacy Officer)",
         "section-payout": "Payout",
         "section-details": "Details overview",
         "all": "All details",
@@ -69,6 +72,20 @@
         "payout-success": "Payout successful.",
         "payout-error": "Payout unsuccessful."
       },
+      "program-people": {
+        "pageTitle": "Manage people",
+        "pageTitlePrivacy": "Manage people (Privacy Officer)",
+        "noConnections": "There are no new enrolled Persons Affected.",
+        "noConnectionsPrivacy": "There are no included or excluded Persons Affected yet.",
+        "column": {
+          "person": "Person",
+          "score": "Inclusion score",
+          "include": "Include",
+          "name": "Name",
+          "dob": "Date of birth"
+        },
+        "submit": "Confirm inclusion decision"
+      },
       "program-modal": {
         "pageTitle": "Program JSON"
       }
@@ -88,6 +105,11 @@
     }
   },
   "common": {
+    "table": {
+      "no-data": "No data to display",
+      "total": "total",
+      "selected": "selected"
+    },
     "update": "Update",
     "confirm": "Are you sure?",
     "cancel": "Cancel",

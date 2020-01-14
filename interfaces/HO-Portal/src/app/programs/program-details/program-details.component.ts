@@ -27,29 +27,21 @@ export class ProgramDetailsComponent implements OnInit {
     'proofRequest',
   ];
 
-
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     public modalController: ModalController,
     public translate: TranslateService,
-  ) {
+  ) {}
 
-  }
-
-  ngOnInit() {
+  async ngOnInit() {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
-
-    const id = this.route.snapshot.paramMap.get('id');
-    this.programsService.getProgramById(id).subscribe((response) => {
-      this.program = response;
-      this.programTitle = this.mapLabelByLanguageCode(this.program.title);
-      this.programArray = this.generateArray(this.program);
-    });
+    const programId = this.route.snapshot.params.id;
+    this.program = await this.programsService.getProgramById(programId);
+    this.programTitle = this.mapLabelByLanguageCode(this.program.title);
+    this.programArray = this.generateArray(this.program);
   }
-
-
 
   public generateArray(obj) {
     return Object.keys(obj)

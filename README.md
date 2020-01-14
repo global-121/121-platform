@@ -24,7 +24,8 @@
 | PA-accounts-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/PA-accounts-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=19&branchName=master) |
 | Tykn-SSI-Services | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/Tykn%20SSI%20Services?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=20&branchName=master) |
 
-
+## Documentation
+The documentation of the 121 platform can be found on the Wiki of this repository on GitHub.
 
 ## Testing
 - Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).

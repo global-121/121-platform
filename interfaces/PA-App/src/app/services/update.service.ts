@@ -17,7 +17,7 @@ export class UpdateService {
   public credential: any;
 
   public pagesNav = {
-    inclusion: 'tabs/tab1',
+    inclusion: 'tabs/personal',
     credential: 'tabs/personal'
   };
 
@@ -47,6 +47,26 @@ export class UpdateService {
     console.log('listenForCredential()', programId, did);
     return interval(this.updateSpeedMs).pipe(
       switchMap(() => this.programsService.getCredential(did))
+    );
+  }
+
+  checkInclusionStatus(programId: number, did: string) {
+    return new Promise(resolve => {
+      const subscription = this.listenForInclusionStatus(programId, did).subscribe(isStatusAvailable => {
+        console.log('isStatusAvailable', isStatusAvailable);
+        if (isStatusAvailable !== 'unavailable') {
+          subscription.unsubscribe();
+          this.createUpdateToast('notification.inclusion', this.pagesNav.inclusion);
+          resolve();
+        }
+      });
+    });
+  }
+
+  listenForInclusionStatus(programId: number, did: string) {
+    console.log('listenForInclusionStatus()', programId, did);
+    return interval(this.updateSpeedMs).pipe(
+      switchMap(() => this.programsService.checkInclusionStatus(did, programId))
     );
   }
 

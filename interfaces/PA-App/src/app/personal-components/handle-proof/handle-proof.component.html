@@ -1,5 +1,5 @@
 <section>
-  <dialogue-turn [actor]="ngo">
+  <dialogue-turn [actor]="currentProgram?.ngo">
     <p>
       {{ 'personal.handle-proof.creating'|translate }}
     </p>
@@ -8,7 +8,7 @@
     </p>
   </dialogue-turn>
 
-  <dialogue-turn [actor]="ngo"
+  <dialogue-turn [actor]="currentProgram?.ngo"
                  *ngIf="inclusionStatus"
                  [isSpoken]="inclusionStatus"
   >
