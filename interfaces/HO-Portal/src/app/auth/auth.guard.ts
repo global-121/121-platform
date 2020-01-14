@@ -35,3 +35,36 @@ export class AuthGuard implements CanActivate {
   }
 
 }
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuardAdmin implements CanActivate {
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) { }
+
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
+    console.log('AuthGuardAdmin#canActivate called');
+    const url: string = state.url;
+
+    return this.checkLogin(url);
+  }
+
+  checkLogin(url: string): boolean {
+    console.log('ROLE: ', this.authService.userRole);
+    if (this.authService.isLoggedIn() && this.authService.userRole === 'admin') {
+      return true;
+    }
+
+    // Store the attempted URL for redirecting
+    this.authService.redirectUrl = url;
+    this.router.navigate(['/login']);
+    return false;
+  }
+
+}
