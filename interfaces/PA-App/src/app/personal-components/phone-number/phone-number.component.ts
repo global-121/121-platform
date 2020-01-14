@@ -51,7 +51,7 @@ export class PhoneNumberComponent extends PersonalComponent {
   async initNew() {
     this.languageCode = this.translate.currentLang;
     this.did = await this.paData.retrieve(this.paData.type.did);
-    this.prefillPhoneNumber();
+    this.phoneNumber = await this.paData.retrieve(this.paData.type.phoneNumber);
   }
 
   initHistory() {
@@ -59,21 +59,6 @@ export class PhoneNumberComponent extends PersonalComponent {
     this.choiceMade = true;
     this.phoneSkipped = this.data.phoneSkipped;
     this.phoneNumber = this.data.phoneNumber;
-  }
-
-  private async prefillPhoneNumber(): Promise<void> {
-    await this.paData.retrieve(this.paData.type.phoneNumber).then(
-      (response) => {
-        this.phoneNumber = response;
-      },
-      (error) => {
-        if (error.status === 404) {
-          console.log('Phonenumber not available ', error.status);
-        } else {
-          console.log('Other error: ', error.status);
-        }
-      }
-    );
   }
 
   async getNgo() {

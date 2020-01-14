@@ -110,7 +110,7 @@ export class PaymentMethodComponent extends PersonalComponent {
       await this.paData.store(this.paData.type.phoneNumber, phoneNumber);
       return phoneNumber;
     } else if (this.fspChoiceWithDetails.attributes[0].name === 'idNumber') {
-      return 'BSN:244672027';
+      return 'NL:999999990';
     }
   }
 
