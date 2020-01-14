@@ -7,10 +7,9 @@
       {{ 'personal.enroll-in-program.introduction-questions'|translate }}
     </p>
     <p>
-      <ion-button type="button" size="small">
-        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+      <more-info-button [message]="'personal.enroll-in-program.info-message'|translate">
         {{ 'personal.enroll-in-program.more-info-questions'|translate }}
-      </ion-button>
+      </more-info-button>
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
@@ -99,10 +98,9 @@
       {{ 'personal.enroll-in-program.please-confirm'|translate }}
     </p>
     <p>
-      <ion-button type="button" size="small">
-        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+      <more-info-button [message]="'personal.enroll-in-program.info-message-share'|translate">
         {{ 'personal.enroll-in-program.more-info-share'|translate }}
-      </ion-button>
+      </more-info-button>
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self"

@@ -4,10 +4,9 @@
         {{ 'personal.create-identity.introduction'|translate }}
       </p>
       <p>
-        <ion-button type="button" size="small">
-          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        <more-info-button [message]="'personal.create-identity.info-message'|translate">
           {{ 'personal.create-identity.more-info-digital-id'|translate }}
-        </ion-button>
+        </more-info-button>
       </p>
     </dialogue-turn>
     <dialogue-turn isConnected="true"
@@ -18,10 +17,9 @@
         {{ 'personal.create-identity.password-only'|translate }}
       </p>
       <p>
-        <ion-button type="button" size="small">
-          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        <more-info-button [message]="'personal.create-identity.info-message-password'|translate">
           {{ 'personal.create-identity.more-info-password'|translate }}
-        </ion-button>
+        </more-info-button>
       </p>
     </dialogue-turn>
     <dialogue-turn isConnected="true"
@@ -32,10 +30,9 @@
         {{ 'personal.create-identity.username-password'|translate }}
       </p>
       <p>
-        <ion-button type="button" size="small">
-          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        <more-info-button [message]="'personal.create-identity.info-message-username-pw'|translate">
           {{ 'personal.create-identity.more-info-username-pw'|translate }}
-        </ion-button>
+        </more-info-button>
       </p>
     </dialogue-turn>
     <dialogue-turn actor="self">
