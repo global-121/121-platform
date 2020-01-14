@@ -5,10 +5,12 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
+import { MoreInfoButtonComponent } from './more-info-button/more-info-button.component';
 
 @NgModule({
   declarations: [
     DialogueTurnComponent,
+    MoreInfoButtonComponent
   ],
   imports: [
     CommonModule,
@@ -17,6 +19,7 @@ import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
   ],
   exports: [
     DialogueTurnComponent,
+    MoreInfoButtonComponent,
     TranslateModule,
   ],
 })
