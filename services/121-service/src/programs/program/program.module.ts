@@ -53,10 +53,11 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 })
 export class ProgramModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    // consumer
-    //   .apply(AuthMiddlewareAdmin)
-    //   .forRoutes(
-    //   );
+    consumer
+      .apply(AuthMiddlewareAdmin)
+      .forRoutes(
+        { path: 'programs/enrolledPrivacy', method: RequestMethod.GET },
+      );
     consumer
       .apply(AuthMiddlewarePM)
       .forRoutes(
@@ -66,6 +67,12 @@ export class ProgramModule implements NestModule {
         { path: 'programs/:id', method: RequestMethod.DELETE },
         { path: 'programs/publish/:id', method: RequestMethod.POST },
         { path: 'programs/unpublish/:id', method: RequestMethod.POST },
+        { path: 'programs/enrolled', method: RequestMethod.GET },
+        { path: 'programs/include/:id', method: RequestMethod.POST },
+        { path: 'programs/exclude/:id', method: RequestMethod.POST },
+        { path: 'programs/payout', method: RequestMethod.POST },
+        { path: 'programs/funds/:id', method: RequestMethod.GET },
+        { path: 'programs/total-included/:id', method: RequestMethod.GET },
       );
     consumer
       .apply(AuthMiddlewareAW)
