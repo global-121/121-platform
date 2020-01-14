@@ -13,8 +13,8 @@ import {
 } from 'class-validator';
 import { CreateCustomCriteriumDto } from './create-custom-criterium.dto';
 import { Type } from 'class-transformer';
-import { FinancialServiceProviderEntity } from '../financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from '../protection-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 
 export class CreateProgramDto {
   @ApiModelProperty()

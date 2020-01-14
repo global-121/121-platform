@@ -23,11 +23,10 @@ import { CreateProgramDto } from './dto';
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
 import { API } from '../../config';
-import { DidDto } from './dto/did.dto';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 
 @Injectable()
 export class ProgramService {
@@ -67,11 +66,12 @@ export class ProgramService {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium')
+      .leftJoinAndSelect('program.aidworkers', 'aidworker')
       .leftJoinAndSelect(
         'program.financialServiceProviders',
         'financialServiceProvider',
       )
-      .leftJoinAndSelect('program.aidworkers', 'aidworker');
+
     qb.whereInIds([where]);
     const program = qb.getOne();
     return program;
@@ -563,7 +563,10 @@ export class ProgramService {
     const includedConnections = await this.getIncludedConnections(programId);
 
     if (includedConnections.length < 1) {
-      return { status: 'error', message: 'There are no included PA for this program' }
+      return {
+        status: 'error',
+        message: 'There are no included PA for this program',
+      };
     }
 
     const fundingOverview = await this.fundingService.getProgramFunds(
@@ -571,7 +574,7 @@ export class ProgramService {
     );
     const fundsNeeded = amount * includedConnections.length;
     if (fundsNeeded > fundingOverview.totalAvailable) {
-      return { status: 'error', message: 'Insufficient funds' }
+      return { status: 'error', message: 'Insufficient funds' };
     }
 
     for (let fsp of program.financialServiceProviders) {
@@ -582,7 +585,7 @@ export class ProgramService {
         program,
       );
     }
-    return { status: 'succes', message: 'Send instructions to FSP' }
+    return { status: 'succes', message: 'Send instructions to FSP' };
   }
 
   private async getEnrolledConnections(
@@ -627,7 +630,9 @@ export class ProgramService {
   private async getIncludedConnections(
     programId: number,
   ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({ relations: ['fsp'] });
+    const connections = await this.connectionRepository.find({
+      relations: ['fsp'],
+    });
     const includedConnections = [];
     for (let connection of connections) {
       if (connection.programsIncluded.includes(+programId)) {
@@ -701,6 +706,13 @@ export class ProgramService {
     }
 
     const fundsDisberse = await this.fundingService.getProgramFunds(programId);
-    return fundsDisberse
+    return fundsDisberse;
+  }
+
+  public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
+    const fsp = await this.financialServiceProviderRepository.findOne(
+      id, { relations: ["attributes"] }
+    );
+    return fsp;
   }
 }

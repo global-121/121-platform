@@ -11,7 +11,7 @@ import { CredentialAttributesEntity } from '../credential/credential-attributes.
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
 import { CredentialEntity } from '../credential/credential.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
-import { FinancialServiceProviderEntity } from '../../programs/program/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 
 @Injectable()
 export class CreateConnectionService {
@@ -109,6 +109,16 @@ export class CreateConnectionService {
     const connection = await this.findOne(did);
     const fsp = await this.fspRepository.findOne(fspId);
     connection.fsp = fsp;
+    return await this.connectionRepository.save(connection);
+  }
+
+  public async addCustomData(
+    did: string,
+    customDataKey: string,
+    customDataValue: string,
+  ): Promise<ConnectionEntity> {
+    const connection = await this.findOne(did);
+    connection.customData[customDataKey] = customDataValue
     return await this.connectionRepository.save(connection);
   }
 

@@ -8,10 +8,12 @@ import { UserEntity } from '../user/user.entity';
 
 import programAnonymousExample1 from '../../examples/program-anonymous1.json';
 import programAnonymousExample2 from '../../examples/program-anonymous2.json';
+import fspAnonymousExample1 from '../../examples/fsp-anonymous1.json';
+import fspAnonymousExample2 from '../../examples/fsp-anonymous2.json';
 import { SeedHelper } from './seed-helper';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
-import { FinancialServiceProviderEntity } from '../programs/program/financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 
 @Injectable()
 export class SeedMvp implements InterfaceScript {
@@ -30,9 +32,8 @@ export class SeedMvp implements InterfaceScript {
     await countryRepository.save([{ country: 'Location B' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
-    const financialServiceProviderRepository = this.connection.getRepository(FinancialServiceProviderEntity);
-    await financialServiceProviderRepository.save([{ fsp: 'Bank A' }]);
-    await financialServiceProviderRepository.save([{ fsp: 'Mobile Money Provider B' }]);
+    await this.seedHelper.addFsp(fspAnonymousExample1)
+    await this.seedHelper.addFsp(fspAnonymousExample2)
 
     // ***** CREATE PROTECTION SERVICE PROVIDERS *****
     const protectionServiceProviderRepository = this.connection.getRepository(ProtectionServiceProviderEntity);
@@ -54,7 +55,6 @@ export class SeedMvp implements InterfaceScript {
       programAnonymousExample3,
       programAnonymousExample4,
     ];
-
     await this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****

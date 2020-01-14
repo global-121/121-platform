@@ -22,8 +22,9 @@
                  inputmode="tel"
                  pattern=""
                  autocomplete="tel"
-                 placeholder="+0 000 000 000"
                  name="phone"
+                 placeholder="+0 000 000 000"
+                 [value]="phoneNumber"
                  [(ngModel)]="phone"
                  ngDefaultControl
                  [disabled]="isDisabled"
@@ -32,7 +33,7 @@
         <ion-button type="submit"
                     *ngIf="!isDisabled"
                     expand="block"
-                    [disabled]="isDisabled || !phone"
+                    [disabled]="isDisabled || !phoneNumber"
         >{{ 'personal.phone-number.submit'|translate }}</ion-button>
       </p>
       <p class="ion-margin-top">

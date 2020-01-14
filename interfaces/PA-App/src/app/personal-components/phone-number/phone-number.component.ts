@@ -51,6 +51,7 @@ export class PhoneNumberComponent extends PersonalComponent {
   async initNew() {
     this.languageCode = this.translate.currentLang;
     this.did = await this.paData.retrieve(this.paData.type.did);
+    this.phoneNumber = await this.paData.retrieve(this.paData.type.phoneNumber);
   }
 
   initHistory() {

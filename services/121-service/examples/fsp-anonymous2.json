@@ -1,0 +1,13 @@
+{
+  "fsp": "Mobile Money Provider B",
+  "attributes": [
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "What is your phonenumber, so we can send you mobile money"
+      },
+      "answerType": "tel",
+      "option": null
+    }
+  ]
+}

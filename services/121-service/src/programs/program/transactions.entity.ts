@@ -1,4 +1,3 @@
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,6 +7,7 @@ import {
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 
 @Entity('transation')
 export class TransactionEntity {

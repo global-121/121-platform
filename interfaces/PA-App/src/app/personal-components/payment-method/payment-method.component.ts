@@ -9,6 +9,7 @@ import { Fsp } from 'src/app/models/fsp.model';
 import { PersonalComponent } from '../personal-component.class';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
+
 @Component({
   selector: 'app-payment-method',
   templateUrl: './payment-method.component.html',
@@ -25,6 +26,8 @@ export class PaymentMethodComponent extends PersonalComponent {
   public fspChoice: number;
   public chosenFsp: Fsp;
   public fspSubmitted: boolean;
+  public fspChoiceWithDetails: Fsp;
+
 
   constructor(
     public conversationService: ConversationService,
@@ -87,7 +90,37 @@ export class PaymentMethodComponent extends PersonalComponent {
   public async submitFsp() {
     this.fspSubmitted = true;
     this.programsService.postFsp(this.did, this.fspChoice).subscribe(() => {
-      this.complete();
+      this.setCustomAttribute();
+    });
+  }
+
+  private async setCustomAttribute() {
+    this.fspChoiceWithDetails = await this.programsService.getFspById(this.fspChoice);
+    if (this.fspChoiceWithDetails.attributes.length > 0) {
+      const customValue = await this.askCustomAttribute();
+      await this.submitCustomAttribute(customValue);
+    }
+
+    this.complete();
+  }
+
+  private async askCustomAttribute(): Promise<string> {
+    if (this.fspChoiceWithDetails.attributes[0].name === 'phoneNumber') {
+      const phoneNumber = '+1234567890';
+      await this.paData.store(this.paData.type.phoneNumber, phoneNumber);
+      return phoneNumber;
+    } else if (this.fspChoiceWithDetails.attributes[0].name === 'idNumber') {
+      return 'NL:999999990';
+    }
+  }
+
+
+
+  private async submitCustomAttribute(customValue: string) {
+    console.log('customValue: ', customValue);
+    const customKey = this.fspChoiceWithDetails.attributes[0].name;
+    this.programsService.postConnectionCustomAttribute(this.did, customKey, customValue).subscribe(() => {
+      console.log('postConnectionCustomAttribute');
     });
   }
 

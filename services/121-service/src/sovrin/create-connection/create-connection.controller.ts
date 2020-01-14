@@ -6,15 +6,14 @@ import {
   ApiUseTags,
   ApiOperation,
   ApiResponse,
-  ApiImplicitParam,
 } from '@nestjs/swagger';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
-import { DidInfoDto } from './dto/did-info.dto';
 import { ConnectionEntity } from './connection.entity';
 import { PasswordDto } from './dto/password.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { SetFspDto } from './dto/set-fsp.dto';
+import { CustomDataDto } from '../../programs/program/dto/custom-data.dto';
 
 @ApiUseTags('sovrin')
 @Controller('sovrin/create-connection')
@@ -71,6 +70,19 @@ export class CreateConnectionController {
     return await this.createConnectionService.addFsp(
       setFsp.did,
       setFsp.fspId
+    );
+  }
+
+  @ApiOperation({ title: 'Set custom data for connection' })
+  @ApiResponse({ status: 200, description: 'Custom data  set for connection' })
+  @Post('/custom-data')
+  public async addCustomData(
+    @Body() customData: CustomDataDto,
+  ): Promise<ConnectionEntity> {
+    return await this.createConnectionService.addCustomData(
+      customData.did,
+      customData.key,
+      customData.value
     );
   }
 

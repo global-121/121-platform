@@ -23,9 +23,9 @@ import { UserModule } from '../../user/user.module';
 import { CustomCriterium } from './custom-criterium.entity';
 import { AuthMiddlewarePM } from '../../user/auth.middlewarePM';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { SmsModule } from '../../notifications/sms/sms.module';
 import { TransactionEntity } from './transactions.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 
 @Module({
   imports: [
