@@ -24,7 +24,7 @@ describe('SelectLanguageComponent', () => {
         {
           provide: PaDataService,
           useValue: MockPaDataService,
-        },
+        }
       ]
     })
       .compileComponents();
