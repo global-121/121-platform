@@ -4,10 +4,9 @@
       {{ 'personal.select-appointment.introduction'|translate }}
     </p>
     <p>
-      <ion-button type="button" size="small">
-        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+      <more-info-button [message]="'personal.select-appointment.info-message'|translate">
         {{ 'personal.select-appointment.more-info-activation'|translate }}
-      </ion-button>
+      </more-info-button>
     </p>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"
