@@ -117,6 +117,7 @@
     "select-language": {
       "introduction": "Welcome to 121. Please select your language.<br><br>Bienvenu chez 121. Choisi votre langue.<br><br>Bienvenido a 121. Selecciona tu idioma.",
       "more-info": "About 121",
+      "info-message": "Lorem ipsum bladibladibla.",
       "option1": "English",
       "option2": "Français",
       "option3": "Español",
@@ -147,6 +148,7 @@
   "shared": {
     "submit-button": "Submit",
     "cancel-button": "Cancel",
-    "close-button": "Close"
+    "close-button": "Close",
+    "more-info": "Read more..."
   }
 }

@@ -6,6 +6,9 @@ import { PaDataService } from 'src/app/services/padata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
+import { PopoverController } from '@ionic/angular';
+import { openInfoPopup } from 'src/app/helpers/openInfoPopup';
+
 @Component({
   selector: 'app-select-language',
   templateUrl: './select-language.component.html',
@@ -22,7 +25,8 @@ export class SelectLanguageComponent extends PersonalComponent {
   constructor(
     public paData: PaDataService,
     public translate: TranslateService,
-    public conversationService: ConversationService
+    public conversationService: ConversationService,
+    public popoverController: PopoverController,
   ) {
     super();
   }
@@ -74,6 +78,13 @@ export class SelectLanguageComponent extends PersonalComponent {
 
   public submitLanguage() {
     this.complete();
+  }
+
+  public openInfoPopup() {
+    openInfoPopup(
+      this.popoverController,
+      this.translate.instant('personal.select-language.info-message')
+    );
   }
 
   getNextSection() {

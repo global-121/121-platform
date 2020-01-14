@@ -2,7 +2,10 @@
   <dialogue-turn>
     <p [innerHTML]="'personal.select-language.introduction'|translate"></p>
     <p>
-      <ion-button type="button" size="small">
+      <ion-button type="button" 
+                  size="small"
+                  (click)="openInfoPopup($event)"
+      >
         <ion-icon name="information-circle-outline" slot="start"></ion-icon>
         {{ 'personal.select-language.more-info'|translate }}
       </ion-button>
