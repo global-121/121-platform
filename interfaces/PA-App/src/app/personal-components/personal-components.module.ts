@@ -20,6 +20,7 @@ import { SelectLanguageComponent } from './select-language/select-language.compo
 import { SelectProgramComponent } from './select-program/select-program.component';
 import { SignupSigninComponent } from './signup-signin/signup-signin.component';
 import { StoreCredentialComponent } from './store-credential/store-credential.component';
+import { InfoPopupComponent } from '../info-popup/info-popup.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     SelectProgramComponent,
     SignupSigninComponent,
     StoreCredentialComponent,
+    InfoPopupComponent
   ],
   imports: [
     CommonModule,
@@ -59,6 +61,7 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     SelectProgramComponent,
     SignupSigninComponent,
     StoreCredentialComponent,
+    InfoPopupComponent
   ],
   exports: [
     CreateIdentityComponent,
