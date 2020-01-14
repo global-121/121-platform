@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { PopoverController } from '@ionic/angular';
 
 import { MoreInfoButtonComponent } from './more-info-button.component';
 
@@ -9,10 +10,15 @@ describe('MoreInfoButtonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MoreInfoButtonComponent ],
+      declarations: [MoreInfoButtonComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: PopoverController,
+        },
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
