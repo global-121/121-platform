@@ -58,18 +58,3 @@ export const TWILIO_API = {
   voiceMp3lUrl: appUrl + 'api/voice/mp3/',
 };
 
-let _walletPasswordEncryptionKey: string;
-if (process.env.NODE_ENV == 'production') {
-  _walletPasswordEncryptionKey = process.env.PRODUCTION_WALLET_PASSWORD_ENCRYPTION_KEY;
-  if(!_walletPasswordEncryptionKey.trim()){
-    console.warn("Wallet encryption key is not set in environment variable PRODUCTION_WALLET_PASSWORD_ENCRYPTION_KEY")
-  }
-} else if (process.env.NODE_ENV == 'staging') {
-  _walletPasswordEncryptionKey = process.env.STAGING_WALLET_PASSWORD_ENCRYPTION_KEY;
-  if(!_walletPasswordEncryptionKey.trim()){
-    console.warn("Wallet encryption key is not set in environment variable STAGING_WALLET_PASSWORD_ENCRYPTION_KEY")
-  }
-} else {
-  _walletPasswordEncryptionKey = "hRpJDphwadZkKcIfQmMpm4GpOWE7kkGu";
-}
-export const walletPasswordEncryptionKey = _walletPasswordEncryptionKey;
