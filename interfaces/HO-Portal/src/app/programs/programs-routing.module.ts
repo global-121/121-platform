@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ProgramListComponent } from './program-list/program-list.component';
 import { ProgramDetailsComponent } from './program-details/program-details.component';
 import { ProgramPeopleComponent } from './program-people/program-people.component';
-import { AuthGuard } from '../auth/auth.guard';
+import { AuthGuard, AuthGuardAdmin } from '../auth/auth.guard';
 
 const programRoutes: Routes = [
   {
@@ -26,7 +26,7 @@ const programRoutes: Routes = [
   {
     path: 'program/:id/people-privacy',
     component: ProgramPeopleComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuardAdmin],
   }
 ];
 

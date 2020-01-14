@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   loggedIn = false;
+  public userRole: string;
 
   // store the URL so we can redirect after logging in
   redirectUrl: string;
@@ -40,6 +41,7 @@ export class AuthService {
 
         this.jwtService.saveToken(user.token);
         this.loggedIn = true;
+        this.userRole = user.role;
 
         if (this.redirectUrl) {
           this.router.navigate([this.redirectUrl]);
