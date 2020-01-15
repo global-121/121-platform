@@ -1,6 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 import { ProgramDetailsComponent } from './program-details/program-details.component';
 import { ProgramFundsComponent } from './program-funds/program-funds.component';
@@ -28,6 +29,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
   imports: [
     CommonModule,
     FormsModule,
+    SharedModule,
     ProgramsRoutingModule,
     TranslateModule.forChild(),
     NgxDatatableModule
