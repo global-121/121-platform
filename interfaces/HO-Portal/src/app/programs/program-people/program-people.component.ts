@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
-import { Program } from 'src/app/models/program.model';
+import { Program, InclusionCalculationType } from 'src/app/models/program.model';
 import { formatDate } from '@angular/common';
 
 @Component({
@@ -14,16 +14,15 @@ import { formatDate } from '@angular/common';
 export class ProgramPeopleComponent implements OnInit {
 
   private locale: string;
+  private dateFormat = 'yyyy-MM-dd, hh:mm';
 
-  public privacy: boolean;
+  public showSensitiveData: boolean;
+
   public programId: number;
   public program: Program;
 
   public columns: any;
   public tableMessages: any;
-
-  public noConnections = false;
-  public noConnectionsPrivacy = false;
 
   public enrolledPeople: Person[] = [];
   public selectedPeople: any[] = [];
@@ -43,34 +42,37 @@ export class ProgramPeopleComponent implements OnInit {
     };
   }
 
-
-
   async ngOnInit() {
-
-    // Determine version of page (Privacy Officer or not)
-    this.privacy = this.route.snapshot.url[2].path === 'people-privacy';
-
     this.programId = Number(this.route.snapshot.params.id);
     this.program = await this.programsService.getProgramById(this.programId);
 
+    await this.shouldShowSensitiveData();
+
     this.determineColumns();
 
-  }
-
-  async ionViewWillEnter() {
     this.loadData();
   }
 
+  private async shouldShowSensitiveData() {
+    return this.route.data.subscribe((result) => this.showSensitiveData = result.showSensitiveData);
+  }
+
   private async loadData() {
-    if (!this.privacy) {
-      this.enrolledPeople = this.createTableData(await this.programsService.getEnrolled(this.programId));
-      if (this.enrolledPeople.length) { this.selectedPeople = this.defaultSelectedPeople(this.enrolledPeople); }
+    let allPeopleData;
+
+    if (this.showSensitiveData) {
+      allPeopleData = await this.programsService.getEnrolledPrivacy(this.programId);
+      this.enrolledPeople = this.createTableData(allPeopleData);
+      this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.enrolledPeople);
     } else {
-      this.enrolledPeople = this.createTableDataPrivacy(await this.programsService.getEnrolledPrivacy(this.programId));
-      if (this.enrolledPeople.length) { this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.enrolledPeople); }
+      allPeopleData = await this.programsService.getEnrolled(this.programId);
+      this.enrolledPeople = this.createTableData(allPeopleData);
+      this.selectedPeople = this.defaultSelectedPeople(this.enrolledPeople);
     }
+
     this.includedPeople = [].concat(this.selectedPeople);
-    console.log('Data loaded', this.includedPeople);
+
+    console.log('Data loaded');
   }
 
   private determineColumns() {
@@ -109,92 +111,79 @@ export class ProgramPeopleComponent implements OnInit {
         sortable: false,
       },
     ];
+    this.columns = columnsRegular;
 
-    const columnsPrivacy = [
-      {
-        prop: 'name',
-        name: this.translate.instant('page.programs.program-people.column.name'),
-        sortable: true,
-        draggable: false,
-        resizeable: false,
-      },
-      {
-        prop: 'dob',
-        name: this.translate.instant('page.programs.program-people.column.dob'),
-        sortable: true,
-        draggable: false,
-        resizeable: false,
-      }
-    ];
+    if (this.showSensitiveData) {
+      const columnsPrivacy = [
+        {
+          prop: 'name',
+          name: this.translate.instant('page.programs.program-people.column.name'),
+          sortable: true,
+          draggable: false,
+          resizeable: false,
+        },
+        {
+          prop: 'dob',
+          name: this.translate.instant('page.programs.program-people.column.dob'),
+          sortable: true,
+          draggable: false,
+          resizeable: false,
+        },
+      ];
 
-    if (!this.privacy) {
-      this.columns = columnsRegular;
-    } else {
       this.columns = columnsRegular.concat(columnsPrivacy);
     }
   }
 
-  private createTableData(source: Person[]) {
+  private createTableData(source: Person[]): Person[] {
     if (source.length === 0) {
-      this.noConnections = true;
       return [];
-    } else {
-      return source
-        .sort((a, b) => (a.score > b.score) ? -1 : 1)
-        .map((person, index) => {
-          return {
-            pa: `PA #${index + 1}`,
-            score: person.score,
-            created: formatDate(person.created, 'medium', this.locale),
-            updated: formatDate(person.updated, 'medium', this.locale),
-            did: person.did
-          };
-        });
     }
 
+    return source
+      .sort((a, b) => (a.score > b.score) ? -1 : 1)
+      .map((person, index) => {
+        const personData: any = {
+          pa: `PA #${index + 1}`,
+          score: person.score,
+          did: person.did,
+          created: formatDate(person.created, this.dateFormat, this.locale),
+          updated: formatDate(person.updated, this.dateFormat, this.locale),
+      };
+
+        if (person.name) {
+          personData.name = person.name;
+        }
+        if (person.dob) {
+          personData.dob = person.dob;
+        }
+        if (person.included) {
+          personData.included = person.included;
+        }
+
+        return personData;
+      });
   }
 
-  private createTableDataPrivacy(source: Person[]) {
-    if (source.length === 0) {
-      this.noConnectionsPrivacy = true;
-      return [];
-    } else {
-      return source
-        .sort((a, b) => (a.score > b.score) ? -1 : 1)
-        .map((person, index) => {
-          return {
-            pa: `PA #${index + 1}`,
-            score: person.score,
-            created: formatDate(person.created, 'medium', this.locale),
-            updated: formatDate(person.updated, 'medium', this.locale),
-            name: person.name,
-            dob: person.dob,
-            did: person.did,
-            included: person.included
-          };
-        });
-    }
-  }
-
-  private defaultSelectedPeople(source: Person[]) {
-    if (this.program.inclusionCalculationType === 'highestScoresX') {
+  private defaultSelectedPeople(source: Person[]): Person[] {
+    if (this.program.inclusionCalculationType === InclusionCalculationType.highestScoresX) {
       const nrToInclude = this.program.highestScoresX;
-      // const nrToInclude = 3;
+
       return source.slice(0, nrToInclude);
-    } else {
-      const minimumScore = this.program.minimumScore;
-      // const minimumScore = 20;
-      return source.filter((person) => person.score >= minimumScore);
     }
+
+    const minimumScore = this.program.minimumScore;
+
+    return source.filter((person) => person.score >= minimumScore);
   }
 
-  private defaultSelectedPeoplePrivacy(source: Person[]) {
+  private defaultSelectedPeoplePrivacy(source: Person[]): Person[] {
     return source.filter((person) => person.included);
   }
 
   public async submitInclusion() {
 
-    if (!this.privacy) {
+    if (!this.showSensitiveData) {
 
       const includedPeople = this.selectedPeople;
       console.log('submitInclusion:', includedPeople);
