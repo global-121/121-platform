@@ -15,5 +15,7 @@
     "migrationsDir": "migration"
   },
   "dropSchema": false,
-  "synchronize": true
+  "synchronize": true,
+  "logging": ["query"],
+  "logger": "file"
 }
