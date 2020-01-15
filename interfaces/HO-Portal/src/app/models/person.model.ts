@@ -5,4 +5,6 @@ export class Person {
   name?: string;
   dob?: string;
   included?: boolean;
+  created: string;
+  updated: string;
 }

@@ -334,7 +334,7 @@ export class ProgramService {
       inclusionRequestStatus = { status: 'done' };
     } else if (program.inclusionCalculationType === 'highestScoresX') {
 
-      // In this case an inclusion-status can only be given later. 
+      // In this case an inclusion-status can only be given later.
       inclusionRequestStatus = { status: 'pending' };
 
     }
@@ -605,6 +605,8 @@ export class ProgramService {
           connectionNew = {
             did: connection.did,
             score: connection.inclusionScore,
+            created: connection.created,
+            updated: connection.updated,
           };
           enrolledConnections.push(connectionNew);
         };
@@ -616,6 +618,8 @@ export class ProgramService {
           connectionNew = {
             did: connection.did,
             score: connection.inclusionScore,
+            created: connection.created,
+            updated: connection.updated,
             name: connection.customData['name'],
             dob: connection.customData['dob'],
             included: connection.programsIncluded.includes(+programId)

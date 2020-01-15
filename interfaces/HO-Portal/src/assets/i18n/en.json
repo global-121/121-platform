@@ -81,6 +81,8 @@
           "person": "Person",
           "score": "Inclusion score",
           "include": "Include",
+          "created": "Created",
+          "updated": "Updated",
           "name": "Name",
           "dob": "Date of birth"
         },
