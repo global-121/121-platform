@@ -1,6 +1,6 @@
 
 import { TransactionEntity } from '../../programs/program/transactions.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, BeforeUpdate } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 
 @Entity('connection')
@@ -51,4 +51,15 @@ export class ConnectionEntity {
 
   @OneToMany(type => TransactionEntity, transactions => transactions.connection)
   public transactions: TransactionEntity[];
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  public created: Date;
+
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  public updated: Date;
+
+  @BeforeUpdate()
+  public updateTimestamp(): void {
+    this.updated = new Date();
+  }
 }
