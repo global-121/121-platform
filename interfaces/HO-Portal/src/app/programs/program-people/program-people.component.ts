@@ -4,6 +4,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
 import { Program } from 'src/app/models/program.model';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-program-people',
@@ -11,6 +12,8 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./program-people.component.scss'],
 })
 export class ProgramPeopleComponent implements OnInit {
+
+  private locale: string;
 
   public privacy: boolean;
   public programId: number;
@@ -31,6 +34,8 @@ export class ProgramPeopleComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService
   ) {
+    this.locale = this.translate.getBrowserCultureLang();
+
     this.tableMessages = {
       emptyMessage: this.translate.instant('common.table.no-data'),
       totalMessage: this.translate.instant('common.table.total'),
@@ -65,7 +70,7 @@ export class ProgramPeopleComponent implements OnInit {
       if (this.enrolledPeople.length) { this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.enrolledPeople); }
     }
     this.includedPeople = [].concat(this.selectedPeople);
-    console.log('Data loaded');
+    console.log('Data loaded', this.includedPeople);
   }
 
   private determineColumns() {
@@ -80,6 +85,18 @@ export class ProgramPeopleComponent implements OnInit {
       {
         prop: 'score',
         name: this.translate.instant('page.programs.program-people.column.score'),
+        draggable: false,
+        resizeable: false,
+      },
+      {
+        prop: 'created',
+        name: this.translate.instant('page.programs.program-people.column.created'),
+        draggable: false,
+        resizeable: false,
+      },
+      {
+        prop: 'updated',
+        name: this.translate.instant('page.programs.program-people.column.updated'),
         draggable: false,
         resizeable: false,
       },
@@ -128,6 +145,8 @@ export class ProgramPeopleComponent implements OnInit {
           return {
             pa: `PA #${index + 1}`,
             score: person.score,
+            created: formatDate(person.created, 'medium', this.locale),
+            updated: formatDate(person.updated, 'medium', this.locale),
             did: person.did
           };
         });
@@ -146,6 +165,8 @@ export class ProgramPeopleComponent implements OnInit {
           return {
             pa: `PA #${index + 1}`,
             score: person.score,
+            created: formatDate(person.created, 'medium', this.locale),
+            updated: formatDate(person.updated, 'medium', this.locale),
             name: person.name,
             dob: person.dob,
             did: person.did,
