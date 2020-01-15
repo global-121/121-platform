@@ -26,6 +26,9 @@ const programRoutes: Routes = [
   {
     path: 'program/:id/people-privacy',
     component: ProgramPeopleComponent,
+    data: {
+      showSensitiveData: true,
+    },
     canActivate: [AuthGuardAdmin],
   }
 ];

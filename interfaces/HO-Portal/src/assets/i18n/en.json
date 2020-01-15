@@ -75,8 +75,8 @@
       "program-people": {
         "pageTitle": "Manage people",
         "pageTitlePrivacy": "Manage people (Privacy Officer)",
-        "noConnections": "There are no new enrolled Persons Affected.",
-        "noConnectionsPrivacy": "There are no included or excluded Persons Affected yet.",
+        "noConnections": "There are no new enrolled People Affected.",
+        "noConnectionsPrivacy": "There are no included or excluded People Affected yet.",
         "column": {
           "person": "Person",
           "score": "Inclusion score",
