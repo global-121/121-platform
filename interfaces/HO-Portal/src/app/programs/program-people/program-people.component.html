@@ -47,11 +47,10 @@
                  [messages]="tableMessages"
   ></ngx-datatable>
 
-  <ion-button (click)="submitInclusion()"
-              [disabled]="!enrolledPeople.length"
-              class="ion-float-end"
+  <confirm-prompt [disabled]="!enrolledPeople.length"
+                  [confirmAction]="submitInclusion"
+                  class="ion-float-end"
   >
     {{ 'page.programs.program-people.submit'|translate }}
-  </ion-button>
-
+  </confirm-prompt>
 </ion-content>
