@@ -17,6 +17,9 @@ const repo_pa = `${repo_interfaces}/PA-App`;
 const repo_ho = `${repo_interfaces}/HO-Portal`;
 const repo_aw = `${repo_interfaces}/AW-App`;
 const web_root = "/var/www/121-platform";
+const web_pa = `${web_root}/PA-app`;
+const web_ho = `${web_root}/HO-portal`;
+const web_aw = `${web_root}/AW-app`;
 
 // ----------------------------------------------------------------------------
 //   Functions/Methods/etc:
@@ -26,16 +29,20 @@ function onMerge() {
   exec(
     `cd ` + repo_services +
     ` && sudo git pull ` +
-    ` && sudo docker-compose up -d --build && sudo docker restart 121-service PA-accounts-service` +
+    ` && sudo docker-compose up -d --build ` +
+    ` && sudo docker restart 121-service PA-accounts-service` +
     ` && cd ` + repo_pa +
-    ` && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /PA-app/` +
-    ` && sudo rm -rf /var/www/121-platform/PA-app && sudo cp -r www/ ${web_root}/PA-app` +
+    ` && sudo npm install --unsafe-perm --no-audit ` +
+    ` && sudo npm run build -- --prod --base-href /PA-app/` +
+    ` && sudo rm -rf ${web_pa} && sudo cp -r www/ ${web_pa}` +
     ` && cd ` + repo_ho +
-    ` && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /HO-portal/` +
-    ` && sudo rm -rf /var/www/121-platform/HO-portal && sudo cp -r www/ ${web_root}/HO-portal` + 
+    ` && sudo npm install --unsafe-perm --no-audit ` +
+    ` && sudo npm run build -- --prod --base-href /HO-portal/` +
+    ` && sudo rm -rf ${web_ho} && sudo cp -r www/ ${web_ho}` +
     ` && cd ` + repo_aw +
-    ` && sudo npm ci --unsafe-perm && sudo npm run build -- --prod --base-href /AW-app/` +
-    ` && sudo rm -rf /var/www/121-platform/AW-app && sudo cp -r www/ ${web_root}/AW-app`
+    ` && sudo npm install --unsafe-perm --no-audit ` +
+    ` && sudo npm run build -- --prod --base-href /AW-app/` +
+    ` && sudo rm -rf ${web_aw} && sudo cp -r www/ ${web_aw}`
   , function(error, stdout, stderr) {
     if (error) {
         console.log(stderr);
