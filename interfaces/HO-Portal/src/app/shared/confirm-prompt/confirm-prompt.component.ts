@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController } from '@ionic/angular';
 
@@ -7,16 +7,22 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './confirm-prompt.component.html',
   styleUrls: ['./confirm-prompt.component.scss'],
 })
-export class ConfirmPromptComponent implements OnInit {
+export class ConfirmPromptComponent {
 
   @Input()
   public disabled: boolean;
 
   @Input()
-  public confirmAction: () => void;
+  public subHeader: string;
 
   @Input()
-  public cancelAction: () => void;
+  public message: string;
+
+  @Output()
+  private confirm = new EventEmitter<void>();
+
+  @Output()
+  private cancel = new EventEmitter<void>();
 
   constructor(
     public translate: TranslateService,
@@ -24,28 +30,23 @@ export class ConfirmPromptComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
-  }
-
   public async showPrompt() {
     const alert = await this.alertController.create({
       header: this.translate.instant('common.confirm'),
+      subHeader: this.subHeader,
+      message: this.message,
       buttons: [
         {
           text: this.translate.instant('common.cancel'),
           role: 'cancel',
           handler: () => {
-            if (this.cancelAction) {
-              this.cancelAction();
-            }
+            this.cancel.emit();
           },
         },
         {
           text: this.translate.instant('common.ok'),
           handler: () => {
-            if (this.confirmAction) {
-              this.confirmAction();
-            }
+            this.confirm.emit();
           },
         },
       ]
