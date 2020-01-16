@@ -25,6 +25,8 @@ export class ProgramPayoutComponent implements OnChanges {
   private locale: string;
   private totalIncluded: number;
 
+  public confirmMessage: string;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
@@ -36,56 +38,24 @@ export class ProgramPayoutComponent implements OnChanges {
   async ngOnChanges(changes: SimpleChanges) {
     if (typeof changes.programId.currentValue === 'number') {
       this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
+      this.updateTotalAmountMessage();
     }
   }
 
-  public submitPayout() {
-    this.isEnabled = false;
-
-    this.payoutConfirm();
-
-    return false;
-  }
-
-  private createTotalAmountMessage() {
+  public updateTotalAmountMessage() {
     const totalCost = this.totalIncluded * this.transferValue;
     const symbol = `${this.currencyCode} `;
     const totalCostFormatted = formatCurrency(totalCost, this.locale, symbol, this.currencyCode);
 
-    return `${this.totalIncluded} * ${this.transferValue} = ${totalCostFormatted}`;
+    this.confirmMessage = `${this.totalIncluded} * ${this.transferValue} = ${totalCostFormatted}`;
   }
 
-  private async payoutConfirm() {
-    const alert = await this.alertController.create({
-      header: this.translate.instant('common.confirm'),
-      subHeader: this.translate.instant('page.programs.program-payout.total-amount'),
-      message: this.createTotalAmountMessage(),
-      buttons: [
-        {
-          text: this.translate.instant('common.cancel'),
-          role: 'cancel',
-          handler: () => {
-            this.cancelPayout();
-          },
-        },
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            this.performPayout();
-          }
-        },
-      ]
-    });
-
-    await alert.present();
-  }
-
-  private cancelPayout() {
+  public cancelPayout() {
     this.isEnabled = true;
     this.isInProgress = false;
   }
 
-  private async performPayout() {
+  public async performPayout() {
     this.isInProgress = true;
     console.log('Paying out...', this.transferValue);
     this.programsService.submitPayout(this.programId, this.transferValue)

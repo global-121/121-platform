@@ -1,6 +1,4 @@
-<form method="POST"
-      (ngSubmit)="submitPayout()"
->
+<form>
   <ion-row class="ion-align-items-center">
     <ion-item class="ion-margin-end">
       <ion-label position="stacked">
@@ -13,14 +11,18 @@
                  name="transferValue"
                  [(ngModel)]="transferValue"
                  ngDefaultControl
+                 (change)="updateTotalAmountMessage()"
       ></ion-input>
     </ion-item>
 
-    <ion-button type="submit"
-                [disabled]="!isEnabled"
+    <confirm-prompt [disabled]="!isEnabled"
+                    (confirm)="performPayout()"
+                    (cancel)="cancelPayout()"
+                    [subHeader]="'page.programs.program-payout.total-amount'|translate"
+                    [message]="confirmMessage"
     >
       {{ 'page.programs.program-payout.start-payout'|translate }}
-    </ion-button>
+    </confirm-prompt>
 
     <ion-spinner *ngIf="isInProgress"
                  color="primary"

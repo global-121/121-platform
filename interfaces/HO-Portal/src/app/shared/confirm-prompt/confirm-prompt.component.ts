@@ -31,6 +31,8 @@ export class ConfirmPromptComponent {
   }
 
   public async showPrompt() {
+    this.disabled = true;
+
     const alert = await this.alertController.create({
       header: this.translate.instant('common.confirm'),
       subHeader: this.subHeader,
@@ -41,12 +43,14 @@ export class ConfirmPromptComponent {
           role: 'cancel',
           handler: () => {
             this.cancel.emit();
+            this.disabled = false;
           },
         },
         {
           text: this.translate.instant('common.ok'),
           handler: () => {
             this.confirm.emit();
+            this.disabled = false;
           },
         },
       ]
