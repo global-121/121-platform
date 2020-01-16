@@ -45,12 +45,27 @@
                  [rows]="enrolledPeople"
                  [selected]="selectedPeople"
                  [messages]="tableMessages"
+                 (select)="updateSubmitWarning()"
   ></ngx-datatable>
 
   <confirm-prompt [disabled]="!enrolledPeople.length"
-                  [confirmAction]="submitInclusion"
+                  (confirm)="submitInclusion()"
+                  [subHeader]="'page.programs.program-people.submit-warningPrivacy'|translate"
+                  [message]="submitWarning.message"
                   class="ion-float-end"
+                  *ngIf="showSensitiveData"
+  >
+    {{ 'page.programs.program-people.submitPrivacy'|translate }}
+  </confirm-prompt>
+
+  <confirm-prompt [disabled]="!enrolledPeople.length"
+                  (confirm)="submitInclusion()"
+                  [subHeader]="'page.programs.program-people.submit-warning'|translate"
+                  [message]="submitWarning.message"
+                  class="ion-float-end"
+                  *ngIf="!showSensitiveData"
   >
     {{ 'page.programs.program-people.submit'|translate }}
   </confirm-prompt>
+
 </ion-content>
