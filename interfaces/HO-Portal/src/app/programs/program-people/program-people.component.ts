@@ -195,7 +195,7 @@ export class ProgramPeopleComponent implements OnInit {
     const numExcluded: number = this.enrolledPeople.length - this.selectedPeople.length;
 
     this.submitWarning.message = `
-      ${this.submitWarning.included} ${numIncluded}
+      ${this.submitWarning.included} ${numIncluded} <br>
       ${this.submitWarning.excluded} ${numExcluded}
     `;
   }
