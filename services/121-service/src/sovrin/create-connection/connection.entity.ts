@@ -1,6 +1,12 @@
-
 import { TransactionEntity } from '../../programs/program/transactions.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, BeforeUpdate } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+  BeforeUpdate,
+} from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 
 @Entity('connection')
@@ -17,7 +23,10 @@ export class ConnectionEntity {
   @Column({ nullable: true })
   public preferredLanguage: string;
 
-  @ManyToOne(type => FinancialServiceProviderEntity, financialServiceProvider => financialServiceProvider.connection)
+  @ManyToOne(
+    type => FinancialServiceProviderEntity,
+    financialServiceProvider => financialServiceProvider.connection,
+  )
   public fsp: FinancialServiceProviderEntity;
 
   @Column({ nullable: true })
@@ -45,17 +54,25 @@ export class ConnectionEntity {
   public programsExcluded: number[];
 
   @Column('json', {
-    default: {}
+    default: {},
   })
   public customData: JSON;
 
   @OneToMany(type => TransactionEntity, transactions => transactions.connection)
   public transactions: TransactionEntity[];
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
+  })
   public created: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
+  })
   public updated: Date;
 
   @BeforeUpdate()
