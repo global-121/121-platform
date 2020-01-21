@@ -154,7 +154,13 @@ export class ProgramPeopleComponent implements OnInit {
     }
 
     return source
-      .sort((a, b) => (a.score > b.score) ? -1 : 1)
+      .sort((a, b) => {
+        if (a.score == b.score) {
+          return (a.did > b.did) ? -1 : 1;
+        } else {
+          return (a.score > b.score) ? -1 : 1;
+        }
+      })
       .map((person, index) => {
         const personData: any = {
           pa: `PA #${index + 1}`,
@@ -162,7 +168,7 @@ export class ProgramPeopleComponent implements OnInit {
           did: person.did,
           created: formatDate(person.created, this.dateFormat, this.locale),
           updated: formatDate(person.updated, this.dateFormat, this.locale),
-      };
+        };
 
         if (person.name) {
           personData.name = person.name;
