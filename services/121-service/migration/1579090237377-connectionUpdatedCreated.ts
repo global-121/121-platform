@@ -11,6 +11,8 @@ export class connectionUpdatedCreated1579090237377 implements MigrationInterface
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsEnrolled" SET DEFAULT array[]::integer[]`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsIncluded" SET DEFAULT array[]::integer[]`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsExcluded" SET DEFAULT array[]::integer[]`);
+        await queryRunner.query(`ALTER TABLE "121-service"."connection" ADD COLUMN "created" timestamp`);
+        await queryRunner.query(`ALTER TABLE "121-service"."connection" ADD COLUMN "updated" timestamp`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "updated" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."program" ALTER COLUMN "schemaId" SET DEFAULT null`);
