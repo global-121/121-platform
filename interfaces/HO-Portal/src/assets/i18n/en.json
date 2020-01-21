@@ -86,10 +86,12 @@
           "name": "Name",
           "dob": "Date of birth"
         },
-        "submit-warningPrivacy": "Inclusion will be updated for:",
         "submit-warning": "Inclusion will become final for:",
-        "submit-warning-pa-included": "PA included:",
-        "submit-warning-pa-excluded": "PA excluded:",
+        "submit-warning-pa-included": "PA's included:",
+        "submit-warning-pa-excluded": "PA's excluded:",
+        "submit-warningPrivacy": "Inclusion will be updated for:",
+        "submit-warning-pa-to-included": "PA's included > excluded:",
+        "submit-warning-pa-to-excluded": "PA's excluded > included:",
         "submitPrivacy": "Update inclusion decision",
         "submit": "Confirm inclusion decision"
       },

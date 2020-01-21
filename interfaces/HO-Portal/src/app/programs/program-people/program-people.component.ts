@@ -28,6 +28,8 @@ export class ProgramPeopleComponent implements OnInit {
   public enrolledPeople: Person[] = [];
   public selectedPeople: any[] = [];
   private includedPeople: any[] = [];
+  private newIncludedPeople: any[] = [];
+  private newExcludedPeople: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -45,6 +47,8 @@ export class ProgramPeopleComponent implements OnInit {
       message: '',
       included: this.translate.instant('page.programs.program-people.submit-warning-pa-included'),
       excluded: this.translate.instant('page.programs.program-people.submit-warning-pa-excluded'),
+      toIncluded: this.translate.instant('page.programs.program-people.submit-warning-pa-to-included'),
+      toExcluded: this.translate.instant('page.programs.program-people.submit-warning-pa-to-excluded'),
     };
   }
 
@@ -150,7 +154,13 @@ export class ProgramPeopleComponent implements OnInit {
     }
 
     return source
-      .sort((a, b) => (a.score > b.score) ? -1 : 1)
+      .sort((a, b) => {
+        if (a.score === b.score) {
+          return (a.did > b.did) ? -1 : 1;
+        } else {
+          return (a.score > b.score) ? -1 : 1;
+        }
+      })
       .map((person, index) => {
         const personData: any = {
           pa: `PA #${index + 1}`,
@@ -158,7 +168,7 @@ export class ProgramPeopleComponent implements OnInit {
           did: person.did,
           created: formatDate(person.created, this.dateFormat, this.locale),
           updated: formatDate(person.updated, this.dateFormat, this.locale),
-      };
+        };
 
         if (person.name) {
           personData.name = person.name;
@@ -191,34 +201,32 @@ export class ProgramPeopleComponent implements OnInit {
   }
 
   public updateSubmitWarning() {
-    const numIncluded: number = this.selectedPeople.length;
-    const numExcluded: number = this.enrolledPeople.length - this.selectedPeople.length;
+
+    if (this.showSensitiveData) {
+      this.newIncludedPeople = this.selectedPeople.filter(x => !this.includedPeople.includes(x));
+      this.newExcludedPeople = this.includedPeople.filter(x => !this.selectedPeople.includes(x));
+    } else {
+      this.newIncludedPeople = this.selectedPeople;
+      this.newExcludedPeople = this.enrolledPeople.filter(x => !this.selectedPeople.includes(x));
+    }
+
+    const numIncluded: number = this.newIncludedPeople.length;
+    const numExcluded: number = this.newExcludedPeople.length;
 
     this.submitWarning.message = `
-      ${this.submitWarning.included} ${numIncluded} <br>
-      ${this.submitWarning.excluded} ${numExcluded}
+      ${this.showSensitiveData ? this.submitWarning.toIncluded : this.submitWarning.included} ${numIncluded} <br>
+      ${this.showSensitiveData ? this.submitWarning.toExcluded : this.submitWarning.excluded} ${numExcluded}
     `;
+
   }
 
   public async submitInclusion() {
-    console.log('submitInclusion()');
 
-    let newIncludedPeople;
-    let newExcludedPeople;
+    console.log('submitInclusion for:', this.newIncludedPeople);
+    console.log('submitExclusion for:', this.newExcludedPeople);
 
-    if (this.showSensitiveData) {
-      newIncludedPeople = this.selectedPeople.filter(x => !this.includedPeople.includes(x));
-      newExcludedPeople = this.includedPeople.filter(x => !this.selectedPeople.includes(x));
-    } else {
-      newIncludedPeople = this.selectedPeople;
-      newExcludedPeople = this.enrolledPeople.filter(x => !this.selectedPeople.includes(x));
-    }
-
-    console.log('submitInclusion for:', newIncludedPeople);
-    console.log('submitExclusion for:', newExcludedPeople);
-
-    await this.programsService.include(this.programId, newIncludedPeople);
-    await this.programsService.exclude(this.programId, newExcludedPeople);
+    await this.programsService.include(this.programId, this.newIncludedPeople);
+    await this.programsService.exclude(this.programId, this.newExcludedPeople);
 
     this.loadData();
 
