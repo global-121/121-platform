@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { InfoPopupComponent } from '../../info-popup/info-popup.component';
-import { PopoverController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'more-info-button',
@@ -9,23 +9,28 @@ import { PopoverController } from '@ionic/angular';
 })
 export class MoreInfoButtonComponent implements OnInit {
   @Input()
+  heading: string;
+
+  @Input()
   message: string;
 
   constructor(
-    private popoverController: PopoverController,
+    private modalController: ModalController,
   ) { }
 
   ngOnInit() { }
 
   public async openInfoPopup() {
-    const popover = await this.popoverController.create({
+    const infoPopup = await this.modalController.create({
       component: InfoPopupComponent,
       componentProps: {
-        message: this.message
-      }
+        heading: this.heading,
+        message: this.message,
+      },
+      cssClass: 'more-info-popup',
     });
 
-    return await popover.present();
+    return await infoPopup.present();
   }
 
 }
