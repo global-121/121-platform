@@ -155,7 +155,7 @@ export class ProgramPeopleComponent implements OnInit {
 
     return source
       .sort((a, b) => {
-        if (a.score == b.score) {
+        if (a.score === b.score) {
           return (a.did > b.did) ? -1 : 1;
         } else {
           return (a.score > b.score) ? -1 : 1;
