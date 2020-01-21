@@ -22,3 +22,12 @@
 ion-textarea {
   --background: #dfe5fe !important;
 }
+
+
+// InfoPopup triggered by MoreInfoButtons shouldn't take up the full screen
+ion-modal.more-info-popup {
+  --max-width: 90vw;
+  --max-height: 80vh;
+}
+
+

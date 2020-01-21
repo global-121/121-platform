@@ -1,8 +1,20 @@
-<ion-content class="ion-padding">
-  <h2>
-    {{ 'shared.more-info'|translate }}
-  </h2>
-  <p>
-    {{ message }}
-  </p>
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>
+      {{ (heading) ? heading : 'shared.more-info'|translate }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()"
+                  [title]="'shared.close-button'|translate"
+                  [aria-label]="'shared.close-button'|translate"
+      >
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen
+             class="ion-padding"
+>
+  <div [innerHTML]="message"></div>
 </ion-content>

@@ -1,30 +1,25 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { PopoverController } from '@ionic/angular';
+import { Component, Input } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-info-popup',
   templateUrl: './info-popup.component.html',
   styleUrls: ['./info-popup.component.scss'],
 })
-export class InfoPopupComponent implements OnInit {
+export class InfoPopupComponent {
   @Input()
-  public data: any;
+  public heading: string;
 
+  @Input()
   public message: string;
 
   constructor(
-    private popoverController: PopoverController,
+    private modalController: ModalController,
   ) {
   }
 
-  ngOnInit() {
-    if (this.data) {
-      this.message = this.data.message;
-    }
-  }
-
   close() {
-    this.popoverController.dismiss();
+    this.modalController.dismiss();
   }
 
 }
