@@ -17,6 +17,7 @@ export class LoginIdentityComponent extends PersonalComponent {
   public username: string;
   public password: any;
   public incorrectCredentials = false;
+  public isActiveToggleTextPassword = true;
 
   public isInProgress = false;
 
@@ -48,6 +49,13 @@ export class LoginIdentityComponent extends PersonalComponent {
     this.username = this.data.username;
     this.password = this.data.password;
     this.usernameSubmitted = true;
+  }
+
+  public toggleTextPassword(): void {
+    this.isActiveToggleTextPassword = (this.isActiveToggleTextPassword == true) ? false : true;
+  }
+  public getPasswordType() {
+    return this.isActiveToggleTextPassword ? 'password' : 'text';
   }
 
   public async submitLoginCredentials(username: string, password: string) {

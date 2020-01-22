@@ -64,13 +64,17 @@
         </div>
         <div *ngIf="usernameSubmitted || useLocalStorage" class="ion-margin-bottom">
           <ion-label>{{ 'personal.create-identity.create-password'|translate }}</ion-label>
-          <ion-input type="password"
-                     name="create"
-                     [(ngModel)]="create"
-                     ngDefaultControl
-                     [disabled]="isDisabled"
-                     autocomplete="new-password"
-          ></ion-input>
+          <ion-item>
+            <ion-input [type]="getPasswordType()"
+                       name="create"
+                       [(ngModel)]="create"
+                       ngDefaultControl
+                       [disabled]="isDisabled"
+                       autocomplete="new-password"
+            ></ion-input>
+            <ion-icon *ngIf="isActiveToggleTextPassword" name="eye" item-right (click)="toggleTextPassword()"></ion-icon>
+            <ion-icon *ngIf="!isActiveToggleTextPassword" name="eye-off" item-right (click)="toggleTextPassword()"></ion-icon>
+          </ion-item>
         </div>
         <div class="ion-margin-top">
           <ion-button *ngIf="create && !initialInput"
@@ -82,12 +86,16 @@
         <div *ngIf="initialInput">
           <div>
             <ion-label>{{ 'personal.create-identity.confirm-password'|translate }}</ion-label>
-            <ion-input type="password"
-                       name="confirm"
-                       [(ngModel)]="confirm"
-                       ngDefaultControl
-                       [disabled]="isDisabled"
-            ></ion-input>
+            <ion-item>
+              <ion-input [type]="getPasswordType()"
+                         name="confirm"
+                         [(ngModel)]="confirm"
+                         ngDefaultControl
+                         [disabled]="isDisabled"
+              ></ion-input>
+              <ion-icon *ngIf="isActiveToggleTextPassword" name="eye" item-right (click)="toggleTextPassword()"></ion-icon>
+              <ion-icon *ngIf="!isActiveToggleTextPassword" name="eye-off" item-right (click)="toggleTextPassword()"></ion-icon>
+            </ion-item>
           </div>
           <div class="ion-margin-top">
             <ion-button *ngIf="create && confirm && !isDisabled"

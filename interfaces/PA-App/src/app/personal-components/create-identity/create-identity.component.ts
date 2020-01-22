@@ -29,6 +29,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   public confirm: string;
   public unequalPasswords = false;
   public usernameNotUnique = false;
+  public isActiveToggleTextPassword = true;
 
   public isInProgress = false;
 
@@ -57,6 +58,13 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.usernameSubmitted = true;
     this.initialInput = true;
 
+  }
+
+  public toggleTextPassword(): void {
+    this.isActiveToggleTextPassword = (this.isActiveToggleTextPassword == true) ? false : true;
+  }
+  public getPasswordType() {
+    return this.isActiveToggleTextPassword ? 'password' : 'text';
   }
 
   public async submitCredentials(username: string, create: string, confirm: string) {
