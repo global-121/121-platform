@@ -61,7 +61,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   }
 
   public toggleTextPassword(): void {
-    this.isActiveToggleTextPassword = (this.isActiveToggleTextPassword == true) ? false : true;
+    this.isActiveToggleTextPassword = (this.isActiveToggleTextPassword === true) ? false : true;
   }
   public getPasswordType() {
     return this.isActiveToggleTextPassword ? 'password' : 'text';
