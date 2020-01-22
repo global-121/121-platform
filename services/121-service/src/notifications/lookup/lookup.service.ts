@@ -10,12 +10,10 @@ export class LookupService {
     console.log('lookup', phoneNumber);
 
     let numberCorrect: Boolean
-
     try {
-      const result  = await twilioClient.lookups
+      await twilioClient.lookups
       .phoneNumbers(phoneNumber)
       .fetch({ type: ['carrier'] })
-      console.log(result)
       numberCorrect = true;
     } catch(e) {
       if (e.status === 404) {
