@@ -40,8 +40,8 @@ steps:
   displayName: 'Generate Assests'
   workingDirectory: $(workingDir)
 
-- script: echo 'Set Environment variables' && printenv
-  displayName: 'Set Environment variables - Debug'
+- script: npm run build:native -- --prod
+  displayName: 'Build Android APK - Debug'
   workingDirectory: $(workingDir)
   env:
     NG_PRODUCTION: $(ng_production)
@@ -54,12 +54,8 @@ steps:
     NG_URL_PA_ACCOUNT_SERVICE_API: $(test_ng_url_pa_account_service_api)
     NG_URL_USER_IMS_API: $(test_url_user_ims_api)
 
-- script: npm run build:native -- --prod
-  displayName: 'Build Android APK - Debug'
-  workingDirectory: $(workingDir)
-
-- script: echo 'Set Environment variables' && printenv
-  displayName: 'Set Environment variables - Production'
+- script: npm run build:native -- --prod --release
+  displayName: 'Build Android APK - Production Release'
   workingDirectory: $(workingDir)
   env:
     NG_PRODUCTION: $(ng_production)
@@ -71,10 +67,6 @@ steps:
     NG_URL_121_SERVICE_API: $(production_ng_url_121_service_api)
     NG_URL_PA_ACCOUNT_SERVICE_API: $(production_ng_url_pa_account_service_api)
     NG_URL_USER_IMS_API: $(production_ng_url_user_ims_api)
-
-- script: npm run build:native -- --prod --release
-  displayName: 'Build Android APK - Production Release'
-  workingDirectory: $(workingDir)
 
 - task: PublishBuildArtifacts@1
   inputs:
