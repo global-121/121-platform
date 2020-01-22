@@ -1,20 +1,19 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { SelectFspComponent } from './select-fsp.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { PhoneNumberComponent } from './phone-number.component';
-
-describe('PhoneNumberComponent', () => {
-  let component: PhoneNumberComponent;
-  let fixture: ComponentFixture<PhoneNumberComponent>;
+describe('SelectFspComponent', () => {
+  let component: SelectFspComponent;
+  let fixture: ComponentFixture<SelectFspComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PhoneNumberComponent],
+      declarations: [SelectFspComponent],
       imports: [
         TranslateModule.forRoot(),
         HttpClientTestingModule
@@ -31,7 +30,7 @@ describe('PhoneNumberComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PhoneNumberComponent);
+    fixture = TestBed.createComponent(SelectFspComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

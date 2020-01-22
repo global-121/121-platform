@@ -307,7 +307,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.paymentMethod;
+    return PersonalComponents.selectAppointment;
   }
 
   complete() {

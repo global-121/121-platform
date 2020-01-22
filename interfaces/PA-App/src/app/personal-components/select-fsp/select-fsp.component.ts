@@ -11,11 +11,11 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 
 
 @Component({
-  selector: 'app-payment-method',
-  templateUrl: './payment-method.component.html',
-  styleUrls: ['./payment-method.component.scss'],
+  selector: 'app-select-fsp',
+  templateUrl: './select-fsp.component.html',
+  styleUrls: ['./select-fsp.component.scss'],
 })
-export class PaymentMethodComponent extends PersonalComponent {
+export class SelectFspComponent extends PersonalComponent {
   @Input()
   public data: any;
 
@@ -125,12 +125,12 @@ export class PaymentMethodComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.selectAppointment;
+    return PersonalComponents.setNotificationNumber;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.paymentMethod,
+      name: PersonalComponents.selectFsp,
       data: {
         fsp: this.chosenFsp,
       },

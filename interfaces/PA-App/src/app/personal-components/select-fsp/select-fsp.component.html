@@ -1,7 +1,7 @@
 <section>
   <dialogue-turn [actor]="program?.ngo">
     <p>
-      {{ 'personal.payment-method.introduction'|translate }}
+      {{ 'personal.select-fsp.introduction'|translate }}
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
@@ -38,6 +38,6 @@
                  *ngIf="fspSubmitted"
                  [isSpoken]="fspSubmitted"
   >
-    <p [innerHTML]="'personal.payment-method.conclusion'|translate:{ fspName:chosenFsp?.fsp }"></p>
+    <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ fspName:chosenFsp?.fsp }"></p>
   </dialogue-turn>
 </section>

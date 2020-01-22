@@ -8,11 +8,11 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-phone-number',
-  templateUrl: './phone-number.component.html',
-  styleUrls: ['./phone-number.component.scss'],
+  selector: 'app-set-notification-number',
+  templateUrl: './set-notification-number.component.html',
+  styleUrls: ['./set-notification-number.component.scss'],
 })
-export class PhoneNumberComponent extends PersonalComponent {
+export class SetNotificationNumberComponent extends PersonalComponent {
   @Input()
   public data: any;
 
@@ -95,7 +95,7 @@ export class PhoneNumberComponent extends PersonalComponent {
   complete() {
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.phoneNumber,
+      name: PersonalComponents.setNotificationNumber,
       data: {
         phoneSkipped: this.phoneSkipped,
         phoneNumber: this.phoneNumber,
