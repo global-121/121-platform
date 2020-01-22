@@ -259,12 +259,12 @@ export class ProgramsServiceApiService {
     );
   }
 
-  lookupPhoneNumber(phonenumber: string): Observable<any> {
+  lookupPhoneNumber(phoneNumber: string): Observable<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/lookup/lookup',
       {
-        phonenumber,
+        phonenumber: phoneNumber,
       },
       true
     ).pipe(
@@ -273,13 +273,13 @@ export class ProgramsServiceApiService {
   }
 
 
-  postPhoneNumber(did: string, phonenumber: string, language: string): Observable<any> {
+  postPhoneNumber(did: string, phoneNumber: string, language: string): Observable<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/sovrin/create-connection/phone',
       {
         did,
-        phonenumber,
+        phonenumber: phoneNumber,
         language
       },
       true
