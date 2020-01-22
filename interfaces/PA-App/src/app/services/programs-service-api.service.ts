@@ -266,7 +266,7 @@ export class ProgramsServiceApiService {
       {
         did,
         key,
-        value
+        value,
       },
       true
     ).pipe(
@@ -274,6 +274,20 @@ export class ProgramsServiceApiService {
       map(response => response)
     );
   }
+
+  lookupPhoneNumber(phonenumber: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/lookup/lookup',
+      {
+        phonenumber,
+      },
+      true
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+    );
+  }
+
 
   postPhoneNumber(did: string, phonenumber: string, language: string): Observable<any> {
     return this.apiService.post(
