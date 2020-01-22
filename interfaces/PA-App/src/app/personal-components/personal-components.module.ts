@@ -12,10 +12,10 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
 import { InitialNeedsComponent } from './initial-needs/initial-needs.component';
 import { LoginIdentityComponent } from './login-identity/login-identity.component';
 import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.component';
-import { PaymentMethodComponent } from './payment-method/payment-method.component';
 import { PhoneNumberComponent } from './phone-number/phone-number.component';
 import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
 import { SelectCountryComponent } from './select-country/select-country.component';
+import { SelectFspComponent } from './select-fsp/select-fsp.component';
 import { SelectLanguageComponent } from './select-language/select-language.component';
 import { SelectProgramComponent } from './select-program/select-program.component';
 import { SignupSigninComponent } from './signup-signin/signup-signin.component';
@@ -30,10 +30,10 @@ import { InfoPopupComponent } from '../info-popup/info-popup.component';
     InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
-    PaymentMethodComponent,
     PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
+    SelectFspComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
     SignupSigninComponent,
@@ -53,10 +53,10 @@ import { InfoPopupComponent } from '../info-popup/info-popup.component';
     InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
-    PaymentMethodComponent,
     PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
+    SelectFspComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
     SignupSigninComponent,
@@ -70,10 +70,10 @@ import { InfoPopupComponent } from '../info-popup/info-popup.component';
     InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
-    PaymentMethodComponent,
     PhoneNumberComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
+    SelectFspComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
     SignupSigninComponent,

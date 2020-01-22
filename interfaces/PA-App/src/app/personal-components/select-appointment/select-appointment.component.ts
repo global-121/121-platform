@@ -165,7 +165,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
 
   getNextSection() {
-    return PersonalComponents.paymentMethod;
+    return PersonalComponents.selectFsp;
   }
 
   complete() {

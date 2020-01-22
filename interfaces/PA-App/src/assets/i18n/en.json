@@ -73,7 +73,7 @@
       "more-info-digital-id": "About Digital ID",
       "info-message": "Lorem ipsem bladibla"
     },
-    "payment-method": {
+    "select-fsp": {
       "introduction": "If you are included in the program, how would you like to receive your money?",
       "conclusion": "Thank you. You have selected payment option <strong>{{fspName}}</strong>."
     },
