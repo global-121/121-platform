@@ -125,7 +125,7 @@ export class SelectFspComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.phoneNumber;
+    return PersonalComponents.setNotificationNumber;
   }
 
   complete() {

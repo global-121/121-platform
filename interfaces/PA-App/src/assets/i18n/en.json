@@ -93,7 +93,7 @@
       "change": "Change appointment",
       "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed."
     },
-    "phone-number": {
+    "set-notification-number": {
       "introduction1": "It is optional to enter your phone number.",
       "introduction2": "We use this to send you text-notifications when you are included or not and when you receive money.",
       "introduction3": "If you do not want to enter your phone number, you have to log in here for updates.",

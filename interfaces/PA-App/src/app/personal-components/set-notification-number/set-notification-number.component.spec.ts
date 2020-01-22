@@ -6,15 +6,15 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 
-import { PhoneNumberComponent } from './phone-number.component';
+import { SetNotificationNumberComponent } from './set-notification-number.component';
 
-describe('PhoneNumberComponent', () => {
-  let component: PhoneNumberComponent;
-  let fixture: ComponentFixture<PhoneNumberComponent>;
+describe('SetNotificationNumberComponent', () => {
+  let component: SetNotificationNumberComponent;
+  let fixture: ComponentFixture<SetNotificationNumberComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PhoneNumberComponent],
+      declarations: [SetNotificationNumberComponent],
       imports: [
         TranslateModule.forRoot(),
         HttpClientTestingModule
@@ -31,7 +31,7 @@ describe('PhoneNumberComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PhoneNumberComponent);
+    fixture = TestBed.createComponent(SetNotificationNumberComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

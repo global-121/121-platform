@@ -5,12 +5,12 @@ export enum PersonalComponents {
   initialNeeds = 'initial-needs',
   loginIdentity = 'login-identity',
   meetingReminder = 'meeting-reminder',
-  phoneNumber = 'phone-number',
   selectAppointment = 'select-appointment',
   selectCountry = 'select-country',
   selectFsp = 'select-fsp',
   selectLanguage = 'select-language',
   selectProgram = 'select-program',
+  setNotificationNumber = 'set-notification-number',
   signupSignin = 'signup-signin',
   storeCredential = 'store-credential',
 }
