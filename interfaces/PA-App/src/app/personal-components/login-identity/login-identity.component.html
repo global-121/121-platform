@@ -27,13 +27,17 @@
       </div>
       <div *ngIf="usernameSubmitted" class="ion-margin-bottom">
         <ion-label>{{ 'personal.login-identity.supply-password'|translate }}</ion-label>
-        <ion-input type="password"
+        <ion-item>
+          <ion-input [type]="getPasswordType()"
                    name="password"
                    [(ngModel)]="password"
                    ngDefaultControl
                    [disabled]="isDisabled"
                    autocomplete="new-password"
-        ></ion-input>
+          ></ion-input>
+          <ion-icon *ngIf="isActiveToggleTextPassword" name="eye" item-right (click)="toggleTextPassword()"></ion-icon>
+          <ion-icon *ngIf="!isActiveToggleTextPassword" name="eye-off" item-right (click)="toggleTextPassword()"></ion-icon>
+        </ion-item>
       </div>
       <div class="ion-margin-top">
         <ion-button *ngIf="password && !isDisabled"
