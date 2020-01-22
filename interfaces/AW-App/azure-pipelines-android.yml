@@ -54,6 +54,13 @@ steps:
 - script: npm run build:native -- --prod
   displayName: 'Build Android APK - Debug'
   workingDirectory: $(workingDir)
+  env:
+    NG_PRODUCTION: $(ng_production)
+    NG_IS_DEBUG: $(ng_is_debug)
+    NG_SHOW_DEBUG: $(ng_show_debug)
+    NG_USE_ANIMATION: $(ng_use_animation)
+    NG_SUB_DIR_PATH: $(ng_sub_dir_path)
+    NG_URL_121_SERVICE_API: $(test_ng_url_121_service_api)
 
 - script: echo 'Set Environment variables' && printenv
   displayName: 'Set Environment variables - Production'
