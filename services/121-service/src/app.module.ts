@@ -21,6 +21,9 @@ import { VoiceController } from './notifications/voice/voice.controller';
 import { VoiceModule } from './notifications/voice/voice.module';
 import { FundingService } from './funding/funding.service';
 import { FundingModule } from './funding/funding.module';
+import { LookupController } from './notifications/lookup/lookup.controller';
+import { LookupService } from './notifications/lookup/lookup.service';
+import { LookupModule } from './notifications/lookup/lookup.module';
 
 @Module({
   imports: [
@@ -38,11 +41,13 @@ import { FundingModule } from './funding/funding.module';
     SmsModule,
     VoiceModule,
     FundingModule,
+    LookupModule,
   ],
   controllers: [
     AppController,
     SmsController,
     VoiceController,
+    LookupController,
     // CreateConnectionController,
     // CredentialController,
   ],
