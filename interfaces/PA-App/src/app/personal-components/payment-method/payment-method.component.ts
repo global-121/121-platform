@@ -125,7 +125,7 @@ export class PaymentMethodComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.selectAppointment;
+    return PersonalComponents.phoneNumber;
   }
 
   complete() {
