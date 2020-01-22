@@ -24,7 +24,6 @@ export class ProgramsServiceApiService {
       .get(environment.url_121_service_api, '/programs/countries/all')
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -53,7 +52,6 @@ export class ProgramsServiceApiService {
       .get(environment.url_121_service_api, '/programs/' + programId)
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -63,7 +61,6 @@ export class ProgramsServiceApiService {
       .get(environment.url_121_service_api, '/programs/fsp/' + fspId)
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -77,7 +74,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -96,7 +92,6 @@ export class ProgramsServiceApiService {
         false
       ).pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -109,7 +104,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -134,7 +128,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -159,7 +152,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -172,7 +164,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       );
   }
 
@@ -184,7 +175,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -237,10 +227,6 @@ export class ProgramsServiceApiService {
       '/appointment/availability/' + programId
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => {
-
-        return response;
-      })
     )
       .toPromise();
   }
@@ -255,7 +241,6 @@ export class ProgramsServiceApiService {
       true
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => response)
     );
   }
 
@@ -271,7 +256,6 @@ export class ProgramsServiceApiService {
       true
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => response)
     );
   }
 
@@ -301,7 +285,6 @@ export class ProgramsServiceApiService {
       true
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => response)
     );
   }
 
@@ -316,7 +299,6 @@ export class ProgramsServiceApiService {
       true
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => response)
     );
   }
 
@@ -330,7 +312,6 @@ export class ProgramsServiceApiService {
       true
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => response)
     )
       .toPromise();
   }
