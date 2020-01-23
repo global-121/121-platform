@@ -29,6 +29,11 @@ ion-textarea {
   --background: #dfe5fe !important;
 }
 
+// Reset to normal color:
+password-toggle-input ion-input {
+  --background: transparent !important;
+}
+
 
 // InfoPopup triggered by MoreInfoButtons shouldn't take up the full screen
 ion-modal.more-info-popup {
