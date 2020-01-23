@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertController, PopoverController, LoadingController } from '@ionic/angular';
 import { PaDataService } from 'src/app/services/padata.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -9,10 +9,8 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./user-menu.component.scss']
 })
 export class UserMenuComponent implements OnInit {
-  @Input()
-  public data: any;
-
   public isLoggedIn = false;
+  public username: string;
   private deletePasswordAlert: HTMLIonAlertElement;
   private loadingDelete: HTMLIonLoadingElement;
 
@@ -25,17 +23,16 @@ export class UserMenuComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
-    if (this.data) {
-      this.isLoggedIn = this.data.isLoggedIn;
-    }
+  async ngOnInit() {
+    this.isLoggedIn = this.paData.hasAccount;
+    this.username = await this.paData.getUsername();
   }
 
   close() {
     this.popoverController.dismiss();
   }
 
-  async logout() {
+  logout() {
     this.paData.logout();
     this.close();
     window.location.reload();
