@@ -40,9 +40,6 @@ export class TabsPage {
   async openUserMenu(ev: any) {
     const popover = await this.popoverController.create({
       component: UserMenuComponent,
-      componentProps: {
-        isLoggedIn: this.isLoggedIn,
-      },
       event: ev,
     });
 

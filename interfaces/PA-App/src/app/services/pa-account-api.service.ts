@@ -6,6 +6,8 @@ import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
 
+import { User } from '../models/user.model';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,7 +17,7 @@ export class PaAccountApiService {
     private jwtService: JwtService,
   ) { }
 
-  createAccount(username: string, password: string): Promise<any> {
+  createAccount(username: string, password: string): Promise<User> {
     console.log('PaAccountApiService : createAccount()');
 
     return this.apiService
@@ -24,7 +26,7 @@ export class PaAccountApiService {
         '/user',
         {
           username,
-          password
+          password,
         },
         true
       )
@@ -36,7 +38,9 @@ export class PaAccountApiService {
           if (user && user.token) {
             this.jwtService.saveToken(user.token);
           }
-        })
+
+          return user;
+        }),
       )
       .toPromise();
   }
@@ -50,13 +54,12 @@ export class PaAccountApiService {
         '/data-storage',
         {
           type,
-          data
+          data,
         },
         false
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -72,12 +75,11 @@ export class PaAccountApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
 
-  login(username: string, password: string): Promise<any> {
+  login(username: string, password: string): Promise<User> {
     console.log('PaAccountApiService : login()');
 
     return this.apiService
@@ -86,7 +88,7 @@ export class PaAccountApiService {
         '/user/login',
         {
           username,
-          password
+          password,
         },
         true
       )
@@ -98,7 +100,9 @@ export class PaAccountApiService {
           if (user && user.token) {
             this.jwtService.saveToken(user.token);
           }
-        })
+
+          return user;
+        }),
       )
       .toPromise();
   }
@@ -111,13 +115,12 @@ export class PaAccountApiService {
         environment.url_pa_account_service_api,
         '/user/delete',
         {
-          password
+          password,
         },
         false
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }

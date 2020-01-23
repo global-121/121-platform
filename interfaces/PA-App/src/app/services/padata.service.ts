@@ -23,6 +23,7 @@ export class PaDataService {
   public type = PaDataTypes;
 
   public hasAccount = false;
+  private username: string;
   public myPrograms: any = {};
   public myAnswers: any = {};
 
@@ -40,6 +41,25 @@ export class PaDataService {
     this.useLocalStorage = environment.localStorage;
 
     this.retrieveLoggedInState();
+  }
+
+  private setUsername(username: string) {
+    this.username = username;
+    this.store(this.type.username, username, true);
+  }
+
+  async getUsername(): Promise<string> {
+    if (!this.username) {
+      this.username = await this.retrieve(this.type.username, true);
+    }
+
+    return new Promise<string>((resolve, reject) => {
+      if (!this.username) {
+        return reject();
+      }
+
+      return resolve(this.username);
+    });
   }
 
   async saveProgram(programId: number, program: Program): Promise<any> {
@@ -115,11 +135,15 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
+    // 'Sanitize' username:
+    username = username.trim();
+
     console.log('PaData: createAccount()');
     return this.paAccountApi.createAccount(username, password).then(
       () => {
         console.log('Account created.');
         this.setLoggedIn();
+        this.setUsername(username);
       }
     );
   }
@@ -137,6 +161,7 @@ export class PaDataService {
             this.ionStorage.clear();
             this.uiService.showUserMenu();
             this.setLoggedIn();
+            this.setUsername(response.username);
             return resolve(response);
           },
           (error) => {
