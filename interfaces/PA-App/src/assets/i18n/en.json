@@ -154,6 +154,10 @@
     "inclusion": "Inclusion status received",
     "close": "close"
   },
+  "password-toggle": {
+    "show": "Show password",
+    "hide": "Hide password"
+  },
   "shared": {
     "submit-button": "Submit",
     "cancel-button": "Cancel",
