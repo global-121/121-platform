@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
 import { CountryEntity } from '../programs/country/country.entity';
-import { UserEntity } from '../user/user.entity';
 
 import fspBank from '../../examples/fsp-bank.json';
 import fspMobileMoney from '../../examples/fsp-mobile-money.json';
@@ -14,7 +13,6 @@ import fspNoAttributes from '../../examples/fsp-no-attributes.json';
 import programAnonymousExample1 from '../../examples/program-anonymous1.json';
 import programAnonymousExample2 from '../../examples/program-anonymous2.json';
 import { SeedHelper } from './seed-helper';
-import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
 import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
 import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 
@@ -46,9 +44,6 @@ export class SeedMvp implements InterfaceScript {
     await protectionServiceProviderRepository.save([{ psp: 'Protection Service Provider B' }]);
 
     // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
-
-    const userRepository = this.connection.getRepository(UserEntity);
-
     const programAnonymousExample3 = { ...programAnonymousExample1 };
     programAnonymousExample3.countryId = 2;
     const programAnonymousExample4 = { ...programAnonymousExample2 };
@@ -69,44 +64,21 @@ export class SeedMvp implements InterfaceScript {
     await this.seedHelper.assignAidworker(2, 3);
 
     // ***** CREATE AVAILABILITY FOR AN AIDWORKER *****
-    const availabilityRepository = this.connection.getRepository(
-      AvailabilityEntity,
-    );
-
-    let newAvailability;
-    const items = [
-      {
-        startDate: 30,
-        endDate: 30,
-        startTime: 12,
-        location: 'A'
-      },
-      {
-        startDate: 31,
-        endDate: 32,
-        startTime: 13,
-        location: 'B'
-      }
-    ]
-    for (var item of items) {
-      let availability = new AvailabilityEntity();
-      let startDate = new Date();
-      let endDate = new Date();
-      startDate.setDate(startDate.getDate() + item.startDate);
-      endDate.setDate(endDate.getDate() + item.endDate);
-      startDate.setHours(item.startTime, 0);
-      endDate.setHours(item.startTime + 5, 0);
-
-      availability.startDate = startDate;
-      availability.endDate = endDate;
-
-      availability.location = 'Location ' + item.location;
-
-      let aidworker = await userRepository.findOne(2);
-      availability.aidworker = aidworker;
-
-      newAvailability = await availabilityRepository.save(availability);
-    }
+    await this.seedHelper.availabilityForAidworker({
+      startDate: '2020-10-10T12:00:00Z',
+      endDate: '2020-10-10T13:00:00Z',
+      location: 'Address of location 1',
+    }, 2);
+    await this.seedHelper.availabilityForAidworker({
+      startDate: '2020-10-11T18:00:00Z',
+      endDate: '2020-10-12T12:00:00Z',
+      location: 'Address of location 2',
+    }, 2);
+    await this.seedHelper.availabilityForAidworker({
+      startDate: '2020-10-20T00:00:00Z',
+      endDate: '2020-10-20T23:59:59Z',
+      location: 'Address of location 3',
+    }, 2);
 
     await this.seedPublish.run();
   }

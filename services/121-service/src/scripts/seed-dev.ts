@@ -4,7 +4,6 @@ import { Connection } from 'typeorm';
 import { InterfaceScript } from './scripts.module';
 
 import { AppointmentEntity } from '../schedule/appointment/appointment.entity';
-import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
 import { ConnectionEntity } from '../sovrin/create-connection/connection.entity';
 import { CountryEntity } from '../programs/country/country.entity';
 import { CredentialAttributesEntity } from '../sovrin/credential/credential-attributes.entity';
@@ -76,37 +75,13 @@ export class SeedDev implements InterfaceScript {
     await this.seedHelper.assignAidworker(2, 2);
 
 
-    // ***** CREATE AVAILABILITY FOR AN AIDWORKER *****
-    const availabilityRepository = this.connection.getRepository(
-      AvailabilityEntity,
-    );
-
-    let newAvailability;
-    for (var item of [0, 1]) {
-      let availability = new AvailabilityEntity();
-      let exampleDate = new Date();
-      exampleDate.setDate(exampleDate.getDate() + item);
-      exampleDate.setHours(12 + item, 0);
-
-      availability.startDate = exampleDate;
-      availability.endDate = new Date(exampleDate.valueOf());
-      availability.endDate.setHours(17 + item);
-
-      availability.location = 'Location ' + item;
-
-      let aidworker = await userRepository.findOne(2);
-      availability.aidworker = aidworker;
-
-      newAvailability = await availabilityRepository.save(availability);
-    }
-
     // ***** CREATE APPOINTMENT *****
     const appointmentRepository = this.connection.getRepository(
       AppointmentEntity,
     );
 
     const appointment = new AppointmentEntity();
-    appointment.timeslotId = newAvailability.id;
+    appointment.timeslotId = 1;
     appointment.did = EXAMPLE_DID;
     appointment.status = 'waiting'
     await appointmentRepository.save(appointment);
