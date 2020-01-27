@@ -55,8 +55,8 @@ export class ProgramPayoutComponent implements OnChanges {
     const program = await this.programsService.getProgramById(programId);
     this.nrOfInstallments = program.distributionDuration;
 
-    this.installments = Array(this.nrOfInstallments).fill(1).map((_, i) => ({
-      id: i + 1,
+    this.installments = Array(this.nrOfInstallments).fill(1).map((_, index) => ({
+      id: index + 1,
       amount: String,
       installmentDate: Date,
       statusOpen: Boolean,
@@ -66,7 +66,7 @@ export class ProgramPayoutComponent implements OnChanges {
     const pastInstallments = await this.programsService.getPastInstallments(programId);
 
     let i = 0;
-    for (let installment of this.installments) {
+    for (const installment of this.installments) {
       if (pastInstallments
         .map(item => item.installment)
         .includes(installment.id)
@@ -80,7 +80,7 @@ export class ProgramPayoutComponent implements OnChanges {
         i += 1;
       } else {
         installment.statusOpen = true;
-        installment.firstOpen = !this.installments[i - 1].statusOpen ? true : false; // If previous item was 'closed' then this item is the 'first open one'
+        installment.firstOpen = !this.installments[i - 1].statusOpen ? true : false;
         i += 1;
       }
     }
