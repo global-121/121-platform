@@ -73,7 +73,7 @@ export class ProgramPayoutComponent implements OnChanges {
   public async performPayout(installment) {
     this.isInProgress = true;
     console.log('Paying out...', this.transferValue);
-    this.programsService.submitPayout(this.programId, installment, this.transferValue)
+    this.programsService.submitPayout(this.programId, installment, +this.transferValue)
       .then(
         () => {
           this.isInProgress = false;

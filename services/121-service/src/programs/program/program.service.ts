@@ -702,6 +702,16 @@ export class ProgramService {
     this.transactionRepository.save(transaction);
   }
 
+  public async getInstallments(programId: number) {
+    const installments = await this.transactionRepository.createQueryBuilder('transaction')
+      .select("transaction.amount, transaction.installment")
+      .addSelect("MIN(transaction.created)", "installmentDate")
+      .where("transaction.program.id = :programId", { programId: programId })
+      .groupBy("transaction.amount, transaction.installment")
+      .getRawMany();
+    return installments;
+  }
+
   public async getFunds(programId: number): Promise<FundingOverview> {
     // TO DO: call Disberse-API here, for now static data.
 

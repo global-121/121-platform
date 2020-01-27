@@ -213,7 +213,7 @@ export class ProgramController {
     );
   }
 
-  @ApiOperation({ title: 'Sent payout instruction to financial service provider' })
+  @ApiOperation({ title: 'Send payout instruction to financial service provider' })
   @Post('payout')
   public async payout(
     @Body() data: PayoutDto,
@@ -223,6 +223,17 @@ export class ProgramController {
       data.installment,
       data.amount,
     );
+  }
+
+  @ApiOperation({ title: 'Get status of payout-installments' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get past payout-installments for program',
+  })
+  @Get('installments/:programId')
+  public async getInstallments(@Param() param): Promise<any> {
+    return await this.programService.getInstallments(param.programId);
   }
 
   @ApiOperation({ title: 'Get total number of included per program' })
