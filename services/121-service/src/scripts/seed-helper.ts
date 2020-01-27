@@ -1,9 +1,10 @@
-import { FinancialServiceProviderEntity } from './../programs/fsp/financial-service-provider.entity';
-import { FspAttributeEntity } from './../programs/fsp/fsp-attribute.entity';
 import { Connection } from 'typeorm';
-import { UserEntity } from '../user/user.entity';
+
 import { ProgramEntity } from '../programs/program/program.entity';
+import { FinancialServiceProviderEntity } from './../programs/fsp/financial-service-provider.entity';
+import { UserEntity } from '../user/user.entity';
 import { CustomCriterium } from '../programs/program/custom-criterium.entity';
+import { FspAttributeEntity } from './../programs/fsp/fsp-attribute.entity';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
 
 export class SeedHelper {
@@ -65,7 +66,7 @@ export class SeedHelper {
       FspAttributeEntity,
     );
 
-    // Remove original custom criteria and add it to a sepperate variable
+    // Remove original custom criteria and add it to a separate variable
     const attributes = fsp.attributes;
     fsp.attributes = [];
 

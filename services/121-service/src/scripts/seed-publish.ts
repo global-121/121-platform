@@ -43,6 +43,3 @@ export class SeedPublish implements InterfaceScript {
   }
 }
 export default SeedPublish;
-
-// http://localhost:3000/api/programs&/country/1
-// http://localhost:3000/api/programs/country/5

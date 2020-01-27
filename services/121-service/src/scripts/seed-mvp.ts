@@ -1,8 +1,11 @@
-import { SeedPublish } from './seed-publish';
-import SeedInit from './seed-init';
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
+
+import { SeedHelper } from './seed-helper';
+import { SeedPublish } from './seed-publish';
+import { SeedInit } from './seed-init';
+
 import { CountryEntity } from '../programs/country/country.entity';
 
 import fspBank from '../../examples/fsp-bank.json';
@@ -10,11 +13,10 @@ import fspMobileMoney from '../../examples/fsp-mobile-money.json';
 import fspMixedAttributes from '../../examples/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../examples/fsp-no-attributes.json';
 
+import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
+
 import programAnonymousExample1 from '../../examples/program-anonymous1.json';
 import programAnonymousExample2 from '../../examples/program-anonymous2.json';
-import { SeedHelper } from './seed-helper';
-import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
-import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 
 @Injectable()
 export class SeedMvp implements InterfaceScript {
@@ -58,7 +60,6 @@ export class SeedMvp implements InterfaceScript {
     await this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
-
     await this.seedHelper.assignAidworker(2, 1);
     await this.seedHelper.assignAidworker(2, 2);
     await this.seedHelper.assignAidworker(2, 3);
