@@ -1,19 +1,22 @@
-import { SeedPublish } from './seed-publish';
-import SeedInit from './seed-init';
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
+
+import { SeedHelper } from './seed-helper';
+import { SeedPublish } from './seed-publish';
+import { SeedInit } from './seed-init';
+
 import { CountryEntity } from '../programs/country/country.entity';
-import { UserEntity } from '../user/user.entity';
+
+import fspBank from '../../examples/fsp-bank.json';
+import fspMobileMoney from '../../examples/fsp-mobile-money.json';
+import fspMixedAttributes from '../../examples/fsp-mixed-attributes.json';
+import fspNoAttributes from '../../examples/fsp-no-attributes.json';
+
+import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
 
 import programAnonymousExample1 from '../../examples/program-anonymous1.json';
 import programAnonymousExample2 from '../../examples/program-anonymous2.json';
-import fspAnonymousExample1 from '../../examples/fsp-anonymous1.json';
-import fspAnonymousExample2 from '../../examples/fsp-anonymous2.json';
-import { SeedHelper } from './seed-helper';
-import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
-import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
-import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 
 @Injectable()
 export class SeedMvp implements InterfaceScript {
@@ -32,8 +35,10 @@ export class SeedMvp implements InterfaceScript {
     await countryRepository.save([{ country: 'Location B' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
-    await this.seedHelper.addFsp(fspAnonymousExample1)
-    await this.seedHelper.addFsp(fspAnonymousExample2)
+    await this.seedHelper.addFsp(fspBank);
+    await this.seedHelper.addFsp(fspMobileMoney);
+    await this.seedHelper.addFsp(fspMixedAttributes);
+    await this.seedHelper.addFsp(fspNoAttributes);
 
     // ***** CREATE PROTECTION SERVICE PROVIDERS *****
     const protectionServiceProviderRepository = this.connection.getRepository(ProtectionServiceProviderEntity);
@@ -41,9 +46,6 @@ export class SeedMvp implements InterfaceScript {
     await protectionServiceProviderRepository.save([{ psp: 'Protection Service Provider B' }]);
 
     // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
-
-    const userRepository = this.connection.getRepository(UserEntity);
-
     const programAnonymousExample3 = { ...programAnonymousExample1 };
     programAnonymousExample3.countryId = 2;
     const programAnonymousExample4 = { ...programAnonymousExample2 };
@@ -58,50 +60,26 @@ export class SeedMvp implements InterfaceScript {
     await this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
-
     await this.seedHelper.assignAidworker(2, 1);
     await this.seedHelper.assignAidworker(2, 2);
     await this.seedHelper.assignAidworker(2, 3);
 
     // ***** CREATE AVAILABILITY FOR AN AIDWORKER *****
-    const availabilityRepository = this.connection.getRepository(
-      AvailabilityEntity,
-    );
-
-    let newAvailability;
-    const items = [
-      {
-        startDate: 30,
-        endDate: 30,
-        startTime: 12,
-        location: 'A'
-      },
-      {
-        startDate: 31,
-        endDate: 32,
-        startTime: 13,
-        location: 'B'
-      }
-    ]
-    for (var item of items) {
-      let availability = new AvailabilityEntity();
-      let startDate = new Date();
-      let endDate = new Date();
-      startDate.setDate(startDate.getDate() + item.startDate);
-      endDate.setDate(endDate.getDate() + item.endDate);
-      startDate.setHours(item.startTime, 0);
-      endDate.setHours(item.startTime + 5, 0);
-
-      availability.startDate = startDate;
-      availability.endDate = endDate;
-
-      availability.location = 'Location ' + item.location;
-
-      let aidworker = await userRepository.findOne(2);
-      availability.aidworker = aidworker;
-
-      newAvailability = await availabilityRepository.save(availability);
-    }
+    await this.seedHelper.availabilityForAidworker({
+      startDate: '2020-10-10T12:00:00Z',
+      endDate: '2020-10-10T13:00:00Z',
+      location: 'Address of location 1',
+    }, 2);
+    await this.seedHelper.availabilityForAidworker({
+      startDate: '2020-10-11T18:00:00Z',
+      endDate: '2020-10-12T12:00:00Z',
+      location: 'Address of location 2',
+    }, 2);
+    await this.seedHelper.availabilityForAidworker({
+      startDate: '2020-10-20T00:00:00Z',
+      endDate: '2020-10-20T23:59:59Z',
+      location: 'Address of location 3',
+    }, 2);
 
     await this.seedPublish.run();
   }
