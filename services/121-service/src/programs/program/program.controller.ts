@@ -220,6 +220,7 @@ export class ProgramController {
   ): Promise<any> {
     return await this.programService.payout(
       data.programId,
+      data.installment,
       data.amount,
     );
   }

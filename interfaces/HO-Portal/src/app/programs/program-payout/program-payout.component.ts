@@ -55,7 +55,6 @@ export class ProgramPayoutComponent implements OnChanges {
     const program = await this.programsService.getProgramById(programId);
     this.nrOfInstallments = program.distributionDuration;
     this.installments = Array.from(Array(this.nrOfInstallments).keys());
-    console.log(this.installments);
   }
 
   public updateTotalAmountMessage() {
@@ -71,10 +70,10 @@ export class ProgramPayoutComponent implements OnChanges {
     this.isInProgress = false;
   }
 
-  public async performPayout() {
+  public async performPayout(installment) {
     this.isInProgress = true;
     console.log('Paying out...', this.transferValue);
-    this.programsService.submitPayout(this.programId, this.transferValue)
+    this.programsService.submitPayout(this.programId, installment, this.transferValue)
       .then(
         () => {
           this.isInProgress = false;

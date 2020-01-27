@@ -20,7 +20,7 @@
       </ion-item>
   
       <confirm-prompt [disabled]="!isEnabled"
-                      (confirm)="performPayout()"
+                      (confirm)="performPayout(installment + 1)"
                       (cancel)="cancelPayout()"
                       [subHeader]="'page.programs.program-payout.total-amount'|translate"
                       [message]="confirmMessage"
