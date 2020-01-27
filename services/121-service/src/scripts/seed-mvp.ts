@@ -6,10 +6,13 @@ import { Connection } from 'typeorm';
 import { CountryEntity } from '../programs/country/country.entity';
 import { UserEntity } from '../user/user.entity';
 
+import fspBank from '../../examples/fsp-bank.json';
+import fspMobileMoney from '../../examples/fsp-mobile-money.json';
+import fspMixedAttributes from '../../examples/fsp-mixed-attributes.json';
+import fspNoAttributes from '../../examples/fsp-no-attributes.json';
+
 import programAnonymousExample1 from '../../examples/program-anonymous1.json';
 import programAnonymousExample2 from '../../examples/program-anonymous2.json';
-import fspAnonymousExample1 from '../../examples/fsp-anonymous1.json';
-import fspAnonymousExample2 from '../../examples/fsp-anonymous2.json';
 import { SeedHelper } from './seed-helper';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
 import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
@@ -32,8 +35,10 @@ export class SeedMvp implements InterfaceScript {
     await countryRepository.save([{ country: 'Location B' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
-    await this.seedHelper.addFsp(fspAnonymousExample1)
-    await this.seedHelper.addFsp(fspAnonymousExample2)
+    await this.seedHelper.addFsp(fspBank);
+    await this.seedHelper.addFsp(fspMobileMoney);
+    await this.seedHelper.addFsp(fspMixedAttributes);
+    await this.seedHelper.addFsp(fspNoAttributes);
 
     // ***** CREATE PROTECTION SERVICE PROVIDERS *****
     const protectionServiceProviderRepository = this.connection.getRepository(ProtectionServiceProviderEntity);

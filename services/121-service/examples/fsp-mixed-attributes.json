@@ -1,0 +1,58 @@
+{
+  "fsp": "FSP C - mixed attributes",
+  "attributes": [
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Your phonenumber"
+      },
+      "answerType": "tel",
+      "options": null
+    },
+    {
+      "name": "accountId",
+      "label": {
+        "en": "Your account number"
+      },
+      "answerType": "number",
+      "options": null
+    },
+    {
+      "name": "date",
+      "label": {
+        "en": "Your date"
+      },
+      "answerType": "date",
+      "options": null
+    },
+    {
+      "name": "openAnswer",
+      "label": {
+        "en": "Your answer"
+      },
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "fixedChoice",
+      "label": {
+        "en": "Your choice"
+      },
+      "answerType": "dropdown",
+      "options": [
+        {
+          "option": "true",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "false",
+          "label": {
+            "en": "No"
+          }
+        }
+      ]
+    }
+  ]
+}
