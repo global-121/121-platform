@@ -37,7 +37,9 @@ export class SelectFspComponent extends PersonalComponent {
     super();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.program = await this.paData.getCurrentProgram();
+
     if (this.data) {
       this.initHistory();
       return;
@@ -48,7 +50,6 @@ export class SelectFspComponent extends PersonalComponent {
 
   async initNew() {
     this.conversationService.startLoading();
-    await this.getProgram();
     this.fsps = this.program.financialServiceProviders;
     this.did = await this.paData.retrieve(this.paData.type.did);
     this.conversationService.stopLoading();
@@ -60,15 +61,6 @@ export class SelectFspComponent extends PersonalComponent {
     this.chosenFsp = this.data.fsp;
     this.fspChoice = this.data.fsp.id;
     this.fsps = [this.data.fsp];
-    await this.getProgram();
-  }
-
-  private async getProgram() {
-    this.program = await this.paData.getCurrentProgram();
-  }
-
-  private storeFsp(chosenFsp: any) {
-    this.paData.store(this.paData.type.fsp, chosenFsp);
   }
 
   private getFspById(fspId: number) {
@@ -84,7 +76,7 @@ export class SelectFspComponent extends PersonalComponent {
     this.fspSubmitted = false;
 
     this.chosenFsp = this.getFspById(this.fspChoice);
-    this.storeFsp(this.chosenFsp);
+    this.paData.store(this.paData.type.fsp, this.chosenFsp);
   }
 
   public async submitFsp() {

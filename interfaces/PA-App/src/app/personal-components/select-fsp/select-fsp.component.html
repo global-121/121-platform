@@ -38,6 +38,6 @@
                  *ngIf="fspSubmitted"
                  [isSpoken]="fspSubmitted"
   >
-    <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ fspName:chosenFsp?.fsp }"></p>
+    <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:chosenFsp?.fsp }"></p>
   </dialogue-turn>
 </section>
