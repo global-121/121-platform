@@ -27,10 +27,7 @@ export class DataStorageService {
     data.type = storeData.type;
     data.data = storeData.data;
 
-    if (data.type == "wallet"){
-      //encrypt the data
-      data.data = this.cryptr.encrypt(data.data);
-    }
+    data.data = this.cryptr.encrypt(data.data);
 
     const newData = await this.dataStorageRepository.save(data);
 
@@ -53,10 +50,7 @@ export class DataStorageService {
       throw new HttpException({ errors }, 404);
     }
 
-    if(data.type =="wallet") {
-      // decrypt the data
-      data.data = this.cryptr.decrypt(data.data);
-    }
+    data.data = this.cryptr.decrypt(data.data);
     return JSON.stringify(data[0].data);
   }
 
