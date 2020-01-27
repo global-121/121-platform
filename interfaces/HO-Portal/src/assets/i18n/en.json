@@ -66,6 +66,7 @@
         "last-updated": "Last updated: {{date}}"
       },
       "program-payout": {
+        "installment-nr": "Installment #",
         "start-payout": "Start payout now",
         "total-included": "Number of PA included",
         "total-amount": "Total amount to payout:",

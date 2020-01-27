@@ -11,6 +11,7 @@ export class Program {
   inclusionCalculationType: InclusionCalculationType;
   highestScoresX: number;
   minimumScore: number;
+  distributionDuration: number;
 }
 
 export enum InclusionCalculationType {

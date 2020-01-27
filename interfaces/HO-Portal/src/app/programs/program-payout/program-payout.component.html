@@ -1,32 +1,37 @@
 <form>
-  <ion-row class="ion-align-items-center">
-    <ion-item class="ion-margin-end">
-      <ion-label position="stacked">
-        {{ 'page.programs.program-details.fixedTransferValue'|translate }}
-      </ion-label>
-      <ion-input type="number"
-                 inputmode="decimal"
-                 min="0"
-                 required
-                 name="transferValue"
-                 [(ngModel)]="transferValue"
-                 ngDefaultControl
-                 (change)="updateTotalAmountMessage()"
-      ></ion-input>
-    </ion-item>
-
-    <confirm-prompt [disabled]="!isEnabled"
-                    (confirm)="performPayout()"
-                    (cancel)="cancelPayout()"
-                    [subHeader]="'page.programs.program-payout.total-amount'|translate"
-                    [message]="confirmMessage"
-    >
-      {{ 'page.programs.program-payout.start-payout'|translate }}
-    </confirm-prompt>
-
-    <ion-spinner *ngIf="isInProgress"
-                 color="primary"
-                 class="ion-margin-start"
-    ></ion-spinner>
-  </ion-row>
+  <ion-item *ngFor="let installment of installments">
+    <ion-row class="ion-align-items-center">
+      <p>
+        {{ 'page.programs.program-payout.installment-nr'|translate }} {{installment + 1}}
+      </p>
+      <ion-item class="ion-margin-end">
+        <ion-label position="stacked">
+          {{ 'page.programs.program-details.fixedTransferValue'|translate }}
+        </ion-label>
+        <ion-input type="number"
+                   inputmode="decimal"
+                   min="0"
+                   required
+                   name="transferValue"
+                   [(ngModel)]="transferValue"
+                   ngDefaultControl
+                   (change)="updateTotalAmountMessage()"
+        ></ion-input>
+      </ion-item>
+  
+      <confirm-prompt [disabled]="!isEnabled"
+                      (confirm)="performPayout()"
+                      (cancel)="cancelPayout()"
+                      [subHeader]="'page.programs.program-payout.total-amount'|translate"
+                      [message]="confirmMessage"
+      >
+        {{ 'page.programs.program-payout.start-payout'|translate }}
+      </confirm-prompt>
+  
+      <ion-spinner *ngIf="isInProgress"
+                   color="primary"
+                   class="ion-margin-start"
+      ></ion-spinner>
+    </ion-row>
+  </ion-item>
 </form>

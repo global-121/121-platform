@@ -3,6 +3,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { formatCurrency } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-program-payout',
@@ -23,11 +24,14 @@ export class ProgramPayoutComponent implements OnChanges {
   public isInProgress = false;
 
   private locale: string;
+  public nrOfInstallments: number;
+  public installments: any[];
   private totalIncluded: number;
 
   public confirmMessage: string;
 
   constructor(
+    private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
@@ -35,11 +39,23 @@ export class ProgramPayoutComponent implements OnChanges {
     this.locale = this.translate.getBrowserCultureLang();
   }
 
+  async ngOnInit() {
+    const programId = this.route.snapshot.params.id;
+    this.createInstallments(programId);
+  }
+
   async ngOnChanges(changes: SimpleChanges) {
     if (typeof changes.programId.currentValue === 'number') {
       this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
       this.updateTotalAmountMessage();
     }
+  }
+
+  private async createInstallments(programId) {
+    const program = await this.programsService.getProgramById(programId);
+    this.nrOfInstallments = program.distributionDuration;
+    this.installments = Array.from(Array(this.nrOfInstallments).keys());
+    console.log(this.installments);
   }
 
   public updateTotalAmountMessage() {
