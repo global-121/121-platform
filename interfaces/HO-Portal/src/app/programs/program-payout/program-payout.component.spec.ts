@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ProgramPayoutComponent } from './program-payout.component';
+import { RouterModule } from '@angular/router';
 
 describe('ProgramPayoutComponent', () => {
   let component: ProgramPayoutComponent;
@@ -13,15 +14,16 @@ describe('ProgramPayoutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProgramPayoutComponent ],
+      declarations: [ProgramPayoutComponent],
       imports: [
         TranslateModule.forRoot(),
+        RouterModule.forRoot([]),
         FormsModule,
         HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

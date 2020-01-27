@@ -551,7 +551,7 @@ export class ProgramService {
     return enrolledConnections;
   }
 
-  public async payout(programId: number, amount: number) {
+  public async payout(programId: number, installment: number, amount: number) {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
@@ -574,7 +574,8 @@ export class ProgramService {
     );
     const fundsNeeded = amount * includedConnections.length;
     if (fundsNeeded > fundingOverview.totalAvailable) {
-      return { status: 'error', message: 'Insufficient funds' };
+      const errors = 'Insufficient funds';
+      throw new HttpException({ errors }, 404);
     }
 
     for (let fsp of program.financialServiceProviders) {
@@ -583,9 +584,10 @@ export class ProgramService {
         includedConnections,
         amount,
         program,
+        installment
       );
     }
-    return { status: 'succes', message: 'Send instructions to FSP' };
+    return { status: 'succes', message: 'Sent instructions to FSP' };
   }
 
   private async getEnrolledConnections(
@@ -651,6 +653,7 @@ export class ProgramService {
     includedConnections: ConnectionEntity[],
     amount: number,
     program: ProgramEntity,
+    installment: number
   ) {
     const paymentList = [];
     const connectionsForFsp = [];
@@ -677,7 +680,7 @@ export class ProgramService {
         throw new HttpException({ errors }, 404);
       }
       for (let connection of connectionsForFsp) {
-        this.storeTransaction(amount, connection, fsp, program);
+        this.storeTransaction(amount, connection, fsp, program, installment);
       }
     }
   }
@@ -686,6 +689,7 @@ export class ProgramService {
     connection: ConnectionEntity,
     fsp: FinancialServiceProviderEntity,
     program: ProgramEntity,
+    installment: number
   ) {
     const transaction = new TransactionEntity();
     transaction.amount = amount;
@@ -693,9 +697,20 @@ export class ProgramService {
     transaction.connection = connection;
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
-    transaction.status = 'send-order';
+    transaction.installment = installment;
+    transaction.status = 'sent-order';
 
     this.transactionRepository.save(transaction);
+  }
+
+  public async getInstallments(programId: number) {
+    const installments = await this.transactionRepository.createQueryBuilder('transaction')
+      .select("transaction.amount, transaction.installment")
+      .addSelect("MIN(transaction.created)", "installmentDate")
+      .where("transaction.program.id = :programId", { programId: programId })
+      .groupBy("transaction.amount, transaction.installment")
+      .getRawMany();
+    return installments;
   }
 
   public async getFunds(programId: number): Promise<FundingOverview> {
