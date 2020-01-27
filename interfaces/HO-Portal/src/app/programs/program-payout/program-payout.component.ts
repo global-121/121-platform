@@ -60,10 +60,13 @@ export class ProgramPayoutComponent implements OnChanges {
       amount: String,
       installmentDate: Date,
       statusOpen: Boolean,
-    this.installments = Array.from(Array(this.nrOfInstallments).keys());
+      firstOpen: Boolean
+    }));
 
     const pastInstallments = await this.programsService.getPastInstallments(programId);
 
+    let i = 0;
+    for (let installment of this.installments) {
       if (pastInstallments
         .map(item => item.installment)
         .includes(installment.id)
@@ -73,8 +76,12 @@ export class ProgramPayoutComponent implements OnChanges {
         installment.amount = pastInstallment.amount;
         installment.installmentDate = pastInstallment.installmentDate;
         installment.statusOpen = false;
+        installment.firstOpen = false;
+        i += 1;
       } else {
         installment.statusOpen = true;
+        installment.firstOpen = !this.installments[i - 1].statusOpen ? true : false; // If previous item was 'closed' then this item is the 'first open one'
+        i += 1;
       }
     }
 

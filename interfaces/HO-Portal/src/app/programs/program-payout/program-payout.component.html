@@ -25,6 +25,7 @@
         ></ion-input>
       </ion-item>
   
+      <confirm-prompt [disabled]="!isEnabled || !installment.firstOpen"
                       (confirm)="performPayout(installment.id)"
                       (cancel)="cancelPayout()"
                       [subHeader]="'page.programs.program-payout.total-amount'|translate"
