@@ -574,7 +574,8 @@ export class ProgramService {
     );
     const fundsNeeded = amount * includedConnections.length;
     if (fundsNeeded > fundingOverview.totalAvailable) {
-      return { status: 'error', message: 'Insufficient funds' };
+      const errors = 'Insufficient funds';
+      throw new HttpException({ errors }, 404);
     }
 
     for (let fsp of program.financialServiceProviders) {
@@ -697,7 +698,7 @@ export class ProgramService {
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
     transaction.installment = installment;
-    transaction.status = 'send-order';
+    transaction.status = 'sent-order';
 
     this.transactionRepository.save(transaction);
   }

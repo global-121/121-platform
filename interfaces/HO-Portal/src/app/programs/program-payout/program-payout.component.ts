@@ -40,14 +40,14 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   async ngOnInit() {
-    const programId = this.route.snapshot.params.id;
-    this.createInstallments(programId);
+    this.programId = this.route.snapshot.params.id;
+    this.createInstallments(this.programId);
   }
 
   async ngOnChanges(changes: SimpleChanges) {
     if (typeof changes.programId.currentValue === 'number') {
       this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
-      this.updateTotalAmountMessage();
+      // this.updateTotalAmountMessage();
     }
   }
 
@@ -58,60 +58,80 @@ export class ProgramPayoutComponent implements OnChanges {
     this.installments = Array(this.nrOfInstallments).fill(1).map((_, index) => ({
       id: index + 1,
       amount: String,
-      installmentDate: Date,
+      installmentDate: new Date(),
       statusOpen: Boolean,
       firstOpen: Boolean
     }));
 
     const pastInstallments = await this.programsService.getPastInstallments(programId);
+    const pastInstallmentIds = pastInstallments.map(item => item.installment);
+    const frequency = program.distributionFrequency;
 
     let i = 0;
+    let maxInstallmentDate: Date;
     for (const installment of this.installments) {
-      if (pastInstallments
-        .map(item => item.installment)
-        .includes(installment.id)
+      if (pastInstallmentIds.includes(installment.id)
       ) {
-
-        const pastInstallment = pastInstallments.filter(item => item.installment = installment.id)[0];
+        const pastInstallment = pastInstallments.filter(item => item.installment === installment.id)[0];
         installment.amount = pastInstallment.amount;
         installment.installmentDate = pastInstallment.installmentDate;
         installment.statusOpen = false;
         installment.firstOpen = false;
-        i += 1;
+
+        maxInstallmentDate = new Date(installment.installmentDate);
       } else {
+        installment.amount = program.fixedTransferValue;
         installment.statusOpen = true;
-        installment.firstOpen = !this.installments[i - 1].statusOpen ? true : false;
-        i += 1;
+
+        // Set dates
+        if (i === 0) {
+          installment.installmentDate = new Date();
+        } else if (frequency === 'month' || 1 === 1) { // For now do the same in all other cases then 'month'
+          installment.installmentDate = new Date(maxInstallmentDate.setMonth(maxInstallmentDate.getMonth() + 1));
+        }
+        maxInstallmentDate = new Date(installment.installmentDate);
+
+        // Determine first 'open' installment
+        if (i === 0 || !this.installments[i - 1].statusOpen) {
+          installment.firstOpen = true;
+          this.updateTotalAmountMessage(installment);
+        } else {
+          installment.firstOpen = false;
+        }
       }
+      i += 1;
+      console.log(installment);
     }
 
   }
 
-  public updateTotalAmountMessage() {
-    const totalCost = this.totalIncluded * this.transferValue;
+  public updateTotalAmountMessage(installment) {
+    const totalCost = this.totalIncluded * +installment.amount;
     const symbol = `${this.currencyCode} `;
     const totalCostFormatted = formatCurrency(totalCost, this.locale, symbol, this.currencyCode);
 
-    this.confirmMessage = `${this.totalIncluded} * ${this.transferValue} = ${totalCostFormatted}`;
+    this.confirmMessage = `${this.totalIncluded} * ${+installment.amount} = ${totalCostFormatted}`;
   }
 
-  public cancelPayout() {
+  public cancelPayout(installment) {
     this.isEnabled = true;
-    this.isInProgress = false;
+    installment.isInProgress = false;
   }
 
   public async performPayout(installment) {
-    this.isInProgress = true;
-    console.log('Paying out...', this.transferValue);
-    this.programsService.submitPayout(this.programId, installment, +this.transferValue)
+    console.log(installment);
+    installment.isInProgress = true;
+    console.log('Paying out...', installment.amount);
+    this.programsService.submitPayout(this.programId, installment.id, +installment.amount)
       .then(
         () => {
-          this.isInProgress = false;
+          installment.isInProgress = false;
           this.payoutResult(this.translate.instant('page.programs.program-payout.payout-success'));
+          this.createInstallments(this.programId);
         },
         () => {
           this.payoutResult(this.translate.instant('page.programs.program-payout.payout-error'));
-          this.cancelPayout();
+          this.cancelPayout(installment);
         }
       );
   }
@@ -127,4 +147,6 @@ export class ProgramPayoutComponent implements OnChanges {
     await alert.present();
   }
 }
+
+
 

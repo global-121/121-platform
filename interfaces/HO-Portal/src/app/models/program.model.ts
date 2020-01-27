@@ -12,6 +12,8 @@ export class Program {
   highestScoresX: number;
   minimumScore: number;
   distributionDuration: number;
+  distributionFrequency: string;
+  startDate: string;
 }
 
 export enum InclusionCalculationType {

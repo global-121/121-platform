@@ -73,7 +73,7 @@
         "total-included": "Number of PA included",
         "total-amount": "Total amount to payout:",
         "payout-success": "Payout successful.",
-        "payout-error": "Payout unsuccessful."
+        "payout-error": "Payout unsuccessful. Are there enough funds?"
       },
       "program-people": {
         "pageTitle": "Manage people",

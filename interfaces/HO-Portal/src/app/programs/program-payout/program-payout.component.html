@@ -9,8 +9,11 @@
         <ion-label *ngIf="!installment.statusOpen" position="stacked">
           {{ 'page.programs.program-payout.closed'|translate }}
         </ion-label>
+        <ion-label position="stacked">
+          {{ installment.installmentDate|date:"dd-MM-y" }}
+        </ion-label>
       </p>
-      <ion-item class="ion-margin-end">
+      <ion-item class="ion-margin-end" [disabled]="!installment.firstOpen">
         <ion-label position="stacked">
           {{ 'page.programs.program-details.fixedTransferValue'|translate }}
         </ion-label>
@@ -18,23 +21,23 @@
                    inputmode="decimal"
                    min="0"
                    required
-                   name="transferValue"
-                   [(ngModel)]="transferValue"
+                   [(ngModel)]="installment.amount"
+                   [ngModelOptions]="{standalone: true}"
                    ngDefaultControl
-                   (change)="updateTotalAmountMessage()"
+                   (change)="updateTotalAmountMessage(installment)"
         ></ion-input>
       </ion-item>
   
-      <confirm-prompt [disabled]="!isEnabled || !installment.firstOpen"
-                      (confirm)="performPayout(installment.id)"
-                      (cancel)="cancelPayout()"
+      <confirm-prompt [disabled]="!isEnabled || !installment.firstOpen || totalIncluded === 0"
+                      (confirm)="performPayout(installment); installment.isInProgress = true"
+                      (cancel)="cancelPayout(installment)"
                       [subHeader]="'page.programs.program-payout.total-amount'|translate"
                       [message]="confirmMessage"
       >
         {{ 'page.programs.program-payout.start-payout'|translate }}
       </confirm-prompt>
   
-      <ion-spinner *ngIf="isInProgress"
+      <ion-spinner *ngIf="installment.isInProgress"
                    color="primary"
                    class="ion-margin-start"
       ></ion-spinner>
