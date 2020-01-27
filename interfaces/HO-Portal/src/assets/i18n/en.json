@@ -67,6 +67,8 @@
       },
       "program-payout": {
         "installment-nr": "Installment #",
+        "closed": "Closed",
+        "open": "Open",
         "start-payout": "Start payout now",
         "total-included": "Number of PA included",
         "total-amount": "Total amount to payout:",

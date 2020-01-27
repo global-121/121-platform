@@ -54,7 +54,30 @@ export class ProgramPayoutComponent implements OnChanges {
   private async createInstallments(programId) {
     const program = await this.programsService.getProgramById(programId);
     this.nrOfInstallments = program.distributionDuration;
+
+    this.installments = Array(this.nrOfInstallments).fill(1).map((_, i) => ({
+      id: i + 1,
+      amount: String,
+      installmentDate: Date,
+      statusOpen: Boolean,
     this.installments = Array.from(Array(this.nrOfInstallments).keys());
+
+    const pastInstallments = await this.programsService.getPastInstallments(programId);
+
+      if (pastInstallments
+        .map(item => item.installment)
+        .includes(installment.id)
+      ) {
+
+        const pastInstallment = pastInstallments.filter(item => item.installment = installment.id)[0];
+        installment.amount = pastInstallment.amount;
+        installment.installmentDate = pastInstallment.installmentDate;
+        installment.statusOpen = false;
+      } else {
+        installment.statusOpen = true;
+      }
+    }
+
   }
 
   public updateTotalAmountMessage() {
@@ -97,3 +120,4 @@ export class ProgramPayoutComponent implements OnChanges {
     await alert.present();
   }
 }
+
