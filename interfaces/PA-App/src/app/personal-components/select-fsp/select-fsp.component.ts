@@ -26,8 +26,10 @@ export class SelectFspComponent extends PersonalComponent {
   public fspChoice: number;
   public chosenFsp: Fsp;
   public fspSubmitted: boolean;
-  public fspChoiceWithDetails: Fsp;
 
+  public hasCustomAttributes: boolean;
+  public customAttributes: any[];
+  public customAttributeAnswers: any[] = [];
 
   constructor(
     public conversationService: ConversationService,
@@ -81,39 +83,36 @@ export class SelectFspComponent extends PersonalComponent {
 
   public async submitFsp() {
     this.fspSubmitted = true;
-    this.programsService.postFsp(this.did, this.fspChoice).subscribe(() => {
-      this.setCustomAttribute();
-    });
-  }
 
-  private async setCustomAttribute() {
-    this.fspChoiceWithDetails = await this.programsService.getFspById(this.fspChoice);
-    if (this.fspChoiceWithDetails.attributes.length > 0) {
-      const customValue = await this.askCustomAttribute();
-      await this.submitCustomAttribute(customValue);
-    }
+    this.programsService.postFsp(this.did, this.fspChoice);
+    this.customAttributes = await this.getCustomAttributes();
+    this.hasCustomAttributes = (this.customAttributes.length >= 1);
 
-    this.complete();
-  }
-
-  private async askCustomAttribute(): Promise<string> {
-    if (this.fspChoiceWithDetails.attributes[0].name === 'phoneNumber') {
-      const phoneNumber = '+1234567890';
-      await this.paData.store(this.paData.type.phoneNumber, phoneNumber);
-      return phoneNumber;
-    } else if (this.fspChoiceWithDetails.attributes[0].name === 'idNumber') {
-      return 'NL:999999990';
+    if (!this.hasCustomAttributes) {
+      return this.complete();
     }
   }
 
+  private async getCustomAttributes() {
+    // Update FSPs with more details:
+    this.chosenFsp = await this.programsService.getFspById(this.fspChoice);
+
+    return (this.chosenFsp.attributes.length > 0) ? this.chosenFsp.attributes : [];
+  }
 
 
-  private async submitCustomAttribute(customValue: string) {
-    console.log('customValue: ', customValue);
-    const customKey = this.fspChoiceWithDetails.attributes[0].name;
-    this.programsService.postConnectionCustomAttribute(this.did, customKey, customValue).subscribe(() => {
-      console.log('postConnectionCustomAttribute');
+
+  public submitCustomAttributes() {
+    let answersSubmitted = 0;
+
+    this.customAttributeAnswers.forEach(async (answer, index) => {
+      await this.programsService.postConnectionCustomAttribute(this.did, answer.name, answer.value);
+      answersSubmitted++;
     });
+
+    if (answersSubmitted === this.customAttributes.length) {
+      this.complete();
+    }
   }
 
   getNextSection() {
