@@ -30,6 +30,7 @@ They are grouped by their (most important) actor.
 ### For Person/People Affected (PA)
 1. [Fill payment details](Fill_payment_details.feature)
 2. [Verify password input](Verify_password_input.feature)
+3. [Verify phone number input](Verify_phone_number_input.feature)
 
 
 ### For Aid-Worker (AW)
