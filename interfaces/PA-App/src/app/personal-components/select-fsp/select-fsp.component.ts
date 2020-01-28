@@ -29,7 +29,8 @@ export class SelectFspComponent extends PersonalComponent {
 
   public hasCustomAttributes: boolean;
   public customAttributes: any[];
-  public customAttributeAnswers: any[] = [];
+  public customAttributeAnswers: any = {};
+  public hasAnsweredAll: boolean;
 
   constructor(
     public conversationService: ConversationService,
@@ -100,7 +101,23 @@ export class SelectFspComponent extends PersonalComponent {
     return (this.chosenFsp.attributes.length > 0) ? this.chosenFsp.attributes : [];
   }
 
+  public onCustomAttributeChange($eventTarget) {
+    const questionKey = $eventTarget.name;
+    const answerValue = $eventTarget.value;
 
+    this.customAttributeAnswers[questionKey] = {
+      key: questionKey,
+      value: answerValue,
+    };
+
+    this.checkAnsweredAll();
+  }
+
+  private checkAnsweredAll() {
+    this.hasAnsweredAll = (this.customAttributes.length === this.customAttributeAnswers.length);
+
+    return this.hasAnsweredAll;
+  }
 
   public submitCustomAttributes() {
     let answersSubmitted = 0;
