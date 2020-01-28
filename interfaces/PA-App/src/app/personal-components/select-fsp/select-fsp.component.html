@@ -38,6 +38,40 @@
                  *ngIf="fspSubmitted"
                  [isSpoken]="fspSubmitted"
   >
-    <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ fspName:chosenFsp?.fsp }"></p>
+    <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:chosenFsp?.fsp }"></p>
   </dialogue-turn>
+
+  <form *ngIf="customAttributes?.length">
+    <dialogue-turn isConnected="true"
+                   isSpoken="true"
+    >
+      <p>
+        {{ 'personal.select-fsp.attributes.introduction'|translate }}
+      </p>
+    </dialogue-turn>
+
+    <div *ngFor="let attribute of customAttributes; first as isFirst">
+
+      <dialogue-turn actor="self"
+                     [isConnected]="!isFirst"
+                     isSpoken="true"
+      >
+      </dialogue-turn>
+
+    </div>
+
+    <dialogue-turn actor="self"
+                   isConnected="true"
+                   isSpoken="true"
+    >
+      <ion-button type="submit"
+                  [disabled]="hasAnsweredAll"
+                  (click)="submitCustomAttributes()"
+                  expand="block"
+      >
+        {{ 'personal.select-fsp.attributes.submit'|translate }}
+      </ion-button>
+    </dialogue-turn>
+  </form>
+
 </section>

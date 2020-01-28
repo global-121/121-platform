@@ -244,7 +244,7 @@ export class ProgramsServiceApiService {
     );
   }
 
-  postConnectionCustomAttribute(did: string, key: string, value: string): Observable<any> {
+  postConnectionCustomAttribute(did: string, key: string, value: string): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/sovrin/create-connection/custom-data',
@@ -256,7 +256,8 @@ export class ProgramsServiceApiService {
       true
     ).pipe(
       tap(response => console.log('response: ', response)),
-    );
+    )
+      .toPromise();
   }
 
   lookupPhoneNumber(phoneNumber: string): Observable<any> {

@@ -75,7 +75,11 @@
     },
     "select-fsp": {
       "introduction": "If you are included in the program, how would you like to receive your money?",
-      "conclusion": "Thank you. You have selected payment option <strong>{{fspName}}</strong>."
+      "conclusion": "Thank you. You have selected payment option: <strong>{{name}}</strong>.",
+      "attributes": {
+        "introduction": "Please answer these additional questions:",
+        "submit": "Save my answers"
+      }
     },
     "select-appointment": {
       "introduction": "Next step: Make an appointment for Digital ID activation and program application.",
