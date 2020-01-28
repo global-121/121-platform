@@ -8,6 +8,7 @@ import {
   Controller,
   UsePipes,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
@@ -23,8 +24,13 @@ import {
   ApiImplicitParam,
 } from '@nestjs/swagger';
 import { DeleteResult } from 'typeorm';
-import { UserEntity } from './user.entity';
+import { RolesGuard } from '../roles.guard';
+import { Roles } from '../roles.decorator';
+import { UserRole } from '../user-roles.enum';
 
+
+@ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiUseTags('user')
 @Controller()
 export class UserController {
@@ -65,7 +71,7 @@ export class UserController {
     return { user };
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer, UserRole.Admin)
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -75,7 +81,7 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Delete user by userId' })
   @Delete('user/:userId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'string' })
@@ -90,7 +96,7 @@ export class UserController {
     return await this.userService.findByEmail(email);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Deactivate Aidworker' })
   @Put('user/:userId/deactivate')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
@@ -98,7 +104,7 @@ export class UserController {
     return await this.userService.deactivate(userId);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Activate Aidworker' })
   @Put('user/:userId/activate')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
@@ -106,7 +112,7 @@ export class UserController {
     return await this.userService.activate(userId);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Put('user/:userId/:programId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
