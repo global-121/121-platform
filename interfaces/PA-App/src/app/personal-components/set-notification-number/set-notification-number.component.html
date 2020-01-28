@@ -1,4 +1,4 @@
-<section>
+<section *ngIf="!isCanceled">
   <dialogue-turn [actor]="ngo">
     <p>
       {{ 'personal.set-notification-number.introduction1'|translate }}
