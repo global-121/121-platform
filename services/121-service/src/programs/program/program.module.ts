@@ -26,6 +26,7 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { SmsModule } from '../../notifications/sms/sms.module';
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { AuthMiddleware } from '../../user/auth.middleware';
 
 @Module({
   imports: [
@@ -74,8 +75,5 @@ export class ProgramModule implements NestModule {
         { path: 'programs/funds/:id', method: RequestMethod.GET },
         { path: 'programs/total-included/:id', method: RequestMethod.GET },
       );
-    consumer
-      .apply(AuthMiddlewareAW)
-      .forRoutes({ path: 'programs/:id', method: RequestMethod.GET });
-  }
+ }
 }

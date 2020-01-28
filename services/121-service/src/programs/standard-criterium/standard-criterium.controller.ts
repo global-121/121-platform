@@ -1,4 +1,4 @@
-import { Get, Post, Body, Controller, Param } from '@nestjs/common';
+import { Get, Post, Body, Controller, Param, UseGuards } from '@nestjs/common';
 
 import { StandardCriteriumEntity } from './standard-criterium.entity';
 import { StandardCriteriumService } from './standard-criterium.service';
@@ -12,8 +12,11 @@ import {
   ApiImplicitParam,
 } from '@nestjs/swagger';
 import { CreateStandardCriteriumDto } from './dto/create-standard-criterium.dto';
-
+import { RolesGuard } from '../../roles.guard';
+import { Roles } from '../../roles.decorator';
+import { UserRole } from '../../user-roles.enum';
 @ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiUseTags('programs')
 @Controller('programs/standard-criteriums')
 export class StandardCriteriumController {
@@ -22,12 +25,14 @@ export class StandardCriteriumController {
     this.criteriumService = criteriumService;
   }
 
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Get all criteria' })
   @Get()
   public async findAll(): Promise<StandardCriteriumEntity[]> {
     return await this.criteriumService.findAll();
   }
 
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Get criteria by country' })
   @ApiImplicitParam({ name: 'countryId', required: true, type: 'number' })
   @Get(':countryId')
@@ -35,6 +40,7 @@ export class StandardCriteriumController {
     return await this.criteriumService.find(params.countryId);
   }
 
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Create criterium' })
   @ApiResponse({
     status: 201,

@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '../../user/user.module';
-import { SchemaController } from './schema.controller';
 import { UserEntity } from '../../user/user.entity';
 
 @Module({
@@ -15,7 +14,7 @@ import { UserEntity } from '../../user/user.entity';
     HttpModule,
   ],
   providers: [SchemaService],
-  controllers: [SchemaController],
+  controllers: [],
   exports: [SchemaService],
 })
 export class SchemaModule {}

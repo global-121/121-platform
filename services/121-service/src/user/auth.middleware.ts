@@ -1,6 +1,5 @@
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
-import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { SECRET } from '../secrets';
@@ -9,13 +8,13 @@ import { UserService } from './user.service';
 import { IGetUserAuthInfoRequest } from './get-user-auth-info-request';
 
 @Injectable()
-export class AuthMiddlewarePM implements NestMiddleware {
+export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly userService: UserService) {}
 
   async use(req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) {
-    console.log('AuthMiddlewarePM')
+    console.log("AUTTTTHHHh")
+
     const authHeaders = req.headers.authorization;
-    console.log('authHeaders', authHeaders)
     if (authHeaders && (authHeaders as string).split(' ')[1]) {
       const token = (authHeaders as string).split(' ')[1];
       const decoded: any = jwt.verify(token, SECRET);
@@ -29,7 +28,8 @@ export class AuthMiddlewarePM implements NestMiddleware {
           HttpStatus.UNAUTHORIZED,
         );
       }
-      console.log('user', user)
+
+      // console.log(data)
 
       if (user.user.role == 'admin' || user.user.role == 'program-manager') {
         req.user = user.user;

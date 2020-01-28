@@ -1,4 +1,4 @@
-import { Get, Post, Body, Param, Controller } from '@nestjs/common';
+import { Get, Post, Body, Param, Controller, UseGuards } from '@nestjs/common';
 import {
   ApiUseTags,
   ApiBearerAuth,
@@ -10,7 +10,12 @@ import { AvailabilityEntity } from '../appointment/availability.entity';
 import { CreateAvailabilityDto, RegisterTimeslotDto } from './dto';
 import { AppointmentEntity } from './appointment.entity';
 import { User } from '../../user/user.decorator';
+import { RolesGuard } from '../../roles.guard';
+import { Roles } from '../../roles.decorator';
+import { UserRole } from '../../user-roles.enum';
 
+@ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiUseTags('appointment')
 @Controller('appointment')
 export class AppointmentController {
@@ -19,7 +24,7 @@ export class AppointmentController {
     this.appointmentService = appointmentService;
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.Aidworker)
   @ApiOperation({ title: 'Give availability (for AW)' })
   @Post('availability')
   public async postAvailability(
@@ -51,7 +56,7 @@ export class AppointmentController {
     return await this.appointmentService.registerTimeslot(timeslotId, didData);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.Aidworker)
   @ApiOperation({ title: 'Get appointments per timeslot (for AW)' })
   @Get('appointments')
   public async getAppointments(
@@ -60,6 +65,7 @@ export class AppointmentController {
     return await this.appointmentService.getAppointments(userId);
   }
 
+  @Roles(UserRole.Aidworker)
   @ApiOperation({ title: 'Change status of did in appointments-list (waiting/validated/postponed) (for AW)' })
   @ApiImplicitParam({ name: 'timeslotId', required: true, type: 'number' })
   @ApiImplicitParam({ name: 'newStatus', required: true, type: 'string' })
