@@ -27,7 +27,6 @@ export class SelectFspComponent extends PersonalComponent {
   public chosenFsp: Fsp;
   public fspSubmitted: boolean;
 
-  public hasCustomAttributes: boolean;
   public customAttributes: any[];
   public customAttributeAnswers: any = {};
   public hasAnsweredAll: boolean;
@@ -64,6 +63,9 @@ export class SelectFspComponent extends PersonalComponent {
     this.chosenFsp = this.data.fsp;
     this.fspChoice = this.data.fsp.id;
     this.fsps = [this.data.fsp];
+    this.customAttributes = this.getCustomAttributes();
+    this.customAttributeAnswers = this.data.customAttributeAnswers;
+    this.checkAnsweredAll();
   }
 
   private getFspById(fspId: number) {
@@ -86,18 +88,18 @@ export class SelectFspComponent extends PersonalComponent {
     this.fspSubmitted = true;
 
     this.programsService.postFsp(this.did, this.fspChoice);
-    this.customAttributes = await this.getCustomAttributes();
-    this.hasCustomAttributes = (this.customAttributes.length >= 1);
 
-    if (!this.hasCustomAttributes) {
+    // Update FSPs with more details:
+    this.chosenFsp = await this.programsService.getFspById(this.fspChoice);
+
+    this.customAttributes = this.getCustomAttributes();
+
+    if (!this.customAttributes.length) {
       return this.complete();
     }
   }
 
-  private async getCustomAttributes() {
-    // Update FSPs with more details:
-    this.chosenFsp = await this.programsService.getFspById(this.fspChoice);
-
+  private getCustomAttributes() {
     return (this.chosenFsp.attributes.length > 0) ? this.chosenFsp.attributes : [];
   }
 

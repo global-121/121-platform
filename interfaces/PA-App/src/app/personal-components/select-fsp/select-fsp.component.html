@@ -41,7 +41,7 @@
     <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:chosenFsp?.fsp }"></p>
   </dialogue-turn>
 
-  <form *ngIf="hasCustomAttributes">
+  <form *ngIf="customAttributes?.length">
     <dialogue-turn isConnected="true"
                    isSpoken="true"
     >
