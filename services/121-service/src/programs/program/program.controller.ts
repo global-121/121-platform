@@ -64,7 +64,6 @@ export class ProgramController {
     return await this.programService.getFunds(params.id);
   }
 
-  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Get all programs' })
   @ApiImplicitQuery({ name: 'location', required: false })
   @ApiImplicitQuery({ name: 'countryId', required: false })

@@ -40,14 +40,12 @@ export class UserController {
   }
 
   @ApiOperation({ title: 'Sign-up new user' })
-  @UsePipes(new ValidationPipe())
   @Post('user')
   public async create(@Body() userData: CreateUserDto): Promise<UserRO> {
     return this.userService.create(userData);
   }
 
   @ApiOperation({ title: 'Log in existing user' })
-  @UsePipes(new ValidationPipe())
   @Post('user/login')
   public async login(@Body() loginUserDto: LoginUserDto): Promise<UserRO> {
     const _user = await this.userService.findOne(loginUserDto);

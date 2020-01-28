@@ -23,7 +23,6 @@ export class RolesGuard implements CanActivate {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
     console.log('roles: ', roles);
 
-
     if (!roles) {
       console.log('Everyone can access')
       return true;
@@ -34,6 +33,7 @@ export class RolesGuard implements CanActivate {
     console.log('Roles guardd1!!!', roles);
     const request = context.switchToHttp().getRequest()
     const authHeaders = request.headers.authorization;
+    console.log('authHeaders: ', authHeaders);
     // console.log('authHeaders: ', authHeaders);
     if (authHeaders && (authHeaders as string).split(' ')[1]) {
       const token = (authHeaders as string).split(' ')[1];
