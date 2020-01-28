@@ -118,7 +118,13 @@ export class PaDataService {
       return this.ionStorage.get(type);
     }
 
-    return JSON.parse(await this.paAccountApi.retrieve(type));
+    const paAccountApiOutput = await this.paAccountApi.retrieve(type);
+
+    // Only JSON.parse the output if it could result in something:
+    if (!paAccountApiOutput) {
+      return undefined;
+    }
+    return JSON.parse(paAccountApiOutput);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -216,8 +222,8 @@ export class PaDataService {
     const did = await this.retrieve(this.type.did);
 
     // All requests are dependent on their predecessors!
-    // A wallet should only be deleted if the account is already succesfully deleted
-    // A connection should only be deleted if the wallet is already succesfully deleted
+    // A wallet should only be deleted if the account is already successfully deleted
+    // A connection should only be deleted if the wallet is already successfully deleted
     return new Promise(async (resolve, reject) => {
       if (!this.hasAccount) {
         return reject('');

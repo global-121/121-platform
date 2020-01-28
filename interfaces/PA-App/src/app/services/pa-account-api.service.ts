@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { map, tap } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { map, tap, catchError } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 
@@ -75,6 +76,14 @@ export class PaAccountApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
+        catchError((error) => {
+          if (error.error instanceof ErrorEvent) {
+            console.error(error);
+          } else {
+            // In case of server-side error (400/500), act as if nothing happened...
+            return of(undefined);
+          }
+        }),
       )
       .toPromise();
   }
