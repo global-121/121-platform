@@ -124,7 +124,7 @@ export class SelectFspComponent extends PersonalComponent {
   public submitCustomAttributes() {
     let answersSubmitted = 0;
 
-    this.customAttributeAnswers.forEach(async (answer, index) => {
+    this.customAttributeAnswers.forEach(async (answer) => {
       await this.programsService.postConnectionCustomAttribute(this.did, answer.name, answer.value);
       answersSubmitted++;
     });
