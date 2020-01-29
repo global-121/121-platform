@@ -3,6 +3,7 @@ import { CredentialController } from './credential.controller';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { CredentialValuesDto } from './dto/credential-values.dto';
 import { CredentialService } from './credential.service';
+import { RolesGuard } from '../../roles.guard';
 
 const did = {
   did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
@@ -56,7 +57,10 @@ describe('Credential Controller', (): void => {
             useValue: new CredentialnServiceMock(),
           },
         ],
-      }).compile();
+      })
+      .overrideGuard(RolesGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
       credentialService = module.get<CredentialService>(CredentialService);
 
       credentialController = module.get<CredentialController>(
