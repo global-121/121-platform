@@ -20,11 +20,15 @@ export class AuthService {
   ) { }
 
   public isLoggedIn(): boolean {
-    if (!!this.jwtService.getToken()) {
+    if (this.jwtService.getToken()) {
       this.loggedIn = true;
     }
 
     return this.loggedIn;
+  }
+
+  public getUserRole(): string {
+    return this.jwtService.getTokenRole();
   }
 
   public async login(email: string, password: string) {

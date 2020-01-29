@@ -4,6 +4,7 @@ import { ProgramController } from './program.controller';
 import { ProgramService } from './program.service';
 import { ProgramEntity } from './program.entity';
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
+import { RolesGuard } from '../../roles.guard';
 
 const newProgramParameters = {
   location: 'Lilongwe',
@@ -88,7 +89,10 @@ describe('ProgramController', (): void => {
             useValue: new ProgramServiceMock(),
           },
         ],
-      }).compile();
+      })
+      .overrideGuard(RolesGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
       programService = module.get<ProgramService>(ProgramService);
       programController = module.get<ProgramController>(ProgramController);

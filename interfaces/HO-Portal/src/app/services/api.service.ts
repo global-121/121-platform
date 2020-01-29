@@ -29,7 +29,7 @@ export class ApiService {
   get(
     endpoint: string,
     path: string,
-    anonymous: boolean = true
+    anonymous: boolean = false
   ): Observable<any> {
     console.log(`ApiService GET: ${endpoint}${path} Anonymous? ${anonymous}`);
 

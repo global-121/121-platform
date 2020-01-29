@@ -1,3 +1,4 @@
+import { UserRole } from '../user-role.enum';
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
@@ -21,9 +22,9 @@ export class SeedInit implements InterfaceScript {
     await userRepository.save([
       {
         username: USERCONFIG.usernameAdmin,
-        role: 'admin',
+        role: UserRole.Admin,
         email: USERCONFIG.emailAdmin,
-        countryId: USERCONFIG.countryIdAdmin,
+        countryId: USERCONFIG.countryId,
         password: crypto
           .createHmac('sha256', USERCONFIG.passwordAdmin)
           .digest('hex'),
@@ -34,11 +35,37 @@ export class SeedInit implements InterfaceScript {
     await userRepository.save([
       {
         username: USERCONFIG.usernameAidWorker,
-        role: 'aidworker',
+        role: UserRole.Aidworker,
         email: USERCONFIG.emailAidWorker,
-        countryId: USERCONFIG.countryIdAidWorker,
+        countryId: USERCONFIG.countryId,
         password: crypto
           .createHmac('sha256', USERCONFIG.passwordAidWorker)
+          .digest('hex'),
+        status: 'active',
+      },
+    ]);
+
+    await userRepository.save([
+      {
+        username: USERCONFIG.usernameProgramManager,
+        role: UserRole.ProgramManager,
+        email: USERCONFIG.emailProgramManager,
+        countryId: USERCONFIG.countryId,
+        password: crypto
+          .createHmac('sha256', USERCONFIG.passwordProgramManager)
+          .digest('hex'),
+        status: 'active',
+      },
+    ]);
+
+    await userRepository.save([
+      {
+        username: USERCONFIG.usernamePrivacyOfficer,
+        role: UserRole.PrivacyOfficer,
+        email: USERCONFIG.emailPrivacyOfficer,
+        countryId: USERCONFIG.countryId,
+        password: crypto
+          .createHmac('sha256', USERCONFIG.passwordPrivacyOfficer)
           .digest('hex'),
         status: 'active',
       },

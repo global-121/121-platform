@@ -10,6 +10,8 @@ import {
   Query,
   Param,
   Controller,
+  UseGuards,
+  SetMetadata,
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto';
@@ -31,7 +33,12 @@ import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { PayoutDto } from './dto/payout.dto';
 import { ConnectionEntity } from 'src/sovrin/create-connection/connection.entity';
+import { RolesGuard } from '../../roles.guard';
+import { Roles } from '../../roles.decorator';
+import { UserRole } from '../../user-role.enum';
 
+@ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiUseTags('programs')
 @Controller('programs')
 export class ProgramController {
@@ -40,7 +47,6 @@ export class ProgramController {
     this.programService = programService;
   }
 
-  @ApiBearerAuth()
   @ApiOperation({ title: 'Get program by id' })
   @ApiImplicitParam({ name: 'id', required: true })
   @ApiResponse({ status: 200, description: 'Return program by id.' })
@@ -49,7 +55,7 @@ export class ProgramController {
     return await this.programService.findOne(params.id);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiOperation({ title: 'Get funds by programId' })
   @ApiImplicitParam({ name: 'id', required: true })
   @ApiResponse({ status: 200, description: 'Return funds by program id.' })
@@ -58,7 +64,6 @@ export class ProgramController {
     return await this.programService.getFunds(params.id);
   }
 
-  @ApiBearerAuth()
   @ApiOperation({ title: 'Get all programs' })
   @ApiImplicitQuery({ name: 'location', required: false })
   @ApiImplicitQuery({ name: 'countryId', required: false })
@@ -68,8 +73,8 @@ export class ProgramController {
     return await this.programService.findAll(query);
   }
 
-  @ApiOperation({ title: 'Get published programs by country id' })
   @ApiImplicitParam({ name: 'countryId', required: true, type: 'integer' })
+  @ApiOperation({ title: 'Get published programs by country id' })
   @ApiResponse({
     status: 200,
     description: 'Return all published programs by country',
@@ -79,7 +84,7 @@ export class ProgramController {
     return await this.programService.findByCountry(param.countryId);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Create program' })
   @ApiResponse({
     status: 201,
@@ -94,7 +99,7 @@ export class ProgramController {
     return this.programService.create(userId, programData);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Change program' })
   @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
   @ApiResponse({
@@ -111,7 +116,7 @@ export class ProgramController {
     return this.programService.update(params.id, programData);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Delete program' })
   @ApiResponse({
     status: 201,
@@ -124,7 +129,7 @@ export class ProgramController {
     return this.programService.delete(params.id);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.ProgramManager)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
   @Post('publish/:id')
@@ -132,7 +137,7 @@ export class ProgramController {
     return this.programService.publish(params.id);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.ProgramManager)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
   @Post('unpublish/:id')
@@ -165,6 +170,7 @@ export class ProgramController {
     );
   }
 
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Get all enrolled PAs in HO-portal' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -176,7 +182,10 @@ export class ProgramController {
     return await this.programService.getEnrolled(param.programId, false);
   }
 
-  @ApiOperation({ title: 'Get all enrolled PAs INCLUDING name/dob in HO-portal' })
+  @Roles(UserRole.PrivacyOfficer)
+  @ApiOperation({
+    title: 'Get all enrolled PAs INCLUDING name/dob in HO-portal',
+  })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
@@ -187,32 +196,23 @@ export class ProgramController {
     return await this.programService.getEnrolled(param.programId, true);
   }
 
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiOperation({ title: 'Include set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('include/:programId')
-  public async include(
-    @Param() params,
-    @Body() data: object,
-  ): Promise<void> {
-    await this.programService.include(
-      params.programId,
-      data,
-    );
+  public async include(@Param() params, @Body() data: object): Promise<void> {
+    await this.programService.include(params.programId, data);
   }
 
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiOperation({ title: 'Exclude set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('exclude/:programId')
-  public async exclude(
-    @Param() params,
-    @Body() data: object,
-  ): Promise<void> {
-    await this.programService.exclude(
-      params.programId,
-      data,
-    );
+  public async exclude(@Param() params, @Body() data: object): Promise<void> {
+    await this.programService.exclude(params.programId, data);
   }
 
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Send payout instruction to financial service provider' })
   @Post('payout')
   public async payout(
@@ -225,6 +225,7 @@ export class ProgramController {
     );
   }
 
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Get status of payout-installments' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -236,6 +237,7 @@ export class ProgramController {
     return await this.programService.getInstallments(param.programId);
   }
 
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiOperation({ title: 'Get total number of included per program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -247,7 +249,6 @@ export class ProgramController {
     return await this.programService.getTotalIncluded(param.programId);
   }
 
-
   @ApiOperation({ title: 'Get fsp' })
   @ApiImplicitParam({ name: 'fspId', required: true, type: 'integer' })
   @ApiResponse({
@@ -255,8 +256,9 @@ export class ProgramController {
     description: 'Fsp with attributes',
   })
   @Get('fsp/:fspId')
-  public async getFspById(@Param() param): Promise<FinancialServiceProviderEntity> {
+  public async getFspById(
+    @Param() param,
+  ): Promise<FinancialServiceProviderEntity> {
     return await this.programService.getFspById(param.fspId);
   }
-
 }

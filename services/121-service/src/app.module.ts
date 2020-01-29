@@ -48,8 +48,6 @@ import { LookupModule } from './notifications/lookup/lookup.module';
     SmsController,
     VoiceController,
     LookupController,
-    // CreateConnectionController,
-    // CredentialController,
   ],
   providers: [],
 })

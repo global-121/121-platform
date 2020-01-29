@@ -28,7 +28,7 @@
     ></app-program-funds>
 
   </section>
-  <section>
+  <section *ngIf="currentUserRole === userRoleEnum.ProgramManager ">
     <h2>{{ 'page.programs.program-details.section-payout'|translate }}</h2>
 
     <app-program-payout [programId]="program?.id"
@@ -39,11 +39,11 @@
   <section>
     <h2>{{ 'page.programs.program-details.section-people'|translate }}</h2>
 
-    <ion-button [routerLink]="['/program', program?.id, 'people']">
+    <ion-button *ngIf="currentUserRole === userRoleEnum.ProgramManager  " [routerLink]="['/program', program?.id, 'people']">
       {{ 'page.programs.program-details.manage-people'|translate }}
     </ion-button>
 
-    <ion-button [routerLink]="['/program', program?.id, 'people-privacy']">
+    <ion-button *ngIf="currentUserRole === userRoleEnum.PrivacyOfficer " [routerLink]="['/program', program?.id, 'people-privacy']">
       {{ 'page.programs.program-details.manage-people-privacy'|translate }}
     </ion-button>
 

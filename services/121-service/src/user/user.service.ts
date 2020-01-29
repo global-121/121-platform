@@ -180,6 +180,7 @@ export class UserService {
         id: user.id,
         username: user.username,
         email: user.email,
+        role: user.role,
         exp: exp.getTime() / 1000,
       },
       SECRET,

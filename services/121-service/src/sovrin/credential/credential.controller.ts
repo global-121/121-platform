@@ -16,6 +16,7 @@ import {
   ValidationPipe,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
@@ -23,7 +24,12 @@ import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
 import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialIssueDto } from './dto/credential-issue.dto';
 import { DeleteResult } from 'typeorm';
+import { RolesGuard } from '../../roles.guard';
+import { Roles } from '../../roles.decorator';
+import { UserRole } from '../../user-role.enum';
 
+@ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiUseTags('sovrin')
 @Controller('sovrin/credential')
 export class CredentialController {
@@ -61,6 +67,7 @@ export class CredentialController {
     );
   }
 
+  @Roles(UserRole.Aidworker)
   @ApiOperation({ title: 'Get prefilled answers (for AW)' })
   @ApiResponse({ status: 200, description: 'Prefilled answers received' })
   @ApiImplicitParam({
@@ -85,6 +92,7 @@ export class CredentialController {
     );
   }
 
+  @Roles(UserRole.Aidworker)
   @ApiOperation({
     title: 'Delete prefilled answers (for AW, after issuing credential)',
   })
@@ -120,10 +128,9 @@ export class CredentialController {
     return await this.credentialService.request(credRequest);
   }
 
-  @ApiBearerAuth()
+  @Roles(UserRole.Aidworker)
   @ApiOperation({ title: 'Issue credentials (For AW)' })
   @ApiResponse({ status: 200, description: 'Credentials issued' })
-  @UsePipes(new ValidationPipe())
   @Post('/issue')
   public async issue(
     @Body() credentialIssue: CredentialIssueDto,
@@ -131,7 +138,7 @@ export class CredentialController {
     return await this.credentialService.issue(credentialIssue);
   }
 
-  @ApiOperation({ title: 'Get credentials (For AP)' })
+  @ApiOperation({ title: 'Get credentials (For PA)' })
   @ApiResponse({ status: 200, description: 'Credentials sent' })
   @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
   @Get(':did')
@@ -139,7 +146,7 @@ export class CredentialController {
     return await this.credentialService.get(params.did);
   }
 
-  @ApiOperation({ title: 'Delete credentials (For AP)' })
+  @ApiOperation({ title: 'Delete credentials (For PA)' })
   @ApiResponse({ status: 200, description: 'Credentials deleted' })
   @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
   @Delete(':did')
