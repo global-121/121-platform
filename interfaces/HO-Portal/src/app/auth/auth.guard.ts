@@ -18,7 +18,7 @@ export class AuthGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     const url: string = state.url;
-    const currentUserRole = this.authService.userRole;
+    const currentUserRole = this.authService.getUserRole();
     console.log('currentUserRole: ', currentUserRole);
 
     return this.checkLogin(url, currentUserRole, next);

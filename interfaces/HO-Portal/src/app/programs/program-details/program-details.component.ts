@@ -47,7 +47,7 @@ export class ProgramDetailsComponent implements OnInit {
     this.program = await this.programsService.getProgramById(programId);
     this.programTitle = this.mapLabelByLanguageCode(this.program.title);
     this.programArray = this.generateArray(this.program);
-    this.currentUserRole = this.authService.userRole;
+    this.currentUserRole = this.authService.getUserRole();
   }
 
   public generateArray(obj) {
