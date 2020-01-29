@@ -35,7 +35,7 @@ import { PayoutDto } from './dto/payout.dto';
 import { ConnectionEntity } from 'src/sovrin/create-connection/connection.entity';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
-import { UserRole } from '../../user-roles.enum';
+import { UserRole } from '../../user-role.enum';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -55,7 +55,7 @@ export class ProgramController {
     return await this.programService.findOne(params.id);
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiOperation({ title: 'Get funds by programId' })
   @ApiImplicitParam({ name: 'id', required: true })
   @ApiResponse({ status: 200, description: 'Return funds by program id.' })

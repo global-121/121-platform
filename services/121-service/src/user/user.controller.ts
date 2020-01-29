@@ -26,7 +26,7 @@ import {
 import { DeleteResult } from 'typeorm';
 import { RolesGuard } from '../roles.guard';
 import { Roles } from '../roles.decorator';
-import { UserRole } from '../user-roles.enum';
+import { UserRole } from '../user-role.enum';
 
 
 @ApiBearerAuth()

@@ -1,4 +1,4 @@
-import { UserRole } from './../user-roles.enum';
+import { UserRole } from '../user-role.enum';
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
