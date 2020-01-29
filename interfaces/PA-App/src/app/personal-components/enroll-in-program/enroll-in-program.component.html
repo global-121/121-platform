@@ -17,7 +17,7 @@
   <dialogue-turn actor="self"
                  *ngFor="let question of questions; let i=index; first as isFirst;"
                 [isConnected]="!isFirst"
-                [isSpoken]="isFirst || hasAnswered || changedAnswers"
+                [isSpoken]="isFirst || hasAnswered || hasChangedAnswers"
   >
     <ion-label>
       {{ question.label }}
@@ -25,7 +25,8 @@
     <div [ngSwitch]="question.answerType">
       <div *ngSwitchCase="answerTypes.Enum">
         <ion-radio-group [name]="question.code"
-                         (ionChange)="changeAnswers($event)"
+                         (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                         debounce="100"
         >
           <ion-item *ngFor="let option of question.options"
                     color="light"
@@ -43,28 +44,29 @@
                    inputmode="numeric"
                    pattern="[0-9]*"
                    [name]="question.code"
-                   (ionInput)="inputAnswers($event)"
-                   (change)="changeAnswers($event)"
                    [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
+                   (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                   debounce="300"
         ></ion-input>
       </div>
       <div *ngSwitchCase="answerTypes.Date">
         <ion-input type="date"
                    placeholder="dd-mm-yyyy"
                    [name]="question.code"
-                   (change)="changeAnswers($event)"
                    [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
+                   (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                   debounce="100"
         ></ion-input>
       </div>
       <div *ngSwitchDefault>
         <ion-input type="text"
                    [name]="question.code"
-                   (ionInput)="inputAnswers($event)"
-                   (change)="changeAnswers($event)"
                    [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
+                   (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                   debounce="300"
         ></ion-input>
       </div>
     </div>
@@ -127,7 +129,7 @@
         {{ 'personal.enroll-in-program.submit-confirm'|translate }}
       </ion-button>
       <ion-button type="button"
-                  (click)="change()"
+                  (click)="changeAnswers()"
                   [disabled]="isDisabled"
                   expand="block"
                   fill="outline"

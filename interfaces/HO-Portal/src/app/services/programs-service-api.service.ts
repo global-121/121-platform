@@ -8,6 +8,7 @@ import { ApiService } from './api.service';
 import { Program } from '../models/program.model';
 import { ProgramFunds } from '../models/program-funds.model';
 import { Person } from '../models/person.model';
+import { PastInstallments } from '../models/past-installments.model';
 
 @Injectable({
   providedIn: 'root',
@@ -72,12 +73,22 @@ export class ProgramsServiceApiService {
     ).toPromise();
   }
 
-  submitPayout(programId: number, amount: number): Promise<any> {
+  getPastInstallments(programId: number | string): Promise<PastInstallments[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/installments/${programId}`,
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
+  submitPayout(programId: number, installment: number, amount: number): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/payout`,
       {
         programId,
+        installment,
         amount,
       },
     ).pipe(

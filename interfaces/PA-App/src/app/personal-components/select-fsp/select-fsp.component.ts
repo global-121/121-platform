@@ -11,11 +11,11 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 
 
 @Component({
-  selector: 'app-payment-method',
-  templateUrl: './payment-method.component.html',
-  styleUrls: ['./payment-method.component.scss'],
+  selector: 'app-select-fsp',
+  templateUrl: './select-fsp.component.html',
+  styleUrls: ['./select-fsp.component.scss'],
 })
-export class PaymentMethodComponent extends PersonalComponent {
+export class SelectFspComponent extends PersonalComponent {
   @Input()
   public data: any;
 
@@ -26,8 +26,10 @@ export class PaymentMethodComponent extends PersonalComponent {
   public fspChoice: number;
   public chosenFsp: Fsp;
   public fspSubmitted: boolean;
-  public fspChoiceWithDetails: Fsp;
 
+  public customAttributes: any[];
+  public customAttributeAnswers: any = {};
+  public hasAnsweredAll: boolean;
 
   constructor(
     public conversationService: ConversationService,
@@ -37,7 +39,9 @@ export class PaymentMethodComponent extends PersonalComponent {
     super();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.program = await this.paData.getCurrentProgram();
+
     if (this.data) {
       this.initHistory();
       return;
@@ -48,7 +52,6 @@ export class PaymentMethodComponent extends PersonalComponent {
 
   async initNew() {
     this.conversationService.startLoading();
-    await this.getProgram();
     this.fsps = this.program.financialServiceProviders;
     this.did = await this.paData.retrieve(this.paData.type.did);
     this.conversationService.stopLoading();
@@ -60,15 +63,9 @@ export class PaymentMethodComponent extends PersonalComponent {
     this.chosenFsp = this.data.fsp;
     this.fspChoice = this.data.fsp.id;
     this.fsps = [this.data.fsp];
-    await this.getProgram();
-  }
-
-  private async getProgram() {
-    this.program = await this.paData.getCurrentProgram();
-  }
-
-  private storeFsp(chosenFsp: any) {
-    this.paData.store(this.paData.type.fsp, chosenFsp);
+    this.customAttributes = this.getCustomAttributes();
+    this.customAttributeAnswers = this.data.customAttributeAnswers;
+    this.checkAnsweredAll();
   }
 
   private getFspById(fspId: number) {
@@ -84,53 +81,66 @@ export class PaymentMethodComponent extends PersonalComponent {
     this.fspSubmitted = false;
 
     this.chosenFsp = this.getFspById(this.fspChoice);
-    this.storeFsp(this.chosenFsp);
+    this.paData.store(this.paData.type.fsp, this.chosenFsp);
   }
 
   public async submitFsp() {
     this.fspSubmitted = true;
-    this.programsService.postFsp(this.did, this.fspChoice).subscribe(() => {
-      this.setCustomAttribute();
-    });
-  }
 
-  private async setCustomAttribute() {
-    this.fspChoiceWithDetails = await this.programsService.getFspById(this.fspChoice);
-    if (this.fspChoiceWithDetails.attributes.length > 0) {
-      const customValue = await this.askCustomAttribute();
-      await this.submitCustomAttribute(customValue);
-    }
+    this.programsService.postFsp(this.did, this.fspChoice);
 
-    this.complete();
-  }
+    // Update FSPs with more details:
+    this.chosenFsp = await this.programsService.getFspById(this.fspChoice);
 
-  private async askCustomAttribute(): Promise<string> {
-    if (this.fspChoiceWithDetails.attributes[0].name === 'phoneNumber') {
-      const phoneNumber = '+1234567890';
-      await this.paData.store(this.paData.type.phoneNumber, phoneNumber);
-      return phoneNumber;
-    } else if (this.fspChoiceWithDetails.attributes[0].name === 'idNumber') {
-      return 'NL:999999990';
+    this.customAttributes = this.getCustomAttributes();
+
+    if (!this.customAttributes.length) {
+      return this.complete();
     }
   }
 
+  private getCustomAttributes() {
+    return (this.chosenFsp.attributes.length > 0) ? this.chosenFsp.attributes : [];
+  }
 
+  public onCustomAttributeChange($eventTarget) {
+    const questionKey = $eventTarget.name;
+    const answerValue = $eventTarget.value;
 
-  private async submitCustomAttribute(customValue: string) {
-    console.log('customValue: ', customValue);
-    const customKey = this.fspChoiceWithDetails.attributes[0].name;
-    this.programsService.postConnectionCustomAttribute(this.did, customKey, customValue).subscribe(() => {
-      console.log('postConnectionCustomAttribute');
+    this.customAttributeAnswers[questionKey] = {
+      key: questionKey,
+      value: answerValue,
+    };
+
+    this.checkAnsweredAll();
+  }
+
+  private checkAnsweredAll() {
+    this.hasAnsweredAll = (this.customAttributes.length === this.customAttributeAnswers.length);
+
+    return this.hasAnsweredAll;
+  }
+
+  public submitCustomAttributes() {
+    let answersSubmitted = 0;
+
+    this.customAttributeAnswers.forEach(async (answer) => {
+      await this.programsService.postConnectionCustomAttribute(this.did, answer.name, answer.value);
+      answersSubmitted++;
     });
+
+    if (answersSubmitted === this.customAttributes.length) {
+      this.complete();
+    }
   }
 
   getNextSection() {
-    return PersonalComponents.selectAppointment;
+    return PersonalComponents.setNotificationNumber;
   }
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.paymentMethod,
+      name: PersonalComponents.selectFsp,
       data: {
         fsp: this.chosenFsp,
       },

@@ -1,19 +1,20 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PaymentMethodComponent } from './payment-method.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('PaymentMethodComponent', () => {
-  let component: PaymentMethodComponent;
-  let fixture: ComponentFixture<PaymentMethodComponent>;
+import { SetNotificationNumberComponent } from './set-notification-number.component';
+
+describe('SetNotificationNumberComponent', () => {
+  let component: SetNotificationNumberComponent;
+  let fixture: ComponentFixture<SetNotificationNumberComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [PaymentMethodComponent],
+      declarations: [SetNotificationNumberComponent],
       imports: [
         TranslateModule.forRoot(),
         HttpClientTestingModule
@@ -30,7 +31,7 @@ describe('PaymentMethodComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PaymentMethodComponent);
+    fixture = TestBed.createComponent(SetNotificationNumberComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

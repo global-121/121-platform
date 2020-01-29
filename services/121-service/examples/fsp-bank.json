@@ -7,7 +7,7 @@
         "en": "What is your national ID, so we can transfer money to your bank account"
       },
       "answerType": "text",
-      "option": null
+      "options": null
     }
   ]
 }

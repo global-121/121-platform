@@ -8,11 +8,11 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-phone-number',
-  templateUrl: './phone-number.component.html',
-  styleUrls: ['./phone-number.component.scss'],
+  selector: 'app-set-notification-number',
+  templateUrl: './set-notification-number.component.html',
+  styleUrls: ['./set-notification-number.component.scss'],
 })
-export class PhoneNumberComponent extends PersonalComponent {
+export class SetNotificationNumberComponent extends PersonalComponent {
   @Input()
   public data: any;
 
@@ -38,6 +38,12 @@ export class PhoneNumberComponent extends PersonalComponent {
   }
 
   async ngOnInit() {
+    await this.checkExistingPhoneNumber();
+
+    if (this.isCanceled) {
+      return;
+    }
+
     this.ngo = await this.getNgo();
 
     if (this.data) {
@@ -51,10 +57,13 @@ export class PhoneNumberComponent extends PersonalComponent {
   async initNew() {
     this.languageCode = this.translate.currentLang;
     this.did = await this.paData.retrieve(this.paData.type.did);
-    this.phoneNumber = await this.paData.retrieve(this.paData.type.phoneNumber);
   }
 
   initHistory() {
+    if (this.data.isCanceled) {
+      return this.cancel();
+    }
+
     this.isDisabled = true;
     this.choiceMade = true;
     this.phoneSkipped = this.data.phoneSkipped;
@@ -64,6 +73,14 @@ export class PhoneNumberComponent extends PersonalComponent {
   async getNgo() {
     const currentProgram = await this.paData.getCurrentProgram();
     return currentProgram.ngo;
+  }
+
+  private async checkExistingPhoneNumber() {
+    this.phoneNumber = await this.paData.retrieve(this.paData.type.phoneNumber);
+
+    if (this.phoneNumber) {
+      return this.cancel();
+    }
   }
 
   public async submitPhoneNumber(phone: any) {
@@ -95,10 +112,21 @@ export class PhoneNumberComponent extends PersonalComponent {
   complete() {
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.phoneNumber,
+      name: PersonalComponents.setNotificationNumber,
       data: {
         phoneSkipped: this.phoneSkipped,
         phoneNumber: this.phoneNumber,
+      },
+      next: this.getNextSection(),
+    });
+  }
+
+  cancel() {
+    this.isCanceled = true;
+    this.conversationService.onSectionCompleted({
+      name: PersonalComponents.setNotificationNumber,
+      data: {
+        isCanceled: this.isCanceled,
       },
       next: this.getNextSection(),
     });

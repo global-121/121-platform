@@ -13,5 +13,6 @@ export enum PaDataTypes {
   programId = 'programId',
   phoneNumber = 'phoneNumber',
   timeslot = 'timeslotChoice',
+  username = 'username',
   wallet = 'wallet',
 }

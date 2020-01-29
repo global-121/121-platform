@@ -14,6 +14,12 @@
   margin: auto;
 }
 
+// Additional text-utility
+.ion-text-ellipsis {
+  overflow:hidden;
+  text-overflow: ellipsis;
+}
+
 // ----------------------------------------------------------------------------
 
 // Override default styles to emphasize where to input
@@ -21,6 +27,11 @@
 *:not(ion-item) > ion-input,
 ion-textarea {
   --background: #dfe5fe !important;
+}
+
+// Reset to normal color:
+password-toggle-input ion-input {
+  --background: transparent !important;
 }
 
 

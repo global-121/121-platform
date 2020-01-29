@@ -5,10 +5,16 @@
               (click)="logout()"
               detail="true"
               detail-icon="log-out"
+              class="ion-text-nowrap"
     >
-      {{ 'account.logout'|translate }}
+      <ion-text>
+        {{ 'account.logout'|translate }}
+      </ion-text>
+      <ion-text class="ion-margin-start ion-text-ellipsis">
+        <strong>{{ username }}</strong>
+      </ion-text>
     </ion-item>
-    <ion-item button="true" 
+    <ion-item button="true"
               disabled
               detail="true"
               detail-icon="key"

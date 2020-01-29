@@ -23,6 +23,11 @@ export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterC
   isDisabled: boolean;
 
   /**
+   * When the component should be considered 'not there'.
+   */
+  isCanceled: boolean;
+
+  /**
    * Timestamp of when the component was completed
    */
   moment: number;

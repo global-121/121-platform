@@ -9,7 +9,7 @@ import { ProgramEntity } from './program.entity';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 
-@Entity('transation')
+@Entity('transaction')
 export class TransactionEntity {
   @PrimaryGeneratedColumn()
   public id: number;
@@ -25,6 +25,9 @@ export class TransactionEntity {
 
   @ManyToOne(_type => ProgramEntity, program => program.transactions)
   public program: ProgramEntity;
+
+  @Column({ default: 1 })
+  public installment: number;
 
   @ManyToOne(_type => FinancialServiceProviderEntity, financialServiceProvider => financialServiceProvider.transactions)
   public financialServiceProvider: FinancialServiceProviderEntity;
