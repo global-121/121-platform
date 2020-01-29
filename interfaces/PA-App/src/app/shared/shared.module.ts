@@ -8,12 +8,14 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
 import { MoreInfoButtonComponent } from './more-info-button/more-info-button.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
+import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
 
 @NgModule({
   declarations: [
     DialogueTurnComponent,
     MoreInfoButtonComponent,
     PasswordToggleInputComponent,
+    QAndASetComponent,
   ],
   imports: [
     CommonModule,
@@ -25,6 +27,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     DialogueTurnComponent,
     MoreInfoButtonComponent,
     PasswordToggleInputComponent,
+    QAndASetComponent,
     TranslateModule,
   ],
 })

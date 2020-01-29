@@ -1,0 +1,74 @@
+
+<dialogue-turn actor="self"
+               *ngFor="let question of questions; let i=index; first as isFirst;"
+               [isConnected]="!isFirst"
+               [isSpoken]="isFirst || isSubmitted || isEditing"
+>
+  <ion-label>
+    {{ question.label }}
+  </ion-label>
+  <div [ngSwitch]="question.answerType">
+    <div *ngSwitchCase="answerType.Enum">
+      <ion-radio-group [name]="question.code"
+                       (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                       debounce="100"
+      >
+        <ion-item *ngFor="let option of question.options"
+                  color="light"
+                  lines="full"
+        >
+          <ion-label>{{ option.label }}</ion-label>
+          <ion-radio [value]="option.value"
+                     [checked]="(option.value === answers[question.code]?.value)"
+                     [disabled]="isSubmitted"
+          ></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+    </div>
+    <div *ngSwitchCase="answerType.Number">
+      <ion-input type="number"
+                 inputmode="numeric"
+                 pattern="[0-9]*"
+                 [name]="question.code"
+                 [value]="answers[question.code]?.value"
+                 [disabled]="isSubmitted"
+                 (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                 debounce="300"
+      ></ion-input>
+    </div>
+    <div *ngSwitchCase="answerType.Date">
+      <ion-input type="date"
+                 placeholder="dd-mm-yyyy"
+                 [name]="question.code"
+                 [value]="answers[question.code]?.value"
+                 [disabled]="isSubmitted"
+                 (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                 debounce="100"
+      ></ion-input>
+    </div>
+    <div *ngSwitchDefault>
+      <ion-input type="text"
+                 [name]="question.code"
+                 [value]="answers[question.code]?.value"
+                 [disabled]="isSubmitted"
+                 (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                 debounce="300"
+      ></ion-input>
+    </div>
+  </div>
+</dialogue-turn>
+<dialogue-turn actor="self"
+               isConnected="true"
+               *ngIf="allQuestionsShown"
+               [isSpoken]="allQuestionsShown"
+>
+  <p>
+    <ion-button type="submit"
+                (click)="doSubmit()"
+                [disabled]="isSubmitted"
+                expand="block"
+    >
+      {{ submitLabel }}
+    </ion-button>
+  </p>
+</dialogue-turn>
