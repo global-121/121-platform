@@ -25,7 +25,8 @@
     <div [ngSwitch]="question.answerType">
       <div *ngSwitchCase="answerTypes.Enum">
         <ion-radio-group [name]="question.code"
-                         (ionChange)="changeAnswers($event)"
+                         (ionChange)="changeAnswers(question.code,$event.target.value)"
+                         debounce="100"
         >
           <ion-item *ngFor="let option of question.options"
                     color="light"
@@ -45,7 +46,7 @@
                    [name]="question.code"
                    [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
-                   (ionChange)="changeAnswers($event)"
+                   (ionChange)="changeAnswers(question.code,$event.target.value)"
                    debounce="300"
         ></ion-input>
       </div>
@@ -55,8 +56,8 @@
                    [name]="question.code"
                    [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
-                   (ionChange)="changeAnswers($event)"
-                   debounce="300"
+                   (ionChange)="changeAnswers(question.code,$event.target.value)"
+                   debounce="100"
         ></ion-input>
       </div>
       <div *ngSwitchDefault>
@@ -64,7 +65,7 @@
                    [name]="question.code"
                    [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
-                   (ionChange)="changeAnswers($event)"
+                   (ionChange)="changeAnswers(question.code,$event.target.value)"
                    debounce="300"
         ></ion-input>
       </div>

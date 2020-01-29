@@ -178,10 +178,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return option ? option.label : '';
   }
 
-  public changeAnswers($event) {
-    const questionCode = $event.target.name;
-    const answerValue = $event.target.value;
-
+  public changeAnswers(questionCode: string, answerValue: string) {
     const question = this.getQuestionByCode(questionCode);
     const answer: Answer = {
       code: questionCode,
