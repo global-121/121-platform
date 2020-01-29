@@ -9,6 +9,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { Program } from 'src/app/models/program.model';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
+import { AnswerType, Question, QuestionOption, Answer } from '../../models/q-and-a.models';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -312,30 +313,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 }
 
-class Question {
-  id: number;
-  code: string;
-  answerType: AnswerType;
-  label: string;
-  options: QuestionOption[];
-}
-enum AnswerType {
-  // Translate the types used in the API to internal, proper types:
-  Number = 'numeric',
-  Text = 'text',
-  Date = 'date',
-  Enum = 'dropdown',
-}
-class QuestionOption {
-  id: number;
-  value: string;
-  label: string;
-}
-class Answer {
-  code: string;
-  value: string;
-  label: string;
-}
 class Attribute {
   attributeId: number;
   attribute: string;
