@@ -35,7 +35,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public allQuestionsShown = false;
   public hasAnswered: boolean;
-  public changedAnswers: boolean;
+  public hasChangedAnswers: boolean;
   public dobFeedback = false;
 
   constructor(
@@ -67,7 +67,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.allQuestionsShown = this.checkAllQuestionsShown(this.questions, Object.keys(this.data.answers));
     this.answers = this.data.answers;
     this.hasAnswered = true;
-    this.changedAnswers = false;
+    this.hasChangedAnswers = false;
   }
 
   initNew() {
@@ -213,7 +213,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public changeAnswers() {
     this.hasAnswered = false;
-    this.changedAnswers = true;
+    this.hasChangedAnswers = true;
   }
 
   public submit() {
@@ -222,7 +222,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
       return;
     }
     this.hasAnswered = true;
-    this.changedAnswers = false;
+    this.hasChangedAnswers = false;
     this.dobFeedback = false;
     this.conversationService.scrollToEnd();
     this.paData.saveAnswers(this.programId, this.answers);
