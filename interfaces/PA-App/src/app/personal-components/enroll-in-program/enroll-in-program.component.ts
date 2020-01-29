@@ -6,7 +6,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
-import { Program } from 'src/app/models/program.model';
+import { Program, ProgramAttribute } from 'src/app/models/program.model';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { AnswerType, Question, QuestionOption, Answer } from '../../models/q-and-a.models';
@@ -276,7 +276,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.paData.store(this.paData.type.programId, this.programId);
   }
 
-  private createAttributes(answers: Answer[]): Attribute[] {
+  private createAttributes(answers: Answer[]): ProgramAttribute[] {
     const attributes = [];
 
     answers.forEach((item: Answer) => {
@@ -311,10 +311,4 @@ export class EnrollInProgramComponent extends PersonalComponent {
       next: this.getNextSection(),
     });
   }
-}
-
-class Attribute {
-  attributeId: number;
-  attribute: string;
-  answer: string;
 }

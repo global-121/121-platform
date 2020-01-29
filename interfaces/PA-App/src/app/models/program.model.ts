@@ -13,3 +13,9 @@ export class Program {
   financialServiceProviders: Fsp[];
   credDefId: string;
 }
+
+export class ProgramAttribute {
+  attributeId: number;
+  attribute: string;
+  answer: string;
+}
