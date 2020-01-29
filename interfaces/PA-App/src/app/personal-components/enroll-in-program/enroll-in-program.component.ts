@@ -9,7 +9,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { Program, ProgramAttribute } from 'src/app/models/program.model';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { AnswerType, Question, QuestionOption, Answer } from '../../models/q-and-a.models';
+import { AnswerType, Question, QuestionOption, Answer, AnswerSet } from '../../models/q-and-a.models';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -32,7 +32,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public questions: Question[];
   public answerTypes = AnswerType;
 
-  public answers: any = {};
+  public answers: AnswerSet = {};
 
   public allQuestionsShown = false;
   public hasAnswered: boolean;
@@ -277,7 +277,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private createAttributes(answers: Answer[]): ProgramAttribute[] {
-    const attributes = [];
+    const attributes: ProgramAttribute[] = [];
 
     answers.forEach((item: Answer) => {
       attributes.push({

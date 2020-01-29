@@ -25,3 +25,7 @@ export class Answer {
   value: string;
   label: string;
 }
+
+export class AnswerSet {
+  [_: string]: Answer,
+}
