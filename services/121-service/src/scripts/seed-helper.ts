@@ -6,9 +6,26 @@ import { UserEntity } from '../user/user.entity';
 import { CustomCriterium } from '../programs/program/custom-criterium.entity';
 import { FspAttributeEntity } from './../programs/fsp/fsp-attribute.entity';
 import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
+import crypto from 'crypto';
 
 export class SeedHelper {
   public constructor(private connection: Connection) { }
+
+  public async addUser(userInput: any) {
+    const userRepository = this.connection.getRepository(UserEntity);
+    await userRepository.save([
+      {
+        username: userInput.username,
+        role: userInput.role,
+        email: userInput.email,
+        countryId: userInput.countryId,
+        password: crypto
+          .createHmac('sha256', userInput.password)
+          .digest('hex'),
+        status: 'active',
+      },
+    ]);
+  }
 
   public async addPrograms(examplePrograms: Object[], authorId: number) {
     const programRepository = this.connection.getRepository(ProgramEntity);

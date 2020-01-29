@@ -17,6 +17,8 @@ import { ProtectionServiceProviderEntity } from '../programs/program/protection-
 
 import programAnonymousExample1 from '../../examples/program-anonymous1.json';
 import programAnonymousExample2 from '../../examples/program-anonymous2.json';
+import { USERCONFIG } from '../secrets';
+import { UserRole } from '../user-role.enum';
 
 @Injectable()
 export class SeedMvp implements InterfaceScript {
@@ -28,6 +30,31 @@ export class SeedMvp implements InterfaceScript {
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.connection);
     await seedInit.run();
+
+    await this.seedHelper.addUser( {
+      username: USERCONFIG.usernameAidWorker,
+      role: UserRole.Aidworker,
+      email: USERCONFIG.emailAidWorker,
+      countryId: USERCONFIG.countryId,
+      password: USERCONFIG.passwordAidWorker
+    });
+
+    await this.seedHelper.addUser( {
+      username: USERCONFIG.usernameProgramManager,
+      role: UserRole.ProgramManager,
+      email: USERCONFIG.emailProgramManager,
+      countryId: USERCONFIG.countryId,
+      password: USERCONFIG.passwordProgramManager
+    });
+
+    await this.seedHelper.addUser( {
+      username: USERCONFIG.usernamePrivacyOfficer,
+      role: UserRole.PrivacyOfficer,
+      email: USERCONFIG.emailPrivacyOfficer,
+      countryId: USERCONFIG.countryId,
+      password: USERCONFIG.passwordPrivacyOfficer
+    });
+
 
     // ***** CREATE COUNTRIES *****
     const countryRepository = this.connection.getRepository(CountryEntity);
