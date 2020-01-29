@@ -178,7 +178,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return option ? option.label : '';
   }
 
-  public changeAnswers(questionCode: string, answerValue: string) {
+  public onAnswerChange(questionCode: string, answerValue: string) {
     const question = this.getQuestionByCode(questionCode);
     const answer: Answer = {
       code: questionCode,
@@ -211,7 +211,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return (answers.length >= (questions.length - 1));
   }
 
-  public change() {
+  public changeAnswers() {
     this.hasAnswered = false;
     this.changedAnswers = true;
   }
