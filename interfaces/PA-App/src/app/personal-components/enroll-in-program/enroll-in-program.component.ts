@@ -178,16 +178,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return option ? option.label : '';
   }
 
-  public inputAnswers($event) {
-    const questionCode = $event.target.name;
-
-    // Fill this.answers with an empty answer. For this functionality, the actual answer is not yet needed.
-    this.answers[questionCode] = new Answer();
-    const answersArray = Object.keys(this.answers);
-
-    this.showNextQuestion(answersArray.indexOf(questionCode));
-  }
-
   public changeAnswers($event) {
     const questionCode = $event.target.name;
     const answerValue = $event.target.value;

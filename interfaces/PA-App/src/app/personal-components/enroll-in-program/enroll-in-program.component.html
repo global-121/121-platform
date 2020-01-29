@@ -43,28 +43,29 @@
                    inputmode="numeric"
                    pattern="[0-9]*"
                    [name]="question.code"
-                   (ionInput)="inputAnswers($event)"
-                   (change)="changeAnswers($event)"
                    [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
+                   (ionChange)="changeAnswers($event)"
+                   debounce="300"
         ></ion-input>
       </div>
       <div *ngSwitchCase="answerTypes.Date">
         <ion-input type="date"
                    placeholder="dd-mm-yyyy"
                    [name]="question.code"
-                   (change)="changeAnswers($event)"
                    [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
+                   (ionChange)="changeAnswers($event)"
+                   debounce="300"
         ></ion-input>
       </div>
       <div *ngSwitchDefault>
         <ion-input type="text"
                    [name]="question.code"
-                   (ionInput)="inputAnswers($event)"
-                   (change)="changeAnswers($event)"
                    [value]="answers[question.code]?.value"
                    [disabled]="hasAnswered"
+                   (ionChange)="changeAnswers($event)"
+                   debounce="300"
         ></ion-input>
       </div>
     </div>
