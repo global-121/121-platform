@@ -129,7 +129,8 @@ export class ProgramPayoutComponent implements OnChanges {
           this.payoutResult(this.translate.instant('page.programs.program-payout.payout-success'));
           this.createInstallments(this.programId);
         },
-        () => {
+        (err) => {
+          console.log('err: ', err);
           this.payoutResult(this.translate.instant('page.programs.program-payout.payout-error'));
           this.cancelPayout(installment);
         }
