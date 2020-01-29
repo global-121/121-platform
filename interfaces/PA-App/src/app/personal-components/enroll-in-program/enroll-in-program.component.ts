@@ -64,7 +64,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.isDisabled = true;
     this.currentProgram = this.data.currentProgram;
     this.prepareProgramDetails(this.data.currentProgram);
-    this.checkAllQuestionsShown(this.questions, Object.keys(this.data.answers));
+    this.allQuestionsShown = this.checkAllQuestionsShown(this.questions, Object.keys(this.data.answers));
     this.answers = this.data.answers;
     this.hasAnswered = true;
     this.changedAnswers = false;
@@ -195,7 +195,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     const answersArray = Object.keys(this.answers);
 
-    this.checkAllQuestionsShown(this.questions, answersArray);
+    this.allQuestionsShown = this.checkAllQuestionsShown(this.questions, answersArray);
 
     this.showNextQuestion(answersArray.indexOf(questionCode));
   }
@@ -208,11 +208,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private checkAllQuestionsShown(questions: Question[], answers: string[]) {
-    if (answers.length >= (questions.length - 1)) {
-      this.allQuestionsShown = true;
-    } else {
-      this.allQuestionsShown = false;
-    }
+    return (answers.length >= (questions.length - 1));
   }
 
   public change() {
