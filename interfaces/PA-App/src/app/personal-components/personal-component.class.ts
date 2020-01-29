@@ -82,17 +82,6 @@ export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterC
   }
 
   /**
-   * Show a specific, previously hidden, Dialogue-Turn
-   */
-  showTurnByIndex(index: number) {
-    const turn = this.turns.toArray()[index];
-
-    if (turn) {
-      turn.show();
-    }
-  }
-
-  /**
    * Provide the name of the next section to be loaded/shown.
    * This can contain logic to base the decision on user input, etc.
    */

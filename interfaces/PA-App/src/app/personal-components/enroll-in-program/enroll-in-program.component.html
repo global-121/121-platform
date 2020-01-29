@@ -14,78 +14,14 @@
       </more-info-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self"
-                 *ngFor="let question of questions; let i=index; first as isFirst;"
-                [isConnected]="!isFirst"
-                [isSpoken]="isFirst || hasAnswered || hasChangedAnswers"
-  >
-    <ion-label>
-      {{ question.label }}
-    </ion-label>
-    <div [ngSwitch]="question.answerType">
-      <div *ngSwitchCase="answerTypes.Enum">
-        <ion-radio-group [name]="question.code"
-                         (ionChange)="onAnswerChange(question.code,$event.target.value)"
-                         debounce="100"
-        >
-          <ion-item *ngFor="let option of question.options"
-                    color="light"
-          >
-            <ion-label>{{ option.label }}</ion-label>
-            <ion-radio [value]="option.value"
-                       [checked]="(option.value === answers[question.code]?.value)"
-                       [disabled]="hasAnswered"
-            ></ion-radio>
-          </ion-item>
-        </ion-radio-group>
-      </div>
-      <div *ngSwitchCase="answerTypes.Number">
-        <ion-input type="number"
-                   inputmode="numeric"
-                   pattern="[0-9]*"
-                   [name]="question.code"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="hasAnswered"
-                   (ionChange)="onAnswerChange(question.code,$event.target.value)"
-                   debounce="300"
-        ></ion-input>
-      </div>
-      <div *ngSwitchCase="answerTypes.Date">
-        <ion-input type="date"
-                   placeholder="dd-mm-yyyy"
-                   [name]="question.code"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="hasAnswered"
-                   (ionChange)="onAnswerChange(question.code,$event.target.value)"
-                   debounce="100"
-        ></ion-input>
-      </div>
-      <div *ngSwitchDefault>
-        <ion-input type="text"
-                   [name]="question.code"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="hasAnswered"
-                   (ionChange)="onAnswerChange(question.code,$event.target.value)"
-                   debounce="300"
-        ></ion-input>
-      </div>
-    </div>
-  </dialogue-turn>
-  <dialogue-turn actor="self"
-                 isConnected="true"
-                 *ngIf="allQuestionsShown"
-                 [isSpoken]="allQuestionsShown"
-  >
-    <p>
-      <ion-button type="submit"
-                  (click)="submit()"
-                  [disabled]="hasAnswered"
-                  expand="block"
-      >
-        {{ 'personal.enroll-in-program.submit'|translate }}
-      </ion-button>
-    </p>
-  </dialogue-turn>
+
+  <q-and-a-set [questions]="questions"
+               [(isSubmitted)]="hasAnswered"
+               [(isEditing)]="hasChangedAnswers"
+               (submit)="submit($event)"
+               [submitLabel]="'personal.enroll-in-program.submit'|translate"
+  ></q-and-a-set>
+
   <dialogue-turn [actor]="programDetails?.ngo"
                  *ngIf="dobFeedback"
                  [isSpoken]="dobFeedback"

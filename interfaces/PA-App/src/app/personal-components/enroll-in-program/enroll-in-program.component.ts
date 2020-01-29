@@ -9,7 +9,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { Program, ProgramAttribute } from 'src/app/models/program.model';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { AnswerType, Question, QuestionOption, Answer } from '../../models/q-and-a.models';
+import { AnswerType, Question, QuestionOption, Answer, AnswerSet } from '../../models/q-and-a.models';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -32,7 +32,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public questions: Question[];
   public answerTypes = AnswerType;
 
-  public answers: any = {};
+  public answers: AnswerSet = {};
 
   public allQuestionsShown = false;
   public hasAnswered: boolean;
@@ -65,8 +65,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.isDisabled = true;
     this.currentProgram = this.data.currentProgram;
     this.prepareProgramDetails(this.data.currentProgram);
-    this.allQuestionsShown = this.checkAllQuestionsShown(this.questions, Object.keys(this.data.answers));
     this.answers = this.data.answers;
+    this.allQuestionsShown = true;
     this.hasAnswered = true;
     this.hasChangedAnswers = false;
   }
@@ -163,65 +163,20 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return label;
   }
 
-  private getQuestionByCode(questionCode: string): Question {
-    const result = this.questions.find((question: Question) => {
-      return question.code === questionCode;
-    });
-
-    return result;
-  }
-
-  private getAnswerOptionLabelByValue(options: QuestionOption[], answerValue: string) {
-    const option = options.find((item: QuestionOption) => {
-      return item.value === answerValue;
-    });
-
-    return option ? option.label : '';
-  }
-
-  public onAnswerChange(questionCode: string, answerValue: string) {
-    const question = this.getQuestionByCode(questionCode);
-    const answer: Answer = {
-      code: questionCode,
-      value: answerValue,
-      label: answerValue,
-    };
-
-    // Convert the answerValue to a human-readable label
-    if (question.answerType === AnswerType.Enum) {
-      answer.label = this.getAnswerOptionLabelByValue(question.options, answerValue);
-    }
-
-    this.answers[questionCode] = answer;
-
-    const answersArray = Object.keys(this.answers);
-
-    this.allQuestionsShown = this.checkAllQuestionsShown(this.questions, answersArray);
-
-    this.showNextQuestion(answersArray.indexOf(questionCode));
-  }
-
-  private showNextQuestion(currentIndex: number) {
-    const initialTurns = 1; // Turns shown before the 'first question'-turn.
-    const nextIndex = currentIndex + initialTurns + 1;
-
-    this.showTurnByIndex(nextIndex);
-  }
-
-  private checkAllQuestionsShown(questions: Question[], answers: string[]) {
-    return (answers.length >= (questions.length - 1));
-  }
-
   public changeAnswers() {
     this.hasAnswered = false;
     this.hasChangedAnswers = true;
   }
 
-  public submit() {
+  public submit($event) {
+    this.answers = $event;
+
     if (!this.answers.dob.value) {
+      this.changeAnswers();
       this.dobFeedback = true;
       return;
     }
+
     this.hasAnswered = true;
     this.hasChangedAnswers = false;
     this.dobFeedback = false;
@@ -277,7 +232,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private createAttributes(answers: Answer[]): ProgramAttribute[] {
-    const attributes = [];
+    const attributes: ProgramAttribute[] = [];
 
     answers.forEach((item: Answer) => {
       attributes.push({
