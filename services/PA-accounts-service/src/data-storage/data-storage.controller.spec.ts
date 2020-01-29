@@ -3,6 +3,7 @@ import { DataStorageController } from './data-storage.controller';
 import { DataStorageService } from './data-storage.service';
 import { DataStorageEntity } from './data-storage.entity';
 import { StoreDataDto } from './dto';
+import { RolesGuard } from '../roles.guard';
 
 const data = 'string';
 const testDataStorage = {
@@ -43,7 +44,10 @@ describe('UserController', (): void => {
             useValue: new DataStorageServiceMock(),
           },
         ],
-      }).compile();
+      })
+      .overrideGuard(RolesGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
       dataStorageService = module.get<DataStorageService>(DataStorageService);
       dataStorageController = module.get<DataStorageController>(DataStorageController);
     },

@@ -9,7 +9,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataStorageEntity } from './data-storage.entity';
 import { UserEntity } from '../user/user.entity';
 import { DataStorageService } from './data-storage.service';
-import { AuthMiddleware } from '../user/auth.middleware';
 import { UserModule } from '../user/user.module';
 
 @Module({
@@ -21,13 +20,4 @@ import { UserModule } from '../user/user.module';
   controllers: [DataStorageController],
   exports: [DataStorageService],
 })
-export class DataStorageModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes(
-        { path: 'data-storage/:type', method: RequestMethod.GET },
-        { path: 'data-storage', method: RequestMethod.POST },
-      );
-  }
-}
+export class DataStorageModule {}

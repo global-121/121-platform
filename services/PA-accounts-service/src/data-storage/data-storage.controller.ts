@@ -1,9 +1,11 @@
+import { RolesGuard } from './../roles.guard';
 import {
   Get,
   Post,
   Body,
   Param,
-  Controller
+  Controller,
+  UseGuards
 } from '@nestjs/common';
 import { DataStorageService } from './data-storage.service';
 import { StoreDataDto } from './dto';
@@ -17,6 +19,8 @@ import {
 import { DataStorageEntity } from './data-storage.entity';
 import { User } from '../user/user.decorator';
 
+@ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiUseTags('data-storage')
 @Controller()
 export class DataStorageController {

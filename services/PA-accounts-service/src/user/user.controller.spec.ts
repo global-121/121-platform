@@ -6,6 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserRO } from './user.interface';
 import { DeleteResult } from 'typeorm';
 import { LoginUserDto } from './dto/login-user.dto';
+import { RolesGuard } from '../roles.guard';
 
 const userRo = {
   user: {
@@ -56,7 +57,10 @@ describe('UserController', (): void => {
             useValue: new UserServiceMock(),
           },
         ],
-      }).compile();
+      })
+      .overrideGuard(RolesGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
       userService = module.get<UserService>(UserService);
       userController = module.get<UserController>(UserController);
     },

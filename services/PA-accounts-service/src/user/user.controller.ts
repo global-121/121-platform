@@ -6,6 +6,7 @@ import {
   UsePipes,
   HttpStatus,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
@@ -16,7 +17,9 @@ import { ValidationPipe } from '../shared/pipes/validation.pipe';
 
 import { ApiUseTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { DeleteUserDto } from './dto/delete-user.dts';
+import { RolesGuard } from '../roles.guard';
 
+@ApiBearerAuth()
 @ApiUseTags('user')
 @Controller()
 export class UserController {
@@ -51,7 +54,7 @@ export class UserController {
     return { user };
   }
 
-  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -61,14 +64,14 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
   public async findMe(@User('username') username: string): Promise<UserRO> {
     return await this.userService.findByUsername(username);
   }
 
-  @ApiBearerAuth()
+  @UseGuards(RolesGuard)
   @ApiOperation({ title: 'Delete current user and storage' })
   @Post('user/delete')
   public async deleteAccount(
