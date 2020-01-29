@@ -29,7 +29,6 @@ export class JwtService {
   getTokenRole(): string|undefined {
     console.log('JWT Service: getTokenRole');
     const rawToken = window.sessionStorage[this.tokenKey];
-    console.log('rawToken: ', rawToken);
     if (rawToken) {
       const decodedToken = this.jwtHelper.decodeToken(rawToken);
       console.log('decodedToken: ', decodedToken);

@@ -1,6 +1,6 @@
 import { TWILIO } from './secrets';
 
-export const DEBUG = false;
+export const DEBUG = true;
 
 export const PORT = 3000;
 export const SUBDOMAIN =
