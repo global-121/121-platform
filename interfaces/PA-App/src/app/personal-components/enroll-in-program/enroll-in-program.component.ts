@@ -218,7 +218,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   public submit() {
-    if (!this.answers.dob) {
+    if (!this.answers.dob.value) {
       this.dobFeedback = true;
       return;
     }
