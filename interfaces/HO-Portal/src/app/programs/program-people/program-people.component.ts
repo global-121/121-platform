@@ -230,5 +230,6 @@ export class ProgramPeopleComponent implements OnInit {
 
     this.loadData();
 
+    window.location.reload();
   }
 }
