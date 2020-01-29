@@ -31,45 +31,6 @@ export class SeedInit implements InterfaceScript {
         status: 'active',
       },
     ]);
-
-    await userRepository.save([
-      {
-        username: USERCONFIG.usernameAidWorker,
-        role: UserRole.Aidworker,
-        email: USERCONFIG.emailAidWorker,
-        countryId: USERCONFIG.countryId,
-        password: crypto
-          .createHmac('sha256', USERCONFIG.passwordAidWorker)
-          .digest('hex'),
-        status: 'active',
-      },
-    ]);
-
-    await userRepository.save([
-      {
-        username: USERCONFIG.usernameProgramManager,
-        role: UserRole.ProgramManager,
-        email: USERCONFIG.emailProgramManager,
-        countryId: USERCONFIG.countryId,
-        password: crypto
-          .createHmac('sha256', USERCONFIG.passwordProgramManager)
-          .digest('hex'),
-        status: 'active',
-      },
-    ]);
-
-    await userRepository.save([
-      {
-        username: USERCONFIG.usernamePrivacyOfficer,
-        role: UserRole.PrivacyOfficer,
-        email: USERCONFIG.emailPrivacyOfficer,
-        countryId: USERCONFIG.countryId,
-        password: crypto
-          .createHmac('sha256', USERCONFIG.passwordPrivacyOfficer)
-          .digest('hex'),
-        status: 'active',
-      },
-    ]);
   }
 }
 
