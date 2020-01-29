@@ -6,9 +6,10 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
-import { Program } from 'src/app/models/program.model';
+import { Program, ProgramAttribute } from 'src/app/models/program.model';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
+import { AnswerType, Question, QuestionOption, Answer } from '../../models/q-and-a.models';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -35,7 +36,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public allQuestionsShown = false;
   public hasAnswered: boolean;
-  public changedAnswers: boolean;
+  public hasChangedAnswers: boolean;
   public dobFeedback = false;
 
   constructor(
@@ -64,10 +65,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.isDisabled = true;
     this.currentProgram = this.data.currentProgram;
     this.prepareProgramDetails(this.data.currentProgram);
-    this.checkAllQuestionsShown(this.questions, Object.keys(this.data.answers));
+    this.allQuestionsShown = this.checkAllQuestionsShown(this.questions, Object.keys(this.data.answers));
     this.answers = this.data.answers;
     this.hasAnswered = true;
-    this.changedAnswers = false;
+    this.hasChangedAnswers = false;
   }
 
   initNew() {
@@ -178,20 +179,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return option ? option.label : '';
   }
 
-  public inputAnswers($event) {
-    const questionCode = $event.target.name;
-
-    // Fill this.answers with an empty answer. For this functionality, the actual answer is not yet needed.
-    this.answers[questionCode] = new Answer();
-    const answersArray = Object.keys(this.answers);
-
-    this.showNextQuestion(answersArray.indexOf(questionCode));
-  }
-
-  public changeAnswers($event) {
-    const questionCode = $event.target.name;
-    const answerValue = $event.target.value;
-
+  public onAnswerChange(questionCode: string, answerValue: string) {
     const question = this.getQuestionByCode(questionCode);
     const answer: Answer = {
       code: questionCode,
@@ -208,7 +196,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     const answersArray = Object.keys(this.answers);
 
-    this.checkAllQuestionsShown(this.questions, answersArray);
+    this.allQuestionsShown = this.checkAllQuestionsShown(this.questions, answersArray);
 
     this.showNextQuestion(answersArray.indexOf(questionCode));
   }
@@ -221,25 +209,21 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private checkAllQuestionsShown(questions: Question[], answers: string[]) {
-    if (answers.length >= (questions.length - 1)) {
-      this.allQuestionsShown = true;
-    } else {
-      this.allQuestionsShown = false;
-    }
+    return (answers.length >= (questions.length - 1));
   }
 
-  public change() {
+  public changeAnswers() {
     this.hasAnswered = false;
-    this.changedAnswers = true;
+    this.hasChangedAnswers = true;
   }
 
   public submit() {
-    if (!this.answers.dob) {
+    if (!this.answers.dob.value) {
       this.dobFeedback = true;
       return;
     }
     this.hasAnswered = true;
-    this.changedAnswers = false;
+    this.hasChangedAnswers = false;
     this.dobFeedback = false;
     this.conversationService.scrollToEnd();
     this.paData.saveAnswers(this.programId, this.answers);
@@ -292,7 +276,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.paData.store(this.paData.type.programId, this.programId);
   }
 
-  private createAttributes(answers: Answer[]): Attribute[] {
+  private createAttributes(answers: Answer[]): ProgramAttribute[] {
     const attributes = [];
 
     answers.forEach((item: Answer) => {
@@ -327,34 +311,4 @@ export class EnrollInProgramComponent extends PersonalComponent {
       next: this.getNextSection(),
     });
   }
-}
-
-class Question {
-  id: number;
-  code: string;
-  answerType: AnswerType;
-  label: string;
-  options: QuestionOption[];
-}
-enum AnswerType {
-  // Translate the types used in the API to internal, proper types:
-  Number = 'numeric',
-  Text = 'text',
-  Date = 'date',
-  Enum = 'dropdown',
-}
-class QuestionOption {
-  id: number;
-  value: string;
-  label: string;
-}
-class Answer {
-  code: string;
-  value: string;
-  label: string;
-}
-class Attribute {
-  attributeId: number;
-  attribute: string;
-  answer: string;
 }
