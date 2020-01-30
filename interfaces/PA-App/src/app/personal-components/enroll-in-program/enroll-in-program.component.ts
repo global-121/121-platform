@@ -119,7 +119,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     for (const criterium of customCriteria) {
       const question: Question = {
-        id: criterium.id,
         code: criterium.criterium,
         answerType: criterium.answerType,
         label: this.mapLabelByLanguageCode(criterium.label),
@@ -140,7 +139,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     for (const option of optionsRaw) {
       const questionOption: QuestionOption = {
-        id: option.id,
         value: option.option,
         label: this.mapLabelByLanguageCode(option.label),
       };

@@ -7,7 +7,6 @@ export enum AnswerType {
 }
 
 export class Question {
-  id: number;
   code: string;
   answerType: AnswerType;
   label: string;
@@ -15,7 +14,6 @@ export class Question {
 }
 
 export class QuestionOption {
-  id: number;
   value: string;
   label: string;
 }
