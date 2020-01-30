@@ -10,6 +10,7 @@ import { Program, ProgramAttribute } from 'src/app/models/program.model';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { AnswerType, Question, QuestionOption, Answer, AnswerSet } from '../../models/q-and-a.models';
+import { TranslatableString } from 'src/app/models/translatable-string.model';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -149,7 +150,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return options;
   }
 
-  private mapLabelByLanguageCode(property: any) {
+  private mapLabelByLanguageCode(property: TranslatableString | string): string {
     let label = property[this.languageCode];
 
     if (!label) {

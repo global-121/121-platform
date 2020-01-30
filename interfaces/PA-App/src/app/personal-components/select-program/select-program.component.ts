@@ -8,6 +8,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Program } from 'src/app/models/program.model';
+import { TranslatableString } from 'src/app/models/translatable-string.model';
 
 @Component({
   selector: 'app-select-program',
@@ -76,7 +77,7 @@ export class SelectProgramComponent extends PersonalComponent {
     return programs;
   }
 
-  private mapLabelByLanguageCode(property: any) {
+  private mapLabelByLanguageCode(property: TranslatableString | string): string {
     let label = property[this.languageCode];
 
     if (!label) {

@@ -9,6 +9,7 @@ import { PaDataService } from 'src/app/services/padata.service';
 
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { Program } from 'src/app/models/program.model';
+import { TranslatableString } from 'src/app/models/translatable-string.model';
 
 @Component({
   selector: 'app-meeting-reminder',
@@ -83,7 +84,7 @@ export class MeetingReminderComponent extends PersonalComponent {
     this.meetingDocuments = this.buildDocumentsList(documents);
   }
 
-  private mapLabelByLanguageCode(property: any) {
+  private mapLabelByLanguageCode(property: TranslatableString | string): string {
     let label = property[this.languageCode];
 
     if (!label) {
