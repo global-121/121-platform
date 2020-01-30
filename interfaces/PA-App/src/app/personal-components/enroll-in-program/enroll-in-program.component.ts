@@ -6,7 +6,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
-import { Program, ProgramAttribute } from 'src/app/models/program.model';
+import { Program, ProgramAttribute, ProgramCriterium, ProgramCriteriumOption } from 'src/app/models/program.model';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { AnswerType, Question, QuestionOption, Answer, AnswerSet } from '../../models/q-and-a.models';
@@ -114,38 +114,24 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return programDetails;
   }
 
-  private buildQuestions(customCriteria: Program['customCriteria']) {
-    const questions = [];
-
-    for (const criterium of customCriteria) {
-      const question: Question = {
+  private buildQuestions(customCriteria: ProgramCriterium[]) {
+    return customCriteria.map((criterium): Question => {
+      return {
         code: criterium.criterium,
         answerType: criterium.answerType,
         label: this.mapLabelByLanguageCode(criterium.label),
-        options: this.buildOptions(criterium.options),
+        options: (!criterium.options) ? null : this.buildOptions(criterium.options),
       };
-      questions.push(question);
-    }
-
-    return questions;
+    });
   }
 
-  private buildOptions(optionsRaw: any[]): QuestionOption[] {
-    if (!optionsRaw) {
-      return;
-    }
-
-    const options = [];
-
-    for (const option of optionsRaw) {
-      const questionOption: QuestionOption = {
+  private buildOptions(optionSet: ProgramCriteriumOption[]): QuestionOption[] {
+    return optionSet.map((option) => {
+      return {
         value: option.option,
         label: this.mapLabelByLanguageCode(option.label),
       };
-      options.push(questionOption);
-    }
-
-    return options;
+    });
   }
 
   private mapLabelByLanguageCode(property: TranslatableString | string): string {
