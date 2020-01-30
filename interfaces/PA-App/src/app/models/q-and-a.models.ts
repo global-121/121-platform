@@ -11,7 +11,7 @@ export class Question {
   code: string;
   answerType: AnswerType;
   label: string;
-  options: QuestionOption[];
+  options: QuestionOption[] | null;
 }
 
 export class QuestionOption {
@@ -27,5 +27,5 @@ export class Answer {
 }
 
 export class AnswerSet {
-  [_: string]: Answer,
+  [code: string]: Answer,
 }

@@ -1,4 +1,6 @@
 import { Fsp } from './fsp.model';
+import { AnswerType } from './q-and-a.models';
+import { TranslatableString } from './translatable-string.model';
 
 export class Program {
   id: number;
@@ -9,9 +11,22 @@ export class Program {
   updated: string;
   meetingDocuments: any;
   ngo: string;
-  customCriteria: any[];
+  customCriteria: ProgramCriterium[];
   financialServiceProviders: Fsp[];
   credDefId: string;
+}
+
+export class ProgramCriterium {
+  id: number;
+  criterium: string;
+  answerType: AnswerType;
+  label: TranslatableString;
+  options: null | ProgramCriteriumOption[];
+}
+
+export class ProgramCriteriumOption {
+  option: string;
+  label: TranslatableString;
 }
 
 export class ProgramAttribute {
