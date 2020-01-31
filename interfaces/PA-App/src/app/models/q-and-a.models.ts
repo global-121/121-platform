@@ -7,15 +7,13 @@ export enum AnswerType {
 }
 
 export class Question {
-  id: number;
   code: string;
   answerType: AnswerType;
   label: string;
-  options: QuestionOption[];
+  options: QuestionOption[] | null;
 }
 
 export class QuestionOption {
-  id: number;
   value: string;
   label: string;
 }
@@ -27,5 +25,5 @@ export class Answer {
 }
 
 export class AnswerSet {
-  [_: string]: Answer,
+  [code: string]: Answer,
 }

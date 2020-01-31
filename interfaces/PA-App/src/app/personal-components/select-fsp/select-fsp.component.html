@@ -41,7 +41,7 @@
     <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:chosenFsp?.fsp }"></p>
   </dialogue-turn>
 
-  <form *ngIf="customAttributes?.length">
+  <form *ngIf="questions">
     <dialogue-turn isConnected="true"
                    isSpoken="true"
     >
@@ -50,27 +50,27 @@
       </p>
     </dialogue-turn>
 
-    <div *ngFor="let attribute of customAttributes; first as isFirst">
 
-      <dialogue-turn actor="self"
-                     [isConnected]="!isFirst"
-                     isSpoken="true"
-      >
-      </dialogue-turn>
+    <q-and-a-set [questions]="questions"
+                 [(isSubmitted)]="isSubmitted"
+                 [(isEditing)]="isEditing"
+                 (submit)="submitCustomAttributes($event)"
+                 [submitLabel]="'personal.select-fsp.attributes.submit'|translate"
+    ></q-and-a-set>
 
-    </div>
-
-    <dialogue-turn actor="self"
-                   isConnected="true"
-                   isSpoken="true"
+    <dialogue-turn *ngIf="showResultSuccess"
+                   [isSpoken]="showResultSuccess"
     >
-      <ion-button type="submit"
-                  [disabled]="hasAnsweredAll"
-                  (click)="submitCustomAttributes()"
-                  expand="block"
-      >
-        {{ 'personal.select-fsp.attributes.submit'|translate }}
-      </ion-button>
+      <p>
+        {{ 'personal.select-fsp.attributes.success'|translate }}
+      </p>
+    </dialogue-turn>
+    <dialogue-turn *ngIf="showResultError"
+                   [isSpoken]="showResultError"
+    >
+      <p>
+        {{ 'personal.select-fsp.attributes.error'|translate }}
+      </p>
     </dialogue-turn>
   </form>
 
