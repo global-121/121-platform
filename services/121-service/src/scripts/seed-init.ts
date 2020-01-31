@@ -23,7 +23,7 @@ export class SeedInit implements InterfaceScript {
         username: USERCONFIG.usernameAdmin,
         role: 'admin',
         email: USERCONFIG.emailAdmin,
-        countryId: USERCONFIG.countryIdAdmin,
+        countryId: USERCONFIG.countryId,
         password: crypto
           .createHmac('sha256', USERCONFIG.passwordAdmin)
           .digest('hex'),
@@ -36,7 +36,7 @@ export class SeedInit implements InterfaceScript {
         username: USERCONFIG.usernameAidWorker,
         role: 'aidworker',
         email: USERCONFIG.emailAidWorker,
-        countryId: USERCONFIG.countryIdAidWorker,
+        countryId: USERCONFIG.countryId,
         password: crypto
           .createHmac('sha256', USERCONFIG.passwordAidWorker)
           .digest('hex'),
