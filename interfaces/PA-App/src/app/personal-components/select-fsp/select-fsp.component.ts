@@ -5,10 +5,12 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 
 import { Program } from 'src/app/models/program.model';
-import { Fsp } from 'src/app/models/fsp.model';
+import { Fsp, FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
 import { PersonalComponent } from '../personal-component.class';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-
+import { Question, QuestionOption, Answer, AnswerSet } from 'src/app/models/q-and-a.models';
+import { TranslateService } from '@ngx-translate/core';
+import { TranslatableString } from 'src/app/models/translatable-string.model';
 
 @Component({
   selector: 'app-select-fsp',
@@ -19,6 +21,9 @@ export class SelectFspComponent extends PersonalComponent {
   @Input()
   public data: any;
 
+  public languageCode: string;
+  public fallbackLanguageCode: string;
+
   private did: string;
   public program: Program;
   public fsps: Fsp[];
@@ -27,19 +32,25 @@ export class SelectFspComponent extends PersonalComponent {
   public chosenFsp: Fsp;
   public fspSubmitted: boolean;
 
-  public customAttributes: any[];
-  public customAttributeAnswers: any = {};
-  public hasAnsweredAll: boolean;
+  public questions: Question[];
+  public customAttributeAnswers: Answer[];
+  public isSubmitted: boolean;
+  public isEditing: boolean;
+  public showResultSuccess: boolean;
+  public showResultError: boolean;
 
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     public paData: PaDataService,
+    public translate: TranslateService,
   ) {
     super();
   }
 
   async ngOnInit() {
+    this.fallbackLanguageCode = this.translate.getDefaultLang();
+    this.languageCode = this.translate.currentLang;
     this.program = await this.paData.getCurrentProgram();
 
     if (this.data) {
@@ -63,9 +74,9 @@ export class SelectFspComponent extends PersonalComponent {
     this.chosenFsp = this.data.fsp;
     this.fspChoice = this.data.fsp.id;
     this.fsps = [this.data.fsp];
-    this.customAttributes = this.getCustomAttributes();
+    this.questions = this.buildQuestions(this.chosenFsp.attributes);
     this.customAttributeAnswers = this.data.customAttributeAnswers;
-    this.checkAnsweredAll();
+    this.isSubmitted = true;
   }
 
   private getFspById(fspId: number) {
@@ -92,46 +103,84 @@ export class SelectFspComponent extends PersonalComponent {
     // Update FSPs with more details:
     this.chosenFsp = await this.programsService.getFspById(this.fspChoice);
 
-    this.customAttributes = this.getCustomAttributes();
-
-    if (!this.customAttributes.length) {
+    if (!this.chosenFsp.attributes.length) {
       return this.complete();
     }
+
+    this.questions = this.buildQuestions(this.chosenFsp.attributes);
   }
 
-  private getCustomAttributes() {
-    return (this.chosenFsp.attributes.length > 0) ? this.chosenFsp.attributes : [];
+  private buildQuestions(fspAttributes: FspAttribute[]) {
+    return fspAttributes.map((attribute): Question => {
+      return {
+        code: attribute.name,
+        answerType: attribute.answerType,
+        label: this.mapLabelByLanguageCode(attribute.label),
+        options: (!attribute.options) ? null : this.buildOptions(attribute.options),
+      };
+    });
   }
 
-  public onCustomAttributeChange($eventTarget) {
-    const questionKey = $eventTarget.name;
-    const answerValue = $eventTarget.value;
-
-    this.customAttributeAnswers[questionKey] = {
-      key: questionKey,
-      value: answerValue,
-    };
-
-    this.checkAnsweredAll();
+  private buildOptions(optionSet: FspAttributeOption[]): QuestionOption[] {
+    return optionSet.map((option): QuestionOption => {
+      return {
+        value: option.option,
+        label: this.mapLabelByLanguageCode(option.label),
+      };
+    });
   }
 
-  private checkAnsweredAll() {
-    this.hasAnsweredAll = (this.customAttributes.length === this.customAttributeAnswers.length);
+  private mapLabelByLanguageCode(property: TranslatableString | string): string {
+    let label = property[this.languageCode];
 
-    return this.hasAnsweredAll;
+    if (!label) {
+      label = property[this.fallbackLanguageCode];
+    }
+
+    if (!label) {
+      label = property;
+    }
+
+    return label;
   }
 
-  public submitCustomAttributes() {
-    let answersSubmitted = 0;
+  private processInOrder(array: any[], fn) {
+    return array.reduce(
+      (request, item) => request.then(() => fn(item)),
+      Promise.resolve()
+    );
+  }
 
-    this.customAttributeAnswers.forEach(async (answer) => {
-      await this.programsService.postConnectionCustomAttribute(this.did, answer.name, answer.value);
-      answersSubmitted++;
+  public async submitCustomAttributes($event: AnswerSet) {
+    this.conversationService.startLoading();
+    this.customAttributeAnswers = Object.values($event);
+
+    this.showResultSuccess = null;
+    this.showResultError = null;
+
+    this.processInOrder(
+      this.customAttributeAnswers,
+      (answer: Answer) => this.programsService.postConnectionCustomAttribute(this.did, answer.code, answer.value)
+    ).then(
+      () => {
+        // in case of success:
+        this.isSubmitted = true;
+        this.isEditing = false;
+        this.showResultSuccess = true;
+        this.showResultError = false;
+        this.complete();
+      },
+      () => {
+        // in case of error:
+        this.isSubmitted = false;
+        this.isEditing = true;
+        this.showResultSuccess = false;
+        this.showResultError = true;
+      }
+    ).finally(() => {
+      this.conversationService.stopLoading();
     });
 
-    if (answersSubmitted === this.customAttributes.length) {
-      this.complete();
-    }
   }
 
   getNextSection() {
@@ -143,6 +192,7 @@ export class SelectFspComponent extends PersonalComponent {
       name: PersonalComponents.selectFsp,
       data: {
         fsp: this.chosenFsp,
+        customAttributeAnswers: this.customAttributeAnswers,
       },
       next: this.getNextSection(),
     });

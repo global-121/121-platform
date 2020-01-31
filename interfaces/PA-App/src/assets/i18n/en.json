@@ -78,7 +78,9 @@
       "conclusion": "Thank you. You have selected payment option: <strong>{{name}}</strong>.",
       "attributes": {
         "introduction": "Please answer these additional questions:",
-        "submit": "Save my answers"
+        "submit": "Save my answers",
+        "error": "Something went wrong, please try again.",
+        "success": "Thank you. Your additional information is saved."
       }
     },
     "select-appointment": {
