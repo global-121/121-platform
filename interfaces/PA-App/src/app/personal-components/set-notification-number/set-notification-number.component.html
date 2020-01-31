@@ -1,0 +1,67 @@
+<section *ngIf="!isCanceled">
+  <dialogue-turn [actor]="ngo">
+    <p>
+      {{ 'personal.set-notification-number.introduction1'|translate }}
+    </p>
+    <ul>
+      <li>
+        {{ 'personal.set-notification-number.introduction2'|translate }}
+      </li>
+      <li>
+        {{ 'personal.set-notification-number.introduction3'|translate }}
+      </li>
+      <li>
+        {{ 'personal.set-notification-number.introduction4'|translate }}
+      </li>
+    </ul>
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+    <form (ngSubmit)="submitPhoneNumber(phone)">
+      <ion-label>{{ 'personal.set-notification-number.input-label'|translate }}</ion-label>
+      <ion-input type="tel"
+                 inputmode="tel"
+                 pattern=""
+                 autocomplete="tel"
+                 name="phone"
+                 placeholder="+0 000 000 000"
+                 [value]="phoneNumber"
+                 [(ngModel)]="phone"
+                 ngDefaultControl
+                 [disabled]="isDisabled"
+      ></ion-input>
+      <p class="ion-margin-top">
+        <ion-button type="submit"
+                    *ngIf="!isDisabled"
+                    expand="block"
+                    [disabled]="isDisabled || !phoneNumber"
+        >{{ 'personal.set-notification-number.submit'|translate }}</ion-button>
+      </p>
+      <p class="ion-margin-top">
+        <ion-button type="reset"
+                    fill="outline"
+                    expand="block"
+                    (click)="skipPhone();"
+                    *ngIf="!isDisabled"
+                    [disabled]="isDisabled"
+        >
+          {{ 'personal.set-notification-number.skip'|translate }}
+        </ion-button>
+      </p>
+    </form>
+
+  </dialogue-turn>
+  <dialogue-turn [actor]="ngo"
+                 *ngIf="choiceMade"
+                 [isSpoken]="choiceMade"
+  >
+    <p *ngIf="!phoneSkipped"
+       [innerHTML]="'personal.set-notification-number.conclusion1'|translate:{ phone:phoneNumber }">
+    </p>
+    <p *ngIf="phoneSkipped">
+      {{ 'personal.set-notification-number.conclusion2'|translate }}
+    </p><br>
+    <p *ngIf="!useLocalStorage">
+      {{ 'personal.set-notification-number.logout-info'|translate }}
+    </p>
+  </dialogue-turn>
+</section>

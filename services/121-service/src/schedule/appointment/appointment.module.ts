@@ -12,7 +12,6 @@ import { AppointmentEntity } from './appointment.entity';
 import { UserEntity } from '../../user/user.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { UserModule } from '../../user/user.module';
-import { AuthMiddlewareAW } from '../../user/auth.middlewareAW';
 
 @Module({
   imports: [
@@ -27,13 +26,4 @@ import { AuthMiddlewareAW } from '../../user/auth.middlewareAW';
   controllers: [AppointmentController],
   providers: [AppointmentService],
 })
-export class AppointmentModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer): void {
-    // consumer
-    //   .apply(AuthMiddlewareAdmin)
-    //   .forRoutes();
-    consumer
-      .apply(AuthMiddlewareAW)
-      .forRoutes({ path: 'availability', method: RequestMethod.POST });
-  }
-}
+export class AppointmentModule {}

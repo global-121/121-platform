@@ -1,4 +1,4 @@
-import { Get, Post, Put, Body, Controller } from '@nestjs/common';
+import { Get, Post, Put, Body, Controller, UseGuards } from '@nestjs/common';
 
 import { CountryEntity } from './country.entity';
 import { CountryService } from './country.service';
@@ -10,8 +10,12 @@ import {
   ApiResponse,
   ApiOperation,
 } from '@nestjs/swagger';
+import { RolesGuard } from '../../roles.guard';
+import { Roles } from '../../roles.decorator';
+import { UserRole } from '../../user-role.enum';
 
 @ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiUseTags('programs')
 @Controller('programs/countries')
 export class CountryController {
@@ -27,6 +31,7 @@ export class CountryController {
     return await this.countryService.findAll();
   }
 
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Create country' })
   @ApiResponse({
     status: 201,
@@ -40,6 +45,7 @@ export class CountryController {
     return this.countryService.create(countryData);
   }
 
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Add criterium to country' })
   @Put(':countryId')
   public async bindCriteriumCountry(

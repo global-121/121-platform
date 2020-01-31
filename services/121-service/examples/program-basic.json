@@ -65,6 +65,7 @@
       "answerType": "text",
       "criteriumType": "standard",
       "options": null,
+      "persistence": true,
       "scoring": {}
     },
     {
@@ -73,16 +74,6 @@
         "en": "My date of birth:"
       },
       "answerType": "date",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {}
-    },
-    {
-      "criterium": "id_number",
-      "label": {
-        "en": "What is your id number?"
-      },
-      "answerType": "text",
       "criteriumType": "standard",
       "options": null,
       "persistence": true,

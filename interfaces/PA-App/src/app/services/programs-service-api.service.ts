@@ -9,6 +9,7 @@ import { ApiService } from './api.service';
 import { Country } from '../models/country.model';
 import { Program } from '../models/program.model';
 import { Timeslot } from '../models/timeslot.model';
+import { Fsp } from '../models/fsp.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,6 @@ export class ProgramsServiceApiService {
       .get(environment.url_121_service_api, '/programs/countries/all')
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -52,7 +52,15 @@ export class ProgramsServiceApiService {
       .get(environment.url_121_service_api, '/programs/' + programId)
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
+      )
+      .toPromise();
+  }
+
+  getFspById(fspId: number): Promise<Fsp> {
+    return this.apiService
+      .get(environment.url_121_service_api, '/programs/fsp/' + fspId)
+      .pipe(
+        tap(response => console.log('response: ', response)),
       )
       .toPromise();
   }
@@ -66,7 +74,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -85,7 +92,6 @@ export class ProgramsServiceApiService {
         false
       ).pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -98,7 +104,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -123,7 +128,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -148,7 +152,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -161,7 +164,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       );
   }
 
@@ -173,7 +175,6 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         tap(response => console.log('response: ', response)),
-        map(response => response)
       )
       .toPromise();
   }
@@ -226,10 +227,6 @@ export class ProgramsServiceApiService {
       '/appointment/availability/' + programId
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => {
-
-        return response;
-      })
     )
       .toPromise();
   }
@@ -244,23 +241,51 @@ export class ProgramsServiceApiService {
       true
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => response)
     );
   }
 
-  postPhoneNumber(did: string, phonenumber: string, language: string): Observable<any> {
+  postConnectionCustomAttribute(did: string, key: string, value: string): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/create-connection/custom-data',
+      {
+        did,
+        key,
+        value,
+      },
+      true
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+    )
+      .toPromise();
+  }
+
+  lookupPhoneNumber(phoneNumber: string): Observable<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/lookup/lookup',
+      {
+        phonenumber: phoneNumber,
+      },
+      true
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+    );
+  }
+
+
+  postPhoneNumber(did: string, phoneNumber: string, language: string): Observable<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/sovrin/create-connection/phone',
       {
         did,
-        phonenumber,
+        phonenumber: phoneNumber,
         language
       },
       true
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => response)
     );
   }
 
@@ -275,7 +300,6 @@ export class ProgramsServiceApiService {
       true
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => response)
     );
   }
 
@@ -289,7 +313,6 @@ export class ProgramsServiceApiService {
       true
     ).pipe(
       tap(response => console.log('response: ', response)),
-      map(response => response)
     )
       .toPromise();
   }

@@ -9,6 +9,7 @@ export const MockPaDataService = {
   type: PaDataTypes,
   myPrograms: {},
   authenticationState$: of(false),
+  getUsername: () => new Promise<string>((resolve) => resolve('')),
   getProgram: () => new Promise<Program>((resolve) => resolve(mockProgram)),
   getCurrentProgram: () => new Promise<Program>((resolve) => resolve(mockProgram)),
   store: () => new Promise<any>((resolve) => resolve('')),

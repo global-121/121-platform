@@ -4,10 +4,11 @@
         {{ 'personal.create-identity.introduction'|translate }}
       </p>
       <p>
-        <ion-button type="button" size="small">
-          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        <more-info-button [message]="'personal.create-identity.info-message'|translate"
+                          [heading]="'personal.create-identity.more-info-digital-id'|translate"
+        >
           {{ 'personal.create-identity.more-info-digital-id'|translate }}
-        </ion-button>
+        </more-info-button>
       </p>
     </dialogue-turn>
     <dialogue-turn isConnected="true"
@@ -18,10 +19,11 @@
         {{ 'personal.create-identity.password-only'|translate }}
       </p>
       <p>
-        <ion-button type="button" size="small">
-          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        <more-info-button [message]="'personal.create-identity.info-message-password'|translate"
+                          [heading]="'personal.create-identity.more-info-password'|translate"
+        >
           {{ 'personal.create-identity.more-info-password'|translate }}
-        </ion-button>
+        </more-info-button>
       </p>
     </dialogue-turn>
     <dialogue-turn isConnected="true"
@@ -32,10 +34,11 @@
         {{ 'personal.create-identity.username-password'|translate }}
       </p>
       <p>
-        <ion-button type="button" size="small">
-          <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+        <more-info-button [message]="'personal.create-identity.info-message-username-pw'|translate"
+                          [heading]="'personal.create-identity.more-info-username-pw'|translate"
+        >
           {{ 'personal.create-identity.more-info-username-pw'|translate }}
-        </ion-button>
+        </more-info-button>
       </p>
     </dialogue-turn>
     <dialogue-turn actor="self">
@@ -60,14 +63,15 @@
           </div>
         </div>
         <div *ngIf="usernameSubmitted || useLocalStorage" class="ion-margin-bottom">
-          <ion-label>{{ 'personal.create-identity.create-password'|translate }}</ion-label>
-          <ion-input type="password"
-                     name="create"
-                     [(ngModel)]="create"
-                     ngDefaultControl
-                     [disabled]="isDisabled"
-                     autocomplete="new-password"
-          ></ion-input>
+          <password-toggle-input name="create"
+                                 [(ngModel)]="create"
+                                 ngDefaultControl
+                                 [disabled]="isDisabled"
+                                 autocomplete="new-password"
+                                 [label]="'personal.create-identity.create-password'|translate"
+                                 [labelShow]="'password-toggle.show'|translate"
+                                 [labelHide]="'password-toggle.hide'|translate"
+          ></password-toggle-input>
         </div>
         <div class="ion-margin-top">
           <ion-button *ngIf="create && !initialInput"
@@ -77,15 +81,15 @@
           >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
         </div>
         <div *ngIf="initialInput">
-          <div>
-            <ion-label>{{ 'personal.create-identity.confirm-password'|translate }}</ion-label>
-            <ion-input type="password"
-                       name="confirm"
-                       [(ngModel)]="confirm"
-                       ngDefaultControl
-                       [disabled]="isDisabled"
-            ></ion-input>
-          </div>
+          <password-toggle-input name="confirm"
+                                 [(ngModel)]="confirm"
+                                 ngDefaultControl
+                                 [disabled]="isDisabled"
+                                 autocomplete="new-password"
+                                 [label]="'personal.create-identity.confirm-password'|translate"
+                                 [labelShow]="'password-toggle.show'|translate"
+                                 [labelHide]="'password-toggle.hide'|translate"
+          ></password-toggle-input>
           <div class="ion-margin-top">
             <ion-button *ngIf="create && confirm && !isDisabled"
                         [disabled]="isInProgress || isDisabled"

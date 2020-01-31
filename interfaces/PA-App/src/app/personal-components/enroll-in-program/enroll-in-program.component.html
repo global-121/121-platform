@@ -7,82 +7,21 @@
       {{ 'personal.enroll-in-program.introduction-questions'|translate }}
     </p>
     <p>
-      <ion-button type="button" size="small">
-        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-        {{ 'personal.enroll-in-program.more-info-questions'|translate }}
-      </ion-button>
-    </p>
-  </dialogue-turn>
-  <dialogue-turn actor="self"
-                 *ngFor="let question of questions; let i=index; first as isFirst;"
-                [isConnected]="!isFirst"
-                [isSpoken]="isFirst || hasAnswered || changedAnswers"
-  >
-    <ion-label>
-      {{ question.label }}
-    </ion-label>
-    <div [ngSwitch]="question.answerType">
-      <div *ngSwitchCase="answerTypes.Enum">
-        <ion-radio-group [name]="question.code"
-                         (ionChange)="changeAnswers($event)"
-        >
-          <ion-item *ngFor="let option of question.options"
-                    color="light"
-          >
-            <ion-label>{{ option.label }}</ion-label>
-            <ion-radio [value]="option.value"
-                       [checked]="(option.value === answers[question.code]?.value)"
-                       [disabled]="hasAnswered"
-            ></ion-radio>
-          </ion-item>
-        </ion-radio-group>
-      </div>
-      <div *ngSwitchCase="answerTypes.Number">
-        <ion-input type="number"
-                   inputmode="numeric"
-                   pattern="[0-9]*"
-                   [name]="question.code"
-                   (input)="inputAnswers($event)"
-                   (change)="changeAnswers($event)"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="hasAnswered"
-        ></ion-input>
-      </div>
-      <div *ngSwitchCase="answerTypes.Date">
-        <ion-input type="date"
-                   placeholder="dd-mm-yyyy"
-                   [name]="question.code"
-                   (change)="changeAnswers($event)"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="hasAnswered"
-        ></ion-input>
-      </div>
-      <div *ngSwitchDefault>
-        <ion-input type="text"
-                   [name]="question.code"
-                   (input)="inputAnswers($event)"
-                   (change)="changeAnswers($event)"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="hasAnswered"
-        ></ion-input>
-      </div>
-    </div>
-  </dialogue-turn>
-  <dialogue-turn actor="self"
-                 isConnected="true"
-                 *ngIf="allQuestionsShown"
-                 [isSpoken]="allQuestionsShown"
-  >
-    <p>
-      <ion-button type="submit"
-                  (click)="submit()"
-                  [disabled]="hasAnswered"
-                  expand="block"
+      <more-info-button [message]="'personal.enroll-in-program.info-message'|translate"
+                        [heading]="'personal.enroll-in-program.more-info-questions'|translate"
       >
-        {{ 'personal.enroll-in-program.submit'|translate }}
-      </ion-button>
+        {{ 'personal.enroll-in-program.more-info-questions'|translate }}
+      </more-info-button>
     </p>
   </dialogue-turn>
+
+  <q-and-a-set [questions]="questions"
+               [(isSubmitted)]="hasAnswered"
+               [(isEditing)]="hasChangedAnswers"
+               (submit)="submit($event)"
+               [submitLabel]="'personal.enroll-in-program.submit'|translate"
+  ></q-and-a-set>
+
   <dialogue-turn [actor]="programDetails?.ngo"
                  *ngIf="dobFeedback"
                  [isSpoken]="dobFeedback"
@@ -99,10 +38,11 @@
       {{ 'personal.enroll-in-program.please-confirm'|translate }}
     </p>
     <p>
-      <ion-button type="button" size="small">
-        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+      <more-info-button [message]="'personal.enroll-in-program.info-message-share'|translate"
+                        [heading]="'personal.enroll-in-program.more-info-share'|translate"
+      >
         {{ 'personal.enroll-in-program.more-info-share'|translate }}
-      </ion-button>
+      </more-info-button>
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
@@ -125,7 +65,7 @@
         {{ 'personal.enroll-in-program.submit-confirm'|translate }}
       </ion-button>
       <ion-button type="button"
-                  (click)="change()"
+                  (click)="changeAnswers()"
                   [disabled]="isDisabled"
                   expand="block"
                   fill="outline"

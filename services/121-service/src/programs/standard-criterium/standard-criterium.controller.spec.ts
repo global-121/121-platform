@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import { StandardCriteriumController } from './standard-criterium.controller';
 import { StandardCriteriumService } from './standard-criterium.service';
 import { StandardCriteriumEntity } from './standard-criterium.entity';
+import { RolesGuard } from '../../roles.guard';
 
 const newStandardCriteriumParameters = {
   criterium: 'test',
@@ -37,7 +38,10 @@ describe('CriteriumController', (): void => {
             useValue: new StandardCriteriumServiceMock(),
           },
         ],
-      }).compile();
+      })
+      .overrideGuard(RolesGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
       criteriumService = module.get<StandardCriteriumService>(
         StandardCriteriumService,

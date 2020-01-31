@@ -1,3 +1,5 @@
+import { UserRole } from './../../auth/user-role.enum';
+import { AuthService } from './../../auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -14,10 +16,12 @@ import { ProgramJsonComponent } from '../program-json/program-json.component';
 export class ProgramDetailsComponent implements OnInit {
   public languageCode: string;
   public fallbackLanguageCode: string;
+  public currentUserRole: string;
 
   public program: Program;
   public programTitle: string;
   public programArray: any;
+  public userRoleEnum = UserRole;
 
   private techFeatures = [
     'countryId',
@@ -27,29 +31,24 @@ export class ProgramDetailsComponent implements OnInit {
     'proofRequest',
   ];
 
-
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     public modalController: ModalController,
     public translate: TranslateService,
-  ) {
+    private authService: AuthService
 
-  }
+  ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
-
-    const id = this.route.snapshot.paramMap.get('id');
-    this.programsService.getProgramById(id).subscribe((response) => {
-      this.program = response;
-      this.programTitle = this.mapLabelByLanguageCode(this.program.title);
-      this.programArray = this.generateArray(this.program);
-    });
+    const programId = this.route.snapshot.params.id;
+    this.program = await this.programsService.getProgramById(programId);
+    this.programTitle = this.mapLabelByLanguageCode(this.program.title);
+    this.programArray = this.generateArray(this.program);
+    this.currentUserRole = this.authService.getUserRole();
   }
-
-
 
   public generateArray(obj) {
     return Object.keys(obj)

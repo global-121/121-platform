@@ -2,6 +2,7 @@ import { CountryEntity } from './country.entity';
 import { Test } from '@nestjs/testing';
 import { CountryController } from './country.controller';
 import { CountryService } from './country.service';
+import { RolesGuard } from '../../roles.guard';
 
 class CountryServiceMock {
   public async findAll(): Promise<CountryEntity[]> {
@@ -23,7 +24,10 @@ describe('CountryController', (): void => {
             useValue: new CountryServiceMock(),
           },
         ],
-      }).compile();
+      })
+      .overrideGuard(RolesGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
       countryService = module.get<CountryService>(CountryService);
       countryController = module.get<CountryController>(CountryController);

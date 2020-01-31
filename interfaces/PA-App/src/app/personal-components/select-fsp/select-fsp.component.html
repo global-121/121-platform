@@ -1,0 +1,77 @@
+<section>
+  <dialogue-turn [actor]="program?.ngo">
+    <p>
+      {{ 'personal.select-fsp.introduction'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn actor="self"
+                 *ngIf="fsps"
+                 [isSpoken]="fsps"
+  >
+    <form (submit)="submitFsp()">
+      <ion-radio-group name="fsps"
+                       (ionChange)="changeFsp($event)"
+      >
+        <ion-item *ngFor="let fsp of fsps"
+                  color="light"
+                  class="ion-no-padding ion-text-wrap"
+        >
+          <ion-label class="ion-text-wrap">
+            {{ fsp.fsp }}
+          </ion-label>
+          <ion-radio [value]="fsp.id"
+                     [checked]="(fsp.id === fspChoice)"
+                     [disabled]="fspSubmitted"
+          ></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <p class="ion-margin-top">
+        <ion-button type="submit"
+                     *ngIf="fspChoice && !fspSubmitted"
+                    [disabled]="fspSubmitted || isDisabled"
+                    expand="block"
+        >{{ 'shared.submit-button'|translate }}</ion-button>
+      </p>
+    </form>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                 *ngIf="fspSubmitted"
+                 [isSpoken]="fspSubmitted"
+  >
+    <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:chosenFsp?.fsp }"></p>
+  </dialogue-turn>
+
+  <form *ngIf="questions">
+    <dialogue-turn isConnected="true"
+                   isSpoken="true"
+    >
+      <p>
+        {{ 'personal.select-fsp.attributes.introduction'|translate }}
+      </p>
+    </dialogue-turn>
+
+
+    <q-and-a-set [questions]="questions"
+                 [(isSubmitted)]="isSubmitted"
+                 [(isEditing)]="isEditing"
+                 (submit)="submitCustomAttributes($event)"
+                 [submitLabel]="'personal.select-fsp.attributes.submit'|translate"
+    ></q-and-a-set>
+
+    <dialogue-turn *ngIf="showResultSuccess"
+                   [isSpoken]="showResultSuccess"
+    >
+      <p>
+        {{ 'personal.select-fsp.attributes.success'|translate }}
+      </p>
+    </dialogue-turn>
+    <dialogue-turn *ngIf="showResultError"
+                   [isSpoken]="showResultError"
+    >
+      <p>
+        {{ 'personal.select-fsp.attributes.error'|translate }}
+      </p>
+    </dialogue-turn>
+  </form>
+
+</section>

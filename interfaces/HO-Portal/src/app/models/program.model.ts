@@ -8,4 +8,15 @@ export class Program {
   created: string;
   updated: string;
   author: object;
+  inclusionCalculationType: InclusionCalculationType;
+  highestScoresX: number;
+  minimumScore: number;
+  distributionDuration: number;
+  distributionFrequency: string;
+  startDate: string;
+}
+
+export enum InclusionCalculationType {
+  highestScoresX = 'highestScoresX',
+  minimumScore = 'minimumScore',
 }

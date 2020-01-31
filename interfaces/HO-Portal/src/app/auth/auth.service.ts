@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   loggedIn = false;
+  public userRole: string;
 
   // store the URL so we can redirect after logging in
   redirectUrl: string;
@@ -19,11 +20,15 @@ export class AuthService {
   ) { }
 
   public isLoggedIn(): boolean {
-    if (!!this.jwtService.getToken()) {
+    if (this.jwtService.getToken()) {
       this.loggedIn = true;
     }
 
     return this.loggedIn;
+  }
+
+  public getUserRole(): string {
+    return this.jwtService.getTokenRole();
   }
 
   public async login(email: string, password: string) {
@@ -40,6 +45,7 @@ export class AuthService {
 
         this.jwtService.saveToken(user.token);
         this.loggedIn = true;
+        this.userRole = user.role;
 
         if (this.redirectUrl) {
           this.router.navigate([this.redirectUrl]);

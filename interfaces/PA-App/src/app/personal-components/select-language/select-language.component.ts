@@ -22,7 +22,7 @@ export class SelectLanguageComponent extends PersonalComponent {
   constructor(
     public paData: PaDataService,
     public translate: TranslateService,
-    public conversationService: ConversationService
+    public conversationService: ConversationService,
   ) {
     super();
   }

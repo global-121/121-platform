@@ -6,9 +6,11 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
-import { Program } from 'src/app/models/program.model';
+import { Program, ProgramAttribute, ProgramCriterium, ProgramCriteriumOption } from 'src/app/models/program.model';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
+import { AnswerType, Question, QuestionOption, Answer, AnswerSet } from '../../models/q-and-a.models';
+import { TranslatableString } from 'src/app/models/translatable-string.model';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -31,11 +33,11 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public questions: Question[];
   public answerTypes = AnswerType;
 
-  public answers: any = {};
+  public answers: AnswerSet = {};
 
   public allQuestionsShown = false;
   public hasAnswered: boolean;
-  public changedAnswers: boolean;
+  public hasChangedAnswers: boolean;
   public dobFeedback = false;
 
   constructor(
@@ -64,10 +66,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.isDisabled = true;
     this.currentProgram = this.data.currentProgram;
     this.prepareProgramDetails(this.data.currentProgram);
-    this.checkAllQuestionsShown(this.questions, Object.keys(this.data.answers));
     this.answers = this.data.answers;
+    this.allQuestionsShown = true;
     this.hasAnswered = true;
-    this.changedAnswers = false;
+    this.hasChangedAnswers = false;
   }
 
   initNew() {
@@ -112,43 +114,27 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return programDetails;
   }
 
-  private buildQuestions(customCriteria: Program['customCriteria']) {
-    const questions = [];
-
-    for (const criterium of customCriteria) {
-      const question: Question = {
-        id: criterium.id,
+  private buildQuestions(customCriteria: ProgramCriterium[]) {
+    return customCriteria.map((criterium): Question => {
+      return {
         code: criterium.criterium,
         answerType: criterium.answerType,
         label: this.mapLabelByLanguageCode(criterium.label),
-        options: this.buildOptions(criterium.options),
+        options: (!criterium.options) ? null : this.buildOptions(criterium.options),
       };
-      questions.push(question);
-    }
-
-    return questions;
+    });
   }
 
-  private buildOptions(optionsRaw: any[]): QuestionOption[] {
-    if (!optionsRaw) {
-      return;
-    }
-
-    const options = [];
-
-    for (const option of optionsRaw) {
-      const questionOption: QuestionOption = {
-        id: option.id,
+  private buildOptions(optionSet: ProgramCriteriumOption[]): QuestionOption[] {
+    return optionSet.map((option) => {
+      return {
         value: option.option,
         label: this.mapLabelByLanguageCode(option.label),
       };
-      options.push(questionOption);
-    }
-
-    return options;
+    });
   }
 
-  private mapLabelByLanguageCode(property: any) {
+  private mapLabelByLanguageCode(property: TranslatableString | string): string {
     let label = property[this.languageCode];
 
     if (!label) {
@@ -162,84 +148,22 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return label;
   }
 
-  private getQuestionByCode(questionCode: string): Question {
-    const result = this.questions.find((question: Question) => {
-      return question.code === questionCode;
-    });
-
-    return result;
-  }
-
-  private getAnswerOptionLabelByValue(options: QuestionOption[], answerValue: string) {
-    const option = options.find((item: QuestionOption) => {
-      return item.value === answerValue;
-    });
-
-    return option ? option.label : '';
-  }
-
-  public inputAnswers($event) {
-    const questionCode = $event.target.name;
-
-    // Fill this.answers with an empty answer. For this functionality, the actual answer is not yet needed.
-    this.answers[questionCode] = new Answer();
-    const answersArray = Object.keys(this.answers);
-
-    this.showNextQuestion(answersArray.indexOf(questionCode));
-  }
-
-  public changeAnswers($event) {
-    const questionCode = $event.target.name;
-    const answerValue = $event.target.value;
-
-    const question = this.getQuestionByCode(questionCode);
-    const answer: Answer = {
-      code: questionCode,
-      value: answerValue,
-      label: answerValue,
-    };
-
-    // Convert the answerValue to a human-readable label
-    if (question.answerType === AnswerType.Enum) {
-      answer.label = this.getAnswerOptionLabelByValue(question.options, answerValue);
-    }
-
-    this.answers[questionCode] = answer;
-
-    const answersArray = Object.keys(this.answers);
-
-    this.checkAllQuestionsShown(this.questions, answersArray);
-
-    this.showNextQuestion(answersArray.indexOf(questionCode));
-  }
-
-  private showNextQuestion(currentIndex: number) {
-    const initialTurns = 1; // Turns shown before the 'first question'-turn.
-    const nextIndex = currentIndex + initialTurns + 1;
-
-    this.showTurnByIndex(nextIndex);
-  }
-
-  private checkAllQuestionsShown(questions: Question[], answers: string[]) {
-    if (answers.length >= (questions.length - 1)) {
-      this.allQuestionsShown = true;
-    } else {
-      this.allQuestionsShown = false;
-    }
-  }
-
-  public change() {
+  public changeAnswers() {
     this.hasAnswered = false;
-    this.changedAnswers = true;
+    this.hasChangedAnswers = true;
   }
 
-  public submit() {
-    if (!this.answers.dob) {
+  public submit($event) {
+    this.answers = $event;
+
+    if (!this.answers.dob.value) {
+      this.changeAnswers();
       this.dobFeedback = true;
       return;
     }
+
     this.hasAnswered = true;
-    this.changedAnswers = false;
+    this.hasChangedAnswers = false;
     this.dobFeedback = false;
     this.conversationService.scrollToEnd();
     this.paData.saveAnswers(this.programId, this.answers);
@@ -292,8 +216,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.paData.store(this.paData.type.programId, this.programId);
   }
 
-  private createAttributes(answers: Answer[]): Attribute[] {
-    const attributes = [];
+  private createAttributes(answers: Answer[]): ProgramAttribute[] {
+    const attributes: ProgramAttribute[] = [];
 
     answers.forEach((item: Answer) => {
       attributes.push({
@@ -307,7 +231,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.paymentMethod;
+    return PersonalComponents.selectAppointment;
   }
 
   complete() {
@@ -327,34 +251,4 @@ export class EnrollInProgramComponent extends PersonalComponent {
       next: this.getNextSection(),
     });
   }
-}
-
-class Question {
-  id: number;
-  code: string;
-  answerType: AnswerType;
-  label: string;
-  options: QuestionOption[];
-}
-enum AnswerType {
-  // Translate the types used in the API to internal, proper types:
-  Number = 'numeric',
-  Text = 'text',
-  Date = 'date',
-  Enum = 'dropdown',
-}
-class QuestionOption {
-  id: number;
-  value: string;
-  label: string;
-}
-class Answer {
-  code: string;
-  value: string;
-  label: string;
-}
-class Attribute {
-  attributeId: number;
-  attribute: string;
-  answer: string;
 }

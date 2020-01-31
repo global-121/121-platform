@@ -7,6 +7,8 @@ import { ApiService } from './api.service';
 
 import { Program } from '../models/program.model';
 import { ProgramFunds } from '../models/program-funds.model';
+import { Person } from '../models/person.model';
+import { PastInstallments } from '../models/past-installments.model';
 
 @Injectable({
   providedIn: 'root',
@@ -44,14 +46,13 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getProgramById(programId: number | string): Observable<Program> {
+  getProgramById(programId: number | string): Promise<Program> {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}`,
     ).pipe(
       tap((response) => console.log(response)),
-      map((response) => response),
-    );
+    ).toPromise();
   }
 
   getFundsById(programId: number | string): Promise<ProgramFunds> {
@@ -60,7 +61,6 @@ export class ProgramsServiceApiService {
       `/programs/funds/${programId}`,
     ).pipe(
       tap((response) => console.log(response)),
-      map((response) => response),
     ).toPromise();
   }
 
@@ -70,21 +70,71 @@ export class ProgramsServiceApiService {
       `/programs/total-included/${programId}`,
     ).pipe(
       tap((response) => console.log(response)),
-      map((response) => response),
     ).toPromise();
   }
 
-  submitPayout(programId: number, amount: number): Promise<any> {
+  getPastInstallments(programId: number | string): Promise<PastInstallments[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/installments/${programId}`,
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
+  submitPayout(programId: number, installment: number, amount: number): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       `/programs/payout`,
       {
         programId,
+        installment,
         amount,
       },
     ).pipe(
       tap((response) => console.log(response)),
-      map((response) => response),
+    ).toPromise();
+  }
+
+  getEnrolled(programId: number | string): Promise<Person[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/enrolled/${programId}`,
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
+  getEnrolledPrivacy(programId: number | string): Promise<Person[]> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/enrolledPrivacy/${programId}`,
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
+  include(programId: number | string, dids: string[]): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/include/${programId}`,
+      {
+        dids: JSON.stringify(dids),
+      },
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
+  exclude(programId: number | string, dids: string[]): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/exclude/${programId}`,
+      {
+        dids: JSON.stringify(dids),
+      },
+    ).pipe(
+      tap((response) => console.log(response)),
     ).toPromise();
   }
 }

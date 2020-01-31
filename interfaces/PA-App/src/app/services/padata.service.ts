@@ -23,6 +23,7 @@ export class PaDataService {
   public type = PaDataTypes;
 
   public hasAccount = false;
+  private username: string;
   public myPrograms: any = {};
   public myAnswers: any = {};
 
@@ -40,6 +41,25 @@ export class PaDataService {
     this.useLocalStorage = environment.localStorage;
 
     this.retrieveLoggedInState();
+  }
+
+  private setUsername(username: string) {
+    this.username = username;
+    this.store(this.type.username, username, true);
+  }
+
+  async getUsername(): Promise<string> {
+    if (!this.username) {
+      this.username = await this.retrieve(this.type.username, true);
+    }
+
+    return new Promise<string>((resolve, reject) => {
+      if (!this.username) {
+        return reject();
+      }
+
+      return resolve(this.username);
+    });
   }
 
   async saveProgram(programId: number, program: Program): Promise<any> {
@@ -98,7 +118,13 @@ export class PaDataService {
       return this.ionStorage.get(type);
     }
 
-    return JSON.parse(await this.paAccountApi.retrieve(type));
+    const paAccountApiOutput = await this.paAccountApi.retrieve(type);
+
+    // Only JSON.parse the output if it could result in something:
+    if (!paAccountApiOutput) {
+      return undefined;
+    }
+    return JSON.parse(paAccountApiOutput);
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -115,11 +141,15 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
+    // 'Sanitize' username:
+    username = username.trim();
+
     console.log('PaData: createAccount()');
     return this.paAccountApi.createAccount(username, password).then(
       () => {
         console.log('Account created.');
         this.setLoggedIn();
+        this.setUsername(username);
       }
     );
   }
@@ -137,6 +167,7 @@ export class PaDataService {
             this.ionStorage.clear();
             this.uiService.showUserMenu();
             this.setLoggedIn();
+            this.setUsername(response.username);
             return resolve(response);
           },
           (error) => {
@@ -191,8 +222,8 @@ export class PaDataService {
     const did = await this.retrieve(this.type.did);
 
     // All requests are dependent on their predecessors!
-    // A wallet should only be deleted if the account is already succesfully deleted
-    // A connection should only be deleted if the wallet is already succesfully deleted
+    // A wallet should only be deleted if the account is already successfully deleted
+    // A connection should only be deleted if the wallet is already successfully deleted
     return new Promise(async (resolve, reject) => {
       if (!this.hasAccount) {
         return reject('');

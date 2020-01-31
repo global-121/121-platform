@@ -30,10 +30,11 @@
     </ul>
 
     <p>
-      <ion-button type="button" size="small">
-        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+      <more-info-button [message]="'personal.meeting-reminder.info-message'|translate"
+                        [heading]="'personal.meeting-reminder.more-info-documents'|translate"
+      >
         {{ 'personal.meeting-reminder.more-info-documents'|translate }}
-      </ion-button>
+      </more-info-button>
     </p>
     <p>
       {{ 'personal.meeting-reminder.qr-code'|translate }}

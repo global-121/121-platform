@@ -27,6 +27,9 @@
       "program-details": {
         "pageTitle": "Program details",
         "section-funds": "Funds overview",
+        "section-people": "People overview",
+        "manage-people": "Manage people (Regular)",
+        "manage-people-privacy": "Manage people (Privacy Officer)",
         "section-payout": "Payout",
         "section-details": "Details overview",
         "all": "All details",
@@ -63,11 +66,37 @@
         "last-updated": "Last updated: {{date}}"
       },
       "program-payout": {
+        "installment-nr": "Installment #",
+        "closed": "Closed",
+        "open": "Open",
         "start-payout": "Start payout now",
         "total-included": "Number of PA included",
         "total-amount": "Total amount to payout:",
         "payout-success": "Payout successful.",
-        "payout-error": "Payout unsuccessful."
+        "payout-error": "Payout unsuccessful. Are there enough funds?"
+      },
+      "program-people": {
+        "pageTitle": "Manage people",
+        "pageTitlePrivacy": "Manage people (Privacy Officer)",
+        "noConnections": "There are no new enrolled People Affected.",
+        "noConnectionsPrivacy": "There are no included or excluded People Affected yet.",
+        "column": {
+          "person": "Person",
+          "score": "Inclusion score",
+          "include": "Include",
+          "created": "Created",
+          "updated": "Updated",
+          "name": "Name",
+          "dob": "Date of birth"
+        },
+        "submit-warning": "Inclusion will become final for:",
+        "submit-warning-pa-included": "PA's included:",
+        "submit-warning-pa-excluded": "PA's excluded:",
+        "submit-warningPrivacy": "Inclusion will be updated for:",
+        "submit-warning-pa-to-included": "PA's included > excluded:",
+        "submit-warning-pa-to-excluded": "PA's excluded > included:",
+        "submitPrivacy": "Update inclusion decision",
+        "submit": "Confirm inclusion decision"
       },
       "program-modal": {
         "pageTitle": "Program JSON"
@@ -88,6 +117,11 @@
     }
   },
   "common": {
+    "table": {
+      "no-data": "No data to display",
+      "total": "total",
+      "selected": "selected"
+    },
     "update": "Update",
     "confirm": "Are you sure?",
     "cancel": "Cancel",

@@ -9,6 +9,7 @@ import { PaDataService } from 'src/app/services/padata.service';
 
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { Program } from 'src/app/models/program.model';
+import { TranslatableString } from 'src/app/models/translatable-string.model';
 
 @Component({
   selector: 'app-select-appointment',
@@ -98,7 +99,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
     return (startDay === endDay);
   }
 
-  private mapLabelByLanguageCode(property: any) {
+  private mapLabelByLanguageCode(property: TranslatableString | string): string {
     let label = property[this.languageCode];
 
     if (!label) {
@@ -165,7 +166,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
 
   getNextSection() {
-    return PersonalComponents.phoneNumber;
+    return PersonalComponents.selectFsp;
   }
 
   complete() {

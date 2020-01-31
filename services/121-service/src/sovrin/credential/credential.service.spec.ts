@@ -19,9 +19,9 @@ import { AppointmentEntity } from '../../schedule/appointment/appointment.entity
 import { SchemaService } from '../schema/schema.service';
 import { ProofService } from '../proof/proof.service';
 import { HttpModule } from '@nestjs/common';
-import { FinancialServiceProviderEntity } from '../../programs/program/financial-service-provider.entity';
 import { ProtectionServiceProviderEntity } from '../../programs/program/protection-service-provider.entity';
 import { TransactionEntity } from '../../programs/program/transactions.entity';
+import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;

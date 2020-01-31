@@ -2,10 +2,11 @@
   <dialogue-turn>
     <p [innerHTML]="'personal.select-language.introduction'|translate"></p>
     <p>
-      <ion-button type="button" size="small">
-        <ion-icon name="information-circle-outline" slot="start"></ion-icon>
+      <more-info-button [message]="'personal.select-language.info-message'|translate"
+                        [heading]="'personal.select-language.more-info'|translate"
+      >
         {{ 'personal.select-language.more-info'|translate }}
-      </ion-button>
+      </more-info-button>
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self"

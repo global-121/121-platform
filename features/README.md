@@ -22,9 +22,15 @@ They are grouped by their (most important) actor.
 
 ### For Humanitarian Organization (HO)
 1. [View funds overview](View_funds_overview.feature)
+2. [Send payment instructions](Send_payment_instructions.feature)
+3. [Manage people enrolled](Manage_people_enrolled.feature)
+4. [Manage people in/excluded](Manage_people_in_or_excluded.feature)
 
 
 ### For Person/People Affected (PA)
+1. [Fill payment details](Fill_payment_details.feature)
+2. [Verify password input](Verify_password_input.feature)
+3. [Verify phone number input](Verify_phone_number_input.feature)
 
 
 ### For Aid-Worker (AW)
