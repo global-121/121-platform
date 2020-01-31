@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { DataStorageEntity } from './data-storage.entity';
 import { UserEntity } from '../user/user.entity';
 import { StoreDataDto } from './dto';
+import { walletPasswordEncryptionKey } from '../config';
+const Cryptr = require('cryptr');
 
 @Injectable()
 export class DataStorageService {
@@ -14,6 +16,8 @@ export class DataStorageService {
 
   public constructor() { }
 
+  public cryptr = new Cryptr(walletPasswordEncryptionKey);
+
   public async post(
     userId: number,
     storeData: StoreDataDto,
@@ -22,6 +26,8 @@ export class DataStorageService {
     data.userId = userId;
     data.type = storeData.type;
     data.data = storeData.data;
+
+    data.data = this.cryptr.encrypt(data.data);
 
     const newData = await this.dataStorageRepository.save(data);
 
@@ -39,10 +45,12 @@ export class DataStorageService {
       },
       order: { created: "DESC" }
     });
-    if (!data || data.length === 0 ) {
+    if (!data || data.length === 0) {
       const errors = { Data: ' not found' };
       throw new HttpException({ errors }, 404);
     }
+
+    data[0].data = this.cryptr.decrypt(data[0].data);
     return JSON.stringify(data[0].data);
   }
 
