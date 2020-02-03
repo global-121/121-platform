@@ -19,37 +19,37 @@
      *ngIf="isDebug"
      [hidden]="!showDebug"
 >
-  <ion-row class="ion-align-items-center ion-justify-content-between">
-    <ion-button color="danger" size="small"
+<ion-row class="ion-align-items-center">
+    <select name="debugSections"
+            title="Add section"
+            (change)="insertSection($event.target.value); $event.target.value='';"
+            class="ion-margin-end"
+    >
+      <option value="">Add section...</option>
+      <option *ngFor="let section of debugSections;">{{ section }}</option>
+    </select>
+    <ion-button color="danger" size="small" fill="outline"
                 title="Clear storage"
                 (click)="debugClearAllStorage()"
+                class="ion-margin-end"
     >
       <ion-icon name="nuclear" size="small" slot="icon-only"></ion-icon>
     </ion-button>
 
-    <ion-button color="danger" size="small" fill="outline"
+    <ion-button color="danger" size="small" fill="clear"
                 title="Step back in Conversation History"
                 (click)="conversationService.debugUndoLastStep()"
     >
       <ion-icon name="undo" size="small" slot="icon-only"></ion-icon>
     </ion-button>
 
-    <ion-button color="danger" size="small"
+    <ion-button color="danger" size="small" fill="clear"
                 title="Fix history"
                 (click)="conversationService.debugFillHistory()"
     >
       <ion-icon name="color-fill" size="small" slot="icon-only"></ion-icon>
     </ion-button>
 
-    <select name="debugSections"
-            title="Add section"
-            (change)="insertSection($event.target.value); $event.target.value='';"
-    >
-      <option value="">Add section...</option>
-      <option *ngFor="let section of debugSections;">{{ section }}</option>
-    </select>
-  </ion-row>
-  <ion-row>
     <ion-button color="tertiary" size="small" fill="clear"
                 title="Toggle state: loading"
                 (click)="conversationService.state.isLoading=!conversationService.state.isLoading;"
@@ -69,6 +69,13 @@
                 (click)="this.container.clear()"
     >
       <ion-icon name="trash" size="small" slot="icon-only"></ion-icon>
+    </ion-button>
+
+    <ion-button color="tertiary" size="small" fill="clear"
+                title="Start from history"
+                (click)="debugStartFromHistory()"
+    >
+      <ion-icon name="cloud-download" size="small" slot="icon-only"></ion-icon>
     </ion-button>
 
   </ion-row>
