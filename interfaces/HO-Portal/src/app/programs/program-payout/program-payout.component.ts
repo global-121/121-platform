@@ -122,7 +122,7 @@ export class ProgramPayoutComponent implements OnChanges {
     console.log(installment);
     installment.isInProgress = true;
     console.log('Paying out...', installment.amount);
-    this.programsService.submitPayout(this.programId, installment.id, +installment.amount)
+    this.programsService.submitPayout(+this.programId, installment.id, +installment.amount)
       .then(
         () => {
           installment.isInProgress = false;
