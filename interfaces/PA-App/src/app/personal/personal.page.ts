@@ -87,6 +87,11 @@ export class PersonalPage implements OnInit {
   }
 
   ngOnInit() {
+    // Prevent automatic behaviour while debugging/developing:
+    if (this.isDebug && this.showDebug) {
+      return;
+    }
+
     this.loadComponents();
   }
 
@@ -139,5 +144,9 @@ export class PersonalPage implements OnInit {
     this.storage.clear();
     window.localStorage.clear();
     window.sessionStorage.clear();
+  }
+
+  public debugStartFromHistory() {
+    this.loadComponents();
   }
 }
