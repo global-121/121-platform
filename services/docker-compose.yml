@@ -134,6 +134,8 @@ services:
     image: pa-accounts-node
     init: true
     container_name: PA-accounts-service
+    environment:
+      - WALLET_PASSWORD_ENCRYPTION_KEY=${WALLET_PASSWORD_ENCRYPTION_KEY}
     volumes:
       - "./PA-accounts-service:/home/121/services/PA-accounts-service"
     ports:
