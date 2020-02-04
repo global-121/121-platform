@@ -158,6 +158,9 @@ export class SelectFspComponent extends PersonalComponent {
     this.showResultSuccess = null;
     this.showResultError = null;
 
+    // Treat phoneNumber as a special case, to enable reuse later:
+    await this.storePhoneNumber();
+
     this.processInOrder(
       this.customAttributeAnswers,
       (answer: Answer) => this.programsService.postConnectionCustomAttribute(this.did, answer.code, answer.value)
@@ -181,6 +184,16 @@ export class SelectFspComponent extends PersonalComponent {
       this.conversationService.stopLoading();
     });
 
+  }
+
+  private async storePhoneNumber() {
+    const phoneNumberAnswer = this.customAttributeAnswers.find((answer: Answer) => {
+      return (answer.code === this.paData.type.phoneNumber);
+    });
+
+    if (phoneNumberAnswer) {
+      return await this.paData.store(this.paData.type.phoneNumber, phoneNumberAnswer.value);
+    }
   }
 
   getNextSection() {

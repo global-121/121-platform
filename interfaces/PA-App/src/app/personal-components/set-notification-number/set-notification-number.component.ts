@@ -35,6 +35,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   ) {
     super();
     this.useLocalStorage = environment.localStorage;
+    this.languageCode = this.translate.currentLang;
   }
 
   async ngOnInit() {
@@ -55,7 +56,6 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   }
 
   async initNew() {
-    this.languageCode = this.translate.currentLang;
     this.did = await this.paData.retrieve(this.paData.type.did);
   }
 
@@ -79,7 +79,11 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     this.phoneNumber = await this.paData.retrieve(this.paData.type.phoneNumber);
 
     if (this.phoneNumber) {
-      return this.cancel();
+      this.did = await this.paData.retrieve(this.paData.type.did);
+      this.programService.postPhoneNumber(this.did, this.phoneNumber, this.languageCode)
+        .then(() => {
+          this.cancel();
+        });
     }
   }
 
@@ -88,9 +92,10 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     this.phoneSkipped = false;
     this.phoneNumber = this.sanitizePhoneNumber(phone);
 
-    this.programService.postPhoneNumber(this.did, this.phoneNumber, this.languageCode).subscribe(() => {
-      this.complete();
-    });
+    this.programService.postPhoneNumber(this.did, this.phoneNumber, this.languageCode)
+      .then(() => {
+        this.complete();
+      });
   }
 
   public sanitizePhoneNumber(phoneNumber: string): string {
