@@ -106,7 +106,6 @@ export class CreateConnectionService {
     did: string,
     fspId: number,
   ): Promise<ConnectionEntity> {
-    console.log('addFsp')
     const connection = await this.findOne(did);
     const fsp = await this.fspRepository.findOne(fspId);
     connection.fsp = fsp;
