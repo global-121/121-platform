@@ -33,7 +33,7 @@ export class SelectFspComponent extends PersonalComponent {
   public fspSubmitted: boolean;
 
   public questions: Question[];
-  public customAttributeAnswers: Answer[];
+  public customAttributeAnswers: AnswerSet = {};
   public isSubmitted: boolean;
   public isEditing: boolean;
   public showResultSuccess: boolean;
@@ -153,7 +153,7 @@ export class SelectFspComponent extends PersonalComponent {
 
   public async submitCustomAttributes($event: AnswerSet) {
     this.conversationService.startLoading();
-    this.customAttributeAnswers = Object.values($event);
+    this.customAttributeAnswers = $event;
 
     this.showResultSuccess = null;
     this.showResultError = null;
@@ -162,7 +162,7 @@ export class SelectFspComponent extends PersonalComponent {
     await this.storePhoneNumber();
 
     this.processInOrder(
-      this.customAttributeAnswers,
+      Object.values(this.customAttributeAnswers),
       (answer: Answer) => this.programsService.postConnectionCustomAttribute(this.did, answer.code, answer.value)
     ).then(
       () => {
@@ -187,9 +187,7 @@ export class SelectFspComponent extends PersonalComponent {
   }
 
   private async storePhoneNumber() {
-    const phoneNumberAnswer = this.customAttributeAnswers.find((answer: Answer) => {
-      return (answer.code === this.paData.type.phoneNumber);
-    });
+    const phoneNumberAnswer = this.customAttributeAnswers[this.paData.type.phoneNumber];
 
     if (phoneNumberAnswer) {
       return await this.paData.store(this.paData.type.phoneNumber, phoneNumberAnswer.value);
