@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 
@@ -32,7 +32,6 @@ export class PaAccountApiService {
         true
       )
       .pipe(
-        tap(response => console.log('response: ', response)),
         map(response => {
           const user = response.user;
 
@@ -59,9 +58,6 @@ export class PaAccountApiService {
         },
         false
       )
-      .pipe(
-        tap(response => console.log('response: ', response)),
-      )
       .toPromise();
   }
 
@@ -75,7 +71,6 @@ export class PaAccountApiService {
         false
       )
       .pipe(
-        tap(response => console.log('response: ', response)),
         catchError((error) => {
           if (error.error instanceof ErrorEvent) {
             console.error(error);
@@ -102,7 +97,6 @@ export class PaAccountApiService {
         true
       )
       .pipe(
-        tap(response => console.log('response: ', response)),
         map(response => {
           const user = response.user;
 
@@ -127,9 +121,6 @@ export class PaAccountApiService {
           password,
         },
         false
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
       )
       .toPromise();
   }
