@@ -75,7 +75,7 @@ export class ProgramsServiceApiService {
           nonce,
           meta
         },
-        false
+        true
       )
       .toPromise();
   }
@@ -105,7 +105,7 @@ export class ProgramsServiceApiService {
           programId,
           encryptedCredentialRequest,
         },
-        false
+        true
       )
       .toPromise();
   }
@@ -126,7 +126,7 @@ export class ProgramsServiceApiService {
           credentialType,
           attributes
         },
-        false
+        true
       )
       .toPromise();
   }
@@ -162,7 +162,7 @@ export class ProgramsServiceApiService {
           programId,
           encryptedProof
         },
-        false
+        true
       )
       .pipe(
         map(response => response.status)
@@ -181,7 +181,7 @@ export class ProgramsServiceApiService {
         {
           did
         },
-        false
+        true
       )
       .pipe(
         map(response => response.status)
