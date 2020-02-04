@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 
@@ -22,9 +22,6 @@ export class ProgramsServiceApiService {
   getCountries(): Promise<Country[]> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/countries/all')
-      .pipe(
-        tap(response => console.log('response: ', response)),
-      )
       .toPromise();
   }
 
@@ -32,7 +29,6 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(environment.url_121_service_api, '/programs')
       .pipe(
-        tap(response => console.log('response: ', response)),
         map(response => response.programs)
       );
   }
@@ -41,7 +37,6 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/country/' + countryId)
       .pipe(
-        tap(response => console.log('response: ', response)),
         map(response => response.programs)
       )
       .toPromise();
@@ -50,18 +45,12 @@ export class ProgramsServiceApiService {
   getProgramById(programId: number): Promise<Program> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/' + programId)
-      .pipe(
-        tap(response => console.log('response: ', response)),
-      )
       .toPromise();
   }
 
   getFspById(fspId: number): Promise<Fsp> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/fsp/' + fspId)
-      .pipe(
-        tap(response => console.log('response: ', response)),
-      )
       .toPromise();
   }
 
@@ -71,9 +60,6 @@ export class ProgramsServiceApiService {
       .get(
         environment.url_121_service_api,
         '/sovrin/create-connection'
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
       )
       .toPromise();
   }
@@ -89,9 +75,7 @@ export class ProgramsServiceApiService {
           nonce,
           meta
         },
-        false
-      ).pipe(
-        tap(response => console.log('response: ', response)),
+        true
       )
       .toPromise();
   }
@@ -101,9 +85,6 @@ export class ProgramsServiceApiService {
       .get(
         environment.url_121_service_api,
         '/sovrin/credential/offer/' + programId
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
       )
       .toPromise();
   }
@@ -124,10 +105,7 @@ export class ProgramsServiceApiService {
           programId,
           encryptedCredentialRequest,
         },
-        false
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
+        true
       )
       .toPromise();
   }
@@ -148,10 +126,7 @@ export class ProgramsServiceApiService {
           credentialType,
           attributes
         },
-        false
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
+        true
       )
       .toPromise();
   }
@@ -161,9 +136,6 @@ export class ProgramsServiceApiService {
       .get(
         environment.url_121_service_api,
         '/sovrin/credential/' + did
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
       );
   }
 
@@ -172,9 +144,6 @@ export class ProgramsServiceApiService {
       .get(
         environment.url_121_service_api,
         '/sovrin/proof/proofRequest/' + programId
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
       )
       .toPromise();
   }
@@ -193,10 +162,9 @@ export class ProgramsServiceApiService {
           programId,
           encryptedProof
         },
-        false
+        true
       )
       .pipe(
-        tap(response => console.log('response: ', response)),
         map(response => response.status)
       )
       .toPromise();
@@ -213,10 +181,9 @@ export class ProgramsServiceApiService {
         {
           did
         },
-        false
+        true
       )
       .pipe(
-        tap(response => console.log('response: ', response)),
         map(response => response.status)
       );
   }
@@ -225,8 +192,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       '/appointment/availability/' + programId
-    ).pipe(
-      tap(response => console.log('response: ', response)),
     )
       .toPromise();
   }
@@ -239,8 +204,6 @@ export class ProgramsServiceApiService {
         did
       },
       true
-    ).pipe(
-      tap(response => console.log('response: ', response)),
     );
   }
 
@@ -254,8 +217,6 @@ export class ProgramsServiceApiService {
         value,
       },
       true
-    ).pipe(
-      tap(response => console.log('response: ', response)),
     )
       .toPromise();
   }
@@ -268,8 +229,6 @@ export class ProgramsServiceApiService {
         phonenumber: phoneNumber,
       },
       true
-    ).pipe(
-      tap(response => console.log('response: ', response)),
     );
   }
 
@@ -284,8 +243,6 @@ export class ProgramsServiceApiService {
         language
       },
       true
-    ).pipe(
-      tap(response => console.log('response: ', response)),
     );
   }
 
@@ -298,8 +255,6 @@ export class ProgramsServiceApiService {
         fspId
       },
       true
-    ).pipe(
-      tap(response => console.log('response: ', response)),
     );
   }
 
@@ -311,8 +266,6 @@ export class ProgramsServiceApiService {
         did
       },
       true
-    ).pipe(
-      tap(response => console.log('response: ', response)),
     )
       .toPromise();
   }
