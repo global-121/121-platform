@@ -30,7 +30,7 @@ Feature: Verify password input
     Given the PA fills in a password("test-password")
     Given the PA presses the "eye open"-button
     When the PA presses the "eye-icon with a line through it"-button
-    Then the value in the input is unreadable" "*************"
+    Then the value in the input is unreadable "*************"
     And the "eye-open" icon is shown
 
   Scenario: Toggle on disabled password-input
