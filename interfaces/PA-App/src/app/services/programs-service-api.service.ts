@@ -243,10 +243,10 @@ export class ProgramsServiceApiService {
       },
       true
     )
-    .toPromise();
+      .toPromise();
   }
 
-  postFsp(did: string, fspId: number): Observable<any> {
+  postFsp(did: string, fspId: number): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/sovrin/create-connection/fsp',
@@ -255,7 +255,8 @@ export class ProgramsServiceApiService {
         fspId
       },
       true
-    );
+    )
+      .toPromise();
   }
 
   deleteConnection(did: string): Promise<any> {
