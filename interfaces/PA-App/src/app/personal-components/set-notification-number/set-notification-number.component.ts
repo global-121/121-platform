@@ -35,6 +35,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   ) {
     super();
     this.useLocalStorage = environment.localStorage;
+    this.languageCode = this.translate.currentLang;
   }
 
   async ngOnInit() {
@@ -50,13 +51,6 @@ export class SetNotificationNumberComponent extends PersonalComponent {
       this.initHistory();
       return;
     }
-
-    this.initNew();
-  }
-
-  async initNew() {
-    this.languageCode = this.translate.currentLang;
-    this.did = await this.paData.retrieve(this.paData.type.did);
   }
 
   initHistory() {
@@ -76,26 +70,36 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   }
 
   private async checkExistingPhoneNumber() {
-    this.phoneNumber = await this.paData.retrieve(this.paData.type.phoneNumber);
+    const phoneNumber = await this.paData.retrieve(this.paData.type.phoneNumber);
 
-    if (this.phoneNumber) {
-      return this.cancel();
+    if (phoneNumber) {
+      this.storePhoneNumber(phoneNumber)
+        .then(() => {
+          this.cancel();
+        });
     }
   }
 
-  public async submitPhoneNumber(phone: any) {
+  public async submitPhoneNumber(phoneNumber: string) {
     this.choiceMade = true;
     this.phoneSkipped = false;
-    this.phoneNumber = this.sanitizePhoneNumber(phone);
 
-    this.programService.postPhoneNumber(this.did, this.phoneNumber, this.languageCode).subscribe(() => {
-      this.complete();
-    });
+    this.storePhoneNumber(phoneNumber)
+      .then(() => {
+        this.complete();
+      });
   }
 
   public sanitizePhoneNumber(phoneNumber: string): string {
     // Remove any non-digit character exept the '+' sign
     return phoneNumber.replace(/[^\d+]/g, '');
+  }
+
+  private async storePhoneNumber(phoneNumber: string) {
+    this.phoneNumber = this.sanitizePhoneNumber(phoneNumber);
+    this.did = await this.paData.retrieve(this.paData.type.did);
+
+    return this.programService.postPhoneNumber(this.did, this.phoneNumber, this.languageCode);
   }
 
   public skipPhone() {

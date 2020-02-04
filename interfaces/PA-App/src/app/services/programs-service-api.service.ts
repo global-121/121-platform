@@ -232,8 +232,7 @@ export class ProgramsServiceApiService {
     );
   }
 
-
-  postPhoneNumber(did: string, phoneNumber: string, language: string): Observable<any> {
+  postPhoneNumber(did: string, phoneNumber: string, language: string): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/sovrin/create-connection/phone',
@@ -243,7 +242,8 @@ export class ProgramsServiceApiService {
         language
       },
       true
-    );
+    )
+    .toPromise();
   }
 
   postFsp(did: string, fspId: number): Observable<any> {
