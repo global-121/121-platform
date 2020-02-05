@@ -68,6 +68,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     this.choiceMade = true;
     this.phoneSkipped = this.data.phoneSkipped;
     this.phoneNumber = this.data.phoneNumber;
+    this.phone = this.phoneNumber;
     this.ngo = await this.getNgo();
   }
 
