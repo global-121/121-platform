@@ -28,6 +28,8 @@ They are grouped by their (most important) actor.
 
 
 ### For Person/People Affected (PA-App)
+- [Create Digital ID](PA-App/Create_Digital_ID.feature)
+- [Use existing Digital ID](PA-App/Use_existing_Digital_ID.feature)
 - [Verify password input](PA-App/Verify_password_input.feature)
 - [Fill payment details](PA-App/Fill_payment_details.feature)
 - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
