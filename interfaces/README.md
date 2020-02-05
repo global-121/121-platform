@@ -16,6 +16,12 @@ Interfaces on the 121-platform
 
   Primary target(s): Laptop/desktop
 
+## Documentation
+Every interface or app has their own set of features described in test-scenarios.
+
+See the [/features/](../features/)-directory in this repository.
+
+
 ## Development
 
 ### Environment Requirements
@@ -49,15 +55,15 @@ When testing/debugging on Android and using the '`livereload`' functionality, it
 
 
 ### Specific requirements
-Every interface or app will have their own requirements defined in their README file.
+Every interface or app has their own requirements defined in their README file.
 
 ### Backend / API
-Every interface or app will refer to their specific services of APIs.
+Every interface or app will refer to the specific services or APIs they require.
 
 See the [/services/](../services/)-directory in this repository.
 
 ### Continuous Integration (CI)
-Every interface has its own Azure Pipeline set up to run tests and generate 'builds'.  
+Every interface has their own Azure Pipeline set up to run tests and generate 'builds'.  
 See their status on the [main README](../README.md#status).
 
 The appropriate tests will run automatically when relevant files are changed in a PR.

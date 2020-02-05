@@ -20,20 +20,22 @@ They are grouped by their (most important) actor.
 
 ## All features / scenario's
 
-### For Humanitarian Organization (HO)
-1. [View funds overview](View_funds_overview.feature)
-2. [Send payment instructions](Send_payment_instructions.feature)
-3. [Manage people enrolled](Manage_people_enrolled.feature)
-4. [Manage people in/excluded](Manage_people_in_or_excluded.feature)
+### For Humanitarian Organization (HO-Portal)
+- [View funds overview](HO-Portal/View_funds_overview.feature)
+- [Send payment instructions](HO-Portal/Send_payment_instructions.feature)
+- [Manage people enrolled](HO-Portal/Manage_people_enrolled.feature)
+- [Manage people in/excluded](HO-Portal/Manage_people_in_or_excluded.feature)
 
 
-### For Person/People Affected (PA)
-1. [Fill payment details](Fill_payment_details.feature)
-2. [Verify password input](Verify_password_input.feature)
-3. [Verify phone number input](Verify_phone_number_input.feature)
+### For Person/People Affected (PA-App)
+- [Create Digital ID](PA-App/Create_Digital_ID.feature)
+- [Use existing Digital ID](PA-App/Use_existing_Digital_ID.feature)
+- [Verify password input](PA-App/Verify_password_input.feature)
+- [Fill payment details](PA-App/Fill_payment_details.feature)
+- [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 
 
-### For Aid-Worker (AW)
+### For Aid-Worker (AW-App)
 
 
 ---
