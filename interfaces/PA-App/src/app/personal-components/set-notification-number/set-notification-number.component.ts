@@ -39,6 +39,15 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   }
 
   async ngOnInit() {
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+
+    this.initNew();
+  }
+
+  async initNew() {
     await this.checkExistingPhoneNumber();
 
     if (this.isCanceled) {
@@ -46,22 +55,20 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     }
 
     this.ngo = await this.getNgo();
-
-    if (this.data) {
-      this.initHistory();
-      return;
-    }
   }
 
-  initHistory() {
-    if (this.data.isCanceled) {
-      return this.cancel();
+  async initHistory() {
+    this.isCanceled = this.data.isCanceled;
+
+    if (this.isCanceled) {
+      return;
     }
 
     this.isDisabled = true;
     this.choiceMade = true;
     this.phoneSkipped = this.data.phoneSkipped;
     this.phoneNumber = this.data.phoneNumber;
+    this.ngo = await this.getNgo();
   }
 
   async getNgo() {
@@ -73,10 +80,8 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     const phoneNumber = await this.paData.retrieve(this.paData.type.phoneNumber);
 
     if (phoneNumber) {
-      this.storePhoneNumber(phoneNumber)
-        .then(() => {
-          this.cancel();
-        });
+      await this.storePhoneNumber(phoneNumber);
+      this.cancel();
     }
   }
 
@@ -84,10 +89,8 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     this.choiceMade = true;
     this.phoneSkipped = false;
 
-    this.storePhoneNumber(phoneNumber)
-      .then(() => {
-        this.complete();
-      });
+    await this.storePhoneNumber(phoneNumber);
+    this.complete();
   }
 
   public sanitizePhoneNumber(phoneNumber: string): string {

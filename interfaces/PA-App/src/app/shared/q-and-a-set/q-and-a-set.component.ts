@@ -15,6 +15,9 @@ export class QAndASetComponent {
   public questions: Question[];
 
   @Input()
+  public answers: AnswerSet = {};
+
+  @Input()
   public isSubmitted = false;
   @Output()
   public isSubmittedChange = new EventEmitter<boolean>();
@@ -29,8 +32,6 @@ export class QAndASetComponent {
 
   @Input()
   public submitLabel = 'Submit';
-
-  public answers: AnswerSet = {};
 
   public allQuestionsShown: boolean;
 
