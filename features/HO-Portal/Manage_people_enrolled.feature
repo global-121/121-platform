@@ -17,7 +17,7 @@ Feature: Manage people enrolled in a program
     And for each person a "updated date" is shown
     And for each person a "include checkbox" is shown
     And the "include checkbox" is checked for the "X" persons with highest value of "inclusion score"
-    And the total number of "people to include" equal to "X" is shown 
+    And the total number of "people to include" equal to "X" is shown
     And the total number of "people enrolled & not yet in/excluded in a program" is shown
 
   Scenario: Sort people enrolled in a program by property(score, creation-date, update-date)
@@ -32,7 +32,7 @@ Feature: Manage people enrolled in a program
     When the user checks/unchecks an "include checkbox"
     Then the row of that "include checkbox" gains/loses its "selection styling"
     And the total number of "people to include" is updated
-    
+
   Scenario: Show number of people to include/exclude
     Given the user views the page "manage people"
     Given a table with all "people enrolled in a program" is shown

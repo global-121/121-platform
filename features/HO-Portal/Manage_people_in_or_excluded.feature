@@ -17,7 +17,7 @@ Feature: Manage people in/excluded in a program
     And for each person a "inclusion status" is shown
     And for each person a "name" is shown
     And for each person a "date of birth" is shown
-    And the total number of "people included" is shown 
+    And the total number of "people included" is shown
     And the total number of "people in/excluded" is shown
 
   Scenario: Sort people in/excluded in a program by property(score, creation-date, update-date, name, date-of-birth)
@@ -49,4 +49,4 @@ Feature: Manage people in/excluded in a program
     Given the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
     Then the list of people is submitted
-     And the table is reloaded
+    And the table is reloaded

@@ -8,7 +8,7 @@ Feature: Manage people enrolled in a program
 
   Scenario: View payment installments of a program
     Given a number of "X" installments in the program
-    Given the installment frequency is "month" 
+    Given the installment frequency is "month"
     When the user scrolls to the "payout" section
     Then a list of "X" installments is shown
     And each installment is either "closed" or "open"
@@ -21,7 +21,7 @@ Feature: Manage people enrolled in a program
     And each installment has a payout-button
     And this button is enabled only for the 1st upcoming "open" installment
     And this button is disabled also in case of 0 included people
-  
+
   Scenario: Show total amount
     When the user clicks the button "start payout now"
     Then the pop-up "Are you sure?" is shown
@@ -30,14 +30,14 @@ Feature: Manage people enrolled in a program
     And the button "Cancel" is shown
 
   Scenario: Send payment instructions
-    Given the installment frequency is "month" 
+    Given the installment frequency is "month"
     Given the user clicks the button "start payout now"
     Given the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
     Then the payment instructions list is sent to the Financial Service Provider
     And the message "Payout successful" is shown
     And the processed installment has changed to "closed" with the date of today and has disabled buttons
-    And the next installment now has a date 1 "month" from today and has enabled fields 
+    And the next installment now has a date 1 "month" from today and has enabled fields
 
   Scenario: Send payment instructions with changed transfer value
     Given the user changes the Transfer value to "20"
@@ -60,7 +60,7 @@ Feature: Manage people enrolled in a program
     Given the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
     Then the message "Payout unsuccessful. Are there enough funds?" is shown
-  
+
   Scenario: Not enough funds available
     Given available funds "X"
     Given total amount needed "Y"
@@ -70,4 +70,4 @@ Feature: Manage people enrolled in a program
     When the user clicks the button "OK"
     Then the message "Payout unsuccessful. Are there enough funds?" is shown
 
-  
+
