@@ -24,6 +24,8 @@ export class StoreCredentialComponent extends PersonalComponent {
   public isDebug = environment.isDebug;
 
   public currentProgram: Program;
+
+  public isListening = false;
   public credentialReceived = false;
   public credentialStored = false;
 
@@ -48,19 +50,25 @@ export class StoreCredentialComponent extends PersonalComponent {
   }
 
   async initNew() {
-    const did = await this.paData.retrieve(this.paData.type.did);
+    if (this.isDebug) {
+      return;
+    }
 
-    console.log('Start listening for Credential...');
-    this.updateService.checkCredential(this.currentProgram.id, did).then(() => {
-      this.getCredential(did);
-    });
-
+    this.startListening();
   }
 
   initHistory() {
     this.isDisabled = true;
     this.credentialReceived = this.data.credentialReceived;
     this.credentialStored = this.data.credentialStored;
+  }
+
+  async startListening() {
+    console.log('Start listening for Credential...');
+    const did = await this.paData.retrieve(this.paData.type.did);
+    this.updateService.checkCredential(this.currentProgram.id, did).then(() => {
+      this.getCredential(did);
+    });
   }
 
   async getCredential(did: string) {

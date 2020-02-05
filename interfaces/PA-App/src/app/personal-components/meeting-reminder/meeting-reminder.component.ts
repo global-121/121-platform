@@ -60,6 +60,7 @@ export class MeetingReminderComponent extends PersonalComponent {
     await this.getDid();
     await this.getProgram();
     await this.generateContent();
+    this.complete();
   }
 
   async initHistory() {
@@ -134,7 +135,6 @@ export class MeetingReminderComponent extends PersonalComponent {
     this.daysToMeeting = this.getDaysToAppointment(this.chosenTimeslot.startDate);
 
     this.conversationService.stopLoading();
-    this.complete();
   }
 
   getNextSection() {
