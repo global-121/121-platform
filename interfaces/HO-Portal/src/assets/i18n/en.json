@@ -20,6 +20,14 @@
       "pageTitle": "Home"
     },
     "programs": {
+      "phases": {
+        "design": "Design",
+        "registration": "Registration",
+        "inclusion": "Inclusion",
+        "finalize": "Finalize",
+        "payment": "Payment",
+        "evaluation": "Evaluation"
+      },
       "program-list": {
         "pageTitle": "All Programs",
         "not-available": "No programs available."

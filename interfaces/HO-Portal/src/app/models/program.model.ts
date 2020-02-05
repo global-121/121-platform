@@ -14,6 +14,7 @@ export class Program {
   distributionDuration: number;
   distributionFrequency: string;
   startDate: string;
+  state: string;
 }
 
 export enum InclusionCalculationType {

@@ -23,6 +23,10 @@ export class ProgramDetailsComponent implements OnInit {
   public programArray: any;
   public userRoleEnum = UserRole;
 
+  public programPhases: any[] = [];
+  public activePhaseId: number;
+  public activePhase: string;
+
   private techFeatures = [
     'countryId',
     'schemaId',
@@ -38,7 +42,7 @@ export class ProgramDetailsComponent implements OnInit {
     public translate: TranslateService,
     private authService: AuthService
 
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
@@ -48,6 +52,23 @@ export class ProgramDetailsComponent implements OnInit {
     this.programTitle = this.mapLabelByLanguageCode(this.program.title);
     this.programArray = this.generateArray(this.program);
     this.currentUserRole = this.authService.getUserRole();
+    this.programPhases = this.createPhases();
+  }
+
+  public createPhases() {
+    const phasesInput = ['design', 'registration', 'inclusion', 'finalize', 'payment', 'evaluation'];
+    const phases = phasesInput.map((phase, index) => ({
+      id: index + 1,
+      phase: phase,
+      label: this.translate.instant('page.programs.phases.' + phase),
+      active: phase === this.program.state,
+    }));
+    this.activePhaseId = 10; // phases.filter(phase => phase.active).map(phase => phase.id)[0];
+    return phases
+  }
+
+  public changePhase(phase) {
+    this.activePhase = phase;
   }
 
   public generateArray(obj) {

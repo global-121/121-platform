@@ -15,6 +15,15 @@
     <ion-title>
       {{ 'page.programs.program-details.pageTitle'|translate }}: {{ programTitle }}
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-button *ngFor="let phase of programPhases"
+                  [color]="phase.active ? 'primary' : 'null'"
+                  [disabled]="phase.id > activePhaseId"
+                  (click)="changePhase(phase.phase)"
+      >
+        {{ phase.label }}
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -28,7 +37,7 @@
     ></app-program-funds>
 
   </section>
-  <section *ngIf="currentUserRole === userRoleEnum.ProgramManager ">
+  <section *ngIf="currentUserRole === userRoleEnum.ProgramManager && activePhase === 'payment'">
     <h2>{{ 'page.programs.program-details.section-payout'|translate }}</h2>
 
     <app-program-payout [programId]="program?.id"

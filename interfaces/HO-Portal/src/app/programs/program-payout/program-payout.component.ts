@@ -100,7 +100,6 @@ export class ProgramPayoutComponent implements OnChanges {
         }
       }
       i += 1;
-      console.log(installment);
     }
 
   }
@@ -119,7 +118,6 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   public async performPayout(installment) {
-    console.log(installment);
     installment.isInProgress = true;
     console.log('Paying out...', installment.amount);
     this.programsService.submitPayout(+this.programId, installment.id, +installment.amount)
