@@ -55,12 +55,18 @@
                  [isSpoken]="choiceMade"
   >
     <p *ngIf="!phoneSkipped"
-       [innerHTML]="'personal.set-notification-number.conclusion1'|translate:{ phone:phoneNumber }">
+       [innerHTML]="'personal.set-notification-number.conclusion-submitted'|translate:{ phone:phoneNumber }">
     </p>
     <p *ngIf="phoneSkipped">
-      {{ 'personal.set-notification-number.conclusion2'|translate }}
-    </p><br>
-    <p *ngIf="!useLocalStorage">
+      {{ 'personal.set-notification-number.conclusion-skipped'|translate }}
+    </p>
+  </dialogue-turn>
+  <dialogue-turn [actor]="ngo"
+                 *ngIf="choiceMade && !useLocalStorage"
+                 [isSpoken]="choiceMade && !useLocalStorage"
+                 isConnected="true"
+  >
+    <p>
       {{ 'personal.set-notification-number.logout-info'|translate }}
     </p>
   </dialogue-turn>
