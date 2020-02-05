@@ -193,6 +193,15 @@ export class ProgramService {
     return await this.programRepository.delete(programId);
   }
 
+  public async changeState(programId: number, newState: string): Promise<SimpleProgramRO> {
+    await this.changeProgramValue(programId, {
+      state: newState,
+    });
+    const changedProgram = await this.findOne(programId);
+    return await this.buildProgramRO(changedProgram);
+  }
+
+
   public async publish(programId: number): Promise<SimpleProgramRO> {
     const selectedProgram = await this.findOne(programId);
     if (selectedProgram.published == true) {
@@ -252,6 +261,7 @@ export class ProgramService {
       id: program.id,
       title: program.title,
       published: program.published,
+      state: program.state
     };
 
     return simpleProgramRO;

@@ -23,6 +23,9 @@ export class ProgramEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
+  @Column({ 'default': 'design' })
+  public state: string;
+
   @Column()
   public location: string;
 
