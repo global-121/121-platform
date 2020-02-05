@@ -3,22 +3,17 @@ Features
 
 <!-- TOC: -->
 - [All features / scenario's](#all-features--scenarios)
-  - [For Humanitarian Organization (HO)](#for-humanitarian-organization-ho)
-  - [For Person/People Affected (PA)](#for-personpeople-affected-pa)
-  - [For Aid-Worker (AW)](#for-aid-worker-aw)
+  - [For Humanitarian Organization (HO-Portal)](#for-humanitarian-organization-ho-portal)
+  - [For Person/People Affected (PA-App)](#for-personpeople-affected-pa-app)
+  - [For Aid-Worker (AW-App)](#for-aid-worker-aw-app)
 - [Reference](#reference)
 - [Tools](#tools)
 - [How to describe features / define scenarios](#how-to-describe-features--define-scenarios)
 
 ---
 
-Features of the 121-platform are described in this folder in a standardizes way using the [Gherkin-language](https://cucumber.io/docs/gherkin/).
-
-They are grouped by their (most important) actor.
-
----
-
 ## All features / scenario's
+Features of the 121-platform are described in this folder in a standardizes way using the [Gherkin-language](https://cucumber.io/docs/gherkin/).
 
 ### For Humanitarian Organization (HO-Portal)
 - [View funds overview](HO-Portal/View_funds_overview.feature)
