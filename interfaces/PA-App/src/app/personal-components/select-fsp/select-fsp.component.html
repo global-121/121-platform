@@ -41,7 +41,7 @@
     <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:chosenFsp?.fsp }"></p>
   </dialogue-turn>
 
-  <form *ngIf="questions">
+  <form *ngIf="questions?.length">
     <dialogue-turn isConnected="true"
                    isSpoken="true"
     >
@@ -49,7 +49,6 @@
         {{ 'personal.select-fsp.attributes.introduction'|translate }}
       </p>
     </dialogue-turn>
-
 
     <q-and-a-set [questions]="questions"
                  [answers]="customAttributeAnswers"
