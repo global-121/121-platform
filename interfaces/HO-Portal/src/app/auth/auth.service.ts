@@ -2,16 +2,21 @@ import { Injectable } from '@angular/core';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { JwtService } from '../services/jwt.service';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  loggedIn = false;
-  public userRole: string;
+  private loggedIn = false;
+  private userRole: string;
 
   // store the URL so we can redirect after logging in
   redirectUrl: string;
+
+  private authenticationState = new BehaviorSubject<User|null>(null);
+  public authenticationState$ = this.authenticationState.asObservable();
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -28,7 +33,7 @@ export class AuthService {
   }
 
   public getUserRole(): string {
-    return this.jwtService.getTokenRole();
+    return (!this.userRole) ? this.jwtService.getTokenRole() : this.userRole;
   }
 
   public async login(email: string, password: string) {
@@ -38,6 +43,8 @@ export class AuthService {
     ).subscribe(
       (response) => {
         const user = response.user;
+
+        this.authenticationState.next(user);
 
         if (!user || !user.token) {
           return;
@@ -64,6 +71,7 @@ export class AuthService {
   public logout() {
     this.jwtService.destroyToken();
     this.loggedIn = false;
-    this.router.navigate(['/']);
+    this.authenticationState.next(null);
+    this.router.navigate(['/login']);
   }
 }

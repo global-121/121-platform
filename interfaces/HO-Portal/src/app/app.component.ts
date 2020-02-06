@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './auth/auth.service';
+import { User } from './models/user.model';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +10,8 @@ import { AuthService } from './auth/auth.service';
 })
 export class AppComponent {
   public currentLanguage: string;
+  public isLoggedIn: boolean;
+  public currentUserRole: string;
 
   constructor(
     private translate: TranslateService,
@@ -19,6 +22,10 @@ export class AppComponent {
   }
 
   initializeApp() {
+    this.authService.authenticationState$.subscribe((user: User|null) => {
+      this.isLoggedIn = (user) ? !!user.token : false;
+      this.currentUserRole = (user) ? user.role : '';
+    });
   }
 
   initializeLanguages() {
