@@ -18,8 +18,8 @@ Switch to the repository folder
 
 Copy a few secret files and get the right passwords from someone who knows:
 
-    cp src/secrets.ts.example src/secrets.ts
-    cp ormconfig.json.example ormconfig.json
+    cp src/example.secrets.ts src/secrets.ts
+    cp example.ormconfig.json ormconfig.json
 
 ---
 

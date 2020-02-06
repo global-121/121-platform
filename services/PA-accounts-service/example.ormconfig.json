@@ -6,7 +6,9 @@
   "password": "<secret>",
   "database": "global121",
   "schema": "pa-accounts",
-  "entities": ["src/**/**.entity{.ts,.js}"],
+  "entities": [
+    "src/**/**.entity{.ts,.js}"
+  ],
   "migrationsTableName": "custom_migration_table",
   "migrations": [
     "migration/*.ts"
@@ -16,6 +18,8 @@
   },
   "dropSchema": false,
   "synchronize": true,
-  "logging": ["query"],
+  "logging": [
+    "query"
+  ],
   "logger": "file"
 }

@@ -20,8 +20,12 @@ RUN apt-get install -y nodejs
 RUN mkdir --parents /home/121/services/PA-accounts-service/
 WORKDIR /home/121/services/PA-accounts-service/
 
+# Install dependencies
 COPY package*.json ./
 RUN npm ci
+
+# Prepare configurations
+COPY tsconfig.json ./
 
 # Possible environments: development | staging | production
 ARG NODE_ENV=development
