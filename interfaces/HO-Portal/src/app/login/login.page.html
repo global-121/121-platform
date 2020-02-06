@@ -12,6 +12,9 @@
           <form method="POST"
                 (ngSubmit)="doLogin()"
           >
+            <!-- Workaround to make the ENTER-key submit the form -->
+            <button type="submit" hidden>{{ 'page.login.form.submit.label'|translate }}</button>
+
             <ion-item>
               <ion-label position="stacked">{{ 'page.login.form.email.label'|translate }}</ion-label>
               <ion-input type="email"
