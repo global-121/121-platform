@@ -26,13 +26,7 @@ export class JwtService {
     window.sessionStorage.removeItem(this.tokenKey);
   }
 
-  getTokenRole(): string|undefined {
-    console.log('JWT Service: getTokenRole');
-    const rawToken = window.sessionStorage[this.tokenKey];
-    if (rawToken) {
-      const decodedToken = this.jwtHelper.decodeToken(rawToken);
-      console.log('decodedToken: ', decodedToken);
-      return decodedToken.role;
-    }
+  decodeToken(rawToken: string): any {
+    return this.jwtHelper.decodeToken(rawToken);
   }
 }
