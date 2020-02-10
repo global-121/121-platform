@@ -1,5 +1,5 @@
 @ho-portal
-Feature: Manage people enrolled in a program
+Feature: Manage payment installments
 
   Background:
     Given a logged-in "program-manager" user
