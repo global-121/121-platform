@@ -74,7 +74,9 @@
         "total-amount": "Total amount to payout:",
         "payout-success": "Payout successful.",
         "payout-error": "Payout unsuccessful. Are there enough funds?",
-        "none-included": "No included people yet."
+        "none-included": "No included people yet.",
+        "export-list": "Export list",
+        "export-error": "Something went wrong with the export."
       },
       "program-people": {
         "pageTitle": "Manage people",
