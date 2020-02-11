@@ -10,11 +10,10 @@
       <ion-col size="4" class="">
 
           <form method="POST"
+                #loginForm
                 (ngSubmit)="doLogin()"
+                (keyup.enter)="doLogin()"
           >
-            <!-- Workaround to make the ENTER-key submit the form -->
-            <button type="submit" hidden>{{ 'page.login.form.submit.label'|translate }}</button>
-
             <ion-item>
               <ion-label position="stacked">{{ 'page.login.form.email.label'|translate }}</ion-label>
               <ion-input type="email"
@@ -43,6 +42,7 @@
 
             <ion-button type="submit"
                         expand="block"
+                        [disabled]="!loginForm?.form?.valid"
             >
               {{ 'page.login.form.submit.label'|translate }}
             </ion-button>

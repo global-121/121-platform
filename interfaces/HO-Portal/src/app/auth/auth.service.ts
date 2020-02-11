@@ -22,22 +22,53 @@ export class AuthService {
     public programsService: ProgramsServiceApiService,
     private jwtService: JwtService,
     private router: Router
-  ) { }
+  ) {
+    this.checkLoggedInState();
+  }
+
+  checkLoggedInState() {
+    const user = this.getUserFromToken();
+
+    this.authenticationState.next(user);
+  }
 
   public isLoggedIn(): boolean {
-    if (this.jwtService.getToken()) {
-      this.loggedIn = true;
-    }
+    this.loggedIn = (this.getUserFromToken() !== null);
 
     return this.loggedIn;
   }
 
   public getUserRole(): string {
-    return (!this.userRole) ? this.jwtService.getTokenRole() : this.userRole;
+    if (!this.userRole) {
+      const user = this.getUserFromToken();
+
+      this.userRole = (user) ? user.role : '';
+    }
+
+    return this.userRole;
+  }
+
+  private getUserFromToken() {
+    const rawToken = this.jwtService.getToken();
+
+    if (!rawToken) {
+      return null;
+    }
+
+    const decodedToken = this.jwtService.decodeToken(rawToken);
+    const user: User = {
+      token: rawToken,
+      email: decodedToken.email,
+      role: decodedToken.role,
+    };
+
+    this.userRole = user.role;
+
+    return user;
   }
 
   public async login(email: string, password: string) {
-    this.programsService.login(
+    return this.programsService.login(
       email,
       password
     ).subscribe(
