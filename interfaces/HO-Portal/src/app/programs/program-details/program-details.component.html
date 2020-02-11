@@ -28,7 +28,7 @@
     ></app-program-funds>
 
   </section>
-  <section *ngIf="currentUserRole === userRoleEnum.ProgramManager ">
+  <section>
     <h2>{{ 'page.programs.program-details.section-payout'|translate }}</h2>
 
     <app-program-payout [programId]="program?.id"
