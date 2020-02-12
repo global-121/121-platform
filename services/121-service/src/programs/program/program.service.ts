@@ -756,7 +756,39 @@ export class ProgramService {
     programId: number,
     installmentId: number,
   ): Promise<any> {
-    let rawPaymentDetails = await this.transactionRepository
+    let rawPaymentDetails = await this.getPaymentDetailsInstallment(
+      programId,
+      installmentId,
+    );
+
+    let installmentTime = 'completed';
+    if (rawPaymentDetails.length === 0) {
+      rawPaymentDetails = await this.getPaymentDetailsFuture(programId);
+      installmentTime = 'future';
+    }
+    const paymentDetails = [];
+    rawPaymentDetails.forEach(rawTransaction => {
+      let transaction = {
+        ...rawTransaction,
+        ...rawTransaction.connection_customData,
+      };
+      delete transaction['connection_customData'];
+      paymentDetails.push(transaction);
+    });
+
+    const response = {
+      fileName: `payment-details-${installmentTime}-installment-${programId}.csv`,
+      data: this.jsonToCsv(paymentDetails),
+    };
+
+    return response;
+  }
+
+  public async getPaymentDetailsInstallment(
+    programId: number,
+    installmentId: number,
+  ): Promise<any> {
+    return await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.amount',
@@ -770,21 +802,6 @@ export class ProgramService {
         installmentId: installmentId,
       })
       .getRawMany();
-
-    if (rawPaymentDetails.length === 0) {
-      rawPaymentDetails = await this.getPaymentDetailsFuture(programId);
-    }
-    const paymentDetails = [];
-    rawPaymentDetails.forEach(rawTransaction => {
-      let transaction = {
-        ...rawTransaction,
-        ...rawTransaction.connection_customData,
-      };
-      delete transaction['connection_customData'];
-      paymentDetails.push(transaction);
-    });
-
-    return this.jsonToCsv(paymentDetails);
   }
 
   public async getPaymentDetailsFuture(programId: number): Promise<any> {

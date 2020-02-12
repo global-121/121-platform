@@ -13,6 +13,7 @@ import {
   UseGuards,
   SetMetadata,
   Res,
+  Header,
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto';
@@ -276,17 +277,10 @@ export class ProgramController {
   @Post('payment-details')
   public async getPaymentDetails(
     @Body() data: PaymentDetailsRequest,
-    @Res() response: Response,
   ): Promise<any> {
-    const csvStream = await this.programService.getPaymentDetails(
+    return await this.programService.getPaymentDetails(
       data.programId,
       data.installment,
     );
-    // response.writeHead(200, {
-    //   'Content-Type': 'text/csv',
-    // });
-    // csvStream.readStream.pipe(response);
-    response.attachment('payment-details.csv');
-    response.status(200).send(csvStream);
   }
 }
