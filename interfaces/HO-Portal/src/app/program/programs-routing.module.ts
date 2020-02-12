@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { ProgramListComponent } from './program-list/program-list.component';
-import { ProgramDetailsComponent } from './program-details/program-details.component';
+import { ProgramsListComponent } from '../programs-list/programs-list.component';
+import { ProgramComponent } from './program.component';
 import { ProgramPeopleComponent } from './program-people/program-people.component';
 import { AuthGuard } from '../auth/auth.guard';
 import { UserRole } from '../auth/user-role.enum';
@@ -10,13 +10,13 @@ import { UserRole } from '../auth/user-role.enum';
 const programRoutes: Routes = [
   {
     path: 'programs',
-    component: ProgramListComponent,
+    component: ProgramsListComponent,
     canActivate: [AuthGuard],
 
   },
   {
     path: 'program/:id',
-    component: ProgramDetailsComponent,
+    component: ProgramComponent,
     canActivate: [AuthGuard],
   },
   {

@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 
-import { ProgramDetailsComponent } from './program-details/program-details.component';
+import { ProgramComponent } from './program.component';
 import { ProgramFundsComponent } from './program-funds/program-funds.component';
 import { ProgramJsonComponent } from './program-json/program-json.component';
-import { ProgramListComponent } from './program-list/program-list.component';
+import { ProgramsListComponent } from '../programs-list/programs-list.component';
 import { ProgramPayoutComponent } from './program-payout/program-payout.component';
 import { ProgramPeopleComponent } from './program-people/program-people.component';
 
@@ -19,10 +19,10 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     ProgramJsonComponent
   ],
   declarations: [
-    ProgramDetailsComponent,
+    ProgramComponent,
     ProgramFundsComponent,
     ProgramJsonComponent,
-    ProgramListComponent,
+    ProgramsListComponent,
     ProgramPayoutComponent,
     ProgramPeopleComponent,
   ],

@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { ProgramDetailsComponent } from './program-details.component';
+import { ProgramComponent } from './program.component';
 
 const modalSpy = jasmine.createSpyObj('Modal', ['present']);
 const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
@@ -14,14 +14,14 @@ modalCtrlSpy.create.and.callFake(() => {
   return modalSpy;
 });
 
-describe('ProgramDetailsComponent', () => {
-  let component: ProgramDetailsComponent;
-  let fixture: ComponentFixture<ProgramDetailsComponent>;
+describe('ProgramComponent', () => {
+  let component: ProgramComponent;
+  let fixture: ComponentFixture<ProgramComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        ProgramDetailsComponent,
+        ProgramComponent,
       ],
       imports: [
         TranslateModule.forRoot(),
@@ -40,7 +40,7 @@ describe('ProgramDetailsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProgramDetailsComponent);
+    fixture = TestBed.createComponent(ProgramComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

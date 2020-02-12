@@ -1,19 +1,19 @@
-import { UserRole } from './../../auth/user-role.enum';
-import { AuthService } from './../../auth/auth.service';
+import { UserRole } from '../auth/user-role.enum';
+import { AuthService } from '../auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Program } from 'src/app/models/program.model';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { ProgramJsonComponent } from '../program-json/program-json.component';
+import { ProgramJsonComponent } from './program-json/program-json.component';
 
 @Component({
-  selector: 'app-program-details',
-  templateUrl: './program-details.component.html',
-  styleUrls: ['./program-details.component.scss'],
+  selector: 'app-program',
+  templateUrl: './program.component.html',
+  styleUrls: ['./program.component.scss'],
 })
-export class ProgramDetailsComponent implements OnInit {
+export class ProgramComponent implements OnInit {
   public languageCode: string;
   public fallbackLanguageCode: string;
   public currentUserRole: string;
