@@ -17,19 +17,16 @@ export class SchemaService {
       attributes.push(criterium.criterium);
     }
 
-    const randomNumber = Math.floor(Math.random() * 1000) + 1;
-    const randomDecimal = Math.floor(Math.random() * 10) + 1;
-
     // Increment version number based on previous version
-    let version : string;
+    let version: string;
     if (program.schemaId) {
       const n = program.schemaId.lastIndexOf(':');
       const lastVersion = program.schemaId.substring(n + 1);
       const lastVersionNr = Number(lastVersion.slice(0, -2));
-      const versionNr = lastVersionNr + 1
-      const version = versionNr.toString() + '.0'
+      const versionNr = lastVersionNr + 1;
+      const version = versionNr.toString() + '.0';
     } else {
-      version = '1.0'
+      version = '1.0';
     }
     if (DEBUG) {
       const randomNumber = Math.floor(Math.random() * 1000) + 1;
@@ -42,11 +39,12 @@ export class SchemaService {
       version: version, // + randomDecimal.toString(),
       attributes: attributes,
     };
-    console.log(schemaPost)
+    console.log(schemaPost);
     const api_string = API.schema;
 
-
-    let responseSchema = await this.httpService.post(api_string, schemaPost).toPromise();
+    let responseSchema = await this.httpService
+      .post(api_string, schemaPost)
+      .toPromise();
     if (!responseSchema.data) {
       const errors = 'Schema not published';
       throw new HttpException({ errors }, 404);
@@ -56,7 +54,9 @@ export class SchemaService {
       name: 'test1',
       schema_id: schemaId,
     };
-    let responseCreddef = await this.httpService.post(API.credential.definition, credDefPost).toPromise();
+    let responseCreddef = await this.httpService
+      .post(API.credential.definition, credDefPost)
+      .toPromise();
     if (!responseCreddef.data) {
       const errors = 'Cred def id not published';
       throw new HttpException({ errors }, 404);

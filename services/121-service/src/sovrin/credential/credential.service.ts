@@ -1,7 +1,13 @@
 import { CredentialIssueDto } from './dto/credential-issue.dto';
 import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialRequestEntity } from './credential-request.entity';
-import { Injectable, HttpException, Inject, forwardRef, HttpService } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  Inject,
+  forwardRef,
+  HttpService,
+} from '@nestjs/common';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,9 +24,13 @@ export class CredentialService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(CredentialAttributesEntity)
-  private readonly credentialAttributesRepository: Repository<CredentialAttributesEntity>;
+  private readonly credentialAttributesRepository: Repository<
+    CredentialAttributesEntity
+  >;
   @InjectRepository(CredentialRequestEntity)
-  private readonly credentialRequestRepository: Repository<CredentialRequestEntity>;
+  private readonly credentialRequestRepository: Repository<
+    CredentialRequestEntity
+  >;
   @InjectRepository(CredentialEntity)
   private readonly credentialRepository: Repository<CredentialEntity>;
   @InjectRepository(AppointmentEntity)
@@ -30,18 +40,20 @@ export class CredentialService {
     @Inject(forwardRef(() => ProgramService))
     private readonly programService: ProgramService,
     private readonly httpService: HttpService,
-  ) { }
+  ) {}
   // Use by HO is done automatically when a program is published
   public async createOffer(credDefId: string): Promise<object> {
     // const credentialOffer = tyknidtyknid.createCredentialOffer(credDefId)
     const credentialOfferPost = {
       credDefID: credDefId,
       correlation: {
-        "correlationID": "test"
-      }
-    }
+        correlationID: 'test',
+      },
+    };
 
-    const response = await this.httpService.post(API.credential.credoffer, credentialOfferPost).toPromise();
+    const response = await this.httpService
+      .post(API.credential.credoffer, credentialOfferPost)
+      .toPromise();
     if (!response.data) {
       const errors = 'Credoffer not created';
       throw new HttpException({ errors }, 404);
@@ -79,8 +91,10 @@ export class CredentialService {
   ): Promise<any[]> {
     //Delete existing entries for this DID*program first.
 
-    await this.credentialAttributesRepository.delete({ did: did, programId: programId });
-
+    await this.credentialAttributesRepository.delete({
+      did: did,
+      programId: programId,
+    });
 
     //Then save new information
     let credentials = [];
@@ -92,7 +106,9 @@ export class CredentialService {
       credential.answer = answer.answer;
       let newCredential;
       credential.programId = programId;
-      newCredential = await this.credentialAttributesRepository.save(credential);
+      newCredential = await this.credentialAttributesRepository.save(
+        credential,
+      );
       credentials.push(newCredential);
     }
     return credentials;
@@ -101,18 +117,24 @@ export class CredentialService {
   // AW: get answers to attributes for a given PA (identified first through did/QR)
   public async getPrefilledAnswers(
     did: string,
-    programId: number
+    programId: number,
   ): Promise<any[]> {
     let credentials;
     credentials = await this.credentialAttributesRepository.find({
       where: { did: did, programId: programId },
-    })
+    });
     return credentials;
   }
 
   // AW: delete answers to attributes for a given PA after issuing credentials (identified first through did/QR)
-  public async deletePrefilledAnswers(did: string, programId: number): Promise<DeleteResult> {
-    return await this.credentialAttributesRepository.delete({ did: did, programId: programId });
+  public async deletePrefilledAnswers(
+    did: string,
+    programId: number,
+  ): Promise<DeleteResult> {
+    return await this.credentialAttributesRepository.delete({
+      did: did,
+      programId: programId,
+    });
   }
 
   // Used by PA
@@ -137,7 +159,6 @@ export class CredentialService {
 
   // Used by Aidworker
   public async issue(payload: CredentialIssueDto): Promise<void> {
-
     await this.checkForOldCredential(payload.did, payload.programId);
 
     // Get related credential offer
@@ -149,7 +170,10 @@ export class CredentialService {
       payload.did,
     );
     const credentialRequest = queryResult.credentialRequest;
-    const preFilledAnswers = await this.getPrefilledAnswers(payload.did, payload.programId);
+    const preFilledAnswers = await this.getPrefilledAnswers(
+      payload.did,
+      payload.programId,
+    );
     let attributesPost = {};
     for (let answer of preFilledAnswers) {
       attributesPost[answer.attribute] = answer.answer;
@@ -164,8 +188,6 @@ export class CredentialService {
       attributes: attributesPost,
     };
 
-
-
     const response = await this.httpService
       .post(API.credential.issue, credentialPost)
       .toPromise();
@@ -179,7 +201,9 @@ export class CredentialService {
 
     await this.cleanupIssueCredData(payload.did, payload.programId);
 
-    let appointmentUpdated = await this.appointmentRepository.findOne(({ did: payload.did }));
+    let appointmentUpdated = await this.appointmentRepository.findOne({
+      did: payload.did,
+    });
     appointmentUpdated.status = 'validated';
     await this.appointmentRepository.save(appointmentUpdated);
   }
@@ -244,7 +268,10 @@ export class CredentialService {
     }
   }
 
-  public async cleanupIssueCredData(did: string, programId: number) {
+  public async cleanupIssueCredData(
+    did: string,
+    programId: number,
+  ): Promise<void> {
     await this.credentialRequestRepository.delete({
       program: {
         id: programId,
@@ -252,7 +279,6 @@ export class CredentialService {
       did: did,
     });
     this.deletePrefilledAnswers(did, programId);
-
   }
 
   // Used by PA
@@ -262,7 +288,7 @@ export class CredentialService {
     });
 
     if (!queryResult) {
-      return { message: '' }
+      return { message: '' };
     }
     const encrypyedCredential = { message: queryResult.credential };
     return encrypyedCredential;

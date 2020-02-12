@@ -4,9 +4,9 @@ import { ApiModelProperty } from '@nestjs/swagger';
 export class LoginUserDto {
   @ApiModelProperty({ example: 'test@example.org' })
   @IsNotEmpty()
-  readonly email: string;
+  public readonly email: string;
 
   @ApiModelProperty()
   @IsNotEmpty()
-  readonly password: string;
+  public readonly password: string;
 }

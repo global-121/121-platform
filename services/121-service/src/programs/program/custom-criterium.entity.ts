@@ -44,6 +44,6 @@ export class CustomCriterium {
   @ManyToOne(_type => ProgramEntity, program => program.customCriteria)
   public program: ProgramEntity;
 
-  @Column({default: false})
+  @Column({ default: false })
   public persistence: boolean;
 }

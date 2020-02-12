@@ -22,7 +22,7 @@ import { UserRole } from '../user-role.enum';
 
 @Injectable()
 export class SeedMvp implements InterfaceScript {
-  public constructor(private connection: Connection) { }
+  public constructor(private connection: Connection) {}
 
   private readonly seedHelper = new SeedHelper(this.connection);
   private readonly seedPublish = new SeedPublish();
@@ -31,30 +31,29 @@ export class SeedMvp implements InterfaceScript {
     const seedInit = await new SeedInit(this.connection);
     await seedInit.run();
 
-    await this.seedHelper.addUser( {
+    await this.seedHelper.addUser({
       username: USERCONFIG.usernameAidWorker,
       role: UserRole.Aidworker,
       email: USERCONFIG.emailAidWorker,
       countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordAidWorker
+      password: USERCONFIG.passwordAidWorker,
     });
 
-    await this.seedHelper.addUser( {
+    await this.seedHelper.addUser({
       username: USERCONFIG.usernameProgramManager,
       role: UserRole.ProgramManager,
       email: USERCONFIG.emailProgramManager,
       countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProgramManager
+      password: USERCONFIG.passwordProgramManager,
     });
 
-    await this.seedHelper.addUser( {
+    await this.seedHelper.addUser({
       username: USERCONFIG.usernamePrivacyOfficer,
       role: UserRole.PrivacyOfficer,
       email: USERCONFIG.emailPrivacyOfficer,
       countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordPrivacyOfficer
+      password: USERCONFIG.passwordPrivacyOfficer,
     });
-
 
     // ***** CREATE COUNTRIES *****
     const countryRepository = this.connection.getRepository(CountryEntity);
@@ -68,9 +67,15 @@ export class SeedMvp implements InterfaceScript {
     await this.seedHelper.addFsp(fspNoAttributes);
 
     // ***** CREATE PROTECTION SERVICE PROVIDERS *****
-    const protectionServiceProviderRepository = this.connection.getRepository(ProtectionServiceProviderEntity);
-    await protectionServiceProviderRepository.save([{ psp: 'Protection Service Provider A' }]);
-    await protectionServiceProviderRepository.save([{ psp: 'Protection Service Provider B' }]);
+    const protectionServiceProviderRepository = this.connection.getRepository(
+      ProtectionServiceProviderEntity,
+    );
+    await protectionServiceProviderRepository.save([
+      { psp: 'Protection Service Provider A' },
+    ]);
+    await protectionServiceProviderRepository.save([
+      { psp: 'Protection Service Provider B' },
+    ]);
 
     // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
     const programAnonymousExample3 = { ...programAnonymousExample1 };
@@ -92,21 +97,30 @@ export class SeedMvp implements InterfaceScript {
     await this.seedHelper.assignAidworker(2, 3);
 
     // ***** CREATE AVAILABILITY FOR AN AIDWORKER *****
-    await this.seedHelper.availabilityForAidworker({
-      startDate: '2020-10-10T12:00:00Z',
-      endDate: '2020-10-10T13:00:00Z',
-      location: 'Address of location 1',
-    }, 2);
-    await this.seedHelper.availabilityForAidworker({
-      startDate: '2020-10-11T18:00:00Z',
-      endDate: '2020-10-12T12:00:00Z',
-      location: 'Address of location 2',
-    }, 2);
-    await this.seedHelper.availabilityForAidworker({
-      startDate: '2020-10-20T00:00:00Z',
-      endDate: '2020-10-20T23:59:59Z',
-      location: 'Address of location 3',
-    }, 2);
+    await this.seedHelper.availabilityForAidworker(
+      {
+        startDate: '2020-10-10T12:00:00Z',
+        endDate: '2020-10-10T13:00:00Z',
+        location: 'Address of location 1',
+      },
+      2,
+    );
+    await this.seedHelper.availabilityForAidworker(
+      {
+        startDate: '2020-10-11T18:00:00Z',
+        endDate: '2020-10-12T12:00:00Z',
+        location: 'Address of location 2',
+      },
+      2,
+    );
+    await this.seedHelper.availabilityForAidworker(
+      {
+        startDate: '2020-10-20T00:00:00Z',
+        endDate: '2020-10-20T23:59:59Z',
+        location: 'Address of location 3',
+      },
+      2,
+    );
 
     await this.seedPublish.run();
   }

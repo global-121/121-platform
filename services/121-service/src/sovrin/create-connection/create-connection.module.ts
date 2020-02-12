@@ -24,7 +24,7 @@ import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-ser
       CredentialAttributesEntity,
       CredentialRequestEntity,
       CredentialEntity,
-      FinancialServiceProviderEntity
+      FinancialServiceProviderEntity,
     ]),
     UserModule,
     SovrinSetupModule,

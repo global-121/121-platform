@@ -66,7 +66,10 @@ export class AppointmentController {
   }
 
   @Roles(UserRole.Aidworker)
-  @ApiOperation({ title: 'Change status of did in appointments-list (waiting/validated/postponed) (for AW)' })
+  @ApiOperation({
+    title:
+      'Change status of did in appointments-list (waiting/validated/postponed) (for AW)',
+  })
   @ApiImplicitParam({ name: 'timeslotId', required: true, type: 'number' })
   @ApiImplicitParam({ name: 'newStatus', required: true, type: 'string' })
   @Post('register/:timeslotId/:newStatus')
@@ -75,6 +78,10 @@ export class AppointmentController {
     @Param('newStatus') newStatus: string,
     @Body() didData: RegisterTimeslotDto,
   ): Promise<void> {
-    await this.appointmentService.changeAppointmentStatus(timeslotId, didData, newStatus);
+    await this.appointmentService.changeAppointmentStatus(
+      timeslotId,
+      didData,
+      newStatus,
+    );
   }
 }

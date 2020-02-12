@@ -7,9 +7,7 @@ import { SeedPublish } from './seed-publish';
 
 @Injectable()
 export class SeedPilot implements InterfaceScript {
-  public constructor(
-    private connection: Connection,
-  ) { }
+  public constructor(private connection: Connection) {}
 
   private readonly seedPublish = new SeedPublish();
 
@@ -19,7 +17,6 @@ export class SeedPilot implements InterfaceScript {
     await this.seedPublish.run();
 
     // TO DO: seed pilot program and other pilot data here
-
   }
 }
 

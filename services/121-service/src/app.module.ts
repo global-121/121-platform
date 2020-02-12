@@ -10,19 +10,14 @@ import { CountryModule } from './programs/country/country.module';
 import { HealthModule } from './health.module';
 import { CreateConnectionModule } from './sovrin/create-connection/create-connection.module';
 import { CredentialModule } from './sovrin/credential/credential.module';
-import { SchemaService } from './sovrin/schema/schema.service';
 import { ProofModule } from './sovrin/proof/proof.module';
 import { SchemaModule } from './sovrin/schema/schema.module';
-import { SmsService } from './notifications/sms/sms.service';
 import { SmsController } from './notifications/sms/sms.controller';
 import { SmsModule } from './notifications/sms/sms.module';
-import { VoiceService } from './notifications/voice/voice.service';
 import { VoiceController } from './notifications/voice/voice.controller';
 import { VoiceModule } from './notifications/voice/voice.module';
-import { FundingService } from './funding/funding.service';
 import { FundingModule } from './funding/funding.module';
 import { LookupController } from './notifications/lookup/lookup.controller';
-import { LookupService } from './notifications/lookup/lookup.service';
 import { LookupModule } from './notifications/lookup/lookup.module';
 
 @Module({

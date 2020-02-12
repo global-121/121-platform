@@ -1,6 +1,6 @@
-import { ApiModelProperty } from "@nestjs/swagger";
+import { ApiModelProperty } from '@nestjs/swagger';
 
-import { Length } from "class-validator";
+import { Length } from 'class-validator';
 
 export class DidDto {
   @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })

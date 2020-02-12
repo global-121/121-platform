@@ -2,9 +2,7 @@ import { FundingService } from './funding.service';
 import { Module, HttpModule } from '@nestjs/common';
 
 @Module({
-  imports: [
-    HttpModule,
-  ],
+  imports: [HttpModule],
   providers: [FundingService],
   exports: [FundingService],
 })

@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum NotificationType {
   Sms = 'sms',
-  Call = 'call'
+  Call = 'call',
 }
 
 @Entity('twilio-message')

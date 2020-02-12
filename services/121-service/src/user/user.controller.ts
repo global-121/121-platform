@@ -28,7 +28,6 @@ import { RolesGuard } from '../roles.guard';
 import { Roles } from '../roles.decorator';
 import { UserRole } from '../user-role.enum';
 
-
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('user')
@@ -52,7 +51,10 @@ export class UserController {
     if (!_user) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
     } else if (_user.status == 'inactive') {
-      throw new HttpException('Account deactivated. Contact organization administration.', HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        'Account deactivated. Contact organization administration.',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     const token = await this.userService.generateJWT(_user);
@@ -75,7 +77,7 @@ export class UserController {
   public async update(
     @User('id') userId: number,
     @Body() userData: UpdateUserDto,
-  ) {
+  ): Promise<any> {
     return this.userService.update(userId, userData);
   }
 
@@ -115,8 +117,10 @@ export class UserController {
   @Put('user/:userId/:programId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
-  public async assignProgram(@Param('userId') userId: number, @Param('programId') programId: number): Promise<UserRO> {
+  public async assignProgram(
+    @Param('userId') userId: number,
+    @Param('programId') programId: number,
+  ): Promise<UserRO> {
     return await this.userService.assignProgram(userId, programId);
   }
-
 }

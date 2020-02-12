@@ -19,7 +19,10 @@ export class ProofService {
 
   public constructor(private readonly httpService: HttpService) {}
 
-  public createProofRequest(program: ProgramEntity, credDefId: string): Object {
+  public createProofRequest(
+    program: ProgramEntity,
+    credDefId: string,
+  ): Record<string, any> {
     const criteriums = program.customCriteria;
     let requestedAttributes = {};
     for (let i = 0; i < criteriums.length; i++) {

@@ -14,12 +14,8 @@ const newProgramParameters = {
   description: JSON.parse(
     '{"en": "Program to help people hit by earthquake examplename"}',
   ),
-  descLocation: JSON.parse(
-    '{"en": "Specification of location"}',
-  ),
-  descHumanitarianObjective: JSON.parse(
-    '{"en": "Specification of hum. obj."}',
-  ),
+  descLocation: JSON.parse('{"en": "Specification of location"}'),
+  descHumanitarianObjective: JSON.parse('{"en": "Specification of hum. obj."}'),
   descCashType: JSON.parse(
     '{"en": "Specification of cash type: Unconditional multi-purpose"}',
   ),
@@ -36,14 +32,14 @@ const newProgramParameters = {
   highestScoresX: 500,
   meetingDocuments: JSON.parse('{"en": "documents"}'),
   customCriteria: [],
-  notifications: JSON.parse('{}')
+  notifications: JSON.parse('{}'),
 };
 
 const newSimpleProgramRO = {
   id: 1,
   title: JSON.parse('{"en": "title"}'),
   published: true,
-}
+};
 
 export class ProgramServiceMock {
   public async findOne(query): Promise<ProgramEntity> {
@@ -90,9 +86,9 @@ describe('ProgramController', (): void => {
           },
         ],
       })
-      .overrideGuard(RolesGuard)
-      .useValue({ canActivate: () => true })
-      .compile();
+        .overrideGuard(RolesGuard)
+        .useValue({ canActivate: () => true })
+        .compile();
 
       programService = module.get<ProgramService>(ProgramService);
       programController = module.get<ProgramController>(ProgramController);
@@ -183,7 +179,9 @@ describe('ProgramController', (): void => {
     it('should publish a program', async (): Promise<void> => {
       const spy = jest
         .spyOn(programService, 'publish')
-        .mockImplementation((): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO));
+        .mockImplementation(
+          (): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO),
+        );
 
       await programController.publish(1);
       expect(spy).toHaveBeenCalled();
@@ -193,7 +191,9 @@ describe('ProgramController', (): void => {
     it('should publish a program', async (): Promise<void> => {
       const spy = jest
         .spyOn(programService, 'unpublish')
-        .mockImplementation((): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO));
+        .mockImplementation(
+          (): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO),
+        );
 
       await programController.unpublish(1);
       expect(spy).toHaveBeenCalled();
