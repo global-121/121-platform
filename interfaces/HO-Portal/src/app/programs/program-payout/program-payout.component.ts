@@ -4,6 +4,8 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { formatCurrency } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { UserRole } from 'src/app/auth/user-role.enum';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-program-payout',
@@ -22,6 +24,8 @@ export class ProgramPayoutComponent implements OnChanges {
 
   public isEnabled = true;
   public isInProgress = false;
+  public userRoleEnum = UserRole;
+  public currentUserRole: string;
 
   private locale: string;
   public nrOfInstallments: number;
@@ -35,11 +39,13 @@ export class ProgramPayoutComponent implements OnChanges {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
+    private authService: AuthService
   ) {
     this.locale = this.translate.getBrowserCultureLang();
   }
 
   async ngOnInit() {
+    this.currentUserRole = this.authService.getUserRole();
     this.programId = this.route.snapshot.params.id;
     this.createInstallments(this.programId);
   }
@@ -47,7 +53,6 @@ export class ProgramPayoutComponent implements OnChanges {
   async ngOnChanges(changes: SimpleChanges) {
     if (typeof changes.programId.currentValue === 'number') {
       this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
-      // this.updateTotalAmountMessage();
     }
   }
 
@@ -124,18 +129,29 @@ export class ProgramPayoutComponent implements OnChanges {
       .then(
         () => {
           installment.isInProgress = false;
-          this.payoutResult(this.translate.instant('page.programs.program-payout.payout-success'));
+          this.actionResult(this.translate.instant('page.programs.program-payout.payout-success'));
           this.createInstallments(this.programId);
         },
         (err) => {
           console.log('err: ', err);
-          this.payoutResult(this.translate.instant('page.programs.program-payout.payout-error'));
+          this.actionResult(this.translate.instant('page.programs.program-payout.payout-error'));
           this.cancelPayout(installment);
         }
       );
   }
 
-  private async payoutResult(resultMessage: string) {
+  public async exportList(installment) {
+    this.programsService.exportList(+this.programId, installment.id)
+      .then(
+        () => { },
+        (err) => {
+          console.log('err: ', err);
+          this.actionResult(this.translate.instant('page.programs.program-payout.export-error'));
+        }
+      );
+  }
+
+  private async actionResult(resultMessage: string) {
     const alert = await this.alertController.create({
       message: resultMessage,
       buttons: [
