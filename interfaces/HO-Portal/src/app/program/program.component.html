@@ -16,8 +16,9 @@
       {{ programTitle }}
     </ion-title>
     <ion-buttons slot="end">
-      <app-phase-navigation [programPhase]="programPhase"
-                            (emitSelectedPhase)="emit($event)"
+      <app-phase-navigation [activePhase]="activePhase"
+                            (emitSelectedPhase)="emitSelectedPhase($event)"
+                            (emitProgramPhases)="emitProgramPhases($event)"
       ></app-phase-navigation>
     </ion-buttons>
   </ion-toolbar>
@@ -25,12 +26,11 @@
 
 
 <ion-content class="ion-padding">
-  <!-- <ion-button *ngIf="activePhaseId < programPhases.length"
-              [disabled]="selectedPhase !== activePhase"
-              (click)="advancePhase(activePhaseId + 1)"
-  >
-    {{ 'page.programs.program-details.advance-phase'|translate }}
-  </ion-button> -->
+  <app-phase-next [programPhases]="programPhases"
+                  [selectedPhase]="selectedPhase"
+                  [programId]="program?.id"
+                  (emitNewPhase)="emitNewPhase($event)"
+  ></app-phase-next>
 
   <app-program-funds [selectedPhase]="selectedPhase"
                      [programId]="program?.id"

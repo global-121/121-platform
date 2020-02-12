@@ -11,15 +11,15 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 })
 export class PhaseNavigationComponent implements OnChanges {
   @Input()
-  public programPhase: string;
-
+  public activePhase: string;
   @Output()
   emitSelectedPhase: EventEmitter<string> = new EventEmitter<string>();
+  @Output()
+  emitProgramPhases: EventEmitter<any[]> = new EventEmitter<any[]>();
 
   public program: Program;
   public programPhases: any[] = [];
   public activePhaseId: number;
-  public activePhase: string;
   public selectedPhaseId: number;
   public selectedPhase: string;
 
@@ -37,9 +37,10 @@ export class PhaseNavigationComponent implements OnChanges {
   ) {
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (typeof changes.programPhase.currentValue === 'string') {
-      this.programPhases = this.createPhases();
+  async ngOnChanges(changes: SimpleChanges) {
+    if (typeof changes.activePhase.currentValue === 'string') {
+      this.programPhases = await this.createPhases();
+      this.emitProgramPhases.emit(this.programPhases);
     }
   }
 
@@ -48,11 +49,11 @@ export class PhaseNavigationComponent implements OnChanges {
     const phases = this.phasesInput.map((phase, index) => ({
       id: index + 1,
       phase,
-      label: this.translate.instant('page.programs.phases.' + phase),
-      active: phase === this.programPhase, // this.program.state,
+      label: this.translate.instant('page.programs.phases.' + phase + '.label'),
+      active: phase === this.activePhase,
+      btnText: this.translate.instant('page.programs.phases.' + phase + '.btnText'),
     }));
     this.activePhaseId = phases.find(item => item.active).id;
-    this.activePhase = phases.find(item => item.active).phase;
     this.selectedPhaseId = this.activePhaseId;
     this.selectedPhase = this.activePhase;
     return phases;

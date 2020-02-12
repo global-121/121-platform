@@ -22,9 +22,9 @@ export class ProgramComponent implements OnInit {
   public programTitle: string;
   public programArray: any;
   public userRoleEnum = UserRole;
-  public programPhase: string;
-
+  public activePhase: string;
   public selectedPhase: string;
+  public programPhases: any[];
 
   constructor(
     private route: ActivatedRoute,
@@ -42,21 +42,22 @@ export class ProgramComponent implements OnInit {
     this.programTitle = this.mapLabelByLanguageCode(this.program.title);
     this.currentUserRole = this.authService.getUserRole();
 
-    this.programPhase = this.program.state;
-    this.selectedPhase = this.programPhase;
+    this.activePhase = this.program.state;
+    this.selectedPhase = this.activePhase;
   }
 
-
-
-  // public async advancePhase(phaseId) {
-  //   const phase = this.programPhases.find(item => item.id === phaseId).phase;
-  //   await this.programsService.advancePhase(this.program.id, phase);
-  //   this.program = await this.programsService.getProgramById(this.program.id);
-  //   this.programPhases = this.createPhases();
-  // }
-
-  public emit(selectedPhase) {
+  public emitSelectedPhase(selectedPhase) {
     this.selectedPhase = selectedPhase;
+  }
+  public emitProgramPhases(programPhases) {
+    this.programPhases = programPhases;
+  }
+  public async emitNewPhase(newPhase) {
+    if (newPhase) {
+      this.program = await this.programsService.getProgramById(this.program.id);
+      this.activePhase = this.program.state;
+      this.selectedPhase = this.activePhase;
+    }
   }
 
   private mapLabelByLanguageCode(property: any) {

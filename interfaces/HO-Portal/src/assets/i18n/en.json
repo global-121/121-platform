@@ -21,12 +21,30 @@
     },
     "programs": {
       "phases": {
-        "design": "Design",
-        "registration": "Registration",
-        "inclusion": "Inclusion",
-        "finalize": "Finalize",
-        "payment": "Payment",
-        "evaluation": "Evaluation"
+        "design": {
+          "label": "Design",
+          "btnText": "Open for registration"
+        },
+        "registration": {
+          "label": "Registration",
+          "btnText": "Close registration"
+        },
+        "inclusion": {
+          "label": "Inclusion",
+          "btnText": "Confirm Inclusion decision"
+        },
+        "finalize": {
+          "label": "Finalize",
+          "btnText": "Freeze (move to payment)"
+        },
+        "payment": {
+          "label": "Payment",
+          "btnText": "Payout"
+        },
+        "evaluation": {
+          "label": "Evaluation",
+          "btnText": "Terminate program"
+        }
       },
       "program-list": {
         "pageTitle": "All Programs",

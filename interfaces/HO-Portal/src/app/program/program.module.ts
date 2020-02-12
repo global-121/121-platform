@@ -15,6 +15,7 @@ import { ProgramDetailsComponent } from './program-details/program-details.compo
 import { ProgramsRoutingModule } from './programs-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { PhaseNextComponent } from './phase-next/phase-next.component';
 
 @NgModule({
   entryComponents: [
@@ -23,6 +24,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
   declarations: [
     ProgramComponent,
     PhaseNavigationComponent,
+    PhaseNextComponent,
     ProgramFundsComponent,
     ProgramJsonComponent,
     ProgramsListComponent,

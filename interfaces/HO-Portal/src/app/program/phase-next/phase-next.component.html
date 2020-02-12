@@ -1,0 +1,6 @@
+  <ion-button *ngIf="btnAvailable"
+              [disabled]="selectedPhase !== activePhase"
+              (click)="advancePhase(activePhaseId + 1)"
+              [innerHTML]="btnText"
+              class="nextStateButton"
+  ></ion-button>
