@@ -53,7 +53,7 @@ describe('ProgramFundsComponent (in host)', () => {
         },
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -81,7 +81,7 @@ describe('ProgramFundsComponent (in host)', () => {
     expect(mockProgramsApi.getFundsById).toHaveBeenCalledWith(fixtureProgramId);
   });
 
-  it('should request the funds when triggered from the interface', () => {
+  xit('should request the funds when triggered from the interface', () => {
     testHost.programId = fixtureProgramId;
     fixture.detectChanges();
 
