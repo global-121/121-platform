@@ -34,6 +34,7 @@
       },
       "program-details": {
         "pageTitle": "Program details",
+        "advance-phase": "Advance to next program phase",
         "section-funds": "Funds overview",
         "section-people": "People overview",
         "manage-people": "Manage people (Regular)",

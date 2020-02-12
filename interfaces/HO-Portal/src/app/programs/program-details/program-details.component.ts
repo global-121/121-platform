@@ -26,6 +26,8 @@ export class ProgramDetailsComponent implements OnInit {
   public programPhases: any[] = [];
   public activePhaseId: number;
   public activePhase: string;
+  public selectedPhaseId: number;
+  public selectedPhase: string;
 
   private techFeatures = [
     'countryId',
@@ -63,12 +65,25 @@ export class ProgramDetailsComponent implements OnInit {
       label: this.translate.instant('page.programs.phases.' + phase),
       active: phase === this.program.state,
     }));
-    this.activePhaseId = 10; // phases.filter(phase => phase.active).map(phase => phase.id)[0];
+    // Set at 10 to have all sections active, for development purposes phases.
+    // this.activePhaseId = 10; 
+    this.activePhaseId = phases.find(item => item.active).id;
+    this.activePhase = phases.find(item => item.active).phase;
+    this.selectedPhaseId = this.activePhaseId;
+    this.selectedPhase = this.activePhase;
     return phases
   }
 
   public changePhase(phase) {
-    this.activePhase = phase;
+    this.selectedPhase = this.programPhases.find(item => item.id === phase).phase;
+    this.selectedPhaseId = this.programPhases.find(item => item.id === phase).id;
+  }
+
+  public async advancePhase(phaseId) {
+    const phase = this.programPhases.find(item => item.id === phaseId).phase;
+    await this.programsService.advancePhase(this.program.id, phase);
+    this.program = await this.programsService.getProgramById(this.program.id);
+    this.programPhases = this.createPhases();
   }
 
   public generateArray(obj) {

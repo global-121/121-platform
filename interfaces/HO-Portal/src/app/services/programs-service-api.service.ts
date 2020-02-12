@@ -55,6 +55,18 @@ export class ProgramsServiceApiService {
     ).toPromise();
   }
 
+  advancePhase(programId: number, newState: string): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/changeState/` + programId,
+      {
+        newState
+      },
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
   getFundsById(programId: number | string): Promise<ProgramFunds> {
     return this.apiService.get(
       environment.url_121_service_api,
