@@ -12,12 +12,11 @@ const EXAMPLE_DID = 'did:sov:1wJPyULfLLnYTEFYzByfUR';
 
 @Injectable()
 export class SeedDev implements InterfaceScript {
-  public constructor(private connection: Connection) { }
+  public constructor(private connection: Connection) {}
 
   private readonly seedPublish = new SeedPublish();
 
   public async run(): Promise<void> {
-
     // ***** CREATE A CONNECTION *****
     const connectionRepository = this.connection.getRepository(
       ConnectionEntity,
@@ -40,7 +39,7 @@ export class SeedDev implements InterfaceScript {
     const appointment = new AppointmentEntity();
     appointment.timeslotId = 1;
     appointment.did = EXAMPLE_DID;
-    appointment.status = 'waiting'
+    appointment.status = 'waiting';
     await appointmentRepository.save(appointment);
 
     // ***** CREATE PREFILLED ANSWERS *****

@@ -42,9 +42,7 @@ export class CreateConnectionController {
   @ApiOperation({ title: 'Delete connection' })
   @ApiResponse({ status: 200, description: 'Deleted connection' })
   @Post('/delete')
-  public async delete(
-    @Body() didObject: DidDto,
-  ): Promise<void> {
+  public async delete(@Body() didObject: DidDto): Promise<void> {
     return await this.createConnectionService.delete(didObject);
   }
 
@@ -57,20 +55,15 @@ export class CreateConnectionController {
     return await this.createConnectionService.addPhone(
       setPhoneRequest.did,
       setPhoneRequest.phonenumber,
-      setPhoneRequest.language
+      setPhoneRequest.language,
     );
   }
 
   @ApiOperation({ title: 'Set Financial Service Provider (FSP)' })
   @ApiResponse({ status: 200, description: 'FSP set for connection' })
   @Post('/fsp')
-  public async addFsp(
-    @Body() setFsp: SetFspDto,
-  ): Promise<ConnectionEntity> {
-    return await this.createConnectionService.addFsp(
-      setFsp.did,
-      setFsp.fspId
-    );
+  public async addFsp(@Body() setFsp: SetFspDto): Promise<ConnectionEntity> {
+    return await this.createConnectionService.addFsp(setFsp.did, setFsp.fspId);
   }
 
   @ApiOperation({ title: 'Set custom data for connection' })
@@ -82,7 +75,7 @@ export class CreateConnectionController {
     return await this.createConnectionService.addCustomData(
       customData.did,
       customData.key,
-      customData.value
+      customData.value,
     );
   }
 

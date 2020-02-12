@@ -17,7 +17,6 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 
-
 @Entity('program')
 export class ProgramEntity {
   @PrimaryGeneratedColumn()
@@ -53,11 +52,17 @@ export class ProgramEntity {
   @Column()
   public fixedTransferValue: number;
 
-  @ManyToMany(type => FinancialServiceProviderEntity, financialServiceProviders => financialServiceProviders.program)
+  @ManyToMany(
+    type => FinancialServiceProviderEntity,
+    financialServiceProviders => financialServiceProviders.program,
+  )
   @JoinTable()
   public financialServiceProviders: FinancialServiceProviderEntity[];
 
-  @ManyToMany(type => ProtectionServiceProviderEntity, protectionServiceProviders => protectionServiceProviders.program)
+  @ManyToMany(
+    type => ProtectionServiceProviderEntity,
+    protectionServiceProviders => protectionServiceProviders.program,
+  )
   @JoinTable()
   public protectionServiceProviders: ProtectionServiceProviderEntity[];
 
@@ -127,14 +132,15 @@ export class ProgramEntity {
   @JoinTable()
   public aidworkers: UserEntity[];
 
-  @OneToMany(type => CredentialRequestEntity, credentialRequest => credentialRequest.program)
+  @OneToMany(
+    type => CredentialRequestEntity,
+    credentialRequest => credentialRequest.program,
+  )
   public credentialRequests: CredentialRequestEntity[];
 
   @OneToMany(type => CredentialEntity, credential => credential.program)
   public credentials: CredentialEntity[];
 
-
   @OneToMany(type => TransactionEntity, transactions => transactions.program)
   public transactions: TransactionEntity[];
-
 }

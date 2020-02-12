@@ -1,6 +1,6 @@
-import { ApiModelProperty } from "@nestjs/swagger";
+import { ApiModelProperty } from '@nestjs/swagger';
 
-import { IsNumber } from "class-validator";
+import { IsNumber } from 'class-validator';
 
 export class PayoutDto {
   @ApiModelProperty({ example: 1 })
@@ -12,5 +12,4 @@ export class PayoutDto {
   @ApiModelProperty({ example: 10 })
   @IsNumber()
   public readonly amount: number;
-
 }

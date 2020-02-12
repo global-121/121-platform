@@ -3,9 +3,7 @@ import { FundingOverview } from './dto/funding-overview.dto';
 
 @Injectable()
 export class FundingService {
-  public constructor(
-    private readonly httpService: HttpService,
-  ) { }
+  public constructor(private readonly httpService: HttpService) {}
 
   public async getProgramFunds(programId: number): Promise<FundingOverview> {
     const totalRaised = Math.floor(Math.random() * (1000 - 500 + 1)) + 500;
@@ -15,8 +13,8 @@ export class FundingService {
       totalRaised: totalRaised,
       totalTransferred: totalTransferred,
       totalAvailable: totalRaised - totalTransferred,
-      updated: new Date()
+      updated: new Date(),
     };
-    return fundsDisberse
+    return fundsDisberse;
   }
 }

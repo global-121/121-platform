@@ -12,6 +12,7 @@ import {
   Controller,
   UseGuards,
   SetMetadata,
+  Res,
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto';
@@ -37,6 +38,8 @@ import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
 import { ChangeStateDto } from './dto/change-state.dto';
+import { PaymentDetailsRequest } from './dto/payment-details-request.dto';
+import { Response } from 'express-serve-static-core';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -225,11 +228,11 @@ export class ProgramController {
   }
 
   @Roles(UserRole.ProgramManager)
-  @ApiOperation({ title: 'Send payout instruction to financial service provider' })
+  @ApiOperation({
+    title: 'Send payout instruction to financial service provider',
+  })
   @Post('payout')
-  public async payout(
-    @Body() data: PayoutDto,
-  ): Promise<any> {
+  public async payout(@Body() data: PayoutDto): Promise<any> {
     return await this.programService.payout(
       data.programId,
       data.installment,

@@ -37,7 +37,7 @@ export class UserEntity {
   public countryId: number;
 
   @BeforeInsert()
-  public hashPassword() {
+  public hashPassword(): any {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
 

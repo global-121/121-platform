@@ -10,7 +10,6 @@ import { SeedHelper } from './seed-helper';
 import { SeedMvp } from './seed-mvp';
 import { SeedPublish } from './seed-publish';
 
-
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -18,9 +17,17 @@ import { SeedPublish } from './seed-publish';
       entities: ['src/app/**/*.entity.{ts,js}'],
     }),
   ],
-  providers: [SeedDev, SeedInit, SeedPilot, SeedProd, SeedHelper, SeedPublish, SeedMvp],
+  providers: [
+    SeedDev,
+    SeedInit,
+    SeedPilot,
+    SeedProd,
+    SeedHelper,
+    SeedPublish,
+    SeedMvp,
+  ],
 })
-export class ScriptsModule { }
+export class ScriptsModule {}
 
 export interface InterfaceScript {
   run(argv: Arguments): Promise<void>;

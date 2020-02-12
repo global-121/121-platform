@@ -18,9 +18,13 @@ export class CreateConnectionService {
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
   @InjectRepository(CredentialAttributesEntity)
-  private readonly credentialAttributesRepository: Repository<CredentialAttributesEntity>;
+  private readonly credentialAttributesRepository: Repository<
+    CredentialAttributesEntity
+  >;
   @InjectRepository(CredentialRequestEntity)
-  private readonly credentialRequestRepository: Repository<CredentialRequestEntity>;
+  private readonly credentialRequestRepository: Repository<
+    CredentialRequestEntity
+  >;
   @InjectRepository(CredentialEntity)
   private readonly credentialRepository: Repository<CredentialEntity>;
   @InjectRepository(AppointmentEntity)
@@ -28,7 +32,7 @@ export class CreateConnectionService {
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
 
-  public constructor(private readonly sovrinSetupService: SovrinSetupService) { }
+  public constructor(private readonly sovrinSetupService: SovrinSetupService) {}
 
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
@@ -60,36 +64,23 @@ export class CreateConnectionService {
     return newConnection;
   }
 
-  public async delete(
-    didObject: DidDto,
-  ) {
-    await this.connectionRepository.delete(
-      {
-        did: didObject.did,
-      }
-    );
-    await this.credentialAttributesRepository.delete(
-      {
-        did: didObject.did,
-      }
-    );
-    await this.credentialRequestRepository.delete(
-      {
-        did: didObject.did,
-      }
-    );
-    await this.appointmentRepository.delete(
-      {
-        did: didObject.did,
-      }
-    );
-    await this.credentialRepository.delete(
-      {
-        did: didObject.did,
-      }
-    );
+  public async delete(didObject: DidDto) {
+    await this.connectionRepository.delete({
+      did: didObject.did,
+    });
+    await this.credentialAttributesRepository.delete({
+      did: didObject.did,
+    });
+    await this.credentialRequestRepository.delete({
+      did: didObject.did,
+    });
+    await this.appointmentRepository.delete({
+      did: didObject.did,
+    });
+    await this.credentialRepository.delete({
+      did: didObject.did,
+    });
   }
-
 
   public async addPhone(
     did: string,
@@ -102,10 +93,7 @@ export class CreateConnectionService {
     await this.connectionRepository.save(connection);
   }
 
-  public async addFsp(
-    did: string,
-    fspId: number,
-  ): Promise<ConnectionEntity> {
+  public async addFsp(did: string, fspId: number): Promise<ConnectionEntity> {
     const connection = await this.findOne(did);
     const fsp = await this.fspRepository.findOne(fspId);
     connection.fsp = fsp;
@@ -118,7 +106,7 @@ export class CreateConnectionService {
     customDataValue: string,
   ): Promise<ConnectionEntity> {
     const connection = await this.findOne(did);
-    connection.customData[customDataKey] = customDataValue
+    connection.customData[customDataKey] = customDataValue;
     return await this.connectionRepository.save(connection);
   }
 

@@ -2,9 +2,9 @@ import { SECRET } from '../secrets';
 import * as jwt from 'jsonwebtoken';
 
 export class BaseController {
-  constructor() {}
+  public constructor() {}
 
-  protected getUserIdFromToken(authorization) {
+  protected getUserIdFromToken(authorization): any {
     if (!authorization) return null;
 
     const token = authorization.split(' ')[1];
