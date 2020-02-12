@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PhaseNavigationComponent } from './phase-navigation.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('PhaseNavigationComponent', () => {
   let component: PhaseNavigationComponent;
@@ -9,10 +10,13 @@ describe('PhaseNavigationComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PhaseNavigationComponent ],
+      declarations: [PhaseNavigationComponent],
+      imports: [
+        TranslateModule.forRoot(),
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,17 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
 import { Program, InclusionCalculationType } from 'src/app/models/program.model';
 import { formatDate } from '@angular/common';
+import { UserRole } from 'src/app/auth/user-role.enum';
 
 @Component({
   selector: 'app-program-people',
   templateUrl: './program-people.component.html',
   styleUrls: ['./program-people.component.scss'],
 })
-export class ProgramPeopleComponent implements OnInit {
+export class ProgramPeopleComponent implements OnChanges {
+  @Input()
+  public selectedPhase: string;
+
+  @Input()
+  public userRole: string;
+
+  public componentVisible: boolean;
+  private presentInPhases = [
+    'design',
+    'registration',
+    'inclusion',
+    'finalize',
+    'payment',
+    'evaluation'
+  ];
+  public userRoleEnum = UserRole;
 
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, hh:mm';
@@ -52,19 +69,34 @@ export class ProgramPeopleComponent implements OnInit {
     };
   }
 
-  async ngOnInit() {
-    this.programId = Number(this.route.snapshot.params.id);
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+      this.checkVisibility(this.selectedPhase);
+    }
+    if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
+      this.shouldShowSensitiveData(this.userRole);
+    }
+    if (changes.programId && typeof changes.programId.currentValue === 'number') {
+      this.update();
+    }
+  }
+
+  private async update() {
     this.program = await this.programsService.getProgramById(this.programId);
 
-    await this.shouldShowSensitiveData();
+    await this.shouldShowSensitiveData(this.userRole);
 
     this.determineColumns();
 
     this.loadData();
   }
 
-  private async shouldShowSensitiveData() {
-    return this.route.data.subscribe((result) => this.showSensitiveData = result.showSensitiveData);
+  private async shouldShowSensitiveData(userRole) {
+    this.showSensitiveData = userRole === this.userRoleEnum.PrivacyOfficer;
+  }
+
+  public checkVisibility(phase) {
+    this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   private async loadData() {

@@ -4,7 +4,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Program } from 'src/app/models/program.model';
-import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgramJsonComponent } from './program-json/program-json.component';
 
@@ -16,26 +15,20 @@ import { ProgramJsonComponent } from './program-json/program-json.component';
 export class ProgramComponent implements OnInit {
   public languageCode: string;
   public fallbackLanguageCode: string;
+
   public currentUserRole: string;
 
   public program: Program;
   public programTitle: string;
   public programArray: any;
   public userRoleEnum = UserRole;
+  public programPhase: string;
 
-
-  private techFeatures = [
-    'countryId',
-    'schemaId',
-    'credDefId',
-    'credOffer',
-    'proofRequest',
-  ];
+  public selectedPhase: string;
 
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
-    public modalController: ModalController,
     public translate: TranslateService,
     private authService: AuthService
 
@@ -47,8 +40,10 @@ export class ProgramComponent implements OnInit {
     const programId = this.route.snapshot.params.id;
     this.program = await this.programsService.getProgramById(programId);
     this.programTitle = this.mapLabelByLanguageCode(this.program.title);
-    this.programArray = this.generateArray(this.program);
     this.currentUserRole = this.authService.getUserRole();
+
+    this.programPhase = this.program.state;
+    this.selectedPhase = this.programPhase;
   }
 
 
@@ -60,21 +55,8 @@ export class ProgramComponent implements OnInit {
   //   this.programPhases = this.createPhases();
   // }
 
-  public generateArray(obj) {
-    return Object.keys(obj)
-      .filter((key) => this.techFeatures.indexOf(key) <= -1)
-      .map((key) => {
-        const keyNew = this.translate.instant('page.programs.program-details.' + key);
-        const valueNew = this.mapLabelByLanguageCode(obj[key]);
-        let isArray = false;
-        if (valueNew instanceof Array) {
-          if (typeof valueNew[0] === 'object') {
-            isArray = true;
-            // Enter code here to visualize array-properties (like Criteria/Aidworkers) differently
-          }
-        }
-        return ({ key: keyNew, value: valueNew, isArray });
-      });
+  public emit(selectedPhase) {
+    this.selectedPhase = selectedPhase;
   }
 
   private mapLabelByLanguageCode(property: any) {
@@ -91,16 +73,6 @@ export class ProgramComponent implements OnInit {
     return label;
   }
 
-  async openProgramJson() {
-    const modal: HTMLIonModalElement =
-      await this.modalController.create({
-        component: ProgramJsonComponent,
-        componentProps: {
-          program: this.program,
-        }
-      });
 
-    await modal.present();
-  }
 
 }

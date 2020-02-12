@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Program } from 'src/app/models/program.model';
 import { ActivatedRoute } from '@angular/router';
@@ -9,7 +9,12 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   templateUrl: './phase-navigation.component.html',
   styleUrls: ['./phase-navigation.component.scss'],
 })
-export class PhaseNavigationComponent implements OnInit {
+export class PhaseNavigationComponent implements OnChanges {
+  @Input()
+  public programPhase: string;
+
+  @Output()
+  emitSelectedPhase: EventEmitter<string> = new EventEmitter<string>();
 
   public program: Program;
   public programPhases: any[] = [];
@@ -28,39 +33,35 @@ export class PhaseNavigationComponent implements OnInit {
   ];
 
   constructor(
-    private route: ActivatedRoute,
-    private programsService: ProgramsServiceApiService,
     public translate: TranslateService,
   ) {
   }
 
-  async ngOnInit() {
-    const programId = this.route.snapshot.params.id;
-    this.program = await this.programsService.getProgramById(programId);
-    this.programPhases = this.createPhases();
+  ngOnChanges(changes: SimpleChanges) {
+    if (typeof changes.programPhase.currentValue === 'string') {
+      this.programPhases = this.createPhases();
+    }
   }
 
 
   public createPhases() {
     const phases = this.phasesInput.map((phase, index) => ({
       id: index + 1,
-      phase: phase,
+      phase,
       label: this.translate.instant('page.programs.phases.' + phase),
-      active: phase === this.program.state,
+      active: phase === this.programPhase, // this.program.state,
     }));
-    // Set at 10 to have all sections active, for development purposes phases.
-    // this.activePhaseId = 10; 
     this.activePhaseId = phases.find(item => item.active).id;
     this.activePhase = phases.find(item => item.active).phase;
     this.selectedPhaseId = this.activePhaseId;
     this.selectedPhase = this.activePhase;
-    return phases
+    return phases;
   }
 
   public changePhase(phase) {
-    console.log(phase);
     this.selectedPhase = this.programPhases.find(item => item.id === phase).phase;
     this.selectedPhaseId = this.programPhases.find(item => item.id === phase).id;
+    this.emitSelectedPhase.emit(this.selectedPhase);
   }
 
 }

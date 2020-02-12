@@ -17,6 +17,9 @@ export class ProgramPayoutComponent implements OnChanges {
   public programId: number;
 
   @Input()
+  public selectedPhase: string;
+
+  @Input()
   public transferValue: any;
 
   @Input()
@@ -33,6 +36,12 @@ export class ProgramPayoutComponent implements OnChanges {
   private totalIncluded: number;
 
   public confirmMessage: string;
+
+  public componentVisible: boolean;
+  private presentInPhases = [
+    'finalize',
+    'payment',
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -51,9 +60,16 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (typeof changes.programId.currentValue === 'number') {
+    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+      this.checkVisibility(this.selectedPhase);
+    }
+    if (changes.programId && typeof changes.programId.currentValue === 'number') {
       this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
     }
+  }
+
+  public checkVisibility(phase) {
+    this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   private async createInstallments(programId) {

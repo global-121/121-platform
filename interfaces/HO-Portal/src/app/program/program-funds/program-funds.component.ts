@@ -14,7 +14,11 @@ export class ProgramFundsComponent implements OnChanges {
   public programId: number;
 
   @Input()
+  public selectedPhase: string;
+
+  @Input()
   private currencyCode = 'EUR';
+
 
   private locale: string;
 
@@ -28,6 +32,16 @@ export class ProgramFundsComponent implements OnChanges {
   public totalAvailableDisplay: string;
   public lastUpdatedDisplay: string;
 
+  public componentVisible: boolean;
+  private presentInPhases = [
+    'design',
+    'registration',
+    'inclusion',
+    'finalize',
+    'payment',
+    'evaluation'
+  ];
+
   constructor(
     private translate: TranslateService,
     private programsService: ProgramsServiceApiService,
@@ -35,10 +49,17 @@ export class ProgramFundsComponent implements OnChanges {
     this.locale = this.translate.getBrowserCultureLang();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (typeof changes.programId.currentValue === 'number') {
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+      this.checkVisibility(this.selectedPhase);
+    }
+    if (changes.programId && typeof changes.programId.currentValue === 'number') {
       this.update();
     }
+  }
+
+  public checkVisibility(phase) {
+    this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   public async update() {

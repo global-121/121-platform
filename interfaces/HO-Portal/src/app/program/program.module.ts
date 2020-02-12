@@ -10,6 +10,7 @@ import { ProgramJsonComponent } from './program-json/program-json.component';
 import { ProgramsListComponent } from '../programs-list/programs-list.component';
 import { ProgramPayoutComponent } from './program-payout/program-payout.component';
 import { ProgramPeopleComponent } from './program-people/program-people.component';
+import { ProgramDetailsComponent } from './program-details/program-details.component';
 
 import { ProgramsRoutingModule } from './programs-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -27,6 +28,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     ProgramsListComponent,
     ProgramPayoutComponent,
     ProgramPeopleComponent,
+    ProgramDetailsComponent,
   ],
   imports: [
     CommonModule,

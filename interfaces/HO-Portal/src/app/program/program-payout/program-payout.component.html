@@ -1,62 +1,67 @@
-<form>
-  <ion-item *ngFor="let installment of installments">
-    <ion-row class="ion-align-items-center">
-      <p>
-        {{ 'page.programs.program-payout.installment-nr'|translate }} {{installment.id}}
-        <ion-label *ngIf="installment.statusOpen" position="stacked">
-          {{ 'page.programs.program-payout.open'|translate }}
-        </ion-label>
-        <ion-label *ngIf="!installment.statusOpen" position="stacked">
-          {{ 'page.programs.program-payout.closed'|translate }}
-        </ion-label>
-        <ion-label position="stacked">
-          {{ installment.installmentDate|date:"dd-MM-y" }}
-        </ion-label>
-      </p>
-      <ion-item class="ion-margin-end" [disabled]="!installment.firstOpen || totalIncluded === 0 || currentUserRole !== userRoleEnum.ProgramManager">
-        <ion-label position="stacked">
-          {{ 'page.programs.program-details.fixedTransferValue'|translate }}
-        </ion-label>
-        <ion-input type="number"
-                   inputmode="decimal"
-                   min="0"
-                   required
-                   [(ngModel)]="installment.amount"
-                   [ngModelOptions]="{standalone: true}"
-                   ngDefaultControl
-                   (change)="updateTotalAmountMessage(installment)"
-        ></ion-input>
-      </ion-item>
+<section *ngIf="componentVisible">
+  <h2>{{ 'page.programs.program-details.section-payout'|translate }}</h2>
   
-      <p>
-        <confirm-prompt [disabled]="!isEnabled || !installment.firstOpen || totalIncluded === 0 || currentUserRole !== userRoleEnum.ProgramManager"
-                        (confirm)="performPayout(installment); installment.isInProgress = true"
-                        (cancel)="cancelPayout(installment)"
-                        [subHeader]="'page.programs.program-payout.total-amount'|translate"
-                        [message]="confirmMessage"
-        >
-          {{ 'page.programs.program-payout.start-payout'|translate }}
-        </confirm-prompt>
-        <ion-label 
-          *ngIf="totalIncluded === 0 && installment.firstOpen"
-          position="stacked"
-        >
-          {{ 'page.programs.program-payout.none-included'|translate }}
-        </ion-label>
-      </p>
-      <p>
-        <ion-button [disabled]="currentUserRole !== userRoleEnum.PrivacyOfficer"
-                    (click)="exportList(installment)"
-        >
-          {{ 'page.programs.program-payout.export-list'|translate }}
-        </ion-button>
+  <form>
+    <ion-item *ngFor="let installment of installments">
+      <ion-row class="ion-align-items-center">
+        <p>
+          {{ 'page.programs.program-payout.installment-nr'|translate }} {{installment.id}}
+          <ion-label *ngIf="installment.statusOpen" position="stacked">
+            {{ 'page.programs.program-payout.open'|translate }}
+          </ion-label>
+          <ion-label *ngIf="!installment.statusOpen" position="stacked">
+            {{ 'page.programs.program-payout.closed'|translate }}
+          </ion-label>
+          <ion-label position="stacked">
+            {{ installment.installmentDate|date:"dd-MM-y" }}
+          </ion-label>
+        </p>
+        <ion-item class="ion-margin-end" [disabled]="!installment.firstOpen || totalIncluded === 0 || currentUserRole !== userRoleEnum.ProgramManager">
+          <ion-label position="stacked">
+            {{ 'page.programs.program-details.fixedTransferValue'|translate }}
+          </ion-label>
+          <ion-input type="number"
+                    inputmode="decimal"
+                    min="0"
+                    required
+                    [(ngModel)]="installment.amount"
+                    [ngModelOptions]="{standalone: true}"
+                    ngDefaultControl
+                    (change)="updateTotalAmountMessage(installment)"
+          ></ion-input>
+        </ion-item>
+    
+        <p>
+          <confirm-prompt [disabled]="!isEnabled || !installment.firstOpen || totalIncluded === 0 || currentUserRole !== userRoleEnum.ProgramManager"
+                          (confirm)="performPayout(installment); installment.isInProgress = true"
+                          (cancel)="cancelPayout(installment)"
+                          [subHeader]="'page.programs.program-payout.total-amount'|translate"
+                          [message]="confirmMessage"
+          >
+            {{ 'page.programs.program-payout.start-payout'|translate }}
+          </confirm-prompt>
+          <ion-label 
+            *ngIf="totalIncluded === 0 && installment.firstOpen"
+            position="stacked"
+          >
+            {{ 'page.programs.program-payout.none-included'|translate }}
+          </ion-label>
+        </p>
+        <p>
+          <ion-button [disabled]="currentUserRole !== userRoleEnum.PrivacyOfficer"
+                      (click)="exportList(installment)"
+          >
+            {{ 'page.programs.program-payout.export-list'|translate }}
+          </ion-button>
 
-      </p>
-  
-      <ion-spinner *ngIf="installment.isInProgress"
-                   color="primary"
-                   class="ion-margin-start"
-      ></ion-spinner>
-    </ion-row>
-  </ion-item>
-</form>
+        </p>
+    
+        <ion-spinner *ngIf="installment.isInProgress"
+                    color="primary"
+                    class="ion-margin-start"
+        ></ion-spinner>
+      </ion-row>
+    </ion-item>
+  </form>
+
+</section>

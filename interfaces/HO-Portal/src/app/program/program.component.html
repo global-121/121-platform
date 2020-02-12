@@ -13,10 +13,12 @@
       </ion-button>
     </ion-buttons>
     <ion-title>
-      {{ 'page.programs.program-details.pageTitle'|translate }}: {{ programTitle }}
+      {{ programTitle }}
     </ion-title>
     <ion-buttons slot="end">
-      <app-phase-navigation></app-phase-navigation>
+      <app-phase-navigation [programPhase]="programPhase"
+                            (emitSelectedPhase)="emit($event)"
+      ></app-phase-navigation>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -29,49 +31,25 @@
   >
     {{ 'page.programs.program-details.advance-phase'|translate }}
   </ion-button> -->
-  <section>
-    <h2>{{ 'page.programs.program-details.section-funds'|translate }}</h2>
 
-    <app-program-funds [programId]="program?.id"
-                       [currencyCode]="program?.currency"
-    ></app-program-funds>
+  <app-program-funds [selectedPhase]="selectedPhase"
+                     [programId]="program?.id"
+                     [currencyCode]="program?.currency"
+  ></app-program-funds>
 
-  </section>
-  <section *ngIf="currentUserRole === userRoleEnum.ProgramManager && activePhase === 'payment'">
-    <h2>{{ 'page.programs.program-details.section-payout'|translate }}</h2>
+  <app-program-payout [selectedPhase]="selectedPhase"
+                      [programId]="program?.id"
+                      [currencyCode]="program?.currency"
+  ></app-program-payout>
 
-    <app-program-payout [programId]="program?.id"
-                        [currencyCode]="program?.currency"
-    ></app-program-payout>
 
-  </section>
-  <section>
-    <h2>{{ 'page.programs.program-details.section-people'|translate }}</h2>
+  <app-program-people [selectedPhase]="selectedPhase"
+                      [programId]="program?.id"
+                      [userRole]="currentUserRole"
+  ></app-program-people>
 
-    <ion-button *ngIf="currentUserRole === userRoleEnum.ProgramManager  " [routerLink]="['/program', program?.id, 'people']">
-      {{ 'page.programs.program-details.manage-people'|translate }}
-    </ion-button>
-
-    <ion-button *ngIf="currentUserRole === userRoleEnum.PrivacyOfficer " [routerLink]="['/program', program?.id, 'people-privacy']">
-      {{ 'page.programs.program-details.manage-people-privacy'|translate }}
-    </ion-button>
-
-  </section>
-  <section *ngIf="currentUserRole === userRoleEnum.ProgramManager && selectedPhase === 'design'">
-    <h2>{{ 'page.programs.program-details.section-details'|translate }}</h2>
-
-    <ion-list lines="full">
-      <ion-item>
-        <ion-button (click)="openProgramJson()">
-          {{ 'page.programs.program-details.all'|translate }}
-        </ion-button>
-      </ion-item>
-      <ion-item *ngFor="let item of programArray">
-        <ion-label>
-          <strong>{{ item.key }}:</strong>
-          <pre>{{ item.value | json }}</pre>
-        </ion-label>
-      </ion-item>
-    </ion-list>
-  </section>
+  <app-program-details [selectedPhase]="selectedPhase"
+                       [programId]="program?.id"
+  ></app-program-details>
+  
 </ion-content>

@@ -1,28 +1,6 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-      <ion-button type="button"
-                  fill="clear"
-                  shape="round"
-                  size="large"
-                  [routerLink]="['/program', programId]"
-                  routerDirection="back"
-      >
-        <ion-icon name="arrow-back"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title *ngIf="!showSensitiveData">
-      {{ 'page.programs.program-people.pageTitle'|translate }}
-    </ion-title>
-    <ion-title *ngIf="showSensitiveData">
-      {{ 'page.programs.program-people.pageTitlePrivacy'|translate }}
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-
-<ion-content class="ion-padding">
+<section *ngIf="componentVisible">
+  <h2>{{ 'page.programs.program-details.section-people'|translate }}</h2>
+  
   <p *ngIf="!enrolledPeople?.length && !showSensitiveData">
     {{ 'page.programs.program-people.noConnections'|translate }}
   </p>
@@ -31,21 +9,21 @@
   </p>
 
   <ngx-datatable #people
-                 class="bootstrap"
-                 limit="50"
-                 columnMode="force"
-                 rowHeight="auto"
-                 headerHeight="50"
-                 footerHeight="50"
-                 reorderable="false"
-                 sortType="multi"
-                 selectionType="checkbox"
-                 loadingIndicator="true"
-                 [columns]="columns"
-                 [rows]="enrolledPeople"
-                 [selected]="selectedPeople"
-                 [messages]="tableMessages"
-                 (select)="updateSubmitWarning()"
+                class="bootstrap"
+                limit="50"
+                columnMode="force"
+                rowHeight="auto"
+                headerHeight="50"
+                footerHeight="50"
+                reorderable="false"
+                sortType="multi"
+                selectionType="checkbox"
+                loadingIndicator="true"
+                [columns]="columns"
+                [rows]="enrolledPeople"
+                [selected]="selectedPeople"
+                [messages]="tableMessages"
+                (select)="updateSubmitWarning()"
   ></ngx-datatable>
 
   <confirm-prompt [disabled]="!enrolledPeople.length"
@@ -68,4 +46,4 @@
     {{ 'page.programs.program-people.submit'|translate }}
   </confirm-prompt>
 
-</ion-content>
+</section>
