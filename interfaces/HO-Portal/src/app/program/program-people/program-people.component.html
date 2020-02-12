@@ -1,11 +1,11 @@
 <section *ngIf="componentVisible">
-  <h2>{{ 'page.programs.program-details.section-people'|translate }}</h2>
+  <h2>{{ 'page.program.program-details.section-people'|translate }}</h2>
   
   <p *ngIf="!enrolledPeople?.length && !showSensitiveData">
-    {{ 'page.programs.program-people.noConnections'|translate }}
+    {{ 'page.program.program-people.noConnections'|translate }}
   </p>
   <p *ngIf="!enrolledPeople?.length && showSensitiveData">
-    {{ 'page.programs.program-people.noConnectionsPrivacy'|translate }}
+    {{ 'page.program.program-people.noConnectionsPrivacy'|translate }}
   </p>
 
   <ngx-datatable #people
@@ -28,22 +28,22 @@
 
   <confirm-prompt [disabled]="!enrolledPeople.length"
                   (confirm)="submitInclusion()"
-                  [subHeader]="'page.programs.program-people.submit-warningPrivacy'|translate"
+                  [subHeader]="'page.program.program-people.submit-warningPrivacy'|translate"
                   [message]="submitWarning.message"
                   class="ion-float-end"
                   *ngIf="showSensitiveData"
   >
-    {{ 'page.programs.program-people.submitPrivacy'|translate }}
+    {{ 'page.program.program-people.submitPrivacy'|translate }}
   </confirm-prompt>
 
   <confirm-prompt [disabled]="!enrolledPeople.length"
                   (confirm)="submitInclusion()"
-                  [subHeader]="'page.programs.program-people.submit-warning'|translate"
+                  [subHeader]="'page.program.program-people.submit-warning'|translate"
                   [message]="submitWarning.message"
                   class="ion-float-end"
                   *ngIf="!showSensitiveData"
   >
-    {{ 'page.programs.program-people.submit'|translate }}
+    {{ 'page.program.program-people.submit'|translate }}
   </confirm-prompt>
 
 </section>

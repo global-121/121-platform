@@ -49,9 +49,9 @@ export class PhaseNavigationComponent implements OnChanges {
     const phases = this.phasesInput.map((phase, index) => ({
       id: index + 1,
       phase,
-      label: this.translate.instant('page.programs.phases.' + phase + '.label'),
+      label: this.translate.instant('page.program.phases.' + phase + '.label'),
       active: phase === this.activePhase,
-      btnText: this.translate.instant('page.programs.phases.' + phase + '.btnText'),
+      btnText: this.translate.instant('page.program.phases.' + phase + '.btnText'),
     }));
     this.activePhaseId = phases.find(item => item.active).id;
     this.selectedPhaseId = this.activePhaseId;

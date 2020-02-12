@@ -19,7 +19,11 @@
     "home": {
       "pageTitle": "Home"
     },
-    "programs": {
+    "programs-list": {
+      "pageTitle": "All Programs",
+      "not-available": "No programs available."
+    },
+    "program": {
       "phases": {
         "design": {
           "label": "Design",
@@ -45,10 +49,6 @@
           "label": "Evaluation",
           "btnText": "Terminate program"
         }
-      },
-      "program-list": {
-        "pageTitle": "All Programs",
-        "not-available": "No programs available."
       },
       "program-details": {
         "pageTitle": "Program details",

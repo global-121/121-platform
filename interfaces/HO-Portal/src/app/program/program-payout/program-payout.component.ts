@@ -145,12 +145,12 @@ export class ProgramPayoutComponent implements OnChanges {
       .then(
         () => {
           installment.isInProgress = false;
-          this.actionResult(this.translate.instant('page.programs.program-payout.payout-success'));
+          this.actionResult(this.translate.instant('page.program.program-payout.payout-success'));
           this.createInstallments(this.programId);
         },
         (err) => {
           console.log('err: ', err);
-          this.actionResult(this.translate.instant('page.programs.program-payout.payout-error'));
+          this.actionResult(this.translate.instant('page.program.program-payout.payout-error'));
           this.cancelPayout(installment);
         }
       );
@@ -162,7 +162,7 @@ export class ProgramPayoutComponent implements OnChanges {
         () => { },
         (err) => {
           console.log('err: ', err);
-          this.actionResult(this.translate.instant('page.programs.program-payout.export-error'));
+          this.actionResult(this.translate.instant('page.program.program-payout.export-error'));
         }
       );
   }

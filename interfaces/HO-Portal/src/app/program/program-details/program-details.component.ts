@@ -66,7 +66,7 @@ export class ProgramDetailsComponent implements OnChanges {
     return Object.keys(obj)
       .filter((key) => this.techFeatures.indexOf(key) <= -1)
       .map((key) => {
-        const keyNew = this.translate.instant('page.programs.program-details.' + key);
+        const keyNew = this.translate.instant('page.program.program-details.' + key);
         const valueNew = this.mapLabelByLanguageCode(obj[key]);
         let isArray = false;
         if (valueNew instanceof Array) {

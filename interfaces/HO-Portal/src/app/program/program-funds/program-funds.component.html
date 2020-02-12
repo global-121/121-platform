@@ -1,12 +1,12 @@
 <section *ngIf="componentVisible">
-  <h2>{{ 'page.programs.program-details.section-funds'|translate }}</h2>
+  <h2>{{ 'page.program.program-details.section-funds'|translate }}</h2>
 
   <table style="border: 1px solid silver;"
         class="ion-text-end"
   >
     <tr>
       <th scope="row" class="ion-padding">
-        {{ 'page.programs.program-funds.total-raised'|translate }}
+        {{ 'page.program.program-funds.total-raised'|translate }}
       </th>
       <td class="ion-padding">
         {{ totalRaisedDisplay }}
@@ -14,7 +14,7 @@
     </tr>
     <tr>
       <th scope="row" class="ion-padding">
-        {{ 'page.programs.program-funds.total-transferred'|translate }}
+        {{ 'page.program.program-funds.total-transferred'|translate }}
       </th>
       <td class="ion-padding">
         {{ totalTransferredDisplay }}
@@ -22,7 +22,7 @@
     </tr>
     <tr>
       <th scope="row" class="ion-padding">
-        {{ 'page.programs.program-funds.total-available'|translate }}
+        {{ 'page.program.program-funds.total-available'|translate }}
       </th>
       <td class="ion-padding">
         {{ totalAvailableDisplay }}
@@ -42,7 +42,7 @@
     </ion-button>
 
     <ion-note>
-      {{ 'page.programs.program-funds.last-updated'|translate:{ date: lastUpdatedDisplay } }}
+      {{ 'page.program.program-funds.last-updated'|translate:{ date: lastUpdatedDisplay } }}
     </ion-note>
   </ion-row>
 </section>

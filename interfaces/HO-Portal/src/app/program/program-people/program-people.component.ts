@@ -62,10 +62,10 @@ export class ProgramPeopleComponent implements OnChanges {
     };
     this.submitWarning = {
       message: '',
-      included: this.translate.instant('page.programs.program-people.submit-warning-pa-included'),
-      excluded: this.translate.instant('page.programs.program-people.submit-warning-pa-excluded'),
-      toIncluded: this.translate.instant('page.programs.program-people.submit-warning-pa-to-included'),
-      toExcluded: this.translate.instant('page.programs.program-people.submit-warning-pa-to-excluded'),
+      included: this.translate.instant('page.program.program-people.submit-warning-pa-included'),
+      excluded: this.translate.instant('page.program.program-people.submit-warning-pa-excluded'),
+      toIncluded: this.translate.instant('page.program.program-people.submit-warning-pa-to-included'),
+      toExcluded: this.translate.instant('page.program.program-people.submit-warning-pa-to-excluded'),
     };
   }
 
@@ -124,32 +124,32 @@ export class ProgramPeopleComponent implements OnChanges {
     const columnsRegular = [
       {
         prop: 'pa',
-        name: this.translate.instant('page.programs.program-people.column.person'),
+        name: this.translate.instant('page.program.program-people.column.person'),
         draggable: false,
         resizeable: false,
         sortable: false,
       },
       {
         prop: 'score',
-        name: this.translate.instant('page.programs.program-people.column.score'),
+        name: this.translate.instant('page.program.program-people.column.score'),
         draggable: false,
         resizeable: false,
       },
       {
         prop: 'created',
-        name: this.translate.instant('page.programs.program-people.column.created'),
+        name: this.translate.instant('page.program.program-people.column.created'),
         draggable: false,
         resizeable: false,
       },
       {
         prop: 'updated',
-        name: this.translate.instant('page.programs.program-people.column.updated'),
+        name: this.translate.instant('page.program.program-people.column.updated'),
         draggable: false,
         resizeable: false,
       },
       {
         prop: 'selected',
-        name: this.translate.instant('page.programs.program-people.column.include'),
+        name: this.translate.instant('page.program.program-people.column.include'),
         checkboxable: true,
         draggable: false,
         resizeable: false,
@@ -162,14 +162,14 @@ export class ProgramPeopleComponent implements OnChanges {
       const columnsPrivacy = [
         {
           prop: 'name',
-          name: this.translate.instant('page.programs.program-people.column.name'),
+          name: this.translate.instant('page.program.program-people.column.name'),
           sortable: true,
           draggable: false,
           resizeable: false,
         },
         {
           prop: 'dob',
-          name: this.translate.instant('page.programs.program-people.column.dob'),
+          name: this.translate.instant('page.program.program-people.column.dob'),
           sortable: true,
           draggable: false,
           resizeable: false,
