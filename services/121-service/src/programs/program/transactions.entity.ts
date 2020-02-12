@@ -29,7 +29,10 @@ export class TransactionEntity {
   @Column({ default: 1 })
   public installment: number;
 
-  @ManyToOne(_type => FinancialServiceProviderEntity, financialServiceProvider => financialServiceProvider.transactions)
+  @ManyToOne(
+    _type => FinancialServiceProviderEntity,
+    financialServiceProvider => financialServiceProvider.transactions,
+  )
   public financialServiceProvider: FinancialServiceProviderEntity;
 
   @ManyToOne(_type => ConnectionEntity, connection => connection.transactions)

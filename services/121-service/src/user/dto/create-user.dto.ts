@@ -5,23 +5,23 @@ import { UserRole } from '../../user-role.enum';
 export class CreateUserDto {
   @ApiModelProperty()
   @IsNotEmpty()
-  readonly username: string;
+  public readonly username: string;
 
   @ApiModelProperty({ example: 'admin@example.org' })
   @IsNotEmpty()
-  readonly email: string;
+  public readonly email: string;
 
   @ApiModelProperty()
   @IsNotEmpty()
-  readonly password: string;
+  public readonly password: string;
 
   @ApiModelProperty({ example: 'admin / aidworker / program-manager' })
   @IsEnum(UserRole)
-  readonly role: string;
+  public readonly role: string;
 
   @ApiModelProperty({ example: 'active' })
-  readonly status: string;
+  public readonly status: string;
 
   @ApiModelProperty({ example: 1 })
-  readonly countryId: number;
+  public readonly countryId: number;
 }

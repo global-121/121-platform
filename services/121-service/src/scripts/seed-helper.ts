@@ -9,9 +9,9 @@ import { AvailabilityEntity } from '../schedule/appointment/availability.entity'
 import crypto from 'crypto';
 
 export class SeedHelper {
-  public constructor(private connection: Connection) { }
+  public constructor(private connection: Connection) {}
 
-  public async addUser(userInput: any) {
+  public async addUser(userInput: any): Promise<void> {
     const userRepository = this.connection.getRepository(UserEntity);
     await userRepository.save([
       {
@@ -19,15 +19,16 @@ export class SeedHelper {
         role: userInput.role,
         email: userInput.email,
         countryId: userInput.countryId,
-        password: crypto
-          .createHmac('sha256', userInput.password)
-          .digest('hex'),
+        password: crypto.createHmac('sha256', userInput.password).digest('hex'),
         status: 'active',
       },
     ]);
   }
 
-  public async addPrograms(examplePrograms: Object[], authorId: number) {
+  public async addPrograms(
+    examplePrograms: Record<string, any>[],
+    authorId: number,
+  ): Promise<void> {
     const programRepository = this.connection.getRepository(ProgramEntity);
     const fspRepository = this.connection.getRepository(
       FinancialServiceProviderEntity,
@@ -48,7 +49,6 @@ export class SeedHelper {
       const customCriteria = program.customCriteria;
       program.customCriteria = [];
 
-
       for (let customCriterium of customCriteria) {
         let customReturn = await customCriteriumRepository.save(
           customCriterium,
@@ -61,17 +61,14 @@ export class SeedHelper {
       program.financialServiceProviders = [];
 
       for (let fsp of fsps) {
-        let fspReturn = await fspRepository.findOne(
-          fsp.id
-        );
+        let fspReturn = await fspRepository.findOne(fsp.id);
         program.financialServiceProviders.push(fspReturn);
       }
       await programRepository.save(program);
-
     }
   }
 
-  public async addFsp(fspInput: any) {
+  public async addFsp(fspInput: any): Promise<void> {
     const exampleDump = JSON.stringify(fspInput);
     const fsp = JSON.parse(exampleDump);
 
@@ -88,16 +85,17 @@ export class SeedHelper {
     fsp.attributes = [];
 
     for (let attribute of attributes) {
-      let customReturn = await fspAttributesRepository.save(
-        attribute,
-      );
+      let customReturn = await fspAttributesRepository.save(attribute);
       fsp.attributes.push(customReturn);
     }
 
     await fspRepository.save(fsp);
   }
 
-  public async assignAidworker(userId: number, programId: number) {
+  public async assignAidworker(
+    userId: number,
+    programId: number,
+  ): Promise<void> {
     const userRepository = this.connection.getRepository(UserEntity);
     const programRepository = this.connection.getRepository(ProgramEntity);
     const program_d = await programRepository.findOne(programId); // Assign programId=1 ...
@@ -108,8 +106,13 @@ export class SeedHelper {
     await userRepository.save(user_d);
   }
 
-  public async availabilityForAidworker(availability, aidworkerId: number) {
-    const availabilityRepository = this.connection.getRepository(AvailabilityEntity);
+  public async availabilityForAidworker(
+    availability,
+    aidworkerId: number,
+  ): Promise<void> {
+    const availabilityRepository = this.connection.getRepository(
+      AvailabilityEntity,
+    );
     const userRepository = this.connection.getRepository(UserEntity);
     let aidworker = await userRepository.findOne(aidworkerId);
 

@@ -15,6 +15,4 @@ export class SovrinSetupController {
   public constructor(sovrinSetupService: SovrinSetupService) {
     this.sovrinSetupService = sovrinSetupService;
   }
-
-
 }

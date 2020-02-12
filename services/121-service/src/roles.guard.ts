@@ -1,4 +1,10 @@
-import { Injectable, CanActivate, ExecutionContext, HttpStatus, HttpException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
@@ -9,16 +15,16 @@ import { UserRole } from './user-role.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
+  public constructor(
     private readonly reflector: Reflector,
     private readonly userService: UserService,
   ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
 
     if (DEBUG) {
-      return true
+      return true;
     }
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
     console.log('roles: ', roles);
@@ -27,9 +33,9 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     // This line allows the Admin role to access every controller
-    roles.push(UserRole.Admin)
+    roles.push(UserRole.Admin);
 
-    const request = context.switchToHttp().getRequest()
+    const request = context.switchToHttp().getRequest();
     const authHeaders = request.headers.authorization;
     if (authHeaders && (authHeaders as string).split(' ')[1]) {
       const token = (authHeaders as string).split(' ')[1];
@@ -41,7 +47,6 @@ export class RolesGuard implements CanActivate {
       hasAccess = false;
     }
     if (hasAccess === false) {
-
       // Add this to stay consitent with the old auth middeleware which returns 401
       // If you remove this an unautherized request return 403 will be sent
       throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);

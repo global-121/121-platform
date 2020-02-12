@@ -5,12 +5,15 @@ import { twilioClient, twilio } from './twilio.client';
 import { TWILIO } from '../secrets';
 import { TWILIO_API } from '../config';
 
-
 @Injectable()
 export class AuthMiddlewareTwilio implements NestMiddleware {
-  constructor() {}
+  public constructor() {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
+  public async use(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<any> {
     const twilioSignature = req.headers['x-twilio-signature'];
     const validSms = twilio.validateRequest(
       TWILIO.authToken,

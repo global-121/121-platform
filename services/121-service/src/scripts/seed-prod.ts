@@ -6,9 +6,7 @@ import { UserEntity } from '../user/user.entity';
 
 @Injectable()
 export class SeedProd implements InterfaceScript {
-  public constructor(
-    private connection: Connection,
-  ) { }
+  public constructor(private connection: Connection) {}
 
   public async run(): Promise<void> {
     const userRepository = this.connection.getRepository(UserEntity);
@@ -16,9 +14,10 @@ export class SeedProd implements InterfaceScript {
       const seedInit = await new SeedInit(this.connection);
       await seedInit.run();
     } else {
-      console.log('----------------NOTE: Users were found in database already, so init-script is not run.------------------');
+      console.log(
+        '----------------NOTE: Users were found in database already, so init-script is not run.------------------',
+      );
     }
-
   }
 }
 

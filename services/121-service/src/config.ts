@@ -33,11 +33,11 @@ export const API = {
   fsp: [
     {
       payout: fsp1 + 'post',
-      name: 'Bank A'
+      name: 'Bank A',
     },
     {
       payout: fsp2 + 'post',
-      name: 'Mobile Money Provider B'
+      name: 'Mobile Money Provider B',
     },
   ],
 };
@@ -57,4 +57,3 @@ export const TWILIO_API = {
   voiceXmlUrl: appUrl + 'api/voice/xml/',
   voiceMp3lUrl: appUrl + 'api/voice/mp3/',
 };
-

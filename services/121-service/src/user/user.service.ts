@@ -13,7 +13,6 @@ import crypto from 'crypto';
 import jwt = require('jsonwebtoken');
 import { ProgramEntity } from '../programs/program/program.entity';
 
-
 @Injectable()
 export class UserService {
   @InjectRepository(UserEntity)
@@ -21,7 +20,7 @@ export class UserService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
-  public constructor() { }
+  public constructor() {}
 
   public async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
@@ -38,7 +37,7 @@ export class UserService {
       .createQueryBuilder()
       .addSelect('password')
       .where(findOneOptions)
-      .getOne()
+      .getOne();
     return user;
   }
 
@@ -128,7 +127,7 @@ export class UserService {
     }
   }
 
-  public async assignProgram(userId: number, programId: number) {
+  public async assignProgram(userId: number, programId: number): Promise<any> {
     let user = await this.userRepository.findOne(userId, {
       relations: ['assignedProgram'],
     });
@@ -142,8 +141,8 @@ export class UserService {
       throw new HttpException({ errors }, 401);
     }
     if (!user.assignedProgram) {
-      console.log('No program assigend')
-      user.assignedProgram = []
+      console.log('No program assigend');
+      user.assignedProgram = [];
     }
     user.assignedProgram.push(program);
     const updatedUser = await this.userRepository.save(user);

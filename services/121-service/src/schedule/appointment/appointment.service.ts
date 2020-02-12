@@ -19,7 +19,7 @@ export class AppointmentService {
   @InjectRepository(AppointmentEntity)
   private readonly appointmentRepository: Repository<AppointmentEntity>;
 
-  public constructor() { }
+  public constructor() {}
 
   public async postAvailability(
     userId: number,
@@ -59,7 +59,7 @@ export class AppointmentService {
     for (let index in aidworkers) {
       const availabilityOneAidworker = await this.availabilityRepository.find({
         where: { aidworker: { id: aidworkers[index].id } },
-      })
+      });
       availabilities.push(...availabilityOneAidworker);
     }
     if (availabilities.length == 0) {
@@ -71,7 +71,7 @@ export class AppointmentService {
 
   public async registerTimeslot(
     timeslotId: number,
-    didData: RegisterTimeslotDto
+    didData: RegisterTimeslotDto,
   ): Promise<AppointmentEntity> {
     let appointment = new AppointmentEntity();
     appointment.timeslotId = timeslotId;
@@ -90,7 +90,7 @@ export class AppointmentService {
     for (let timeslot of timeslots) {
       let appointmentsPerTimeslot = await this.appointmentRepository.find({
         where: { timeslotId: timeslot.id },
-        select: ["id", "did", "status"]
+        select: ['id', 'did', 'status'],
       });
       if (appointmentsPerTimeslot.length > 0) {
         let timeslotInclAppointments = {
@@ -98,16 +98,22 @@ export class AppointmentService {
           startDate: timeslot.startDate,
           endDate: timeslot.endDate,
           location: timeslot.location,
-          appointments: appointmentsPerTimeslot
-        }
+          appointments: appointmentsPerTimeslot,
+        };
         appointments.push(timeslotInclAppointments);
       }
     }
     return appointments;
   }
 
-  public async changeAppointmentStatus(timeslotId: number, didData: RegisterTimeslotDto, newStatus: string): Promise<void> {
-    let appointment = await this.appointmentRepository.findOne({ where: { timeslotId: timeslotId, did: didData.did } });
+  public async changeAppointmentStatus(
+    timeslotId: number,
+    didData: RegisterTimeslotDto,
+    newStatus: string,
+  ): Promise<void> {
+    let appointment = await this.appointmentRepository.findOne({
+      where: { timeslotId: timeslotId, did: didData.did },
+    });
     appointment.status = newStatus;
     this.appointmentRepository.save(appointment);
   }

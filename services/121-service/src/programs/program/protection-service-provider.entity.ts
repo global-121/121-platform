@@ -1,9 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 
 @Entity('psp')
@@ -14,6 +9,9 @@ export class ProtectionServiceProviderEntity {
   @Column()
   public psp: string;
 
-  @ManyToMany(_type => ProgramEntity, program => program.protectionServiceProviders)
+  @ManyToMany(
+    _type => ProgramEntity,
+    program => program.protectionServiceProviders,
+  )
   public program: ProgramEntity[];
 }

@@ -16,7 +16,9 @@ export class LookupController {
     description: 'Succesfully looked up telephone number',
   })
   @Post('/lookup')
-  public async lookupPhoneNr(@Body() phoneNrDto: PhoneNumberDto): Promise<void> {
+  public async lookupPhoneNr(
+    @Body() phoneNrDto: PhoneNumberDto,
+  ): Promise<void> {
     return await this.lookupService.lookupPhoneNr(phoneNrDto.phoneNumber);
   }
 }

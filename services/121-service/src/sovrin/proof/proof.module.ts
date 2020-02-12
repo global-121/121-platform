@@ -27,7 +27,7 @@ import { SchemaModule } from '../schema/schema.module';
     ]),
     UserModule,
     forwardRef(() => ProgramModule),
-    HttpModule
+    HttpModule,
   ],
   controllers: [ProofController],
   providers: [ProofService],

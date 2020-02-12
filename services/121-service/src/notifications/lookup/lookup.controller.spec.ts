@@ -27,7 +27,4 @@ describe('Lookup Controller', () => {
   it('should be defined', () => {
     expect(lookupController).toBeDefined();
   });
-
-
-
 });

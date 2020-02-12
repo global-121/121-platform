@@ -39,9 +39,9 @@ describe('CriteriumController', (): void => {
           },
         ],
       })
-      .overrideGuard(RolesGuard)
-      .useValue({ canActivate: () => true })
-      .compile();
+        .overrideGuard(RolesGuard)
+        .useValue({ canActivate: () => true })
+        .compile();
 
       criteriumService = module.get<StandardCriteriumService>(
         StandardCriteriumService,
