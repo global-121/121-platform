@@ -264,4 +264,29 @@ export class ProgramController {
   ): Promise<FinancialServiceProviderEntity> {
     return await this.programService.getFspById(param.fspId);
   }
+
+  @Roles(UserRole.PrivacyOfficer)
+  @ApiOperation({
+    title: 'Get a list payment details per person to share with officials',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Total number of included per program',
+  })
+  @Post('payment-details')
+  public async getPaymentDetails(
+    @Body() data: PaymentDetailsRequest,
+    @Res() response: Response,
+  ): Promise<any> {
+    const csvStream = await this.programService.getPaymentDetails(
+      data.programId,
+      data.installment,
+    );
+    // response.writeHead(200, {
+    //   'Content-Type': 'text/csv',
+    // });
+    // csvStream.readStream.pipe(response);
+    response.attachment('payment-details.csv');
+    response.status(200).send(csvStream);
+  }
 }

@@ -1,3 +1,4 @@
+import { Length } from 'class-validator';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { FundingService } from './../../funding/funding.service';
 import { TransactionEntity } from './transactions.entity';
@@ -15,7 +16,7 @@ import {
   HttpService,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, DeleteResult, Like } from 'typeorm';
+import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
@@ -749,5 +750,75 @@ export class ProgramService {
       relations: ['attributes'],
     });
     return fsp;
+  }
+
+  public async getPaymentDetails(
+    programId: number,
+    installmentId: number,
+  ): Promise<any> {
+    let rawPaymentDetails = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select([
+        'transaction.amount',
+        'transaction.installment',
+        'connection.phoneNumber',
+        'connection.customData',
+      ])
+      .leftJoin('transaction.connection', 'connection')
+      .where('transaction.program.id = :programId', { programId: programId })
+      .andWhere('transaction.installment = :installmentId', {
+        installmentId: installmentId,
+      })
+      .getRawMany();
+
+    if (rawPaymentDetails.length === 0) {
+      rawPaymentDetails = await this.getPaymentDetailsFuture(programId);
+    }
+    const paymentDetails = [];
+    rawPaymentDetails.forEach(rawTransaction => {
+      let transaction = {
+        ...rawTransaction,
+        ...rawTransaction.connection_customData,
+      };
+      delete transaction['connection_customData'];
+      paymentDetails.push(transaction);
+    });
+
+    return this.jsonToCsv(paymentDetails);
+  }
+
+  public async getPaymentDetailsFuture(programId: number): Promise<any> {
+    const connections = await this.connectionRepository
+      .createQueryBuilder('connection')
+      .select([
+        'connection.phoneNumber',
+        'connection.customData',
+        'connection.programsIncluded',
+      ])
+      .getRawMany();
+    const rawPaymentDetails = [];
+    for (let connection of connections) {
+      if (connection.connection_programsIncluded.includes(+programId)) {
+        delete connection['connection_programsIncluded'];
+        rawPaymentDetails.push(connection);
+      }
+    }
+    return rawPaymentDetails;
+  }
+
+  public jsonToCsv(items: any): any {
+    if (items.length === 0) {
+      return '';
+    }
+    const replacer = (key, value): any => (value === null ? '' : value); // specify how you want to handle null values here
+    const header = Object.keys(items[0]);
+    let csv = items.map(row =>
+      header
+        .map(fieldName => JSON.stringify(row[fieldName], replacer))
+        .join(','),
+    );
+    csv.unshift(header.join(','));
+    csv = csv.join('\r\n');
+    return csv;
   }
 }
