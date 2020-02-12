@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 
 import { ProgramComponent } from './program.component';
+import { PhaseNavigationComponent } from './phase-navigation/phase-navigation.component';
 import { ProgramFundsComponent } from './program-funds/program-funds.component';
 import { ProgramJsonComponent } from './program-json/program-json.component';
 import { ProgramsListComponent } from '../programs-list/programs-list.component';
@@ -20,6 +21,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
   ],
   declarations: [
     ProgramComponent,
+    PhaseNavigationComponent,
     ProgramFundsComponent,
     ProgramJsonComponent,
     ProgramsListComponent,

@@ -23,11 +23,6 @@ export class ProgramComponent implements OnInit {
   public programArray: any;
   public userRoleEnum = UserRole;
 
-  public programPhases: any[] = [];
-  public activePhaseId: number;
-  public activePhase: string;
-  public selectedPhaseId: number;
-  public selectedPhase: string;
 
   private techFeatures = [
     'countryId',
@@ -54,37 +49,16 @@ export class ProgramComponent implements OnInit {
     this.programTitle = this.mapLabelByLanguageCode(this.program.title);
     this.programArray = this.generateArray(this.program);
     this.currentUserRole = this.authService.getUserRole();
-    this.programPhases = this.createPhases();
   }
 
-  public createPhases() {
-    const phasesInput = ['design', 'registration', 'inclusion', 'finalize', 'payment', 'evaluation'];
-    const phases = phasesInput.map((phase, index) => ({
-      id: index + 1,
-      phase: phase,
-      label: this.translate.instant('page.programs.phases.' + phase),
-      active: phase === this.program.state,
-    }));
-    // Set at 10 to have all sections active, for development purposes phases.
-    // this.activePhaseId = 10; 
-    this.activePhaseId = phases.find(item => item.active).id;
-    this.activePhase = phases.find(item => item.active).phase;
-    this.selectedPhaseId = this.activePhaseId;
-    this.selectedPhase = this.activePhase;
-    return phases
-  }
 
-  public changePhase(phase) {
-    this.selectedPhase = this.programPhases.find(item => item.id === phase).phase;
-    this.selectedPhaseId = this.programPhases.find(item => item.id === phase).id;
-  }
 
-  public async advancePhase(phaseId) {
-    const phase = this.programPhases.find(item => item.id === phaseId).phase;
-    await this.programsService.advancePhase(this.program.id, phase);
-    this.program = await this.programsService.getProgramById(this.program.id);
-    this.programPhases = this.createPhases();
-  }
+  // public async advancePhase(phaseId) {
+  //   const phase = this.programPhases.find(item => item.id === phaseId).phase;
+  //   await this.programsService.advancePhase(this.program.id, phase);
+  //   this.program = await this.programsService.getProgramById(this.program.id);
+  //   this.programPhases = this.createPhases();
+  // }
 
   public generateArray(obj) {
     return Object.keys(obj)

@@ -16,26 +16,19 @@
       {{ 'page.programs.program-details.pageTitle'|translate }}: {{ programTitle }}
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button *ngFor="let phase of programPhases"
-                  [color]="phase.active ? 'primary' : 'null'"
-                  [class.selected]="phase.id === selectedPhaseId"
-                  [disabled]="phase.id > activePhaseId"
-                  (click)="changePhase(phase.id)"
-      >
-        {{ phase.label }}
-      </ion-button>
+      <app-phase-navigation></app-phase-navigation>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 
 <ion-content class="ion-padding">
-  <ion-button *ngIf="activePhaseId < programPhases.length"
+  <!-- <ion-button *ngIf="activePhaseId < programPhases.length"
               [disabled]="selectedPhase !== activePhase"
               (click)="advancePhase(activePhaseId + 1)"
   >
     {{ 'page.programs.program-details.advance-phase'|translate }}
-  </ion-button>
+  </ion-button> -->
   <section>
     <h2>{{ 'page.programs.program-details.section-funds'|translate }}</h2>
 
