@@ -20,10 +20,6 @@ export class LoginPage {
   public async doLogin() {
     console.log('doLogin()');
 
-    if (!this.loginForm.form.valid) {
-      return;
-    }
-
     const result = await this.authService.login(
       this.email,
       this.password
