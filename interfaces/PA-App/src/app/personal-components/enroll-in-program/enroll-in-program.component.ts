@@ -231,7 +231,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.selectAppointment;
+    return PersonalComponents.selectFsp;
   }
 
   complete() {
