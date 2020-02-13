@@ -25,16 +25,13 @@ export class LoginPage {
       return;
     }
 
-    const result = await this.authService.login(
+    this.authService.login(
       this.email,
       this.password
-    );
-
-    if (result.closed) {
+    ).then(() => {
       // Remove credentials from interface-state to prevent re-use after log-out:
-      this.email = '';
-      this.password = '';
-    }
+      this.loginForm.resetForm();
+    });
 
   }
 }
