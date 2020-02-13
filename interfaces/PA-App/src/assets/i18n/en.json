@@ -18,12 +18,12 @@
       "introduction": "To create a Digital ID you need to complete the following steps.",
       "more-info-digital-id": "About Digital ID",
       "info-message": "Lorem ipsem bladibla",
-      "username-password": "First step: create a username and a password. You will need to remember these.",
+      "username-password": "Create a username and a password.",
       "more-info-username-pw": "About usernames and passwords",
       "info-message-username-pw": "Lorem ipsem bladibla",
       "create-username": "Create username:",
       "submit-username": "Create my username",
-      "password-only": "First step: Create a password.",
+      "password-only": "Create a password.",
       "more-info-password": "About passwords",
       "info-message-password": "Lorem ipsem bladibla",
       "create-password": "Create password:",
@@ -32,7 +32,7 @@
       "username-not-unique": "The username you provide is not unique. Please try again.",
       "unequal-passwords": "The passwords you provided are not the same. Please try again.",
       "conclusion": "Great! You have created a Digital ID.",
-      "conclusion-web": "You are currently logged in. You can log out, and find other account-features, under the green account-button in the top right."
+      "conclusion-web": ""
     },
     "login-identity": {
       "introduction": "To use an existing Digital ID you need to log in with your username and password.",
@@ -44,59 +44,57 @@
       "conclusion": "Great! You have now returned to your existing Digital ID. You can log out, and find other account-features, under the green account-button in the top right."
     },
     "enroll-in-program": {
-      "introduction": "We have received your request to apply for <strong>{{programTitle}}</strong> of <strong>{{ngo}}</strong>.",
+      "introduction": "Hello this is <strong>{{ngo}}</strong>. We have received your request to apply for <strong>{{programTitle}}</strong>.",
       "introduction-questions": "To make sure you get the best possible help and a fair process, we need some personal information.",
-      "more-info-questions": "About this",
+      "more-info-questions": "About personal information",
       "info-message": "Lorem ipsem bladibla",
       "more-info-share": "Who sees your information",
       "info-message-share": "Lorem ipsem bladibla",
-      "submit": "Save my answers",
+      "submit": "Save my information",
       "dob-feedback": "Your date of birth does not have a valid format. Please adjust and save again.",
-      "please-confirm": "Below is an overview of your information. Please confirm and submit.",
+      "please-confirm": "Below is an overview of your information. Please check and submit.",
       "submit-confirm": "Submit my information",
       "change": "Change my information",
       "confirm-received": "Next step: Make an appointment for Digital ID activation and program application.",
       "prepare-documents": "To save time at your appointment, make sure to bring these documents:"
     },
     "initial-needs": {
-      "introduction": "In order to help you as best as possible, please tell us what your needs are.",
+      "introduction": "Understanding your needs will help us create better programs in your area, as soon as we can.",
       "info-message": "Lorem ipsem bladibla",
       "input-label": "My needs are:",
       "input-placeholder": "I need...",
       "submit": "Submit my needs",
-      "conclusion": "Thank you for sharing. Understanding your needs will help us create better programs in your area."
+      "conclusion": "Thank you for sharing."
     },
     "signup-signin": {
-      "introduction": "Please select your next step.",
+      "introduction": "Please select your digital ID.",
       "create-id": "Create a Digital ID",
-      "login-id": "Use existing Digital ID",
+      "login-id": "Use my Digital ID",
       "more-info-digital-id": "About Digital ID",
       "info-message": "Lorem ipsem bladibla"
     },
     "select-fsp": {
       "introduction": "If you are included in the program, how would you like to receive your money?",
-      "conclusion": "Thank you. You have selected payment option: <strong>{{name}}</strong>.",
+      "conclusion": "Thank you. You have selected the option <strong>{{name}}</strong>.",
       "attributes": {
-        "introduction": "Please answer these additional questions:",
-        "submit": "Save my answers",
+        "introduction": "For this option we also need the following:",
+        "submit": "Save my information",
         "error": "Something went wrong, please try again.",
         "success": "Thank you. Your additional information is saved."
       }
     },
     "select-appointment": {
-      "introduction": "Next step: Make an appointment for Digital ID activation and program application.",
+      "introduction": "Next step: select your option for Digital ID activation and program application.",
       "more-info-activation": "About activation",
       "info-message": "Lorem ipsem bladibla",
-      "select": "Select a date and time:",
-      "thanks-repeat": "You have selected the following date and time:",
+      "thanks-repeat": "You have selected the following option:",
       "documents": "Please ensure you have the following documents:",
       "from": "From",
       "till": "Till",
       "at": "At",
-      "please-confirm": "Please confirm the appointment",
       "more-info-documents": "About these documents",
-      "confirm": "Confirm appointment",
-      "change": "Change appointment",
+      "confirm": "Confirm my option",
+      "change": "Change my option",
       "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed."
     },
     "set-notification-number": {
@@ -112,20 +110,20 @@
       "logout-info": "If you want, you can now log out, under the account-button on the top right. When you return here, you can log in with your username and password."
     },
     "meeting-reminder": {
-      "documents": "Please ensure you have the following documents:",
+      "documents": "Make sure to bring these documents:",
       "from": "From",
       "till": "Till",
       "at": "At",
       "more-info-documents": "About these documents",
       "info-message": "Lorem ipsem bladibla",
       "qr-code": "Please show this QR-code at your meeting.",
-      "meeting-reminder": "Here is everything you need to know about your meeting:",
+      "meeting-reminder": "Thank you. Here is everything you need to know about your meeting:",
       "meeting-count-down": "Your meeting appointment takes place in <strong>{{daysToMeeting}}</strong> days.",
       "meeting-tomorrow": "Your meeting appointment takes place tomorrow.",
       "meeting-today": "Your meeting appointment takes place today."
     },
     "select-country": {
-      "introduction": " Next step: Select your location.",
+      "introduction": " Next step: select your location.",
       "conclusion": "Thank you, you have selected <strong>{{country}}</strong>."
     },
     "select-language": {
@@ -138,7 +136,7 @@
       "result": "Thank you, you have selected <strong>{{language}}</strong>."
     },
     "select-program": {
-      "introduction": "Next step: Select a program.",
+      "introduction": "Next step: select your program.",
       "more-info-programs": "About programs",
       "info-message": "Lorem ipsem bladibla",
       "program": "Program"
