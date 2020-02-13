@@ -93,7 +93,6 @@
       "from": "From",
       "till": "Till",
       "at": "At",
-      "please-confirm": "Please confirm the appointment",
       "more-info-documents": "About these documents",
       "confirm": "Confirm my option",
       "change": "Change my option",
@@ -112,14 +111,14 @@
       "logout-info": "If you want, you can now log out, under the account-button on the top right. When you return here, you can log in with your username and password."
     },
     "meeting-reminder": {
-      "documents": "Please ensure you have the following documents:",
+      "documents": "Make sure to bring these documents:",
       "from": "From",
       "till": "Till",
       "at": "At",
       "more-info-documents": "About these documents",
       "info-message": "Lorem ipsem bladibla",
       "qr-code": "Please show this QR-code at your meeting.",
-      "meeting-reminder": "Here is everything you need to know about your meeting:",
+      "meeting-reminder": "Thank you. Here is everything you need to know about your meeting:",
       "meeting-count-down": "Your meeting appointment takes place in <strong>{{daysToMeeting}}</strong> days.",
       "meeting-tomorrow": "Your meeting appointment takes place tomorrow.",
       "meeting-today": "Your meeting appointment takes place today."
