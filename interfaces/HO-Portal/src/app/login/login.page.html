@@ -10,7 +10,7 @@
       <ion-col size="4" class="">
 
           <form method="POST"
-                #loginForm
+                #loginForm="ngForm"
                 (ngSubmit)="doLogin()"
                 (keyup.enter)="doLogin()"
           >
@@ -25,6 +25,7 @@
                          required
                          name="email"
                          [(ngModel)]="email"
+                         ngDefaultControl
               ></ion-input>
             </ion-item>
             <ion-item>
@@ -37,11 +38,13 @@
                          required
                          name="password"
                          [(ngModel)]="password"
+                         ngDefaultControl
               ></ion-input>
             </ion-item>
 
             <ion-button type="submit"
                         expand="block"
+                        [disabled]="!loginForm?.form?.valid"
             >
               {{ 'page.login.form.submit.label'|translate }}
             </ion-button>

@@ -1,10 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { of } from 'rxjs';
 
-import { LoginPage } from './login.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
-import { of } from 'rxjs';
+
+import { LoginPage } from './login.page';
 
 describe('LoginPage', () => {
   let component: LoginPage;
@@ -19,6 +21,7 @@ describe('LoginPage', () => {
       declarations: [ LoginPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
+        FormsModule,
         TranslateModule.forRoot(),
       ],
       providers: [
