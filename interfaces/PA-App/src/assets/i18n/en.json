@@ -59,12 +59,12 @@
       "prepare-documents": "To save time at your appointment, make sure to bring these documents:"
     },
     "initial-needs": {
-      "introduction": "In order to help you as best as possible, please tell us what your needs are.",
+      "introduction": "Understanding your needs will help us create better programs in your area, as soon as we can.",
       "info-message": "Lorem ipsem bladibla",
       "input-label": "My needs are:",
       "input-placeholder": "I need...",
       "submit": "Submit my needs",
-      "conclusion": "Thank you for sharing. Understanding your needs will help us create better programs in your area."
+      "conclusion": "Thank you for sharing."
     },
     "signup-signin": {
       "introduction": "Please select your next step.",
