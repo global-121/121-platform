@@ -84,19 +84,19 @@
       }
     },
     "select-appointment": {
-      "introduction": "Next step: Make an appointment for Digital ID activation and program application.",
+      "introduction": "Next step: select your option for Digital ID activation and program application.",
       "more-info-activation": "About activation",
       "info-message": "Lorem ipsem bladibla",
-      "select": "Select a date and time:",
-      "thanks-repeat": "You have selected the following date and time:",
+      "select": "Select an option:",
+      "thanks-repeat": "You have selected the following option:",
       "documents": "Please ensure you have the following documents:",
       "from": "From",
       "till": "Till",
       "at": "At",
       "please-confirm": "Please confirm the appointment",
       "more-info-documents": "About these documents",
-      "confirm": "Confirm appointment",
-      "change": "Change appointment",
+      "confirm": "Confirm my option",
+      "change": "Change my option",
       "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed."
     },
     "set-notification-number": {
