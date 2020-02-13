@@ -125,7 +125,7 @@
       "meeting-today": "Your meeting appointment takes place today."
     },
     "select-country": {
-      "introduction": " Next step: Select your location.",
+      "introduction": " Next step: select your location.",
       "conclusion": "Thank you, you have selected <strong>{{country}}</strong>."
     },
     "select-language": {
@@ -138,7 +138,7 @@
       "result": "Thank you, you have selected <strong>{{language}}</strong>."
     },
     "select-program": {
-      "introduction": "Next step: Select a program.",
+      "introduction": "Next step: select your program.",
       "more-info-programs": "About programs",
       "info-message": "Lorem ipsem bladibla",
       "program": "Program"
