@@ -67,9 +67,9 @@
       "conclusion": "Thank you for sharing."
     },
     "signup-signin": {
-      "introduction": "Please select your next step.",
+      "introduction": "Please select your digital ID.",
       "create-id": "Create a Digital ID",
-      "login-id": "Use existing Digital ID",
+      "login-id": "Use my Digital ID",
       "more-info-digital-id": "About Digital ID",
       "info-message": "Lorem ipsem bladibla"
     },
