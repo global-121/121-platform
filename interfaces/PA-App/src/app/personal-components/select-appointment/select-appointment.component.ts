@@ -166,7 +166,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
 
 
   getNextSection() {
-    return PersonalComponents.selectFsp;
+    return PersonalComponents.meetingReminder;
   }
 
   complete() {

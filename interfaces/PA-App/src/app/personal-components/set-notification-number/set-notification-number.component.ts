@@ -114,7 +114,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.meetingReminder;
+    return PersonalComponents.selectAppointment;
   }
 
   complete() {
