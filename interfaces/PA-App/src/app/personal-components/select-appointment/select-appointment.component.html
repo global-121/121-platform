@@ -11,13 +11,6 @@
       </more-info-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo"
-                 isConnected="true"
-  >
-    <p>
-      {{ 'personal.select-appointment.select'|translate }}
-    </p>
-  </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="timeslots"
                  [isSpoken]="timeslots"
