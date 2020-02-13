@@ -18,12 +18,12 @@
       "introduction": "To create a Digital ID you need to complete the following steps.",
       "more-info-digital-id": "About Digital ID",
       "info-message": "Lorem ipsem bladibla",
-      "username-password": "First step: create a username and a password. You will need to remember these.",
+      "username-password": "Create a username and a password.",
       "more-info-username-pw": "About usernames and passwords",
       "info-message-username-pw": "Lorem ipsem bladibla",
       "create-username": "Create username:",
       "submit-username": "Create my username",
-      "password-only": "First step: Create a password.",
+      "password-only": "Create a password.",
       "more-info-password": "About passwords",
       "info-message-password": "Lorem ipsem bladibla",
       "create-password": "Create password:",
@@ -32,7 +32,7 @@
       "username-not-unique": "The username you provide is not unique. Please try again.",
       "unequal-passwords": "The passwords you provided are not the same. Please try again.",
       "conclusion": "Great! You have created a Digital ID.",
-      "conclusion-web": "You are currently logged in. You can log out, and find other account-features, under the green account-button in the top right."
+      "conclusion-web": ""
     },
     "login-identity": {
       "introduction": "To use an existing Digital ID you need to log in with your username and password.",
