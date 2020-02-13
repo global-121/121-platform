@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -8,7 +9,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class LoginPage {
   @ViewChild('loginForm')
-  public loginForm;
+  public loginForm: NgForm;
 
   public email: any;
   public password: any;
@@ -19,6 +20,10 @@ export class LoginPage {
 
   public async doLogin() {
     console.log('doLogin()');
+
+    if (!this.loginForm.form.valid) {
+      return;
+    }
 
     const result = await this.authService.login(
       this.email,
