@@ -41,10 +41,14 @@ class testApi:
 
     def setupProgram(self):
         printAction('HO', 'Unpublishes a program to reset the sequence')
-        self.r.postRequest('programs/unpublish/' + PROGRAM_ID)
+        # This replacement is not tested
+        # self.r.postRequest('programs/unpublish/' + PROGRAM_ID)
+        self.r.postRequest('programs/changeState/' + PROGRAM_ID, { newState: 'design'})
 
         printAction('HO', 'Publishes a program')
-        self.r.postRequest('programs/publish/' + PROGRAM_ID)
+        # This replacement is not tested
+        # self.r.postRequest('programs/publish/' + PROGRAM_ID)
+        self.r.postRequest('programs/changeState/' + PROGRAM_ID, { newState: 'registration'})
 
     def getWalletDid(self):
         printAction(

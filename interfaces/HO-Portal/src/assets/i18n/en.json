@@ -80,6 +80,7 @@
         "descHumanitarianObjective": "Description: Humanatarian objective",
         "descCashType": "Description: Cash Type",
         "published": "Published",
+        "state": "Current program phase",
         "created": "Program created at",
         "updated": "Program last updated at",
         "customCriteria": "Inclusion criteria",

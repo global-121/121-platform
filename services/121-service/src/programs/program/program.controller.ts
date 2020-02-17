@@ -136,28 +136,12 @@ export class ProgramController {
   @Roles(UserRole.ProgramManager)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
-  @Post('publish/:id')
-  public async publish(@Param() params): Promise<SimpleProgramRO> {
-    return this.programService.publish(params.id);
-  }
-
-  @Roles(UserRole.ProgramManager)
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
   @Post('changeState/:id')
   public async changeState(
     @Param() params,
     @Body() changeStateData: ChangeStateDto
   ): Promise<SimpleProgramRO> {
     return this.programService.changeState(params.id, changeStateData.newState);
-  }
-
-  @Roles(UserRole.ProgramManager)
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
-  @Post('unpublish/:id')
-  public async unpublish(@Param() params): Promise<SimpleProgramRO> {
-    return this.programService.unpublish(params.id);
   }
 
   @ApiOperation({ title: 'Post proof' })

@@ -53,8 +53,6 @@ export class PhaseNextComponent implements OnChanges {
     const phase = this.programPhases.find(item => item.id === phaseId).phase;
     await this.programsService.advancePhase(this.programId, phase);
     this.emitNewPhase.emit(true);
-    // this.program = await this.programsService.getProgramById(this.programId);
-    // this.programPhases = this.createPhases();
   }
 
 }

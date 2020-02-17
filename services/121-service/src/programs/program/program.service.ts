@@ -60,7 +60,7 @@ export class ProgramService {
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
-  ) {}
+  ) { }
 
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
@@ -198,7 +198,10 @@ export class ProgramService {
       state: newState,
     });
     const changedProgram = await this.findOne(programId);
-    return await this.buildProgramRO(changedProgram);
+    if (newState === 'registration') {
+      this.publish(programId);
+    }
+    return this.buildProgramRO(changedProgram);
   }
 
 
@@ -234,15 +237,15 @@ export class ProgramService {
     return await this.buildProgramRO(changedProgram);
   }
 
-  public async unpublish(programId: number): Promise<SimpleProgramRO> {
-    let selectedProgram = await this.findOne(programId);
-    if (selectedProgram.published == false) {
-      const errors = { Program: ' already unpublished' };
-      throw new HttpException({ errors }, 401);
-    }
-    await this.changeProgramValue(programId, { published: false });
-    return await this.buildProgramRO(selectedProgram);
-  }
+  // public async unpublish(programId: number): Promise<SimpleProgramRO> {
+  //   let selectedProgram = await this.findOne(programId);
+  //   if (selectedProgram.published == false) {
+  //     const errors = { Program: ' already unpublished' };
+  //     throw new HttpException({ errors }, 401);
+  //   }
+  //   await this.changeProgramValue(programId, { published: false });
+  //   return await this.buildProgramRO(selectedProgram);
+  // }
 
   private async changeProgramValue(
     programId: number,
@@ -260,7 +263,6 @@ export class ProgramService {
     const simpleProgramRO = {
       id: program.id,
       title: program.title,
-      published: program.published,
       state: program.state
     };
 
@@ -578,7 +580,7 @@ export class ProgramService {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
-    if (!program || !program.published) {
+    if (!program || program.state === 'design') {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, 404);
     }
