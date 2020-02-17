@@ -200,6 +200,8 @@ export class ProgramService {
     const changedProgram = await this.findOne(programId);
     if (newState === 'registration') {
       this.publish(programId);
+    } else if (newState === 'design') {
+      this.unpublish(programId);
     }
     return this.buildProgramRO(changedProgram);
   }
@@ -237,15 +239,15 @@ export class ProgramService {
     return await this.buildProgramRO(changedProgram);
   }
 
-  // public async unpublish(programId: number): Promise<SimpleProgramRO> {
-  //   let selectedProgram = await this.findOne(programId);
-  //   if (selectedProgram.published == false) {
-  //     const errors = { Program: ' already unpublished' };
-  //     throw new HttpException({ errors }, 401);
-  //   }
-  //   await this.changeProgramValue(programId, { published: false });
-  //   return await this.buildProgramRO(selectedProgram);
-  // }
+  public async unpublish(programId: number): Promise<SimpleProgramRO> {
+    let selectedProgram = await this.findOne(programId);
+    if (selectedProgram.published == false) {
+      const errors = { Program: ' already unpublished' };
+      throw new HttpException({ errors }, 401);
+    }
+    await this.changeProgramValue(programId, { published: false });
+    return await this.buildProgramRO(selectedProgram);
+  }
 
   private async changeProgramValue(
     programId: number,
