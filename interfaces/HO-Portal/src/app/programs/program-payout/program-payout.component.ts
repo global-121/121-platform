@@ -48,12 +48,14 @@ export class ProgramPayoutComponent implements OnChanges {
   async ngOnInit() {
     this.currentUserRole = this.authService.getUserRole();
     this.programId = this.route.snapshot.params.id;
+    this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
     this.createInstallments(this.programId);
   }
 
   async ngOnChanges(changes: SimpleChanges) {
     if (typeof changes.programId.currentValue === 'number') {
       this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
+      console.log('totalIncluded: ', this.totalIncluded);
     }
   }
 
@@ -105,10 +107,22 @@ export class ProgramPayoutComponent implements OnChanges {
           installment.firstOpen = false;
         }
       }
+      installment.isExportAvailable = this.isExportAvailable(installment);
       i += 1;
-      console.log(installment);
     }
 
+  }
+
+  public isExportAvailable(installment) {
+    console.log('totalincluded', this.totalIncluded)
+    if (installment.firstOpen === true && this.totalIncluded > 0)
+      return true
+    if (installment.statusOpen === false) {
+      return true
+    }
+    else {
+      return false
+    }
   }
 
   public updateTotalAmountMessage(installment) {
