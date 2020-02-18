@@ -24,6 +24,6 @@ export class SmsModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(AuthMiddlewareTwilio)
-      .forRoutes({ path: 'sms/status', method: RequestMethod.POST });
+      .forRoutes({ path: 'notifications/sms/status', method: RequestMethod.POST });
   }
 }

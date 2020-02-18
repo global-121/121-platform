@@ -224,7 +224,7 @@ export class ProgramsServiceApiService {
   lookupPhoneNumber(phoneNumber: string): Observable<any> {
     return this.apiService.post(
       environment.url_121_service_api,
-      '/lookup/lookup',
+      '/notifications/lookup',
       {
         phonenumber: phoneNumber,
       },
