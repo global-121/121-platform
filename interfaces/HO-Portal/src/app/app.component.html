@@ -37,19 +37,6 @@
                 {{ 'page.home.pageTitle'|translate }}
               </ion-label>
             </ion-item>
-            <ion-item routerLink="/programs"
-                      routerDirection="root"
-                      routerLinkActive
-                      #rlaProgams="routerLinkActive"
-                      [detail]="rlaProgams.isActive"
-                      [color]="rlaProgams.isActive ? 'primary' : ''"
-                      *ngIf="isLoggedIn"
-            >
-              <ion-icon slot="start" name="list"></ion-icon>
-              <ion-label>
-                {{ 'page.programs-list.pageTitle'|translate }}
-              </ion-label>
-            </ion-item>
             <ion-item routerLink="/help"
                       routerDirection="root"
                       routerLinkActive

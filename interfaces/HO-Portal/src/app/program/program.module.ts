@@ -7,7 +7,6 @@ import { ProgramComponent } from './program.component';
 import { PhaseNavigationComponent } from './phase-navigation/phase-navigation.component';
 import { ProgramFundsComponent } from './program-funds/program-funds.component';
 import { ProgramJsonComponent } from './program-json/program-json.component';
-import { ProgramsListComponent } from '../programs-list/programs-list.component';
 import { ProgramPayoutComponent } from './program-payout/program-payout.component';
 import { ProgramPeopleComponent } from './program-people/program-people.component';
 import { ProgramDetailsComponent } from './program-details/program-details.component';
@@ -27,7 +26,6 @@ import { PhaseNextComponent } from './phase-next/phase-next.component';
     PhaseNextComponent,
     ProgramFundsComponent,
     ProgramJsonComponent,
-    ProgramsListComponent,
     ProgramPayoutComponent,
     ProgramPeopleComponent,
     ProgramDetailsComponent,
