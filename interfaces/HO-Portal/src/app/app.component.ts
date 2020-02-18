@@ -22,7 +22,7 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.authService.authenticationState$.subscribe((user: User|null) => {
+    this.authService.authenticationState$.subscribe((user: User | null) => {
       this.isLoggedIn = (user) ? !!user.token : false;
       this.currentUserRole = (user) ? user.role : '';
     });
@@ -33,10 +33,6 @@ export class AppComponent {
     this.translate.use('en');
 
     this.currentLanguage = this.translate.currentLang;
-  }
-
-  public switchLanguage(event: any) {
-    this.translate.use(event.detail.value);
   }
 
   public logout() {
