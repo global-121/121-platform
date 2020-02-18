@@ -4,7 +4,7 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { formatCurrency } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { saveAs } from 'file-saver'
+import { saveAs } from 'file-saver';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
 
