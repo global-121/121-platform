@@ -114,14 +114,14 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   public isExportAvailable(installment) {
-    console.log('totalincluded', this.totalIncluded)
-    if (installment.firstOpen === true && this.totalIncluded > 0)
-      return true
-    if (installment.statusOpen === false) {
-      return true
+    console.log('totalincluded', this.totalIncluded);
+    if (installment.firstOpen === true && this.totalIncluded > 0) {
+      return true;
     }
-    else {
-      return false
+    if (installment.statusOpen === false) {
+      return true;
+    } else {
+      return false;
     }
   }
 
