@@ -4,6 +4,7 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { formatCurrency } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { saveAs } from 'file-saver';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
 
@@ -144,7 +145,10 @@ export class ProgramPayoutComponent implements OnChanges {
   public async exportList(installment) {
     this.programsService.exportList(+this.programId, installment.id)
       .then(
-        () => { },
+        (res) => {
+          const blob = new Blob([res.data], { type: 'text/csv' });
+          saveAs(blob, res.fileName);
+        },
         (err) => {
           console.log('err: ', err);
           this.actionResult(this.translate.instant('page.programs.program-payout.export-error'));

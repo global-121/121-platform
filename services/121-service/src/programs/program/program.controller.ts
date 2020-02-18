@@ -13,6 +13,7 @@ import {
   UseGuards,
   SetMetadata,
   Res,
+  Header,
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto';
@@ -263,5 +264,23 @@ export class ProgramController {
     @Param() param,
   ): Promise<FinancialServiceProviderEntity> {
     return await this.programService.getFspById(param.fspId);
+  }
+
+  @Roles(UserRole.PrivacyOfficer)
+  @ApiOperation({
+    title: 'Get a list payment details per person to share with officials',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Total number of included per program',
+  })
+  @Post('payment-details')
+  public async getPaymentDetails(
+    @Body() data: PaymentDetailsRequest,
+  ): Promise<any> {
+    return await this.programService.getPaymentDetails(
+      data.programId,
+      data.installment,
+    );
   }
 }
