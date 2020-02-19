@@ -103,9 +103,7 @@ export class QAndASetComponent {
     return (answers.length >= (questions.length - 1));
   }
 
-  public async onChangeWithValidation(questionCode: string, answerValue: string, checkValidity: Promise<boolean>) {
-    const validity = await checkValidity;
-
+  public onChangeWithValidation(questionCode: string, answerValue: string, validity: boolean) {
     if (validity !== true) {
       this.addValidationError(questionCode);
       return;

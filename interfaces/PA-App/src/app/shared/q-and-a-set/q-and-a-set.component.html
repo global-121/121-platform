@@ -51,7 +51,7 @@
                           [value]="answers[question.code]?.value"
                           ngDefaultControl
                           [disabled]="isSubmitted"
-                          (ionChange)="onChangeWithValidation(question.code, telInput.value, telInput.checkValidity())"
+                          (isValidChange)="onChangeWithValidation(question.code, telInput.value, telInput.isValid)"
                           debounce="500"
       ></phone-number-input>
     </div>

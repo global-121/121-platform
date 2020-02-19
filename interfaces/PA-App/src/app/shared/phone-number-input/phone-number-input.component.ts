@@ -21,13 +21,17 @@ export class PhoneNumberInputComponent {
   @Output()
   public isValidChange = new EventEmitter<boolean>();
 
+  private initialChecked = false;
+
   constructor(
     private programService: ProgramsServiceApiService,
   ) { }
 
-  private setValidity(state: boolean) {
+  private setValidity(state: boolean, emit = true) {
     this.isValid = state;
-    this.isValidChange.emit(state);
+    if (emit) {
+      this.isValidChange.emit(state);
+    }
   }
 
   public async onChange() {
@@ -35,15 +39,18 @@ export class PhoneNumberInputComponent {
     const nativeIsValid = nativeInput.checkValidity();
 
     if (!nativeIsValid) {
-      this.setValidity(false);
+      this.setValidity(false, this.initialChecked);
       return;
     }
 
-    const customIsValid = await this.checkValidity();
+    // Only start emitting validity-states when the first check is passed once:
+    this.initialChecked = true;
+
+    const customIsValid = await this.checkValidityOnline();
     this.setValidity(customIsValid);
   }
 
-  public async checkValidity() {
+  private async checkValidityOnline() {
     const phoneNumber = this.telInput.value;
     let isValid: boolean;
 
