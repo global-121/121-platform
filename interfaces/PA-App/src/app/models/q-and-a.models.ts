@@ -3,7 +3,8 @@ export enum AnswerType {
   Number = 'numeric',
   Text = 'text',
   Date = 'date',
-  Enum = 'dropdown'
+  Enum = 'dropdown',
+  phoneNumber = 'tel',
 }
 
 export class Question {

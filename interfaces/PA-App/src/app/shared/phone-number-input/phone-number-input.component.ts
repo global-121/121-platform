@@ -43,7 +43,7 @@ export class PhoneNumberInputComponent {
     this.setValidity(customIsValid);
   }
 
-  private async checkValidity() {
+  public async checkValidity() {
     const phoneNumber = this.telInput.value;
     let isValid: boolean;
 

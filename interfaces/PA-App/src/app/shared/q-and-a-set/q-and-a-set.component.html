@@ -46,6 +46,15 @@
                  debounce="100"
       ></ion-input>
     </div>
+    <div *ngSwitchCase="answerType.phoneNumber">
+      <phone-number-input #telInput
+                          [value]="answers[question.code]?.value"
+                          ngDefaultControl
+                          [disabled]="isSubmitted"
+                          (ionChange)="onChangeWithValidation(question.code, telInput.value, telInput.checkValidity())"
+                          debounce="500"
+      ></phone-number-input>
+    </div>
     <div *ngSwitchDefault>
       <ion-input type="text"
                  [name]="question.code"
@@ -57,10 +66,19 @@
     </div>
   </div>
 </dialogue-turn>
+
+<dialogue-turn *ngIf="checkValidationErrors()"
+               [isSpoken]="checkValidationErrors()"
+>
+  <p *ngIf="validationErrors.includes('phoneNumber')">
+    {{ 'validation.phoneNumber'|translate }}
+  </p>
+</dialogue-turn>
+
 <dialogue-turn actor="self"
                isConnected="true"
-               *ngIf="allQuestionsShown"
-               [isSpoken]="allQuestionsShown"
+               *ngIf="!checkValidationErrors() && allQuestionsShown"
+               [isSpoken]="!checkValidationErrors() && allQuestionsShown"
 >
   <p>
     <ion-button type="submit"
