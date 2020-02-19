@@ -86,14 +86,14 @@ export class ProgramPeopleComponent implements OnChanges {
   private async update() {
     this.program = await this.programsService.getProgramById(this.programId);
 
-    await this.shouldShowSensitiveData(this.userRole);
+    this.shouldShowSensitiveData(this.userRole);
 
     this.determineColumns();
 
     this.loadData();
   }
 
-  private async shouldShowSensitiveData(userRole) {
+  private shouldShowSensitiveData(userRole) {
     this.showSensitiveData = userRole === this.userRoleEnum.PrivacyOfficer;
   }
 

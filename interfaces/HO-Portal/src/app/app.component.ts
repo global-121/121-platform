@@ -9,7 +9,6 @@ import { User } from './models/user.model';
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
-  public currentLanguage: string;
   public isLoggedIn: boolean;
   public currentUserRole: string;
 
@@ -31,8 +30,6 @@ export class AppComponent {
   initializeLanguages() {
     this.translate.setDefaultLang('en');
     this.translate.use('en');
-
-    this.currentLanguage = this.translate.currentLang;
   }
 
   public logout() {

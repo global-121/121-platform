@@ -27,7 +27,7 @@ Feature: Navigate home page and main menu
     Then the "main menu" opens on the left side of the screen
     And shows a "home" option
     And shows a "help" option
-    And shows a "logout" option accompanied by the "username" of the logged-in user
+    And shows a "logout" option accompanied by the "userRole" of the logged-in user
 
   Scenario: Close main menu
     Given a logged-in user

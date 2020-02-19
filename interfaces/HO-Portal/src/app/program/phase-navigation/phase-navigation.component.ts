@@ -29,15 +29,17 @@ export class PhaseNavigationComponent implements OnChanges {
   }
 
   private update() {
-    this.activePhaseId = this.programPhases.find(item => item.active).id;
+    const activePhase = this.programPhases.find(item => item.active);
+    this.activePhaseId = activePhase.id;
     this.selectedPhaseId = this.activePhaseId;
-    this.activePhase = this.programPhases.find(item => item.active).phase;
+    this.activePhase = activePhase.phase;
     this.selectedPhase = this.activePhase;
   }
 
   public changePhase(phase) {
-    this.selectedPhase = this.programPhases.find(item => item.id === phase).phase;
-    this.selectedPhaseId = this.programPhases.find(item => item.id === phase).id;
+    const selectedPhaseObj = this.programPhases.find(item => item.id === phase);
+    this.selectedPhase = selectedPhaseObj.phase;
+    this.selectedPhaseId = selectedPhaseObj.id;
     this.emitSelectedPhase.emit(this.selectedPhase);
   }
 
