@@ -1,4 +1,4 @@
-import { Controller, Get, Header, Req, Res, Post, Param, Body } from '@nestjs/common';
+import { Controller, Get, Header, Res, Post, Param, Body } from '@nestjs/common';
 import {
   ApiUseTags,
   ApiResponse,
@@ -6,11 +6,10 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { VoiceService } from './voice.service';
-import { Request, Response } from 'express-serve-static-core';
-import fs from 'fs';
+import { Response } from 'express-serve-static-core';
 
 @ApiUseTags('notifications')
-@Controller('voice')
+@Controller('notifications/voice')
 export class VoiceController {
   private readonly voiceService: VoiceService;
   public constructor(voiceService: VoiceService) {

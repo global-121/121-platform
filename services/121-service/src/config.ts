@@ -52,8 +52,8 @@ if (process.env.NODE_ENV == 'production') {
 }
 export default appUrl;
 export const TWILIO_API = {
-  callbackUrlSms: appUrl + 'api/sms/status',
-  callbackUrlVoice: appUrl + 'api/voice/status',
-  voiceXmlUrl: appUrl + 'api/voice/xml/',
-  voiceMp3lUrl: appUrl + 'api/voice/mp3/',
+  callbackUrlSms: appUrl + 'api/notifications/sms/status',
+  callbackUrlVoice: appUrl + 'api/notifications/voice/status',
+  voiceXmlUrl: appUrl + 'api/notifications/voice/xml/',
+  voiceMp3lUrl: appUrl + 'api/notifications/voice/mp3/',
 };

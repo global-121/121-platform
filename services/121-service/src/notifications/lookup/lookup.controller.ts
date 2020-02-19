@@ -4,7 +4,7 @@ import { LookupService } from './lookup.service';
 import { PhoneNumberDto } from './dto/phone-number.dto';
 
 @ApiUseTags('notifications')
-@Controller('lookup')
+@Controller('notifications/lookup')
 export class LookupController {
   private readonly lookupService: LookupService;
   public constructor(lookupService: LookupService) {
@@ -15,7 +15,7 @@ export class LookupController {
     status: 200,
     description: 'Succesfully looked up telephone number',
   })
-  @Post('/lookup')
+  @Post()
   public async lookupPhoneNr(
     @Body() phoneNrDto: PhoneNumberDto,
   ): Promise<void> {
