@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './auth/auth.service';
 import { User } from './models/user.model';
 
@@ -13,11 +12,9 @@ export class AppComponent {
   public currentUserRole: string;
 
   constructor(
-    private translate: TranslateService,
     private authService: AuthService,
   ) {
     this.initializeApp();
-    this.initializeLanguages();
   }
 
   initializeApp() {
@@ -25,11 +22,6 @@ export class AppComponent {
       this.isLoggedIn = (user) ? !!user.token : false;
       this.currentUserRole = (user) ? user.role : '';
     });
-  }
-
-  initializeLanguages() {
-    this.translate.setDefaultLang('en');
-    this.translate.use('en');
   }
 
   public logout() {
