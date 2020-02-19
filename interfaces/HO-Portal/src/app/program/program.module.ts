@@ -11,7 +11,7 @@ import { ProgramPayoutComponent } from './program-payout/program-payout.componen
 import { ProgramPeopleComponent } from './program-people/program-people.component';
 import { ProgramDetailsComponent } from './program-details/program-details.component';
 
-import { ProgramsRoutingModule } from './programs-routing.module';
+import { ProgramsRoutingModule } from './program-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { PhaseNextComponent } from './phase-next/phase-next.component';
