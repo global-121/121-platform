@@ -3,6 +3,8 @@ import { formatCurrency, formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ProgramFunds } from 'src/app/models/program-funds.model';
+import { ProgramPhase } from 'src/app/models/program.model';
+
 
 @Component({
   selector: 'app-program-funds',
@@ -34,12 +36,12 @@ export class ProgramFundsComponent implements OnChanges {
 
   public componentVisible: boolean;
   private presentInPhases = [
-    'design',
-    'registration',
-    'inclusion',
-    'finalize',
-    'payment',
-    'evaluation'
+    ProgramPhase.design,
+    ProgramPhase.registration,
+    ProgramPhase.inclusion,
+    ProgramPhase.finalize,
+    ProgramPhase.payment,
+    ProgramPhase.evaluation
   ];
 
   constructor(

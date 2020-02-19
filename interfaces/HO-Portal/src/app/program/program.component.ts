@@ -3,7 +3,7 @@ import { AuthService } from '../auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Program } from 'src/app/models/program.model';
+import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -26,12 +26,12 @@ export class ProgramComponent implements OnInit {
   public programPhases: any[];
 
   private phasesInput = [
-    'design',
-    'registration',
-    'inclusion',
-    'finalize',
-    'payment',
-    'evaluation'
+    ProgramPhase.design,
+    ProgramPhase.registration,
+    ProgramPhase.inclusion,
+    ProgramPhase.finalize,
+    ProgramPhase.payment,
+    ProgramPhase.evaluation
   ];
 
   constructor(

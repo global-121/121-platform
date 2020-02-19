@@ -2,7 +2,7 @@ import { Component, OnInit, OnChanges, Input, SimpleChanges } from '@angular/cor
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Program } from 'src/app/models/program.model';
+import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { ProgramJsonComponent } from '../program-json/program-json.component';
 
 @Component({
@@ -18,7 +18,7 @@ export class ProgramDetailsComponent implements OnChanges {
 
   public componentVisible: boolean;
   private presentInPhases = [
-    'design',
+    ProgramPhase.design
   ];
 
   public program: Program;
@@ -52,9 +52,7 @@ export class ProgramDetailsComponent implements OnChanges {
   private async update() {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
-    // const programId = this.route.snapshot.params.id;
     this.program = await this.programsService.getProgramById(this.programId);
-    // this.programTitle = this.mapLabelByLanguageCode(this.program.title);
     this.programArray = this.generateArray(this.program);
   }
 

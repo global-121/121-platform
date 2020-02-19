@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
-import { Program, InclusionCalculationType } from 'src/app/models/program.model';
+import { Program, InclusionCalculationType, ProgramPhase } from 'src/app/models/program.model';
 import { formatDate } from '@angular/common';
 import { UserRole } from 'src/app/auth/user-role.enum';
 
@@ -24,12 +24,12 @@ export class ProgramPeopleComponent implements OnChanges {
 
   public componentVisible: boolean;
   private presentInPhases = [
-    'design',
-    'registration',
-    'inclusion',
-    'finalize',
-    'payment',
-    'evaluation'
+    ProgramPhase.design,
+    ProgramPhase.registration,
+    ProgramPhase.inclusion,
+    ProgramPhase.finalize,
+    ProgramPhase.payment,
+    ProgramPhase.evaluation
   ];
   public userRoleEnum = UserRole;
 

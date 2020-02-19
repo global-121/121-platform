@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Program } from 'src/app/models/program.model';
+import { Program, ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-phase-next',
@@ -35,7 +35,7 @@ export class PhaseNextComponent implements OnChanges {
       this.firstChange = false;
     }
     if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string' && this.programPhasesBackup) {
-      this.btnAvailable = this.selectedPhase !== 'evaluation';
+      this.btnAvailable = this.selectedPhase !== ProgramPhase.evaluation;
       this.btnText = this.programPhasesBackup.find(item => item.phase === this.selectedPhase).btnText;
     }
   }
@@ -46,7 +46,7 @@ export class PhaseNextComponent implements OnChanges {
     this.activePhase = this.programPhases.find(item => item.active).phase;
     this.selectedPhase = this.activePhase;
     this.btnText = this.programPhases.find(item => item.active).btnText;
-    this.btnAvailable = this.selectedPhase !== 'evaluation';
+    this.btnAvailable = this.selectedPhase !== ProgramPhase.evaluation;
   }
 
   public async advancePhase(phaseId) {

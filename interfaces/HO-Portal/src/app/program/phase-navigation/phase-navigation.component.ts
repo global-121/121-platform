@@ -1,8 +1,5 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Program } from 'src/app/models/program.model';
-import { ActivatedRoute } from '@angular/router';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-phase-navigation',

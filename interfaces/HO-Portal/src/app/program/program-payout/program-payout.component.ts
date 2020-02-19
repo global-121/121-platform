@@ -6,6 +6,7 @@ import { formatCurrency } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
+import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-program-payout',
@@ -39,8 +40,8 @@ export class ProgramPayoutComponent implements OnChanges {
 
   public componentVisible: boolean;
   private presentInPhases = [
-    'finalize',
-    'payment',
+    ProgramPhase.finalize,
+    ProgramPhase.payment,
   ];
 
   constructor(
