@@ -8,6 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
 import { MoreInfoButtonComponent } from './more-info-button/more-info-button.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
+import { PhoneNumberInputComponent } from './phone-number-input/phone-number-input.component';
 import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
 
 @NgModule({
@@ -15,6 +16,7 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
     DialogueTurnComponent,
     MoreInfoButtonComponent,
     PasswordToggleInputComponent,
+    PhoneNumberInputComponent,
     QAndASetComponent,
   ],
   imports: [
@@ -27,6 +29,7 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
     DialogueTurnComponent,
     MoreInfoButtonComponent,
     PasswordToggleInputComponent,
+    PhoneNumberInputComponent,
     QAndASetComponent,
     TranslateModule,
   ],

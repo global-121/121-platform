@@ -105,6 +105,7 @@
       "input-label": "Phone number (with country-code)",
       "submit": "Submit phone number",
       "skip": "Skip",
+      "validation-error": "We couldn't verify that phone-number. Please update and try again.",
       "conclusion-submitted": "Thank you. You will now receive notifications on this phone number: <strong>{{phone}}</strong>",
       "conclusion-skipped": "You have chosen not to leave a phone number. Please log in back here regularly, to check on updates.",
       "logout-info": "If you want, you can now log out, under the account-button on the top right. When you return here, you can log in with your username and password."
