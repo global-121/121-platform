@@ -25,6 +25,15 @@ export class ProgramComponent implements OnInit {
   public selectedPhase: string;
   public programPhases: any[];
 
+  private phasesInput = [
+    'design',
+    'registration',
+    'inclusion',
+    'finalize',
+    'payment',
+    'evaluation'
+  ];
+
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
@@ -43,6 +52,18 @@ export class ProgramComponent implements OnInit {
 
     this.activePhase = this.program.state;
     this.selectedPhase = this.activePhase;
+    this.programPhases = this.createPhases();
+  }
+
+  public createPhases() {
+    const phases = this.phasesInput.map((phase, index) => ({
+      id: index + 1,
+      phase,
+      label: this.translate.instant('page.program.phases.' + phase + '.label'),
+      active: phase === this.activePhase,
+      btnText: this.translate.instant('page.program.phases.' + phase + '.btnText'),
+    }));
+    return phases;
   }
 
   public emitSelectedPhase(selectedPhase) {
@@ -56,6 +77,7 @@ export class ProgramComponent implements OnInit {
       this.program = await this.programsService.getProgramById(this.program.id);
       this.activePhase = this.program.state;
       this.selectedPhase = this.activePhase;
+      this.programPhases = this.createPhases();
     }
   }
 

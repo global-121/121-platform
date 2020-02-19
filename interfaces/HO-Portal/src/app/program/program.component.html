@@ -16,7 +16,7 @@
       {{ programTitle }}
     </ion-title>
     <ion-buttons slot="end">
-      <app-phase-navigation [activePhase]="activePhase"
+      <app-phase-navigation [programPhases]="programPhases"
                             (emitSelectedPhase)="emitSelectedPhase($event)"
                             (emitProgramPhases)="emitProgramPhases($event)"
       ></app-phase-navigation>
