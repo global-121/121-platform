@@ -38,7 +38,7 @@ const newProgramParameters = {
 const newSimpleProgramRO = {
   id: 1,
   title: JSON.parse('{"en": "title"}'),
-  published: true,
+  state: 'registration',
 };
 
 export class ProgramServiceMock {
@@ -63,11 +63,9 @@ export class ProgramServiceMock {
     programData;
     return { program: new ProgramEntity() };
   }
-  public async publish(id: number): Promise<void> {
+  public async changeState(id: number, newState: string): Promise<void> {
     id;
-  }
-  public async unpublish(id: number): Promise<void> {
-    id;
+    newState;
   }
 }
 
@@ -178,24 +176,24 @@ describe('ProgramController', (): void => {
   describe('publish', (): void => {
     it('should publish a program', async (): Promise<void> => {
       const spy = jest
-        .spyOn(programService, 'publish')
+        .spyOn(programService, 'changeState')
         .mockImplementation(
           (): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO),
         );
 
-      await programController.publish(1);
+      await programController.changeState(1, { newState: 'registration' });
       expect(spy).toHaveBeenCalled();
     });
   });
   describe('unpublish', (): void => {
     it('should publish a program', async (): Promise<void> => {
       const spy = jest
-        .spyOn(programService, 'unpublish')
+        .spyOn(programService, 'changeState')
         .mockImplementation(
           (): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO),
         );
 
-      await programController.unpublish(1);
+      await programController.changeState(1, { newState: 'design' });
       expect(spy).toHaveBeenCalled();
     });
   });

@@ -1,27 +1,21 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { ModalController } from '@ionic/angular';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { ProgramDetailsComponent } from './program-details.component';
+import { ProgramComponent } from './program.component';
 
-const modalSpy = jasmine.createSpyObj('Modal', ['present']);
-const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);
-modalCtrlSpy.create.and.callFake(() => {
-  return modalSpy;
-});
 
-describe('ProgramDetailsComponent', () => {
-  let component: ProgramDetailsComponent;
-  let fixture: ComponentFixture<ProgramDetailsComponent>;
+describe('ProgramComponent', () => {
+  let component: ProgramComponent;
+  let fixture: ComponentFixture<ProgramComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        ProgramDetailsComponent,
+        ProgramComponent,
       ],
       imports: [
         TranslateModule.forRoot(),
@@ -29,18 +23,12 @@ describe('ProgramDetailsComponent', () => {
         HttpClientTestingModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ModalController,
-          useValue: modalCtrlSpy
-        },
-      ]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProgramDetailsComponent);
+    fixture = TestBed.createComponent(ProgramComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

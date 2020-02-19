@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      <ion-button type="button"
+                  fill="clear"
+                  shape="round"
+                  size="large"
+                  routerLink="/home"
+                  routerDirection="back"
+      >
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ programTitle }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-phase-navigation [programPhases]="programPhases"
+                            (emitSelectedPhase)="emitSelectedPhase($event)"
+                            (emitProgramPhases)="emitProgramPhases($event)"
+      ></app-phase-navigation>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+  <app-phase-next [programPhases]="programPhases"
+                  [selectedPhase]="selectedPhase"
+                  [programId]="program?.id"
+                  (emitNewPhase)="emitNewPhase($event)"
+  ></app-phase-next>
+
+  <app-program-funds [selectedPhase]="selectedPhase"
+                     [programId]="program?.id"
+                     [currencyCode]="program?.currency"
+  ></app-program-funds>
+
+  <app-program-payout [selectedPhase]="selectedPhase"
+                      [programId]="program?.id"
+                      [currencyCode]="program?.currency"
+  ></app-program-payout>
+
+
+  <app-program-people [selectedPhase]="selectedPhase"
+                      [programId]="program?.id"
+                      [userRole]="currentUserRole"
+  ></app-program-people>
+
+  <app-program-details [selectedPhase]="selectedPhase"
+                       [programId]="program?.id"
+  ></app-program-details>
+  
+</ion-content>

@@ -14,9 +14,19 @@ export class Program {
   distributionDuration: number;
   distributionFrequency: string;
   startDate: string;
+  state: ProgramPhase;
 }
 
 export enum InclusionCalculationType {
   highestScoresX = 'highestScoresX',
   minimumScore = 'minimumScore',
+}
+
+export enum ProgramPhase {
+  design = 'design',
+  registration = 'registration',
+  inclusion = 'inclusion',
+  finalize = 'finalize',
+  payment = 'payment',
+  evaluation = 'evaluation',
 }

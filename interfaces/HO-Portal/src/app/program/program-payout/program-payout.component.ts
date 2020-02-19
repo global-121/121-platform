@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
+import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-program-payout',
@@ -16,6 +17,9 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class ProgramPayoutComponent implements OnChanges {
   @Input()
   public programId: number;
+
+  @Input()
+  public selectedPhase: string;
 
   @Input()
   public transferValue: any;
@@ -35,6 +39,12 @@ export class ProgramPayoutComponent implements OnChanges {
 
   public confirmMessage: string;
 
+  public componentVisible: boolean;
+  private presentInPhases = [
+    ProgramPhase.finalize,
+    ProgramPhase.payment,
+  ];
+
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
@@ -53,10 +63,17 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (typeof changes.programId.currentValue === 'number') {
+    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+      this.checkVisibility(this.selectedPhase);
+    }
+    if (changes.programId && typeof changes.programId.currentValue === 'number') {
       this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
       console.log('totalIncluded: ', this.totalIncluded);
     }
+  }
+
+  public checkVisibility(phase) {
+    this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   private async createInstallments(programId) {
@@ -115,10 +132,9 @@ export class ProgramPayoutComponent implements OnChanges {
 
   public isExportAvailable(installment) {
     console.log('totalincluded', this.totalIncluded);
-    if (installment.firstOpen === true && this.totalIncluded > 0) {
+    if (installment.firstOpen && this.totalIncluded > 0) {
       return true;
-    }
-    if (installment.statusOpen === false) {
+    } else if (!installment.statusOpen) {
       return true;
     } else {
       return false;
@@ -145,12 +161,12 @@ export class ProgramPayoutComponent implements OnChanges {
       .then(
         () => {
           installment.isInProgress = false;
-          this.actionResult(this.translate.instant('page.programs.program-payout.payout-success'));
+          this.actionResult(this.translate.instant('page.program.program-payout.payout-success'));
           this.createInstallments(this.programId);
         },
         (err) => {
           console.log('err: ', err);
-          this.actionResult(this.translate.instant('page.programs.program-payout.payout-error'));
+          this.actionResult(this.translate.instant('page.program.program-payout.payout-error'));
           this.cancelPayout(installment);
         }
       );
@@ -165,7 +181,7 @@ export class ProgramPayoutComponent implements OnChanges {
         },
         (err) => {
           console.log('err: ', err);
-          this.actionResult(this.translate.instant('page.programs.program-payout.export-error'));
+          this.actionResult(this.translate.instant('page.program.program-payout.export-error'));
         }
       );
   }

@@ -13,7 +13,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { ProgramsModule } from './programs/programs.module';
+import { ProgramsModule } from './program/program.module';
 
 import { Injector, APP_INITIALIZER } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';

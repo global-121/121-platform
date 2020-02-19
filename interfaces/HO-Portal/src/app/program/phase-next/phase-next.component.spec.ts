@@ -1,21 +1,17 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ProgramListComponent } from './program-list.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('ProgramListComponent', () => {
-  let component: ProgramListComponent;
-  let fixture: ComponentFixture<ProgramListComponent>;
+import { PhaseNextComponent } from './phase-next.component';
+
+describe('PhaseNextComponent', () => {
+  let component: PhaseNextComponent;
+  let fixture: ComponentFixture<PhaseNextComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ProgramListComponent],
+      declarations: [PhaseNextComponent],
       imports: [
-        TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
         HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -24,7 +20,7 @@ describe('ProgramListComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ProgramListComponent);
+    fixture = TestBed.createComponent(PhaseNextComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

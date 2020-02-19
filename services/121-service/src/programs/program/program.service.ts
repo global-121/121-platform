@@ -61,7 +61,7 @@ export class ProgramService {
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
-  ) {}
+  ) { }
 
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
@@ -194,6 +194,20 @@ export class ProgramService {
     return await this.programRepository.delete(programId);
   }
 
+  public async changeState(programId: number, newState: string): Promise<SimpleProgramRO> {
+    await this.changeProgramValue(programId, {
+      state: newState,
+    });
+    const changedProgram = await this.findOne(programId);
+    if (newState === 'registration') {
+      this.publish(programId);
+    } else if (newState === 'design') {
+      this.unpublish(programId);
+    }
+    return this.buildProgramRO(changedProgram);
+  }
+
+
   public async publish(programId: number): Promise<SimpleProgramRO> {
     const selectedProgram = await this.findOne(programId);
     if (selectedProgram.published == true) {
@@ -252,7 +266,7 @@ export class ProgramService {
     const simpleProgramRO = {
       id: program.id,
       title: program.title,
-      published: program.published,
+      state: program.state
     };
 
     return simpleProgramRO;
@@ -569,7 +583,7 @@ export class ProgramService {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
-    if (!program || !program.published) {
+    if (!program || program.state === 'design') {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, 404);
     }

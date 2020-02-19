@@ -1,5 +1,5 @@
 <ion-app>
-  <ion-split-pane contentId="main">
+  <ion-split-pane contentId="main" when="true">
     <ion-menu contentId="main">
       <ion-header>
         <ion-toolbar>
@@ -37,19 +37,6 @@
                 {{ 'page.home.pageTitle'|translate }}
               </ion-label>
             </ion-item>
-            <ion-item routerLink="/programs"
-                      routerDirection="root"
-                      routerLinkActive
-                      #rlaProgams="routerLinkActive"
-                      [detail]="rlaProgams.isActive"
-                      [color]="rlaProgams.isActive ? 'primary' : ''"
-                      *ngIf="isLoggedIn"
-            >
-              <ion-icon slot="start" name="list"></ion-icon>
-              <ion-label>
-                {{ 'page.programs.program-list.pageTitle'|translate }}
-              </ion-label>
-            </ion-item>
             <ion-item routerLink="/help"
                       routerDirection="root"
                       routerLinkActive
@@ -75,19 +62,6 @@
             </ion-item>
           </ion-menu-toggle>
         </ion-list>
-
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; top: auto;">
-          <ion-segment (ionChange)="switchLanguage($event)"
-                       [value]="currentLanguage"
-          >
-            <ion-segment-button value="nl">
-              <ion-label>NL</ion-label>
-            </ion-segment-button>
-            <ion-segment-button value="en">
-              <ion-label>EN</ion-label>
-            </ion-segment-button>
-          </ion-segment>
-        </div>
 
       </ion-content>
     </ion-menu>
