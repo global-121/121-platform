@@ -18,22 +18,20 @@
   <dialogue-turn actor="self">
     <form (ngSubmit)="submitPhoneNumber(phone)">
       <ion-label>{{ 'personal.set-notification-number.input-label'|translate }}</ion-label>
-      <ion-input type="tel"
-                 inputmode="tel"
-                 pattern=""
-                 autocomplete="tel"
-                 name="phone"
-                 placeholder="+0 000 000 000"
-                 [value]="phoneNumber"
-                 [(ngModel)]="phone"
-                 ngDefaultControl
-                 [disabled]="isDisabled"
-      ></ion-input>
+
+      <phone-number-input name="phone"
+                          [(ngModel)]="phone"
+                          ngDefaultControl
+                          [disabled]="isDisabled"
+                          [(isValid)]="phoneNumberIsValid"
+                          (ionFocus)="hasValidationError=false;"
+      ></phone-number-input>
+
       <p class="ion-margin-top">
         <ion-button type="submit"
                     *ngIf="!isDisabled"
                     expand="block"
-                    [disabled]="isDisabled || !phoneNumber"
+                    [disabled]="isDisabled || !phone"
         >{{ 'personal.set-notification-number.submit'|translate }}</ion-button>
       </p>
       <p class="ion-margin-top">
@@ -49,6 +47,14 @@
       </p>
     </form>
 
+  </dialogue-turn>
+  <dialogue-turn [actor]="ngo"
+                 *ngIf="hasValidationError"
+                 [isSpoken]="hasValidationError"
+  >
+    <p>
+      {{ 'validation.phoneNumber'|translate }}
+    </p>
   </dialogue-turn>
   <dialogue-turn [actor]="ngo"
                  *ngIf="choiceMade"

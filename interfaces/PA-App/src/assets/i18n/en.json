@@ -162,6 +162,9 @@
     "show": "Show password",
     "hide": "Hide password"
   },
+  "validation": {
+    "phoneNumber":  "We couldn't verify that phone-number. Please update and try again."
+  },
   "shared": {
     "submit-button": "Submit",
     "cancel-button": "Cancel",

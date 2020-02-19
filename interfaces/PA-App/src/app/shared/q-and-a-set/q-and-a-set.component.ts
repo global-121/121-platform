@@ -37,6 +37,8 @@ export class QAndASetComponent {
 
   public answerType = AnswerType;
 
+  public validationErrors: string[] = [];
+
   constructor() { }
 
   private getQuestionByCode(questionCode: string): Question {
@@ -101,7 +103,41 @@ export class QAndASetComponent {
     return (answers.length >= (questions.length - 1));
   }
 
+  public async onChangeWithValidation(questionCode: string, answerValue: string, checkValidity: Promise<boolean>) {
+    const validity = await checkValidity;
+
+    if (validity !== true) {
+      this.addValidationError(questionCode);
+      return;
+    }
+
+    this.removeValidationError(questionCode);
+
+    this.onAnswerChange(questionCode, answerValue);
+  }
+
+  private removeValidationError(questionCode: string): void {
+    if (this.validationErrors.includes(questionCode)) {
+      const itemIndex = this.validationErrors.indexOf(questionCode);
+      this.validationErrors.splice(itemIndex, 1);
+    }
+  }
+
+  private addValidationError(questionCode: string): void {
+    if (!this.validationErrors.includes(questionCode)) {
+      this.validationErrors.push(questionCode);
+    }
+  }
+
+  public checkValidationErrors() {
+    return (this.validationErrors.length > 0);
+  }
+
   public doSubmit() {
+    if (this.checkValidationErrors()) {
+      return;
+    }
+
     this.isSubmitted = true;
     this.isSubmittedChange.emit(this.isSubmitted);
     this.isEditing = false;
