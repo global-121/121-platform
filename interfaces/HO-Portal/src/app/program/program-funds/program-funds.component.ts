@@ -3,6 +3,8 @@ import { formatCurrency, formatDate } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ProgramFunds } from 'src/app/models/program-funds.model';
+import { ProgramPhase } from 'src/app/models/program.model';
+
 
 @Component({
   selector: 'app-program-funds',
@@ -14,7 +16,11 @@ export class ProgramFundsComponent implements OnChanges {
   public programId: number;
 
   @Input()
+  public selectedPhase: string;
+
+  @Input()
   private currencyCode = 'EUR';
+
 
   private locale: string;
 
@@ -28,6 +34,16 @@ export class ProgramFundsComponent implements OnChanges {
   public totalAvailableDisplay: string;
   public lastUpdatedDisplay: string;
 
+  public componentVisible: boolean;
+  private presentInPhases = [
+    ProgramPhase.design,
+    ProgramPhase.registration,
+    ProgramPhase.inclusion,
+    ProgramPhase.finalize,
+    ProgramPhase.payment,
+    ProgramPhase.evaluation
+  ];
+
   constructor(
     private translate: TranslateService,
     private programsService: ProgramsServiceApiService,
@@ -35,10 +51,17 @@ export class ProgramFundsComponent implements OnChanges {
     this.locale = this.translate.getBrowserCultureLang();
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (typeof changes.programId.currentValue === 'number') {
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+      this.checkVisibility(this.selectedPhase);
+    }
+    if (changes.programId && typeof changes.programId.currentValue === 'number') {
       this.update();
     }
+  }
+
+  public checkVisibility(phase) {
+    this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   public async update() {

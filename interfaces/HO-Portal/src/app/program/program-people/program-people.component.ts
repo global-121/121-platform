@@ -1,24 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
-import { Program, InclusionCalculationType } from 'src/app/models/program.model';
+import { Program, InclusionCalculationType, ProgramPhase } from 'src/app/models/program.model';
 import { formatDate } from '@angular/common';
+import { UserRole } from 'src/app/auth/user-role.enum';
 
 @Component({
   selector: 'app-program-people',
   templateUrl: './program-people.component.html',
   styleUrls: ['./program-people.component.scss'],
 })
-export class ProgramPeopleComponent implements OnInit {
+export class ProgramPeopleComponent implements OnChanges {
+  @Input()
+  public selectedPhase: string;
+
+  @Input()
+  public userRole: string;
+
+  @Input()
+  public programId: number;
+
+  public componentVisible: boolean;
+  private presentInPhases = [
+    ProgramPhase.design,
+    ProgramPhase.registration,
+    ProgramPhase.inclusion,
+    ProgramPhase.finalize,
+    ProgramPhase.payment,
+    ProgramPhase.evaluation
+  ];
+  public userRoleEnum = UserRole;
 
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, hh:mm';
 
   public showSensitiveData: boolean;
 
-  public programId: number;
   public program: Program;
 
   public columns: any;
@@ -45,26 +64,41 @@ export class ProgramPeopleComponent implements OnInit {
     };
     this.submitWarning = {
       message: '',
-      included: this.translate.instant('page.programs.program-people.submit-warning-pa-included'),
-      excluded: this.translate.instant('page.programs.program-people.submit-warning-pa-excluded'),
-      toIncluded: this.translate.instant('page.programs.program-people.submit-warning-pa-to-included'),
-      toExcluded: this.translate.instant('page.programs.program-people.submit-warning-pa-to-excluded'),
+      included: this.translate.instant('page.program.program-people.submit-warning-pa-included'),
+      excluded: this.translate.instant('page.program.program-people.submit-warning-pa-excluded'),
+      toIncluded: this.translate.instant('page.program.program-people.submit-warning-pa-to-included'),
+      toExcluded: this.translate.instant('page.program.program-people.submit-warning-pa-to-excluded'),
     };
   }
 
-  async ngOnInit() {
-    this.programId = Number(this.route.snapshot.params.id);
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+      this.checkVisibility(this.selectedPhase);
+    }
+    if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
+      this.shouldShowSensitiveData(this.userRole);
+    }
+    if (changes.programId && typeof changes.programId.currentValue === 'number') {
+      this.update();
+    }
+  }
+
+  private async update() {
     this.program = await this.programsService.getProgramById(this.programId);
 
-    await this.shouldShowSensitiveData();
+    this.shouldShowSensitiveData(this.userRole);
 
     this.determineColumns();
 
     this.loadData();
   }
 
-  private async shouldShowSensitiveData() {
-    return this.route.data.subscribe((result) => this.showSensitiveData = result.showSensitiveData);
+  private shouldShowSensitiveData(userRole) {
+    this.showSensitiveData = userRole === this.userRoleEnum.PrivacyOfficer;
+  }
+
+  public checkVisibility(phase) {
+    this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   private async loadData() {
@@ -92,32 +126,32 @@ export class ProgramPeopleComponent implements OnInit {
     const columnsRegular = [
       {
         prop: 'pa',
-        name: this.translate.instant('page.programs.program-people.column.person'),
+        name: this.translate.instant('page.program.program-people.column.person'),
         draggable: false,
         resizeable: false,
         sortable: false,
       },
       {
         prop: 'score',
-        name: this.translate.instant('page.programs.program-people.column.score'),
+        name: this.translate.instant('page.program.program-people.column.score'),
         draggable: false,
         resizeable: false,
       },
       {
         prop: 'created',
-        name: this.translate.instant('page.programs.program-people.column.created'),
+        name: this.translate.instant('page.program.program-people.column.created'),
         draggable: false,
         resizeable: false,
       },
       {
         prop: 'updated',
-        name: this.translate.instant('page.programs.program-people.column.updated'),
+        name: this.translate.instant('page.program.program-people.column.updated'),
         draggable: false,
         resizeable: false,
       },
       {
         prop: 'selected',
-        name: this.translate.instant('page.programs.program-people.column.include'),
+        name: this.translate.instant('page.program.program-people.column.include'),
         checkboxable: true,
         draggable: false,
         resizeable: false,
@@ -130,14 +164,14 @@ export class ProgramPeopleComponent implements OnInit {
       const columnsPrivacy = [
         {
           prop: 'name',
-          name: this.translate.instant('page.programs.program-people.column.name'),
+          name: this.translate.instant('page.program.program-people.column.name'),
           sortable: true,
           draggable: false,
           resizeable: false,
         },
         {
           prop: 'dob',
-          name: this.translate.instant('page.programs.program-people.column.dob'),
+          name: this.translate.instant('page.program.program-people.column.dob'),
           sortable: true,
           draggable: false,
           resizeable: false,

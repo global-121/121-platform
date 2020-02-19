@@ -1,0 +1,8 @@
+<ion-button *ngFor="let phase of programPhases"
+            [color]="phase.active ? 'primary' : 'null'"
+            [class.selected]="phase.id === selectedPhaseId"
+            [disabled]="phase.id > activePhaseId"
+            (click)="changePhase(phase.id)"
+>
+  {{ phase.label }}
+</ion-button>

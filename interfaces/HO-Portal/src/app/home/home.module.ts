@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { HomePage } from './home.page';
+import { ProgramsListComponent } from '../programs-list/programs-list.component';
 
 @NgModule({
   imports: [
@@ -18,6 +19,9 @@ import { HomePage } from './home.page';
     ]),
     TranslateModule.forChild()
   ],
-  declarations: [HomePage]
+  declarations: [
+    HomePage,
+    ProgramsListComponent,
+  ]
 })
 export class HomePageModule { }

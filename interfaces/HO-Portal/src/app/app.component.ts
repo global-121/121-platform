@@ -9,7 +9,6 @@ import { User } from './models/user.model';
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
-  public currentLanguage: string;
   public isLoggedIn: boolean;
   public currentUserRole: string;
 
@@ -22,7 +21,7 @@ export class AppComponent {
   }
 
   initializeApp() {
-    this.authService.authenticationState$.subscribe((user: User|null) => {
+    this.authService.authenticationState$.subscribe((user: User | null) => {
       this.isLoggedIn = (user) ? !!user.token : false;
       this.currentUserRole = (user) ? user.role : '';
     });
@@ -31,12 +30,6 @@ export class AppComponent {
   initializeLanguages() {
     this.translate.setDefaultLang('en');
     this.translate.use('en');
-
-    this.currentLanguage = this.translate.currentLang;
-  }
-
-  public switchLanguage(event: any) {
-    this.translate.use(event.detail.value);
   }
 
   public logout() {

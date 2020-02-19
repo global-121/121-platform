@@ -22,7 +22,7 @@ import { UserRole } from '../user-role.enum';
 
 @Injectable()
 export class SeedMvp implements InterfaceScript {
-  public constructor(private connection: Connection) {}
+  public constructor(private connection: Connection) { }
 
   private readonly seedHelper = new SeedHelper(this.connection);
   private readonly seedPublish = new SeedPublish();

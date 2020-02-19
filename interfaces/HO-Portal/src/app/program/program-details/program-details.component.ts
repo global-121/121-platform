@@ -1,11 +1,8 @@
-import { UserRole } from './../../auth/user-role.enum';
-import { AuthService } from './../../auth/auth.service';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Program } from 'src/app/models/program.model';
+import { Component, OnInit, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { ProgramJsonComponent } from '../program-json/program-json.component';
 
 @Component({
@@ -13,15 +10,21 @@ import { ProgramJsonComponent } from '../program-json/program-json.component';
   templateUrl: './program-details.component.html',
   styleUrls: ['./program-details.component.scss'],
 })
-export class ProgramDetailsComponent implements OnInit {
-  public languageCode: string;
-  public fallbackLanguageCode: string;
-  public currentUserRole: string;
+export class ProgramDetailsComponent implements OnChanges {
+  @Input()
+  public programId: number;
+  @Input()
+  public selectedPhase: string;
+
+  public componentVisible: boolean;
+  private presentInPhases = [
+    ProgramPhase.design
+  ];
 
   public program: Program;
-  public programTitle: string;
   public programArray: any;
-  public userRoleEnum = UserRole;
+  public languageCode: string;
+  public fallbackLanguageCode: string;
 
   private techFeatures = [
     'countryId',
@@ -32,29 +35,36 @@ export class ProgramDetailsComponent implements OnInit {
   ];
 
   constructor(
-    private route: ActivatedRoute,
-    private programsService: ProgramsServiceApiService,
     public modalController: ModalController,
     public translate: TranslateService,
-    private authService: AuthService
+    private programsService: ProgramsServiceApiService,
+  ) { }
 
-  ) {}
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+      this.checkVisibility(this.selectedPhase);
+    }
+    if (changes.programId && typeof changes.programId.currentValue === 'number') {
+      this.update();
+    }
+  }
 
-  async ngOnInit() {
+  private async update() {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
-    const programId = this.route.snapshot.params.id;
-    this.program = await this.programsService.getProgramById(programId);
-    this.programTitle = this.mapLabelByLanguageCode(this.program.title);
+    this.program = await this.programsService.getProgramById(this.programId);
     this.programArray = this.generateArray(this.program);
-    this.currentUserRole = this.authService.getUserRole();
+  }
+
+  public checkVisibility(phase) {
+    this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   public generateArray(obj) {
     return Object.keys(obj)
       .filter((key) => this.techFeatures.indexOf(key) <= -1)
       .map((key) => {
-        const keyNew = this.translate.instant('page.programs.program-details.' + key);
+        const keyNew = this.translate.instant('page.program.program-details.' + key);
         const valueNew = this.mapLabelByLanguageCode(obj[key]);
         let isArray = false;
         if (valueNew instanceof Array) {
