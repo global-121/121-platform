@@ -27,6 +27,9 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   public ngo: string;
   public did: string;
 
+  public hasValidationError: boolean;
+  public phoneNumberIsValid: boolean;
+
   constructor(
     private conversationService: ConversationService,
     public translate: TranslateService,
@@ -87,23 +90,30 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   }
 
   public async submitPhoneNumber(phoneNumber: string) {
+    this.phoneNumber = this.sanitizePhoneNumber(phoneNumber);
+
+    if (!this.phoneNumberIsValid) {
+      this.hasValidationError = true;
+      return;
+    }
+
+    this.hasValidationError = false;
     this.choiceMade = true;
     this.phoneSkipped = false;
 
-    await this.storePhoneNumber(phoneNumber);
+    await this.storePhoneNumber(this.phoneNumber);
     this.complete();
   }
 
-  public sanitizePhoneNumber(phoneNumber: string): string {
+  private sanitizePhoneNumber(phoneNumber: string): string {
     // Remove any non-digit character exept the '+' sign
     return phoneNumber.replace(/[^\d+]/g, '');
   }
 
   private async storePhoneNumber(phoneNumber: string) {
-    this.phoneNumber = this.sanitizePhoneNumber(phoneNumber);
-    this.did = await this.paData.retrieve(this.paData.type.did);
+    const did = await this.paData.retrieve(this.paData.type.did);
 
-    return this.programService.postPhoneNumber(this.did, this.phoneNumber, this.languageCode);
+    return this.programService.postPhoneNumber(did, phoneNumber, this.languageCode);
   }
 
   public skipPhone() {
@@ -114,7 +124,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.meetingReminder;
+    return PersonalComponents.selectAppointment;
   }
 
   complete() {

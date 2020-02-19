@@ -221,15 +221,16 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  lookupPhoneNumber(phoneNumber: string): Observable<any> {
+  lookupPhoneNumber(phoneNumber: string): Promise<{ result: boolean }> {
     return this.apiService.post(
       environment.url_121_service_api,
-      '/lookup/lookup',
+      '/notifications/lookup',
       {
-        phonenumber: phoneNumber,
+        phoneNumber,
       },
       true
-    );
+    )
+      .toPromise();
   }
 
   postPhoneNumber(did: string, phoneNumber: string, language: string): Promise<any> {

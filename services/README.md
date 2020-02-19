@@ -17,18 +17,18 @@ Switch to the repository folder
 Copy a few secret files and get the right passwords from someone who knows:
 
     cp .env.example .env
-    cp 121-service/src/secrets.ts.example 121-service/src/secrets.ts
-    cp 121-service/ormconfig.json.example 121-service/ormconfig.json
-    cp PA-accounts-service/src/secrets.ts.example PA-accounts-service/src/secrets.ts
-    cp PA-accounts-service/ormconfig.json.example PA-accounts-service/ormconfig.json
+    cp 121-service/src/example.secrets.ts 121-service/src/secrets.ts
+    cp 121-service/example.ormconfig.json 121-service/ormconfig.json
+    cp PA-accounts-service/src/example.secrets.ts PA-accounts-service/src/secrets.ts
+    cp PA-accounts-service/example.ormconfig.json PA-accounts-service/ormconfig.json
 
-Copy the two Dockerfile.templates ...
+Copy the two example `Dockerfile` files ...
 
-    cp 121-service/Dockerfile.template 121-service/Dockerfile
-    cp PA-accounts-service/Dockerfile.template PA-accounts-service/Dockerfile 
+    cp 121-service/example.Dockerfile 121-service/Dockerfile
+    cp PA-accounts-service/example.Dockerfile PA-accounts-service/Dockerfile 
 
-... and uncomment the appropriate last CMD line (or leave as is, in which case you will need to start the containers and start the applications from within: see below).
-... Also note the NODE_ENV-variable. Leave this as 'development' for local environment. 'Production' is used for production-server.
+... and uncomment the appropriate last line (or leave as is, in which case you will need to start the containers and start the applications from within: see below).
+... Also note the `NODE_ENV`-variable. Leave this as 'development' for local environment.
 
 ---
 
@@ -36,7 +36,7 @@ Copy the two Dockerfile.templates ...
 
 Run (from /services subfolder):
 
-    docker-compose -f "docker-compose.yml" up -d --build
+    docker-compose up -d --build
 
 ## How to use
 

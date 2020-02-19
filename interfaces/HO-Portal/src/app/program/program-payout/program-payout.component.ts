@@ -4,6 +4,7 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { formatCurrency } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { saveAs } from 'file-saver';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ProgramPhase } from 'src/app/models/program.model';
@@ -57,6 +58,7 @@ export class ProgramPayoutComponent implements OnChanges {
   async ngOnInit() {
     this.currentUserRole = this.authService.getUserRole();
     this.programId = this.route.snapshot.params.id;
+    this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
     this.createInstallments(this.programId);
   }
 
@@ -66,6 +68,7 @@ export class ProgramPayoutComponent implements OnChanges {
     }
     if (changes.programId && typeof changes.programId.currentValue === 'number') {
       this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
+      console.log('totalIncluded: ', this.totalIncluded);
     }
   }
 
@@ -121,9 +124,21 @@ export class ProgramPayoutComponent implements OnChanges {
           installment.firstOpen = false;
         }
       }
+      installment.isExportAvailable = this.isExportAvailable(installment);
       i += 1;
     }
 
+  }
+
+  public isExportAvailable(installment) {
+    console.log('totalincluded', this.totalIncluded);
+    if (installment.firstOpen && this.totalIncluded > 0) {
+      return true;
+    } else if (!installment.statusOpen) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   public updateTotalAmountMessage(installment) {
@@ -160,7 +175,10 @@ export class ProgramPayoutComponent implements OnChanges {
   public async exportList(installment) {
     this.programsService.exportList(+this.programId, installment.id)
       .then(
-        () => { },
+        (res) => {
+          const blob = new Blob([res.data], { type: 'text/csv' });
+          saveAs(blob, res.fileName);
+        },
         (err) => {
           console.log('err: ', err);
           this.actionResult(this.translate.instant('page.program.program-payout.export-error'));

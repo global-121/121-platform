@@ -40,7 +40,7 @@ This is currently set up. To reproduce, you would follow these steps:
 
 1. (On the Ubuntu server) copy secrets file
 
-       cp tools/secrets.json.example tools/secrets.json
+       cp tools/example.secrets.json tools/secrets.json
 
    And fill in the right secret.
 

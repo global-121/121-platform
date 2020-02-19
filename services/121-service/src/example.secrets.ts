@@ -1,4 +1,5 @@
 export const SECRET = 'secret-key';
+
 export const USERCONFIG = {
   passwordAdmin: 'password',
   usernameAdmin: 'admin',
@@ -12,15 +13,14 @@ export const USERCONFIG = {
   passwordPrivacyOfficer: 'password',
   usernamePrivacyOfficer: 'privacy-officer',
   emailPrivacyOfficer: 'privacy-officer@example.org',
-  countryId: 1
+  countryId: 1,
 };
 
-
 export const TWILIO = {
-         sid: 'AC<your-sid>',
-         authToken: 'AC<your-sid>',
-         testToNumber: '<your-testToNumber>',
-         testFromNumberVoice: '<your-testFromNumber>',
-         testFromNumberSms: '<your-testFromNumber>',
-         ngrok: 'http://example.ngrok.io/',
-       };
+  sid: 'AC<your-sid>',
+  authToken: 'AC<your-sid>',
+  testToNumber: '<your-testToNumber>',
+  testFromNumberVoice: '<your-testFromNumber>',
+  testFromNumberSms: '<your-testFromNumber>',
+  ngrok: 'http://example.ngrok.io/',
+};

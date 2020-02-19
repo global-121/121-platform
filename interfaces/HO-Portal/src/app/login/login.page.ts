@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -8,7 +9,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class LoginPage {
   @ViewChild('loginForm')
-  public loginForm;
+  public loginForm: NgForm;
 
   public email: any;
   public password: any;
@@ -20,16 +21,17 @@ export class LoginPage {
   public async doLogin() {
     console.log('doLogin()');
 
-    const result = await this.authService.login(
+    if (!this.loginForm.form.valid) {
+      return;
+    }
+
+    this.authService.login(
       this.email,
       this.password
-    );
-
-    if (result.closed) {
+    ).then(() => {
       // Remove credentials from interface-state to prevent re-use after log-out:
-      this.email = '';
-      this.password = '';
-    }
+      this.loginForm.resetForm();
+    });
 
   }
 }

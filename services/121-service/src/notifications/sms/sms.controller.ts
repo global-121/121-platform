@@ -1,10 +1,9 @@
-import { VoiceService } from './../voice/voice.service';
 import { SmsService } from './sms.service';
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { ApiResponse, ApiUseTags, ApiImplicitParam } from '@nestjs/swagger';
 
 @ApiUseTags('notifications')
-@Controller('sms')
+@Controller('notifications/sms')
 export class SmsController {
   private readonly smsService: SmsService;
   public constructor(smsService: SmsService) {

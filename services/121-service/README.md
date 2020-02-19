@@ -22,9 +22,8 @@ Install dependencies (NOT NEEDED, SINCE USING DOCKER)
 
 Copy a few secret files and get the right passwords from someone who knows:
 
-    cp src/secrets.ts.example src/secrets.ts
-    cp secrets/DID_generation/import-HO-wallet.txt.example secrets/DID_generation/import-HO-wallet.txt
-    cp ormconfig.json.example ormconfig.json
+    cp src/example.secrets.ts src/secrets.ts
+    cp example.ormconfig.json ormconfig.json
 
 ---
 
@@ -102,7 +101,7 @@ Any time, the database-structure is adapted, before pushing, run:
 `docker exec -it 121-service npm run migration:generate <name>`
 
 This stores all edits in a migration-file, which is pushed along with your code.
-On test- and production-server, this file is automatically run within the 'npm prestart' command.
+On test- and production-server, this file is automatically run within the `npm prestart` command.
 To run this file locally, do:
 `docker exec -it 121-service npm run migration:run`
 

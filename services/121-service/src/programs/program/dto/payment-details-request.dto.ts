@@ -1,6 +1,6 @@
-import { ApiModelProperty } from "@nestjs/swagger";
+import { ApiModelProperty } from '@nestjs/swagger';
 
-import { IsNumber } from "class-validator";
+import { IsNumber } from 'class-validator';
 
 export class PaymentDetailsRequest {
   @ApiModelProperty({ example: 1 })

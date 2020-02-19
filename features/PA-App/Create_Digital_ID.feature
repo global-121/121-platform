@@ -20,11 +20,11 @@ Feature: Create Digital ID
     When the PA completes the step
     Then the "enroll in a program"-step is shown
     When the PA completes the step
-    Then the "select appointment"-step is shown
-    When the PA completes the step
     Then the "select FSP"-step is shown
     When the PA completes the step
     Then the "set notification number"-step is shown
+    When the PA completes the step
+    Then the "select appointment"-step is shown
     When the PA completes the step
     Then the "meeting reminder"-step is shown
     And the "store credential"-step is shown
