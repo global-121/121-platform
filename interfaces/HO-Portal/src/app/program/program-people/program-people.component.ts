@@ -19,6 +19,9 @@ export class ProgramPeopleComponent implements OnChanges {
   @Input()
   public userRole: string;
 
+  @Input()
+  public programId: number;
+
   public componentVisible: boolean;
   private presentInPhases = [
     'design',
@@ -35,7 +38,6 @@ export class ProgramPeopleComponent implements OnChanges {
 
   public showSensitiveData: boolean;
 
-  public programId: number;
   public program: Program;
 
   public columns: any;

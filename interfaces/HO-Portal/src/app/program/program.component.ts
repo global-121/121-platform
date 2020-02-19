@@ -5,7 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Program } from 'src/app/models/program.model';
 import { TranslateService } from '@ngx-translate/core';
-import { ProgramJsonComponent } from './program-json/program-json.component';
 
 @Component({
   selector: 'app-program',
