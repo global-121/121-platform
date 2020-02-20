@@ -73,10 +73,17 @@ export class PaAccountApiService {
       .pipe(
         catchError((error) => {
           if (error.error instanceof ErrorEvent) {
+            // Client-side error:
             console.error(error);
           } else {
-            // In case of server-side error (400/500), act as if nothing happened...
-            return of(undefined);
+            // In case of server-side error (400/500):
+            // Only on a 404-error, act as if nothing happened...
+            if (error.status === 404) {
+              return of(undefined);
+            }
+            // Otherwise...
+            console.error(error);
+            return of(error);
           }
         }),
       )

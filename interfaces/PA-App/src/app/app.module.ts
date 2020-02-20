@@ -1,6 +1,7 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Injector, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { LOCATION_INITIALIZED } from '@angular/common';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -11,12 +12,10 @@ import { IonicStorageModule } from '@ionic/storage';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { Injector, APP_INITIALIZER } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { LOCATION_INITIALIZED } from '@angular/common';
+import { httpInterceptorProviders } from './http-interceptors/index';
 
 export function appInitializerFactory(translate: TranslateService, injector: Injector) {
 
@@ -67,6 +66,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    httpInterceptorProviders,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,

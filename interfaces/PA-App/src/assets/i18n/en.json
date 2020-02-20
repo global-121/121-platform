@@ -165,6 +165,9 @@
   "validation": {
     "phoneNumber":  "We couldn't verify that phone-number. Please update and try again."
   },
+  "connection": {
+    "error-retry": "Something went wrong, do you want to try again?"
+  },
   "shared": {
     "submit-button": "Submit",
     "cancel-button": "Cancel",
