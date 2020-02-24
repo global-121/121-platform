@@ -47,11 +47,11 @@
       ></ion-input>
     </div>
     <div *ngSwitchCase="answerType.phoneNumber">
-      <phone-number-input #telInput
+      <phone-number-input #phoneNumberInput
                           [value]="answers[question.code]?.value"
                           ngDefaultControl
                           [disabled]="isSubmitted"
-                          (isValidChange)="onChangeWithValidation(question.code, telInput.value, telInput.isValid)"
+                          (isValidChange)="onChangeWithValidation(question.code, phoneNumberInput.value, phoneNumberInput.isValid)"
                           debounce="500"
       ></phone-number-input>
     </div>
