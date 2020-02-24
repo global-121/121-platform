@@ -35,6 +35,9 @@ export class PhoneNumberInputComponent {
   }
 
   public async onChange() {
+    // 'export' the value of the input-ELEMENT to be used as value of this COMPONENT
+    this.value = this.telInput.value;
+
     const nativeInput = await this.telInput.getInputElement();
     const nativeIsValid = nativeInput.checkValidity();
 
