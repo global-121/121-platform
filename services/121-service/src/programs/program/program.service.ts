@@ -14,6 +14,7 @@ import {
   Inject,
   forwardRef,
   HttpService,
+  HttpStatus,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
@@ -161,7 +162,7 @@ export class ProgramService {
       });
       if (!fsp) {
         const errors = `No fsp found with id ${item.id}`;
-        throw new HttpException({ errors }, 404);
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       }
       fsp.program.push(program);
       await this.financialServiceProviderRepository.save(fsp);
@@ -173,7 +174,7 @@ export class ProgramService {
       });
       if (!psp) {
         const errors = `No psp found with id ${item.id}`;
-        throw new HttpException({ errors }, 404);
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       }
       psp.program.push(program);
       await this.protectionServiceProviderRepository.save(psp);
@@ -212,7 +213,7 @@ export class ProgramService {
     const selectedProgram = await this.findOne(programId);
     if (selectedProgram.published == true) {
       const errors = { Program: ' already published' };
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
 
     const result = await this.schemaService.create(selectedProgram);
@@ -244,7 +245,7 @@ export class ProgramService {
     let selectedProgram = await this.findOne(programId);
     if (selectedProgram.published == false) {
       const errors = { Program: ' already unpublished' };
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
     await this.changeProgramValue(programId, { published: false });
     return await this.buildProgramRO(selectedProgram);
@@ -290,12 +291,12 @@ export class ProgramService {
     });
     if (!connection) {
       const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     if (connection.programsEnrolled.includes(+programId)) {
       const errors = 'Already enrolled for program';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     let program = await this.programRepository.findOne(programId, {
@@ -303,7 +304,7 @@ export class ProgramService {
     });
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     await this.proofService.validateProof(program.proofRequest, proof, did);
@@ -382,12 +383,12 @@ export class ProgramService {
     });
     if (!connection) {
       const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     let inclusionStatus: InclusionStatus;
     if (
@@ -408,7 +409,7 @@ export class ProgramService {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     for (let did of JSON.parse(dids['dids'])) {
@@ -442,7 +443,7 @@ export class ProgramService {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     for (let did of JSON.parse(dids['dids'])) {
@@ -585,7 +586,7 @@ export class ProgramService {
     });
     if (!program || program.state === 'design') {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     const includedConnections = await this.getIncludedConnections(programId);
@@ -603,7 +604,7 @@ export class ProgramService {
     const fundsNeeded = amount * includedConnections.length;
     if (fundsNeeded > fundingOverview.totalAvailable) {
       const errors = 'Insufficient funds';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     for (let fsp of program.financialServiceProviders) {
@@ -707,7 +708,7 @@ export class ProgramService {
         .toPromise();
       if (!response.data) {
         const errors = 'Payment instruction not send';
-        throw new HttpException({ errors }, 404);
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       }
       for (let connection of connectionsForFsp) {
         this.storeTransaction(amount, connection, fsp, program, installment);
@@ -752,7 +753,7 @@ export class ProgramService {
     });
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     const fundsDisberse = await this.fundingService.getProgramFunds(programId);

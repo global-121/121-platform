@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DataStorageEntity } from './data-storage.entity';
@@ -47,7 +47,7 @@ export class DataStorageService {
     });
     if (!data || data.length === 0) {
       const errors = { Data: ' not found' };
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     data[0].data = this.cryptr.decrypt(data[0].data);

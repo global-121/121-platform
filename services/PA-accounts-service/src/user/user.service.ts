@@ -90,13 +90,13 @@ export class UserService {
 
     if (!user) {
       const errors = 'User not found or already deleted';
-      throw new HttpException({ errors }, 400)
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST)
     }
 
     const hashedpassword = crypto.createHmac('sha256', passwordData.password).digest('hex')
     if (user.password !== hashedpassword) {
       const errors = 'Password for user is incorrect';
-      throw new HttpException({ errors }, 401)
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED)
     }
     await this.dataStorageRepository.delete(
       {
@@ -110,7 +110,7 @@ export class UserService {
     const user = await this.userRepository.findOne(id);
     if (!user) {
       const errors = { User: ' not found' };
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
 
     return this.buildUserRO(user);
@@ -121,7 +121,7 @@ export class UserService {
     if (!user) {
       const errors = { 'username': username + ' not found' };
       console.log(errors)
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return this.buildUserRO(user);
   }

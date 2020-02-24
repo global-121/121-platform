@@ -1,7 +1,7 @@
 import { ProgramService } from './../../programs/program/program.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { Injectable, HttpException, HttpService } from '@nestjs/common';
+import { Injectable, HttpException, HttpService, HttpStatus } from '@nestjs/common';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { CustomCriterium } from '../../programs/program/custom-criterium.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
@@ -51,15 +51,15 @@ export class ProofService {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     if (program.published === false) {
       const errors = 'This program is not published';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     if (!program.proofRequest) {
       const errors = 'This program has no proof request';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program.proofRequest;
   }

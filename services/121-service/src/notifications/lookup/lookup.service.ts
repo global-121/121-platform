@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus } from '@nestjs/common';
 import { twilioClient } from '../twilio.client';
 import { resolve } from 'path';
 
@@ -16,7 +16,7 @@ export class LookupService {
         .fetch({ type: ['carrier'] });
       numberCorrect = true;
     } catch (e) {
-      if (e.status === 404) {
+      if (e.status === HttpStatus.NOT_FOUND) {
         numberCorrect = false;
       }
     }

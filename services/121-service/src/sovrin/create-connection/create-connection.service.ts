@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { DidInfoDto } from './dto/did-info.dto';
@@ -55,7 +55,7 @@ export class CreateConnectionService {
     });
     if (connections.length > 0) {
       const errors = 'There is already a secure connection with this PA.';
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
 
     let connection = new ConnectionEntity();
@@ -116,7 +116,7 @@ export class CreateConnectionService {
     });
     if (!connection) {
       const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return connection;
   }
