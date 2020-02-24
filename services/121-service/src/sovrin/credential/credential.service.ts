@@ -7,6 +7,7 @@ import {
   Inject,
   forwardRef,
   HttpService,
+  HttpStatus,
 } from '@nestjs/common';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { ProgramEntity } from '../../programs/program/program.entity';
@@ -56,7 +57,7 @@ export class CredentialService {
       .toPromise();
     if (!response.data) {
       const errors = 'Credoffer not created';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return response.data;
   }
@@ -78,7 +79,7 @@ export class CredentialService {
       }
     } else {
       const errors = 'Program does not exist or is not published';
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
     return attributes;
   }
@@ -144,7 +145,7 @@ export class CredentialService {
     const program = await this.programService.findOne(credRequest.programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     const credentialRequestInfo = new CredentialRequestEntity();
@@ -214,12 +215,7 @@ export class CredentialService {
     });
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException(
-        {
-          errors,
-        },
-        404,
-      );
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program;
   }
@@ -236,12 +232,7 @@ export class CredentialService {
     });
     if (!queryResult) {
       const errors = 'Credential request not found.';
-      throw new HttpException(
-        {
-          errors,
-        },
-        404,
-      );
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return queryResult;
   }
@@ -259,13 +250,8 @@ export class CredentialService {
     if (oldCredential) {
       const errors =
         'A credential has already been created for this did for this program';
-      throw new HttpException(
-        {
-          errors,
-        },
-        404,
-      );
-    }
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      }
   }
 
   public async cleanupIssueCredData(

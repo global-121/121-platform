@@ -1,5 +1,5 @@
 import { SchemaEntity } from './schema.entity';
-import { Injectable, HttpService, HttpException } from '@nestjs/common';
+import { Injectable, HttpService, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { API, DEBUG } from '../../config';
@@ -47,7 +47,7 @@ export class SchemaService {
       .toPromise();
     if (!responseSchema.data) {
       const errors = 'Schema not published';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const schemaId = responseSchema.data.schema_id;
     const credDefPost = {
@@ -59,7 +59,7 @@ export class SchemaService {
       .toPromise();
     if (!responseCreddef.data) {
       const errors = 'Cred def id not published';
-      throw new HttpException({ errors }, 404);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const credDefId = responseCreddef.data.credential_definition_id;
 

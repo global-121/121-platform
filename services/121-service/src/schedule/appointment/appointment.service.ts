@@ -1,6 +1,6 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
 import { CreateAvailabilityDto, RegisterTimeslotDto } from './dto';
 import { AvailabilityEntity } from './availability.entity';
@@ -46,14 +46,14 @@ export class AppointmentService {
     const program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = { Program: ' not found' };
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
     let aidworkers = await this.userRepository.find({
       where: { assignedProgram: { id: programId } },
     });
     if (aidworkers.length == 0) {
       const errors = { Message: 'No aidworkers assigned to this program yet.' };
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
     let availabilities = [];
     for (let index in aidworkers) {
@@ -64,7 +64,7 @@ export class AppointmentService {
     }
     if (availabilities.length == 0) {
       const errors = { Message: 'No available time-windows posted yet.' };
-      throw new HttpException({ errors }, 401);
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
     return availabilities;
   }
