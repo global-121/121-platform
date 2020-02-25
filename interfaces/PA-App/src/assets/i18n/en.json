@@ -163,6 +163,7 @@
     "hide": "Hide password"
   },
   "validation": {
+    "generic-error": "We cannot process some of your input. Please check and update one of your answers.",
     "phoneNumber":  "We couldn't verify that phone-number. Please update and try again."
   },
   "connection": {
