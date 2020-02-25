@@ -1,7 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
-import { DidInfoDto } from './dto/did-info.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
 import { Repository } from 'typeorm';
@@ -64,7 +63,7 @@ export class CreateConnectionService {
     return newConnection;
   }
 
-  public async delete(didObject: DidDto) {
+  public async delete(didObject: DidDto): Promise<void> {
     await this.connectionRepository.delete({
       did: didObject.did,
     });
@@ -86,7 +85,7 @@ export class CreateConnectionService {
     did: string,
     phoneNumber: string,
     preferredLanguage: string,
-  ) {
+  ): Promise<void> {
     const connection = await this.findOne(did);
     connection.phoneNumber = phoneNumber;
     connection.preferredLanguage = preferredLanguage;
