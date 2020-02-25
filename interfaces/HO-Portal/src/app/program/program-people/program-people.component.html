@@ -8,23 +8,27 @@
     {{ 'page.program.program-people.noConnectionsPrivacy'|translate }}
   </p>
 
-  <ngx-datatable #people
-                class="bootstrap"
-                limit="50"
-                columnMode="force"
-                rowHeight="auto"
-                headerHeight="50"
-                footerHeight="50"
-                reorderable="false"
-                sortType="multi"
-                selectionType="checkbox"
-                loadingIndicator="true"
-                [columns]="columns"
-                [rows]="enrolledPeople"
-                [selected]="selectedPeople"
-                [messages]="tableMessages"
-                (select)="updateSubmitWarning()"
-  ></ngx-datatable>
+  <div class="full-width">
+    <ngx-datatable #people
+                  class="bootstrap"
+                  limit="50"
+                  columnMode="force"
+                  rowHeight="auto"
+                  headerHeight="50"
+                  footerHeight="50"
+                  reorderable="false"
+                  sortType="multi"
+                  selectionType="checkbox"
+                  loadingIndicator="true"
+                  [columns]="columns"
+                  [columnMode]="'standard'"
+                  [scrollbarH]="true"
+                  [rows]="enrolledPeople"
+                  [selected]="selectedPeople"
+                  [messages]="tableMessages"
+                  (select)="updateSubmitWarning()"
+    ></ngx-datatable>
+  </div>
 
   <confirm-prompt [disabled]="!enrolledPeople.length"
                   (confirm)="submitInclusion()"

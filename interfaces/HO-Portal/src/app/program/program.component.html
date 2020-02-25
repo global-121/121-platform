@@ -32,21 +32,20 @@
                   (emitNewPhase)="emitNewPhase($event)"
   ></app-phase-next>
 
-  <app-program-funds [selectedPhase]="selectedPhase"
-                     [programId]="program?.id"
-                     [currencyCode]="program?.currency"
-  ></app-program-funds>
-
+  <app-program-people [selectedPhase]="selectedPhase"
+                      [programId]="program?.id"
+                      [userRole]="currentUserRole"
+  ></app-program-people>
+  
   <app-program-payout [selectedPhase]="selectedPhase"
                       [programId]="program?.id"
                       [currencyCode]="program?.currency"
   ></app-program-payout>
 
-
-  <app-program-people [selectedPhase]="selectedPhase"
-                      [programId]="program?.id"
-                      [userRole]="currentUserRole"
-  ></app-program-people>
+  <app-program-funds [selectedPhase]="selectedPhase"
+                     [programId]="program?.id"
+                     [currencyCode]="program?.currency"
+  ></app-program-funds>
 
   <app-program-details [selectedPhase]="selectedPhase"
                        [programId]="program?.id"

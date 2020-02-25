@@ -31,16 +31,17 @@ export class ProgramPeopleComponent implements OnChanges {
     ProgramPhase.payment,
     ProgramPhase.evaluation
   ];
+  private activePhase: ProgramPhase;
   public userRoleEnum = UserRole;
 
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd, hh:mm';
+  private dateFormat = 'yyyy-MM-dd'; //, hh:mm';
 
   public showSensitiveData: boolean;
 
   public program: Program;
 
-  public columns: any;
+  public columns: any[] = [];
   public tableMessages: any;
   public submitWarning: any;
 
@@ -50,8 +51,118 @@ export class ProgramPeopleComponent implements OnChanges {
   private newIncludedPeople: any[] = [];
   private newExcludedPeople: any[] = [];
 
+  private columnsAvailable = [
+    {
+      prop: 'pa',
+      name: this.translate.instant('page.program.program-people.column.person'),
+      draggable: false,
+      resizeable: false,
+      sortable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'digitalIdCreated',
+      name: this.translate.instant('page.program.program-people.column.digital-id-created'),
+      draggable: false,
+      resizeable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'digitalIdValidated',
+      name: this.translate.instant('page.program.program-people.column.digital-id-validated'),
+      draggable: false,
+      resizeable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'vulnerabilityAssessmentCreated',
+      name: this.translate.instant('page.program.program-people.column.vulnerability-assessment-created'),
+      draggable: false,
+      resizeable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'vulnerabilityAssessmentValidated',
+      name: this.translate.instant('page.program.program-people.column.vulnerability-assessment-validated'),
+      draggable: false,
+      resizeable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'score',
+      name: this.translate.instant('page.program.program-people.column.score'),
+      draggable: false,
+      resizeable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'selected',
+      name: this.translate.instant('page.program.program-people.column.include'),
+      checkboxable: true,
+      draggable: false,
+      resizeable: false,
+      sortable: false,
+      hidePhases: [ProgramPhase.design, ProgramPhase.registration, ProgramPhase.finalize, ProgramPhase.payment, ProgramPhase.evaluation]
+    },
+    {
+      prop: 'included',
+      name: this.translate.instant('page.program.program-people.column.included'),
+      draggable: false,
+      resizeable: false,
+      disabled: true,
+      sortable: false,
+      hidePhases: [ProgramPhase.inclusion]
+    },
+    {
+      prop: 'inclusionCommunication',
+      name: this.translate.instant('page.program.program-people.column.inclusion-communication'),
+      draggable: false,
+      resizeable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'payment1',
+      name: this.translate.instant('page.program.program-people.column.payment-1'),
+      draggable: false,
+      resizeable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'payment2',
+      name: this.translate.instant('page.program.program-people.column.payment-2'),
+      draggable: false,
+      resizeable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'payment3',
+      name: this.translate.instant('page.program.program-people.column.payment-3'),
+      draggable: false,
+      resizeable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'name',
+      name: this.translate.instant('page.program.program-people.column.name'),
+      sortable: true,
+      draggable: false,
+      resizeable: false,
+      hidePhases: [],
+      privacy: true
+    },
+    {
+      prop: 'dob',
+      name: this.translate.instant('page.program.program-people.column.dob'),
+      sortable: true,
+      draggable: false,
+      resizeable: false,
+      hidePhases: [],
+      privacy: true
+    },
+  ];
+
+
   constructor(
-    private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService
   ) {
@@ -74,6 +185,7 @@ export class ProgramPeopleComponent implements OnChanges {
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
       this.checkVisibility(this.selectedPhase);
+      this.update();
     }
     if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
       this.shouldShowSensitiveData(this.userRole);
@@ -85,10 +197,11 @@ export class ProgramPeopleComponent implements OnChanges {
 
   private async update() {
     this.program = await this.programsService.getProgramById(this.programId);
+    this.activePhase = ProgramPhase[this.program.state];
 
     this.shouldShowSensitiveData(this.userRole);
 
-    this.determineColumns();
+    await this.determineColumns();
 
     this.loadData();
   }
@@ -122,64 +235,26 @@ export class ProgramPeopleComponent implements OnChanges {
     console.log('Data loaded');
   }
 
-  private determineColumns() {
-    const columnsRegular = [
-      {
-        prop: 'pa',
-        name: this.translate.instant('page.program.program-people.column.person'),
-        draggable: false,
-        resizeable: false,
-        sortable: false,
-      },
-      {
-        prop: 'score',
-        name: this.translate.instant('page.program.program-people.column.score'),
-        draggable: false,
-        resizeable: false,
-      },
-      {
-        prop: 'created',
-        name: this.translate.instant('page.program.program-people.column.created'),
-        draggable: false,
-        resizeable: false,
-      },
-      {
-        prop: 'updated',
-        name: this.translate.instant('page.program.program-people.column.updated'),
-        draggable: false,
-        resizeable: false,
-      },
-      {
-        prop: 'selected',
-        name: this.translate.instant('page.program.program-people.column.include'),
-        checkboxable: true,
-        draggable: false,
-        resizeable: false,
-        sortable: false,
-      },
-    ];
-    this.columns = columnsRegular;
+  private async determineColumns() {
 
-    if (this.showSensitiveData) {
-      const columnsPrivacy = [
-        {
-          prop: 'name',
-          name: this.translate.instant('page.program.program-people.column.name'),
-          sortable: true,
-          draggable: false,
-          resizeable: false,
-        },
-        {
-          prop: 'dob',
-          name: this.translate.instant('page.program.program-people.column.dob'),
-          sortable: true,
-          draggable: false,
-          resizeable: false,
-        },
-      ];
-
-      this.columns = columnsRegular.concat(columnsPrivacy);
+    const columns = [];
+    for (let column of this.columnsAvailable) {
+      if (!this.showSensitiveData) {
+        if (
+          !column.privacy &&
+          !column.hidePhases.includes(ProgramPhase[this.selectedPhase])
+        ) {
+          columns.push(column);
+        }
+      } else {
+        columns.push(column);
+      }
     }
+    if (this.activePhase !== 'inclusion') {
+      columns.find(i => i.prop === 'selected').cellClass = 'column-disabled';
+    }
+    this.columns = columns;
+    console.log(this.columns);
   }
 
   private createTableData(source: Person[]): Person[] {
@@ -200,8 +275,12 @@ export class ProgramPeopleComponent implements OnChanges {
           pa: `PA #${index + 1}`,
           score: person.score,
           did: person.did,
-          created: formatDate(person.created, this.dateFormat, this.locale),
-          updated: formatDate(person.updated, this.dateFormat, this.locale),
+          digitalIdCreated: formatDate(person.created, this.dateFormat, this.locale),
+          digitalIdValidated: formatDate(person.updated, this.dateFormat, this.locale),
+          vulnerabilityAssessmentCreated: formatDate(person.created, this.dateFormat, this.locale),
+          vulnerabilityAssessmentValidated: formatDate(person.updated, this.dateFormat, this.locale),
+          included: person.included ? "Included" : (person.excluded ? "Excluded" : ""),
+          inclusionCommunication: formatDate(person.updated, this.dateFormat, this.locale),
         };
 
         if (person.name) {
@@ -210,24 +289,28 @@ export class ProgramPeopleComponent implements OnChanges {
         if (person.dob) {
           personData.dob = person.dob;
         }
-        if (person.included) {
-          personData.included = person.included;
-        }
+        // if (person.included) {
+        //   personData.included = person.included;
+        // }
 
         return personData;
       });
   }
 
   private defaultSelectedPeople(source: Person[]): Person[] {
-    if (this.program.inclusionCalculationType === InclusionCalculationType.highestScoresX) {
-      const nrToInclude = this.program.highestScoresX;
+    if (this.selectedPhase === ProgramPhase.inclusion) {
+      if (this.program.inclusionCalculationType === InclusionCalculationType.highestScoresX) {
+        const nrToInclude = this.program.highestScoresX;
 
-      return source.slice(0, nrToInclude);
+        return source.slice(0, nrToInclude);
+      }
+
+      const minimumScore = this.program.minimumScore;
+
+      return source.filter((person) => person.score >= minimumScore);
+    } else {
+      return [];
     }
-
-    const minimumScore = this.program.minimumScore;
-
-    return source.filter((person) => person.score >= minimumScore);
   }
 
   private defaultSelectedPeoplePrivacy(source: Person[]): Person[] {

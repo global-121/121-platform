@@ -631,15 +631,17 @@ export class ProgramService {
       let connectionNew: any;
       if (!privacy) {
         if (
-          connection.programsEnrolled.includes(+programId) &&
-          !connection.programsIncluded.includes(+programId) &&
-          !connection.programsExcluded.includes(+programId)
+          connection.programsEnrolled.includes(+programId)
+          // && !connection.programsIncluded.includes(+programId) 
+          // && !connection.programsExcluded.includes(+programId)
         ) {
           connectionNew = {
             did: connection.did,
             score: connection.inclusionScore,
             created: connection.created,
             updated: connection.updated,
+            included: connection.programsIncluded.includes(+programId),
+            excluded: connection.programsIncluded.includes(+programId),
           };
           enrolledConnections.push(connectionNew);
         }
