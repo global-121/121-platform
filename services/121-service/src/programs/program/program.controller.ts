@@ -1,3 +1,4 @@
+import { ProgramMetricis } from './dto/program-metrics.dto';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { DidDto } from './dto/did.dto';
@@ -140,7 +141,7 @@ export class ProgramController {
   @Post('changeState/:id')
   public async changeState(
     @Param() params,
-    @Body() changeStateData: ChangeStateDto
+    @Body() changeStateData: ChangeStateDto,
   ): Promise<SimpleProgramRO> {
     return this.programService.changeState(params.id, changeStateData.newState);
   }
@@ -278,5 +279,18 @@ export class ProgramController {
       data.programId,
       data.installment,
     );
+  }
+
+  @Roles(UserRole.ProgramManager)
+  @ApiOperation({ title: 'Get metrics by program-id' })
+  @ApiImplicitParam({ name: 'id', required: true })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Get metrics of a program used by the program manager to gain an overview of the program ',
+  })
+  @Get('metrics/:id')
+  public async getMetrics(@Param() params): Promise<ProgramMetricis> {
+    return await this.programService.getMetrics(params.id);
   }
 }
