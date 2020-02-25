@@ -1,6 +1,18 @@
-.selected {
-  background-color: lightgrey;
+.phase-navigation {
+  --phase-navigation--indicator-width: 4px;
+
+  display: inline-block;
+  position: relative;
+
+  // Add space between items:
+  margin-inline-end: 0.5em;
 }
-.unselected {
-  background-color:none;
+.phase-navigation--indicator {
+  display: block;
+  position: absolute;
+  top: 100%;
+  left: 2px;
+  right: 2px;
+  border-top: 1px solid transparent;
+  border-bottom: var(--phase-navigation--indicator-width) solid var(--ion-color-primary);
 }
