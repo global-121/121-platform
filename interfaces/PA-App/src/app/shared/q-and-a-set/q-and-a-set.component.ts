@@ -127,8 +127,12 @@ export class QAndASetComponent {
     }
   }
 
-  public checkValidationErrors() {
-    return (this.validationErrors.length > 0);
+  public checkValidationErrors(questionCode?: string): boolean {
+    if (!questionCode) {
+      return (this.validationErrors.length > 0);
+    }
+
+    return this.validationErrors.includes(questionCode);
   }
 
   public doSubmit() {

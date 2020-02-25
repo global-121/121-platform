@@ -1,6 +1,6 @@
+<div *ngFor="let question of questions; let i=index; first as isFirst;">
 
 <dialogue-turn actor="self"
-               *ngFor="let question of questions; let i=index; first as isFirst;"
                [isConnected]="!isFirst"
                [isSpoken]="isFirst || isSubmitted || isEditing"
 >
@@ -67,11 +67,23 @@
   </div>
 </dialogue-turn>
 
-<dialogue-turn *ngIf="checkValidationErrors()"
-               [isSpoken]="checkValidationErrors()"
+<div *ngIf="checkValidationErrors(question.code)"
+     class="ion-margin-bottom ion-padding-bottom"
 >
-  <p *ngIf="validationErrors.includes('phoneNumber')">
-    {{ 'validation.phoneNumber'|translate }}
+  <dialogue-turn isSpoken="true">
+    <p *ngIf="(question.answerType === answerType.phoneNumber) && validationErrors.includes('phoneNumber')">
+      {{ 'validation.phoneNumber'|translate }}
+    </p>
+  </dialogue-turn>
+</div>
+
+</div>
+
+<dialogue-turn *ngIf="checkValidationErrors() && allQuestionsShown"
+               [isSpoken]="checkValidationErrors() && allQuestionsShown"
+>
+  <p>
+    {{ 'validation.generic-error'|translate }}
   </p>
 </dialogue-turn>
 
