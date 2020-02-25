@@ -250,11 +250,7 @@ export class ProgramPeopleComponent implements OnChanges {
         columns.push(column);
       }
     }
-    if (this.activePhase !== 'inclusion') {
-      columns.find(i => i.prop === 'selected').cellClass = 'column-disabled';
-    }
     this.columns = columns;
-    console.log(this.columns);
   }
 
   private createTableData(source: Person[]): Person[] {
