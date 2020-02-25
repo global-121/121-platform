@@ -43,4 +43,28 @@ export class PhaseNavigationComponent implements OnChanges {
     this.emitSelectedPhase.emit(this.selectedPhase);
   }
 
+  public getColor(phase) {
+    let color = 'medium';
+
+    if (phase.id === this.selectedPhaseId) {
+      color = 'primary';
+    }
+
+    return color;
+  }
+
+  public getFill(phase) {
+    let fill = 'outline';
+
+    if (phase.active) {
+      fill = 'solid';
+    }
+
+    if (phase.id > this.activePhaseId) {
+      fill = 'clear';
+    }
+
+    return fill;
+  }
+
 }
