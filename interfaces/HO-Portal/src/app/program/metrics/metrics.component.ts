@@ -14,11 +14,11 @@ import { ProgramMetrics, MetricRow, MetricGroup } from 'src/app/models/program-m
 })
 export class MetricsComponent implements OnChanges {
   @Input()
-  public program: Program;
-
+  private program: Program;
   private locale: string;
   private programMetrics: ProgramMetrics;
   private metricsMap: Map<string, MetricRow> = new Map();
+
   public metricList: IterableIterator<MetricRow>;
   public lastUpdated: string;
 
