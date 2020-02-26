@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,15 +17,14 @@ import { ProgramPhase } from 'src/app/models/program.model';
 export class ProgramPayoutComponent implements OnChanges {
   @Input()
   public programId: number;
-
   @Input()
   public selectedPhase: string;
-
   @Input()
   public transferValue: any;
-
   @Input()
   public currencyCode: string;
+  @Output()
+  emitCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isEnabled = true;
   public isInProgress = false;
@@ -34,6 +33,7 @@ export class ProgramPayoutComponent implements OnChanges {
 
   private locale: string;
   public nrOfInstallments: number;
+  public nrOfPastInstallments: number;
   public installments: any[];
   private totalIncluded: number;
 
@@ -44,6 +44,7 @@ export class ProgramPayoutComponent implements OnChanges {
     ProgramPhase.finalize,
     ProgramPhase.payment,
   ];
+  private activePhase: ProgramPhase;
 
   constructor(
     private route: ActivatedRoute,
@@ -78,6 +79,7 @@ export class ProgramPayoutComponent implements OnChanges {
 
   private async createInstallments(programId) {
     const program = await this.programsService.getProgramById(programId);
+    this.activePhase = ProgramPhase[program.state];
     this.nrOfInstallments = program.distributionDuration;
 
     this.installments = Array(this.nrOfInstallments).fill(1).map((_, index) => ({
@@ -89,6 +91,7 @@ export class ProgramPayoutComponent implements OnChanges {
     }));
 
     const pastInstallments = await this.programsService.getPastInstallments(programId);
+    this.nrOfPastInstallments = pastInstallments.length;
     const pastInstallmentIds = pastInstallments.map(item => item.installment);
     const frequency = program.distributionFrequency;
 
@@ -127,6 +130,8 @@ export class ProgramPayoutComponent implements OnChanges {
       installment.isExportAvailable = this.isExportAvailable(installment);
       i += 1;
     }
+
+    this.checkPhaseReady();
 
   }
 
@@ -195,6 +200,19 @@ export class ProgramPayoutComponent implements OnChanges {
     });
 
     await alert.present();
+  }
+
+  private checkPhaseReady() {
+    //This component only influences ready in the 'payment'-phase
+    if (this.activePhase === ProgramPhase.payment) {
+      if (this.nrOfPastInstallments === this.nrOfInstallments) {
+        this.emitCompleted.emit(true);
+      } else {
+        this.emitCompleted.emit(false);
+      }
+    } else {
+      this.emitCompleted.emit(true);
+    }
   }
 }
 

@@ -248,7 +248,7 @@ export class ProgramPeopleComponent implements OnChanges {
 
     this.includedPeople = [].concat(this.selectedPeople);
 
-    this.phaseReady();
+    this.chechkPhaseReady();
 
     // Load initial values for warning-message:
     this.updateSubmitWarning();
@@ -256,7 +256,8 @@ export class ProgramPeopleComponent implements OnChanges {
     console.log('Data loaded');
   }
 
-  private phaseReady() {
+  private chechkPhaseReady() {
+    //This component only influences ready in the 'inclusion'-phase
     if (this.activePhase === ProgramPhase.inclusion) {
       if (this.newEnrolledPeople.length === 0) {
         this.emitCompleted.emit(true);

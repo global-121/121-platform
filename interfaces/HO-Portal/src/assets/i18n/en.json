@@ -43,7 +43,7 @@
         },
         "payment": {
           "label": "Payment",
-          "btnText": "Payout"
+          "btnText": "Move to evaluation"
         },
         "evaluation": {
           "label": "Evaluation",

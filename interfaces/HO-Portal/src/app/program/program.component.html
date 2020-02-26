@@ -42,6 +42,7 @@
   <app-program-payout [selectedPhase]="selectedPhase"
                       [programId]="program?.id"
                       [currencyCode]="program?.currency"
+                      (emitCompleted)="emitCompleted($event)"
   ></app-program-payout>
 
   <app-program-funds [selectedPhase]="selectedPhase"
