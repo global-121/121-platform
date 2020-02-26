@@ -9,7 +9,6 @@ import { ConversationService } from '../services/conversation.service';
 import { CreateIdentityComponent } from './create-identity/create-identity.component';
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
 import { HandleProofComponent } from './handle-proof/handle-proof.component';
-import { InitialNeedsComponent } from './initial-needs/initial-needs.component';
 import { LoginIdentityComponent } from './login-identity/login-identity.component';
 import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.component';
 import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
@@ -27,7 +26,6 @@ import { InfoPopupComponent } from '../info-popup/info-popup.component';
     CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
-    InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
     SelectAppointmentComponent,
@@ -50,7 +48,6 @@ import { InfoPopupComponent } from '../info-popup/info-popup.component';
     CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
-    InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
     SelectAppointmentComponent,
@@ -67,7 +64,6 @@ import { InfoPopupComponent } from '../info-popup/info-popup.component';
     CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
-    InitialNeedsComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
     SelectAppointmentComponent,
