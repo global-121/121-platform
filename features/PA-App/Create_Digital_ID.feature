@@ -12,8 +12,6 @@ Feature: Create Digital ID
     When the PA selects "Create a Digital ID"
     Then the "create identity"-step is shown
     When the PA completes the step
-    Then the "initial needs"-step is shown
-    When the PA completes the step
     Then the "select country"-step is shown
     When the PA completes the step
     Then the "select program"-step is shown
