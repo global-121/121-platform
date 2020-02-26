@@ -1,0 +1,27 @@
+.metrics--table {
+  width: 100%;
+
+  tr {
+    border-bottom: 1px solid var(--ion-color-medium);
+  }
+
+  th,
+  td {
+    padding: 0.4em 0.2em;
+  }
+}
+.metrics--icon-cell {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+/*
+  Metric Groups:
+*/
+.metrics--group-pa {
+  background-color: rosybrown;
+}
+.metrics--group-funds {
+  background-color: turquoise;
+}

@@ -37,14 +37,11 @@
     </ion-row>
     <ion-row>
       <ion-col size-md="4" size-lg="3"
-               style="border-right: 1px dashed var(--ion-color-medium)">
+               style="border-right: 1px dashed var(--ion-color-medium)"
+      >
 
 
-
-        <app-program-funds [selectedPhase]="selectedPhase"
-                           [programId]="program?.id"
-                           [currencyCode]="program?.currency"
-        ></app-program-funds>
+        <app-metrics [program]="program"></app-metrics>
 
 
       </ion-col>
