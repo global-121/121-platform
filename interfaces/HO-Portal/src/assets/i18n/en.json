@@ -109,6 +109,7 @@
       "program-people": {
         "pageTitle": "Manage people",
         "pageTitlePrivacy": "Manage people (Privacy Officer)",
+        "targetNumber": "The target number of people to include is: ",
         "noConnections": "There are no new enrolled People Affected.",
         "noConnectionsPrivacy": "There are no included or excluded People Affected yet.",
         "column": {

@@ -7,6 +7,9 @@
   <p *ngIf="!enrolledPeople?.length && showSensitiveData">
     {{ 'page.program.program-people.noConnectionsPrivacy'|translate }}
   </p>
+  <p>
+    {{ 'page.program.program-people.targetNumber'|translate }} {{program?.highestScoresX}}
+  </p>
 
   <div class="full-width">
     <ngx-datatable #people

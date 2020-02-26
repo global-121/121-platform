@@ -46,6 +46,7 @@ export class ProgramPeopleComponent implements OnChanges {
   private nrOfInstallments: number;
 
   public columns: any[] = [];
+  public paymentColumns: any[] = [];
   public tableMessages: any;
   public submitWarning: any;
   public btnEnabled: boolean = false;
@@ -274,12 +275,16 @@ export class ProgramPeopleComponent implements OnChanges {
       }
     }
 
-    columns = this.addPaymentColumns(columns);
+    this.paymentColumns = this.addPaymentColumns();
+    for (let column of this.paymentColumns) {
+      columns.push(column);
+    }
 
     this.columns = columns;
   }
 
-  private addPaymentColumns(columns) {
+  private addPaymentColumns() {
+    const paymentColumns = [];
     for (let p = 0; p < this.nrOfInstallments; p++) {
       let column = {
         prop: 'payment' + (p + 1),
@@ -288,9 +293,9 @@ export class ProgramPeopleComponent implements OnChanges {
         resizeable: false,
         hidePhases: []
       }
-      columns.push(column);
+      paymentColumns.push(column);
     }
-    return columns;
+    return paymentColumns;
   }
 
   private async createTableData(source: Person[]): Promise<Person[]> {
@@ -299,9 +304,6 @@ export class ProgramPeopleComponent implements OnChanges {
     }
 
     const pastInstallments = await this.programsService.getPastInstallments(this.programId);
-    const payment1 = pastInstallments.find(i => i.installment === 1);
-    const payment2 = pastInstallments.find(i => i.installment === 2);
-    const payment3 = pastInstallments.find(i => i.installment === 4);
 
     return source
       .sort((a, b) => {
@@ -317,16 +319,20 @@ export class ProgramPeopleComponent implements OnChanges {
           score: person.score,
           did: person.did,
           processStarted: formatDate(person.created, this.dateFormat, this.locale),
-          digitalIdCreated: formatDate(person.created, this.dateFormat, this.locale),
+          digitalIdCreated: null,
           digitalIdValidated: formatDate(person.updated, this.dateFormat, this.locale),
-          vulnerabilityAssessmentCreated: formatDate(person.created, this.dateFormat, this.locale),
+          vulnerabilityAssessmentCreated: null,
           vulnerabilityAssessmentValidated: formatDate(person.updated, this.dateFormat, this.locale),
           included: person.included ? "Included" : (person.excluded ? "Excluded" : ""),
-          // inclusionCommunication: formatDate(person.updated, this.dateFormat, this.locale),
-          payment1: payment1 ? formatDate(payment1.installmentDate, this.dateFormat, this.locale) : null,
-          payment2: payment2 ? formatDate(payment2.installmentDate, this.dateFormat, this.locale) : null,
-          payment3: payment3 ? formatDate(payment3.installmentDate, this.dateFormat, this.locale) : null,
+          inclusionCommunication: null,
         };
+
+        this.paymentColumns.map((_, index) => {
+          const payment = pastInstallments.find(i => i.installment === index + 1);
+          if (payment) {
+            personData['payment' + (index + 1)] = formatDate(payment.installmentDate, this.dateFormat, this.locale);
+          }
+        });
 
         if (person.name) {
           personData.name = person.name;
@@ -392,7 +398,5 @@ export class ProgramPeopleComponent implements OnChanges {
     await this.programsService.exclude(this.programId, this.newExcludedPeople);
 
     this.loadData();
-
-    // window.location.reload();
   }
 }
