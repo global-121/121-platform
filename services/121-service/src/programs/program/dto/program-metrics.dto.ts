@@ -1,7 +1,7 @@
 import { FundingOverview } from './../../../funding/dto/funding-overview.dto';
-import { PaMetricis } from './pa-metrics.dto';
-export class ProgramMetricis {
+import { PaMetrics } from './pa-metrics.dto';
+export class ProgramMetrics {
   public funding: FundingOverview;
-  public pa: PaMetricis;
+  public pa: PaMetrics;
   public updated: Date;
 }

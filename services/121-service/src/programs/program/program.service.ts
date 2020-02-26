@@ -1,4 +1,5 @@
-import { ProgramMetricis } from './dto/program-metrics.dto';
+import { PaMetrics } from './dto/pa-metrics.dto';
+import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { FundingService } from './../../funding/funding.service';
 import { TransactionEntity } from './transactions.entity';
@@ -29,7 +30,6 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { SmsService } from '../../notifications/sms/sms.service';
 import { API } from '../../config';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-import { PaMetricis } from './dto/pa-metrics.dto';
 
 @Injectable()
 export class ProgramService {
@@ -895,16 +895,16 @@ export class ProgramService {
     return csv;
   }
 
-  public async getMetrics(programId): Promise<ProgramMetricis> {
-    const metrics = new ProgramMetricis();
+  public async getMetrics(programId): Promise<ProgramMetrics> {
+    const metrics = new ProgramMetrics();
     metrics.funding = await this.getFunds(programId);
     metrics.pa = await this.getPaMetrics(programId);
     metrics.updated = new Date();
     return metrics;
   }
 
-  public async getPaMetrics(programId): Promise<PaMetricis> {
-    const metrics = new PaMetricis();
+  public async getPaMetrics(programId): Promise<PaMetrics> {
+    const metrics = new PaMetrics();
     metrics.included = await this.getTotalIncluded(programId);
     metrics.verifiedAwaitingDecision = (await this.getConnectionsAwaitingInclusionDecision(
       programId,
