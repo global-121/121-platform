@@ -1,14 +1,14 @@
 <section *ngIf="componentVisible">
   <h2>{{ 'page.program.program-details.section-people'|translate }}</h2>
   
-  <p *ngIf="!enrolledPeople?.length && !showSensitiveData">
-    {{ 'page.program.program-people.noConnections'|translate }}
-  </p>
-  <p *ngIf="!enrolledPeople?.length && showSensitiveData">
-    {{ 'page.program.program-people.noConnectionsPrivacy'|translate }}
-  </p>
   <p>
     {{ 'page.program.program-people.targetNumber'|translate }} {{program?.highestScoresX}}
+  </p>
+  <p *ngIf="!enrolledPeople?.length && !showSensitiveData && selectedPhase !== 'design'">
+    {{ 'page.program.program-people.noConnections'|translate }}
+  </p>
+  <p *ngIf="!EnrolledPeople?.length && showSensitiveData && selectedPhase !== 'design'">
+    {{ 'page.program.program-people.noConnectionsPrivacy'|translate }}
   </p>
 
   <div class="full-width">
