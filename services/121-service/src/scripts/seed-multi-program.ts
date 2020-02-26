@@ -21,7 +21,7 @@ import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
 
 @Injectable()
-export class SeedMvp implements InterfaceScript {
+export class SeedMultiProgram implements InterfaceScript {
   public constructor(private connection: Connection) { }
 
   private readonly seedHelper = new SeedHelper(this.connection);
@@ -122,8 +122,8 @@ export class SeedMvp implements InterfaceScript {
       2,
     );
 
-    await this.seedPublish.run();
+    // await this.seedPublish.run();
   }
 }
 
-export default SeedMvp;
+export default SeedMultiProgram;

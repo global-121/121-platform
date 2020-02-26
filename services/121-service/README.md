@@ -84,8 +84,10 @@ Upon application start, automatically a basic seed-script is run which adds 1 ad
 To seed the database with more data (e.g. programs) additional seed-scripts can be run manually.  
 **NOTE:** These seed-scripts delete _all existing data_. They cannot be run on production; When run locally or on test-environment, you are prompted with '`Are you sure? (y/n)`'.
 
-- For basic testing:  
-  `docker exec -it 121-service npm run seed:mvp`
+- For basic testing (1 program):  
+  `docker exec -it 121-service npm run seed:single-program`
+- For basic testing (4 programs):  
+  `docker exec -it 121-service npm run seed:multi-program`
 
 - Include more testing data:  
   `docker exec -it 121-service npm run seed:dev`

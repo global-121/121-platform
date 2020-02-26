@@ -7,7 +7,8 @@ import { SeedDev } from './seed-dev';
 import { SeedPilot } from './seed-pilot';
 import { SeedProd } from './seed-prod';
 import { SeedHelper } from './seed-helper';
-import { SeedMvp } from './seed-mvp';
+import { SeedMultiProgram } from './seed-multi-program';
+import { SeedSingleProgram } from './seed-single-program';
 import { SeedPublish } from './seed-publish';
 
 @Module({
@@ -24,10 +25,11 @@ import { SeedPublish } from './seed-publish';
     SeedProd,
     SeedHelper,
     SeedPublish,
-    SeedMvp,
+    SeedSingleProgram,
+    SeedMultiProgram,
   ],
 })
-export class ScriptsModule {}
+export class ScriptsModule { }
 
 export interface InterfaceScript {
   run(argv: Arguments): Promise<void>;
