@@ -41,7 +41,6 @@ export class ProgramPayoutComponent implements OnChanges {
 
   public componentVisible: boolean;
   private presentInPhases = [
-    ProgramPhase.finalize,
     ProgramPhase.payment,
   ];
   private activePhase: ProgramPhase;
@@ -168,6 +167,7 @@ export class ProgramPayoutComponent implements OnChanges {
           installment.isInProgress = false;
           this.actionResult(this.translate.instant('page.program.program-payout.payout-success'));
           this.createInstallments(this.programId);
+          window.location.reload();
         },
         (err) => {
           console.log('err: ', err);
