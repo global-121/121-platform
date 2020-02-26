@@ -9,7 +9,7 @@
     </th>
   </thead>
   <tbody>
-    <ng-container *ngFor="let metric of metricList?.values()">
+    <ng-container *ngFor="let metric of metricList">
       <tr [class]="(metric.group) ? 'metrics--group-' + metric.group : ''">
         <td class="metrics--icon-cell">
           <ion-icon *ngIf="metric.icon"

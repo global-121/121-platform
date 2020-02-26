@@ -18,7 +18,8 @@ export class MetricsComponent implements OnChanges {
 
   private locale: string;
   private programMetrics: ProgramMetrics;
-  public metricList: Map<string, MetricRow> = new Map();
+  private metricsMap: Map<string, MetricRow> = new Map();
+  public metricList: IterableIterator<MetricRow>;
   public lastUpdated: string;
 
   constructor(
@@ -37,14 +38,13 @@ export class MetricsComponent implements OnChanges {
   public async update() {
     this.programMetrics = await this.programService.getMetricsById(this.program.id);
 
-    this.render();
-  }
-
-  private render() {
     this.renderUpdated();
 
-    this.renderPaMetrics();
     this.renderFundsMetrics();
+    this.renderPaMetrics();
+
+    // Convert to array, for use in template:
+    this.metricList = this.metricsMap.values();
   }
 
   private renderUpdated() {
@@ -55,25 +55,25 @@ export class MetricsComponent implements OnChanges {
     const metrics = this.programMetrics.pa;
     const group = MetricGroup.pa;
 
-    this.metricList.set('pendingVerification', {
+    this.metricsMap.set(`${group}.pendingVerification`, {
       group,
       icon: 'people',
       label: 'page.program.metrics.pa.pending-verification',
       value: metrics.pendingVerification,
     });
-    this.metricList.set('verifiedAwaitingDecision', {
+    this.metricsMap.set(`${group}.verifiedAwaitingDecision`, {
       group,
       icon: 'person',
       label: 'page.program.metrics.pa.verified-awaiting-decision',
       value: metrics.verifiedAwaitingDecision,
     });
-    this.metricList.set('included', {
+    this.metricsMap.set(`${group}.included`, {
       group,
       icon: 'person-add',
       label: 'page.program.metrics.pa.included',
       value: metrics.included,
     });
-    this.metricList.set('excluded', {
+    this.metricsMap.set(`${group}.excluded`, {
       group,
       icon: 'person',
       label: 'page.program.metrics.pa.excluded',
@@ -88,19 +88,19 @@ export class MetricsComponent implements OnChanges {
     const symbol = `${currencyCode} `;
     const locale = this.locale;
 
-    this.metricList.set('totalRaised', {
+    this.metricsMap.set(`${group}.totalRaised`, {
       group,
       icon: 'cash',
       label: 'page.program.metrics.funds.raised',
       value: formatCurrency(metrics.totalRaised, locale, symbol, currencyCode),
     });
-    this.metricList.set('totalTransferred', {
+    this.metricsMap.set(`${group}.totalTransferred`, {
       group,
       icon: 'cash',
       label: 'page.program.metrics.funds.transferred',
       value: formatCurrency(metrics.totalTransferred, locale, symbol, currencyCode),
     });
-    this.metricList.set('totalAvailable', {
+    this.metricsMap.set(`${group}.totalAvailable`, {
       group,
       icon: 'cash',
       label: 'page.program.metrics.funds.available',
