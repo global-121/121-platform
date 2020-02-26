@@ -114,7 +114,7 @@ export class ProgramPeopleComponent implements OnChanges {
       draggable: false,
       resizeable: false,
       sortable: false,
-      hidePhases: [ProgramPhase.design, ProgramPhase.registration, ProgramPhase.finalize, ProgramPhase.payment, ProgramPhase.evaluation]
+      hidePhases: [ProgramPhase.design, ProgramPhase.registration, ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment, ProgramPhase.evaluation]
     },
     {
       prop: 'included',
@@ -216,7 +216,9 @@ export class ProgramPeopleComponent implements OnChanges {
 
     await this.determineColumns();
 
-    this.btnEnabled = this.activePhase === ProgramPhase.inclusion && this.selectedPhase === ProgramPhase.inclusion;
+    this.btnEnabled =
+      this.activePhase === ProgramPhase.inclusion
+      && this.selectedPhase === ProgramPhase.inclusion;
 
     this.loadData();
   }
@@ -272,8 +274,9 @@ export class ProgramPeopleComponent implements OnChanges {
     for (let column of this.columnsAvailable) {
       if (!this.showSensitiveData) {
         if (
-          !column.privacy &&
-          !column.hidePhases.includes(ProgramPhase[this.selectedPhase])
+          (!column.privacy &&
+            !column.hidePhases.includes(ProgramPhase[this.selectedPhase])) ||
+          (column.prop === 'selected' && this.activePhase === ProgramPhase.inclusion)
         ) {
           columns.push(column);
         }
