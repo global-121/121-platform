@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -22,6 +22,9 @@ export class ProgramPeopleComponent implements OnChanges {
   @Input()
   public programId: number;
 
+  @Output()
+  emitCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   public componentVisible: boolean;
   private presentInPhases = [
     ProgramPhase.design,
@@ -44,8 +47,10 @@ export class ProgramPeopleComponent implements OnChanges {
   public columns: any[] = [];
   public tableMessages: any;
   public submitWarning: any;
+  public btnEnabled: boolean = false;
 
   public enrolledPeople: Person[] = [];
+  public newEnrolledPeople: Person[] = [];
   public selectedPeople: any[] = [];
   private includedPeople: any[] = [];
   private newIncludedPeople: any[] = [];
@@ -58,6 +63,13 @@ export class ProgramPeopleComponent implements OnChanges {
       draggable: false,
       resizeable: false,
       sortable: false,
+      hidePhases: []
+    },
+    {
+      prop: 'processStarted',
+      name: this.translate.instant('page.program.program-people.column.process-started'),
+      draggable: false,
+      resizeable: false,
       hidePhases: []
     },
     {
@@ -111,7 +123,8 @@ export class ProgramPeopleComponent implements OnChanges {
       resizeable: false,
       disabled: true,
       sortable: false,
-      hidePhases: [ProgramPhase.inclusion]
+      cellClass: '',
+      hidePhases: []
     },
     {
       prop: 'inclusionCommunication',
@@ -203,6 +216,8 @@ export class ProgramPeopleComponent implements OnChanges {
 
     await this.determineColumns();
 
+    this.btnEnabled = this.activePhase === ProgramPhase.inclusion && this.selectedPhase === ProgramPhase.inclusion;
+
     this.loadData();
   }
 
@@ -220,19 +235,35 @@ export class ProgramPeopleComponent implements OnChanges {
     if (this.showSensitiveData) {
       allPeopleData = await this.programsService.getEnrolledPrivacy(this.programId);
       this.enrolledPeople = this.createTableData(allPeopleData);
-      this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.enrolledPeople);
+      this.newEnrolledPeople = this.enrolledPeople.filter(i => !i.included && !i.excluded);
+      this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.newEnrolledPeople);
     } else {
       allPeopleData = await this.programsService.getEnrolled(this.programId);
       this.enrolledPeople = this.createTableData(allPeopleData);
-      this.selectedPeople = this.defaultSelectedPeople(this.enrolledPeople);
+      this.newEnrolledPeople = this.enrolledPeople.filter(i => !i.included && !i.excluded);
+      this.selectedPeople = this.defaultSelectedPeople(this.newEnrolledPeople);
     }
 
     this.includedPeople = [].concat(this.selectedPeople);
+
+    this.phaseReady();
 
     // Load initial values for warning-message:
     this.updateSubmitWarning();
 
     console.log('Data loaded');
+  }
+
+  private phaseReady() {
+    if (this.activePhase === ProgramPhase.inclusion) {
+      if (this.newEnrolledPeople.length === 0) {
+        this.emitCompleted.emit(true);
+      } else {
+        this.emitCompleted.emit(false);
+      }
+    } else {
+      this.emitCompleted.emit(true);
+    }
   }
 
   private async determineColumns() {
@@ -247,7 +278,9 @@ export class ProgramPeopleComponent implements OnChanges {
           columns.push(column);
         }
       } else {
-        columns.push(column);
+        if (!column.hidePhases.includes(ProgramPhase[this.selectedPhase])) {
+          columns.push(column);
+        }
       }
     }
     this.columns = columns;
@@ -271,12 +304,13 @@ export class ProgramPeopleComponent implements OnChanges {
           pa: `PA #${index + 1}`,
           score: person.score,
           did: person.did,
+          processStarted: formatDate(person.created, this.dateFormat, this.locale),
           digitalIdCreated: formatDate(person.created, this.dateFormat, this.locale),
           digitalIdValidated: formatDate(person.updated, this.dateFormat, this.locale),
           vulnerabilityAssessmentCreated: formatDate(person.created, this.dateFormat, this.locale),
           vulnerabilityAssessmentValidated: formatDate(person.updated, this.dateFormat, this.locale),
           included: person.included ? "Included" : (person.excluded ? "Excluded" : ""),
-          inclusionCommunication: formatDate(person.updated, this.dateFormat, this.locale),
+          // inclusionCommunication: formatDate(person.updated, this.dateFormat, this.locale),
         };
 
         if (person.name) {
@@ -285,9 +319,6 @@ export class ProgramPeopleComponent implements OnChanges {
         if (person.dob) {
           personData.dob = person.dob;
         }
-        // if (person.included) {
-        //   personData.included = person.included;
-        // }
 
         return personData;
       });
@@ -313,6 +344,10 @@ export class ProgramPeopleComponent implements OnChanges {
     return source.filter((person) => person.included);
   }
 
+  public showCheckbox(row) {
+    return !row.included;
+  }
+
   public updateSubmitWarning() {
 
     if (this.showSensitiveData) {
@@ -320,7 +355,7 @@ export class ProgramPeopleComponent implements OnChanges {
       this.newExcludedPeople = this.includedPeople.filter(x => !this.selectedPeople.includes(x));
     } else {
       this.newIncludedPeople = this.selectedPeople;
-      this.newExcludedPeople = this.enrolledPeople.filter(x => !this.selectedPeople.includes(x));
+      this.newExcludedPeople = this.newEnrolledPeople.filter(x => !this.selectedPeople.includes(x));
     }
 
     const numIncluded: number = this.newIncludedPeople.length;
@@ -343,6 +378,6 @@ export class ProgramPeopleComponent implements OnChanges {
 
     this.loadData();
 
-    window.location.reload();
+    // window.location.reload();
   }
 }

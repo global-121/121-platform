@@ -1,6 +1,14 @@
-  <ion-button *ngIf="btnAvailable"
-              [disabled]="selectedPhase !== activePhase"
+  <!-- <ion-button *ngIf="btnAvailable"
+              [disabled]="selectedPhase !== activePhase || !phaseReady"
               (click)="advancePhase(activePhaseId)"
               [innerHTML]="btnText"
               class="nextStateButton"
-  ></ion-button>
+  ></ion-button> -->
+<confirm-prompt *ngIf="btnAvailable"
+                [disabled]="selectedPhase !== activePhase || !phaseReady"
+                (confirm)="advancePhase(activePhaseId)"
+                [subHeader]="btnText"
+                class="ion-float-end"
+>
+  {{ btnText }}
+</confirm-prompt>

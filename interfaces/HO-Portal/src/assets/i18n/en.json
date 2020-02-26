@@ -35,7 +35,7 @@
         },
         "inclusion": {
           "label": "Inclusion",
-          "btnText": "Confirm Inclusion decision"
+          "btnText": "Move to finalize"
         },
         "finalize": {
           "label": "Finalize",
@@ -113,6 +113,7 @@
         "noConnectionsPrivacy": "There are no included or excluded People Affected yet.",
         "column": {
           "person": "Person",
+          "process-started": "Process started",
           "digital-id-created": "Digital ID Applied",
           "digital-id-validated": "Digital ID Validated",
           "vulnerability-assessment-created": "Vulnerability Assessment Applied",

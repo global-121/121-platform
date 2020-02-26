@@ -19,6 +19,7 @@
                   reorderable="false"
                   sortType="multi"
                   selectionType="checkbox"
+                  [displayCheck]="showCheckbox"
                   loadingIndicator="true"
                   [columns]="columns"
                   [columnMode]="'standard'"
@@ -40,7 +41,7 @@
     {{ 'page.program.program-people.submitPrivacy'|translate }}
   </confirm-prompt>
 
-  <confirm-prompt [disabled]="!enrolledPeople.length"
+  <confirm-prompt [disabled]="!newEnrolledPeople.length || !btnEnabled"
                   (confirm)="submitInclusion()"
                   [subHeader]="'page.program.program-people.submit-warning'|translate"
                   [message]="submitWarning.message"

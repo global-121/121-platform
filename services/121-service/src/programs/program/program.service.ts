@@ -632,8 +632,6 @@ export class ProgramService {
       if (!privacy) {
         if (
           connection.programsEnrolled.includes(+programId)
-          // && !connection.programsIncluded.includes(+programId) 
-          // && !connection.programsExcluded.includes(+programId)
         ) {
           connectionNew = {
             did: connection.did,
@@ -641,7 +639,7 @@ export class ProgramService {
             created: connection.created,
             updated: connection.updated,
             included: connection.programsIncluded.includes(+programId),
-            excluded: connection.programsIncluded.includes(+programId),
+            excluded: connection.programsExcluded.includes(+programId),
           };
           enrolledConnections.push(connectionNew);
         }

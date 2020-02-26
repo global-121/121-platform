@@ -29,12 +29,14 @@
   <app-phase-next [programPhases]="programPhases"
                   [selectedPhase]="selectedPhase"
                   [programId]="program?.id"
+                  [phaseReady]="phaseReady"
                   (emitNewPhase)="emitNewPhase($event)"
   ></app-phase-next>
 
   <app-program-people [selectedPhase]="selectedPhase"
                       [programId]="program?.id"
                       [userRole]="currentUserRole"
+                      (emitCompleted)="emitCompleted($event)"
   ></app-program-people>
   
   <app-program-payout [selectedPhase]="selectedPhase"

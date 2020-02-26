@@ -14,6 +14,8 @@ export class PhaseNextComponent implements OnChanges {
   public programPhases: any[];
   @Input()
   public selectedPhase: string;
+  @Input()
+  public phaseReady: boolean;
   @Output()
   emitNewPhase: EventEmitter<boolean> = new EventEmitter<boolean>();
 
