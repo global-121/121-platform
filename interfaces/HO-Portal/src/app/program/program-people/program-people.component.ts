@@ -43,6 +43,7 @@ export class ProgramPeopleComponent implements OnChanges {
   public showSensitiveData: boolean;
 
   public program: Program;
+  private nrOfInstallments: number;
 
   public columns: any[] = [];
   public tableMessages: any;
@@ -134,27 +135,6 @@ export class ProgramPeopleComponent implements OnChanges {
       hidePhases: []
     },
     {
-      prop: 'payment1',
-      name: this.translate.instant('page.program.program-people.column.payment-1'),
-      draggable: false,
-      resizeable: false,
-      hidePhases: []
-    },
-    {
-      prop: 'payment2',
-      name: this.translate.instant('page.program.program-people.column.payment-2'),
-      draggable: false,
-      resizeable: false,
-      hidePhases: []
-    },
-    {
-      prop: 'payment3',
-      name: this.translate.instant('page.program.program-people.column.payment-3'),
-      draggable: false,
-      resizeable: false,
-      hidePhases: []
-    },
-    {
       prop: 'name',
       name: this.translate.instant('page.program.program-people.column.name'),
       sortable: true,
@@ -211,6 +191,7 @@ export class ProgramPeopleComponent implements OnChanges {
   private async update() {
     this.program = await this.programsService.getProgramById(this.programId);
     this.activePhase = ProgramPhase[this.program.state];
+    this.nrOfInstallments = this.program.distributionDuration;
 
     this.shouldShowSensitiveData(this.userRole);
 
@@ -236,12 +217,12 @@ export class ProgramPeopleComponent implements OnChanges {
 
     if (this.showSensitiveData) {
       allPeopleData = await this.programsService.getEnrolledPrivacy(this.programId);
-      this.enrolledPeople = this.createTableData(allPeopleData);
+      this.enrolledPeople = await this.createTableData(allPeopleData);
       this.newEnrolledPeople = this.enrolledPeople.filter(i => !i.included && !i.excluded);
       this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.newEnrolledPeople);
     } else {
       allPeopleData = await this.programsService.getEnrolled(this.programId);
-      this.enrolledPeople = this.createTableData(allPeopleData);
+      this.enrolledPeople = await this.createTableData(allPeopleData);
       this.newEnrolledPeople = this.enrolledPeople.filter(i => !i.included && !i.excluded);
       this.selectedPeople = this.defaultSelectedPeople(this.newEnrolledPeople);
     }
@@ -271,29 +252,56 @@ export class ProgramPeopleComponent implements OnChanges {
 
   private async determineColumns() {
 
-    const columns = [];
+    let columns = [];
     for (let column of this.columnsAvailable) {
       if (!this.showSensitiveData) {
         if (
-          (!column.privacy &&
-            !column.hidePhases.includes(ProgramPhase[this.selectedPhase])) ||
-          (column.prop === 'selected' && this.activePhase === ProgramPhase.inclusion)
+          (
+            !column.privacy &&
+            !column.hidePhases.includes(ProgramPhase[this.selectedPhase])
+          ) || (column.prop === 'selected' && this.activePhase === ProgramPhase.inclusion)
         ) {
           columns.push(column);
         }
       } else {
-        if (!column.hidePhases.includes(ProgramPhase[this.selectedPhase])) {
+        if (
+          (
+            !column.hidePhases.includes(ProgramPhase[this.selectedPhase])
+          ) || (column.prop === 'selected' && this.activePhase === ProgramPhase.inclusion)
+        ) {
           columns.push(column);
         }
       }
     }
+
+    columns = this.addPaymentColumns(columns);
+
     this.columns = columns;
   }
 
-  private createTableData(source: Person[]): Person[] {
+  private addPaymentColumns(columns) {
+    for (let p = 0; p < this.nrOfInstallments; p++) {
+      let column = {
+        prop: 'payment' + (p + 1),
+        name: this.translate.instant('page.program.program-people.column.payment') + ' #' + (p + 1),
+        draggable: false,
+        resizeable: false,
+        hidePhases: []
+      }
+      columns.push(column);
+    }
+    return columns;
+  }
+
+  private async createTableData(source: Person[]): Promise<Person[]> {
     if (source.length === 0) {
       return [];
     }
+
+    const pastInstallments = await this.programsService.getPastInstallments(this.programId);
+    const payment1 = pastInstallments.find(i => i.installment === 1);
+    const payment2 = pastInstallments.find(i => i.installment === 2);
+    const payment3 = pastInstallments.find(i => i.installment === 4);
 
     return source
       .sort((a, b) => {
@@ -315,6 +323,9 @@ export class ProgramPeopleComponent implements OnChanges {
           vulnerabilityAssessmentValidated: formatDate(person.updated, this.dateFormat, this.locale),
           included: person.included ? "Included" : (person.excluded ? "Excluded" : ""),
           // inclusionCommunication: formatDate(person.updated, this.dateFormat, this.locale),
+          payment1: payment1 ? formatDate(payment1.installmentDate, this.dateFormat, this.locale) : null,
+          payment2: payment2 ? formatDate(payment2.installmentDate, this.dateFormat, this.locale) : null,
+          payment3: payment3 ? formatDate(payment3.installmentDate, this.dateFormat, this.locale) : null,
         };
 
         if (person.name) {

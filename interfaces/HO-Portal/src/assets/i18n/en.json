@@ -122,9 +122,7 @@
           "include": "Include",
           "included": "Included",
           "inclusion-communication": "Inclusion communication",
-          "payment-1": "Payment #1",
-          "payment-2": "Payment #2",
-          "payment-3": "Payment #3",
+          "payment": "Payment",
           "name": "Name",
           "dob": "Date of birth"
         },
