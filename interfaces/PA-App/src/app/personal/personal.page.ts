@@ -1,3 +1,4 @@
+import { ApiService } from './../services/api.service';
 import { Component, ViewChild, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
 import { IonContent } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
@@ -23,6 +24,8 @@ import { SelectProgramComponent } from '../personal-components/select-program/se
 import { SetNotificationNumberComponent } from '../personal-components/set-notification-number/set-notification-number.component';
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
 import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
+import { HttpClient } from '@angular/common/http';
+import { Howl } from 'howler'
 
 @Component({
   selector: 'app-personal',
@@ -61,6 +64,8 @@ export class PersonalPage implements OnInit {
 
   constructor(
     public programsService: ProgramsServiceApiService,
+    public apiService: ApiService,
+    private http: HttpClient,
     public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
     private storage: Storage,
@@ -148,5 +153,24 @@ export class PersonalPage implements OnInit {
 
   public debugStartFromHistory() {
     this.loadComponents();
+  }
+
+  public async playAudio() {
+    console.log('playAudio: ');
+
+    const completeUrl = environment.url_121_service_api + '/notifications/voice/mp3/1REPLACEenREPLACEincluded'
+
+    const sound = new Howl({
+      src: completeUrl,
+      format: ['mp3']
+    });
+
+    sound.play();
+
+    const audio = new Audio();
+    audio.src = completeUrl;
+    audio.load();
+    audio.play();
+
   }
 }
