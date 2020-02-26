@@ -438,6 +438,7 @@ export class ProgramService {
       if (indexEx > -1) {
         connection.programsExcluded.splice(indexEx, 1);
       }
+      connection = await this.updateInclusionDate(connection);
       await this.connectionRepository.save(connection);
     }
   }
@@ -472,8 +473,19 @@ export class ProgramService {
       if (indexIn > -1) {
         connection.programsIncluded.splice(indexIn, 1);
       }
+      connection = await this.updateInclusionDate(connection);
       await this.connectionRepository.save(connection);
     }
+  }
+
+  private async updateInclusionDate(
+    connection: ConnectionEntity,
+  ): Promise<ConnectionEntity> {
+    if (!connection.inclusionDate) {
+      connection.inclusionDate = new Date();
+      await this.connectionRepository.save(connection);
+    }
+    return connection;
   }
 
   private createQuestionAnswerList(

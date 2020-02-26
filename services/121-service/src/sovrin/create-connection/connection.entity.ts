@@ -70,6 +70,27 @@ export class ConnectionEntity {
 
   @Column({
     type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
+  public appliedDate: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
+  public validationDate: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
+  public inclusionDate: Date;
+
+  @Column({
+    type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })

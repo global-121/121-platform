@@ -46,6 +46,13 @@ export class CreateConnectionController {
     return await this.createConnectionService.delete(didObject);
   }
 
+  @ApiOperation({ title: 'Connection applies for program' })
+  @ApiResponse({ status: 200, description: 'Connection applied for program' })
+  @Post('/apply-program')
+  public async applyProgram(@Body() didObject: DidDto): Promise<void> {
+    return await this.createConnectionService.applyProgram(didObject.did);
+  }
+
   @ApiOperation({ title: 'Set phone number' })
   @ApiResponse({ status: 200, description: 'Phone set for connection' })
   @Post('/phone')
