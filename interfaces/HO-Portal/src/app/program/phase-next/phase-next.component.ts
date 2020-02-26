@@ -25,6 +25,7 @@ export class PhaseNextComponent implements OnChanges {
   public btnAvailable: boolean;
   public programPhasesBackup: any[];
   public btnText: string;
+  public isInProgress = false;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -67,8 +68,15 @@ export class PhaseNextComponent implements OnChanges {
   public async advancePhase(phaseId) {
     const nextPhaseId = phaseId + 1;
     const phase = this.programPhases.find(item => item.id === nextPhaseId).phase;
-    await this.programsService.advancePhase(this.programId, phase);
-    this.emitNewPhase.emit(true);
+    this.isInProgress = true;
+    await this.programsService.advancePhase(this.programId, phase).then((response) => {
+      console.log(response);
+      this.isInProgress = false;
+      this.emitNewPhase.emit(true);
+    }, (error) => {
+      console.log(error);
+      this.isInProgress = false;
+    });
   }
 
 }

@@ -18,7 +18,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { ProgramEntity } from './program.entity';
+import { ProgramEntity, ProgramPhase } from './program.entity';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 
@@ -200,10 +200,13 @@ export class ProgramService {
       state: newState,
     });
     const changedProgram = await this.findOne(programId);
-    if (newState === 'registration') {
-      this.publish(programId);
-    } else if (newState === 'design') {
-      this.unpublish(programId);
+    if (newState === ProgramPhase.registration) {
+      await this.publish(programId);
+    } else if (
+      newState === ProgramPhase.inclusion ||      // This represents the real case of 'closing registration'
+      newState === ProgramPhase.design            // This represents the (debug) case of moving back to design for some reason
+    ) {
+      await this.unpublish(programId);
     }
     return this.buildProgramRO(changedProgram);
   }
@@ -638,6 +641,7 @@ export class ProgramService {
             score: connection.inclusionScore,
             created: connection.created,
             updated: connection.updated,
+            enrolled: connection.programsEnrolled.includes(+programId),
             included: connection.programsIncluded.includes(+programId),
             excluded: connection.programsExcluded.includes(+programId),
           };
