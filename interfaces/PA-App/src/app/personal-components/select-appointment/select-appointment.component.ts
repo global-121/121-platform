@@ -4,12 +4,11 @@ import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { TranslateService } from '@ngx-translate/core';
 import { PaDataService } from 'src/app/services/padata.service';
 
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { Program } from 'src/app/models/program.model';
-import { TranslatableString } from 'src/app/models/translatable-string.model';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-select-appointment',
@@ -46,16 +45,13 @@ export class SelectAppointmentComponent extends PersonalComponent {
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
-    public translate: TranslateService,
+    public translatableString: TranslatableStringService,
     public paData: PaDataService,
   ) {
     super();
   }
 
   ngOnInit() {
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
-
     if (this.data) {
       this.initHistory();
       return;
@@ -88,7 +84,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
   }
 
   private prepareProgramProperties(program: Program) {
-    const documents = this.mapLabelByLanguageCode(program.meetingDocuments);
+    const documents = this.translatableString.get(program.meetingDocuments);
     this.meetingDocuments = this.buildDocumentsList(documents);
   }
 
@@ -97,20 +93,6 @@ export class SelectAppointmentComponent extends PersonalComponent {
     const endDay = new Date(endDate).toDateString();
 
     return (startDay === endDay);
-  }
-
-  private mapLabelByLanguageCode(property: TranslatableString | string): string {
-    let label = property[this.languageCode];
-
-    if (!label) {
-      label = property[this.fallbackLanguageCode];
-    }
-
-    if (!label) {
-      label = property;
-    }
-
-    return label;
   }
 
   private buildDocumentsList(documents: string): string[] {

@@ -1,5 +1,5 @@
 <section>
-  <h2 >
+  <h2>
     {{ 'page.programs-list.pageTitle'|translate }}
   </h2>
   <div *ngIf="!items"
@@ -8,21 +8,18 @@
     <ion-icon name="sad" size="large"></ion-icon><br>
     {{ 'page.programs-list.not-available'|translate }}
   </div>
-  <ion-list *ngIf="items"
-  >
+  <ion-list *ngIf="items">
     <ion-item *ngFor="let program of items"
               detail="true"
               button="true"
               [routerLink]="'/program/' + program.id"
     >
       <ion-label>
-        {{ program.title.en }}
-        <br>
+        {{ program.title }}<br>
         <ion-note>
-          {{ program.description.en }}
+          {{ program.description }}
         </ion-note>
-        <ion-note class="ion-float-end ion-padding-end"
-        >
+        <ion-note class="ion-float-end ion-padding-end">
           {{ program.updated|date:"dd-MM-y - H:m" }}
         </ion-note>
       </ion-label>

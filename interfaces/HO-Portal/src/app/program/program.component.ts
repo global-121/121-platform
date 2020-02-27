@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { TranslateService } from '@ngx-translate/core';
+import { TranslatableStringService } from '../services/translatable-string.service';
 
 @Component({
   selector: 'app-program',
@@ -12,8 +13,6 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./program.component.scss'],
 })
 export class ProgramComponent implements OnInit {
-  public languageCode: string;
-  public fallbackLanguageCode: string;
 
   public currentUserRole: string;
 
@@ -38,16 +37,15 @@ export class ProgramComponent implements OnInit {
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService,
+    private translatableString: TranslatableStringService,
     private authService: AuthService
-
   ) { }
 
   async ngOnInit() {
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
     const programId = this.route.snapshot.params.id;
     this.program = await this.programsService.getProgramById(programId);
-    this.programTitle = this.mapLabelByLanguageCode(this.program.title);
+    this.programTitle = this.translatableString.get(this.program.title);
+
     this.currentUserRole = this.authService.getUserRole();
 
     this.activePhase = this.program.state;
@@ -80,21 +78,4 @@ export class ProgramComponent implements OnInit {
       this.programPhases = this.createPhases();
     }
   }
-
-  private mapLabelByLanguageCode(property: any) {
-    let label = property[this.languageCode];
-
-    if (!label) {
-      label = property[this.fallbackLanguageCode];
-    }
-
-    if (!label) {
-      label = property;
-    }
-
-    return label;
-  }
-
-
-
 }

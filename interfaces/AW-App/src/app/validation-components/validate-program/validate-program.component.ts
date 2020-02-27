@@ -7,7 +7,7 @@ import { IonContent } from '@ionic/angular';
 import { ValidationComponents } from '../validation-components.enum';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
 import { Program } from 'src/app/models/program.model';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-validate-program',
@@ -15,9 +15,6 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./validate-program.component.scss'],
 })
 export class ValidateProgramComponent implements ValidationComponent {
-
-  public languageCode: string;
-  public fallbackLanguageCode: string;
 
   public did: string;
   public programId: number;
@@ -35,7 +32,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   public dobFeedback = false;
 
   constructor(
-    public translate: TranslateService,
+    public translatableString: TranslatableStringService,
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
     public sessionStorageService: SessionStorageService,
@@ -44,9 +41,6 @@ export class ValidateProgramComponent implements ValidationComponent {
   ) { }
 
   ngOnInit() {
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
-
     this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(async data => {
       this.handleScannedData(data);
       await this.getProgramQuestionsAndAnswers();
@@ -80,7 +74,7 @@ export class ValidateProgramComponent implements ValidationComponent {
         id: criterium.id,
         code: criterium.criterium,
         answerType: criterium.answerType,
-        label: this.mapLabelByLanguageCode(criterium.label),
+        label: this.translatableString.get(criterium.label),
         options: this.buildOptions(criterium.options),
       };
       questions.push(question);
@@ -100,26 +94,12 @@ export class ValidateProgramComponent implements ValidationComponent {
       const questionOption: QuestionOption = {
         id: option.id,
         value: option.option,
-        label: this.mapLabelByLanguageCode(option.label),
+        label: this.translatableString.get(option.label),
       };
       options.push(questionOption);
     }
 
     return options;
-  }
-
-  private mapLabelByLanguageCode(property: any) {
-    let label = property[this.languageCode];
-
-    if (!label) {
-      label = property[this.fallbackLanguageCode];
-    }
-
-    if (!label) {
-      label = property;
-    }
-
-    return label;
   }
 
   private getQuestionByCode(questionCode: string): Question {
