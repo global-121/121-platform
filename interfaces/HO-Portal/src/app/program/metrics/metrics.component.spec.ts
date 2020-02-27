@@ -1,14 +1,14 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 import { ProgramMetrics } from 'src/app/models/program-metrics.model';
-import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { Program } from 'src/app/models/program.model';
 
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { getRandomInt } from 'src/app/mocks/helpers';
@@ -63,11 +63,11 @@ describe('MetricsComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
-          provide: ProgramsServiceApiService,
-          useValue: mockProgramsApi,
+          provide: TranslatableStringService,
         },
         {
-          provide: TranslatableStringService,
+          provide: ProgramsServiceApiService,
+          useValue: mockProgramsApi,
         },
       ],
     })
