@@ -4,17 +4,22 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-import { MetricsComponent } from './metrics.component';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+
 import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 
+import apiProgramsMock from 'src/app/mocks/api.programs.mock';
+import { getRandomInt } from 'src/app/mocks/helpers';
+
+import { MetricsComponent } from './metrics.component';
+
 @Component({
-  template: `<app-metrics [program]="program" [selectedPhase]="selectedPhase"></app-metrics>`,
+  template: `<app-metrics [program]="program"></app-metrics>`,
 })
 class TestHostComponent {
   program: Program | any;
-  selectedPhase: ProgramPhase;
 }
 
 describe('MetricsComponent', () => {
@@ -22,22 +27,21 @@ describe('MetricsComponent', () => {
   let testHost: TestHostComponent;
   let componentElement: HTMLElement;
 
-  const fixtureProgram = {
-    id: 1,
-  };
+  const fixtureProgram = apiProgramsMock.programs[0];
+
   let mockProgramsApi: any;
   const mockProgramMetrics: ProgramMetrics = {
     updated: new Date().toISOString(),
     pa: {
-      included: 1,
-      excluded: 1,
-      pendingVerification: 1,
-      verifiedAwaitingDecision: 1,
+      included: getRandomInt(0, 100),
+      excluded: getRandomInt(0, 100),
+      pendingVerification: getRandomInt(0, 100),
+      verifiedAwaitingDecision: getRandomInt(0, 100),
     },
     funding: {
-      totalRaised: 10,
-      totalTransferred: 7,
-      totalAvailable: 3,
+      totalRaised: getRandomInt(0, 1000),
+      totalTransferred: getRandomInt(0, 1000),
+      totalAvailable: getRandomInt(0, 1000),
     },
   };
 
@@ -61,6 +65,9 @@ describe('MetricsComponent', () => {
         {
           provide: ProgramsServiceApiService,
           useValue: mockProgramsApi,
+        },
+        {
+          provide: TranslatableStringService,
         },
       ],
     })
@@ -94,7 +101,6 @@ describe('MetricsComponent', () => {
     componentElement.querySelector('ion-button').click();
 
     expect(mockProgramsApi.getMetricsById).toHaveBeenCalledTimes(2);
-    expect(mockProgramsApi.getMetricsById).toHaveBeenCalledWith(fixtureProgram.id);
   });
 
 });

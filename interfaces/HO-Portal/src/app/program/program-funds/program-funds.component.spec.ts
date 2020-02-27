@@ -7,6 +7,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ProgramFunds } from 'src/app/models/program-funds.model';
 
+import apiProgramsMock from 'src/app/mocks/api.programs.mock';
+import { getRandomInt } from 'src/app/mocks/helpers';
+
 import { ProgramFundsComponent } from './program-funds.component';
 
 @Component({
@@ -21,12 +24,13 @@ describe('ProgramFundsComponent (in host)', () => {
   let testHost: TestHostComponent;
   let componentElement: HTMLElement;
 
-  const fixtureProgramId = 1;
+  const fixtureProgram = apiProgramsMock.programs[0];
+
   let mockProgramsApi;
   const mockProgramFunds: ProgramFunds = {
-    totalRaised: 10,
-    totalTransferred: 7,
-    totalAvailable: 3,
+    totalRaised: getRandomInt(0, 1000),
+    totalTransferred: getRandomInt(0, 1000),
+    totalAvailable: getRandomInt(0, 1000),
     updated: new Date().toISOString(),
   };
 
@@ -75,14 +79,14 @@ describe('ProgramFundsComponent (in host)', () => {
   });
 
   it('should request the funds for the provided program-id', () => {
-    testHost.programId = fixtureProgramId;
+    testHost.programId = fixtureProgram.id;
     fixture.detectChanges();
 
-    expect(mockProgramsApi.getFundsById).toHaveBeenCalledWith(fixtureProgramId);
+    expect(mockProgramsApi.getFundsById).toHaveBeenCalledWith(fixtureProgram.id);
   });
 
   xit('should request the funds when triggered from the interface', () => {
-    testHost.programId = fixtureProgramId;
+    testHost.programId = fixtureProgram.id;
     fixture.detectChanges();
 
     expect(mockProgramsApi.getFundsById).toHaveBeenCalledTimes(1);
@@ -90,6 +94,5 @@ describe('ProgramFundsComponent (in host)', () => {
     componentElement.querySelector('ion-button').click();
 
     expect(mockProgramsApi.getFundsById).toHaveBeenCalledTimes(2);
-    expect(mockProgramsApi.getFundsById).toHaveBeenCalledWith(fixtureProgramId);
   });
 });
