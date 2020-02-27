@@ -35,7 +35,7 @@ export class ProgramsServiceApiService {
     );
   }
 
-  getAllPrograms(): Observable<Program[]> {
+  getAllPrograms(): Promise<Program[]> {
     return this.apiService.get(
       environment.url_121_service_api,
       '/programs'
@@ -44,7 +44,7 @@ export class ProgramsServiceApiService {
       map((response) => {
         return response.programs;
       })
-    );
+    ).toPromise();
   }
 
   getProgramById(programId: number | string): Promise<Program> {

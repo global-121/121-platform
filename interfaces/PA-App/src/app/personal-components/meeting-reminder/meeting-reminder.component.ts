@@ -4,12 +4,11 @@ import { PersonalComponents } from '../personal-components.enum';
 
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { TranslateService } from '@ngx-translate/core';
 import { PaDataService } from 'src/app/services/padata.service';
 
 import { Timeslot } from 'src/app/models/timeslot.model';
 import { Program } from 'src/app/models/program.model';
-import { TranslatableString } from 'src/app/models/translatable-string.model';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-meeting-reminder',
@@ -21,8 +20,6 @@ export class MeetingReminderComponent extends PersonalComponent {
   public data: any;
 
   private did: string;
-  public languageCode: string;
-  public fallbackLanguageCode: string;
 
   public dateFormat = 'EEE, dd-MM-yyyy';
   public timeFormat = 'HH:mm';
@@ -39,13 +36,10 @@ export class MeetingReminderComponent extends PersonalComponent {
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
-    public translate: TranslateService,
+    public translatableString: TranslatableStringService,
     public paData: PaDataService,
   ) {
     super();
-
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
   }
 
   ngOnInit() {
@@ -81,22 +75,8 @@ export class MeetingReminderComponent extends PersonalComponent {
   }
 
   private getProgramProperties(program: Program) {
-    const documents = this.mapLabelByLanguageCode(program.meetingDocuments);
+    const documents = this.translatableString.get(program.meetingDocuments);
     this.meetingDocuments = this.buildDocumentsList(documents);
-  }
-
-  private mapLabelByLanguageCode(property: TranslatableString | string): string {
-    let label = property[this.languageCode];
-
-    if (!label) {
-      label = property[this.fallbackLanguageCode];
-    }
-
-    if (!label) {
-      label = property;
-    }
-
-    return label;
   }
 
   private buildDocumentsList(documents: string): string[] {

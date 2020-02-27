@@ -5,10 +5,9 @@ import { PersonalComponents } from '../personal-components.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 import { Program } from 'src/app/models/program.model';
-import { TranslatableString } from 'src/app/models/translatable-string.model';
 
 @Component({
   selector: 'app-select-program',
@@ -19,9 +18,6 @@ export class SelectProgramComponent extends PersonalComponent {
   @Input()
   public data;
 
-  private languageCode: string;
-  private fallbackLanguageCode: string;
-
   private countryChoice: string;
 
   public programs: Program[];
@@ -31,12 +27,9 @@ export class SelectProgramComponent extends PersonalComponent {
     public programsService: ProgramsServiceApiService,
     public paData: PaDataService,
     public conversationService: ConversationService,
-    public translate: TranslateService,
+    public translatableString: TranslatableStringService,
   ) {
     super();
-
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
   }
 
   ngOnInit() {
@@ -64,31 +57,17 @@ export class SelectProgramComponent extends PersonalComponent {
 
     this.countryChoice = await this.paData.retrieve(this.paData.type.country);
     this.programs = await this.programsService.getProgramsByCountryId(this.countryChoice);
-    this.programs = this.filterProgramsByLanguageCode(this.programs);
+    this.programs = this.translateProgramProperties(this.programs);
 
     this.conversationService.stopLoading();
   }
 
-  private filterProgramsByLanguageCode(programs: Program[]) {
-    programs.forEach((program: Program, index: number) => {
-      programs[index].title = this.mapLabelByLanguageCode(program.title);
-      programs[index].description = this.mapLabelByLanguageCode(program.description);
+  private translateProgramProperties(programs: Program[]) {
+    return programs.map((program: Program) => {
+      program.title = this.translatableString.get(program.title);
+      program.description = this.translatableString.get(program.description);
+      return program;
     });
-    return programs;
-  }
-
-  private mapLabelByLanguageCode(property: TranslatableString | string): string {
-    let label = property[this.languageCode];
-
-    if (!label) {
-      label = property[this.fallbackLanguageCode];
-    }
-
-    if (!label) {
-      label = property;
-    }
-
-    return label;
   }
 
   private findProgramById(programId: number) {
