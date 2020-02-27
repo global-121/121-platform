@@ -57,6 +57,7 @@
           "available": "Funds Available"
         },
         "pa": {
+          "targeted": "PA Targeted",
           "pending-verification": "PA Pending verification",
           "verified-awaiting-decision": "PA Verified",
           "included": "PA Included",
@@ -87,7 +88,7 @@
         "currency": "Currency",
         "distributionFrequency": "Distribution frequency",
         "distributionDuration": "Distribution duration",
-        "fixedTransferValue": "Fixed Transfer Value (per installment)",
+        "fixedTransferValue": "Transfer Value",
         "inclusionCalculationType": "Inclusion calculation type",
         "minimumScore": "Minimum score needed",
         "highestScoresX": "Top X highest scores included",

@@ -6,6 +6,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 
 import { Program } from 'src/app/models/program.model';
 import { ProgramMetrics, MetricRow, MetricGroup } from 'src/app/models/program-metrics.model';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-metrics',
@@ -24,6 +25,7 @@ export class MetricsComponent implements OnChanges {
 
   constructor(
     private translate: TranslateService,
+    private translatableString: TranslatableStringService,
     private programService: ProgramsServiceApiService,
   ) {
     this.locale = this.translate.getBrowserCultureLang();
@@ -40,8 +42,10 @@ export class MetricsComponent implements OnChanges {
 
     this.renderUpdated();
 
-    this.renderFundsMetrics();
+    this.renderProgramProperties();
+    this.renderFinancialMetrics();
     this.renderPaMetrics();
+    this.renderAidWorkerMetrics();
 
     // Convert to array, for use in template:
     this.metricList = this.metricsMap.values();
@@ -51,43 +55,72 @@ export class MetricsComponent implements OnChanges {
     this.lastUpdated = formatDate(this.programMetrics.updated, 'full', this.locale);
   }
 
-  private renderPaMetrics() {
-    const metrics = this.programMetrics.pa;
-    const group = MetricGroup.pa;
+  private renderProgramProperties() {
+    const group = MetricGroup.programProperties;
 
-    this.metricsMap.set(`${group}.pendingVerification`, {
+    this.metricsMap.set(`${group}.title`, {
       group,
-      icon: 'people',
-      label: 'page.program.metrics.pa.pending-verification',
-      value: metrics.pendingVerification,
+      icon: 'document',
+      label: 'page.program.program-details.title',
+      value: this.translatableString.get(this.program.title),
     });
-    this.metricsMap.set(`${group}.verifiedAwaitingDecision`, {
+    this.metricsMap.set(`${group}.startDate`, {
       group,
-      icon: 'person',
-      label: 'page.program.metrics.pa.verified-awaiting-decision',
-      value: metrics.verifiedAwaitingDecision,
+      icon: 'calendar',
+      label: 'page.program.program-details.startDate',
+      value: formatDate(this.program.startDate, 'shortDate', this.locale),
     });
-    this.metricsMap.set(`${group}.included`, {
+    this.metricsMap.set(`${group}.endDate`, {
       group,
-      icon: 'person-add',
-      label: 'page.program.metrics.pa.included',
-      value: metrics.included,
+      icon: 'calendar',
+      label: 'page.program.program-details.endDate',
+      value: formatDate(this.program.endDate, 'shortDate', this.locale),
     });
-    this.metricsMap.set(`${group}.excluded`, {
+    this.metricsMap.set(`${group}.location`, {
       group,
-      icon: 'person',
-      label: 'page.program.metrics.pa.excluded',
-      value: metrics.excluded,
+      icon: 'pin',
+      label: 'page.program.program-details.location',
+      value: this.translatableString.get(this.program.location),
     });
   }
 
-  private renderFundsMetrics() {
+  private renderFinancialMetrics() {
     const metrics = this.programMetrics.funding;
-    const group = MetricGroup.funds;
+    const group = MetricGroup.financial;
     const currencyCode = this.program.currency;
     const symbol = `${currencyCode} `;
     const locale = this.locale;
 
+    this.metricsMap.set(`${group}.financialServiceProviders`, {
+      group,
+      icon: 'card',
+      label: 'page.program.program-details.financialServiceProviders',
+      value: this.program.financialServiceProviders.length,
+    });
+    this.metricsMap.set(`${group}.descCashType`, {
+      group,
+      icon: 'card',
+      label: 'page.program.program-details.descCashType',
+      value: this.translatableString.get(this.program.descCashType),
+    });
+    this.metricsMap.set(`${group}.distributionFrequency`, {
+      group,
+      icon: 'repeat',
+      label: 'page.program.program-details.distributionFrequency',
+      value: this.translatableString.get(this.program.distributionFrequency),
+    });
+    this.metricsMap.set(`${group}.distributionDuration`, {
+      group,
+      icon: 'hourglass',
+      label: 'page.program.program-details.distributionDuration',
+      value: `${this.program.distributionDuration} ${this.translatableString.get(this.program.distributionFrequency)}`,
+    });
+    this.metricsMap.set(`${group}.fixedTransferValue`, {
+      group,
+      icon: 'gift',
+      label: 'page.program.program-details.fixedTransferValue',
+      value: formatCurrency(this.program.fixedTransferValue, locale, symbol, currencyCode),
+    });
     this.metricsMap.set(`${group}.totalRaised`, {
       group,
       icon: 'cash',
@@ -106,6 +139,52 @@ export class MetricsComponent implements OnChanges {
       label: 'page.program.metrics.funds.available',
       value: formatCurrency(metrics.totalAvailable, locale, symbol, currencyCode),
     });
+  }
 
+  private renderPaMetrics() {
+    const metrics = this.programMetrics.pa;
+    const group = MetricGroup.pa;
+
+    this.metricsMap.set(`${group}.targeted`, {
+      group,
+      icon: 'locate',
+      label: 'page.program.metrics.pa.targeted',
+      value: this.program.highestScoresX,
+    });
+    this.metricsMap.set(`${group}.pendingVerification`, {
+      group,
+      icon: 'people',
+      label: 'page.program.metrics.pa.pending-verification',
+      value: metrics.pendingVerification,
+    });
+    this.metricsMap.set(`${group}.verifiedAwaitingDecision`, {
+      group,
+      icon: 'contact',
+      label: 'page.program.metrics.pa.verified-awaiting-decision',
+      value: metrics.verifiedAwaitingDecision,
+    });
+    this.metricsMap.set(`${group}.included`, {
+      group,
+      icon: 'checkmark-circle-outline',
+      label: 'page.program.metrics.pa.included',
+      value: metrics.included,
+    });
+    this.metricsMap.set(`${group}.excluded`, {
+      group,
+      icon: 'close-circle',
+      label: 'page.program.metrics.pa.excluded',
+      value: metrics.excluded,
+    });
+  }
+
+  private renderAidWorkerMetrics() {
+    const group = MetricGroup.aidworkers;
+
+    this.metricsMap.set(`${group}.assigned`, {
+      group,
+      icon: 'body',
+      label: 'page.program.program-details.aidworkers',
+      value: this.program.aidworkers.length,
+    });
   }
 }
