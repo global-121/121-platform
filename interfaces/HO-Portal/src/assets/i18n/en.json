@@ -50,6 +50,24 @@
           "btnText": "Terminate program"
         }
       },
+      "metrics": {
+        "funds": {
+          "raised": "Funds Raised",
+          "transferred": "Funds Transferred to FSPs",
+          "available": "Funds Available"
+        },
+        "pa": {
+          "pending-verification": "PA Pending verification",
+          "verified-awaiting-decision": "PA Verified",
+          "included": "PA Included",
+          "excluded": "PA Excluded"
+        },
+        "header": {
+          "metric": "Metric",
+          "latest-value": "Latest value"
+        },
+        "last-updated": "Last updated: {{date}}"
+      },
       "program-details": {
         "pageTitle": "Program details",
         "advance-phase": "Advance to next program phase",

@@ -1,4 +1,4 @@
-import { ProgramMetricis } from './dto/program-metrics.dto';
+import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { DidDto } from './dto/did.dto';
@@ -12,9 +12,6 @@ import {
   Param,
   Controller,
   UseGuards,
-  SetMetadata,
-  Res,
-  Header,
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto';
@@ -35,13 +32,11 @@ import { IncludeMeDto } from './dto/include-me.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { PayoutDto } from './dto/payout.dto';
-import { ConnectionEntity } from 'src/sovrin/create-connection/connection.entity';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
 import { ChangeStateDto } from './dto/change-state.dto';
 import { PaymentDetailsRequest } from './dto/payment-details-request.dto';
-import { Response } from 'express-serve-static-core';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -290,7 +285,7 @@ export class ProgramController {
       'Get metrics of a program used by the program manager to gain an overview of the program ',
   })
   @Get('metrics/:id')
-  public async getMetrics(@Param() params): Promise<ProgramMetricis> {
+  public async getMetrics(@Param() params): Promise<ProgramMetrics> {
     return await this.programService.getMetrics(params.id);
   }
 }

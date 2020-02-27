@@ -9,6 +9,7 @@ import { Program } from '../models/program.model';
 import { ProgramFunds } from '../models/program-funds.model';
 import { Person } from '../models/person.model';
 import { PastInstallments } from '../models/past-installments.model';
+import { ProgramMetrics } from '../models/program-metrics.model';
 
 @Injectable({
   providedIn: 'root',
@@ -73,6 +74,13 @@ export class ProgramsServiceApiService {
       `/programs/funds/${programId}`,
     ).pipe(
       tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
+  getMetricsById(programId: number | string): Promise<ProgramMetrics> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      `/programs/metrics/${programId}`,
     ).toPromise();
   }
 
