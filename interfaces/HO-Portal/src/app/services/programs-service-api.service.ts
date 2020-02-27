@@ -6,7 +6,6 @@ import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
 
 import { Program } from '../models/program.model';
-import { ProgramFunds } from '../models/program-funds.model';
 import { Person } from '../models/person.model';
 import { PastInstallments } from '../models/past-installments.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
@@ -63,15 +62,6 @@ export class ProgramsServiceApiService {
       {
         newState
       },
-    ).pipe(
-      tap((response) => console.log(response)),
-    ).toPromise();
-  }
-
-  getFundsById(programId: number | string): Promise<ProgramFunds> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      `/programs/funds/${programId}`,
     ).pipe(
       tap((response) => console.log(response)),
     ).toPromise();

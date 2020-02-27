@@ -2,20 +2,28 @@ import { TranslatableString } from './translatable-string.model';
 
 export class Program {
   id: number;
+  author: object;
+  countryId: number;
+  startDate: string;
+  endDate?: string;
   title: string | TranslatableString;
   description: string | TranslatableString;
-  countryId: number;
+  descHumanitarianObjective?: string | TranslatableString;
+  location: string | TranslatableString;
+  descLocation?: string | TranslatableString;
+  descCashType?: string | TranslatableString;
   currency: string;
   fixedTransferValue: number;
-  created: string;
-  updated: string;
-  author: object;
   inclusionCalculationType: InclusionCalculationType;
-  highestScoresX: number;
-  minimumScore: number;
+  highestScoresX?: number;
+  minimumScore?: number;
   distributionDuration: number;
   distributionFrequency: string;
-  startDate: string;
+  meetingDocuments?: string | TranslatableString;
+  financialServiceProviders?: any[];
+  aidworkers?: any[];
+  created: string;
+  updated: string;
   state: ProgramPhase;
 }
 
