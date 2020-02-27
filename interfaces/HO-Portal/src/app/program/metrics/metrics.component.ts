@@ -20,7 +20,7 @@ export class MetricsComponent implements OnChanges {
   private programMetrics: ProgramMetrics;
   private metricsMap: Map<string, MetricRow> = new Map();
 
-  public metricList: IterableIterator<MetricRow>;
+  public metricList: MetricRow[];
   public lastUpdated: string;
 
   constructor(
@@ -48,7 +48,7 @@ export class MetricsComponent implements OnChanges {
     this.renderAidWorkerMetrics();
 
     // Convert to array, for use in template:
-    this.metricList = this.metricsMap.values();
+    this.metricList = Array.from(this.metricsMap.values());
   }
 
   private renderUpdated() {
