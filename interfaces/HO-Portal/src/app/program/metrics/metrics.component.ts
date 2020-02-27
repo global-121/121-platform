@@ -107,13 +107,13 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'repeat',
       label: 'page.program.program-details.distributionFrequency',
-      value: this.translatableString.get(this.program.distributionFrequency),
+      value: this.translate.instant('page.program.metrics.units.' + this.program.distributionFrequency),
     });
     this.metricsMap.set(`${group}.distributionDuration`, {
       group,
       icon: 'hourglass',
       label: 'page.program.program-details.distributionDuration',
-      value: `${this.program.distributionDuration} ${this.translatableString.get(this.program.distributionFrequency)}`,
+      value: `${this.program.distributionDuration} ${this.translate.instant('page.program.metrics.units.' + this.program.distributionFrequency)}`,
     });
     this.metricsMap.set(`${group}.fixedTransferValue`, {
       group,

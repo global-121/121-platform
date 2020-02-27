@@ -67,6 +67,9 @@
           "metric": "Metric",
           "latest-value": "Latest value"
         },
+        "units": {
+          "month": "month"
+        },
         "last-updated": "Last updated: {{date}}"
       },
       "program-details": {
