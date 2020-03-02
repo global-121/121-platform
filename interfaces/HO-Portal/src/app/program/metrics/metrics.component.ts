@@ -23,8 +23,10 @@ export class MetricsComponent implements OnChanges {
   public metricList: MetricRow[];
   public lastUpdated: string;
 
+  public isCollapsed = false;
+
   constructor(
-    private translate: TranslateService,
+    public translate: TranslateService,
     private translatableString: TranslatableStringService,
     private programService: ProgramsServiceApiService,
   ) {
@@ -228,5 +230,9 @@ export class MetricsComponent implements OnChanges {
 
     // If all else fails, just return checkValue to display:
     return checkValue;
+  }
+
+  public toggleView() {
+    this.isCollapsed = !this.isCollapsed;
   }
 }
