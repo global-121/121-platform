@@ -21,13 +21,12 @@
 .metrics--cell-label,
 .metrics--cell-value {
   padding: 0.4em 0.2em;
-  border-bottom: 1px solid white;
+  border-block-end: 1px solid white;
 }
 
 .metrics--cell-icon {
-  display: flex;
-  justify-content: center;
-  align-content: center;
+  text-align: center;
+  vertical-align: top;
   pointer-events: none;
 }
 
