@@ -27,9 +27,10 @@ describe('MetricsComponent', () => {
   let testHost: TestHostComponent;
   let componentElement: HTMLElement;
 
-  const fixtureProgram = apiProgramsMock.programs[0];
-
   let mockProgramsApi: any;
+  let mockTranslatableStringService: any;
+
+  const fixtureProgram = apiProgramsMock.programs[0];
   const mockProgramMetrics: ProgramMetrics = {
     updated: new Date().toISOString(),
     pa: {
@@ -51,6 +52,11 @@ describe('MetricsComponent', () => {
     ]);
     mockProgramsApi.getMetricsById.and.returnValue(mockProgramMetrics);
 
+    mockTranslatableStringService = jasmine.createSpyObj('TranslatableStringService', [
+      'get',
+    ]);
+    mockTranslatableStringService.get.and.returnValue('');
+
     TestBed.configureTestingModule({
       declarations: [
         MetricsComponent,
@@ -64,6 +70,7 @@ describe('MetricsComponent', () => {
       providers: [
         {
           provide: TranslatableStringService,
+          useValue: mockTranslatableStringService,
         },
         {
           provide: ProgramsServiceApiService,
