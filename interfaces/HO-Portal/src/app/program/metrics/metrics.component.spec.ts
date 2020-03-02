@@ -99,13 +99,13 @@ describe('MetricsComponent', () => {
     expect(mockProgramsApi.getMetricsById).toHaveBeenCalledWith(fixtureProgram.id);
   });
 
-  it('should request the metrics when triggered from the interface', () => {
+  it('should request the metrics (again) when triggered from the interface', () => {
     testHost.program = fixtureProgram;
     fixture.detectChanges();
 
     expect(mockProgramsApi.getMetricsById).toHaveBeenCalledTimes(1);
 
-    componentElement.querySelector('ion-button').click();
+    document.getElementById('metrics-update').click();
 
     expect(mockProgramsApi.getMetricsById).toHaveBeenCalledTimes(2);
   });

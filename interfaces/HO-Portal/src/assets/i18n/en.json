@@ -64,6 +64,8 @@
           "excluded": "PA Excluded"
         },
         "header": {
+          "expand": "Expand",
+          "collapse": "Collapse",
           "metric": "Metric",
           "latest-value": "Latest value"
         },
