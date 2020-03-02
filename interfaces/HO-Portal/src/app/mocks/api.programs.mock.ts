@@ -10,7 +10,7 @@ const programsArray: Program[] = [
     countryId: 1,
     startDate: '1970-01-01T01:01:01Z',
     currency: 'EUR',
-    distributionFrequency: '',
+    distributionFrequency: 'month',
     distributionDuration: getRandomInt(1, 12),
     fixedTransferValue: getRandomInt(10, 1000),
     inclusionCalculationType: InclusionCalculationType.highestScoresX,
