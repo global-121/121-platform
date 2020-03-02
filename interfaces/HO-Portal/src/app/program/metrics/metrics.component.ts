@@ -42,6 +42,7 @@ export class MetricsComponent implements OnChanges {
 
     this.renderUpdated();
 
+    // The order of these methods, define the order of the metricMap/List:
     this.renderProgramProperties();
     this.renderFinancialMetrics();
     this.renderPaMetrics();
@@ -52,7 +53,7 @@ export class MetricsComponent implements OnChanges {
   }
 
   private renderUpdated() {
-    this.lastUpdated = formatDate(this.programMetrics.updated, 'full', this.locale);
+    this.lastUpdated = this.getValueOrUnknown(this.programMetrics.updated, (value) => formatDate(value, 'full', this.locale));
   }
 
   private renderProgramProperties() {
@@ -62,25 +63,25 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'document',
       label: 'page.program.program-details.title',
-      value: this.translatableString.get(this.program.title),
+      value: this.getValueOrEmpty(this.program.title, (value) => this.translatableString.get(value)),
     });
     this.metricsMap.set(`${group}.startDate`, {
       group,
       icon: 'calendar',
       label: 'page.program.program-details.startDate',
-      value: formatDate(this.program.startDate, 'shortDate', this.locale),
+      value: this.getValueOrEmpty(this.program.startDate, (value) => formatDate(value, 'shortDate', this.locale)),
     });
     this.metricsMap.set(`${group}.endDate`, {
       group,
       icon: 'calendar',
       label: 'page.program.program-details.endDate',
-      value: formatDate(this.program.endDate, 'shortDate', this.locale),
+      value: this.getValueOrEmpty(this.program.endDate, (value) => formatDate(value, 'shortDate', this.locale)),
     });
     this.metricsMap.set(`${group}.location`, {
       group,
       icon: 'pin',
       label: 'page.program.program-details.location',
-      value: this.translatableString.get(this.program.location),
+      value: this.getValueOrEmpty(this.program.location, (value) => this.translatableString.get(value)),
     });
   }
 
@@ -95,49 +96,55 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'card',
       label: 'page.program.program-details.financialServiceProviders',
-      value: this.program.financialServiceProviders.length,
+      value: this.getValueOrEmpty(this.program.financialServiceProviders, (value) => value.length),
     });
     this.metricsMap.set(`${group}.descCashType`, {
       group,
       icon: 'card',
       label: 'page.program.program-details.descCashType',
-      value: this.translatableString.get(this.program.descCashType),
+      value: this.getValueOrEmpty(this.program.descCashType, (value) => this.translatableString.get(value)),
     });
     this.metricsMap.set(`${group}.distributionFrequency`, {
       group,
       icon: 'repeat',
       label: 'page.program.program-details.distributionFrequency',
-      value: this.translate.instant('page.program.metrics.units.' + this.program.distributionFrequency),
+      value: this.getValueOrEmpty(this.program.distributionFrequency, (value) => {
+        return this.translate.instant('page.program.metrics.units.' + value);
+      }),
     });
     this.metricsMap.set(`${group}.distributionDuration`, {
       group,
       icon: 'hourglass',
       label: 'page.program.program-details.distributionDuration',
-      value: `${this.program.distributionDuration} ${this.translate.instant('page.program.metrics.units.' + this.program.distributionFrequency)}`,
+      value: this.getValueOrEmpty(this.program.distributionDuration, (value) => {
+        return `${value} ${this.translate.instant(
+          'page.program.metrics.units.' + this.program.distributionFrequency
+        )}`;
+      }),
     });
     this.metricsMap.set(`${group}.fixedTransferValue`, {
       group,
       icon: 'gift',
       label: 'page.program.program-details.fixedTransferValue',
-      value: formatCurrency(this.program.fixedTransferValue, locale, symbol, currencyCode),
+      value: this.getValueOrUnknown(this.program.fixedTransferValue, (value) => formatCurrency(value, locale, symbol, currencyCode)),
     });
     this.metricsMap.set(`${group}.totalRaised`, {
       group,
       icon: 'cash',
       label: 'page.program.metrics.funds.raised',
-      value: formatCurrency(metrics.totalRaised, locale, symbol, currencyCode),
+      value: this.getValueOrUnknown(metrics.totalRaised, (value) => formatCurrency(value, locale, symbol, currencyCode)),
     });
     this.metricsMap.set(`${group}.totalTransferred`, {
       group,
       icon: 'cash',
       label: 'page.program.metrics.funds.transferred',
-      value: formatCurrency(metrics.totalTransferred, locale, symbol, currencyCode),
+      value: this.getValueOrUnknown(metrics.totalTransferred, (value) => formatCurrency(value, locale, symbol, currencyCode)),
     });
     this.metricsMap.set(`${group}.totalAvailable`, {
       group,
       icon: 'cash',
       label: 'page.program.metrics.funds.available',
-      value: formatCurrency(metrics.totalAvailable, locale, symbol, currencyCode),
+      value: this.getValueOrUnknown(metrics.totalAvailable, (value) => formatCurrency(value, locale, symbol, currencyCode)),
     });
   }
 
@@ -149,31 +156,31 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'locate',
       label: 'page.program.metrics.pa.targeted',
-      value: this.program.highestScoresX,
+      value: this.getValueOrEmpty(this.program.highestScoresX),
     });
     this.metricsMap.set(`${group}.pendingVerification`, {
       group,
       icon: 'people',
       label: 'page.program.metrics.pa.pending-verification',
-      value: metrics.pendingVerification,
+      value: this.getValueOrUnknown(metrics.pendingVerification),
     });
     this.metricsMap.set(`${group}.verifiedAwaitingDecision`, {
       group,
       icon: 'contact',
       label: 'page.program.metrics.pa.verified-awaiting-decision',
-      value: metrics.verifiedAwaitingDecision,
+      value: this.getValueOrUnknown(metrics.verifiedAwaitingDecision),
     });
     this.metricsMap.set(`${group}.included`, {
       group,
       icon: 'checkmark-circle-outline',
       label: 'page.program.metrics.pa.included',
-      value: metrics.included,
+      value: this.getValueOrUnknown(metrics.included),
     });
     this.metricsMap.set(`${group}.excluded`, {
       group,
       icon: 'close-circle',
       label: 'page.program.metrics.pa.excluded',
-      value: metrics.excluded,
+      value: this.getValueOrUnknown(metrics.excluded),
     });
   }
 
@@ -184,7 +191,42 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'body',
       label: 'page.program.program-details.aidworkers',
-      value: this.program.aidworkers.length,
+      value: this.getValueOrEmpty(this.program.aidworkers, (value) => value.length),
     });
+  }
+
+  /**
+   * Returns the output of `getValueToShow()` if `checkValue` is available or defined.
+   * Otherwise, returns fallback-value: '-'
+   */
+  private getValueOrEmpty(checkValue, getValueToShow?: (value?: any) => number | string) {
+    return this.getValueOrFallback('-', checkValue, getValueToShow);
+  }
+
+  /**
+   * Returns the output of `getValueToShow()` if `checkValue` is available or defined.
+   * Otherwise, returns fallback-value: '?'
+   */
+  private getValueOrUnknown(checkValue, getValueToShow?: (value?: any) => number | string) {
+    return this.getValueOrFallback('?', checkValue, getValueToShow);
+  }
+
+  /**
+   * Returns the output of `getValueToShow()` if `checkValue` is available or defined.
+   * Otherwise, returns fallback-value
+   */
+  private getValueOrFallback(fallbackValue: string, checkValue, getValueToShow?: (value?: any) => number | string) {
+    // If there is nothing sensible to display, show the fallback:
+    if (typeof checkValue === 'undefined') {
+      return fallbackValue;
+    }
+
+    // If available, use `getValueToShow()` to get 'something to display':
+    if (typeof getValueToShow === 'function') {
+      return getValueToShow(checkValue);
+    }
+
+    // If all else fails, just return checkValue to display:
+    return checkValue;
   }
 }
