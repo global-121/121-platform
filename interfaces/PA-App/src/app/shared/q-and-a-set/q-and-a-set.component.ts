@@ -88,14 +88,15 @@ export class QAndASetComponent {
   private showNextQuestion(currentIndex: number) {
     const nextIndex = currentIndex + 1;
 
-    this.showTurnByIndex(nextIndex);
+    this.showQuestionByIndex(nextIndex);
   }
 
-  private showTurnByIndex(index: number) {
-    const turn = this.turns.toArray()[index];
+  private showQuestionByIndex(index: number) {
+    const onlyQuestionTurns = this.turns.filter((turn: DialogueTurnComponent) => turn.isSelf);
+    const questionTurn = onlyQuestionTurns[index];
 
-    if (turn) {
-      turn.show();
+    if (questionTurn) {
+      questionTurn.show();
     }
   }
 

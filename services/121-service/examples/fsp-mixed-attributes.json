@@ -14,7 +14,7 @@
       "label": {
         "en": "Your account number"
       },
-      "answerType": "number",
+      "answerType": "numeric",
       "options": null
     },
     {

@@ -36,8 +36,9 @@ describe('MetricsComponent', () => {
     pa: {
       included: getRandomInt(0, 100),
       excluded: getRandomInt(0, 100),
-      pendingVerification: getRandomInt(0, 100),
-      verifiedAwaitingDecision: getRandomInt(0, 100),
+      startedEnlisting: getRandomInt(0, 100),
+      finishedEnlisting: getRandomInt(0, 100),
+      verified: getRandomInt(0, 100),
     },
     funding: {
       totalRaised: getRandomInt(0, 1000),
