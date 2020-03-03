@@ -49,7 +49,7 @@ export class ProgramPeopleComponent implements OnChanges {
   public paymentColumns: any[] = [];
   public tableMessages: any;
   public submitWarning: any;
-  public btnEnabled: boolean = false;
+  public btnEnabled = false;
 
   public enrolledPeople: Person[] = [];
   public newEnrolledPeople: Person[] = [];
@@ -116,7 +116,14 @@ export class ProgramPeopleComponent implements OnChanges {
       draggable: false,
       resizeable: false,
       sortable: false,
-      hidePhases: [ProgramPhase.design, ProgramPhase.registration, ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment, ProgramPhase.evaluation]
+      hidePhases: [
+        ProgramPhase.design,
+        ProgramPhase.registration,
+        ProgramPhase.inclusion,
+        ProgramPhase.finalize,
+        ProgramPhase.payment,
+        ProgramPhase.evaluation
+      ]
     },
     {
       prop: 'included',
@@ -237,7 +244,7 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   private checkPhaseReady() {
-    //This component only influences ready in the 'inclusion'-phase
+    // This component only influences ready in the 'inclusion'-phase
     if (this.activePhase === ProgramPhase.inclusion) {
       if (this.newEnrolledPeople.length === 0) {
         this.emitCompleted.emit(true);
@@ -251,8 +258,8 @@ export class ProgramPeopleComponent implements OnChanges {
 
   private async determineColumns() {
 
-    let columns = [];
-    for (let column of this.columnsAvailable) {
+    const columns = [];
+    for (const column of this.columnsAvailable) {
       if (!this.showSensitiveData) {
         if (
           (
@@ -278,7 +285,7 @@ export class ProgramPeopleComponent implements OnChanges {
     }
 
     this.paymentColumns = this.addPaymentColumns();
-    for (let column of this.paymentColumns) {
+    for (const column of this.paymentColumns) {
       columns.push(column);
     }
 
@@ -288,13 +295,13 @@ export class ProgramPeopleComponent implements OnChanges {
   private addPaymentColumns() {
     const paymentColumns = [];
     for (let p = 0; p < this.nrOfInstallments; p++) {
-      let column = {
+      const column = {
         prop: 'payment' + (p + 1),
         name: this.translate.instant('page.program.program-people.column.payment') + ' #' + (p + 1),
         draggable: false,
         resizeable: false,
         hidePhases: []
-      }
+      };
       paymentColumns.push(column);
     }
     return paymentColumns;
@@ -327,13 +334,13 @@ export class ProgramPeopleComponent implements OnChanges {
           vulnerabilityAssessmentCreated: person.appliedDate ? formatDate(person.appliedDate, this.dateFormat, this.locale) : null,
           vulnerabilityAssessmentValidated: person.validationDate ? formatDate(person.validationDate, this.dateFormat, this.locale) : null,
           inclusionCommunication: person.inclusionDate ? formatDate(person.inclusionDate, this.dateFormat, this.locale) : null,
-          included: person.included ? "Included" : (person.excluded ? "Excluded" : ""),
+          included: person.included ? 'Included' : (person.excluded ? 'Excluded' : ''),
         };
 
-        this.paymentColumns.map((_, index) => {
-          const payment = pastInstallments.find(i => i.installment === index + 1);
+        this.paymentColumns.map((_, index2) => {
+          const payment = pastInstallments.find(i => i.installment === index2 + 1);
           if (payment) {
-            personData['payment' + (index + 1)] = formatDate(payment.installmentDate, this.dateFormat, this.locale);
+            personData['payment' + (index2 + 1)] = formatDate(payment.installmentDate, this.dateFormat, this.locale);
           }
         });
 
@@ -376,8 +383,8 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   public showCheckbox(row) {
-    return !row.included  // Show checkboxes only for new enrolled PA's in program-manager mode 
-      || row.name;        // OR always when in privacy-officer (where endpoint gives only in/excluded people anyway)
+    return !row.included // Show checkboxes only for new enrolled PA's in program-manager mode
+      || row.name; // OR always when in privacy-officer (where endpoint gives only in/excluded people anyway)
   }
 
   public updateSubmitWarning() {

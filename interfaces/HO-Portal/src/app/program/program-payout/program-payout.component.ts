@@ -205,7 +205,7 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   private checkPhaseReady() {
-    //This component only influences ready in the 'payment'-phase
+    // This component only influences ready in the 'payment'-phase
     if (this.activePhase === ProgramPhase.payment) {
       if (this.nrOfPastInstallments === this.nrOfInstallments) {
         this.emitCompleted.emit(true);

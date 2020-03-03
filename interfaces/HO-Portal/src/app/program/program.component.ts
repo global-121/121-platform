@@ -23,9 +23,9 @@ export class ProgramComponent implements OnInit {
   public activePhase: string;
   public selectedPhase: string;
   public programPhases: any[];
-  public phaseReady: boolean = false;
-  public phaseReadyPayout: boolean = false;
-  public phaseReadyPeople: boolean = false;
+  public phaseReady = false;
+  public phaseReadyPayout = false;
+  public phaseReadyPeople = false;
 
   private phasesInput = [
     {

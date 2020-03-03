@@ -31,6 +31,7 @@ export class PhaseNextComponent implements OnChanges {
   public userRoleEnum = UserRole;
   public currentUserRole: string;
 
+  private firstChange = true;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -41,7 +42,6 @@ export class PhaseNextComponent implements OnChanges {
     this.currentUserRole = this.authService.getUserRole();
   }
 
-  private firstChange = true;
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.programPhases && typeof changes.programPhases.currentValue === 'object') {
       this.updatePhases();
