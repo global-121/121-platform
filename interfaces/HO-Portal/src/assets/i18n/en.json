@@ -58,8 +58,9 @@
         },
         "pa": {
           "targeted": "PA Targeted",
-          "pending-verification": "PA Pending verification",
-          "verified-awaiting-decision": "PA Verified",
+          "started-enlisting": "PA Started enlisting",
+          "finished-enlisting": "PA Finished enlisting",
+          "verified": "PA Verified",
           "included": "PA Included",
           "excluded": "PA Excluded"
         },
