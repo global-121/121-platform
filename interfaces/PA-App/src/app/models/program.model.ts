@@ -4,12 +4,12 @@ import { TranslatableString } from './translatable-string.model';
 
 export class Program {
   id: number;
-  title: string;
-  description: string;
+  title: string | TranslatableString;
+  description: string | TranslatableString;
   countryId: number;
   created: string;
   updated: string;
-  meetingDocuments: any;
+  meetingDocuments?: string | TranslatableString;
   ngo: string;
   customCriteria: ProgramCriterium[];
   financialServiceProviders: Fsp[];

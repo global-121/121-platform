@@ -50,10 +50,33 @@
           "btnText": "Terminate program"
         }
       },
+      "metrics": {
+        "funds": {
+          "raised": "Funds Raised",
+          "transferred": "Funds Transferred to FSPs",
+          "available": "Funds Available"
+        },
+        "pa": {
+          "targeted": "PA Targeted",
+          "pending-verification": "PA Pending verification",
+          "verified-awaiting-decision": "PA Verified",
+          "included": "PA Included",
+          "excluded": "PA Excluded"
+        },
+        "header": {
+          "expand": "Expand",
+          "collapse": "Collapse",
+          "metric": "Metric",
+          "latest-value": "Latest value"
+        },
+        "units": {
+          "month": "month"
+        },
+        "last-updated": "Last updated: {{date}}"
+      },
       "program-details": {
         "pageTitle": "Program details",
         "advance-phase": "Advance to next program phase",
-        "section-funds": "Funds overview",
         "section-people": "People overview",
         "manage-people": "Manage people (Regular)",
         "manage-people-privacy": "Manage people (Privacy Officer)",
@@ -69,7 +92,7 @@
         "currency": "Currency",
         "distributionFrequency": "Distribution frequency",
         "distributionDuration": "Distribution duration",
-        "fixedTransferValue": "Fixed Transfer Value (per installment)",
+        "fixedTransferValue": "Transfer Value",
         "inclusionCalculationType": "Inclusion calculation type",
         "minimumScore": "Minimum score needed",
         "highestScoresX": "Top X highest scores included",
@@ -86,12 +109,6 @@
         "customCriteria": "Inclusion criteria",
         "aidworkers": "Assigned aidworkers",
         "financialServiceProviders": "Financial Service-providers"
-      },
-      "program-funds": {
-        "total-raised": "Total funds raised:",
-        "total-transferred": "Transferred to FSPs:",
-        "total-available": "Funds available:",
-        "last-updated": "Last updated: {{date}}"
       },
       "program-payout": {
         "installment-nr": "Installment #",

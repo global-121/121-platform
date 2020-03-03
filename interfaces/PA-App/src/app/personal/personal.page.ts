@@ -12,7 +12,6 @@ import { PersonalComponents } from '../personal-components/personal-components.e
 import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
-import { InitialNeedsComponent } from '../personal-components/initial-needs/initial-needs.component';
 import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
 import { MeetingReminderComponent } from '../personal-components/meeting-reminder/meeting-reminder.component';
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
@@ -45,7 +44,6 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.createIdentity]: CreateIdentityComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
     [PersonalComponents.handleProof]: HandleProofComponent,
-    [PersonalComponents.initialNeeds]: InitialNeedsComponent,
     [PersonalComponents.loginIdentity]: LoginIdentityComponent,
     [PersonalComponents.meetingReminder]: MeetingReminderComponent,
     [PersonalComponents.selectAppointment]: SelectAppointmentComponent,

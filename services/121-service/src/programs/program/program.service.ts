@@ -1,4 +1,5 @@
-import { Length } from 'class-validator';
+import { PaMetrics } from './dto/pa-metrics.dto';
+import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { FundingService } from './../../funding/funding.service';
 import { TransactionEntity } from './transactions.entity';
@@ -195,7 +196,10 @@ export class ProgramService {
     return await this.programRepository.delete(programId);
   }
 
-  public async changeState(programId: number, newState: string): Promise<SimpleProgramRO> {
+  public async changeState(
+    programId: number,
+    newState: string,
+  ): Promise<SimpleProgramRO> {
     await this.changeProgramValue(programId, {
       state: newState,
     });
@@ -210,7 +214,6 @@ export class ProgramService {
     }
     return this.buildProgramRO(changedProgram);
   }
-
 
   public async publish(programId: number): Promise<SimpleProgramRO> {
     const selectedProgram = await this.findOne(programId);
@@ -270,7 +273,7 @@ export class ProgramService {
     const simpleProgramRO = {
       id: program.id,
       title: program.title,
-      state: program.state
+      state: program.state,
     };
 
     return simpleProgramRO;
@@ -438,6 +441,7 @@ export class ProgramService {
       if (indexEx > -1) {
         connection.programsExcluded.splice(indexEx, 1);
       }
+      connection = await this.updateInclusionDate(connection);
       await this.connectionRepository.save(connection);
     }
   }
@@ -472,8 +476,19 @@ export class ProgramService {
       if (indexIn > -1) {
         connection.programsIncluded.splice(indexIn, 1);
       }
+      connection = await this.updateInclusionDate(connection);
       await this.connectionRepository.save(connection);
     }
+  }
+
+  private async updateInclusionDate(
+    connection: ConnectionEntity,
+  ): Promise<ConnectionEntity> {
+    if (!connection.inclusionDate) {
+      connection.inclusionDate = new Date();
+      await this.connectionRepository.save(connection);
+    }
+    return connection;
   }
 
   private createQuestionAnswerList(
@@ -626,46 +641,83 @@ export class ProgramService {
     programId: number,
     privacy: boolean,
   ): Promise<any[]> {
+    let selectedConnections;
+    if (!privacy) {
+      selectedConnections = await this.getConnections(
+        programId,
+      );
+    } else {
+      selectedConnections = await this.getIncludedExcludedConnections(
+        programId,
+      );
+    }
+    const connectionsReponse = [];
+    for (let connection of selectedConnections) {
+      const connectionReponse = {};
+      connectionReponse['did'] = connection.did;
+      connectionReponse['score'] = connection.inclusionScore;
+      connectionReponse['created'] = connection.created;
+      connectionReponse['updated'] = connection.updated;
+      connectionReponse['enrolled'] = connection.programsEnrolled.includes(+programId);
+      connectionReponse['included'] = connection.programsIncluded.includes(+programId);
+      connectionReponse['excluded'] = connection.programsExcluded.includes(+programId);
+      if (privacy) {
+        connectionReponse['name'] = connection.customData.name;
+        connectionReponse['dob'] = connection.customData.dob;
+      }
+      connectionsReponse.push(connectionReponse);
+    }
+    return connectionsReponse;
+  }
+
+  private async getConnectionsAwaitingInclusionDecision(
+    programId,
+  ): Promise<ConnectionEntity[]> {
     const connections = await this.connectionRepository.find({
       order: { inclusionScore: 'DESC' },
     });
     const enrolledConnections = [];
-    for (let connection of connections) {
-      let connectionNew: any;
-      if (!privacy) {
-        if (
-          connection.programsEnrolled.includes(+programId)
-        ) {
-          connectionNew = {
-            did: connection.did,
-            score: connection.inclusionScore,
-            created: connection.created,
-            updated: connection.updated,
-            enrolled: connection.programsEnrolled.includes(+programId),
-            included: connection.programsIncluded.includes(+programId),
-            excluded: connection.programsExcluded.includes(+programId),
-          };
-          enrolledConnections.push(connectionNew);
-        }
-      } else {
-        if (
-          connection.programsIncluded.includes(+programId) ||
-          connection.programsExcluded.includes(+programId)
-        ) {
-          connectionNew = {
-            did: connection.did,
-            score: connection.inclusionScore,
-            created: connection.created,
-            updated: connection.updated,
-            name: connection.customData['name'],
-            dob: connection.customData['dob'],
-            included: connection.programsIncluded.includes(+programId),
-            excluded: connection.programsExcluded.includes(+programId),
-          };
-          enrolledConnections.push(connectionNew);
-        }
+    for (let connection of connections)
+      if (
+        connection.programsEnrolled.includes(+programId) &&
+        !connection.programsIncluded.includes(+programId) &&
+        !connection.programsExcluded.includes(+programId)
+      ) {
+        enrolledConnections.push(connection);
       }
-    }
+    return enrolledConnections;
+  }
+
+  private async getConnections(
+    programId,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find({
+      order: { inclusionScore: 'DESC' },
+    });
+    const enrolledConnections = [];
+    for (let connection of connections)
+      if (
+        connection.programsEnrolled.includes(+programId)
+      ) {
+        enrolledConnections.push(connection);
+      }
+    return enrolledConnections;
+  }
+
+  private async getIncludedExcludedConnections(
+    programId,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find({
+      order: { inclusionScore: 'DESC' },
+    });
+    const enrolledConnections = [];
+    for (let connection of connections)
+      if (
+        connection.programsIncluded.includes(+programId) ||
+        connection.programsExcluded.includes(+programId)
+      ) {
+        enrolledConnections.push(connection);
+      }
     return enrolledConnections;
   }
 
@@ -682,6 +734,21 @@ export class ProgramService {
       }
     }
     return includedConnections;
+  }
+
+  private async getExcludedConnections(
+    programId: number,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find({
+      relations: ['fsp'],
+    });
+    const excludedConnections = [];
+    for (let connection of connections) {
+      if (connection.programsExcluded.includes(+programId)) {
+        excludedConnections.push(connection);
+      }
+    }
+    return excludedConnections;
   }
 
   private async createSendPaymentListFsp(
@@ -857,5 +924,23 @@ export class ProgramService {
     csv.unshift(header.join(','));
     csv = csv.join('\r\n');
     return csv;
+  }
+
+  public async getMetrics(programId): Promise<ProgramMetrics> {
+    const metrics = new ProgramMetrics();
+    metrics.funding = await this.getFunds(programId);
+    metrics.pa = await this.getPaMetrics(programId);
+    metrics.updated = new Date();
+    return metrics;
+  }
+
+  public async getPaMetrics(programId): Promise<PaMetrics> {
+    const metrics = new PaMetrics();
+    metrics.included = await this.getTotalIncluded(programId);
+    metrics.verifiedAwaitingDecision = (await this.getConnectionsAwaitingInclusionDecision(
+      programId,
+    )).length;
+    metrics.excluded = (await this.getExcludedConnections(programId)).length;
+    return metrics;
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { TranslatableStringService } from '../services/translatable-string.service';
 import { Program } from '../models/program.model';
 
 @Component({
@@ -12,12 +13,21 @@ export class ProgramsListComponent implements OnInit {
   public items: Program[];
 
   constructor(
-    private programsService: ProgramsServiceApiService
-  ) {
+    private programsService: ProgramsServiceApiService,
+    private translatableString: TranslatableStringService,
+  ) { }
+
+  async ngOnInit() {
+    const programs = await this.programsService.getAllPrograms();
+    this.items = this.translateProperties(programs);
   }
 
-  ngOnInit() {
-    this.programsService.getAllPrograms().subscribe(response => this.items = response);
-  }
+  private translateProperties(programs: Program[]): Program[] {
+    return programs.map((program: Program) => {
+      program.title = this.translatableString.get(program.title);
+      program.description = this.translatableString.get(program.description);
 
+      return program;
+    });
+  }
 }

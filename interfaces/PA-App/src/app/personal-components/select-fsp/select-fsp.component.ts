@@ -9,8 +9,7 @@ import { Fsp, FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model'
 import { PersonalComponent } from '../personal-component.class';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Question, QuestionOption, Answer, AnswerSet } from 'src/app/models/q-and-a.models';
-import { TranslateService } from '@ngx-translate/core';
-import { TranslatableString } from 'src/app/models/translatable-string.model';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-select-fsp',
@@ -20,9 +19,6 @@ import { TranslatableString } from 'src/app/models/translatable-string.model';
 export class SelectFspComponent extends PersonalComponent {
   @Input()
   public data: any;
-
-  public languageCode: string;
-  public fallbackLanguageCode: string;
 
   private did: string;
   public program: Program;
@@ -43,14 +39,12 @@ export class SelectFspComponent extends PersonalComponent {
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     public paData: PaDataService,
-    public translate: TranslateService,
+    public translatableString: TranslatableStringService,
   ) {
     super();
   }
 
   async ngOnInit() {
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
     this.program = await this.paData.getCurrentProgram();
 
     if (this.data) {
@@ -115,7 +109,7 @@ export class SelectFspComponent extends PersonalComponent {
       return {
         code: attribute.name,
         answerType: attribute.answerType,
-        label: this.mapLabelByLanguageCode(attribute.label),
+        label: this.translatableString.get(attribute.label),
         options: (!attribute.options) ? null : this.buildOptions(attribute.options),
       };
     });
@@ -125,23 +119,9 @@ export class SelectFspComponent extends PersonalComponent {
     return optionSet.map((option): QuestionOption => {
       return {
         value: option.option,
-        label: this.mapLabelByLanguageCode(option.label),
+        label: this.translatableString.get(option.label),
       };
     });
-  }
-
-  private mapLabelByLanguageCode(property: TranslatableString | string): string {
-    let label = property[this.languageCode];
-
-    if (!label) {
-      label = property[this.fallbackLanguageCode];
-    }
-
-    if (!label) {
-      label = property;
-    }
-
-    return label;
   }
 
   private processInOrder(array: any[], fn) {

@@ -1,0 +1,73 @@
+.metrics {
+  --metrics-full-width: 330px;
+  --metrics-collapsed-width: 48px;
+
+  width: var(--metrics-full-width);
+
+  &.is-collapsed {
+    overflow: hidden;
+    width: var(--metrics-collapsed-width);
+  }
+}
+
+.metrics--table {
+  position: relative; // To contain .metrics--toggle
+  width: var(--metrics-full-width);
+
+  font-size: 90%;
+}
+
+.metrics--cell-icon,
+.metrics--cell-label,
+.metrics--cell-value {
+  padding: 0.4em 0.2em;
+  border-block-end: 1px solid white;
+}
+
+.metrics--cell-icon {
+  text-align: center;
+  vertical-align: top;
+  pointer-events: none;
+}
+
+.metrics--cell-value {
+  padding-inline-start: 0.4em;
+  border-inline-start: 1px solid white;
+}
+
+.metrics--header-toggle {
+  padding: 0; // Compensate for margin/padding of toggle-button
+}
+
+.metrics--toggle {
+  position: static; // To let hit-target expand outside itself.
+
+  // Hit-target:
+  &::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--metrics-collapsed-width);
+    height: 100%;
+    content: '';
+    display: block;
+    cursor: pointer;
+  }
+}
+
+
+/*
+  Metric Groups:
+*/
+.metrics--group-program-properties {
+  background-color: gold;
+}
+.metrics--group-pa {
+  background-color: rosybrown;
+}
+.metrics--group-financial {
+  background-color: turquoise;
+}
+.metrics--group-aidworkers {
+  background-color: goldenrod;
+}

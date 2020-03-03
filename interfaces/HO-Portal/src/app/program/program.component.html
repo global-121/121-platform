@@ -24,34 +24,49 @@
   </ion-toolbar>
 </ion-header>
 
-
-<ion-content class="ion-padding">
-  <app-phase-next [programPhases]="programPhases"
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="ion-text-right">
+        <app-phase-next [programPhases]="programPhases"
                   [selectedPhase]="selectedPhase"
                   [programId]="program?.id"
                   [phaseReady]="phaseReady"
                   (emitNewPhase)="emitNewPhase($event)"
-  ></app-phase-next>
+        ></app-phase-next>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="auto"
+               style="border-right: 1px dashed var(--ion-color-medium)"
+      >
 
-  <app-program-people [selectedPhase]="selectedPhase"
+
+        <app-metrics [program]="program"></app-metrics>
+
+
+      </ion-col>
+      <ion-col>
+
+        <app-program-people [selectedPhase]="selectedPhase"
                       [programId]="program?.id"
                       [userRole]="currentUserRole"
                       (emitCompleted)="emitPeopleCompleted($event)"
-  ></app-program-people>
-  
-  <app-program-payout [selectedPhase]="selectedPhase"
-                      [programId]="program?.id"
-                      [currencyCode]="program?.currency"
-                      (emitCompleted)="emitPayoutCompleted($event)"
-  ></app-program-payout>
+        ></app-program-people>
+        
+        <app-program-payout [selectedPhase]="selectedPhase"
+                            [programId]="program?.id"
+                            [currencyCode]="program?.currency"
+                            (emitCompleted)="emitPayoutCompleted($event)"
+        ></app-program-payout>
 
-  <app-program-funds [selectedPhase]="selectedPhase"
-                     [programId]="program?.id"
-                     [currencyCode]="program?.currency"
-  ></app-program-funds>
+        <app-program-details [selectedPhase]="selectedPhase"
+                            [programId]="program?.id"
+        ></app-program-details>
 
-  <app-program-details [selectedPhase]="selectedPhase"
-                       [programId]="program?.id"
-  ></app-program-details>
-  
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>

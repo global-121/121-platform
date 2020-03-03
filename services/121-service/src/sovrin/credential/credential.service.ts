@@ -19,6 +19,7 @@ import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialEntity } from './credential.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { API } from '../../config';
+import { ConnectionEntity } from '../create-connection/connection.entity';
 
 @Injectable()
 export class CredentialService {
@@ -36,6 +37,8 @@ export class CredentialService {
   private readonly credentialRepository: Repository<CredentialEntity>;
   @InjectRepository(AppointmentEntity)
   private readonly appointmentRepository: Repository<AppointmentEntity>;
+  @InjectRepository(ConnectionEntity)
+  private readonly connectionRepository: Repository<ConnectionEntity>;
 
   public constructor(
     @Inject(forwardRef(() => ProgramService))
@@ -201,12 +204,23 @@ export class CredentialService {
     await this.credentialRepository.save(credentialData);
 
     await this.cleanupIssueCredData(payload.did, payload.programId);
-
+    await this.updateAppointmentStatus(payload.did);
+    await this.updateConnectionStatus(payload.did);
+  }
+  private async updateAppointmentStatus(did): Promise<void> {
     let appointmentUpdated = await this.appointmentRepository.findOne({
-      did: payload.did,
+      did: did,
     });
     appointmentUpdated.status = 'validated';
     await this.appointmentRepository.save(appointmentUpdated);
+  }
+
+  private async updateConnectionStatus(did): Promise<void> {
+    let connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+    connection.validationDate = new Date();
+    await this.connectionRepository.save(connection);
   }
 
   private async getRelatedProgram(programId: number): Promise<ProgramEntity> {
@@ -250,8 +264,8 @@ export class CredentialService {
     if (oldCredential) {
       const errors =
         'A credential has already been created for this did for this program';
-        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      }
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
   }
 
   public async cleanupIssueCredData(

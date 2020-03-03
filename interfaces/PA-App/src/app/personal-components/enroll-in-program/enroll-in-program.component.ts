@@ -3,14 +3,13 @@ import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 
 import { Program, ProgramAttribute, ProgramCriterium, ProgramCriteriumOption } from 'src/app/models/program.model';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { AnswerType, Question, QuestionOption, Answer, AnswerSet } from '../../models/q-and-a.models';
-import { TranslatableString } from 'src/app/models/translatable-string.model';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-enroll-in-program',
@@ -20,9 +19,6 @@ import { TranslatableString } from 'src/app/models/translatable-string.model';
 export class EnrollInProgramComponent extends PersonalComponent {
   @Input()
   public data: any;
-
-  public languageCode: string;
-  public fallbackLanguageCode: string;
 
   private programId: number;
   private currentProgram: Program;
@@ -44,16 +40,13 @@ export class EnrollInProgramComponent extends PersonalComponent {
     public programsService: ProgramsServiceApiService,
     public sovrinService: SovrinService,
     public paData: PaDataService,
-    public translate: TranslateService,
+    public translatableString: TranslatableStringService,
     public conversationService: ConversationService,
   ) {
     super();
   }
 
   ngOnInit() {
-    this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
-
     if (this.data) {
       this.initHistory();
       return;
@@ -102,13 +95,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
       'description',
     ];
     for (const detail of details) {
-      let value = this.mapLabelByLanguageCode(response[detail]);
-
-      if (typeof value === 'undefined') {
-        value = response[detail];
-      }
-
-      programDetails[detail] = value;
+      programDetails[detail] = this.translatableString.get(response[detail]);
     }
 
     return programDetails;
@@ -119,7 +106,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
       return {
         code: criterium.criterium,
         answerType: criterium.answerType,
-        label: this.mapLabelByLanguageCode(criterium.label),
+        label: this.translatableString.get(criterium.label),
         options: (!criterium.options) ? null : this.buildOptions(criterium.options),
       };
     });
@@ -129,23 +116,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return optionSet.map((option) => {
       return {
         value: option.option,
-        label: this.mapLabelByLanguageCode(option.label),
+        label: this.translatableString.get(option.label),
       };
     });
-  }
-
-  private mapLabelByLanguageCode(property: TranslatableString | string): string {
-    let label = property[this.languageCode];
-
-    if (!label) {
-      label = property[this.fallbackLanguageCode];
-    }
-
-    if (!label) {
-      label = property;
-    }
-
-    return label;
   }
 
   public changeAnswers() {

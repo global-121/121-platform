@@ -1,3 +1,4 @@
+import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { CredentialEntity } from './credential.entity';
 import { UserModule } from '../../user/user.module';
 import { Module, forwardRef, HttpModule } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { AppointmentEntity } from '../../schedule/appointment/appointment.entity
     TypeOrmModule.forFeature([
       UserEntity,
       ProgramEntity,
+      ConnectionEntity,
       CredentialAttributesEntity,
       CredentialRequestEntity,
       CredentialEntity,

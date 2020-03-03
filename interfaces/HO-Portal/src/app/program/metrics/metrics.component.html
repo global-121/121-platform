@@ -1,0 +1,71 @@
+
+<div class="metrics" [ngClass]="{ 'is-collapsed': isCollapsed }">
+
+  <table class="metrics--table">
+    <thead>
+      <th class="metrics--header-toggle">
+        <ion-button size="small"
+                    fill="clear"
+                    color="medium"
+                    [title]="isCollapsed ? translate.instant('page.program.metrics.header.expand') : translate.instant('page.program.metrics.header.collapse')"
+                    [aria-label]="isCollapsed ? translate.instant('page.program.metrics.header.expand') : translate.instant('page.program.metrics.header.collapse')"
+                    (click)="toggleView()"
+                    id="metrics-toggle-view"
+                    class="metrics--toggle"
+        >
+          <ion-icon [name]="isCollapsed ? 'expand' : 'contract'"
+                    color="medium"
+                    size="small"
+                    slot="icon-only"
+          ></ion-icon>
+        </ion-button>
+      </th>
+      <th class="metrics--cell-label ion-text-start">
+        {{ 'page.program.metrics.header.metric'|translate }}
+      </th>
+      <th class="metrics--cell-value ion-text-end">
+        {{ 'page.program.metrics.header.latest-value'|translate }}
+      </th>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let metric of metricList">
+        <tr [class]="(metric.group) ? 'metrics--group-' + metric.group : ''">
+          <td class="metrics--cell-icon">
+            <ion-icon *ngIf="metric.icon"
+                      [name]="metric.icon"
+                      size="small"
+            ></ion-icon>
+          </td>
+          <td class="metrics--cell-label">
+            {{ metric.label|translate }}
+          </td>
+          <td class="metrics--cell-value ion-text-end">
+            {{ metric.value }}
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+
+
+  <div *ngIf="!isCollapsed"
+       style="display: flex;"
+       class="ion-margin-vertical ion-align-items-center"
+  >
+    <ion-button size="small"
+                fill="clear"
+                color="medium"
+                [title]="'common.update'|translate"
+                [aria-label]="'common.update'|translate"
+                (click)="update()"
+                id="metrics-update"
+    >
+      <ion-icon name="refresh" size="small" slot="icon-only"></ion-icon>
+    </ion-button>
+
+    <ion-note>
+      {{ 'page.program.metrics.last-updated'|translate:{ date: lastUpdated } }}
+    </ion-note>
+  </div>
+
+</div>

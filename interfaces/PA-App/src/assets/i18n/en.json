@@ -58,14 +58,6 @@
       "confirm-received": "Next step: Make an appointment for Digital ID activation and program application.",
       "prepare-documents": "To save time at your appointment, make sure to bring these documents:"
     },
-    "initial-needs": {
-      "introduction": "Understanding your needs will help us create better programs in your area, as soon as we can.",
-      "info-message": "Lorem ipsem bladibla",
-      "input-label": "My needs are:",
-      "input-placeholder": "I need...",
-      "submit": "Submit my needs",
-      "conclusion": "Thank you for sharing."
-    },
     "signup-signin": {
       "introduction": "Please select your digital ID.",
       "create-id": "Create a Digital ID",
@@ -163,6 +155,7 @@
     "hide": "Hide password"
   },
   "validation": {
+    "generic-error": "We cannot process some of your input. Please check and update one of your answers.",
     "phoneNumber":  "We couldn't verify that phone-number. Please update and try again."
   },
   "connection": {
