@@ -1,13 +1,16 @@
-<confirm-prompt *ngIf="btnAvailable"
-                [disabled]="selectedPhase !== activePhase || !phaseReady || isInProgress || currentUserRole !== userRoleEnum.ProgramManager"
-                (confirm)="advancePhase(activePhaseId)"
-                [subHeader]="btnText"
-                class="ion-float-end"
+<div style="display: flex;"
+     class="ion-align-items-center ion-justify-content-end"
 >
-  {{ btnText }}
-</confirm-prompt>
+  <ion-spinner *ngIf="isInProgress"
+               color="primary"
+  ></ion-spinner>
 
-<ion-spinner *ngIf="isInProgress"
-            color="primary"
-            class="ion-float-end"
-></ion-spinner>
+  <confirm-prompt *ngIf="btnAvailable"
+                  [disabled]="selectedPhase !== activePhase || !phaseReady || isInProgress || currentUserRole !== userRoleEnum.ProgramManager"
+                  (confirm)="advancePhase(activePhaseId)"
+                  [subHeader]="btnText"
+                  class="ion-margin-start"
+  >
+    {{ btnText }}
+  </confirm-prompt>
+</div>
