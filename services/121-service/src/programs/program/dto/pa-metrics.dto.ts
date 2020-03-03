@@ -1,6 +1,7 @@
 export class PaMetrics {
-  public pendingVerification: number;
-  public verifiedAwaitingDecision: number;
+  public startedEnlisting: number;
+  public finishedEnlisting: number;
+  public verified: number;
   public included: number;
   public excluded: number;
 }

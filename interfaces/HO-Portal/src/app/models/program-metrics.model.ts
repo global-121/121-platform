@@ -5,8 +5,9 @@ export class ProgramMetrics {
 }
 
 export class PeopleMetrics {
-  pendingVerification: number;
-  verifiedAwaitingDecision: number;
+  startedEnlisting: number;
+  finishedEnlisting: number;
+  verified: number;
   included: number;
   excluded: number;
 }

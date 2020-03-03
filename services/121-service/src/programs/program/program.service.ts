@@ -667,6 +667,29 @@ export class ProgramService {
     return connectionsReponse;
   }
 
+  private async getConnectionsStartedProcess(
+    programId,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find({
+      order: { inclusionScore: 'DESC' },
+    });
+    return connections;
+  }
+
+  private async getConnectionsFinishedEnlisting(
+    programId,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find({
+      order: { inclusionScore: 'DESC' },
+    });
+    const pendingConnections = [];
+    for (let connection of connections)
+      if (connection.appliedDate) {
+        pendingConnections.push(connection);
+      }
+    return pendingConnections;
+  }
+
   private async getConnectionsAwaitingInclusionDecision(
     programId,
   ): Promise<ConnectionEntity[]> {
@@ -917,11 +940,19 @@ export class ProgramService {
 
   public async getPaMetrics(programId): Promise<PaMetrics> {
     const metrics = new PaMetrics();
-    metrics.included = await this.getTotalIncluded(programId);
-    metrics.verifiedAwaitingDecision = (await this.getConnectionsAwaitingInclusionDecision(
+    metrics.startedEnlisting = (await this.getConnectionsStartedProcess(
       programId,
     )).length;
+    metrics.finishedEnlisting = (await this.getConnectionsFinishedEnlisting(
+      programId,
+    )).length;
+    metrics.included = await this.getTotalIncluded(programId);
     metrics.excluded = (await this.getExcludedConnections(programId)).length;
+    const paWaiting = (await this.getConnectionsAwaitingInclusionDecision(
+      programId,
+    )).length;
+    metrics.verified = paWaiting + metrics.included + metrics.excluded;
+
     return metrics;
   }
 }
