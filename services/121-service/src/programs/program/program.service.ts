@@ -63,7 +63,7 @@ export class ProgramService {
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
-  ) { }
+  ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
@@ -114,7 +114,9 @@ export class ProgramService {
       .where('"countryId" = :countryId', { countryId: query });
 
     const programs = await qb.getMany();
-    if (process.env.NODE_ENV === 'production') { programs.filter(program => program.published); }
+    if (process.env.NODE_ENV === 'production') {
+      programs.filter(program => program.published);
+    }
     const programsCount = programs.length;
     return { programs, programsCount };
   }
@@ -206,11 +208,9 @@ export class ProgramService {
     const changedProgram = await this.findOne(programId);
     if (newState === ProgramPhase.registration) {
       await this.publish(programId);
-    } else if (
-      newState === ProgramPhase.inclusion ||      // This represents the real case of 'closing registration'
-      newState === ProgramPhase.design            // This represents the (debug) case of moving back to design for some reason
-    ) {
-      if (process.env.NODE_ENV === 'production') {  // Only unpublish in production-mode, as this inhibits developing/testing
+    } else if (newState === ProgramPhase.inclusion) {
+      if (process.env.NODE_ENV === 'production') {
+        // Only unpublish in production-mode, as this inhibits developing/testing
         await this.unpublish(programId);
       }
     }
@@ -645,9 +645,7 @@ export class ProgramService {
   ): Promise<any[]> {
     let selectedConnections;
     if (!privacy) {
-      selectedConnections = await this.getConnections(
-        programId,
-      );
+      selectedConnections = await this.getConnections(programId);
     } else {
       selectedConnections = await this.getIncludedExcludedConnections(
         programId,
@@ -660,9 +658,15 @@ export class ProgramService {
       connectionReponse['score'] = connection.inclusionScore;
       connectionReponse['created'] = connection.created;
       connectionReponse['updated'] = connection.updated;
-      connectionReponse['enrolled'] = connection.programsEnrolled.includes(+programId);
-      connectionReponse['included'] = connection.programsIncluded.includes(+programId);
-      connectionReponse['excluded'] = connection.programsExcluded.includes(+programId);
+      connectionReponse['enrolled'] = connection.programsEnrolled.includes(
+        +programId,
+      );
+      connectionReponse['included'] = connection.programsIncluded.includes(
+        +programId,
+      );
+      connectionReponse['excluded'] = connection.programsExcluded.includes(
+        +programId,
+      );
       connectionReponse['appliedDate'] = connection.appliedDate;
       connectionReponse['validationDate'] = connection.validationDate;
       connectionReponse['inclusionDate'] = connection.inclusionDate;
@@ -716,9 +720,7 @@ export class ProgramService {
     return enrolledConnections;
   }
 
-  private async getConnections(
-    programId,
-  ): Promise<ConnectionEntity[]> {
+  private async getConnections(programId): Promise<ConnectionEntity[]> {
     const connections = await this.connectionRepository.find({
       order: { inclusionScore: 'DESC' },
     });
