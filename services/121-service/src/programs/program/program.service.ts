@@ -111,11 +111,11 @@ export class ProgramService {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium')
-      .where('"countryId" = :countryId', { countryId: query })
-      .andWhere('published = true');
+      .where('"countryId" = :countryId', { countryId: query });
 
-    const programsCount = await qb.getCount();
     const programs = await qb.getMany();
+    if (process.env.NODE_ENV === 'production') { programs.filter(program => program.published); }
+    const programsCount = programs.length;
     return { programs, programsCount };
   }
 
@@ -210,7 +210,9 @@ export class ProgramService {
       newState === ProgramPhase.inclusion ||      // This represents the real case of 'closing registration'
       newState === ProgramPhase.design            // This represents the (debug) case of moving back to design for some reason
     ) {
-      await this.unpublish(programId);
+      if (process.env.NODE_ENV === 'production') {  // Only unpublish in production-mode, as this inhibits developing/testing
+        await this.unpublish(programId);
+      }
     }
     return this.buildProgramRO(changedProgram);
   }
