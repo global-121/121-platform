@@ -1,30 +1,38 @@
 <section *ngIf="componentVisible">
   <h2>{{ 'page.program.program-details.section-people'|translate }}</h2>
   
-  <p *ngIf="!enrolledPeople?.length && !showSensitiveData">
+  <p>
+    {{ 'page.program.program-people.targetNumber'|translate }} {{program?.highestScoresX}}
+  </p>
+  <p *ngIf="!enrolledPeople?.length && !showSensitiveData && selectedPhase !== 'design'">
     {{ 'page.program.program-people.noConnections'|translate }}
   </p>
-  <p *ngIf="!enrolledPeople?.length && showSensitiveData">
+  <p *ngIf="!enrolledPeople?.length && showSensitiveData && selectedPhase !== 'design'">
     {{ 'page.program.program-people.noConnectionsPrivacy'|translate }}
   </p>
 
-  <ngx-datatable #people
-                class="bootstrap"
-                limit="50"
-                columnMode="force"
-                rowHeight="auto"
-                headerHeight="50"
-                footerHeight="50"
-                reorderable="false"
-                sortType="multi"
-                selectionType="checkbox"
-                loadingIndicator="true"
-                [columns]="columns"
-                [rows]="enrolledPeople"
-                [selected]="selectedPeople"
-                [messages]="tableMessages"
-                (select)="updateSubmitWarning()"
-  ></ngx-datatable>
+  <div class="full-width">
+    <ngx-datatable #people
+                  class="bootstrap"
+                  limit="50"
+                  columnMode="force"
+                  rowHeight="auto"
+                  headerHeight="50"
+                  footerHeight="50"
+                  reorderable="false"
+                  sortType="multi"
+                  selectionType="checkbox"
+                  [displayCheck]="showCheckbox"
+                  loadingIndicator="true"
+                  [columns]="columns"
+                  [columnMode]="'standard'"
+                  [scrollbarH]="true"
+                  [rows]="enrolledPeople"
+                  [selected]="selectedPeople"
+                  [messages]="tableMessages"
+                  (select)="updateSubmitWarning()"
+    ></ngx-datatable>
+  </div>
 
   <confirm-prompt [disabled]="!enrolledPeople.length"
                   (confirm)="submitInclusion()"
@@ -36,7 +44,7 @@
     {{ 'page.program.program-people.submitPrivacy'|translate }}
   </confirm-prompt>
 
-  <confirm-prompt [disabled]="!enrolledPeople.length"
+  <confirm-prompt [disabled]="!newEnrolledPeople.length || !btnEnabled"
                   (confirm)="submitInclusion()"
                   [subHeader]="'page.program.program-people.submit-warning'|translate"
                   [message]="submitWarning.message"

@@ -23,14 +23,35 @@ export class ProgramComponent implements OnInit {
   public activePhase: string;
   public selectedPhase: string;
   public programPhases: any[];
+  public phaseReady = false;
+  public phaseReadyPayout = false;
+  public phaseReadyPeople = false;
 
   private phasesInput = [
-    ProgramPhase.design,
-    ProgramPhase.registration,
-    ProgramPhase.inclusion,
-    ProgramPhase.finalize,
-    ProgramPhase.payment,
-    ProgramPhase.evaluation
+    {
+      id: 1,
+      name: ProgramPhase.design,
+    },
+    {
+      id: 2,
+      name: ProgramPhase.registration,
+    },
+    {
+      id: 3,
+      name: ProgramPhase.inclusion,
+    },
+    {
+      id: 4,
+      name: ProgramPhase.finalize,
+    },
+    {
+      id: 5,
+      name: ProgramPhase.payment,
+    },
+    {
+      id: 6,
+      name: ProgramPhase.evaluation,
+    }
   ];
 
   constructor(
@@ -54,12 +75,12 @@ export class ProgramComponent implements OnInit {
   }
 
   public createPhases() {
-    const phases = this.phasesInput.map((phase, index) => ({
-      id: index + 1,
-      phase,
-      label: this.translate.instant('page.program.phases.' + phase + '.label'),
-      active: phase === this.activePhase,
-      btnText: this.translate.instant('page.program.phases.' + phase + '.btnText'),
+    const phases = this.phasesInput.map((phase) => ({
+      id: phase.id,
+      phase: phase.name,
+      label: this.translate.instant('page.program.phases.' + phase.name + '.label'),
+      btnText: this.translate.instant('page.program.phases.' + phase.name + '.btnText'),
+      active: phase.name === this.activePhase,
     }));
     return phases;
   }
@@ -78,4 +99,27 @@ export class ProgramComponent implements OnInit {
       this.programPhases = this.createPhases();
     }
   }
+
+  public async emitPayoutCompleted(completed) {
+    if (completed) {
+      this.phaseReadyPayout = true;
+    } else {
+      this.phaseReadyPayout = false;
+    }
+    this.checkPhaseReady();
+  }
+
+  public async emitPeopleCompleted(completed) {
+    if (completed) {
+      this.phaseReadyPeople = true;
+    } else {
+      this.phaseReadyPeople = false;
+    }
+    this.checkPhaseReady();
+  }
+
+  private checkPhaseReady() {
+    this.phaseReady = this.phaseReadyPayout === true && this.phaseReadyPeople === true;
+  }
+
 }

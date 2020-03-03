@@ -29,9 +29,10 @@
     <ion-row>
       <ion-col class="ion-text-right">
         <app-phase-next [programPhases]="programPhases"
-                        [selectedPhase]="selectedPhase"
-                        [programId]="program?.id"
-                        (emitNewPhase)="emitNewPhase($event)"
+                  [selectedPhase]="selectedPhase"
+                  [programId]="program?.id"
+                  [phaseReady]="phaseReady"
+                  (emitNewPhase)="emitNewPhase($event)"
         ></app-phase-next>
       </ion-col>
     </ion-row>
@@ -41,20 +42,23 @@
         <app-metrics [program]="program"></app-metrics>
 
       </ion-col>
+
       <ion-col size=9>
 
+        <app-program-people [selectedPhase]="selectedPhase"
+                      [programId]="program?.id"
+                      [userRole]="currentUserRole"
+                      (emitCompleted)="emitPeopleCompleted($event)"
+        ></app-program-people>
+        
         <app-program-payout [selectedPhase]="selectedPhase"
                             [programId]="program?.id"
                             [currencyCode]="program?.currency"
+                            (emitCompleted)="emitPayoutCompleted($event)"
         ></app-program-payout>
 
-        <app-program-people [selectedPhase]="selectedPhase"
-                            [programId]="program?.id"
-                            [userRole]="currentUserRole"
-        ></app-program-people>
-
         <app-program-details [selectedPhase]="selectedPhase"
-                             [programId]="program?.id"
+                            [programId]="program?.id"
         ></app-program-details>
 
 

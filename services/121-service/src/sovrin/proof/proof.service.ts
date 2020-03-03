@@ -17,7 +17,7 @@ export class ProofService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
-  public constructor(private readonly httpService: HttpService) {}
+  public constructor(private readonly httpService: HttpService) { }
 
   public createProofRequest(
     program: ProgramEntity,
@@ -51,10 +51,6 @@ export class ProofService {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    if (program.published === false) {
-      const errors = 'This program is not published';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     if (!program.proofRequest) {

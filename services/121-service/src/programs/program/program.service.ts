@@ -19,7 +19,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { ProgramEntity } from './program.entity';
+import { ProgramEntity, ProgramPhase } from './program.entity';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 
@@ -63,7 +63,7 @@ export class ProgramService {
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
-  ) {}
+  ) { }
 
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
@@ -111,11 +111,11 @@ export class ProgramService {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium')
-      .where('"countryId" = :countryId', { countryId: query })
-      .andWhere('published = true');
+      .where('"countryId" = :countryId', { countryId: query });
 
-    const programsCount = await qb.getCount();
     const programs = await qb.getMany();
+    if (process.env.NODE_ENV === 'production') { programs.filter(program => program.published); }
+    const programsCount = programs.length;
     return { programs, programsCount };
   }
 
@@ -204,10 +204,15 @@ export class ProgramService {
       state: newState,
     });
     const changedProgram = await this.findOne(programId);
-    if (newState === 'registration') {
-      this.publish(programId);
-    } else if (newState === 'design') {
-      this.unpublish(programId);
+    if (newState === ProgramPhase.registration) {
+      await this.publish(programId);
+    } else if (
+      newState === ProgramPhase.inclusion ||      // This represents the real case of 'closing registration'
+      newState === ProgramPhase.design            // This represents the (debug) case of moving back to design for some reason
+    ) {
+      if (process.env.NODE_ENV === 'production') {  // Only unpublish in production-mode, as this inhibits developing/testing
+        await this.unpublish(programId);
+      }
     }
     return this.buildProgramRO(changedProgram);
   }
@@ -640,7 +645,7 @@ export class ProgramService {
   ): Promise<any[]> {
     let selectedConnections;
     if (!privacy) {
-      selectedConnections = await this.getConnectionsAwaitingInclusionDecision(
+      selectedConnections = await this.getConnections(
         programId,
       );
     } else {
@@ -655,12 +660,15 @@ export class ProgramService {
       connectionReponse['score'] = connection.inclusionScore;
       connectionReponse['created'] = connection.created;
       connectionReponse['updated'] = connection.updated;
+      connectionReponse['enrolled'] = connection.programsEnrolled.includes(+programId);
+      connectionReponse['included'] = connection.programsIncluded.includes(+programId);
+      connectionReponse['excluded'] = connection.programsExcluded.includes(+programId);
+      connectionReponse['appliedDate'] = connection.appliedDate;
+      connectionReponse['validationDate'] = connection.validationDate;
+      connectionReponse['inclusionDate'] = connection.inclusionDate;
       if (privacy) {
-        connectionReponse['name'] = connection.customData['name'];
-        connectionReponse['dob'] = connection.customData['dob'];
-        connectionReponse['included'] = connection.programsIncluded.includes(
-          +programId,
-        );
+        connectionReponse['name'] = connection.customData.name;
+        connectionReponse['dob'] = connection.customData.dob;
       }
       connectionsReponse.push(connectionReponse);
     }
@@ -702,6 +710,23 @@ export class ProgramService {
         connection.programsEnrolled.includes(+programId) &&
         !connection.programsIncluded.includes(+programId) &&
         !connection.programsExcluded.includes(+programId)
+      ) {
+        enrolledConnections.push(connection);
+      }
+    return enrolledConnections;
+  }
+
+  private async getConnections(
+    programId,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find({
+      order: { inclusionScore: 'DESC' },
+    });
+    const enrolledConnections = [];
+    for (let connection of connections)
+      if (
+        connection.programsEnrolled.includes(+programId) ||
+        connection.programsEnrolled.length === 0
       ) {
         enrolledConnections.push(connection);
       }

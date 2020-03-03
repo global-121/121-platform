@@ -1,6 +1,8 @@
 import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { UserRole } from 'src/app/auth/user-role.enum';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-phase-next',
@@ -14,6 +16,8 @@ export class PhaseNextComponent implements OnChanges {
   public programPhases: any[];
   @Input()
   public selectedPhase: string;
+  @Input()
+  public phaseReady: boolean;
   @Output()
   emitNewPhase: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -23,12 +27,21 @@ export class PhaseNextComponent implements OnChanges {
   public btnAvailable: boolean;
   public programPhasesBackup: any[];
   public btnText: string;
+  public isInProgress = false;
+  public userRoleEnum = UserRole;
+  public currentUserRole: string;
+
+  private firstChange = true;
 
   constructor(
     private programsService: ProgramsServiceApiService,
+    private authService: AuthService
   ) { }
 
-  private firstChange = true;
+  async ngOnInit() {
+    this.currentUserRole = this.authService.getUserRole();
+  }
+
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.programPhases && typeof changes.programPhases.currentValue === 'object') {
       this.updatePhases();
@@ -65,8 +78,15 @@ export class PhaseNextComponent implements OnChanges {
   public async advancePhase(phaseId) {
     const nextPhaseId = phaseId + 1;
     const phase = this.programPhases.find(item => item.id === nextPhaseId).phase;
-    await this.programsService.advancePhase(this.programId, phase);
-    this.emitNewPhase.emit(true);
+    this.isInProgress = true;
+    await this.programsService.advancePhase(this.programId, phase).then((response) => {
+      console.log(response);
+      this.isInProgress = false;
+      this.emitNewPhase.emit(true);
+    }, (error) => {
+      console.log(error);
+      this.isInProgress = false;
+    });
   }
 
 }

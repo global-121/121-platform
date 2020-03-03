@@ -44,7 +44,7 @@ export class CredentialService {
     @Inject(forwardRef(() => ProgramService))
     private readonly programService: ProgramService,
     private readonly httpService: HttpService,
-  ) {}
+  ) { }
   // Use by HO is done automatically when a program is published
   public async createOffer(credDefId: string): Promise<object> {
     // const credentialOffer = tyknidtyknid.createCredentialOffer(credDefId)
@@ -76,7 +76,7 @@ export class CredentialService {
   public async getAttributes(programId: number): Promise<any[]> {
     let selectedProgram = await this.programService.findOne(programId);
     let attributes = [];
-    if (selectedProgram && selectedProgram.published === true) {
+    if (selectedProgram) {
       for (let criterium of selectedProgram.customCriteria) {
         attributes.push(criterium);
       }

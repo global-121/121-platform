@@ -5,6 +5,10 @@ export class Person {
   name?: string;
   dob?: string;
   included?: boolean;
+  excluded?: boolean;
   created: string;
   updated: string;
+  appliedDate: string;
+  validationDate: string;
+  inclusionDate: string;
 }

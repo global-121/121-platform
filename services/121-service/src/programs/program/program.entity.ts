@@ -17,13 +17,22 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 
+export enum ProgramPhase {
+  design = 'design',
+  registration = 'registration',
+  inclusion = 'inclusion',
+  finalize = 'finalize',
+  payment = 'payment',
+  evaluation = 'evaluation',
+}
+
 @Entity('program')
 export class ProgramEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({ 'default': 'design' })
-  public state: string;
+  @Column({ 'default': ProgramPhase.design })
+  public state: ProgramPhase;
 
   @Column()
   public location: string;
@@ -144,3 +153,4 @@ export class ProgramEntity {
   @OneToMany(type => TransactionEntity, transactions => transactions.program)
   public transactions: TransactionEntity[];
 }
+

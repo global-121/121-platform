@@ -16,6 +16,8 @@ const tyknIMS = 'http://11.0.0.3:50001/api/';
 const orgIMS = 'http://11.0.0.4:50002/api/';
 const fsp1 = 'https://postman-echo.com/';
 const fsp2 = 'https://postman-echo.com/';
+const fsp3 = 'https://postman-echo.com/';
+const fsp4 = 'https://postman-echo.com/';
 
 export const PRODUCTION_URL = 'https://production-vm.121.global/121-service/';
 export const STAGING_URL = 'https://test-vm.121.global/121-service/';
@@ -38,6 +40,14 @@ export const API = {
     {
       payout: fsp2 + 'post',
       name: 'Mobile Money Provider B',
+    },
+    {
+      payout: fsp3 + 'post',
+      name: 'FSP C - mixed attributes',
+    },
+    {
+      payout: fsp4 + 'post',
+      name: 'FSP D - no attributes',
     },
   ],
 };
