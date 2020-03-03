@@ -38,7 +38,7 @@ export class ProgramPeopleComponent implements OnChanges {
   public userRoleEnum = UserRole;
 
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd'; //, hh:mm';
+  private dateFormat = 'yyyy-MM-dd, hh:mm';
 
   public showSensitiveData: boolean;
 
@@ -304,6 +304,7 @@ export class ProgramPeopleComponent implements OnChanges {
     if (source.length === 0) {
       return [];
     }
+    console.log(source);
 
     const pastInstallments = await this.programsService.getPastInstallments(this.programId);
 
@@ -321,12 +322,12 @@ export class ProgramPeopleComponent implements OnChanges {
           score: person.score,
           did: person.did,
           processStarted: formatDate(person.created, this.dateFormat, this.locale),
-          digitalIdCreated: null,
-          digitalIdValidated: formatDate(person.updated, this.dateFormat, this.locale),
-          vulnerabilityAssessmentCreated: null,
-          vulnerabilityAssessmentValidated: formatDate(person.updated, this.dateFormat, this.locale),
+          digitalIdCreated: person.appliedDate ? formatDate(person.appliedDate, this.dateFormat, this.locale) : null,
+          digitalIdValidated: person.validationDate ? formatDate(person.validationDate, this.dateFormat, this.locale) : null,
+          vulnerabilityAssessmentCreated: person.appliedDate ? formatDate(person.appliedDate, this.dateFormat, this.locale) : null,
+          vulnerabilityAssessmentValidated: person.validationDate ? formatDate(person.validationDate, this.dateFormat, this.locale) : null,
+          inclusionCommunication: person.inclusionDate ? formatDate(person.inclusionDate, this.dateFormat, this.locale) : null,
           included: person.included ? "Included" : (person.excluded ? "Excluded" : ""),
-          inclusionCommunication: null,
         };
 
         this.paymentColumns.map((_, index) => {

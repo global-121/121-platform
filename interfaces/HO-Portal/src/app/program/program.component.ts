@@ -85,10 +85,6 @@ export class ProgramComponent implements OnInit {
     return phases;
   }
 
-  // public updatePhases() {
-  //   this.programPhases.map(phase => phase.active = phase.name === this.activePhase);
-  // }
-
   public emitSelectedPhase(selectedPhase) {
     this.selectedPhase = selectedPhase;
   }
@@ -110,7 +106,7 @@ export class ProgramComponent implements OnInit {
     } else {
       this.phaseReadyPayout = false;
     }
-    this.phaseReady = this.phaseReadyPayout === true && this.phaseReadyPeople === true;
+    this.checkPhaseReady();
   }
 
   public async emitPeopleCompleted(completed) {
@@ -119,6 +115,10 @@ export class ProgramComponent implements OnInit {
     } else {
       this.phaseReadyPeople = false;
     }
+    this.checkPhaseReady();
+  }
+
+  private checkPhaseReady() {
     this.phaseReady = this.phaseReadyPayout === true && this.phaseReadyPeople === true;
   }
 

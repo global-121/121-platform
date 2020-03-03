@@ -661,6 +661,9 @@ export class ProgramService {
       connectionReponse['enrolled'] = connection.programsEnrolled.includes(+programId);
       connectionReponse['included'] = connection.programsIncluded.includes(+programId);
       connectionReponse['excluded'] = connection.programsExcluded.includes(+programId);
+      connectionReponse['appliedDate'] = connection.appliedDate;
+      connectionReponse['validationDate'] = connection.validationDate;
+      connectionReponse['inclusionDate'] = connection.inclusionDate;
       if (privacy) {
         connectionReponse['name'] = connection.customData.name;
         connectionReponse['dob'] = connection.customData.dob;
@@ -697,7 +700,8 @@ export class ProgramService {
     const enrolledConnections = [];
     for (let connection of connections)
       if (
-        connection.programsEnrolled.includes(+programId)
+        connection.programsEnrolled.includes(+programId) ||
+        connection.programsEnrolled.length === 0
       ) {
         enrolledConnections.push(connection);
       }
