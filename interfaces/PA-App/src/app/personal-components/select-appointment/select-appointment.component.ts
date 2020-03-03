@@ -138,12 +138,12 @@ export class SelectAppointmentComponent extends PersonalComponent {
     }
   }
 
-  public postAppointment(timeslotId: number, did: string) {
+  public async postAppointment(timeslotId: number, did: string) {
     this.conversationService.startLoading();
-    this.programsService.postAppointment(timeslotId, did).subscribe(() => {
-      this.conversationService.stopLoading();
-      this.complete();
-    });
+    await this.programsService.postAppointment(timeslotId, did);
+    this.conversationService.stopLoading();
+    this.complete();
+
   }
 
 

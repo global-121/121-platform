@@ -196,7 +196,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  postAppointment(timeslotId: number, did: string): Observable<any> {
+  postAppointment(timeslotId: number, did: string): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/appointment/register/' + timeslotId,
@@ -204,7 +204,18 @@ export class ProgramsServiceApiService {
         did
       },
       true
-    );
+    ).toPromise();
+  }
+
+  postConnectionApply(did: string): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/create-connection/apply-program',
+      {
+        did
+      },
+      true
+    ).toPromise();
   }
 
   postConnectionCustomAttribute(did: string, key: string, value: string): Promise<any> {

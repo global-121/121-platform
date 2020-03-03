@@ -12,8 +12,6 @@ import {
   Body,
   Post,
   Param,
-  UsePipes,
-  ValidationPipe,
   Delete,
   Query,
   UseGuards,

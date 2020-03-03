@@ -63,6 +63,14 @@ export class CreateConnectionService {
     return newConnection;
   }
 
+  public async applyProgram(did: string): Promise<void> {
+    const connection = await this.findOne(did);
+    if (!connection.appliedDate) {
+      connection.appliedDate = new Date();
+      await this.connectionRepository.save(connection);
+    }
+  }
+
   public async delete(didObject: DidDto): Promise<void> {
     await this.connectionRepository.delete({
       did: didObject.did,
