@@ -660,6 +660,7 @@ export class ProgramService {
             name: connection.customData['name'],
             dob: connection.customData['dob'],
             included: connection.programsIncluded.includes(+programId),
+            excluded: connection.programsExcluded.includes(+programId),
           };
           enrolledConnections.push(connectionNew);
         }

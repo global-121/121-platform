@@ -1,6 +1,8 @@
 import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { UserRole } from 'src/app/auth/user-role.enum';
+import { AuthService } from 'src/app/auth/auth.service';
 
 @Component({
   selector: 'app-phase-next',
@@ -26,10 +28,18 @@ export class PhaseNextComponent implements OnChanges {
   public programPhasesBackup: any[];
   public btnText: string;
   public isInProgress = false;
+  public userRoleEnum = UserRole;
+  public currentUserRole: string;
+
 
   constructor(
     private programsService: ProgramsServiceApiService,
+    private authService: AuthService
   ) { }
+
+  async ngOnInit() {
+    this.currentUserRole = this.authService.getUserRole();
+  }
 
   private firstChange = true;
   async ngOnChanges(changes: SimpleChanges) {

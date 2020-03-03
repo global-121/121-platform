@@ -125,7 +125,6 @@ export class ProgramPeopleComponent implements OnChanges {
       resizeable: false,
       disabled: true,
       sortable: false,
-      cellClass: '',
       hidePhases: []
     },
     {
@@ -219,8 +218,7 @@ export class ProgramPeopleComponent implements OnChanges {
     if (this.showSensitiveData) {
       allPeopleData = await this.programsService.getEnrolledPrivacy(this.programId);
       this.enrolledPeople = await this.createTableData(allPeopleData);
-      this.newEnrolledPeople = this.enrolledPeople.filter(i => !i.included && !i.excluded);
-      this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.newEnrolledPeople);
+      this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.enrolledPeople);
     } else {
       allPeopleData = await this.programsService.getEnrolled(this.programId);
       this.enrolledPeople = await this.createTableData(allPeopleData);
@@ -230,7 +228,7 @@ export class ProgramPeopleComponent implements OnChanges {
 
     this.includedPeople = [].concat(this.selectedPeople);
 
-    this.chechkPhaseReady();
+    this.checkPhaseReady();
 
     // Load initial values for warning-message:
     this.updateSubmitWarning();
@@ -238,7 +236,7 @@ export class ProgramPeopleComponent implements OnChanges {
     console.log('Data loaded');
   }
 
-  private chechkPhaseReady() {
+  private checkPhaseReady() {
     //This component only influences ready in the 'inclusion'-phase
     if (this.activePhase === ProgramPhase.inclusion) {
       if (this.newEnrolledPeople.length === 0) {
@@ -268,7 +266,11 @@ export class ProgramPeopleComponent implements OnChanges {
         if (
           (
             !column.hidePhases.includes(ProgramPhase[this.selectedPhase])
-          ) || (column.prop === 'selected' && this.activePhase === ProgramPhase.inclusion)
+          ) || (
+            column.prop === 'selected' &&
+            this.selectedPhase === this.activePhase &&
+            [ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.activePhase])
+          )
         ) {
           columns.push(column);
         }
@@ -345,7 +347,7 @@ export class ProgramPeopleComponent implements OnChanges {
       });
   }
 
-  private defaultSelectedPeople(source: Person[]): Person[] {
+  private defaultSelectedPeople(source: any[]): any[] {
     if (this.selectedPhase === ProgramPhase.inclusion) {
       if (this.program.inclusionCalculationType === InclusionCalculationType.highestScoresX) {
         const nrToInclude = this.program.highestScoresX;
@@ -361,12 +363,20 @@ export class ProgramPeopleComponent implements OnChanges {
     }
   }
 
-  private defaultSelectedPeoplePrivacy(source: Person[]): Person[] {
-    return source.filter((person) => person.included);
+  private defaultSelectedPeoplePrivacy(source: any[]): any[] {
+    if (
+      this.selectedPhase === this.activePhase &&
+      [ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.selectedPhase])
+    ) {
+      return source.filter((person) => person.included === 'Included');
+    } else {
+      return [];
+    }
   }
 
   public showCheckbox(row) {
-    return !row.included;
+    return !row.included  // Show checkboxes only for new enrolled PA's in program-manager mode 
+      || row.name;        // OR always when in privacy-officer (where endpoint gives only in/excluded people anyway)
   }
 
   public updateSubmitWarning() {

@@ -1,5 +1,5 @@
 <confirm-prompt *ngIf="btnAvailable"
-                [disabled]="selectedPhase !== activePhase || !phaseReady || isInProgress"
+                [disabled]="selectedPhase !== activePhase || !phaseReady || isInProgress || currentUserRole !== userRoleEnum.ProgramManager"
                 (confirm)="advancePhase(activePhaseId)"
                 [subHeader]="btnText"
                 class="ion-float-end"
