@@ -1,7 +1,7 @@
 @ho-portal
-Feature: View funds overview
+Feature: View metrics overview
 
-  Scenario: View funds overview successfully
+  Scenario: View metrics overview successfully
     Given a logged-in "program-manager" user
     When the user views the page "program-details"
     Then a number for "funds received" is shown
@@ -9,19 +9,19 @@ Feature: View funds overview
     And a number for "funds available" is shown
     And a date for "Last updated" is shown
 
-  Scenario: Funds overview not available
+  Scenario: Funds not available
     Given the "funding-service" is unavailable
     Given a logged-in "program-manager" user
     When the user views the page "program-details"
-    Then an error-message: "Funds overview not available" is shown
+    Then a "?" for "funds received" is shown
+    And a "?" for "funds transferred" is shown
+    And a "?" for "funds available" is shown
 
-  Scenario: Refresh funds overview
+  Scenario: Refresh metrics overview
     Given a logged-in "program-manager" user
-    Given the user viewed the funds overview before
-    Given the program-funds have changed
+    Given the user viewed the metrics overview before
+    Given any program-metrics have changed
     When the user clicks the "update"-button
-    Then a new number for "funds received" is shown
-    And a new number for "funds transferred" is shown
-    And a new number for "funds available" is shown
+    Then the most recent values for all metrics are shown
     And a new date for "Last updated" is shown
 

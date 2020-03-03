@@ -6,7 +6,7 @@ export class FundingService {
   public constructor(private readonly httpService: HttpService) {}
 
   public async getProgramFunds(programId: number): Promise<FundingOverview> {
-    const totalRaised = Math.floor(Math.random() * (100000 - 500 + 1)) + 500;
+    const totalRaised = Math.floor(Math.random() * (100000 - 500 + 1)) + 50000;
     const totalTransferred = Math.floor(Math.random() * (49999 - 1 + 1)) + 1;
 
     const fundsDisberse = {
