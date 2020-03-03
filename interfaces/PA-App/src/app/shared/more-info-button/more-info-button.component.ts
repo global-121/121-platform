@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { InfoPopupComponent } from '../../info-popup/info-popup.component';
+import { InfoPopupComponent } from '../info-popup/info-popup.component';
 import { ModalController } from '@ionic/angular';
 
 @Component({
