@@ -16,7 +16,7 @@ Features
 Features of the 121-platform are described in this folder in a standardizes way using the [Gherkin-language](https://cucumber.io/docs/gherkin/).
 
 ### For Humanitarian Organization (HO-Portal)
-- [View funds overview](HO-Portal/View_funds_overview.feature)
+- [View metrics overview](HO-Portal/View_metrics_overview.feature)
 - [Manage payment installments](HO-Portal/Manage_payment_installments.feature)
 - [Manage people enrolled](HO-Portal/Manage_people_enrolled.feature)
 - [Manage people in/excluded](HO-Portal/Manage_people_in_or_excluded.feature)
