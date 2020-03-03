@@ -25,15 +25,8 @@ export class ProgramComponent implements OnInit {
   public selectedPhase: string;
   public programPhases: any[];
   public phaseReady: boolean = false;
-
-  // private phasesInput = [
-  //   ProgramPhase.design,
-  //   ProgramPhase.registration,
-  //   ProgramPhase.inclusion,
-  //   ProgramPhase.finalize,
-  //   ProgramPhase.payment,
-  //   ProgramPhase.evaluation
-  // ];
+  public phaseReadyPayout: boolean = false;
+  public phaseReadyPeople: boolean = false;
 
   private phasesInput = [
     {
@@ -113,12 +106,26 @@ export class ProgramComponent implements OnInit {
     }
   }
 
-  public async emitCompleted(completed) {
+  public async emitPayoutCompleted(completed) {
     if (completed) {
-      this.phaseReady = true;
+      this.phaseReadyPayout = true;
     } else {
-      this.phaseReady = false;
+      this.phaseReadyPayout = false;
     }
+    console.log(this.phaseReadyPayout, this.phaseReadyPeople);
+    this.phaseReady = this.phaseReadyPayout === true && this.phaseReadyPeople === true;
+    console.log(this.phaseReady);
+  }
+
+  public async emitPeopleCompleted(completed) {
+    if (completed) {
+      this.phaseReadyPeople = true;
+    } else {
+      this.phaseReadyPeople = false;
+    }
+    console.log(this.phaseReadyPayout, this.phaseReadyPeople);
+    this.phaseReady = this.phaseReadyPayout === true && this.phaseReadyPeople === true;
+    console.log(this.phaseReady);
   }
 
   private mapLabelByLanguageCode(property: any) {

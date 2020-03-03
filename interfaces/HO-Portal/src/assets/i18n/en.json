@@ -131,8 +131,8 @@
         "submit-warning-pa-included": "PA's included:",
         "submit-warning-pa-excluded": "PA's excluded:",
         "submit-warningPrivacy": "Inclusion will be updated for:",
-        "submit-warning-pa-to-included": "PA's included > excluded:",
-        "submit-warning-pa-to-excluded": "PA's excluded > included:",
+        "submit-warning-pa-to-included": "PA's excluded > included:",
+        "submit-warning-pa-to-excluded": "PA's included > excluded:",
         "submitPrivacy": "Update inclusion decision",
         "submit": "Confirm inclusion decision"
       },

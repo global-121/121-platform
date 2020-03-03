@@ -36,13 +36,13 @@
   <app-program-people [selectedPhase]="selectedPhase"
                       [programId]="program?.id"
                       [userRole]="currentUserRole"
-                      (emitCompleted)="emitCompleted($event)"
+                      (emitCompleted)="emitPeopleCompleted($event)"
   ></app-program-people>
   
   <app-program-payout [selectedPhase]="selectedPhase"
                       [programId]="program?.id"
                       [currencyCode]="program?.currency"
-                      (emitCompleted)="emitCompleted($event)"
+                      (emitCompleted)="emitPayoutCompleted($event)"
   ></app-program-payout>
 
   <app-program-funds [selectedPhase]="selectedPhase"

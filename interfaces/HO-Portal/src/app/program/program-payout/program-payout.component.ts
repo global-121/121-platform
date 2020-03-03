@@ -59,12 +59,14 @@ export class ProgramPayoutComponent implements OnChanges {
     this.currentUserRole = this.authService.getUserRole();
     this.programId = this.route.snapshot.params.id;
     this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
+    this.emitCompleted.emit(false);
     this.createInstallments(this.programId);
   }
 
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
       this.checkVisibility(this.selectedPhase);
+      this.createInstallments(this.programId);
     }
     if (changes.programId && typeof changes.programId.currentValue === 'number') {
       this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
