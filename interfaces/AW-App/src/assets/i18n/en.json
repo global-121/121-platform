@@ -54,6 +54,9 @@
       "conclusion": "The Program credential has been created. As such there is no need, and thus no possibility, for you to see the PA's personal information any more here."
     }
   },
+  "connection": {
+    "error-retry": "Something went wrong, do you want to try again?"
+  },
   "shared": {
     "submit-button": "Submit"
   }

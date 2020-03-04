@@ -72,14 +72,15 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getAppointments(): Observable<any> {
+  getAppointments(): Promise<any> {
     return this.apiService.get(
       environment.url_121_service_api,
       '/appointment/appointments'
     ).pipe(
       tap(response => console.log('response: ', response)),
       map(response => response)
-    );
+    )
+      .toPromise();
   }
 
   getPrefilledAnswers(did: string, programId: number): Observable<any> {
