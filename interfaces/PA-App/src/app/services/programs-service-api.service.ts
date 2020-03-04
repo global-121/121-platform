@@ -207,10 +207,10 @@ export class ProgramsServiceApiService {
     ).toPromise();
   }
 
-  postConnectionApply(did: string): Promise<any> {
+  postConnectionApply(did: string, programId: number): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,
-      '/sovrin/create-connection/apply-program',
+      '/sovrin/create-connection/apply-program/' + programId,
       {
         did
       },

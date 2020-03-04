@@ -37,6 +37,13 @@ export class ConnectionEntity {
     default: () => 'array[]::integer[]',
     nullable: true,
   })
+  public programsApplied: number[];
+
+  @Column('numeric', {
+    array: true,
+    default: () => 'array[]::integer[]',
+    nullable: true,
+  })
   public programsEnrolled: number[];
 
   @Column('numeric', {

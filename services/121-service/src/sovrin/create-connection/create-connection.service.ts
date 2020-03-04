@@ -31,7 +31,7 @@ export class CreateConnectionService {
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
 
-  public constructor(private readonly sovrinSetupService: SovrinSetupService) {}
+  public constructor(private readonly sovrinSetupService: SovrinSetupService) { }
 
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
@@ -63,10 +63,11 @@ export class CreateConnectionService {
     return newConnection;
   }
 
-  public async applyProgram(did: string): Promise<void> {
+  public async applyProgram(did: string, programId: number): Promise<void> {
     const connection = await this.findOne(did);
     if (!connection.appliedDate) {
       connection.appliedDate = new Date();
+      connection.programsApplied.push(+programId);
       await this.connectionRepository.save(connection);
     }
   }

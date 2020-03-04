@@ -63,7 +63,7 @@ export class ProgramService {
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
-  ) {}
+  ) { }
 
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
@@ -679,30 +679,7 @@ export class ProgramService {
     return connectionsReponse;
   }
 
-  private async getConnectionsStartedProcess(
-    programId,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
-      order: { inclusionScore: 'DESC' },
-    });
-    return connections;
-  }
-
-  private async getConnectionsFinishedEnlisting(
-    programId,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
-      order: { inclusionScore: 'DESC' },
-    });
-    const pendingConnections = [];
-    for (let connection of connections)
-      if (connection.appliedDate) {
-        pendingConnections.push(connection);
-      }
-    return pendingConnections;
-  }
-
-  private async getConnectionsAwaitingInclusionDecision(
+  private async getConnections(
     programId,
   ): Promise<ConnectionEntity[]> {
     const connections = await this.connectionRepository.find({
@@ -711,24 +688,8 @@ export class ProgramService {
     const enrolledConnections = [];
     for (let connection of connections)
       if (
-        connection.programsEnrolled.includes(+programId) &&
-        !connection.programsIncluded.includes(+programId) &&
-        !connection.programsExcluded.includes(+programId)
-      ) {
-        enrolledConnections.push(connection);
-      }
-    return enrolledConnections;
-  }
-
-  private async getConnections(programId): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
-      order: { inclusionScore: 'DESC' },
-    });
-    const enrolledConnections = [];
-    for (let connection of connections)
-      if (
-        connection.programsEnrolled.includes(+programId) ||
-        connection.programsEnrolled.length === 0
+        connection.programsApplied.includes(+programId) ||
+        connection.programsApplied.length === 0
       ) {
         enrolledConnections.push(connection);
       }
@@ -746,6 +707,55 @@ export class ProgramService {
       if (
         connection.programsIncluded.includes(+programId) ||
         connection.programsExcluded.includes(+programId)
+      ) {
+        enrolledConnections.push(connection);
+      }
+    return enrolledConnections;
+  }
+
+  private async getConnectionsStartedProcess(
+    programId,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find({
+      order: { inclusionScore: 'DESC' },
+    });
+    const startedConnections = [];
+    for (let connection of connections)
+      if (
+        connection.programsApplied.includes(+programId) ||
+        connection.programsApplied.length === 0
+      ) {
+        startedConnections.push(connection);
+      }
+    return startedConnections;
+  }
+
+  private async getConnectionsFinishedEnlisting(
+    programId,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find({
+      order: { inclusionScore: 'DESC' },
+    });
+    const pendingConnections = [];
+    for (let connection of connections)
+      if (connection.programsApplied.includes(+programId)) {
+        pendingConnections.push(connection);
+      }
+    return pendingConnections;
+  }
+
+  private async getConnectionsAwaitingInclusionDecision(
+    programId,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find({
+      order: { inclusionScore: 'DESC' },
+    });
+    const enrolledConnections = [];
+    for (let connection of connections)
+      if (
+        connection.programsEnrolled.includes(+programId) &&
+        !connection.programsIncluded.includes(+programId) &&
+        !connection.programsExcluded.includes(+programId)
       ) {
         enrolledConnections.push(connection);
       }
