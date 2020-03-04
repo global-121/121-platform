@@ -17,8 +17,8 @@
     </ion-title>
     <ion-buttons slot="end">
       <app-phase-navigation [programPhases]="programPhases"
-                            (emitSelectedPhase)="emitSelectedPhase($event)"
-                            (emitProgramPhases)="emitProgramPhases($event)"
+                            (outputSelectedPhase)="onSelectedPhase($event)"
+                            (outputProgramPhases)="onProgramPhases($event)"
       ></app-phase-navigation>
     </ion-buttons>
   </ion-toolbar>
@@ -37,19 +37,19 @@
                         [selectedPhase]="selectedPhase"
                         [programId]="program?.id"
                         [phaseReady]="phaseReady"
-                        (emitNewPhase)="emitNewPhase($event)"
+                        (isNewPhase)="onNewPhase($event)"
         ></app-phase-next>
 
         <app-program-people [selectedPhase]="selectedPhase"
                             [programId]="program?.id"
                             [userRole]="currentUserRole"
-                            (emitCompleted)="emitPeopleCompleted($event)"
+                            (isCompleted)="onPeopleCompleted($event)"
         ></app-program-people>
 
         <app-program-payout [selectedPhase]="selectedPhase"
                             [programId]="program?.id"
                             [currencyCode]="program?.currency"
-                            (emitCompleted)="emitPayoutCompleted($event)"
+                            (isCompleted)="onPayoutCompleted($event)"
         ></app-program-payout>
 
         <app-program-details [selectedPhase]="selectedPhase"

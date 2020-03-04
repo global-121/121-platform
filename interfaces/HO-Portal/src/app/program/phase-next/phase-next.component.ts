@@ -19,7 +19,7 @@ export class PhaseNextComponent implements OnChanges {
   @Input()
   public phaseReady: boolean;
   @Output()
-  emitNewPhase: EventEmitter<boolean> = new EventEmitter<boolean>();
+  isNewPhase: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public program: Program;
   public activePhaseId: number;
@@ -53,6 +53,13 @@ export class PhaseNextComponent implements OnChanges {
     }
   }
 
+  public checkDisabled() {
+    return this.selectedPhase !== this.activePhase
+      || !this.phaseReady
+      || this.isInProgress
+      || this.currentUserRole !== this.userRoleEnum.ProgramManager
+  }
+
   private async updatePhases() {
     if (this.firstChange) { this.programPhasesBackup = this.programPhases; }
     const activePhase = this.programPhases.find(item => item.active);
@@ -80,9 +87,8 @@ export class PhaseNextComponent implements OnChanges {
     const phase = this.programPhases.find(item => item.id === nextPhaseId).phase;
     this.isInProgress = true;
     await this.programsService.advancePhase(this.programId, phase).then((response) => {
-      console.log(response);
       this.isInProgress = false;
-      this.emitNewPhase.emit(true);
+      this.isNewPhase.emit(true);
     }, (error) => {
       console.log(error);
       this.isInProgress = false;

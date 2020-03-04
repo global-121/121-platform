@@ -85,13 +85,13 @@ export class ProgramComponent implements OnInit {
     return phases;
   }
 
-  public emitSelectedPhase(selectedPhase) {
+  public onSelectedPhase(selectedPhase) {
     this.selectedPhase = selectedPhase;
   }
-  public emitProgramPhases(programPhases) {
+  public onProgramPhases(programPhases) {
     this.programPhases = programPhases;
   }
-  public async emitNewPhase(newPhase) {
+  public async onNewPhase(newPhase) {
     if (newPhase) {
       this.program = await this.programsService.getProgramById(this.program.id);
       window.location.reload();
@@ -101,7 +101,7 @@ export class ProgramComponent implements OnInit {
     }
   }
 
-  public async emitPayoutCompleted(completed) {
+  public async onPayoutCompleted(completed) {
     if (completed) {
       this.phaseReadyPayout = true;
     } else {
@@ -110,7 +110,7 @@ export class ProgramComponent implements OnInit {
     this.checkPhaseReady();
   }
 
-  public async emitPeopleCompleted(completed) {
+  public async onPeopleCompleted(completed) {
     if (completed) {
       this.phaseReadyPeople = true;
     } else {

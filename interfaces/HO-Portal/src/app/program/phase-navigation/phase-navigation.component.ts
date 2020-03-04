@@ -12,7 +12,7 @@ export class PhaseNavigationComponent implements OnChanges {
   @Input()
   public programPhases: any[];
   @Output()
-  emitSelectedPhase: EventEmitter<string> = new EventEmitter<string>();
+  outputSelectedPhase: EventEmitter<string> = new EventEmitter<string>();
 
   public program: Program;
   public activePhaseId: number;
@@ -40,7 +40,7 @@ export class PhaseNavigationComponent implements OnChanges {
     const selectedPhaseObj = this.programPhases.find(item => item.id === phase);
     this.selectedPhase = selectedPhaseObj.phase;
     this.selectedPhaseId = selectedPhaseObj.id;
-    this.emitSelectedPhase.emit(this.selectedPhase);
+    this.outputSelectedPhase.emit(this.selectedPhase);
   }
 
   public getColor(phase) {

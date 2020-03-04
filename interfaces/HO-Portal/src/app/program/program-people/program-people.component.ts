@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
@@ -15,15 +14,12 @@ import { UserRole } from 'src/app/auth/user-role.enum';
 export class ProgramPeopleComponent implements OnChanges {
   @Input()
   public selectedPhase: string;
-
   @Input()
   public userRole: string;
-
   @Input()
   public programId: number;
-
   @Output()
-  emitCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
+  isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public componentVisible: boolean;
   private presentInPhases = [
@@ -35,11 +31,10 @@ export class ProgramPeopleComponent implements OnChanges {
     ProgramPhase.evaluation
   ];
   private activePhase: ProgramPhase;
-  public userRoleEnum = UserRole;
-
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, hh:mm';
 
+  public userRoleEnum = UserRole;
   public showSensitiveData: boolean;
 
   public program: Program;
@@ -49,7 +44,7 @@ export class ProgramPeopleComponent implements OnChanges {
   public paymentColumns: any[] = [];
   public tableMessages: any;
   public submitWarning: any;
-  public btnEnabled = false;
+  public showNoConnectionsMessage: boolean;
 
   public enrolledPeople: Person[] = [];
   public newEnrolledPeople: Person[] = [];
@@ -57,6 +52,9 @@ export class ProgramPeopleComponent implements OnChanges {
   private includedPeople: any[] = [];
   private newIncludedPeople: any[] = [];
   private newExcludedPeople: any[] = [];
+
+  private includedLabel: string;
+  private excludedLabel: string;
 
   private columnsAvailable = [
     {
@@ -168,6 +166,9 @@ export class ProgramPeopleComponent implements OnChanges {
   ) {
     this.locale = this.translate.getBrowserCultureLang();
 
+    this.includedLabel = this.translate.instant('page.program.program-people.included');
+    this.excludedLabel = this.translate.instant('page.program.program-people.excluded');
+
     this.tableMessages = {
       emptyMessage: this.translate.instant('common.table.no-data'),
       totalMessage: this.translate.instant('common.table.total'),
@@ -204,10 +205,6 @@ export class ProgramPeopleComponent implements OnChanges {
 
     await this.determineColumns();
 
-    this.btnEnabled =
-      this.activePhase === ProgramPhase.inclusion
-      && this.selectedPhase === ProgramPhase.inclusion;
-
     this.loadData();
   }
 
@@ -217,6 +214,93 @@ export class ProgramPeopleComponent implements OnChanges {
 
   public checkVisibility(phase) {
     this.componentVisible = this.presentInPhases.includes(phase);
+  }
+
+  private checkPhaseReady() {
+    // This component only influences ready in the 'inclusion'-phase
+    if (this.activePhase !== ProgramPhase.inclusion) {
+      this.isCompleted.emit(true);
+      return;
+    }
+
+    if (this.newEnrolledPeople.length === 0) {
+      this.isCompleted.emit(true);
+    } else {
+      this.isCompleted.emit(false);
+    }
+  }
+
+  public confirmBtnDisabled() {
+    if (this.showSensitiveData) {
+      return this.enrolledPeople.length === 0 ||
+        this.selectedPhase !== this.activePhase ||
+        ![ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.activePhase])
+    } else {
+      return this.newEnrolledPeople.length === 0 ||
+        this.activePhase !== ProgramPhase.inclusion ||
+        this.selectedPhase !== ProgramPhase.inclusion
+    }
+  }
+
+  public checkNoConnectionsMessage() {
+    return !this.enrolledPeople.length && this.selectedPhase !== ProgramPhase.design;
+  }
+
+  private async determineColumns() {
+
+    const columns = [];
+    for (const column of this.columnsAvailable) {
+      if (!this.showSensitiveData) {
+        if (this.checkColumn(column)) {
+          columns.push(column);
+        }
+      } else {
+        if (this.checkColumnPrivacy(column)) {
+          columns.push(column);
+        }
+      }
+    }
+
+    this.paymentColumns = this.addPaymentColumns();
+    for (const column of this.paymentColumns) {
+      columns.push(column);
+    }
+
+    this.columns = columns;
+  }
+
+  private checkColumn(column) {
+    return (
+      !column.privacy &&
+      !column.hidePhases.includes(ProgramPhase[this.selectedPhase])
+    ) || (
+        column.prop === 'selected' &&
+        this.selectedPhase === this.activePhase &&
+        ProgramPhase.inclusion === this.activePhase
+      );
+  }
+
+  private checkColumnPrivacy(column) {
+    return !column.hidePhases.includes(ProgramPhase[this.selectedPhase]) || (
+      column.prop === 'selected' &&
+      this.selectedPhase === this.activePhase &&
+      [ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.activePhase])
+    );
+  }
+
+  private addPaymentColumns() {
+    const paymentColumns = [];
+    for (let p = 0; p < this.nrOfInstallments; p++) {
+      const column = {
+        prop: 'payment' + (p + 1),
+        name: this.translate.instant('page.program.program-people.column.payment') + ' #' + (p + 1),
+        draggable: false,
+        resizeable: false,
+        hidePhases: []
+      };
+      paymentColumns.push(column);
+    }
+    return paymentColumns;
   }
 
   private async loadData() {
@@ -243,75 +327,10 @@ export class ProgramPeopleComponent implements OnChanges {
     console.log('Data loaded');
   }
 
-  private checkPhaseReady() {
-    // This component only influences ready in the 'inclusion'-phase
-    if (this.activePhase === ProgramPhase.inclusion) {
-      if (this.newEnrolledPeople.length === 0) {
-        this.emitCompleted.emit(true);
-      } else {
-        this.emitCompleted.emit(false);
-      }
-    } else {
-      this.emitCompleted.emit(true);
-    }
-  }
-
-  private async determineColumns() {
-
-    const columns = [];
-    for (const column of this.columnsAvailable) {
-      if (!this.showSensitiveData) {
-        if (
-          (
-            !column.privacy &&
-            !column.hidePhases.includes(ProgramPhase[this.selectedPhase])
-          ) || (column.prop === 'selected' && this.activePhase === ProgramPhase.inclusion)
-        ) {
-          columns.push(column);
-        }
-      } else {
-        if (
-          (
-            !column.hidePhases.includes(ProgramPhase[this.selectedPhase])
-          ) || (
-            column.prop === 'selected' &&
-            this.selectedPhase === this.activePhase &&
-            [ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.activePhase])
-          )
-        ) {
-          columns.push(column);
-        }
-      }
-    }
-
-    this.paymentColumns = this.addPaymentColumns();
-    for (const column of this.paymentColumns) {
-      columns.push(column);
-    }
-
-    this.columns = columns;
-  }
-
-  private addPaymentColumns() {
-    const paymentColumns = [];
-    for (let p = 0; p < this.nrOfInstallments; p++) {
-      const column = {
-        prop: 'payment' + (p + 1),
-        name: this.translate.instant('page.program.program-people.column.payment') + ' #' + (p + 1),
-        draggable: false,
-        resizeable: false,
-        hidePhases: []
-      };
-      paymentColumns.push(column);
-    }
-    return paymentColumns;
-  }
-
-  private async createTableData(source: Person[]): Promise<Person[]> {
+  private async createTableData(source: Person[]): Promise<any[]> {
     if (source.length === 0) {
       return [];
     }
-    console.log(source);
 
     const pastInstallments = await this.programsService.getPastInstallments(this.programId);
 
@@ -324,7 +343,7 @@ export class ProgramPeopleComponent implements OnChanges {
         }
       })
       .map((person, index) => {
-        const personData: any = {
+        let personData: any = {
           pa: `PA #${index + 1}`,
           score: person.score,
           did: person.did,
@@ -334,15 +353,10 @@ export class ProgramPeopleComponent implements OnChanges {
           vulnerabilityAssessmentCreated: person.appliedDate ? formatDate(person.appliedDate, this.dateFormat, this.locale) : null,
           vulnerabilityAssessmentValidated: person.validationDate ? formatDate(person.validationDate, this.dateFormat, this.locale) : null,
           inclusionCommunication: person.inclusionDate ? formatDate(person.inclusionDate, this.dateFormat, this.locale) : null,
-          included: person.included ? 'Included' : (person.excluded ? 'Excluded' : ''),
+          included: person.included ? this.includedLabel : (person.excluded ? this.excludedLabel : '')
         };
 
-        this.paymentColumns.map((_, index2) => {
-          const payment = pastInstallments.find(i => i.installment === index2 + 1);
-          if (payment) {
-            personData['payment' + (index2 + 1)] = formatDate(payment.installmentDate, this.dateFormat, this.locale);
-          }
-        });
+        personData = this.fillPaymentColumns(personData, pastInstallments);
 
         if (person.name) {
           personData.name = person.name;
@@ -355,36 +369,47 @@ export class ProgramPeopleComponent implements OnChanges {
       });
   }
 
-  private defaultSelectedPeople(source: any[]): any[] {
-    if (this.selectedPhase === ProgramPhase.inclusion) {
-      if (this.program.inclusionCalculationType === InclusionCalculationType.highestScoresX) {
-        const nrToInclude = this.program.highestScoresX;
+  private fillPaymentColumns(personData: any[], pastInstallments: any[]): any[] {
 
-        return source.slice(0, nrToInclude);
+    this.paymentColumns.map((_, index) => {
+      const payment = pastInstallments.find(i => i.installment === index + 1);
+      if (payment) {
+        personData['payment' + (index + 1)] = formatDate(payment.installmentDate, this.dateFormat, this.locale);
       }
+    });
+    return personData;
+  }
 
-      const minimumScore = this.program.minimumScore;
-
-      return source.filter((person) => person.score >= minimumScore);
-    } else {
+  private defaultSelectedPeople(source: any[]): any[] {
+    if (this.selectedPhase !== ProgramPhase.inclusion) {
       return [];
+    };
+
+    if (this.program.inclusionCalculationType === InclusionCalculationType.highestScoresX) {
+      const nrToInclude = this.program.highestScoresX;
+
+      return source.slice(0, nrToInclude);
     }
+
+    const minimumScore = this.program.minimumScore;
+
+    return source.filter((person) => person.score >= minimumScore);
   }
 
   private defaultSelectedPeoplePrivacy(source: any[]): any[] {
     if (
-      this.selectedPhase === this.activePhase &&
-      [ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.selectedPhase])
+      this.selectedPhase !== this.activePhase ||
+      ![ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.selectedPhase])
     ) {
-      return source.filter((person) => person.included === 'Included');
-    } else {
       return [];
     }
+
+    return source.filter((person) => person.included === this.includedLabel);
   }
 
   public showCheckbox(row) {
-    return !row.included // Show checkboxes only for new enrolled PA's in program-manager mode
-      || row.name; // OR always when in privacy-officer (where endpoint gives only in/excluded people anyway)
+    return !row.included  // Show checkboxes only for new enrolled PA's in program-manager mode
+      || row.name;        // OR always when in privacy-officer (where endpoint gives only in/excluded people anyway)
   }
 
   public updateSubmitWarning() {

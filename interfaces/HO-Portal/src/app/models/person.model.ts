@@ -8,7 +8,7 @@ export class Person {
   excluded?: boolean;
   created: string;
   updated: string;
-  appliedDate: string;
-  validationDate: string;
-  inclusionDate: string;
+  appliedDate?: string;
+  validationDate?: string;
+  inclusionDate?: string;
 }
