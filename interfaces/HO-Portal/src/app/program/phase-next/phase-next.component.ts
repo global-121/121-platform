@@ -28,8 +28,7 @@ export class PhaseNextComponent implements OnChanges {
   public programPhasesBackup: any[];
   public btnText: string;
   public isInProgress = false;
-  public userRoleEnum = UserRole;
-  public currentUserRole: string;
+  private currentUserRole: string;
 
   private firstChange = true;
 
@@ -57,7 +56,7 @@ export class PhaseNextComponent implements OnChanges {
     return this.selectedPhase !== this.activePhase
       || !this.phaseReady
       || this.isInProgress
-      || this.currentUserRole !== this.userRoleEnum.ProgramManager;
+      || this.currentUserRole !== UserRole.ProgramManager;
   }
 
   private async updatePhases() {

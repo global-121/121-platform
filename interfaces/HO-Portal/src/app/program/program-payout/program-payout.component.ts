@@ -35,7 +35,7 @@ export class ProgramPayoutComponent implements OnChanges {
   public nrOfInstallments: number;
   public nrOfPastInstallments: number;
   public installments: any[];
-  private totalIncluded: number;
+  public totalIncluded: number;
 
   public confirmMessage: string;
 
@@ -205,17 +205,12 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   private checkPhaseReady() {
-    // This component only influences 'ready' in the 'payment'-phase
-    if (this.activePhase !== ProgramPhase.payment) {
-      this.isCompleted.emit(true);
-      return;
-    }
+    const isReady = (
+      this.activePhase !== ProgramPhase.payment ||
+      this.nrOfPastInstallments === this.nrOfInstallments
+    );
 
-    if (this.nrOfPastInstallments === this.nrOfInstallments) {
-      this.isCompleted.emit(true);
-    } else {
-      this.isCompleted.emit(false);
-    }
+    this.isCompleted.emit(isReady);
   }
 }
 
