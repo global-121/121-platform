@@ -65,8 +65,6 @@
           "excluded": "PA Excluded"
         },
         "header": {
-          "expand": "Expand",
-          "collapse": "Collapse",
           "metric": "Metric",
           "latest-value": "Latest value"
         },
@@ -170,6 +168,8 @@
       "total": "total",
       "selected": "selected"
     },
+    "expand": "Expand",
+    "collapse": "Collapse",
     "update": "Update",
     "confirm": "Are you sure?",
     "cancel": "Cancel",

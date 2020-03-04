@@ -27,12 +27,36 @@
 <ion-content>
   <ion-grid>
     <ion-row class="ion-nowrap ion-align-items-stretch">
-      <ion-col size="auto">
+      <ion-col size-xs="12"
+               [sizeSm]="metricsCollapsed ? '1' : '12'"
+               [sizeMd]="metricsCollapsed ? '1' : '4'"
+               [sizeXl]="metricsCollapsed ? 'auto' : '3'"
+      >
 
-        <app-metrics [program]="program"></app-metrics>
+        <ion-button size="small"
+                    fill="clear"
+                    color="medium"
+                    [title]="metricsCollapsed ? metricsExpandLabel : metricsCollapseLabel"
+                    [aria-label]="metricsCollapsed ? metricsExpandLabel : metricsCollapseLabel"
+                    (click)="toggleMetricsView()"
+        >
+          <ion-icon [name]="metricsCollapsed ? 'expand' : 'contract'"
+                    color="medium"
+                    size="small"
+                    slot="icon-only"
+          ></ion-icon>
+        </ion-button>
+
+        <app-metrics [program]="program"
+                     [isCollapsed]="metricsCollapsed"
+        ></app-metrics>
 
       </ion-col>
-      <ion-col>
+      <ion-col size-xs="12"
+               [sizeSm]="metricsCollapsed ? '11' : '12'"
+               [sizeMd]="metricsCollapsed ? '11' : '8'"
+               [sizeXl]="metricsCollapsed ? '' : '9'"
+      >
         <app-phase-next [programPhases]="programPhases"
                         [selectedPhase]="selectedPhase"
                         [programId]="program?.id"

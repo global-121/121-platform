@@ -54,13 +54,20 @@ export class ProgramComponent implements OnInit {
     }
   ];
 
+  public metricsCollapsed = false;
+  public metricsCollapseLabel: string;
+  public metricsExpandLabel: string;
+
   constructor(
     private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService,
     private translatableString: TranslatableStringService,
     private authService: AuthService
-  ) { }
+  ) {
+    this.metricsCollapseLabel = this.translate.instant('common.collapse');
+    this.metricsExpandLabel = this.translate.instant('common.expand');
+  }
 
   async ngOnInit() {
     const programId = this.route.snapshot.params.id;
@@ -122,4 +129,7 @@ export class ProgramComponent implements OnInit {
     this.phaseReady = this.phaseReadyPayout === true && this.phaseReadyPeople === true;
   }
 
+  public toggleMetricsView() {
+    this.metricsCollapsed = !this.metricsCollapsed;
+  }
 }
