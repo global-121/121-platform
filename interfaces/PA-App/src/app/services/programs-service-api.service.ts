@@ -139,6 +139,18 @@ export class ProgramsServiceApiService {
       );
   }
 
+  deleteCredential(did: string): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/credential/delete',
+      {
+        did
+      },
+      true
+    )
+      .toPromise();
+  }
+
   getProofRequest(programId: number): Promise<any> {
     return this.apiService
       .get(
