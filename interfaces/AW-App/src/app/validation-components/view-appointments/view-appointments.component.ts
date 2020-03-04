@@ -21,22 +21,29 @@ export class ViewAppointmentsComponent implements ValidationComponent {
   public appointmentsByTimeslot: any;
   public timeslotSelected: boolean;
   public appointmentChoice: number;
-  public noAppointments = false;
+  public noAppointments: boolean;
 
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
   ) { }
 
-  ngOnInit() {
-    this.getAppointments();
+  async ngOnInit() {
+    await this.getAppointments();
   }
 
-  public getAppointments() {
-    this.programsService.getAppointments().subscribe((response: Appointment[]) => {
-      this.appointments = response;
-      if (this.appointments.length === 0) { this.noAppointments = true; this.complete(); }
-    });
+  public async getAppointments() {
+    const response = await this.programsService.getAppointments();
+    console.log('after await')
+    this.appointments = response;
+    if (this.appointments.length === 0) {
+      this.noAppointments = true;
+      this.complete();
+    }
+    else {
+      this.noAppointments = false;
+    }
+
   }
 
   public isSameDay(startDate: string, endDate: string) {
