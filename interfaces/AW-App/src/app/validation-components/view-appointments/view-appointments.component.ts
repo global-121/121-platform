@@ -34,13 +34,11 @@ export class ViewAppointmentsComponent implements ValidationComponent {
 
   public async getAppointments() {
     const response = await this.programsService.getAppointments();
-    console.log('after await')
     this.appointments = response;
     if (this.appointments.length === 0) {
       this.noAppointments = true;
       this.complete();
-    }
-    else {
+    } else {
       this.noAppointments = false;
     }
 
