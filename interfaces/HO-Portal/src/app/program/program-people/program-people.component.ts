@@ -34,20 +34,18 @@ export class ProgramPeopleComponent implements OnChanges {
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, hh:mm';
 
-  public userRoleEnum = UserRole;
   public showSensitiveData: boolean;
 
   public program: Program;
   private nrOfInstallments: number;
 
   public columns: any[] = [];
-  public paymentColumns: any[] = [];
+  private paymentColumns: any[] = [];
   public tableMessages: any;
   public submitWarning: any;
-  public showNoConnectionsMessage: boolean;
 
   public enrolledPeople: Person[] = [];
-  public newEnrolledPeople: Person[] = [];
+  private newEnrolledPeople: Person[] = [];
   public selectedPeople: any[] = [];
   private includedPeople: any[] = [];
   private newIncludedPeople: any[] = [];
@@ -159,7 +157,6 @@ export class ProgramPeopleComponent implements OnChanges {
     },
   ];
 
-
   constructor(
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService
@@ -209,7 +206,7 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   private shouldShowSensitiveData(userRole) {
-    this.showSensitiveData = userRole === this.userRoleEnum.PrivacyOfficer;
+    this.showSensitiveData = userRole === UserRole.PrivacyOfficer;
   }
 
   public checkVisibility(phase) {
@@ -217,17 +214,12 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   private checkPhaseReady() {
-    // This component only influences ready in the 'inclusion'-phase
-    if (this.activePhase !== ProgramPhase.inclusion) {
-      this.isCompleted.emit(true);
-      return;
-    }
+    const isReady = (
+      this.activePhase !== ProgramPhase.inclusion ||
+      this.newEnrolledPeople.length === 0
+    );
 
-    if (this.newEnrolledPeople.length === 0) {
-      this.isCompleted.emit(true);
-    } else {
-      this.isCompleted.emit(false);
-    }
+    this.isCompleted.emit(isReady);
   }
 
   public confirmBtnDisabled() {
@@ -247,7 +239,6 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   private async determineColumns() {
-
     const columns = [];
     for (const column of this.columnsAvailable) {
       if (!this.showSensitiveData) {
@@ -370,7 +361,6 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   private fillPaymentColumns(personData: any[], pastInstallments: any[]): any[] {
-
     this.paymentColumns.map((_, index) => {
       const payment = pastInstallments.find(i => i.installment === index + 1);
       if (payment) {
@@ -413,7 +403,6 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   public updateSubmitWarning() {
-
     if (this.showSensitiveData) {
       this.newIncludedPeople = this.selectedPeople.filter(x => !this.includedPeople.includes(x));
       this.newExcludedPeople = this.includedPeople.filter(x => !this.selectedPeople.includes(x));
@@ -429,11 +418,9 @@ export class ProgramPeopleComponent implements OnChanges {
       ${this.showSensitiveData ? this.submitWarning.toIncluded : this.submitWarning.included} ${numIncluded} <br>
       ${this.showSensitiveData ? this.submitWarning.toExcluded : this.submitWarning.excluded} ${numExcluded}
     `;
-
   }
 
   public async submitInclusion() {
-
     console.log('submitInclusion for:', this.newIncludedPeople);
     console.log('submitExclusion for:', this.newExcludedPeople);
 

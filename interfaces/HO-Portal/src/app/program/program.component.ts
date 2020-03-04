@@ -1,4 +1,3 @@
-import { UserRole } from '../auth/user-role.enum';
 import { AuthService } from '../auth/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -19,7 +18,6 @@ export class ProgramComponent implements OnInit {
   public program: Program;
   public programTitle: string;
   public programArray: any;
-  public userRoleEnum = UserRole;
   public activePhase: string;
   public selectedPhase: string;
   public programPhases: any[];
@@ -101,7 +99,6 @@ export class ProgramComponent implements OnInit {
   public async onNewPhase(newPhase) {
     if (newPhase) {
       this.program = await this.programsService.getProgramById(this.program.id);
-      window.location.reload();
       this.activePhase = this.program.state;
       this.selectedPhase = this.activePhase;
       this.programPhases = this.createPhases();
@@ -109,25 +106,17 @@ export class ProgramComponent implements OnInit {
   }
 
   public async onPayoutCompleted(completed) {
-    if (completed) {
-      this.phaseReadyPayout = true;
-    } else {
-      this.phaseReadyPayout = false;
-    }
+    this.phaseReadyPayout = completed;
     this.checkPhaseReady();
   }
 
   public async onPeopleCompleted(completed) {
-    if (completed) {
-      this.phaseReadyPeople = true;
-    } else {
-      this.phaseReadyPeople = false;
-    }
+    this.phaseReadyPeople = completed;
     this.checkPhaseReady();
   }
 
   private checkPhaseReady() {
-    this.phaseReady = this.phaseReadyPayout === true && this.phaseReadyPeople === true;
+    this.phaseReady = (this.phaseReadyPayout && this.phaseReadyPeople);
   }
 
   public toggleMetricsView() {
