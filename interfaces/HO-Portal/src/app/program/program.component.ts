@@ -94,7 +94,7 @@ export class ProgramComponent implements OnInit {
   public async emitNewPhase(newPhase) {
     if (newPhase) {
       this.program = await this.programsService.getProgramById(this.program.id);
-      window.location.reload()
+      window.location.reload();
       this.activePhase = this.program.state;
       this.selectedPhase = this.activePhase;
       this.programPhases = this.createPhases();
