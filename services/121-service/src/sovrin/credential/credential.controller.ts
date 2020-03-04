@@ -21,6 +21,7 @@ import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.
 import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
 import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialIssueDto } from './dto/credential-issue.dto';
+import { DidDto } from '../../programs/program/dto/did.dto';
 import { DeleteResult } from 'typeorm';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
@@ -146,9 +147,10 @@ export class CredentialController {
 
   @ApiOperation({ title: 'Delete credentials (For PA)' })
   @ApiResponse({ status: 200, description: 'Credentials deleted' })
-  @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
-  @Delete(':did')
-  public async delete(@Param() params): Promise<DeleteResult> {
-    return await this.credentialService.delete(params.did);
+  @Post('delete')
+  public async delete(
+    @Body() did: DidDto,
+  ): Promise<DeleteResult> {
+    return await this.credentialService.delete(did.did);
   }
 }

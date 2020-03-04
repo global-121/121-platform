@@ -296,7 +296,6 @@ export class CredentialService {
 
   public async delete(did: string): Promise<DeleteResult> {
     const deleteResult = await this.credentialRepository.delete({ did: did });
-    console.log(deleteResult);
     return deleteResult;
   }
 }

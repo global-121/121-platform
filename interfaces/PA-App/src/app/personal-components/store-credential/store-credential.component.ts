@@ -94,10 +94,17 @@ export class StoreCredentialComponent extends PersonalComponent {
       credentialRequest.credentialRequestMetadata,
       credentialFormat.credential,
       wallet,
-    );
+    ).then(() => {
+      this.deleteCredential();
+    });
     this.credentialStored = true;
     this.conversationService.stopLoading();
     this.complete();
+  }
+
+  async deleteCredential() {
+    const did = await this.paData.retrieve(this.paData.type.did);
+    this.programsService.deleteCredential(did);
   }
 
   getNextSection() {
