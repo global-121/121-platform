@@ -31,6 +31,7 @@
                [sizeSm]="metricsCollapsed ? '1' : '12'"
                [sizeMd]="metricsCollapsed ? '1' : '4'"
                [sizeXl]="metricsCollapsed ? 'auto' : '3'"
+               class="metrics-column"
       >
 
         <ion-button size="small"
@@ -39,6 +40,10 @@
                     [title]="metricsCollapsed ? metricsExpandLabel : metricsCollapseLabel"
                     [aria-label]="metricsCollapsed ? metricsExpandLabel : metricsCollapseLabel"
                     (click)="toggleMetricsView()"
+                    [ngClass]="{
+                      'metrics-column--toggle': true,
+                      'is-expanded': metricsCollapsed
+                    }"
         >
           <ion-icon [name]="metricsCollapsed ? 'expand' : 'contract'"
                     color="medium"
