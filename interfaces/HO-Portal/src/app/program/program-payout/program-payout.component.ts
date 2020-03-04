@@ -24,7 +24,7 @@ export class ProgramPayoutComponent implements OnChanges {
   @Input()
   public currencyCode: string;
   @Output()
-  emitCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
+  isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isEnabled = true;
   public isInProgress = false;
@@ -59,7 +59,7 @@ export class ProgramPayoutComponent implements OnChanges {
     this.currentUserRole = this.authService.getUserRole();
     this.programId = this.route.snapshot.params.id;
     this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
-    this.emitCompleted.emit(false);
+    this.isCompleted.emit(false);
     this.createInstallments(this.programId);
   }
 
@@ -205,15 +205,16 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   private checkPhaseReady() {
-    // This component only influences ready in the 'payment'-phase
-    if (this.activePhase === ProgramPhase.payment) {
-      if (this.nrOfPastInstallments === this.nrOfInstallments) {
-        this.emitCompleted.emit(true);
-      } else {
-        this.emitCompleted.emit(false);
-      }
+    // This component only influences 'ready' in the 'payment'-phase
+    if (this.activePhase !== ProgramPhase.payment) {
+      this.isCompleted.emit(true);
+      return;
+    }
+
+    if (this.nrOfPastInstallments === this.nrOfInstallments) {
+      this.isCompleted.emit(true);
     } else {
-      this.emitCompleted.emit(true);
+      this.isCompleted.emit(false);
     }
   }
 }

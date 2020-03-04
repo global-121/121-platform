@@ -6,7 +6,7 @@
   ></ion-spinner>
 
   <confirm-prompt *ngIf="btnAvailable"
-                  [disabled]="selectedPhase !== activePhase || !phaseReady || isInProgress || currentUserRole !== userRoleEnum.ProgramManager"
+                  [disabled]="checkDisabled()"
                   (confirm)="advancePhase(activePhaseId)"
                   [subHeader]="btnText"
                   class="ion-margin-start"

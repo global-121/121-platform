@@ -1,18 +1,17 @@
 <section *ngIf="componentVisible">
   <h2>{{ 'page.program.program-details.section-people'|translate }}</h2>
 
-  <p>
+  <p *ngIf="program?.highestScoresX">
     {{ 'page.program.program-people.targetNumber'|translate }} {{program?.highestScoresX}}
   </p>
-  <p *ngIf="!enrolledPeople?.length && !showSensitiveData && selectedPhase !== 'design'">
+  <p *ngIf="checkNoConnectionsMessage() && !showSensitiveData">
     {{ 'page.program.program-people.noConnections'|translate }}
   </p>
-  <p *ngIf="!enrolledPeople?.length && showSensitiveData && selectedPhase !== 'design'">
+  <p *ngIf="checkNoConnectionsMessage() && showSensitiveData">
     {{ 'page.program.program-people.noConnectionsPrivacy'|translate }}
   </p>
 
   <ngx-datatable #people
-                 *ngIf="enrolledPeople?.length"
                  class="bootstrap"
                  limit="50"
                  columnMode="fixed"
@@ -32,7 +31,7 @@
                  (select)="updateSubmitWarning()"
   ></ngx-datatable>
 
-  <confirm-prompt [disabled]="!enrolledPeople.length"
+  <confirm-prompt [disabled]="confirmBtnDisabled()"
                   (confirm)="submitInclusion()"
                   [subHeader]="'page.program.program-people.submit-warningPrivacy'|translate"
                   [message]="submitWarning.message"
@@ -42,7 +41,7 @@
     {{ 'page.program.program-people.submitPrivacy'|translate }}
   </confirm-prompt>
 
-  <confirm-prompt [disabled]="!newEnrolledPeople.length || !btnEnabled"
+  <confirm-prompt [disabled]="confirmBtnDisabled()"
                   (confirm)="submitInclusion()"
                   [subHeader]="'page.program.program-people.submit-warning'|translate"
                   [message]="submitWarning.message"

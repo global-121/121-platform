@@ -54,7 +54,7 @@ export class MeetingReminderComponent extends PersonalComponent {
     await this.getDid();
     await this.getProgram();
     await this.generateContent();
-    await this.programsService.postConnectionApply(this.did);
+    await this.programsService.postConnectionApply(this.did, this.program.id);
     this.complete();
   }
 

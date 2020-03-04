@@ -58,8 +58,8 @@
         },
         "pa": {
           "targeted": "PA Targeted",
-          "started-enlisting": "PA Started enlisting",
-          "finished-enlisting": "PA Finished enlisting",
+          "started-enlisting": "PA Started Registration",
+          "finished-enlisting": "PA Registered",
           "verified": "PA Verified",
           "included": "PA Included",
           "excluded": "PA Excluded"
@@ -131,10 +131,10 @@
         "column": {
           "person": "Person",
           "process-started": "Process started",
-          "digital-id-created": "Digital ID Applied",
-          "digital-id-validated": "Digital ID Validated",
-          "vulnerability-assessment-created": "Vulnerability Assessment Applied",
-          "vulnerability-assessment-validated": "Vulnerability Assessment Validated",
+          "digital-id-created": "Digital ID Registered",
+          "digital-id-validated": "Digital ID Verified",
+          "vulnerability-assessment-created": "Vulnerability Assessment Registered",
+          "vulnerability-assessment-validated": "Vulnerability Assessment Verified",
           "score": "Inclusion score",
           "include": "Include",
           "included": "Included",
@@ -143,6 +143,8 @@
           "name": "Name",
           "dob": "Date of birth"
         },
+        "included": "Included",
+        "excluded": "Excluded",
         "submit-warning": "Inclusion will become final for:",
         "submit-warning-pa-included": "PA's included:",
         "submit-warning-pa-excluded": "PA's excluded:",

@@ -1,5 +1,5 @@
 @ho-portal
-Feature: Manage persons affected connected to a program
+Feature: Manage people connected to a program
 
   Background:
     Given a logged-in "program-manager" user

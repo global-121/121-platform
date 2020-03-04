@@ -6,6 +6,7 @@ import {
   ApiUseTags,
   ApiOperation,
   ApiResponse,
+  ApiImplicitParam,
 } from '@nestjs/swagger';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
@@ -48,9 +49,10 @@ export class CreateConnectionController {
 
   @ApiOperation({ title: 'Connection applies for program' })
   @ApiResponse({ status: 200, description: 'Connection applied for program' })
-  @Post('/apply-program')
-  public async applyProgram(@Body() didObject: DidDto): Promise<void> {
-    return await this.createConnectionService.applyProgram(didObject.did);
+  @ApiImplicitParam({ name: 'programId', required: true })
+  @Post('/apply-program/:programId')
+  public async applyProgram(@Body() didObject: DidDto, @Param() params): Promise<void> {
+    return await this.createConnectionService.applyProgram(didObject.did, params.programId);
   }
 
   @ApiOperation({ title: 'Set phone number' })
