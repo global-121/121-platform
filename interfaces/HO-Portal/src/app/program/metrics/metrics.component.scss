@@ -1,19 +1,16 @@
 .metrics {
-  --metrics-full-width: 330px;
-  --metrics-collapsed-width: 48px;
-
-  width: var(--metrics-full-width);
+  width: 100%;
 
   &.is-collapsed {
-    overflow: hidden;
-    width: var(--metrics-collapsed-width);
+    .metrics--cell-label,
+    .metrics--cell-value {
+      display: none;
+    }
   }
 }
 
 .metrics--table {
-  position: relative; // To contain .metrics--toggle
-  width: var(--metrics-full-width);
-
+  width: 100%;
   font-size: 90%;
 }
 
@@ -34,27 +31,6 @@
   padding-inline-start: 0.4em;
   border-inline-start: 1px solid white;
 }
-
-.metrics--header-toggle {
-  padding: 0; // Compensate for margin/padding of toggle-button
-}
-
-.metrics--toggle {
-  position: static; // To let hit-target expand outside itself.
-
-  // Hit-target:
-  &::before {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: var(--metrics-collapsed-width);
-    height: 100%;
-    content: '';
-    display: block;
-    cursor: pointer;
-  }
-}
-
 
 /*
   Metric Groups:

@@ -16,14 +16,16 @@ import { TranslatableStringService } from 'src/app/services/translatable-string.
 export class MetricsComponent implements OnChanges {
   @Input()
   private program: Program;
+
+  @Input()
+  public isCollapsed: boolean;
+
   private locale: string;
   private programMetrics: ProgramMetrics;
   private metricsMap: Map<string, MetricRow> = new Map();
 
   public metricList: MetricRow[];
   public lastUpdated: string;
-
-  public isCollapsed = false;
 
   constructor(
     public translate: TranslateService,
@@ -236,9 +238,5 @@ export class MetricsComponent implements OnChanges {
 
     // If all else fails, just return checkValue to display:
     return checkValue;
-  }
-
-  public toggleView() {
-    this.isCollapsed = !this.isCollapsed;
   }
 }
