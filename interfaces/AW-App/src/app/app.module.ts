@@ -15,6 +15,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 
+import { httpInterceptorProviders } from './http-interceptors/index';
+
 import { Injector, APP_INITIALIZER } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LOCATION_INITIALIZED } from '@angular/common';
@@ -70,6 +72,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     SplashScreen,
     QRScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    httpInterceptorProviders,
     {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
