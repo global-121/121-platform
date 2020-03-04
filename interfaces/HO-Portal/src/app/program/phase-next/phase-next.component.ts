@@ -57,7 +57,7 @@ export class PhaseNextComponent implements OnChanges {
     return this.selectedPhase !== this.activePhase
       || !this.phaseReady
       || this.isInProgress
-      || this.currentUserRole !== this.userRoleEnum.ProgramManager
+      || this.currentUserRole !== this.userRoleEnum.ProgramManager;
   }
 
   private async updatePhases() {

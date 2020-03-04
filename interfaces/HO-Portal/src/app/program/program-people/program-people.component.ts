@@ -234,11 +234,11 @@ export class ProgramPeopleComponent implements OnChanges {
     if (this.showSensitiveData) {
       return this.enrolledPeople.length === 0 ||
         this.selectedPhase !== this.activePhase ||
-        ![ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.activePhase])
+        ![ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.activePhase]);
     } else {
       return this.newEnrolledPeople.length === 0 ||
         this.activePhase !== ProgramPhase.inclusion ||
-        this.selectedPhase !== ProgramPhase.inclusion
+        this.selectedPhase !== ProgramPhase.inclusion;
     }
   }
 
@@ -383,7 +383,7 @@ export class ProgramPeopleComponent implements OnChanges {
   private defaultSelectedPeople(source: any[]): any[] {
     if (this.selectedPhase !== ProgramPhase.inclusion) {
       return [];
-    };
+    }
 
     if (this.program.inclusionCalculationType === InclusionCalculationType.highestScoresX) {
       const nrToInclude = this.program.highestScoresX;
