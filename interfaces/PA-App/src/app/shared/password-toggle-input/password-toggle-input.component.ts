@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'password-toggle-input',
@@ -6,6 +7,9 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./password-toggle-input.component.scss'],
 })
 export class PasswordToggleInputComponent {
+  @ViewChild('passwordInput')
+  public passwordInput: any;
+
   @Input()
   public name: string;
 
@@ -15,6 +19,11 @@ export class PasswordToggleInputComponent {
 
   @Input()
   public disabled: boolean;
+
+  @Input()
+  public isValid: boolean;
+  @Output()
+  public isValidChange = new EventEmitter<boolean>();
 
   @Input()
   public autocomplete: string;
@@ -28,9 +37,9 @@ export class PasswordToggleInputComponent {
   @Input()
   public labelHide = 'Hide password';
 
-  public inputType: 'password'|'text' = 'password';
+  public inputType: 'password' | 'text' = 'password';
 
-  constructor() {}
+  constructor() { }
 
   isPassword() {
     return (this.inputType === 'password');
@@ -38,5 +47,23 @@ export class PasswordToggleInputComponent {
 
   toggleInputType() {
     this.inputType = this.isPassword() ? 'text' : 'password';
+  }
+
+  private setValidity(state: boolean, emit = true) {
+    this.isValid = state;
+    if (emit) {
+      this.isValidChange.emit(state);
+    }
+  }
+
+  public async onChange() {
+    if (environment.isDebug) {
+      this.setValidity(true);
+      return;
+    }
+
+    const nativeInput = await this.passwordInput.getInputElement();
+    const nativeIsValid = nativeInput.checkValidity();
+    this.setValidity(nativeIsValid);
   }
 }
