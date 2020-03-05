@@ -75,7 +75,7 @@
                                  [(isValid)]="createIsValid"
           ></password-toggle-input>
           <div class="ion-margin-top">
-            <p *ngIf="!createIsValid">'personal.create-identity.password-too-short'|translate</p>
+            <p *ngIf="!createIsValid">{{ 'personal.create-identity.password-too-short'|translate }}</p>
             <ion-button *ngIf="create && !initialInput"
                         (click)="initialInput=true;"
                         type="button"
