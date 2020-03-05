@@ -11,9 +11,6 @@ export const environment = {
   localStorage: false, // Use local or remote wallet/account
   useAnimation: false, // Use animations and delays in the interface
 
-  // Extra:
-  subDirPath: '', // Is needed for correctly serving built app on server via Apache2
-
   // APIs:
   url_121_service_api: 'http://localhost:3000/api',
   url_pa_account_service_api: 'http://localhost:3001/api',

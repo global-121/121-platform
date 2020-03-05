@@ -8,13 +8,13 @@
      }"
 >
   <div class="dialogue-turn--actor">
-    <ion-avatar *ngIf="actor === 'system'" style="border-radius: 0 !important;">
-      <img src={{imgPath}}>
+    <ion-avatar *ngIf="isSystem" style="border-radius: 0 !important;">
+      <img src="./assets/avatar--121.svg">
     </ion-avatar>
-    <ion-avatar *ngIf="actor === 'self'" style="background:#2f4bfd; display:flex;">
-      <ion-icon name="person" color="white" size="large" style="margin:auto;"></ion-icon>
+    <ion-avatar *ngIf="isSelf" style="background:#2f4bfd; display:flex;">
+      <ion-icon name="person" color="light" size="large" style="margin:auto;"></ion-icon>
     </ion-avatar>
-    <ion-avatar *ngIf="actor !== 'system' && actor !== 'self'" style="color:black; background:white; display:flex;">
+    <ion-avatar *ngIf="!isSystem && !isSelf" style="color:black; background:white; display:flex;">
       <b style="margin:auto">{{ actor }}</b>
     </ion-avatar>
   </div>
