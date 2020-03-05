@@ -1,30 +1,39 @@
 .dialogue-turn {
-  --dialogue-turn--margin-around-card-vertical: 13px;
-  --dialogue-turn--margin-around-card-horizontal: -4px;
+  --dialogue-turn--speech-arrow-width: 8px;
+  --dialogue-turn--speech-arrow-height: 8px;
+  --dialogue-turn--margin-around-card-vertical: 22px; // Align with 121-logo vertically
+  --dialogue-turn--margin-around-card-horizontal: -6px;
 
   display: flex;
   padding: 0.5em;
+
+  ion-card {
+    box-shadow: none;
+  }
 }
 
 .dialogue-turn--actor {
   order: 1;
 
-  max-width: 25%;
+  margin-top: 0.5em; // inner-padding of .dialogue-turn
+  max-width: 20%;
 }
 
 .dialogue-turn--content {
   position: relative;
   order: 2;
+  transform-origin: top left;
 
-  width: 75%;
-  max-width: 75%;
+  width: 80%;
+  max-width: 80%;
 }
+
 .dialogue-turn--speech-arrow {
   display: block;
   position: absolute;
   top: var(--dialogue-turn--margin-around-card-vertical);
 
-  border-width: 0.75em 1em;
+  border-width: var(--dialogue-turn--speech-arrow-height) var(--dialogue-turn--speech-arrow-width);
   border-style: solid;
   border-color: transparent;
 }
@@ -34,6 +43,7 @@
     left: var(--dialogue-turn--margin-around-card-horizontal);
     border-right-color: var(--ion-color-dark);
   }
+
   // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
   .dialogue-turn--speech-arrow:dir(rtl) {
     // Reset LTR-styles first:
@@ -49,13 +59,17 @@
   .dialogue-turn--actor {
     order: 2;
   }
+
   .dialogue-turn--content {
     order: 1;
+    transform-origin: top right;
   }
+
   .dialogue-turn--speech-arrow {
     right: var(--dialogue-turn--margin-around-card-horizontal);
     border-left-color: var(--ion-color-light);
   }
+
   // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
   .dialogue-turn--speech-arrow:dir(rtl) {
     // Reset LTR-styles first:
@@ -74,5 +88,43 @@
   .dialogue-turn--actor,
   .dialogue-turn--speech-arrow {
     visibility: hidden;
+  }
+
+  .dialogue-turn--content {
+    transform-origin: top center;
+  }
+}
+
+.dialogue-turn.is-pending {
+  opacity: 0;
+
+  .dialogue-turn--content {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+}
+
+.dialogue-turn.is-spoken {
+  .dialogue-turn--content {
+    animation-name: speak;
+    animation-duration: .3s;
+    animation-direction: forwards;
+    animation-iteration-count: 1;
+  }
+}
+
+@keyframes speak {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  95% {
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }

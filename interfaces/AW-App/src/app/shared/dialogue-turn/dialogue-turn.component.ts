@@ -1,17 +1,22 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
+enum Actor {
+  system = 'system',
+  self = 'self',
+}
+
 @Component({
   selector: 'dialogue-turn',
   templateUrl: './dialogue-turn.component.html',
   styleUrls: ['./dialogue-turn.component.scss'],
 })
 export class DialogueTurnComponent implements OnInit {
-  public imgPath121: string;
-  public imgPathSelf: string;
+  @Input()
+  isSpoken = false;
 
   @Input()
-  actor = 'system';
+  actor = Actor.system;
 
   @Input()
   moment: Date;
@@ -19,16 +24,21 @@ export class DialogueTurnComponent implements OnInit {
   @Input()
   isConnected = false;
 
-  isSelf = false;
+  isSelf: boolean;
+  isSystem: boolean;
+
+  animate = environment.useAnimation;
 
   constructor() {
   }
 
   ngOnInit() {
-    this.imgPath121 = '../../..' + environment.subDirPath + '/assets/avatar--121.svg';
-    this.imgPathSelf = '../../..' + environment.subDirPath + '/assets/avatar.svg';
-    this.isSelf = (this.actor === 'self');
+    this.isSelf = (this.actor === Actor.self);
+    this.isSystem = (this.actor === Actor.system);
     this.moment = new Date();
   }
 
+  show() {
+    this.isSpoken = true;
+  }
 }
