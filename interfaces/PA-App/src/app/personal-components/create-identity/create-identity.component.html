@@ -63,6 +63,7 @@
           </div>
         </div>
         <div *ngIf="usernameSubmitted || useLocalStorage" class="ion-margin-bottom">
+          <p>{{ 'personal.create-identity.create-password-explanation'|translate }}</p>
           <password-toggle-input name="create"
                                  [(ngModel)]="create"
                                  ngDefaultControl
@@ -71,16 +72,20 @@
                                  [label]="'personal.create-identity.create-password'|translate"
                                  [labelShow]="'password-toggle.show'|translate"
                                  [labelHide]="'password-toggle.hide'|translate"
+                                 [(isValid)]="createIsValid"
           ></password-toggle-input>
+          <div class="ion-margin-top">
+            <p *ngIf="!createIsValid">{{ 'personal.create-identity.password-too-short'|translate }}</p>
+            <ion-button *ngIf="create && !initialInput"
+                        (click)="initialInput=true;"
+                        type="button"
+                        expand="block"
+            >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
+          </div>
         </div>
-        <div class="ion-margin-top">
-          <ion-button *ngIf="create && !initialInput"
-                      (click)="initialInput=true;"
-                      type="button"
-                      expand="block"
-          >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
-        </div>
+
         <div *ngIf="initialInput">
+          <p>{{ 'personal.create-identity.confirm-password'|translate }}</p>
           <password-toggle-input name="confirm"
                                  [(ngModel)]="confirm"
                                  ngDefaultControl

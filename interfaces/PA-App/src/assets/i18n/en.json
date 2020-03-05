@@ -26,10 +26,12 @@
       "password-only": "Create a password.",
       "more-info-password": "About passwords",
       "info-message-password": "Lorem ipsem bladibla",
-      "create-password": "Create password:",
+      "create-password-explanation": "Enter a password of at least 4 digits:",
+      "create-password": "Create password",
       "confirm-password": "Confirm password:",
       "submit-password": "Create my password",
       "username-not-unique": "The username you provide is not unique. Please try again.",
+      "password-too-short": "Please enter at least 4 digits:",
       "unequal-passwords": "The passwords you provided are not the same. Please try again.",
       "conclusion": "Great! You have created a Digital ID.",
       "conclusion-web": ""

@@ -31,6 +31,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   public usernameNotUnique = false;
 
   public isInProgress = false;
+  public createIsValid = true;
 
   constructor(
     public conversationService: ConversationService,
