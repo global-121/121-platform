@@ -33,8 +33,7 @@
       "username-not-unique": "The username you provide is not unique. Please try again.",
       "password-too-short": "Please enter at least {{minimalLength}} characters.",
       "unequal-passwords": "The passwords you provided are not the same. Please try again.",
-      "conclusion": "Great! You have created a Digital ID.",
-      "conclusion-web": ""
+      "conclusion": "Great! You have created a Digital ID."
     },
     "login-identity": {
       "introduction": "To use an existing Digital ID you need to log in with your username and password.",
