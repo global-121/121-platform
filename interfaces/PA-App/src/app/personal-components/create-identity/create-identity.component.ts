@@ -21,6 +21,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   public data: any;
 
   public useLocalStorage: boolean;
+  public passwordMinLength = 4;
 
   public initialInput = false;
   public usernameSubmitted = false;

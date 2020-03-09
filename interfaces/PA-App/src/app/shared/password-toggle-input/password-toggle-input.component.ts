@@ -29,6 +29,9 @@ export class PasswordToggleInputComponent {
   public autocomplete: string;
 
   @Input()
+  public minLength: number;
+
+  @Input()
   public label: string;
 
   @Input()

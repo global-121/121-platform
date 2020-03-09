@@ -63,19 +63,20 @@
           </div>
         </div>
         <div *ngIf="usernameSubmitted || useLocalStorage" class="ion-margin-bottom">
-          <p>{{ 'personal.create-identity.create-password-explanation'|translate }}</p>
+          <p>{{ 'personal.create-identity.create-password-explanation'|translate:{ minimalLength: passwordMinLength } }}</p>
           <password-toggle-input name="create"
                                  [(ngModel)]="create"
                                  ngDefaultControl
                                  [disabled]="isDisabled"
                                  autocomplete="new-password"
+                                 [minLength]="passwordMinLength"
                                  [label]="'personal.create-identity.create-password'|translate"
                                  [labelShow]="'password-toggle.show'|translate"
                                  [labelHide]="'password-toggle.hide'|translate"
                                  [(isValid)]="createIsValid"
           ></password-toggle-input>
           <div class="ion-margin-top">
-            <p *ngIf="!createIsValid">{{ 'personal.create-identity.password-too-short'|translate }}</p>
+            <p *ngIf="!createIsValid">{{ 'personal.create-identity.password-too-short'|translate:{ minimalLength: passwordMinLength } }}</p>
             <ion-button *ngIf="create && !initialInput"
                         (click)="initialInput=true;"
                         type="button"
@@ -91,6 +92,7 @@
                                  ngDefaultControl
                                  [disabled]="isDisabled"
                                  autocomplete="new-password"
+                                 [minLength]="passwordMinLength"
                                  [label]="'personal.create-identity.confirm-password'|translate"
                                  [labelShow]="'password-toggle.show'|translate"
                                  [labelHide]="'password-toggle.hide'|translate"
