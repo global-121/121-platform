@@ -32,7 +32,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   public usernameNotUnique = false;
 
   public isInProgress = false;
-  public createIsValid = true;
+  public createIsValid: boolean;
 
   constructor(
     public conversationService: ConversationService,
@@ -64,14 +64,51 @@ export class CreateIdentityComponent extends PersonalComponent {
   public async submitCredentials(username: string, create: string, confirm: string) {
     console.log('submitCredentials()', username, create, confirm);
 
-    this.isInProgress = true;
+    // Reset server-side errors, to be sure to only show the first, most relevant error only.
+    this.usernameNotUnique = false;
+    this.unequalPasswords = false;
 
-    if (create !== confirm) {
-      this.unequalPasswords = true;
+    if (!username) {
+      this.usernameSubmitted = false;
       this.isInProgress = false;
+      console.log('No username. ⛔️');
       return;
     }
+
+    this.usernameSubmitted = true;
+
+    if (!create && !confirm) {
+      this.isInProgress = false;
+      console.log('Username ✅; But no passwords. ⛔️');
+      return;
+    }
+
+    if (create && !this.createIsValid) {
+      this.initialInput = false;
+      this.isInProgress = false;
+      console.log('Username ✅; First password = Validation error. ⛔️');
+      return;
+    }
+
+    if (create && this.createIsValid && !confirm) {
+      this.initialInput = true;
+      this.isInProgress = false;
+      console.log('Username ✅; First password ✅; No 2nd password. ⛔️');
+      return;
+    }
+
+    if (create && this.createIsValid && create !== confirm) {
+      this.initialInput = true;
+      this.unequalPasswords = true;
+      this.isInProgress = false;
+      console.log('Username ✅; First password ✅; 2nd password ✅; Passwords not equal. ⛔️');
+      return;
+    }
+
+    this.isInProgress = true;
     this.unequalPasswords = false;
+
+    console.log('Username ✅; First password ✅; 2nd password ✅; Passwords equal ✅; Done! ✅');
 
     // 1. Create PA-account using supplied password + random username
     // (moved outside of executeSovrinFlow because of unique-username-check)
@@ -91,10 +128,9 @@ export class CreateIdentityComponent extends PersonalComponent {
         if (error.status === 400) {
           this.usernameNotUnique = true;
           this.isInProgress = false;
-          console.log('Username is not unique: ', error.status);
-        } else {
-          console.log('Other error: ', error.status);
+          console.warn('Username is not unique');
         }
+        console.warn('CreateAccount Error: ', error);
       }
     );
 
