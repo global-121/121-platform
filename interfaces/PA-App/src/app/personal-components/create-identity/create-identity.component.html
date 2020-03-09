@@ -43,6 +43,8 @@
     </dialogue-turn>
     <dialogue-turn actor="self">
       <form (ngSubmit)="submitCredentials(username,create,confirm)">
+        <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
+
         <div *ngIf="!useLocalStorage">
           <div>
             <ion-label>{{ 'personal.create-identity.create-username'|translate }}</ion-label>
@@ -55,14 +57,15 @@
           </div>
           <div class="ion-margin-top">
             <ion-button *ngIf="username && !usernameSubmitted"
-                        [disabled]="isInProgress || isDisabled"
-                        (click)="usernameSubmitted=true;"
-                        type="button"
+                        [disabled]="usernameSubmitted || isDisabled"
+                        type="submit"
                         expand="block"
             >{{ 'personal.create-identity.submit-username'|translate }}</ion-button>
           </div>
         </div>
-        <div *ngIf="usernameSubmitted || useLocalStorage" class="ion-margin-bottom">
+        <div *ngIf="usernameSubmitted || useLocalStorage"
+             class="ion-margin-vertical"
+        >
           <p>{{ 'personal.create-identity.create-password-explanation'|translate:{ minimalLength: passwordMinLength } }}</p>
           <password-toggle-input name="create"
                                  [(ngModel)]="create"
@@ -76,10 +79,10 @@
                                  [(isValid)]="createIsValid"
           ></password-toggle-input>
           <div class="ion-margin-top">
-            <p *ngIf="!createIsValid">{{ 'personal.create-identity.password-too-short'|translate:{ minimalLength: passwordMinLength } }}</p>
+            <p *ngIf="createIsValid === false">{{ 'personal.create-identity.password-too-short'|translate:{ minimalLength: passwordMinLength } }}</p>
             <ion-button *ngIf="create && !initialInput"
-                        (click)="initialInput=true;"
-                        type="button"
+                        [disabled]="!createIsValid || initialInput || isDisabled"
+                        type="submit"
                         expand="block"
             >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
           </div>
@@ -126,9 +129,6 @@
     >
       <p>
         {{ 'personal.create-identity.conclusion'|translate }}
-      </p><br>
-      <p *ngIf="!useLocalStorage">
-        {{ 'personal.create-identity.conclusion-web'|translate }}
       </p>
     </dialogue-turn>
   </section>

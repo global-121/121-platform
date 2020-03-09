@@ -1,4 +1,3 @@
-import { environment } from 'src/environments/environment';
 import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 
 @Component({
@@ -60,11 +59,6 @@ export class PasswordToggleInputComponent {
   }
 
   public async onChange() {
-    if (environment.isDebug) {
-      this.setValidity(true);
-      return;
-    }
-
     const nativeInput = await this.passwordInput.getInputElement();
     const nativeIsValid = nativeInput.checkValidity();
     this.setValidity(nativeIsValid);
