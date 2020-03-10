@@ -1,4 +1,12 @@
-import { Controller, Get, Header, Res, Post, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Header,
+  Res,
+  Post,
+  Param,
+  Body,
+} from '@nestjs/common';
 import {
   ApiUseTags,
   ApiResponse,
@@ -15,13 +23,6 @@ export class VoiceController {
   public constructor(voiceService: VoiceService) {
     this.voiceService = voiceService;
   }
-  @ApiResponse({ status: 200, description: 'Test voice call' })
-  @ApiImplicitParam({ name: 'number' })
-  @Get(':number')
-  public notifyByVoice(@Param() params): void {
-    return this.voiceService.notifyByVoice(params.number, 'en', 'included', 1);
-  }
-
   @ApiOperation({
     title: 'Return xml that specifies the mp3 location to play in call',
   })

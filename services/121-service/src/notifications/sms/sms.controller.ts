@@ -10,21 +10,6 @@ export class SmsController {
     this.smsService = smsService;
   }
 
-  @ApiResponse({
-    status: 200,
-    description: 'Test controller to test sending sms',
-  })
-  @ApiImplicitParam({ name: 'number' })
-  @Get(':number')
-  public async sendSms(@Param() params): Promise<void> {
-    return await this.smsService.notifyBySms(
-      params.number,
-      'en',
-      'included',
-      1,
-    );
-  }
-
   @Post('status')
   public async statusCallback(@Body() callbackData: any): Promise<void> {
     return await this.smsService.statusCallback(callbackData);

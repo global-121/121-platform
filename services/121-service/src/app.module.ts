@@ -38,12 +38,7 @@ import { LookupModule } from './notifications/lookup/lookup.module';
     FundingModule,
     LookupModule,
   ],
-  controllers: [
-    AppController,
-    SmsController,
-    VoiceController,
-    LookupController,
-  ],
+  controllers: [AppController],
   providers: [],
 })
 export class ApplicationModule {

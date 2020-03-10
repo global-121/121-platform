@@ -38,6 +38,7 @@ export class UserController {
     this.userService = userService;
   }
 
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Sign-up new user' })
   @Post('user')
   public async create(@Body() userData: CreateUserDto): Promise<UserRO> {
@@ -89,6 +90,7 @@ export class UserController {
     return await this.userService.delete(params.userId);
   }
 
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer, UserRole.Admin)
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get current user' })
   @Get('user')

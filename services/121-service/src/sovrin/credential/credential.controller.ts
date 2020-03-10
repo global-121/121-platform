@@ -4,18 +4,8 @@ import {
   ApiBearerAuth,
   ApiUseTags,
   ApiImplicitParam,
-  ApiImplicitQuery,
 } from '@nestjs/swagger';
-import {
-  Controller,
-  Get,
-  Body,
-  Post,
-  Param,
-  Delete,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Body, Post, Param, UseGuards } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
@@ -26,6 +16,7 @@ import { DeleteResult } from 'typeorm';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
+import { DidProgramDto } from './dto/did-program.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -69,25 +60,13 @@ export class CredentialController {
   @Roles(UserRole.Aidworker)
   @ApiOperation({ title: 'Get prefilled answers (for AW)' })
   @ApiResponse({ status: 200, description: 'Prefilled answers received' })
-  @ApiImplicitParam({
-    name: 'did',
-    required: true,
-    type: 'string',
-    description: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
-  })
-  @ApiImplicitQuery({
-    name: 'programId',
-    required: false,
-    type: 'number',
-  })
-  @Get('/answers/:did')
+  @Post('/get-answers')
   public async getPrefilledAnswers(
-    @Param() params,
-    @Query() query,
+    @Body() getAnswers: DidProgramDto,
   ): Promise<any[]> {
     return await this.credentialService.getPrefilledAnswers(
-      params.did,
-      query.programId,
+      getAnswers.did,
+      getAnswers.programId,
     );
   }
 
@@ -96,25 +75,13 @@ export class CredentialController {
     title: 'Delete prefilled answers (for AW, after issuing credential)',
   })
   @ApiResponse({ status: 200, description: 'Prefilled answers deleted' })
-  @ApiImplicitParam({
-    name: 'did',
-    required: true,
-    type: 'string',
-    description: 'did:sov:12351352kl',
-  })
-  @ApiImplicitQuery({
-    name: 'programId',
-    required: false,
-    type: 'number',
-  })
-  @Delete('/answers/:did')
+  @Post('/delete-answers')
   public async deletePrefilledAnswers(
-    @Param() params,
-    @Query() query,
+    @Body() deleteAnswers: DidProgramDto,
   ): Promise<DeleteResult> {
     return await this.credentialService.deletePrefilledAnswers(
-      params.did,
-      query.programId,
+      deleteAnswers.did,
+      deleteAnswers.programId,
     );
   }
 
@@ -140,17 +107,15 @@ export class CredentialController {
   @ApiOperation({ title: 'Get credentials (For PA)' })
   @ApiResponse({ status: 200, description: 'Credentials sent' })
   @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
-  @Get(':did')
-  public async get(@Param() params): Promise<EncryptedMessageDto> {
-    return await this.credentialService.get(params.did);
+  @Post('/get')
+  public async get(@Body() did: DidDto): Promise<EncryptedMessageDto> {
+    return await this.credentialService.get(did.did);
   }
 
   @ApiOperation({ title: 'Delete credentials (For PA)' })
   @ApiResponse({ status: 200, description: 'Credentials deleted' })
   @Post('delete')
-  public async delete(
-    @Body() did: DidDto,
-  ): Promise<DeleteResult> {
+  public async delete(@Body() did: DidDto): Promise<DeleteResult> {
     return await this.credentialService.delete(did.did);
   }
 }

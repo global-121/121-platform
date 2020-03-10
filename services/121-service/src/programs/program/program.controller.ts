@@ -141,7 +141,7 @@ export class ProgramController {
     return this.programService.changeState(params.id, changeStateData.newState);
   }
 
-  @ApiOperation({ title: 'Post proof' })
+  @ApiOperation({ title: 'Post proof (Used by PA)' })
   @Post('includeMe')
   public async includeMe(
     @Body() inclusionData: IncludeMeDto,
@@ -153,7 +153,7 @@ export class ProgramController {
     );
   }
 
-  @ApiOperation({ title: 'Get inclusion status' })
+  @ApiOperation({ title: 'Get inclusion status (Used by PA)' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('inclusionStatus/:programId')
   public async inclusionStatus(

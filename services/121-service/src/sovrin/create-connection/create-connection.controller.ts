@@ -1,6 +1,6 @@
 import { DidDto } from './dto/did.dto';
 import { CreateConnectionService } from './create-connection.service';
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiUseTags,
@@ -15,7 +15,11 @@ import { PasswordDto } from './dto/password.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { SetFspDto } from './dto/set-fsp.dto';
 import { CustomDataDto } from '../../programs/program/dto/custom-data.dto';
-
+import { RolesGuard } from '../../roles.guard';
+import { Roles } from '../../roles.decorator';
+import { UserRole } from '../../user-role.enum';
+@ApiBearerAuth()
+@UseGuards(RolesGuard)
 @ApiUseTags('sovrin')
 @Controller('sovrin/create-connection')
 export class CreateConnectionController {
@@ -51,8 +55,14 @@ export class CreateConnectionController {
   @ApiResponse({ status: 200, description: 'Connection applied for program' })
   @ApiImplicitParam({ name: 'programId', required: true })
   @Post('/apply-program/:programId')
-  public async applyProgram(@Body() didObject: DidDto, @Param() params): Promise<void> {
-    return await this.createConnectionService.applyProgram(didObject.did, params.programId);
+  public async applyProgram(
+    @Body() didObject: DidDto,
+    @Param() params,
+  ): Promise<void> {
+    return await this.createConnectionService.applyProgram(
+      didObject.did,
+      params.programId,
+    );
   }
 
   @ApiOperation({ title: 'Set phone number' })
@@ -88,6 +98,7 @@ export class CreateConnectionController {
     );
   }
 
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get all connections' })
   @ApiResponse({ status: 200, description: 'Got all connections' })

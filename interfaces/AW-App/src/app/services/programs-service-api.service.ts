@@ -84,9 +84,13 @@ export class ProgramsServiceApiService {
   }
 
   getPrefilledAnswers(did: string, programId: number): Observable<any> {
-    return this.apiService.get(
+    return this.apiService.post(
       environment.url_121_service_api,
-      '/sovrin/credential/answers/'.concat(did, programId ? '?programId=' + programId : '')
+      '/sovrin/credential/get-answers/',
+      {
+        did,
+        programId
+      }
     ).pipe(
       tap(response => console.log('response: ', response)),
       map(response => response)
@@ -109,10 +113,13 @@ export class ProgramsServiceApiService {
   }
 
   deletePrefilledAnswers(did: string, programId: number): Observable<any> {
-    return this.apiService.delete(
+    return this.apiService.post(
       environment.url_121_service_api,
-      '/sovrin/credential/answers/'.concat(did, programId ? '?programId=' + programId : ''),
-      false
+      '/sovrin/credential//delete-answers',
+      {
+        did,
+        programId
+      }
     ).pipe(
       tap(response => console.log('response: ', response)),
       map(response => response)

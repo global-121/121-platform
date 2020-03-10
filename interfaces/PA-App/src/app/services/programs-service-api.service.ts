@@ -133,9 +133,13 @@ export class ProgramsServiceApiService {
 
   getCredential(did: string): Observable<any> {
     return this.apiService
-      .get(
+      .post(
         environment.url_121_service_api,
-        '/sovrin/credential/' + did
+        '/sovrin/credential/get',
+        {
+          did
+        },
+        true
       );
   }
 
