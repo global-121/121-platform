@@ -18,6 +18,8 @@ export class ProgramPeopleComponent implements OnChanges {
   public userRole: string;
   @Input()
   public programId: number;
+  @Input()
+  public refresh: boolean;
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -189,6 +191,9 @@ export class ProgramPeopleComponent implements OnChanges {
       this.shouldShowSensitiveData(this.userRole);
     }
     if (changes.programId && typeof changes.programId.currentValue === 'number') {
+      this.update();
+    }
+    if (changes.refresh && typeof changes.refresh.currentValue === 'boolean') {
       this.update();
     }
   }

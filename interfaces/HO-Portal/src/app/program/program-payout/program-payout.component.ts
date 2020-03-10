@@ -24,6 +24,8 @@ export class ProgramPayoutComponent implements OnChanges {
   @Input()
   public currencyCode: string;
   @Output()
+  triggerRefresh: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isEnabled = true;
@@ -58,7 +60,6 @@ export class ProgramPayoutComponent implements OnChanges {
   async ngOnInit() {
     this.currentUserRole = this.authService.getUserRole();
     this.programId = this.route.snapshot.params.id;
-    this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
     this.isCompleted.emit(false);
     this.createInstallments(this.programId);
   }
@@ -79,6 +80,7 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   private async createInstallments(programId) {
+    this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
     const program = await this.programsService.getProgramById(programId);
     this.activePhase = ProgramPhase[program.state];
     this.nrOfInstallments = program.distributionDuration;
@@ -169,7 +171,7 @@ export class ProgramPayoutComponent implements OnChanges {
           installment.isInProgress = false;
           this.actionResult(this.translate.instant('page.program.program-payout.payout-success'));
           this.createInstallments(this.programId);
-          window.location.reload();
+          this.triggerRefresh.emit(true);
         },
         (err) => {
           console.log('err: ', err);
