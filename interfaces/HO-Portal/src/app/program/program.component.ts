@@ -26,6 +26,7 @@ export class ProgramComponent implements OnInit {
   public phaseReady = false;
   public phaseReadyPayout = false;
   public phaseReadyPeople = false;
+  public refresh = false;
 
   private phasesInput = [
     {
@@ -94,11 +95,14 @@ export class ProgramComponent implements OnInit {
   public async onNewPhase(newPhase) {
     if (newPhase) {
       this.program = await this.programsService.getProgramById(this.program.id);
-      window.location.reload();
       this.activePhase = this.program.state;
       this.selectedPhase = this.activePhase;
       this.programPhases = this.createPhases();
     }
+  }
+
+  public async refreshComponents(trigger) {
+    this.refresh = trigger;
   }
 
   public async onPayoutCompleted(completed) {
