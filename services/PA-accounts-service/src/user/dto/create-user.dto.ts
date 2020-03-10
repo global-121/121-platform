@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, MinLength } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -8,6 +8,7 @@ export class CreateUserDto {
 
   @ApiModelProperty()
   @IsNotEmpty()
+  @MinLength(4)
   readonly password: string;
 
 }
