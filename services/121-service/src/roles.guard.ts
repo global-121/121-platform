@@ -10,7 +10,6 @@ import * as jwt from 'jsonwebtoken';
 import { UserService } from './user/user.service';
 import { SECRET } from './secrets';
 import { DEBUG } from './config';
-import { IGetUserAuthInfoRequest } from './user/get-user-auth-info-request';
 import { UserRole } from './user-role.enum';
 
 @Injectable()

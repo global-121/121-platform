@@ -1,7 +1,6 @@
-import { Get, Param, Controller, Post, Body } from '@nestjs/common';
+import { Get, Param, Controller } from '@nestjs/common';
 import { ApiUseTags, ApiOperation, ApiImplicitParam } from '@nestjs/swagger';
 import { ProofService } from './proof.service';
-import { IncludeMeDto } from '../../programs/program/dto/include-me.dto';
 
 @ApiUseTags('sovrin')
 @Controller('sovrin')

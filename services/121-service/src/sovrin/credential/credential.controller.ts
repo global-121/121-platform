@@ -4,18 +4,8 @@ import {
   ApiBearerAuth,
   ApiUseTags,
   ApiImplicitParam,
-  ApiImplicitQuery,
 } from '@nestjs/swagger';
-import {
-  Controller,
-  Get,
-  Body,
-  Post,
-  Param,
-  Delete,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Body, Post, Param, UseGuards } from '@nestjs/common';
 import { CredentialService } from './credential.service';
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
