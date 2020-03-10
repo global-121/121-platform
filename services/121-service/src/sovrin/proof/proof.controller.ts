@@ -19,15 +19,4 @@ export class ProofController {
     return await this.proofService.getProofRequest(programId);
   }
 
-  // @ApiOperation({ title: 'Post proof' })
-  // @Post('proof')
-  // public async validateProof(
-  //   @Body() inclusionData: IncludeMeDto,
-  // ): Promise<object> {
-  //   return await this.proofService.validateProof(
-  //     inclusionData.programId,
-  //     inclusionData.did,
-  //     inclusionData.encryptedProof,
-  //   );
-  // }
 }

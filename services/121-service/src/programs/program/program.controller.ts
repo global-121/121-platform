@@ -65,6 +65,7 @@ export class ProgramController {
     return await this.programService.getFunds(params.id);
   }
 
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer, UserRole.Aidworker)
   @ApiOperation({ title: 'Get all programs' })
   @ApiImplicitQuery({ name: 'location', required: false })
   @ApiImplicitQuery({ name: 'countryId', required: false })
@@ -221,7 +222,7 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiOperation({ title: 'Get status of payout-installments' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -276,7 +277,7 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiOperation({ title: 'Get metrics by program-id' })
   @ApiImplicitParam({ name: 'id', required: true })
   @ApiResponse({

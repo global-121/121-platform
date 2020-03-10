@@ -17,7 +17,7 @@ export class RolesGuard implements CanActivate {
   public constructor(
     private readonly reflector: Reflector,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     let hasAccess: boolean;
@@ -26,13 +26,14 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
-    console.log('roles: ', roles);
 
     if (!roles) {
       return true;
     }
     // This line allows the Admin role to access every controller
-    roles.push(UserRole.Admin);
+    if (!roles.includes(UserRole.Admin)) {
+      roles.push(UserRole.Admin);
+    }
 
     const request = context.switchToHttp().getRequest();
     const authHeaders = request.headers.authorization;

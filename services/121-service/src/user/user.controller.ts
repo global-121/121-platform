@@ -72,7 +72,7 @@ export class UserController {
     return { user };
   }
 
-  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer, UserRole.Admin)
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer, UserRole.Aidworker)
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -90,7 +90,7 @@ export class UserController {
     return await this.userService.delete(params.userId);
   }
 
-  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer, UserRole.Admin)
+  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer, UserRole.Aidworker)
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
