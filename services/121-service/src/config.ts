@@ -1,8 +1,10 @@
 import { TWILIO } from './secrets';
 
-export const DEBUG = true;
-
 export const PORT = 3000;
+export const DEBUG =
+  ['production', 'staging'].indexOf(process.env.NODE_ENV) > -1
+    ? false
+    : true;
 export const SUBDOMAIN =
   ['production', 'staging'].indexOf(process.env.NODE_ENV) > -1
     ? '121-service/'

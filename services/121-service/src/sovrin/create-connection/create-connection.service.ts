@@ -4,7 +4,6 @@ import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
 import { Repository } from 'typeorm';
-import { SovrinSetupService } from '../setup/setup.service';
 import { DidDto } from '../../programs/program/dto/did.dto';
 import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
@@ -31,7 +30,7 @@ export class CreateConnectionService {
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
 
-  public constructor(private readonly sovrinSetupService: SovrinSetupService) { }
+  public constructor() { }
 
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
@@ -134,36 +133,4 @@ export class CreateConnectionService {
     return connections;
   }
 
-  //This is for Server-side solution
-  public async initiateServerside(password: string): Promise<any> {
-    `
-    ConnectionRequest is generated on server.
-    Pool is connected to.
-    Wallet for PA is created. Wallet is opened. DID is created and stored in wallet.
-    ConnectionResponse is formed based on wallet (no traffic with PA needed, as all on server.)
-    Connection is created based on this.
-    `;
-    // tyknid.getConnectionRequest(connectionResponse.did, connectionResponse.verkey, connectionResponse.meta)`;
-    const connectionRequest = {
-      did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
-      nonce: '1234567890',
-    };
-
-    let poolHandle = await this.sovrinSetupService.connectPool();
-    let did_for_ho = await this.sovrinSetupService.createWallet(
-      poolHandle,
-      connectionRequest,
-      password,
-    );
-    let connectionResponse: ConnectionReponseDto;
-    connectionResponse = {
-      did: did_for_ho['did_for_ho'],
-      verkey: did_for_ho['key_for_ho'],
-      nonce: connectionRequest['nonce'],
-      meta: 'meta:sample',
-    };
-    let connection = await this.create(connectionResponse);
-
-    return connection;
-  }
 }

@@ -107,16 +107,4 @@ export class CreateConnectionController {
     return await this.createConnectionService.getConnections();
   }
 
-  //Server-side
-  @ApiOperation({ title: 'Initiate connection server-side' })
-  @ApiResponse({ status: 200, description: 'Sent connection request' })
-  @Post('/initiate/serverside')
-  public async initiateServerside(
-    @Param() params,
-    @Body() passwordData: PasswordDto,
-  ): Promise<any> {
-    return await this.createConnectionService.initiateServerside(
-      passwordData.password,
-    );
-  }
 }
