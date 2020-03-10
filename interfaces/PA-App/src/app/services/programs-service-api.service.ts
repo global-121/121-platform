@@ -140,7 +140,7 @@ export class ProgramsServiceApiService {
           did
         },
         true
-      )
+      );
   }
 
   deleteCredential(did: string): Promise<any> {
