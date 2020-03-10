@@ -1,6 +1,7 @@
-import { IsNotEmpty, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsEnum, MinLength } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { UserRole } from '../../user-role.enum';
+import { MinKey } from 'typeorm';
 
 export class CreateUserDto {
   @ApiModelProperty()
@@ -13,6 +14,7 @@ export class CreateUserDto {
 
   @ApiModelProperty()
   @IsNotEmpty()
+  @MinLength(8)
   public readonly password: string;
 
   @ApiModelProperty({ example: 'admin / aidworker / program-manager' })
