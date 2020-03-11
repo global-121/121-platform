@@ -14,6 +14,7 @@ import { ProgramJsonComponent } from './program-json/program-json.component';
 import { ProgramPayoutComponent } from './program-payout/program-payout.component';
 import { ProgramPeopleComponent } from './program-people/program-people.component';
 import { ProgramDetailsComponent } from './program-details/program-details.component';
+import { ManageAidworkersComponent } from './manage-aidworkers/manage-aidworkers.component';
 
 @NgModule({
   entryComponents: [
@@ -28,6 +29,7 @@ import { ProgramDetailsComponent } from './program-details/program-details.compo
     ProgramPayoutComponent,
     ProgramPeopleComponent,
     ProgramDetailsComponent,
+    ManageAidworkersComponent,
   ],
   imports: [
     CommonModule,
