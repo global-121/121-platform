@@ -18,6 +18,12 @@ export class ConfirmPromptComponent {
   @Input()
   public message: string;
 
+  @Input()
+  public size: string;
+
+  @Input()
+  public fill: string;
+
   @Output()
   private confirm = new EventEmitter<void>();
 
