@@ -30,17 +30,15 @@ export class ManageAidworkersComponent implements OnChanges {
       prop: 'email',
       name: this.translate.instant('page.program.manage-aidworkers.column-email'),
       draggable: false,
-      resizeable: false,
-      hidePhases: []
+      resizeable: false
     },
     {
       prop: 'created',
       name: this.translate.instant('page.program.manage-aidworkers.column-created'),
       draggable: false,
-      resizeable: false,
-      hidePhases: []
+      resizeable: false
     }
-  ]
+  ];
 
   public tableMessages: any;
   private locale: string;
@@ -50,11 +48,6 @@ export class ManageAidworkersComponent implements OnChanges {
     public translate: TranslateService
   ) {
     this.locale = this.translate.getBrowserCultureLang();
-    this.tableMessages = {
-      emptyMessage: this.translate.instant('common.table.no-data'),
-      totalMessage: this.translate.instant('common.table.total'),
-      selectedMessage: this.translate.instant('common.table.selected'),
-    };
   }
 
   ngOnInit() { }
