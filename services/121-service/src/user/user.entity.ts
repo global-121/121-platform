@@ -41,6 +41,9 @@ export class UserEntity {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
 
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  public created: Date;
+
   @OneToMany(type => ProgramEntity, program => program.author)
   public programs: ProgramEntity[];
 

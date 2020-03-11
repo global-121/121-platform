@@ -1,3 +1,17 @@
-<p>
-  manage-aidworkers works!
-</p>
+<section *ngIf="componentVisible">
+  <h2>{{ 'page.program.manage-aidworkers.section-title'|translate }}</h2>
+
+  <ngx-datatable class="bootstrap"
+                 limit="50"
+                 columnMode="force"
+                 rowHeight="auto"
+                 headerHeight="50"
+                 footerHeight="0"
+                 reorderable="false"
+                 sortType="multi"
+                 loadingIndicator="true"
+                 [columns]="columns"
+                 [rows]="aidworkers"
+  ></ngx-datatable>
+
+</section>
