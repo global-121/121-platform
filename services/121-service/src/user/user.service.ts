@@ -69,17 +69,8 @@ export class UserService {
     newUser.programs = [];
     newUser.assignedProgram = [];
 
-    const errors = await validate(newUser);
-    if (errors.length > 0) {
-      const _errors = { email: 'User input is not valid.' };
-      throw new HttpException(
-        { message: 'Input data validation failed', _errors },
-        HttpStatus.BAD_REQUEST,
-      );
-    } else {
-      const savedUser = await this.userRepository.save(newUser);
-      return this.buildUserRO(savedUser);
-    }
+    const savedUser = await this.userRepository.save(newUser);
+    return this.buildUserRO(savedUser);
   }
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {

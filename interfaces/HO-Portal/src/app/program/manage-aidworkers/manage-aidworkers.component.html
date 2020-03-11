@@ -24,4 +24,31 @@
     </ngx-datatable-column>
   </ngx-datatable>
 
+  <h3>{{ 'page.program.manage-aidworkers.create-aidworker-title'|translate }}</h3>
+  <ion-label>{{ 'page.program.manage-aidworkers.email'|translate }}</ion-label>
+  <ion-input type="text"
+              name="emailAidworker"
+              [(ngModel)]="emailAidworker"
+              ngDefaultControl
+              [disabled]="isDisabled"
+  ></ion-input>
+  <ion-label>{{ 'page.program.manage-aidworkers.create-password'|translate:{ minimalLength: passwordMinLength } }}</ion-label>
+  <password-toggle-input name="passwordAidworker"
+                          [(ngModel)]="passwordAidworker"
+                          ngDefaultControl
+                          [disabled]="isDisabled"
+                          autocomplete="new-password"
+                          [minLength]="passwordMinLength"
+                          [labelShow]="'password-toggle.show'|translate"
+                          [labelHide]="'password-toggle.hide'|translate"
+                          [(isValid)]="createIsValid"
+  ></password-toggle-input>
+
+  <ion-button
+              [disabled]="False"
+              (click)="addAidworker()"
+  >
+    {{ 'page.program.manage-aidworkers.confirm'|translate }}
+  </ion-button>
+
 </section>

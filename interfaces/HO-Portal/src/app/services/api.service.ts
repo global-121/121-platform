@@ -41,6 +41,21 @@ export class ApiService {
     );
   }
 
+  put(
+    endpoint: string,
+    path: string,
+    anonymous: boolean = false
+  ): Observable<any> {
+    console.log(`ApiService PUT: ${endpoint}${path} Anonymous? ${anonymous}`);
+
+    return this.http.put(
+      endpoint + path,
+      {
+        headers: this.createHeaders(anonymous),
+      }
+    );
+  }
+
   post(
     endpoint: string,
     path: string,
