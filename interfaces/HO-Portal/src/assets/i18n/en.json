@@ -74,13 +74,7 @@
         "last-updated": "Last updated: {{date}}"
       },
       "program-details": {
-        "pageTitle": "Program details",
-        "advance-phase": "Advance to next program phase",
-        "section-people": "People overview",
-        "manage-people": "Manage people (Regular)",
-        "manage-people-privacy": "Manage people (Privacy Officer)",
-        "section-payout": "Payout",
-        "section-details": "Details overview",
+        "section-title": "Program Details",
         "all": "All details",
         "id": "ID",
         "location": "Location",
@@ -110,6 +104,7 @@
         "financialServiceProviders": "Financial Service-providers"
       },
       "program-payout": {
+        "section-title": "Manage Payments",
         "installment-nr": "Installment #",
         "closed": "Closed",
         "open": "Open",
@@ -123,8 +118,7 @@
         "export-error": "Something went wrong with the export."
       },
       "program-people": {
-        "pageTitle": "Manage people",
-        "pageTitlePrivacy": "Manage people (Privacy Officer)",
+        "section-title": "Manage People Affected",
         "targetNumber": "The target number of People Affected to include is: ",
         "noConnections": "There are no enrolled People Affected yet.",
         "noConnectionsPrivacy": "There are no included or excluded People Affected yet.",
