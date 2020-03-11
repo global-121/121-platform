@@ -5,9 +5,23 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './manage-aidworkers.component.html',
   styleUrls: ['./manage-aidworkers.component.scss'],
 })
-export class ManageAidworkersComponent implements OnInit {
+  public componentVisible: boolean;
+  private presentInPhases = [
+    ProgramPhase.design,
+    ProgramPhase.registration,
+    ProgramPhase.inclusion,
+    ProgramPhase.finalize,
+    ProgramPhase.payment,
+    ProgramPhase.evaluation,
+  ];
 
-  constructor() { }
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+      this.checkVisibility(this.selectedPhase);
+    }
+  public checkVisibility(phase) {
+    this.componentVisible = this.presentInPhases.includes(phase);
+  }
 
   ngOnInit() {}
 
