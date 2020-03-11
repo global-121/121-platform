@@ -101,7 +101,7 @@ export class ManageAidworkersComponent implements OnChanges {
 
   public async addAidworker() {
     const role = 'aidworker';
-    const status = 'active'
+    const status = 'active';
     this.programsService.addUser(this.emailAidworker, this.passwordAidworker, role, status, 1)
       .then(
         (res) => {
@@ -111,7 +111,7 @@ export class ManageAidworkersComponent implements OnChanges {
           const message = String(Object.values(err.error.message[0].constraints)[0]);
           this.actionResult(message);
         }
-    )
+      );
   }
 
   private async succesCreatedAidworker(userId: number) {
@@ -120,7 +120,7 @@ export class ManageAidworkersComponent implements OnChanges {
     const message = this.translate.instant('page.program.manage-aidworkers.succes-create', {
       email: this.emailAidworker,
       password: this.passwordAidworker,
-    })
+    });
     this.actionResult(message);
     this.emailAidworker = undefined;
     this.passwordAidworker = undefined;
