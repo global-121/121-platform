@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { ProgramPhase } from 'src/app/models/program.model';
 import { formatDate } from '@angular/common';
+import { UserRole } from 'src/app/auth/user-role.enum';
 
 @Component({
   selector: 'app-manage-aidworkers',
@@ -13,7 +14,8 @@ export class ManageAidworkersComponent implements OnChanges {
   @Input()
   public selectedPhase: string;
   @Input()
-  public aidworkers: any[];
+  @Input()
+  public userRole: string;
 
   public componentVisible: boolean;
   private presentInPhases = [
@@ -62,7 +64,7 @@ export class ManageAidworkersComponent implements OnChanges {
   }
 
   public checkVisibility(phase) {
-    this.componentVisible = this.presentInPhases.includes(phase);
+    this.componentVisible = this.presentInPhases.includes(phase) && this.userRole !== UserRole.PrivacyOfficer;
   }
 
   public loadData() {
