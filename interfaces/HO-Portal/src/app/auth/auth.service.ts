@@ -4,6 +4,7 @@ import { JwtService } from '../services/jwt.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
+import { UserRole } from './user-role.enum';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class AuthService {
   // store the URL so we can redirect after logging in
   redirectUrl: string;
 
-  private authenticationState = new BehaviorSubject<User|null>(null);
+  private authenticationState = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationState.asObservable();
 
   constructor(
@@ -77,7 +78,7 @@ export class AuthService {
 
         this.authenticationState.next(user);
 
-        if (!user || !user.token) {
+        if (!user || !user.token || user.role === UserRole.Aidworker) {
           return;
         }
 
