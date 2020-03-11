@@ -153,8 +153,9 @@
       },
       "manage-aidworkers": {
         "section-title": "Manage aidworkers",
-        "column-email": "Email Aidworker",
+        "column-email": "Email-adress",
         "column-created": "Creation date",
+        "column-delete": "Delete aidworker",
         "email": "Enter email"
       }
     },
