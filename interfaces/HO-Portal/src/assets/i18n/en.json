@@ -156,6 +156,9 @@
       },
       "program-modal": {
         "pageTitle": "Program JSON"
+      },
+      "manage-aidworkers": {
+        "email": "Enter email"
       }
     },
     "help": {
