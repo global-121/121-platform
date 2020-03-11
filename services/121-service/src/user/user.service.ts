@@ -1,17 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { UserEntity } from './user.entity';
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { SECRET } from '../secrets';
-import { UserRO } from './user.interface';
 import { validate } from 'class-validator';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
 import crypto from 'crypto';
-
 import jwt = require('jsonwebtoken');
+
 import { ProgramEntity } from '../programs/program/program.entity';
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
+import { UserEntity } from './user.entity';
+import { UserRO } from './user.interface';
+import { UserRole } from '../user-role.enum';
 
 @Injectable()
 export class UserService {
@@ -20,7 +21,7 @@ export class UserService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
-  public constructor() {}
+  public constructor() { }
 
   public async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
@@ -149,8 +150,22 @@ export class UserService {
     return this.buildUserRO(updatedUser);
   }
 
-  public async delete(userId: number): Promise<DeleteResult> {
-    return await this.userRepository.delete(userId);
+  public async delete(deleterId: number, userId: number): Promise<DeleteResult> {
+    const deleter = await this.userRepository.findOne(deleterId);
+    const user = await this.userRepository.findOne(userId);
+
+    // If not program-manager (= admin, as other roles have no access to this endpoint), can delete any user
+    if (deleter.role !== UserRole.ProgramManager) {
+      return await this.userRepository.delete(userId);
+    }
+
+    // Program-manager can only delete aidworkers
+    if (user.role === UserRole.Aidworker) {
+      return await this.userRepository.delete(userId);
+    } else {
+      const errors = { Delete: 'Program manager can only delete aidworkers' };
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
   }
 
   public async findById(id: number): Promise<UserRO> {

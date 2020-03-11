@@ -3,10 +3,8 @@ import {
   Post,
   Put,
   Body,
-  Delete,
   Param,
   Controller,
-  UsePipes,
   HttpStatus,
   UseGuards,
 } from '@nestjs/common';
@@ -15,7 +13,6 @@ import { UserRO } from './user.interface';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { User } from './user.decorator';
-import { ValidationPipe } from '../shared/pipes/validation.pipe';
 
 import {
   ApiUseTags,
@@ -82,12 +79,15 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @Roles(UserRole.Admin)
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Delete user by userId' })
-  @Delete('user/:userId')
+  @Post('user/delete/:userId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'string' })
-  public async delete(@Param() params): Promise<DeleteResult> {
-    return await this.userService.delete(params.userId);
+  public async delete(
+    @User('id') deleterId: number,
+    @Param() params
+  ): Promise<DeleteResult> {
+    return await this.userService.delete(deleterId, params.userId);
   }
 
   @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer, UserRole.Aidworker)
