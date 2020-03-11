@@ -193,7 +193,7 @@ export class ProgramPeopleComponent implements OnChanges {
     if (changes.programId && typeof changes.programId.currentValue === 'number') {
       this.update();
     }
-    if (changes.refresh && typeof changes.refresh.currentValue === 'boolean') {
+    if (this.programId && changes.refresh && typeof changes.refresh.currentValue === 'boolean') {
       this.update();
     }
   }
