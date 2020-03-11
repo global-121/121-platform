@@ -156,7 +156,11 @@
         "column-email": "Email-adress",
         "column-created": "Creation date",
         "column-delete": "Delete aidworker",
-        "email": "Enter email"
+        "create-aidworker-title": "Add aidworker",
+        "email": "Enter email",
+        "confirm": "Add aidworker",
+        "create-password": "Enter a password of at least {{minimalLength}} characters:",
+        "succes-create": "Succesfully created user with email: {{email}} and password {{password}} please inform them of their new account."
       }
     },
     "help": {
@@ -177,5 +181,9 @@
     "confirm": "Are you sure?",
     "cancel": "Cancel",
     "ok": "OK"
+  },
+  "password-toggle": {
+    "show": "Show password",
+    "hide": "Hide password"
   }
 }

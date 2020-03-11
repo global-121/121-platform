@@ -171,4 +171,29 @@ export class ProgramsServiceApiService {
       tap((response) => console.log(response)),
     ).toPromise();
   }
+
+  addUser(email: string, password: string, role: string, status: string, countryId: number): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/user`,
+      {
+        email,
+        password,
+        role,
+        status,
+        countryId
+      },
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
+  assignAidworker(programId: number | string, userId: number): Promise<Program> {
+    return this.apiService.put(
+      environment.url_121_service_api,
+      `/user/${userId}/${programId}`,
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
 }

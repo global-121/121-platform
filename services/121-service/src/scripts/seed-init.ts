@@ -19,7 +19,6 @@ export class SeedInit implements InterfaceScript {
     const userRepository = this.connection.getRepository(UserEntity);
     await userRepository.save([
       {
-        username: USERCONFIG.usernameAdmin,
         role: UserRole.Admin,
         email: USERCONFIG.emailAdmin,
         countryId: USERCONFIG.countryId,

@@ -10,7 +10,6 @@ import { StandardCriteriumEntity } from '../programs/standard-criterium/standard
 const userRo = {
   user: {
     id: undefined,
-    username: undefined,
     email: 'test@example.org',
     token: undefined,
     role: undefined,
@@ -21,7 +20,6 @@ const userRo = {
 };
 
 const createUserDto = {
-  username: undefined,
   email: 'test@example.org',
   role: undefined,
   status: undefined,

@@ -15,7 +15,6 @@ export class SeedHelper {
     const userRepository = this.connection.getRepository(UserEntity);
     await userRepository.save([
       {
-        username: userInput.username,
         role: userInput.role,
         email: userInput.email,
         countryId: userInput.countryId,

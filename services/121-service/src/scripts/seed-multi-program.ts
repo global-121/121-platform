@@ -22,7 +22,7 @@ import { UserRole } from '../user-role.enum';
 
 @Injectable()
 export class SeedMultiProgram implements InterfaceScript {
-  public constructor(private connection: Connection) { }
+  public constructor(private connection: Connection) {}
 
   private readonly seedHelper = new SeedHelper(this.connection);
   private readonly seedPublish = new SeedPublish();
@@ -32,7 +32,6 @@ export class SeedMultiProgram implements InterfaceScript {
     await seedInit.run();
 
     await this.seedHelper.addUser({
-      username: USERCONFIG.usernameAidWorker,
       role: UserRole.Aidworker,
       email: USERCONFIG.emailAidWorker,
       countryId: USERCONFIG.countryId,
@@ -40,7 +39,6 @@ export class SeedMultiProgram implements InterfaceScript {
     });
 
     await this.seedHelper.addUser({
-      username: USERCONFIG.usernameProgramManager,
       role: UserRole.ProgramManager,
       email: USERCONFIG.emailProgramManager,
       countryId: USERCONFIG.countryId,
@@ -48,7 +46,6 @@ export class SeedMultiProgram implements InterfaceScript {
     });
 
     await this.seedHelper.addUser({
-      username: USERCONFIG.usernamePrivacyOfficer,
       role: UserRole.PrivacyOfficer,
       email: USERCONFIG.emailPrivacyOfficer,
       countryId: USERCONFIG.countryId,

@@ -5,6 +5,7 @@ import { ProgramPhase } from 'src/app/models/program.model';
 import { formatDate } from '@angular/common';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-manage-aidworkers',
@@ -18,6 +19,10 @@ export class ManageAidworkersComponent implements OnChanges {
   public programId: number;
   @Input()
   public userRole: string;
+
+  public emailAidworker: string;
+  public passwordAidworker: string;
+  public passwordMinLength = 8;
 
   public componentVisible: boolean;
   private presentInPhases = [
@@ -58,7 +63,8 @@ export class ManageAidworkersComponent implements OnChanges {
 
   constructor(
     public translate: TranslateService,
-    public programsSerivce: ProgramsServiceApiService
+    private programsService: ProgramsServiceApiService,
+    private alertController: AlertController,
   ) {
     this.locale = this.translate.getBrowserCultureLang();
   }
@@ -79,7 +85,7 @@ export class ManageAidworkersComponent implements OnChanges {
   }
 
   public async loadData() {
-    const program = await this.programsSerivce.getProgramById(this.programId);
+    const program = await this.programsService.getProgramById(this.programId);
     this.aidworkers = program.aidworkers;
 
     this.aidworkers.forEach((aidworker) => {
@@ -89,8 +95,46 @@ export class ManageAidworkersComponent implements OnChanges {
   }
 
   public async deleteAidworker(row) {
-    await this.programsSerivce.deleteUser(row.id);
+    await this.programsService.deleteUser(row.id);
     this.loadData();
+  }
+
+  public async addAidworker() {
+    const role = 'aidworker';
+    const status = 'active';
+    this.programsService.addUser(this.emailAidworker, this.passwordAidworker, role, status, 1)
+      .then(
+        (res) => {
+          this.succesCreatedAidworker(res.user.id);
+        },
+        (err) => {
+          const message = String(Object.values(err.error.message[0].constraints)[0]);
+          this.actionResult(message);
+        }
+      );
+  }
+
+  private async succesCreatedAidworker(userId: number) {
+    await this.programsService.assignAidworker(1, userId);
+    this.loadData();
+    const message = this.translate.instant('page.program.manage-aidworkers.succes-create', {
+      email: this.emailAidworker,
+      password: this.passwordAidworker,
+    });
+    this.actionResult(message);
+    this.emailAidworker = undefined;
+    this.passwordAidworker = undefined;
+  }
+
+  private async actionResult(resultMessage: string) {
+    const alert = await this.alertController.create({
+      message: resultMessage,
+      buttons: [
+        this.translate.instant('common.ok'),
+      ],
+    });
+
+    await alert.present();
   }
 
 }
