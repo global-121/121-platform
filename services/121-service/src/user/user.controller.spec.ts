@@ -9,7 +9,6 @@ import { LoginUserDto } from './dto/login-user.dto';
 
 const userRo = {
   user: {
-    username: 'string',
     email: 'test@example.org',
     token:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo',
@@ -26,7 +25,6 @@ class UserServiceMock {
   public async create(userData: CreateUserDto): Promise<UserRO> {
     const userRo = {
       user: {
-        username: userData.username,
         email: userData.email,
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo',
@@ -43,7 +41,6 @@ class UserServiceMock {
   public async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const user = new UserEntity();
     user.id = 1;
-    user.username = 'string';
     user.email = 'test@example.org';
     user.password =
       'c90f86e09c3461da52b3d8bc80ccd6a0d0cb893b1a41bd461e8ed31fa21c9b6e';
@@ -112,7 +109,6 @@ describe('UserController', (): void => {
   describe('create', (): void => {
     it('should return an a user entity', async (): Promise<void> => {
       const userValue = {
-        username: 'string',
         email: 'test@example.org',
         password: 'string',
         role: 'aidworker',

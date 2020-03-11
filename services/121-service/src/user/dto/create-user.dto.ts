@@ -4,10 +4,6 @@ import { UserRole } from '../../user-role.enum';
 import { MinKey } from 'typeorm';
 
 export class CreateUserDto {
-  @ApiModelProperty()
-  @IsNotEmpty()
-  public readonly username: string;
-
   @ApiModelProperty({ example: 'admin@example.org' })
   @IsNotEmpty()
   public readonly email: string;

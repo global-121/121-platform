@@ -42,17 +42,16 @@ export class UserService {
   }
 
   public async create(dto: CreateUserDto): Promise<UserRO> {
-    // check uniqueness of username/email
-    const { username, email, password, role, countryId } = dto;
+    // check uniqueness of email
+    const { email, password, role, countryId } = dto;
     const qb = await getRepository(UserEntity)
       .createQueryBuilder('user')
-      .where('user.username = :username', { username })
-      .orWhere('user.email = :email', { email });
+      .where('user.email = :email', { email });
 
     const user = await qb.getOne();
 
     if (user) {
-      const errors = { username: 'Username and email must be unique.' };
+      const errors = { email: 'Email must be unique.' };
       throw new HttpException(
         { message: 'Input data validation failed', errors },
         HttpStatus.BAD_REQUEST,
@@ -61,7 +60,6 @@ export class UserService {
 
     // create new user
     let newUser = new UserEntity();
-    newUser.username = username;
     newUser.email = email;
     newUser.password = password;
     newUser.role = role;
@@ -72,7 +70,7 @@ export class UserService {
 
     const errors = await validate(newUser);
     if (errors.length > 0) {
-      const _errors = { username: 'User input is not valid.' };
+      const _errors = { email: 'User input is not valid.' };
       throw new HttpException(
         { message: 'Input data validation failed', _errors },
         HttpStatus.BAD_REQUEST,
@@ -98,7 +96,7 @@ export class UserService {
       relations: ['assignedProgram'],
     });
     if (updated.role == 'admin') {
-      const _errors = { username: 'Cannot change status of admin-user.' };
+      const _errors = { email: 'Cannot change status of admin-user.' };
       throw new HttpException(
         { message: 'Input data validation failed', _errors },
         HttpStatus.BAD_REQUEST,
@@ -115,7 +113,7 @@ export class UserService {
       relations: ['assignedProgram'],
     });
     if (updated.role == 'admin') {
-      const _errors = { username: 'Cannot change status of admin-user.' };
+      const _errors = { email: 'Cannot change status of admin-user.' };
       throw new HttpException(
         { message: 'Input data validation failed', _errors },
         HttpStatus.BAD_REQUEST,
@@ -177,7 +175,6 @@ export class UserService {
     const result = jwt.sign(
       {
         id: user.id,
-        username: user.username,
         email: user.email,
         role: user.role,
         exp: exp.getTime() / 1000,
@@ -191,7 +188,6 @@ export class UserService {
   private buildUserRO(user: UserEntity): UserRO {
     const userRO = {
       id: user.id,
-      username: user.username,
       email: user.email,
       token: this.generateJWT(user),
       role: user.role,
