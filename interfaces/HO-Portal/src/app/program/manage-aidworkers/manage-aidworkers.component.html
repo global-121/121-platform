@@ -12,6 +12,16 @@
                  loadingIndicator="true"
                  [columns]="columns"
                  [rows]="aidworkers"
-  ></ngx-datatable>
+  >
+    <ngx-datatable-column *ngFor="let column of columns; let i = index;" name="{{column.name}}" prop="{{column.prop}}">
+      <ng-template let-value="value" let-row="row" *ngIf="column.prop==='delete'" ngx-datatable-cell-template>
+        <confirm-prompt (confirm)="deleteAidworker(row)"
+                        [subHeader]="'page.program.manage-aidworkers.column-delete'|translate"
+        >
+          <ion-icon name="trash"></ion-icon>
+        </confirm-prompt>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
 
 </section>

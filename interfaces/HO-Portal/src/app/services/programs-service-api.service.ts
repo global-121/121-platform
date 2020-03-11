@@ -34,6 +34,17 @@ export class ProgramsServiceApiService {
     );
   }
 
+  deleteUser(userId: string): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/user/delete/' + userId,
+      {},
+      true
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
   getAllPrograms(): Promise<Program[]> {
     return this.apiService.get(
       environment.url_121_service_api,

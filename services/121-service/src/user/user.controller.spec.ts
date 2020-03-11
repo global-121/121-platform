@@ -136,7 +136,7 @@ describe('UserController', (): void => {
         .mockImplementation(
           (): Promise<DeleteResult> => Promise.resolve(new DeleteResult()),
         );
-      const controllerResult = await userController.delete(1);
+      const controllerResult = await userController.delete(1, 1);
 
       expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(new DeleteResult());

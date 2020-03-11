@@ -84,7 +84,8 @@
         ></app-program-payout>
 
         <app-manage-aidworkers [selectedPhase]="selectedPhase"
-                                [aidworkers]="program?.aidworkers"
+                                [programId]="program?.id"
+                                [userRole]="currentUserRole"
         ></app-manage-aidworkers>
 
         <app-program-details [selectedPhase]="selectedPhase"
