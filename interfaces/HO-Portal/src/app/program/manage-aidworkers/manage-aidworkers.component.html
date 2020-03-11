@@ -1,5 +1,6 @@
 <section *ngIf="componentVisible">
   <h2>{{ 'page.program.manage-aidworkers.section-title'|translate }}</h2>
+  <h4>{{ 'page.program.manage-aidworkers.view-aidworkers'|translate }}</h4>
 
   <ngx-datatable class="bootstrap"
                  limit="50"
@@ -32,31 +33,47 @@
     </ngx-datatable-column>
   </ngx-datatable>
 
-  <h3>{{ 'page.program.manage-aidworkers.create-aidworker-title'|translate }}</h3>
-  <ion-label>{{ 'page.program.manage-aidworkers.email'|translate }}</ion-label>
-  <ion-input type="text"
-              name="emailAidworker"
-              [(ngModel)]="emailAidworker"
-              ngDefaultControl
-              [disabled]="isDisabled"
-  ></ion-input>
-  <ion-label>{{ 'page.program.manage-aidworkers.create-password'|translate:{ minimalLength: passwordMinLength } }}</ion-label>
-  <password-toggle-input name="passwordAidworker"
-                          [(ngModel)]="passwordAidworker"
-                          ngDefaultControl
-                          [disabled]="isDisabled"
-                          autocomplete="new-password"
-                          [minLength]="passwordMinLength"
-                          [labelShow]="'password-toggle.show'|translate"
-                          [labelHide]="'password-toggle.hide'|translate"
-                          [(isValid)]="createIsValid"
-  ></password-toggle-input>
+  <h4>{{ 'page.program.manage-aidworkers.create-aidworker'|translate }}</h4>
 
-  <ion-button
-              [disabled]="False"
-              (click)="addAidworker()"
-  >
-    {{ 'page.program.manage-aidworkers.confirm'|translate }}
-  </ion-button>
+  <ion-row class="ion-align-items-center">
+    <p>
+      <ion-item style="--inner-padding-end: 0;">
+        <ion-label position="stacked">
+          {{ 'page.program.manage-aidworkers.email'|translate }}
+        </ion-label>
+        <div style="display: flex; width: 100%;"
+             class="ion-align-items-center"
+        >
+        <ion-input type="text"
+                  name="emailAidworker"
+                  [(ngModel)]="emailAidworker"
+                  ngDefaultControl
+                  [disabled]="isDisabled"
+        ></ion-input>
+        </div>
+      </ion-item>
+    </p>
+    <p>
+      <password-toggle-input name="passwordAidworker"
+                              [(ngModel)]="passwordAidworker"
+                              ngDefaultControl
+                              [disabled]="isDisabled"
+                              autocomplete="new-password"
+                              [minLength]="passwordMinLength"
+                              [labelShow]="'password-toggle.show'|translate"
+                              [labelHide]="'password-toggle.hide'|translate"
+                              [(isValid)]="createIsValid"
+                              [label]="'page.program.manage-aidworkers.create-password'|translate:{ minimalLength: passwordMinLength }"
+      ></password-toggle-input>
+    </p>
+  
+    <ion-button
+                [disabled]="False"
+                (click)="addAidworker()"
+    >
+      {{ 'page.program.manage-aidworkers.confirm'|translate }}
+    </ion-button>
+
+  </ion-row>
 
 </section>
