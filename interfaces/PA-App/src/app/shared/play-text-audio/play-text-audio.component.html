@@ -1,0 +1,17 @@
+
+<ion-button *ngIf="!isDisabled"
+            type="button"
+            color="tertiary"
+            shape="round"
+            fill="solid"
+            size="small"
+            [attr.title]="buttonLabel"
+            [attr.aria-label]="buttonLabel"
+            (click)="toggleState()"
+            style="display: inline-block; vertical-align: middle;"
+>
+  <ion-icon [name]="iconName"
+            size="small"
+            slot="icon-only"
+  ></ion-icon>
+</ion-button>

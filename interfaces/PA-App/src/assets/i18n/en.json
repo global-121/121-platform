@@ -162,6 +162,11 @@
   "connection": {
     "error-retry": "Something went wrong, do you want to try again?"
   },
+  "speak-text": {
+    "loading": "Loading",
+    "play": "Play",
+    "pause": "Pause"
+  },
   "shared": {
     "submit-button": "Submit",
     "cancel-button": "Cancel",

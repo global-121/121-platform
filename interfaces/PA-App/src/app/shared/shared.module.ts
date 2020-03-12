@@ -9,6 +9,7 @@ import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
 import { MoreInfoButtonComponent } from './more-info-button/more-info-button.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
 import { PhoneNumberInputComponent } from './phone-number-input/phone-number-input.component';
+import { PlayTextAudioComponent } from './play-text-audio/play-text-audio.component';
 import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
 
 @NgModule({
@@ -17,6 +18,7 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
     MoreInfoButtonComponent,
     PasswordToggleInputComponent,
     PhoneNumberInputComponent,
+    PlayTextAudioComponent,
     QAndASetComponent,
   ],
   imports: [
@@ -30,6 +32,7 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
     MoreInfoButtonComponent,
     PasswordToggleInputComponent,
     PhoneNumberInputComponent,
+    PlayTextAudioComponent,
     QAndASetComponent,
     TranslateModule,
   ],
