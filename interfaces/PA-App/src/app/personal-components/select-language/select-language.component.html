@@ -20,7 +20,13 @@
         <ion-item *ngFor="let language of languages"
                   color="light"
                   class="ion-no-padding ion-text-wrap"
+                  lines="full"
         >
+          <play-text-audio [key]="'personal.select-language.language.' + language.id"
+                           slot="start"
+                           class="ion-no-margin ion-margin-end"
+          ></play-text-audio>
+
           <ion-label>{{ language.language }}</ion-label>
           <ion-radio [value]="language.id"></ion-radio>
         </ion-item>

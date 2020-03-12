@@ -31,15 +31,15 @@ export class SelectLanguageComponent extends PersonalComponent {
     this.languages = [
       {
         id: 'en',
-        language: this.translate.instant('personal.select-language.option1'),
+        language: this.translate.instant('personal.select-language.language.en'),
       },
       {
-        id: 'la2',
-        language: this.translate.instant('personal.select-language.option2'),
+        id: 'fr',
+        language: this.translate.instant('personal.select-language.language.fr'),
       },
       {
-        id: 'la3',
-        language: this.translate.instant('personal.select-language.option3'),
+        id: 'es',
+        language: this.translate.instant('personal.select-language.language.es'),
       },
     ];
 
