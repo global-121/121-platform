@@ -1,5 +1,6 @@
 <section #selectLanguage>
   <dialogue-turn>
+    <play-text-audio key="personal.select-language.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
     <p [innerHTML]="'personal.select-language.introduction'|translate"></p>
     <p>
       <more-info-button [message]="'personal.select-language.info-message'|translate"
@@ -20,7 +21,13 @@
         <ion-item *ngFor="let language of languages"
                   color="light"
                   class="ion-no-padding ion-text-wrap"
+                  lines="full"
         >
+          <play-text-audio [key]="'personal.select-language.language.' + language.id"
+                           slot="start"
+                           class="ion-no-margin ion-margin-end"
+          ></play-text-audio>
+
           <ion-label>{{ language.language }}</ion-label>
           <ion-radio [value]="language.id"></ion-radio>
         </ion-item>
@@ -47,6 +54,7 @@
   <dialogue-turn *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
+    <play-text-audio key="personal.select-language.result" class="ion-float-end ion-margin-start"></play-text-audio>
     <p [innerHTML]="'personal.select-language.result'|translate:{ language:languageChoiceName }"></p>
   </dialogue-turn>
 </section>

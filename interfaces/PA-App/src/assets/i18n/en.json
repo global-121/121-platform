@@ -123,9 +123,11 @@
       "introduction": "Welcome to 121. Please select your language.<br><br>Bienvenu chez 121. Choisi votre langue.<br><br>Bienvenido a 121. Selecciona tu idioma.",
       "more-info": "About 121",
       "info-message": "With the 121 platform, we aim to make Cash Based Aid safe, fast & fair, to help you if you have been affected by disasters and crises to meet your own needs. 121 will help you<br><ul><li>Create a Digtial ID</li><li>Know which programs are available in your area</li><li>Apply to the programs</li><li>Understand who sees your information</li></ul>",
-      "option1": "English",
-      "option2": "Français",
-      "option3": "Español",
+      "language": {
+        "en": "English",
+        "fr": "Français",
+        "es": "Español"
+      },
       "result": "Thank you, you have selected <strong>{{language}}</strong>."
     },
     "select-program": {
