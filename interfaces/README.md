@@ -62,6 +62,27 @@ Every interface or app will refer to the specific services or APIs they require.
 
 See the [/services/](../services/)-directory in this repository.
 
+
+### Dependencies in use
+All interfaces use a common set of dependencies/frameworks/libraries.
+
+- [Ionic v4](https://ionicframework.com/docs/v4/)  
+  This UI-kit or library gives us a foundation to quickly build interfaces cross-platform and cross-device-type(mobile/desktop).  
+  We use the (default) framework of Angular with(in) Ionic.
+  - Available components: <https://ionicframework.com/docs/v4/components>
+  - CSS Utilities: <https://ionicframework.com/docs/v4/layout/css-utilities>
+  - Icons: <https://ionicons.com/v4/>
+
+- [Angular v7](https://v7.angular.io/docs)  
+  This front-end framework gives us a structure to create components that can be connected, combined, share data and can be delivered as a web-app.
+  - API Documentation: <https://v7.angular.io/api>
+  - Used by Angular, RxJS: <https://rxjs-dev.firebaseapp.com/api>
+
+- [`ngx-translate`](http://www.ngx-translate.com/)  
+  An Angular-service to handle internationalization(i18n) or translations.
+  - API Documentation: <https://github.com/ngx-translate/core#api>
+  
+
 ### Continuous Integration (CI)
 Every interface has their own Azure Pipeline set up to run tests and generate 'builds'.  
 See their status on the [main README](../README.md#status).

@@ -26,6 +26,14 @@ Some specific information need to be configured before use:
 - Set the API-endpoint(s) in the [`environment.ts`](./src/environments/environment.ts)-file.
 
 
+## Dependencies in use
+Next to the 'generic' dependencies/libraries/components [used by all interfaces](../README.md#Dependencies-in-use), the PA-app also uses:
+
+- [`angularx-qrcode`](https://github.com/cordobo/angularx-qrcode)
+  A component to render QR-codes with custom data.
+  - Documentation: <https://github.com/cordobo/angularx-qrcode#basic-usage>
+
+
 ## Deployment / Building
 To deploy a native build of this app, see the generic instructions in [/interfaces/README](../README.md#Deployment).
 
