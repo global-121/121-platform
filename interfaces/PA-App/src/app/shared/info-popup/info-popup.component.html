@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <play-text-audio [key]="(headingKey) ? headingKey : 'shared.more-info'"></play-text-audio>
+    </ion-buttons>
     <ion-title>
       {{ (heading) ? heading : 'shared.more-info'|translate }}
     </ion-title>
@@ -16,5 +19,8 @@
 <ion-content fullscreen
              class="ion-padding"
 >
+  <div *ngIf="messageKey">
+    <play-text-audio [key]="messageKey"></play-text-audio>
+  </div>
   <div [innerHTML]="message"></div>
 </ion-content>
