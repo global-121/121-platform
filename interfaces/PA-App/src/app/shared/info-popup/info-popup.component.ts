@@ -11,7 +11,13 @@ export class InfoPopupComponent {
   public heading: string;
 
   @Input()
+  public headingKey: string;
+
+  @Input()
   public message: string;
+
+  @Input()
+  public messageKey: string;
 
   constructor(
     private modalController: ModalController,
