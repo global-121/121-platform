@@ -1,7 +1,6 @@
-import { STAGING_URL, TWILIO_API } from './../../config';
+import { EXTERNAL_API } from './../../config';
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { TWILIO } from '../../secrets';
-import { DEBUG, PRODUCTION_URL } from '../../config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
@@ -39,7 +38,7 @@ export class SmsService {
       .create({
         body: message,
         from: TWILIO.testFromNumberSms, // This parameter could be specifief per program
-        statusCallback: TWILIO_API.callbackUrlSms,
+        statusCallback: EXTERNAL_API.callbackUrlSms,
         to: recipientPhoneNr,
       })
       .then(message => this.storeSendSms(message));

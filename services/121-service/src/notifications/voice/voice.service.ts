@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { TWILIO } from '../../secrets';
 import { twilioClient, twilio } from '../twilio.client';
-import { Request, Response, NextFunction } from 'express';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import fs from 'fs';
-import { TWILIO_API } from '../../config';
+import { EXTERNAL_API } from '../../config';
 
 @Injectable()
 export class VoiceService {
@@ -33,9 +32,9 @@ export class VoiceService {
     twilioClient.calls
       .create({
         method: 'GET',
-        url: TWILIO_API.voiceXmlUrl + mp3Param,
+        url: EXTERNAL_API.voiceXmlUrl + mp3Param,
         to: recipientPhoneNr,
-        statusCallback: TWILIO_API.callbackUrlVoice,
+        statusCallback: EXTERNAL_API.callbackUrlVoice,
         from: TWILIO.testFromNumberVoice,
       })
       .then(call => this.storeCall(call, mp3Param))
@@ -63,7 +62,7 @@ export class VoiceService {
     const twiml = new VoiceResponse();
     const re = new RegExp('/', 'g');
     const mp3Escaped = mp3Param.replace(re, 'REPLACE');
-    const mp3Url = TWILIO_API.voiceMp3lUrl + mp3Escaped;
+    const mp3Url = EXTERNAL_API.voiceMp3lUrl + mp3Escaped;
     twiml.play(mp3Url);
     return twiml.toString();
   }
