@@ -53,9 +53,9 @@ Audio-file creation/processing:
 - Set the audio files' filenames to: `<translation.string.key>.m4a` where:
   - `translation.string.key` is the path used in the text-translation file, see [`en.json`](./src/assets/i18n/en.json)  
 
-- Convert the audio files to the specified format:
-  
-      for f in *.m4a; do ffmpeg -i "$f" -map 0:a -dash 1 "${f%.m4a}.webm" -map 0:a "${f%.m4a}.mp3"; done;
+- Convert the audio files to the specified format by running the script:  
+  `npm run generate-assets-audio -- <locale>`  
+   Or provide the locale/language-code at the prompt.
 
 
 ## Deployment / Building
