@@ -28,7 +28,8 @@ const web_aw = `${web_root}/AW-app`;
 function onMerge() {
   exec(
     `cd ` + repo_services +
-    ` && sudo git pull ` +
+    ` && sudo git reset --hard ` +
+    ` && sudo git pull --ff-only` +
     ` && sudo docker-compose up -d --build ` +
     ` && sudo docker restart 121-service PA-accounts-service` +
     ` && cd ` + repo_pa +
@@ -74,13 +75,16 @@ http
       let payload = JSON.parse(str);
 
       if (
-        req.headers["x-hub-signature"] == sig &&
-        payload.action == "closed" &&
-        payload.pull_request.merged &&
-        (
-          (payload.pull_request.base.ref == "production" && process.env.NODE_ENV == "production")
-          || process.env.NODE_ENV == "staging"
-        )
+          req.headers["x-hub-signature"] === sig &&
+          payload.action === "closed" &&
+          payload.pull_request.merged &&
+          (
+            process.env.NODE_ENV === "staging" ||
+            (
+              payload.pull_request.base.ref === "production" &&
+              process.env.NODE_ENV === "production"
+            )
+          )
       ) {
         onMerge();
       }
