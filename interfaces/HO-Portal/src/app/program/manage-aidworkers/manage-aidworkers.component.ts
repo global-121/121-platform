@@ -118,7 +118,7 @@ export class ManageAidworkersComponent implements OnChanges {
   }
 
   private async succesCreatedAidworker(userId: number) {
-    await this.programsService.assignAidworker(1, userId);
+    await this.programsService.assignAidworker(this.programId, userId);
     this.loadData();
     const message = this.translate.instant('page.program.manage-aidworkers.succes-create', {
       email: this.emailAidworker,
