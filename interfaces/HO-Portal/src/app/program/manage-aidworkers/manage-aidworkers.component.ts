@@ -56,6 +56,7 @@ export class ManageAidworkersComponent implements OnChanges {
     }
   ];
   public aidworkers: any[];
+  private countryId: number;
 
   public tableMessages: any;
   private locale: string;
@@ -86,6 +87,7 @@ export class ManageAidworkersComponent implements OnChanges {
 
   public async loadData() {
     const program = await this.programsService.getProgramById(this.programId);
+    this.countryId = program.countryId;
     this.aidworkers = program.aidworkers;
 
     this.aidworkers.forEach((aidworker) => {
@@ -102,7 +104,8 @@ export class ManageAidworkersComponent implements OnChanges {
   public async addAidworker() {
     const role = 'aidworker';
     const status = 'active';
-    this.programsService.addUser(this.emailAidworker, this.passwordAidworker, role, status, 1)
+
+    this.programsService.addUser(this.emailAidworker, this.passwordAidworker, role, status, this.countryId)
       .then(
         (res) => {
           this.succesCreatedAidworker(res.user.id);
