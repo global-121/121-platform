@@ -12,7 +12,13 @@ export class MoreInfoButtonComponent implements OnInit {
   heading: string;
 
   @Input()
+  headingKey: string;
+
+  @Input()
   message: string;
+
+  @Input()
+  messageKey: string;
 
   constructor(
     private modalController: ModalController,
@@ -25,7 +31,9 @@ export class MoreInfoButtonComponent implements OnInit {
       component: InfoPopupComponent,
       componentProps: {
         heading: this.heading,
+        headingKey: this.headingKey,
         message: this.message,
+        messageKey: this.messageKey,
       },
       cssClass: 'more-info-popup',
     });
