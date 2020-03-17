@@ -1,5 +1,6 @@
-<section #loginIdentity>
+<section>
   <dialogue-turn>
+    <play-text-audio key="personal.login-identity.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.login-identity.introduction'|translate }}
     </p>
@@ -8,6 +9,7 @@
     <form (ngSubmit)="submitLoginCredentials(username,password)">
       <div>
         <div>
+          <play-text-audio key="personal.login-identity.supply-username" class="ion-margin-end"></play-text-audio>
           <ion-label>{{ 'personal.login-identity.supply-username'|translate }}</ion-label>
           <ion-input type="text"
                       name="username"
@@ -26,6 +28,7 @@
         </div>
       </div>
       <div *ngIf="usernameSubmitted" class="ion-margin-bottom">
+        <play-text-audio key="personal.login-identity.supply-password" class="ion-margin-end"></play-text-audio>
         <password-toggle-input name="password"
                                [(ngModel)]="password"
                                ngDefaultControl
@@ -48,15 +51,9 @@
   <dialogue-turn *ngIf="incorrectCredentials"
                  [isSpoken]="incorrectCredentials"
   >
+    <play-text-audio key="personal.login-identity.incorrect-credentials" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.login-identity.incorrect-credentials'|translate }}
-    </p>
-  </dialogue-turn>
-  <dialogue-turn *ngIf="isDisabled"
-                 [isSpoken]="isDisabled"
-  >
-    <p>
-      {{ 'personal.login-identity.conclusion'|translate }}
     </p>
   </dialogue-turn>
 </section>
