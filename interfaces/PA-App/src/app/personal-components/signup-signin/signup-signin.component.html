@@ -1,11 +1,13 @@
 <section #signupSignin>
   <dialogue-turn>
+    <play-text-audio key="personal.signup-signin.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.signup-signin.introduction'|translate }}
     </p>
     <p>
       <more-info-button [message]="'personal.signup-signin.info-message'|translate"
                         [heading]="'personal.signup-signin.more-info-digital-id'|translate"
+                        headingKey="personal.signup-signin.more-info-digital-id"
       >
         {{ 'personal.signup-signin.more-info-digital-id'|translate }}
       </more-info-button>
@@ -17,6 +19,10 @@
                   class="ion-no-padding ion-text-wrap"
                   [disabled]="typeChosen"
         >
+          <play-text-audio key="personal.signup-signin.create-id"
+                           slot="start"
+                           class="ion-no-margin ion-margin-end"
+          ></play-text-audio>
           <ion-label>{{ 'personal.signup-signin.create-id'|translate }}</ion-label>
           <ion-radio [value]="idChoices.create"
                      [checked]="signupSigninChoice === idChoices.create"
@@ -26,6 +32,10 @@
                   class="ion-no-padding ion-text-wrap"
                   [disabled]="useLocalStorage || typeChosen"
         >
+          <play-text-audio key="personal.signup-signin.login-id"
+                           slot="start"
+                           class="ion-no-margin ion-margin-end"
+          ></play-text-audio>
           <ion-label>{{ 'personal.signup-signin.login-id'|translate }}</ion-label>
           <ion-radio [value]="idChoices.login"
                      [checked]="signupSigninChoice === idChoices.login"
