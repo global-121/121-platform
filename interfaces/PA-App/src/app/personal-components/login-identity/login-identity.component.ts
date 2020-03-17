@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { PersonalComponent } from '../personal-component.class';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -9,10 +9,6 @@ import { PaDataService } from 'src/app/services/padata.service';
   styleUrls: ['./login-identity.component.scss'],
 })
 export class LoginIdentityComponent extends PersonalComponent {
-  @Input()
-  public data: any;
-
-  public initialInput = false;
   public usernameSubmitted = false;
   public username: string;
   public password: any;
@@ -38,16 +34,6 @@ export class LoginIdentityComponent extends PersonalComponent {
   }
 
   ngOnInit() {
-    if (this.data) {
-      this.initHistory();
-    }
-  }
-
-  initHistory() {
-    this.isDisabled = true;
-    this.username = this.data.username;
-    this.password = this.data.password;
-    this.usernameSubmitted = true;
   }
 
   public async submitLoginCredentials(username: string, password: string) {
@@ -59,9 +45,7 @@ export class LoginIdentityComponent extends PersonalComponent {
       () => {
         this.incorrectCredentials = false;
         this.isInProgress = true;
-        this.isDisabled = true;
         this.complete();
-        this.conversationService.restoreAfterLogin();
       },
       (error) => {
         this.conversationService.stopLoading();
@@ -83,6 +67,7 @@ export class LoginIdentityComponent extends PersonalComponent {
   }
 
   complete() {
-    // This section doesn't really need to 'completed', as it will be replaced by the state from history.
+    this.isDisabled = true;
+    this.conversationService.restoreAfterLogin();
   }
 }
