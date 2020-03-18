@@ -1,11 +1,13 @@
 <section #selectProgram>
   <dialogue-turn>
+    <play-text-audio key="personal.select-program.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.select-program.introduction'|translate }}
     </p>
     <p>
       <more-info-button [message]="'personal.select-program.info-message'|translate"
                         [heading]="'personal.select-program.more-info-programs'|translate"
+                        headingKey="personal.select-program.more-info-programs"
       >
         {{ 'personal.select-program.more-info-programs'|translate }}
       </more-info-button>
