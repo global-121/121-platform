@@ -1,5 +1,6 @@
 <section #selectCountry>
   <dialogue-turn>
+    <play-text-audio key="personal.select-country.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.select-country.introduction'|translate }}
     </p>
@@ -29,6 +30,7 @@
   <dialogue-turn *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
+    <play-text-audio key="personal.select-country.conclusion" class="ion-float-end ion-margin-start"></play-text-audio>
     <p [innerHTML]="'personal.select-country.conclusion'|translate:{ country:countryChoiceName }"></p>
   </dialogue-turn>
 </section>
