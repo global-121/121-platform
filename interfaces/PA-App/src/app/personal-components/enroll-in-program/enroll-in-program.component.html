@@ -29,7 +29,7 @@
                [(isSubmitted)]="hasAnswered"
                [(isEditing)]="hasChangedAnswers"
                (submit)="submit($event)"
-               [submitLabel]="'personal.enroll-in-program.submit'|translate"
+               submitLabel="personal.enroll-in-program.submit"
   ></q-and-a-set>
 
   <dialogue-turn [actor]="programDetails?.ngo"
