@@ -10,6 +10,7 @@ export const environment = {
   showDebug: ${process.env.NG_SHOW_DEBUG || 'false'},
   useAnimation: ${process.env.NG_USE_ANIMATION || 'true'},
   localStorage: ${process.env.NG_LOCAL_STORAGE || 'false'},
+  alwaysShowTextPlayer: false,
 
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API}',
