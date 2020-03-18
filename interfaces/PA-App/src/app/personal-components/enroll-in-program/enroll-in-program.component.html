@@ -2,17 +2,26 @@
   <dialogue-turn [actor]="programDetails?.ngo"
                  [hidden]="!programDetails?.title"
   >
-    <p [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programDetails?.title, ngo:programDetails?.ngo }"></p>
-    <p>
+    <play-text-audio key="personal.enroll-in-program.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
+    <div [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programDetails?.title, ngo:programDetails?.ngo }"
+       class="ion-margin-bottom"
+    ></div>
+
+    <div class="ion-margin-vertical">
+      <play-text-audio key="personal.enroll-in-program.introduction-questions" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.enroll-in-program.introduction-questions'|translate }}
-    </p>
-    <p>
+    </div>
+
+    <ion-row class="ion-nowrap ion-align-items-center">
+      <play-text-audio key="personal.enroll-in-program.more-info-questions"></play-text-audio>
       <more-info-button [message]="'personal.enroll-in-program.info-message'|translate"
+                        messageKey="personal.enroll-in-program.info-message"
                         [heading]="'personal.enroll-in-program.more-info-questions'|translate"
+                        headingKey="personal.enroll-in-program.more-info-questions"
       >
         {{ 'personal.enroll-in-program.more-info-questions'|translate }}
       </more-info-button>
-    </p>
+    </ion-row>
   </dialogue-turn>
 
   <q-and-a-set [questions]="questions"
@@ -27,6 +36,7 @@
                  *ngIf="dobFeedback"
                  [isSpoken]="dobFeedback"
   >
+    <play-text-audio key="personal.enroll-in-program.dob-feedback" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.enroll-in-program.dob-feedback'|translate }}
     </p>
@@ -35,16 +45,20 @@
                  *ngIf="hasAnswered"
                  [isSpoken]="hasAnswered"
   >
+    <play-text-audio key="personal.enroll-in-program.please-confirm" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.enroll-in-program.please-confirm'|translate }}
     </p>
-    <p>
+    <ion-row class="ion-nowrap ion-align-items-center ion-margin-top">
+      <play-text-audio key="personal.enroll-in-program.more-info-share"></play-text-audio>
       <more-info-button [message]="'personal.enroll-in-program.info-message-share'|translate"
+                        messageKey="prsonal.enroll-in-program.info-message-share"
                         [heading]="'personal.enroll-in-program.more-info-share'|translate"
+                        headingKey="personal.enroll-in-program.more-info-share"
       >
         {{ 'personal.enroll-in-program.more-info-share'|translate }}
       </more-info-button>
-    </p>
+    </ion-row>
   </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="hasAnswered"
@@ -57,22 +71,30 @@
       </li>
     </ul>
 
-    <p class="ion-margin-top">
-      <ion-button type="submit"
-                  (click)="submitConfirm()"
-                  [disabled]="isDisabled"
-                  expand="block"
-      >
-        {{ 'personal.enroll-in-program.submit-confirm'|translate }}
-      </ion-button>
-      <ion-button type="button"
-                  (click)="changeAnswers()"
-                  [disabled]="isDisabled"
-                  expand="block"
-                  fill="outline"
-      >
-        {{ 'personal.enroll-in-program.change'|translate }}
-      </ion-button>
-    </p>
+    <div class="ion-margin-top">
+      <ion-row class="ion-nowrap ion-align-items-center">
+        <play-text-audio key="personal.enroll-in-program.submit-confirm"></play-text-audio>
+        <ion-button type="submit"
+                    (click)="submitConfirm()"
+                    [disabled]="isDisabled"
+                    expand="block"
+                    style="flex-basis:100%;"
+        >
+          {{ 'personal.enroll-in-program.submit-confirm'|translate }}
+        </ion-button>
+      </ion-row>
+      <ion-row class="ion-nowrap ion-align-items-center">
+        <play-text-audio key="personal.enroll-in-program.change"></play-text-audio>
+        <ion-button type="button"
+                    (click)="changeAnswers()"
+                    [disabled]="isDisabled"
+                    expand="block"
+                    style="flex-basis:100%;"
+                    fill="outline"
+        >
+          {{ 'personal.enroll-in-program.change'|translate }}
+        </ion-button>
+      </ion-row>
+    </div>
   </dialogue-turn>
 </section>
