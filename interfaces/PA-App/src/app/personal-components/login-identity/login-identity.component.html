@@ -18,14 +18,17 @@
                       [disabled]="isDisabled"
           ></ion-input>
         </div>
-        <div class="ion-margin-top">
-          <ion-button *ngIf="username && !usernameSubmitted"
-                      [disabled]="isInProgress || isDisabled"
+        <ion-row *ngIf="username && !usernameSubmitted"
+                 class="ion-nowrap ion-align-items-center ion-margin-top"
+        >
+          <play-text-audio key="personal.login-identity.submit-username"></play-text-audio>
+          <ion-button [disabled]="isInProgress || isDisabled"
                       (click)="usernameSubmitted=true;"
                       type="button"
                       expand="block"
+                      style="flex-basis:100%"
           >{{ 'personal.login-identity.submit-username'|translate }}</ion-button>
-        </div>
+        </ion-row>
       </div>
       <div *ngIf="usernameSubmitted" class="ion-margin-bottom">
         <play-text-audio key="personal.login-identity.supply-password" class="ion-margin-end"></play-text-audio>
@@ -39,13 +42,17 @@
                                [labelHide]="'password-toggle.hide'|translate"
         ></password-toggle-input>
       </div>
-      <div class="ion-margin-top">
+      <ion-row *ngIf="password && !isDisabled"
+                class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio key="personal.login-identity.submit-password"></play-text-audio>
         <ion-button *ngIf="password && !isDisabled"
                     [disabled]="isInProgress || isDisabled"
                     type="submit"
                     expand="block"
+                    style="flex-basis:100%"
         >{{ 'personal.login-identity.submit-password'|translate }}</ion-button>
-      </div>
+      </ion-row>
     </form>
   </dialogue-turn>
   <dialogue-turn *ngIf="incorrectCredentials"
