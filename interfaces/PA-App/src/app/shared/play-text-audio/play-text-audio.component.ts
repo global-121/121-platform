@@ -71,6 +71,9 @@ export class PlayTextAudioComponent implements OnInit {
 
   public toggleState() {
     switch (this.state) {
+      case PlayerState.error:
+        console.warn(`SpeakTextAudio: error for [${this.key}]`);
+        break;
       case PlayerState.playing:
         this.player.pause();
         this.setState(PlayerState.paused);
