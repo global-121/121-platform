@@ -1,14 +1,15 @@
 <section>
   <dialogue-turn [actor]="program?.ngo">
     <p>
+      <play-text-audio key="personal.select-appointment.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.select-appointment.introduction'|translate }}
     </p>
-    <p>
+    <div class="ion-margin-top">
       <more-info-button buttonKey="personal.select-appointment.more-info-activation"
                         messageKey="personal.select-appointment.info-message"
                         headingKey="personal.select-appointment.more-info-activation"
       ></more-info-button>
-    </p>
+    </div>
   </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="timeslots"
@@ -42,19 +43,23 @@
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <p class="ion-margin-top">
+      <ion-row *ngIf="timeslotChoice && !timeslotSubmitted"
+               class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio key="shared.submit-button"></play-text-audio>
         <ion-button type="submit"
-                     *ngIf="timeslotChoice && !timeslotSubmitted"
                     [disabled]="timeslotSubmitted || isDisabled"
                     expand="block"
+                    style="flex-basis:100%"
         >{{ 'shared.submit-button'|translate }}</ion-button>
-      </p>
+      </ion-row>
     </form>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"
                  *ngIf="timeslotSubmitted"
                  [isSpoken]="timeslotSubmitted"
   >
+    <play-text-audio key="personal.select-appointment.thanks-repeat" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.select-appointment.thanks-repeat'|translate }}
     </p>
@@ -81,7 +86,12 @@
       <ion-radio-group (ionChange)="changeConfirmAction($event)">
         <ion-item color="light"
                   class="ion-no-padding ion-text-wrap"
+                  lines="full"
         >
+          <play-text-audio key="personal.select-appointment.confirm"
+                           slot="start"
+                           class="ion-no-margin ion-margin-end"
+          ></play-text-audio>
           <ion-label>{{ 'personal.select-appointment.confirm'|translate }}</ion-label>
           <ion-radio [value]="confirmActions.confirm"
                      [checked]="(confirmAction === confirmActions.confirm)"
@@ -90,7 +100,12 @@
         </ion-item>
         <ion-item color="light"
                   class="ion-no-padding ion-text-wrap"
+                  lines="full"
         >
+          <play-text-audio key="personal.select-appointment.change"
+                           slot="start"
+                           class="ion-no-margin ion-margin-end"
+          ></play-text-audio>
           <ion-label>{{ 'personal.select-appointment.change'|translate }}</ion-label>
           <ion-radio [value]="confirmActions.change"
                      [checked]="(confirmAction === confirmActions.change)"
@@ -98,19 +113,23 @@
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <p class="ion-margin-top">
+      <ion-row *ngIf="confirmAction && !isDisabled"
+                class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio key="shared.submit-button"></play-text-audio>
         <ion-button type="submit"
-                    *ngIf="confirmAction && !isDisabled"
                     [disabled]="isDisabled"
                     expand="block"
+                    style="flex-basis:100%"
         >{{ 'shared.submit-button'|translate }}</ion-button>
-      </p>
+      </ion-row>
     </form>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"
                  *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
+    <play-text-audio key="personal.select-appointment.conclusion" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.select-appointment.conclusion'|translate }}
     </p>
