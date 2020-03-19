@@ -1,10 +1,11 @@
 <section>
   <dialogue-turn [actor]="programDetails?.ngo"
-                 [hidden]="!programDetails?.title"
+                 *ngIf="!programDetails?.title"
+                 [isSpoken]="!programDetails?.title"
   >
     <play-text-audio key="personal.enroll-in-program.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
     <div [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programDetails?.title, ngo:programDetails?.ngo }"
-       class="ion-margin-bottom"
+         class="ion-margin-bottom"
     ></div>
 
     <div class="ion-margin-vertical">
