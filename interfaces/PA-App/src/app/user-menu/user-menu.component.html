@@ -29,9 +29,11 @@
     >
       {{ 'account.delete-digital-id'|translate }}
     </ion-item>
-    <ion-button (click)="close()"
+    <ion-button type="button"
+                (click)="close()"
                 expand="block"
     >
+      <ion-icon name="close" size="small"></ion-icon>
       {{ 'shared.close-button'|translate }}
     </ion-button>
   </ion-list>
