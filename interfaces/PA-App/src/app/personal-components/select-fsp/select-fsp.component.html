@@ -25,13 +25,16 @@
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <p class="ion-margin-top">
+      <ion-row *ngIf="fspChoice && !fspSubmitted"
+               class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio key="shared.submit-button"></play-text-audio>
         <ion-button type="submit"
-                     *ngIf="fspChoice && !fspSubmitted"
                     [disabled]="fspSubmitted || isDisabled"
                     expand="block"
+                    style="flex-basis:100%"
         >{{ 'shared.submit-button'|translate }}</ion-button>
-      </p>
+      </ion-row>
     </form>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"

@@ -31,12 +31,15 @@
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <div class="ion-margin-top">
+      <ion-row *ngIf="programChoice && !isDisabled"
+               class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio key="shared.submit-button"></play-text-audio>
         <ion-button type="submit"
-                    *ngIf="programChoice && !isDisabled"
                     expand="block"
+                    style="flex-basis:100%"
         >{{ 'shared.submit-button'|translate }}</ion-button>
-      </div>
+      </ion-row>
     </form>
   </dialogue-turn>
 </section>
