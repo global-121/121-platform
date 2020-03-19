@@ -30,11 +30,10 @@
     </ul>
 
     <p>
-      <more-info-button [message]="'personal.meeting-reminder.info-message'|translate"
-                        [heading]="'personal.meeting-reminder.more-info-documents'|translate"
-      >
-        {{ 'personal.meeting-reminder.more-info-documents'|translate }}
-      </more-info-button>
+      <more-info-button buttonKey="personal.meeting-reminder.more-info-documents"
+                        headingKey="personal.meeting-reminder.more-info-documents"
+                        messageKey="personal.meeting-reminder.info-message"
+      ></more-info-button>
     </p>
     <p>
       {{ 'personal.meeting-reminder.qr-code'|translate }}

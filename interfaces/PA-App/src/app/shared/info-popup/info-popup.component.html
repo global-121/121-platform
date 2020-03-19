@@ -4,7 +4,9 @@
       <play-text-audio [key]="(headingKey) ? headingKey : 'shared.more-info'"></play-text-audio>
     </ion-buttons>
     <ion-title>
-      {{ (heading) ? heading : 'shared.more-info'|translate }}
+      <ng-container *ngIf="headingKey">{{ headingKey|translate }}</ng-container>
+      <ng-container *ngIf="!headingKey && heading">{{ heading }}</ng-container>
+      <ng-container *ngIf="!headingKey && !heading">{{ 'shared.more-info'|translate }}</ng-container>
     </ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="close()"
@@ -19,8 +21,9 @@
 <ion-content fullscreen
              class="ion-padding"
 >
-  <div *ngIf="messageKey">
+  <div *ngIf="messageKey" class="ion-float-end ion-margin-start">
     <play-text-audio [key]="messageKey"></play-text-audio>
   </div>
-  <div [innerHTML]="message"></div>
+  <div *ngIf="messageKey" [innerHTML]="messageKey|translate"></div>
+  <div *ngIf="!messageKey && message" [innerHTML]="message"></div>
 </ion-content>

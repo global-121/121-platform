@@ -5,12 +5,10 @@
       {{ 'personal.signup-signin.introduction'|translate }}
     </p>
     <p>
-      <more-info-button [message]="'personal.signup-signin.info-message'|translate"
-                        [heading]="'personal.signup-signin.more-info-digital-id'|translate"
+      <more-info-button buttonKey="personal.signup-signin.more-info-digital-id"
+                        messageKey="personal.signup-signin.info-message"
                         headingKey="personal.signup-signin.more-info-digital-id"
-      >
-        {{ 'personal.signup-signin.more-info-digital-id'|translate }}
-      </more-info-button>
+      ></more-info-button>
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self">

@@ -5,12 +5,10 @@
       {{ 'personal.select-program.introduction'|translate }}
     </p>
     <p>
-      <more-info-button [message]="'personal.select-program.info-message'|translate"
-                        [heading]="'personal.select-program.more-info-programs'|translate"
+      <more-info-button buttonKey="personal.select-program.more-info-programs"
+                        messageKey="personal.select-program.info-message"
                         headingKey="personal.select-program.more-info-programs"
-      >
-        {{ 'personal.select-program.more-info-programs'|translate }}
-      </more-info-button>
+      ></more-info-button>
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self">

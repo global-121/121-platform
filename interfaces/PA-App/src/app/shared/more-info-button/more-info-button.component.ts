@@ -9,6 +9,9 @@ import { ModalController } from '@ionic/angular';
 })
 export class MoreInfoButtonComponent implements OnInit {
   @Input()
+  buttonKey: string;
+
+  @Input()
   heading: string;
 
   @Input()

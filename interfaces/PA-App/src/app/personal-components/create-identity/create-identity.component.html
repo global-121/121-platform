@@ -5,13 +5,10 @@
         {{ 'personal.create-identity.introduction'|translate }}
       </p>
       <p>
-        <more-info-button [message]="'personal.create-identity.info-message'|translate"
-                          [heading]="'personal.create-identity.more-info-digital-id'|translate"
+        <more-info-button buttonKey="personal.create-identity.more-info-digital-id"
+                          messageKey="personal.create-identity.info-message"
                           headingKey="personal.create-identity.more-info-digital-id"
-        >
-          {{ 'personal.create-identity.more-info-digital-id'|translate }}
-        </more-info-button>
-      </p>
+        ></more-info-button>
     </dialogue-turn>
     <dialogue-turn isConnected="true"
                    *ngIf="useLocalStorage"
@@ -22,12 +19,10 @@
         {{ 'personal.create-identity.password-only'|translate }}
       </p>
       <p>
-        <more-info-button [message]="'personal.create-identity.info-message-password'|translate"
-                          [heading]="'personal.create-identity.more-info-password'|translate"
+        <more-info-button buttonKey="personal.create-identity.more-info-password"
+                          messageKey="personal.create-identity.info-message-password"
                           headingKey="personal.create-identity.more-info-password"
-        >
-          {{ 'personal.create-identity.more-info-password'|translate }}
-        </more-info-button>
+        ></more-info-button>
       </p>
     </dialogue-turn>
     <dialogue-turn isConnected="true"
@@ -39,12 +34,10 @@
         {{ 'personal.create-identity.username-password'|translate }}
       </p>
       <p>
-        <more-info-button [message]="'personal.create-identity.info-message-username-pw'|translate"
-                          [heading]="'personal.create-identity.more-info-username-pw'|translate"
+        <more-info-button buttonKey="personal.create-identity.more-info-username-pw"
+                          messageKey="personal.create-identity.info-message-username-pw"
                           headingKey="personal.create-identity.more-info-username-pw"
-        >
-          {{ 'personal.create-identity.more-info-username-pw'|translate }}
-        </more-info-button>
+        ></more-info-button>
       </p>
     </dialogue-turn>
     <dialogue-turn actor="self">

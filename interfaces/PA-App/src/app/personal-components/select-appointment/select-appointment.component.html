@@ -4,11 +4,10 @@
       {{ 'personal.select-appointment.introduction'|translate }}
     </p>
     <p>
-      <more-info-button [message]="'personal.select-appointment.info-message'|translate"
-                        [heading]="'personal.select-appointment.more-info-activation'|translate"
-      >
-        {{ 'personal.select-appointment.more-info-activation'|translate }}
-      </more-info-button>
+      <more-info-button buttonKey="personal.select-appointment.more-info-activation"
+                        messageKey="personal.select-appointment.info-message"
+                        headingKey="personal.select-appointment.more-info-activation"
+      ></more-info-button>
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
