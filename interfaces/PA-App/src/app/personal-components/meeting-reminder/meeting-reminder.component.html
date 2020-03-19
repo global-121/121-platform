@@ -3,6 +3,7 @@
                  *ngIf="qrDataShow"
                  [isSpoken]="qrDataShow"
   >
+    <play-text-audio key="personal.meeting-reminder.meeting-reminder" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.meeting-reminder.meeting-reminder'|translate }}
     </p>
@@ -20,6 +21,7 @@
       {{ 'personal.meeting-reminder.at'|translate }}:
       <strong>{{ chosenTimeslot?.location }}</strong>
     </p>
+    <play-text-audio key="personal.meeting-reminder.documents" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.meeting-reminder.documents'|translate }}
     </p>
@@ -36,6 +38,7 @@
       ></more-info-button>
     </p>
     <p>
+      <play-text-audio key="personal.meeting-reminder.qr-code" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.meeting-reminder.qr-code'|translate }}
     </p>
     <div *ngIf="qrDataString"
@@ -53,13 +56,16 @@
                  [isSpoken]="qrDataShow && (daysToMeeting > 0)"
                  isConnected="true"
   >
-    <p *ngIf="daysToMeeting > 1"
-       [innerHTML]="'personal.meeting-reminder.meeting-count-down'|translate:{ daysToMeeting:daysToMeeting }"
-    ></p>
+    <ng-container *ngIf="daysToMeeting > 1">
+      <play-text-audio key="personal.meeting-reminder.meeting-count-down" class="ion-float-end ion-margin-start"></play-text-audio>
+      <p [innerHTML]="'personal.meeting-reminder.meeting-count-down'|translate:{ daysToMeeting:daysToMeeting }"></p>
+    </ng-container>
     <p *ngIf="daysToMeeting === 1">
+      <play-text-audio key="personal.meeting-reminder.meeting-tomorrow" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.meeting-reminder.meeting-tomorrow'|translate }}
     </p>
     <p *ngIf="daysToMeeting === 0">
+      <play-text-audio key="personal.meeting-reminder.meeting-today" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.meeting-reminder.meeting-today'|translate }}
     </p>
   </dialogue-turn>
