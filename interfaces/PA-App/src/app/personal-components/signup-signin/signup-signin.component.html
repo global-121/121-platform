@@ -40,12 +40,16 @@
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <p class="ion-margin-top">
-        <ion-button *ngIf="signupSigninChoice && !typeChosen"
+      <ion-row *ngIf="signupSigninChoice && !typeChosen"
+               class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio key="shared.submit-button"></play-text-audio>
+        <ion-button type="submit"
                     (click)="submitSignupSignin()"
                     [disabled]="typeChosen"
                     expand="block"
+                    style="flex-basis:100%"
         >{{ 'shared.submit-button'|translate }}</ion-button>
-      </p>
+      </ion-row>
   </dialogue-turn>
 </section>
