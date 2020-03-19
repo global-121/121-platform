@@ -1,17 +1,14 @@
-<section #createIdentity>
+<section>
     <dialogue-turn>
       <play-text-audio key="personal.create-identity.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
       <p>
         {{ 'personal.create-identity.introduction'|translate }}
       </p>
       <p>
-        <more-info-button [message]="'personal.create-identity.info-message'|translate"
-                          [heading]="'personal.create-identity.more-info-digital-id'|translate"
+        <more-info-button buttonKey="personal.create-identity.more-info-digital-id"
+                          messageKey="personal.create-identity.info-message"
                           headingKey="personal.create-identity.more-info-digital-id"
-        >
-          {{ 'personal.create-identity.more-info-digital-id'|translate }}
-        </more-info-button>
-      </p>
+        ></more-info-button>
     </dialogue-turn>
     <dialogue-turn isConnected="true"
                    *ngIf="useLocalStorage"
@@ -22,12 +19,10 @@
         {{ 'personal.create-identity.password-only'|translate }}
       </p>
       <p>
-        <more-info-button [message]="'personal.create-identity.info-message-password'|translate"
-                          [heading]="'personal.create-identity.more-info-password'|translate"
+        <more-info-button buttonKey="personal.create-identity.more-info-password"
+                          messageKey="personal.create-identity.info-message-password"
                           headingKey="personal.create-identity.more-info-password"
-        >
-          {{ 'personal.create-identity.more-info-password'|translate }}
-        </more-info-button>
+        ></more-info-button>
       </p>
     </dialogue-turn>
     <dialogue-turn isConnected="true"
@@ -39,12 +34,10 @@
         {{ 'personal.create-identity.username-password'|translate }}
       </p>
       <p>
-        <more-info-button [message]="'personal.create-identity.info-message-username-pw'|translate"
-                          [heading]="'personal.create-identity.more-info-username-pw'|translate"
+        <more-info-button buttonKey="personal.create-identity.more-info-username-pw"
+                          messageKey="personal.create-identity.info-message-username-pw"
                           headingKey="personal.create-identity.more-info-username-pw"
-        >
-          {{ 'personal.create-identity.more-info-username-pw'|translate }}
-        </more-info-button>
+        ></more-info-button>
       </p>
     </dialogue-turn>
     <dialogue-turn actor="self">
@@ -62,19 +55,24 @@
                         [disabled]="isDisabled"
             ></ion-input>
           </div>
-          <div class="ion-margin-top">
-            <ion-button *ngIf="username && !usernameSubmitted"
-                        [disabled]="usernameSubmitted || isDisabled"
+          <ion-row *ngIf="username && !usernameSubmitted"
+                   class="ion-nowrap ion-align-items-center ion-margin-top"
+          >
+            <play-text-audio key="personal.create-identity.submit-username"></play-text-audio>
+            <ion-button [disabled]="usernameSubmitted || isDisabled"
                         type="submit"
                         expand="block"
+                        style="flex-basis:100%"
             >{{ 'personal.create-identity.submit-username'|translate }}</ion-button>
-          </div>
+          </ion-row>
         </div>
         <div *ngIf="usernameSubmitted || useLocalStorage"
              class="ion-margin-vertical"
         >
-          <play-text-audio key="personal.create-identity.create-password-explanation" class="ion-margin-end"></play-text-audio>
-          <p>{{ 'personal.create-identity.create-password-explanation'|translate:{ minimalLength: passwordMinLength } }}</p>
+          <p>
+            <play-text-audio key="personal.create-identity.create-password-explanation" class="ion-margin-end"></play-text-audio>
+            {{ 'personal.create-identity.create-password-explanation'|translate:{ minimalLength: passwordMinLength } }}
+          </p>
           <password-toggle-input name="create"
                                  [(ngModel)]="create"
                                  ngDefaultControl
@@ -86,17 +84,20 @@
                                  [labelHide]="'password-toggle.hide'|translate"
                                  [(isValid)]="createIsValid"
           ></password-toggle-input>
-          <div class="ion-margin-top">
-            <div *ngIf="createIsValid === false">
-              <play-text-audio key="personal.create-identity.password-too-short" class="ion-margin-end"></play-text-audio>
-              <p>{{ 'personal.create-identity.password-too-short'|translate:{ minimalLength: passwordMinLength } }}</p>
-            </div>
-            <ion-button *ngIf="create && !initialInput"
-                        [disabled]="!createIsValid || initialInput || isDisabled"
+          <div *ngIf="createIsValid === false" class="ion-margin-vertical">
+            <play-text-audio key="personal.create-identity.password-too-short" class="ion-margin-end"></play-text-audio>
+            <p>{{ 'personal.create-identity.password-too-short'|translate:{ minimalLength: passwordMinLength } }}</p>
+          </div>
+          <ion-row *ngIf="create && !initialInput"
+                   class="ion-nowrap ion-align-items-center ion-margin-top"
+          >
+            <play-text-audio key="personal.create-identity.submit-password"></play-text-audio>
+            <ion-button [disabled]="!createIsValid || initialInput || isDisabled"
                         type="submit"
                         expand="block"
+                        style="flex-basis:100%"
             >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
-          </div>
+          </ion-row>
         </div>
 
         <div *ngIf="initialInput">
@@ -111,13 +112,16 @@
                                  [labelShow]="'password-toggle.show'|translate"
                                  [labelHide]="'password-toggle.hide'|translate"
           ></password-toggle-input>
-          <div class="ion-margin-top">
-            <ion-button *ngIf="create && confirm && !isDisabled"
-                        [disabled]="isInProgress || isDisabled"
+          <ion-row *ngIf="create && confirm && !isDisabled"
+                   class="ion-nowrap ion-align-items-center ion-margin-top"
+          >
+            <play-text-audio key="personal.create-identity.submit-password"></play-text-audio>
+            <ion-button [disabled]="isInProgress || isDisabled"
                         type="submit"
                         expand="block"
+                        style="flex-basis:100%"
             >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
-          </div>
+          </ion-row>
         </div>
       </form>
     </dialogue-turn>

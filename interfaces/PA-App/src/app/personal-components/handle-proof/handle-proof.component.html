@@ -1,9 +1,11 @@
 <section>
   <dialogue-turn [actor]="currentProgram?.ngo">
     <p>
+      <play-text-audio key="personal.handle-proof.creating" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.handle-proof.creating'|translate }}
     </p>
     <p>
+      <play-text-audio key="personal.handle-proof.notify" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.handle-proof.notify'|translate }}
     </p>
   </dialogue-turn>
@@ -13,9 +15,11 @@
                  [isSpoken]="inclusionStatus"
   >
     <p *ngIf="inclusionStatusNegative">
+      <play-text-audio key="personal.handle-proof.inclusion-status-negative" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.handle-proof.inclusion-status-negative'|translate }}
     </p>
     <p *ngIf="inclusionStatusPositive">
+      <play-text-audio key="personal.handle-proof.inclusion-status-positive" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.handle-proof.inclusion-status-positive'|translate }}
     </p>
   </dialogue-turn>

@@ -10,6 +10,7 @@ export const environment = {
   showDebug: false, // Controls debugging features
   localStorage: false, // Use local or remote wallet/account
   useAnimation: false, // Use animations and delays in the interface
+  alwaysShowTextPlayer: true, // Also show text-player for missing audio-files
 
   // APIs:
   url_121_service_api: 'http://localhost:3000/api',

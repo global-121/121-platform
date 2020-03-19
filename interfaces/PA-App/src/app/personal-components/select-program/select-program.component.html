@@ -1,14 +1,14 @@
 <section #selectProgram>
   <dialogue-turn>
+    <play-text-audio key="personal.select-program.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.select-program.introduction'|translate }}
     </p>
     <p>
-      <more-info-button [message]="'personal.select-program.info-message'|translate"
-                        [heading]="'personal.select-program.more-info-programs'|translate"
-      >
-        {{ 'personal.select-program.more-info-programs'|translate }}
-      </more-info-button>
+      <more-info-button buttonKey="personal.select-program.more-info-programs"
+                        messageKey="personal.select-program.info-message"
+                        headingKey="personal.select-program.more-info-programs"
+      ></more-info-button>
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
@@ -31,12 +31,15 @@
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <div class="ion-margin-top">
+      <ion-row *ngIf="programChoice && !isDisabled"
+               class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio key="shared.submit-button"></play-text-audio>
         <ion-button type="submit"
-                    *ngIf="programChoice && !isDisabled"
                     expand="block"
+                    style="flex-basis:100%"
         >{{ 'shared.submit-button'|translate }}</ion-button>
-      </div>
+      </ion-row>
     </form>
   </dialogue-turn>
 </section>

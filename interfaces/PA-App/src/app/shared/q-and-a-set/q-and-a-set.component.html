@@ -72,6 +72,7 @@
   >
     <dialogue-turn [isSpoken]="checkValidationErrors(question.code)">
       <p *ngIf="(question.answerType === answerType.phoneNumber) && validationErrors.includes('phoneNumber')">
+        <play-text-audio key="validation.phoneNumber" class="ion-float-end ion-margin-start"></play-text-audio>
         {{ 'validation.phoneNumber'|translate }}
       </p>
     </dialogue-turn>
@@ -82,6 +83,7 @@
 <dialogue-turn *ngIf="checkValidationErrors() && allQuestionsShown"
                [isSpoken]="checkValidationErrors() && allQuestionsShown"
 >
+  <play-text-audio key="validation.generic-error" class="ion-float-end ion-margin-start"></play-text-audio>
   <p>
     {{ 'validation.generic-error'|translate }}
   </p>
@@ -92,13 +94,15 @@
                *ngIf="!checkValidationErrors() && allQuestionsShown"
                [isSpoken]="!checkValidationErrors() && allQuestionsShown"
 >
-  <p>
+  <ion-row class="ion-nowrap ion-align-items-center">
+    <play-text-audio [key]="submitLabel"></play-text-audio>
     <ion-button type="submit"
                 (click)="doSubmit()"
                 [disabled]="isSubmitted"
                 expand="block"
+                style="flex-basis:100%;"
     >
-      {{ submitLabel }}
+      {{ submitLabel|translate }}
     </ion-button>
-  </p>
+  </ion-row>
 </dialogue-turn>

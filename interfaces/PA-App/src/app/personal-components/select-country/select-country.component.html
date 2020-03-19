@@ -1,5 +1,6 @@
 <section #selectCountry>
   <dialogue-turn>
+    <play-text-audio key="personal.select-country.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
       {{ 'personal.select-country.introduction'|translate }}
     </p>
@@ -18,17 +19,21 @@
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <div class="ion-margin-top">
+      <ion-row *ngIf="countryChoice && !isDisabled"
+               class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio key="shared.submit-button"></play-text-audio>
         <ion-button type="submit"
-                    *ngIf="countryChoice && !isDisabled"
                     expand="block"
+                    style="flex-basis:100%"
         >{{ 'shared.submit-button'|translate }}</ion-button>
-      </div>
+      </ion-row>
     </form>
   </dialogue-turn>
   <dialogue-turn *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
+    <play-text-audio key="personal.select-country.conclusion" class="ion-float-end ion-margin-start"></play-text-audio>
     <p [innerHTML]="'personal.select-country.conclusion'|translate:{ country:countryChoiceName }"></p>
   </dialogue-turn>
 </section>

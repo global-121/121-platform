@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Howl } from 'howler';
+import { environment } from 'src/environments/environment';
 
 const enum PlayerState {
   loading = 'loading',
@@ -19,6 +20,7 @@ export class PlayTextAudioComponent implements OnInit {
   @Input()
   public key: string;
 
+  public alwaysVisible = environment.alwaysShowTextPlayer;
   public isDisabled = false;
   public iconName: string;
   public buttonLabel: string;
@@ -69,6 +71,9 @@ export class PlayTextAudioComponent implements OnInit {
 
   public toggleState() {
     switch (this.state) {
+      case PlayerState.error:
+        console.warn(`SpeakTextAudio: error for [${this.key}]`);
+        break;
       case PlayerState.playing:
         this.player.pause();
         this.setState(PlayerState.paused);
