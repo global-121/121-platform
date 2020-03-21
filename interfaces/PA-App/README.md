@@ -44,13 +44,10 @@ Next to the 'generic' dependencies/libraries/components [used by all interfaces]
 The PA-App uses audio-files to make the [interface-text](./src/assets/i18n/en.json) accessible in spoken form.
 
 Audio-file creation/processing:
-- Install the command-line tool: [`ffmpeg`](https://www.ffmpeg.org/).  
-  - Installation on macOS: `brew install ffmpeg`
-
 - Add the audio-file(s) to `./src/assets/i18n/<locale>/` where:
   - `locale` is an [IETF BCP47](https://tools.ietf.org/html/bcp47) language-string; like `en` or `fr-BE`, etc.
 
-- Set the audio files' filenames to: `<translation.string.key>.m4a` where:
+- Set the audio files' filenames to: `<translation.string.key>.mp3` where:
   - `translation.string.key` is the path used in the text-translation file, see [`en.json`](./src/assets/i18n/en.json)  
 
 - Convert the audio files to the specified format by running the script:  
