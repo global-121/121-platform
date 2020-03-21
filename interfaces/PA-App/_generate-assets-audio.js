@@ -4,7 +4,8 @@ const rl = readline.createInterface({
   output: process.stdout
 });
 const existsSync = require('fs').existsSync;
-const exec = require("child_process").exec;
+const exec = require('child_process').exec;
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 
 /**
  * Generate audio assets in the required formats (*.mp3 and *.webm)
@@ -23,8 +24,8 @@ function generateAssetsAudio(locale) {
 
   // Run `ffmpeg` command on all `*.m4a`-files:
   return exec(
-    'for f in *.m4a; ' +
-      'do ffmpeg -n -i "$f" -map 0:a -dash 1 "${f%.m4a}.webm" -map 0:a "${f%.m4a}.mp3"; ' +
+    'for f in *.mp3; ' +
+      'do ' + ffmpegPath + ' -n -i "$f" -dash 1 "${f%.mp3}.webm"; ' +
     'done;',
     (error, stdout, stderr) => {
       if (error) {
