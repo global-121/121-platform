@@ -45,12 +45,12 @@ export class PaDataService {
 
   private setUsername(username: string) {
     this.username = username;
-    this.store(this.type.username, username, true);
+    window.sessionStorage.setItem(this.type.username, username);
   }
 
   async getUsername(): Promise<string> {
     if (!this.username) {
-      this.username = await this.retrieve(this.type.username, true);
+      this.username = window.sessionStorage.getItem(this.type.username);
     }
 
     return new Promise<string>((resolve, reject) => {
@@ -209,6 +209,7 @@ export class PaDataService {
 
     console.log('PaData: logout()');
     this.jwtService.destroyToken();
+    window.sessionStorage.removeItem(this.type.username);
     this.ionStorage.clear();
     this.setLoggedOut();
   }
