@@ -6,7 +6,6 @@
     "logout": "Log out",
     "change-password": "Change password",
     "delete-digital-id": "Delete Digital ID",
-    "logged-out": "You are succesfully logged out.",
     "enter-password": "Your Password",
     "delete-account-header": "Enter your password if you are sure you want to delete your Digital ID",
     "delete-account-message": "Deleting your Digital ID is irreversible, all your data will be lost!",
@@ -54,9 +53,7 @@
       "dob-feedback": "Your date of birth does not have a valid format. Please adjust and save again.",
       "please-confirm": "Below is an overview of your information. Please check and submit.",
       "submit-confirm": "Submit my information",
-      "change": "Change my information",
-      "confirm-received": "Next step: Make an appointment for Digital ID activation and program application.",
-      "prepare-documents": "To save time at your appointment, make sure to bring these documents:"
+      "change": "Change my information"
     },
     "signup-signin": {
       "introduction": "Please select your digital ID.",
@@ -80,11 +77,9 @@
       "more-info-activation": "About activation",
       "info-message": "Lorem ipsem bladibla",
       "thanks-repeat": "You have selected the following option:",
-      "documents": "Please ensure you have the following documents:",
       "from": "From",
       "till": "Till",
       "at": "At",
-      "more-info-documents": "About these documents",
       "confirm": "Confirm my option",
       "change": "Change my option",
       "conclusion": "Thank you. Your appointment for Digital ID activation and program application is confirmed."

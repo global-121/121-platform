@@ -20,7 +20,8 @@
     "build:native": "npm run ionic -- cordova build android ",
     "test": "ng test --no-watch --browsers=ChromeHeadless",
     "test:dev": "ng test",
-    "lint": "ng lint",
+    "lint:translations": "ngx-translate-lint --config=ngx-translate-lint.config.json",
+    "lint": "ng lint && npm run lint:translations",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -82,6 +83,7 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.5.1",
     "native-run": "^0.2.9",
+    "ngx-translate-lint": "^1.6.0",
     "protractor": "~5.4.0",
     "ts-node": "~8.3.0",
     "tslint": "~5.18.0",
