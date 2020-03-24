@@ -46,7 +46,10 @@
       <ion-row *ngIf="timeslotChoice && !timeslotSubmitted"
                class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button"></play-text-audio>
+        <play-text-audio key="shared.submit-button"
+                         type="forSubmit"
+                         size="default"
+        ></play-text-audio>
         <ion-button type="submit"
                     [disabled]="timeslotSubmitted || isDisabled"
                     expand="block"
@@ -89,6 +92,7 @@
                   lines="full"
         >
           <play-text-audio key="personal.select-appointment.confirm"
+                           type="forRadio"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
@@ -103,6 +107,7 @@
                   lines="full"
         >
           <play-text-audio key="personal.select-appointment.change"
+                           type="forRadio"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
@@ -116,7 +121,10 @@
       <ion-row *ngIf="confirmAction && !isDisabled"
                 class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button"></play-text-audio>
+        <play-text-audio key="shared.submit-button"
+                         type="forSubmit"
+                         size="default"
+        ></play-text-audio>
         <ion-button type="submit"
                     [disabled]="isDisabled"
                     expand="block"

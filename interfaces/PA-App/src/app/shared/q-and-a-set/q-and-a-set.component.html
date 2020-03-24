@@ -95,7 +95,10 @@
                [isSpoken]="!checkValidationErrors() && allQuestionsShown"
 >
   <ion-row class="ion-nowrap ion-align-items-center">
-    <play-text-audio [key]="submitLabel"></play-text-audio>
+    <play-text-audio [key]="submitLabel"
+                     type="forSubmit"
+                     size="default"
+    ></play-text-audio>
     <ion-button type="submit"
                 (click)="doSubmit()"
                 [disabled]="isSubmitted"

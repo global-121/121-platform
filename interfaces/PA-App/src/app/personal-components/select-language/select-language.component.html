@@ -21,6 +21,7 @@
                   lines="full"
         >
           <play-text-audio [key]="'personal.select-language.language.' + language.id"
+                           type="forRadio"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
@@ -31,7 +32,10 @@
       <ion-row *ngIf="languageChoice"
                class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button"></play-text-audio>
+        <play-text-audio key="shared.submit-button"
+                         type="forSubmit"
+                         size="default"
+        ></play-text-audio>
         <ion-button type="submit"
                     expand="block"
                     style="flex-basis:100%"
