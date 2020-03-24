@@ -35,7 +35,10 @@
       <ion-row *ngIf="!isDisabled"
                class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="personal.set-notification-number.submit"></play-text-audio>
+        <play-text-audio key="personal.set-notification-number.submit"
+                         type="forSubmit"
+                         size="default"
+        ></play-text-audio>
         <ion-button type="submit"
                     [disabled]="isDisabled || !phone"
                     expand="block"
@@ -45,7 +48,10 @@
       <ion-row *ngIf="!isDisabled"
                class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="personal.set-notification-number.skip"></play-text-audio>
+        <play-text-audio key="personal.set-notification-number.skip"
+                         type="forSubmit"
+                         size="default"
+        ></play-text-audio>
         <ion-button type="reset"
                     (click)="skipPhone()"
                     [disabled]="isDisabled"

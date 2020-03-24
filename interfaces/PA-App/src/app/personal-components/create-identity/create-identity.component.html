@@ -58,7 +58,10 @@
           <ion-row *ngIf="username && !usernameSubmitted"
                    class="ion-nowrap ion-align-items-center ion-margin-top"
           >
-            <play-text-audio key="personal.create-identity.submit-username"></play-text-audio>
+            <play-text-audio key="personal.create-identity.submit-username"
+                             type="forSubmit"
+                             size="default"
+            ></play-text-audio>
             <ion-button [disabled]="usernameSubmitted || isDisabled"
                         type="submit"
                         expand="block"
@@ -91,7 +94,10 @@
           <ion-row *ngIf="create && !initialInput"
                    class="ion-nowrap ion-align-items-center ion-margin-top"
           >
-            <play-text-audio key="personal.create-identity.submit-password"></play-text-audio>
+            <play-text-audio key="personal.create-identity.submit-password"
+                             type="forSubmit"
+                             size="default"
+            ></play-text-audio>
             <ion-button [disabled]="!createIsValid || initialInput || isDisabled"
                         type="submit"
                         expand="block"
@@ -115,7 +121,10 @@
           <ion-row *ngIf="create && confirm && !isDisabled"
                    class="ion-nowrap ion-align-items-center ion-margin-top"
           >
-            <play-text-audio key="personal.create-identity.submit-password"></play-text-audio>
+            <play-text-audio key="personal.create-identity.submit-password"
+                             type="forSubmit"
+                             size="default"
+            ></play-text-audio>
             <ion-button [disabled]="isInProgress || isDisabled"
                         type="submit"
                         expand="block"
