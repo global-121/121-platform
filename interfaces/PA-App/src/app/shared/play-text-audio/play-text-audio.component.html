@@ -1,14 +1,18 @@
 
 <ion-button *ngIf="!isDisabled || alwaysVisible"
             type="button"
-            color="tertiary"
+            color="primary"
             shape="round"
             fill="solid"
-            size="small"
+            [size]="size ? size : 'small'"
             [attr.title]="buttonLabel"
             [attr.aria-label]="buttonLabel"
             (click)="toggleState()"
-            style="display: inline-block; vertical-align: middle;"
+            [ngClass]="{
+              'is-for-submit': (type === buttonTypes.forSubmit),
+              'is-thin': (type === buttonTypes.forSubmit) || (type === buttonTypes.forRadio),
+              'play-text-audio': true
+            }"
 >
   <ion-icon [name]="iconName"
             size="small"

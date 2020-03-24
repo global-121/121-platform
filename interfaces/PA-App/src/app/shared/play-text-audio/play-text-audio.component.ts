@@ -4,11 +4,17 @@ import { Howl } from 'howler';
 import { environment } from 'src/environments/environment';
 
 const enum PlayerState {
-  loading = 'loading',
-  ready = 'ready',
-  playing = 'playing',
-  paused = 'paused',
-  error = 'error',
+  loading,
+  ready,
+  playing,
+  paused,
+  error,
+}
+
+enum ButtonType {
+  forSubmit = 'forSubmit',
+  forSubmitSecondary = 'forSubmitSecondary',
+  forRadio = 'forRadio',
 }
 
 @Component({
@@ -19,6 +25,16 @@ const enum PlayerState {
 export class PlayTextAudioComponent implements OnInit {
   @Input()
   public key: string;
+
+  @Input()
+  public size: string;
+
+  @Input()
+  public color: string;
+
+  @Input()
+  public type: ButtonType;
+  public buttonTypes = ButtonType;
 
   public alwaysVisible = environment.alwaysShowTextPlayer;
   public isDisabled = false;
