@@ -57,9 +57,17 @@ export class PlayTextAudioComponent implements OnInit {
       play: this.translate.instant('speak-text.play'),
       pause: this.translate.instant('speak-text.pause'),
     };
+
+    this.translate.onLangChange.subscribe(() => {
+      this.createPlayer();
+    });
   }
 
-  async ngOnInit() {
+  ngOnInit() {
+    this.createPlayer();
+  }
+
+  private createPlayer() {
     this.player = new Howl({
       src: this.getSourceUrls(this.key),
       preload: true,
