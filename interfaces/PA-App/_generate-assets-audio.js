@@ -3,7 +3,7 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
-const existsSync = require('fs').existsSync;
+const fs = require('fs');
 const exec = require('child_process').exec;
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 
@@ -13,8 +13,9 @@ const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
  */
 function generateAssetsAudio(locale) {
   const sourcePath = `src/assets/i18n/${locale}/`;
+  const sourceFileType = '.mp3';
 
-  if (!locale || !existsSync(sourcePath)) {
+  if (!locale || !fs.existsSync(sourcePath)) {
     console.warn(`No folder available for locale: ${locale}`)
     return process.exit();
   }
@@ -22,20 +23,24 @@ function generateAssetsAudio(locale) {
   // Change to requested folder:
   process.chdir(sourcePath);
 
-  // Run `ffmpeg` command on all `*.m4a`-files:
-  return exec(
-    'for f in *.mp3; ' +
-      'do ' + ffmpegPath + ' -n -i "$f" -dash 1 "${f%.mp3}.webm"; ' +
-    'done;',
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(stderr);
-      } else {
-        console.log(stdout);
-      }
-      process.exit();
-    }
-  );
+  // Run `ffmpeg` command on all source-files:
+  fs.readdirSync('./')
+    .filter((file) => file.match(`${sourceFileType}$`))
+    .forEach((file) => {
+      const outputFile = file.replace(`${sourceFileType}`, '.webm');
+
+      return exec(
+        `${ffmpegPath} -n -i ${file} -dash 1 ${outputFile}`,
+        (error, stdout, stderr) => {
+          if (error) {
+            console.error(stderr);
+          } else {
+            console.log(stdout);
+          }
+        }
+      );
+    });
+  process.exit();
 }
 
 
