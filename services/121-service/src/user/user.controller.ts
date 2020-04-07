@@ -115,7 +115,7 @@ export class UserController {
 
   @Roles(UserRole.ProgramManager)
   @ApiOperation({ title: 'Assign Aidworker to program' })
-  @Put('user/:userId/:programId')
+  @Post('user/:userId/:programId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   public async assignProgram(

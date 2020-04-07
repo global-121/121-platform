@@ -38,8 +38,7 @@ export class ProgramsServiceApiService {
     return this.apiService.post(
       environment.url_121_service_api,
       '/user/delete/' + userId,
-      {},
-      true
+      {}
     ).pipe(
       tap((response) => console.log(response)),
     ).toPromise();
@@ -72,7 +71,7 @@ export class ProgramsServiceApiService {
       `/programs/changeState/` + programId,
       {
         newState
-      },
+      }
     ).pipe(
       tap((response) => console.log(response)),
     ).toPromise();
@@ -189,9 +188,10 @@ export class ProgramsServiceApiService {
   }
 
   assignAidworker(programId: number | string, userId: number): Promise<Program> {
-    return this.apiService.put(
+    return this.apiService.post(
       environment.url_121_service_api,
       `/user/${userId}/${programId}`,
+      {}
     ).pipe(
       tap((response) => console.log(response)),
     ).toPromise();
