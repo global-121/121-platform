@@ -66,7 +66,7 @@
       "at": "Pa ",
       "documents": "Onetsetsani kuti mwabweretsa zinthu izi",
       "from": "Kochokera",
-      "meeting-count-down": "Mkumano wanu ulipo mumasiku <strong>{{daysToMeeting}}</strong> akubwerawa",
+      "meeting-count-down": "Mkumano wanu ulipo mumasiku {{daysToMeeting}} akubwerawa",
       "meeting-reminder": "Zikomo. Izi ndi zonse zomwe mukufunika kudziwa zamkumano wanu",
       "meeting-today": "Mkumano wanu ulipo lero",
       "meeting-tomorrow": "Mkumano wanu ulipo mawa",
@@ -86,11 +86,11 @@
       "till": "Mpaka"
     },
     "select-country": {
-      "conclusion": "Zikomo, mwasankha <strong>{{country}}</strong>",
+      "conclusion": "Zikomo, mwasankha {{country}}",
       "introduction": "Sankhani dera lanu"
     },
     "select-fsp": {
-      "conclusion": "Zikomo. Mwasankha <strong>{{name}}</strong>.",
+      "conclusion": "Zikomo. Mwasankha {{name}}.",
       "introduction": "Mutati mwayikidwa mu pologalamu iyi, mungakonde kuti muzilandila bwanji ndalama zanu",
       "attributes": {
         "error": "China chinalakwika, chonde yesaniso",
@@ -101,7 +101,7 @@
     },
     "select-language": {
       "more-info": "Zokhuzana ndi 121",
-      "result": "Zikomo, mwasankha <strong>{{language}}</strong>.",
+      "result": "Zikomo, mwasankha {{language}}.",
       "introduction": {
         "en": "Welcome to 121. Please select your language.",
         "es": "Bienvenido a 121. Selecciona tu idioma.",
@@ -121,7 +121,7 @@
     },
     "set-notification-number": {
       "conclusion-skipped": "Mwasankha kusasiya foni nambala yanu. Chonde muzilowa pafupipafupi kuti muziona uthenga wina",
-      "conclusion-submitted": "Zikomo. Tsopano muzilandila uthenga pa foni nambala iyi <strong>{{phone}}</strong>",
+      "conclusion-submitted": "Zikomo. Tsopano muzilandila uthenga pa foni nambala iyi {{phone}}",
       "input-label": "foni nambala (kuyambila +265)",
       "introduction1": "Mutha kufuna kapena ayi kulowetsa foni nambala yanu",
       "introduction2": "Timagwiritsa ichi kukutumizilani uthenga ngati mwayikidwa mu pulogalamu komanso ngati mwalandila ndalama",
@@ -137,7 +137,7 @@
       "login-id": "Gwiritsani ntchito nambala yanga"
     },
     "store-credential": {
-      "done": "Nambala yanu yayatsidwa ndi <strong>{{ngo}}</strong>",
+      "done": "Nambala yanu yayatsidwa ndi {{ngo}}",
       "received": "Nambala yanu yalandilidwa kuchokera ku foni yanu",
       "stored": "Nambala yanu yasungidwa mu foni yanu"
     }

@@ -4,7 +4,7 @@
                  [isSpoken]="!programDetails?.title"
   >
     <play-text-audio key="personal.enroll-in-program.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
-    <div [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:programDetails?.title, ngo:programDetails?.ngo }"
+    <div [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:'<strong>'+programDetails?.title+'</strong>', ngo:'<strong>'+programDetails?.ngo+'</strong>' }"
          class="ion-margin-bottom"
     ></div>
 

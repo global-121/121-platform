@@ -46,7 +46,7 @@
                  [isSpoken]="fspSubmitted"
   >
     <play-text-audio key="personal.select-fsp.conclusion" class="ion-float-end ion-margin-start"></play-text-audio>
-    <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:chosenFsp?.fsp }"></p>
+    <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:'<strong>'+chosenFsp?.fsp+'</strong>' }"></p>
   </dialogue-turn>
 
   <form *ngIf="questions?.length">

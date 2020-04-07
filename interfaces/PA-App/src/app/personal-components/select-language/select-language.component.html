@@ -62,6 +62,6 @@
                  [isSpoken]="isDisabled"
   >
     <play-text-audio key="personal.select-language.result" class="ion-float-end ion-margin-start"></play-text-audio>
-    <p [innerHTML]="'personal.select-language.result'|translate:{ language:languageChoiceName }"></p>
+    <p [innerHTML]="'personal.select-language.result'|translate:{ language:'<strong>'+languageChoiceName+'</strong>' }"></p>
   </dialogue-turn>
 </section>

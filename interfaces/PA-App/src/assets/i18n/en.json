@@ -43,7 +43,7 @@
       "incorrect-credentials": "The combination of username and password you provided is not recognized. Please try again."
     },
     "enroll-in-program": {
-      "introduction": "Hello this is <strong>{{ngo}}</strong>. We have received your request to apply for <strong>{{programTitle}}</strong>.",
+      "introduction": "Hello this is {{ngo}}. We have received your request to apply for {{programTitle}}.",
       "introduction-questions": "To make sure you get the best possible help and a fair process, we need some personal information.",
       "more-info-questions": "About personal information",
       "info-message": "Lorem ipsem bladibla",
@@ -64,7 +64,7 @@
     },
     "select-fsp": {
       "introduction": "If you are included in the program, how would you like to receive your money?",
-      "conclusion": "Thank you. You have selected the option <strong>{{name}}</strong>.",
+      "conclusion": "Thank you. You have selected the option {{name}}.",
       "attributes": {
         "introduction": "For this option we also need the following:",
         "submit": "Save my information",
@@ -92,7 +92,7 @@
       "input-label": "Phone number (with country-code)",
       "submit": "Submit phone number",
       "skip": "Skip",
-      "conclusion-submitted": "Thank you. You will now receive notifications on this phone number: <strong>{{phone}}</strong>",
+      "conclusion-submitted": "Thank you. You will now receive notifications on this phone number: {{phone}}",
       "conclusion-skipped": "You have chosen not to leave a phone number. Please log in back here regularly, to check on updates.",
       "logout-info": "If you want, you can now log out, under the account-button on the top right. When you return here, you can log in with your username and password."
     },
@@ -105,13 +105,13 @@
       "info-message": "Lorem ipsem bladibla",
       "qr-code": "Please show this QR-code at your meeting.",
       "meeting-reminder": "Thank you. Here is everything you need to know about your meeting:",
-      "meeting-count-down": "Your meeting appointment takes place in <strong>{{daysToMeeting}}</strong> days.",
+      "meeting-count-down": "Your meeting appointment takes place in {{daysToMeeting}} days.",
       "meeting-tomorrow": "Your meeting appointment takes place tomorrow.",
       "meeting-today": "Your meeting appointment takes place today."
     },
     "select-country": {
       "introduction": " Next step: select your location.",
-      "conclusion": "Thank you, you have selected <strong>{{country}}</strong>."
+      "conclusion": "Thank you, you have selected {{country}}."
     },
     "select-language": {
       "introduction": {
@@ -128,7 +128,7 @@
         "fr": "Français",
         "ny_MW": "Chichewa"
       },
-      "result": "Thank you, you have selected <strong>{{language}}</strong>."
+      "result": "Thank you, you have selected {{language}}."
     },
     "select-program": {
       "introduction": "Next step: select your program.",
@@ -136,7 +136,7 @@
       "info-message": "How was the Pilot created?<br>This 121 Pilot has been created with Dorcas who have worked together with your communities in<br><ul><li>Bishoftu Camp 1</li><li>Bishoftu Camp 2</li><li>Bishoftu Camp 3</li><li>Bishoftu Camp 4</li><li>Bishoftu Camp 5</li><li>Bishoftu Camp 6</li><li>Bishoftu Camp 7</li><li>Bishoftu Camp 8</li></ul><br>Together your community and Dorcas decided how to Identify 250 households that are most in need of Cash based Aid. Needs are based on looking at family size and if or your family members are<br><ul><li>Chronically ill</li><li>Disabled</li><li>Pregnant</li><li>Lactating</li><li>Widowed</li></ul><br>If you are included in the program it will mean that you will receive the cash as<br><br><ul><li>unconditional, meaning to receive it you only need to fulfill the criteria of  “most in need”.</li><li>unrestricted, meaning whomever receives it, can spend it in any way they see fit.</li></ul><br>What will the each of the 250 households receive?<br>Together your community and Dorcas decided to give <br>XXX ETB given in 1 payment.<br><br>When will the each of the 250 households receive it?<br>Together your community and Dorcas decided how to give<br>Payment 1 of 1: XXX MKW on XX-XX-XXXX<br><br>Where will the each of the 250 households get it?<br>Together your community and Eagles decided Identified the following ways<br><ul><li>Bank of Oromia </ul><br>How does it work?<br>After 121 registration/Digital ID Creation and Registration/Digital ID Activation<br><br><ul><li>An initial list of included will be created.</li><li>This list will be shared within the community leaders</li><li>The existing community leaders will give feedback on the list to Dorcas.</li><li>Dorcas will take this feedback to create the final list (final decision is by Dorcas)</li><li>If you have a phone number you will receive a text message to tell you if you are included</li></ul><br>If you do not have a phone number you will be able to see a list in your community to check if you are included or excluded"
     },
     "store-credential": {
-      "done": "Your Digital ID has been activated by <strong>{{ngo}}</strong>.",
+      "done": "Your Digital ID has been activated by {{ngo}}.",
       "received": "Your Digital ID is received on your device.",
       "stored": "Your Digital ID is stored in your wallet."
     },
