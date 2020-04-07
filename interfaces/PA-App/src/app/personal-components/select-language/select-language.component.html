@@ -1,8 +1,8 @@
 <section #selectLanguage>
   <dialogue-turn>
     <ng-container *ngFor="let language of languages">
-      <play-text-audio [key]="language.key" class="ion-float-end ion-margin-start"></play-text-audio>
-      <div [innerHTML]="language.key|translate"
+      <play-text-audio [key]="language.introductionKey" class="ion-float-end ion-margin-start"></play-text-audio>
+      <div [innerHTML]="language.introduction|translate"
            class="ion-margin-bottom"
       ></div>
     </ng-container>
@@ -24,7 +24,7 @@
                   class="ion-no-padding ion-text-wrap"
                   lines="full"
         >
-          <play-text-audio [key]="'personal.select-language.language.' + language.id"
+          <play-text-audio [key]="language.languageKey"
                            type="forRadio"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
