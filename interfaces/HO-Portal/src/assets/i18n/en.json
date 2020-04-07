@@ -161,7 +161,7 @@
         "email": "Enter email",
         "confirm": "Add aidworker",
         "create-password": "Enter a password of at least {{minimalLength}} characters:",
-        "succes-create": "Succesfully created user with email: {{email}} and password {{password}} please inform them of their new account."
+        "succes-create": "Succesfully created user with email: '<strong>{{email}}</strong>' and password '<strong>{{password}}</strong>'. Please inform them now of their new account by sending an e-mail."
       }
     },
     "help": {
@@ -181,7 +181,8 @@
     "update": "Update",
     "confirm": "Are you sure?",
     "cancel": "Cancel",
-    "ok": "OK"
+    "ok": "OK",
+    "unknown-error": "Something went wrong. Error is unknown."
   },
   "password-toggle": {
     "show": "Show password",

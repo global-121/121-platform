@@ -111,7 +111,14 @@ export class ManageAidworkersComponent implements OnChanges {
           this.succesCreatedAidworker(res.user.id);
         },
         (err) => {
-          const message = String(Object.values(err.error.message[0].constraints)[0]);
+          let message;
+          if (err.error.message[0] && err.error.message[0].constraints) {
+            message = String(Object.values(err.error.message[0].constraints)[0]);
+          } else if (err.error.errors) {
+            message = String(Object.values(err.error.errors));
+          } else {
+            message = this.translate.instant('common.unknown-error')
+          }
           this.actionResult(message);
         }
       );
