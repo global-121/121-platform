@@ -31,6 +31,8 @@ export class HandleProofComponent extends PersonalComponent {
   private did: string;
   private wallet: any;
 
+  public hasNotificationNumberSet: boolean;
+
   public inclusionStatus: string;
   public inclusionStatusPositive = false;
   public inclusionStatusNegative = false;
@@ -58,12 +60,14 @@ export class HandleProofComponent extends PersonalComponent {
   }
 
   async initNew() {
+    this.hasNotificationNumberSet = !!await this.paData.retrieve(this.paData.type.phoneNumber);
     this.handleProof();
   }
 
   initHistory() {
     this.isDisabled = true;
     this.inclusionStatus = this.data.inclusionStatus;
+    this.hasNotificationNumberSet = this.data.hasNotificationNumberSet;
     this.processStatus(this.inclusionStatus);
   }
 
@@ -149,6 +153,7 @@ export class HandleProofComponent extends PersonalComponent {
       name: PersonalComponents.handleProof,
       data: {
         inclusionStatus: this.inclusionStatus,
+        hasNotificationNumberSet: this.hasNotificationNumberSet,
       },
       next: this.getNextSection(),
     });
