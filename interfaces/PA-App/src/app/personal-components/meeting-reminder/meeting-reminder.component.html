@@ -58,7 +58,7 @@
   >
     <ng-container *ngIf="daysToMeeting > 1">
       <play-text-audio key="personal.meeting-reminder.meeting-count-down" class="ion-float-end ion-margin-start"></play-text-audio>
-      <p [innerHTML]="'personal.meeting-reminder.meeting-count-down'|translate:{ daysToMeeting:daysToMeeting }"></p>
+      <p [innerHTML]="'personal.meeting-reminder.meeting-count-down'|translate:{ daysToMeeting:'<strong>'+daysToMeeting+'</strong>' }"></p>
     </ng-container>
     <p *ngIf="daysToMeeting === 1">
       <play-text-audio key="personal.meeting-reminder.meeting-tomorrow" class="ion-float-end ion-margin-start"></play-text-audio>

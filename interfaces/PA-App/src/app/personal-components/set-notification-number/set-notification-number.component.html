@@ -80,7 +80,7 @@
   >
     <ng-container *ngIf="!phoneSkipped">
       <play-text-audio key="personal.set-notification-number.conclusion-submitted" class="ion-float-end ion-margin-start"></play-text-audio>
-      <p [innerHTML]="'personal.set-notification-number.conclusion-submitted'|translate:{ phone:phoneNumber }"></p>
+      <p [innerHTML]="'personal.set-notification-number.conclusion-submitted'|translate:{ phone:'<strong>'+phoneNumber+'</strong>' }"></p>
     </ng-container>
     <ng-container *ngIf="phoneSkipped">
       <play-text-audio key="personal.set-notification-number.conclusion-skipped" class="ion-float-end ion-margin-start"></play-text-audio>

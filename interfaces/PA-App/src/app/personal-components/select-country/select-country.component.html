@@ -37,6 +37,6 @@
                  [isSpoken]="isDisabled"
   >
     <play-text-audio key="personal.select-country.conclusion" class="ion-float-end ion-margin-start"></play-text-audio>
-    <p [innerHTML]="'personal.select-country.conclusion'|translate:{ country:countryChoiceName }"></p>
+    <p [innerHTML]="'personal.select-country.conclusion'|translate:{ country:'<strong>'+countryChoiceName+'</strong>' }"></p>
   </dialogue-turn>
 </section>
