@@ -123,15 +123,15 @@ export class UserService {
     });
     if (!user) {
       const errors = { User: ' not found' };
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     const program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = { Program: ' not found' };
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     if (!user.assignedProgram) {
-      console.log('No program assigend');
+      console.log('No program assigned');
       user.assignedProgram = [];
     }
     user.assignedProgram.push(program);
@@ -162,7 +162,7 @@ export class UserService {
 
     if (!user) {
       const errors = { User: ' not found' };
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     return this.buildUserRO(user);

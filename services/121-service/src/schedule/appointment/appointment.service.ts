@@ -19,7 +19,7 @@ export class AppointmentService {
   @InjectRepository(AppointmentEntity)
   private readonly appointmentRepository: Repository<AppointmentEntity>;
 
-  public constructor() {}
+  public constructor() { }
 
   public async postAvailability(
     userId: number,
@@ -46,14 +46,14 @@ export class AppointmentService {
     const program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = { Program: ' not found' };
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     let aidworkers = await this.userRepository.find({
       where: { assignedProgram: { id: programId } },
     });
     if (aidworkers.length == 0) {
       const errors = { Message: 'No aidworkers assigned to this program yet.' };
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     let availabilities = [];
     for (let index in aidworkers) {
@@ -64,7 +64,7 @@ export class AppointmentService {
     }
     if (availabilities.length == 0) {
       const errors = { Message: 'No available time-windows posted yet.' };
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return availabilities;
   }
