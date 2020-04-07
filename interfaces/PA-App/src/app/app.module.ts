@@ -28,10 +28,10 @@ export function appInitializerFactory(translate: TranslateService, injector: Inj
 
     // Pre-load all available locales:
     const enabledLocales = environment.locales.trim().split(/\s*,\s*/);
-
-    enabledLocales.forEach(async (locale: string) => {
-      await translate.use(locale).toPromise();
+    const loadingLocales = enabledLocales.map(async (locale: string) => {
+      return translate.use(locale).toPromise();
     });
+    await Promise.all(loadingLocales);
 
     // Return to default
     await translate.use(defaultLang).toPromise();
