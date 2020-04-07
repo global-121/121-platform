@@ -1,6 +1,6 @@
 {
   "WORLD": "Community",
-  "PERSONAL": "You",
+  "YOU": "You",
   "DEVICE": "Device",
   "account": {
     "logout": "Log out",
@@ -114,13 +114,19 @@
       "conclusion": "Thank you, you have selected <strong>{{country}}</strong>."
     },
     "select-language": {
-      "introduction": "Welcome to 121. Please select your language.<br><br>Bienvenu chez 121. Choisi votre langue.<br><br>Bienvenido a 121. Selecciona tu idioma.",
+      "introduction": {
+        "en": "Welcome to 121. Please select your language.",
+        "es": "Bienvenido a 121. Selecciona tu idioma.",
+        "fr": "Bienvenu chez 121. Choisi votre langue.",
+        "ny_MW": "Takulandilani ku 121. Chonde sankhani chiyankhulo chanu."
+      },
       "more-info": "About 121",
       "info-message": "With the 121 platform, we aim to make Cash Based Aid safe, fast & fair, to help you if you have been affected by disasters and crises to meet your own needs. 121 will help you<br><ul><li>Create a Digtial ID</li><li>Know which programs are available in your area</li><li>Apply to the programs</li><li>Understand who sees your information</li></ul>",
       "language": {
         "en": "English",
+        "es": "Español",
         "fr": "Français",
-        "es": "Español"
+        "ny_MW": "Chichewa"
       },
       "result": "Thank you, you have selected <strong>{{language}}</strong>."
     },

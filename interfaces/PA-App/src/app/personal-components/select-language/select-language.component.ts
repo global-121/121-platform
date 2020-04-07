@@ -5,6 +5,7 @@ import { PersonalComponents } from '../personal-components.enum';
 import { PaDataService } from 'src/app/services/padata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-select-language',
@@ -28,30 +29,31 @@ export class SelectLanguageComponent extends PersonalComponent {
   }
 
   ngOnInit() {
-    this.languages = [
-      {
-        id: 'en',
-        language: this.translate.instant('personal.select-language.language.en'),
-      },
-      {
-        id: 'fr',
-        language: this.translate.instant('personal.select-language.language.fr'),
-      },
-      {
-        id: 'es',
-        language: this.translate.instant('personal.select-language.language.es'),
-      },
-    ];
+    this.languages = this.getEnabledLanguages();
 
     if (this.data) {
       this.initHistory();
     }
   }
 
-  initHistory() {
+  async initHistory() {
     this.languageChoice = this.data.languageChoice;
     this.languageChoiceName = this.getLanguageName(this.data.languageChoice);
+    await this.translate.use(this.languageChoice).toPromise();
     this.isDisabled = true;
+  }
+
+  private getEnabledLanguages() {
+    const enabledLocales = environment.locales.trim().split(/\s*,\s*/);
+
+    return enabledLocales.map((locale: string) => {
+      const key = 'personal.select-language.language.' + locale;
+      return {
+        id: locale,
+        key,
+        language: this.translate.instant(key),
+      };
+    });
   }
 
   public getLanguageName(languageId: string): string {

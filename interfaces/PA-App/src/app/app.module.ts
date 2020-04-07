@@ -16,23 +16,27 @@ import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { httpInterceptorProviders } from './http-interceptors/index';
+import { environment } from 'src/environments/environment';
 
+// See : https://github.com/ngx-translate/core/issues/517
 export function appInitializerFactory(translate: TranslateService, injector: Injector) {
+  return () => new Promise<any>(async (resolve: any) => {
+    await injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
 
-  const langToSet = 'en';
+    const defaultLang = 'en';
+    translate.setDefaultLang(defaultLang);
 
-  return () => new Promise<any>((resolve: any) => {
-    const locationInitialized = injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
-    locationInitialized.then(() => {
-      translate.setDefaultLang(langToSet);
-      translate.use(langToSet).subscribe(() => {
-        console.log(`Successfully initialized '${langToSet}' language.`);
-      }, (err) => {
-        console.log(`Problem with '${langToSet}' language initialization: `, err);
-      }, () => {
-        resolve(null);
-      });
+    // Pre-load all available locales:
+    const enabledLocales = environment.locales.trim().split(/\s*,\s*/);
+    const loadingLocales = enabledLocales.map(async (locale: string) => {
+      return translate.use(locale).toPromise();
     });
+    await Promise.all(loadingLocales);
+
+    // Return to default
+    await translate.use(defaultLang).toPromise();
+
+    resolve(null);
   });
 }
 
@@ -54,8 +58,8 @@ export function HttpLoaderFactory(http: HttpClient) {
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
     IonicStorageModule.forRoot()
   ],
@@ -71,8 +75,8 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
       deps: [TranslateService, Injector],
-      multi: true
-    }
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent]
 })

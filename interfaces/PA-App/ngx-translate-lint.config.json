@@ -1,9 +1,9 @@
 {
   "project": "./src/app/**/*.{html,ts}",
   "languages": "./src/assets/i18n/*.json",
-  "ignore": "./src/app/services/update.service.ts, ./src/app/tabs/tabs.page.html, ./src/app/tabs/tabs.router.module.ts",
-  "views": "warning",
-  "zombies": "warning",
-  "misprint": "warning",
-  "maxWarning": 3
+  "ignore": "./src/assets/i18n/ny_MW.json",
+  "views": "warn",
+  "zombies": "warn",
+  "misprint": "warn",
+  "maxWarnings": 0
 }
