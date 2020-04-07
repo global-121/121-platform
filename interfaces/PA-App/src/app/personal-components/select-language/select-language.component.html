@@ -1,8 +1,8 @@
 <section #selectLanguage>
   <dialogue-turn>
     <ng-container *ngFor="let language of languages">
-      <play-text-audio [key]="'personal.select-language.introduction.' + language.id" class="ion-float-end ion-margin-start"></play-text-audio>
-      <div [innerHTML]="'personal.select-language.introduction.' + language.id|translate"
+      <play-text-audio [key]="language.key" class="ion-float-end ion-margin-start"></play-text-audio>
+      <div [innerHTML]="language.key|translate"
            class="ion-margin-bottom"
       ></div>
     </ng-container>

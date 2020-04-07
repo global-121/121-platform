@@ -46,9 +46,11 @@ export class SelectLanguageComponent extends PersonalComponent {
     const enabledLocales = environment.locales.trim().split(/\s*,\s*/);
 
     return enabledLocales.map((locale: string) => {
+      const key = 'personal.select-language.language.' + locale;
       return {
         id: locale,
-        language: this.translate.instant('personal.select-language.language.' + locale),
+        key,
+        language: this.translate.instant(key),
       };
     });
   }
