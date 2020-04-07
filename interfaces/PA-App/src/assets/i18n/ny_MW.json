@@ -1,0 +1,156 @@
+{
+  "DEVICE": "Chida",
+  "PERSONAL": "Inu",
+  "WORLD": "Dera",
+  "account": {
+    "change-password": "Sinthani nambala yanga yachinsinsi",
+    "delete-account-header": "Yikani nambala yanu ya chinsinsi ngati mukufuna kufufuta nambala yanu",
+    "delete-account-message": "Kufufuta nambala simungatheso kusintha, zonse zokhudza inu zitayika",
+    "delete-digital-id": "Fufutani nambala",
+    "delete-fail": "china chinalakwika, ndodomeko yanu siyinafufutidwe mwathunthu",
+    "delete-succes": "Akaunti yanu yafufutidwa. Mutha kutuluka tsopano",
+    "enter-password": "Mawu anu achinsinsi",
+    "logout": "Tulukani"
+  },
+  "connection": {
+    "error-retry": "China chinalakwika, kodi mukufuna kuyesaso"
+  },
+  "notification": {
+    "close": "Tsekani",
+    "credential": "Tsekani",
+    "inclusion": "Mwalandira kuti mwalowetsedwa"
+  },
+  "password-toggle": {
+    "hide": "Bisani nambala ya chinsinsi",
+    "show": "Onetsani nambala yanga yachinsinsi"
+  },
+  "personal": {
+    "create-identity": {
+      "conclusion": "Zatheka! Mwapanga nambala yanu",
+      "confirm-password": "Tsimikizani nambala yanga ya chinsinsi",
+      "create-password": "Pangani nambala yanga ya chinsinsi",
+      "create-username": "Pangani dzina langa",
+      "introduction": "Kuti mupange nambala mufunika kumaliza izi",
+      "more-info-digital-id": "Nambala yanu",
+      "more-info-password": "Nambala yanu yachinsinsi",
+      "more-info-username-pw": "Zokhudza dzina lanu ndi nambala ya chinsinsi",
+      "submit-username": "Pangani dzina langa",
+      "unequal-passwords": "Nambala yachinsinsi yomwe munapanga yasiyana. Chonde yesaniso",
+      "username-not-unique": "Dzina lanu lomwe munalemba ndi la wamba. Chonde yesaniso",
+      "username-password": "Pangani dzina lanu ndi nambala yachinsinsi"
+    },
+    "enroll-in-program": {
+      "change": "Sinthani mbiri yanga",
+      "dob-feedback": "Tsiku lanu lobadwa simunalembe bwino. Chonde konzani ndi kuyikaso",
+      "introduction-questions": "Kuti muthandizike bwino komanso kuti mukhale pandondomeko yabwino, tifuna mbiri yanu",
+      "more-info-questions": "Zinthu zokhudza munthu",
+      "more-info-share": "Ndindani amene awone mbiri yanu",
+      "please-confirm": "Pansipa pali zinthu zokhuza inu. Onani ndipo mupereke",
+      "submit": "Sungani mbiri yanga",
+      "submit-confirm": "Tumizani mbiri yanga"
+    },
+    "handle-proof": {
+      "creating": "Mwatipatsa mbiri yanu yokwanila kuti tione ngati mungakhale nawo mu pulogalamu",
+      "inclusion-status-positive": "Zikomo chifukwa chakudekha kwanu. Mwayikidwa mu pulogalamu",
+      "notify": "Tikudziwitsani ngati mwayikidwa mu pulogalamu"
+    },
+    "login-identity": {
+      "incorrect-credentials": "Dzina lanu ndi nambala yachinsinsi yomwe mwapanga yakanidwa. Chonde yesaniso",
+      "introduction": "Kuti mugwiritse nambala yanu lowetsani dzina lanu ndi nambala yanu yachinsinsi",
+      "submit-password": "Tumizani nambala yanga yachinsinsi",
+      "submit-username": "Tumizani dzina langa",
+      "supply-password": "Nambala yanu yachinsinsi",
+      "supply-username": "Dzina lanu"
+    },
+    "meeting-reminder": {
+      "at": "Pa ",
+      "documents": "Onetsetsani kuti mwabweretsa zinthu izi",
+      "from": "Kochokera",
+      "meeting-count-down": "Mkumano wanu ulipo mumasiku <strong>{{daysToMeeting}}</strong> akubwerawa",
+      "meeting-reminder": "Zikomo. Izi ndi zonse zomwe mukufunika kudziwa zamkumano wanu",
+      "meeting-today": "Mkumano wanu ulipo lero",
+      "meeting-tomorrow": "Mkumano wanu ulipo mawa",
+      "more-info-documents": "Zokhudza zitupa izi",
+      "qr-code": "Chonde onetsani nambala iyi pamkumano wanu",
+      "till": "Mpaka"
+    },
+    "select-appointment": {
+      "at": "Pa ",
+      "change": "Sinthani zosankha zanga",
+      "conclusion": "Zikomo. Pempho lanu loyatsa nambala ndi kupempha pulogalamu lavomerezedwa",
+      "confirm": "Tsimikizani zosankha zanga",
+      "from": "Kochokera",
+      "introduction": "Tsopano: Sankhani gawo lanu ya nambala kuti yiyambe ndikupempha pulogalamu",
+      "more-info-activation": "Kuyambitsa",
+      "thanks-repeat": "Mwasankha izi",
+      "till": "Mpaka"
+    },
+    "select-country": {
+      "conclusion": "Zikomo, mwasankha <strong>{{country}}</strong>",
+      "introduction": "Sankhani dera lanu"
+    },
+    "select-fsp": {
+      "conclusion": "Zikomo. Mwasankha <strong>{{name}}</strong>.",
+      "introduction": "Mutati mwayikidwa mu pologalamu iyi, mungakonde kuti muzilandila bwanji ndalama zanu",
+      "attributes": {
+        "error": "China chinalakwika, chonde yesaniso",
+        "introduction": "Pa gawo ili tifunanso izi",
+        "submit": "Sungani mbiri yanga",
+        "success": "Zikomo. Mbiri yanu yowonjezera yasungika"
+      }
+    },
+    "select-language": {
+      "more-info": "Zokhuzana ndi 121",
+      "result": "Zikomo, mwasankha <strong>{{language}}</strong>.",
+      "introduction": {
+        "en": "Welcome to 121. Please select your language.",
+        "es": "Bienvenido a 121. Selecciona tu idioma.",
+        "fr": "Bienvenu chez 121. Choisi votre langue.",
+        "ny_MW": "Takulandilani ku 121. Chonde sankhani chiyankhulo chanu."
+      },
+      "language": {
+        "en": "English",
+        "es": "Español",
+        "fr": "Français",
+        "ny_MW": "Chichewa"
+      }
+    },
+    "select-program": {
+      "introduction": "Tsopano: Sankhani pulogalamu yanu",
+      "more-info-programs": "Ndondomeko ya zochitika"
+    },
+    "set-notification-number": {
+      "conclusion-skipped": "Mwasankha kusasiya foni nambala yanu. Chonde muzilowa pafupipafupi kuti muziona uthenga wina",
+      "conclusion-submitted": "Zikomo. Tsopano muzilandila uthenga pa foni nambala iyi <strong>{{phone}}</strong>",
+      "input-label": "foni nambala (kuyambila +265)",
+      "introduction1": "Mutha kufuna kapena ayi kulowetsa foni nambala yanu",
+      "introduction2": "Timagwiritsa ichi kukutumizilani uthenga ngati mwayikidwa mu pulogalamu komanso ngati mwalandila ndalama",
+      "introduction3": "Ngati simukufuna kuyika nambala yanu ya foni, mukuyenera kulowa apa kuti muone zambiri",
+      "introduction4": "Pakutha pandondomeko iyi tizafufuta nambala yanu",
+      "logout-info": "Ngati mukufuna mutha kutuluka, kugwiritsa batani lilipamwamba kumanja kwanu. Mukabwerera pano mutha kulowa kugwitritsa ntchito dzina lanu ndi nambala yanu yachinsinsi",
+      "skip": "Dumphani",
+      "submit": "Tumizani foni nambala"
+    },
+    "signup-signin": {
+      "create-id": "Pangani nambala",
+      "introduction": "Chonde sankhani nambala yanu",
+      "login-id": "Gwiritsani ntchito nambala yanga"
+    },
+    "store-credential": {
+      "done": "Nambala yanu yayatsidwa ndi <strong>{{ngo}}</strong>",
+      "received": "Nambala yanu yalandilidwa kuchokera ku foni yanu",
+      "stored": "Nambala yanu yasungidwa mu foni yanu"
+    }
+  },
+  "shared": {
+    "cancel-button": "Chotsani",
+    "close-button": "Tsekani",
+    "more-info": "Werengani zina",
+    "submit-button": "Tumizani"
+  },
+  "speak-text": {},
+  "validation": {
+    "generic-error": "Tikulephera kugwiritsa ntchito zina za zomwe mwapereka. Chonde onaniso ndikuyankha ena mwamayankho omwe mukuyenera kupereka",
+    "phoneNumber": "Tikulephera kupeza foni nambala mwayikayo. Chonde yikaniso ndiye muyeseso"
+  }
+}
