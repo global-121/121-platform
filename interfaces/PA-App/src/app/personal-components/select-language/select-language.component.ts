@@ -36,9 +36,10 @@ export class SelectLanguageComponent extends PersonalComponent {
     }
   }
 
-  initHistory() {
+  async initHistory() {
     this.languageChoice = this.data.languageChoice;
     this.languageChoiceName = this.getLanguageName(this.data.languageChoice);
+    await this.translate.use(this.languageChoice).toPromise();
     this.isDisabled = true;
   }
 
