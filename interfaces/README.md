@@ -82,6 +82,9 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   An Angular-service to handle internationalization(i18n) or translations.
   - API Documentation: <https://github.com/ngx-translate/core#api>
   
+  - [`ngx-translate-lint`](https://www.npmjs.com/package/ngx-translate-lint)  
+    A lint-tool to check for missing or unused translations or typos in keys.
+
 
 ### Continuous Integration (CI)
 Every interface has their own Azure Pipeline set up to run tests and generate 'builds'.  

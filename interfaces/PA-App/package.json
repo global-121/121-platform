@@ -20,6 +20,7 @@
     "build:native": "npm run ionic -- cordova build android ",
     "test": "ng test --no-watch --browsers=ChromeHeadless",
     "test:dev": "ng test",
+    "test:all": "npm run lint && npm test",
     "lint:translations": "ngx-translate-lint --config=ngx-translate-lint.config.json",
     "lint": "ng lint && npm run lint:translations",
     "e2e": "ng e2e"
