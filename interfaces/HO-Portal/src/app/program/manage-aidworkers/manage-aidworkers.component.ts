@@ -117,7 +117,7 @@ export class ManageAidworkersComponent implements OnChanges {
           } else if (err.error.errors) {
             message = String(Object.values(err.error.errors));
           } else {
-            message = this.translate.instant('common.unknown-error')
+            message = this.translate.instant('common.unknown-error');
           }
           this.actionResult(message);
         }
