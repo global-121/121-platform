@@ -28,6 +28,16 @@
       <option value="">Add section...</option>
       <option *ngFor="let section of debugSections;">{{ section }}</option>
     </select>
+
+    <select name="debugLocales"
+            title="Change locale"
+            (change)="translate.use($event.target.value); $event.target.value='';"
+            class="ion-margin-start"
+    >
+      <option value=""> 💱 </option>
+      <option *ngFor="let lang of translate.getLangs();">{{ lang }}</option>
+    </select>
+
     <ion-button color="danger" size="small" fill="outline"
                 title="Clear storage"
                 (click)="debugClearAllStorage()"
