@@ -1,7 +1,7 @@
 {
   "DEVICE": "Chida",
-  "YOU": "Inu",
   "WORLD": "Dera",
+  "YOU": "Inu",
   "account": {
     "change-password": "Sinthani nambala yanga yachinsinsi",
     "delete-account-header": "Yikani nambala yanu ya chinsinsi ngati mukufuna kufufuta nambala yanu",
@@ -102,18 +102,8 @@
     "select-language": {
       "more-info": "Zokhuzana ndi 121",
       "result": "Zikomo, mwasankha {{language}}.",
-      "introduction": {
-        "en": "Welcome to 121. Please select your language.",
-        "es": "Bienvenido a 121. Selecciona tu idioma.",
-        "fr": "Bienvenu chez 121. Choisi votre langue.",
-        "ny_MW": "Takulandilani ku 121. Chonde sankhani chiyankhulo chanu."
-      },
-      "language": {
-        "en": "English",
-        "es": "Español",
-        "fr": "Français",
-        "ny_MW": "Chichewa"
-      }
+      "introduction": {},
+      "language": {}
     },
     "select-program": {
       "introduction": "Tsopano: Sankhani pulogalamu yanu",
