@@ -25,7 +25,7 @@ const web_aw = `${web_root}/AW-app`;
 //   Functions/Methods/etc:
 // ----------------------------------------------------------------------------
 
-function onMerge() {
+function deploy() {
   exec(
     `cd ` + repo_services +
     ` && sudo git reset --hard ` +
@@ -76,17 +76,19 @@ http
 
       if (
           req.headers["x-hub-signature"] === sig &&
-          payload.action === "closed" &&
-          payload.pull_request.merged &&
+        payload.action === "closed" &&
+        (
           (
-            process.env.NODE_ENV === "staging" ||
-            (
-              payload.pull_request.base.ref === "production" &&
-              process.env.NODE_ENV === "production"
+            payload.pull_request.merged &&
+            process.env.NODE_ENV === "staging"
+          )||
+          (
+            payload.release.tag_name.startsWith(process.env.VERSION) &&
+            process.env.NODE_ENV === "production"
             )
-          )
+        )
       ) {
-        onMerge();
+        deploy();
       }
     });
     res.end();

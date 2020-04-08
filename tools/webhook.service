@@ -6,6 +6,7 @@ After=network.target
 #Fill in the right server here (staging/production)
 Environment=NODE_ENV=production
 Environment=NODE_PORT=3099
+Environment=VERSION=v0.1.
 Type=simple
 #Fill in the right user here, based on which server (global121 / global121production)
 User=global121production
