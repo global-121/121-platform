@@ -118,15 +118,11 @@
       "result": "Thank you, you have selected {{language}}.",
       "introduction": {
         "en": "Welcome to 121. Please select your language.",
-        "es": "Bienvenido a 121. Selecciona tu idioma.",
-        "fr": "Bienvenu chez 121. Choisi votre langue.",
         "ny_MW": "Takulandilani ku 121. Chonde sankhani chiyankhulo chanu.",
         "om_ET": "Baga gara 121'tti nagaan dhuftan. Maaloo qooqa keessan filadhaa."
       },
       "language": {
         "en": "English",
-        "es": "Español",
-        "fr": "Français",
         "ny_MW": "Chichewa",
         "om_ET": "Afaan Oromoo"
       }
