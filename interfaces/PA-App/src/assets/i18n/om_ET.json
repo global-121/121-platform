@@ -1,0 +1,142 @@
+{
+  "DEVICE": "Mi'a",
+  "WORLD": "Hawaasa",
+  "YOU": "Isini",
+  "account": {
+    "change-password": "Paaswoordii jijjiiri",
+    "delete-account-header": "Adda-baastuu Dijitaalaa keessan haquuf murteessitaniittu taanaan paaswoordii keessan galchaa",
+    "delete-account-message": "Adda-baastuu Dijitaalaa keessan haquun waan duubatti hin deebinedha daataan keessan hunduu ni bada!",
+    "delete-digital-id": "Adda-baastuu Dijitalaa haqaa",
+    "delete-fail": "Dogoggorri ta'e uumameera, akkaawontii kee guutummaatti haquun hin danda'amne.",
+    "delete-succes": "Akkaawontiin keessan haala milkaa'aa ta'een haqameera. Amma keessaa ba'uuf jirtu.",
+    "enter-password": "Paaswoordii keessan",
+    "logout": "Keessaa ba'aa"
+  },
+  "connection": {
+    "error-retry": "Dogoggorri ta'e uumameera, irra deebitanii yaaluu barbaadduu?"
+  },
+  "notification": {
+    "close": "Cufi",
+    "credential": "Adda-baastuun Dijitaalaa qaqqabeera",
+    "inclusion": "Sadarkaan itti-makamuu qaqqabeera"
+  },
+  "password-toggle": {
+    "hide": "Paaswoordii dhoksi",
+    "show": "Paaswoordii agarsiisi"
+  },
+  "personal": {
+    "create-identity": {
+      "conclusion": "Gaariidha! Adda-baastuu Dijitaalaa tolfattaniittu.",
+      "confirm-password": "Paaswoordii koo mirkaneessi:",
+      "create-password": "Paaswoordii koo tolchi",
+      "create-username": "Maqaa-fayyadamaa koo tolchi:",
+      "introduction": "Adda-baastuu Dijitaalaa tolfachuudhaaf sadarkaawwan itti-aanan kanneen xumuruun sin barbaachisa.",
+      "more-info-digital-id": "Waa'ee Adda-baastuu Dijiitaalaa",
+      "more-info-password": "Waa'ee paaswoordiiwwanii",
+      "more-info-username-pw": "Waa'ee maqaa-fayyadamttaniifi paaswoordii keessanii",
+      "password-only": "Create my password",
+      "submit-password": "Create my password",
+      "submit-username": "Maqaa-fayyadamaa koo tolchi",
+      "unequal-passwords": "Paaswoordiiwwan isin tolfattan tokko miti. Maaloo irra deebi'aa yaalaa.",
+      "username-not-unique": "Maqaan fayyadamaa isin tolfattan adda miti. Maaloo irra deebi'aa yaalaa.",
+      "username-password": "Maqaa-fayyadamaafi paaswoordii keessan tolfadhaa."
+    },
+    "enroll-in-program": {
+      "change": "Odeeffannoo koo jijjiiri",
+      "dob-feedback": "Guyyaan dhalootaa keessan bifa sirriitiin miti. Maaloo sirreessuun irra deebi'aa ol kaa'aa.",
+      "introduction-questions": "Gargaarsa jira jedhame argachuu keessaniifi adeemsa bilisaa ta'uu isaa mirkaneeffachuuf odeeffannoo dhuunfaa hanga tokko ni barbaadna.",
+      "more-info-questions": "Waa'ee odeeffannoo dhuunfaa",
+      "more-info-share": "Odeeffannoo keessan eenyutu ilaala",
+      "please-confirm": "Kan armaan gadii odeeffannoo keessan waliigalaati. Maaloo ilaaluun mirkaneeffadhaa galchaa.",
+      "submit": "Odeeffannoo koo ol naaf kaa'i",
+      "submit-confirm": "Odeeffannoo koo galchi"
+    },
+    "handle-proof": {},
+    "login-identity": {
+      "incorrect-credentials": "Walta'insi maqaa fayyadamaafi paaswoordiin isin tolfattan hin fudhatamne. Maaloo irra deebi'aa yaalaa.",
+      "introduction": "Adda-baastuu Dijitaalaa duraan jiru fayyadamuuf maqaa-fayyadamtaniifi paaswoordiitiin seenuu sin barbaachisa.",
+      "submit-password": "Paaswoordii koo galchi",
+      "submit-username": "Maqaa-fayadamaa koo galchi",
+      "supply-password": "Paaswoordii keessan:",
+      "supply-username": "Maqaa-fayyadmaa keessan:"
+    },
+    "meeting-reminder": {
+      "at": "Irratti",
+      "documents": "Dokumentoota kanneen fiduu keessan mirkaneeffadhaa:",
+      "from": "Irraa",
+      "meeting-count-down": "Beellamni walga'ii keessan guuyyoota {{daysToMeeting}} keessatti ta'a.",
+      "meeting-reminder": "Galatoomaa. Waa'ee walga'ii keessanii ilaalchisee wantoota isin beekuu qabdan kunooti:",
+      "meeting-today": "Beellamni walga'ii keessan ar'a ta'a.",
+      "meeting-tomorrow": "Beellamni walga'ii keessan bor ta'a.",
+      "more-info-documents": "Waa'ee dokumantiiwwanii",
+      "qr-code": "Maaloo walga'ii keessan irratti  koodii -QR kana agarsiisaa.",
+      "till": "Hanga"
+    },
+    "select-appointment": {
+      "at": "Irratti",
+      "change": "Filmaata koo jijjiiri",
+      "conclusion": "Galatoomaa. Adda-baastuu Dijitaalaa keessan kakaasuufi appilikeeshinii pirogiraamiitiif beellamni qabattan mirkanaa'eera.",
+      "confirm": "Filmaata koo mirkaneessi",
+      "from": "Irraa",
+      "introduction": "Sadarkaan itti-aanu: Adda-baastuu Dijitaalaa kakaafachuufi appilikeeshinii pirogiraamiitiif filmaata keessan kennadhaa.",
+      "more-info-activation": "Waa'ee kakaasuu",
+      "thanks-repeat": "Filmaata itti-aanee jiru kana filattaniittu:",
+      "till": "Hanga"
+    },
+    "select-country": {
+      "conclusion": "Galatoomaa, {{country}} filattaniittu.",
+      "introduction": "Sadarkaa itti aanuun iddoo keessan  filadhaa."
+    },
+    "select-fsp": {
+      "conclusion": "Galatoomaa. Filmaata keessan kennattanii jirtu {{name}}",
+      "introduction": "Saganticha keessatti hammatamttaniittu yoo ta'e, maallaqa keessan akkamiin fudhachuu feetuu?",
+      "attributes": {
+        "error": "Maaloo dogoggorri ta'e uumameera, irra deebi'aa  yaalaa.",
+        "introduction": "Filmaata kanaaf wanta itti aanus ni barbaadna:",
+        "submit": "Odeeffannoo koo ol naaf kaa'i",
+        "success": "Galatoomaa. Odeeffannoon dabalataa keessan ol kaa'ameera."
+      }
+    },
+    "select-language": {
+      "more-info": "Waa'ee 121",
+      "result": "Galatoomaa, {{language}} filattaniittu.",
+      "introduction": {},
+      "language": {}
+    },
+    "select-program": {
+      "introduction": "Sadarkaan itti aanu: Sagantaa keessan filadhaa.",
+      "more-info-programs": "Waa'ee sagantaawwanii"
+    },
+    "set-notification-number": {
+      "conclusion-skipped": "Lakkoofsa bilbilaa keessan kaa'uu dhiisuu filattaniittu. Maaloo wantoota haaraa jiran ilaaluuf yeroo mara asitti deebi'uun seenaa.",
+      "conclusion-submitted": "Galatoomaa. Amma lakkoofsa bilbilaa kana irratti {{phone}} yaadachiisa fudhachuuf jirtu.",
+      "input-label": "Lakkoofsa bilbilaa (koodii biyyaa waliin)",
+      "introduction1": "Lakkoofsa bilbilaa keessan kennuun dirqama miti.",
+      "introduction2": "Yoo itti makamtaniifi maallaqa kan fudhattan ta'e beeksisa ergaa gababaa erguuf kana fayyadamna.",
+      "introduction3": "Lakkoofsa bilbilaa keessan galchuu hin barbaaddan yoo ta'e, haaromsuudhaaf asiin seenuu qabdu.",
+      "introduction4": "Dhuma sagantichaaratti, lakkoofsa keessan ni haqna.",
+      "logout-info": "Yoo kan barbaaddan ta'e, irra keessaan karaa gama mirgaatiin qabduu-akkaawontii jalaan keessaa bahuu ni dandeessu. Yeroo asitti deebi'uu barbaaddan ammoo maqaa-fayyadamaafi paaswoordii keessaniin seenuu ni dandeessu.",
+      "skip": "Irra darbi",
+      "submit": "Lakkoofsa bilbilaa galchi"
+    },
+    "signup-signin": {
+      "create-id": "Adda-baastuu Dijitaalaa tolchi",
+      "introduction": "Maaloo adda-baastuu Dijitaalaa keessan filadhaa.",
+      "login-id": "Adda-baastuu Dijitaalaa koo fayyadami",
+      "more-info-digital-id": "Waa'ee Adda-baastuu Dijiitaalaa"
+    },
+    "store-credential": {
+      "done": "Adda-baastuun Dijitaalaa keessan {{ngo}}'tiin kakaafameera.",
+      "received": "Adda-baastuun Dijitaalaa keessan mi'a/meeshaa keessanirratti sin qaqqabeera.",
+      "stored": "Adda-baastuun Dijitaalaa keessan qabee keessa kaa'ameera."
+    }
+  },
+  "shared": {
+    "cancel-button": "Dhiisaa",
+    "close-button": "Cufi",
+    "more-info": "Dabalataan dubbisaa...",
+    "submit-button": "Galchi"
+  },
+  "speak-text": {},
+  "validation": {}
+}
