@@ -161,15 +161,18 @@ This applications uses [JSON Web Token](https://jwt.io/) (JWT) to handle authent
 
 We use the NestJS swagger module for API documentation. [NestJS Swagger](https://github.com/nestjs/swagger) - [swagger.io](https://swagger.io/)
 
-## Set up twilio for development
+---
 
-- Get up to date secrets.ts file from someone who has it
-- Download ngrok https://ngrok.com/download
-- Unzip ngrok `unzip /path/to/ngrok.zip`
-- Setup nrok http `./ngrok http 3000` in the folder where you uzipped ngrok
-- Copy paste forwarding url to secrets.ts TWILIO.ngrok
+## Use Twilio API during development
+
+- Get up to date `secrets.ts` file from someone who has it
+- Download `ngrok`: <https://ngrok.com/download>
+- Unzip `ngrok` `unzip /path/to/ngrok.zip`
+- Start `ngrok` to open your local port: `./ngrok http 3000` in the folder where you uzipped `ngrok`
+- Set the ENV-variable `EXTERNAL_121_SERVICE_URL` to your personal `ngrok`-url, i.e:  
+  `export EXTERNAL_121_SERVICE_URL=https://example.ngrok.io/` or via the root `.env`-file
 
 ## Upload voice mp3
 
-- Mp3's that are used when sending voice notifcation (`src/notifications/voice/voice.service.ts`) can be added to the service putting files in this github in the voice folder.
-- The folder struture follows this pattern: `voice/<programId>/<language>/<notification-key>.mp3`
+- Mp3's that are used when sending voice notifications (see: `src/notifications/voice/voice.service.ts`) can be added to the `voice`-folder:  
+  The folder structure follows the pattern: `voice/<programId>/<language>/<notification-key>.mp3`

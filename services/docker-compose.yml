@@ -117,6 +117,8 @@ services:
       dockerfile: Dockerfile
     init: true
     container_name: 121-service
+    environment:
+      - EXTERNAL_121_SERVICE_URL=${EXTERNAL_121_SERVICE_URL}
     volumes:
       - "./121-service:/home/121/services/121-service"
     ports:

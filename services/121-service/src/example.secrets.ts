@@ -18,5 +18,4 @@ export const TWILIO = {
   testToNumber: '<your-testToNumber>',
   testFromNumberVoice: '<your-testFromNumber>',
   testFromNumberSms: '<your-testFromNumber>',
-  ngrok: 'http://example.ngrok.io/',
 };
