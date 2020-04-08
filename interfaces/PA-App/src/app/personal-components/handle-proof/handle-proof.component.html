@@ -4,7 +4,7 @@
       <play-text-audio key="personal.handle-proof.creating" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.handle-proof.creating'|translate }}
     </p>
-    <p>
+    <p *ngIf="hasNotificationNumberSet">
       <play-text-audio key="personal.handle-proof.notify" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.handle-proof.notify'|translate }}
     </p>
