@@ -9,14 +9,14 @@
 >
   <div class="dialogue-turn--actor">
     <ion-avatar *ngIf="isSystem" style="border-radius: 0 !important;">
-      <img src="./assets/avatar--121.svg">
+      <img src="./assets/logos/avatar--121.svg">
     </ion-avatar>
     <ion-avatar *ngIf="isSelf" style="background:#2f4bfd; display:flex;">
       <ion-icon name="person" color="light" size="large" style="margin:auto;"></ion-icon>
     </ion-avatar>
-    <div *ngIf="!isSystem && !isSelf && actor === 'NGO A'; else noLogo">
+    <div *ngIf="!isSystem && !isSelf && isNgoA; else noLogo">
       <ion-avatar style="border-radius: 0 !important;">
-        <img src="./assets/{{actor}}.png">
+        <img [alt]="actor" src="./assets/logos/ngo-a_white_512x512.png">
       </ion-avatar>
     </div>
     <ng-template #noLogo >

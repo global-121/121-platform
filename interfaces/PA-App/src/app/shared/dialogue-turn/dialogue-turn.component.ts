@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 enum Actor {
   system = 'system',
   self = 'self',
+  ngoA = 'NGO A',
 }
 
 @Component({
@@ -26,6 +27,7 @@ export class DialogueTurnComponent implements OnInit {
 
   isSelf: boolean;
   isSystem: boolean;
+  isNgoA: boolean;
 
   animate = environment.useAnimation;
 
@@ -35,6 +37,7 @@ export class DialogueTurnComponent implements OnInit {
   ngOnInit() {
     this.isSelf = (this.actor === Actor.self);
     this.isSystem = (this.actor === Actor.system);
+    this.isNgoA = (this.actor === Actor.ngoA);
     this.moment = new Date();
   }
 
