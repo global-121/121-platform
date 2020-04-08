@@ -12,7 +12,7 @@ export const environment = {
   localStorage: ${process.env.NG_LOCAL_STORAGE || 'false'},
   alwaysShowTextPlayer: ${process.env.NG_ALWAYS_SHOW_TEXT_PLAYER || 'false'},
 
-  locales: ${process.env.NG_LOCALES || 'en'},
+  locales: '${process.env.NG_LOCALES || 'en'}',
 
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API}',
