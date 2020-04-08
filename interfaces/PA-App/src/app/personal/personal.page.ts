@@ -22,6 +22,7 @@ import { SelectProgramComponent } from '../personal-components/select-program/se
 import { SetNotificationNumberComponent } from '../personal-components/set-notification-number/set-notification-number.component';
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
 import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-personal',
@@ -62,6 +63,7 @@ export class PersonalPage implements OnInit {
     public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
     private storage: Storage,
+    public translate: TranslateService,
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.updateConversation$.subscribe((nextAction: string) => {
