@@ -14,9 +14,16 @@
     <ion-avatar *ngIf="isSelf" style="background:#2f4bfd; display:flex;">
       <ion-icon name="person" color="light" size="large" style="margin:auto;"></ion-icon>
     </ion-avatar>
-    <ion-avatar *ngIf="!isSystem && !isSelf" style="color:black; background:white; display:flex;">
-      <b style="margin:auto">{{ actor }}</b>
-    </ion-avatar>
+    <div *ngIf="!isSystem && !isSelf && actor === 'NGO A'; else noLogo">
+      <ion-avatar style="border-radius: 0 !important;">
+        <img src="./assets/{{actor}}.png">
+      </ion-avatar>
+    </div>
+    <ng-template #noLogo >
+      <ion-avatar *ngIf="!isSystem && !isSelf" style="color:black; background:white; display:flex;">
+        <b style="margin:auto">{{ actor }}</b>
+      </ion-avatar>
+    </ng-template>
   </div>
   <div class="dialogue-turn--content">
     <ion-card [color]="isSelf ? 'light' : 'dark'">
