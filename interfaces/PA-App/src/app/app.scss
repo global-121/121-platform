@@ -42,3 +42,21 @@ ion-modal.more-info-popup {
 }
 
 
+// Make long text fit on buttons
+// This is scoped to inside dialogue-turns ONLY, to limit the side-effects on other ion-button elements
+dialogue-turn ion-button {
+  // Get the same height as the fixed height:
+  --padding-top: 0.786em;
+  --padding-bottom: var(--padding-top); // Mirror the top value automatically
+  height: auto !important;
+  white-space: normal !important;
+
+  // Adjust size for other button-types:
+  &.button-has-icon-only {
+    --padding-top: 0.643em;
+  }
+  &.button-small.button-has-icon-only,
+  &.button-small {
+    --padding-top: 0.354em;
+  }
+}
