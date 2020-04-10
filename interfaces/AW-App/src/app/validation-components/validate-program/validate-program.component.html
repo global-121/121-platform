@@ -1,6 +1,6 @@
 <section #startMeeting>
    <br>
-  <dialogue-turn>
+  <dialogue-turn isSpoken="true">
     {{ 'validation.validate-program.introduction'|translate }}
   </dialogue-turn>
   <dialogue-turn actor="self"
@@ -61,6 +61,7 @@
   <dialogue-turn actor="self"
                  isConnected="true"
                  *ngIf="!programCredentialIssued"
+                 [isSpoken]="!programCredentialIssued"
   >
     <p>
       <ion-button type="submit"
@@ -80,7 +81,7 @@
     </p>
   </dialogue-turn>
   <dialogue-turn *ngIf="hasAnswered && !programCredentialIssued"
-                 [isSpoken]="hasAnswered"
+                 [isSpoken]="hasAnswered && !programCredentialIssued"
   >
     <p>
       {{ 'validation.validate-program.please-confirm'|translate }}
@@ -88,7 +89,7 @@
   </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="hasAnswered && !programCredentialIssued"
-                 [isSpoken]="hasAnswered"
+                 [isSpoken]="hasAnswered && !programCredentialIssued"
   >
     <ul>
       <li *ngFor="let question of questions">
@@ -113,7 +114,10 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self" [hidden]="!programCredentialIssued">
+  <dialogue-turn actor="self" 
+                 *ngIf="programCredentialIssued"
+                 [isSpoken]="programCredentialIssued"
+  >
     {{ 'validation.validate-program.conclusion'|translate }}
   </dialogue-turn>
 

@@ -1,8 +1,10 @@
 <section #scanQr>
-  <dialogue-turn>
+  <dialogue-turn isSpoken="true">
     {{ 'validation.scan-qr.introduction'|translate }}
   </dialogue-turn>
-  <dialogue-turn actor="self">
+  <dialogue-turn actor="self"
+                 isSpoken="true"
+  >
     <ion-button expand="block"
                 [disabled]="didResult || returnMainMenu"
                 (click)="scanQrCode()">
@@ -14,13 +16,19 @@
       {{ 'validation.scan-qr.main-menu'|translate }}
     </ion-button>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!scanError">
+  <dialogue-turn *ngIf="scanError"
+                 [isSpoken]="scanError"
+  >
     {{ 'validation.scan-qr.error'|translate }}
   </dialogue-turn>
-    <dialogue-turn [hidden]="!unknownDidCombination">
+  <dialogue-turn *ngIf="unknownDidCombination"
+                 [isSpoken]="unknownDidCombination"
+  >
       {{ 'validation.scan-qr.unknownDidCombination'|translate }}
     </dialogue-turn>
-  <dialogue-turn [hidden]="!didResult">
+  <dialogue-turn *ngIf="didResult"
+                 [isSpoken]="didResult"
+  >
     {{ 'validation.scan-qr.conclusion'|translate }}
   </dialogue-turn>
 </section>
