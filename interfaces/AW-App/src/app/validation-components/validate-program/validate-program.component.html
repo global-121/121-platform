@@ -6,7 +6,7 @@
   <dialogue-turn actor="self"
                  *ngFor="let question of questions; let i=index; first as isFirst;"
                 [isConnected]="!isFirst"
-                [isSpoken]="isFirst || hasAnswered || changedAnswers"
+                isSpoken="true"
   >
     <ion-label>
       {{ question.label }}
