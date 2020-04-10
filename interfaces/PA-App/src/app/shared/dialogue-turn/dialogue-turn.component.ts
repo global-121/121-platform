@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
 enum Actor {
   system = 'system',
   self = 'self',
   ngoA = 'NGO A',
+  ngoB = 'NGO B',
 }
 
 @Component({
@@ -12,7 +13,7 @@ enum Actor {
   templateUrl: './dialogue-turn.component.html',
   styleUrls: ['./dialogue-turn.component.scss'],
 })
-export class DialogueTurnComponent implements OnInit {
+export class DialogueTurnComponent implements OnChanges {
   @Input()
   isSpoken = false;
 
@@ -28,6 +29,7 @@ export class DialogueTurnComponent implements OnInit {
   isSelf: boolean;
   isSystem: boolean;
   isNgoA: boolean;
+  isNgoB: boolean;
 
   animate = environment.useAnimation;
 
@@ -37,8 +39,19 @@ export class DialogueTurnComponent implements OnInit {
   ngOnInit() {
     this.isSelf = (this.actor === Actor.self);
     this.isSystem = (this.actor === Actor.system);
-    this.isNgoA = (this.actor === Actor.ngoA);
+    this.updateNgos();
     this.moment = new Date();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.actor && typeof changes.actor.currentValue === 'string') {
+      this.updateNgos();
+    }
+  }
+
+  updateNgos() {
+    this.isNgoA = (this.actor === Actor.ngoA);
+    this.isNgoB = (this.actor === Actor.ngoB);
   }
 
   show() {
