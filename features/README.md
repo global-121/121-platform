@@ -23,6 +23,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 
 ### For Person/People Affected (PA-App)
+- [Listen to text in conversation-view](PA-App/Listen_to_text_in_conversation-view.feature)
 - [Create Digital ID](PA-App/Create_Digital_ID.feature)
 - [Use existing Digital ID](PA-App/Use_existing_Digital_ID.feature)
 - [Verify password input](PA-App/Verify_password_input.feature)
