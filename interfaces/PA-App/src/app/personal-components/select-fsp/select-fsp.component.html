@@ -67,7 +67,8 @@
                  submitLabel="personal.select-fsp.attributes.submit"
     ></q-and-a-set>
 
-    <dialogue-turn *ngIf="showResultSuccess"
+    <dialogue-turn [actor]="program?.ngo"
+                   *ngIf="showResultSuccess"
                    [isSpoken]="showResultSuccess"
     >
       <play-text-audio key="personal.select-fsp.attributes.success" class="ion-float-end ion-margin-start"></play-text-audio>
@@ -75,7 +76,8 @@
         {{ 'personal.select-fsp.attributes.success'|translate }}
       </p>
     </dialogue-turn>
-    <dialogue-turn *ngIf="showResultError"
+    <dialogue-turn [actor]="program?.ngo"
+                   *ngIf="showResultError"
                    [isSpoken]="showResultError"
     >
       <play-text-audio key="personal.select-fsp.attributes.error" class="ion-float-end ion-margin-start"></play-text-audio>
