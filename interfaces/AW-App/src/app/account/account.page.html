@@ -7,13 +7,19 @@
 </ion-header>
 
 <ion-content color="medium" class="ion-padding-vertical">
-  <dialogue-turn *ngIf="!isLoggedIn">
+  <dialogue-turn *ngIf="!isLoggedIn"
+                 [isSpoken]="!isLoggedIn"
+  >
     {{ 'account.introduction'|translate }}
   </dialogue-turn>
-  <dialogue-turn *ngIf="isLoggedIn">
+  <dialogue-turn *ngIf="isLoggedIn"
+                 [isSpoken]="isLoggedIn"
+  >
     {{ 'account.conclusion'|translate }}
   </dialogue-turn>
-  <dialogue-turn actor="self">
+  <dialogue-turn actor="self" 
+                 isSpoken="true"
+  >
     <form method="POST" (submit)="doLogin($event)" *ngIf="!isLoggedIn">
       <ion-item color="light">
         <ion-label position="stacked">{{ 'account.email-label'|translate }}</ion-label>
@@ -59,6 +65,7 @@
   <dialogue-turn actor="self"
                  isConnected="true"
                  *ngIf="changePasswordForm"
+                 [isSpoken]="changePasswordForm"
   >
     <strong>{{ 'account.change-password'|translate }}:</strong>
     <form method="POST" (submit)="doChangePassword($event)">

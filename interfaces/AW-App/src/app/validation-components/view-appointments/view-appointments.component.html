@@ -1,11 +1,19 @@
 <section #viewAppointments>
-  <dialogue-turn [hidden]="!noAppointments">
+  <dialogue-turn *ngIf="noAppointments"
+                 [isSpoken]="noAppointments"
+  >
     {{ 'validation.view-appointments.no-appointments'|translate }}
   </dialogue-turn>
-  <dialogue-turn [hidden]="noAppointments">
+  <dialogue-turn *ngIf="!noAppointments"
+                 [isSpoken]="!noAppointments"
+  >
     {{ 'validation.view-appointments.introduction'|translate }}
   </dialogue-turn>
-  <dialogue-turn [hidden]="noAppointments" actor="self">
+  <dialogue-turn actor="self" 
+                 *ngIf="!noAppointments"
+                 [isSpoken]="!noAppointments"
+  
+  >
     <ion-radio-group (ionChange)="changeTimeslot($event)">
       <ion-item *ngFor="let timeslot of appointments"
                 color="light"
@@ -35,10 +43,15 @@
       {{ 'validation.view-appointments.submit-button'|translate }}
     </ion-button>
   </dialogue-turn>
-  <dialogue-turn [hidden]="!timeslotSelected">
+  <dialogue-turn *ngIf="timeslotSelected"
+                 [isSpoken]="timeslotSelected"
+  >
     {{ 'validation.view-appointments.appointments'|translate }}
   </dialogue-turn>
-  <dialogue-turn actor="self" [hidden]="!timeslotSelected">
+  <dialogue-turn actor="self" 
+                 *ngIf="timeslotSelected"
+                 [isSpoken]="timeslotSelected"
+  >
     <ion-list>
       <ion-item *ngFor="let appointment of appointmentsByTimeslot; let i = index;"
                 color="light"
