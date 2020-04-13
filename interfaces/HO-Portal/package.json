@@ -47,7 +47,7 @@
     "@angular/language-service": "^7.2.16",
     "@ionic/angular-toolkit": "^1.5.1",
     "@types/file-saver": "^2.0.1",
-    "@types/jasmine": "^3.5.0",
+    "@types/jasmine": "^3.5.10",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^12.12.24",
     "codelyzer": "^5.2.1",
