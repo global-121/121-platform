@@ -78,7 +78,7 @@
     "native-run": "^0.2.9",
     "protractor": "~5.4.0",
     "ts-node": "~8.3.0",
-    "tslint": "~5.18.0",
+    "tslint": "~5.20.1",
     "typescript": "~3.1.6"
   },
   "cordova": {
