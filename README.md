@@ -68,7 +68,6 @@ This is how we create and publish a new release of the 121-platform.
   - [ ] Build the platform (following actions from the [webhook script](./tools/webhook.js))
 - [ ] Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2)
 - [ ] (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database)
-  - [ ] Change the default passwords using the endpoints `/121-service/api/user/change-password`
 
 #### On next deployments
 - [ ] Decide on what version to deploy
