@@ -34,21 +34,55 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
   - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
 
 
+## Releases
+See notable changes and the currently release version in the [CHANGELOG](CHANGELOG.md).
+
+### Release Checklist
+This is how we create and publish a new release of the 121-platform.  
+(See [the glossary](#glossary) for definitions of some terms.)
+
+- [ ] Define the date/time of the release. (Notify the dev-team for a code-freeze.)
+- [ ] Define what code gets released. ("_Is the current `master`-branch working?_")
+- [ ] Define the `version`(-number) for the upcoming release.
+- [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch
+- [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
+- [ ] Commit changes + push to release-branch on GitHub.
+- [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub  
+      - Select the new `release`-branch
+      - Add a short description and/or link to relevant other documents.
+      - Create/publish the release on GitHub
+
+
 ## Deployment
 
 ### To "test" environment
 - Merged PR's to 'master' branch are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
+- Make sure to update the environment-settings as soon as possible, preferably before the merge+deploy.
 
 ### To "production" environment
 
 #### On initial deployment (only)
-- Configure environment(s) as described in [/services > Getting started / Installation](services/README.md#getting-started-installation).
-  - Checkout code
-  - Install dependencies / tools
-  - Set secrets, configure ENV-variables, etc
-- Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2).
-- (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database).
+- [ ] Configure environment(s) as described in [/services > Getting started / Installation](services/README.md#getting-started-installation).
+  - [ ] Checkout code (of latest release)
+  - [ ] Set secrets, configure ENV-variables (via all .env-files)
+  - [ ] Build the platform (following actions from the [webhook script](./tools/webhook.js))
+- [ ] Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2)
+- [ ] (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database)
 
 #### On next deployments
-- Create and merge a PR from `global-121:master` to `global-121:production` branches.
+- [ ] Decide on what version to deploy
+- [ ] Checkout code (from that version's release-branch)
+- [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
+- [ ] Prepare the environment accordingly (in all .env-files)
+- [ ] Rebuild the platform (following actions from the [webhook script](./tools/webhook.js))
 
+
+## Glossary
+
+| Term          | Definition (_we_ use) |
+|---------------|---------------------|
+| `version`     | A 'number' specified in the [`SemVer`](https://semver.org/spec/v2.0.0.html)-format: `0.1.0` |
+| `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v0.1.0` |
+| `release`     | A fixed 'state of the code-base', [published on GitHub](https://github.com/global-121/121-platform/releases)
+| `deployment`  | An action performed to get (released) code running on an environment
+| `environment` | A machine that can run code (with specified settings); i.e. a server or VM, or your local machine |
