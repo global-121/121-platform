@@ -43,7 +43,8 @@ function onMerge() {
     ` && cd ` + repo_aw +
     ` && sudo npm ci --unsafe-perm ` +
     ` && sudo npm run build -- --prod --base-href /AW-app/` +
-    ` && sudo rm -rf ${web_aw} && sudo cp -r www/ ${web_aw}`
+    ` && sudo rm -rf ${web_aw} && sudo cp -r www/ ${web_aw}` +
+    ` && sudo git describe > ${web_root}/VERSION`
   , function(error, stdout, stderr) {
     if (error) {
         console.log(stderr);
