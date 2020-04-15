@@ -9,6 +9,7 @@ import { CredentialRequestEntity } from '../credential/credential-request.entity
 import { CredentialEntity } from '../credential/credential.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
+import { ProgramModule } from '../../programs/program/program.module';
 
 @Module({
   imports: [
@@ -20,9 +21,10 @@ import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-ser
       CredentialEntity,
       FinancialServiceProviderEntity,
     ]),
+    ProgramModule,
     UserModule,
   ],
   providers: [CreateConnectionService],
   controllers: [CreateConnectionController],
 })
-export class CreateConnectionModule { }
+export class CreateConnectionModule {}

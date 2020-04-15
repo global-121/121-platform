@@ -63,7 +63,7 @@ export class ProgramService {
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
-  ) { }
+  ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
@@ -317,7 +317,10 @@ export class ProgramService {
 
     await this.proofService.validateProof(program.proofRequest, proof, did);
 
-    const questionAnswerList = this.createQuestionAnswerList(program, proof);
+    const questionAnswerList = this.createQuestionAnswerListProof(
+      program,
+      proof,
+    );
     connection.customData = this.getPersitentDataFromProof(
       connection.customData,
       questionAnswerList,
@@ -493,7 +496,47 @@ export class ProgramService {
     return connection;
   }
 
-  private createQuestionAnswerList(
+  public async calculateInclusionPrefilledAnswers(
+    did: string,
+    programId: number,
+  ): Promise<void> {
+    const scoreList = await this.createQuestionAnswerListPrefilled(
+      did,
+      programId,
+    );
+
+    let program = await this.programRepository.findOne(programId, {
+      relations: ['customCriteria'],
+    });
+    const score = this.calculateScoreAllCriteria(
+      program.customCriteria,
+      scoreList,
+    );
+    let connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+    connection.temporaryInclusionScore = score;
+    await this.connectionRepository.save(connection);
+  }
+
+  private async createQuestionAnswerListPrefilled(
+    did: string,
+    programId: number,
+  ): Promise<object> {
+    const prefilledAnswers = await this.credentialService.getPrefilledAnswers(
+      did,
+      programId,
+    );
+    const scoreList = {};
+    for (let prefilledAnswer of prefilledAnswers) {
+      let attrValue = prefilledAnswer.answer;
+      let newKeyName = prefilledAnswer.attribute;
+      scoreList[newKeyName] = attrValue;
+    }
+    return scoreList;
+  }
+
+  private createQuestionAnswerListProof(
     program: ProgramEntity,
     proof: string,
   ): object {
@@ -679,9 +722,7 @@ export class ProgramService {
     return connectionsReponse;
   }
 
-  private async getConnections(
-    programId,
-  ): Promise<ConnectionEntity[]> {
+  private async getConnections(programId): Promise<ConnectionEntity[]> {
     const connections = await this.connectionRepository.find({
       order: { inclusionScore: 'DESC' },
     });
