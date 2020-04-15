@@ -25,7 +25,7 @@ const web_aw = `${web_root}/AW-app`;
 //   Functions/Methods/etc:
 // ----------------------------------------------------------------------------
 
-function deploy() {
+function deploy(tag_name) {
   exec(
     `cd ` + repo_services +
     ` && sudo git reset --hard ` +
@@ -75,20 +75,25 @@ http
       let payload = JSON.parse(str);
 
       if (
-          req.headers["x-hub-signature"] === sig &&
-        payload.action === "closed" &&
-        (
-          (
-            payload.pull_request.merged &&
-            process.env.NODE_ENV === "staging"
-          )||
-          (
-            payload.release.tag_name.startsWith(process.env.VERSION) &&
-            process.env.NODE_ENV === "production"
-            )
-        )
+        req.headers["x-hub-signature"] !== sig
       ) {
-        deploy();
+        return
+      }
+      if (
+        process.env.NODE_ENV === "staging" &&
+        payload.action === "closed" &&
+        payload.pull_request.merged
+      ) {
+        deploy()
+        return
+      }
+      if (
+        process.env.NODE_ENV === "production" &&
+        payload.release.tag_name &&
+        payload.release.tag_name.startsWith(process.env.VERSION)
+      ) {
+        deploy(payload.release.tag_name);
+        return
       }
     });
     res.end();
