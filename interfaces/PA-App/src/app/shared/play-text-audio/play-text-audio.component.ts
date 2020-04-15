@@ -112,6 +112,7 @@ export class PlayTextAudioComponent implements OnInit {
     this.state = state;
     this.setLabel(state);
     this.setIcon(state);
+    this.isDisabled = false;
   }
 
   private setLabel(state: PlayerState) {
