@@ -44,13 +44,17 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Define the date/time of the release. (Notify the dev-team for a code-freeze.)
 - [ ] Define what code gets released. ("_Is the current `master`-branch working?_")
 - [ ] Define the `version`(-number) for the upcoming release.
-- [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
-- [ ] Commit changes + push to release-branch on GitHub.
+  - [ ] Commit changes to `master`-branch on GitHub.
+- [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch
+- [ ] Run the [Azure Pipelines](https://dev.azure.com/redcrossnl/121%20Platform/_build) for the native Android-apps on that `release`-branch
+  - [ ] Download the generated artifacts (`AW-App.zip` and `PA-App.zip`)
+  - [ ] Rename to match the version (i.e: `PA-App-v0.1.0.zip`)
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub  
-      - Select the new `release`-branch
-      - Add a short description and/or link to relevant other documents.
-      - Create/publish the release on GitHub
+  - [ ] Select the new `release`-branch
+  - [ ] Add a short description and/or link to relevant other documents.
+  - [ ] Attach the generated artifacts of the native Android apps
+  - [ ] Create/publish the release on GitHub
 
 
 ## Deployment
