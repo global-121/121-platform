@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - 2020-04-08: Add `EXTERNAL_121_SERVICE_URL` to `services/.env`
 - 2020-03-25: Add `NG_LOCALES` to `interfaces/PA-App/.env` AB#1680
+- 2020-03-19: Add `NG_ALWAYS_SHOW_TEXT_PLAYER` to `interfaces/PA-App/.env` AB#823
 
 ### Removed
 - 2020-03-11: Remove usernames from `services/121-service/src/secrets.ts` AB#1641
+
+[Unreleased]: https://github.com/global-121/121-platform/compare/v0.1.0...master
+[0.1.0]: https://github.com/global-121/121-platform/releases/tag/v0.1.0
