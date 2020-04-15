@@ -30,6 +30,9 @@ export class ConnectionEntity {
   public fsp: FinancialServiceProviderEntity;
 
   @Column({ nullable: true })
+  public temporaryInclusionScore: number;
+
+  @Column({ nullable: true })
   public inclusionScore: number;
 
   @Column('numeric', {

@@ -1,4 +1,10 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,6 +16,7 @@ import { CredentialRequestEntity } from '../credential/credential-request.entity
 import { CredentialEntity } from '../credential/credential.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
+import { ProgramService } from '../../programs/program/program.service';
 
 @Injectable()
 export class CreateConnectionService {
@@ -30,7 +37,7 @@ export class CreateConnectionService {
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
 
-  public constructor() { }
+  public constructor(private readonly programService: ProgramService) {}
 
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
@@ -68,6 +75,7 @@ export class CreateConnectionService {
       connection.appliedDate = new Date();
       connection.programsApplied.push(+programId);
       await this.connectionRepository.save(connection);
+      this.programService.calculateInclusionPrefilledAnswers(did, programId);
     }
   }
 
@@ -132,5 +140,4 @@ export class CreateConnectionService {
     let connections = await this.connectionRepository.find();
     return connections;
   }
-
 }
