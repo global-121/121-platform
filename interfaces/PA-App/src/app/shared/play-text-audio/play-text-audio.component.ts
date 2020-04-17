@@ -68,6 +68,7 @@ export class PlayTextAudioComponent implements OnInit {
   }
 
   private createPlayer() {
+    this.isDisabled = false;
     this.player = new Howl({
       src: this.getSourceUrls(this.key),
       preload: true,
@@ -112,7 +113,6 @@ export class PlayTextAudioComponent implements OnInit {
     this.state = state;
     this.setLabel(state);
     this.setIcon(state);
-    this.isDisabled = false;
   }
 
   private setLabel(state: PlayerState) {
