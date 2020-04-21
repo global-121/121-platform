@@ -11,15 +11,7 @@ const secrets = require("./secrets");
 
 const secret = secrets.secret;
 const repo = "/home/121-platform";
-const repo_services = `${repo}/services`;
-const repo_interfaces = `${repo}/interfaces`;
-const repo_pa = `${repo_interfaces}/PA-App`;
-const repo_ho = `${repo_interfaces}/HO-Portal`;
-const repo_aw = `${repo_interfaces}/AW-App`;
-const web_root = "/var/www/121-platform";
-const web_pa = `${web_root}/PA-app`;
-const web_ho = `${web_root}/HO-portal`;
-const web_aw = `${web_root}/AW-app`;
+
 
 // ----------------------------------------------------------------------------
 //   Functions/Methods/etc:
@@ -27,31 +19,15 @@ const web_aw = `${web_root}/AW-app`;
 
 function deploy(tag_name) {
   exec(
-    `cd ` + repo_services +
-    ` && sudo git reset --hard ` +
-    ` && sudo git pull --ff-only` +
-    ` && sudo docker-compose up -d --build ` +
-    ` && sudo docker restart 121-service PA-accounts-service` +
-    ` && cd ` + repo_pa +
-    ` && sudo npm ci --unsafe-perm ` +
-    ` && sudo npm run build -- --prod --base-href /PA-app/` +
-    ` && sudo rm -rf ${web_pa} && sudo cp -r www/ ${web_pa}` +
-    ` && cd ` + repo_ho +
-    ` && sudo npm ci --unsafe-perm ` +
-    ` && sudo npm run build -- --prod --base-href /HO-portal/` +
-    ` && sudo rm -rf ${web_ho} && sudo cp -r www/ ${web_ho}` +
-    ` && cd ` + repo_aw +
-    ` && sudo npm ci --unsafe-perm ` +
-    ` && sudo npm run build -- --prod --base-href /AW-app/` +
-    ` && sudo rm -rf ${web_aw} && sudo cp -r www/ ${web_aw}` +
-    ` && git describe | sudo tee ${web_root}/VERSION`
-  , function(error, stdout, stderr) {
-    if (error) {
+    `cd ${repo} && . ./tools/deploy.sh`,
+    function (error, stdout, stderr) {
+      if (error) {
         console.log(stderr);
-    } else {
+      } else {
         console.log(stdout);
+      }
     }
-  });
+  );
 }
 
 // ----------------------------------------------------------------------------
