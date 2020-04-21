@@ -11,7 +11,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 })
 export class DownloadDataComponent implements ValidationComponent {
 
-  public downloadReady: boolean = false;
+  public downloadReady = false;
   public nrDownloaded: number;
 
   constructor(
@@ -31,7 +31,7 @@ export class DownloadDataComponent implements ValidationComponent {
 
   public uniqueDids(array) {
     const dids = [];
-    for (let record of array) {
+    for (const record of array) {
       if (!dids.includes(record.did)) {
         dids.push(record.did);
       }
