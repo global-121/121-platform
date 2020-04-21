@@ -1,5 +1,26 @@
-import { Length, IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import {
+  Length,
+  IsNotEmpty,
+  IsString,
+  IsNumber,
+  IsArray,
+} from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
+
+export class AttributeDto {
+  @ApiModelProperty()
+  @IsNotEmpty()
+  @IsString()
+  public readonly attributeId: number;
+  @ApiModelProperty()
+  @IsNotEmpty()
+  @IsString()
+  public readonly attribute: string;
+  @ApiModelProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  public readonly answer: string;
+}
 
 export class CredentialIssueDto {
   @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
@@ -9,4 +30,20 @@ export class CredentialIssueDto {
   @IsNotEmpty()
   @IsNumber()
   public readonly programId: number;
+  @ApiModelProperty({
+    example: [
+      {
+        attributeId: 1,
+        attribute: 'nr_of_children',
+        answer: 32,
+      },
+      {
+        attributeId: 2,
+        attribute: 'roof_type',
+        answer: 0,
+      },
+    ],
+  })
+  @IsArray()
+  public readonly attributes: AttributeDto[];
 }

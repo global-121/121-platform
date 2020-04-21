@@ -174,12 +174,10 @@ export class CredentialService {
       payload.did,
     );
     const credentialRequest = queryResult.credentialRequest;
-    const preFilledAnswers = await this.getPrefilledAnswers(
-      payload.did,
-      payload.programId,
-    );
+
+    const updatedAnswers = payload.attributes;
     let attributesPost = {};
-    for (let answer of preFilledAnswers) {
+    for (let answer of updatedAnswers) {
       attributesPost[answer.attribute] = answer.answer;
     }
 

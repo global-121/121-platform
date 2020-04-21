@@ -183,8 +183,26 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.verificationPostponed = true;
   }
 
+  private createAttributes(answers: Answer[]): ProgramAttribute[] {
+    const attributes: ProgramAttribute[] = [];
+
+    answers.forEach((item: Answer) => {
+      attributes.push({
+        attributeId: 0,
+        attribute: item.code,
+        answer: item.value,
+      });
+    });
+
+    return attributes;
+  }
+
   public issueCredential() {
-    this.programsService.issueCredential(this.did, this.programId).subscribe(() => {
+    this.programsService.issueCredential(
+      this.did,
+      this.programId,
+      this.createAttributes(Object.values(this.answers))
+    ).subscribe(() => {
       this.programCredentialIssued = true;
       this.answers = {};
       this.complete();
@@ -231,4 +249,9 @@ class Answer {
   code: string;
   value: string;
   label: string;
+}
+class ProgramAttribute {
+  attributeId: number;
+  attribute: string;
+  answer: string;
 }
