@@ -22,6 +22,7 @@ const credRequest = {
 const cred = {
   did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
   programId: 1,
+  attributes: [],
   credentialJson: JSON.parse('{ "encrypted" :"example" }'),
 };
 class CredentialnServiceMock {
@@ -58,9 +59,9 @@ describe('Credential Controller', (): void => {
           },
         ],
       })
-      .overrideGuard(RolesGuard)
-      .useValue({ canActivate: () => true })
-      .compile();
+        .overrideGuard(RolesGuard)
+        .useValue({ canActivate: () => true })
+        .compile();
       credentialService = module.get<CredentialService>(CredentialService);
 
       credentialController = module.get<CredentialController>(
