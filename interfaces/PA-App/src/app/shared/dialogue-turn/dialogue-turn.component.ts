@@ -5,7 +5,8 @@ enum Actor {
   system = 'system',
   self = 'self',
   ngoA = 'NGO A',
-  ngoB = 'NGO B',
+  ngoDorcas = 'Dorcas',
+  ngoEagles = 'Eagles'
 }
 
 @Component({
@@ -29,7 +30,8 @@ export class DialogueTurnComponent implements OnChanges {
   isSelf: boolean;
   isSystem: boolean;
   isNgoA: boolean;
-  isNgoB: boolean;
+  isNgoDorcas: boolean;
+  isNgoEagles: boolean;
 
   animate = environment.useAnimation;
 
@@ -51,7 +53,8 @@ export class DialogueTurnComponent implements OnChanges {
 
   updateNgos() {
     this.isNgoA = (this.actor === Actor.ngoA);
-    this.isNgoB = (this.actor === Actor.ngoB);
+    this.isNgoDorcas = (this.actor === Actor.ngoDorcas);
+    this.isNgoEagles = (this.actor === Actor.ngoEagles);
   }
 
   show() {
