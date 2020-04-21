@@ -12,14 +12,16 @@ import {
 import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult, getRepository } from 'typeorm';
 import { ProgramService } from '../../programs/program/program.service';
 import { PrefilledAnswerDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialEntity } from './credential.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
-import { API } from '../../config';
 import { ConnectionEntity } from '../create-connection/connection.entity';
+import { UserEntity } from '../../user/user.entity';
+
+import { API } from '../../config';
 
 @Injectable()
 export class CredentialService {
@@ -128,6 +130,29 @@ export class CredentialService {
       where: { did: did, programId: programId },
     });
     return credentials;
+  }
+
+  // AW: get answers to attributes for all PA's (selected for validation)
+  public async getAllPrefilledAnswers(
+    userId: number,
+  ): Promise<CredentialAttributesEntity[]> {
+    const user = await getRepository(UserEntity)
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.assignedProgram', 'program')
+      .where('"userId" = :userId', { userId: userId })
+      .getOne();
+    if (!user || !user.assignedProgram) {
+      const errors = 'User not found or no assigned programs';
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+
+    const programIds = user.assignedProgram.map(program => {
+      return { programId: program.id };
+    });
+    const answers = await this.credentialAttributesRepository.find({
+      where: programIds,
+    });
+    return answers;
   }
 
   // AW: delete answers to attributes for a given PA after issuing credentials (identified first through did/QR)
