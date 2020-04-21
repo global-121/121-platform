@@ -10,19 +10,19 @@
 
 ## Status
 
-| Interfaces | Build Status |
-|------------|--------------|
-| PA-App  | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master) |
-| PA-App (Android)  | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App%20--%20Android?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=23&branchName=master) |
-| AW-App  | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master) |
+| Interfaces       | Build Status                                                                                                                                                                                                                              |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PA-App           | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master)                |
+| PA-App (Android) | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App%20--%20Android?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=23&branchName=master) |
+| AW-App           | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master)                |
 | AW-App (Android) | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App%20--%20Android?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=22&branchName=master) |
-| HO-Portal  | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master) |
+| HO-Portal        | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master)             |
 
-| Services | Build Status |
-|----------|--------------|
-| 121-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master) |
-| PA-accounts-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/PA-accounts-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=19&branchName=master) |
-| Tykn-SSI-Services | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/Tykn%20SSI%20Services?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=20&branchName=master) |
+| Services            | Build Status                                                                                                                                                                                                                            |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 121-service         | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master)           |
+| PA-accounts-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/PA-accounts-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=19&branchName=master)   |
+| Tykn-SSI-Services   | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/Tykn%20SSI%20Services?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=20&branchName=master) |
 
 ## Documentation
 The documentation of the 121 platform can be found on the Wiki of this repository on GitHub.
@@ -44,9 +44,12 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Define the date/time of the release. (Notify the dev-team for a code-freeze.)
 - [ ] Define what code gets released. ("_Is the current `master`-branch working?_")
 - [ ] Define the `version`(-number) for the upcoming release.
-- [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
-- [ ] Commit changes + push to release-branch on GitHub.
+  - [ ] Commit changes to `master`-branch on GitHub.
+- [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch
+- [ ] Run the [Azure Pipelines](https://dev.azure.com/redcrossnl/121%20Platform/_build) for the native Android-apps on that `release`-branch
+  - [ ] Download the generated artifacts (`AW-App.zip` and `PA-App.zip`)
+  - [ ] Rename to match the version (i.e: `PA-App-v0.1.0.zip`)
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub  
       - Select the new `release`-branch
       - Add a short description and/or link to relevant other documents.
@@ -63,6 +66,7 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Commit changes + push to release-branch on GitHub.
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub  
       - Same as Release Checklist
+      
 ## Deployment
 
 ### To "test" environment
@@ -89,10 +93,10 @@ This is how we create and publish a new release of the 121-platform.
 
 ## Glossary
 
-| Term          | Definition (_we_ use) |
-|---------------|---------------------|
-| `version`     | A 'number' specified in the [`SemVer`](https://semver.org/spec/v2.0.0.html)-format: `0.1.0` |
-| `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v0.1.0` |
-| `release`     | A fixed 'state of the code-base', [published on GitHub](https://github.com/global-121/121-platform/releases)
-| `deployment`  | An action performed to get (released) code running on an environment
-| `environment` | A machine that can run code (with specified settings); i.e. a server or VM, or your local machine |
+| Term          | Definition (_we_ use)                                                                                        |
+| ------------- | ------------------------------------------------------------------------------------------------------------ |
+| `version`     | A 'number' specified in the [`SemVer`](https://semver.org/spec/v2.0.0.html)-format: `0.1.0`                  |
+| `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v0.1.0`                 |
+| `release`     | A fixed 'state of the code-base', [published on GitHub](https://github.com/global-121/121-platform/releases) |
+| `deployment`  | An action performed to get (released) code running on an environment                                         |
+| `environment` | A machine that can run code (with specified settings); i.e. a server or VM, or your local machine            |

@@ -28,7 +28,7 @@
     "@angular/platform-browser": "^7.2.16",
     "@angular/platform-browser-dynamic": "^7.2.16",
     "@angular/router": "^7.2.16",
-    "@ionic-native/core": "^5.16.0",
+    "@ionic-native/core": "^5.24.0",
     "@ionic-native/qr-scanner": "^5.16.0",
     "@ionic-native/splash-screen": "^5.16.0",
     "@ionic-native/status-bar": "^5.16.0",
@@ -77,9 +77,9 @@
     "karma-jasmine-html-reporter": "^1.5.1",
     "native-run": "^0.2.9",
     "protractor": "~5.4.0",
-    "ts-node": "~8.3.0",
-    "tslint": "~5.18.0",
-    "typescript": "~3.1.6"
+    "ts-node": "~8.9.0",
+    "tslint": "~5.20.1",
+    "typescript": "~3.2.4"
   },
   "cordova": {
     "plugins": {

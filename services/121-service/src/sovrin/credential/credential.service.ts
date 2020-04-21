@@ -44,7 +44,7 @@ export class CredentialService {
     @Inject(forwardRef(() => ProgramService))
     private readonly programService: ProgramService,
     private readonly httpService: HttpService,
-  ) { }
+  ) {}
   // Use by HO is done automatically when a program is published
   public async createOffer(credDefId: string): Promise<object> {
     // const credentialOffer = tyknidtyknid.createCredentialOffer(credDefId)
@@ -122,7 +122,7 @@ export class CredentialService {
   public async getPrefilledAnswers(
     did: string,
     programId: number,
-  ): Promise<any[]> {
+  ): Promise<CredentialAttributesEntity[]> {
     let credentials;
     credentials = await this.credentialAttributesRepository.find({
       where: { did: did, programId: programId },
@@ -174,12 +174,10 @@ export class CredentialService {
       payload.did,
     );
     const credentialRequest = queryResult.credentialRequest;
-    const preFilledAnswers = await this.getPrefilledAnswers(
-      payload.did,
-      payload.programId,
-    );
+
+    const updatedAnswers = payload.attributes;
     let attributesPost = {};
-    for (let answer of preFilledAnswers) {
+    for (let answer of updatedAnswers) {
       attributesPost[answer.attribute] = answer.answer;
     }
 

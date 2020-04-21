@@ -92,8 +92,13 @@ To seed the database with more data (e.g. programs) additional seed-scripts can 
 - Include more testing data:  
   `docker exec -it 121-service npm run seed:dev`
 
-- For pilot March 2020:  
+- For pilot:  
   `docker exec -it 121-service npm run seed:pilot`
+
+### Consequences of altering (program) data in the 121-platform
+
+When changing the name of the NGO (program.ngo), this has effect on the PA-app NGO-logo-processing, which is hard-coded on the value of this attribute. So code-changes are needed in the PA-app. See the [PA-app readme](../../interfaces/PA-App/README.md).
+
 
 ## Database migrations
 
