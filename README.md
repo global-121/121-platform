@@ -51,8 +51,18 @@ This is how we create and publish a new release of the 121-platform.
       - Select the new `release`-branch
       - Add a short description and/or link to relevant other documents.
       - Create/publish the release on GitHub
+      - Add a new tag as <version>
 
+### Patches/Hotfixes Checklist
 
+- [ ] Define the date/time of the release. 
+- [ ] Define what code gets released. 
+- [ ] Define the `version`(-number) for the upcoming release. For a hotfix/patch this should be the number after the second point. 
+- [ ] Create a `release`-branch ("`release/<version>`") from the `release/<version>`-branch that needs a hotfix
+- [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
+- [ ] Commit changes + push to release-branch on GitHub.
+- [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub  
+      - Same as Release Checklist
 ## Deployment
 
 ### To "test" environment
