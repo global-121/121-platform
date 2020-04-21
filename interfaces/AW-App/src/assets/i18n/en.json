@@ -28,6 +28,8 @@
       "view-appointments": "View appointments",
       "scan-qr": "Scan PA's QR-code"
     },
+    "download-data": {
+      "main-menu": "Back to main menu."
     },
     "view-appointments": {
       "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details.",
