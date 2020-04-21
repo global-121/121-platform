@@ -4,6 +4,7 @@ This folder contains code not directly related to the applications, but for exam
 
 ## Contents
 * [Hosting](#hosting)
+* [Manual Deployment](#manual-deployment)
 * [Continuous Deployment](#continuous-deployment)
 * [Local development](#local-development)
 
@@ -29,6 +30,11 @@ On Ubuntu server do:
 to check if it started correctly.
 
 ---
+
+## Manual Deployment
+
+The bash-script [`deploy.sh`](./deploy.sh) can be run on the test/production-environment to perform all necessary steps.
+
 
 ## Continuous Deployment
 
