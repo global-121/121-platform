@@ -1,4 +1,17 @@
 <section>
+  <dialogue-turn *ngIf="!downloadReady"
+                 isSpoken="!downloadReady"
+  >
+    {{ 'validation.download-data.downloading'|translate }}
+  </dialogue-turn>
+  <dialogue-turn *ngIf="downloadReady"
+                 [isSpoken]="downloadReady"      
+  >
+    <div
+      [innerHTML]="'validation.download-data.download-result'|translate:{ nrDownloaded:'<strong>'+nrDownloaded+'</strong>' }"
+      class="ion-margin-bottom">
+    </div>
+  </dialogue-turn>
   <dialogue-turn actor="self">
     <ion-button expand="block" (click)="backMainMenu()">{{ 'validation.download-data.main-menu'|translate }}
     </ion-button>

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ValidationComponents } from '../validation-components.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-download-data',
@@ -10,11 +11,33 @@ import { ValidationComponents } from '../validation-components.enum';
 })
 export class DownloadDataComponent implements ValidationComponent {
 
+  public downloadReady: boolean = false;
+  public nrDownloaded: number;
+
   constructor(
+    public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
   ) { }
 
-  ngOnInit() {}
+  async ngOnInit() {
+    await this.downloadData();
+  }
+
+  public async downloadData() {
+    const data = await this.programsService.downloadData();
+    this.nrDownloaded = this.uniqueDids(data);
+    this.downloadReady = true;
+  }
+
+  public uniqueDids(array) {
+    const dids = [];
+    for (let record of array) {
+      if (!dids.includes(record.did)) {
+        dids.push(record.did);
+      }
+    }
+    return dids.length;
+  }
 
   public backMainMenu() {
     this.complete();

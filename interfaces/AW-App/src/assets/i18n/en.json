@@ -29,6 +29,8 @@
       "scan-qr": "Scan PA's QR-code"
     },
     "download-data": {
+      "downloading": "Data is being downloaded. Wait a second.",
+      "download-result": "Data downloaded for {{nrDownloaded}} Persons Affected.",
       "main-menu": "Back to main menu."
     },
     "view-appointments": {
