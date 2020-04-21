@@ -24,9 +24,10 @@
   "validation": {
     "main-menu": {
       "introduction": "You have access to the following actions. Please select one.",
-      "menu-option1": "View appointments",
-      "menu-option2": "Check PA's claims",
-      "menu-option3": "Change password"
+      "download-data": "Download data for validation",
+      "view-appointments": "View appointments",
+      "scan-qr": "Scan PA's QR-code"
+    },
     },
     "view-appointments": {
       "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details.",

@@ -25,8 +25,9 @@ export class MainMenuComponent implements ValidationComponent {
 
   ngOnInit() {
     this.menuOptions = [
-      { id: 'view-appointments', option: this.customTranslateService.translate('validation.main-menu.menu-option1'), disabled: false },
-      { id: 'scan-qr', option: this.customTranslateService.translate('validation.main-menu.menu-option2'), disabled: false },
+      { id: 'download-data', option: this.customTranslateService.translate('validation.main-menu.download-data'), disabled: false },
+      { id: 'view-appointments', option: this.customTranslateService.translate('validation.main-menu.view-appointments'), disabled: false },
+      { id: 'scan-qr', option: this.customTranslateService.translate('validation.main-menu.scan-qr'), disabled: false },
     ];
   }
 
@@ -47,7 +48,9 @@ export class MainMenuComponent implements ValidationComponent {
   }
 
   getNextSection() {
-    if (this.optionChoice === 'view-appointments') {
+    if (this.optionChoice === 'download-data') {
+      return ValidationComponents.downloadData;
+    } else if (this.optionChoice === 'view-appointments') {
       return ValidationComponents.viewAppointments;
     } else if (this.optionChoice === 'scan-qr') {
       return ValidationComponents.scanQr;
