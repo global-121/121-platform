@@ -14,16 +14,26 @@
     <ion-avatar *ngIf="isSelf" style="background:#2f4bfd; display:flex;">
       <ion-icon name="person" color="light" size="large" style="margin:auto;"></ion-icon>
     </ion-avatar>
-    <div *ngIf="!isSystem && !isSelf && isNgoA; else noLogo">
+    <div *ngIf="!isSystem && !isSelf && isNgoA">
       <ion-avatar style="border-radius: 0 !important;">
         <img [alt]="actor" src="./assets/logos/ngo-a.png">
       </ion-avatar>
     </div>
-    <ng-template #noLogo >
-      <ion-avatar *ngIf="!isSystem && !isSelf" style="color:black; background:white; display:flex;">
-        <b style="margin:auto">{{ actor }}</b>
+    <div *ngIf="!isSystem && !isSelf && isNgoDorcas">
+      <ion-avatar style="border-radius: 0 !important;">
+        <img [alt]="actor" src="./assets/logos/dorcas-270x270.png">
       </ion-avatar>
-    </ng-template>
+    </div>
+    <div *ngIf="!isSystem && !isSelf && isNgoEagles">
+      <ion-avatar style="border-radius: 0 !important;">
+        <img [alt]="actor" src="./assets/logos/eagles-relief.png">
+      </ion-avatar>
+    </div>
+    <div *ngIf="!isSystem && !isSelf && !isNgoA && !isNgoDorcas && !isNgoEagles">
+      <ion-avatar style="color:black; background:white; display:flex;">
+        <b style="margin:auto; text-align: center;">{{ actor }}</b>
+      </ion-avatar>
+    </div>
   </div>
   <div class="dialogue-turn--content">
     <ion-card [color]="isSelf ? 'light' : 'dark'">
