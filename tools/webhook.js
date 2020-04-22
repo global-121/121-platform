@@ -10,6 +10,7 @@ const secrets = require("./secrets");
 // ----------------------------------------------------------------------------
 
 const secret = secrets.secret;
+const repo = process.env.GLOBAL_121_REPO;
 
 
 // ----------------------------------------------------------------------------
@@ -18,7 +19,7 @@ const secret = secrets.secret;
 
 function deploy(tag_name) {
   exec(
-    `. ./deploy.sh`,
+    `cd ${repo} && sudo ./tools/deploy.sh`,
     function (error, stdout, stderr) {
       if (error) {
         console.log(stderr);
