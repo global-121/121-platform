@@ -10,7 +10,6 @@ const secrets = require("./secrets");
 // ----------------------------------------------------------------------------
 
 const secret = secrets.secret;
-const repo = "/home/121-platform";
 
 
 // ----------------------------------------------------------------------------
@@ -19,7 +18,7 @@ const repo = "/home/121-platform";
 
 function deploy(tag_name) {
   exec(
-    `cd ${repo} && . ./tools/deploy.sh`,
+    `. ./deploy.sh`,
     function (error, stdout, stderr) {
       if (error) {
         console.log(stderr);
