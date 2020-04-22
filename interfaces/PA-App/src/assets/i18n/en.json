@@ -86,6 +86,11 @@
       "qr-code": "Please show this QR-code at your meeting.",
       "till": "Till"
     },
+    "preprinted-qrcode": {
+      "introduction": "Do you have a pre-printed QR-code?",
+      "yes": "Yes",
+      "no": "No"
+    },
     "select-appointment": {
       "at": "At",
       "change": "Change my option",
