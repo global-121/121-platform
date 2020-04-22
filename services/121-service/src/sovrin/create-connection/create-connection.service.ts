@@ -125,6 +125,33 @@ export class CreateConnectionService {
     return await this.connectionRepository.save(connection);
   }
 
+  public async addQrIdentifier(
+    did: string,
+    qrIdentifier: string,
+  ): Promise<void> {
+    const connection = await this.findOne(did);
+    const duplicateConnection = await this.connectionRepository.findOne({
+      where: { qrIdentifier: qrIdentifier },
+    });
+    if (duplicateConnection) {
+      const errors = 'This QR identifier already exists';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    connection.qrIdentifier = qrIdentifier;
+    await this.connectionRepository.save(connection);
+  }
+
+  public async findDidWithQrIdentifier(qrIdentifier: string): Promise<DidDto> {
+    let connection = await this.connectionRepository.findOne({
+      where: { qrIdentifier: qrIdentifier },
+    });
+    if (!connection) {
+      const errors = 'No connection found for QR';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return { did: connection.did };
+  }
+
   public async findOne(did: string): Promise<ConnectionEntity> {
     let connection = await this.connectionRepository.findOne({
       where: { did: did },
