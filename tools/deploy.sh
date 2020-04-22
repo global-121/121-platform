@@ -56,7 +56,7 @@ function deploy() {
 
     cd "$repo_path" || return
     sudo npm ci --unsafe-perm
-    sudo npm run build -- --prod --base-href="/$base_href/"
+    sudo npm run build -- --prod --base-href="$base_href"
   }
 
   function deploy_interface() {
@@ -84,7 +84,7 @@ function deploy() {
   # Actual deployment:
   #
   update_code
-  update_services
+  build_services
 
   build_interface "PA-App" "$repo_pa" "$pa_dir"
   deploy_interface "PA-App" "$repo_pa" "$pa_dir"
