@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CustomTranslateService } from 'src/app/services/custom-translate.service';
-import { Storage } from '@ionic/storage';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { Router } from '@angular/router';
@@ -18,26 +17,21 @@ export class MainMenuComponent implements ValidationComponent {
 
   constructor(
     public customTranslateService: CustomTranslateService,
-    public storage: Storage,
     public conversationService: ConversationService,
     public router: Router,
   ) { }
 
   ngOnInit() {
     this.menuOptions = [
-      { id: 'view-appointments', option: this.customTranslateService.translate('validation.main-menu.menu-option1'), disabled: false },
-      { id: 'scan-qr', option: this.customTranslateService.translate('validation.main-menu.menu-option2'), disabled: false },
+      { id: 'download-data', option: this.customTranslateService.translate('validation.main-menu.download-data'), disabled: false },
+      { id: 'view-appointments', option: this.customTranslateService.translate('validation.main-menu.view-appointments'), disabled: false },
+      { id: 'scan-qr', option: this.customTranslateService.translate('validation.main-menu.scan-qr'), disabled: false },
     ];
-  }
-
-  private storeOption(optionChoice: any) {
-    this.storage.set('optionChoice', optionChoice);
   }
 
   public changeOption($event) {
     const optionChoice = $event.detail.value;
     this.optionChoice = optionChoice;
-    this.storeOption(optionChoice);
   }
 
   public submitOption() {
@@ -47,7 +41,9 @@ export class MainMenuComponent implements ValidationComponent {
   }
 
   getNextSection() {
-    if (this.optionChoice === 'view-appointments') {
+    if (this.optionChoice === 'download-data') {
+      return ValidationComponents.downloadData;
+    } else if (this.optionChoice === 'view-appointments') {
       return ValidationComponents.viewAppointments;
     } else if (this.optionChoice === 'scan-qr') {
       return ValidationComponents.scanQr;

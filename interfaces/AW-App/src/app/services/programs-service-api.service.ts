@@ -79,8 +79,7 @@ export class ProgramsServiceApiService {
     ).pipe(
       tap(response => console.log('response: ', response)),
       map(response => response)
-    )
-      .toPromise();
+    ).toPromise();
   }
 
   getPrefilledAnswers(did: string, programId: number): Observable<any> {
@@ -95,6 +94,17 @@ export class ProgramsServiceApiService {
       tap(response => console.log('response: ', response)),
       map(response => response)
     );
+  }
+
+  downloadData(): Promise<any> {
+    return this.apiService.get(
+      environment.url_121_service_api,
+      '/sovrin/credential/download-data',
+    ).pipe(
+      tap(response => console.log('response: ', response)),
+      map(response => response)
+    ).toPromise()
+    ;
   }
 
   issueCredential(did: string, programId: number, attributes: any): Observable<any> {

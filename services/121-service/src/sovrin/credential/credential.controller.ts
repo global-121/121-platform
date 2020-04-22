@@ -17,6 +17,7 @@ import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
 import { DidProgramDto } from './dto/did-program.dto';
+import { User } from '../../user/user.decorator';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -68,6 +69,16 @@ export class CredentialController {
       getAnswers.did,
       getAnswers.programId,
     );
+  }
+
+  @Roles(UserRole.Aidworker)
+  @ApiOperation({ title: 'Get all prefilled answers (for pre-download)' })
+  @ApiResponse({ status: 200, description: 'Prefilled answers downloaded' })
+  @Get('/download-data')
+  public async getAllPrefilledAnswers(
+    @User('id') userId: number,
+  ): Promise<any[]> {
+    return await this.credentialService.getAllPrefilledAnswers(userId);
   }
 
   @Roles(UserRole.Aidworker)

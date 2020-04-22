@@ -1,0 +1,15 @@
+<section>
+  <dialogue-turn *ngIf="!downloadReady"
+                 isSpoken="!downloadReady"
+  >
+    {{ 'validation.download-data.downloading'|translate }}
+  </dialogue-turn>
+  <dialogue-turn *ngIf="downloadReady"
+                 [isSpoken]="downloadReady"      
+  >
+    <div
+      [innerHTML]="'validation.download-data.download-result'|translate:{ nrDownloaded:'<strong>'+nrDownloaded+'</strong>' }"
+      class="ion-margin-bottom">
+    </div>
+  </dialogue-turn>
+</section>
