@@ -18,6 +18,8 @@ import { CustomDataDto } from '../../programs/program/dto/custom-data.dto';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
+import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
+import { QrIdentifierDto } from './dto/qr-identifier.dto';
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('sovrin')
@@ -98,6 +100,36 @@ export class CreateConnectionController {
     );
   }
 
+  @ApiOperation({ title: 'Set qr identifier for connection' })
+  @ApiResponse({
+    status: 201,
+    description: 'Qr identifier  set for connection',
+  })
+  @Post('/add-qr-identifier')
+  public async addQrIdentifier(
+    @Body() data: AddQrIdentifierDto,
+  ): Promise<void> {
+    await this.createConnectionService.addQrIdentifier(
+      data.did,
+      data.qrIdentifier,
+    );
+  }
+
+  @Roles(UserRole.Aidworker)
+  @ApiOperation({ title: 'Find did using qr identifier' })
+  @ApiResponse({
+    status: 200,
+    description: 'Found did using qr',
+  })
+  @Post('/qr-find-did')
+  public async findDidWithQrIdentifier(
+    @Body() data: QrIdentifierDto,
+  ): Promise<DidDto> {
+    return await this.createConnectionService.findDidWithQrIdentifier(
+      data.qrIdentifier,
+    );
+  }
+
   @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get all connections' })
@@ -106,5 +138,4 @@ export class CreateConnectionController {
   public async getConnections(): Promise<ConnectionEntity[]> {
     return await this.createConnectionService.getConnections();
   }
-
 }
