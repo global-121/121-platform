@@ -4,6 +4,14 @@
   >
     {{ 'validation.download-data.downloading'|translate }}
   </dialogue-turn>
+  <div class="loading-indicator"
+       [hidden]="downloadReady" 
+  >
+    <ion-spinner name="dots" 
+                 class="loading-indicator--spinner"
+    >
+    </ion-spinner>
+  </div>
   <dialogue-turn *ngIf="downloadReady"
                  [isSpoken]="downloadReady"      
   >
