@@ -56,7 +56,7 @@ function deploy() {
 
     cd "$repo_path" || return
     sudo npm ci --unsafe-perm
-    sudo npm run build -- --prod --base-href="/$base_href/"
+    sudo npm run build -- --prod --base-href="$base_href"
   }
 
   function deploy_interface() {
