@@ -3,12 +3,6 @@ const crypto = require("crypto");
 const child_process = require("child_process");
 const exec = child_process.exec;
 
-const secrets = require("./secrets");
-
-const secret = secrets.secret;
-const repo = process.env.GLOBAL_121_REPO;
-
-
 // ----------------------------------------------------------------------------
 //   Functions/Methods/etc:
 // ----------------------------------------------------------------------------
@@ -20,8 +14,8 @@ const repo = process.env.GLOBAL_121_REPO;
 function deploy(target) {
   exec(
     target
-      ? `cd ${repo} && sudo ./tools/deploy.sh "${target}"`
-      : `cd ${repo} && sudo ./tools/deploy.sh`,
+      ? `cd ${process.env.GLOBAL_121_REPO} && sudo ./tools/deploy.sh "${target}"`
+      : `cd ${process.env.GLOBAL_121_REPO} && sudo ./tools/deploy.sh`,
     function (error, stdout, stderr) {
       if (error) {
         console.log(stderr);
@@ -41,14 +35,13 @@ http
     let body = [];
     req.on("data", function(chunk) {
       body.push(chunk);
-      console.log("BODY: ", body);
     });
     req.on("end", function() {
       let str = Buffer.concat(body).toString();
       let sig =
         "sha1=" +
         crypto
-          .createHmac("sha1", secret)
+          .createHmac("sha1", process.env.GITHUB_WEBHOOK_SECRET)
           .update(str)
           .digest("hex");
       let payload = JSON.parse(str);
