@@ -4,6 +4,7 @@ This folder contains code not directly related to the applications, but for exam
 
 ## Contents
 * [Hosting](#hosting)
+* [Manual Deployment](#manual-deployment)
 * [Continuous Deployment](#continuous-deployment)
 * [Local development](#local-development)
 
@@ -30,6 +31,11 @@ to check if it started correctly.
 
 ---
 
+## Manual Deployment
+
+The bash-script [`deploy.sh`](./deploy.sh) can be run on the test/production-environment to perform all necessary steps.
+
+
 ## Continuous Deployment
 
 ### GitHub webhook
@@ -46,14 +52,12 @@ This is currently set up. To reproduce, you would follow these steps:
 
 2. Create `systemd-service`.  
    First fill in, in `webhook.service`:
-   * The right User ('global121' or 'global121production'). This should reflect a user-account on that server with the appropriate permissions. 
+   * The right User ('global121' or 'global121production'). This should reflect a user-account on that server with the appropriate permissions.
    * Also choose 'staging' or 'production' for NODE_ENV, depending on the server.
-    
-    ```
-       cp tools/webhook.service /etc/systemd/system/webhook.service
-       sudo service webhook start
-       sudo service webhook status
-    ```
+
+         cp tools/webhook.service /etc/systemd/system/webhook.service
+         sudo service webhook start
+         sudo service webhook status
 
    The last command checks that the service runs correctly.
 
