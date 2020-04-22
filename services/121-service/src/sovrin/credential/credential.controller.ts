@@ -18,6 +18,7 @@ import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
 import { DidProgramDto } from './dto/did-program.dto';
 import { User } from '../../user/user.decorator';
+import { CredentialAttributesEntity } from './credential-attributes.entity';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -77,7 +78,7 @@ export class CredentialController {
   @Get('/download-data')
   public async getAllPrefilledAnswers(
     @User('id') userId: number,
-  ): Promise<any[]> {
+  ): Promise<CredentialAttributesEntity[]> {
     return await this.credentialService.getAllPrefilledAnswers(userId);
   }
 
