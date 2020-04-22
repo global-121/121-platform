@@ -5,10 +5,6 @@ const exec = child_process.exec;
 
 const secrets = require("./secrets");
 
-// ----------------------------------------------------------------------------
-//   Configuration:
-// ----------------------------------------------------------------------------
-
 const secret = secrets.secret;
 const repo = process.env.GLOBAL_121_REPO;
 
@@ -17,9 +13,13 @@ const repo = process.env.GLOBAL_121_REPO;
 //   Functions/Methods/etc:
 // ----------------------------------------------------------------------------
 
-function deploy(tag_name) {
+/**
+ * Run the deployment script
+ * @param {string} target (optional)
+ */
+function deploy(target) {
   exec(
-    `cd ${repo} && sudo ./tools/deploy.sh`,
+    `cd ${repo} && sudo ./tools/deploy.sh` + (target) ? ` ${target}` : ``,
     function (error, stdout, stderr) {
       if (error) {
         console.log(stderr);
@@ -66,10 +66,10 @@ http
       }
       if (
         process.env.NODE_ENV === "production" &&
-        payload.release.tag_name &&
-        payload.release.tag_name.startsWith(process.env.VERSION)
+        payload.release.target_commitish &&
+        payload.release.target_commitish.includes(process.env.VERSION)
       ) {
-        deploy(payload.release.tag_name);
+        deploy(payload.release.target_commitish);
         return
       }
     });

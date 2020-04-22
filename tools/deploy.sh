@@ -21,6 +21,9 @@ function deploy() {
   local ho_dir=$GLOBAL_121_HO_DIR
   local aw_dir=$GLOBAL_121_AW_DIR
 
+  # Arguments
+  local target=$1 || false
+
   function log() {
     printf "\n\n"
     # highlight/warn:
@@ -33,10 +36,23 @@ function deploy() {
 
   function update_code() {
     log "Updating code..."
+    local target=$1 || false
 
     cd "$repo" || return
     sudo git reset --hard
-    sudo git pull --ff-only
+    sudo git fetch --all --tags
+
+    # When a target is provided, checkout that
+    if [[ -n "$target" ]]
+    then
+      log "Checking out: $target"
+
+      sudo git checkout -b "$target" --track upstream/"$target"
+    else
+      log "Pulling latest changes"
+
+      sudo git pull --ff-only
+    fi
   }
 
   function build_services() {
@@ -83,7 +99,7 @@ function deploy() {
   #
   # Actual deployment:
   #
-  update_code
+  update_code "$target"
   build_services
 
   build_interface "PA-App" "$repo_pa" "$pa_dir"
@@ -100,4 +116,4 @@ function deploy() {
   log "Done."
 }
 
-deploy
+deploy "$@"
