@@ -44,22 +44,21 @@ A [GitHub webhook](https://developer.github.com/webhooks/) is fired after every 
 
 This is currently set up. To reproduce, you would follow these steps:
 
-1. (On the Ubuntu server) copy secrets file
+1. Create a `systemd-service`.  
+   Use the template [`webhook.service`](webhook.service), fill in:  
+   * Set `User` to `global121` or `global121production`  
+     This should reflect a user-account with the appropriate permissions.
+   * Set `NODE_ENV` to `staging` or `production`
+   * Set `GLOBAL_121_REPO` to the absolute path of this git-repository
+   * Set `GITHUB_WEBHOOK_SECRET` to the value configured on [GitHub](../settings/hooks)
+   * (optional) Set `VERSION` to a minor release-number(leaving off the last patch-digit) to enable automatic deployment of patch-releases for that minor version. For example, setting `VERSION=0.1.` would automatically deploy releases like `v0.1.1`, `v0.1.2`, etc.
 
-       cp tools/example.secrets.json tools/secrets.json
 
-   And fill in the right secret.
-
-2. Create `systemd-service`.  
-   First fill in, in `webhook.service`:
-   * The right User ('global121' or 'global121production'). This should reflect a user-account on that server with the appropriate permissions.
-   * Also choose 'staging' or 'production' for NODE_ENV, depending on the server.
+2. Enable the webhook service:
 
          cp tools/webhook.service /etc/systemd/system/webhook.service
          sudo service webhook start
          sudo service webhook status
-
-   The last command checks that the service runs correctly.
 
 3. Expose service with Apache2.  
    See above, [Hosting > Apache2](#apache2).
