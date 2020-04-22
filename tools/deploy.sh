@@ -84,7 +84,7 @@ function deploy() {
   # Actual deployment:
   #
   update_code
-  update_services
+  build_services
 
   build_interface "PA-App" "$repo_pa" "$pa_dir"
   deploy_interface "PA-App" "$repo_pa" "$pa_dir"
