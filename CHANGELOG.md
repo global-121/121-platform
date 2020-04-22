@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [0.2.0] - 2020-04-22
+
 ### Added
 - 2020-04-22: Add `tools/.env`-file for `tools/deploy.sh`-script AB#1640
 
@@ -26,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - 2020-03-11: Remove usernames from `services/121-service/src/secrets.ts` AB#1641
 
-[Unreleased]: https://github.com/global-121/121-platform/compare/v0.1.1...master
+[Unreleased]: https://github.com/global-121/121-platform/compare/v0.2.0...master
+[0.2.0]: https://github.com/global-121/121-platform/releases/tag/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/global-121/121-platform/releases/tag/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/global-121/121-platform/releases/tag/v0.1.0
