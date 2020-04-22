@@ -19,7 +19,9 @@ const repo = process.env.GLOBAL_121_REPO;
  */
 function deploy(target) {
   exec(
-    `cd ${repo} && sudo ./tools/deploy.sh` + (target) ? ` ${target}` : ``,
+    target
+      ? `cd ${repo} && sudo ./tools/deploy.sh "${target}"`
+      : `cd ${repo} && sudo ./tools/deploy.sh`,
     function (error, stdout, stderr) {
       if (error) {
         console.log(stderr);
@@ -75,6 +77,6 @@ http
     });
     res.end();
   })
-  .listen(3099);
+  .listen(process.env.NODE_PORT);
 
-console.log("Listening on port 3099");
+console.log(`Listening on port ${process.env.NODE_PORT}`);
