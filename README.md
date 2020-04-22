@@ -56,12 +56,14 @@ This is how we create and publish a new release of the 121-platform.
       - Create/publish the release on GitHub.
       - Add a new tag as <version>.
 
-### Patches/Hotfixes Checklist
+### Patch/Hotfix Checklist
 
-Doing patchers/hotfixes follows the same process as the release branches. With some small changes.
-- Code does not need to be freezed.
+Doing patchers/hotfixes follows the same process as a regular release With some small changes.
+- Code does not need to be frozen. (As there is no active development on the release-branch)
 - Checkout from the `release/<version>`-branch that needs a hotfix.
 - The update to the Changelog should only be committed to the new hotfix release branch.
+- After the hotfix-release, apply the same fix (if applicable) to the master-branch in a regular PR
+- Add the hotfix-release to the CHANGELOG in the master-branch
 
 ## Deployment
 
