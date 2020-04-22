@@ -30,6 +30,7 @@ export class DownloadDataComponent implements ValidationComponent {
     this.storage.set('validationData', validationData);
     this.nrDownloaded = this.countUniqueDids(validationData);
     this.downloadReady = true;
+    this.complete();
   }
 
   public countUniqueDids(array) {
@@ -40,10 +41,6 @@ export class DownloadDataComponent implements ValidationComponent {
       }
     }
     return dids.length;
-  }
-
-  public backMainMenu() {
-    this.complete();
   }
 
   getNextSection() {
