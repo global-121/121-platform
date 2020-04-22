@@ -51,11 +51,19 @@ This is how we create and publish a new release of the 121-platform.
   - [ ] Download the generated artifacts (`AW-App.zip` and `PA-App.zip`)
   - [ ] Rename to match the version (i.e: `PA-App-v0.1.0.zip`)
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub  
-  - [ ] Select the new `release`-branch
-  - [ ] Add a short description and/or link to relevant other documents.
-  - [ ] Attach the generated artifacts of the native Android apps
-  - [ ] Create/publish the release on GitHub
+      - Select the new `release`-branch.
+      - Add a short description and/or link to relevant other documents.
+      - Create/publish the release on GitHub.
+      - Add a new tag as <version>.
 
+### Patch/Hotfix Checklist
+
+Doing patchers/hotfixes follows the same process as a regular release With some small changes.
+- Code does not need to be frozen. (As there is no active development on the release-branch)
+- Checkout from the `release/<version>`-branch that needs a hotfix.
+- The update to the Changelog should only be committed to the new hotfix release branch.
+- After the hotfix-release, apply the same fix (if applicable) to the master-branch in a regular PR
+- Add the hotfix-release to the CHANGELOG in the master-branch
 
 ## Deployment
 
