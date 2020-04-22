@@ -47,23 +47,25 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
   - [ ] Commit changes to `master`-branch on GitHub.
 - [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch
+  - [ ] Push this branch to GitHub
 - [ ] Run the [Azure Pipelines](https://dev.azure.com/redcrossnl/121%20Platform/_build) for the native Android-apps on that `release`-branch
   - [ ] Download the generated artifacts (`AW-App.zip` and `PA-App.zip`)
   - [ ] Rename to match the version (i.e: `PA-App-v0.1.0.zip`)
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub  
-      - Select the new `release`-branch.
-      - Add a short description and/or link to relevant other documents.
-      - Create/publish the release on GitHub.
-      - Add a new tag as <version>.
+  - [ ] Add the `version` to create a new tag
+  - [ ] Select the new `release/<version>`-branch
+  - [ ] Set the title of the release to `version`
+  - [ ] Add a short description and/or link to relevant other documents (if applicable)
+  - [ ] Create/publish the release on GitHub
 
 ### Patch/Hotfix Checklist
 
-Doing patchers/hotfixes follows the same process as a regular release With some small changes.
+This follows the same process as a regular release + deployment. With some small changes.
 - Code does not need to be frozen. (As there is no active development on the release-branch)
-- Checkout from the `release/<version>`-branch that needs a hotfix.
-- The update to the Changelog should only be committed to the new hotfix release branch.
+- Checkout the `release/<version>`-branch that needs the hotfix.
 - After the hotfix-release, apply the same fix (if applicable) to the master-branch in a regular PR
-- Add the hotfix-release to the CHANGELOG in the master-branch
+- Finally, add the hotfix-release to the [CHANGELOG](CHANGELOG.md) in the master-branch
+
 
 ## Deployment
 
@@ -76,17 +78,18 @@ Doing patchers/hotfixes follows the same process as a regular release With some 
 #### On initial deployment (only)
 - [ ] Configure environment(s) as described in [/services > Getting started / Installation](services/README.md#getting-started-installation).
   - [ ] Checkout code (of latest release)
-  - [ ] Set secrets, configure ENV-variables (via all .env-files)
-  - [ ] Build the platform (following actions from the [webhook script](./tools/webhook.js))
+  - [ ] Set secrets, configure ENV-variables (via all `.env`-files)
+  - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):  
+        Run: `. ./tools/deploy.sh`
 - [ ] Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2)
 - [ ] (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database)
 
 #### On next deployments
 - [ ] Decide on what version to deploy
-- [ ] Checkout code (from that version's release-branch)
 - [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
-- [ ] Prepare the environment accordingly (in all .env-files)
-- [ ] Rebuild the platform (following actions from the [webhook script](./tools/webhook.js))
+- [ ] Prepare the environment accordingly (in all `.env`-files)
+  - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):  
+        Run: `. ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v0.1.0`
 
 
 ## Glossary
