@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { CustomTranslateService } from 'src/app/services/custom-translate.service';
-import { Storage } from '@ionic/storage';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { Router } from '@angular/router';
@@ -18,7 +17,6 @@ export class MainMenuComponent implements ValidationComponent {
 
   constructor(
     public customTranslateService: CustomTranslateService,
-    public storage: Storage,
     public conversationService: ConversationService,
     public router: Router,
   ) { }
@@ -31,14 +29,9 @@ export class MainMenuComponent implements ValidationComponent {
     ];
   }
 
-  private storeOption(optionChoice: any) {
-    this.storage.set('optionChoice', optionChoice);
-  }
-
   public changeOption($event) {
     const optionChoice = $event.detail.value;
     this.optionChoice = optionChoice;
-    this.storeOption(optionChoice);
   }
 
   public submitOption() {

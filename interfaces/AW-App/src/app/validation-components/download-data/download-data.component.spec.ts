@@ -1,9 +1,14 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Storage } from '@ionic/storage';
 
 import { DownloadDataComponent } from './download-data.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+const storageIonicMock: any = {
+  get: () => new Promise<any>((resolve) => resolve('1')),
+};
 
 describe('DownloadDataComponent', () => {
   let component: DownloadDataComponent;
@@ -17,6 +22,12 @@ describe('DownloadDataComponent', () => {
         HttpClientTestingModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: Storage,
+          useValue: storageIonicMock
+        }
+      ]
     })
     .compileComponents();
   }));

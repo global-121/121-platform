@@ -4,17 +4,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
-import { Storage } from '@ionic/storage';
 
 import { ScanQrPage } from './scan-qr.page';
 
 describe('ScanQrPage', () => {
   let component: ScanQrPage;
   let fixture: ComponentFixture<ScanQrPage>;
-
-  const storageIonicMock: any = {
-    get: () => new Promise<any>((resolve) => resolve('1')),
-  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -28,10 +23,6 @@ describe('ScanQrPage', () => {
         {
           provide: QRScanner,
           useValue: jasmine.createSpy(),
-        },
-        {
-          provide: Storage,
-          useValue: storageIonicMock,
         },
       ],
     })

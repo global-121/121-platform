@@ -3,7 +3,6 @@ import { Component, OnInit } from '@angular/core';
 import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { NavController, LoadingController, AlertController, ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { ConversationService } from '../services/conversation.service';
 
@@ -24,7 +23,6 @@ export class ScanQrPage implements OnInit {
     public navCtrl: NavController,
     public translate: TranslateService,
     public qrScanner: QRScanner,
-    public storage: Storage,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
     public alertCtrl: AlertController,
