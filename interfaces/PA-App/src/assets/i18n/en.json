@@ -27,8 +27,8 @@
   "personal": {
     "create-identity": {
       "conclusion": "Great! You have created a Digital ID.",
-      "confirm-password": "Confirm password:",
-      "create-password": "Create password",
+      "confirm-password": "Confirm my password:",
+      "create-password": "Create my password",
       "create-password-explanation": "Enter a password of at least {{minimalLength}} characters:",
       "create-username": "Create username:",
       "info-message": "The following two parts of your information is used to create a digital ID.<br><br>1. Your username (which you will create below)<br>2. Your Password (which must consists of 4 digits/numbers)<br><br>If you create a Digital ID for this pilot program it will be stored securely on the Netherlands Red Cross Server.  What is a Server? In this case the server is the physical computer that a server program runs on and it is owned by The Netherlands Red Cross.",
@@ -38,13 +38,13 @@
       "more-info-digital-id": "About Digital ID",
       "more-info-password": "About passwords",
       "more-info-username-pw": "About usernames and passwords",
-      "password-only": "Create a password.",
+      "password-only": "Create my password",
       "password-too-short": "Please enter at least {{minimalLength}} characters.",
       "submit-password": "Create my password",
       "submit-username": "Create my username",
-      "unequal-passwords": "The passwords you provided are not the same. Please try again.",
-      "username-not-unique": "The username you provide is not unique. Please try again.",
-      "username-password": "Create a username and a password."
+      "unequal-passwords": "The passwords you created are not the same. Please try again.",
+      "username-not-unique": "The username you created is not unique. Please try again.",
+      "username-password": "Create your username and a password."
     },
     "enroll-in-program": {
       "change": "Change my information",
