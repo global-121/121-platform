@@ -28,7 +28,7 @@
         </ion-radio-group>
       </div>
       <div *ngSwitchCase="answerTypes.Number">
-        <ion-input type="number"
+        <ion-input type="text"
                    inputmode="numeric"
                    pattern="[0-9]*"
                    [name]="question.code"
@@ -114,7 +114,7 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self" 
+  <dialogue-turn actor="self"
                  *ngIf="programCredentialIssued"
                  [isSpoken]="programCredentialIssued"
   >
