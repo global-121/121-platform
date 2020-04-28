@@ -39,11 +39,9 @@ export class DownloadDataComponent implements ValidationComponent {
   public async downloadData() {
     await this.programsService.downloadData().then(
       (response) => {
-        console.log(response);
         this.validationData = response;
       },
-      (error) => {
-        console.log(error);
+      () => {
         this.downloadAborted = true;
         this.complete();
       }
