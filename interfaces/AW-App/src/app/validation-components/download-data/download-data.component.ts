@@ -21,7 +21,10 @@ class ValidationAnswer {
 })
 export class DownloadDataComponent implements ValidationComponent {
   public downloadReady = false;
+  public downloadAborted = false;
   public nrDownloaded: number;
+
+  public validationData: ValidationAnswer[];
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -34,13 +37,23 @@ export class DownloadDataComponent implements ValidationComponent {
   }
 
   public async downloadData() {
-    const validationData: ValidationAnswer[] = await this.programsService.downloadData();
-    await this.storage.set('validationData', validationData);
+    await this.programsService.downloadData().then(
+      (response) => {
+        console.log(response);
+        this.validationData = response;
+      },
+      (error) => {
+        console.log(error);
+        this.downloadAborted = true;
+        this.complete();
+      }
+    );
+    await this.storage.set('validationData', this.validationData);
 
-    const myPrograms = await this.getProgramData(validationData);
+    const myPrograms = await this.getProgramData(this.validationData);
     await this.storage.set('myPrograms', myPrograms);
 
-    this.nrDownloaded = this.countUniqueDids(validationData);
+    this.nrDownloaded = this.countUniqueDids(this.validationData);
     this.downloadReady = true;
     this.complete();
   }
@@ -89,7 +102,7 @@ export class DownloadDataComponent implements ValidationComponent {
 
   complete() {
     this.conversationService.onSectionCompleted({
-      name: ValidationComponents.viewAppointments,
+      name: ValidationComponents.downloadData,
       data: {},
       next: this.getNextSection(),
     });
