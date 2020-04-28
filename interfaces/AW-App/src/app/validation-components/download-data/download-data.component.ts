@@ -37,7 +37,7 @@ export class DownloadDataComponent implements ValidationComponent {
     const validationData: ValidationAnswer[] = await this.programsService.downloadData();
     await this.storage.set('validationData', validationData);
 
-    const myPrograms = this.getProgramData(validationData);
+    const myPrograms = await this.getProgramData(validationData);
     await this.storage.set('myPrograms', myPrograms);
 
     this.nrDownloaded = this.countUniqueDids(validationData);
@@ -45,14 +45,19 @@ export class DownloadDataComponent implements ValidationComponent {
     this.complete();
   }
 
-  private getProgramData(validationData: ValidationAnswer[]) {
-    const myPrograms = [];
+  private async getProgramData(validationData: ValidationAnswer[]) {
     const programIds = this.getUniqueProgramIds(validationData);
+    const programRequests = [];
+    const myPrograms = [];
 
     programIds.forEach(async (programId) => {
-      const programData = await this.programsService.getProgramById(programId);
-      myPrograms.push(programData);
+      programRequests.push(
+        this.programsService
+          .getProgramById(programId)
+          .then((programData) => myPrograms.push(programData))
+      );
     });
+    await Promise.all(programRequests);
 
     return myPrograms;
   }
