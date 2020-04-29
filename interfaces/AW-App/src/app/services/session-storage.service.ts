@@ -9,6 +9,7 @@ export class SessionStorageService {
 
   public type = {
     scannedData: 'scannedData',
+    paData: 'paData'
   };
 
 

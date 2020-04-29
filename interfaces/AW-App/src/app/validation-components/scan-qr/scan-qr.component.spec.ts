@@ -6,6 +6,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { ScanQrComponent } from './scan-qr.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Storage } from '@ionic/storage';
+
+const storageIonicMock: any = {
+  get: () => new Promise<any>((resolve) => resolve('1')),
+};
 
 describe('ScanQrComponent', () => {
   let component: ScanQrComponent;
@@ -26,6 +31,10 @@ describe('ScanQrComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        {
+          provide: Storage,
+          useValue: storageIonicMock
+        }
       ],
     })
       .compileComponents();

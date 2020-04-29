@@ -1,3 +1,4 @@
+import { Storage } from '@ionic/storage';
 import { SessionStorageService } from './../../services/session-storage.service';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
@@ -5,6 +6,7 @@ import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ValidationComponents } from '../validation-components.enum';
+import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 
 @Component({
   selector: 'app-scan-qr',
@@ -20,12 +22,14 @@ export class ScanQrComponent implements ValidationComponent {
   public unknownDidCombination = false;
   public returnMainMenu = false;
 
+  public ionicStorageTypes = IonicStorageTypes
 
   constructor(
     private router: Router,
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
-    public sessionStorageService: SessionStorageService
+    public sessionStorageService: SessionStorageService,
+    private storage: Storage
   ) {
   }
 
@@ -45,14 +49,13 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   public async checkScannedData() {
-    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(data => {
+    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(async data => {
       if (this.isNotJson(data)) {
         this.scanError = true;
         return;
       }
 
       const jsonData = JSON.parse(data);
-
       if (!jsonData && !jsonData.did && !jsonData.programId) {
         this.scanError = true;
         console.log('this.scanError: ', this.scanError);
@@ -62,20 +65,51 @@ export class ScanQrComponent implements ValidationComponent {
       this.did = jsonData.did;
       this.programId = jsonData.programId;
 
-      this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
-        if (response.length === 0) {
-          this.unknownDidCombination = true;
-          console.log('this.scanError: unknownDidCombination');
-          return;
-        }
-
-        this.didResult = true;
-        this.unknownDidCombination = false;
-        this.scanError = false;
-
-        this.complete();
-      });
+      let didData = await this.findDidDataOffline()
+      if (!didData) {
+        didData = await this.findDidDataOnline()
+      }
+      if (didData) {
+        this.sessionStorageService.store(this.sessionStorageService.type.paData, JSON.stringify(didData))
+        this.foundCorrectDid()
+      }
     });
+  }
+
+  private async findDidDataOnline(): Promise<void> {
+    console.log('findDidDataOnline: ');
+    this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
+      if (response.length === 0) {
+        this.unknownDidCombination = true;
+        console.log('this.scanError: unknownDidCombination');
+        return;
+      }
+      return response
+    });
+  }
+
+  private async findDidDataOffline(): Promise<any> {
+    console.log('findDidOffline: ');
+    const offlineData = await this.storage.get(this.ionicStorageTypes.validationData);
+    const prefilledQuestions = []
+    if (offlineData) {
+      offlineData.forEach(element => {
+        if(this.did === element.did && this.programId == element.programId) {
+          prefilledQuestions.push(element)
+        }
+      });
+      if (prefilledQuestions.length > 0) {
+        return prefilledQuestions
+      }
+    }
+  }
+
+  private foundCorrectDid(): void {
+    console.log('foundCorrectDid');
+    this.didResult = true;
+    this.unknownDidCombination = false;
+    this.scanError = false;
+    this.complete();
   }
 
   public backMainMenu() {

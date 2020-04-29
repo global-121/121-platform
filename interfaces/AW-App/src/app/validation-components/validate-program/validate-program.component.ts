@@ -1,3 +1,4 @@
+import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -8,6 +9,7 @@ import { ValidationComponents } from '../validation-components.enum';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
 import { Program } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 
 @Component({
   selector: 'app-validate-program',
@@ -31,6 +33,8 @@ export class ValidateProgramComponent implements ValidationComponent {
   public changedAnswers: boolean;
   public dobFeedback = false;
 
+  public ionicStorageTypes = IonicStorageTypes
+
   constructor(
     public translatableString: TranslatableStringService,
     public programsService: ProgramsServiceApiService,
@@ -38,6 +42,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     public sessionStorageService: SessionStorageService,
     public router: Router,
     public ionContent: IonContent,
+    private storage: Storage
   ) { }
 
   ngOnInit() {
@@ -45,25 +50,47 @@ export class ValidateProgramComponent implements ValidationComponent {
       this.handleScannedData(data);
       await this.getProgramQuestionsAndAnswers();
       this.sessionStorageService.destroyItem(this.sessionStorageService.type.scannedData);
+      this.sessionStorageService.destroyItem(this.sessionStorageService.type.paData);
     });
   }
 
   private handleScannedData(data: string) {
     const jsonData = JSON.parse(data);
-
     this.did = jsonData.did;
     this.programId = jsonData.programId;
   }
 
   private async getProgramQuestionsAndAnswers() {
-    this.currentProgram = await this.programsService.getProgramById(this.programId);
+    this.currentProgram = await this.getCurrentProgram();
+    console.log('currentProgram: ', this.currentProgram);
     this.questions = this.buildQuestions(this.currentProgram.customCriteria);
+    console.log('questions: ', this.questions);
+    const paDataRaw = await this.sessionStorageService.retrieve(this.sessionStorageService.type.paData)
+    const paData = JSON.parse(paDataRaw)
+    this.initialAnswers(paData);
+    this.verificationPostponed = false;
+    this.ionContent.scrollToBottom(300);
+  }
 
-    this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
-      this.initialAnswers(response);
-      this.verificationPostponed = false;
-      this.ionContent.scrollToBottom(300);
-    });
+  private async getCurrentProgram() {
+      let program = await this.getCurrentProgramOffline()
+      if (!program) {
+        console.log('getCurrentProgramOnline');
+        program = await this.programsService.getProgramById(this.programId)
+      }
+      return program
+  }
+
+  private async getCurrentProgramOffline() {
+    console.log('getCurrentProgramOffline');
+    const programs = await this.storage.get(this.ionicStorageTypes.myPrograms)
+    if (programs) {
+      for (const program of programs) {
+        if (program.id === this.programId) {
+          return program
+        }
+      }
+    }
   }
 
   private buildQuestions(customCriteria: Program['customCriteria']) {
@@ -98,11 +125,11 @@ export class ValidateProgramComponent implements ValidationComponent {
       };
       options.push(questionOption);
     }
-
     return options;
   }
 
   private getQuestionByCode(questionCode: string): Question {
+    console.log('this.questions, getQuestionByCode', this.questions)
     const result = this.questions.find((question: Question) => {
       return question.code === questionCode;
     });
