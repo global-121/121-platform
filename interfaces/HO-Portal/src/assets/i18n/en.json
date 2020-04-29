@@ -29,17 +29,17 @@
           "label": "Design",
           "btnText": "Open for registration"
         },
-        "registration": {
-          "label": "Registration",
-          "btnText": "Close registration"
+        "registrationValidation": {
+          "label": "Registration & validation",
+          "btnText": "Close registration & validation"
         },
         "inclusion": {
           "label": "Inclusion",
-          "btnText": "Move to finalize"
+          "btnText": "Move to Review inclusion"
         },
-        "finalize": {
-          "label": "Finalize",
-          "btnText": "Freeze (move to payment)"
+        "reviewInclusion": {
+          "label": "Review Inclusion",
+          "btnText": "Finalize Inclusion (move to payment)"
         },
         "payment": {
           "label": "Payment",

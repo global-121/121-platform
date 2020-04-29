@@ -206,7 +206,7 @@ export class ProgramService {
       state: newState,
     });
     const changedProgram = await this.findOne(programId);
-    if (newState === ProgramPhase.registration) {
+    if (newState === ProgramPhase.registrationValidation) {
       await this.publish(programId);
     } else if (newState === ProgramPhase.inclusion) {
       if (process.env.NODE_ENV === 'production') {

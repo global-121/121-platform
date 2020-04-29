@@ -26,9 +26,9 @@ export class ProgramPeopleComponent implements OnChanges {
   public componentVisible: boolean;
   private presentInPhases = [
     ProgramPhase.design,
-    ProgramPhase.registration,
+    ProgramPhase.registrationValidation,
     ProgramPhase.inclusion,
-    ProgramPhase.finalize,
+    ProgramPhase.reviewInclusion,
     ProgramPhase.payment,
     ProgramPhase.evaluation
   ];
@@ -116,9 +116,9 @@ export class ProgramPeopleComponent implements OnChanges {
       sortable: false,
       hidePhases: [
         ProgramPhase.design,
-        ProgramPhase.registration,
+        ProgramPhase.registrationValidation,
         ProgramPhase.inclusion,
-        ProgramPhase.finalize,
+        ProgramPhase.reviewInclusion,
         ProgramPhase.payment,
         ProgramPhase.evaluation
       ]
@@ -231,7 +231,7 @@ export class ProgramPeopleComponent implements OnChanges {
     if (this.showSensitiveData) {
       return this.enrolledPeople.length === 0 ||
         this.selectedPhase !== this.activePhase ||
-        ![ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.activePhase]);
+        ![ProgramPhase.inclusion, ProgramPhase.reviewInclusion, ProgramPhase.payment].includes(ProgramPhase[this.activePhase]);
     } else {
       return this.newEnrolledPeople.length === 0 ||
         this.activePhase !== ProgramPhase.inclusion ||
@@ -280,7 +280,7 @@ export class ProgramPeopleComponent implements OnChanges {
     return !column.hidePhases.includes(ProgramPhase[this.selectedPhase]) || (
       column.prop === 'selected' &&
       this.selectedPhase === this.activePhase &&
-      [ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.activePhase])
+      [ProgramPhase.inclusion, ProgramPhase.reviewInclusion, ProgramPhase.payment].includes(ProgramPhase[this.activePhase])
     );
   }
 
@@ -394,7 +394,7 @@ export class ProgramPeopleComponent implements OnChanges {
   private defaultSelectedPeoplePrivacy(source: any[]): any[] {
     if (
       this.selectedPhase !== this.activePhase ||
-      ![ProgramPhase.inclusion, ProgramPhase.finalize, ProgramPhase.payment].includes(ProgramPhase[this.selectedPhase])
+      ![ProgramPhase.inclusion, ProgramPhase.reviewInclusion, ProgramPhase.payment].includes(ProgramPhase[this.selectedPhase])
     ) {
       return [];
     }

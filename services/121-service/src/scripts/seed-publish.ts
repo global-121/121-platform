@@ -9,7 +9,7 @@ export class SeedPublish implements InterfaceScript {
 
   private readonly httpService = new HttpService();
 
-  public constructor() { }
+  public constructor() {}
 
   public async run(): Promise<void> {
     console.log('Checking if 121-service is online');
@@ -32,7 +32,9 @@ export class SeedPublish implements InterfaceScript {
       let idString = program.id.toString();
 
       this.httpService
-        .post(this.address + 'programs/changeState/' + idString, { newState: 'registration' })
+        .post(this.address + 'programs/changeState/' + idString, {
+          newState: 'registrationValidation',
+        })
         .toPromise()
         .then(() => {
           console.log('Program ' + idString + ' has been published');

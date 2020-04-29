@@ -38,7 +38,7 @@ const newProgramParameters = {
 const newSimpleProgramRO = {
   id: 1,
   title: JSON.parse('{"en": "title"}'),
-  state: 'registration',
+  state: 'registrationValidation',
 };
 
 export class ProgramServiceMock {
@@ -181,7 +181,9 @@ describe('ProgramController', (): void => {
           (): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO),
         );
 
-      await programController.changeState(1, { newState: 'registration' });
+      await programController.changeState(1, {
+        newState: 'registrationValidation',
+      });
       expect(spy).toHaveBeenCalled();
     });
   });

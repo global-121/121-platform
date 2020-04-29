@@ -48,7 +48,7 @@ class testApi:
         printAction('HO', 'Publishes a program')
         # This replacement is not tested
         # self.r.postRequest('programs/publish/' + PROGRAM_ID)
-        self.r.postRequest('programs/changeState/' + PROGRAM_ID, { newState: 'registration'})
+        self.r.postRequest('programs/changeState/' + PROGRAM_ID, { newState: 'registrationValidation'})
 
     def getWalletDid(self):
         printAction(
