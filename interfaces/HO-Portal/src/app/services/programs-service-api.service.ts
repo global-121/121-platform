@@ -147,6 +147,18 @@ export class ProgramsServiceApiService {
     ).toPromise();
   }
 
+  selectForValidation(programId: number | string, dids: string[]): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      `/programs/select-validation/${programId}`,
+      {
+        dids: JSON.stringify(dids),
+      },
+    ).pipe(
+      tap((response) => console.log(response)),
+    ).toPromise();
+  }
+
   include(programId: number | string, dids: string[]): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,

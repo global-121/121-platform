@@ -416,6 +416,32 @@ export class ProgramService {
     return inclusionStatus;
   }
 
+  public async selectForValidation(
+    programId: number,
+    dids: object,
+  ): Promise<void> {
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    const selectedForValidationDate = new Date();
+    console.log(dids);
+
+    for (let did of JSON.parse(dids['dids'])) {
+      let connection = await this.connectionRepository.findOne({
+        where: { did: did.did },
+      });
+      if (!connection) {
+        continue;
+      }
+
+      connection.selectedForValidationDate = selectedForValidationDate;
+      await this.connectionRepository.save(connection);
+    }
+  }
+
   public async include(programId: number, dids: object): Promise<void> {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
