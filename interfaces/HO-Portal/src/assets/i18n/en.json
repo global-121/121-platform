@@ -117,8 +117,11 @@
         "export-list": "Export list",
         "export-error": "Something went wrong with the export."
       },
+      "program-people-affected": {
+        "section-title": "Manage People Affected (for Validation)"
+      },
       "program-people": {
-        "section-title": "Manage People Affected",
+        "section-title": "Manage People Affected (for Inclusion)",
         "targetNumber": "The target number of People Affected to include is: ",
         "noConnections": "There are no enrolled People Affected yet.",
         "noConnectionsPrivacy": "There are no included or excluded People Affected yet.",
