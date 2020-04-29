@@ -157,6 +157,14 @@
       "stored": "Your Digital ID is stored in your wallet."
     }
   },
+  "qr-scanner": {
+    "title": "Scan QR-code",
+    "error-not-compatible": "Your device is not able to scan",
+    "error-no-permissions": "Please allow the camera to be used and try again.",
+    "error-generic": "Something went wrong.",
+    "swwitch-camera": "Switch camera",
+    "toggle-flash": "Toggle flash-light"
+  },
   "shared": {
     "cancel-button": "Cancel",
     "close-button": "Close",
