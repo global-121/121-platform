@@ -118,7 +118,17 @@
         "export-error": "Something went wrong with the export."
       },
       "program-people-affected": {
-        "section-title": "Manage People Affected (for Validation)"
+        "section-title": "Manage People Affected (for Validation)",
+        "column": {
+          "person": "Person",
+          "digital-id-created": "Digital ID Created",
+          "vulnerability-assessment-completed": "Vulnerability Assessment Completed",
+          "selected-for-validation": "Selected for validation",
+          "scanned-qr": "QR-code scanned",
+          "vulnerability-assessment-validated": "Vulnerability Assessment validated",
+          "final-score": "Final score",
+          "temp-score": "Initial score"
+        }
       },
       "program-people": {
         "section-title": "Manage People Affected (for Inclusion)",

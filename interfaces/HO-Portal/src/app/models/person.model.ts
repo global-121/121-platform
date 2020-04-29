@@ -1,6 +1,7 @@
 export class Person {
   did: string;
   phoneNumber?: string;
+  tempScore?: number;
   score?: number;
   name?: string;
   dob?: string;
@@ -9,6 +10,8 @@ export class Person {
   created: string;
   updated: string;
   appliedDate?: string;
+  selectedForValidationDate?: string;
+  scannedQrDate?: string;
   validationDate?: string;
   inclusionDate?: string;
 }

@@ -1,4 +1,19 @@
 <section *ngIf="componentVisible">
   <h2>{{ 'page.program.program-people-affected.section-title'|translate }}</h2>
 
+  <ngx-datatable #people 
+                class="bootstrap" 
+                limit="50"
+                columnMode="fixed" 
+                rowHeight="auto" 
+                scrollbarH="true"
+                headerHeight="50" 
+                footerHeight="50" 
+                reorderable="false" 
+                sortType="single" 
+                loadingIndicator="true" 
+                [columns]="columns" 
+                [rows]="peopleAffected"
+  ></ngx-datatable>
+
 </section>

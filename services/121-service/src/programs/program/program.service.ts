@@ -725,6 +725,7 @@ export class ProgramService {
       const connectionReponse = {};
       connectionReponse['did'] = connection.did;
       connectionReponse['score'] = connection.inclusionScore;
+      connectionReponse['tempScore'] = connection.temporaryInclusionScore;
       connectionReponse['created'] = connection.created;
       connectionReponse['updated'] = connection.updated;
       connectionReponse['enrolled'] = connection.programsEnrolled.includes(
@@ -737,6 +738,9 @@ export class ProgramService {
         +programId,
       );
       connectionReponse['appliedDate'] = connection.appliedDate;
+      connectionReponse['selectedForValidationDate'] =
+        connection.selectedForValidationDate;
+      connectionReponse['scannedQrDate'] = null;
       connectionReponse['validationDate'] = connection.validationDate;
       connectionReponse['inclusionDate'] = connection.inclusionDate;
       if (privacy) {
