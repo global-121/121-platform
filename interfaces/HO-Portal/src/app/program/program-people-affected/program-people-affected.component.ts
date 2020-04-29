@@ -174,7 +174,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     this.peopleAffected.forEach(person => {
       person.checkboxVisible = true;
       this.showCheckbox(person);
-    })
+    });
     console.log(this.peopleAffected);
     this.peopleAffected = [...this.peopleAffected];
   }
