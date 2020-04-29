@@ -14,4 +14,5 @@ export class Person {
   scannedQrDate?: string;
   validationDate?: string;
   inclusionDate?: string;
+  checkboxVisible: boolean;
 }

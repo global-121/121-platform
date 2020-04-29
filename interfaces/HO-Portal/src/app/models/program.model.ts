@@ -40,3 +40,7 @@ export enum ProgramPhase {
   payment = 'payment',
   evaluation = 'evaluation',
 }
+
+export enum BulkActions {
+  selectForValidation = 'select-for-validation',
+}

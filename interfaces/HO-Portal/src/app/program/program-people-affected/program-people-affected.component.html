@@ -1,19 +1,39 @@
 <section *ngIf="componentVisible">
   <h2>{{ 'page.program.program-people-affected.section-title'|translate }}</h2>
 
-  <ngx-datatable #people 
-                class="bootstrap" 
+  <ion-row class="ion-align-items-center">
+    <select name="bulkActions" 
+            title="Bulk action"
+            (change)="selectAction($event.target.value); $event.target.value='';" 
+            class="ion-margin-end"
+    >
+      <option value="">{{ 'page.program.program-people-affected.choose-action'|translate }}</option>
+      <option [value]="action.id" *ngFor="let action of bulkActions;">{{ action.label }}</option>
+    </select>
+    <ion-button>
+      {{ 'page.program.program-people-affected.apply-action'|translate }}
+    </ion-button>
+  </ion-row>
+
+
+  <ngx-datatable #people
+                class="bootstrap"
                 limit="50"
-                columnMode="fixed" 
-                rowHeight="auto" 
+                columnMode="fixed"
+                rowHeight="auto"
                 scrollbarH="true"
-                headerHeight="50" 
-                footerHeight="50" 
-                reorderable="false" 
-                sortType="single" 
-                loadingIndicator="true" 
-                [columns]="columns" 
+                headerHeight="50"
+                footerHeight="50"
+                reorderable="false"
+                sortType="single"
+                loadingIndicator="true"
+                [columns]="columns"
                 [rows]="peopleAffected"
+                [displayCheck]="showCheckbox"
+                checkboxable="true"
+                headerCheckboxable="true"
+                selectionType="checkbox"
+                [selected]="selectedPeople"
   ></ngx-datatable>
 
 </section>

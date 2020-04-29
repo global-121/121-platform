@@ -119,7 +119,10 @@
       },
       "program-people-affected": {
         "section-title": "Manage People Affected (for Validation)",
+        "choose-action": "Choose action...",
+        "apply-action": "Apply action",
         "column": {
+          "select": "Select",
           "person": "Person",
           "digital-id-created": "Digital ID Created",
           "vulnerability-assessment-completed": "Vulnerability Assessment Completed",
@@ -128,6 +131,9 @@
           "vulnerability-assessment-validated": "Vulnerability Assessment validated",
           "final-score": "Final score",
           "temp-score": "Initial score"
+        },
+        "actions": {
+          "select-for-validation": "Select for validation"
         }
       },
       "program-people": {

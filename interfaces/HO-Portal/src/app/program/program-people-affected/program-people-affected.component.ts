@@ -1,5 +1,5 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
-import { ProgramPhase, Program } from 'src/app/models/program.model';
+import { ProgramPhase, Program, BulkActions } from 'src/app/models/program.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -25,18 +25,21 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     ProgramPhase.payment,
     ProgramPhase.evaluation
   ];
+  public program: Program;
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, hh:mm';
 
+  public rows: any[] = [];
   public columns: any[] = [];
-  public program: Program;
-
   public peopleAffected: Person[] = [];
-  private newEnrolledPeople: Person[] = [];
   public selectedPeople: any[] = [];
-  private includedPeople: any[] = [];
-  private newIncludedPeople: any[] = [];
-  private newExcludedPeople: any[] = [];
+
+  public bulkActions = [
+    {
+      id: BulkActions.selectForValidation,
+      label: this.translate.instant('page.program.program-people-affected.actions.' + BulkActions.selectForValidation),
+    }
+  ];
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -46,8 +49,17 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
 
     this.columns = [
       {
+        prop: 'selected',
+        name: this.translate.instant('page.program.program-people-affected.column.select'),
+        checkboxable: true,
+        draggable: false,
+        resizeable: false,
+        sortable: false,
+        hidePhases: []
+      },
+      {
         prop: 'pa',
-        name: this.translate.instant('page.program.program-people.column.person'),
+        name: this.translate.instant('page.program.program-people-affected.column.person'),
         draggable: false,
         resizeable: false,
         sortable: false,
@@ -150,10 +162,25 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
             : null,
           scannedQrCode: person.scannedQrDate ? formatDate(person.scannedQrDate, this.dateFormat, this.locale) : null,
           vulnerabilityAssessmentValidated: person.validationDate ? formatDate(person.validationDate, this.dateFormat, this.locale) : null,
+          checkboxVisible: false
         };
 
         return personData;
       });
+  }
+
+  public selectAction(action) {
+    console.log(action);
+    this.peopleAffected.forEach(person => {
+      person.checkboxVisible = true;
+      this.showCheckbox(person);
+    })
+    console.log(this.peopleAffected);
+    this.peopleAffected = [...this.peopleAffected];
+  }
+
+  public showCheckbox(row) {
+    return row.checkboxVisible;
   }
 
 }
