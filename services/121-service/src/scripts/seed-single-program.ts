@@ -106,8 +106,6 @@ export class SeedSingleProgram implements InterfaceScript {
       },
       2,
     );
-
-    await this.seedPublish.run();
   }
 }
 
