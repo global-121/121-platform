@@ -118,8 +118,6 @@ export class SeedMultiProgram implements InterfaceScript {
       },
       2,
     );
-
-    await this.seedPublish.run();
   }
 }
 

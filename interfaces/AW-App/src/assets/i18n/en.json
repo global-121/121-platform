@@ -30,7 +30,8 @@
     },
     "download-data": {
       "downloading": "Validation data is being downloaded. Wait a second.",
-      "download-result": "Validation data downloaded for {{nrDownloaded}} Persons Affected."
+      "download-result": "Validation data downloaded for {{nrDownloaded}} Persons Affected.",
+      "download-aborted": "No validation data could be downloaded at this time. Please try again later."
     },
     "view-appointments": {
       "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details.",

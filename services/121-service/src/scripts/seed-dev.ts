@@ -63,7 +63,6 @@ export class SeedDev implements InterfaceScript {
     credential2.answer = '0';
     await credentialAttributesRepository.save(credential2);
 
-    await this.seedPublish.run();
     await this.connection.close();
   }
 }

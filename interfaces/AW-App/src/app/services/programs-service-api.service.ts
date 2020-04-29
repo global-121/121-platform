@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { Program } from '../models/program.model';
 
@@ -9,13 +9,10 @@ import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(
-    private apiService: ApiService,
-    private jwtService: JwtService
-  ) { }
+  constructor(private apiService: ApiService, private jwtService: JwtService) {}
 
   login(email: string, password: string): Observable<any> {
     console.log('ProgramsService : login()');
@@ -26,19 +23,18 @@ export class ProgramsServiceApiService {
         '/user/login',
         {
           email,
-          password
+          password,
         },
-        true
+        true,
       )
       .pipe(
-        tap(response => console.log('response: ', response)),
-        map(response => {
+        map((response) => {
           const user = response.user;
 
           if (user && user.token) {
             this.jwtService.saveToken(user.token);
           }
-        })
+        }),
       );
   }
 
@@ -52,34 +48,21 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       '/user/change-password',
       {
-        password
+        password,
       },
-      false
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
     );
   }
 
   getProgramById(programId: number): Promise<Program> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      '/programs/' + programId
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    )
+    return this.apiService
+      .get(environment.url_121_service_api, '/programs/' + programId)
       .toPromise();
   }
 
   getAppointments(): Promise<any> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      '/appointment/appointments'
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    ).toPromise();
+    return this.apiService
+      .get(environment.url_121_service_api, '/appointment/appointments')
+      .toPromise();
   }
 
   getPrefilledAnswers(did: string, programId: number): Observable<any> {
@@ -88,53 +71,30 @@ export class ProgramsServiceApiService {
       '/sovrin/credential/get-answers/',
       {
         did,
-        programId
-      }
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
+        programId,
+      },
     );
   }
 
   downloadData(): Promise<any> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      '/sovrin/credential/download-data',
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    ).toPromise()
-    ;
+    return this.apiService
+      .get(environment.url_121_service_api, '/sovrin/credential/download-data')
+      .toPromise();
   }
 
-  issueCredential(did: string, programId: number, attributes: any): Observable<any> {
+  issueCredential(
+    did: string,
+    programId: number,
+    attributes: any,
+  ): Observable<any> {
     return this.apiService.post(
       environment.url_121_service_api,
       '/sovrin/credential/issue',
       {
         did,
         programId,
-        attributes
+        attributes,
       },
-      false
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
     );
   }
-
-  deletePrefilledAnswers(did: string, programId: number): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/credential//delete-answers',
-      {
-        did,
-        programId
-      }
-    ).pipe(
-      tap(response => console.log('response: ', response)),
-      map(response => response)
-    );
-  }
-
 }

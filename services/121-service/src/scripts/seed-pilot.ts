@@ -14,7 +14,6 @@ export class SeedPilot implements InterfaceScript {
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.connection);
     await seedInit.run();
-    await this.seedPublish.run();
 
     // TO DO: seed pilot program and other pilot data here
   }
