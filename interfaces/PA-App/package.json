@@ -59,7 +59,7 @@
     "@angular/cli": "^7.x.x",
     "@angular/compiler": "^7.2.16",
     "@angular/compiler-cli": "^7.2.16",
-    "@angular/language-service": "^7.2.16",
+    "@angular/language-service": "^9.1.4",
     "@ffmpeg-installer/ffmpeg": "^1.0.20",
     "@ionic/angular-toolkit": "^1.5.1",
     "@types/jasmine": "^3.5.10",
