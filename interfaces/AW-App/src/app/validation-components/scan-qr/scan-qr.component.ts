@@ -73,6 +73,8 @@ export class ScanQrComponent implements ValidationComponent {
         this.unknownDidCombination = false;
         this.scanError = false;
 
+        this.programsService.storeScannedQrDate(this.programId, [{ did: this.did }]);
+
         this.complete();
       });
     });
