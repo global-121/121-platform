@@ -21,6 +21,7 @@ import { SetNotificationNumberComponent } from './set-notification-number/set-no
 import { SignupSigninComponent } from './signup-signin/signup-signin.component';
 import { StoreCredentialComponent } from './store-credential/store-credential.component';
 import { InfoPopupComponent } from '../shared/info-popup/info-popup.component';
+import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
 
 @NgModule({
   declarations: [
@@ -38,13 +39,13 @@ import { InfoPopupComponent } from '../shared/info-popup/info-popup.component';
     SetNotificationNumberComponent,
     SignupSigninComponent,
     StoreCredentialComponent,
-    InfoPopupComponent
+    InfoPopupComponent,
   ],
   imports: [
     CommonModule,
     SharedModule,
     FormsModule,
-    QRCodeModule
+    QRCodeModule,
   ],
   entryComponents: [
     CreateIdentityComponent,
@@ -61,7 +62,8 @@ import { InfoPopupComponent } from '../shared/info-popup/info-popup.component';
     SetNotificationNumberComponent,
     SignupSigninComponent,
     StoreCredentialComponent,
-    InfoPopupComponent
+    InfoPopupComponent,
+    QrScannerComponent,
   ],
   exports: [
     CreateIdentityComponent,
