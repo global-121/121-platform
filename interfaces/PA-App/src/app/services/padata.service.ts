@@ -6,7 +6,6 @@ import { environment } from 'src/environments/environment';
 import { Storage } from '@ionic/storage';
 import { PaAccountApiService } from './pa-account-api.service';
 import { JwtService } from './jwt.service';
-import { UiService } from './ui.service';
 
 import { Program } from '../models/program.model';
 import { PaDataTypes } from './padata-types.enum';
@@ -36,7 +35,6 @@ export class PaDataService {
     private programService: ProgramsServiceApiService,
     private sovrinService: SovrinService,
     private jwtService: JwtService,
-    private uiService: UiService,
   ) {
     this.useLocalStorage = environment.localStorage;
 
@@ -165,7 +163,6 @@ export class PaDataService {
           (response) => {
             console.log('PaData: login successful', response);
             this.ionStorage.clear();
-            this.uiService.showUserMenu();
             this.setLoggedIn();
             this.setUsername(response.username);
             return resolve(response);
@@ -199,7 +196,6 @@ export class PaDataService {
     }
 
     this.setLoggedIn();
-    this.uiService.showUserMenu();
   }
 
   public logout() {
