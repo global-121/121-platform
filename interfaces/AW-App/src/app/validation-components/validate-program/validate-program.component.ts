@@ -236,6 +236,23 @@ export class ValidateProgramComponent implements ValidationComponent {
     });
   }
 
+  public async storeCredentialOffline(
+    did: string,
+    programdId: number,
+    attributes: ProgramAttribute[]) {
+      const credential = {
+        did: did,
+        programId: programdId,
+        attributes: attributes
+      }
+      let storedCredentials = await this.storage.get(this.ionicStorageTypes.credentials)
+      if (!storedCredentials) {
+        storedCredentials = []
+      }
+      storedCredentials.append(credential)
+      await this.storage.set(this.ionicStorageTypes.credentials, storedCredentials)
+    }
+
   getNextSection() {
     return ValidationComponents.mainMenu;
   }
