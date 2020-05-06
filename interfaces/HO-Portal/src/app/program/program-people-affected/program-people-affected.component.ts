@@ -28,7 +28,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   ];
   public program: Program;
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd, hh:mm';
+  private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   public rows: any[] = [];
   public columns: any[] = [];
