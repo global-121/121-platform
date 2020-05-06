@@ -188,14 +188,15 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     this.applyBtnDisabled = false;
 
     this.peopleAffected = this.peopleAffected.map((person) => {
-      //BEGIN: For some weird reason, this piece of code is needed for the checkbox-change to take effect (all simpler variations have been tried)
-      let personData: any = {};
-      for (var prop in person) {
+      // BEGIN: For some weird reason, this piece of code is needed for the checkbox-change to take effect
+      // (all simpler variations have been tried)
+      const personData: any = {};
+      for (const prop in person) {
         if (Object.prototype.hasOwnProperty.call(person, prop)) {
           personData[prop] = person[prop];
         }
       }
-      //END
+      // END
 
       if (this.action === BulkAction.selectForValidation) {
         personData.checkboxVisible = personData.tempScore && !personData.selectedForValidation ? true : false;
