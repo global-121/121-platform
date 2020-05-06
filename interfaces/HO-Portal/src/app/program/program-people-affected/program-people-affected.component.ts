@@ -5,6 +5,7 @@ import { Person } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatDate } from '@angular/common';
 import { AlertController } from '@ionic/angular';
+import { UserRole } from 'src/app/auth/user-role.enum';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -16,6 +17,8 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   public selectedPhase: string;
   @Input()
   public programId: number;
+  @Input()
+  public userRole: UserRole;
 
   public componentVisible: boolean;
   private presentInPhases = [
@@ -41,8 +44,10 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     {
       id: BulkAction.selectForValidation,
       label: this.translate.instant('page.program.program-people-affected.actions.' + BulkAction.selectForValidation),
+      roles: [UserRole.ProgramManager]
     }
   ];
+  public bulkActionsEnabled = [];
 
   public submitWarning: any;
 
@@ -133,6 +138,9 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       this.checkVisibility(this.selectedPhase);
       this.loadData();
     }
+    if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
+      this.loadData();
+    }
   }
 
   public checkVisibility(phase) {
@@ -143,7 +151,15 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     let allPeopleData: any[];
     allPeopleData = await this.programsService.getPeopleAffected(this.programId);
     this.peopleAffected = await this.createTableData(allPeopleData);
-    console.log('Data loaded');
+    this.loadActions();
+  }
+  private loadActions() {
+    this.bulkActionsEnabled = [];
+    for (const action of this.bulkActions) {
+      if (action.roles.includes(this.userRole)) {
+        this.bulkActionsEnabled.push(action);
+      }
+    }
   }
 
   private async createTableData(source: Person[]): Promise<any[]> {
