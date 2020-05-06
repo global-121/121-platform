@@ -22,7 +22,7 @@ export class ScanQrComponent implements ValidationComponent {
   public unknownDidCombination = false;
   public returnMainMenu = false;
 
-  public ionicStorageTypes = IonicStorageTypes
+  public ionicStorageTypes = IonicStorageTypes;
 
   constructor(
     private router: Router,
@@ -49,7 +49,6 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   public async checkScannedData() {
-    console.log('checkScannedData');
     this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(async data => {
       if (this.isNotJson(data)) {
         this.scanError = true;
@@ -66,15 +65,14 @@ export class ScanQrComponent implements ValidationComponent {
       this.did = jsonData.did;
       this.programId = jsonData.programId;
 
-      let didData = await this.findDidDataOffline()
+      let didData = await this.findDidDataOffline();
       if (!didData) {
-        didData = await this.findDidDataOnline()
+        didData = await this.findDidDataOnline();
       }
       if (didData) {
-        this.sessionStorageService.store(this.sessionStorageService.type.paData, JSON.stringify(didData))
-        this.foundCorrectDid()
-      }
-      else {
+        this.sessionStorageService.store(this.sessionStorageService.type.paData, JSON.stringify(didData));
+        this.foundCorrectDid();
+      } else {
           this.unknownDidCombination = true;
           console.log('this.scanError: unknownDidCombination');
       }
@@ -94,17 +92,17 @@ export class ScanQrComponent implements ValidationComponent {
     console.log('findDidOffline');
     const offlineData = await this.storage.get(this.ionicStorageTypes.validationData);
     if (!offlineData) {
-      return
+      return;
     }
-    const prefilledQuestions = []
+    const prefilledQuestions = [];
     if (offlineData) {
       offlineData.forEach(element => {
-        if(this.did === element.did && this.programId == element.programId) {
-          prefilledQuestions.push(element)
+        if (this.did === element.did && this.programId === element.programId) {
+          prefilledQuestions.push(element);
         }
       });
       if (prefilledQuestions.length > 0) {
-        return prefilledQuestions
+        return prefilledQuestions;
       }
     }
   }

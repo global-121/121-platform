@@ -33,7 +33,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   public changedAnswers: boolean;
   public dobFeedback = false;
 
-  public ionicStorageTypes = IonicStorageTypes
+  public ionicStorageTypes = IonicStorageTypes;
 
   constructor(
     public translatableString: TranslatableStringService,
@@ -65,29 +65,29 @@ export class ValidateProgramComponent implements ValidationComponent {
     console.log('currentProgram: ', this.currentProgram);
     this.questions = this.buildQuestions(this.currentProgram.customCriteria);
     console.log('questions: ', this.questions);
-    const paDataRaw = await this.sessionStorageService.retrieve(this.sessionStorageService.type.paData)
-    const paData = JSON.parse(paDataRaw)
+    const paDataRaw = await this.sessionStorageService.retrieve(this.sessionStorageService.type.paData);
+    const paData = JSON.parse(paDataRaw);
     this.initialAnswers(paData);
     this.verificationPostponed = false;
     this.ionContent.scrollToBottom(300);
   }
 
   private async getCurrentProgram() {
-      let program = await this.getCurrentProgramOffline()
+      let program = await this.getCurrentProgramOffline();
       if (!program) {
         console.log('getCurrentProgramOnline');
-        program = await this.programsService.getProgramById(this.programId)
+        program = await this.programsService.getProgramById(this.programId);
       }
-      return program
+      return program;
   }
 
   private async getCurrentProgramOffline() {
     console.log('getCurrentProgramOffline');
-    const programs = await this.storage.get(this.ionicStorageTypes.myPrograms)
+    const programs = await this.storage.get(this.ionicStorageTypes.myPrograms);
     if (programs) {
       for (const program of programs) {
         if (program.id === this.programId) {
-          return program
+          return program;
         }
       }
     }
@@ -129,7 +129,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   private getQuestionByCode(questionCode: string): Question {
-    console.log('this.questions, getQuestionByCode', this.questions)
+    console.log('this.questions, getQuestionByCode', this.questions);
     const result = this.questions.find((question: Question) => {
       return question.code === questionCode;
     });
@@ -225,7 +225,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   public async validateAttributes() {
-    const attributes = this.createAttributes(Object.values(this.answers))
+    const attributes = this.createAttributes(Object.values(this.answers));
     this.storeCredentialOffline(attributes);
 
     // THIS SHOULD BE REMOVED WHEN WORKING ON AB# 1472
@@ -234,7 +234,7 @@ export class ValidateProgramComponent implements ValidationComponent {
       this.programId,
       attributes
     ).subscribe(() => {
-      console.log('createAttributes api call completed')
+      console.log('createAttributes api call completed');
     });
     // THIS SHOULD BE REMOVED WHEN WORKING ON AB# 1472
 
@@ -248,18 +248,18 @@ export class ValidateProgramComponent implements ValidationComponent {
       const credential = {
         did: this.did,
         programId: this.programId,
-        attributes: attributes
-      }
-      let storedCredentials = await this.storage.get(this.ionicStorageTypes.credentials)
+        attributes
+      };
+      let storedCredentials = await this.storage.get(this.ionicStorageTypes.credentials);
       if (!storedCredentials) {
-        storedCredentials = []
+        storedCredentials = [];
       }
 
       // If offline DID is already stored delete it from array first
       storedCredentials = storedCredentials.filter(credential => !(credential.did === this.did));
 
-      storedCredentials.push(credential)
-      await this.storage.set(this.ionicStorageTypes.credentials, storedCredentials)
+      storedCredentials.push(credential);
+      await this.storage.set(this.ionicStorageTypes.credentials, storedCredentials);
     }
 
   getNextSection() {
