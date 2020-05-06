@@ -7,7 +7,6 @@ import {
   BeforeUpdate,
   ManyToMany,
   JoinTable,
-  OneToOne,
 } from 'typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { CustomCriterium } from './custom-criterium.entity';
@@ -19,9 +18,9 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 
 export enum ProgramPhase {
   design = 'design',
-  registration = 'registration',
+  registrationValidation = 'registrationValidation',
   inclusion = 'inclusion',
-  finalize = 'finalize',
+  reviewInclusion = 'reviewInclusion',
   payment = 'payment',
   evaluation = 'evaluation',
 }
@@ -31,7 +30,7 @@ export class ProgramEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({ 'default': ProgramPhase.design })
+  @Column({ default: ProgramPhase.design })
   public state: ProgramPhase;
 
   @Column()
@@ -153,4 +152,3 @@ export class ProgramEntity {
   @OneToMany(type => TransactionEntity, transactions => transactions.program)
   public transactions: TransactionEntity[];
 }
-

@@ -1,7 +1,7 @@
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
-import { DidDto } from './dto/did.dto';
+import { DidDto, DidsDto } from './dto/did.dto';
 import {
   Get,
   Post,
@@ -193,11 +193,22 @@ export class ProgramController {
     return await this.programService.getEnrolled(param.programId, true);
   }
 
+  @Roles(UserRole.ProgramManager)
+  @ApiOperation({ title: 'Select set of PAs for validation' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @Post('select-validation/:programId')
+  public async selectForValidation(
+    @Param() params,
+    @Body() data: DidsDto,
+  ): Promise<void> {
+    await this.programService.selectForValidation(params.programId, data);
+  }
+
   @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiOperation({ title: 'Include set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('include/:programId')
-  public async include(@Param() params, @Body() data: object): Promise<void> {
+  public async include(@Param() params, @Body() data: DidsDto): Promise<void> {
     await this.programService.include(params.programId, data);
   }
 
@@ -205,7 +216,7 @@ export class ProgramController {
   @ApiOperation({ title: 'Exclude set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('exclude/:programId')
-  public async exclude(@Param() params, @Body() data: object): Promise<void> {
+  public async exclude(@Param() params, @Body() data: DidsDto): Promise<void> {
     await this.programService.exclude(params.programId, data);
   }
 

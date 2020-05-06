@@ -34,9 +34,13 @@ export enum InclusionCalculationType {
 
 export enum ProgramPhase {
   design = 'design',
-  registration = 'registration',
+  registrationValidation = 'registrationValidation',
   inclusion = 'inclusion',
-  finalize = 'finalize',
+  reviewInclusion = 'reviewInclusion',
   payment = 'payment',
   evaluation = 'evaluation',
+}
+
+export enum BulkActions {
+  selectForValidation = 'select-for-validation',
 }

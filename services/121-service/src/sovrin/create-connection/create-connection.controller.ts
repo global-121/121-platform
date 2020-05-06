@@ -11,7 +11,6 @@ import {
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { ConnectionEntity } from './connection.entity';
-import { PasswordDto } from './dto/password.dto';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { SetFspDto } from './dto/set-fsp.dto';
 import { CustomDataDto } from '../../programs/program/dto/custom-data.dto';

@@ -93,6 +93,13 @@ export class ConnectionEntity {
     default: () => null,
     nullable: true,
   })
+  public selectedForValidationDate: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
   public validationDate: Date;
 
   @Column({

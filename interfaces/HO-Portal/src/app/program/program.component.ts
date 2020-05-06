@@ -33,7 +33,7 @@ export class ProgramComponent implements OnInit {
     },
     {
       id: 2,
-      name: ProgramPhase.registration,
+      name: ProgramPhase.registrationValidation,
     },
     {
       id: 3,
@@ -41,7 +41,7 @@ export class ProgramComponent implements OnInit {
     },
     {
       id: 4,
-      name: ProgramPhase.finalize,
+      name: ProgramPhase.reviewInclusion,
     },
     {
       id: 5,
