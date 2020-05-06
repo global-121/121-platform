@@ -49,6 +49,7 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   public async checkScannedData() {
+    console.log('checkScannedData');
     this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(async data => {
       if (this.isNotJson(data)) {
         this.scanError = true;
@@ -73,24 +74,28 @@ export class ScanQrComponent implements ValidationComponent {
         this.sessionStorageService.store(this.sessionStorageService.type.paData, JSON.stringify(didData))
         this.foundCorrectDid()
       }
+      else {
+          this.unknownDidCombination = true;
+          console.log('this.scanError: unknownDidCombination');
+      }
     });
   }
 
   private async findDidDataOnline(): Promise<void> {
-    console.log('findDidDataOnline: ');
-    this.programsService.getPrefilledAnswers(this.did, this.programId).subscribe(response => {
-      if (response.length === 0) {
-        this.unknownDidCombination = true;
-        console.log('this.scanError: unknownDidCombination');
-        return;
-      }
-      return response
-    });
+    console.log('findDidDataOnline');
+    const response = await this.programsService.getPrefilledAnswers(this.did, this.programId).toPromise();
+    if (response.length === 0) {
+      return;
+    }
+    return response;
   }
 
   private async findDidDataOffline(): Promise<any> {
-    console.log('findDidOffline: ');
+    console.log('findDidOffline');
     const offlineData = await this.storage.get(this.ionicStorageTypes.validationData);
+    if (!offlineData) {
+      return
+    }
     const prefilledQuestions = []
     if (offlineData) {
       offlineData.forEach(element => {
