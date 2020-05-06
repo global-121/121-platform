@@ -63,7 +63,7 @@
     "@types/jasmine": "~3.3.16",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^12.12.24",
-    "codelyzer": "^5.2.1",
+    "codelyzer": "^5.2.2",
     "cordova": "^9.0.0",
     "cordova-res": "^0.8.1",
     "dotenv": "^8.2.0",
