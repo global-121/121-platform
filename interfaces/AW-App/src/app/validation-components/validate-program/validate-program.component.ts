@@ -224,39 +224,47 @@ export class ValidateProgramComponent implements ValidationComponent {
     return attributes;
   }
 
-  public issueCredential() {
+  public async validateAttributes() {
+    const attributes = this.createAttributes(Object.values(this.answers))
+    this.storeCredentialOffline(attributes);
+
+    // THIS SHOULD BE REMOVED WHEN WORKING ON AB# 1472
     this.programsService.issueCredential(
       this.did,
       this.programId,
-      this.createAttributes(Object.values(this.answers))
+      attributes
     ).subscribe(() => {
-      this.programCredentialIssued = true;
-      this.answers = {};
-      this.complete();
+      console.log('createAttributes api call completed')
     });
+    // THIS SHOULD BE REMOVED WHEN WORKING ON AB# 1472
+
+    this.programCredentialIssued = true;
+    this.answers = {};
+    this.complete();
   }
 
   public async storeCredentialOffline(
-    did: string,
-    programdId: number,
     attributes: ProgramAttribute[]) {
       const credential = {
-        did: did,
-        programId: programdId,
+        did: this.did,
+        programId: this.programId,
         attributes: attributes
       }
       let storedCredentials = await this.storage.get(this.ionicStorageTypes.credentials)
       if (!storedCredentials) {
         storedCredentials = []
       }
-      storedCredentials.append(credential)
+
+      // If offline DID is already stored delete it from array first
+      storedCredentials = storedCredentials.filter(credential => !(credential.did === this.did));
+
+      storedCredentials.push(credential)
       await this.storage.set(this.ionicStorageTypes.credentials, storedCredentials)
     }
 
   getNextSection() {
     return ValidationComponents.mainMenu;
   }
-
 
   complete() {
     this.conversationService.onSectionCompleted({
