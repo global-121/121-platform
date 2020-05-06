@@ -15,6 +15,8 @@ import {
 } from '@nestjs/swagger';
 import { VoiceService } from './voice.service';
 import { Response } from 'express-serve-static-core';
+import { UserRole } from '../../user-role.enum';
+import { Roles } from '../../roles.decorator';
 
 @ApiUseTags('notifications')
 @Controller('notifications/voice')
@@ -23,6 +25,15 @@ export class VoiceController {
   public constructor(voiceService: VoiceService) {
     this.voiceService = voiceService;
   }
+
+  @Roles(UserRole.Admin)
+  @ApiResponse({ status: 200, description: 'Test voice call' })
+  @ApiImplicitParam({ name: 'number' })
+  @Get(':number')
+  public notifyByVoice(@Param() params): void {
+    return this.voiceService.notifyByVoice(params.number, 'en', 'included', 1);
+  }
+
   @ApiOperation({
     title: 'Return xml that specifies the mp3 location to play in call',
   })
