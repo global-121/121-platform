@@ -10,33 +10,27 @@ Feature: Get PA attributes for validation
     Given the DID and the progam ID are available online
     Given the user did not download the offline data for this user
     Given there is internet
-    Given the validation data for that did an program id is available online
+    Given the validation data for that did and program id is available online
     When the scan is complete
     Then the correct validation data is loaded
 
-  Scenario: Scanning a valid QR code offline with the validation data downloaded
+  Scenario: Scanning a valid QR code with the validation data downloaded
     Given a valid qr
     Given the DID and the progam ID are available offline
-    Given there is no internet
     When the scan is complete
     Then the correct validation data is loaded
 
-  Scenario: Scanning a valid QR code online and the validation data is not available
+  Scenario: Scanning a valid QR code online and the validation data is not available (online or offline)
     Given a valid qr
-    Given the DID and the progam ID are available online
-    Given the user did not download the offline data for this user
-    Given the validation data for that did an program id is not available online
+    Given the user did not download  offline data for this DID
+    Given the validation data for that DID an program id is not available online
     Given there is internet
     When the scan is complete
     Then the message: "QR-code not found. You can try scanning another QR-code." is displayed
 
-  Scenario: Scanning a valid QR code online with the validation data not downloaded
+  Scenario: Scanning a valid QR code offline with the validation data not downloaded
     Given a valid qr
     Given the DID and the progam ID are not available offline
     Given there is no internet
     When the scan is complete
     Then the message: "QR-code not found. You can try scanning another QR-code." is displayed
-
-
-
-  Scenario: Scanning a valid QR code online and the data
