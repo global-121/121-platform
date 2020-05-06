@@ -10,9 +10,14 @@
       <option value="">{{ 'page.program.program-people-affected.choose-action'|translate }}</option>
       <option [value]="action.id" *ngFor="let action of bulkActions;">{{ action.label }}</option>
     </select>
-    <ion-button>
+    <confirm-prompt [disabled]="applyBtnDisabled" 
+                    (confirm)="applyAction()"
+                    [subHeader]="'page.program.program-people-affected.submit-warning'|translate" 
+                    [message]="submitWarning.message"
+                    class="ion-float-end" 
+    >
       {{ 'page.program.program-people-affected.apply-action'|translate }}
-    </ion-button>
+    </confirm-prompt>
   </ion-row>
 
 
@@ -29,11 +34,12 @@
                 loadingIndicator="true"
                 [columns]="columns"
                 [rows]="peopleAffected"
-                [displayCheck]="showCheckbox"
+                selectionType="checkbox"
                 checkboxable="true"
                 headerCheckboxable="true"
-                selectionType="checkbox"
+                [displayCheck]="showCheckbox"
                 [selected]="selectedPeople"
+                (select)="updateSubmitWarning()"
   ></ngx-datatable>
 
 </section>
