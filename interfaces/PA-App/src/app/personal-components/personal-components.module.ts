@@ -11,6 +11,7 @@ import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.
 import { HandleProofComponent } from './handle-proof/handle-proof.component';
 import { LoginIdentityComponent } from './login-identity/login-identity.component';
 import { MeetingReminderComponent } from './meeting-reminder/meeting-reminder.component';
+import { PreprintedQrcodeComponent } from './preprinted-qrcode/preprinted-qrcode.component';
 import { SelectAppointmentComponent } from './select-appointment/select-appointment.component';
 import { SelectCountryComponent } from './select-country/select-country.component';
 import { SelectFspComponent } from './select-fsp/select-fsp.component';
@@ -29,6 +30,7 @@ import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
     HandleProofComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
+    PreprintedQrcodeComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectFspComponent,
@@ -51,6 +53,7 @@ import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
     HandleProofComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
+    PreprintedQrcodeComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectFspComponent,
@@ -68,6 +71,7 @@ import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
     HandleProofComponent,
     LoginIdentityComponent,
     MeetingReminderComponent,
+    PreprintedQrcodeComponent,
     SelectAppointmentComponent,
     SelectCountryComponent,
     SelectFspComponent,

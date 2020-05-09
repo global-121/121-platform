@@ -1,0 +1,94 @@
+<section>
+  <dialogue-turn [actor]="program?.ngo">
+    <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
+    <p>
+      {{ 'personal.preprinted-qrcode.introduction'|translate }}
+    </p>
+  </dialogue-turn>
+
+  <dialogue-turn actor="self">
+    <ion-row *ngIf="!isDisabled || hasPreprinted"
+             class="ion-nowrap ion-align-items-center"
+    >
+      <play-text-audio key="personal.preprinted-qrcode.yes"
+                       type="forSubmit"
+                       size="default"
+      ></play-text-audio>
+      <ion-button type="button"
+                  (click)="addPreprinted()"
+                  [disabled]="isDisabled || hasPreprinted"
+                  expand="block"
+                  style="flex-basis:100%"
+      >{{ 'personal.preprinted-qrcode.yes'|translate }}</ion-button>
+    </ion-row>
+    <ion-row *ngIf="!isDisabled || !hasPreprinted"
+             class="ion-nowrap ion-align-items-center"
+    >
+      <play-text-audio key="personal.preprinted-qrcode.no"
+                       type="forSubmit"
+                       size="default"
+      ></play-text-audio>
+      <ion-button type="button"
+                  (click)="skipPreprinted()"
+                  [disabled]="isDisabled || hasPreprinted"
+                  fill="outline"
+                  expand="block"
+                  style="flex-basis:100%"
+      >
+        {{ 'personal.preprinted-qrcode.no'|translate }}
+      </ion-button>
+    </ion-row>
+  </dialogue-turn>
+
+  <dialogue-turn *ngIf="hasPreprinted && !isDisabled"
+                 [isSpoken]="hasPreprinted && !isDisabled"
+                 actor="self"
+                 isConnected="true"
+  >
+    <ion-row class="ion-nowrap ion-align-items-center">
+      <play-text-audio key="personal.preprinted-qrcode.start-scanner"
+                       type="forSubmit"
+                       size="default"
+      ></play-text-audio>
+      <ion-button type="button"
+                  (click)="doScan()"
+                  expand="block"
+                  style="flex-basis:100%"
+      >
+        <ion-icon name="qr-scanner" slot="start" size="small"></ion-icon>
+        {{ 'personal.preprinted-qrcode.start-scanner'|translate }}
+      </ion-button>
+    </ion-row>
+  </dialogue-turn>
+
+  <dialogue-turn [actor]="program?.ngo"
+                 *ngIf="hasPreprinted && scanResult"
+                 [isSpoken]="hasPreprinted && scanResult"
+  >
+    <div *ngIf="!scanResultError">
+      <p>
+        {{ 'personal.preprinted-qrcode.result-ok'|translate }}
+      </p>
+    </div>
+    <div *ngIf="scanResultError">
+      <p>
+        {{ 'personal.preprinted-qrcode.error'|translate }}
+      </p>
+
+      <ion-row class="ion-nowrap ion-align-items-center ion-margin-top">
+        <play-text-audio key="personal.preprinted-qrcode.try-again"
+                         type="forSubmit"
+                         size="default"
+        ></play-text-audio>
+        <ion-button type="button"
+                    (click)="resetScan();doScan()"
+                    expand="block"
+                    style="flex-basis:100%"
+        >
+          {{ 'personal.preprinted-qrcode.try-again'|translate }}
+        </ion-button>
+      </ion-row>
+    </div>
+  </dialogue-turn>
+
+</section>
