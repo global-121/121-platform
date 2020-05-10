@@ -88,6 +88,15 @@
       "qr-code": "Please show this QR-code at your meeting.",
       "till": "Till"
     },
+    "preprinted-qrcode": {
+      "introduction": "Do you have a pre-printed QR-code?",
+      "yes": "Yes",
+      "no": "No",
+      "start-scanner": "Start scanner",
+      "try-again": "Try again",
+      "error": "The code you scanned cannot be used, please try another one.",
+      "result-ok": "The QR-code you scanned is now connected to your account."
+    },
     "select-appointment": {
       "at": "At",
       "change": "Change my option",

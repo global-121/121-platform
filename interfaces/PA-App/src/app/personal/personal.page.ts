@@ -23,6 +23,7 @@ import { SetNotificationNumberComponent } from '../personal-components/set-notif
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
 import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
 import { TranslateService } from '@ngx-translate/core';
+import { PreprintedQrcodeComponent } from '../personal-components/preprinted-qrcode/preprinted-qrcode.component';
 
 @Component({
   selector: 'app-personal',
@@ -47,6 +48,7 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.handleProof]: HandleProofComponent,
     [PersonalComponents.loginIdentity]: LoginIdentityComponent,
     [PersonalComponents.meetingReminder]: MeetingReminderComponent,
+    [PersonalComponents.preprintedQrcode]: PreprintedQrcodeComponent,
     [PersonalComponents.selectAppointment]: SelectAppointmentComponent,
     [PersonalComponents.selectCountry]: SelectCountryComponent,
     [PersonalComponents.selectFsp]: SelectFspComponent,
