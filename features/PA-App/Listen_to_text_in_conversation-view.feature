@@ -27,24 +27,24 @@ Feature: Listen to text in conversation-view
 
   Scenario: Play audio of visible text (start)
     Given an audio-file is available for the visible text
-    When the PA clicks on the "play" button
+    When the PA presses the "play" button
     Then the audio starts playing
     And the "pause" icon is shown on the button
 
   Scenario: Play audio of visible text (end)
     Given an audio-file is available for the visible text
-    Given the PA clicked on the "play" button
+    Given the PA presses the "play" button
     When the audio is played till the end
     Then the audio stops playing
     And the "play" icon is shown on the button
 
   Scenario: Pause audio while playing
     Given an audio-file is available for the visible text
-    Given the PA clicked on the "play" button
+    Given the PA presses the "play" button
     Given the audio is playing
-    When the PA clicks on the "pause" button
+    When the PA presses the "pause" button
     Then the audio is paused
     And the "play" icon is shown on the button
-    When the PA clicks on the "play" button again
+    When the PA presses the "play" button again
     Then the audio resumes playing
     And the "play" icon is shown on the button
