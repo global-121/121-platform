@@ -29,6 +29,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Verify password input](PA-App/Verify_password_input.feature)
 - [Fill payment details](PA-App/Fill_payment_details.feature)
 - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
+- [Link preprinted QR-code](PA-App/Link-preprinted-QR-code.feature)
 
 
 ### For Aid-Worker (AW-App)
