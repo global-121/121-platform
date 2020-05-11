@@ -24,6 +24,8 @@ Feature: Create Digital ID
     When the PA completes the step
     Then the "select appointment"-step is shown
     When the PA completes the step
+    Then the "preprinted qr-code"-step is shown
+    When the PA completes the step
     Then the "meeting reminder"-step is shown
     And the "store credential"-step is shown
     When the PA meets with an AidWorker and validation is completed
