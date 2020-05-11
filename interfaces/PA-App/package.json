@@ -87,7 +87,7 @@
     "ngx-translate-lint": "^1.6.0",
     "protractor": "~5.4.0",
     "ts-node": "~8.3.0",
-    "tslint": "~5.18.0",
+    "tslint": "~6.1.2",
     "typescript": "~3.1.6"
   },
   "cordova": {
