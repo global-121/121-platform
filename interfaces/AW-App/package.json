@@ -65,7 +65,7 @@
     "@types/node": "^12.12.24",
     "codelyzer": "^5.2.2",
     "cordova": "^9.0.0",
-    "cordova-res": "^0.8.1",
+    "cordova-res": "^0.14.0",
     "dotenv": "^8.2.0",
     "ionic": "^5.4.15",
     "jasmine-core": "^3.5.0",
