@@ -1,17 +1,14 @@
 <section #selectLanguage>
   <dialogue-turn>
-    <ng-container *ngFor="let language of languages">
+    <p *ngFor="let language of languages">
       <play-text-audio [key]="language.introductionKey" class="ion-float-start ion-margin-end"></play-text-audio>
-      <div [innerHTML]="language.introduction|translate"
-           class="ion-margin-bottom"
-      ></div>
-    </ng-container>
-    <p>
-      <more-info-button buttonKey="personal.select-language.more-info"
-                        messageKey="personal.select-language.info-message"
-                        headingKey="personal.select-language.more-info"
-      ></more-info-button>
+      {{ language.introduction|translate }}
     </p>
+
+    <more-info-button buttonKey="personal.select-language.more-info"
+                      messageKey="personal.select-language.info-message"
+                      headingKey="personal.select-language.more-info"
+    ></more-info-button>
   </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="!isDisabled"
@@ -59,7 +56,9 @@
   <dialogue-turn *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
-    <play-text-audio key="personal.select-language.result" class="ion-float-start ion-margin-end"></play-text-audio>
-    <p [innerHTML]="'personal.select-language.result'|translate:{ language:'<strong>'+languageChoiceName+'</strong>' }"></p>
+    <p>
+      <play-text-audio key="personal.select-language.result" class="ion-float-start ion-margin-end"></play-text-audio>
+      <span [innerHTML]="'personal.select-language.result'|translate:{ language:'<strong>'+languageChoiceName+'</strong>' }"></span>
+    </p>
   </dialogue-turn>
 </section>

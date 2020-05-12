@@ -67,8 +67,8 @@
                  *ngIf="hasValidationError"
                  [isSpoken]="hasValidationError"
   >
-    <play-text-audio key="validation.phoneNumber" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
+      <play-text-audio key="validation.phoneNumber" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'validation.phoneNumber'|translate }}
     </p>
   </dialogue-turn>
@@ -76,22 +76,22 @@
                  *ngIf="choiceMade"
                  [isSpoken]="choiceMade"
   >
-    <ng-container *ngIf="!phoneSkipped">
+    <p *ngIf="!phoneSkipped">
       <play-text-audio key="personal.set-notification-number.conclusion-submitted" class="ion-float-start ion-margin-end"></play-text-audio>
-      <p [innerHTML]="'personal.set-notification-number.conclusion-submitted'|translate:{ phone:'<strong>'+phoneNumber+'</strong>' }"></p>
-    </ng-container>
-    <ng-container *ngIf="phoneSkipped">
+      <span [innerHTML]="'personal.set-notification-number.conclusion-submitted'|translate:{ phone:'<strong>'+phoneNumber+'</strong>' }"></span>
+    </p>
+    <p *ngIf="phoneSkipped">
       <play-text-audio key="personal.set-notification-number.conclusion-skipped" class="ion-float-start ion-margin-end"></play-text-audio>
-      <p>{{ 'personal.set-notification-number.conclusion-skipped'|translate }}</p>
-    </ng-container>
+      <span>{{ 'personal.set-notification-number.conclusion-skipped'|translate }}</span>
+    </p>
   </dialogue-turn>
   <dialogue-turn [actor]="ngo"
                  *ngIf="choiceMade && !useLocalStorage"
                  [isSpoken]="choiceMade && !useLocalStorage"
                  isConnected="true"
   >
-    <play-text-audio key="personal.set-notification-number.logout-info" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
+      <play-text-audio key="personal.set-notification-number.logout-info" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.set-notification-number.logout-info'|translate }}
     </p>
   </dialogue-turn>

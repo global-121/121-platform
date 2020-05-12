@@ -1,7 +1,7 @@
 <section>
   <dialogue-turn [actor]="program?.ngo">
-    <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
+      <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.preprinted-qrcode.introduction'|translate }}
     </p>
   </dialogue-turn>
@@ -64,11 +64,13 @@
   >
     <div *ngIf="!scanResultError">
       <p>
+        <play-text-audio key="personal.preprinted-qrcode.result-ok" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.preprinted-qrcode.result-ok'|translate }}
       </p>
     </div>
     <div *ngIf="scanResultError">
       <p>
+        <play-text-audio key="personal.preprinted-qrcode.error" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.preprinted-qrcode.error'|translate }}
       </p>
 

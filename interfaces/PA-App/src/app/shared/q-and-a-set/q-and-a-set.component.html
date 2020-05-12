@@ -83,8 +83,8 @@
 <dialogue-turn *ngIf="checkValidationErrors() && allQuestionsShown"
                [isSpoken]="checkValidationErrors() && allQuestionsShown"
 >
-  <play-text-audio key="validation.generic-error" class="ion-float-start ion-margin-end"></play-text-audio>
   <p>
+    <play-text-audio key="validation.generic-error" class="ion-float-start ion-margin-end"></play-text-audio>
     {{ 'validation.generic-error'|translate }}
   </p>
 </dialogue-turn>

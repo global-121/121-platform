@@ -4,12 +4,11 @@
       <play-text-audio key="personal.select-appointment.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-appointment.introduction'|translate }}
     </p>
-    <div class="ion-margin-top">
-      <more-info-button buttonKey="personal.select-appointment.more-info-activation"
-                        messageKey="personal.select-appointment.info-message"
-                        headingKey="personal.select-appointment.more-info-activation"
-      ></more-info-button>
-    </div>
+
+    <more-info-button buttonKey="personal.select-appointment.more-info-activation"
+                      messageKey="personal.select-appointment.info-message"
+                      headingKey="personal.select-appointment.more-info-activation"
+    ></more-info-button>
   </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="timeslots"
@@ -61,8 +60,8 @@
                  *ngIf="timeslotSubmitted"
                  [isSpoken]="timeslotSubmitted"
   >
-    <play-text-audio key="personal.select-appointment.thanks-repeat" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
+      <play-text-audio key="personal.select-appointment.thanks-repeat" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-appointment.thanks-repeat'|translate }}
     </p>
     <p>
@@ -133,8 +132,8 @@
                  *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
-    <play-text-audio key="personal.select-appointment.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
+      <play-text-audio key="personal.select-appointment.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-appointment.conclusion'|translate }}
     </p>
   </dialogue-turn>

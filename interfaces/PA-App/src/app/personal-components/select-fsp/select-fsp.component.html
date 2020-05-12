@@ -1,7 +1,7 @@
 <section>
   <dialogue-turn [actor]="program?.ngo">
-    <play-text-audio key="personal.select-fsp.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
+      <play-text-audio key="personal.select-fsp.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-fsp.introduction'|translate }}
     </p>
   </dialogue-turn>
@@ -44,16 +44,18 @@
                  *ngIf="fspSubmitted"
                  [isSpoken]="fspSubmitted"
   >
-    <play-text-audio key="personal.select-fsp.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
-    <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:'<strong>'+chosenFsp?.fsp+'</strong>' }"></p>
+    <p>
+      <play-text-audio key="personal.select-fsp.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
+      <span [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:'<strong>'+chosenFsp?.fsp+'</strong>' }"></span>
+    </p>
   </dialogue-turn>
 
   <form *ngIf="questions?.length">
     <dialogue-turn isConnected="true"
                    isSpoken="true"
     >
-      <play-text-audio key="personal.select-fsp.attributes.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
+        <play-text-audio key="personal.select-fsp.attributes.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.select-fsp.attributes.introduction'|translate }}
       </p>
     </dialogue-turn>
@@ -70,8 +72,8 @@
                    *ngIf="showResultSuccess"
                    [isSpoken]="showResultSuccess"
     >
-      <play-text-audio key="personal.select-fsp.attributes.success" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
+        <play-text-audio key="personal.select-fsp.attributes.success" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.select-fsp.attributes.success'|translate }}
       </p>
     </dialogue-turn>
@@ -79,8 +81,8 @@
                    *ngIf="showResultError"
                    [isSpoken]="showResultError"
     >
-      <play-text-audio key="personal.select-fsp.attributes.error" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
+        <play-text-audio key="personal.select-fsp.attributes.error" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.select-fsp.attributes.error'|translate }}
       </p>
     </dialogue-turn>

@@ -1,15 +1,14 @@
 <section #selectProgram>
   <dialogue-turn>
-    <play-text-audio key="personal.select-program.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
+      <play-text-audio key="personal.select-program.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-program.introduction'|translate }}
     </p>
-    <p>
-      <more-info-button buttonKey="personal.select-program.more-info-programs"
-                        messageKey="personal.select-program.info-message"
-                        headingKey="personal.select-program.more-info-programs"
-      ></more-info-button>
-    </p>
+
+    <more-info-button buttonKey="personal.select-program.more-info-programs"
+                      messageKey="personal.select-program.info-message"
+                      headingKey="personal.select-program.more-info-programs"
+    ></more-info-button>
   </dialogue-turn>
   <dialogue-turn actor="self">
     <form (submit)="submitProgram()">
