@@ -1,40 +1,10 @@
 <section>
   <dialogue-turn [actor]="program?.ngo">
-<<<<<<< HEAD
-    <!-- <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-end ion-margin-start"></play-text-audio> -->
-=======
     <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
->>>>>>> upstream/master
     <p>
       {{ 'personal.preprinted-qrcode.introduction'|translate }}
     </p>
   </dialogue-turn>
-<<<<<<< HEAD
-  <dialogue-turn actor="self" isSpoken="true">
-    <form (submit)="submitPreprinted()">
-      <ion-radio-group (ionChange)="changePreprinted($event)">
-        <ion-item color="light" class="ion-no-padding ion-text-wrap" lines="full">
-          <!-- <play-text-audio [key]="personal.preprinted-qrcode.yes" type="forRadio" slot="start" class="ion-no-margin ion-margin-end">
-          </play-text-audio> -->
-          <ion-label>{{ 'personal.preprinted-qrcode.yes'|translate }}</ion-label>
-          <ion-radio [value]="yes"></ion-radio>
-        </ion-item>
-        <ion-item color="light" class="ion-no-padding ion-text-wrap" lines="full">
-          <!-- <play-text-audio [key]="personal.preprinted-qrcode.no" type="forRadio" slot="start" class="ion-no-margin ion-margin-end">
-          </play-text-audio> -->
-          <ion-label>{{ 'personal.preprinted-qrcode.no'|translate }}</ion-label>
-          <ion-radio [value]="no"></ion-radio>
-        </ion-item>
-      </ion-radio-group>
-      <ion-row *ngIf="preprintedChoice" class="ion-nowrap ion-align-items-center ion-margin-top">
-        <!-- <play-text-audio key="shared.submit-button" type="forSubmit" size="default"></play-text-audio> -->
-        <ion-button type="submit" expand="block" style="flex-basis:100%">{{ 'shared.submit-button'|translate }}</ion-button>
-      </ion-row>
-    </form>
-  </dialogue-turn>
-
-</section>
-=======
 
   <dialogue-turn actor="self">
     <ion-row *ngIf="!isDisabled || hasPreprinted"
@@ -122,4 +92,3 @@
   </dialogue-turn>
 
 </section>
->>>>>>> upstream/master
