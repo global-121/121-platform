@@ -1,10 +1,7 @@
 <section #meetingReminder>
-  <dialogue-turn [actor]="program?.ngo"
-                 *ngIf="qrDataShow"
-                 [isSpoken]="qrDataShow"
-  >
-    <play-text-audio key="personal.meeting-reminder.meeting-reminder" class="ion-float-end ion-margin-start"></play-text-audio>
+  <dialogue-turn [actor]="program?.ngo">
     <p>
+      <play-text-audio key="personal.meeting-reminder.meeting-reminder" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.meeting-reminder.meeting-reminder'|translate }}
     </p>
     <p>
@@ -21,8 +18,14 @@
       {{ 'personal.meeting-reminder.at'|translate }}:
       <strong>{{ chosenTimeslot?.location }}</strong>
     </p>
-    <play-text-audio key="personal.meeting-reminder.documents" class="ion-float-end ion-margin-start"></play-text-audio>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                 isConnected="true"
+                 *ngIf="meetingDocuments?.length"
+                 [isSpoken]="meetingDocuments?.length"
+  >
     <p>
+      <play-text-audio key="personal.meeting-reminder.documents" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.meeting-reminder.documents'|translate }}
     </p>
     <ul class="ion-no-padding ion-padding-start">
@@ -37,6 +40,12 @@
                         messageKey="personal.meeting-reminder.info-message"
       ></more-info-button>
     </p>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                 isConnected="true"
+                 *ngIf="showQrCode"
+                 [isSpoken]="showQrCode"
+  >
     <p>
       <play-text-audio key="personal.meeting-reminder.qr-code" class="ion-float-end ion-margin-start"></play-text-audio>
       {{ 'personal.meeting-reminder.qr-code'|translate }}
@@ -52,8 +61,8 @@
     </div>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"
-                 *ngIf="qrDataShow && (daysToMeeting > 0)"
-                 [isSpoken]="qrDataShow && (daysToMeeting > 0)"
+                 *ngIf="qrDataString && (daysToMeeting > 0)"
+                 [isSpoken]="qrDataString && (daysToMeeting > 0)"
                  isConnected="true"
   >
     <ng-container *ngIf="daysToMeeting > 1">
