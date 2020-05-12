@@ -25,6 +25,14 @@
     <p *ngIf="showGenericError">
       {{ 'qr-scanner.error-generic'|translate }}
     </p>
+    <p class="ion-margin-top ion-text-center">
+      <ion-button type="button"
+                  (click)="tryAgain()"
+      >
+        <ion-icon name="refresh" size="small" slot="start"></ion-icon>
+        {{ 'qr-scanner.try-again'|translate }}
+      </ion-button>
+    </p>
   </div>
 
   <zxing-scanner #scanner

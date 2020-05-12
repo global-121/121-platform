@@ -78,6 +78,10 @@ export class QrScannerComponent {
     this.currentCamera = this.camerasAvailable[nextCameraIndex];
   }
 
+  public tryAgain() {
+    window.location.reload();
+  }
+
   public closeModal(data?: string) {
     this.scanner.reset();
     this.modalController.dismiss(data);
