@@ -110,13 +110,6 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
         hidePhases: []
       },
       {
-        prop: 'scannedQrCode',
-        name: this.translate.instant('page.program.program-people-affected.column.scanned-qr'),
-        draggable: false,
-        resizeable: false,
-        hidePhases: []
-      },
-      {
         prop: 'vulnerabilityAssessmentValidated',
         name: this.translate.instant('page.program.program-people-affected.column.vulnerability-assessment-validated'),
         draggable: false,
@@ -186,7 +179,6 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
           selectedForValidation: person.selectedForValidationDate
             ? formatDate(person.selectedForValidationDate, this.dateFormat, this.locale)
             : null,
-          scannedQrCode: person.scannedQrDate ? formatDate(person.scannedQrDate, this.dateFormat, this.locale) : null,
           vulnerabilityAssessmentValidated: person.validationDate ? formatDate(person.validationDate, this.dateFormat, this.locale) : null,
           finalScore: person.score,
         };

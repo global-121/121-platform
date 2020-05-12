@@ -204,17 +204,6 @@ export class ProgramController {
     await this.programService.selectForValidation(params.programId, data);
   }
 
-  @Roles(UserRole.ProgramManager)
-  @ApiOperation({ title: 'Store Scanned-QR-date for PA (from AW-app)' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
-  @Post('store-qr-scan-date/:programId')
-  public async storeQrScanDate(
-    @Param() params,
-    @Body() data: DidsDto,
-  ): Promise<void> {
-    await this.programService.storeQrScanDate(params.programId, data);
-  }
-
   @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
   @ApiOperation({ title: 'Include set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })

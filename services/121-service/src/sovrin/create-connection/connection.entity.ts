@@ -107,13 +107,6 @@ export class ConnectionEntity {
     default: () => null,
     nullable: true,
   })
-  public scannedQrDate: Date;
-
-  @Column({
-    type: 'timestamp',
-    default: () => null,
-    nullable: true,
-  })
   public inclusionDate: Date;
 
   @Column({

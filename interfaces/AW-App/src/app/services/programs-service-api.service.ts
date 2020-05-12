@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { Program } from '../models/program.model';
 
@@ -63,18 +63,6 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(environment.url_121_service_api, '/appointment/appointments')
       .toPromise();
-  }
-
-  storeScannedQrDate(programId: number | string, dids: any[]): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      `/programs/store-qr-scan-date/${programId}`,
-      {
-        dids: JSON.stringify(dids),
-      },
-    ).pipe(
-      tap((response) => console.log(response)),
-    ).toPromise();
   }
 
   getPrefilledAnswers(did: string, programId: number): Observable<any> {

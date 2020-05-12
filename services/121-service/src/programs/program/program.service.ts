@@ -441,30 +441,6 @@ export class ProgramService {
     }
   }
 
-  public async storeQrScanDate(programId: number, dids: object): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    const qrScanDate = new Date();
-    console.log(dids);
-
-    for (let did of JSON.parse(dids['dids'])) {
-      console.log(did);
-      let connection = await this.connectionRepository.findOne({
-        where: { did: did.did },
-      });
-      if (!connection) {
-        continue;
-      }
-
-      connection.scannedQrDate = qrScanDate;
-      await this.connectionRepository.save(connection);
-    }
-  }
-
   public async include(programId: number, dids: object): Promise<void> {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
@@ -763,7 +739,6 @@ export class ProgramService {
       connectionReponse['appliedDate'] = connection.appliedDate;
       connectionReponse['selectedForValidationDate'] =
         connection.selectedForValidationDate;
-      connectionReponse['scannedQrDate'] = connection.scannedQrDate;
       connectionReponse['validationDate'] = connection.validationDate;
       connectionReponse['inclusionDate'] = connection.inclusionDate;
       if (privacy) {
