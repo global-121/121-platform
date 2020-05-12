@@ -256,7 +256,7 @@ export class ValidateProgramComponent implements ValidationComponent {
       }
 
       // If offline DID is already stored delete it from array first
-      storedCredentials = storedCredentials.filter(credential => !(credential.did === this.did));
+      storedCredentials = storedCredentials.filter(storedCredential => !(storedCredential.did === this.did));
 
       storedCredentials.push(credential);
       await this.storage.set(this.ionicStorageTypes.credentials, storedCredentials);

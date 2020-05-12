@@ -33,7 +33,7 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
     }
 
     this.initNew();
-   }
+  }
 
   async initNew() {
     this.conversationService.startLoading();
@@ -53,8 +53,6 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
     // this.confirmAction = ConfirmAction.confirm;
   }
 
-
-  
   public changePreprinted($event) {
     this.preprinted = $event.detail.value === 'yes';
     this.preprintedChoice = true;
