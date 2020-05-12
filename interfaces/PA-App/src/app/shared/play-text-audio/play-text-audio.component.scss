@@ -2,18 +2,8 @@
   display: inline-block;
   vertical-align: middle;
 
-  &.is-thin {
-    --padding-start: 0.5em;
-    --padding-end: 0.5em;
-  }
-
-  &.is-for-submit {
-    // Fake the original button-shape as a background of the real button:
-    --original-border-radius: 64px;
-    --border-radius: 4px;
-
-    overflow: hidden;
-    border-top-left-radius: var(--original-border-radius);
-    border-bottom-left-radius: var(--original-border-radius);
-  }
+  --padding-start: 0.35em;
+  --padding-end: 0.35em;
+  --padding-top: 0.35em;
+  --padding-bottom: 0.35em;
 }

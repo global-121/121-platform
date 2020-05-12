@@ -11,12 +11,6 @@ const enum PlayerState {
   error,
 }
 
-enum ButtonType {
-  forSubmit = 'forSubmit',
-  forSubmitSecondary = 'forSubmitSecondary',
-  forRadio = 'forRadio',
-}
-
 @Component({
   selector: 'play-text-audio',
   templateUrl: './play-text-audio.component.html',
@@ -31,10 +25,6 @@ export class PlayTextAudioComponent implements OnInit {
 
   @Input()
   public color: string;
-
-  @Input()
-  public type: ButtonType;
-  public buttonTypes = ButtonType;
 
   public alwaysVisible = environment.alwaysShowTextPlayer;
   public isDisabled = false;

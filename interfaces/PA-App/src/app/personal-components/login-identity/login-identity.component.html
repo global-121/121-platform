@@ -22,7 +22,6 @@
                  class="ion-nowrap ion-align-items-center ion-margin-top"
         >
           <play-text-audio key="personal.login-identity.submit-username"
-                           type="forSubmit"
                            size="default"
           ></play-text-audio>
           <ion-button [disabled]="isInProgress || isDisabled"
@@ -49,7 +48,6 @@
                 class="ion-nowrap ion-align-items-center ion-margin-top"
       >
         <play-text-audio key="personal.login-identity.submit-password"
-                         type="forSubmit"
                          size="default"
         ></play-text-audio>
         <ion-button *ngIf="password && !isDisabled"

@@ -8,11 +8,7 @@
             [attr.title]="buttonLabel"
             [attr.aria-label]="buttonLabel"
             (click)="toggleState()"
-            [ngClass]="{
-              'is-for-submit': (type === buttonTypes.forSubmit),
-              'is-thin': (type === buttonTypes.forSubmit) || (type === buttonTypes.forRadio),
-              'play-text-audio': true
-            }"
+            class="play-text-audio"
 >
   <ion-icon [name]="iconName"
             size="small"
