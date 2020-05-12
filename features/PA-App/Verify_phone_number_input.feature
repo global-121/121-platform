@@ -14,7 +14,7 @@ Feature: Verify phone number input
   Scenario: Accept a correct phone number value
     Given a "phone-number"-input is shown
     When the PA fills in the phone number correctly
-    Then a positive confirmation message is shown
+    Then a positive feedback message is shown
 
     Examples:
       | Correct phone number value |

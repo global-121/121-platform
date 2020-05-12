@@ -6,7 +6,6 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { UiService } from 'src/app/services/ui.service';
 
 import { createRandomString } from 'src/app/helpers/createRandomString';
 import { environment } from 'src/environments/environment';
@@ -39,7 +38,6 @@ export class CreateIdentityComponent extends PersonalComponent {
     public sovrinService: SovrinService,
     public programsServiceApiService: ProgramsServiceApiService,
     public paData: PaDataService,
-    public uiService: UiService,
   ) {
     super();
     this.useLocalStorage = environment.localStorage;
@@ -119,7 +117,6 @@ export class CreateIdentityComponent extends PersonalComponent {
       async () => {
         this.usernameNotUnique = false;
         await this.executeSovrinFlow();
-        this.uiService.showUserMenu();
         this.conversationService.stopLoading();
         this.complete();
       },

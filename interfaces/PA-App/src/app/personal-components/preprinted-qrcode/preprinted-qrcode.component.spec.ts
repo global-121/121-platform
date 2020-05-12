@@ -1,5 +1,14 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+<<<<<<< HEAD
+=======
+import { TranslateModule } from '@ngx-translate/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+
+import { PaDataService } from 'src/app/services/padata.service';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
+import { ModalController } from '@ionic/angular';
+>>>>>>> upstream/master
 
 import { PreprintedQrcodeComponent } from './preprinted-qrcode.component';
 
@@ -10,7 +19,24 @@ describe('PreprintedQrcodeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PreprintedQrcodeComponent ],
+<<<<<<< HEAD
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+=======
+      imports: [
+        TranslateModule.forRoot(),
+        HttpClientTestingModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: PaDataService,
+          useValue: MockPaDataService,
+        },
+        {
+          provide: ModalController,
+        },
+      ],
+>>>>>>> upstream/master
     })
     .compileComponents();
   }));

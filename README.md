@@ -5,9 +5,6 @@
 
 ---
 
-- [List of API endpoints](./API%20Reference.md)  
-
-
 ## Status
 
 | Interfaces       | Build Status                                                                                                                                                                                                                              |

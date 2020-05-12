@@ -85,6 +85,9 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - [`ngx-translate-lint`](https://www.npmjs.com/package/ngx-translate-lint)  
     A lint-tool to check for missing or unused translations or typos in keys.
 
+- [`ngx-scanner` v2](https://github.com/zxing-js/ngx-scanner/tree/v2.0.1)
+  An Angular-component to scan QR-codes with a browser.
+
 
 ### Continuous Integration (CI)
 Every interface has their own Azure Pipeline set up to run tests and generate 'builds'.  

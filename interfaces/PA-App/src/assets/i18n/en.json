@@ -1,7 +1,9 @@
 {
-  "DEVICE": "Device",
-  "WORLD": "Community",
-  "YOU": "You",
+  "tabs": {
+    "you": "You",
+    "community": "Community",
+    "account": "Account"
+  },
   "account": {
     "change-password": "Change password",
     "delete-account-header": "Enter your password if you are sure you want to delete your Digital ID",
@@ -89,7 +91,11 @@
     "preprinted-qrcode": {
       "introduction": "Do you have a pre-printed QR-code?",
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "start-scanner": "Start scanner",
+      "try-again": "Try again",
+      "error": "The code you scanned cannot be used, please try another one.",
+      "result-ok": "The QR-code you scanned is now connected to your account."
     },
     "select-appointment": {
       "at": "At",
