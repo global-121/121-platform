@@ -1,6 +1,6 @@
 <section>
   <dialogue-turn>
-    <play-text-audio key="personal.login-identity.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
+    <play-text-audio key="personal.login-identity.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
       {{ 'personal.login-identity.introduction'|translate }}
     </p>
@@ -62,7 +62,7 @@
   <dialogue-turn *ngIf="incorrectCredentials"
                  [isSpoken]="incorrectCredentials"
   >
-    <play-text-audio key="personal.login-identity.incorrect-credentials" class="ion-float-end ion-margin-start"></play-text-audio>
+    <play-text-audio key="personal.login-identity.incorrect-credentials" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
       {{ 'personal.login-identity.incorrect-credentials'|translate }}
     </p>

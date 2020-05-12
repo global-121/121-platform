@@ -1,20 +1,20 @@
 <section *ngIf="!isCanceled">
   <dialogue-turn [actor]="ngo">
     <p>
-      <play-text-audio key="personal.set-notification-number.introduction1" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.set-notification-number.introduction1" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.set-notification-number.introduction1'|translate }}
     </p>
     <ul>
       <li>
-        <play-text-audio key="personal.set-notification-number.introduction2" class="ion-float-end ion-margin-start"></play-text-audio>
+        <play-text-audio key="personal.set-notification-number.introduction2" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.set-notification-number.introduction2'|translate }}
       </li>
       <li>
-        <play-text-audio key="personal.set-notification-number.introduction3" class="ion-float-end ion-margin-start"></play-text-audio>
+        <play-text-audio key="personal.set-notification-number.introduction3" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.set-notification-number.introduction3'|translate }}
       </li>
       <li>
-        <play-text-audio key="personal.set-notification-number.introduction4" class="ion-float-end ion-margin-start"></play-text-audio>
+        <play-text-audio key="personal.set-notification-number.introduction4" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.set-notification-number.introduction4'|translate }}
       </li>
     </ul>
@@ -67,7 +67,7 @@
                  *ngIf="hasValidationError"
                  [isSpoken]="hasValidationError"
   >
-    <play-text-audio key="validation.phoneNumber" class="ion-float-end ion-margin-start"></play-text-audio>
+    <play-text-audio key="validation.phoneNumber" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
       {{ 'validation.phoneNumber'|translate }}
     </p>
@@ -77,11 +77,11 @@
                  [isSpoken]="choiceMade"
   >
     <ng-container *ngIf="!phoneSkipped">
-      <play-text-audio key="personal.set-notification-number.conclusion-submitted" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.set-notification-number.conclusion-submitted" class="ion-float-start ion-margin-end"></play-text-audio>
       <p [innerHTML]="'personal.set-notification-number.conclusion-submitted'|translate:{ phone:'<strong>'+phoneNumber+'</strong>' }"></p>
     </ng-container>
     <ng-container *ngIf="phoneSkipped">
-      <play-text-audio key="personal.set-notification-number.conclusion-skipped" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.set-notification-number.conclusion-skipped" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>{{ 'personal.set-notification-number.conclusion-skipped'|translate }}</p>
     </ng-container>
   </dialogue-turn>
@@ -90,7 +90,7 @@
                  [isSpoken]="choiceMade && !useLocalStorage"
                  isConnected="true"
   >
-    <play-text-audio key="personal.set-notification-number.logout-info" class="ion-float-end ion-margin-start"></play-text-audio>
+    <play-text-audio key="personal.set-notification-number.logout-info" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
       {{ 'personal.set-notification-number.logout-info'|translate }}
     </p>

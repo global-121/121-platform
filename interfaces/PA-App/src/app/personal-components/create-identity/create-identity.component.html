@@ -1,6 +1,6 @@
 <section>
     <dialogue-turn>
-      <play-text-audio key="personal.create-identity.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.create-identity.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
         {{ 'personal.create-identity.introduction'|translate }}
       </p>
@@ -14,7 +14,7 @@
                    *ngIf="useLocalStorage"
                    [isSpoken]="useLocalStorage"
     >
-      <play-text-audio key="personal.create-identity.password-only" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.create-identity.password-only" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
         {{ 'personal.create-identity.password-only'|translate }}
       </p>
@@ -29,7 +29,7 @@
                    *ngIf="!useLocalStorage"
                    [isSpoken]="!useLocalStorage"
     >
-      <play-text-audio key="personal.create-identity.username-password" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.create-identity.username-password" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
         {{ 'personal.create-identity.username-password'|translate }}
       </p>
@@ -134,7 +134,7 @@
     <dialogue-turn *ngIf="unequalPasswords"
                    [isSpoken]="unequalPasswords"
     >
-      <play-text-audio key="personal.create-identity.unequal-passwords" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.create-identity.unequal-passwords" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
         {{ 'personal.create-identity.unequal-passwords'|translate }}
       </p>
@@ -142,7 +142,7 @@
     <dialogue-turn *ngIf="usernameNotUnique"
                    [isSpoken]="usernameNotUnique"
     >
-      <play-text-audio key="personal.create-identity.username-not-unique" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.create-identity.username-not-unique" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
         {{ 'personal.create-identity.username-not-unique'|translate }}
       </p>
@@ -150,7 +150,7 @@
     <dialogue-turn *ngIf="isDisabled"
                    [isSpoken]="isDisabled"
     >
-      <play-text-audio key="personal.create-identity.conclusion" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.create-identity.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
         {{ 'personal.create-identity.conclusion'|translate }}
       </p>

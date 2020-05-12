@@ -1,6 +1,6 @@
 <section>
   <dialogue-turn [actor]="program?.ngo">
-    <play-text-audio key="personal.select-fsp.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
+    <play-text-audio key="personal.select-fsp.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
     <p>
       {{ 'personal.select-fsp.introduction'|translate }}
     </p>
@@ -44,7 +44,7 @@
                  *ngIf="fspSubmitted"
                  [isSpoken]="fspSubmitted"
   >
-    <play-text-audio key="personal.select-fsp.conclusion" class="ion-float-end ion-margin-start"></play-text-audio>
+    <play-text-audio key="personal.select-fsp.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
     <p [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:'<strong>'+chosenFsp?.fsp+'</strong>' }"></p>
   </dialogue-turn>
 
@@ -52,7 +52,7 @@
     <dialogue-turn isConnected="true"
                    isSpoken="true"
     >
-      <play-text-audio key="personal.select-fsp.attributes.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.select-fsp.attributes.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
         {{ 'personal.select-fsp.attributes.introduction'|translate }}
       </p>
@@ -70,7 +70,7 @@
                    *ngIf="showResultSuccess"
                    [isSpoken]="showResultSuccess"
     >
-      <play-text-audio key="personal.select-fsp.attributes.success" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.select-fsp.attributes.success" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
         {{ 'personal.select-fsp.attributes.success'|translate }}
       </p>
@@ -79,7 +79,7 @@
                    *ngIf="showResultError"
                    [isSpoken]="showResultError"
     >
-      <play-text-audio key="personal.select-fsp.attributes.error" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.select-fsp.attributes.error" class="ion-float-start ion-margin-end"></play-text-audio>
       <p>
         {{ 'personal.select-fsp.attributes.error'|translate }}
       </p>

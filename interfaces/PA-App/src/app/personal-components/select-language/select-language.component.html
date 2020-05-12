@@ -1,7 +1,7 @@
 <section #selectLanguage>
   <dialogue-turn>
     <ng-container *ngFor="let language of languages">
-      <play-text-audio [key]="language.introductionKey" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio [key]="language.introductionKey" class="ion-float-start ion-margin-end"></play-text-audio>
       <div [innerHTML]="language.introduction|translate"
            class="ion-margin-bottom"
       ></div>
@@ -59,7 +59,7 @@
   <dialogue-turn *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
-    <play-text-audio key="personal.select-language.result" class="ion-float-end ion-margin-start"></play-text-audio>
+    <play-text-audio key="personal.select-language.result" class="ion-float-start ion-margin-end"></play-text-audio>
     <p [innerHTML]="'personal.select-language.result'|translate:{ language:'<strong>'+languageChoiceName+'</strong>' }"></p>
   </dialogue-turn>
 </section>
