@@ -20,6 +20,15 @@ Feature: Link preprinted QR-code
     When the PA does not allow access to the camera(s)
     Then a warning message is shown
 
+  Scenario: Wrong default camera is selected
+    Given the device has multiple camera's
+    When the PA presses "yes" at the first question
+    Then a "start scanner" button is shown and the "Scan QR-code" window is shown
+    And a "switch camera" button is shown
+    And sometimes the wrong camera is selected, resulting in a waiting screen
+    When the PA clicks the "switch camera" button
+    Then a camera preview is shown
+    
   Scenario: Successful scanning of QR-code
     Given the PA presses "yes" at the first question
     Given a "start scanner" button is shown and the "Scan QR-code" window is shown

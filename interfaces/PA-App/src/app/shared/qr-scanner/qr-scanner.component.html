@@ -47,7 +47,7 @@
 
   <ion-fab vertical="top" horizontal="end" slot="fixed">
     <ion-fab-button *ngIf="torchAvailable"
-                    [title]="'qr-scanner.toggle-flash|translate'"
+                    [title]="toggleFlashTitle"
                     (click)="torchEnabled=!torchEnabled"
                     [color]="torchEnabled ? 'success' : 'light'"
                     class="ion-margin-vertical"
@@ -55,7 +55,7 @@
       <ion-icon [name]="torchEnabled ? 'flash' : 'flash-off'"></ion-icon>
     </ion-fab-button>
     <ion-fab-button *ngIf="switchCamerasAvailable"
-                    [title]="'qr-scanner.switch-camera|translate'"
+                    [title]="cameraSwitchTitle"
                     (click)="switchCamera()"
                     color="light"
                     class="ion-margin-vertical"
