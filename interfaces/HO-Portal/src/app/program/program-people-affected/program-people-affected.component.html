@@ -8,8 +8,7 @@
             class="ion-margin-end"
             [(ngModel)]="action"
     >
-      <!-- <option value="">{{ 'page.program.program-people-affected.choose-action'|translate }}</option> -->
-      <option [ngValue]="action.id" *ngFor="let action of bulkActionsEnabled;">{{ action.label }}</option>
+      <option [value]="action.id" *ngFor="let action of bulkActionsEnabled;">{{ action.label }}</option>
     </select>
     <confirm-prompt [disabled]="applyBtnDisabled" 
                     (confirm)="applyAction()"
