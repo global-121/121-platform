@@ -4,7 +4,6 @@ import { environment } from 'src/environments/environment';
 enum Actor {
   system = 'system',
   self = 'self',
-  ngoA = 'NGO A',
   ngoDorcas = 'Dorcas',
   ngoEagles = 'Eagles'
 }
@@ -29,7 +28,8 @@ export class DialogueTurnComponent implements OnChanges {
 
   isSelf: boolean;
   isSystem: boolean;
-  isNgoA: boolean;
+
+  // Hard-coded initial HOs:
   isNgoDorcas: boolean;
   isNgoEagles: boolean;
 
@@ -52,7 +52,6 @@ export class DialogueTurnComponent implements OnChanges {
   }
 
   updateNgos() {
-    this.isNgoA = (this.actor === Actor.ngoA);
     this.isNgoDorcas = (this.actor === Actor.ngoDorcas);
     this.isNgoEagles = (this.actor === Actor.ngoEagles);
   }
