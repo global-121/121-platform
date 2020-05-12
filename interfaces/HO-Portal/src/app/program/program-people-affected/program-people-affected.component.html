@@ -4,11 +4,12 @@
   <ion-row class="ion-align-items-center">
     <select name="bulkActions" 
             title="Bulk action"
-            (change)="selectAction($event.target.value); $event.target.value='';" 
+            (change)="selectAction();" 
             class="ion-margin-end"
+            [(ngModel)]="action"
     >
-      <option value="">{{ 'page.program.program-people-affected.choose-action'|translate }}</option>
-      <option [value]="action.id" *ngFor="let action of bulkActionsEnabled;">{{ action.label }}</option>
+      <!-- <option value="">{{ 'page.program.program-people-affected.choose-action'|translate }}</option> -->
+      <option [ngValue]="action.id" *ngFor="let action of bulkActionsEnabled;">{{ action.label }}</option>
     </select>
     <confirm-prompt [disabled]="applyBtnDisabled" 
                     (confirm)="applyAction()"

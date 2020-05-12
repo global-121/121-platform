@@ -39,8 +39,13 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   public selectedPeople: any[] = [];
 
   public applyBtnDisabled = true;
-  private action: BulkAction;
+  private action = BulkAction.chooseAction;
   public bulkActions = [
+    {
+      id: BulkAction.chooseAction,
+      label: this.translate.instant('page.program.program-people-affected.choose-action'),
+      roles: [UserRole.ProgramManager, UserRole.PrivacyOfficer]
+    },
     {
       id: BulkAction.selectForValidation,
       label: this.translate.instant('page.program.program-people-affected.actions.' + BulkAction.selectForValidation),
@@ -191,8 +196,13 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     return row.checkboxVisible;
   }
 
-  public selectAction(action) {
-    this.action = action;
+  public selectAction() {
+    if (this.action === BulkAction.chooseAction) {
+      this.loadData();
+      this.applyBtnDisabled = true;
+      return;
+    }
+
     this.applyBtnDisabled = false;
 
     this.peopleAffected = this.peopleAffected.map((person) => {
@@ -221,7 +231,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     const nrCheckboxes = people.filter(i => i.checkboxVisible).length;
     if (nrCheckboxes === 0) {
       this.actionResult(this.translate.instant('page.program.program-people-affected.no-checkboxes'));
-      this.action = null;
+      this.action = BulkAction.chooseAction;
       this.applyBtnDisabled = true;
     }
   }
@@ -237,7 +247,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     if (this.action === BulkAction.selectForValidation) {
       await this.programsService.selectForValidation(this.programId, this.selectedPeople);
       this.loadData();
-      this.action = null;
+      this.action = BulkAction.chooseAction;
       this.applyBtnDisabled = true;
     }
   }

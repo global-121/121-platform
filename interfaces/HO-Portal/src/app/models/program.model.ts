@@ -42,5 +42,6 @@ export enum ProgramPhase {
 }
 
 export enum BulkAction {
+  chooseAction = 'choose-action',
   selectForValidation = 'select-for-validation',
 }
