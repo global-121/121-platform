@@ -23,7 +23,7 @@
                   class="ion-no-padding ion-text-wrap"
         >
           <ion-label class="ion-text-wrap">
-            <p>
+            <div>
               {{ timeslot.startDate|date:dateFormat }}: {{ timeslot.startDate|date:timeFormat }}
               -
               <span *ngIf="!isSameDay(timeslot.startDate, timeslot.endDate)">
@@ -31,7 +31,7 @@
                 {{ timeslot.endDate|date:dateFormat }}:
               </span>
               {{ timeslot.endDate|date:timeFormat }}
-            </p>
+            </div>
             <ion-note class="ion-text-wrap">
               {{ timeslot.location }}
             </ion-note>
