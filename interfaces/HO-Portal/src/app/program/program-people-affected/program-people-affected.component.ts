@@ -6,6 +6,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { formatDate } from '@angular/common';
 import { AlertController } from '@ionic/angular';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -59,6 +60,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   constructor(
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService,
+    private bulkActionService: BulkActionsService,
     private alertController: AlertController,
   ) {
     this.locale = this.translate.getBrowserCultureLang();
@@ -216,11 +218,8 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       }
       // END
 
-      if (this.action === BulkAction.selectForValidation) {
-        personData.checkboxVisible = personData.tempScore && !personData.selectedForValidation ? true : false;
-      }
+      return this.bulkActionService.updateCheckboxes(this.action, personData);
 
-      return personData;
     });
     this.updateSubmitWarning();
     this.countCheckboxes(this.peopleAffected);
@@ -244,12 +243,11 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   }
 
   public async applyAction() {
-    if (this.action === BulkAction.selectForValidation) {
-      await this.programsService.selectForValidation(this.programId, this.selectedPeople);
-      this.loadData();
-      this.action = BulkAction.chooseAction;
-      this.applyBtnDisabled = true;
-    }
+    await this.bulkActionService.applyAction(this.action, this.programId, this.selectedPeople);
+
+    this.loadData();
+    this.action = BulkAction.chooseAction;
+    this.applyBtnDisabled = true;
   }
 
   private async actionResult(resultMessage: string) {
