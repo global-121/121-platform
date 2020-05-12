@@ -14,7 +14,7 @@ Feature: Update_inclusion_decision
     And for each person a "Digital ID Validated" date is shown
     And for each person a "Vulnerability Assessment Validated" date is shown and it is now equal to "Digital ID Validated" date
     And for each person a "inclusion score" is shown
-    And for each person a "include checkbox" is shown if "selected phase" is "active phase" and "active phase" is "Inclusion" or "Finalize" or "Payment"
+    And for each person a "include checkbox" is shown if "selected phase" is "active phase" and "active phase" is "Inclusion" or "Review inclusion" or "Payment"
     And the "include checkbox" is checked for the "included" persons and unchecked for "excluded" persons
     And for each person a current "included status" is shown
     And for each person a "Inclusion communication" date is shown if already available
@@ -22,7 +22,7 @@ Feature: Update_inclusion_decision
     And for each person a "name" is shown
     And for each person a "date of birth" is shown
     And an "update inclusion decision" button is shown 
-    And this button is enabled if "selected phase" is "active phase" and "active phase" is "Inclusion" or "Finalize" or "Payment"
+    And this button is enabled if "selected phase" is "active phase" and "active phase" is "Inclusion" or "Review inclusion" or "Payment"
 
   Scenario: Sort people in/excluded in a program by property(score, creation-date, update-date, name, date-of-birth)
     Given the user views the "program" page

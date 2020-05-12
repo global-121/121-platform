@@ -69,6 +69,11 @@
                         [phaseReady]="phaseReady"
                         (isNewPhase)="onNewPhase($event)"
         ></app-phase-next>
+        
+        <app-program-people-affected [selectedPhase]="selectedPhase"
+                                     [programId]="program?.id"
+                                     [userRole]="currentUserRole"
+        ></app-program-people-affected>
 
         <app-program-people [selectedPhase]="selectedPhase"
                             [programId]="program?.id"

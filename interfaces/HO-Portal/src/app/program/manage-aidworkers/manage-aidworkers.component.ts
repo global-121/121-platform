@@ -27,9 +27,9 @@ export class ManageAidworkersComponent implements OnChanges {
   public componentVisible: boolean;
   private presentInPhases = [
     ProgramPhase.design,
-    ProgramPhase.registration,
+    ProgramPhase.registrationValidation,
     ProgramPhase.inclusion,
-    ProgramPhase.finalize,
+    ProgramPhase.reviewInclusion,
     ProgramPhase.payment,
     ProgramPhase.evaluation,
   ];

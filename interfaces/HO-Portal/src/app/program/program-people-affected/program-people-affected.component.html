@@ -1,0 +1,45 @@
+<section *ngIf="componentVisible">
+  <h2>{{ 'page.program.program-people-affected.section-title'|translate }}</h2>
+
+  <ion-row class="ion-align-items-center">
+    <select name="bulkActions" 
+            title="Bulk action"
+            (change)="selectAction();" 
+            class="ion-margin-end"
+            [(ngModel)]="action"
+    >
+      <option [value]="action.id" *ngFor="let action of bulkActionsEnabled;">{{ action.label }}</option>
+    </select>
+    <confirm-prompt [disabled]="applyBtnDisabled" 
+                    (confirm)="applyAction()"
+                    [subHeader]="'page.program.program-people-affected.submit-warning'|translate" 
+                    [message]="submitWarning.message"
+                    class="ion-float-end" 
+    >
+      {{ 'page.program.program-people-affected.apply-action'|translate }}
+    </confirm-prompt>
+  </ion-row>
+
+
+  <ngx-datatable #people
+                class="bootstrap"
+                limit="50"
+                columnMode="fixed"
+                rowHeight="auto"
+                scrollbarH="true"
+                headerHeight="50"
+                footerHeight="50"
+                reorderable="false"
+                sortType="single"
+                loadingIndicator="true"
+                [columns]="columns"
+                [rows]="peopleAffected"
+                selectionType="checkbox"
+                checkboxable="true"
+                headerCheckboxable="true"
+                [displayCheck]="showCheckbox"
+                [selected]="selectedPeople"
+                (select)="updateSubmitWarning()"
+  ></ngx-datatable>
+
+</section>

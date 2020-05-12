@@ -29,17 +29,17 @@
           "label": "Design",
           "btnText": "Open for registration"
         },
-        "registration": {
-          "label": "Registration",
-          "btnText": "Close registration"
+        "registrationValidation": {
+          "label": "Registration & validation",
+          "btnText": "Close registration & validation"
         },
         "inclusion": {
           "label": "Inclusion",
-          "btnText": "Move to finalize"
+          "btnText": "Move to Review inclusion"
         },
-        "finalize": {
-          "label": "Finalize",
-          "btnText": "Freeze (move to payment)"
+        "reviewInclusion": {
+          "label": "Review Inclusion",
+          "btnText": "Finalize Inclusion (move to payment)"
         },
         "payment": {
           "label": "Payment",
@@ -117,8 +117,30 @@
         "export-list": "Export list",
         "export-error": "Something went wrong with the export."
       },
+      "program-people-affected": {
+        "section-title": "Manage People Affected (for Validation)",
+        "choose-action": "Choose action...",
+        "apply-action": "Apply action",
+        "column": {
+          "select": "Select",
+          "person": "Person",
+          "digital-id-created": "Digital ID Created",
+          "vulnerability-assessment-completed": "Vulnerability Assessment Completed",
+          "selected-for-validation": "Selected for validation",
+          "scanned-qr": "QR-code scanned",
+          "vulnerability-assessment-validated": "Vulnerability Assessment validated",
+          "final-score": "Final score",
+          "temp-score": "Initial score"
+        },
+        "actions": {
+          "select-for-validation": "Select for validation"
+        },
+        "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
+        "submit-warning": "You are about to:",
+        "submit-warning-people-affected": "People Affected"
+      },
       "program-people": {
-        "section-title": "Manage People Affected",
+        "section-title": "Manage People Affected (for Inclusion)",
         "targetNumber": "The target number of People Affected to include is: ",
         "noConnections": "There are no enrolled People Affected yet.",
         "noConnectionsPrivacy": "There are no included or excluded People Affected yet.",
