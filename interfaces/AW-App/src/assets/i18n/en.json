@@ -45,18 +45,18 @@
       "introduction": "Now scan the QR-code of the PA to identify him/her in the system.",
       "scan-button": "Scan QR-code",
       "error": "The scanned QR code did nog contain a DID or program number. You may have scanned the a wrong QR-code",
-      "unknownDidCombination": "The scanned QR-code did not contain a valid combination of DID and program-ID. You can try scanning another QR-code.",
+      "unknownDidCombination": "QR-code not found. You can try scanning another QR-code.",
       "conclusion": "Thank you. You have scanned a valid combination of DID and program-ID.",
       "main-menu": "Back to main menu"
     },
     "validate-program": {
       "introduction": "Below you see the PA's information for the specific program. Check it with the PA, adapt where necessary, and confirm.",
-      "submit": "Submit answers",
+      "submit": "Confirm",
       "dob-feedback": "The date of birth does not have a valid format. Please adjust and save again.",
-      "please-confirm": "Below is an overview of the PA's information. Please confirm and submit.",
+      "please-confirm": "Below is an overview of the PA's information. Please confirm.",
       "change": "Change information",
-      "confirm-button": "Issue Program Credential",
-      "conclusion": "The Program credential has been created. As such there is no need, and thus no possibility, for you to see the PA's personal information any more here."
+      "confirm-button": "Store Program Credential",
+      "conclusion": "The Program credential has been created. Please make sure to upload it when internet is available."
     }
   },
   "connection": {

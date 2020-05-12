@@ -15,7 +15,7 @@ describe('PreprintedQrcodeComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PreprintedQrcodeComponent ],
+      declarations: [PreprintedQrcodeComponent],
       imports: [
         TranslateModule.forRoot(),
         HttpClientTestingModule,
@@ -31,7 +31,7 @@ describe('PreprintedQrcodeComponent', () => {
         },
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -8,6 +8,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { of } from 'rxjs';
 import { IonContent, IonicModule } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
+
+const storageIonicMock: any = {
+  get: () => new Promise<any>((resolve) => resolve('1')),
+};
 
 
 describe('ValidateProgramComponent', () => {
@@ -38,6 +43,10 @@ describe('ValidateProgramComponent', () => {
           provide: IonContent,
           useValue: IonContent,
         },
+        {
+          provide: Storage,
+          useValue: storageIonicMock
+        }
       ]
     })
       .compileComponents();

@@ -43,7 +43,7 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
     }
 
     this.initNew();
-   }
+  }
 
   async initNew() {
     this.conversationService.startLoading();
