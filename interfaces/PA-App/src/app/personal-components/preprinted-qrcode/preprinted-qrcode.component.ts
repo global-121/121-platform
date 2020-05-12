@@ -104,8 +104,9 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
     }
 
     await this.programsService.addQrIdentifier(this.did, this.scanResult).then(
-      () => {
+      async () => {
         this.scanResultError = false;
+        await this.paData.store(this.paData.type.usePreprintedQrCode, this.hasPreprinted);
         this.complete();
       },
       () => {

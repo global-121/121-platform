@@ -30,8 +30,8 @@ export class MeetingReminderComponent extends PersonalComponent {
   public chosenTimeslot: Timeslot;
   public daysToMeeting: number;
 
+  public showQrCode: boolean;
   public qrDataString: string;
-  public qrDataShow = false;
 
   constructor(
     public conversationService: ConversationService,
@@ -51,6 +51,7 @@ export class MeetingReminderComponent extends PersonalComponent {
   }
 
   async initNew() {
+    await this.shouldShowQrCode();
     await this.getDid();
     await this.getProgram();
     await this.generateContent();
@@ -63,6 +64,12 @@ export class MeetingReminderComponent extends PersonalComponent {
 
     // There is no difference between first use and future use of this component:
     this.initNew();
+  }
+
+  private async shouldShowQrCode() {
+    this.showQrCode = !await this.paData.retrieve(
+      this.paData.type.usePreprintedQrCode,
+    );
   }
 
   private async getDid() {
@@ -91,7 +98,6 @@ export class MeetingReminderComponent extends PersonalComponent {
     };
 
     this.qrDataString = JSON.stringify(qrData);
-    this.qrDataShow = true;
   }
 
   private getDaysToAppointment(appointmentDate: Date) {
@@ -136,5 +142,4 @@ export class MeetingReminderComponent extends PersonalComponent {
       next: this.getNextSection(),
     });
   }
-
 }
