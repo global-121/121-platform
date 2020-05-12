@@ -10,7 +10,6 @@
                 'ion-no-margin': !!buttonKey
               }"
   >
-    <ion-icon name="information-circle-outline" slot="start"></ion-icon>
 
     <ng-container *ngIf="buttonKey">{{ buttonKey|translate }}</ng-container>
     <ng-content *ngIf="!buttonKey"></ng-content>
