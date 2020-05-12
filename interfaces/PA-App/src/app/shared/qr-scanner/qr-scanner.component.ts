@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 import { ModalController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'qr-scanner',
@@ -23,16 +22,7 @@ export class QrScannerComponent {
   public switchCamerasAvailable = false;
   public camerasAvailable: any[];
 
-  public cameraSwitchTitle: string;
-  public toggleFlashTitle: string;
-
-  constructor(
-    private modalController: ModalController,
-    private translate: TranslateService,
-  ) {
-    this.cameraSwitchTitle = this.translate.instant('qr-scanner.switch-camera');
-    this.toggleFlashTitle = this.translate.instant('qr-scanner.toggle-flash');
-  }
+  constructor(private modalController: ModalController) {}
 
   public onHasDevices = (hasDevices: boolean) => {
     this.showCompatibilityError = !hasDevices;
