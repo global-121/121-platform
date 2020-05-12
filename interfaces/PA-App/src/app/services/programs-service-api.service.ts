@@ -287,6 +287,19 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  addQrIdentifier(did: string, qrIdentifier: string): Promise<any> {
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/create-connection/add-qr-identifier',
+      {
+        did,
+        qrIdentifier,
+      },
+      true
+    )
+      .toPromise();
+  }
+
   deleteConnection(did: string): Promise<any> {
     return this.apiService.post(
       environment.url_121_service_api,

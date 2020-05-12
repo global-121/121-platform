@@ -11,7 +11,6 @@ export class Person {
   updated: string;
   appliedDate?: string;
   selectedForValidationDate?: string;
-  scannedQrDate?: string;
   validationDate?: string;
   inclusionDate?: string;
   checkboxVisible: boolean;

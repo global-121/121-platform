@@ -134,7 +134,10 @@
         },
         "actions": {
           "select-for-validation": "Select for validation"
-        }
+        },
+        "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
+        "submit-warning": "You are about to:",
+        "submit-warning-people-affected": "People Affected"
       },
       "program-people": {
         "section-title": "Manage People Affected (for Inclusion)",

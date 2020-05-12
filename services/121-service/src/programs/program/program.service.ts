@@ -427,7 +427,6 @@ export class ProgramService {
     }
 
     const selectedForValidationDate = new Date();
-    console.log(dids);
 
     for (let did of JSON.parse(dids['dids'])) {
       let connection = await this.connectionRepository.findOne({
@@ -740,7 +739,6 @@ export class ProgramService {
       connectionReponse['appliedDate'] = connection.appliedDate;
       connectionReponse['selectedForValidationDate'] =
         connection.selectedForValidationDate;
-      connectionReponse['scannedQrDate'] = null;
       connectionReponse['validationDate'] = connection.validationDate;
       connectionReponse['inclusionDate'] = connection.inclusionDate;
       if (privacy) {

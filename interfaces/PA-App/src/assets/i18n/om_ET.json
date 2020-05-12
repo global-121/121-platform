@@ -1,7 +1,8 @@
 {
-  "DEVICE": "Mi'a",
-  "WORLD": "Hawaasa",
-  "YOU": "Isini",
+  "tabs": {
+    "you": "Isini",
+    "community": "Hawaasa"
+  },
   "account": {
     "change-password": "Paaswoordii jijjiiri",
     "delete-account-header": "Adda-baastuu Dijitaalaa keessan haquuf murteessitaniittu taanaan paaswoordii keessan galchaa",

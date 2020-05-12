@@ -7,16 +7,12 @@ import { PaAccountApiService } from './pa-account-api.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { SovrinService } from './sovrin.service';
 import { JwtService } from './jwt.service';
-import { UiService } from './ui.service';
 
 import { PaDataService } from './padata.service';
 
 describe('PaDataService', () => {
   const mockJwtService = jasmine.createSpyObj('JwtService', {
     getToken: () => '',
-  });
-  const mockUiService = jasmine.createSpyObj('UiService', {
-    showUserMenu: () => { },
   });
 
   beforeEach(() => TestBed.configureTestingModule({
@@ -40,10 +36,6 @@ describe('PaDataService', () => {
       {
         provide: JwtService,
         useValue: mockJwtService,
-      },
-      {
-        provide: UiService,
-        useValue: mockUiService,
       },
     ],
   }));

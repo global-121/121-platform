@@ -4,6 +4,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
+import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 
 class ValidationAnswer {
   id: number;
@@ -26,11 +27,15 @@ export class DownloadDataComponent implements ValidationComponent {
 
   public validationData: ValidationAnswer[];
 
+  public ionicStorageTypes = IonicStorageTypes;
+
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
     private storage: Storage
   ) {}
+
+
 
   async ngOnInit() {
     await this.downloadData();
@@ -46,10 +51,10 @@ export class DownloadDataComponent implements ValidationComponent {
         this.complete();
       }
     );
-    await this.storage.set('validationData', this.validationData);
+    await this.storage.set(this.ionicStorageTypes.validationData, this.validationData);
 
     const myPrograms = await this.getProgramData(this.validationData);
-    await this.storage.set('myPrograms', myPrograms);
+    await this.storage.set(this.ionicStorageTypes.myPrograms, myPrograms);
 
     this.nrDownloaded = this.countUniqueDids(this.validationData);
     this.downloadReady = true;
