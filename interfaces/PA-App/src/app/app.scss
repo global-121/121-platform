@@ -57,6 +57,11 @@ dialogue-turn ion-button {
   }
   &.button-small.button-has-icon-only,
   &.button-small {
-    --padding-top: 0.354em;
+    --padding-top: 0.35em;
   }
+}
+
+// Add generic margin to all paragraphs
+dialogue-turn ion-card-content p {
+  margin-bottom: var(--ion-margin, 16px) !important;
 }
