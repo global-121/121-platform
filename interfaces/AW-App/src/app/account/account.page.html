@@ -1,7 +1,7 @@
 <ion-header>
-  <ion-toolbar color="secondary">
+  <ion-toolbar color="dark">
     <ion-title>
-      Account
+      {{ 'tabs.user'|translate }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -48,6 +48,7 @@
 
       <ion-button type="submit"
                   expand="block"
+                  class="ion-margin-top"
       >
         {{ 'account.login-button'|translate }}
       </ion-button>
@@ -68,7 +69,7 @@
                  *ngIf="changePasswordForm"
                  [isSpoken]="changePasswordForm"
   >
-    <strong>{{ 'account.change-password'|translate }}:</strong>
+    <h2 class="ion-text-uppercase">{{ 'account.change-password'|translate }}:</h2>
     <form method="POST" (submit)="doChangePassword($event)">
       <ion-item color="light">
         <ion-label position="stacked">{{ 'account.create-label'|translate }}</ion-label>
@@ -95,6 +96,7 @@
 
       <ion-button type="submit"
                   expand="block"
+                  class="ion-margin-top"
       >
         {{ 'account.change-password'|translate }}
       </ion-button>

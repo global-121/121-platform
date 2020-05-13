@@ -6,11 +6,11 @@ ion-tab-bar {
 ion-tab-button {
 
   &#tab-button-account {
-    color: var(--ion-color-secondary-contrast);
-    background: var(--ion-color-secondary-tint);
+    color: var(--ion-color-dark-contrast);
+    background: var(--ion-color-dark-tint);
 
     &.tab-selected {
-      background: var(--ion-color-secondary);
+      background: var(--ion-color-dark);
     }
   }
 

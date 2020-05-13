@@ -1,7 +1,8 @@
 {
-  "ACCOUNT": "Account",
-  "VALIDATION": "Validation",
-  "WORLD": "World",
+  "tabs": {
+    "user": "Aid worker",
+    "actions": "Actions"
+  },
   "account": {
     "introduction": "Welcome to 121. Please log in below.",
     "login": "Log-in form",
@@ -23,10 +24,10 @@
   },
   "validation": {
     "main-menu": {
-      "introduction": "You have access to the following actions. Please select one.",
-      "download-data": "Download data for validation",
+      "introduction": "The following actions are available. Please select one.",
+      "download-data": "Download validation data",
       "view-appointments": "View appointments",
-      "scan-qr": "Scan QR-code of Person Affected"
+      "scan-qr": "Scan PA's QR-code"
     },
     "download-data": {
       "downloading": "Validation data is being downloaded. Wait a second.",
@@ -42,7 +43,7 @@
       "main-menu": "Finished. Back to main menu."
     },
     "scan-qr": {
-      "introduction": "Now scan the QR-code of the PA to identify him/her in the system.",
+      "introduction": "Scan QR-code to retrieve PA's information.",
       "scan-button": "Scan QR-code",
       "error": "The scanned QR code did nog contain a DID or program number. You may have scanned the a wrong QR-code",
       "unknownDidCombination": "QR-code not found. You can try scanning another QR-code.",
