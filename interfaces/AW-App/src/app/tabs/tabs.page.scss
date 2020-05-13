@@ -1,25 +1,25 @@
+// Colors are aligned between AW-App and PA-App
+// See: /interfaces/AW-App/src/app/tabs/tabs.page.scss
+// See: /interfaces/PA-App/src/app/tabs/tabs.page.scss
 
 ion-tab-bar {
   border-bottom: none;
 }
 
 ion-tab-button {
+  &.tab-disabled {
+    opacity: 0.6;
+  }
 
   &#tab-button-account {
-    color: var(--ion-color-dark-contrast);
-    background: var(--ion-color-dark-tint);
-
-    &.tab-selected {
-      background: var(--ion-color-dark);
-    }
+    --color: var(--ion-color-dark-contrast);
+    --color-selected: var(--ion-color-dark-contrast);
+    --background: var(--ion-color-dark);
   }
 
   &#tab-button-validation {
-    color: var(--ion-color-primary-contrast);
-    background: var(--ion-color-primary-tint);
-
-    &.tab-selected {
-      background: var(--ion-color-primary);
-    }
+    --color: var(--ion-color-primary-contrast);
+    --color-selected: var(--ion-color-primary-contrast);
+    --background: var(--ion-color-primary);
   }
 }
