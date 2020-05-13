@@ -17,10 +17,11 @@
   >
     {{ 'account.conclusion'|translate }}
   </dialogue-turn>
-  <dialogue-turn actor="self" 
+  <dialogue-turn actor="self"
                  isSpoken="true"
   >
     <form method="POST" (submit)="doLogin($event)" *ngIf="!isLoggedIn">
+      <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
       <ion-item color="light">
         <ion-label position="stacked">{{ 'account.email-label'|translate }}</ion-label>
         <ion-input type="email"
