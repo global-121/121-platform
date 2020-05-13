@@ -7,6 +7,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { TimeoutError } from 'rxjs';
 
 @Component({
   selector: 'app-scan-qr',
@@ -14,6 +15,7 @@ import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
   styleUrls: ['./scan-qr.component.scss'],
 })
 export class ScanQrComponent implements ValidationComponent {
+  public gettingDid = false;
 
   public did: string;
   public programId: number;
@@ -33,14 +35,14 @@ export class ScanQrComponent implements ValidationComponent {
   ) {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log('init scan qr');
     this.scanQrCode();
   }
 
-  public scanQrCode() {
-    const storageSubscription = this.sessionStorageService.watchStorage().subscribe(() => {
-      this.checkScannedData();
+  public async scanQrCode() {
+    const storageSubscription = this.sessionStorageService.watchStorage().subscribe(async () => {
+      await this.checkScannedData();
       storageSubscription.unsubscribe();
       // this will call whenever your localStorage data changes
       // use localStorage code here and set your data here for ngFor
@@ -49,6 +51,7 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   public async checkScannedData() {
+    this.gettingDid = true;
     this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(async data => {
       if (this.isNotJson(data)) {
         this.scanError = true;
@@ -69,6 +72,7 @@ export class ScanQrComponent implements ValidationComponent {
       if (!didData) {
         didData = await this.findDidDataOnline();
       }
+      this.gettingDid = false;
       if (didData) {
         this.sessionStorageService.store(this.sessionStorageService.type.paData, JSON.stringify(didData));
         this.foundCorrectDid();
@@ -81,11 +85,18 @@ export class ScanQrComponent implements ValidationComponent {
 
   private async findDidDataOnline(): Promise<void> {
     console.log('findDidDataOnline');
-    const response = await this.programsService.getPrefilledAnswers(this.did, this.programId).toPromise();
-    if (response.length === 0) {
-      return;
+    try {
+      const response = await this.programsService.getPrefilledAnswers(this.did, this.programId).toPromise();
+      if (response.length === 0) {
+        return;
+      }
+      return response;
+    } catch (e) {
+        console.log('Error: ', e.name);
+        if (e.status === 0 || e instanceof TimeoutError) {
+          return;
+        }
     }
-    return response;
   }
 
   private async findDidDataOffline(): Promise<any> {

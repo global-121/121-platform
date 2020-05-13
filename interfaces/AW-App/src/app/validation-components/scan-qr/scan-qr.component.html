@@ -21,6 +21,14 @@
   >
     {{ 'validation.scan-qr.error'|translate }}
   </dialogue-turn>
+    <div class="loading-indicator"
+    [hidden]="!gettingDid"
+  >
+    <ion-spinner name="dots"
+    class="loading-indicator--spinner"
+  >
+  </ion-spinner>
+  </div>
   <dialogue-turn *ngIf="unknownDidCombination"
                  [isSpoken]="unknownDidCombination"
   >
