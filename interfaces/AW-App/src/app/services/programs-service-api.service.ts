@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Program } from '../models/program.model';
@@ -14,7 +13,7 @@ import { JwtService } from './jwt.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService, private jwtService: JwtService) {}
 
-  login(email: string, password: string): Observable<any> {
+  login(email: string, password: string): Promise<any> {
     console.log('ProgramsService : login()');
 
     return this.apiService
@@ -35,7 +34,8 @@ export class ProgramsServiceApiService {
             this.jwtService.saveToken(user.token);
           }
         }),
-      );
+      )
+      .toPromise();
   }
 
   logout() {
@@ -43,14 +43,12 @@ export class ProgramsServiceApiService {
     this.jwtService.destroyToken();
   }
 
-  changePassword(password: string): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/user/change-password',
-      {
+  changePassword(password: string): Promise<any> {
+    return this.apiService
+      .post(environment.url_121_service_api, '/user/change-password', {
         password,
-      },
-    );
+      })
+      .toPromise();
   }
 
   getProgramById(programId: number): Promise<Program> {
@@ -65,15 +63,17 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getPrefilledAnswers(did: string, programId: number): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/credential/get-answers/',
-      {
-        did,
-        programId,
-      },
-    );
+  getPrefilledAnswers(did: string, programId: number): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/credential/get-answers/',
+        {
+          did,
+          programId,
+        },
+      )
+      .toPromise();
   }
 
   downloadData(): Promise<any> {
@@ -86,15 +86,13 @@ export class ProgramsServiceApiService {
     did: string,
     programId: number,
     attributes: any,
-  ): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/credential/issue',
-      {
+  ): Promise<any> {
+    return this.apiService
+      .post(environment.url_121_service_api, '/sovrin/credential/issue', {
         did,
         programId,
         attributes,
-      },
-    );
+      })
+      .toPromise();
   }
 }

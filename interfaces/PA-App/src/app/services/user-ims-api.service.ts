@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { map, tap } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 
@@ -11,7 +10,7 @@ class Wallet {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserImsApiService {
   // Some endpoints require this object as a parameter
@@ -19,9 +18,7 @@ export class UserImsApiService {
     correlationID: 'test',
   };
 
-  constructor(
-    private apiService: ApiService,
-  ) { }
+  constructor(private apiService: ApiService) {}
 
   createWallet(wallet: Wallet): Promise<any> {
     console.log('UserImsApiService : createWallet()');
@@ -34,11 +31,7 @@ export class UserImsApiService {
           wallet,
           correlation: this.correlation,
         },
-        true
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
-        map(response => response)
+        true,
       )
       .toPromise();
   }
@@ -54,11 +47,7 @@ export class UserImsApiService {
           wallet,
           correlation: this.correlation,
         },
-        true
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
-        map(response => response)
+        true,
       )
       .toPromise();
   }
@@ -82,11 +71,7 @@ export class UserImsApiService {
           credentialOffer,
           did,
         },
-        true
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
-        map(response => response)
+        true,
       )
       .toPromise();
   }
@@ -110,19 +95,12 @@ export class UserImsApiService {
           wallet,
           correlation: this.correlation,
         },
-        true
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
-        map(response => response)
+        true,
       )
       .toPromise();
   }
 
-  getProofFromWallet(
-    proofRequest: any,
-    wallet: Wallet,
-  ): Promise<any> {
+  getProofFromWallet(proofRequest: any, wallet: Wallet): Promise<any> {
     console.log('UserImsApiService : getProofFromWallet()');
 
     const proofRequestJsonData = JSON.stringify(proofRequest);
@@ -136,18 +114,12 @@ export class UserImsApiService {
           wallet,
           correlation: this.correlation,
         },
-        true
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
-        map(response => response.proof)
+        true,
       )
       .toPromise();
   }
 
-  deleteWallet(
-    wallet: Wallet,
-  ): Promise<any> {
+  deleteWallet(wallet: Wallet): Promise<any> {
     console.log('UserImsApiService : deleteWallet()');
 
     return this.apiService
@@ -155,13 +127,9 @@ export class UserImsApiService {
         environment.url_user_ims_api,
         '/wallet/delete',
         {
-          wallet
+          wallet,
         },
-        true
-      )
-      .pipe(
-        tap(response => console.log('response: ', response)),
-        map(response => response)
+        true,
       )
       .toPromise();
   }

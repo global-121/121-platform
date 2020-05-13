@@ -50,16 +50,13 @@ export class AccountPage {
     this.programsService.login(
       event.target.elements.email.value,
       event.target.elements.password.value
-    ).subscribe(
+    ).then(
       (response) => {
-        console.log('LoginPage subscribe:', response);
-
+        console.log('LoginPage login:', response);
         this.isLoggedIn = true;
-
         this.createToast(this.loggedIn);
         this.toggleValidation();
         this.router.navigate(['/tabs/validation']);
-
       },
       (error) => {
         console.log('LoginPage error: ', error.status);
@@ -114,7 +111,7 @@ export class AccountPage {
     const create = event.target.elements.create.value;
     const confirm = event.target.elements.confirm.value;
     if (create === confirm) {
-      this.programsService.changePassword(create).subscribe((response) => {
+      this.programsService.changePassword(create).then((response) => {
         console.log('Password changed succesfully', response);
         this.changePasswordForm = false;
         this.createToast(this.changedPassword);

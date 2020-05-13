@@ -25,14 +25,6 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getAllPrograms(): Observable<Program[]> {
-    return this.apiService
-      .get(environment.url_121_service_api, '/programs')
-      .pipe(
-        map(response => response.programs)
-      );
-  }
-
   getProgramsByCountryId(countryId: string): Promise<Program[]> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/country/' + countryId)

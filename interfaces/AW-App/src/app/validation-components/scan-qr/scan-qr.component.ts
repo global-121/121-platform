@@ -86,7 +86,7 @@ export class ScanQrComponent implements ValidationComponent {
   private async findDidDataOnline(): Promise<void> {
     console.log('findDidDataOnline');
     try {
-      const response = await this.programsService.getPrefilledAnswers(this.did, this.programId).toPromise();
+      const response = await this.programsService.getPrefilledAnswers(this.did, this.programId);
       if (response.length === 0) {
         return;
       }
