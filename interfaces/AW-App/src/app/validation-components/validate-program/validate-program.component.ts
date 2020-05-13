@@ -7,7 +7,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { IonContent } from '@ionic/angular';
 import { ValidationComponents } from '../validation-components.enum';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
-import { Program } from 'src/app/models/program.model';
+import { Program, AnswerType, ProgramAttribute } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 
@@ -94,9 +94,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   private buildQuestions(customCriteria: Program['customCriteria']) {
-    const questions = [];
-
-    for (const criterium of customCriteria) {
+    const questions = customCriteria.map((criterium) => {
       const question: Question = {
         id: criterium.id,
         code: criterium.criterium,
@@ -104,8 +102,8 @@ export class ValidateProgramComponent implements ValidationComponent {
         label: this.translatableString.get(criterium.label),
         options: this.buildOptions(criterium.options),
       };
-      questions.push(question);
-    }
+      return question;
+    });
 
     return questions;
   }
@@ -285,13 +283,6 @@ class Question {
   label: string;
   options: QuestionOption[];
 }
-enum AnswerType {
-  // Translate the types used in the API to internal, proper types:
-  Number = 'numeric',
-  Text = 'text',
-  Date = 'date',
-  Enum = 'dropdown',
-}
 class QuestionOption {
   id: number;
   value: string;
@@ -302,8 +293,4 @@ class Answer {
   value: string;
   label: string;
 }
-class ProgramAttribute {
-  attributeId: number;
-  attribute: string;
-  answer: string;
-}
+
