@@ -1,15 +1,14 @@
 <section>
   <dialogue-turn [actor]="program?.ngo">
     <p>
-      <play-text-audio key="personal.select-appointment.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.select-appointment.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-appointment.introduction'|translate }}
     </p>
-    <div class="ion-margin-top">
-      <more-info-button buttonKey="personal.select-appointment.more-info-activation"
-                        messageKey="personal.select-appointment.info-message"
-                        headingKey="personal.select-appointment.more-info-activation"
-      ></more-info-button>
-    </div>
+
+    <more-info-button buttonKey="personal.select-appointment.more-info-activation"
+                      messageKey="personal.select-appointment.info-message"
+                      headingKey="personal.select-appointment.more-info-activation"
+    ></more-info-button>
   </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="timeslots"
@@ -24,7 +23,7 @@
                   class="ion-no-padding ion-text-wrap"
         >
           <ion-label class="ion-text-wrap">
-            <p>
+            <div>
               {{ timeslot.startDate|date:dateFormat }}: {{ timeslot.startDate|date:timeFormat }}
               -
               <span *ngIf="!isSameDay(timeslot.startDate, timeslot.endDate)">
@@ -32,7 +31,7 @@
                 {{ timeslot.endDate|date:dateFormat }}:
               </span>
               {{ timeslot.endDate|date:timeFormat }}
-            </p>
+            </div>
             <ion-note class="ion-text-wrap">
               {{ timeslot.location }}
             </ion-note>
@@ -47,7 +46,6 @@
                class="ion-nowrap ion-align-items-center ion-margin-top"
       >
         <play-text-audio key="shared.submit-button"
-                         type="forSubmit"
                          size="default"
         ></play-text-audio>
         <ion-button type="submit"
@@ -62,8 +60,8 @@
                  *ngIf="timeslotSubmitted"
                  [isSpoken]="timeslotSubmitted"
   >
-    <play-text-audio key="personal.select-appointment.thanks-repeat" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
+      <play-text-audio key="personal.select-appointment.thanks-repeat" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-appointment.thanks-repeat'|translate }}
     </p>
     <p>
@@ -92,7 +90,6 @@
                   lines="full"
         >
           <play-text-audio key="personal.select-appointment.confirm"
-                           type="forRadio"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
@@ -107,7 +104,6 @@
                   lines="full"
         >
           <play-text-audio key="personal.select-appointment.change"
-                           type="forRadio"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
@@ -122,7 +118,6 @@
                 class="ion-nowrap ion-align-items-center ion-margin-top"
       >
         <play-text-audio key="shared.submit-button"
-                         type="forSubmit"
                          size="default"
         ></play-text-audio>
         <ion-button type="submit"
@@ -137,8 +132,8 @@
                  *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
-    <play-text-audio key="personal.select-appointment.conclusion" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
+      <play-text-audio key="personal.select-appointment.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-appointment.conclusion'|translate }}
     </p>
   </dialogue-turn>

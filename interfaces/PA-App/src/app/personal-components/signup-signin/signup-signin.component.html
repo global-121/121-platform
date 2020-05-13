@@ -1,15 +1,13 @@
 <section #signupSignin>
   <dialogue-turn>
-    <play-text-audio key="personal.signup-signin.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
+      <play-text-audio key="personal.signup-signin.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.signup-signin.introduction'|translate }}
     </p>
-    <p>
-      <more-info-button buttonKey="personal.signup-signin.more-info-digital-id"
-                        messageKey="personal.signup-signin.info-message"
-                        headingKey="personal.signup-signin.more-info-digital-id"
-      ></more-info-button>
-    </p>
+    <more-info-button buttonKey="personal.signup-signin.more-info-digital-id"
+                      messageKey="personal.signup-signin.info-message"
+                      headingKey="personal.signup-signin.more-info-digital-id"
+    ></more-info-button>
   </dialogue-turn>
   <dialogue-turn actor="self">
       <ion-radio-group (ionChange)="changeSignupSignin($event.detail.value)">
@@ -18,7 +16,6 @@
                   [disabled]="typeChosen"
         >
           <play-text-audio key="personal.signup-signin.create-id"
-                           type="forRadio"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
@@ -32,7 +29,6 @@
                   [disabled]="useLocalStorage || typeChosen"
         >
           <play-text-audio key="personal.signup-signin.login-id"
-                           type="forRadio"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
@@ -46,7 +42,6 @@
                class="ion-nowrap ion-align-items-center ion-margin-top"
       >
         <play-text-audio key="shared.submit-button"
-                         type="forSubmit"
                          size="default"
         ></play-text-audio>
         <ion-button type="submit"

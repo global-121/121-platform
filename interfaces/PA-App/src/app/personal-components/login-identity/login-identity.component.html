@@ -1,7 +1,7 @@
 <section>
   <dialogue-turn>
-    <play-text-audio key="personal.login-identity.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
+      <play-text-audio key="personal.login-identity.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.login-identity.introduction'|translate }}
     </p>
   </dialogue-turn>
@@ -22,7 +22,6 @@
                  class="ion-nowrap ion-align-items-center ion-margin-top"
         >
           <play-text-audio key="personal.login-identity.submit-username"
-                           type="forSubmit"
                            size="default"
           ></play-text-audio>
           <ion-button [disabled]="isInProgress || isDisabled"
@@ -49,7 +48,6 @@
                 class="ion-nowrap ion-align-items-center ion-margin-top"
       >
         <play-text-audio key="personal.login-identity.submit-password"
-                         type="forSubmit"
                          size="default"
         ></play-text-audio>
         <ion-button *ngIf="password && !isDisabled"
@@ -64,8 +62,8 @@
   <dialogue-turn *ngIf="incorrectCredentials"
                  [isSpoken]="incorrectCredentials"
   >
-    <play-text-audio key="personal.login-identity.incorrect-credentials" class="ion-float-end ion-margin-start"></play-text-audio>
     <p>
+      <play-text-audio key="personal.login-identity.incorrect-credentials" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.login-identity.incorrect-credentials'|translate }}
     </p>
   </dialogue-turn>

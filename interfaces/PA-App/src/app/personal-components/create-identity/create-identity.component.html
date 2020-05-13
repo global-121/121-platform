@@ -1,44 +1,42 @@
 <section>
     <dialogue-turn>
-      <play-text-audio key="personal.create-identity.introduction" class="ion-float-end ion-margin-start"></play-text-audio>
       <p>
+        <play-text-audio key="personal.create-identity.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.create-identity.introduction'|translate }}
       </p>
-      <p>
-        <more-info-button buttonKey="personal.create-identity.more-info-digital-id"
-                          messageKey="personal.create-identity.info-message"
-                          headingKey="personal.create-identity.more-info-digital-id"
-        ></more-info-button>
+
+      <more-info-button buttonKey="personal.create-identity.more-info-digital-id"
+                        messageKey="personal.create-identity.info-message"
+                        headingKey="personal.create-identity.more-info-digital-id"
+      ></more-info-button>
     </dialogue-turn>
     <dialogue-turn isConnected="true"
                    *ngIf="useLocalStorage"
                    [isSpoken]="useLocalStorage"
     >
-      <play-text-audio key="personal.create-identity.password-only" class="ion-float-end ion-margin-start"></play-text-audio>
       <p>
+        <play-text-audio key="personal.create-identity.password-only" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.create-identity.password-only'|translate }}
       </p>
-      <p>
-        <more-info-button buttonKey="personal.create-identity.more-info-password"
-                          messageKey="personal.create-identity.info-message-password"
-                          headingKey="personal.create-identity.more-info-password"
-        ></more-info-button>
-      </p>
+
+      <more-info-button buttonKey="personal.create-identity.more-info-password"
+                        messageKey="personal.create-identity.info-message-password"
+                        headingKey="personal.create-identity.more-info-password"
+      ></more-info-button>
     </dialogue-turn>
     <dialogue-turn isConnected="true"
                    *ngIf="!useLocalStorage"
                    [isSpoken]="!useLocalStorage"
     >
-      <play-text-audio key="personal.create-identity.username-password" class="ion-float-end ion-margin-start"></play-text-audio>
       <p>
+        <play-text-audio key="personal.create-identity.username-password" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.create-identity.username-password'|translate }}
       </p>
-      <p>
-        <more-info-button buttonKey="personal.create-identity.more-info-username-pw"
-                          messageKey="personal.create-identity.info-message-username-pw"
-                          headingKey="personal.create-identity.more-info-username-pw"
-        ></more-info-button>
-      </p>
+
+      <more-info-button buttonKey="personal.create-identity.more-info-username-pw"
+                        messageKey="personal.create-identity.info-message-username-pw"
+                        headingKey="personal.create-identity.more-info-username-pw"
+      ></more-info-button>
     </dialogue-turn>
     <dialogue-turn actor="self">
       <form (ngSubmit)="submitCredentials(username,create,confirm)">
@@ -59,7 +57,6 @@
                    class="ion-nowrap ion-align-items-center ion-margin-top"
           >
             <play-text-audio key="personal.create-identity.submit-username"
-                             type="forSubmit"
                              size="default"
             ></play-text-audio>
             <ion-button [disabled]="usernameSubmitted || isDisabled"
@@ -73,7 +70,7 @@
              class="ion-margin-vertical"
         >
           <p>
-            <play-text-audio key="personal.create-identity.create-password-explanation" class="ion-margin-end"></play-text-audio>
+            <play-text-audio key="personal.create-identity.create-password-explanation" class="ion-float-start ion-margin-end"></play-text-audio>
             {{ 'personal.create-identity.create-password-explanation'|translate:{ minimalLength: passwordMinLength } }}
           </p>
           <password-toggle-input name="create"
@@ -88,14 +85,15 @@
                                  [(isValid)]="createIsValid"
           ></password-toggle-input>
           <div *ngIf="createIsValid === false" class="ion-margin-vertical">
-            <play-text-audio key="personal.create-identity.password-too-short" class="ion-margin-end"></play-text-audio>
-            <p>{{ 'personal.create-identity.password-too-short'|translate:{ minimalLength: passwordMinLength } }}</p>
+            <p>
+              <play-text-audio key="personal.create-identity.password-too-short" class="ion-float-start ion-margin-end"></play-text-audio>
+              {{ 'personal.create-identity.password-too-short'|translate:{ minimalLength: passwordMinLength } }}
+            </p>
           </div>
           <ion-row *ngIf="create && !initialInput"
                    class="ion-nowrap ion-align-items-center ion-margin-top"
           >
             <play-text-audio key="personal.create-identity.submit-password"
-                             type="forSubmit"
                              size="default"
             ></play-text-audio>
             <ion-button [disabled]="!createIsValid || initialInput || isDisabled"
@@ -122,7 +120,6 @@
                    class="ion-nowrap ion-align-items-center ion-margin-top"
           >
             <play-text-audio key="personal.create-identity.submit-password"
-                             type="forSubmit"
                              size="default"
             ></play-text-audio>
             <ion-button [disabled]="isInProgress || isDisabled"
@@ -137,24 +134,24 @@
     <dialogue-turn *ngIf="unequalPasswords"
                    [isSpoken]="unequalPasswords"
     >
-      <play-text-audio key="personal.create-identity.unequal-passwords" class="ion-float-end ion-margin-start"></play-text-audio>
       <p>
+        <play-text-audio key="personal.create-identity.unequal-passwords" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.create-identity.unequal-passwords'|translate }}
       </p>
     </dialogue-turn>
     <dialogue-turn *ngIf="usernameNotUnique"
                    [isSpoken]="usernameNotUnique"
     >
-      <play-text-audio key="personal.create-identity.username-not-unique" class="ion-float-end ion-margin-start"></play-text-audio>
       <p>
+        <play-text-audio key="personal.create-identity.username-not-unique" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.create-identity.username-not-unique'|translate }}
       </p>
     </dialogue-turn>
     <dialogue-turn *ngIf="isDisabled"
                    [isSpoken]="isDisabled"
     >
-      <play-text-audio key="personal.create-identity.conclusion" class="ion-float-end ion-margin-start"></play-text-audio>
       <p>
+        <play-text-audio key="personal.create-identity.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'personal.create-identity.conclusion'|translate }}
       </p>
     </dialogue-turn>

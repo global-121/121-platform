@@ -36,7 +36,9 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
     super();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.program = await this.paData.getCurrentProgram();
+
     if (this.data) {
       this.initHistory();
       return;
@@ -47,7 +49,6 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
 
   async initNew() {
     this.conversationService.startLoading();
-    this.program = await this.paData.getCurrentProgram();
     this.did = await this.paData.retrieve(this.paData.type.did);
     this.conversationService.stopLoading();
   }

@@ -1,7 +1,7 @@
 <section #meetingReminder>
   <dialogue-turn [actor]="program?.ngo">
     <p>
-      <play-text-audio key="personal.meeting-reminder.meeting-reminder" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.meeting-reminder.meeting-reminder" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.meeting-reminder.meeting-reminder'|translate }}
     </p>
     <p>
@@ -25,7 +25,7 @@
                  [isSpoken]="meetingDocuments?.length"
   >
     <p>
-      <play-text-audio key="personal.meeting-reminder.documents" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.meeting-reminder.documents" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.meeting-reminder.documents'|translate }}
     </p>
     <ul class="ion-no-padding ion-padding-start">
@@ -34,12 +34,10 @@
       </li>
     </ul>
 
-    <p>
-      <more-info-button buttonKey="personal.meeting-reminder.more-info-documents"
-                        headingKey="personal.meeting-reminder.more-info-documents"
-                        messageKey="personal.meeting-reminder.info-message"
-      ></more-info-button>
-    </p>
+    <more-info-button buttonKey="personal.meeting-reminder.more-info-documents"
+                      headingKey="personal.meeting-reminder.more-info-documents"
+                      messageKey="personal.meeting-reminder.info-message"
+    ></more-info-button>
   </dialogue-turn>
   <dialogue-turn [actor]="program?.ngo"
                  isConnected="true"
@@ -47,7 +45,7 @@
                  [isSpoken]="showQrCode"
   >
     <p>
-      <play-text-audio key="personal.meeting-reminder.qr-code" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.meeting-reminder.qr-code" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.meeting-reminder.qr-code'|translate }}
     </p>
     <div *ngIf="qrDataString"
@@ -66,15 +64,15 @@
                  isConnected="true"
   >
     <ng-container *ngIf="daysToMeeting > 1">
-      <play-text-audio key="personal.meeting-reminder.meeting-count-down" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.meeting-reminder.meeting-count-down" class="ion-float-start ion-margin-end"></play-text-audio>
       <p [innerHTML]="'personal.meeting-reminder.meeting-count-down'|translate:{ daysToMeeting:'<strong>'+daysToMeeting+'</strong>' }"></p>
     </ng-container>
     <p *ngIf="daysToMeeting === 1">
-      <play-text-audio key="personal.meeting-reminder.meeting-tomorrow" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.meeting-reminder.meeting-tomorrow" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.meeting-reminder.meeting-tomorrow'|translate }}
     </p>
     <p *ngIf="daysToMeeting === 0">
-      <play-text-audio key="personal.meeting-reminder.meeting-today" class="ion-float-end ion-margin-start"></play-text-audio>
+      <play-text-audio key="personal.meeting-reminder.meeting-today" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.meeting-reminder.meeting-today'|translate }}
     </p>
   </dialogue-turn>
