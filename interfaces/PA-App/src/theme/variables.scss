@@ -1,3 +1,7 @@
+// Colors are aligned between AW-App and PA-App
+// See: /interfaces/AW-App/src/theme/variables.scss
+// See: /interfaces/PA-App/src/theme/variables.scss
+
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
@@ -36,7 +40,7 @@
   --ion-color-success-tint: #28e070;
 
   /** warning **/
-  --ion-color-warning: #ffce00;
+  --ion-color-warning: #ffcc00;
   --ion-color-warning-rgb: 255, 206, 0;
   --ion-color-warning-contrast: #ffffff;
   --ion-color-warning-contrast-rgb: 255, 255, 255;
@@ -60,8 +64,8 @@
   --ion-color-dark-tint: #002370;
 
   /** medium **/
-  --ion-color-medium: #e7e7e6;
-  --ion-color-medium-rgb: 231, 231, 230;
+  --ion-color-medium: #cccccc;
+  --ion-color-medium-rgb: 204, 204, 204;
   --ion-color-medium-contrast: #ffffff;
   --ion-color-medium-contrast-rgb: 255, 255, 255;
   --ion-color-medium-shade: #aaaaaa;
