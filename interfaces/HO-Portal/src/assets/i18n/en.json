@@ -123,14 +123,13 @@
         "apply-action": "Apply action",
         "column": {
           "select": "Select",
-          "person": "Person",
-          "digital-id-created": "Digital ID Created",
-          "vulnerability-assessment-completed": "Vulnerability Assessment Completed",
+          "person": "Person Affected",
+          "digital-id-created": "Created Digital ID",
+          "vulnerability-assessment-completed": "Completed Vulnerability Assessment",
           "selected-for-validation": "Selected for validation",
-          "scanned-qr": "QR-code scanned",
-          "vulnerability-assessment-validated": "Vulnerability Assessment validated",
-          "final-score": "Final score",
-          "temp-score": "Initial score"
+          "vulnerability-assessment-validated": "Validated Vulnerability Assessment",
+          "final-score": "Temporary inclusion score",
+          "temp-score": "Validated inclusion score"
         },
         "actions": {
           "select-for-validation": "Select for validation"

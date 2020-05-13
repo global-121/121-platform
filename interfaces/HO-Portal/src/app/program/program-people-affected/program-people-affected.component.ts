@@ -38,6 +38,8 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   public columns: any[] = [];
   public peopleAffected: Person[] = [];
   public selectedPeople: any[] = [];
+  private headerChecked = false;
+  private countSelected = 0;
 
   public applyBtnDisabled = true;
   private action = BulkAction.chooseAction;
@@ -75,6 +77,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
         prop: 'selected',
         name: this.translate.instant('page.program.program-people-affected.column.select'),
         checkboxable: true,
+        headerCheckboxable: false,
         draggable: false,
         resizeable: false,
         sortable: false,
@@ -153,6 +156,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     this.peopleAffected = await this.createTableData(allPeopleData);
     this.loadActions();
   }
+
   private loadActions() {
     this.bulkActionsEnabled = [];
     for (const action of this.bulkActions) {
@@ -200,15 +204,14 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
 
   public selectAction() {
     if (this.action === BulkAction.chooseAction) {
-      this.loadData();
-      this.applyBtnDisabled = true;
+      this.resetBulkAction();
       return;
     }
 
     this.applyBtnDisabled = false;
 
     this.peopleAffected = this.peopleAffected.map((person) => {
-      // BEGIN: For some weird reason, this piece of code is needed for the checkbox-change to take effect
+      // BEGIN: For some weird reason, this piece of code is needed for the subsequent checkbox-change to take effect
       // (all simpler variations have been tried)
       const personData: any = {};
       for (const prop in person) {
@@ -221,33 +224,97 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       return this.bulkActionService.updateCheckboxes(this.action, personData);
 
     });
-    this.updateSubmitWarning();
-    this.countCheckboxes(this.peopleAffected);
+    this.toggleHeaderCheckbox();
+    this.updateSubmitWarning(this.selectedPeople);
+
+    const nrCheckboxes = this.countCheckboxes(this.peopleAffected);
+    if (nrCheckboxes === 0) {
+      this.resetBulkAction();
+      this.actionResult(this.translate.instant('page.program.program-people-affected.no-checkboxes'));
+    }
 
   }
 
-  private countCheckboxes(people) {
-    const nrCheckboxes = people.filter(i => i.checkboxVisible).length;
-    if (nrCheckboxes === 0) {
-      this.actionResult(this.translate.instant('page.program.program-people-affected.no-checkboxes'));
-      this.action = BulkAction.chooseAction;
-      this.applyBtnDisabled = true;
+  private resetBulkAction() {
+    this.loadData();
+    this.action = BulkAction.chooseAction;
+    this.applyBtnDisabled = true;
+    this.toggleHeaderCheckbox();
+    this.headerChecked = false;
+    this.countSelected = 0;
+    this.selectedPeople = [];
+  }
+
+  private toggleHeaderCheckbox() {
+    // Only add header-checkbox with > 1 checkbox
+    if (this.countCheckboxes(this.peopleAffected) > 1) {
+      const switchedColumn = this.columns.find(i => i.prop === 'selected');
+      switchedColumn.headerCheckboxable = !switchedColumn.headerCheckboxable;
+      if (switchedColumn && switchedColumn.$$id) {
+        this.columns = this.columns.filter(c => c.$$id !== switchedColumn.$$id);
+        switchedColumn.$$id = undefined;
+        this.columns = [switchedColumn, ...this.columns];
+      }
     }
   }
 
-  public updateSubmitWarning() {
+  public onSelect(event) {
+    const selected = event.selected;
+
+    // We need to distinguish between the header-select case and the single-row-selection, as they both call the same function
+    const diffNewSelected = Math.abs(selected.length - this.countSelected);
+    this.countSelected = selected.length;
+    const headerSelection = diffNewSelected > 1;
+
+    // This is the single-row-selection case (although it also involves the going from (N-1) to N rows through header-selection)
+    if (!headerSelection) {
+      this.headerChecked = selected.length < this.countCheckboxes(this.peopleAffected) ? false : true;
+      this.selectedPeople = selected;
+      this.updateSubmitWarning(this.selectedPeople);
+      return;
+    }
+
+    // This is the header-selection case
+    if (!this.headerChecked) { // If checking ...
+      const disabledList = [];
+
+      selected.forEach((item, index) => {
+        if (!item.checkboxVisible) {
+          disabledList.push(index);
+        }
+      });
+
+      disabledList.reverse().forEach(item => {
+        selected.splice(item, 1);
+      });
+
+      this.selectedPeople.splice(0, this.selectedPeople.length);
+      this.selectedPeople.push(...selected);
+      this.updateSubmitWarning(this.selectedPeople);
+    } else { // If unchecking ...
+      this.selectedPeople = [];
+      this.updateSubmitWarning(this.selectedPeople);
+    }
+    this.headerChecked = !this.headerChecked; // Toggle checked-boolean
+  }
+
+
+  private countCheckboxes(people) {
+    return people.filter(i => i.checkboxVisible).length;
+  }
+
+  public updateSubmitWarning(selected) {
     const actionLabel = this.bulkActions.find(i => i.id === this.action).label;
     this.submitWarning.message = `
-      ${actionLabel}: ${this.selectedPeople.length} ${this.submitWarning.people}
+      ${actionLabel}: ${selected.length} ${this.submitWarning.people}
     `;
+    console.log(this.selectedPeople);
   }
 
   public async applyAction() {
     await this.bulkActionService.applyAction(this.action, this.programId, this.selectedPeople);
 
-    this.loadData();
-    this.action = BulkAction.chooseAction;
-    this.applyBtnDisabled = true;
+    this.resetBulkAction();
   }
 
   private async actionResult(resultMessage: string) {
