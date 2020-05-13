@@ -2,24 +2,23 @@ import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SessionStorageService {
   private storageSub = new Subject<string>();
 
   public type = {
     scannedData: 'scannedData',
-    paData: 'paData'
+    paData: 'paData',
   };
 
-
-  constructor() { }
+  constructor() {}
 
   watchStorage(): Observable<any> {
     return this.storageSub.asObservable();
   }
 
-  async store(key: string, data: string): Promise<void> {
+  store(key: string, data: string) {
     window.sessionStorage[key] = data;
     this.storageSub.next(key);
   }
@@ -28,7 +27,7 @@ export class SessionStorageService {
     return window.sessionStorage[key];
   }
 
-  async destroyItem(key: string): Promise<void> {
+  destroyItem(key: string) {
     window.sessionStorage.removeItem(key);
   }
 }

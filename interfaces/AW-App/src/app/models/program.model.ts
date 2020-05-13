@@ -9,6 +9,35 @@ export class Program {
   updated: string;
   meetingDocuments?: string | TranslatableString;
   ngo: string;
-  customCriteria: any[];
+  customCriteria: ProgramCriterium[];
+  financialServiceProviders: any[];
   credDefId: string;
+}
+
+export class ProgramCriterium {
+  id: number;
+  criterium: string;
+  answerType: AnswerType;
+  label: TranslatableString;
+  options: null | ProgramCriteriumOption[];
+}
+
+export class ProgramCriteriumOption {
+  option: string;
+  label: TranslatableString;
+}
+
+export enum AnswerType {
+  // Translate the types used in the API to internal, proper types:
+  Number = 'numeric',
+  Text = 'text',
+  Date = 'date',
+  Enum = 'dropdown',
+  phoneNumber = 'tel',
+}
+
+export class ProgramAttribute {
+  attributeId: number;
+  attribute: string;
+  answer: string;
 }
