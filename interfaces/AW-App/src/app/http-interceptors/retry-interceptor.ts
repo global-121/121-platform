@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { retryWhen, concatMap, delay } from 'rxjs/operators';
+import { retryWhen, concatMap, delay, timeout } from 'rxjs/operators';
 
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()
 export class RetryInterceptor implements HttpInterceptor {
   private retryTimeOut = 2000;
+  private offlineTimeout = 3000;
   private retryConfirmLabel: string;
 
   constructor(
@@ -29,7 +30,7 @@ export class RetryInterceptor implements HttpInterceptor {
     // Exclude interceptor for get prefilled answer requests
     if (request.url.search(re) !== -1 ) {
       console.log('Exception retry-interceptor');
-      return next.handle(request).pipe();
+      return next.handle(request).pipe((timeout(this.offlineTimeout)));
     }
 
     return next.handle(request)
