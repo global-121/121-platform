@@ -51,7 +51,7 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   public async checkScannedData() {
-    this.gettingDid = true
+    this.gettingDid = true;
     this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(async data => {
       if (this.isNotJson(data)) {
         this.scanError = true;
@@ -72,7 +72,7 @@ export class ScanQrComponent implements ValidationComponent {
       if (!didData) {
         didData = await this.findDidDataOnline();
       }
-      this.gettingDid = false
+      this.gettingDid = false;
       if (didData) {
         this.sessionStorageService.store(this.sessionStorageService.type.paData, JSON.stringify(didData));
         this.foundCorrectDid();
