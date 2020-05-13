@@ -89,7 +89,7 @@ To seed the database with more data (e.g. programs) additional seed-scripts can 
 - For basic testing (4 programs):  
   `docker exec -it 121-service npm run seed:multi-program`
 
-- Include more testing data:  
+- Add your custom testing data:  
   `docker exec -it 121-service npm run seed:dev`
 
 - For pilot:  
