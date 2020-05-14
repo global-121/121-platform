@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { IonContent, IonicModule } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
+import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
@@ -15,9 +16,17 @@ import { mockProgram } from 'src/app/mocks/api.program.mock';
 import { ValidateProgramComponent } from './validate-program.component';
 
 const storageIonicMock: any = {
-  get: () => new Promise<any>((resolve) => resolve('1')),
+  get: (type: IonicStorageTypes) => new Promise<any>((resolve) => {
+    switch (type) {
+      case IonicStorageTypes.myPrograms:
+        return resolve([mockProgram]);
+      default:
+        return resolve('1');
+    }
+  }),
 };
 
+const ionContentMock: IonContent = jasmine.createSpyObj('IonContent', ['scrollToBottom']);
 
 describe('ValidateProgramComponent', () => {
   let component: ValidateProgramComponent;
@@ -55,7 +64,7 @@ describe('ValidateProgramComponent', () => {
         },
         {
           provide: IonContent,
-          useValue: IonContent,
+          useValue: ionContentMock,
         },
         {
           provide: Storage,

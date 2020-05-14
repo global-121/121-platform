@@ -1,4 +1,4 @@
-import { Program } from '../models/program.model';
+import { Program, AnswerType } from '../models/program.model';
 
 export const mockProgram: Program = {
   id: 1,
@@ -9,7 +9,17 @@ export const mockProgram: Program = {
   updated: new Date().toISOString(),
   meetingDocuments: 'document;document;',
   ngo: 'NGO',
-  customCriteria: [],
+  customCriteria: [
+    {
+      id: 1,
+      criterium: 'question1',
+      label: {
+        en: 'Question 1:',
+      },
+      answerType: AnswerType.Text,
+      options: null,
+    },
+  ],
   financialServiceProviders: [],
   credDefId: '',
 };

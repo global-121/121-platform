@@ -231,7 +231,7 @@ export class ValidateProgramComponent implements ValidationComponent {
       this.did,
       this.programId,
       attributes
-    ).subscribe(() => {
+    ).then(() => {
       console.log('createAttributes api call completed');
     });
     // THIS SHOULD BE REMOVED WHEN WORKING ON AB# 1472
