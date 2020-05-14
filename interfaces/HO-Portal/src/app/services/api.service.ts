@@ -3,15 +3,17 @@ import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { JwtService } from './jwt.service';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-  constructor(
-    private jwtService: JwtService,
-    private http: HttpClient,
-  ) { }
+  constructor(private jwtService: JwtService, private http: HttpClient) {}
+
+  private showSecurity(anonymous: boolean) {
+    return anonymous ? '🌐' : '🔐';
+  }
 
   private createHeaders(anonymous: boolean = false): HttpHeaders {
     const headers = new HttpHeaders({
@@ -20,7 +22,10 @@ export class ApiService {
     });
 
     if (!anonymous) {
-      return headers.set('Authorization', `Token ${this.jwtService.getToken()}`);
+      return headers.set(
+        'Authorization',
+        `Token ${this.jwtService.getToken()}`,
+      );
     }
 
     return headers;
@@ -29,33 +34,48 @@ export class ApiService {
   get(
     endpoint: string,
     path: string,
-    anonymous: boolean = false
+    anonymous: boolean = false,
   ): Observable<any> {
-    console.log(`ApiService GET: ${endpoint}${path} Anonymous? ${anonymous}`);
+    const security = this.showSecurity(anonymous);
+    console.log(`ApiService GET: ${security} ${endpoint}${path}`);
 
-    return this.http.get(
-      endpoint + path,
-      {
+    return this.http
+      .get(endpoint + path, {
         headers: this.createHeaders(anonymous),
-      }
-    );
+      })
+      .pipe(
+        tap((response) =>
+          console.log(
+            `ApiService GET: ${security} ${endpoint}${path}`,
+            `\nResponse:`,
+            response,
+          ),
+        ),
+      );
   }
-
 
   post(
     endpoint: string,
     path: string,
     body: object,
-    anonymous: boolean = false
+    anonymous: boolean = false,
   ): Observable<any> {
-    console.log(`ApiService POST: ${endpoint}${path}`, body, `Anonymous? ${anonymous}`);
+    const security = this.showSecurity(anonymous);
+    console.log(`ApiService POST: ${security} ${endpoint}${path}`, body);
 
-    return this.http.post(
-      endpoint + path,
-      body,
-      {
+    return this.http
+      .post(endpoint + path, body, {
         headers: this.createHeaders(anonymous),
-      }
-    );
+      })
+      .pipe(
+        tap((response) =>
+          console.log(
+            `ApiService POST: ${security} ${endpoint}${path}:`,
+            body,
+            `\nResponse:`,
+            response,
+          ),
+        ),
+      );
   }
 }

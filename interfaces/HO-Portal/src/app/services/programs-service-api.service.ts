@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
@@ -29,8 +29,6 @@ export class ProgramsServiceApiService {
         password
       },
       true
-    ).pipe(
-      tap((response) => console.log(response)),
     );
   }
 
@@ -39,8 +37,6 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       '/user/delete/' + userId,
       {}
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -49,7 +45,6 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       '/programs'
     ).pipe(
-      tap((response) => console.log(response)),
       map((response) => {
         return response.programs;
       })
@@ -60,8 +55,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/${programId}`,
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -72,8 +65,6 @@ export class ProgramsServiceApiService {
       {
         newState
       }
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -88,8 +79,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/total-included/${programId}`,
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -97,8 +86,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/installments/${programId}`,
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -111,8 +98,6 @@ export class ProgramsServiceApiService {
         installment,
         amount,
       },
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -124,8 +109,6 @@ export class ProgramsServiceApiService {
         programId,
         installment,
       },
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -133,8 +116,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/enrolled/${programId}`,
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -142,8 +123,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/enrolled/${programId}`,
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -151,8 +130,6 @@ export class ProgramsServiceApiService {
     return this.apiService.get(
       environment.url_121_service_api,
       `/programs/enrolledPrivacy/${programId}`,
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -163,8 +140,6 @@ export class ProgramsServiceApiService {
       {
         dids: JSON.stringify(dids),
       },
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -175,8 +150,6 @@ export class ProgramsServiceApiService {
       {
         dids: JSON.stringify(dids),
       },
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -187,8 +160,6 @@ export class ProgramsServiceApiService {
       {
         dids: JSON.stringify(dids),
       },
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -203,8 +174,6 @@ export class ProgramsServiceApiService {
         status,
         countryId
       },
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 
@@ -213,8 +182,6 @@ export class ProgramsServiceApiService {
       environment.url_121_service_api,
       `/user/${userId}/${programId}`,
       {}
-    ).pipe(
-      tap((response) => console.log(response)),
     ).toPromise();
   }
 }
