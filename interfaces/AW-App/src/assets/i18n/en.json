@@ -45,7 +45,7 @@
     "scan-qr": {
       "introduction": "Scan QR-code to retrieve PA's information.",
       "scan-button": "Scan QR-code",
-      "error": "The scanned QR code did nog contain a DID or program number. You may have scanned the a wrong QR-code",
+      "error": "The scanned QR code did not contain a DID or program number. You may have scanned the a wrong QR-code",
       "unknownDidCombination": "QR-code not found. You can try scanning another QR-code.",
       "conclusion": "Thank you. You have scanned a valid combination of DID and program-ID.",
       "main-menu": "Back to main menu"

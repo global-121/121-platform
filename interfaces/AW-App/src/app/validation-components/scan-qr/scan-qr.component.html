@@ -6,12 +6,12 @@
                  isSpoken="true"
   >
     <ion-button expand="block"
-                [disabled]="didResult || returnMainMenu"
+                [disabled]="paDataResult || returnMainMenu"
                 (click)="scanQrCode()">
       {{ 'validation.scan-qr.scan-button'|translate }}
     </ion-button>
     <ion-button expand="block"
-                [disabled]="didResult || returnMainMenu"
+                [disabled]="paDataResult || returnMainMenu"
                 (click)="backMainMenu()">
       {{ 'validation.scan-qr.main-menu'|translate }}
     </ion-button>
@@ -22,7 +22,7 @@
     {{ 'validation.scan-qr.error'|translate }}
   </dialogue-turn>
     <div class="loading-indicator"
-    [hidden]="!gettingDid"
+    [hidden]="!gettingPaData"
   >
     <ion-spinner name="dots"
     class="loading-indicator--spinner"
@@ -34,8 +34,8 @@
   >
       {{ 'validation.scan-qr.unknownDidCombination'|translate }}
     </dialogue-turn>
-  <dialogue-turn *ngIf="didResult"
-                 [isSpoken]="didResult"
+  <dialogue-turn *ngIf="paDataResult"
+                 [isSpoken]="paDataResult"
   >
     {{ 'validation.scan-qr.conclusion'|translate }}
   </dialogue-turn>
