@@ -52,15 +52,10 @@ export class ScanQrComponent implements ValidationComponent {
     this.sessionStorageService
       .retrieve(this.sessionStorageService.type.scannedData)
       .then(async (data) => {
-        if (!this.isValidPaQrCode(data)) {
-          this.scanError = true;
-          return;
-        }
-
-        const scannedData: PaQrCode = JSON.parse(data);
+        const paToValidate = await this.getPaToValidate(data);
         const paData = await this.findPaData(
-          scannedData.did,
-          scannedData.programId,
+          paToValidate.did,
+          paToValidate.programId,
         );
 
         if (paData) {
@@ -96,6 +91,27 @@ export class ScanQrComponent implements ValidationComponent {
     const parsedData = JSON.parse(data);
 
     return this.isPaQrCode(parsedData);
+  }
+
+  private async getPaToValidate(data: string): Promise<PaQrCode> {
+    let paToValidate: PaQrCode;
+
+    if (this.isValidPaQrCode(data)) {
+      paToValidate = JSON.parse(data);
+    } else {
+      const foundDid = await this.programsService.getDidByQrIdentifier(data);
+
+      if (!foundDid || !foundDid.did) {
+        this.scanError = true;
+        return;
+      }
+      paToValidate = {
+        did: foundDid.did,
+        programId: 1, // Hard-code Program ID for now...
+      };
+    }
+
+    return paToValidate;
   }
 
   private async findPaData(did: string, programId: number): Promise<any> {
