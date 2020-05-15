@@ -128,8 +128,8 @@
           "vulnerability-assessment-completed": "Completed Vulnerability Assessment",
           "selected-for-validation": "Selected for validation",
           "vulnerability-assessment-validated": "Validated Vulnerability Assessment",
-          "final-score": "Temporary inclusion score",
-          "temp-score": "Validated inclusion score"
+          "final-score": "Validated inclusion score",
+          "temp-score": "Temporary inclusion score"
         },
         "actions": {
           "select-for-validation": "Select for validation"
