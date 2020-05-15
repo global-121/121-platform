@@ -54,7 +54,7 @@ export class PhaseNextComponent implements OnChanges {
 
   public checkDisabled() {
     return this.selectedPhase !== this.activePhase
-      || !this.phaseReady
+      // || !this.phaseReady
       || this.isInProgress
       || this.currentUserRole !== UserRole.ProgramManager;
   }

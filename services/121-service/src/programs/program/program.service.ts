@@ -653,17 +653,6 @@ export class ProgramService {
     return includedConnections.length;
   }
 
-  public async getEnrolled(
-    programId: number,
-    privacy: boolean,
-  ): Promise<any[]> {
-    const enrolledConnections = await this.getEnrolledConnections(
-      programId,
-      privacy,
-    );
-    return enrolledConnections;
-  }
-
   public async payout(
     programId: number,
     installment: number,
@@ -707,7 +696,7 @@ export class ProgramService {
     return { status: 'succes', message: 'Sent instructions to FSP' };
   }
 
-  private async getEnrolledConnections(
+  public async getEnrolledConnections(
     programId: number,
     privacy: boolean,
   ): Promise<any[]> {

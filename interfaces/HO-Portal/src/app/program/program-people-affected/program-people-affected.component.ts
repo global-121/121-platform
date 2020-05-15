@@ -17,6 +17,8 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   @Input()
   public selectedPhase: string;
   @Input()
+  public activePhase: string;
+  @Input()
   public programId: number;
   @Input()
   public userRole: UserRole;
@@ -47,12 +49,21 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     {
       id: BulkAction.chooseAction,
       label: this.translate.instant('page.program.program-people-affected.choose-action'),
-      roles: [UserRole.ProgramManager, UserRole.PrivacyOfficer]
+      roles: [UserRole.ProgramManager, UserRole.PrivacyOfficer],
+      phases: [
+        ProgramPhase.design,
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.reviewInclusion,
+        ProgramPhase.payment,
+        ProgramPhase.evaluation
+      ]
     },
     {
       id: BulkAction.selectForValidation,
       label: this.translate.instant('page.program.program-people-affected.actions.' + BulkAction.selectForValidation),
-      roles: [UserRole.ProgramManager]
+      roles: [UserRole.ProgramManager],
+      phases: [ProgramPhase.registrationValidation]
     }
   ];
   public bulkActionsEnabled = [];
@@ -141,6 +152,9 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       this.checkVisibility(this.selectedPhase);
       this.loadData();
     }
+    if (changes.activePhase && typeof changes.activePhase.currentValue === 'string') {
+      this.loadActions();
+    }
     if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
       this.loadData();
     }
@@ -160,7 +174,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   private loadActions() {
     this.bulkActionsEnabled = [];
     for (const action of this.bulkActions) {
-      if (action.roles.includes(this.userRole)) {
+      if (action.roles.includes(this.userRole) && action.phases.includes(ProgramPhase[this.activePhase])) {
         this.bulkActionsEnabled.push(action);
       }
     }
