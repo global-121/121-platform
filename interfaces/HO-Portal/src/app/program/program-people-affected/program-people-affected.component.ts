@@ -50,7 +50,14 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       id: BulkAction.chooseAction,
       label: this.translate.instant('page.program.program-people-affected.choose-action'),
       roles: [UserRole.ProgramManager, UserRole.PrivacyOfficer],
-      phases: [ProgramPhase.design,ProgramPhase.registrationValidation,ProgramPhase.inclusion,ProgramPhase.reviewInclusion,ProgramPhase.payment,ProgramPhase.evaluation]
+      phases: [
+        ProgramPhase.design,
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.reviewInclusion,
+        ProgramPhase.payment,
+        ProgramPhase.evaluation
+      ]
     },
     {
       id: BulkAction.selectForValidation,
