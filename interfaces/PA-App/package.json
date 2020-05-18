@@ -81,7 +81,7 @@
     "karma": "^4.4.1",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage-istanbul-reporter": "^2.1.1",
-    "karma-jasmine": "~2.0.1",
+    "karma-jasmine": "~3.1.1",
     "karma-jasmine-html-reporter": "^1.5.1",
     "native-run": "^0.2.9",
     "ngx-translate-lint": "^1.6.0",
