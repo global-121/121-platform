@@ -8,6 +8,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { ValidationComponents } from '../validation-components.enum';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { TimeoutError } from 'rxjs';
+import { PaQrCode } from 'src/app/models/pa-qr-code.model';
 
 @Component({
   selector: 'app-scan-qr',
@@ -15,12 +16,10 @@ import { TimeoutError } from 'rxjs';
   styleUrls: ['./scan-qr.component.scss'],
 })
 export class ScanQrComponent implements ValidationComponent {
-  public gettingDid = false;
+  public gettingPaData = false;
 
-  public did: string;
-  public programId: number;
   public scanError = false;
-  public didResult = false;
+  public paDataResult = false;
   public unknownDidCombination = false;
   public returnMainMenu = false;
 
@@ -31,96 +30,142 @@ export class ScanQrComponent implements ValidationComponent {
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     public sessionStorageService: SessionStorageService,
-    private storage: Storage
-  ) {
-  }
+    private storage: Storage,
+  ) {}
 
   async ngOnInit() {
-    console.log('init scan qr');
     this.scanQrCode();
   }
 
   public async scanQrCode() {
-    const storageSubscription = this.sessionStorageService.watchStorage().subscribe(async () => {
-      await this.checkScannedData();
-      storageSubscription.unsubscribe();
-      // this will call whenever your localStorage data changes
-      // use localStorage code here and set your data here for ngFor
-    });
+    const storageSubscription = this.sessionStorageService
+      .watchStorage()
+      .subscribe(async () => {
+        await this.checkScannedData();
+        storageSubscription.unsubscribe();
+      });
     this.router.navigate(['/scan-qr']);
   }
 
-  public async checkScannedData() {
-    this.gettingDid = true;
-    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(async data => {
-      if (this.isNotJson(data)) {
-        this.scanError = true;
-        return;
-      }
+  private async checkScannedData() {
+    this.gettingPaData = true;
+    this.sessionStorageService
+      .retrieve(this.sessionStorageService.type.scannedData)
+      .then(async (data) => {
+        const paToValidate = await this.getPaToValidate(data);
+        const paData = await this.findPaData(
+          paToValidate.did,
+          paToValidate.programId,
+        );
 
-      const jsonData = JSON.parse(data);
-      if (!jsonData && !jsonData.did && !jsonData.programId) {
-        this.scanError = true;
-        console.log('this.scanError: ', this.scanError);
-        return;
-      }
-
-      this.did = jsonData.did;
-      this.programId = jsonData.programId;
-
-      let didData = await this.findDidDataOffline();
-      if (!didData) {
-        didData = await this.findDidDataOnline();
-      }
-      this.gettingDid = false;
-      if (didData) {
-        this.sessionStorageService.store(this.sessionStorageService.type.paData, JSON.stringify(didData));
-        this.foundCorrectDid();
-      } else {
+        if (paData) {
+          this.sessionStorageService.store(
+            this.sessionStorageService.type.paData,
+            JSON.stringify(paData),
+          );
+          this.foundCorrectPaData();
+        } else {
           this.unknownDidCombination = true;
-          console.log('this.scanError: unknownDidCombination');
-      }
-    });
+        }
+      });
   }
 
-  private async findDidDataOnline(): Promise<void> {
-    console.log('findDidDataOnline');
+  private isJson(str: string): boolean {
     try {
-      const response = await this.programsService.getPrefilledAnswers(this.did, this.programId);
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  private isPaQrCode(data: any): data is PaQrCode {
+    return data.did !== undefined && data.programId !== undefined;
+  }
+
+  private isValidPaQrCode(data: string): boolean {
+    if (!this.isJson(data)) {
+      return false;
+    }
+
+    const parsedData = JSON.parse(data);
+
+    return this.isPaQrCode(parsedData);
+  }
+
+  private async getPaToValidate(data: string): Promise<PaQrCode> {
+    let paToValidate: PaQrCode;
+
+    if (this.isValidPaQrCode(data)) {
+      paToValidate = JSON.parse(data);
+    } else {
+      const foundDid = await this.programsService.getDidByQrIdentifier(data);
+
+      if (!foundDid || !foundDid.did) {
+        this.scanError = true;
+        return;
+      }
+      paToValidate = {
+        did: foundDid.did,
+        programId: 1, // Hard-code Program ID for now...
+      };
+    }
+
+    return paToValidate;
+  }
+
+  private async findPaData(did: string, programId: number): Promise<any> {
+    let paData = await this.findPaDataOffline(did, programId);
+    if (!paData) {
+      paData = await this.findPaDataOnline(did, programId);
+    }
+    this.gettingPaData = false;
+    return paData;
+  }
+
+  private async findPaDataOnline(did: string, programId: number): Promise<any> {
+    console.log('findPaDataOnline()');
+    try {
+      const response = await this.programsService.getPrefilledAnswers(
+        did,
+        programId,
+      );
       if (response.length === 0) {
         return;
       }
       return response;
     } catch (e) {
-        console.log('Error: ', e.name);
-        if (e.status === 0 || e instanceof TimeoutError) {
-          return;
-        }
-    }
-  }
-
-  private async findDidDataOffline(): Promise<any> {
-    console.log('findDidOffline');
-    const offlineData = await this.storage.get(this.ionicStorageTypes.validationData);
-    if (!offlineData) {
-      return;
-    }
-    const prefilledQuestions = [];
-    if (offlineData) {
-      offlineData.forEach(element => {
-        if (this.did === element.did && this.programId === element.programId) {
-          prefilledQuestions.push(element);
-        }
-      });
-      if (prefilledQuestions.length > 0) {
-        return prefilledQuestions;
+      console.log('Error: ', e.name);
+      if (e.status === 0 || e instanceof TimeoutError) {
+        return;
       }
     }
   }
 
-  private foundCorrectDid(): void {
-    console.log('foundCorrectDid');
-    this.didResult = true;
+  private async findPaDataOffline(
+    did: string,
+    programId: number,
+  ): Promise<any> {
+    console.log('findPaDataOffline()');
+    const offlineData = await this.storage.get(
+      this.ionicStorageTypes.validationData,
+    );
+    if (!offlineData || !offlineData.length) {
+      return;
+    }
+    const prefilledQuestions = [];
+    offlineData.forEach((element) => {
+      if (did === element.did && programId === element.programId) {
+        prefilledQuestions.push(element);
+      }
+    });
+    if (prefilledQuestions.length > 0) {
+      return prefilledQuestions;
+    }
+  }
+
+  private foundCorrectPaData() {
+    this.paDataResult = true;
     this.unknownDidCombination = false;
     this.scanError = false;
     this.complete();
@@ -130,8 +175,7 @@ export class ScanQrComponent implements ValidationComponent {
     this.returnMainMenu = true;
     this.conversationService.onSectionCompleted({
       name: ValidationComponents.scanQr,
-      data: {
-      },
+      data: {},
       next: ValidationComponents.mainMenu,
     });
   }
@@ -140,22 +184,10 @@ export class ScanQrComponent implements ValidationComponent {
     return ValidationComponents.validateProgram;
   }
 
-  isNotJson(str: string): boolean {
-    try {
-      JSON.parse(str);
-    } catch (e) {
-      return true;
-    }
-    return false;
-  }
-
   complete() {
     this.conversationService.onSectionCompleted({
       name: ValidationComponents.scanQr,
-      data: {
-      },
       next: this.getNextSection(),
     });
   }
-
 }
