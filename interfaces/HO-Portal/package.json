@@ -60,7 +60,7 @@
     "karma-coverage-istanbul-reporter": "^3.0.2",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.5.3",
-    "protractor": "~5.4.0",
+    "protractor": "^7.0.0",
     "ts-node": "^8.10.1",
     "tslint": "^5.20.1",
     "typescript": "3.2.4"
