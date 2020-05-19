@@ -21,6 +21,7 @@
   },
   "startDate": "2020-01-01T12:00:00Z",
   "endDate": "2020-12-31T12:00:00Z",
+  "disberseProjectId": "super-awesome-id",
   "currency": "MWK",
   "distributionFrequency": "month",
   "distributionDuration": 3,

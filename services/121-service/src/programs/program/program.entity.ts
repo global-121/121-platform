@@ -48,6 +48,9 @@ export class ProgramEntity {
   @Column()
   public endDate: Date;
 
+  @Column({ default: null })
+  public disberseProjectId: string;
+
   @Column()
   public currency: string;
 
