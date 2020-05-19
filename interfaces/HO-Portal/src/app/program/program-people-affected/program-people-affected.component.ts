@@ -150,25 +150,19 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   async ngOnChanges(changes: SimpleChanges) {
     if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
       this.checkVisibility(this.selectedPhase);
-      this.loadData();
+      await this.loadData();
+      this.loadActions();
     }
     if (changes.activePhase && typeof changes.activePhase.currentValue === 'string') {
       this.loadActions();
     }
     if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
-      this.loadData();
+      this.loadActions();
     }
   }
 
   public checkVisibility(phase) {
     this.componentVisible = this.presentInPhases.includes(phase);
-  }
-
-  private async loadData() {
-    let allPeopleData: any[];
-    allPeopleData = await this.programsService.getPeopleAffected(this.programId);
-    this.peopleAffected = await this.createTableData(allPeopleData);
-    this.loadActions();
   }
 
   private loadActions() {
@@ -180,19 +174,19 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     }
   }
 
+  private async loadData() {
+    let allPeopleData: any[];
+    allPeopleData = await this.programsService.getPeopleAffected(this.programId);
+    this.peopleAffected = await this.createTableData(allPeopleData);
+  }
+
   private async createTableData(source: Person[]): Promise<any[]> {
     if (source.length === 0) {
       return [];
     }
 
     return source
-      .sort((a, b) => {
-        if (a.tempScore === b.tempScore) {
-          return (a.did > b.did) ? -1 : 1;
-        } else {
-          return (a.tempScore > b.tempScore) ? -1 : 1;
-        }
-      })
+      .sort(this.sortPeopleAffected)
       .map((person, index) => {
         const personData: any = {
           did: person.did,
@@ -212,6 +206,14 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       });
   }
 
+  private sortPeopleAffected(a,b) {
+    if (a.tempScore === b.tempScore) {
+      return (a.did > b.did) ? -1 : 1;
+    } else {
+      return (a.tempScore > b.tempScore) ? -1 : 1;
+    }
+  }
+
   public showCheckbox(row) {
     return row.checkboxVisible;
   }
@@ -224,7 +226,21 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
 
     this.applyBtnDisabled = false;
 
-    this.peopleAffected = this.peopleAffected.map((person) => {
+    this.peopleAffected = this.recreatePeopleAffected(this.peopleAffected);
+
+    this.toggleHeaderCheckbox();
+    this.updateSubmitWarning(this.selectedPeople);
+
+    const nrCheckboxes = this.countCheckboxes(this.peopleAffected);
+    if (nrCheckboxes === 0) {
+      this.resetBulkAction();
+      this.actionResult(this.translate.instant('page.program.program-people-affected.no-checkboxes'));
+    }
+
+  }
+
+  private recreatePeopleAffected(peopleAffected) {
+    return peopleAffected.map((person) => {
       // BEGIN: For some weird reason, this piece of code is needed for the subsequent checkbox-change to take effect
       // (all simpler variations have been tried)
       const personData: any = {};
@@ -238,15 +254,6 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       return this.bulkActionService.updateCheckboxes(this.action, personData);
 
     });
-    this.toggleHeaderCheckbox();
-    this.updateSubmitWarning(this.selectedPeople);
-
-    const nrCheckboxes = this.countCheckboxes(this.peopleAffected);
-    if (nrCheckboxes === 0) {
-      this.resetBulkAction();
-      this.actionResult(this.translate.instant('page.program.program-people-affected.no-checkboxes'));
-    }
-
   }
 
   private resetBulkAction() {
