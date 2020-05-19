@@ -291,6 +291,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     if (!headerSelection) {
       this.headerChecked = selected.length < this.countCheckboxes(this.peopleAffected) ? false : true;
       this.selectedPeople = selected;
+      this.countSelected = this.selectedPeople.length;
       this.updateSubmitWarning(this.selectedPeople);
       return;
     }
@@ -317,19 +318,19 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       this.updateSubmitWarning(this.selectedPeople);
     }
     this.headerChecked = !this.headerChecked; // Toggle checked-boolean
+    this.countSelected = this.selectedPeople.length;
   }
 
 
-  private countCheckboxes(people) {
-    return people.filter(i => i.checkboxVisible).length;
+  private countCheckboxes(rows) {
+    return rows.filter(i => i.checkboxVisible).length;
   }
 
-  public updateSubmitWarning(selected) {
+  private updateSubmitWarning(selected) {
     const actionLabel = this.bulkActions.find(i => i.id === this.action).label;
     this.submitWarning.message = `
       ${actionLabel}: ${selected.length} ${this.submitWarning.people}
     `;
-    console.log(this.selectedPeople);
   }
 
   public async applyAction() {
