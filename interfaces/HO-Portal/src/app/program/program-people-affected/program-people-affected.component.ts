@@ -206,7 +206,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       });
   }
 
-  private sortPeopleAffected(a,b) {
+  private sortPeopleAffected(a, b) {
     if (a.tempScore === b.tempScore) {
       return (a.did > b.did) ? -1 : 1;
     } else {
