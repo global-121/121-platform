@@ -16,8 +16,6 @@ import { PaQrCode } from 'src/app/models/pa-qr-code.model';
   styleUrls: ['./scan-qr.component.scss'],
 })
 export class ScanQrComponent implements ValidationComponent {
-  public gettingPaData = false;
-
   public scanError = false;
   public paDataResult = false;
   public unknownDidCombination = false;
@@ -48,7 +46,7 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   private async checkScannedData() {
-    this.gettingPaData = true;
+    this.conversationService.startLoading();
     this.sessionStorageService
       .retrieve(this.sessionStorageService.type.scannedData)
       .then(async (data) => {
@@ -67,6 +65,7 @@ export class ScanQrComponent implements ValidationComponent {
         } else {
           this.unknownDidCombination = true;
         }
+        this.conversationService.stopLoading();
       });
   }
 
@@ -119,7 +118,6 @@ export class ScanQrComponent implements ValidationComponent {
     if (!paData) {
       paData = await this.findPaDataOnline(did, programId);
     }
-    this.gettingPaData = false;
     return paData;
   }
 
