@@ -1,3 +1,4 @@
+import { DisberseApiService } from './../../funding/disberse-api.service';
 import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
@@ -38,6 +39,7 @@ describe('CredentialService', (): void => {
           VoiceService,
           SmsService,
           FundingService,
+          DisberseApiService,
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
             useFactory: repositoryMockFactory,

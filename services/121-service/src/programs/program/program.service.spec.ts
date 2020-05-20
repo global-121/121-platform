@@ -1,3 +1,4 @@
+import { DisberseApiService } from './../../funding/disberse-api.service';
 import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
@@ -39,6 +40,7 @@ describe('Program service', (): void => {
           SmsService,
           ProofService,
           FundingService,
+          DisberseApiService,
           {
             provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,
