@@ -2,7 +2,7 @@
 Feature: Navigate program phases
 
   Background:
-    Given a logged-in "program-manager" user
+    Given a logged-in "project-officer" user
 
   Scenario: See current phase of the program
     When the user views a "program" page

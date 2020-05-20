@@ -2,7 +2,7 @@
 Feature: Manage aidworkers
 
   Background:
-    Given a logged-in "program-manager" user
+    Given a logged-in "project-officer" user
     Given the user views the "program" page
 
   Scenario: View assigned aidworkers

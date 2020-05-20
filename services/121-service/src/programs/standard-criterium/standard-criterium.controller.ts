@@ -25,14 +25,14 @@ export class StandardCriteriumController {
     this.criteriumService = criteriumService;
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Get all criteria' })
   @Get()
   public async findAll(): Promise<StandardCriteriumEntity[]> {
     return await this.criteriumService.findAll();
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Get criteria by country' })
   @ApiImplicitParam({ name: 'countryId', required: true, type: 'number' })
   @Get(':countryId')
@@ -40,7 +40,7 @@ export class StandardCriteriumController {
     return await this.criteriumService.find(params.countryId);
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Create criterium' })
   @ApiResponse({
     status: 201,

@@ -403,7 +403,7 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   public showCheckbox(row) {
-    return !row.included  // Show checkboxes only for new enrolled PA's in program-manager mode
+    return !row.included  // Show checkboxes only for new enrolled PA's in project-officer mode
       || row.name;        // OR always when in privacy-officer (where endpoint gives only in/excluded people anyway)
   }
 

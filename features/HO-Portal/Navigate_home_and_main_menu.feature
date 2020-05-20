@@ -2,7 +2,7 @@
 Feature: Navigate home page and main menu
 
   Scenario: View home screen
-    When a "program-manager" or "privacy-officer" user logs in the HO-portal
+    When a "project-officer" or "privacy-officer" user logs in the HO-portal
     Then the user sees the "home page"
     And sees a list of all programs on this screen
     And sees a "menu" icon in the top-left of the screen

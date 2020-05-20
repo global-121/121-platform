@@ -129,7 +129,7 @@ export class CreateConnectionController {
     );
   }
 
-  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer)
+  @Roles(UserRole.ProjectOfficer, UserRole.PrivacyOfficer)
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get all connections' })
   @ApiResponse({ status: 200, description: 'Got all connections' })

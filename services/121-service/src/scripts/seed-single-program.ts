@@ -38,10 +38,10 @@ export class SeedSingleProgram implements InterfaceScript {
     });
 
     await this.seedHelper.addUser({
-      role: UserRole.ProgramManager,
-      email: USERCONFIG.emailProgramManager,
+      role: UserRole.ProjectOfficer,
+      email: USERCONFIG.emailProjectOfficer,
       countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProgramManager,
+      password: USERCONFIG.passwordProjectOfficer,
     });
 
     await this.seedHelper.addUser({

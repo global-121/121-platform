@@ -2,7 +2,7 @@
 Feature: Manage payment installments
 
   Background:
-    Given a logged-in "program-manager" user
+    Given a logged-in "project-officer" user
     Given the user views the page "program-details"
 
 

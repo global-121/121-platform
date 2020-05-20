@@ -27,7 +27,7 @@ Feature: Export payment details
     And the known "phonenumber"
     And all "connection.custromData"
 
-  Scenario: Viewing the export options as program-manager
-    Given a logged-in "program-manager" user
+  Scenario: Viewing the export options as project-officer
+    Given a logged-in "project-officer" user
     When the user views the "program-payout" component
     Then the export list buttton is disabled for all installments
