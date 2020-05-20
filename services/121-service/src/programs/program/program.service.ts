@@ -113,10 +113,9 @@ export class ProgramService {
       .leftJoinAndSelect('program.customCriteria', 'customCriterium')
       .where('"countryId" = :countryId', { countryId: query });
 
-    const programs = await qb.getMany();
-    if (process.env.NODE_ENV === 'production') {
-      programs.filter(program => program.published);
-    }
+    let programs = await qb.getMany();
+    programs = programs.filter(program => program.published);
+
     const programsCount = programs.length;
     return { programs, programsCount };
   }
