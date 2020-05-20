@@ -9,9 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - 2020-05-20: Add `RESET_SECRET` to `services/.env` AB#1921
 
+### Changed
+- 2020-05-20: Renamed `program-manager` to `project-officer` throughout code, and particularly in `services/121-service/src/secrets.ts` AB#1938
+- 2020-05-20: Renamed `privacy-officer` to `program-manager` throughout code, and particularly in `services/121-service/src/secrets.ts` AB#1939
+
 ### Removed
 - 2020-04-23: Remove `tools/secrets.json`, set `GITHUB_WEBHOOK_SECRET` in `webhook.service`
-
 
 ## [0.2.1] - 2020-04-22
 Test hotfix-release to test automatic deployment of patch-releases.
