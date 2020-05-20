@@ -10,6 +10,7 @@ import { SeedHelper } from './seed-helper';
 import { SeedMultiProgram } from './seed-multi-program';
 import { SeedSingleProgram } from './seed-single-program';
 import { SeedPublish } from './seed-publish';
+import { ScriptsController } from './scripts.controller';
 
 @Module({
   imports: [
@@ -28,8 +29,9 @@ import { SeedPublish } from './seed-publish';
     SeedSingleProgram,
     SeedMultiProgram,
   ],
+  controllers: [ScriptsController],
 })
-export class ScriptsModule { }
+export class ScriptsModule {}
 
 export interface InterfaceScript {
   run(argv: Arguments): Promise<void>;

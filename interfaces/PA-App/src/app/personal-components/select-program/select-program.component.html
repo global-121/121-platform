@@ -1,5 +1,7 @@
 <section #selectProgram>
-  <dialogue-turn>
+  <dialogue-turn *ngIf="programs?.length"
+                 [isSpoken]="programs?.length"
+  >
     <p>
       <play-text-audio key="personal.select-program.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-program.introduction'|translate }}
@@ -10,7 +12,10 @@
                       headingKey="personal.select-program.more-info-programs"
     ></more-info-button>
   </dialogue-turn>
-  <dialogue-turn actor="self">
+  <dialogue-turn actor="self"
+                 *ngIf="programs?.length"
+                 [isSpoken]="programs?.length"
+  >
     <form (submit)="submitProgram()">
       <ion-radio-group (ionChange)="changeProgram($event)">
         <ion-item *ngFor="let program of programs"
@@ -42,5 +47,13 @@
         >{{ 'shared.submit-button'|translate }}</ion-button>
       </ion-row>
     </form>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="!programs?.length"
+                 [isSpoken]="!programs?.length"
+  >
+    <p>
+      <play-text-audio key="personal.select-program.no-published-programs" class="ion-float-start ion-margin-end"></play-text-audio>
+      {{ 'personal.select-program.no-published-programs'|translate }}
+    </p>
   </dialogue-turn>
 </section>
