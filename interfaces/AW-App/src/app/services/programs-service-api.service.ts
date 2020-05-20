@@ -63,14 +63,18 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  public getDidByQrIdentifier(qrIdentifier: string): Promise<{ did: string }> {
-    return this.apiService.post(
-      environment.url_121_service_api, '/sovrin/create-connection/qr-find-did',
-      {
-        qrIdentifier,
-      },
-      false,
-    ).toPromise();
+  public getDidByQrIdentifier(qrIdentifier: string): Promise<string> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection/qr-find-did',
+        {
+          qrIdentifier,
+        },
+        false,
+      )
+      .pipe(map((response) => response.did))
+      .toPromise();
   }
 
   getPrefilledAnswers(did: string, programId: number): Promise<any> {

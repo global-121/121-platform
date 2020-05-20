@@ -47,32 +47,38 @@ export class ScanQrComponent implements ValidationComponent {
 
   private async checkScannedData() {
     this.conversationService.startLoading();
-    this.sessionStorageService
+    await this.sessionStorageService
       .retrieve(this.sessionStorageService.type.scannedData)
       .then(async (data) => {
-        const paToValidate = await this.getPaToValidate(data);
+        const paIdentifier = await this.getPaIdentifier(data);
+
+        if (!paIdentifier) {
+          this.scanError = true;
+          return;
+        }
+
+        this.scanError = false;
+
         const paData = await this.findPaData(
-          paToValidate.did,
-          paToValidate.programId,
+          paIdentifier.did,
+          paIdentifier.programId,
         );
 
-        if (paData) {
-          this.sessionStorageService.store(
-            this.sessionStorageService.type.paData,
-            JSON.stringify(paData),
-          );
-          this.foundCorrectPaData();
-        } else {
+        if (!paData) {
           this.unknownDidCombination = true;
+          return;
         }
-        this.conversationService.stopLoading();
+
+        this.storePaData(paData);
+        this.foundCorrectPaData();
       });
+    this.conversationService.stopLoading();
   }
 
   private isJson(str: string): boolean {
     try {
       JSON.parse(str);
-    } catch (e) {
+    } catch {
       return false;
     }
     return true;
@@ -87,30 +93,24 @@ export class ScanQrComponent implements ValidationComponent {
       return false;
     }
 
-    const parsedData = JSON.parse(data);
-
-    return this.isPaQrCode(parsedData);
+    return this.isPaQrCode(JSON.parse(data));
   }
 
-  private async getPaToValidate(data: string): Promise<PaQrCode> {
-    let paToValidate: PaQrCode;
-
+  private async getPaIdentifier(data: string): Promise<PaQrCode | false> {
     if (this.isValidPaQrCode(data)) {
-      paToValidate = JSON.parse(data);
-    } else {
-      const foundDid = await this.programsService.getDidByQrIdentifier(data);
-
-      if (!foundDid || !foundDid.did) {
-        this.scanError = true;
-        return;
-      }
-      paToValidate = {
-        did: foundDid.did,
-        programId: 1, // Hard-code Program ID for now...
-      };
+      return JSON.parse(data);
     }
 
-    return paToValidate;
+    try {
+      const paDid = await this.programsService.getDidByQrIdentifier(data);
+
+      return {
+        did: paDid,
+        programId: 1, // Hard-code Program ID for now...
+      };
+    } catch {
+      return false;
+    }
   }
 
   private async findPaData(did: string, programId: number): Promise<any> {
@@ -160,6 +160,13 @@ export class ScanQrComponent implements ValidationComponent {
     if (prefilledQuestions.length > 0) {
       return prefilledQuestions;
     }
+  }
+
+  private storePaData(paData: any) {
+    this.sessionStorageService.store(
+      this.sessionStorageService.type.paData,
+      JSON.stringify(paData),
+    );
   }
 
   private foundCorrectPaData() {
