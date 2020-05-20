@@ -2,7 +2,7 @@
 Feature: Manage people connected to a program
 
   Background:
-    Given a logged-in "program-manager" user
+    Given a logged-in "project-officer" user
     Given a program property "X" representing the target number of people to include
 
   Scenario: View people enrolled in a program

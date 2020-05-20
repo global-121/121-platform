@@ -38,17 +38,17 @@ export class SeedSingleProgram implements InterfaceScript {
     });
 
     await this.seedHelper.addUser({
+      role: UserRole.ProjectOfficer,
+      email: USERCONFIG.emailProjectOfficer,
+      countryId: USERCONFIG.countryId,
+      password: USERCONFIG.passwordProjectOfficer,
+    });
+
+    await this.seedHelper.addUser({
       role: UserRole.ProgramManager,
       email: USERCONFIG.emailProgramManager,
       countryId: USERCONFIG.countryId,
       password: USERCONFIG.passwordProgramManager,
-    });
-
-    await this.seedHelper.addUser({
-      role: UserRole.PrivacyOfficer,
-      email: USERCONFIG.emailPrivacyOfficer,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordPrivacyOfficer,
     });
 
     // ***** CREATE COUNTRIES *****

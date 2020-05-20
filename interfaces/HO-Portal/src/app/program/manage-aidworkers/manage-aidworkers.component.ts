@@ -82,7 +82,7 @@ export class ManageAidworkersComponent implements OnChanges {
   }
 
   public checkVisibility(phase) {
-    this.componentVisible = this.presentInPhases.includes(phase) && this.userRole !== UserRole.PrivacyOfficer;
+    this.componentVisible = this.presentInPhases.includes(phase) && this.userRole !== UserRole.ProgramManager;
   }
 
   public async loadData() {

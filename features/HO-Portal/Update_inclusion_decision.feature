@@ -2,7 +2,7 @@
 Feature: Update_inclusion_decision
 
   Background:
-    Given a logged-in "privacy-officer" user
+    Given a logged-in "program-manager" user
     Given the user views the "program" page
 
   Scenario: View people in/excluded in a program

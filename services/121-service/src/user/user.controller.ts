@@ -35,7 +35,7 @@ export class UserController {
     this.userService = userService;
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Sign-up new user' })
   @Post('user')
   public async create(@Body() userData: CreateUserDto): Promise<UserRO> {
@@ -68,7 +68,7 @@ export class UserController {
     return { user };
   }
 
-  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer, UserRole.Aidworker)
+  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager, UserRole.Aidworker)
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -78,18 +78,18 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'string' })
   public async delete(
     @User('id') deleterId: number,
-    @Param() params
+    @Param() params,
   ): Promise<DeleteResult> {
     return await this.userService.delete(deleterId, params.userId);
   }
 
-  @Roles(UserRole.ProgramManager, UserRole.PrivacyOfficer, UserRole.Aidworker)
+  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager, UserRole.Aidworker)
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
@@ -97,7 +97,7 @@ export class UserController {
     return await this.userService.findByEmail(email);
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Deactivate Aidworker' })
   @Put('user/:userId/deactivate')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
@@ -105,7 +105,7 @@ export class UserController {
     return await this.userService.deactivate(userId);
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Activate Aidworker' })
   @Put('user/:userId/activate')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
@@ -113,7 +113,7 @@ export class UserController {
     return await this.userService.activate(userId);
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/:userId/:programId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })

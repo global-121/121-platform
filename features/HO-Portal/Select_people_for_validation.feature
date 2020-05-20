@@ -2,7 +2,7 @@
 Feature: Select people affected for validation
 
   Background:
-    Given a logged-in "program-manager" user
+    Given a logged-in "project-officer" user
     Given the "active phase" is "registration & validation"
 
   Scenario: View people affected connected to a program

@@ -31,7 +31,7 @@ export class CountryController {
     return await this.countryService.findAll();
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Create country' })
   @ApiResponse({
     status: 201,
@@ -45,7 +45,7 @@ export class CountryController {
     return this.countryService.create(countryData);
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Add criterium to country' })
   @Put(':countryId')
   public async bindCriteriumCountry(

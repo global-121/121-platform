@@ -49,7 +49,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     {
       id: BulkAction.chooseAction,
       label: this.translate.instant('page.program.program-people-affected.choose-action'),
-      roles: [UserRole.ProgramManager, UserRole.PrivacyOfficer],
+      roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
       phases: [
         ProgramPhase.design,
         ProgramPhase.registrationValidation,
@@ -62,7 +62,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     {
       id: BulkAction.selectForValidation,
       label: this.translate.instant('page.program.program-people-affected.actions.' + BulkAction.selectForValidation),
-      roles: [UserRole.ProgramManager],
+      roles: [UserRole.ProjectOfficer],
       phases: [ProgramPhase.registrationValidation]
     }
   ];

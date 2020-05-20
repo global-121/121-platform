@@ -21,7 +21,7 @@ export class UserService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
-  public constructor() { }
+  public constructor() {}
 
   public async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
@@ -139,20 +139,23 @@ export class UserService {
     return this.buildUserRO(updatedUser);
   }
 
-  public async delete(deleterId: number, userId: number): Promise<DeleteResult> {
+  public async delete(
+    deleterId: number,
+    userId: number,
+  ): Promise<DeleteResult> {
     const deleter = await this.userRepository.findOne(deleterId);
     const user = await this.userRepository.findOne(userId);
 
-    // If not program-manager (= admin, as other roles have no access to this endpoint), can delete any user
-    if (deleter.role !== UserRole.ProgramManager) {
+    // If not project-officer (= admin, as other roles have no access to this endpoint), can delete any user
+    if (deleter.role !== UserRole.ProjectOfficer) {
       return await this.userRepository.delete(userId);
     }
 
-    // Program-manager can only delete aidworkers
+    // project-officer can only delete aidworkers
     if (user.role === UserRole.Aidworker) {
       return await this.userRepository.delete(userId);
     } else {
-      const errors = { Delete: 'Program manager can only delete aidworkers' };
+      const errors = { Delete: 'project-officer can only delete aidworkers' };
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
   }
