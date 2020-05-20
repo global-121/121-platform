@@ -45,10 +45,10 @@ export class SeedSingleProgram implements InterfaceScript {
     });
 
     await this.seedHelper.addUser({
-      role: UserRole.PrivacyOfficer,
-      email: USERCONFIG.emailPrivacyOfficer,
+      role: UserRole.ProgramManager,
+      email: USERCONFIG.emailProgramManager,
       countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordPrivacyOfficer,
+      password: USERCONFIG.passwordProgramManager,
     });
 
     // ***** CREATE COUNTRIES *****

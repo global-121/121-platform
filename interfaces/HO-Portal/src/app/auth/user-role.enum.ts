@@ -1,6 +1,6 @@
 export enum UserRole {
   Admin = 'admin',
   ProjectOfficer = 'project-officer',
-  PrivacyOfficer = 'privacy-officer',
+  ProgramManager = 'program-manager',
   Aidworker = 'aidworker',
 }

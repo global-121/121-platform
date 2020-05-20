@@ -211,7 +211,7 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   private shouldShowSensitiveData(userRole) {
-    this.showSensitiveData = userRole === UserRole.PrivacyOfficer;
+    this.showSensitiveData = userRole === UserRole.ProgramManager;
   }
 
   public checkVisibility(phase) {
@@ -404,7 +404,7 @@ export class ProgramPeopleComponent implements OnChanges {
 
   public showCheckbox(row) {
     return !row.included  // Show checkboxes only for new enrolled PA's in project-officer mode
-      || row.name;        // OR always when in privacy-officer (where endpoint gives only in/excluded people anyway)
+      || row.name;        // OR always when in program-manager (where endpoint gives only in/excluded people anyway)
   }
 
   public updateSubmitWarning() {

@@ -7,8 +7,8 @@ export const USERCONFIG = {
   emailAidWorker: 'aidworker@example.org',
   passwordProjectOfficer: 'password',
   emailProjectOfficer: 'project-officer@example.org',
-  passwordPrivacyOfficer: 'password',
-  emailPrivacyOfficer: 'privacy-officer@example.org',
+  passwordProgramManager: 'password',
+  emailProgramManager: 'program-manager@example.org',
   countryId: 1,
 };
 

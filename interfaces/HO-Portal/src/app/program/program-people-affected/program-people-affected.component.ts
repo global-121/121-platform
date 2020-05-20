@@ -49,7 +49,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     {
       id: BulkAction.chooseAction,
       label: this.translate.instant('page.program.program-people-affected.choose-action'),
-      roles: [UserRole.ProjectOfficer, UserRole.PrivacyOfficer],
+      roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
       phases: [
         ProgramPhase.design,
         ProgramPhase.registrationValidation,

@@ -39,7 +39,7 @@
         >
           {{ 'page.program.program-payout.start-payout'|translate }}
         </confirm-prompt>
-        <ion-button [disabled]="currentUserRole !== userRoleEnum.PrivacyOfficer || !installment.isExportAvailable"
+        <ion-button [disabled]="currentUserRole !== userRoleEnum.ProgramManager || !installment.isExportAvailable"
                     (click)="exportList(installment)"
         >
           {{ 'page.program.program-payout.export-list'|translate }}

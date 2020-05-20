@@ -11,7 +11,7 @@ Feature: Navigate program phases
     And sees that future phases are disabled
     And sees that past phases are enabled
     And sees the "move-to-next-phase"-button below the header, unless the "current program phase" is the last phase
-    And this button is "disabled" for the "privacy-officer"
+    And this button is "disabled" for the "program-manager"
     And this button is "disabled" if the "selected phase" is not the "active phase"
     And this button is "disabled" if "phase" is "inclusion" and there are "enrolled" but not "in/excluded" people in the "people-list"
     And this button is "disabled" if "phase" is "payment" and not all "installments" are "closed" 
