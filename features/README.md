@@ -33,7 +33,8 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 
 ### For Aid-Worker (AW-App)
-
+- [Create program credential](AW-App/Create_program_credential.feature)
+- [Download validation data](AW-App/Download_validation_data.feature)
 
 ---
 
