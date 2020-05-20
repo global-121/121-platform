@@ -95,7 +95,7 @@ export class HandleProofComponent extends PersonalComponent {
       const proof = await this.sovrinService.getProofFromWallet(proofRequest, this.wallet);
 
       // Use proof
-      status = await this.programService.includeMe(this.did, this.programId, proof);
+      status = await this.programService.includeMe(this.did, this.programId, proof['proof']);
       this.paData.store('status', status);
     } else {
       // .. IF YES, THEN CONTINUE
