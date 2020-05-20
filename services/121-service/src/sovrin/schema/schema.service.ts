@@ -1,5 +1,10 @@
 import { SchemaEntity } from './schema.entity';
-import { Injectable, HttpService, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpService,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { API, DEBUG } from '../../config';
@@ -17,33 +22,35 @@ export class SchemaService {
       attributes.push(criterium.criterium);
     }
 
-    // Increment version number based on previous version
     let version: string;
-    if (program.schemaId) {
-      const n = program.schemaId.lastIndexOf(':');
-      const lastVersion = program.schemaId.substring(n + 1);
-      const lastVersionNr = Number(lastVersion.slice(0, -2));
-      const versionNr = lastVersionNr + 1;
-      const version = versionNr.toString() + '.0';
-    } else {
-      version = '1.0';
+    // Increment version number based on previous version
+    // Version set here is overwritten below, but logic is left in for later use
+    if (!DEBUG) {
+      if (program.schemaId) {
+        const n = program.schemaId.lastIndexOf(':');
+        const lastVersion = program.schemaId.substring(n + 1);
+        const lastVersionNr = Number(lastVersion.slice(0, -2));
+        const versionNr = lastVersionNr + 1;
+        version = versionNr.toString() + '.0';
+      } else {
+        version = '1.0';
+      }
     }
-    if (DEBUG) {
-      const randomNumber = Math.floor(Math.random() * 1000) + 1;
-      const randomDecimal = Math.floor(Math.random() * 10) + 1;
-      version = randomNumber.toString() + '.' + randomDecimal.toString();
-    }
+
+    const randomNumber = Math.floor(Math.random() * 1000) + 1;
+    const randomDecimal = Math.floor(Math.random() * 10) + 1;
+    version = randomNumber.toString() + '.' + randomDecimal.toString();
 
     const schemaPost = {
       name: 'program_' + program.id.toString(),
-      version: version, // + randomDecimal.toString(),
+      version: version,
       attributes: attributes,
     };
     console.log(schemaPost);
-    const api_string = API.schema;
+    const apiString = API.schema;
 
     let responseSchema = await this.httpService
-      .post(api_string, schemaPost)
+      .post(apiString, schemaPost)
       .toPromise();
     if (!responseSchema.data) {
       const errors = 'Schema not published';
