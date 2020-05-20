@@ -687,7 +687,7 @@ export class ProgramService {
     }
 
     const fundingOverview = await this.fundingService.getProgramFunds(
-      programId,
+      program.disberseProjectId
     );
     const fundsNeeded = amount * includedConnections.length;
     if (fundsNeeded > fundingOverview.totalAvailable) {
@@ -938,7 +938,7 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const fundsDisberse = await this.fundingService.getProgramFunds(programId);
+    const fundsDisberse = await this.fundingService.getProgramFunds(program.disberseProjectId);
     return fundsDisberse;
   }
 

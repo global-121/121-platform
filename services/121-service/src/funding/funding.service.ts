@@ -1,18 +1,17 @@
-import { Injectable, HttpService } from '@nestjs/common';
+import { DisberseApiService } from './disberse-api.service';
+import { Injectable } from '@nestjs/common';
 import { FundingOverview } from './dto/funding-overview.dto';
 
 @Injectable()
 export class FundingService {
-  public constructor(private readonly httpService: HttpService) {}
+  public constructor(
+    private readonly disberseApiService: DisberseApiService,
+  ) {}
 
-  public async getProgramFunds(programId: number): Promise<FundingOverview> {
-    const totalRaised = Math.floor(Math.random() * (100000 - 500 + 1)) + 50000;
-    const totalTransferred = Math.floor(Math.random() * (49999 - 1 + 1)) + 1;
-
+  public async getProgramFunds(disberseProgramId: string): Promise<FundingOverview> {
+    const totalAvailable = await this.disberseApiService.balance(disberseProgramId);
     const fundsDisberse = {
-      totalRaised: totalRaised,
-      totalTransferred: totalTransferred,
-      totalAvailable: totalRaised - totalTransferred,
+      totalAvailable: totalAvailable,
       updated: new Date(),
     };
     return fundsDisberse;

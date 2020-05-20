@@ -13,8 +13,6 @@ export class PeopleMetrics {
 }
 
 export class FundsMetrics {
-  totalRaised: number;
-  totalTransferred: number;
   totalAvailable: number;
 }
 

@@ -132,18 +132,6 @@ export class MetricsComponent implements OnChanges {
       label: 'page.program.program-details.fixedTransferValue',
       value: this.getValueOrUnknown(this.program.fixedTransferValue, (value) => formatCurrency(value, locale, symbol, currencyCode)),
     });
-    this.metricsMap.set(`${group}.totalRaised`, {
-      group,
-      icon: 'cash',
-      label: 'page.program.metrics.funds.raised',
-      value: this.getValueOrUnknown(metrics.totalRaised, (value) => formatCurrency(value, locale, symbol, currencyCode)),
-    });
-    this.metricsMap.set(`${group}.totalTransferred`, {
-      group,
-      icon: 'cash',
-      label: 'page.program.metrics.funds.transferred',
-      value: this.getValueOrUnknown(metrics.totalTransferred, (value) => formatCurrency(value, locale, symbol, currencyCode)),
-    });
     this.metricsMap.set(`${group}.totalAvailable`, {
       group,
       icon: 'cash',
