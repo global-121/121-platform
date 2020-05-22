@@ -65,17 +65,6 @@ async function main(): Promise<void> {
     const name = [names];
     const name_check = name[0][0];
 
-    if (
-      name_check !== 'seed-prod' &&
-      name_check !== 'seed-publish' &&
-      process.env.NODE_ENV === 'production'
-    ) {
-      console.log(
-        '-----------NOTE: You are in production-environment and cannot run this script.----------------',
-      );
-      return;
-    }
-
     if (name_check !== 'seed-prod' && name_check !== 'seed-publish') {
       confirmRun(name);
     } else {
