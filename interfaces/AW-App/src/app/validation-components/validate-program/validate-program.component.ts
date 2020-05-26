@@ -50,7 +50,9 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   async ngOnInit() {
     const paData = await this.getPaData();
+    this.did = paData[0].did;
     this.programId = paData[0].programId;
+
     await this.getProgramQuestions();
     await this.initialAnswers(paData);
 
