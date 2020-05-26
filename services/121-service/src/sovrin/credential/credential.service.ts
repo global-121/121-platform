@@ -117,7 +117,31 @@ export class CredentialService {
       );
       credentials.push(newCredential);
     }
+    await this.storePersistentAnswers(prefilledAnswers, programId, did);
     return credentials;
+  }
+
+  public async storePersistentAnswers(answers, programId, did): Promise<void> {
+    let program = await this.programRepository.findOne(programId, {
+      relations: ['customCriteria'],
+    });
+    const persistentCriteria = [];
+    for (let criterium of program.customCriteria) {
+      if (criterium.persistence) {
+        persistentCriteria.push(criterium.criterium);
+      }
+    }
+    const customDataToStore = {};
+    for (let answer of answers) {
+      if (persistentCriteria.includes(answer.attribute)) {
+        customDataToStore[answer.attribute] = answer.answer;
+      }
+    }
+    let connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+    connection.customData = JSON.parse(JSON.stringify(customDataToStore));
+    await this.connectionRepository.save(connection);
   }
 
   // AW: get answers to attributes for a given PA (identified first through did/QR)
