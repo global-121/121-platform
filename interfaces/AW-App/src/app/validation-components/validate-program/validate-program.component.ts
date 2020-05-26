@@ -14,6 +14,7 @@ import {
 } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { PaDataAttribute } from 'src/app/models/pa-data.model';
 
 @Component({
   selector: 'app-validate-program',
@@ -296,13 +297,4 @@ class Answer {
   code: string;
   value: string;
   label: string;
-}
-
-class PaDataAttribute {
-  answer: string;
-  attribute: string;
-  attributeId: number;
-  did: string;
-  id: number;
-  programId: number;
 }
