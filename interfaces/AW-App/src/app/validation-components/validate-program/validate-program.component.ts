@@ -7,7 +7,11 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { IonContent } from '@ionic/angular';
 import { ValidationComponents } from '../validation-components.enum';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
-import { Program, AnswerType, ProgramAttribute } from 'src/app/models/program.model';
+import {
+  Program,
+  AnswerType,
+  ProgramAttribute,
+} from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 
@@ -17,7 +21,6 @@ import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
   styleUrls: ['./validate-program.component.scss'],
 })
 export class ValidateProgramComponent implements ValidationComponent {
-
   public did: string;
   public programId: number;
   private currentProgram: Program;
@@ -42,51 +45,44 @@ export class ValidateProgramComponent implements ValidationComponent {
     public sessionStorageService: SessionStorageService,
     public router: Router,
     public ionContent: IonContent,
-    private storage: Storage
-  ) { }
+    private storage: Storage,
+  ) {}
 
-  ngOnInit() {
-    this.sessionStorageService.retrieve(this.sessionStorageService.type.scannedData).then(async data => {
-      this.handleScannedData(data);
-      await this.getProgramQuestionsAndAnswers();
-      this.sessionStorageService.destroyItem(this.sessionStorageService.type.scannedData);
-      this.sessionStorageService.destroyItem(this.sessionStorageService.type.paData);
-    });
-  }
+  async ngOnInit() {
+    const paData = await this.getPaData();
+    this.programId = paData[0].programId;
+    await this.getProgramQuestions();
+    await this.initialAnswers(paData);
 
-  private handleScannedData(data: string) {
-    const jsonData = JSON.parse(data);
-    this.did = jsonData.did;
-    this.programId = jsonData.programId;
-  }
-
-  private async getProgramQuestionsAndAnswers() {
-    this.currentProgram = await this.getCurrentProgram();
-    console.log('currentProgram: ', this.currentProgram);
-    this.questions = this.buildQuestions(this.currentProgram.customCriteria);
-    console.log('questions: ', this.questions);
-    const paDataRaw = await this.sessionStorageService.retrieve(this.sessionStorageService.type.paData);
-    const paData = JSON.parse(paDataRaw);
-    this.initialAnswers(paData);
     this.verificationPostponed = false;
     this.ionContent.scrollToBottom(300);
   }
 
-  private async getCurrentProgram() {
-      let program = await this.getCurrentProgramOffline();
-      if (!program) {
-        console.log('getCurrentProgramOnline');
-        program = await this.programsService.getProgramById(this.programId);
-      }
-      return program;
+  private async getPaData(): Promise<PaDataAttribute[]> {
+    const paDataRaw = await this.sessionStorageService.retrieve(
+      this.sessionStorageService.type.paData,
+    );
+    return JSON.parse(paDataRaw);
   }
 
-  private async getCurrentProgramOffline() {
-    console.log('getCurrentProgramOffline');
+  private async getProgramQuestions() {
+    this.currentProgram = await this.getCurrentProgram();
+    this.questions = this.buildQuestions(this.currentProgram.customCriteria);
+  }
+
+  private async getCurrentProgram(): Promise<Program> {
+    let program = await this.getCurrentProgramOffline(this.programId);
+    if (!program) {
+      program = await this.programsService.getProgramById(this.programId);
+    }
+    return program;
+  }
+
+  private async getCurrentProgramOffline(programId: number): Promise<Program> {
     const programs = await this.storage.get(this.ionicStorageTypes.myPrograms);
     if (programs) {
       for (const program of programs) {
-        if (program.id === this.programId) {
+        if (program.id === programId) {
           return program;
         }
       }
@@ -127,7 +123,6 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   private getQuestionByCode(questionCode: string): Question {
-    console.log('this.questions, getQuestionByCode', this.questions);
     const result = this.questions.find((question: Question) => {
       return question.code === questionCode;
     });
@@ -135,7 +130,10 @@ export class ValidateProgramComponent implements ValidationComponent {
     return result;
   }
 
-  private getAnswerOptionLabelByValue(options: QuestionOption[], answerValue: string) {
+  private getAnswerOptionLabelByValue(
+    options: QuestionOption[],
+    answerValue: string,
+  ) {
     const option = options.find((item: QuestionOption) => {
       return item.value === answerValue;
     });
@@ -158,7 +156,10 @@ export class ValidateProgramComponent implements ValidationComponent {
 
     // Convert the answerValue to a human-readable label
     if (question.answerType === AnswerType.Enum) {
-      answer.label = this.getAnswerOptionLabelByValue(question.options, answerValue);
+      answer.label = this.getAnswerOptionLabelByValue(
+        question.options,
+        answerValue,
+      );
     }
 
     this.answers[questionCode] = answer;
@@ -173,7 +174,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.checkAllQuestionsAnswered(this.answers);
   }
 
-  public initialAnswers(answers) {
+  public initialAnswers(answers: PaDataAttribute[]) {
     for (const answerItem of answers) {
       this.buildAnswers(answerItem.attribute, answerItem.answer);
     }
@@ -227,13 +228,11 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.storeCredentialOffline(attributes);
 
     // THIS SHOULD BE REMOVED WHEN WORKING ON AB# 1472
-    this.programsService.issueCredential(
-      this.did,
-      this.programId,
-      attributes
-    ).then(() => {
-      console.log('createAttributes api call completed');
-    });
+    this.programsService
+      .issueCredential(this.did, this.programId, attributes)
+      .then(() => {
+        console.log('createAttributes api call completed');
+      });
     // THIS SHOULD BE REMOVED WHEN WORKING ON AB# 1472
 
     this.programCredentialIssued = true;
@@ -241,24 +240,30 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.complete();
   }
 
-  public async storeCredentialOffline(
-    attributes: ProgramAttribute[]) {
-      const credential = {
-        did: this.did,
-        programId: this.programId,
-        attributes
-      };
-      let storedCredentials = await this.storage.get(this.ionicStorageTypes.credentials);
-      if (!storedCredentials) {
-        storedCredentials = [];
-      }
-
-      // If offline DID is already stored delete it from array first
-      storedCredentials = storedCredentials.filter(storedCredential => !(storedCredential.did === this.did));
-
-      storedCredentials.push(credential);
-      await this.storage.set(this.ionicStorageTypes.credentials, storedCredentials);
+  public async storeCredentialOffline(attributes: ProgramAttribute[]) {
+    const credential = {
+      did: this.did,
+      programId: this.programId,
+      attributes,
+    };
+    let storedCredentials = await this.storage.get(
+      this.ionicStorageTypes.credentials,
+    );
+    if (!storedCredentials) {
+      storedCredentials = [];
     }
+
+    // If offline DID is already stored delete it from array first
+    storedCredentials = storedCredentials.filter(
+      (storedCredential) => !(storedCredential.did === this.did),
+    );
+
+    storedCredentials.push(credential);
+    await this.storage.set(
+      this.ionicStorageTypes.credentials,
+      storedCredentials,
+    );
+  }
 
   getNextSection() {
     return ValidationComponents.mainMenu;
@@ -267,14 +272,11 @@ export class ValidateProgramComponent implements ValidationComponent {
   complete() {
     this.conversationService.onSectionCompleted({
       name: ValidationComponents.validateProgram,
-      data: {
-      },
+      data: {},
       next: this.getNextSection(),
     });
   }
-
 }
-
 
 class Question {
   id: number;
@@ -294,3 +296,11 @@ class Answer {
   label: string;
 }
 
+class PaDataAttribute {
+  answer: string;
+  attribute: string;
+  attributeId: number;
+  did: string;
+  id: number;
+  programId: number;
+}
