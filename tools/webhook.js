@@ -61,6 +61,8 @@ http
       }
       if (
         process.env.NODE_ENV === "production" &&
+        payload.action === "released" &&
+        payload.release.draft === false &&
         payload.release.target_commitish &&
         payload.release.target_commitish.includes(process.env.VERSION)
       ) {
