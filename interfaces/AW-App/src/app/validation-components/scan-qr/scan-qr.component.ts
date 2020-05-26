@@ -16,8 +16,6 @@ import { PaQrCode } from 'src/app/models/pa-qr-code.model';
   styleUrls: ['./scan-qr.component.scss'],
 })
 export class ScanQrComponent implements ValidationComponent {
-  public gettingPaData = false;
-
   public scanError = false;
   public paDataResult = false;
   public unknownDidCombination = false;
@@ -40,40 +38,57 @@ export class ScanQrComponent implements ValidationComponent {
   public async scanQrCode() {
     const storageSubscription = this.sessionStorageService
       .watchStorage()
-      .subscribe(async () => {
-        await this.checkScannedData();
+      .subscribe(async (response) => {
+        // Only respond to scannedData changes:
+        if (response !== this.sessionStorageService.type.scannedData) {
+          return;
+        }
+
+        this.conversationService.startLoading();
+        await this.sessionStorageService
+          .retrieve(this.sessionStorageService.type.scannedData)
+          .then((data) => this.checkScannedData(data))
+          .finally(() => {
+            // Always reset the scanned-data
+            this.sessionStorageService.destroyItem(
+              this.sessionStorageService.type.scannedData,
+            );
+          });
+        this.conversationService.stopLoading();
+
         storageSubscription.unsubscribe();
       });
     this.router.navigate(['/scan-qr']);
   }
 
-  private async checkScannedData() {
-    this.gettingPaData = true;
-    this.sessionStorageService
-      .retrieve(this.sessionStorageService.type.scannedData)
-      .then(async (data) => {
-        const paToValidate = await this.getPaToValidate(data);
-        const paData = await this.findPaData(
-          paToValidate.did,
-          paToValidate.programId,
-        );
+  private async checkScannedData(data: string) {
+    const paIdentifier = await this.getPaIdentifier(data);
 
-        if (paData) {
-          this.sessionStorageService.store(
-            this.sessionStorageService.type.paData,
-            JSON.stringify(paData),
-          );
-          this.foundCorrectPaData();
-        } else {
-          this.unknownDidCombination = true;
-        }
-      });
+    if (!paIdentifier) {
+      this.scanError = true;
+      return;
+    }
+
+    this.scanError = false;
+
+    const paData = await this.findPaData(
+      paIdentifier.did,
+      paIdentifier.programId,
+    );
+
+    if (!paData) {
+      this.unknownDidCombination = true;
+      return;
+    }
+
+    this.storePaData(paData);
+    this.foundCorrectPaData();
   }
 
   private isJson(str: string): boolean {
     try {
       JSON.parse(str);
-    } catch (e) {
+    } catch {
       return false;
     }
     return true;
@@ -88,30 +103,24 @@ export class ScanQrComponent implements ValidationComponent {
       return false;
     }
 
-    const parsedData = JSON.parse(data);
-
-    return this.isPaQrCode(parsedData);
+    return this.isPaQrCode(JSON.parse(data));
   }
 
-  private async getPaToValidate(data: string): Promise<PaQrCode> {
-    let paToValidate: PaQrCode;
-
+  private async getPaIdentifier(data: string): Promise<PaQrCode | false> {
     if (this.isValidPaQrCode(data)) {
-      paToValidate = JSON.parse(data);
-    } else {
-      const foundDid = await this.programsService.getDidByQrIdentifier(data);
-
-      if (!foundDid || !foundDid.did) {
-        this.scanError = true;
-        return;
-      }
-      paToValidate = {
-        did: foundDid.did,
-        programId: 1, // Hard-code Program ID for now...
-      };
+      return JSON.parse(data);
     }
 
-    return paToValidate;
+    try {
+      const paDid = await this.programsService.getDidByQrIdentifier(data);
+
+      return {
+        did: paDid,
+        programId: 1, // Hard-code Program ID for now...
+      };
+    } catch {
+      return false;
+    }
   }
 
   private async findPaData(did: string, programId: number): Promise<any> {
@@ -119,12 +128,10 @@ export class ScanQrComponent implements ValidationComponent {
     if (!paData) {
       paData = await this.findPaDataOnline(did, programId);
     }
-    this.gettingPaData = false;
     return paData;
   }
 
   private async findPaDataOnline(did: string, programId: number): Promise<any> {
-    console.log('findPaDataOnline()');
     try {
       const response = await this.programsService.getPrefilledAnswers(
         did,
@@ -162,6 +169,13 @@ export class ScanQrComponent implements ValidationComponent {
     if (prefilledQuestions.length > 0) {
       return prefilledQuestions;
     }
+  }
+
+  private storePaData(paData: any) {
+    this.sessionStorageService.store(
+      this.sessionStorageService.type.paData,
+      JSON.stringify(paData),
+    );
   }
 
   private foundCorrectPaData() {

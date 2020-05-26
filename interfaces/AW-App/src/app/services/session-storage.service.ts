@@ -23,7 +23,7 @@ export class SessionStorageService {
     this.storageSub.next(key);
   }
 
-  async retrieve(key: string): Promise<any> {
+  async retrieve(key: string): Promise<string> {
     return window.sessionStorage[key];
   }
 
