@@ -13,7 +13,7 @@
     "test:dev": "ng test",
     "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss}\"",
     "syntax:fix": "npm run lint:syntax -- --write",
-    "lint": "ng lint",
+    "lint": "ng lint && npm run lint:syntax",
     "e2e": "ng e2e"
   },
   "private": true,
