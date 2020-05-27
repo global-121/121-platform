@@ -13,11 +13,9 @@ import { HealthModule } from './health.module';
     DataStorageModule,
     HealthModule,
   ],
-  controllers: [
-    AppController
-  ],
+  controllers: [AppController],
   providers: [],
 })
 export class ApplicationModule {
-  public constructor(private readonly connection: Connection) { }
+  public constructor(private readonly connection: Connection) {}
 }

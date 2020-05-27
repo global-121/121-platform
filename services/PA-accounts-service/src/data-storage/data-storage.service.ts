@@ -14,14 +14,11 @@ export class DataStorageService {
   @InjectRepository(DataStorageEntity)
   private readonly dataStorageRepository: Repository<DataStorageEntity>;
 
-  public constructor() { }
+  public constructor() {}
 
   public cryptr = new Cryptr(walletPasswordEncryptionKey);
 
-  public async post(
-    userId: number,
-    storeData: StoreDataDto,
-  ): Promise<DataStorageEntity> {
+  public async post(userId: number, storeData: StoreDataDto): Promise<any> {
     let data = new DataStorageEntity();
     data.userId = userId;
     data.type = storeData.type;
@@ -34,16 +31,13 @@ export class DataStorageService {
     return newData;
   }
 
-  public async get(
-    userId: number,
-    params,
-  ): Promise<String> {
+  public async get(userId: number, params): Promise<string> {
     const data = await this.dataStorageRepository.find({
       where: {
         userId: userId,
-        type: params.type
+        type: params.type,
       },
-      order: { created: "DESC" }
+      order: { created: 'DESC' },
     });
     if (!data || data.length === 0) {
       const errors = { Data: ' not found' };
@@ -53,6 +47,4 @@ export class DataStorageService {
     data[0].data = this.cryptr.decrypt(data[0].data);
     return JSON.stringify(data[0].data);
   }
-
-
 }
