@@ -12,6 +12,7 @@ describe('PhaseNextComponent', () => {
 
   const authServiceMock = {
     authenticationState$: of(null),
+    getUserRole: () => '',
   };
 
   beforeEach(async(() => {
