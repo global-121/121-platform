@@ -6,7 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- 2020-05-26 - Webhook in production-mode triggers deploy-script only once per published release
+
+
 ---
+
+
+## [0.3.1] - 2020-05-26
+Hotfix to add missing variable/parameter in AW-App validation-flow.
+
 
 ## [0.3.0] - 2020-05-26
 
@@ -50,7 +59,8 @@ Test hotfix-release to test automatic deployment of patch-releases.
 
 ---
 
-[Unreleased]: https://github.com/global-121/121-platform/compare/v0.3.0...master
+[Unreleased]: https://github.com/global-121/121-platform/compare/v0.3.1...master
+[0.3.1]: https://github.com/global-121/121-platform/releases/tag/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/global-121/121-platform/releases/tag/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/global-121/121-platform/releases/tag/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/global-121/121-platform/releases/tag/v0.1.1...v0.2.0
