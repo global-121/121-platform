@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BulkAction } from '../models/program.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
+import { BulkActionId } from './bulk-actions.models';
+import { Person } from '../models/person.model';
 
 @Injectable({
   providedIn: 'root',
@@ -8,23 +9,29 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 export class BulkActionsService {
   constructor(private programsService: ProgramsServiceApiService) {}
 
-  updateCheckboxes(action: BulkAction, personData: any) {
-    if (action === BulkAction.selectForValidation) {
-      personData.checkboxVisible =
-        personData.tempScore && !personData.selectedForValidation
-          ? true
-          : false;
+  updateCheckboxes(action: BulkActionId, personData: Person) {
+    switch (action) {
+      case BulkActionId.selectForValidation:
+        personData.checkboxVisible =
+          personData.tempScore && !personData.selectedForValidation
+            ? true
+            : false;
+        break;
     }
     return personData;
   }
 
   async applyAction(
-    action: BulkAction,
+    action: BulkActionId,
     programId: number,
     selectedPeople: any[],
-  ) {
-    if (action === BulkAction.selectForValidation) {
-      await this.programsService.selectForValidation(programId, selectedPeople);
+  ): Promise<void> {
+    switch (action) {
+      case BulkActionId.selectForValidation:
+        return await this.programsService.selectForValidation(
+          programId,
+          selectedPeople,
+        );
     }
   }
 }

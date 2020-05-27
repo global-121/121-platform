@@ -1,16 +1,13 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
-import {
-  ProgramPhase,
-  Program,
-  BulkAction,
-} from 'src/app/models/program.model';
+import { ProgramPhase, Program } from 'src/app/models/program.model';
 import { TranslateService } from '@ngx-translate/core';
-import { Person } from 'src/app/models/person.model';
+import { Person, PersonRow } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatDate } from '@angular/common';
 import { AlertController } from '@ionic/angular';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
+import { BulkActionId, BulkAction } from 'src/app/services/bulk-actions.models';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -19,9 +16,9 @@ import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 })
 export class ProgramPeopleAffectedComponent implements OnChanges {
   @Input()
-  public selectedPhase: string;
+  public selectedPhase: ProgramPhase;
   @Input()
-  public activePhase: string;
+  public activePhase: ProgramPhase;
   @Input()
   public programId: number;
   @Input()
@@ -42,16 +39,16 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
 
   public rows: any[] = [];
   public columns: any[] = [];
-  public peopleAffected: Person[] = [];
-  public selectedPeople: any[] = [];
+  public peopleAffected: PersonRow[] = [];
+  public selectedPeople: PersonRow[] = [];
   private headerChecked = false;
   private countSelected = 0;
 
   public applyBtnDisabled = true;
-  private action = BulkAction.chooseAction;
-  public bulkActions = [
+  public action = BulkActionId.chooseAction;
+  public bulkActions: BulkAction[] = [
     {
-      id: BulkAction.chooseAction,
+      id: BulkActionId.chooseAction,
       label: this.translate.instant(
         'page.program.program-people-affected.choose-action',
       ),
@@ -66,16 +63,15 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       ],
     },
     {
-      id: BulkAction.selectForValidation,
+      id: BulkActionId.selectForValidation,
       label: this.translate.instant(
-        'page.program.program-people-affected.actions.' +
-          BulkAction.selectForValidation,
+        'page.program.program-people-affected.actions.select-for-validation',
       ),
       roles: [UserRole.ProjectOfficer],
       phases: [ProgramPhase.registrationValidation],
     },
   ];
-  public bulkActionsEnabled = [];
+  public bulkActionsEnabled: BulkAction[] = [];
 
   public submitWarning: any;
 
@@ -194,37 +190,33 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     }
   }
 
-  public checkVisibility(phase) {
+  public checkVisibility(phase: ProgramPhase) {
     this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   private loadActions() {
-    this.bulkActionsEnabled = [];
-    for (const action of this.bulkActions) {
-      if (
+    this.bulkActionsEnabled = this.bulkActions.filter((action) => {
+      return (
         action.roles.includes(this.userRole) &&
-        action.phases.includes(ProgramPhase[this.activePhase])
-      ) {
-        this.bulkActionsEnabled.push(action);
-      }
-    }
+        action.phases.includes(this.activePhase)
+      );
+    });
   }
 
   private async loadData() {
-    let allPeopleData: any[];
-    allPeopleData = await this.programsService.getPeopleAffected(
+    const allPeopleData = await this.programsService.getPeopleAffected(
       this.programId,
     );
-    this.peopleAffected = await this.createTableData(allPeopleData);
+    this.peopleAffected = this.createTableData(allPeopleData);
   }
 
-  private async createTableData(source: Person[]): Promise<any[]> {
+  private createTableData(source: Person[]): PersonRow[] {
     if (source.length === 0) {
       return [];
     }
 
     return source.sort(this.sortPeopleAffected).map((person, index) => {
-      const personData: any = {
+      return {
         did: person.did,
         checkboxVisible: false,
         pa: `PA #${index + 1}`,
@@ -246,13 +238,11 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
           ? formatDate(person.validationDate, this.dateFormat, this.locale)
           : null,
         finalScore: person.score,
-      };
-
-      return personData;
+      } as PersonRow;
     });
   }
 
-  private sortPeopleAffected(a, b) {
+  private sortPeopleAffected(a: Person, b: Person) {
     if (a.tempScore === b.tempScore) {
       return a.did > b.did ? -1 : 1;
     } else {
@@ -260,12 +250,12 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     }
   }
 
-  public showCheckbox(row) {
+  public showCheckbox(row: PersonRow) {
     return row.checkboxVisible;
   }
 
   public selectAction() {
-    if (this.action === BulkAction.chooseAction) {
+    if (this.action === BulkActionId.chooseAction) {
       this.resetBulkAction();
       return;
     }
@@ -306,7 +296,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
 
   private resetBulkAction() {
     this.loadData();
-    this.action = BulkAction.chooseAction;
+    this.action = BulkActionId.chooseAction;
     this.applyBtnDisabled = true;
     this.toggleHeaderCheckbox();
     this.headerChecked = false;
@@ -376,11 +366,11 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     this.countSelected = this.selectedPeople.length;
   }
 
-  private countCheckboxes(rows) {
+  private countCheckboxes(rows: PersonRow[]) {
     return rows.filter((i) => i.checkboxVisible).length;
   }
 
-  private updateSubmitWarning(selected) {
+  private updateSubmitWarning(selected: PersonRow[]) {
     const actionLabel = this.bulkActions.find((i) => i.id === this.action)
       .label;
     this.submitWarning.message = `

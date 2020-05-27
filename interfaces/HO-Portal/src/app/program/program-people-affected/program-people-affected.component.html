@@ -2,19 +2,19 @@
   <h2>{{ 'page.program.program-people-affected.section-title'|translate }}</h2>
 
   <ion-row class="ion-align-items-center">
-    <select name="bulkActions" 
-            title="Bulk action"
-            (change)="selectAction();" 
+    <select name="bulkActions"
+            [title]="'page.program.program-people-affected.choose-action'|translate"
+            (change)="selectAction()"
             class="ion-margin-end"
             [(ngModel)]="action"
     >
       <option [value]="action.id" *ngFor="let action of bulkActionsEnabled;">{{ action.label }}</option>
     </select>
-    <confirm-prompt [disabled]="applyBtnDisabled" 
+    <confirm-prompt [disabled]="applyBtnDisabled"
                     (confirm)="applyAction()"
-                    [subHeader]="'page.program.program-people-affected.submit-warning'|translate" 
+                    [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
                     [message]="submitWarning.message"
-                    class="ion-float-end" 
+                    class="ion-float-end"
     >
       {{ 'page.program.program-people-affected.apply-action'|translate }}
     </confirm-prompt>
