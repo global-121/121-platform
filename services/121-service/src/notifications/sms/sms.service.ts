@@ -7,7 +7,6 @@ import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
 import { ProgramService } from '../../programs/program/program.service';
 
-
 @Injectable()
 export class SmsService {
   @InjectRepository(TwilioMessageEntity)

@@ -18,5 +18,4 @@ export class ProofController {
   ): Promise<any> {
     return await this.proofService.getProofRequest(programId);
   }
-
 }

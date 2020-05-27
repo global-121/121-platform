@@ -1,7 +1,12 @@
 import { ProgramService } from './../../programs/program/program.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { Injectable, HttpException, HttpService, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpService,
+  HttpStatus,
+} from '@nestjs/common';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { CustomCriterium } from '../../programs/program/custom-criterium.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
@@ -17,7 +22,7 @@ export class ProofService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
 
-  public constructor(private readonly httpService: HttpService) { }
+  public constructor(private readonly httpService: HttpService) {}
 
   public createProofRequest(
     program: ProgramEntity,
