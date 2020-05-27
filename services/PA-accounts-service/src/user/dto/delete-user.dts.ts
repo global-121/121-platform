@@ -5,5 +5,4 @@ export class DeleteUserDto {
   @ApiModelProperty()
   @IsNotEmpty()
   readonly password: string;
-
 }

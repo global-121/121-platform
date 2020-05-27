@@ -11,9 +11,7 @@ import { UserService } from './user.service';
 import { DataStorageEntity } from '../data-storage/data-storage.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([DataStorageEntity, UserEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([DataStorageEntity, UserEntity])],
   providers: [UserService],
   controllers: [UserController],
   exports: [UserService],

@@ -15,15 +15,17 @@ import { TwilioMessageEntity } from '../twilio.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([TwilioMessageEntity]),
-    forwardRef(() => ProgramModule)],
+    forwardRef(() => ProgramModule),
+  ],
   providers: [SmsService],
   controllers: [SmsController],
   exports: [SmsService],
 })
 export class SmsModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(AuthMiddlewareTwilio)
-      .forRoutes({ path: 'notifications/sms/status', method: RequestMethod.POST });
+    consumer.apply(AuthMiddlewareTwilio).forRoutes({
+      path: 'notifications/sms/status',
+      method: RequestMethod.POST,
+    });
   }
 }

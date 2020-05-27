@@ -1,9 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  BeforeInsert,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
 const crypto = require('crypto');
 
 @Entity('user')
@@ -21,5 +16,4 @@ export class UserEntity {
   public hashPassword() {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
-
 }

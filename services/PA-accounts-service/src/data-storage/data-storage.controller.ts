@@ -1,12 +1,5 @@
 import { RolesGuard } from './../roles.guard';
-import {
-  Get,
-  Post,
-  Body,
-  Param,
-  Controller,
-  UseGuards
-} from '@nestjs/common';
+import { Get, Post, Body, Param, Controller, UseGuards } from '@nestjs/common';
 import { DataStorageService } from './data-storage.service';
 import { StoreDataDto } from './dto';
 
@@ -24,7 +17,6 @@ import { User } from '../user/user.decorator';
 @ApiUseTags('data-storage')
 @Controller()
 export class DataStorageController {
-
   private readonly dataStorageService: DataStorageService;
 
   public constructor(dataStorageService: DataStorageService) {
@@ -43,13 +35,17 @@ export class DataStorageController {
 
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get data from storage' })
-  @ApiImplicitParam({ name: 'type', description: 'string', required: true, type: 'string' })
+  @ApiImplicitParam({
+    name: 'type',
+    description: 'string',
+    required: true,
+    type: 'string',
+  })
   @Get('data-storage/:type')
   public async get(
     @User('id') userId: number,
     @Param() params,
-  ): Promise<String> {
+  ): Promise<string> {
     return await this.dataStorageService.get(userId, params);
   }
-
 }

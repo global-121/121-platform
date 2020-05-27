@@ -12,7 +12,7 @@ import { SeedInit } from './seed-init';
   ],
   providers: [SeedInit],
 })
-export class ScriptsModule { }
+export class ScriptsModule {}
 
 export interface InterfaceScript {
   run(argv: Arguments): Promise<void>;
