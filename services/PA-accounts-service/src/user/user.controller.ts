@@ -1,3 +1,4 @@
+import { DidDto } from './dto/did.dto';
 import {
   Get,
   Post,
@@ -52,6 +53,16 @@ export class UserController {
     };
 
     return { user };
+  }
+
+  @UseGuards(RolesGuard)
+  @ApiOperation({ title: 'Set the did of logged in user' })
+  @Post('user/set-did')
+  public async setDid(
+    @User('id') userId: number,
+    @Body() didDto: DidDto,
+  ) {
+    return this.userService.setDid(userId, didDto);
   }
 
   @UseGuards(RolesGuard)
