@@ -120,6 +120,10 @@ services:
     environment:
       - EXTERNAL_121_SERVICE_URL=${EXTERNAL_121_SERVICE_URL}
       - RESET_SECRET=${RESET_SECRET}
+      - PORT_121_SERVICE=${PORT_121_SERVICE}
+      - PORT_PA_ACCOUNTS_SERVICE=${PORT_PA_ACCOUNTS_SERVICE}
+      - SUBDOMAIN_121_SERVICE=${SUBDOMAIN_121_SERVICE}
+      - SUBDOMAIN_PA_ACCOUNTS_SERVICE=${SUBDOMAIN_PA_ACCOUNTS_SERVICE}
     volumes:
       - "./121-service:/home/121/services/121-service"
     ports:
@@ -141,6 +145,10 @@ services:
     container_name: PA-accounts-service
     environment:
       - WALLET_PASSWORD_ENCRYPTION_KEY=${WALLET_PASSWORD_ENCRYPTION_KEY}
+      - PORT_121_SERVICE=${PORT_121_SERVICE}
+      - PORT_PA_ACCOUNTS_SERVICE=${PORT_PA_ACCOUNTS_SERVICE}
+      - SUBDOMAIN_121_SERVICE=${SUBDOMAIN_121_SERVICE}
+      - SUBDOMAIN_PA_ACCOUNTS_SERVICE=${SUBDOMAIN_PA_ACCOUNTS_SERVICE}
     volumes:
       - "./PA-accounts-service:/home/121/services/PA-accounts-service"
     ports:

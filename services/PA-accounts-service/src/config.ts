@@ -1,13 +1,14 @@
+import { eventNames } from "cluster";
+
 export const AUTH_DEBUG = false;
-export const PORT = 3001;
-export const SUBDOMAIN =
-  ['production', 'staging'].indexOf(process.env.NODE_ENV) > -1
-    ? 'PA-accounts/'
-    : '';
+export const PORT = process.env.PORT_PA_ACCOUNTS_SERVICE;
+export const BASE_PATH = process.env.SUBDOMAIN_PA_ACCOUNTS_SERVICE + '/api';
 export const SCHEME =
   ['production', 'staging'].indexOf(process.env.NODE_ENV) > -1
     ? 'https'
     : 'http';
+
+export const URL_121_SERVICE = 'localhost:' + process.env.PORT_121_SERVICE + '/' + process.env.SUBDOMAIN_121_SERVICE + 'api'
 
 let _walletPasswordEncryptionKey: string;
 if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'staging') {
