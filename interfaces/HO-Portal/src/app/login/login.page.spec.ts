@@ -18,20 +18,16 @@ describe('LoginPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoginPage ],
+      declarations: [LoginPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        FormsModule,
-        TranslateModule.forRoot(),
-      ],
+      imports: [FormsModule, TranslateModule.forRoot()],
       providers: [
         {
           provide: AuthService,
           useValue: authServiceMock,
         },
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

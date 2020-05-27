@@ -7,22 +7,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
 
-
 @NgModule({
-  declarations: [
-    ConfirmPromptComponent,
-    PasswordToggleInputComponent,
-  ],
-  imports: [
-    CommonModule,
-    IonicModule,
-    FormsModule,
-    TranslateModule.forChild(),
-  ],
+  declarations: [ConfirmPromptComponent, PasswordToggleInputComponent],
+  imports: [CommonModule, IonicModule, FormsModule, TranslateModule.forChild()],
   exports: [
     ConfirmPromptComponent,
     PasswordToggleInputComponent,
     TranslateModule,
   ],
 })
-export class SharedModule { }
+export class SharedModule {}

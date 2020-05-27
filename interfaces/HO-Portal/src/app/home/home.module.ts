@@ -14,14 +14,11 @@ import { ProgramsListComponent } from '../programs-list/programs-list.component'
     RouterModule.forChild([
       {
         path: '',
-        component: HomePage
-      }
+        component: HomePage,
+      },
     ]),
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
   ],
-  declarations: [
-    HomePage,
-    ProgramsListComponent,
-  ]
+  declarations: [HomePage, ProgramsListComponent],
 })
-export class HomePageModule { }
+export class HomePageModule {}

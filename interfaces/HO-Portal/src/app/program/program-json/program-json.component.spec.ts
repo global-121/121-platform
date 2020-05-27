@@ -18,18 +18,15 @@ describe('ProgramJsonComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ProgramJsonComponent],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      imports: [TranslateModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: ModalController,
-          useValue: modalCtrlSpy
+          useValue: modalCtrlSpy,
         },
-      ]
-    })
-      .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

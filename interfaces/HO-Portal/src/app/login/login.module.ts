@@ -11,8 +11,8 @@ import { LoginPage } from './login.page';
 const routes: Routes = [
   {
     path: '',
-    component: LoginPage
-  }
+    component: LoginPage,
+  },
 ];
 
 @NgModule({
@@ -23,6 +23,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     TranslateModule.forChild(),
   ],
-  declarations: [LoginPage]
+  declarations: [LoginPage],
 })
 export class LoginPageModule {}

@@ -1,8 +1,20 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
-import { Program, InclusionCalculationType, ProgramPhase } from 'src/app/models/program.model';
+import {
+  Program,
+  InclusionCalculationType,
+  ProgramPhase,
+} from 'src/app/models/program.model';
 import { formatDate } from '@angular/common';
 import { UserRole } from 'src/app/auth/user-role.enum';
 
@@ -30,7 +42,7 @@ export class ProgramPeopleComponent implements OnChanges {
     ProgramPhase.inclusion,
     ProgramPhase.reviewInclusion,
     ProgramPhase.payment,
-    ProgramPhase.evaluation
+    ProgramPhase.evaluation,
   ];
   private activePhase: ProgramPhase;
   private locale: string;
@@ -63,53 +75,65 @@ export class ProgramPeopleComponent implements OnChanges {
       draggable: false,
       resizeable: false,
       sortable: false,
-      hidePhases: []
+      hidePhases: [],
     },
     {
       prop: 'processStarted',
-      name: this.translate.instant('page.program.program-people.column.process-started'),
+      name: this.translate.instant(
+        'page.program.program-people.column.process-started',
+      ),
       draggable: false,
       resizeable: false,
-      hidePhases: []
+      hidePhases: [],
     },
     {
       prop: 'digitalIdCreated',
-      name: this.translate.instant('page.program.program-people.column.digital-id-created'),
+      name: this.translate.instant(
+        'page.program.program-people.column.digital-id-created',
+      ),
       draggable: false,
       resizeable: false,
-      hidePhases: []
+      hidePhases: [],
     },
     {
       prop: 'digitalIdValidated',
-      name: this.translate.instant('page.program.program-people.column.digital-id-validated'),
+      name: this.translate.instant(
+        'page.program.program-people.column.digital-id-validated',
+      ),
       draggable: false,
       resizeable: false,
-      hidePhases: []
+      hidePhases: [],
     },
     {
       prop: 'vulnerabilityAssessmentCreated',
-      name: this.translate.instant('page.program.program-people.column.vulnerability-assessment-created'),
+      name: this.translate.instant(
+        'page.program.program-people.column.vulnerability-assessment-created',
+      ),
       draggable: false,
       resizeable: false,
-      hidePhases: []
+      hidePhases: [],
     },
     {
       prop: 'vulnerabilityAssessmentValidated',
-      name: this.translate.instant('page.program.program-people.column.vulnerability-assessment-validated'),
+      name: this.translate.instant(
+        'page.program.program-people.column.vulnerability-assessment-validated',
+      ),
       draggable: false,
       resizeable: false,
-      hidePhases: []
+      hidePhases: [],
     },
     {
       prop: 'score',
       name: this.translate.instant('page.program.program-people.column.score'),
       draggable: false,
       resizeable: false,
-      hidePhases: []
+      hidePhases: [],
     },
     {
       prop: 'selected',
-      name: this.translate.instant('page.program.program-people.column.include'),
+      name: this.translate.instant(
+        'page.program.program-people.column.include',
+      ),
       checkboxable: true,
       draggable: false,
       resizeable: false,
@@ -120,24 +144,28 @@ export class ProgramPeopleComponent implements OnChanges {
         ProgramPhase.inclusion,
         ProgramPhase.reviewInclusion,
         ProgramPhase.payment,
-        ProgramPhase.evaluation
-      ]
+        ProgramPhase.evaluation,
+      ],
     },
     {
       prop: 'included',
-      name: this.translate.instant('page.program.program-people.column.included'),
+      name: this.translate.instant(
+        'page.program.program-people.column.included',
+      ),
       draggable: false,
       resizeable: false,
       disabled: true,
       sortable: false,
-      hidePhases: []
+      hidePhases: [],
     },
     {
       prop: 'inclusionCommunication',
-      name: this.translate.instant('page.program.program-people.column.inclusion-communication'),
+      name: this.translate.instant(
+        'page.program.program-people.column.inclusion-communication',
+      ),
       draggable: false,
       resizeable: false,
-      hidePhases: []
+      hidePhases: [],
     },
     {
       prop: 'name',
@@ -146,7 +174,7 @@ export class ProgramPeopleComponent implements OnChanges {
       draggable: false,
       resizeable: false,
       hidePhases: [],
-      privacy: true
+      privacy: true,
     },
     {
       prop: 'dob',
@@ -155,18 +183,22 @@ export class ProgramPeopleComponent implements OnChanges {
       draggable: false,
       resizeable: false,
       hidePhases: [],
-      privacy: true
+      privacy: true,
     },
   ];
 
   constructor(
     private programsService: ProgramsServiceApiService,
-    public translate: TranslateService
+    public translate: TranslateService,
   ) {
     this.locale = this.translate.getBrowserCultureLang();
 
-    this.includedLabel = this.translate.instant('page.program.program-people.included');
-    this.excludedLabel = this.translate.instant('page.program.program-people.excluded');
+    this.includedLabel = this.translate.instant(
+      'page.program.program-people.included',
+    );
+    this.excludedLabel = this.translate.instant(
+      'page.program.program-people.excluded',
+    );
 
     this.tableMessages = {
       emptyMessage: this.translate.instant('common.table.no-data'),
@@ -175,25 +207,43 @@ export class ProgramPeopleComponent implements OnChanges {
     };
     this.submitWarning = {
       message: '',
-      included: this.translate.instant('page.program.program-people.submit-warning-pa-included'),
-      excluded: this.translate.instant('page.program.program-people.submit-warning-pa-excluded'),
-      toIncluded: this.translate.instant('page.program.program-people.submit-warning-pa-to-included'),
-      toExcluded: this.translate.instant('page.program.program-people.submit-warning-pa-to-excluded'),
+      included: this.translate.instant(
+        'page.program.program-people.submit-warning-pa-included',
+      ),
+      excluded: this.translate.instant(
+        'page.program.program-people.submit-warning-pa-excluded',
+      ),
+      toIncluded: this.translate.instant(
+        'page.program.program-people.submit-warning-pa-to-included',
+      ),
+      toExcluded: this.translate.instant(
+        'page.program.program-people.submit-warning-pa-to-excluded',
+      ),
     };
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+    if (
+      changes.selectedPhase &&
+      typeof changes.selectedPhase.currentValue === 'string'
+    ) {
       this.checkVisibility(this.selectedPhase);
       this.update();
     }
     if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
       this.shouldShowSensitiveData(this.userRole);
     }
-    if (changes.programId && typeof changes.programId.currentValue === 'number') {
+    if (
+      changes.programId &&
+      typeof changes.programId.currentValue === 'number'
+    ) {
       this.update();
     }
-    if (this.programId && changes.refresh && typeof changes.refresh.currentValue === 'boolean') {
+    if (
+      this.programId &&
+      changes.refresh &&
+      typeof changes.refresh.currentValue === 'boolean'
+    ) {
       this.update();
     }
   }
@@ -219,28 +269,37 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   private checkPhaseReady() {
-    const isReady = (
+    const isReady =
       this.activePhase !== ProgramPhase.inclusion ||
-      this.newEnrolledPeople.length === 0
-    );
+      this.newEnrolledPeople.length === 0;
 
     this.isCompleted.emit(isReady);
   }
 
   public confirmBtnDisabled() {
     if (this.showSensitiveData) {
-      return this.enrolledPeople.length === 0 ||
+      return (
+        this.enrolledPeople.length === 0 ||
         this.selectedPhase !== this.activePhase ||
-        ![ProgramPhase.inclusion, ProgramPhase.reviewInclusion, ProgramPhase.payment].includes(ProgramPhase[this.activePhase]);
+        ![
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+          ProgramPhase.payment,
+        ].includes(ProgramPhase[this.activePhase])
+      );
     } else {
-      return this.newEnrolledPeople.length === 0 ||
+      return (
+        this.newEnrolledPeople.length === 0 ||
         this.activePhase !== ProgramPhase.inclusion ||
-        this.selectedPhase !== ProgramPhase.inclusion;
+        this.selectedPhase !== ProgramPhase.inclusion
+      );
     }
   }
 
   public checkNoConnectionsMessage() {
-    return !this.enrolledPeople.length && this.selectedPhase !== ProgramPhase.design;
+    return (
+      !this.enrolledPeople.length && this.selectedPhase !== ProgramPhase.design
+    );
   }
 
   private async determineColumns() {
@@ -267,20 +326,24 @@ export class ProgramPeopleComponent implements OnChanges {
 
   private checkColumn(column) {
     return (
-      !column.privacy &&
-      !column.hidePhases.includes(ProgramPhase[this.selectedPhase])
-    ) || (
-        column.prop === 'selected' &&
+      (!column.privacy &&
+        !column.hidePhases.includes(ProgramPhase[this.selectedPhase])) ||
+      (column.prop === 'selected' &&
         this.selectedPhase === this.activePhase &&
-        ProgramPhase.inclusion === this.activePhase
-      );
+        ProgramPhase.inclusion === this.activePhase)
+    );
   }
 
   private checkColumnPrivacy(column) {
-    return !column.hidePhases.includes(ProgramPhase[this.selectedPhase]) || (
-      column.prop === 'selected' &&
-      this.selectedPhase === this.activePhase &&
-      [ProgramPhase.inclusion, ProgramPhase.reviewInclusion, ProgramPhase.payment].includes(ProgramPhase[this.activePhase])
+    return (
+      !column.hidePhases.includes(ProgramPhase[this.selectedPhase]) ||
+      (column.prop === 'selected' &&
+        this.selectedPhase === this.activePhase &&
+        [
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+          ProgramPhase.payment,
+        ].includes(ProgramPhase[this.activePhase]))
     );
   }
 
@@ -289,10 +352,13 @@ export class ProgramPeopleComponent implements OnChanges {
     for (let p = 0; p < this.nrOfInstallments; p++) {
       const column = {
         prop: 'payment' + (p + 1),
-        name: this.translate.instant('page.program.program-people.column.payment') + ' #' + (p + 1),
+        name:
+          this.translate.instant('page.program.program-people.column.payment') +
+          ' #' +
+          (p + 1),
         draggable: false,
         resizeable: false,
-        hidePhases: []
+        hidePhases: [],
       };
       paymentColumns.push(column);
     }
@@ -303,13 +369,19 @@ export class ProgramPeopleComponent implements OnChanges {
     let allPeopleData: any[];
 
     if (this.showSensitiveData) {
-      allPeopleData = await this.programsService.getEnrolledPrivacy(this.programId);
+      allPeopleData = await this.programsService.getEnrolledPrivacy(
+        this.programId,
+      );
       this.enrolledPeople = await this.createTableData(allPeopleData);
-      this.selectedPeople = this.defaultSelectedPeoplePrivacy(this.enrolledPeople);
+      this.selectedPeople = this.defaultSelectedPeoplePrivacy(
+        this.enrolledPeople,
+      );
     } else {
       allPeopleData = await this.programsService.getEnrolled(this.programId);
       this.enrolledPeople = await this.createTableData(allPeopleData);
-      this.newEnrolledPeople = this.enrolledPeople.filter(i => !i.included && !i.excluded);
+      this.newEnrolledPeople = this.enrolledPeople.filter(
+        (i) => !i.included && !i.excluded,
+      );
       this.selectedPeople = this.defaultSelectedPeople(this.newEnrolledPeople);
     }
 
@@ -328,14 +400,16 @@ export class ProgramPeopleComponent implements OnChanges {
       return [];
     }
 
-    const pastInstallments = await this.programsService.getPastInstallments(this.programId);
+    const pastInstallments = await this.programsService.getPastInstallments(
+      this.programId,
+    );
 
     return source
       .sort((a, b) => {
         if (a.score === b.score) {
-          return (a.did > b.did) ? -1 : 1;
+          return a.did > b.did ? -1 : 1;
         } else {
-          return (a.score > b.score) ? -1 : 1;
+          return a.score > b.score ? -1 : 1;
         }
       })
       .map((person, index) => {
@@ -343,13 +417,31 @@ export class ProgramPeopleComponent implements OnChanges {
           pa: `PA #${index + 1}`,
           score: person.score,
           did: person.did,
-          processStarted: formatDate(person.created, this.dateFormat, this.locale),
-          digitalIdCreated: person.appliedDate ? formatDate(person.appliedDate, this.dateFormat, this.locale) : null,
-          digitalIdValidated: person.validationDate ? formatDate(person.validationDate, this.dateFormat, this.locale) : null,
-          vulnerabilityAssessmentCreated: person.appliedDate ? formatDate(person.appliedDate, this.dateFormat, this.locale) : null,
-          vulnerabilityAssessmentValidated: person.validationDate ? formatDate(person.validationDate, this.dateFormat, this.locale) : null,
-          inclusionCommunication: person.inclusionDate ? formatDate(person.inclusionDate, this.dateFormat, this.locale) : null,
-          included: person.included ? this.includedLabel : (person.excluded ? this.excludedLabel : '')
+          processStarted: formatDate(
+            person.created,
+            this.dateFormat,
+            this.locale,
+          ),
+          digitalIdCreated: person.appliedDate
+            ? formatDate(person.appliedDate, this.dateFormat, this.locale)
+            : null,
+          digitalIdValidated: person.validationDate
+            ? formatDate(person.validationDate, this.dateFormat, this.locale)
+            : null,
+          vulnerabilityAssessmentCreated: person.appliedDate
+            ? formatDate(person.appliedDate, this.dateFormat, this.locale)
+            : null,
+          vulnerabilityAssessmentValidated: person.validationDate
+            ? formatDate(person.validationDate, this.dateFormat, this.locale)
+            : null,
+          inclusionCommunication: person.inclusionDate
+            ? formatDate(person.inclusionDate, this.dateFormat, this.locale)
+            : null,
+          included: person.included
+            ? this.includedLabel
+            : person.excluded
+            ? this.excludedLabel
+            : '',
         };
 
         personData = this.fillPaymentColumns(personData, pastInstallments);
@@ -365,11 +457,18 @@ export class ProgramPeopleComponent implements OnChanges {
       });
   }
 
-  private fillPaymentColumns(personData: any[], pastInstallments: any[]): any[] {
+  private fillPaymentColumns(
+    personData: any[],
+    pastInstallments: any[],
+  ): any[] {
     this.paymentColumns.map((_, index) => {
-      const payment = pastInstallments.find(i => i.installment === index + 1);
+      const payment = pastInstallments.find((i) => i.installment === index + 1);
       if (payment) {
-        personData['payment' + (index + 1)] = formatDate(payment.installmentDate, this.dateFormat, this.locale);
+        personData['payment' + (index + 1)] = formatDate(
+          payment.installmentDate,
+          this.dateFormat,
+          this.locale,
+        );
       }
     });
     return personData;
@@ -380,7 +479,10 @@ export class ProgramPeopleComponent implements OnChanges {
       return [];
     }
 
-    if (this.program.inclusionCalculationType === InclusionCalculationType.highestScoresX) {
+    if (
+      this.program.inclusionCalculationType ===
+      InclusionCalculationType.highestScoresX
+    ) {
       const nrToInclude = this.program.highestScoresX;
 
       return source.slice(0, nrToInclude);
@@ -394,7 +496,11 @@ export class ProgramPeopleComponent implements OnChanges {
   private defaultSelectedPeoplePrivacy(source: any[]): any[] {
     if (
       this.selectedPhase !== this.activePhase ||
-      ![ProgramPhase.inclusion, ProgramPhase.reviewInclusion, ProgramPhase.payment].includes(ProgramPhase[this.selectedPhase])
+      ![
+        ProgramPhase.inclusion,
+        ProgramPhase.reviewInclusion,
+        ProgramPhase.payment,
+      ].includes(ProgramPhase[this.selectedPhase])
     ) {
       return [];
     }
@@ -403,25 +509,40 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   public showCheckbox(row) {
-    return !row.included  // Show checkboxes only for new enrolled PA's in project-officer mode
-      || row.name;        // OR always when in program-manager (where endpoint gives only in/excluded people anyway)
+    return (
+      !row.included || row.name // Show checkboxes only for new enrolled PA's in project-officer mode
+    ); // OR always when in program-manager (where endpoint gives only in/excluded people anyway)
   }
 
   public updateSubmitWarning() {
     if (this.showSensitiveData) {
-      this.newIncludedPeople = this.selectedPeople.filter(x => !this.includedPeople.includes(x));
-      this.newExcludedPeople = this.includedPeople.filter(x => !this.selectedPeople.includes(x));
+      this.newIncludedPeople = this.selectedPeople.filter(
+        (x) => !this.includedPeople.includes(x),
+      );
+      this.newExcludedPeople = this.includedPeople.filter(
+        (x) => !this.selectedPeople.includes(x),
+      );
     } else {
       this.newIncludedPeople = this.selectedPeople;
-      this.newExcludedPeople = this.newEnrolledPeople.filter(x => !this.selectedPeople.includes(x));
+      this.newExcludedPeople = this.newEnrolledPeople.filter(
+        (x) => !this.selectedPeople.includes(x),
+      );
     }
 
     const numIncluded: number = this.newIncludedPeople.length;
     const numExcluded: number = this.newExcludedPeople.length;
 
     this.submitWarning.message = `
-      ${this.showSensitiveData ? this.submitWarning.toIncluded : this.submitWarning.included} ${numIncluded} <br>
-      ${this.showSensitiveData ? this.submitWarning.toExcluded : this.submitWarning.excluded} ${numExcluded}
+      ${
+        this.showSensitiveData
+          ? this.submitWarning.toIncluded
+          : this.submitWarning.included
+      } ${numIncluded} <br>
+      ${
+        this.showSensitiveData
+          ? this.submitWarning.toExcluded
+          : this.submitWarning.excluded
+      } ${numExcluded}
     `;
   }
 

@@ -14,6 +14,6 @@ const programRoutes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(programRoutes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class ProgramsRoutingModule { }
+export class ProgramsRoutingModule {}

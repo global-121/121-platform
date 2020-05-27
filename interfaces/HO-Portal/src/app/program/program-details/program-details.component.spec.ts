@@ -19,19 +19,15 @@ describe('ProgramDetailsComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ProgramDetailsComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: ModalController,
-          useValue: modalCtrlSpy
+          useValue: modalCtrlSpy,
         },
-      ]
-    })
-      .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -9,13 +9,12 @@ import { Program } from '../models/program.model';
   styleUrls: ['./programs-list.component.scss'],
 })
 export class ProgramsListComponent implements OnInit {
-
   public items: Program[];
 
   constructor(
     private programsService: ProgramsServiceApiService,
     private translatableString: TranslatableStringService,
-  ) { }
+  ) {}
 
   async ngOnInit() {
     const programs = await this.programsService.getAllPrograms();

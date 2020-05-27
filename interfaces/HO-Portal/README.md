@@ -1,9 +1,9 @@
-HO-Portal
-=========
+# HO-Portal
 
-The front-end for the *Humanitarian Organization* web portal, where 121-programs can be created and monitored, etc.
+The front-end for the _Humanitarian Organization_ web portal, where 121-programs can be created and monitored, etc.
 
 ## Getting Started
+
 - Install [environment requirements](../README.md)
 - Install dependencies (from this folder):
   `npm install`
@@ -11,12 +11,13 @@ The front-end for the *Humanitarian Organization* web portal, where 121-programs
   `npm start`
 
 ## Configuration
+
 Some specific information need to be configured before use:
 
 - Set the API-endpoint(s) in the [`environment.ts`](./src/environments/environment.ts)-file.
 
-
 ## Dependencies in use
+
 Next to the 'generic' dependencies/libraries/components used by all interfaces, the HO-portal also uses:
 
 - `ngx-datatable`

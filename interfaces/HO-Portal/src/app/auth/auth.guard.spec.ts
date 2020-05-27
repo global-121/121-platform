@@ -13,7 +13,7 @@ describe('AuthGuard', () => {
         RouterModule.forRoot([]),
         HttpClientTestingModule,
       ],
-      providers: [AuthGuard]
+      providers: [AuthGuard],
     });
   });
 

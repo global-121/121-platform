@@ -12,7 +12,6 @@ import { TranslatableStringService } from '../services/translatable-string.servi
   styleUrls: ['./program.component.scss'],
 })
 export class ProgramComponent implements OnInit {
-
   public currentUserRole: string;
 
   public program: Program;
@@ -50,7 +49,7 @@ export class ProgramComponent implements OnInit {
     {
       id: 6,
       name: ProgramPhase.evaluation,
-    }
+    },
   ];
 
   public metricsCollapsed = false;
@@ -62,7 +61,7 @@ export class ProgramComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService,
     private translatableString: TranslatableStringService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     this.metricsCollapseLabel = this.translate.instant('common.collapse');
     this.metricsExpandLabel = this.translate.instant('common.expand');
@@ -84,8 +83,12 @@ export class ProgramComponent implements OnInit {
     const phases = this.phasesInput.map((phase) => ({
       id: phase.id,
       phase: phase.name,
-      label: this.translate.instant('page.program.phases.' + phase.name + '.label'),
-      btnText: this.translate.instant('page.program.phases.' + phase.name + '.btnText'),
+      label: this.translate.instant(
+        'page.program.phases.' + phase.name + '.label',
+      ),
+      btnText: this.translate.instant(
+        'page.program.phases.' + phase.name + '.btnText',
+      ),
       active: phase.name === this.activePhase,
     }));
     return phases;
@@ -121,7 +124,7 @@ export class ProgramComponent implements OnInit {
   }
 
   private checkPhaseReady() {
-    this.phaseReady = (this.phaseReadyPayout && this.phaseReadyPeople);
+    this.phaseReady = this.phaseReadyPayout && this.phaseReadyPeople;
   }
 
   public toggleMetricsView() {

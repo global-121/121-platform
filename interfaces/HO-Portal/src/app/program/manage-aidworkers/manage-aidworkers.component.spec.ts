@@ -12,13 +12,9 @@ describe('ManageAidworkersComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ManageAidworkersComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

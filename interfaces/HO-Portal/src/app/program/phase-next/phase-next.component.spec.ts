@@ -18,9 +18,7 @@ describe('PhaseNextComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [PhaseNextComponent],
-      imports: [
-        HttpClientTestingModule,
-      ],
+      imports: [HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
@@ -28,8 +26,7 @@ describe('PhaseNextComponent', () => {
           useValue: authServiceMock,
         },
       ],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

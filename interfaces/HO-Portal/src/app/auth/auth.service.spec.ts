@@ -6,14 +6,16 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Router, RouterModule } from '@angular/router';
 
 describe('AuthService', () => {
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
         HttpClientTestingModule,
       ],
-    providers: []
-  }));
+      providers: [],
+    }),
+  );
 
   it('should be created', () => {
     const service: AuthService = TestBed.get(AuthService);
