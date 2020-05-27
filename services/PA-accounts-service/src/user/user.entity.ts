@@ -16,4 +16,7 @@ export class UserEntity {
   public hashPassword() {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
+
+  @Column({ default: null })
+  public did: string
 }

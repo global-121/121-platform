@@ -1,3 +1,4 @@
+import { DidDto } from './dto/did.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
@@ -71,6 +72,13 @@ export class UserService {
       const savedUser = await this.userRepository.save(newUser);
       return this.buildUserRO(savedUser);
     }
+  }
+
+  public async setDid(id: number, didDto: DidDto): Promise<UserRO> {
+    let user = await this.userRepository.findOne(id);
+    user.did = didDto.did;
+    const updatedUser = await this.userRepository.save(user);
+    return this.buildUserRO(updatedUser);
   }
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
