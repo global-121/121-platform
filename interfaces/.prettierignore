@@ -1,0 +1,6 @@
+# See .gitignore
+coverage
+
+
+# Don't format HTML, waiting for https://github.com/prettier/prettier/pull/6644 to be possible
+*.html

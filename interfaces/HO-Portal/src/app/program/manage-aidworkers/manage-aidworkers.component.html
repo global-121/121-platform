@@ -36,6 +36,7 @@
   <h4>{{ 'page.program.manage-aidworkers.create-aidworker'|translate }}</h4>
 
   <form (ngSubmit)="addAidworker()">
+    <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
     <ion-row class="ion-align-items-center">
       <ion-item>
         <ion-label position="stacked">

@@ -12,14 +12,13 @@ describe('PhaseNextComponent', () => {
 
   const authServiceMock = {
     authenticationState$: of(null),
+    getUserRole: () => '',
   };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [PhaseNextComponent],
-      imports: [
-        HttpClientTestingModule,
-      ],
+      imports: [HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
@@ -27,8 +26,7 @@ describe('PhaseNextComponent', () => {
           useValue: authServiceMock,
         },
       ],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

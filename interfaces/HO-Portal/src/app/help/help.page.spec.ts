@@ -11,12 +11,9 @@ describe('HelpPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [HelpPage],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      imports: [TranslateModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

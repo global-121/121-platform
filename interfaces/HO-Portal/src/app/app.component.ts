@@ -5,22 +5,20 @@ import { User } from './models/user.model';
 
 @Component({
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
 })
 export class AppComponent {
   public isLoggedIn: boolean;
   public currentUserRole: string;
 
-  constructor(
-    private authService: AuthService,
-  ) {
+  constructor(private authService: AuthService) {
     this.initializeApp();
   }
 
   initializeApp() {
     this.authService.authenticationState$.subscribe((user: User | null) => {
-      this.isLoggedIn = (user) ? !!user.token : false;
-      this.currentUserRole = (user) ? user.role : '';
+      this.isLoggedIn = user ? !!user.token : false;
+      this.currentUserRole = user ? user.role : '';
     });
   }
 

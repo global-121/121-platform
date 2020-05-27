@@ -1,5 +1,9 @@
 import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
-import { ProgramPhase, Program, BulkAction } from 'src/app/models/program.model';
+import {
+  ProgramPhase,
+  Program,
+  BulkAction,
+} from 'src/app/models/program.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -30,7 +34,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     ProgramPhase.inclusion,
     ProgramPhase.reviewInclusion,
     ProgramPhase.payment,
-    ProgramPhase.evaluation
+    ProgramPhase.evaluation,
   ];
   public program: Program;
   private locale: string;
@@ -48,7 +52,9 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   public bulkActions = [
     {
       id: BulkAction.chooseAction,
-      label: this.translate.instant('page.program.program-people-affected.choose-action'),
+      label: this.translate.instant(
+        'page.program.program-people-affected.choose-action',
+      ),
       roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
       phases: [
         ProgramPhase.design,
@@ -56,15 +62,18 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
         ProgramPhase.inclusion,
         ProgramPhase.reviewInclusion,
         ProgramPhase.payment,
-        ProgramPhase.evaluation
-      ]
+        ProgramPhase.evaluation,
+      ],
     },
     {
       id: BulkAction.selectForValidation,
-      label: this.translate.instant('page.program.program-people-affected.actions.' + BulkAction.selectForValidation),
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.' +
+          BulkAction.selectForValidation,
+      ),
       roles: [UserRole.ProjectOfficer],
-      phases: [ProgramPhase.registrationValidation]
-    }
+      phases: [ProgramPhase.registrationValidation],
+    },
   ];
   public bulkActionsEnabled = [];
 
@@ -80,80 +89,104 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
 
     this.submitWarning = {
       message: '',
-      people: this.translate.instant('page.program.program-people-affected.submit-warning-people-affected'),
+      people: this.translate.instant(
+        'page.program.program-people-affected.submit-warning-people-affected',
+      ),
     };
 
     this.columns = [
       {
         prop: 'selected',
-        name: this.translate.instant('page.program.program-people-affected.column.select'),
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.select',
+        ),
         checkboxable: true,
         headerCheckboxable: false,
         draggable: false,
         resizeable: false,
         sortable: false,
-        hidePhases: []
+        hidePhases: [],
       },
       {
         prop: 'pa',
-        name: this.translate.instant('page.program.program-people-affected.column.person'),
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.person',
+        ),
         draggable: false,
         resizeable: false,
         sortable: false,
-        hidePhases: []
+        hidePhases: [],
       },
       {
         prop: 'digitalIdCreated',
-        name: this.translate.instant('page.program.program-people-affected.column.digital-id-created'),
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.digital-id-created',
+        ),
         draggable: false,
         resizeable: false,
-        hidePhases: []
+        hidePhases: [],
       },
       {
         prop: 'vulnerabilityAssessmentCompleted',
-        name: this.translate.instant('page.program.program-people-affected.column.vulnerability-assessment-completed'),
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.vulnerability-assessment-completed',
+        ),
         draggable: false,
         resizeable: false,
-        hidePhases: []
+        hidePhases: [],
       },
       {
         prop: 'tempScore',
-        name: this.translate.instant('page.program.program-people-affected.column.temp-score'),
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.temp-score',
+        ),
         draggable: false,
         resizeable: false,
-        hidePhases: []
+        hidePhases: [],
       },
       {
         prop: 'selectedForValidation',
-        name: this.translate.instant('page.program.program-people-affected.column.selected-for-validation'),
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.selected-for-validation',
+        ),
         draggable: false,
         resizeable: false,
-        hidePhases: []
+        hidePhases: [],
       },
       {
         prop: 'vulnerabilityAssessmentValidated',
-        name: this.translate.instant('page.program.program-people-affected.column.vulnerability-assessment-validated'),
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.vulnerability-assessment-validated',
+        ),
         draggable: false,
         resizeable: false,
-        hidePhases: []
+        hidePhases: [],
       },
       {
         prop: 'finalScore',
-        name: this.translate.instant('page.program.program-people-affected.column.final-score'),
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.final-score',
+        ),
         draggable: false,
         resizeable: false,
-        hidePhases: []
-      }
+        hidePhases: [],
+      },
     ];
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+    if (
+      changes.selectedPhase &&
+      typeof changes.selectedPhase.currentValue === 'string'
+    ) {
       this.checkVisibility(this.selectedPhase);
       await this.loadData();
       this.loadActions();
     }
-    if (changes.activePhase && typeof changes.activePhase.currentValue === 'string') {
+    if (
+      changes.activePhase &&
+      typeof changes.activePhase.currentValue === 'string'
+    ) {
       this.loadActions();
     }
     if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
@@ -168,7 +201,10 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   private loadActions() {
     this.bulkActionsEnabled = [];
     for (const action of this.bulkActions) {
-      if (action.roles.includes(this.userRole) && action.phases.includes(ProgramPhase[this.activePhase])) {
+      if (
+        action.roles.includes(this.userRole) &&
+        action.phases.includes(ProgramPhase[this.activePhase])
+      ) {
         this.bulkActionsEnabled.push(action);
       }
     }
@@ -176,7 +212,9 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
 
   private async loadData() {
     let allPeopleData: any[];
-    allPeopleData = await this.programsService.getPeopleAffected(this.programId);
+    allPeopleData = await this.programsService.getPeopleAffected(
+      this.programId,
+    );
     this.peopleAffected = await this.createTableData(allPeopleData);
   }
 
@@ -185,32 +223,40 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       return [];
     }
 
-    return source
-      .sort(this.sortPeopleAffected)
-      .map((person, index) => {
-        const personData: any = {
-          did: person.did,
-          checkboxVisible: false,
-          pa: `PA #${index + 1}`,
-          digitalIdCreated: person.created ? formatDate(person.created, this.dateFormat, this.locale) : null,
-          vulnerabilityAssessmentCompleted: person.appliedDate ? formatDate(person.appliedDate, this.dateFormat, this.locale) : null,
-          tempScore: person.tempScore,
-          selectedForValidation: person.selectedForValidationDate
-            ? formatDate(person.selectedForValidationDate, this.dateFormat, this.locale)
-            : null,
-          vulnerabilityAssessmentValidated: person.validationDate ? formatDate(person.validationDate, this.dateFormat, this.locale) : null,
-          finalScore: person.score,
-        };
+    return source.sort(this.sortPeopleAffected).map((person, index) => {
+      const personData: any = {
+        did: person.did,
+        checkboxVisible: false,
+        pa: `PA #${index + 1}`,
+        digitalIdCreated: person.created
+          ? formatDate(person.created, this.dateFormat, this.locale)
+          : null,
+        vulnerabilityAssessmentCompleted: person.appliedDate
+          ? formatDate(person.appliedDate, this.dateFormat, this.locale)
+          : null,
+        tempScore: person.tempScore,
+        selectedForValidation: person.selectedForValidationDate
+          ? formatDate(
+              person.selectedForValidationDate,
+              this.dateFormat,
+              this.locale,
+            )
+          : null,
+        vulnerabilityAssessmentValidated: person.validationDate
+          ? formatDate(person.validationDate, this.dateFormat, this.locale)
+          : null,
+        finalScore: person.score,
+      };
 
-        return personData;
-      });
+      return personData;
+    });
   }
 
   private sortPeopleAffected(a, b) {
     if (a.tempScore === b.tempScore) {
-      return (a.did > b.did) ? -1 : 1;
+      return a.did > b.did ? -1 : 1;
     } else {
-      return (a.tempScore > b.tempScore) ? -1 : 1;
+      return a.tempScore > b.tempScore ? -1 : 1;
     }
   }
 
@@ -234,9 +280,12 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     const nrCheckboxes = this.countCheckboxes(this.peopleAffected);
     if (nrCheckboxes === 0) {
       this.resetBulkAction();
-      this.actionResult(this.translate.instant('page.program.program-people-affected.no-checkboxes'));
+      this.actionResult(
+        this.translate.instant(
+          'page.program.program-people-affected.no-checkboxes',
+        ),
+      );
     }
-
   }
 
   private recreatePeopleAffected(peopleAffected) {
@@ -252,7 +301,6 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       // END
 
       return this.bulkActionService.updateCheckboxes(this.action, personData);
-
     });
   }
 
@@ -269,10 +317,12 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   private toggleHeaderCheckbox() {
     // Only add header-checkbox with > 1 checkbox
     if (this.countCheckboxes(this.peopleAffected) > 1) {
-      const switchedColumn = this.columns.find(i => i.prop === 'selected');
+      const switchedColumn = this.columns.find((i) => i.prop === 'selected');
       switchedColumn.headerCheckboxable = !switchedColumn.headerCheckboxable;
       if (switchedColumn && switchedColumn.$$id) {
-        this.columns = this.columns.filter(c => c.$$id !== switchedColumn.$$id);
+        this.columns = this.columns.filter(
+          (c) => c.$$id !== switchedColumn.$$id,
+        );
         switchedColumn.$$id = undefined;
         this.columns = [switchedColumn, ...this.columns];
       }
@@ -289,7 +339,10 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
 
     // This is the single-row-selection case (although it also involves the going from (N-1) to N rows through header-selection)
     if (!headerSelection) {
-      this.headerChecked = selected.length < this.countCheckboxes(this.peopleAffected) ? false : true;
+      this.headerChecked =
+        selected.length < this.countCheckboxes(this.peopleAffected)
+          ? false
+          : true;
       this.selectedPeople = selected;
       this.countSelected = this.selectedPeople.length;
       this.updateSubmitWarning(this.selectedPeople);
@@ -297,7 +350,8 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     }
 
     // This is the header-selection case
-    if (!this.headerChecked) { // If checking ...
+    if (!this.headerChecked) {
+      // If checking ...
       const disabledList = [];
 
       selected.forEach((item, index) => {
@@ -306,14 +360,15 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
         }
       });
 
-      disabledList.reverse().forEach(item => {
+      disabledList.reverse().forEach((item) => {
         selected.splice(item, 1);
       });
 
       this.selectedPeople.splice(0, this.selectedPeople.length);
       this.selectedPeople.push(...selected);
       this.updateSubmitWarning(this.selectedPeople);
-    } else { // If unchecking ...
+    } else {
+      // If unchecking ...
       this.selectedPeople = [];
       this.updateSubmitWarning(this.selectedPeople);
     }
@@ -321,20 +376,24 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     this.countSelected = this.selectedPeople.length;
   }
 
-
   private countCheckboxes(rows) {
-    return rows.filter(i => i.checkboxVisible).length;
+    return rows.filter((i) => i.checkboxVisible).length;
   }
 
   private updateSubmitWarning(selected) {
-    const actionLabel = this.bulkActions.find(i => i.id === this.action).label;
+    const actionLabel = this.bulkActions.find((i) => i.id === this.action)
+      .label;
     this.submitWarning.message = `
       ${actionLabel}: ${selected.length} ${this.submitWarning.people}
     `;
   }
 
   public async applyAction() {
-    await this.bulkActionService.applyAction(this.action, this.programId, this.selectedPeople);
+    await this.bulkActionService.applyAction(
+      this.action,
+      this.programId,
+      this.selectedPeople,
+    );
 
     this.resetBulkAction();
   }
@@ -342,12 +401,9 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   private async actionResult(resultMessage: string) {
     const alert = await this.alertController.create({
       message: resultMessage,
-      buttons: [
-        this.translate.instant('common.ok'),
-      ],
+      buttons: [this.translate.instant('common.ok')],
     });
 
     await alert.present();
   }
-
 }

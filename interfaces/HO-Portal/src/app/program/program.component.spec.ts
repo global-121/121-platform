@@ -7,24 +7,20 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ProgramComponent } from './program.component';
 
-
 describe('ProgramComponent', () => {
   let component: ProgramComponent;
   let fixture: ComponentFixture<ProgramComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        ProgramComponent,
-      ],
+      declarations: [ProgramComponent],
       imports: [
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
-        HttpClientTestingModule
+        HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

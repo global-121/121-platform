@@ -18,9 +18,7 @@ import { ProgramDetailsComponent } from './program-details/program-details.compo
 import { ManageAidworkersComponent } from './manage-aidworkers/manage-aidworkers.component';
 
 @NgModule({
-  entryComponents: [
-    ProgramJsonComponent
-  ],
+  entryComponents: [ProgramJsonComponent],
   declarations: [
     ProgramComponent,
     PhaseNavigationComponent,
@@ -39,10 +37,8 @@ import { ManageAidworkersComponent } from './manage-aidworkers/manage-aidworkers
     SharedModule,
     ProgramsRoutingModule,
     TranslateModule.forChild(),
-    NgxDatatableModule
+    NgxDatatableModule,
   ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class ProgramsModule { }
+export class ProgramsModule {}

@@ -3,15 +3,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { TranslatableString } from '../models/translatable-string.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TranslatableStringService {
   private fallbackLanguageCode: string;
   private languageCode: string;
 
-  constructor(
-    private translate: TranslateService,
-  ) {
+  constructor(private translate: TranslateService) {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
     this.languageCode = this.translate.currentLang;
   }

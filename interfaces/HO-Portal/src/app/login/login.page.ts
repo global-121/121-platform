@@ -14,9 +14,7 @@ export class LoginPage {
   public email: any;
   public password: any;
 
-  constructor(
-    private authService: AuthService,
-  ) { }
+  constructor(private authService: AuthService) {}
 
   public async doLogin() {
     console.log('doLogin()');
@@ -25,13 +23,9 @@ export class LoginPage {
       return;
     }
 
-    this.authService.login(
-      this.email,
-      this.password
-    ).then(() => {
+    this.authService.login(this.email, this.password).then(() => {
       // Remove credentials from interface-state to prevent re-use after log-out:
       this.loginForm.resetForm();
     });
-
   }
 }

@@ -14,5 +14,6 @@
   left: 2px;
   right: 2px;
   border-top: 1px solid transparent;
-  border-bottom: var(--phase-navigation--indicator-width) solid var(--ion-color-primary);
+  border-bottom: var(--phase-navigation--indicator-width) solid
+    var(--ion-color-primary);
 }

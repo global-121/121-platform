@@ -9,7 +9,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from './auth/auth.service';
 
 describe('AppComponent', () => {
-
   const authServiceMock = {
     authenticationState$: of(null),
   };
@@ -24,10 +23,7 @@ describe('AppComponent', () => {
           useValue: authServiceMock,
         },
       ],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterTestingModule.withRoutes([])
-      ],
+      imports: [TranslateModule.forRoot(), RouterTestingModule.withRoutes([])],
     }).compileComponents();
   }));
 
@@ -44,8 +40,9 @@ describe('AppComponent', () => {
     const menuItems = app.querySelectorAll('ion-item');
     const menuLabels = app.querySelectorAll('ion-menu ion-list ion-label');
     expect(menuItems.length).toEqual(1);
-    expect(menuItems[0].getAttribute('ng-reflect-router-link')).toEqual('/login');
+    expect(menuItems[0].getAttribute('ng-reflect-router-link')).toEqual(
+      '/login',
+    );
     expect(menuLabels[0].textContent).toContain('LOGIN');
   });
-
 });

@@ -13,11 +13,11 @@ import { HelpPage } from './help.page';
     RouterModule.forChild([
       {
         path: '',
-        component: HelpPage
-      }
+        component: HelpPage,
+      },
     ]),
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
   ],
-  declarations: [HelpPage]
+  declarations: [HelpPage],
 })
-export class HelpPageModule { }
+export class HelpPageModule {}

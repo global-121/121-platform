@@ -16,11 +16,10 @@ describe('ProgramPeopleComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
-        HttpClientTestingModule
+        HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

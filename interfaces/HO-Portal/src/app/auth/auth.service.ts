@@ -7,7 +7,7 @@ import { User } from '../models/user.model';
 import { UserRole } from './user-role.enum';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private loggedIn = false;
@@ -22,7 +22,7 @@ export class AuthService {
   constructor(
     public programsService: ProgramsServiceApiService,
     private jwtService: JwtService,
-    private router: Router
+    private router: Router,
   ) {
     this.checkLoggedInState();
   }
@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   public isLoggedIn(): boolean {
-    this.loggedIn = (this.getUserFromToken() !== null);
+    this.loggedIn = this.getUserFromToken() !== null;
 
     return this.loggedIn;
   }
@@ -43,7 +43,7 @@ export class AuthService {
     if (!this.userRole) {
       const user = this.getUserFromToken();
 
-      this.userRole = (user) ? user.role : '';
+      this.userRole = user ? user.role : '';
     }
 
     return this.userRole;
@@ -69,10 +69,7 @@ export class AuthService {
   }
 
   public async login(email: string, password: string) {
-    return this.programsService.login(
-      email,
-      password
-    ).subscribe(
+    return this.programsService.login(email, password).subscribe(
       (response) => {
         const user = response.user;
 
@@ -96,7 +93,7 @@ export class AuthService {
       },
       (error) => {
         console.log('AuthService error: ', error);
-      }
+      },
     );
   }
 
