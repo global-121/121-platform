@@ -11,6 +11,8 @@
     "build": "ng build",
     "test": "ng test --no-watch --browsers=ChromeHeadless",
     "test:dev": "ng test",
+    "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss}\"",
+    "syntax:fix": "npm run lint:syntax -- --write",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -60,6 +62,7 @@
     "karma-coverage-istanbul-reporter": "^3.0.2",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.5.3",
+    "prettier": "2.0.5",
     "protractor": "^7.0.0",
     "ts-node": "^8.10.1",
     "tslint": "^5.20.1",
