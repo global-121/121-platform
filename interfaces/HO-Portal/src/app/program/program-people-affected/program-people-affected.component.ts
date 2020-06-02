@@ -91,82 +91,72 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       ),
     };
 
+    const columnDefauls = {
+      draggable: false,
+      resizeable: false,
+      sortable: true,
+      hidePhases: [],
+    };
     this.columns = [
       {
         prop: 'selected',
         name: this.translate.instant(
           'page.program.program-people-affected.column.select',
         ),
+        ...columnDefauls,
+        sortable: false,
         checkboxable: true,
         headerCheckboxable: false,
-        draggable: false,
-        resizeable: false,
-        sortable: false,
-        hidePhases: [],
       },
       {
         prop: 'pa',
         name: this.translate.instant(
           'page.program.program-people-affected.column.person',
         ),
-        draggable: false,
-        resizeable: false,
+        ...columnDefauls,
         sortable: false,
-        hidePhases: [],
       },
       {
         prop: 'digitalIdCreated',
         name: this.translate.instant(
           'page.program.program-people-affected.column.digital-id-created',
         ),
-        draggable: false,
-        resizeable: false,
-        hidePhases: [],
+        ...columnDefauls,
       },
       {
         prop: 'vulnerabilityAssessmentCompleted',
         name: this.translate.instant(
           'page.program.program-people-affected.column.vulnerability-assessment-completed',
         ),
-        draggable: false,
-        resizeable: false,
-        hidePhases: [],
+        ...columnDefauls,
       },
       {
         prop: 'tempScore',
         name: this.translate.instant(
           'page.program.program-people-affected.column.temp-score',
         ),
-        draggable: false,
-        resizeable: false,
-        hidePhases: [],
+        ...columnDefauls,
       },
       {
         prop: 'selectedForValidation',
         name: this.translate.instant(
           'page.program.program-people-affected.column.selected-for-validation',
         ),
-        draggable: false,
-        resizeable: false,
-        hidePhases: [],
+        ...columnDefauls,
       },
       {
         prop: 'vulnerabilityAssessmentValidated',
         name: this.translate.instant(
           'page.program.program-people-affected.column.vulnerability-assessment-validated',
         ),
-        draggable: false,
-        resizeable: false,
-        hidePhases: [],
+        ...columnDefauls,
       },
       {
         prop: 'finalScore',
         name: this.translate.instant(
           'page.program.program-people-affected.column.final-score',
         ),
-        draggable: false,
-        resizeable: false,
-        hidePhases: [],
+        ...columnDefauls,
       },
     ];
   }
@@ -216,39 +206,43 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       return [];
     }
 
-    return source.sort(this.sortPeopleAffected).map((person, index) => {
-      return {
-        did: person.did,
-        checkboxVisible: false,
-        pa: `PA #${index + 1}`,
-        digitalIdCreated: person.created
-          ? formatDate(person.created, this.dateFormat, this.locale)
-          : null,
-        vulnerabilityAssessmentCompleted: person.appliedDate
-          ? formatDate(person.appliedDate, this.dateFormat, this.locale)
-          : null,
-        tempScore: person.tempScore,
-        selectedForValidation: person.selectedForValidationDate
-          ? formatDate(
-              person.selectedForValidationDate,
-              this.dateFormat,
-              this.locale,
-            )
-          : null,
-        vulnerabilityAssessmentValidated: person.validationDate
-          ? formatDate(person.validationDate, this.dateFormat, this.locale)
-          : null,
-        finalScore: person.score,
-      } as PersonRow;
-    });
+    return source
+      .sort(this.sortPeopleByTempScore)
+      .map((person, index) => this.createPersonRow(person, index + 1));
   }
 
-  private sortPeopleAffected(a: Person, b: Person) {
+  private sortPeopleByTempScore(a: Person, b: Person) {
     if (a.tempScore === b.tempScore) {
       return a.did > b.did ? -1 : 1;
     } else {
       return a.tempScore > b.tempScore ? -1 : 1;
     }
+  }
+
+  private createPersonRow(person: Person, index: number): PersonRow {
+    return {
+      did: person.did,
+      checkboxVisible: false,
+      pa: `PA #${index}`,
+      digitalIdCreated: person.created
+        ? formatDate(person.created, this.dateFormat, this.locale)
+        : null,
+      vulnerabilityAssessmentCompleted: person.appliedDate
+        ? formatDate(person.appliedDate, this.dateFormat, this.locale)
+        : null,
+      tempScore: person.tempScore,
+      selectedForValidation: person.selectedForValidationDate
+        ? formatDate(
+            person.selectedForValidationDate,
+            this.dateFormat,
+            this.locale,
+          )
+        : null,
+      vulnerabilityAssessmentValidated: person.validationDate
+        ? formatDate(person.validationDate, this.dateFormat, this.locale)
+        : null,
+      finalScore: person.score,
+    } as PersonRow;
   }
 
   public showCheckbox(row: PersonRow) {
@@ -268,7 +262,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     this.toggleHeaderCheckbox();
     this.updateSubmitWarning(this.selectedPeople);
 
-    const nrCheckboxes = this.countCheckboxes(this.peopleAffected);
+    const nrCheckboxes = this.countSelectable(this.peopleAffected);
     if (nrCheckboxes === 0) {
       this.resetBulkAction();
       this.actionResult(
@@ -307,7 +301,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
 
   private toggleHeaderCheckbox() {
     // Only add header-checkbox with > 1 checkbox
-    if (this.countCheckboxes(this.peopleAffected) > 1) {
+    if (this.countSelectable(this.peopleAffected) > 1) {
       const switchedColumn = this.columns.find((i) => i.prop === 'selected');
       switchedColumn.headerCheckboxable = !switchedColumn.headerCheckboxable;
       if (switchedColumn && switchedColumn.$$id) {
@@ -331,7 +325,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     // This is the single-row-selection case (although it also involves the going from (N-1) to N rows through header-selection)
     if (!headerSelection) {
       this.headerChecked =
-        selected.length < this.countCheckboxes(this.peopleAffected)
+        selected.length < this.countSelectable(this.peopleAffected)
           ? false
           : true;
       this.selectedPeople = selected;
@@ -367,8 +361,8 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     this.countSelected = this.selectedPeople.length;
   }
 
-  private countCheckboxes(rows: PersonRow[]) {
-    return rows.filter((i) => i.checkboxVisible).length;
+  private countSelectable(rows: PersonRow[]) {
+    return rows.filter((row) => row.checkboxVisible).length;
   }
 
   private updateSubmitWarning(selected: PersonRow[]) {
