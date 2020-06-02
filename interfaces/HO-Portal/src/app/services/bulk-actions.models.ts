@@ -8,6 +8,7 @@ export enum BulkActionId {
 
 export class BulkAction {
   id: BulkActionId;
+  enabled: boolean;
   label: string;
   roles: UserRole[];
   phases: ProgramPhase[];

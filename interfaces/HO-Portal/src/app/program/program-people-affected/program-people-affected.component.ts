@@ -49,6 +49,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   public bulkActions: BulkAction[] = [
     {
       id: BulkActionId.chooseAction,
+      enabled: true,
       label: this.translate.instant(
         'page.program.program-people-affected.choose-action',
       ),
@@ -64,6 +65,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     },
     {
       id: BulkActionId.selectForValidation,
+      enabled: false,
       label: this.translate.instant(
         'page.program.program-people-affected.actions.select-for-validation',
       ),
@@ -71,7 +73,6 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       phases: [ProgramPhase.registrationValidation],
     },
   ];
-  public bulkActionsEnabled: BulkAction[] = [];
 
   public submitWarning: any;
 
@@ -177,16 +178,16 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     ) {
       this.checkVisibility(this.selectedPhase);
       await this.loadData();
-      this.loadActions();
+      this.updateBulkActions();
     }
     if (
       changes.activePhase &&
       typeof changes.activePhase.currentValue === 'string'
     ) {
-      this.loadActions();
+      this.updateBulkActions();
     }
     if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
-      this.loadActions();
+      this.updateBulkActions();
     }
   }
 
@@ -194,12 +195,12 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     this.componentVisible = this.presentInPhases.includes(phase);
   }
 
-  private loadActions() {
-    this.bulkActionsEnabled = this.bulkActions.filter((action) => {
-      return (
+  private updateBulkActions() {
+    this.bulkActions = this.bulkActions.map((action) => {
+      action.enabled =
         action.roles.includes(this.userRole) &&
-        action.phases.includes(this.activePhase)
-      );
+        action.phases.includes(this.activePhase);
+      return action;
     });
   }
 

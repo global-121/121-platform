@@ -8,7 +8,9 @@
             class="ion-margin-end"
             [(ngModel)]="action"
     >
-      <option [value]="action.id" *ngFor="let action of bulkActionsEnabled;">{{ action.label }}</option>
+      <ng-container *ngFor="let action of bulkActions;">
+        <option *ngIf="action.enabled" [value]="action.id" >{{ action.label }}</option>
+      </ng-container>
     </select>
     <confirm-prompt [disabled]="applyBtnDisabled"
                     (confirm)="applyAction()"
