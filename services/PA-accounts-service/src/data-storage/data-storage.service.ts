@@ -31,11 +31,11 @@ export class DataStorageService {
     return newData;
   }
 
-  public async get(userId: number, params): Promise<string> {
+  public async get(userId: number, type: string): Promise<string> {
     const data = await this.dataStorageRepository.find({
       where: {
         userId: userId,
-        type: params.type,
+        type: type,
       },
       order: { created: 'DESC' },
     });

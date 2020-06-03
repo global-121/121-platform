@@ -8,7 +8,9 @@ export const SCHEME =
     ? 'https'
     : 'http';
 
-export const URL_121_SERVICE = 'localhost:' + process.env.PORT_121_SERVICE + '/' + process.env.SUBDOMAIN_121_SERVICE + 'api'
+export const URL_121_SERVICE = 'http://11.0.0.7:' + process.env.PORT_121_SERVICE + '/' + process.env.SUBDOMAIN_121_SERVICE + 'api'
+
+export const URL_USERIMS = 'http://11.0.0.5:50003/api';
 
 let _walletPasswordEncryptionKey: string;
 if (process.env.NODE_ENV == 'production' || process.env.NODE_ENV == 'staging') {

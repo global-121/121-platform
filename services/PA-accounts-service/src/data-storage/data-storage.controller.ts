@@ -46,6 +46,6 @@ export class DataStorageController {
     @User('id') userId: number,
     @Param() params,
   ): Promise<string> {
-    return await this.dataStorageService.get(userId, params);
+    return await this.dataStorageService.get(userId, params.type);
   }
 }
