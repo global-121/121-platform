@@ -6,7 +6,6 @@ import {
   Controller,
   UsePipes,
   HttpStatus,
-  Delete,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -61,7 +60,7 @@ export class UserController {
   public async setDid(
     @User('id') userId: number,
     @Body() didDto: DidDto,
-  ) {
+  ): Promise<void> {
     return this.userService.setDid(userId, didDto);
   }
 
@@ -71,7 +70,7 @@ export class UserController {
   public async update(
     @User('id') userId: number,
     @Body() userData: UpdateUserDto,
-  ) {
+  ): Promise<UserRO> {
     return this.userService.update(userId, userData);
   }
 

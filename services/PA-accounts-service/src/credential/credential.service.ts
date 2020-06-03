@@ -17,10 +17,12 @@ export class CredentialService {
   };
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
-  private readonly dataStorageService: DataStorageService;
-  private readonly programsApiService: ProgramsServiceApiService;
-  private readonly userImsApiService: UserImsApiService;
-  public constructor() {}
+
+  public constructor(
+    private readonly dataStorageService: DataStorageService,
+    private readonly programsApiService: ProgramsServiceApiService,
+    private readonly userImsApiService: UserImsApiService,
+  ) {}
 
   public async getCredentialHandleProof(
     did: string,

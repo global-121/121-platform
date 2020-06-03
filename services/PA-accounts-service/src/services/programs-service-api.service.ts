@@ -4,8 +4,7 @@ import { URL_121_SERVICE } from '../config';
 
 @Injectable()
 export class ProgramsServiceApiService {
-  private readonly apiService: ApiService;
-  public constructor() {}
+  public constructor(private readonly apiService: ApiService) {}
 
   public async getCredential(did: string): Promise<any> {
     return await this.apiService.post(

@@ -9,7 +9,6 @@ import {
   ApiOperation,
   ApiImplicitParam,
 } from '@nestjs/swagger';
-import { DataStorageEntity } from './data-storage.entity';
 import { User } from '../user/user.decorator';
 
 @ApiBearerAuth()
@@ -29,7 +28,7 @@ export class DataStorageController {
   public async post(
     @User('id') userId: number,
     @Body() storeData: StoreDataDto,
-  ): Promise<DataStorageEntity> {
+  ): Promise<void> {
     return await this.dataStorageService.post(userId, storeData);
   }
 
