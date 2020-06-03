@@ -1,4 +1,4 @@
-import { eventNames } from "cluster";
+import { eventNames } from 'cluster';
 
 export const AUTH_DEBUG = false;
 export const PORT = process.env.PORT_PA_ACCOUNTS_SERVICE;
@@ -8,7 +8,7 @@ export const SCHEME =
     ? 'https'
     : 'http';
 
-export const URL_121_SERVICE = 'http://11.0.0.7:' + process.env.PORT_121_SERVICE + '/' + process.env.SUBDOMAIN_121_SERVICE + 'api'
+export const URL_121_SERVICE = process.env.URL_121_SERVICE_API;
 
 export const URL_USERIMS = 'http://11.0.0.5:50003/api';
 

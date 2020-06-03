@@ -7,6 +7,9 @@ export const SCHEME = DEBUG ? 'http' : 'https';
 const tyknIMS = 'http://11.0.0.3:50001/api/';
 const orgIMS = 'http://11.0.0.4:50002/api/';
 
+export const URL_PA_ACCOUNTS_SERVICE_API =
+  process.env.URL_PA_ACCOUNTS_SERVICE_API;
+
 export const API = {
   schema: tyknIMS + 'schema',
   credential: {
