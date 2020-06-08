@@ -22,7 +22,6 @@
     </confirm-prompt>
   </ion-row>
 
-
   <ngx-datatable #people
                 class="bootstrap"
                 limit="50"
@@ -35,13 +34,14 @@
                 sortType="single"
                 loadingIndicator="true"
                 [columns]="columns"
-                [rows]="peopleAffected"
+                [rows]="allPeopleAffected"
                 selectionType="checkbox"
                 checkboxable="true"
                 headerCheckboxable="true"
-                [displayCheck]="showCheckbox"
+                [displayCheck]="isRowSelectable"
                 [selected]="selectedPeople"
-                (select)="onSelect($event)"
+                (select)="onSelect($event.selected)"
+                [selectCheck]="isRowSelectable"
   ></ngx-datatable>
 
 </section>

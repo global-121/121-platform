@@ -37,12 +37,12 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
-  public rows: any[] = [];
   public columns: any[] = [];
-  public peopleAffected: PersonRow[] = [];
+
+  public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
+
   private headerChecked = false;
-  private countSelected = 0;
 
   public applyBtnDisabled = true;
   public action = BulkActionId.chooseAction;
@@ -198,14 +198,13 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     const allPeopleData = await this.programsService.getPeopleAffected(
       this.programId,
     );
-    this.peopleAffected = this.createTableData(allPeopleData);
+    this.allPeopleAffected = this.createTableData(allPeopleData);
   }
 
   private createTableData(source: Person[]): PersonRow[] {
     if (source.length === 0) {
       return [];
     }
-
     return source
       .sort(this.sortPeopleByTempScore)
       .map((person, index) => this.createPersonRow(person, index + 1));
@@ -245,10 +244,6 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     } as PersonRow;
   }
 
-  public showCheckbox(row: PersonRow) {
-    return row.checkboxVisible;
-  }
-
   public selectAction() {
     if (this.action === BulkActionId.chooseAction) {
       this.resetBulkAction();
@@ -257,12 +252,15 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
 
     this.applyBtnDisabled = false;
 
-    this.peopleAffected = this.recreatePeopleAffected(this.peopleAffected);
+    this.allPeopleAffected = this.updatePeopleForAction(
+      this.allPeopleAffected,
+      this.action,
+    );
 
     this.toggleHeaderCheckbox();
-    this.updateSubmitWarning(this.selectedPeople);
+    this.updateSubmitWarning(this.selectedPeople.length);
 
-    const nrCheckboxes = this.countSelectable(this.peopleAffected);
+    const nrCheckboxes = this.countSelectable(this.allPeopleAffected);
     if (nrCheckboxes === 0) {
       this.resetBulkAction();
       this.actionResult(
@@ -273,20 +271,10 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     }
   }
 
-  private recreatePeopleAffected(peopleAffected) {
-    return peopleAffected.map((person) => {
-      // BEGIN: For some weird reason, this piece of code is needed for the subsequent checkbox-change to take effect
-      // (all simpler variations have been tried)
-      const personData: any = {};
-      for (const prop in person) {
-        if (Object.prototype.hasOwnProperty.call(person, prop)) {
-          personData[prop] = person[prop];
-        }
-      }
-      // END
-
-      return this.bulkActionService.updateCheckboxes(this.action, personData);
-    });
+  private updatePeopleForAction(people: PersonRow[], action: BulkActionId) {
+    return people.map((person) =>
+      this.bulkActionService.updateCheckbox(action, person),
+    );
   }
 
   private resetBulkAction() {
@@ -295,81 +283,65 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     this.applyBtnDisabled = true;
     this.toggleHeaderCheckbox();
     this.headerChecked = false;
-    this.countSelected = 0;
     this.selectedPeople = [];
   }
 
   private toggleHeaderCheckbox() {
-    // Only add header-checkbox with > 1 checkbox
-    if (this.countSelectable(this.peopleAffected) > 1) {
-      const switchedColumn = this.columns.find((i) => i.prop === 'selected');
-      switchedColumn.headerCheckboxable = !switchedColumn.headerCheckboxable;
-      if (switchedColumn && switchedColumn.$$id) {
-        this.columns = this.columns.filter(
-          (c) => c.$$id !== switchedColumn.$$id,
-        );
-        switchedColumn.$$id = undefined;
-        this.columns = [switchedColumn, ...this.columns];
-      }
-    }
-  }
-
-  public onSelect(event) {
-    const selected = event.selected;
-
-    // We need to distinguish between the header-select case and the single-row-selection, as they both call the same function
-    const diffNewSelected = Math.abs(selected.length - this.countSelected);
-    this.countSelected = selected.length;
-    const headerSelection = diffNewSelected > 1;
-
-    // This is the single-row-selection case (although it also involves the going from (N-1) to N rows through header-selection)
-    if (!headerSelection) {
-      this.headerChecked =
-        selected.length < this.countSelectable(this.peopleAffected)
-          ? false
-          : true;
-      this.selectedPeople = selected;
-      this.countSelected = this.selectedPeople.length;
-      this.updateSubmitWarning(this.selectedPeople);
+    if (this.countSelectable(this.allPeopleAffected) < 1) {
       return;
     }
+    this.columns = this.columns.map((column) => {
+      if (column.prop === 'selected') {
+        column.headerCheckboxable = !column.headerCheckboxable;
+        // Reset internal column-identifier to trigger re-rendering
+        column.$$id = undefined;
+      }
+      return column;
+    });
+  }
 
-    // This is the header-selection case
-    if (!this.headerChecked) {
-      // If checking ...
-      const disabledList = [];
+  public isRowSelectable(row: PersonRow): boolean {
+    return row.checkboxVisible || false;
+  }
 
-      selected.forEach((item, index) => {
-        if (!item.checkboxVisible) {
-          disabledList.push(index);
-        }
-      });
+  public onSelect(newSelected: PersonRow[]) {
+    const allSelectable = this.allPeopleAffected.filter(this.isRowSelectable);
+    const prevSelectedCount = this.selectedPeople.length;
+    const cleanNewSelected = newSelected.filter(this.isRowSelectable);
 
-      disabledList.reverse().forEach((item) => {
-        selected.splice(item, 1);
-      });
+    // We need to distinguish between the header-select case and the single-row-selection, as they both call the same function
+    const diffNewSelected = Math.abs(newSelected.length - prevSelectedCount);
+    const multiSelection = diffNewSelected > 1;
 
-      this.selectedPeople.splice(0, this.selectedPeople.length);
-      this.selectedPeople.push(...selected);
-      this.updateSubmitWarning(this.selectedPeople);
+    if (!multiSelection) {
+      // This is the single-row-selection case (although it also involves the going from (N-1) to N rows through header-selection)
+      this.selectedPeople = cleanNewSelected;
+      this.headerChecked = cleanNewSelected.length === allSelectable.length;
     } else {
-      // If unchecking ...
-      this.selectedPeople = [];
-      this.updateSubmitWarning(this.selectedPeople);
+      // This is the header-selection case
+      if (!this.headerChecked) {
+        // If checking ...
+        this.selectedPeople = cleanNewSelected;
+      } else {
+        // If unchecking ...
+        this.selectedPeople = [];
+      }
+
+      this.headerChecked = !this.headerChecked;
     }
-    this.headerChecked = !this.headerChecked; // Toggle checked-boolean
-    this.countSelected = this.selectedPeople.length;
+
+    this.updateSubmitWarning(this.selectedPeople.length);
   }
 
   private countSelectable(rows: PersonRow[]) {
-    return rows.filter((row) => row.checkboxVisible).length;
+    return rows.filter(this.isRowSelectable).length;
   }
 
-  private updateSubmitWarning(selected: PersonRow[]) {
+  private updateSubmitWarning(peopleCount: number) {
     const actionLabel = this.bulkActions.find((i) => i.id === this.action)
       .label;
     this.submitWarning.message = `
-      ${actionLabel}: ${selected.length} ${this.submitWarning.people}
+      ${actionLabel}: ${peopleCount} ${this.submitWarning.people}
     `;
   }
 

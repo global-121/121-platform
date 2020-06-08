@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { BulkActionId } from './bulk-actions.models';
-import { Person } from '../models/person.model';
+import { PersonRow } from '../models/person.model';
 
 @Injectable({
   providedIn: 'root',
@@ -9,13 +9,11 @@ import { Person } from '../models/person.model';
 export class BulkActionsService {
   constructor(private programsService: ProgramsServiceApiService) {}
 
-  updateCheckboxes(action: BulkActionId, personData: Person) {
+  updateCheckbox(action: BulkActionId, personData: PersonRow) {
     switch (action) {
       case BulkActionId.selectForValidation:
         personData.checkboxVisible =
-          personData.tempScore && !personData.selectedForValidation
-            ? true
-            : false;
+          personData.tempScore && !personData.selectedForValidation;
         break;
     }
     return personData;
