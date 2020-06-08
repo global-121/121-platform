@@ -42,7 +42,8 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
 
-  private headerChecked = false;
+  public headerChecked = false;
+  public headerSelectAllVisible = false;
 
   public applyBtnDisabled = true;
   public action = BulkActionId.chooseAction;
@@ -98,16 +99,6 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       hidePhases: [],
     };
     this.columns = [
-      {
-        prop: 'selected',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.select',
-        ),
-        ...columnDefauls,
-        sortable: false,
-        checkboxable: true,
-        headerCheckboxable: false,
-      },
       {
         prop: 'pa',
         name: this.translate.instant(
@@ -290,14 +281,7 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     if (this.countSelectable(this.allPeopleAffected) < 1) {
       return;
     }
-    this.columns = this.columns.map((column) => {
-      if (column.prop === 'selected') {
-        column.headerCheckboxable = !column.headerCheckboxable;
-        // Reset internal column-identifier to trigger re-rendering
-        column.$$id = undefined;
-      }
-      return column;
-    });
+    this.headerSelectAllVisible = !this.headerSelectAllVisible;
   }
 
   public isRowSelectable(row: PersonRow): boolean {

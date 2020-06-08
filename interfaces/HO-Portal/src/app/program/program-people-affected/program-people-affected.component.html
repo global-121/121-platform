@@ -42,6 +42,37 @@
                 [selected]="selectedPeople"
                 (select)="onSelect($event.selected)"
                 [selectCheck]="isRowSelectable"
-  ></ngx-datatable>
+  >
+    <ngx-datatable-column prop="selected"
+                          width="75"
+    >
+      <ng-template ngx-datatable-header-template
+                   let-value="value"
+                   let-allRowsSelected="allRowsSelected"
+                   let-selectFn="selectFn"
+      >
+        <label *ngIf="headerSelectAllVisible">
+          <input type="checkbox"
+                [checked]="headerChecked"
+                (change)="selectFn(!allRowsSelected)"
+          />
+          {{ 'page.program.program-people-affected.column.select'|translate }}
+        </label>
+      </ng-template>
+      <ng-template ngx-datatable-cell-template
+                   let-row="row"
+                   let-value="value"
+                   let-isSelected="isSelected"
+                   let-onCheckboxChangeFn="onCheckboxChangeFn"
+      >
+        <input type="checkbox"
+               [checked]="isSelected"
+               (change)="onCheckboxChangeFn($event)"
+               *ngIf="row.checkboxVisible"
+        />
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column *ngFor="let column of columns;" [prop]="column.prop"></ngx-datatable-column>
+  </ngx-datatable>
 
 </section>
