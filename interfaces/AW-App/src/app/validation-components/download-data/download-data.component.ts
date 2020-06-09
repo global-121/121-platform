@@ -15,6 +15,11 @@ class ValidationAnswer {
   answer: string | number;
 }
 
+class QrDidMap {
+  did: string;
+  qrIdentifier: string;
+}
+
 @Component({
   selector: 'app-download-data',
   templateUrl: './download-data.component.html',
@@ -26,6 +31,7 @@ export class DownloadDataComponent implements ValidationComponent {
   public nrDownloaded: number;
 
   public validationData: ValidationAnswer[];
+  public qrDidMapping: QrDidMap[];
 
   public ionicStorageTypes = IonicStorageTypes;
 
@@ -44,7 +50,8 @@ export class DownloadDataComponent implements ValidationComponent {
   public async downloadData() {
     await this.programsService.downloadData().then(
       (response) => {
-        this.validationData = response;
+        this.validationData = response.answers;
+        this.qrDidMapping = response.didQrMapping;
       },
       () => {
         this.downloadAborted = true;
@@ -52,9 +59,12 @@ export class DownloadDataComponent implements ValidationComponent {
       }
     );
     await this.storage.set(this.ionicStorageTypes.validationData, this.validationData);
+    await this.storage.set(this.ionicStorageTypes.qrDidMapping, this.qrDidMapping);
 
     const myPrograms = await this.getProgramData(this.validationData);
     await this.storage.set(this.ionicStorageTypes.myPrograms, myPrograms);
+
+
 
     this.nrDownloaded = this.countUniqueDids(this.validationData);
     this.downloadReady = true;
