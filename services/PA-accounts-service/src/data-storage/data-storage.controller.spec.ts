@@ -76,7 +76,7 @@ describe('UserController', (): void => {
   });
 
   describe('post', (): void => {
-    xit('should return data', async (): Promise<void> => {
+    it.skip('should return data', async (): Promise<any> => {
       const storeDataParameters = {
         type: 'string',
         data: 'string',
@@ -90,10 +90,7 @@ describe('UserController', (): void => {
 
       const spy = jest
         .spyOn(dataStorageService, 'post')
-        .mockImplementation(
-          (): Promise<DataStorageEntity> =>
-            Promise.resolve(new DataStorageEntity()),
-        );
+        .mockImplementation((): Promise<void> => Promise.resolve());
       await dataStorageController.post(1, storeDataParameters);
       expect(spy).toHaveBeenCalled();
     });
