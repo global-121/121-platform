@@ -5,6 +5,7 @@ trigger:
   branches:
     include:
       - master
+      - release/*
   paths:
     include:
       - 'services/121-service/*'
