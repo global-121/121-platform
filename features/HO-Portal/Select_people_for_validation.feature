@@ -10,36 +10,36 @@ Feature: Select people affected for validation
     Then a table with all "people connected to a program" is shown
     And for each person the "Select" column is empty
     And for each person a "PA row identifier" is shown
-    And for each person a "Created Digital ID" datetime is shown 
-    And for each person a "Completed Vulnerability Assessment" datetime is shown if already available
-    And for each person a "Temporary Inclusion Score" is shown if already available
-    And for each person a "Selected for validation" datetime is shown if already available
-    And for each person a "Validated Vulnerability Assessment " datetime is shown if already available
-    And for each person a "Validate Inclusion Score" is shown if already available
+    And for each person a "Created Digital ID" date+time is shown
+    And for each person a "Completed Vulnerability Assessment" date+time is shown (if already available)
+    And for each person a "Temporary Inclusion Score" is shown (if already available)
+    And for each person a "Selected for validation" date+time is shown (if already available)
+    And for each person a "Validated Vulnerability Assessment " date+time is shown (if already available)
+    And for each person a "Validate Inclusion Score" is shown (if already available)
     And above the table a list of "bulk actions" is shown
     And next to it an "apply action" button is shown and it is "disabled"
 
   Scenario: View available actions
     When the user opens up the "choose action" dropdown
     Then a list appears with only "select for validation" as option
-    And this is dependent on the "user" and "active phase" specified in the "background" of this file
+    And this is dependent on the currently logged-in "user" and "active phase" of the program
     And all other "users" and "phases" return no actions currently
-  
+
   Scenario: Select "bulk action" while rows eligible
-    Given some people are eligible for the "bulk action"
+    Given at least 2 people are eligible for the "bulk action"
     When the user selects a "bulk action"
     Then the dropdown now shows the name of the "bulk action" instead of "choose action"
     And the "apply action" button is "enabled"
     And a "row checkbox" appears in the "select" column for eligible rows
-    And a "header checkbox" appears in the "select" column only if at least 2 "row checkboxes" appear
+    And a "header checkbox" appears in the "select" column
 
   Scenario: Select "bulk action" while no rows eligible
     Given no people are eligible for the "bulk action"
-    When the user selects a "bulk action"
-    Then a popup appears which informs "user" that no "people" are eligible
-    And the dropdown resets to "choose action"
+    When the user selects a "bulk action" from the dropdown
+    Then a popup with the message "no people are eligible" is shown
+    And the dropdown is reset to the default "choose action" option
 
-  Scenario: Select "select for validation"
+  Scenario: Use bulk-action "select for validation"
     Given the generic "select bulk action" scenario
     When user selects the "select for validation" action
     Then the eligible rows are those with a "temporary inclusion score" entry and without a "selected for validation" entry
@@ -51,7 +51,7 @@ Feature: Select people affected for validation
 
   Scenario: Select a row
     Given a "bulk action" is selected
-    And "row checkxboxes" have appeared for eligible rows
+    And "row checkboxes" have appeared for eligible rows
     And all "row checkboxes" are unchecked
     When the "user" clicks on the checkbox
     Then the row styling reflects selection by turning "blue"
@@ -63,7 +63,7 @@ Feature: Select people affected for validation
     And the "header checkbox" is unchecked
     When the "user" checks the "header checkbox"
     Then all "row checkboxes" are selected and the "header checkbox" is selected
-    When the "user unchecks the "header checkbox" 
+    When the "user" un-checks the "header checkbox"
     Then all "row checkboxes" are selected and the "header checkbox" is selected
 
   Scenario: Deselect all rows given full selection
@@ -76,11 +76,11 @@ Feature: Select people affected for validation
     When user checks "header checkbox"
     Then all "row checkboxes" are checked
 
-  Scnenario: Unselect row given full selection
+  Scenario: Unselect row given full selection
     Given current "full" selection
-    When user unchecks single "row checkbox"
-    Then the "header checkbox" also unchecks
-  
+    When user un-checks single "row checkbox"
+    Then the "header checkbox" also un-checks
+
   Scenario: Select row given (N-1) selection
     Given currently all eligible rows except 1 are selected
     When user checks last eligible row through "row checkbox"
@@ -100,11 +100,9 @@ Feature: Select people affected for validation
     And the "changed data" is reflected in the table
     And the "action" dropdown is reset
     And the "apply action" is "disabled" again
-    And all "row checkboxes" and "header checkbox" disappear 
+    And all "row checkboxes" and "header checkbox" disappear
 
   Scenario: Confirm "select for validation" action
     Given the generic "confirm apply action" scenario
     When the "bulk action" is "select for validation"
     Then the "changed data" is that the "selected for validation" timestamp is filled for the selected rows
-
-
