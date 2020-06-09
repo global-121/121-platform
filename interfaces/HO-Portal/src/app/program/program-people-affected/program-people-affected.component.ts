@@ -92,62 +92,71 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       ),
     };
 
-    const columnDefauls = {
+    const columnDefaults = {
       draggable: false,
       resizeable: false,
       sortable: true,
       hidePhases: [],
+      headerClass: 'ion-text-wrap ion-align-self-end',
     };
+    const columnDateWidth = 142;
+    const columnScoreWidth = 90;
     this.columns = [
       {
         prop: 'pa',
         name: this.translate.instant(
           'page.program.program-people-affected.column.person',
         ),
-        ...columnDefauls,
-        sortable: false,
+        ...columnDefaults,
+        minWidth: 80,
       },
       {
         prop: 'digitalIdCreated',
         name: this.translate.instant(
           'page.program.program-people-affected.column.digital-id-created',
         ),
-        ...columnDefauls,
+        ...columnDefaults,
+        width: columnDateWidth,
       },
       {
         prop: 'vulnerabilityAssessmentCompleted',
         name: this.translate.instant(
           'page.program.program-people-affected.column.vulnerability-assessment-completed',
         ),
-        ...columnDefauls,
+        ...columnDefaults,
+        width: columnDateWidth,
       },
       {
         prop: 'tempScore',
         name: this.translate.instant(
           'page.program.program-people-affected.column.temp-score',
         ),
-        ...columnDefauls,
+        ...columnDefaults,
+        width: columnScoreWidth,
       },
       {
         prop: 'selectedForValidation',
         name: this.translate.instant(
           'page.program.program-people-affected.column.selected-for-validation',
         ),
-        ...columnDefauls,
+        ...columnDefaults,
+        width: columnDateWidth,
       },
       {
         prop: 'vulnerabilityAssessmentValidated',
         name: this.translate.instant(
           'page.program.program-people-affected.column.vulnerability-assessment-validated',
         ),
-        ...columnDefauls,
+        ...columnDefaults,
+        width: columnDateWidth,
       },
       {
         prop: 'finalScore',
         name: this.translate.instant(
           'page.program.program-people-affected.column.final-score',
         ),
-        ...columnDefauls,
+        ...columnDefaults,
+        width: columnScoreWidth,
       },
     ];
   }

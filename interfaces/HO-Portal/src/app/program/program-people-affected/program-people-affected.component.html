@@ -45,16 +45,20 @@
   >
     <ngx-datatable-column prop="selected"
                           width="75"
+                          resizable="false"
+                          headerClass="ion-align-self-end"
     >
       <ng-template ngx-datatable-header-template
                    let-value="value"
                    let-allRowsSelected="allRowsSelected"
                    let-selectFn="selectFn"
       >
-        <label *ngIf="headerSelectAllVisible">
+        <label>
           <input type="checkbox"
-                [checked]="headerChecked"
-                (change)="selectFn(!allRowsSelected)"
+                 [checked]="headerChecked"
+                 [disabled]="!headerSelectAllVisible"
+                 [ngStyle]="headerSelectAllVisible ? {} : {'visibility':'hidden'}"
+                 (change)="selectFn(!allRowsSelected)"
           />
           {{ 'page.program.program-people-affected.column.select'|translate }}
         </label>
@@ -72,7 +76,19 @@
         />
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column *ngFor="let column of columns;" [prop]="column.prop"></ngx-datatable-column>
+    <ngx-datatable-column *ngFor="let column of columns;"
+                          [prop]="column.prop"
+                          [name]="column.name"
+                          [width]="column.width"
+                          [minWidth]="column.minWidth"
+                          [maxWidth]="column.maxWidth"
+                          [draggable]="column.draggable"
+                          [resizeable]="column.resizable"
+                          [sortable]="column.sortable"
+                          [canAutoResize]="column.canAutoResize"
+                          [headerClass]="column.headerClass"
+                          [cellClass]="column.cellClass"
+    ></ngx-datatable-column>
   </ngx-datatable>
 
 </section>
