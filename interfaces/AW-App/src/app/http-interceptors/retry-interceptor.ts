@@ -26,12 +26,15 @@ export class RetryInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const re = '/sovrin/credential/get-answers';
+    const res = ['/sovrin/credential/get-answers', '/sovrin/create-connection/qr-find-did'];
     // Exclude interceptor for get prefilled answer requests
-    if (request.url.search(re) !== -1 ) {
-      console.log('Exception retry-interceptor');
-      return next.handle(request).pipe((timeout(this.offlineTimeout)));
+    for (const re of res) {
+      if (request.url.search(re) !== -1) {
+        console.log('Exception retry-interceptor');
+        return next.handle(request).pipe((timeout(this.offlineTimeout)));
+      }
     }
+
 
     return next.handle(request)
       .pipe(
