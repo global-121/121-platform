@@ -22,6 +22,7 @@ import { ConnectionEntity } from '../create-connection/connection.entity';
 import { UserEntity } from '../../user/user.entity';
 
 import { API } from '../../config';
+import { DownloadData } from './interfaces/download-data.interface';
 
 @Injectable()
 export class CredentialService {
@@ -157,9 +158,7 @@ export class CredentialService {
   }
 
   // AW: get answers to attributes for all PA's (selected for validation)
-  public async getAllPrefilledAnswers(
-    userId: number,
-  ): Promise<CredentialAttributesEntity[]> {
+  public async downloadData(userId: number): Promise<DownloadData> {
     const user = await getRepository(UserEntity)
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.assignedProgram', 'program')
@@ -169,7 +168,16 @@ export class CredentialService {
       const errors = 'User not found or no assigned programs';
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
+    const data = {
+      answers: await this.getAllPrefilledAnswers(user),
+      didQrMapping: await this.getQrDidMapping(),
+    };
+    return data;
+  }
 
+  public async getAllPrefilledAnswers(
+    user: UserEntity,
+  ): Promise<CredentialAttributesEntity[]> {
     const programIds = user.assignedProgram.map(program => {
       return { programId: program.id };
     });
@@ -177,6 +185,13 @@ export class CredentialService {
       where: programIds,
     });
     return answers;
+  }
+
+  public async getQrDidMapping(): Promise<ConnectionEntity[]> {
+    return await this.connectionRepository
+      .createQueryBuilder('connection')
+      .select(['connection.qrIdentifier', 'connection.did'])
+      .getMany();
   }
 
   // AW: delete answers to attributes for a given PA after issuing credentials (identified first through did/QR)

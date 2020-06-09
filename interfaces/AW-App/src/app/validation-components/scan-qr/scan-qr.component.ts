@@ -111,16 +111,55 @@ export class ScanQrComponent implements ValidationComponent {
       return JSON.parse(data);
     }
 
-    try {
-      const paDid = await this.programsService.getDidByQrIdentifier(data);
+    const didProgramId = {
+      did: undefined,
+      programId: 1, // Hard-code Program ID for now...
+    };
 
-      return {
-        did: paDid,
-        programId: 1, // Hard-code Program ID for now...
-      };
+    didProgramId.did = await this.getPaIdentifierOffline(data);
+    console.log('didProgramId: ', didProgramId);
+    if (didProgramId.did) {
+      return didProgramId;
+    }
+    try {
+      didProgramId.did = await this.getPaIdentifierOnline(data);
+      return didProgramId;
     } catch {
       return false;
     }
+  }
+
+  private async getPaIdentifierOffline(data: string): Promise<string> {
+    console.log('getPaIdentifierOffline');
+    const qrDidMapping = await this.storage.get(
+      this.ionicStorageTypes.qrDidMapping,
+    );
+    if (!qrDidMapping || !qrDidMapping.length) {
+      return;
+    }
+    for (const element of qrDidMapping) {
+      if (data === element.qrIdentifier) {
+        return element.did;
+      }
+    }
+  }
+
+
+  private async getPaIdentifierOnline(data: string): Promise<string> {
+    console.log('getPaIdentifierOnline');
+    try {
+      const response = await this.programsService.getDidByQrIdentifier(data);
+      if (response.length === 0) {
+        return;
+      }
+      return response;
+    } catch (e) {
+      console.log('Error: ', e.name);
+      if (e.status === 0 || e instanceof TimeoutError) {
+        return;
+      }
+    }
+
   }
 
   private async findPaData(did: string, programId: number): Promise<any> {
