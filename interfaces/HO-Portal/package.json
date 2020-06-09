@@ -37,7 +37,7 @@
     "file-saver": "^2.0.2",
     "rxjs": "^6.5.5",
     "tslib": "^1.11.1",
-    "zone.js": "~0.8.26"
+    "zone.js": "^0.8.29"
   },
   "devDependencies": {
     "@angular-devkit/architect": "~0.13.8",
@@ -57,10 +57,10 @@
     "dotenv": "^8.2.0",
     "jasmine-core": "^3.5.0",
     "jasmine-spec-reporter": "~5.0.2",
-    "karma": "^5.0.2",
+    "karma": "^5.0.9",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage-istanbul-reporter": "^3.0.2",
-    "karma-jasmine": "~2.0.1",
+    "karma-jasmine": "^3.3.1",
     "karma-jasmine-html-reporter": "^1.5.3",
     "prettier": "2.0.5",
     "protractor": "^7.0.0",
