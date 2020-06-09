@@ -1,4 +1,10 @@
-import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'password-toggle-input',
@@ -41,10 +47,10 @@ export class PasswordToggleInputComponent {
 
   public inputType: 'password' | 'text' = 'password';
 
-  constructor() { }
+  constructor() {}
 
   isPassword() {
-    return (this.inputType === 'password');
+    return this.inputType === 'password';
   }
 
   toggleInputType() {

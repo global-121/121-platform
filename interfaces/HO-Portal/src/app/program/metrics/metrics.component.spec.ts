@@ -53,20 +53,15 @@ describe('MetricsComponent', () => {
     ]);
     mockProgramsApi.getMetricsById.and.returnValue(mockProgramMetrics);
 
-    mockTranslatableStringService = jasmine.createSpyObj('TranslatableStringService', [
-      'get',
-    ]);
+    mockTranslatableStringService = jasmine.createSpyObj(
+      'TranslatableStringService',
+      ['get'],
+    );
     mockTranslatableStringService.get.and.returnValue('');
 
     TestBed.configureTestingModule({
-      declarations: [
-        MetricsComponent,
-        TestHostComponent,
-      ],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-      ],
+      declarations: [MetricsComponent, TestHostComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
@@ -78,8 +73,7 @@ describe('MetricsComponent', () => {
           useValue: mockProgramsApi,
         },
       ],
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -97,7 +91,9 @@ describe('MetricsComponent', () => {
     testHost.program = fixtureProgram;
     fixture.detectChanges();
 
-    expect(mockProgramsApi.getMetricsById).toHaveBeenCalledWith(fixtureProgram.id);
+    expect(mockProgramsApi.getMetricsById).toHaveBeenCalledWith(
+      fixtureProgram.id,
+    );
   });
 
   it('should request the metrics (again) when triggered from the interface', () => {
@@ -110,5 +106,4 @@ describe('MetricsComponent', () => {
 
     expect(mockProgramsApi.getMetricsById).toHaveBeenCalledTimes(2);
   });
-
 });

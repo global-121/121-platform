@@ -11,15 +11,9 @@ describe('ConfirmPromptComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        ConfirmPromptComponent,
-      ],
-      imports: [
-        TranslateModule.forRoot(),
-        IonicModule,
-      ],
-    })
-    .compileComponents();
+      declarations: [ConfirmPromptComponent],
+      imports: [TranslateModule.forRoot(), IonicModule],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

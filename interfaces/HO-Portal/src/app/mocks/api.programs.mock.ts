@@ -1,4 +1,8 @@
-import { Program, InclusionCalculationType, ProgramPhase } from '../models/program.model';
+import {
+  Program,
+  InclusionCalculationType,
+  ProgramPhase,
+} from '../models/program.model';
 import { getRandomInt } from './helpers';
 
 const programsArray: Program[] = [
@@ -17,7 +21,7 @@ const programsArray: Program[] = [
     created: '1970-01-01T01:01:01Z',
     updated: '1970-01-01T01:01:01Z',
     state: ProgramPhase.design,
-    author: {}
+    author: {},
   },
 ];
 // Copy 2:

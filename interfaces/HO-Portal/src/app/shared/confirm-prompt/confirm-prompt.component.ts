@@ -8,7 +8,6 @@ import { AlertController } from '@ionic/angular';
   styleUrls: ['./confirm-prompt.component.scss'],
 })
 export class ConfirmPromptComponent {
-
   @Input()
   public disabled: boolean;
 
@@ -33,8 +32,7 @@ export class ConfirmPromptComponent {
   constructor(
     public translate: TranslateService,
     private alertController: AlertController,
-  ) {
-  }
+  ) {}
 
   public async showPrompt() {
     this.disabled = true;
@@ -59,10 +57,9 @@ export class ConfirmPromptComponent {
             this.disabled = false;
           },
         },
-      ]
+      ],
     });
 
     await alert.present();
   }
-
 }

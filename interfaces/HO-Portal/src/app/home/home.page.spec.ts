@@ -12,11 +12,8 @@ describe('HomePage', () => {
     TestBed.configureTestingModule({
       declarations: [HomePage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
-    })
-      .compileComponents();
+      imports: [TranslateModule.forRoot()],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
