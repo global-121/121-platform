@@ -14,7 +14,7 @@ export class CredentialController {
   }
   @ApiOperation({ title: 'Gets the credential and stores it in the wallet' })
   @Post('get-credential-handle-proof')
-  public async getAndStoreCredential(
+  public async getCredentialHandleProof(
     @Body() didProgramDto: DidProgramIdDto,
   ): Promise<void> {
     return await this.credentialService.getCredentialHandleProof(

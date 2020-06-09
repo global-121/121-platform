@@ -38,6 +38,10 @@ export const API = {
       name: 'FSP D - no attributes',
     },
   ],
+  paAccounts: {
+    getCredentialHandleProof:
+      URL_PA_ACCOUNTS_SERVICE_API + '/get-credential-handle-proof',
+  },
 };
 
 export const EXTERNAL_API = {
