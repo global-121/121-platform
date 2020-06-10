@@ -22,6 +22,7 @@ export class StoreCredentialComponent extends PersonalComponent {
   public data: any;
 
   public isDebug = environment.isDebug;
+  private useLocalStorage = environment.localStorage;
 
   public currentProgram: Program;
 
@@ -50,6 +51,13 @@ export class StoreCredentialComponent extends PersonalComponent {
   }
 
   async initNew() {
+    const paStatus = await this.paData.retrieve(this.paData.type.status);
+
+    if (!this.useLocalStorage && paStatus !== undefined) {
+      this.skipCredentialHandling();
+      return;
+    }
+
     if (this.isDebug) {
       return;
     }
@@ -63,6 +71,12 @@ export class StoreCredentialComponent extends PersonalComponent {
     this.credentialStored = this.data.credentialStored;
   }
 
+  skipCredentialHandling() {
+    this.credentialReceived = true;
+    this.credentialStored = true;
+    this.complete();
+  }
+
   async startListening() {
     console.log('Start listening for Credential...');
     const did = await this.paData.retrieve(this.paData.type.did);
@@ -73,7 +87,7 @@ export class StoreCredentialComponent extends PersonalComponent {
 
   async getCredential(did: string) {
     console.log('getCredential()');
-    this.programsService.getCredential(did).subscribe(response => {
+    this.programsService.getCredential(did).subscribe((response) => {
       const credential = response;
       console.log('credential Received:', credential);
       this.credentialReceived = true;
@@ -85,18 +99,22 @@ export class StoreCredentialComponent extends PersonalComponent {
     this.conversationService.startLoading();
     console.log('Trying to store this credential', credential);
     const wallet = await this.paData.retrieve(this.paData.type.wallet);
-    const credentialRequest = await this.paData.retrieve(this.paData.type.credentialRequest);
+    const credentialRequest = await this.paData.retrieve(
+      this.paData.type.credentialRequest,
+    );
     const credDefID = await this.paData.retrieve(this.paData.type.credDefId);
     const credentialFormat = JSON.parse(credential.message);
 
-    await this.sovrinService.storeCredential(
-      credDefID,
-      credentialRequest.credentialRequestMetadata,
-      credentialFormat.credential,
-      wallet,
-    ).then(() => {
-      this.deleteCredential();
-    });
+    await this.sovrinService
+      .storeCredential(
+        credDefID,
+        credentialRequest.credentialRequestMetadata,
+        credentialFormat.credential,
+        wallet,
+      )
+      .then(() => {
+        this.deleteCredential();
+      });
     this.credentialStored = true;
     this.conversationService.stopLoading();
     this.complete();

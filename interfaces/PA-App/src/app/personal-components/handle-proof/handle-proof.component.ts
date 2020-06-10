@@ -10,6 +10,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PersonalComponents } from '../personal-components.enum';
 import { PersonalComponent } from '../personal-component.class';
 import { Program } from 'src/app/models/program.model';
+import { PaStatus } from 'src/app/models/pa-status.enum';
 
 enum InclusionStates {
   included = 'included',
@@ -84,7 +85,7 @@ export class HandleProofComponent extends PersonalComponent {
     // Check if the enrollment was done earlier ..
     let statusRetrieved: string, status: string;
     try {
-      statusRetrieved = await this.paData.retrieve('status');
+      statusRetrieved = await this.paData.retrieve(this.paData.type.status);
     } catch {
       statusRetrieved = '';
     }
@@ -96,13 +97,13 @@ export class HandleProofComponent extends PersonalComponent {
 
       // Use proof
       status = await this.programService.includeMe(this.did, this.programId, proof.proof);
-      this.paData.store('status', status);
+      this.paData.store(this.paData.type.status, status);
     } else {
       // .. IF YES, THEN CONTINUE
       status = statusRetrieved;
     }
 
-    if (status === 'done') {
+    if (status === PaStatus.done) {
       this.inclusionStatus = await this.programService.checkInclusionStatus(this.did, this.programId).toPromise();
       this.processStatus(this.inclusionStatus);
       this.conversationService.stopLoading();

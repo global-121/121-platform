@@ -12,6 +12,7 @@ export enum PaDataTypes {
   myPrograms = 'myPrograms',
   programId = 'programId',
   phoneNumber = 'phoneNumber',
+  status = 'status',
   timeslot = 'timeslotChoice',
   usePreprintedQrCode = 'usePreprintedQrCode',
   username = 'username',
