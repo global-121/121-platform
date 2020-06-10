@@ -24,7 +24,7 @@
     "@angular/http": "^7.2.16",
     "@angular/platform-browser": "^7.2.16",
     "@angular/platform-browser-dynamic": "^7.2.16",
-    "@angular/pwa": "^0.12.4",
+    "@angular/pwa": "^0.901.7",
     "@angular/router": "^7.2.16",
     "@angular/service-worker": "^7.2.16",
     "@auth0/angular-jwt": "^4.1.2",
