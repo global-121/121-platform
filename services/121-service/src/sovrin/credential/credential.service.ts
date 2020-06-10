@@ -157,7 +157,6 @@ export class CredentialService {
     return credentials;
   }
 
-  // AW: get answers to attributes for all PA's (selected for validation)
   public async downloadData(userId: number): Promise<DownloadData> {
     const user = await getRepository(UserEntity)
       .createQueryBuilder('user')
