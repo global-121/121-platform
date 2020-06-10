@@ -9,7 +9,7 @@ updates:
   ignore:
   - dependency-name: "@angular/*"
     versions:
-    - ">= 8"
+    - ">= 8, >= 0.800"
   - dependency-name: "@angular-devkit/*"
     versions:
     - ">= 0.800"
@@ -35,7 +35,7 @@ updates:
   ignore:
   - dependency-name: "@angular/*"
     versions:
-    - ">= 8"
+    - ">= 8, >= 0.800"
   - dependency-name: "@angular-devkit/*"
     versions:
     - ">= 0.800"
@@ -61,7 +61,7 @@ updates:
   ignore:
   - dependency-name: "@angular/*"
     versions:
-    - ">= 8"
+    - ">= 8, >= 0.800"
   - dependency-name: "@angular-devkit/*"
     versions:
     - ">= 0.800"
