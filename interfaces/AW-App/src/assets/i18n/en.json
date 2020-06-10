@@ -27,7 +27,8 @@
       "introduction": "The following actions are available. Please select one.",
       "download-data": "Download validation data",
       "view-appointments": "View appointments",
-      "scan-qr": "Scan PA's QR-code"
+      "scan-qr": "Scan PA's QR-code",
+      "upload-data": "Upload validation data"
     },
     "download-data": {
       "downloading": "Validation data is being downloaded. Wait a second.",
