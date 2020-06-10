@@ -229,15 +229,6 @@ export class ValidateProgramComponent implements ValidationComponent {
   public async validateAttributes() {
     const attributes = this.createAttributes(Object.values(this.answers));
     this.storeCredentialOffline(attributes);
-
-    // THIS SHOULD BE REMOVED WHEN WORKING ON AB# 1472
-    this.programsService
-      .issueCredential(this.did, this.programId, attributes)
-      .then(() => {
-        console.log('createAttributes api call completed');
-      });
-    // THIS SHOULD BE REMOVED WHEN WORKING ON AB# 1472
-
     this.programCredentialIssued = true;
     this.answers = {};
     this.complete();
