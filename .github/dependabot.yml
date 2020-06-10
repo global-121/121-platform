@@ -1,0 +1,71 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/interfaces/HO-Portal"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 3
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: "@angular/*"
+    versions:
+    - ">= 8"
+  - dependency-name: "@angular-devkit/*"
+    versions:
+    - ">= 0.800"
+  - dependency-name: tslint
+    versions:
+    - ">= 6"
+  - dependency-name: core-js
+    versions:
+    - ">= 3"
+  - dependency-name: tslib
+    versions:
+    - ">= 2"
+
+- package-ecosystem: npm
+  directory: "/interfaces/AW-App"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 3
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: "@angular/*"
+    versions:
+    - ">= 8"
+  - dependency-name: "@angular-devkit/*"
+    versions:
+    - ">= 0.800"
+  - dependency-name: tslint
+    versions:
+    - ">= 6"
+  - dependency-name: core-js
+    versions:
+    - ">= 3"
+  - dependency-name: tslib
+    versions:
+    - ">= 2"
+
+- package-ecosystem: npm
+  directory: "/interfaces/PA-App"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 3
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: "@angular/*"
+    versions:
+    - ">= 8"
+  - dependency-name: "@angular-devkit/*"
+    versions:
+    - ">= 0.800"
+  - dependency-name: tslint
+    versions:
+    - ">= 6"
+  - dependency-name: core-js
+    versions:
+    - ">= 3"
+  - dependency-name: tslib
+    versions:
+    - ">= 2"
+
