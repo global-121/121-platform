@@ -9,7 +9,7 @@ updates:
   ignore:
   - dependency-name: "@angular/*"
     versions:
-    - ">= 8"
+    - ">= 8, >= 0.800"
   - dependency-name: "@angular-devkit/*"
     versions:
     - ">= 0.800"
@@ -22,6 +22,9 @@ updates:
   - dependency-name: tslib
     versions:
     - ">= 2"
+  - dependency-name: ngx-translate-lint
+    versions:
+    - ">= 1.4, < 1.6.0"
 
 - package-ecosystem: npm
   directory: "/interfaces/AW-App"
@@ -32,7 +35,7 @@ updates:
   ignore:
   - dependency-name: "@angular/*"
     versions:
-    - ">= 8"
+    - ">= 8, >= 0.800"
   - dependency-name: "@angular-devkit/*"
     versions:
     - ">= 0.800"
@@ -45,6 +48,9 @@ updates:
   - dependency-name: tslib
     versions:
     - ">= 2"
+  - dependency-name: ngx-translate-lint
+    versions:
+    - ">= 1.4, < 1.6.0"
 
 - package-ecosystem: npm
   directory: "/interfaces/PA-App"
@@ -55,7 +61,7 @@ updates:
   ignore:
   - dependency-name: "@angular/*"
     versions:
-    - ">= 8"
+    - ">= 8, >= 0.800"
   - dependency-name: "@angular-devkit/*"
     versions:
     - ">= 0.800"
@@ -68,4 +74,9 @@ updates:
   - dependency-name: tslib
     versions:
     - ">= 2"
-
+  - dependency-name: ngx-translate-lint
+    versions:
+    - ">= 1.4, < 1.6.0"
+  - dependency-name: angularx-qrcode
+    versions:
+    - ">= 2.1"
