@@ -267,7 +267,9 @@ export class CredentialService {
     await this.cleanupIssueCredData(payload.did, payload.programId);
     await this.updateAppointmentStatus(payload.did);
     await this.updateConnectionStatus(payload.did);
+    await this.paAccountsCredentialReady(payload.did, payload.programId);
   }
+
   private async updateAppointmentStatus(did): Promise<void> {
     let appointmentUpdated = await this.appointmentRepository.findOne({
       did: did,
@@ -340,6 +342,21 @@ export class CredentialService {
       did: did,
     });
     this.deletePrefilledAnswers(did, programId);
+  }
+
+  public async paAccountsCredentialReady(
+    did: string,
+    programId: number,
+  ): Promise<void> {
+    console.log('paAccountsCredentialReady');
+    const data = {
+      did: did,
+      programId: programId,
+    };
+    console.log(API.paAccounts.getCredentialHandleProof, data);
+    await this.httpService
+      .post(API.paAccounts.getCredentialHandleProof, data)
+      .toPromise();
   }
 
   // Used by PA

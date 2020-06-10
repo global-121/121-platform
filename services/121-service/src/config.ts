@@ -1,11 +1,14 @@
 export const DEBUG =
   ['production', 'staging'].indexOf(process.env.NODE_ENV) === -1;
-export const PORT = process.env.PORT ? process.env.PORT : 3000;
-export const BASE_PATH = DEBUG ? 'api' : '121-service/api';
+export const PORT = process.env.PORT_121_SERVICE;
+export const BASE_PATH = process.env.SUBDOMAIN_121_SERVICE + '/api';
 export const SCHEME = DEBUG ? 'http' : 'https';
 
 const tyknIMS = 'http://11.0.0.3:50001/api/';
 const orgIMS = 'http://11.0.0.4:50002/api/';
+
+export const URL_PA_ACCOUNTS_SERVICE_API =
+  process.env.URL_PA_ACCOUNTS_SERVICE_API;
 
 export const API = {
   schema: tyknIMS + 'schema',
@@ -35,6 +38,10 @@ export const API = {
       name: 'FSP D - no attributes',
     },
   ],
+  paAccounts: {
+    getCredentialHandleProof:
+      URL_PA_ACCOUNTS_SERVICE_API + '/get-credential-handle-proof',
+  },
 };
 
 export const EXTERNAL_API = {

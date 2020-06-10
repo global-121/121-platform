@@ -169,6 +169,9 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.paData.store(this.paData.type.wallet, wallet);
     this.paData.store(this.paData.type.didShort, didShort);
     this.paData.store(this.paData.type.did, did);
+
+    // 9. Store did in user table of PA-account
+    this.paData.setDid(did);
   }
 
   getNextSection() {

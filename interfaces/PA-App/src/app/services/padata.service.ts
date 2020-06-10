@@ -210,6 +210,14 @@ export class PaDataService {
     this.setLoggedOut();
   }
 
+  public setDid(did: string) {
+    if (this.useLocalStorage) {
+      return this.featureNotAvailable();
+    }
+
+    return this.paAccountApi.setDid(did);
+  }
+
   public async deleteIdentity(password: string): Promise<any> {
     if (this.useLocalStorage) {
       return this.featureNotAvailable();
