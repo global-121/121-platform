@@ -22,6 +22,9 @@ updates:
   - dependency-name: tslib
     versions:
     - ">= 2"
+  - dependency-name: ngx-translate-lint
+    versions:
+    - ">= 1.4, < 1.6.0"
 
 - package-ecosystem: npm
   directory: "/interfaces/AW-App"
@@ -45,6 +48,9 @@ updates:
   - dependency-name: tslib
     versions:
     - ">= 2"
+  - dependency-name: ngx-translate-lint
+    versions:
+    - ">= 1.4, < 1.6.0"
 
 - package-ecosystem: npm
   directory: "/interfaces/PA-App"
@@ -68,4 +74,7 @@ updates:
   - dependency-name: tslib
     versions:
     - ">= 2"
+  - dependency-name: ngx-translate-lint
+    versions:
+    - ">= 1.4, < 1.6.0"
 
