@@ -98,9 +98,8 @@ export class CredentialService {
       );
       await this.dataStorageService.post(userId, {
         type: this.paDataType.status,
-        data: statusResponse.data.status,
+        data: JSON.stringify(statusResponse.data.status),
       });
-      console.log(statusResponse.data.status);
     }
   }
 
