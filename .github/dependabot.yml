@@ -77,4 +77,6 @@ updates:
   - dependency-name: ngx-translate-lint
     versions:
     - ">= 1.4, < 1.6.0"
-
+  - dependency-name: angularx-qrcode
+    versions:
+    - ">= 2.1"
