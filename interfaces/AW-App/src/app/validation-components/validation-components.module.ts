@@ -9,6 +9,7 @@ import { ViewAppointmentsComponent } from './view-appointments/view-appointments
 import { ScanQrComponent } from './scan-qr/scan-qr.component';
 import { ValidateProgramComponent } from './validate-program/validate-program.component';
 import { DownloadDataComponent } from './download-data/download-data.component';
+import { UploadDataComponent } from './upload-data/upload-data.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { DownloadDataComponent } from './download-data/download-data.component';
     ViewAppointmentsComponent,
     ScanQrComponent,
     ValidateProgramComponent,
-    DownloadDataComponent
+    DownloadDataComponent,
+    UploadDataComponent
   ],
   imports: [
     CommonModule,
@@ -28,14 +30,16 @@ import { DownloadDataComponent } from './download-data/download-data.component';
     ViewAppointmentsComponent,
     ScanQrComponent,
     ValidateProgramComponent,
-    DownloadDataComponent
+    DownloadDataComponent,
+    UploadDataComponent
   ],
   exports: [
     MainMenuComponent,
     ViewAppointmentsComponent,
     ScanQrComponent,
     ValidateProgramComponent,
-    DownloadDataComponent
+    DownloadDataComponent,
+    UploadDataComponent
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

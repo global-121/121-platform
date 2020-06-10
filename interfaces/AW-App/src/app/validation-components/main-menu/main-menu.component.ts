@@ -48,6 +48,8 @@ export class MainMenuComponent implements ValidationComponent {
       return ValidationComponents.viewAppointments;
     } else if (this.optionChoice === 'scan-qr') {
       return ValidationComponents.scanQr;
+    } else if (this.optionChoice === 'upload-data') {
+      return ValidationComponents.uploadData;
     }
   }
 

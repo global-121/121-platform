@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ConversationService } from 'src/app/services/conversation.service';
 
 @Component({
   selector: 'app-upload-data',
@@ -7,8 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UploadDataComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    public conversationService: ConversationService,
+    // private storage: Storage
+  ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('Upload data')
+  }
 
 }
