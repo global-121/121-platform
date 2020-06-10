@@ -41,7 +41,6 @@ export class CreateConnectionService {
 
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
-    // tyknid.getConnectionRequest(connectionResponse.did, connectionResponse.verkey, connectionResponse.meta)`;
     const connectionRequest = {
       did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
       nonce: '1234567890',
@@ -53,8 +52,6 @@ export class CreateConnectionService {
   public async create(
     connectionResponse: ConnectionReponseDto,
   ): Promise<ConnectionEntity> {
-    ` assert nonce(connectionResponse.nonce ==== stored.nonce)
-      await tyknid.createConnection(connectionResponse.did, connectionResponse.verkey, connectionResponse.meta)`;
     let connections = await this.connectionRepository.find({
       where: { did: connectionResponse['did'] },
     });
