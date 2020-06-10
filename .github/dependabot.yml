@@ -7,27 +7,22 @@ updates:
   open-pull-requests-limit: 3
   versioning-strategy: increase-if-necessary
   ignore:
-  - dependency-name: "@angular/cli"
+  - dependency-name: "@angular/*"
     versions:
-    - ">= 8.a, < 9"
-  - dependency-name: "@angular/cli"
+    - ">= 8"
+  - dependency-name: "@angular-devkit/*"
     versions:
-    - ">= 9.a, < 10"
-  - dependency-name: "@angular-devkit/architect"
-    versions:
-    - ">= 0.900.a, < 0.901"
-  - dependency-name: "@angular-devkit/architect"
-    versions:
-    - ">= 0.901.a, < 0.902"
-  - dependency-name: "@angular-devkit/build-angular"
-    versions:
-    - ">= 0.800.a, < 0.801"
-  - dependency-name: "@angular/language-service"
-    versions:
-    - ">= 9.a, < 10"
+    - ">= 0.800"
   - dependency-name: tslint
     versions:
-    - ">= 6.a, < 7"
+    - ">= 6"
+  - dependency-name: core-js
+    versions:
+    - ">= 3"
+  - dependency-name: tslib
+    versions:
+    - ">= 2"
+
 - package-ecosystem: npm
   directory: "/interfaces/AW-App"
   schedule:
@@ -35,36 +30,22 @@ updates:
   open-pull-requests-limit: 3
   versioning-strategy: increase-if-necessary
   ignore:
-  - dependency-name: "@angular/cli"
+  - dependency-name: "@angular/*"
     versions:
-    - ">= 9.a, < 10"
-  - dependency-name: "@angular-devkit/architect"
+    - ">= 8"
+  - dependency-name: "@angular-devkit/*"
     versions:
-    - ">= 0.901.a, < 0.902"
-  - dependency-name: "@angular-devkit/build-angular"
-    versions:
-    - ">= 0.800.a, < 0.801"
-  - dependency-name: "@angular/language-service"
-    versions:
-    - ">= 9.1.a, < 9.2"
-  - dependency-name: "@angular/language-service"
-    versions:
-    - ">= 9.a, < 10"
-  - dependency-name: core-js
-    versions:
-    - ">= 3.a, < 4"
-  - dependency-name: "@ionic-native/core"
-    versions:
-    - "> 5.24.0"
-  - dependency-name: jasmine-spec-reporter
-    versions:
-    - ">= 5.a, < 6"
-  - dependency-name: tslib
-    versions:
-    - ">= 2.a, < 3"
+    - ">= 0.800"
   - dependency-name: tslint
     versions:
-    - ">= 6.a, < 7"
+    - ">= 6"
+  - dependency-name: core-js
+    versions:
+    - ">= 3"
+  - dependency-name: tslib
+    versions:
+    - ">= 2"
+
 - package-ecosystem: npm
   directory: "/interfaces/PA-App"
   schedule:
@@ -72,21 +53,19 @@ updates:
   open-pull-requests-limit: 3
   versioning-strategy: increase-if-necessary
   ignore:
-  - dependency-name: "@angular-devkit/architect"
+  - dependency-name: "@angular/*"
     versions:
-    - ">= 0.803.a, < 0.804"
-  - dependency-name: "@angular-devkit/architect"
+    - ">= 8"
+  - dependency-name: "@angular-devkit/*"
     versions:
-    - ">= 0.900.a, < 0.901"
-  - dependency-name: "@angular-devkit/architect"
-    versions:
-    - ">= 0.901.a, < 0.902"
-  - dependency-name: "@angular-devkit/build-angular"
-    versions:
-    - ">= 0.800.a, < 0.801"
-  - dependency-name: "@angular/language-service"
-    versions:
-    - ">= 9.a, < 10"
+    - ">= 0.800"
   - dependency-name: tslint
     versions:
-    - ">= 6.a, < 7"
+    - ">= 6"
+  - dependency-name: core-js
+    versions:
+    - ">= 3"
+  - dependency-name: tslib
+    versions:
+    - ">= 2"
+
