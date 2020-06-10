@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { ValidationComponent } from '../validation-components.interface';
+import { ValidationComponents } from '../validation-components.enum';
 
 @Component({
   selector: 'app-upload-data',
   templateUrl: './upload-data.component.html',
   styleUrls: ['./upload-data.component.scss'],
 })
-export class UploadDataComponent implements OnInit {
+export class UploadDataComponent implements ValidationComponent {
 
   constructor(
     public conversationService: ConversationService,
@@ -15,6 +17,18 @@ export class UploadDataComponent implements OnInit {
 
   ngOnInit() {
     console.log('Upload data')
+  }
+
+  getNextSection() {
+    return ValidationComponents.mainMenu;
+  }
+
+  complete() {
+    this.conversationService.onSectionCompleted({
+      name: ValidationComponents.uploadData,
+      data: {},
+      next: this.getNextSection(),
+    });
   }
 
 }
