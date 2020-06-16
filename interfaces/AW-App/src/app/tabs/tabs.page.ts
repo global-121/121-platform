@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Events } from '@ionic/angular';
 
 @Component({
   selector: 'app-tabs',
@@ -9,14 +8,7 @@ import { Events } from '@ionic/angular';
 export class TabsPage {
   public validationDisabled = true;
 
-  constructor(
-    public events: Events
-  ) {
-    events.subscribe('toggleValidation', () => {
-      this.validationDisabled = !this.validationDisabled;
-    });
-
-  }
+  constructor() { }
 
 
 
