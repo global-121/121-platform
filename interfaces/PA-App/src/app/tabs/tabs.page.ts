@@ -9,7 +9,7 @@ import { UserMenuComponent } from '../user-menu/user-menu.component';
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
-  styleUrls: ['tabs.page.scss']
+  styleUrls: ['tabs.page.scss'],
 })
 export class TabsPage {
   public useLocalStorage: boolean;

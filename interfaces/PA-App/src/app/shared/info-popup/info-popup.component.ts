@@ -19,13 +19,9 @@ export class InfoPopupComponent {
   @Input()
   public messageKey: string;
 
-  constructor(
-    private modalController: ModalController,
-  ) {
-  }
+  constructor(private modalController: ModalController) {}
 
   close() {
     this.modalController.dismiss();
   }
-
 }

@@ -5,7 +5,7 @@ enum Actor {
   system = 'system',
   self = 'self',
   ngoDorcas = 'Dorcas',
-  ngoEagles = 'Eagles'
+  ngoEagles = 'Eagles',
 }
 
 @Component({
@@ -35,12 +35,11 @@ export class DialogueTurnComponent implements OnChanges {
 
   animate = environment.useAnimation;
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
-    this.isSelf = (this.actor === Actor.self);
-    this.isSystem = (this.actor === Actor.system);
+    this.isSelf = this.actor === Actor.self;
+    this.isSystem = this.actor === Actor.system;
     this.updateNgos();
     this.moment = new Date();
   }
@@ -52,8 +51,8 @@ export class DialogueTurnComponent implements OnChanges {
   }
 
   updateNgos() {
-    this.isNgoDorcas = (this.actor === Actor.ngoDorcas);
-    this.isNgoEagles = (this.actor === Actor.ngoEagles);
+    this.isNgoDorcas = this.actor === Actor.ngoDorcas;
+    this.isNgoEagles = this.actor === Actor.ngoEagles;
   }
 
   show() {

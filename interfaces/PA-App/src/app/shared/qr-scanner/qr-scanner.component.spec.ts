@@ -11,18 +11,15 @@ describe('QrScannerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QrScannerComponent ],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      declarations: [QrScannerComponent],
+      imports: [TranslateModule.forRoot()],
       providers: [
         {
           provide: ModalController,
         },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

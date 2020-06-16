@@ -16,15 +16,18 @@ describe('PersonalPage', () => {
 
   beforeEach(async(() => {
     // Mock the used services:
-    const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getCountries']);
-    const conversationService = jasmine.createSpyObj('ConversationService', { getConversationUpToNow: [{}, {}] });
+    const programsServiceApiService = jasmine.createSpyObj(
+      'ProgramsServiceApiService',
+      ['getCountries'],
+    );
+    const conversationService = jasmine.createSpyObj('ConversationService', {
+      getConversationUpToNow: [{}, {}],
+    });
 
     TestBed.configureTestingModule({
       declarations: [PersonalPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      imports: [TranslateModule.forRoot()],
       providers: [
         {
           provide: ProgramsServiceApiService,
@@ -38,7 +41,7 @@ describe('PersonalPage', () => {
           provide: Storage,
           useValue: MockIonicStorage,
         },
-      ]
+      ],
     }).compileComponents();
   }));
 
@@ -51,5 +54,4 @@ describe('PersonalPage', () => {
   xit('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });

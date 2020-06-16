@@ -26,5 +26,5 @@ export class Answer {
 }
 
 export class AnswerSet {
-  [code: string]: Answer,
+  [code: string]: Answer;
 }

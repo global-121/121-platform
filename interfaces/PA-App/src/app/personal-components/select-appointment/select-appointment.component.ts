@@ -92,7 +92,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
     const startDay = new Date(startDate).toDateString();
     const endDay = new Date(endDate).toDateString();
 
-    return (startDay === endDay);
+    return startDay === endDay;
   }
 
   private buildDocumentsList(documents: string): string[] {
@@ -143,9 +143,7 @@ export class SelectAppointmentComponent extends PersonalComponent {
     await this.programsService.postAppointment(timeslotId, did);
     this.conversationService.stopLoading();
     this.complete();
-
   }
-
 
   getNextSection() {
     return PersonalComponents.preprintedQrcode;

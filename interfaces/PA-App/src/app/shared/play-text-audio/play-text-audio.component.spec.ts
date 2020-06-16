@@ -11,13 +11,10 @@ describe('PlayTextAudioComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PlayTextAudioComponent ],
-      imports: [
-        TranslateModule.forRoot()
-      ],
+      declarations: [PlayTextAudioComponent],
+      imports: [TranslateModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

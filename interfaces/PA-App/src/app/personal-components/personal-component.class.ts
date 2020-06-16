@@ -1,10 +1,18 @@
-import { ViewChildren, QueryList, OnInit, AfterViewInit, AfterContentInit, Input } from '@angular/core';
+import {
+  ViewChildren,
+  QueryList,
+  OnInit,
+  AfterViewInit,
+  AfterContentInit,
+  Input,
+} from '@angular/core';
 
 import { environment } from 'src/environments/environment';
 
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
-export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterContentInit {
+export abstract class PersonalComponent
+  implements OnInit, AfterViewInit, AfterContentInit {
   /**
    * The data required to 'reinstate' the component from history
    */
@@ -14,7 +22,7 @@ export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterC
   @ViewChildren(DialogueTurnComponent)
   private turns: QueryList<DialogueTurnComponent>;
 
-  private turnSpeed = (environment.useAnimation) ? 300 : 1;
+  private turnSpeed = environment.useAnimation ? 300 : 1;
 
   /**
    * The state of the whole component.
@@ -32,29 +40,28 @@ export abstract class PersonalComponent implements OnInit, AfterViewInit, AfterC
    */
   moment: number;
 
-  constructor() { }
+  constructor() {}
 
   /**
    * Angular default component initialisation
    */
-  ngOnInit() { }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     this.setupTurns();
   }
 
-  ngAfterContentInit() { }
+  ngAfterContentInit() {}
 
   /**
    * Initialize the component for the first time
    */
-  initNew(): void { }
+  initNew(): void {}
 
   /**
    * Initialize the component from history
    */
-  initHistory(): void { }
-
+  initHistory(): void {}
 
   private setupTurns() {
     this.turns.forEach((turn: DialogueTurnComponent, index: number) => {

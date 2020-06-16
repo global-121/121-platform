@@ -1,6 +1,19 @@
-import { Component, Input, ViewChildren, QueryList, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewChildren,
+  QueryList,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { DialogueTurnComponent } from '../dialogue-turn/dialogue-turn.component';
-import { AnswerType, Question, QuestionOption, Answer, AnswerSet } from 'src/app/models/q-and-a.models';
+import {
+  AnswerType,
+  Question,
+  QuestionOption,
+  Answer,
+  AnswerSet,
+} from 'src/app/models/q-and-a.models';
 
 @Component({
   selector: 'q-and-a-set',
@@ -39,7 +52,7 @@ export class QAndASetComponent {
 
   public validationErrors: string[] = [];
 
-  constructor() { }
+  constructor() {}
 
   private getQuestionByCode(questionCode: string): Question {
     const result = this.questions.find((question: Question) => {
@@ -49,7 +62,10 @@ export class QAndASetComponent {
     return result;
   }
 
-  private getAnswerOptionLabelByValue(options: QuestionOption[], answerValue: string) {
+  private getAnswerOptionLabelByValue(
+    options: QuestionOption[],
+    answerValue: string,
+  ) {
     const option = options.find((item: QuestionOption) => {
       return item.value === answerValue;
     });
@@ -66,7 +82,10 @@ export class QAndASetComponent {
 
     // Convert the answerValue to a human-readable label
     if (question.answerType === AnswerType.Enum) {
-      answer.label = this.getAnswerOptionLabelByValue(question.options, answerValue);
+      answer.label = this.getAnswerOptionLabelByValue(
+        question.options,
+        answerValue,
+      );
     }
 
     return answer;
@@ -81,7 +100,10 @@ export class QAndASetComponent {
 
     const answersArray = Object.keys(this.answers);
 
-    this.allQuestionsShown = this.checkAllQuestionsShown(this.questions, answersArray);
+    this.allQuestionsShown = this.checkAllQuestionsShown(
+      this.questions,
+      answersArray,
+    );
     this.showNextQuestion(answersArray.indexOf(questionCode));
   }
 
@@ -92,7 +114,9 @@ export class QAndASetComponent {
   }
 
   private showQuestionByIndex(index: number) {
-    const onlyQuestionTurns = this.turns.filter((turn: DialogueTurnComponent) => turn.isSelf);
+    const onlyQuestionTurns = this.turns.filter(
+      (turn: DialogueTurnComponent) => turn.isSelf,
+    );
     const questionTurn = onlyQuestionTurns[index];
 
     if (questionTurn) {
@@ -101,10 +125,14 @@ export class QAndASetComponent {
   }
 
   private checkAllQuestionsShown(questions: Question[], answers: string[]) {
-    return (answers.length >= (questions.length - 1));
+    return answers.length >= questions.length - 1;
   }
 
-  public onChangeWithValidation(questionCode: string, answerValue: string, validity: boolean) {
+  public onChangeWithValidation(
+    questionCode: string,
+    answerValue: string,
+    validity: boolean,
+  ) {
     if (validity !== true) {
       this.addValidationError(questionCode);
       return;
@@ -130,7 +158,7 @@ export class QAndASetComponent {
 
   public checkValidationErrors(questionCode?: string): boolean {
     if (!questionCode) {
-      return (this.validationErrors.length > 0);
+      return this.validationErrors.length > 0;
     }
 
     return this.validationErrors.includes(questionCode);
@@ -147,5 +175,4 @@ export class QAndASetComponent {
     this.isEditingChange.emit(this.isEditing);
     this.submit.emit(this.answers);
   }
-
 }

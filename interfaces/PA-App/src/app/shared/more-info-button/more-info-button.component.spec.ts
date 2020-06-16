@@ -13,16 +13,13 @@ describe('MoreInfoButtonComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MoreInfoButtonComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot()
-      ],
+      imports: [TranslateModule.forRoot()],
       providers: [
         {
           provide: ModalController,
         },
-      ]
-    })
-      .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

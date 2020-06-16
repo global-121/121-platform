@@ -15,19 +15,15 @@ describe('SetNotificationNumberComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SetNotificationNumberComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: PaDataService,
           useValue: MockPaDataService,
         },
-      ]
-    })
-      .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

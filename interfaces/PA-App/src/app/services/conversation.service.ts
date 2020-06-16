@@ -6,7 +6,7 @@ import { PaDataService } from './padata.service';
 import { PersonalComponents } from '../personal-components/personal-components.enum';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConversationService {
   public state = {
@@ -26,9 +26,7 @@ export class ConversationService {
   private shouldScrollSource = new Subject<number>();
   public shouldScroll$ = this.shouldScrollSource.asObservable();
 
-  constructor(
-    private paData: PaDataService,
-  ) {
+  constructor(private paData: PaDataService) {
     console.log('ConversationService()');
   }
 
@@ -61,7 +59,9 @@ export class ConversationService {
   }
 
   private async getHistory() {
-    let history = await this.paData.retrieve(this.paData.type.conversationHistory);
+    let history = await this.paData.retrieve(
+      this.paData.type.conversationHistory,
+    );
 
     if (!history) {
       history = [];
@@ -71,7 +71,7 @@ export class ConversationService {
   }
 
   private hasHistory() {
-    return (this.history.length > 0);
+    return this.history.length > 0;
   }
 
   private replayHistory() {
@@ -134,7 +134,10 @@ export class ConversationService {
   }
 
   public debugFillHistory() {
-    const fillWith = window.prompt('Fill history with:', JSON.stringify(this.history));
+    const fillWith = window.prompt(
+      'Fill history with:',
+      JSON.stringify(this.history),
+    );
 
     if (!fillWith) {
       return;

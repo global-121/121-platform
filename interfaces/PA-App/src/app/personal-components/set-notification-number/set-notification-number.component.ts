@@ -81,7 +81,9 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   }
 
   private async checkExistingPhoneNumber() {
-    const phoneNumber = await this.paData.retrieve(this.paData.type.phoneNumber);
+    const phoneNumber = await this.paData.retrieve(
+      this.paData.type.phoneNumber,
+    );
 
     if (phoneNumber) {
       await this.storePhoneNumber(phoneNumber);
@@ -113,7 +115,11 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   private async storePhoneNumber(phoneNumber: string) {
     const did = await this.paData.retrieve(this.paData.type.did);
 
-    return this.programService.postPhoneNumber(did, phoneNumber, this.languageCode);
+    return this.programService.postPhoneNumber(
+      did,
+      phoneNumber,
+      this.languageCode,
+    );
   }
 
   public skipPhone() {
@@ -149,5 +155,4 @@ export class SetNotificationNumberComponent extends PersonalComponent {
       next: this.getNextSection(),
     });
   }
-
 }

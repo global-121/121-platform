@@ -56,7 +56,9 @@ export class SelectProgramComponent extends PersonalComponent {
     this.conversationService.startLoading();
 
     this.countryChoice = await this.paData.retrieve(this.paData.type.country);
-    this.programs = await this.programsService.getProgramsByCountryId(this.countryChoice);
+    this.programs = await this.programsService.getProgramsByCountryId(
+      this.countryChoice,
+    );
     this.programs = this.translateProgramProperties(this.programs);
 
     this.conversationService.stopLoading();
@@ -72,7 +74,7 @@ export class SelectProgramComponent extends PersonalComponent {
 
   private findProgramById(programId: number) {
     return this.programs.find((item: Program) => {
-      return (item.id === programId);
+      return item.id === programId;
     });
   }
 

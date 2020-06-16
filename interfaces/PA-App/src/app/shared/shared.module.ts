@@ -42,4 +42,4 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     TranslateModule,
   ],
 })
-export class SharedModule { }
+export class SharedModule {}

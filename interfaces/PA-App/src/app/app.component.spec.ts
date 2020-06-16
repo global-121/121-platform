@@ -9,7 +9,6 @@ import { AppComponent } from './app.component';
 import { TranslateModule } from '@ngx-translate/core';
 
 describe('AppComponent', () => {
-
   let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
 
   beforeEach(async(() => {
@@ -26,9 +25,7 @@ describe('AppComponent', () => {
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
       ],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      imports: [TranslateModule.forRoot()],
     }).compileComponents();
   }));
 
@@ -47,5 +44,4 @@ describe('AppComponent', () => {
   });
 
   // TODO: add more tests!
-
 });

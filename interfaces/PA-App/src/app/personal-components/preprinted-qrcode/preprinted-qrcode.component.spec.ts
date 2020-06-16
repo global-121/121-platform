@@ -16,10 +16,7 @@ describe('PreprintedQrcodeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [PreprintedQrcodeComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
@@ -30,8 +27,7 @@ describe('PreprintedQrcodeComponent', () => {
           provide: ModalController,
         },
       ],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

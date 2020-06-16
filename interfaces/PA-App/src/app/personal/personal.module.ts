@@ -20,6 +20,6 @@ import { PersonalPage } from './personal.page';
     SharedModule,
     PersonalComponentsModule,
   ],
-  declarations: [PersonalPage]
+  declarations: [PersonalPage],
 })
-export class PersonalPageModule { }
+export class PersonalPageModule {}

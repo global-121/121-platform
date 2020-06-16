@@ -5,10 +5,19 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 
 import { Program } from 'src/app/models/program.model';
-import { Fsp, FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
+import {
+  Fsp,
+  FspAttribute,
+  FspAttributeOption,
+} from 'src/app/models/fsp.model';
 import { PersonalComponent } from '../personal-component.class';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Question, QuestionOption, Answer, AnswerSet } from 'src/app/models/q-and-a.models';
+import {
+  Question,
+  QuestionOption,
+  Answer,
+  AnswerSet,
+} from 'src/app/models/q-and-a.models';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
@@ -105,29 +114,35 @@ export class SelectFspComponent extends PersonalComponent {
   }
 
   private buildQuestions(fspAttributes: FspAttribute[]) {
-    return fspAttributes.map((attribute): Question => {
-      return {
-        code: attribute.name,
-        answerType: attribute.answerType,
-        label: this.translatableString.get(attribute.label),
-        options: (!attribute.options) ? null : this.buildOptions(attribute.options),
-      };
-    });
+    return fspAttributes.map(
+      (attribute): Question => {
+        return {
+          code: attribute.name,
+          answerType: attribute.answerType,
+          label: this.translatableString.get(attribute.label),
+          options: !attribute.options
+            ? null
+            : this.buildOptions(attribute.options),
+        };
+      },
+    );
   }
 
   private buildOptions(optionSet: FspAttributeOption[]): QuestionOption[] {
-    return optionSet.map((option): QuestionOption => {
-      return {
-        value: option.option,
-        label: this.translatableString.get(option.label),
-      };
-    });
+    return optionSet.map(
+      (option): QuestionOption => {
+        return {
+          value: option.option,
+          label: this.translatableString.get(option.label),
+        };
+      },
+    );
   }
 
   private processInOrder(array: any[], fn) {
     return array.reduce(
       (request, item) => request.then(() => fn(item)),
-      Promise.resolve()
+      Promise.resolve(),
     );
   }
 
@@ -143,34 +158,45 @@ export class SelectFspComponent extends PersonalComponent {
 
     this.processInOrder(
       Object.values(this.customAttributeAnswers),
-      (answer: Answer) => this.programsService.postConnectionCustomAttribute(this.did, answer.code, answer.value)
-    ).then(
-      () => {
-        // in case of success:
-        this.isSubmitted = true;
-        this.isEditing = false;
-        this.showResultSuccess = true;
-        this.showResultError = false;
-        this.complete();
-      },
-      () => {
-        // in case of error:
-        this.isSubmitted = false;
-        this.isEditing = true;
-        this.showResultSuccess = false;
-        this.showResultError = true;
-      }
-    ).finally(() => {
-      this.conversationService.stopLoading();
-    });
-
+      (answer: Answer) =>
+        this.programsService.postConnectionCustomAttribute(
+          this.did,
+          answer.code,
+          answer.value,
+        ),
+    )
+      .then(
+        () => {
+          // in case of success:
+          this.isSubmitted = true;
+          this.isEditing = false;
+          this.showResultSuccess = true;
+          this.showResultError = false;
+          this.complete();
+        },
+        () => {
+          // in case of error:
+          this.isSubmitted = false;
+          this.isEditing = true;
+          this.showResultSuccess = false;
+          this.showResultError = true;
+        },
+      )
+      .finally(() => {
+        this.conversationService.stopLoading();
+      });
   }
 
   private async storePhoneNumber() {
-    const phoneNumberAnswer = this.customAttributeAnswers[this.paData.type.phoneNumber];
+    const phoneNumberAnswer = this.customAttributeAnswers[
+      this.paData.type.phoneNumber
+    ];
 
     if (phoneNumberAnswer) {
-      return await this.paData.store(this.paData.type.phoneNumber, phoneNumberAnswer.value);
+      return await this.paData.store(
+        this.paData.type.phoneNumber,
+        phoneNumberAnswer.value,
+      );
     }
   }
 
@@ -188,5 +214,4 @@ export class SelectFspComponent extends PersonalComponent {
       next: this.getNextSection(),
     });
   }
-
 }

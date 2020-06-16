@@ -1,10 +1,19 @@
-import { Component, ViewChild, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  OnInit,
+  ViewContainerRef,
+  ComponentFactoryResolver,
+} from '@angular/core';
 import { IonContent } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 import { Storage } from '@ionic/storage';
 
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { ConversationService, ConversationSection } from '../services/conversation.service';
+import {
+  ConversationService,
+  ConversationSection,
+} from '../services/conversation.service';
 import { PersonalComponent } from '../personal-components/personal-component.class';
 
 import { PersonalComponents } from '../personal-components/personal-components.enum';
@@ -68,16 +77,20 @@ export class PersonalPage implements OnInit {
     public translate: TranslateService,
   ) {
     // Listen for completed sections, to continue with next steps
-    this.conversationService.updateConversation$.subscribe((nextAction: string) => {
-      if (nextAction === this.conversationService.conversationActions.afterLogin) {
-        this.loadComponents();
-        return;
-      }
+    this.conversationService.updateConversation$.subscribe(
+      (nextAction: string) => {
+        if (
+          nextAction === this.conversationService.conversationActions.afterLogin
+        ) {
+          this.loadComponents();
+          return;
+        }
 
-      this.scrollDown();
+        this.scrollDown();
 
-      this.insertSection(nextAction);
-    });
+        this.insertSection(nextAction);
+      },
+    );
     // Listen for scroll events
     this.conversationService.shouldScroll$.subscribe((toY: number) => {
       if (toY === -1) {
@@ -117,9 +130,7 @@ export class PersonalPage implements OnInit {
   }
 
   private getComponentFactory(name: string) {
-    return this.resolver.resolveComponentFactory(
-      this.availableSections[name]
-    );
+    return this.resolver.resolveComponentFactory(this.availableSections[name]);
   }
 
   public insertSection(name: string, moment?: number, data?: any) {
@@ -130,7 +141,7 @@ export class PersonalPage implements OnInit {
     console.log('PersonalPage insertSection(): ', name);
 
     const componentRef = this.container.createComponent(
-      this.getComponentFactory(name)
+      this.getComponentFactory(name),
     );
     const componentInstance: PersonalComponent = componentRef.instance;
 

@@ -24,41 +24,43 @@ export class QrScannerComponent {
 
   constructor(private modalController: ModalController) {}
 
-  public onHasDevices = (hasDevices: boolean) => {
+  public onHasDevices(hasDevices: boolean) {
     this.showCompatibilityError = !hasDevices;
   }
 
-  public onPermissionResponse = (permission: boolean) => {
+  public onPermissionResponse(permission: boolean) {
     this.showPermissionError = !permission;
   }
 
-  public onCamerasFound = (cameras: any[]) => {
+  public onCamerasFound(cameras: any[]) {
     if (cameras.length > 1) {
       this.switchCamerasAvailable = true;
       this.camerasAvailable = cameras;
     }
   }
 
-  public onCamerasNotFound = () => {
+  public onCamerasNotFound() {
     this.showCompatibilityError = true;
   }
 
-  public onScanSuccess = (value: string) => {
+  public onScanSuccess(value: string) {
     if (value) {
       this.closeModal(value);
     }
   }
 
-  public onScanError = () => {
+  public onScanError() {
     this.showGenericError = true;
   }
 
-  public onTorchCompatible = (available: boolean) => {
+  public onTorchCompatible(available: boolean) {
     this.torchAvailable = !!available;
   }
 
   public switchCamera() {
-    const currentCameraIndex = this.camerasAvailable.indexOf(this.currentCamera);
+    const currentCameraIndex = this.camerasAvailable.indexOf(
+      this.currentCamera,
+    );
     let nextCameraIndex = currentCameraIndex + 1;
 
     if (nextCameraIndex >= this.camerasAvailable.length) {

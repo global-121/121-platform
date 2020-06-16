@@ -34,14 +34,12 @@ export class PlayTextAudioComponent implements OnInit {
   private state: PlayerState;
   private player: Howl;
   private labels: {
-    loading: 'Loading',
-    play: 'Play',
-    pause: 'Pause',
+    loading: 'Loading';
+    play: 'Play';
+    pause: 'Pause';
   };
 
-  constructor(
-    private translate: TranslateService,
-  ) {
+  constructor(private translate: TranslateService) {
     this.labels = {
       loading: this.translate.instant('speak-text.loading'),
       play: this.translate.instant('speak-text.play'),

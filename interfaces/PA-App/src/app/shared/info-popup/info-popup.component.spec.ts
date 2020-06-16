@@ -12,17 +12,14 @@ describe('InfoPopupComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [InfoPopupComponent],
-      imports: [
-        TranslateModule.forRoot()
-      ],
+      imports: [TranslateModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: ModalController,
         },
-      ]
-    })
-      .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -41,11 +38,14 @@ describe('InfoPopupComponent', () => {
     component.message = customContent;
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('ion-content').textContent).toContain(customContent);
+    expect(
+      fixture.nativeElement.querySelector('ion-content').textContent,
+    ).toContain(customContent);
   });
 
   it('should show the provided message rendered with HTML as the modal contents', () => {
-    const customContent = 'CUSTOM-CONTENT<p><strong>CUSTOM-CONTENT</strong><br>CUSTOM-CONTENT</p>';
+    const customContent =
+      'CUSTOM-CONTENT<p><strong>CUSTOM-CONTENT</strong><br>CUSTOM-CONTENT</p>';
 
     component.message = customContent;
     fixture.detectChanges();
@@ -55,8 +55,12 @@ describe('InfoPopupComponent', () => {
 CUSTOM-CONTENT
 CUSTOM-CONTENT`;
 
-    expect(fixture.nativeElement.querySelector('ion-content').innerHTML).toContain(customContent);
-    expect(fixture.nativeElement.querySelector('ion-content').innerText).toContain(customContentRendered);
+    expect(
+      fixture.nativeElement.querySelector('ion-content').innerHTML,
+    ).toContain(customContent);
+    expect(
+      fixture.nativeElement.querySelector('ion-content').innerText,
+    ).toContain(customContentRendered);
   });
 
   it('should show the provided heading as the modal title', () => {
@@ -65,7 +69,9 @@ CUSTOM-CONTENT`;
     component.heading = customHeading;
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('ion-title').textContent).toContain(customHeading);
+    expect(
+      fixture.nativeElement.querySelector('ion-title').textContent,
+    ).toContain(customHeading);
   });
 
   it('should show a generic heading as the modal title, when no custom heading is provided', () => {
@@ -74,7 +80,8 @@ CUSTOM-CONTENT`;
     component.heading = null;
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('ion-title').textContent).toContain(genericHeading);
+    expect(
+      fixture.nativeElement.querySelector('ion-title').textContent,
+    ).toContain(genericHeading);
   });
-
 });

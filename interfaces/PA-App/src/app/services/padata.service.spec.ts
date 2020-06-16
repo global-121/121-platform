@@ -15,30 +15,30 @@ describe('PaDataService', () => {
     getToken: () => '',
   });
 
-  beforeEach(() => TestBed.configureTestingModule({
-    imports: [
-      HttpClientTestingModule,
-    ],
-    providers: [
-      {
-        provide: Storage,
-        useValue: MockIonicStorage,
-      },
-      {
-        provide: PaAccountApiService,
-      },
-      {
-        provide: ProgramsServiceApiService,
-      },
-      {
-        provide: SovrinService,
-      },
-      {
-        provide: JwtService,
-        useValue: mockJwtService,
-      },
-    ],
-  }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        {
+          provide: Storage,
+          useValue: MockIonicStorage,
+        },
+        {
+          provide: PaAccountApiService,
+        },
+        {
+          provide: ProgramsServiceApiService,
+        },
+        {
+          provide: SovrinService,
+        },
+        {
+          provide: JwtService,
+          useValue: mockJwtService,
+        },
+      ],
+    }),
+  );
 
   it('should create', () => {
     const service: PaDataService = TestBed.get(PaDataService);

@@ -15,19 +15,15 @@ describe('SelectLanguageComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [SelectLanguageComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: PaDataService,
           useValue: MockPaDataService,
-        }
-      ]
-    })
-      .compileComponents();
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

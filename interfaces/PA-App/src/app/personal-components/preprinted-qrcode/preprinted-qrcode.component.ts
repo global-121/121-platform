@@ -87,7 +87,9 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
       component: QrScannerComponent,
     });
 
-    qrScannerModal.onWillDismiss().then((data: any) => this.handleScanResult(data.data));
+    qrScannerModal
+      .onWillDismiss()
+      .then((data: any) => this.handleScanResult(data.data));
 
     return await qrScannerModal.present();
   }
@@ -95,10 +97,7 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
   private async handleScanResult(data?: any) {
     this.scanResult = data;
 
-    if (
-      !data ||
-      (data && !this.isScanDataValid(data))
-    ) {
+    if (!data || (data && !this.isScanDataValid(data))) {
       this.scanResultError = true;
       this.conversationService.stopLoading();
       return;
@@ -107,7 +106,10 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
     await this.programsService.addQrIdentifier(this.did, this.scanResult).then(
       async () => {
         this.scanResultError = false;
-        await this.paData.store(this.paData.type.usePreprintedQrCode, this.hasPreprinted);
+        await this.paData.store(
+          this.paData.type.usePreprintedQrCode,
+          this.hasPreprinted,
+        );
         this.complete();
       },
       () => {
@@ -137,5 +139,4 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
       next: this.getNextSection(),
     });
   }
-
 }

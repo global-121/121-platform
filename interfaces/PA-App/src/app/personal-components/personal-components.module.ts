@@ -41,12 +41,7 @@ import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
     StoreCredentialComponent,
     InfoPopupComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    FormsModule,
-    QRCodeModule,
-  ],
+  imports: [CommonModule, SharedModule, FormsModule, QRCodeModule],
   entryComponents: [
     CreateIdentityComponent,
     EnrollInProgramComponent,
@@ -81,10 +76,7 @@ import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
     SignupSigninComponent,
     StoreCredentialComponent,
   ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ],
-  providers: [ConversationService]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [ConversationService],
 })
-export class PersonalComponentsModule { }
-
+export class PersonalComponentsModule {}

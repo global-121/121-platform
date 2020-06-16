@@ -5,10 +5,21 @@ import { PersonalComponents } from '../personal-components.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ConversationService } from 'src/app/services/conversation.service';
 
-import { Program, ProgramAttribute, ProgramCriterium, ProgramCriteriumOption } from 'src/app/models/program.model';
+import {
+  Program,
+  ProgramAttribute,
+  ProgramCriterium,
+  ProgramCriteriumOption,
+} from 'src/app/models/program.model';
 import { SovrinService } from 'src/app/services/sovrin.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { AnswerType, Question, QuestionOption, Answer, AnswerSet } from '../../models/q-and-a.models';
+import {
+  AnswerType,
+  Question,
+  QuestionOption,
+  Answer,
+  AnswerSet,
+} from '../../models/q-and-a.models';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
@@ -72,8 +83,12 @@ export class EnrollInProgramComponent extends PersonalComponent {
   private async getProgramDetails() {
     this.conversationService.startLoading();
 
-    this.programId = Number(await this.paData.retrieve(this.paData.type.programId));
-    this.currentProgram = await this.programsService.getProgramById(this.programId);
+    this.programId = Number(
+      await this.paData.retrieve(this.paData.type.programId),
+    );
+    this.currentProgram = await this.programsService.getProgramById(
+      this.programId,
+    );
     this.prepareProgramDetails(this.currentProgram);
     this.paData.saveProgram(this.programId, this.currentProgram);
 
@@ -89,11 +104,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   private buildDetails(response: Program) {
     const programDetails = [];
-    const details = [
-      'ngo',
-      'title',
-      'description',
-    ];
+    const details = ['ngo', 'title', 'description'];
     for (const detail of details) {
       programDetails[detail] = this.translatableString.get(response[detail]);
     }
@@ -102,14 +113,18 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private buildQuestions(customCriteria: ProgramCriterium[]) {
-    return customCriteria.map((criterium): Question => {
-      return {
-        code: criterium.criterium,
-        answerType: criterium.answerType,
-        label: this.translatableString.get(criterium.label),
-        options: (!criterium.options) ? null : this.buildOptions(criterium.options),
-      };
-    });
+    return customCriteria.map(
+      (criterium): Question => {
+        return {
+          code: criterium.criterium,
+          answerType: criterium.answerType,
+          label: this.translatableString.get(criterium.label),
+          options: !criterium.options
+            ? null
+            : this.buildOptions(criterium.options),
+        };
+      },
+    );
   }
 
   private buildOptions(optionSet: ProgramCriteriumOption[]): QuestionOption[] {
@@ -151,9 +166,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private async executeSovrinFlow() {
-
     // 1. Get Credential Offer for programId
-    const credentialOffer = await this.programsService.getCredentialOffer(this.programId);
+    const credentialOffer = await this.programsService.getCredentialOffer(
+      this.programId,
+    );
 
     // 2. Retrieve other necessary data from PA-account
     const wallet = await this.paData.retrieve(this.paData.type.wallet);

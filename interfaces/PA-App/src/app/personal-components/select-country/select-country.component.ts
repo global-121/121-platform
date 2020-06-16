@@ -46,10 +46,12 @@ export class SelectCountryComponent extends PersonalComponent {
     this.isDisabled = true;
     this.countryChoice = this.data.countryChoice;
     this.countryChoiceName = this.data.countryChoiceName;
-    this.countries = [{
-      id: this.data.countryChoice,
-      country: this.data.countryChoiceName,
-    }];
+    this.countries = [
+      {
+        id: this.data.countryChoice,
+        country: this.data.countryChoiceName,
+      },
+    ];
   }
 
   private getCountryName(countryId: number): string {

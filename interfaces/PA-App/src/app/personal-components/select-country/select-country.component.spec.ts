@@ -17,14 +17,17 @@ describe('SelectCountryComponent', () => {
 
   beforeEach(async(() => {
     // Mock the used service:
-    const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getCountries']);
-    getAllCountriesSpy = programsServiceApiService.getCountries.and.returnValue(of(mockCountriesResponse.countries));
+    const programsServiceApiService = jasmine.createSpyObj(
+      'ProgramsServiceApiService',
+      ['getCountries'],
+    );
+    getAllCountriesSpy = programsServiceApiService.getCountries.and.returnValue(
+      of(mockCountriesResponse.countries),
+    );
 
     TestBed.configureTestingModule({
       declarations: [SelectCountryComponent],
-      imports: [
-        TranslateModule.forRoot()
-      ],
+      imports: [TranslateModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
@@ -35,9 +38,8 @@ describe('SelectCountryComponent', () => {
           provide: PaDataService,
           useValue: MockPaDataService,
         },
-      ]
-    })
-      .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -53,5 +55,4 @@ describe('SelectCountryComponent', () => {
   it('should request all countries from the server', () => {
     expect(getAllCountriesSpy.calls.any()).toBe(true, 'getAllCountries called');
   });
-
 });

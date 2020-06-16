@@ -10,13 +10,10 @@ import { JwtService } from './jwt.service';
 import { User } from '../models/user.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaAccountApiService {
-  constructor(
-    private apiService: ApiService,
-    private jwtService: JwtService,
-  ) { }
+  constructor(private apiService: ApiService, private jwtService: JwtService) {}
 
   createAccount(username: string, password: string): Promise<User> {
     console.log('PaAccountApiService : createAccount()');
@@ -29,10 +26,10 @@ export class PaAccountApiService {
           username,
           password,
         },
-        true
+        true,
       )
       .pipe(
-        map(response => {
+        map((response) => {
           const user = response.user;
 
           if (user && user.token) {
@@ -56,7 +53,7 @@ export class PaAccountApiService {
           type,
           data,
         },
-        false
+        false,
       )
       .toPromise();
   }
@@ -68,7 +65,7 @@ export class PaAccountApiService {
       .get(
         environment.url_pa_account_service_api,
         '/data-storage/' + type,
-        false
+        false,
       )
       .pipe(
         catchError((error) => {
@@ -101,10 +98,10 @@ export class PaAccountApiService {
           username,
           password,
         },
-        true
+        true,
       )
       .pipe(
-        map(response => {
+        map((response) => {
           const user = response.user;
 
           if (user && user.token) {
@@ -127,7 +124,7 @@ export class PaAccountApiService {
         {
           did,
         },
-        false
+        false,
       )
       .toPromise();
   }
@@ -142,7 +139,7 @@ export class PaAccountApiService {
         {
           password,
         },
-        false
+        false,
       )
       .toPromise();
   }

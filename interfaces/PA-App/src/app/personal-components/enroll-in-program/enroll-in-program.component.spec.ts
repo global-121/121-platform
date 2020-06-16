@@ -16,18 +16,14 @@ describe('EnrollInProgramComponent', () => {
     TestBed.configureTestingModule({
       declarations: [EnrollInProgramComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       providers: [
         {
           provide: PaDataService,
           useValue: MockPaDataService,
         },
-      ]
-    })
-      .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
