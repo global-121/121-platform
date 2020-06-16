@@ -13,7 +13,11 @@ export class BulkActionsService {
     switch (action) {
       case BulkActionId.selectForValidation:
         personData.checkboxVisible =
-          personData.tempScore && !personData.selectedForValidation;
+          personData.vulnerabilityAssessmentCompleted &&
+          personData.tempScore &&
+          !personData.selectedForValidation &&
+          !personData.vulnerabilityAssessmentValidated &&
+          !personData.finalScore;
         break;
     }
     return personData;

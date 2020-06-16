@@ -1,3 +1,4 @@
+// Model for data from the API
 export class Person {
   did: string;
   phoneNumber?: string;
@@ -12,15 +13,18 @@ export class Person {
   appliedDate?: string;
   selectedForValidationDate?: string;
   validationDate?: string;
-  digitalIdCreated?: string;
-  vulnerabilityAssessmentCompleted?: string;
-  selectedForValidation?: string;
-  vulnerabilityAssessmentValidated?: string;
-  finalScore?: number;
   inclusionDate?: string;
-  checkboxVisible: boolean;
 }
 
-export class PersonRow extends Person {
-  pa?: string; // Display label
+// Model for display (in table)
+export class PersonRow {
+  did: string;
+  checkboxVisible: boolean;
+  pa: string; // Display label
+  digitalIdCreated?: string;
+  vulnerabilityAssessmentCompleted?: string | null;
+  tempScore?: number;
+  selectedForValidation?: string | null;
+  vulnerabilityAssessmentValidated?: string | null;
+  finalScore?: number;
 }
