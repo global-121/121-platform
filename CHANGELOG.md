@@ -61,7 +61,8 @@ Test hotfix-release to test automatic deployment of patch-releases.
 
 ---
 
-[Unreleased]: https://github.com/global-121/121-platform/compare/v0.3.1...master
+[Unreleased]: https://github.com/global-121/121-platform/compare/v0.4.0...master
+[0.4.0]: https://github.com/global-121/121-platform/releases/tag/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/global-121/121-platform/releases/tag/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/global-121/121-platform/releases/tag/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/global-121/121-platform/releases/tag/v0.2.0...v0.2.1
