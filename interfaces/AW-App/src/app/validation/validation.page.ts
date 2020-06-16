@@ -12,6 +12,7 @@ import { ScanQrComponent } from '../validation-components/scan-qr/scan-qr.compon
 import { ViewAppointmentsComponent } from '../validation-components/view-appointments/view-appointments.component';
 import { ValidateProgramComponent } from '../validation-components/validate-program/validate-program.component';
 import { DownloadDataComponent } from '../validation-components/download-data/download-data.component';
+import { UploadDataComponent } from '../validation-components/upload-data/upload-data.component';
 
 @Component({
   selector: 'app-validation',
@@ -36,6 +37,7 @@ export class ValidationPage implements OnInit {
     [ValidationComponents.validateProgram]: ValidateProgramComponent,
     [ValidationComponents.viewAppointments]: ViewAppointmentsComponent,
     [ValidationComponents.downloadData]: DownloadDataComponent,
+    [ValidationComponents.uploadData]: UploadDataComponent,
   };
   public debugSections = Object.keys(this.availableSections);
 
