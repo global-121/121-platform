@@ -18,5 +18,4 @@ export const environment = {
   url_121_service_api: 'http://localhost:3000/api',
   url_pa_account_service_api: 'http://localhost:3001/api',
   url_user_ims_api: 'http://localhost:50003/api',
-
 };

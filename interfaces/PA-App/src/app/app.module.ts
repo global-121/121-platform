@@ -12,32 +12,40 @@ import { IonicStorageModule } from '@ionic/storage';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
-import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateService,
+  TranslateModule,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { httpInterceptorProviders } from './http-interceptors/index';
 import { environment } from 'src/environments/environment';
 
 // See : https://github.com/ngx-translate/core/issues/517
-export function appInitializerFactory(translate: TranslateService, injector: Injector) {
-  return () => new Promise<any>(async (resolve: any) => {
-    await injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
+export function appInitializerFactory(
+  translate: TranslateService,
+  injector: Injector,
+) {
+  return () =>
+    new Promise<any>(async (resolve: any) => {
+      await injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
 
-    const defaultLang = 'en';
-    translate.setDefaultLang(defaultLang);
+      const defaultLang = 'en';
+      translate.setDefaultLang(defaultLang);
 
-    // Pre-load all available locales:
-    const enabledLocales = environment.locales.trim().split(/\s*,\s*/);
-    const loadingLocales = enabledLocales.map(async (locale: string) => {
-      return translate.use(locale).toPromise();
+      // Pre-load all available locales:
+      const enabledLocales = environment.locales.trim().split(/\s*,\s*/);
+      const loadingLocales = enabledLocales.map(async (locale: string) => {
+        return translate.use(locale).toPromise();
+      });
+      await Promise.all(loadingLocales);
+
+      // Return to default
+      await translate.use(defaultLang).toPromise();
+
+      resolve(null);
     });
-    await Promise.all(loadingLocales);
-
-    // Return to default
-    await translate.use(defaultLang).toPromise();
-
-    resolve(null);
-  });
 }
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -61,11 +69,9 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
-    IonicStorageModule.forRoot()
+    IonicStorageModule.forRoot(),
   ],
-  exports: [
-    TranslateModule
-  ],
+  exports: [TranslateModule],
   providers: [
     StatusBar,
     SplashScreen,
@@ -78,6 +84,6 @@ export function HttpLoaderFactory(http: HttpClient) {
       multi: true,
     },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

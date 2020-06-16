@@ -56,10 +56,13 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.confirm = this.data.password;
     this.usernameSubmitted = true;
     this.initialInput = true;
-
   }
 
-  public async submitCredentials(username: string, create: string, confirm: string) {
+  public async submitCredentials(
+    username: string,
+    create: string,
+    confirm: string,
+  ) {
     console.log('submitCredentials()', username, create, confirm);
 
     // Reset server-side errors, to be sure to only show the first, most relevant error only.
@@ -99,18 +102,24 @@ export class CreateIdentityComponent extends PersonalComponent {
       this.initialInput = true;
       this.unequalPasswords = true;
       this.isInProgress = false;
-      console.log('Username ✅; First password ✅; 2nd password ✅; Passwords not equal. ⛔️');
+      console.log(
+        'Username ✅; First password ✅; 2nd password ✅; Passwords not equal. ⛔️',
+      );
       return;
     }
 
     this.isInProgress = true;
     this.unequalPasswords = false;
 
-    console.log('Username ✅; First password ✅; 2nd password ✅; Passwords equal ✅; Done! ✅');
+    console.log(
+      'Username ✅; First password ✅; 2nd password ✅; Passwords equal ✅; Done! ✅',
+    );
 
     // 1. Create PA-account using supplied password + random username
     // (moved outside of executeSovrinFlow because of unique-username-check)
-    const paAccountUsername = this.useLocalStorage ? createRandomString(42) : username;
+    const paAccountUsername = this.useLocalStorage
+      ? createRandomString(42)
+      : username;
     const paAccountPassword = create;
     this.conversationService.startLoading();
     await this.paData.createAccount(paAccountUsername, paAccountPassword).then(
@@ -128,13 +137,11 @@ export class CreateIdentityComponent extends PersonalComponent {
           console.warn('Username is not unique');
         }
         console.warn('CreateAccount Error: ', error);
-      }
+      },
     );
-
   }
 
   async executeSovrinFlow() {
-
     // 2. Create (random) wallet-name and password and store in PA-account
     const paWalletName = createRandomString(42);
     const paWalletPassword = createRandomString(42);

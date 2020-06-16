@@ -25,7 +25,7 @@ describe('MeetingReminderComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         HttpClientTestingModule,
-        QRCodeModule
+        QRCodeModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -37,9 +37,8 @@ describe('MeetingReminderComponent', () => {
           provide: PaDataService,
           useValue: MockPaDataService,
         },
-      ]
-    })
-      .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

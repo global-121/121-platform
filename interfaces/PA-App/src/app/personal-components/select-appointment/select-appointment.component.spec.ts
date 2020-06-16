@@ -21,16 +21,15 @@ describe('SelectAppointmentComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         HttpClientTestingModule,
-        QRCodeModule
+        QRCodeModule,
       ],
       providers: [
         {
           provide: PaDataService,
           useValue: MockPaDataService,
         },
-      ]
-    })
-      .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

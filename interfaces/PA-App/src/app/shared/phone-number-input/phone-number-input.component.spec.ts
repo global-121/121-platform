@@ -12,18 +12,15 @@ describe('PhoneNumberInputComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PhoneNumberInputComponent ],
-      imports: [
-        HttpClientTestingModule,
-      ],
+      declarations: [PhoneNumberInputComponent],
+      imports: [HttpClientTestingModule],
       providers: [
         {
           provide: ProgramsServiceApiService,
         },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -16,7 +16,7 @@
 
 // Additional text-utility
 .ion-text-ellipsis {
-  overflow:hidden;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -34,13 +34,11 @@ password-toggle-input ion-input {
   --background: transparent !important;
 }
 
-
 // InfoPopup triggered by MoreInfoButtons shouldn't take up the full screen
 ion-modal.more-info-popup {
   --max-width: 90vw;
   --max-height: 80vh;
 }
-
 
 // Make long text fit on buttons
 // This is scoped to inside dialogue-turns ONLY, to limit the side-effects on other ion-button elements

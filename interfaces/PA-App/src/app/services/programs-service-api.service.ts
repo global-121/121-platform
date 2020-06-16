@@ -12,12 +12,10 @@ import { Timeslot } from '../models/timeslot.model';
 import { Fsp } from '../models/fsp.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(
-    private apiService: ApiService,
-  ) { }
+  constructor(private apiService: ApiService) {}
 
   getCountries(): Promise<Country[]> {
     return this.apiService
@@ -28,9 +26,7 @@ export class ProgramsServiceApiService {
   getProgramsByCountryId(countryId: string): Promise<Program[]> {
     return this.apiService
       .get(environment.url_121_service_api, '/programs/country/' + countryId)
-      .pipe(
-        map(response => response.programs)
-      )
+      .pipe(map((response) => response.programs))
       .toPromise();
   }
 
@@ -49,14 +45,16 @@ export class ProgramsServiceApiService {
   getConnectionRequest(): Promise<any> {
     console.log('getConnectionRequest');
     return this.apiService
-      .get(
-        environment.url_121_service_api,
-        '/sovrin/create-connection'
-      )
+      .get(environment.url_121_service_api, '/sovrin/create-connection')
       .toPromise();
   }
 
-  postConnectionResponse(did: string, verkey: string, nonce: string, meta: string): Promise<any> {
+  postConnectionResponse(
+    did: string,
+    verkey: string,
+    nonce: string,
+    meta: string,
+  ): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
@@ -65,9 +63,9 @@ export class ProgramsServiceApiService {
           did,
           verkey,
           nonce,
-          meta
+          meta,
         },
-        true
+        true,
       )
       .toPromise();
   }
@@ -76,7 +74,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        '/sovrin/credential/offer/' + programId
+        '/sovrin/credential/offer/' + programId,
       )
       .toPromise();
   }
@@ -97,7 +95,7 @@ export class ProgramsServiceApiService {
           programId,
           encryptedCredentialRequest,
         },
-        true
+        true,
       )
       .toPromise();
   }
@@ -116,34 +114,34 @@ export class ProgramsServiceApiService {
           did,
           programId,
           credentialType,
-          attributes
+          attributes,
         },
-        true
+        true,
       )
       .toPromise();
   }
 
   getCredential(did: string): Observable<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/sovrin/credential/get',
-        {
-          did
-        },
-        true
-      );
+    return this.apiService.post(
+      environment.url_121_service_api,
+      '/sovrin/credential/get',
+      {
+        did,
+      },
+      true,
+    );
   }
 
   deleteCredential(did: string): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/credential/delete',
-      {
-        did
-      },
-      true
-    )
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/credential/delete',
+        {
+          did,
+        },
+        true,
+      )
       .toPromise();
   }
 
@@ -151,7 +149,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        '/sovrin/proof/proofRequest/' + programId
+        '/sovrin/proof/proofRequest/' + programId,
       )
       .toPromise();
   }
@@ -168,139 +166,151 @@ export class ProgramsServiceApiService {
         {
           did,
           programId,
-          encryptedProof
+          encryptedProof,
         },
-        true
+        true,
       )
-      .pipe(
-        map(response => response.status)
-      )
+      .pipe(map((response) => response.status))
       .toPromise();
   }
 
-  checkInclusionStatus(
-    did: string,
-    programId: number,
-  ): Observable<any> {
+  checkInclusionStatus(did: string, programId: number): Observable<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         '/programs/inclusionStatus/' + programId,
         {
-          did
+          did,
         },
-        true
+        true,
       )
-      .pipe(
-        map(response => response.status)
-      );
+      .pipe(map((response) => response.status));
   }
 
   getTimeslots(programId: number): Promise<Timeslot[]> {
-    return this.apiService.get(
-      environment.url_121_service_api,
-      '/appointment/availability/' + programId
-    )
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        '/appointment/availability/' + programId,
+      )
       .toPromise();
   }
 
   postAppointment(timeslotId: number, did: string): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/appointment/register/' + timeslotId,
-      {
-        did
-      },
-      true
-    ).toPromise();
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/appointment/register/' + timeslotId,
+        {
+          did,
+        },
+        true,
+      )
+      .toPromise();
   }
 
   postConnectionApply(did: string, programId: number): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/create-connection/apply-program/' + programId,
-      {
-        did
-      },
-      true
-    ).toPromise();
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection/apply-program/' + programId,
+        {
+          did,
+        },
+        true,
+      )
+      .toPromise();
   }
 
-  postConnectionCustomAttribute(did: string, key: string, value: string): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/create-connection/custom-data',
-      {
-        did,
-        key,
-        value,
-      },
-      true
-    )
+  postConnectionCustomAttribute(
+    did: string,
+    key: string,
+    value: string,
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection/custom-data',
+        {
+          did,
+          key,
+          value,
+        },
+        true,
+      )
       .toPromise();
   }
 
   lookupPhoneNumber(phoneNumber: string): Promise<{ result: boolean }> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/notifications/lookup',
-      {
-        phoneNumber,
-      },
-      true
-    )
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/notifications/lookup',
+        {
+          phoneNumber,
+        },
+        true,
+      )
       .toPromise();
   }
 
-  postPhoneNumber(did: string, phoneNumber: string, language: string): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/create-connection/phone',
-      {
-        did,
-        phonenumber: phoneNumber,
-        language
-      },
-      true
-    )
+  postPhoneNumber(
+    did: string,
+    phoneNumber: string,
+    language: string,
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection/phone',
+        {
+          did,
+          phonenumber: phoneNumber,
+          language,
+        },
+        true,
+      )
       .toPromise();
   }
 
   postFsp(did: string, fspId: number): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/create-connection/fsp',
-      {
-        did,
-        fspId
-      },
-      true
-    )
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection/fsp',
+        {
+          did,
+          fspId,
+        },
+        true,
+      )
       .toPromise();
   }
 
   addQrIdentifier(did: string, qrIdentifier: string): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/create-connection/add-qr-identifier',
-      {
-        did,
-        qrIdentifier,
-      },
-      true
-    )
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection/add-qr-identifier',
+        {
+          did,
+          qrIdentifier,
+        },
+        true,
+      )
       .toPromise();
   }
 
   deleteConnection(did: string): Promise<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/create-connection/delete',
-      {
-        did
-      },
-      true
-    )
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection/delete',
+        {
+          did,
+        },
+        true,
+      )
       .toPromise();
   }
 }

@@ -1,4 +1,10 @@
-import { Component, Input, Output, ViewChild, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  ViewChild,
+  EventEmitter,
+} from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
@@ -23,9 +29,7 @@ export class PhoneNumberInputComponent {
 
   private initialChecked = false;
 
-  constructor(
-    private programService: ProgramsServiceApiService,
-  ) { }
+  constructor(private programService: ProgramsServiceApiService) {}
 
   private setValidity(state: boolean, emit = true) {
     this.isValid = state;
@@ -59,12 +63,12 @@ export class PhoneNumberInputComponent {
 
     await this.programService.lookupPhoneNumber(phoneNumber).then(
       (result) => {
-        isValid = (typeof result.result !== 'undefined') ? result.result : false;
+        isValid = typeof result.result !== 'undefined' ? result.result : false;
       },
       (error) => {
         console.log('error: ', error.error);
         isValid = false;
-      }
+      },
     );
 
     return isValid;

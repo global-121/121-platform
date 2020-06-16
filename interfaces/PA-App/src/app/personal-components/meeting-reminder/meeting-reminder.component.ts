@@ -67,9 +67,9 @@ export class MeetingReminderComponent extends PersonalComponent {
   }
 
   private async shouldShowQrCode() {
-    this.showQrCode = !await this.paData.retrieve(
+    this.showQrCode = !(await this.paData.retrieve(
       this.paData.type.usePreprintedQrCode,
-    );
+    ));
   }
 
   private async getDid() {
@@ -119,7 +119,9 @@ export class MeetingReminderComponent extends PersonalComponent {
     this.generateQrCode(this.did, this.program.id);
 
     this.chosenTimeslot = await this.paData.retrieve(this.paData.type.timeslot);
-    this.daysToMeeting = this.getDaysToAppointment(this.chosenTimeslot.startDate);
+    this.daysToMeeting = this.getDaysToAppointment(
+      this.chosenTimeslot.startDate,
+    );
 
     this.conversationService.stopLoading();
   }

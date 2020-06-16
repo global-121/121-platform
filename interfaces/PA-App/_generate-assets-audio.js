@@ -1,7 +1,7 @@
 const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 const fs = require('fs');
 const exec = require('child_process').exec;
@@ -16,7 +16,7 @@ function generateAssetsAudio(locale) {
   const sourceFileType = '.mp3';
 
   if (!locale || !fs.existsSync(sourcePath)) {
-    console.warn(`No folder available for locale: ${locale}`)
+    console.warn(`No folder available for locale: ${locale}`);
     return process.exit();
   }
 
@@ -37,21 +37,22 @@ function generateAssetsAudio(locale) {
           } else {
             console.log(stdout);
           }
-        }
+        },
       );
     });
   process.exit();
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
-
 
 // When a locale is provided via the command-line, use that:
 if (process.argv[2]) {
-  return generateAssetsAudio(process.argv[2]);;
+  return generateAssetsAudio(process.argv[2]);
 }
 // Otherwise, ask for it:
-rl.question('For which locale do you want to generate audio assets? : ', (locale) => {
-  return generateAssetsAudio(locale);
-});
+rl.question(
+  'For which locale do you want to generate audio assets? : ',
+  (locale) => {
+    return generateAssetsAudio(locale);
+  },
+);

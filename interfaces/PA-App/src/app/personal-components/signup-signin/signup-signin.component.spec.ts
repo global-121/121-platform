@@ -14,9 +14,7 @@ describe('SignupSigninComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [SignupSigninComponent],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      imports: [TranslateModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
@@ -24,8 +22,7 @@ describe('SignupSigninComponent', () => {
           useValue: conversationService,
         },
       ],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

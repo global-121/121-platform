@@ -9,7 +9,6 @@ describe('createRandomString()', () => {
 
       expect(output.length).toBe(item);
     });
-
   });
 
   it('should not contain invalid characters', () => {

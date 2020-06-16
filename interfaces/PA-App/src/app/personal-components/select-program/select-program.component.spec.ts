@@ -16,18 +16,14 @@ describe('SelectProgramComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SelectProgramComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       providers: [
         {
           provide: PaDataService,
           useValue: MockPaDataService,
-        }
-      ]
-    })
-      .compileComponents();
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -10,13 +10,10 @@ describe('QAndASetComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ QAndASetComponent ],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      declarations: [QAndASetComponent],
+      imports: [TranslateModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    })
-    .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -3,4 +3,3 @@ export const MockIonicStorage = {
   set: () => new Promise<any>((resolve) => resolve('')),
   clear: () => new Promise<any>((resolve) => resolve('')),
 };
-

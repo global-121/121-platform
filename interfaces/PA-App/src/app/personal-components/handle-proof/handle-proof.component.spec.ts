@@ -23,20 +23,19 @@ describe('HandleProofComponent', () => {
       imports: [
         TranslateModule.forRoot(),
         RouterModule.forRoot([]),
-        HttpClientTestingModule
+        HttpClientTestingModule,
       ],
       providers: [
         {
           provide: Storage,
-          useValue: MockIonicStorage
+          useValue: MockIonicStorage,
         },
         {
           provide: PaDataService,
           useValue: MockPaDataService,
         },
-      ]
-    })
-      .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

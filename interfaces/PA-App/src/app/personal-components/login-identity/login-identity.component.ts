@@ -33,8 +33,7 @@ export class LoginIdentityComponent extends PersonalComponent {
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   public async submitLoginCredentials(username: string, password: string) {
     console.log('submitCredentials()', username, password);
@@ -56,9 +55,8 @@ export class LoginIdentityComponent extends PersonalComponent {
         } else {
           console.log('Other error: ', error.status);
         }
-      }
+      },
     );
-
   }
 
   getNextSection() {

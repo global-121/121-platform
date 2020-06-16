@@ -13,10 +13,9 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 import { SovrinService } from './sovrin.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaDataService {
-
   private useLocalStorage: boolean;
 
   public type = PaDataTypes;
@@ -143,13 +142,11 @@ export class PaDataService {
     username = username.trim();
 
     console.log('PaData: createAccount()');
-    return this.paAccountApi.createAccount(username, password).then(
-      () => {
-        console.log('Account created.');
-        this.setLoggedIn();
-        this.setUsername(username);
-      }
-    );
+    return this.paAccountApi.createAccount(username, password).then(() => {
+      console.log('Account created.');
+      this.setLoggedIn();
+      this.setUsername(username);
+    });
   }
 
   async login(username: string, password: string): Promise<any> {
@@ -158,21 +155,20 @@ export class PaDataService {
     }
 
     return new Promise((resolve, reject) => {
-      this.paAccountApi.login(username, password)
-        .then(
-          (response) => {
-            console.log('PaData: login successful', response);
-            this.ionStorage.clear();
-            this.setLoggedIn();
-            this.setUsername(response.username);
-            return resolve(response);
-          },
-          (error) => {
-            console.log('PaData: login error', error);
-            this.setLoggedOut();
-            return reject(error);
-          }
-        );
+      this.paAccountApi.login(username, password).then(
+        (response) => {
+          console.log('PaData: login successful', response);
+          this.ionStorage.clear();
+          this.setLoggedIn();
+          this.setUsername(response.username);
+          return resolve(response);
+        },
+        (error) => {
+          console.log('PaData: login error', error);
+          this.setLoggedOut();
+          return reject(error);
+        },
+      );
     });
   }
 
@@ -234,31 +230,28 @@ export class PaDataService {
         return reject('');
       }
 
-      await this.paAccountApi.deleteAccount(password)
-        .then(
-          async () => {
-            let deleteWalletResult = false;
-            let deleteConnectionResult = false;
+      await this.paAccountApi.deleteAccount(password).then(
+        async () => {
+          let deleteWalletResult = false;
+          let deleteConnectionResult = false;
 
-            await this.sovrinService.deleteWallet(wallet)
-              .then(
-                () => deleteWalletResult = true,
-                (error) => reject(error)
-              );
+          await this.sovrinService.deleteWallet(wallet).then(
+            () => (deleteWalletResult = true),
+            (error) => reject(error),
+          );
 
-            await this.programService.deleteConnection(did)
-              .then(
-                () => deleteConnectionResult = true,
-                (error) => reject(error)
-              );
+          await this.programService.deleteConnection(did).then(
+            () => (deleteConnectionResult = true),
+            (error) => reject(error),
+          );
 
-            if (deleteWalletResult && deleteConnectionResult) {
-              this.setLoggedOut();
-              return resolve(true);
-            }
-          },
-          (error) => reject(error)
-        );
+          if (deleteWalletResult && deleteConnectionResult) {
+            this.setLoggedOut();
+            return resolve(true);
+          }
+        },
+        (error) => reject(error),
+      );
     });
   }
 }

@@ -23,9 +23,7 @@ export class SignupSigninComponent extends PersonalComponent {
   public signupSigninChoice: string;
   public typeChosen: boolean;
 
-  constructor(
-    public conversationService: ConversationService,
-  ) {
+  constructor(public conversationService: ConversationService) {
     super();
     this.useLocalStorage = environment.localStorage;
   }

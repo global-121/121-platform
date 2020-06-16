@@ -17,12 +17,7 @@ import { UserMenuComponent } from '../user-menu/user-menu.component';
     TabsPageRoutingModule,
     TranslateModule.forChild(),
   ],
-  declarations: [
-    TabsPage,
-    UserMenuComponent
-  ],
-  entryComponents: [
-    UserMenuComponent
-  ]
+  declarations: [TabsPage, UserMenuComponent],
+  entryComponents: [UserMenuComponent],
 })
-export class TabsPageModule { }
+export class TabsPageModule {}

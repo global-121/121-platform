@@ -60,7 +60,7 @@ export class SelectLanguageComponent extends PersonalComponent {
   }
 
   public getLanguageName(languageId: string): string {
-    const language = this.languages.find(item => {
+    const language = this.languages.find((item) => {
       return item.id === languageId;
     });
 

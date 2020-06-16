@@ -1,14 +1,14 @@
 const countriesArray = [
   {
     id: 1,
-    country: 'Malawi'
+    country: 'Malawi',
   },
   {
     id: 2,
-    country: 'Ethiopia'
-  }
+    country: 'Ethiopia',
+  },
 ];
 
 export default {
-  countries: countriesArray
+  countries: countriesArray,
 };

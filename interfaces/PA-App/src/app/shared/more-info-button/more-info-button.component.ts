@@ -23,11 +23,9 @@ export class MoreInfoButtonComponent implements OnInit {
   @Input()
   messageKey: string;
 
-  constructor(
-    private modalController: ModalController,
-  ) { }
+  constructor(private modalController: ModalController) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   public async openInfoPopup() {
     const infoPopup = await this.modalController.create({
@@ -43,5 +41,4 @@ export class MoreInfoButtonComponent implements OnInit {
 
     return await infoPopup.present();
   }
-
 }

@@ -74,9 +74,11 @@ export class StoreCredentialComponent extends PersonalComponent {
 
   async startListeningReadyStatus(did) {
     console.log('Start listening for PA-accounts Ready Status...');
-    this.updateService.checkReadyStatus(this.currentProgram.id, did).then(() => {
-      this.skipCredentialHandling();
-    });
+    this.updateService
+      .checkReadyStatus(this.currentProgram.id, did)
+      .then(() => {
+        this.skipCredentialHandling();
+      });
   }
 
   skipCredentialHandling() {

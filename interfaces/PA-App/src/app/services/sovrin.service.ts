@@ -12,15 +12,12 @@ class Wallet {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SovrinService {
-
   private useLocalStorage: boolean;
 
-  constructor(
-    private userImsApi: UserImsApiService,
-  ) {
+  constructor(private userImsApi: UserImsApiService) {
     this.useLocalStorage = environment.localStorage && this.hasSdkInstalled();
 
     // Check/Perform initial Sovrin setup:
@@ -30,7 +27,7 @@ export class SovrinService {
   }
 
   private hasSdkInstalled() {
-    const sdkInstalled = ('Global121' in window);
+    const sdkInstalled = 'Global121' in window;
     console.log('SovrinService: hasSdkInstalled?', sdkInstalled);
 
     return sdkInstalled;
@@ -39,8 +36,7 @@ export class SovrinService {
   private initialSovrinSetup() {
     console.log('SovrinService: initialSovrinSetup()');
 
-    Global121.Indy.setup()
-      .then(this.sdkSuccessHandler, this.sdkErrorHandler);
+    Global121.Indy.setup().then(this.sdkSuccessHandler, this.sdkErrorHandler);
   }
 
   private toDoSDK(message: string): Promise<any> {
@@ -64,13 +60,11 @@ export class SovrinService {
       console.log('SDK: createWallet');
       await Global121.Indy.createWallet({
         password: wallet.passKey,
-      })
-        .then(this.sdkSuccessHandler, this.sdkErrorHandler);
+      }).then(this.sdkSuccessHandler, this.sdkErrorHandler);
       console.log('SDK: createMasterSecret');
       return Global121.Indy.createMasterSecret({
         password: wallet.passKey,
-      })
-        .then(this.sdkSuccessHandler, this.sdkErrorHandler);
+      }).then(this.sdkSuccessHandler, this.sdkErrorHandler);
     }
 
     return this.userImsApi.createWallet(wallet);
@@ -126,33 +120,23 @@ export class SovrinService {
     );
   }
 
-  getProofFromWallet(
-    proofRequest: any,
-    wallet: Wallet,
-  ): Promise<any> {
+  getProofFromWallet(proofRequest: any, wallet: Wallet): Promise<any> {
     console.log('SovrinService : getProofFromWallet()');
 
     if (this.useLocalStorage) {
       return this.toDoSDK('SDK: getProofFromWallet');
     }
 
-    return this.userImsApi.getProofFromWallet(
-      proofRequest,
-      wallet,
-    );
+    return this.userImsApi.getProofFromWallet(proofRequest, wallet);
   }
 
-  deleteWallet(
-    wallet: Wallet,
-  ): Promise<any> {
+  deleteWallet(wallet: Wallet): Promise<any> {
     console.log('SovrinService : deleteWallet()');
 
     if (this.useLocalStorage) {
       return this.toDoSDK('SDK: deleteWallet');
     }
 
-    return this.userImsApi.deleteWallet(
-      wallet,
-    );
+    return this.userImsApi.deleteWallet(wallet);
   }
 }
