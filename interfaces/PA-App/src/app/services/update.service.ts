@@ -1,6 +1,7 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
 import { ProgramsServiceApiService } from './programs-service-api.service';
+import { PaDataService } from './padata.service';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
@@ -23,6 +24,7 @@ export class UpdateService {
 
   constructor(
     public programsService: ProgramsServiceApiService,
+    public paData: PaDataService,
     public toastController: ToastController,
     public translate: TranslateService,
     public storage: Storage,
@@ -47,6 +49,26 @@ export class UpdateService {
     console.log('listenForCredential()', programId, did);
     return interval(this.updateSpeedMs).pipe(
       switchMap(() => this.programsService.getCredential(did))
+    );
+  }
+
+  checkReadyStatus(programId: number, did: string) {
+    return new Promise(resolve => {
+      const subscription = this.listenForReadyStatus(programId, did).subscribe(isReadyStatusAvailable => {
+        console.log('isReadyStatusAvailable', isReadyStatusAvailable);
+        if (isReadyStatusAvailable) {
+          subscription.unsubscribe();
+          this.createUpdateToast('notification.credential', this.pagesNav.credential);
+          resolve();
+        }
+      });
+    });
+  }
+
+  listenForReadyStatus(programId: number, did: string) {
+    console.log('listenForReadyStatus()', programId, did);
+    return interval(this.updateSpeedMs).pipe(
+      switchMap(() => this.paData.retrieve(this.paData.type.status))
     );
   }
 

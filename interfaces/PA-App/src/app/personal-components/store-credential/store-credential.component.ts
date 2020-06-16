@@ -51,17 +51,9 @@ export class StoreCredentialComponent extends PersonalComponent {
   }
 
   async initNew() {
-    const paStatus = await this.paData.retrieve(this.paData.type.status);
-
-    if (!this.useLocalStorage && paStatus !== undefined) {
-      this.skipCredentialHandling();
-      return;
-    }
-
     if (this.isDebug) {
       return;
     }
-
     this.startListening();
   }
 
@@ -71,15 +63,30 @@ export class StoreCredentialComponent extends PersonalComponent {
     this.credentialStored = this.data.credentialStored;
   }
 
+  async startListening() {
+    const did = await this.paData.retrieve(this.paData.type.did);
+    if (!this.useLocalStorage) {
+      this.startListeningReadyStatus(did);
+      return;
+    }
+    this.startListeningCredential(did);
+  }
+
+  async startListeningReadyStatus(did) {
+    console.log('Start listening for PA-accounts Ready Status...');
+    this.updateService.checkReadyStatus(this.currentProgram.id, did).then(() => {
+      this.skipCredentialHandling();
+    });
+  }
+
   skipCredentialHandling() {
     this.credentialReceived = true;
     this.credentialStored = true;
     this.complete();
   }
 
-  async startListening() {
+  async startListeningCredential(did) {
     console.log('Start listening for Credential...');
-    const did = await this.paData.retrieve(this.paData.type.did);
     this.updateService.checkCredential(this.currentProgram.id, did).then(() => {
       this.getCredential(did);
     });
