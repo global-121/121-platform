@@ -8,25 +8,19 @@ export class JwtService {
   private tokenKey = 'jwt';
   private jwtHelper = new JwtHelperService();
 
-  getToken(): string | undefined {
-    console.log('JWT Service: getToken');
-
+  public getToken(): string | undefined {
     return window.sessionStorage[this.tokenKey];
   }
 
-  saveToken(token: string) {
-    console.log('JWT Service: saveToken');
-
+  public saveToken(token: string): void {
     window.sessionStorage[this.tokenKey] = token;
   }
 
-  destroyToken() {
-    console.log('JWT Service: destroyToken');
-
+  public destroyToken(): void {
     window.sessionStorage.removeItem(this.tokenKey);
   }
 
-  decodeToken(rawToken: string): any {
+  public decodeToken(rawToken: string): any {
     return this.jwtHelper.decodeToken(rawToken);
   }
 }
