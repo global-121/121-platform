@@ -8,20 +8,15 @@ import { Program } from 'src/app/models/program.model';
   styleUrls: ['./program-json.component.scss'],
 })
 export class ProgramJsonComponent implements OnInit {
-
   program: Program;
 
-  constructor(
-    private modalController: ModalController
-  ) { }
+  constructor(private modalController: ModalController) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   async myDismiss() {
     const result: Date = new Date();
 
     await this.modalController.dismiss(result);
   }
-
 }

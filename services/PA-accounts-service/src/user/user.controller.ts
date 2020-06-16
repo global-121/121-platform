@@ -1,3 +1,4 @@
+import { DidDto } from './dto/did.dto';
 import {
   Get,
   Post,
@@ -5,7 +6,6 @@ import {
   Controller,
   UsePipes,
   HttpStatus,
-  Delete,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -55,12 +55,22 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
+  @ApiOperation({ title: 'Set the did of logged in user' })
+  @Post('user/set-did')
+  public async setDid(
+    @User('id') userId: number,
+    @Body() didDto: DidDto,
+  ): Promise<void> {
+    return this.userService.setDid(userId, didDto);
+  }
+
+  @UseGuards(RolesGuard)
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
     @User('id') userId: number,
     @Body() userData: UpdateUserDto,
-  ) {
+  ): Promise<UserRO> {
     return this.userService.update(userId, userData);
   }
 

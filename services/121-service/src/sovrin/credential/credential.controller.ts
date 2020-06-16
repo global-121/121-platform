@@ -1,3 +1,4 @@
+import { DownloadData } from './interfaces/download-data.interface';
 import {
   ApiOperation,
   ApiResponse,
@@ -78,8 +79,8 @@ export class CredentialController {
   @Get('/download-data')
   public async getAllPrefilledAnswers(
     @User('id') userId: number,
-  ): Promise<CredentialAttributesEntity[]> {
-    return await this.credentialService.getAllPrefilledAnswers(userId);
+  ): Promise<DownloadData> {
+    return await this.credentialService.downloadData(userId);
   }
 
   @Roles(UserRole.Aidworker)

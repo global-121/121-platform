@@ -1,4 +1,11 @@
-import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { Program } from 'src/app/models/program.model';
 
 @Component({
@@ -19,8 +26,7 @@ export class PhaseNavigationComponent implements OnChanges {
   public selectedPhaseId: number;
   public selectedPhase: string;
 
-  constructor() {
-  }
+  constructor() {}
 
   async ngOnChanges(changes: SimpleChanges) {
     if (typeof changes.programPhases.currentValue === 'object') {
@@ -29,7 +35,7 @@ export class PhaseNavigationComponent implements OnChanges {
   }
 
   private update() {
-    const activePhase = this.programPhases.find(item => item.active);
+    const activePhase = this.programPhases.find((item) => item.active);
     this.activePhaseId = activePhase.id;
     this.selectedPhaseId = this.activePhaseId;
     this.activePhase = activePhase.phase;
@@ -37,7 +43,9 @@ export class PhaseNavigationComponent implements OnChanges {
   }
 
   public changePhase(phase) {
-    const selectedPhaseObj = this.programPhases.find(item => item.id === phase);
+    const selectedPhaseObj = this.programPhases.find(
+      (item) => item.id === phase,
+    );
     this.selectedPhase = selectedPhaseObj.phase;
     this.selectedPhaseId = selectedPhaseObj.id;
     this.outputSelectedPhase.emit(this.selectedPhase);
@@ -66,5 +74,4 @@ export class PhaseNavigationComponent implements OnChanges {
 
     return fill;
   }
-
 }

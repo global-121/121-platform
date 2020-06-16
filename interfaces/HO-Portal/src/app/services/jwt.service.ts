@@ -8,7 +8,7 @@ export class JwtService {
   private tokenKey = 'jwt';
   private jwtHelper = new JwtHelperService();
 
-  getToken(): string|undefined {
+  getToken(): string | undefined {
     console.log('JWT Service: getToken');
 
     return window.sessionStorage[this.tokenKey];

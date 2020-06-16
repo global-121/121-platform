@@ -10,39 +10,71 @@ import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
+import { SessionStorageType } from 'src/app/services/session-storage-types.enum';
 
 import { mockProgram } from 'src/app/mocks/api.program.mock';
+import { PaDataAttribute } from 'src/app/models/pa-data.model';
+import { PaQrCode } from 'src/app/models/pa-qr-code.model';
 
 import { ValidateProgramComponent } from './validate-program.component';
-
-const storageIonicMock: any = {
-  get: (type: IonicStorageTypes) => new Promise<any>((resolve) => {
-    switch (type) {
-      case IonicStorageTypes.myPrograms:
-        return resolve([mockProgram]);
-      default:
-        return resolve('1');
-    }
-  }),
-};
-
-const ionContentMock: IonContent = jasmine.createSpyObj('IonContent', ['scrollToBottom']);
 
 describe('ValidateProgramComponent', () => {
   let component: ValidateProgramComponent;
   let fixture: ComponentFixture<ValidateProgramComponent>;
 
   beforeEach(async(() => {
+    const programsServiceApiServiceMock = jasmine.createSpyObj(
+      'ProgramsServiceApiService',
+      {
+        getProgramById: () => of(mockProgram).toPromise(),
+        getPrefilledAnswers: () => of({}).toPromise(),
+      },
+    );
 
-    const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getProgramById', 'getPrefilledAnswers']);
-    programsServiceApiService.getProgramById.and.returnValue(of(mockProgram).toPromise());
-    programsServiceApiService.getPrefilledAnswers.and.returnValue(of({}));
+    const sessionStorageServiceMock = {
+      type: SessionStorageType,
+      retrieve: (type: SessionStorageType) =>
+        new Promise<any>((resolve) => {
+          switch (type) {
+            case SessionStorageType.scannedData:
+              return resolve(
+                JSON.stringify({
+                  did: 'did:sov:example',
+                  programId: 1,
+                } as PaQrCode),
+              );
+            case SessionStorageType.paData:
+              return resolve(
+                JSON.stringify([
+                  {
+                    did: 'did:sov:example',
+                    programId: 1,
+                    attributeId: 0,
+                    attribute: 'question1',
+                    answer: 'answer',
+                  } as PaDataAttribute,
+                ]),
+              );
+          }
+        }),
+      destroyItem: () => of('').toPromise(),
+    };
 
-    const sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['type', 'retrieve', 'destroyItem']);
-    sessionStorageService.type.and.returnValue({ scannedData: 'scannedData', paData: 'paData' });
-    sessionStorageService.retrieve.and.returnValue(of('""').toPromise());
-    sessionStorageService.destroyItem.and.returnValue(of('').toPromise());
+    const ionContentMock = jasmine.createSpyObj('IonContent', [
+      'scrollToBottom',
+    ]);
 
+    const ionicStorageMock = {
+      get: (type: IonicStorageTypes) =>
+        new Promise<any>((resolve) => {
+          switch (type) {
+            case IonicStorageTypes.myPrograms:
+              return resolve([mockProgram]);
+            default:
+              return resolve('1');
+          }
+        }),
+    };
 
     TestBed.configureTestingModule({
       declarations: [ValidateProgramComponent],
@@ -56,11 +88,11 @@ describe('ValidateProgramComponent', () => {
       providers: [
         {
           provide: ProgramsServiceApiService,
-          useValue: programsServiceApiService,
+          useValue: programsServiceApiServiceMock,
         },
         {
           provide: SessionStorageService,
-          useValue: sessionStorageService,
+          useValue: sessionStorageServiceMock,
         },
         {
           provide: IonContent,
@@ -68,11 +100,10 @@ describe('ValidateProgramComponent', () => {
         },
         {
           provide: Storage,
-          useValue: storageIonicMock
-        }
-      ]
-    })
-      .compileComponents();
+          useValue: ionicStorageMock,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

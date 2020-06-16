@@ -117,6 +117,21 @@ export class PaAccountApiService {
       .toPromise();
   }
 
+  setDid(did: string): Promise<any> {
+    console.log('PaAccountApiService : setDid()');
+
+    return this.apiService
+      .post(
+        environment.url_pa_account_service_api,
+        '/user/set-did',
+        {
+          did,
+        },
+        false
+      )
+      .toPromise();
+  }
+
   deleteAccount(password: string): Promise<any> {
     console.log('PaAccountApiService : deleteAccount()');
 

@@ -58,9 +58,9 @@ describe('UserController', (): void => {
           },
         ],
       })
-      .overrideGuard(RolesGuard)
-      .useValue({ canActivate: () => true })
-      .compile();
+        .overrideGuard(RolesGuard)
+        .useValue({ canActivate: () => true })
+        .compile();
       userService = module.get<UserService>(UserService);
       userController = module.get<UserController>(UserController);
     },
@@ -113,5 +113,4 @@ describe('UserController', (): void => {
       expect(controllerResult).toEqual(userRo);
     });
   });
-
 });

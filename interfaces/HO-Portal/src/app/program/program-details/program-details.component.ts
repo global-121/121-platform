@@ -18,9 +18,7 @@ export class ProgramDetailsComponent implements OnChanges {
   public selectedPhase: string;
 
   public componentVisible: boolean;
-  private presentInPhases = [
-    ProgramPhase.design
-  ];
+  private presentInPhases = [ProgramPhase.design];
 
   public program: Program;
   public programArray: any;
@@ -38,13 +36,19 @@ export class ProgramDetailsComponent implements OnChanges {
     public translate: TranslateService,
     private translatableString: TranslatableStringService,
     private programsService: ProgramsServiceApiService,
-  ) { }
+  ) {}
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+    if (
+      changes.selectedPhase &&
+      typeof changes.selectedPhase.currentValue === 'string'
+    ) {
       this.checkVisibility(this.selectedPhase);
     }
-    if (changes.programId && typeof changes.programId.currentValue === 'number') {
+    if (
+      changes.programId &&
+      typeof changes.programId.currentValue === 'number'
+    ) {
       this.update();
     }
   }
@@ -70,15 +74,13 @@ export class ProgramDetailsComponent implements OnChanges {
   }
 
   async openProgramJson() {
-    const modal: HTMLIonModalElement =
-      await this.modalController.create({
-        component: ProgramJsonComponent,
-        componentProps: {
-          program: this.program,
-        }
-      });
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: ProgramJsonComponent,
+      componentProps: {
+        program: this.program,
+      },
+    });
 
     await modal.present();
   }
-
 }

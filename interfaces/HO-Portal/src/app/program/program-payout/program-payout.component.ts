@@ -1,4 +1,11 @@
-import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  SimpleChanges,
+  OnChanges,
+} from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -42,9 +49,7 @@ export class ProgramPayoutComponent implements OnChanges {
   public confirmMessage: string;
 
   public componentVisible: boolean;
-  private presentInPhases = [
-    ProgramPhase.payment,
-  ];
+  private presentInPhases = [ProgramPhase.payment];
   private activePhase: ProgramPhase;
 
   constructor(
@@ -52,7 +57,7 @@ export class ProgramPayoutComponent implements OnChanges {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     this.locale = this.translate.getBrowserCultureLang();
   }
@@ -65,12 +70,20 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string') {
+    if (
+      changes.selectedPhase &&
+      typeof changes.selectedPhase.currentValue === 'string'
+    ) {
       this.checkVisibility(this.selectedPhase);
       this.createInstallments(this.programId);
     }
-    if (changes.programId && typeof changes.programId.currentValue === 'number') {
-      this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
+    if (
+      changes.programId &&
+      typeof changes.programId.currentValue === 'number'
+    ) {
+      this.totalIncluded = await this.programsService.getTotalIncluded(
+        this.programId,
+      );
       console.log('totalIncluded: ', this.totalIncluded);
     }
   }
@@ -80,30 +93,37 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   private async createInstallments(programId) {
-    this.totalIncluded = await this.programsService.getTotalIncluded(this.programId);
+    this.totalIncluded = await this.programsService.getTotalIncluded(
+      this.programId,
+    );
     const program = await this.programsService.getProgramById(programId);
     this.activePhase = ProgramPhase[program.state];
     this.nrOfInstallments = program.distributionDuration;
 
-    this.installments = Array(this.nrOfInstallments).fill(1).map((_, index) => ({
-      id: index + 1,
-      amount: String,
-      installmentDate: new Date(),
-      statusOpen: Boolean,
-      firstOpen: Boolean
-    }));
+    this.installments = Array(this.nrOfInstallments)
+      .fill(1)
+      .map((_, index) => ({
+        id: index + 1,
+        amount: String,
+        installmentDate: new Date(),
+        statusOpen: Boolean,
+        firstOpen: Boolean,
+      }));
 
-    const pastInstallments = await this.programsService.getPastInstallments(programId);
+    const pastInstallments = await this.programsService.getPastInstallments(
+      programId,
+    );
     this.nrOfPastInstallments = pastInstallments.length;
-    const pastInstallmentIds = pastInstallments.map(item => item.installment);
+    const pastInstallmentIds = pastInstallments.map((item) => item.installment);
     const frequency = program.distributionFrequency;
 
     let i = 0;
     let maxInstallmentDate: Date;
     for (const installment of this.installments) {
-      if (pastInstallmentIds.includes(installment.id)
-      ) {
-        const pastInstallment = pastInstallments.filter(item => item.installment === installment.id)[0];
+      if (pastInstallmentIds.includes(installment.id)) {
+        const pastInstallment = pastInstallments.filter(
+          (item) => item.installment === installment.id,
+        )[0];
         installment.amount = pastInstallment.amount;
         installment.installmentDate = pastInstallment.installmentDate;
         installment.statusOpen = false;
@@ -117,8 +137,11 @@ export class ProgramPayoutComponent implements OnChanges {
         // Set dates
         if (i === 0) {
           installment.installmentDate = new Date();
-        } else if (frequency === 'month' || 1 === 1) { // For now do the same in all other cases then 'month'
-          installment.installmentDate = new Date(maxInstallmentDate.setMonth(maxInstallmentDate.getMonth() + 1));
+        } else if (frequency === 'month' || 1 === 1) {
+          // For now do the same in all other cases then 'month'
+          installment.installmentDate = new Date(
+            maxInstallmentDate.setMonth(maxInstallmentDate.getMonth() + 1),
+          );
         }
         maxInstallmentDate = new Date(installment.installmentDate);
 
@@ -135,7 +158,6 @@ export class ProgramPayoutComponent implements OnChanges {
     }
 
     this.checkPhaseReady();
-
   }
 
   public isExportAvailable(installment) {
@@ -152,9 +174,16 @@ export class ProgramPayoutComponent implements OnChanges {
   public updateTotalAmountMessage(installment) {
     const totalCost = this.totalIncluded * +installment.amount;
     const symbol = `${this.currencyCode} `;
-    const totalCostFormatted = formatCurrency(totalCost, this.locale, symbol, this.currencyCode);
+    const totalCostFormatted = formatCurrency(
+      totalCost,
+      this.locale,
+      symbol,
+      this.currencyCode,
+    );
 
-    this.confirmMessage = `${this.totalIncluded} * ${+installment.amount} = ${totalCostFormatted}`;
+    this.confirmMessage = `${
+      this.totalIncluded
+    } * ${+installment.amount} = ${totalCostFormatted}`;
   }
 
   public cancelPayout(installment) {
@@ -165,56 +194,58 @@ export class ProgramPayoutComponent implements OnChanges {
   public async performPayout(installment) {
     installment.isInProgress = true;
     console.log('Paying out...', installment.amount);
-    this.programsService.submitPayout(+this.programId, installment.id, +installment.amount)
+    this.programsService
+      .submitPayout(+this.programId, installment.id, +installment.amount)
       .then(
         () => {
           installment.isInProgress = false;
-          this.actionResult(this.translate.instant('page.program.program-payout.payout-success'));
+          this.actionResult(
+            this.translate.instant(
+              'page.program.program-payout.payout-success',
+            ),
+          );
           this.createInstallments(this.programId);
           this.triggerRefresh.emit(true);
         },
         (err) => {
           console.log('err: ', err);
-          this.actionResult(this.translate.instant('page.program.program-payout.payout-error'));
+          this.actionResult(
+            this.translate.instant('page.program.program-payout.payout-error'),
+          );
           this.cancelPayout(installment);
-        }
+        },
       );
   }
 
   public async exportList(installment) {
-    this.programsService.exportList(+this.programId, installment.id)
-      .then(
-        (res) => {
-          const blob = new Blob([res.data], { type: 'text/csv' });
-          saveAs(blob, res.fileName);
-        },
-        (err) => {
-          console.log('err: ', err);
-          this.actionResult(this.translate.instant('page.program.program-payout.export-error'));
-        }
-      );
+    this.programsService.exportList(+this.programId, installment.id).then(
+      (res) => {
+        const blob = new Blob([res.data], { type: 'text/csv' });
+        saveAs(blob, res.fileName);
+      },
+      (err) => {
+        console.log('err: ', err);
+        this.actionResult(
+          this.translate.instant('page.program.program-payout.export-error'),
+        );
+      },
+    );
   }
 
   private async actionResult(resultMessage: string) {
     const alert = await this.alertController.create({
       message: resultMessage,
-      buttons: [
-        this.translate.instant('common.ok'),
-      ],
+      buttons: [this.translate.instant('common.ok')],
     });
 
     await alert.present();
   }
 
   private checkPhaseReady() {
-    const isReady = (
+    const isReady =
       this.activePhase !== ProgramPhase.payment ||
-      this.nrOfPastInstallments === this.nrOfInstallments
-    );
+      this.nrOfPastInstallments === this.nrOfInstallments;
 
     this.isCompleted.emit(isReady);
   }
 }
-
-
-

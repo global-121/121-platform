@@ -2,26 +2,20 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DataStorageEntity } from './data-storage.entity';
-import { UserEntity } from '../user/user.entity';
 import { StoreDataDto } from './dto';
 import { walletPasswordEncryptionKey } from '../config';
 const Cryptr = require('cryptr');
 
 @Injectable()
 export class DataStorageService {
-  @InjectRepository(UserEntity)
-  private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(DataStorageEntity)
   private readonly dataStorageRepository: Repository<DataStorageEntity>;
 
-  public constructor() { }
+  public constructor() {}
 
   public cryptr = new Cryptr(walletPasswordEncryptionKey);
 
-  public async post(
-    userId: number,
-    storeData: StoreDataDto,
-  ): Promise<DataStorageEntity> {
+  public async post(userId: number, storeData: StoreDataDto): Promise<void> {
     let data = new DataStorageEntity();
     data.userId = userId;
     data.type = storeData.type;
@@ -29,21 +23,16 @@ export class DataStorageService {
 
     data.data = this.cryptr.encrypt(data.data);
 
-    const newData = await this.dataStorageRepository.save(data);
-
-    return newData;
+    await this.dataStorageRepository.save(data);
   }
 
-  public async get(
-    userId: number,
-    params,
-  ): Promise<String> {
+  public async get(userId: number, type: string): Promise<string> {
     const data = await this.dataStorageRepository.find({
       where: {
         userId: userId,
-        type: params.type
+        type: type,
       },
-      order: { created: "DESC" }
+      order: { created: 'DESC' },
     });
     if (!data || data.length === 0) {
       const errors = { Data: ' not found' };
@@ -53,6 +42,4 @@ export class DataStorageService {
     data[0].data = this.cryptr.decrypt(data[0].data);
     return JSON.stringify(data[0].data);
   }
-
-
 }

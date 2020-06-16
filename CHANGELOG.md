@@ -6,6 +6,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- 2020-06-09: Add `IPV4_121_SERVICE`, `PORT_121_SERVICE`, `SUBDOMAIN_121_SERVICE`, `EXTERNAL_121_SERVICE_URL`, `URL_PA_ACCOUNTS_SERVICE_API`, `IPV4_PA_ACCOUNTS_SERVICE` , `PORT_PA_ACCOUNTS_SERVICE`, `SUBDOMAIN_PA_ACCOUNTS_SERVICE` and `URL_121_SERVICE_API`  to `services/.env` AB#1965 
+- 2020-05-26 - Webhook in production-mode triggers deploy-script only once per published release
+
+
+---
+
+
+## [0.3.1] - 2020-05-26
+Hotfix to add missing variable/parameter in AW-App validation-flow.
+
+
+## [0.3.0] - 2020-05-26
+
 ### Added
 - 2020-05-20: Add `RESET_SECRET` to `services/.env` AB#1921
 
@@ -16,8 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - 2020-04-23: Remove `tools/secrets.json`, set `GITHUB_WEBHOOK_SECRET` in `webhook.service`
 
+
 ## [0.2.1] - 2020-04-22
 Test hotfix-release to test automatic deployment of patch-releases.
+
 
 ## [0.2.0] - 2020-04-22
 
@@ -41,7 +57,12 @@ Test hotfix-release to test automatic deployment of patch-releases.
 ### Removed
 - 2020-03-11: Remove usernames from `services/121-service/src/secrets.ts` AB#1641
 
-[Unreleased]: https://github.com/global-121/121-platform/compare/v0.2.1...master
+
+---
+
+[Unreleased]: https://github.com/global-121/121-platform/compare/v0.3.1...master
+[0.3.1]: https://github.com/global-121/121-platform/releases/tag/v0.3.0...v0.3.1
+[0.3.0]: https://github.com/global-121/121-platform/releases/tag/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/global-121/121-platform/releases/tag/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/global-121/121-platform/releases/tag/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/global-121/121-platform/releases/tag/v0.1.0...v0.1.1

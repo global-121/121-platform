@@ -18,8 +18,9 @@ import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 })
 export class VoiceModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer
-      .apply(AuthMiddlewareTwilio)
-      .forRoutes({ path: 'notifications/voice/status', method: RequestMethod.POST });
+    consumer.apply(AuthMiddlewareTwilio).forRoutes({
+      path: 'notifications/voice/status',
+      method: RequestMethod.POST,
+    });
   }
 }

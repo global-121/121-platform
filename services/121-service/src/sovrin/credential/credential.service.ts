@@ -22,6 +22,7 @@ import { ConnectionEntity } from '../create-connection/connection.entity';
 import { UserEntity } from '../../user/user.entity';
 
 import { API } from '../../config';
+import { DownloadData } from './interfaces/download-data.interface';
 
 @Injectable()
 export class CredentialService {
@@ -117,7 +118,31 @@ export class CredentialService {
       );
       credentials.push(newCredential);
     }
+    await this.storePersistentAnswers(prefilledAnswers, programId, did);
     return credentials;
+  }
+
+  public async storePersistentAnswers(answers, programId, did): Promise<void> {
+    let program = await this.programRepository.findOne(programId, {
+      relations: ['customCriteria'],
+    });
+    const persistentCriteria = [];
+    for (let criterium of program.customCriteria) {
+      if (criterium.persistence) {
+        persistentCriteria.push(criterium.criterium);
+      }
+    }
+    const customDataToStore = {};
+    for (let answer of answers) {
+      if (persistentCriteria.includes(answer.attribute)) {
+        customDataToStore[answer.attribute] = answer.answer;
+      }
+    }
+    let connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+    connection.customData = JSON.parse(JSON.stringify(customDataToStore));
+    await this.connectionRepository.save(connection);
   }
 
   // AW: get answers to attributes for a given PA (identified first through did/QR)
@@ -132,10 +157,7 @@ export class CredentialService {
     return credentials;
   }
 
-  // AW: get answers to attributes for all PA's (selected for validation)
-  public async getAllPrefilledAnswers(
-    userId: number,
-  ): Promise<CredentialAttributesEntity[]> {
+  public async downloadData(userId: number): Promise<DownloadData> {
     const user = await getRepository(UserEntity)
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.assignedProgram', 'program')
@@ -145,7 +167,16 @@ export class CredentialService {
       const errors = 'User not found or no assigned programs';
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
+    const data = {
+      answers: await this.getAllPrefilledAnswers(user),
+      didQrMapping: await this.getQrDidMapping(),
+    };
+    return data;
+  }
 
+  public async getAllPrefilledAnswers(
+    user: UserEntity,
+  ): Promise<CredentialAttributesEntity[]> {
     const programIds = user.assignedProgram.map(program => {
       return { programId: program.id };
     });
@@ -153,6 +184,13 @@ export class CredentialService {
       where: programIds,
     });
     return answers;
+  }
+
+  public async getQrDidMapping(): Promise<ConnectionEntity[]> {
+    return await this.connectionRepository
+      .createQueryBuilder('connection')
+      .select(['connection.qrIdentifier', 'connection.did'])
+      .getMany();
   }
 
   // AW: delete answers to attributes for a given PA after issuing credentials (identified first through did/QR)
@@ -229,7 +267,9 @@ export class CredentialService {
     await this.cleanupIssueCredData(payload.did, payload.programId);
     await this.updateAppointmentStatus(payload.did);
     await this.updateConnectionStatus(payload.did);
+    await this.paAccountsCredentialReady(payload.did, payload.programId);
   }
+
   private async updateAppointmentStatus(did): Promise<void> {
     let appointmentUpdated = await this.appointmentRepository.findOne({
       did: did,
@@ -302,6 +342,21 @@ export class CredentialService {
       did: did,
     });
     this.deletePrefilledAnswers(did, programId);
+  }
+
+  public async paAccountsCredentialReady(
+    did: string,
+    programId: number,
+  ): Promise<void> {
+    console.log('paAccountsCredentialReady');
+    const data = {
+      did: did,
+      programId: programId,
+    };
+    console.log(API.paAccounts.getCredentialHandleProof, data);
+    await this.httpService
+      .post(API.paAccounts.getCredentialHandleProof, data)
+      .toPromise();
   }
 
   // Used by PA

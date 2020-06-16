@@ -1,6 +1,7 @@
+import { DidDto } from './dto/did.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, DeleteResult } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { SECRET } from '../secrets';
@@ -14,7 +15,6 @@ import jwt = require('jsonwebtoken');
 import { DeleteUserDto } from './dto/delete-user.dts';
 import { DataStorageEntity } from '../data-storage/data-storage.entity';
 
-
 @Injectable()
 export class UserService {
   @InjectRepository(UserEntity)
@@ -22,7 +22,7 @@ export class UserService {
   @InjectRepository(DataStorageEntity)
   private readonly dataStorageRepository: Repository<DataStorageEntity>;
 
-  public constructor() { }
+  public constructor() {}
 
   public async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
@@ -74,6 +74,12 @@ export class UserService {
     }
   }
 
+  public async setDid(id: number, didDto: DidDto): Promise<void> {
+    let user = await this.userRepository.findOne(id);
+    user.did = didDto.did;
+    await this.userRepository.save(user);
+  }
+
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
     let toUpdate = await this.userRepository.findOne(id);
     let updated = toUpdate;
@@ -82,27 +88,30 @@ export class UserService {
     return this.buildUserRO(updatedUser);
   }
 
-  public async deleteAccount(id: number, passwordData: DeleteUserDto): Promise<void> {
+  public async deleteAccount(
+    id: number,
+    passwordData: DeleteUserDto,
+  ): Promise<void> {
     const findOneOptions = {
       id: id,
     };
-    const user = await this.userRepository.findOne(findOneOptions)
+    const user = await this.userRepository.findOne(findOneOptions);
 
     if (!user) {
       const errors = 'User not found or already deleted';
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST)
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
 
-    const hashedpassword = crypto.createHmac('sha256', passwordData.password).digest('hex')
+    const hashedpassword = crypto
+      .createHmac('sha256', passwordData.password)
+      .digest('hex');
     if (user.password !== hashedpassword) {
       const errors = 'Password for user is incorrect';
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED)
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-    await this.dataStorageRepository.delete(
-      {
-        userId: user.id,
-      }
-    );
+    await this.dataStorageRepository.delete({
+      userId: user.id,
+    });
     await this.userRepository.delete(user.id);
   }
 
@@ -119,8 +128,8 @@ export class UserService {
   public async findByUsername(username: string): Promise<UserRO> {
     const user = await this.userRepository.findOne({ username: username });
     if (!user) {
-      const errors = { 'username': username + ' not found' };
-      console.log(errors)
+      const errors = { username: username + ' not found' };
+      console.log(errors);
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return this.buildUserRO(user);

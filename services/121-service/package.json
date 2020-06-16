@@ -4,7 +4,7 @@
   "homepage": "https://www.121.global/",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint \"**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\"",
     "prestart": "npx ts-node src/scripts seed-prod && npm run migration:run",
     "start": "node index.js",
     "start:dev": "tsc-watch --onSuccess \"  node index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json",

@@ -19,7 +19,7 @@ export class AppointmentService {
   @InjectRepository(AppointmentEntity)
   private readonly appointmentRepository: Repository<AppointmentEntity>;
 
-  public constructor() { }
+  public constructor() {}
 
   public async postAvailability(
     userId: number,

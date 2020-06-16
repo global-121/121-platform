@@ -2,7 +2,6 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class StoreDataDto {
-
   @ApiModelProperty()
   @IsNotEmpty()
   @IsString()
@@ -12,5 +11,4 @@ export class StoreDataDto {
   @IsNotEmpty()
   @IsString()
   readonly data: string;
-
 }

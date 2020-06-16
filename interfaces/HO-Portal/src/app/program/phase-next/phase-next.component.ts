@@ -1,4 +1,11 @@
-import { Component, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { UserRole } from 'src/app/auth/user-role.enum';
@@ -34,34 +41,45 @@ export class PhaseNextComponent implements OnChanges {
 
   constructor(
     private programsService: ProgramsServiceApiService,
-    private authService: AuthService
-  ) { }
+    private authService: AuthService,
+  ) {}
 
   async ngOnInit() {
     this.currentUserRole = this.authService.getUserRole();
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (changes.programPhases && typeof changes.programPhases.currentValue === 'object') {
+    if (
+      changes.programPhases &&
+      typeof changes.programPhases.currentValue === 'object'
+    ) {
       this.updatePhases();
       this.firstChange = false;
     }
-    if (changes.selectedPhase && typeof changes.selectedPhase.currentValue === 'string' && this.programPhasesBackup) {
+    if (
+      changes.selectedPhase &&
+      typeof changes.selectedPhase.currentValue === 'string' &&
+      this.programPhasesBackup
+    ) {
       this.btnAvailable = this.selectedPhase !== ProgramPhase.evaluation;
       this.btnText = this.fillBtnText();
     }
   }
 
   public checkDisabled() {
-    return this.selectedPhase !== this.activePhase
+    return (
+      this.selectedPhase !== this.activePhase ||
       // || !this.phaseReady
-      || this.isInProgress
-      || this.currentUserRole !== UserRole.ProjectOfficer;
+      this.isInProgress ||
+      this.currentUserRole !== UserRole.ProjectOfficer
+    );
   }
 
   private async updatePhases() {
-    if (this.firstChange) { this.programPhasesBackup = this.programPhases; }
-    const activePhase = this.programPhases.find(item => item.active);
+    if (this.firstChange) {
+      this.programPhasesBackup = this.programPhases;
+    }
+    const activePhase = this.programPhases.find((item) => item.active);
     this.activePhaseId = activePhase.id;
     this.activePhase = activePhase.phase;
     this.selectedPhase = this.activePhase;
@@ -76,22 +94,25 @@ export class PhaseNextComponent implements OnChanges {
   }
 
   private fillBtnText() {
-    return this.programPhasesBackup
-      .find(item => item.phase === this.selectedPhase)
-      .btnText;
+    return this.programPhasesBackup.find(
+      (item) => item.phase === this.selectedPhase,
+    ).btnText;
   }
 
   public async advancePhase(phaseId) {
     const nextPhaseId = phaseId + 1;
-    const phase = this.programPhases.find(item => item.id === nextPhaseId).phase;
+    const phase = this.programPhases.find((item) => item.id === nextPhaseId)
+      .phase;
     this.isInProgress = true;
-    await this.programsService.advancePhase(this.programId, phase).then((response) => {
-      this.isInProgress = false;
-      this.isNewPhase.emit(true);
-    }, (error) => {
-      console.log(error);
-      this.isInProgress = false;
-    });
+    await this.programsService.advancePhase(this.programId, phase).then(
+      (response) => {
+        this.isInProgress = false;
+        this.isNewPhase.emit(true);
+      },
+      (error) => {
+        console.log(error);
+        this.isInProgress = false;
+      },
+    );
   }
-
 }

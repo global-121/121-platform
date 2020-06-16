@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
+import { SessionStorageType } from './session-storage-types.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -7,10 +8,7 @@ import { Subject, Observable } from 'rxjs';
 export class SessionStorageService {
   private storageSub = new Subject<string>();
 
-  public type = {
-    scannedData: 'scannedData',
-    paData: 'paData',
-  };
+  public type = SessionStorageType;
 
   constructor() {}
 
@@ -23,7 +21,7 @@ export class SessionStorageService {
     this.storageSub.next(key);
   }
 
-  async retrieve(key: string): Promise<any> {
+  async retrieve(key: string): Promise<string> {
     return window.sessionStorage[key];
   }
 

@@ -6,11 +6,11 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'login',
-    loadChildren: './login/login.module#LoginPageModule'
+    loadChildren: './login/login.module#LoginPageModule',
   },
   {
     path: 'home',
@@ -22,13 +22,12 @@ const routes: Routes = [
     loadChildren: './help/help.module#HelpPageModule',
     canActivate: [AuthGuard],
   },
-
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
