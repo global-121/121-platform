@@ -1,12 +1,29 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { ScriptsModule, InterfaceScript } from './scripts/scripts.module';
 import yargs = require('yargs');
+import { EventEmitter } from 'events';
+
+async function runScript(scriptName): Promise<any> {
+  const context = await NestFactory.createApplicationContext(ScriptsModule);
+  const { default: Module } = await import(
+    `${__dirname}/scripts/${scriptName}.ts`
+  );
+  if (typeof Module !== 'function') {
+    throw new TypeError(
+      `Cannot find default Module in scripts/${scriptName}.ts`,
+    );
+  }
+  const script = context.get<InterfaceScript>(Module);
+  if (!script) {
+    throw new TypeError(`Cannot create instance of ${Module.scriptName}`);
+  }
+  await script.run(yargs.argv);
+}
 
 function confirmRun(scriptName): any {
-  var EventEmitter = require('events');
-  var prompt = new EventEmitter();
-  var current = null;
-  var result = null;
+  const prompt = new EventEmitter();
+  let current = null;
+  let result = null;
   process.stdin.resume();
 
   process.stdin.on('data', function(data) {
@@ -42,30 +59,13 @@ function confirmRun(scriptName): any {
   });
 }
 
-async function runScript(scriptName): Promise<any> {
-  const context = await NestFactory.createApplicationContext(ScriptsModule);
-  const { default: Module } = await import(
-    `${__dirname}/scripts/${scriptName}.ts`
-  );
-  if (typeof Module !== 'function') {
-    throw new TypeError(
-      `Cannot find default Module in scripts/${scriptName}.ts`,
-    );
-  }
-  const script = context.get<InterfaceScript>(Module);
-  if (!script) {
-    throw new TypeError(`Cannot create instance of ${Module.scriptName}`);
-  }
-  await script.run(yargs.argv);
-}
-
 async function main(): Promise<void> {
   try {
     const names: string[] = yargs.argv._;
     const name = [names];
-    const name_check = name[0][0];
+    const nameCheck = name[0][0];
 
-    if (name_check !== 'seed-prod' && name_check !== 'seed-publish') {
+    if (nameCheck !== 'seed-prod' && nameCheck !== 'seed-publish') {
       confirmRun(name);
     } else {
       runScript(name);
