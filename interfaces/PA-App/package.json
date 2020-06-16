@@ -21,7 +21,9 @@
     "test:dev": "ng test",
     "test:all": "npm run lint && npm test",
     "lint:translations": "ngx-translate-lint --config=ngx-translate-lint.config.json",
-    "lint": "ng lint && npm run lint:translations",
+    "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss}\"",
+    "lint": "ng lint && npm run lint:syntax && npm run lint:translations",
+    "fix:syntax": "npm run lint:syntax -- --write",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -85,6 +87,7 @@
     "karma-jasmine-html-reporter": "^1.5.4",
     "native-run": "^1.0.0",
     "ngx-translate-lint": "^1.4.0",
+    "prettier": "2.0.5",
     "protractor": "^7.0.0",
     "ts-node": "~8.10.2",
     "tslint": "~5.18.0",
