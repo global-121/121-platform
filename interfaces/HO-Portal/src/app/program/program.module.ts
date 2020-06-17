@@ -9,23 +9,18 @@ import { ProgramsRoutingModule } from './program-routing.module';
 import { ProgramComponent } from './program.component';
 import { PhaseNavigationComponent } from './phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from './phase-next/phase-next.component';
-import { ProgramJsonComponent } from './program-json/program-json.component';
 import { ProgramPayoutComponent } from './program-payout/program-payout.component';
 import { ProgramPeopleComponent } from './program-people/program-people.component';
 import { ProgramPeopleAffectedComponent } from './program-people-affected/program-people-affected.component';
-import { ProgramDetailsComponent } from './program-details/program-details.component';
 
 @NgModule({
-  entryComponents: [ProgramJsonComponent],
   declarations: [
     ProgramComponent,
     PhaseNavigationComponent,
     PhaseNextComponent,
-    ProgramJsonComponent,
     ProgramPayoutComponent,
     ProgramPeopleComponent,
     ProgramPeopleAffectedComponent,
-    ProgramDetailsComponent,
   ],
   imports: [
     CommonModule,

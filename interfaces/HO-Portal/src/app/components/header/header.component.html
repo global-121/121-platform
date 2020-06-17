@@ -49,7 +49,15 @@
     </ion-col>
     <ion-col class="horizontal-scroll-container">
       <div class="ion-text-nowrap">
-        [{{ 'header.design'|translate }}]
+        <ion-button
+          [routerLink]="['/program', programId, 'design']"
+          routerDirection="root"
+          routerLinkActive
+          #rlaDesign="routerLinkActive"
+          [fill]=" rlaDesign.isActive ? 'solid' : 'outline'"
+        >
+          {{ 'header.design'|translate }}
+        </ion-button>
         [{{ 'header.registration-validation'|translate }}]
         [{{ 'header.inclusion'|translate }}]
         [{{ 'header.review-inclusion'|translate }}]

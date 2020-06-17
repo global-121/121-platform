@@ -40,6 +40,11 @@ const routes: Routes = [
           roles: [UserRole.ProgramManager],
         },
       },
+      {
+        path: 'design',
+        loadChildren: './pages/design/design.module#DesignPageModule',
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];
