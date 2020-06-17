@@ -10,9 +10,10 @@
 <ion-button
   type="button"
   [title]="'user-state.log-out'|translate"
-  [attr.ariaLabel]="'user-state.log-out'|translate"
+  [attr.aria-label]="'user-state.log-out'|translate"
   size="small"
   fill="clear"
+  (click)="doLogout()"
 >
   <span class="ion-hide-sm-down">{{ 'user-state.log-out'|translate }}</span>
   <ion-icon name="log-out" slot="end"></ion-icon>
