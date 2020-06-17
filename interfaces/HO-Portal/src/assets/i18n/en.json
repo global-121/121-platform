@@ -2,6 +2,18 @@
   "LOGIN": "Log in",
   "LOGOUT": "Log out",
   "MENU": "Menu",
+  "header": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "aid-workers": "Aid-workers",
+    "phases": "Phases",
+    "design": "Design",
+    "registration-validation": "Registration & Validation",
+    "inclusion": "Inclusion",
+    "review-inclusion": "Review Inclusion",
+    "payment": "Payment",
+    "evaluation": "Evaluation"
+  },
   "page": {
     "login": {
       "form": {
