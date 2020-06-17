@@ -26,6 +26,7 @@ export class MainMenuComponent implements ValidationComponent {
       { id: 'download-data', option: this.customTranslateService.translate('validation.main-menu.download-data'), disabled: false },
       { id: 'view-appointments', option: this.customTranslateService.translate('validation.main-menu.view-appointments'), disabled: false },
       { id: 'scan-qr', option: this.customTranslateService.translate('validation.main-menu.scan-qr'), disabled: false },
+      { id: 'upload-data', option: this.customTranslateService.translate('validation.main-menu.upload-data'), disabled: false },
     ];
   }
 
@@ -47,6 +48,8 @@ export class MainMenuComponent implements ValidationComponent {
       return ValidationComponents.viewAppointments;
     } else if (this.optionChoice === 'scan-qr') {
       return ValidationComponents.scanQr;
+    } else if (this.optionChoice === 'upload-data') {
+      return ValidationComponents.uploadData;
     }
   }
 

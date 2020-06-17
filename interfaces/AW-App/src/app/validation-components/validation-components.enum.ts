@@ -4,4 +4,5 @@ export enum ValidationComponents {
   validateProgram = 'validate-program',
   viewAppointments = 'view-appointments',
   downloadData = 'download-data',
+  uploadData = 'upload-data',
 }

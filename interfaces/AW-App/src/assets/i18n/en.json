@@ -27,7 +27,8 @@
       "introduction": "The following actions are available. Please select one.",
       "download-data": "Download validation data",
       "view-appointments": "View appointments",
-      "scan-qr": "Scan PA's QR-code"
+      "scan-qr": "Scan PA's QR-code",
+      "upload-data": "Upload validation data"
     },
     "download-data": {
       "downloading": "Validation data is being downloaded. Wait a second.",
@@ -49,6 +50,11 @@
       "unknownDidCombination": "QR-code not found. You can try scanning another QR-code.",
       "conclusion": "Thank you. You have scanned a valid combination of DID and program-ID.",
       "main-menu": "Back to main menu"
+    },
+    "upload-data": {
+      "uploading": "Validation data is being uploaded for {{nrStored}} Persons Affected. Wait a second.",
+      "upload-result": "Validation data uploaded succesfully.",
+      "no-upload-data-stored": "There is no validation data to upload. Please validate someone first."
     },
     "validate-program": {
       "introduction": "Below you see the PA's information for the specific program. Check it with the PA, adapt where necessary, and confirm.",
