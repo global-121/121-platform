@@ -231,7 +231,9 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
       did: person.did,
       checkboxVisible: false,
       pa: `PA #${index}`,
-      status: this.translate.instant('page.program.program-people-affected.status.' + person.status),
+      status: this.translate.instant(
+        'page.program.program-people-affected.status.' + person.status,
+      ),
       digitalIdCreated: person.created
         ? formatDate(person.created, this.dateFormat, this.locale)
         : null,
