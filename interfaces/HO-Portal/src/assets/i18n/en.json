@@ -22,6 +22,9 @@
     "dashboard": {
       "pageTitle": "Dashboard"
     },
+    "aid-workers": {
+      "pageTitle": "Aid-workers"
+    },
     "login": {
       "form": {
         "email": {
