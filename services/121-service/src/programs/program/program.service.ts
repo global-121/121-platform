@@ -19,7 +19,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { ProgramEntity, ProgramPhase } from './program.entity';
+import { ProgramEntity } from './program.entity';
+import { ProgramPhase } from '../../models/program-phase.model';
+import { PaStatus } from '../../models/pa-status.model';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 
@@ -690,6 +692,22 @@ export class ProgramService {
     return { status: 'succes', message: 'Sent instructions to FSP' };
   }
 
+  private getPaStatus(connection, programId: number): PaStatus {
+    let paStatus: PaStatus;
+    if (connection.programsEnrolled.includes(+programId)) {
+      paStatus = PaStatus.included;
+    } else if (connection.validationDate) {
+      paStatus = PaStatus.validated;
+    } else if (connection.selectedForValidationDate) {
+      paStatus = PaStatus.selectedForValidation;
+    } else if (connection.appliedDate) {
+      paStatus = PaStatus.registered;
+    } else if (connection.created) {
+      paStatus = PaStatus.created;
+    }
+    return paStatus;
+  }
+
   public async getEnrolledConnections(
     programId: number,
     privacy: boolean,
@@ -702,35 +720,36 @@ export class ProgramService {
         programId,
       );
     }
-    const connectionsReponse = [];
+    const connectionsResponse = [];
     for (let connection of selectedConnections) {
-      const connectionReponse = {};
-      connectionReponse['did'] = connection.did;
-      connectionReponse['score'] = connection.inclusionScore;
-      connectionReponse['tempScore'] = connection.temporaryInclusionScore;
-      connectionReponse['created'] = connection.created;
-      connectionReponse['updated'] = connection.updated;
-      connectionReponse['enrolled'] = connection.programsEnrolled.includes(
+      const connectionResponse = {};
+      connectionResponse['did'] = connection.did;
+      connectionResponse['score'] = connection.inclusionScore;
+      connectionResponse['tempScore'] = connection.temporaryInclusionScore;
+      connectionResponse['created'] = connection.created;
+      connectionResponse['updated'] = connection.updated;
+      connectionResponse['enrolled'] = connection.programsEnrolled.includes(
         +programId,
       );
-      connectionReponse['included'] = connection.programsIncluded.includes(
+      connectionResponse['included'] = connection.programsIncluded.includes(
         +programId,
       );
-      connectionReponse['excluded'] = connection.programsExcluded.includes(
+      connectionResponse['excluded'] = connection.programsExcluded.includes(
         +programId,
       );
-      connectionReponse['appliedDate'] = connection.appliedDate;
-      connectionReponse['selectedForValidationDate'] =
+      connectionResponse['appliedDate'] = connection.appliedDate;
+      connectionResponse['selectedForValidationDate'] =
         connection.selectedForValidationDate;
-      connectionReponse['validationDate'] = connection.validationDate;
-      connectionReponse['inclusionDate'] = connection.inclusionDate;
+      connectionResponse['validationDate'] = connection.validationDate;
+      connectionResponse['inclusionDate'] = connection.inclusionDate;
       if (privacy) {
-        connectionReponse['name'] = connection.customData.name;
-        connectionReponse['dob'] = connection.customData.dob;
+        connectionResponse['name'] = connection.customData.name;
+        connectionResponse['dob'] = connection.customData.dob;
       }
-      connectionsReponse.push(connectionReponse);
+      connectionResponse['status'] = this.getPaStatus(connection, +programId);
+      connectionsResponse.push(connectionResponse);
     }
-    return connectionsReponse;
+    return connectionsResponse;
   }
 
   private async getConnections(programId): Promise<ConnectionEntity[]> {

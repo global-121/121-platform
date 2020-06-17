@@ -16,15 +16,6 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 
-export enum ProgramPhase {
-  design = 'design',
-  registrationValidation = 'registrationValidation',
-  inclusion = 'inclusion',
-  reviewInclusion = 'reviewInclusion',
-  payment = 'payment',
-  evaluation = 'evaluation',
-}
-
 @Entity('program')
 export class ProgramEntity {
   @PrimaryGeneratedColumn()
