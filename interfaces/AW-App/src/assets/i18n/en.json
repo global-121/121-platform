@@ -54,7 +54,8 @@
     "upload-data": {
       "uploading": "Validation data is being uploaded for {{nrStored}} Persons Affected. Wait a second.",
       "upload-result": "Validation data uploaded succesfully.",
-      "no-upload-data-stored": "There is no validation data to upload. Please validate someone first."
+      "no-upload-data-stored": "There is no validation data to upload. Please validate someone first.",
+      "upload-aborted": "No validation data could be uploaded at this time. Please try again later."
     },
     "validate-program": {
       "introduction": "Below you see the PA's information for the specific program. Check it with the PA, adapt where necessary, and confirm.",
