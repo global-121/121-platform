@@ -15,15 +15,7 @@ import { CredentialEntity } from '../../sovrin/credential/credential.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
-
-export enum ProgramPhase {
-  design = 'design',
-  registrationValidation = 'registrationValidation',
-  inclusion = 'inclusion',
-  reviewInclusion = 'reviewInclusion',
-  payment = 'payment',
-  evaluation = 'evaluation',
-}
+import { ProgramPhase } from '../../models/program-phase.model';
 
 @Entity('program')
 export class ProgramEntity {

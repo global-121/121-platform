@@ -14,6 +14,7 @@ export class Person {
   selectedForValidationDate?: string;
   validationDate?: string;
   inclusionDate?: string;
+  status: PaStatus;
 }
 
 // Model for display (in table)
@@ -21,10 +22,21 @@ export class PersonRow {
   did: string;
   checkboxVisible: boolean;
   pa: string; // Display label
+  status: string;
   digitalIdCreated?: string;
   vulnerabilityAssessmentCompleted?: string | null;
   tempScore?: number;
   selectedForValidation?: string | null;
   vulnerabilityAssessmentValidated?: string | null;
   finalScore?: number;
+}
+
+export enum PaStatus {
+  created = 'created',
+  registered = 'registered',
+  selectedForValidation = 'selectedForValidation',
+  validated = 'validated',
+  included = 'included',
+  rejected = 'rejected',
+  excluded = 'excluded',
 }

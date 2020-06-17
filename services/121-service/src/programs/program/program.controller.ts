@@ -176,10 +176,7 @@ export class ProgramController {
   })
   @Get('enrolled/:programId')
   public async getEnrolled(@Param() param): Promise<any[]> {
-    return await this.programService.getEnrolledConnections(
-      param.programId,
-      false,
-    );
+    return await this.programService.getConnections(param.programId, false);
   }
 
   @Roles(UserRole.ProgramManager)
@@ -193,10 +190,7 @@ export class ProgramController {
   })
   @Get('enrolledPrivacy/:programId')
   public async getEnrolledWithNames(@Param() param): Promise<any[]> {
-    return await this.programService.getEnrolledConnections(
-      param.programId,
-      true,
-    );
+    return await this.programService.getConnections(param.programId, true);
   }
 
   @Roles(UserRole.ProjectOfficer)
