@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { DashboardPage } from './dashboard.page';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { MetricsComponent } from 'src/app/program/metrics/metrics.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [DashboardPage],
+  declarations: [DashboardPage, MetricsComponent],
 })
 export class DashboardPageModule {}

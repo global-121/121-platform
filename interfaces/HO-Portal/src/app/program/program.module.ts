@@ -9,7 +9,6 @@ import { ProgramsRoutingModule } from './program-routing.module';
 import { ProgramComponent } from './program.component';
 import { PhaseNavigationComponent } from './phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from './phase-next/phase-next.component';
-import { MetricsComponent } from './metrics/metrics.component';
 import { ProgramJsonComponent } from './program-json/program-json.component';
 import { ProgramPayoutComponent } from './program-payout/program-payout.component';
 import { ProgramPeopleComponent } from './program-people/program-people.component';
@@ -24,7 +23,6 @@ import { ExportInclusionComponent } from './export-inclusion/export-inclusion.co
     ProgramComponent,
     PhaseNavigationComponent,
     PhaseNextComponent,
-    MetricsComponent,
     ProgramJsonComponent,
     ProgramPayoutComponent,
     ProgramPeopleComponent,
