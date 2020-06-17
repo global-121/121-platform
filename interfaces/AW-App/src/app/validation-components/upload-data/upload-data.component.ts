@@ -29,17 +29,16 @@ export class UploadDataComponent implements ValidationComponent {
   }
 
   public async uploadData(): Promise<void> {
-    const credentials = await this.storage.get(this.ionicStorageTypes.credentials)
+    const credentials = await this.storage.get(this.ionicStorageTypes.credentials);
     if (credentials && credentials.length > 0) {
       this.uploadDataStored = true;
-      this.nrStored = credentials.length
+      this.nrStored = credentials.length;
       for (const credential of credentials) {
-        await this.issueCredendtial(credential)
-        await this.removeCredentialByDid(credential.did)
+        await this.issueCredendtial(credential);
+        await this.removeCredentialByDid(credential.did);
       }
       this.uploadReady = true;
-    }
-    else {
+    } else {
       this.uploadDataStored = false;
     }
     this.complete();
