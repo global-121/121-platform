@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { CustomTranslateService } from '../services/custom-translate.service';
 import { ConversationService } from '../services/conversation.service';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-account',
@@ -21,6 +22,7 @@ export class AccountPage {
   public unequalPasswords: string;
 
   constructor(
+    private authService: AuthService,
     public customTranslateService: CustomTranslateService,
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
@@ -36,10 +38,8 @@ export class AccountPage {
     this.noConnection = this.customTranslateService.translate('account.no-connection');
     this.loggedIn = this.customTranslateService.translate('account.logged-in');
     this.loggedOut = this.customTranslateService.translate('account.logged-out');
-  }
 
-  toggleValidation() {
-    this.events.publish('toggleValidation');
+    this.isLoggedIn = this.authService.isLoggedIn();
   }
 
   public async doLogin(event) {
@@ -47,7 +47,7 @@ export class AccountPage {
 
     event.preventDefault();
 
-    this.programsService.login(
+    this.authService.login(
       event.target.elements.email.value,
       event.target.elements.password.value
     ).then(
@@ -55,7 +55,6 @@ export class AccountPage {
         console.log('LoginPage login:', response);
         this.isLoggedIn = true;
         this.createToast(this.loggedIn);
-        this.toggleValidation();
         this.router.navigate(['/tabs/validation']);
       },
       (error) => {
@@ -73,7 +72,6 @@ export class AccountPage {
     this.programsService.logout();
     this.isLoggedIn = false;
     this.changePasswordForm = false;
-    this.toggleValidation();
     this.createToast(this.loggedOut);
   }
 

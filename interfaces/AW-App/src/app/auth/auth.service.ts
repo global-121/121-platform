@@ -79,7 +79,7 @@ export class AuthService {
           return;
         }
 
-        if (user.role === UserRole.Aidworker) {
+        if (user.role !== UserRole.Aidworker) {
           return;
         }
 
@@ -93,7 +93,7 @@ export class AuthService {
           return;
         }
 
-        this.router.navigate(['/home']);
+        this.router.navigate(['/tabs/validation']);
       },
       (error) => {
         console.log('AuthService error: ', error);
@@ -105,6 +105,6 @@ export class AuthService {
     this.jwtService.destroyToken();
     this.loggedIn = false;
     this.authenticationState.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/tabs/account']);
   }
 }
