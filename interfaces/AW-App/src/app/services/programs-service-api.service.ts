@@ -14,31 +14,6 @@ import { JwtService } from './jwt.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService, private jwtService: JwtService) {}
 
-  // login(email: string, password: string): Promise<any> {
-  //   console.log('ProgramsService : login()');
-
-  //   return this.apiService
-  //     .post(
-  //       environment.url_121_service_api,
-  //       '/user/login',
-  //       {
-  //         email,
-  //         password,
-  //       },
-  //       true,
-  //     )
-  //     .pipe(
-  //       map((response) => {
-  //         const user = response.user;
-
-  //         if (user && user.token) {
-  //           this.jwtService.saveToken(user.token);
-  //         }
-  //       }),
-  //     )
-  //     .toPromise();
-  // }
-
   login(email: string, password: string): Observable<any> {
     console.log('ProgramsService : login()');
 
