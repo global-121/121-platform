@@ -19,7 +19,6 @@ export class JwtService {
   public destroyToken(): void {
     window.sessionStorage.removeItem(this.tokenKey);
   }
-  
   public decodeToken(rawToken: string): any {
     return this.jwtHelper.decodeToken(rawToken);
   }

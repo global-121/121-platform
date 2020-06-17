@@ -75,7 +75,11 @@ export class AuthService {
 
         this.authenticationState.next(user);
 
-        if (!user || !user.token || user.role !== UserRole.Aidworker) {
+        if (!user || !user.token) {
+          return;
+        }
+
+        if (user.role !== UserRole.Aidworker) {
           return;
         }
 
