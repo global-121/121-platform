@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -9,7 +10,11 @@ export class HeaderComponent implements OnInit {
   @Input()
   public title: string;
 
-  constructor() {}
+  public programId: number;
+
+  constructor(private route: ActivatedRoute) {
+    this.programId = this.route.snapshot.params.id;
+  }
 
   ngOnInit() {}
 }

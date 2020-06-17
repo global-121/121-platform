@@ -22,6 +22,22 @@ const routes: Routes = [
     loadChildren: './help/help.module#HelpPageModule',
     canActivate: [AuthGuard],
   },
+  {
+    path: 'program/:id',
+    children: [
+      {
+        path: 'dashboard',
+        loadChildren: './pages/dashboard/dashboard.module#DashboardPageModule',
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'aid-workers',
+        loadChildren:
+          './pages/aid-workers/aid-workers.module#AidWorkersPageModule',
+        canActivate: [AuthGuard],
+      },
+    ],
+  },
 ];
 
 @NgModule({

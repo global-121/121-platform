@@ -24,8 +24,24 @@
   </ion-row>
   <ion-row>
     <ion-col size="auto">
-      [{{ 'header.dashboard'|translate }}]
-      [{{ 'header.aid-workers'|translate }}]
+      <ion-button
+        [routerLink]="['/program', programId, 'dashboard']"
+        routerDirection="root"
+        routerLinkActive
+        #rlaDashboard="routerLinkActive"
+        [fill]=" rlaDashboard.isActive ? 'solid' : 'outline'"
+      >
+        {{ 'header.dashboard'|translate }}
+      </ion-button>
+      <ion-button
+        [routerLink]="['/program', programId, 'aid-workers']"
+        routerDirection="root"
+        routerLinkActive
+        #rlaAidWorkers="routerLinkActive"
+        [fill]=" rlaAidWorkers.isActive ? 'solid' : 'outline'"
+      >
+        {{ 'header.aid-workers'|translate }}
+      </ion-button>
     </ion-col>
     <ion-col size="auto">
       {{ 'header.phases'|translate }}:

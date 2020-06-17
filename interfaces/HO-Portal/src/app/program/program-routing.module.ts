@@ -10,11 +10,6 @@ const programRoutes: Routes = [
     component: ProgramComponent,
     canActivate: [AuthGuard],
   },
-  {
-    path: 'program/:id/dashboard',
-    loadChildren: '../pages/dashboard/dashboard.module#DashboardPageModule',
-    canActivate: [AuthGuard],
-  },
 ];
 
 @NgModule({
