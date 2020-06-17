@@ -63,7 +63,7 @@
       "please-confirm": "Below is an overview of the PA's information. Please confirm.",
       "change": "Change information",
       "confirm-button": "Save",
-      "conclusion": "The validation data has been saved. Please make sure to upload it when internet is available."
+      "conclusion": "The validation data has been saved. Please make sure to upload it (now or when internet is available)."
     }
   },
   "connection": {

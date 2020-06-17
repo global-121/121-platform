@@ -34,7 +34,7 @@ export class UploadDataComponent implements ValidationComponent {
       this.uploadDataStored = true;
       this.nrStored = credentials.length;
       for (const credential of credentials) {
-        await this.issueCredendtial(credential);
+        await this.issueCredential(credential);
         await this.removeCredentialByDid(credential.did);
       }
       this.uploadReady = true;
@@ -44,7 +44,7 @@ export class UploadDataComponent implements ValidationComponent {
     this.complete();
   }
 
-  public async issueCredendtial(credential: any): Promise<void> {
+  public async issueCredential(credential: any): Promise<void> {
     await this.programsService.issueCredential(
       credential.did,
       credential.programId,
