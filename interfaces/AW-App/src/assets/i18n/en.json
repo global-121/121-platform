@@ -54,7 +54,8 @@
     "upload-data": {
       "uploading": "Validation data is being uploaded for {{nrStored}} Persons Affected. Wait a second.",
       "upload-result": "Validation data uploaded succesfully.",
-      "no-upload-data-stored": "There is no validation data to upload. Please validate someone first."
+      "no-upload-data-stored": "There is no validation data to upload. Please validate someone first.",
+      "upload-aborted": "No validation data could be uploaded at this time. Please try again later."
     },
     "validate-program": {
       "introduction": "Below you see the PA's information for the specific program. Check it with the PA, adapt where necessary, and confirm.",
@@ -63,7 +64,7 @@
       "please-confirm": "Below is an overview of the PA's information. Please confirm.",
       "change": "Change information",
       "confirm-button": "Save",
-      "conclusion": "The validation data has been saved. Please make sure to upload it when internet is available."
+      "conclusion": "The validation data has been saved. Please make sure to upload it (now or when internet is available)."
     }
   },
   "connection": {

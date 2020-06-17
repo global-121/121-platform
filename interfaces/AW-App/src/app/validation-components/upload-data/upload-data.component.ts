@@ -13,6 +13,7 @@ import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 })
 export class UploadDataComponent implements ValidationComponent {
   public uploadReady = false;
+  public uploadAborted = false;
   public uploadDataStored: boolean;
   public nrStored: number;
 
@@ -34,8 +35,7 @@ export class UploadDataComponent implements ValidationComponent {
       this.uploadDataStored = true;
       this.nrStored = credentials.length;
       for (const credential of credentials) {
-        await this.issueCredendtial(credential);
-        await this.removeCredentialByDid(credential.did);
+        await this.issueCredential(credential);
       }
       this.uploadReady = true;
     } else {
@@ -44,11 +44,18 @@ export class UploadDataComponent implements ValidationComponent {
     this.complete();
   }
 
-  public async issueCredendtial(credential: any): Promise<void> {
+  public async issueCredential(credential: any): Promise<void> {
     await this.programsService.issueCredential(
       credential.did,
       credential.programId,
       credential.attributes
+    ).then(
+      async () => {
+        await this.removeCredentialByDid(credential.did);
+      },
+      () => {
+        this.uploadAborted = true;
+      }
     );
   }
 
