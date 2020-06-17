@@ -671,10 +671,8 @@ export class ProgramService {
     )).filter(connection => connection.status === PaStatus.included);
 
     if (includedConnections.length < 1) {
-      return {
-        status: 'error',
-        message: 'There are no included PA for this program',
-      };
+      const errors = 'There are no included PA for this program';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     const fundingOverview = await this.fundingService.getProgramFunds(
@@ -802,7 +800,7 @@ export class ProgramService {
     const paymentList = [];
     const connectionsForFsp = [];
     for (let connection of includedConnections) {
-      if (connection.fsp.id === fsp.id) {
+      if (connection.fsp && connection.fsp.id === fsp.id) {
         let paymentDetails = {
           // phone: connection.phoneNumber,
           id_details: connection.customData['id_number'],

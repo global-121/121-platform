@@ -209,9 +209,9 @@ export class ProgramPayoutComponent implements OnChanges {
         },
         (err) => {
           console.log('err: ', err);
-          this.actionResult(
-            this.translate.instant('page.program.program-payout.payout-error'),
-          );
+          if (err.error.errors) {
+            this.actionResult(err.error.errors);
+          }
           this.cancelPayout(installment);
         },
       );
