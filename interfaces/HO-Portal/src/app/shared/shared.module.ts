@@ -9,6 +9,7 @@ import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.componen
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
 import { HeaderComponent } from '../components/header/header.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { HeaderComponent } from '../components/header/header.component';
     FormsModule,
     RouterModule,
     TranslateModule.forChild(),
+    NgxDatatableModule,
   ],
   exports: [
     ConfirmPromptComponent,
@@ -31,6 +33,7 @@ import { HeaderComponent } from '../components/header/header.component';
     UserStateComponent,
     RouterModule,
     TranslateModule,
+    NgxDatatableModule,
   ],
 })
 export class SharedModule {}

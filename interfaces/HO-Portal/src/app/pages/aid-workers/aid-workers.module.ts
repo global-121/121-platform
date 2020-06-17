@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { AidWorkersPage } from './aid-workers.page';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ManageAidworkersComponent } from 'src/app/program/manage-aidworkers/manage-aidworkers.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [AidWorkersPage],
+  declarations: [AidWorkersPage, ManageAidworkersComponent],
 })
 export class AidWorkersPageModule {}

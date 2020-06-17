@@ -90,11 +90,6 @@
                             (isCompleted)="onPayoutCompleted($event)"
         ></app-program-payout>
 
-        <app-manage-aidworkers [selectedPhase]="selectedPhase"
-                                [programId]="program?.id"
-                                [userRole]="currentUserRole"
-        ></app-manage-aidworkers>
-
         <app-program-details [selectedPhase]="selectedPhase"
                              [programId]="program?.id"
         ></app-program-details>
