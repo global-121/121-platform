@@ -1,0 +1,19 @@
+<span style="display: inline-block;">
+  <span class="ion-hide-sm-down">
+    {{ 'user-state.logged-in-as'|translate }}:
+  </span>
+  <strong>{{ userRole }}</strong>
+  <br class="ion-hide-sm-down">
+  <ion-note class="ion-text-nowrap ion-hide-sm-down">{{ userName }}</ion-note>
+</span>
+
+<ion-button
+  type="button"
+  [title]="'user-state.log-out'|translate"
+  [attr.ariaLabel]="'user-state.log-out'|translate"
+  size="small"
+  fill="clear"
+>
+  <span class="ion-hide-sm-down">{{ 'user-state.log-out'|translate }}</span>
+  <ion-icon name="log-out" slot="end"></ion-icon>
+</ion-button>

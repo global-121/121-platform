@@ -6,13 +6,22 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
+import { UserStateComponent } from '../components/user-state/user-state.component';
+import { HeaderComponent } from '../components/header/header.component';
 
 @NgModule({
-  declarations: [ConfirmPromptComponent, PasswordToggleInputComponent],
+  declarations: [
+    ConfirmPromptComponent,
+    PasswordToggleInputComponent,
+    HeaderComponent,
+    UserStateComponent,
+  ],
   imports: [CommonModule, IonicModule, FormsModule, TranslateModule.forChild()],
   exports: [
     ConfirmPromptComponent,
     PasswordToggleInputComponent,
+    HeaderComponent,
+    UserStateComponent,
     TranslateModule,
   ],
 })
