@@ -1,0 +1,125 @@
+{
+  "published": false,
+  "state": "design",
+  "location": "Location A",
+  "ngo": "Yellow Cross",
+  "countryId": 1,
+  "title": {
+    "en": "Cash program Westeros"
+  },
+  "description": {
+    "en": "Short description."
+  },
+  "descLocation": {
+    "en": "Location such and such."
+  },
+  "descHumanitarianObjective": {
+    "en": "Humanitarian objective of program is such and such."
+  },
+  "descCashType": {
+    "en": "Unconditional multi-purpose"
+  },
+  "startDate": "2020-01-01T12:00:00Z",
+  "endDate": "2020-12-31T12:00:00Z",
+  "currency": "MWK",
+  "distributionFrequency": "month",
+  "distributionDuration": 3,
+  "fixedTransferValue": 500,
+  "financialServiceProviders": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ],
+  "protectionServiceProviders": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ],
+  "inclusionCalculationType": "highestScoresX",
+  "minimumScore": 0,
+  "highestScoresX": 250,
+  "meetingDocuments": {
+    "en": "Document 1; Document 2; Document 3"
+  },
+  "notifications": {
+    "en": {
+      "included": "You have been included in this program please wait for further instructions",
+      "excluded": "Unfortunately you have not been included for this program"
+    }
+  },
+  "customCriteria": [
+    {
+      "criterium": "name",
+      "label": {
+        "en": "My full name:"
+      },
+      "answerType": "text",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    },
+    {
+      "criterium": "dob",
+      "label": {
+        "en": "My date of birth:"
+      },
+      "answerType": "date",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    },
+    {
+      "criterium": "house",
+      "label": {
+        "en": "1. I am a..?"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "lannister",
+          "label": {
+            "en": "Lannister"
+          }
+        },
+        {
+          "option": "stark",
+          "label": {
+            "en": "Stark"
+          }
+        },
+        {
+          "option": "greyjoy",
+          "label": {
+            "en": "Greyjoy"
+          }
+        }
+      ],
+      "scoring": {
+        "lannister": 3,
+        "stark": 6,
+        "greyjoy": 9
+      }
+    },
+    {
+      "criterium": "dragon",
+      "label": {
+        "en": "2. How many dragons do you own?"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {
+        "multiplier": 2
+      }
+    }
+  ]
+}
