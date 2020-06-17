@@ -1,5 +1,18 @@
 <section>
-  <dialogue-turn>
-    {{ 'validation.upload-data.uploading'|translate }}
+  <dialogue-turn *ngIf="uploadDataStored">
+    <div
+    [innerHTML]="'validation.upload-data.uploading'|translate:{ nrStored:'<strong>'+nrStored+'</strong>' }"
+    class="ion-margin-bottom">
+  </div>
+  </dialogue-turn>
+  <div class="loading-indicator" [hidden]="!uploadDataStored || uploadReady">
+    <ion-spinner name="dots" class="loading-indicator--spinner">
+    </ion-spinner>
+  </div>
+  <dialogue-turn *ngIf="uploadReady">
+    {{ 'validation.upload-data.upload-result'|translate }}
+  </dialogue-turn>
+  <dialogue-turn *ngIf="!uploadDataStored" [isSpoken]="noUploadDataStored">
+    {{ 'validation.upload-data.no-upload-data-stored'|translate }}
   </dialogue-turn>
 </section>

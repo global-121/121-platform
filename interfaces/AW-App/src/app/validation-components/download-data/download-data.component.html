@@ -5,15 +5,15 @@
     {{ 'validation.download-data.downloading'|translate }}
   </dialogue-turn>
   <div class="loading-indicator"
-       [hidden]="downloadReady || downloadAborted" 
+       [hidden]="downloadReady || downloadAborted"
   >
-    <ion-spinner name="dots" 
+    <ion-spinner name="dots"
                  class="loading-indicator--spinner"
     >
     </ion-spinner>
   </div>
   <dialogue-turn *ngIf="downloadReady"
-                 [isSpoken]="downloadReady"      
+                 [isSpoken]="downloadReady"
   >
     <div
       [innerHTML]="'validation.download-data.download-result'|translate:{ nrDownloaded:'<strong>'+nrDownloaded+'</strong>' }"

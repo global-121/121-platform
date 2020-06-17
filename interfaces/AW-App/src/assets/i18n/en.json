@@ -52,9 +52,9 @@
       "main-menu": "Back to main menu"
     },
     "upload-data": {
-      "uploading": "Validation data is being downloaded. Wait a second.",
-      "upload-result": "Validation data downloaded for {{nrDownloaded}} Persons Affected.",
-      "upload-aborted": "No validation data could be downloaded at this time. Please try again later."
+      "uploading": "Validation data is being uploaded for {{nrStored}} Persons Affected. Wait a second.",
+      "upload-result": "Validation data uploaded succesfully.",
+      "no-upload-data-stored": "There is no validation data to upload. Please validate someone first."
     },
     "validate-program": {
       "introduction": "Below you see the PA's information for the specific program. Check it with the PA, adapt where necessary, and confirm.",

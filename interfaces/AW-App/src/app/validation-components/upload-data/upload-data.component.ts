@@ -12,6 +12,10 @@ import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
   styleUrls: ['./upload-data.component.scss'],
 })
 export class UploadDataComponent implements ValidationComponent {
+  public uploadReady = false;
+  public uploadDataStored: boolean;
+  public nrStored: number;
+
   public ionicStorageTypes = IonicStorageTypes;
 
   constructor(
@@ -26,33 +30,40 @@ export class UploadDataComponent implements ValidationComponent {
 
   public async uploadData(): Promise<void> {
     const credentials = await this.storage.get(this.ionicStorageTypes.credentials)
-    for (const credential of credentials) {
-      await this.issueDeleteCredential(credential)
+    if (credentials && credentials.length > 0) {
+      this.uploadDataStored = true;
+      this.nrStored = credentials.length
+      for (const credential of credentials) {
+        await this.issueCredendtial(credential)
+        await this.removeCredentialByDid(credential.did)
+      }
+      this.uploadReady = true;
     }
-
+    else {
+      this.uploadDataStored = false;
+    }
+    this.complete();
   }
 
-  public async issueDeleteCredential(credential: any) {
+  public async issueCredendtial(credential: any): Promise<void> {
     await this.programsService.issueCredential(
       credential.did,
       credential.programId,
       credential.attributes
     );
-    await this.removeCredentialByDid(credential.did);
   }
 
-  public async removeCredentialByDid(did: string) {
+  public async removeCredentialByDid(did: string): Promise<void>  {
     const currentCredentials = await this.storage.get(this.ionicStorageTypes.credentials);
     currentCredentials.splice(currentCredentials.findIndex(item => item.did === did), 1);
     await this.storage.set(this.ionicStorageTypes.credentials, currentCredentials);
   }
 
-
-  getNextSection() {
+  getNextSection(): string {
     return ValidationComponents.mainMenu;
   }
 
-  complete() {
+  complete(): void {
     this.conversationService.onSectionCompleted({
       name: ValidationComponents.uploadData,
       data: {},
