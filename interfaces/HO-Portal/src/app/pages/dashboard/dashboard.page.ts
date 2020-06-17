@@ -9,6 +9,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   styleUrls: ['./dashboard.page.scss'],
 })
 export class DashboardPage implements OnInit {
+  public programId = this.route.snapshot.params.id;
   public program: Program;
 
   constructor(
@@ -17,7 +18,6 @@ export class DashboardPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const programId = this.route.snapshot.params.id;
-    this.program = await this.programsService.getProgramById(programId);
+    this.program = await this.programsService.getProgramById(this.programId);
   }
 }
