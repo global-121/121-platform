@@ -228,7 +228,7 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   public async validateAttributes() {
     const attributes = this.createAttributes(Object.values(this.answers));
-    this.storeCredentialOffline(attributes);
+    await this.storeCredentialOffline(attributes);
     this.programCredentialIssued = true;
     this.answers = {};
     this.complete();

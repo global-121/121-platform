@@ -19,7 +19,9 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { ProgramEntity, ProgramPhase } from './program.entity';
+import { ProgramEntity } from './program.entity';
+import { ProgramPhase } from '../../models/program-phase.model';
+import { PaStatus } from '../../models/pa-status.model';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 
@@ -643,7 +645,10 @@ export class ProgramService {
   }
 
   public async getTotalIncluded(programId): Promise<number> {
-    const includedConnections = await this.getIncludedConnections(programId);
+    const includedConnections = (await this.getConnections(
+      programId,
+      false,
+    )).filter(connection => connection.status === PaStatus.included);
     return includedConnections.length;
   }
 
@@ -660,13 +665,14 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const includedConnections = await this.getIncludedConnections(programId);
+    const includedConnections = (await this.getConnections(
+      programId,
+      false,
+    )).filter(connection => connection.status === PaStatus.included);
 
     if (includedConnections.length < 1) {
-      return {
-        status: 'error',
-        message: 'There are no included PA for this program',
-      };
+      const errors = 'There are no included PA for this program';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     const fundingOverview = await this.fundingService.getProgramFunds(
@@ -690,58 +696,77 @@ export class ProgramService {
     return { status: 'succes', message: 'Sent instructions to FSP' };
   }
 
-  public async getEnrolledConnections(
+  private getPaStatus(connection, programId: number): PaStatus {
+    let paStatus: PaStatus;
+    if (connection.programsIncluded.includes(+programId)) {
+      paStatus = PaStatus.included;
+    } else if (connection.programsExcluded.includes(+programId)) {
+      paStatus = PaStatus.excluded;
+    } else if (connection.validationDate) {
+      paStatus = PaStatus.validated;
+    } else if (connection.selectedForValidationDate) {
+      paStatus = PaStatus.selectedForValidation;
+    } else if (connection.appliedDate) {
+      paStatus = PaStatus.registered;
+    } else if (connection.created) {
+      paStatus = PaStatus.created;
+    }
+    return paStatus;
+  }
+
+  public async getConnections(
     programId: number,
     privacy: boolean,
   ): Promise<any[]> {
     let selectedConnections;
     if (!privacy) {
-      selectedConnections = await this.getConnections(programId);
+      selectedConnections = await this.getAllConnections(programId);
     } else {
       selectedConnections = await this.getIncludedExcludedConnections(
         programId,
       );
     }
-    const connectionsReponse = [];
+    const connectionsResponse = [];
     for (let connection of selectedConnections) {
-      const connectionReponse = {};
-      connectionReponse['did'] = connection.did;
-      connectionReponse['score'] = connection.inclusionScore;
-      connectionReponse['tempScore'] = connection.temporaryInclusionScore;
-      connectionReponse['created'] = connection.created;
-      connectionReponse['updated'] = connection.updated;
-      connectionReponse['enrolled'] = connection.programsEnrolled.includes(
+      const connectionResponse = {};
+      connectionResponse['did'] = connection.did;
+      connectionResponse['score'] = connection.inclusionScore;
+      connectionResponse['tempScore'] = connection.temporaryInclusionScore;
+      connectionResponse['created'] = connection.created;
+      connectionResponse['updated'] = connection.updated;
+      connectionResponse['enrolled'] = connection.programsEnrolled.includes(
         +programId,
       );
-      connectionReponse['included'] = connection.programsIncluded.includes(
+      connectionResponse['included'] = connection.programsIncluded.includes(
         +programId,
       );
-      connectionReponse['excluded'] = connection.programsExcluded.includes(
+      connectionResponse['excluded'] = connection.programsExcluded.includes(
         +programId,
       );
-      connectionReponse['appliedDate'] = connection.appliedDate;
-      connectionReponse['selectedForValidationDate'] =
+      connectionResponse['appliedDate'] = connection.appliedDate;
+      connectionResponse['selectedForValidationDate'] =
         connection.selectedForValidationDate;
-      connectionReponse['validationDate'] = connection.validationDate;
-      connectionReponse['inclusionDate'] = connection.inclusionDate;
+      connectionResponse['validationDate'] = connection.validationDate;
+      connectionResponse['inclusionDate'] = connection.inclusionDate;
       if (privacy) {
-        connectionReponse['name'] = connection.customData.name;
-        connectionReponse['dob'] = connection.customData.dob;
+        connectionResponse['name'] = connection.customData.name;
+        connectionResponse['dob'] = connection.customData.dob;
       }
-      connectionsReponse.push(connectionReponse);
+      connectionResponse['status'] = this.getPaStatus(connection, +programId);
+      connectionsResponse.push(connectionResponse);
     }
-    return connectionsReponse;
+    return connectionsResponse;
   }
 
-  private async getConnections(programId): Promise<ConnectionEntity[]> {
+  private async getAllConnections(programId): Promise<ConnectionEntity[]> {
     const connections = await this.connectionRepository.find({
       order: { inclusionScore: 'DESC' },
     });
     const enrolledConnections = [];
     for (let connection of connections)
       if (
-        connection.programsApplied.includes(+programId) ||
-        connection.programsApplied.length === 0
+        connection.programsApplied.includes(+programId) || // Get connections applied to your program ..
+        connection.programsApplied.length === 0 // .. and connections applied to no program (so excluding connections applied to other program)
       ) {
         enrolledConnections.push(connection);
       }
@@ -765,85 +790,6 @@ export class ProgramService {
     return enrolledConnections;
   }
 
-  private async getConnectionsStartedProcess(
-    programId,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
-      order: { inclusionScore: 'DESC' },
-    });
-    const startedConnections = [];
-    for (let connection of connections)
-      if (
-        connection.programsApplied.includes(+programId) ||
-        connection.programsApplied.length === 0
-      ) {
-        startedConnections.push(connection);
-      }
-    return startedConnections;
-  }
-
-  private async getConnectionsFinishedEnlisting(
-    programId,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
-      order: { inclusionScore: 'DESC' },
-    });
-    const pendingConnections = [];
-    for (let connection of connections)
-      if (connection.programsApplied.includes(+programId)) {
-        pendingConnections.push(connection);
-      }
-    return pendingConnections;
-  }
-
-  private async getConnectionsAwaitingInclusionDecision(
-    programId,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
-      order: { inclusionScore: 'DESC' },
-    });
-    const enrolledConnections = [];
-    for (let connection of connections)
-      if (
-        connection.programsEnrolled.includes(+programId) &&
-        !connection.programsIncluded.includes(+programId) &&
-        !connection.programsExcluded.includes(+programId)
-      ) {
-        enrolledConnections.push(connection);
-      }
-    return enrolledConnections;
-  }
-
-  private async getIncludedConnections(
-    programId: number,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
-      relations: ['fsp'],
-    });
-    const includedConnections = [];
-    for (let connection of connections) {
-      if (connection.programsIncluded.includes(+programId)) {
-        includedConnections.push(connection);
-      }
-    }
-    return includedConnections;
-  }
-
-  private async getExcludedConnections(
-    programId: number,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
-      relations: ['fsp'],
-    });
-    const excludedConnections = [];
-    for (let connection of connections) {
-      if (connection.programsExcluded.includes(+programId)) {
-        excludedConnections.push(connection);
-      }
-    }
-    return excludedConnections;
-  }
-
   private async createSendPaymentListFsp(
     fsp: FinancialServiceProviderEntity,
     includedConnections: ConnectionEntity[],
@@ -854,7 +800,7 @@ export class ProgramService {
     const paymentList = [];
     const connectionsForFsp = [];
     for (let connection of includedConnections) {
-      if (connection.fsp.id === fsp.id) {
+      if (connection.fsp && connection.fsp.id === fsp.id) {
         let paymentDetails = {
           // phone: connection.phoneNumber,
           id_details: connection.customData['id_number'],
@@ -1027,20 +973,28 @@ export class ProgramService {
     return metrics;
   }
 
+  private filteredLength(connections, filterStatus: PaStatus): number {
+    const filteredConnections = connections.filter(
+      connection => connection.status === filterStatus,
+    );
+    return filteredConnections.length;
+  }
+
   public async getPaMetrics(programId): Promise<PaMetrics> {
     const metrics = new PaMetrics();
-    metrics.startedEnlisting = (await this.getConnectionsStartedProcess(
-      programId,
-    )).length;
-    metrics.finishedEnlisting = (await this.getConnectionsFinishedEnlisting(
-      programId,
-    )).length;
-    metrics.included = await this.getTotalIncluded(programId);
-    metrics.excluded = (await this.getExcludedConnections(programId)).length;
-    const paWaiting = (await this.getConnectionsAwaitingInclusionDecision(
-      programId,
-    )).length;
-    metrics.verified = paWaiting + metrics.included + metrics.excluded;
+    const connections = await this.getConnections(programId, false);
+
+    metrics.included = this.filteredLength(connections, PaStatus.included);
+    metrics.excluded = this.filteredLength(connections, PaStatus.excluded);
+    metrics.verified =
+      this.filteredLength(connections, PaStatus.validated) +
+      metrics.included +
+      metrics.excluded;
+    metrics.finishedEnlisting =
+      this.filteredLength(connections, PaStatus.registered) + metrics.verified;
+    metrics.startedEnlisting =
+      this.filteredLength(connections, PaStatus.created) +
+      metrics.finishedEnlisting;
 
     return metrics;
   }

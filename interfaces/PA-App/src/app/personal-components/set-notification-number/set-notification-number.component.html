@@ -85,14 +85,4 @@
       <span>{{ 'personal.set-notification-number.conclusion-skipped'|translate }}</span>
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="ngo"
-                 *ngIf="choiceMade && !useLocalStorage"
-                 [isSpoken]="choiceMade && !useLocalStorage"
-                 isConnected="true"
-  >
-    <p>
-      <play-text-audio key="personal.set-notification-number.logout-info" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.set-notification-number.logout-info'|translate }}
-    </p>
-  </dialogue-turn>
 </section>

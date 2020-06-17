@@ -112,7 +112,6 @@
         "total-included": "Number of PA included",
         "total-amount": "Total amount to payout:",
         "payout-success": "Payout successful.",
-        "payout-error": "Payout unsuccessful. Are there enough funds?",
         "none-included": "No included people yet.",
         "export-list": "Export list",
         "export-error": "Something went wrong with the export."
@@ -124,12 +123,22 @@
         "column": {
           "select": "Select",
           "person": "Person Affected",
+          "status": "Status",
           "digital-id-created": "Created Digital ID",
           "vulnerability-assessment-completed": "Completed Vulnerability Assessment",
           "selected-for-validation": "Selected for validation",
           "vulnerability-assessment-validated": "Validated Vulnerability Assessment",
           "final-score": "Validated inclusion score",
           "temp-score": "Temporary inclusion score"
+        },
+        "status": {
+          "created": "Created",
+          "registered": "Registered",
+          "selectedForValidation": "Selected for Validation",
+          "validated": "Validated",
+          "included": "Included",
+          "excluded": "Excluded",
+          "rejected": "Rejected"
         },
         "actions": {
           "select-for-validation": "Select for validation"

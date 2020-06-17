@@ -1,5 +1,7 @@
 <section>
-  <dialogue-turn *ngIf="uploadDataStored">
+  <dialogue-turn *ngIf="uploadDataStored && !uploadAborted && !uploadReady"
+                 [isSpoken]="uploadDataStored && !uploadAborted && !uploadReady"
+  >
     <div
     [innerHTML]="'validation.upload-data.uploading'|translate:{ nrStored:'<strong>'+nrStored+'</strong>' }"
     class="ion-margin-bottom">
@@ -9,10 +11,15 @@
     <ion-spinner name="dots" class="loading-indicator--spinner">
     </ion-spinner>
   </div>
-  <dialogue-turn *ngIf="uploadReady">
+  <dialogue-turn *ngIf="uploadReady && !uploadAborted"
+                 [isSpoken]="uploadReady && !uploadAborted"
+  >
     {{ 'validation.upload-data.upload-result'|translate }}
   </dialogue-turn>
   <dialogue-turn *ngIf="!uploadDataStored" [isSpoken]="noUploadDataStored">
     {{ 'validation.upload-data.no-upload-data-stored'|translate }}
+  </dialogue-turn>
+  <dialogue-turn *ngIf="uploadAborted" [isSpoken]="uploadAborted">
+    {{ 'validation.upload-data.upload-aborted'|translate }}
   </dialogue-turn>
 </section>

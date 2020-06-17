@@ -11,7 +11,7 @@
                 class="ion-no-padding ion-text-wrap"
                 [disabled]="option.disabled || optionSelected"
       >
-        <ion-label>{{ option.option }}</ion-label>
+        <ion-label>{{ option.option }} <ion-badge *ngIf="option.counter">{{option.counter}}</ion-badge></ion-label>
         <ion-radio value="{{ option.id }}"></ion-radio>
       </ion-item>
     </ion-radio-group>
