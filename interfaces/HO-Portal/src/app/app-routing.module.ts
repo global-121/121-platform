@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
+import { UserRole } from './auth/user-role.enum';
 
 const routes: Routes = [
   {
@@ -35,6 +36,9 @@ const routes: Routes = [
         loadChildren:
           './pages/aid-workers/aid-workers.module#AidWorkersPageModule',
         canActivate: [AuthGuard],
+        data: {
+          roles: [UserRole.ProgramManager],
+        },
       },
     ],
   },

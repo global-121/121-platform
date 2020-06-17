@@ -34,6 +34,7 @@
         {{ 'header.dashboard'|translate }}
       </ion-button>
       <ion-button
+        [disabled]="!showManageAidworkers"
         [routerLink]="['/program', programId, 'aid-workers']"
         routerDirection="root"
         routerLinkActive
