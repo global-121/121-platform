@@ -1,0 +1,13 @@
+{
+  "fsp": "Iron Bank of Braavos",
+  "attributes": [
+    {
+      "name": "personalId",
+      "label": {
+        "en": "What is your national ID, so we can transfer money to your bank account"
+      },
+      "answerType": "text",
+      "options": null
+    }
+  ]
+}
