@@ -210,9 +210,7 @@ export class ProgramPayoutComponent implements OnChanges {
         (err) => {
           console.log('err: ', err);
           if (err.error.errors) {
-            this.actionResult(
-              err.error.errors
-            );
+            this.actionResult(err.error.errors);
           }
           this.cancelPayout(installment);
         },
