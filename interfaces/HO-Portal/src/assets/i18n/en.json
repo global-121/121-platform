@@ -19,6 +19,9 @@
     "log-out": "Log out"
   },
   "page": {
+    "dashboard": {
+      "pageTitle": "Dashboard"
+    },
     "login": {
       "form": {
         "email": {
