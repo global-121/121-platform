@@ -2,11 +2,11 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TranslateModule } from '@ngx-translate/core';
+import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ProgramPayoutComponent } from './program-payout.component';
-import { RouterModule } from '@angular/router';
 
 describe('ProgramPayoutComponent', () => {
   let component: ProgramPayoutComponent;
@@ -17,7 +17,7 @@ describe('ProgramPayoutComponent', () => {
       declarations: [ProgramPayoutComponent],
       imports: [
         TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
+        RouterTestingModule,
         FormsModule,
         HttpClientTestingModule,
       ],

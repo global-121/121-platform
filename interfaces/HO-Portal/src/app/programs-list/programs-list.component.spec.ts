@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProgramsListComponent } from './programs-list.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ProgramListComponent', () => {
@@ -15,7 +15,7 @@ describe('ProgramListComponent', () => {
       declarations: [ProgramsListComponent],
       imports: [
         TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
+        RouterTestingModule,
         HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

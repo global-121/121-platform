@@ -2,10 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 import { ProgramComponent } from './program.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ProgramComponent', () => {
   let component: ProgramComponent;
@@ -16,7 +16,7 @@ describe('ProgramComponent', () => {
       declarations: [ProgramComponent],
       imports: [
         TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
+        RouterTestingModule,
         HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
