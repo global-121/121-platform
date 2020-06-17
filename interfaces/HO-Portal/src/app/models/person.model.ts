@@ -22,7 +22,7 @@ export class PersonRow {
   did: string;
   checkboxVisible: boolean;
   pa: string; // Display label
-  status: PaStatus;
+  status: string;
   digitalIdCreated?: string;
   vulnerabilityAssessmentCompleted?: string | null;
   tempScore?: number;
