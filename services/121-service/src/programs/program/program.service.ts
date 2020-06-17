@@ -663,10 +663,8 @@ export class ProgramService {
     const includedConnections = await this.getIncludedConnections(programId);
 
     if (includedConnections.length < 1) {
-      return {
-        status: 'error',
-        message: 'There are no included PA for this program',
-      };
+      const errors = 'There are no included PA for this program';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     const fundingOverview = await this.fundingService.getProgramFunds(
