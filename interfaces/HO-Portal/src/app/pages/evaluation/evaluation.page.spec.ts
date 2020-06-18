@@ -1,8 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { EvaluationPage } from './evaluation.page';
 import { TranslateModule } from '@ngx-translate/core';
+import { EvaluationPage } from './evaluation.page';
 
 describe('EvaluationPage', () => {
   let component: EvaluationPage;
