@@ -10,7 +10,6 @@ import { ProgramComponent } from './program.component';
 import { PhaseNavigationComponent } from './phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from './phase-next/phase-next.component';
 import { ProgramPeopleComponent } from './program-people/program-people.component';
-import { ProgramPeopleAffectedComponent } from './program-people-affected/program-people-affected.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +17,6 @@ import { ProgramPeopleAffectedComponent } from './program-people-affected/progra
     PhaseNavigationComponent,
     PhaseNextComponent,
     ProgramPeopleComponent,
-    ProgramPeopleAffectedComponent,
   ],
   imports: [
     CommonModule,

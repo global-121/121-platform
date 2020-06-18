@@ -1,4 +1,4 @@
-import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ProgramPhase, Program } from 'src/app/models/program.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Person, PersonRow } from 'src/app/models/person.model';
@@ -14,26 +14,15 @@ import { BulkActionId, BulkAction } from 'src/app/services/bulk-actions.models';
   templateUrl: './program-people-affected.component.html',
   styleUrls: ['./program-people-affected.component.scss'],
 })
-export class ProgramPeopleAffectedComponent implements OnChanges {
-  @Input()
-  public selectedPhase: ProgramPhase;
-  @Input()
-  public activePhase: ProgramPhase;
+export class ProgramPeopleAffectedComponent implements OnInit {
   @Input()
   public programId: number;
   @Input()
   public userRole: UserRole;
 
-  public componentVisible: boolean;
-  private presentInPhases = [
-    ProgramPhase.design,
-    ProgramPhase.registrationValidation,
-    ProgramPhase.inclusion,
-    ProgramPhase.reviewInclusion,
-    ProgramPhase.payment,
-    ProgramPhase.evaluation,
-  ];
   public program: Program;
+  public activePhase: ProgramPhase;
+
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
@@ -169,28 +158,13 @@ export class ProgramPeopleAffectedComponent implements OnChanges {
     ];
   }
 
-  async ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes.selectedPhase &&
-      typeof changes.selectedPhase.currentValue === 'string'
-    ) {
-      this.checkVisibility(this.selectedPhase);
-      await this.loadData();
-      this.updateBulkActions();
-    }
-    if (
-      changes.activePhase &&
-      typeof changes.activePhase.currentValue === 'string'
-    ) {
-      this.updateBulkActions();
-    }
-    if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
-      this.updateBulkActions();
-    }
-  }
+  async ngOnInit() {
+    this.program = await this.programsService.getProgramById(this.programId);
+    this.activePhase = this.program.state;
 
-  public checkVisibility(phase: ProgramPhase) {
-    this.componentVisible = this.presentInPhases.includes(phase);
+    await this.loadData();
+
+    this.updateBulkActions();
   }
 
   private updateBulkActions() {

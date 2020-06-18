@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { RegistrationValidationPage } from './registration-validation.page';
+import { ProgramPeopleAffectedComponent } from 'src/app/program/program-people-affected/program-people-affected.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [RegistrationValidationPage],
+  declarations: [RegistrationValidationPage, ProgramPeopleAffectedComponent],
 })
 export class RegistrationValidationPageModule {}

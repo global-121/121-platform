@@ -1,94 +1,103 @@
-<section *ngIf="componentVisible">
-  <h2>{{ 'page.program.program-people-affected.section-title'|translate }}</h2>
+<h2>{{ 'page.program.program-people-affected.section-title'|translate }}</h2>
 
-  <ion-row class="ion-align-items-center">
-    <select name="bulkActions"
-            [title]="'page.program.program-people-affected.choose-action'|translate"
-            (change)="selectAction()"
-            class="ion-margin-end"
-            [(ngModel)]="action"
-    >
-      <ng-container *ngFor="let action of bulkActions;">
-        <option *ngIf="action.enabled" [value]="action.id" >{{ action.label }}</option>
-      </ng-container>
-    </select>
-    <confirm-prompt [disabled]="applyBtnDisabled"
-                    (confirm)="applyAction()"
-                    [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
-                    [message]="submitWarning.message"
-                    class="ion-float-end"
-    >
-      {{ 'page.program.program-people-affected.apply-action'|translate }}
-    </confirm-prompt>
-  </ion-row>
-
-  <ngx-datatable #people
-                class="bootstrap"
-                limit="50"
-                columnMode="fixed"
-                rowHeight="auto"
-                scrollbarH="true"
-                headerHeight="50"
-                footerHeight="50"
-                reorderable="false"
-                sortType="single"
-                loadingIndicator="true"
-                [columns]="columns"
-                [rows]="allPeopleAffected"
-                selectionType="checkbox"
-                checkboxable="true"
-                headerCheckboxable="true"
-                [displayCheck]="isRowSelectable"
-                [selected]="selectedPeople"
-                (select)="onSelect($event.selected)"
-                [selectCheck]="isRowSelectable"
+<ion-row class="ion-align-items-center">
+  <select
+    name="bulkActions"
+    [title]="'page.program.program-people-affected.choose-action'|translate"
+    (change)="selectAction()"
+    class="ion-margin-end"
+    [(ngModel)]="action"
   >
-    <ngx-datatable-column prop="selected"
-                          width="75"
-                          resizable="false"
-                          headerClass="ion-align-self-end"
-    >
-      <ng-template ngx-datatable-header-template
-                   let-value="value"
-                   let-allRowsSelected="allRowsSelected"
-                   let-selectFn="selectFn"
-      >
-        <label>
-          <input type="checkbox"
-                 [checked]="headerChecked"
-                 [disabled]="!headerSelectAllVisible"
-                 [ngStyle]="headerSelectAllVisible ? {} : {'visibility':'hidden'}"
-                 (change)="selectFn(!allRowsSelected)"
-          />
-          {{ 'page.program.program-people-affected.column.select'|translate }}
-        </label>
-      </ng-template>
-      <ng-template ngx-datatable-cell-template
-                   let-row="row"
-                   let-value="value"
-                   let-isSelected="isSelected"
-                   let-onCheckboxChangeFn="onCheckboxChangeFn"
-      >
-        <input type="checkbox"
-               [checked]="isSelected"
-               (change)="onCheckboxChangeFn($event)"
-               *ngIf="row.checkboxVisible"
-        />
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column *ngFor="let column of columns;"
-                          [prop]="column.prop"
-                          [name]="column.name"
-                          [width]="column.width"
-                          [minWidth]="column.minWidth"
-                          [maxWidth]="column.maxWidth"
-                          [draggable]="column.draggable"
-                          [resizeable]="column.resizable"
-                          [sortable]="column.sortable"
-                          [canAutoResize]="column.canAutoResize"
-                          [headerClass]="column.headerClass"
-                          [cellClass]="column.cellClass"
-    ></ngx-datatable-column>
-  </ngx-datatable>
+    <ng-container *ngFor="let action of bulkActions;">
+      <option
+        *ngIf="action.enabled"
+        [value]="action.id"
+      >{{ action.label }}</option>
+    </ng-container>
+  </select>
+  <confirm-prompt
+    [disabled]="applyBtnDisabled"
+    (confirm)="applyAction()"
+    [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
+    [message]="submitWarning.message"
+    class="ion-float-end"
+  >
+    {{ 'page.program.program-people-affected.apply-action'|translate }}
+  </confirm-prompt>
+</ion-row>
 
-</section>
+<ngx-datatable
+  #people
+  class="bootstrap"
+  limit="50"
+  columnMode="fixed"
+  rowHeight="auto"
+  scrollbarH="true"
+  headerHeight="50"
+  footerHeight="50"
+  reorderable="false"
+  sortType="single"
+  loadingIndicator="true"
+  [columns]="columns"
+  [rows]="allPeopleAffected"
+  selectionType="checkbox"
+  checkboxable="true"
+  headerCheckboxable="true"
+  [displayCheck]="isRowSelectable"
+  [selected]="selectedPeople"
+  (select)="onSelect($event.selected)"
+  [selectCheck]="isRowSelectable"
+>
+  <ngx-datatable-column
+    prop="selected"
+    width="75"
+    resizable="false"
+    headerClass="ion-align-self-end"
+  >
+    <ng-template
+      ngx-datatable-header-template
+      let-value="value"
+      let-allRowsSelected="allRowsSelected"
+      let-selectFn="selectFn"
+    >
+      <label>
+        <input
+          type="checkbox"
+          [checked]="headerChecked"
+          [disabled]="!headerSelectAllVisible"
+          [ngStyle]="headerSelectAllVisible ? {} : {'visibility':'hidden'}"
+          (change)="selectFn(!allRowsSelected)"
+        />
+        {{ 'page.program.program-people-affected.column.select'|translate }}
+      </label>
+    </ng-template>
+    <ng-template
+      ngx-datatable-cell-template
+      let-row="row"
+      let-value="value"
+      let-isSelected="isSelected"
+      let-onCheckboxChangeFn="onCheckboxChangeFn"
+    >
+      <input
+        type="checkbox"
+        [checked]="isSelected"
+        (change)="onCheckboxChangeFn($event)"
+        *ngIf="row.checkboxVisible"
+      />
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column
+    *ngFor="let column of columns;"
+    [prop]="column.prop"
+    [name]="column.name"
+    [width]="column.width"
+    [minWidth]="column.minWidth"
+    [maxWidth]="column.maxWidth"
+    [draggable]="column.draggable"
+    [resizeable]="column.resizable"
+    [sortable]="column.sortable"
+    [canAutoResize]="column.canAutoResize"
+    [headerClass]="column.headerClass"
+    [cellClass]="column.cellClass"
+  ></ngx-datatable-column>
+</ngx-datatable>
