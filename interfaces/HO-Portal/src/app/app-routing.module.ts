@@ -46,6 +46,11 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
+        path: 'payment',
+        loadChildren: './pages/payment/payment.module#PaymentPageModule',
+        canActivate: [AuthGuard],
+      },
+      {
         path: 'evaluation',
         loadChildren:
           './pages/evaluation/evaluation.module#EvaluationPageModule',
