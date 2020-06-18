@@ -51,6 +51,12 @@ const routes: Routes = [
           './pages/evaluation/evaluation.module#EvaluationPageModule',
         canActivate: [AuthGuard],
       },
+      {
+        path: 'review-inclusion',
+        loadChildren:
+          './pages/review-inclusion/review-inclusion.module#ReviewInclusionPageModule',
+        canActivate: [AuthGuard],
+      },
     ],
   },
 ];
