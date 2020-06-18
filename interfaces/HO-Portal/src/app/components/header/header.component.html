@@ -58,7 +58,15 @@
         >
           {{ 'header.design'|translate }}
         </ion-button>
-        [{{ 'header.registration-validation'|translate }}]
+        <ion-button
+          [routerLink]="['/program', programId, 'registration-validation']"
+          routerDirection="root"
+          routerLinkActive
+          #rlaRegistrationValidation="routerLinkActive"
+          [fill]=" rlaRegistrationValidation.isActive ? 'solid' : 'outline'"
+        >
+          {{ 'header.registration-validation'|translate }}
+        </ion-button>
         <ion-button
           [routerLink]="['/program', programId, 'inclusion']"
           routerDirection="root"

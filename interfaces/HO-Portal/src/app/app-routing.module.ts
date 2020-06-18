@@ -46,6 +46,12 @@ const routes: Routes = [
         canActivate: [AuthGuard],
       },
       {
+        path: 'registration-validation',
+        loadChildren:
+          './pages/registration-validation/registration-validation.module#RegistrationValidationPageModule',
+        canActivate: [AuthGuard],
+      },
+      {
         path: 'inclusion',
         loadChildren: './pages/inclusion/inclusion.module#InclusionPageModule',
         canActivate: [AuthGuard],
