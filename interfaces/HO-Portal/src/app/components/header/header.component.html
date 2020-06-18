@@ -62,7 +62,15 @@
         [{{ 'header.inclusion'|translate }}]
         [{{ 'header.review-inclusion'|translate }}]
         [{{ 'header.payment'|translate }}]
-        [{{ 'header.evaluation'|translate }}]
+        <ion-button
+          [routerLink]="['/program', programId, 'evaluation']"
+          routerDirection="root"
+          routerLinkActive
+          #rlaEvaluation="routerLinkActive"
+          [fill]=" rlaEvaluation.isActive ? 'solid' : 'outline'"
+        >
+          {{ 'header.evaluation'|translate }}
+        </ion-button>
       </div>
     </ion-col>
   </ion-row>
