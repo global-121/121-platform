@@ -1,6 +1,6 @@
 <ion-grid>
   <ion-row>
-    <ion-col size="2">
+    <ion-col size="1">
       <ion-button
         [title]="'header.home'|translate"
         [attr.aria-label]="'header.home'|translate"
@@ -30,6 +30,7 @@
         routerLinkActive
         #rlaDashboard="routerLinkActive"
         [fill]=" rlaDashboard.isActive ? 'solid' : 'outline'"
+        size="small"
       >
         {{ 'header.dashboard'|translate }}
       </ion-button>
@@ -40,6 +41,7 @@
         routerLinkActive
         #rlaAidWorkers="routerLinkActive"
         [fill]=" rlaAidWorkers.isActive ? 'solid' : 'outline'"
+        size="small"
       >
         {{ 'header.aid-workers'|translate }}
       </ion-button>
@@ -55,6 +57,7 @@
           routerLinkActive
           #rlaDesign="routerLinkActive"
           [fill]=" rlaDesign.isActive ? 'solid' : 'outline'"
+          size="small"
         >
           {{ 'header.design'|translate }}
         </ion-button>
@@ -64,6 +67,7 @@
           routerLinkActive
           #rlaRegistrationValidation="routerLinkActive"
           [fill]=" rlaRegistrationValidation.isActive ? 'solid' : 'outline'"
+          size="small"
         >
           {{ 'header.registration-validation'|translate }}
         </ion-button>
@@ -73,6 +77,7 @@
           routerLinkActive
           #rlaInclusion="routerLinkActive"
           [fill]=" rlaInclusion.isActive ? 'solid' : 'outline'"
+          size="small"
         >
           {{ 'header.inclusion'|translate }}
         </ion-button>
@@ -82,6 +87,7 @@
           routerLinkActive
           #rlaReviewInclusion="routerLinkActive"
           [fill]=" rlaReviewInclusion.isActive ? 'solid' : 'outline'"
+          size="small"
         >
           {{ 'header.review-inclusion'|translate }}
         </ion-button>
@@ -91,6 +97,7 @@
           routerLinkActive
           #rlaPayment="routerLinkActive"
           [fill]=" rlaPayment.isActive ? 'solid' : 'outline'"
+          size="small"
         >
           {{ 'header.payment'|translate }}
         </ion-button>
@@ -100,6 +107,7 @@
           routerLinkActive
           #rlaEvaluation="routerLinkActive"
           [fill]=" rlaEvaluation.isActive ? 'solid' : 'outline'"
+          size="small"
         >
           {{ 'header.evaluation'|translate }}
         </ion-button>
