@@ -59,7 +59,15 @@
           {{ 'header.design'|translate }}
         </ion-button>
         [{{ 'header.registration-validation'|translate }}]
-        [{{ 'header.inclusion'|translate }}]
+        <ion-button
+          [routerLink]="['/program', programId, 'inclusion']"
+          routerDirection="root"
+          routerLinkActive
+          #rlaInclusion="routerLinkActive"
+          [fill]=" rlaInclusion.isActive ? 'solid' : 'outline'"
+        >
+          {{ 'header.inclusion'|translate }}
+        </ion-button>
         <ion-button
           [routerLink]="['/program', programId, 'review-inclusion']"
           routerDirection="root"
