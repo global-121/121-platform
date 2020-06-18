@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PaymentPage } from './payment.page';
+import { ProgramPayoutComponent } from 'src/app/program/program-payout/program-payout.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [PaymentPage],
+  declarations: [PaymentPage, ProgramPayoutComponent],
 })
 export class PaymentPageModule {}

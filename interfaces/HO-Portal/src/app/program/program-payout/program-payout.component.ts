@@ -1,35 +1,22 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  SimpleChanges,
-  OnChanges,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { formatCurrency } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
-import { ProgramPhase } from 'src/app/models/program.model';
+import { ProgramPhase, Program } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-program-payout',
   templateUrl: './program-payout.component.html',
   styleUrls: ['./program-payout.component.scss'],
 })
-export class ProgramPayoutComponent implements OnChanges {
+export class ProgramPayoutComponent implements OnInit {
   @Input()
   public programId: number;
-  @Input()
-  public selectedPhase: string;
-  @Input()
-  public transferValue: any;
-  @Input()
-  public currencyCode: string;
+
   @Output()
   triggerRefresh: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output()
@@ -40,6 +27,7 @@ export class ProgramPayoutComponent implements OnChanges {
   public userRoleEnum = UserRole;
   public currentUserRole: string;
 
+  private program: Program;
   private locale: string;
   public nrOfInstallments: number;
   public nrOfPastInstallments: number;
@@ -48,12 +36,9 @@ export class ProgramPayoutComponent implements OnChanges {
 
   public confirmMessage: string;
 
-  public componentVisible: boolean;
-  private presentInPhases = [ProgramPhase.payment];
   private activePhase: ProgramPhase;
 
   constructor(
-    private route: ActivatedRoute,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
@@ -64,41 +49,19 @@ export class ProgramPayoutComponent implements OnChanges {
 
   async ngOnInit() {
     this.currentUserRole = this.authService.getUserRole();
-    this.programId = this.route.snapshot.params.id;
     this.isCompleted.emit(false);
+
+    this.program = await this.programsService.getProgramById(this.programId);
+
     this.createInstallments(this.programId);
-  }
-
-  async ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes.selectedPhase &&
-      typeof changes.selectedPhase.currentValue === 'string'
-    ) {
-      this.checkVisibility(this.selectedPhase);
-      this.createInstallments(this.programId);
-    }
-    if (
-      changes.programId &&
-      typeof changes.programId.currentValue === 'number'
-    ) {
-      this.totalIncluded = await this.programsService.getTotalIncluded(
-        this.programId,
-      );
-      console.log('totalIncluded: ', this.totalIncluded);
-    }
-  }
-
-  public checkVisibility(phase) {
-    this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   private async createInstallments(programId) {
     this.totalIncluded = await this.programsService.getTotalIncluded(
       this.programId,
     );
-    const program = await this.programsService.getProgramById(programId);
-    this.activePhase = ProgramPhase[program.state];
-    this.nrOfInstallments = program.distributionDuration;
+    this.activePhase = ProgramPhase[this.program.state];
+    this.nrOfInstallments = this.program.distributionDuration;
 
     this.installments = Array(this.nrOfInstallments)
       .fill(1)
@@ -115,7 +78,7 @@ export class ProgramPayoutComponent implements OnChanges {
     );
     this.nrOfPastInstallments = pastInstallments.length;
     const pastInstallmentIds = pastInstallments.map((item) => item.installment);
-    const frequency = program.distributionFrequency;
+    const frequency = this.program.distributionFrequency;
 
     let i = 0;
     let maxInstallmentDate: Date;
@@ -131,7 +94,7 @@ export class ProgramPayoutComponent implements OnChanges {
 
         maxInstallmentDate = new Date(installment.installmentDate);
       } else {
-        installment.amount = program.fixedTransferValue;
+        installment.amount = this.program.fixedTransferValue;
         installment.statusOpen = true;
 
         // Set dates
@@ -161,7 +124,6 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   public isExportAvailable(installment) {
-    console.log('totalincluded', this.totalIncluded);
     if (installment.firstOpen && this.totalIncluded > 0) {
       return true;
     } else if (!installment.statusOpen) {
@@ -173,12 +135,12 @@ export class ProgramPayoutComponent implements OnChanges {
 
   public updateTotalAmountMessage(installment) {
     const totalCost = this.totalIncluded * +installment.amount;
-    const symbol = `${this.currencyCode} `;
+    const symbol = `${this.program.currency} `;
     const totalCostFormatted = formatCurrency(
       totalCost,
       this.locale,
       symbol,
-      this.currencyCode,
+      this.program.currency,
     );
 
     this.confirmMessage = `${

@@ -83,13 +83,6 @@
                             (isCompleted)="onPeopleCompleted($event)"
         ></app-program-people>
 
-        <app-program-payout [selectedPhase]="selectedPhase"
-                            [programId]="program?.id"
-                            [currencyCode]="program?.currency"
-                            (triggerRefresh)="refreshComponents($event)"
-                            (isCompleted)="onPayoutCompleted($event)"
-        ></app-program-payout>
-
       </ion-col>
     </ion-row>
   </ion-grid>

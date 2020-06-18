@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { PaymentPage } from './payment.page';
 import { TranslateModule } from '@ngx-translate/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { PaymentPage } from './payment.page';
 
 describe('PaymentPage', () => {
   let component: PaymentPage;
@@ -11,7 +11,7 @@ describe('PaymentPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [PaymentPage],
-      imports: [TranslateModule.forRoot()],
+      imports: [TranslateModule.forRoot(), RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
