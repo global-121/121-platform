@@ -31,7 +31,7 @@
     "@ionic/angular": "^4.11.8",
     "@ionic/cli": "^6.10.0",
     "@ngx-translate/core": "^11.0.1",
-    "@ngx-translate/http-loader": "^4.0.0",
+    "@ngx-translate/http-loader": "^5.0.0",
     "@swimlane/ngx-datatable": "^16.1.1",
     "core-js": "2.6.8",
     "file-saver": "^2.0.2",
