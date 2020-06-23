@@ -43,7 +43,11 @@ export class MainMenuComponent implements ValidationComponent {
 
   private async getNrUploadWaiting() {
     const credentials = await this.storage.get(this.ionicStorageTypes.credentials);
-    return credentials.length;
+    if (credentials) {
+      return credentials.length;
+    } else {
+      return 0;
+    }
   }
 
   public changeOption($event) {
