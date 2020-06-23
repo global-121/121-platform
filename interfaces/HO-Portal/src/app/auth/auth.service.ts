@@ -11,7 +11,7 @@ import { UserRole } from './user-role.enum';
 })
 export class AuthService {
   private loggedIn = false;
-  private userRole: string;
+  private userRole: UserRole | string;
 
   // store the URL so we can redirect after logging in
   redirectUrl: string;
@@ -20,7 +20,7 @@ export class AuthService {
   public authenticationState$ = this.authenticationState.asObservable();
 
   constructor(
-    public programsService: ProgramsServiceApiService,
+    private programsService: ProgramsServiceApiService,
     private jwtService: JwtService,
     private router: Router,
   ) {
@@ -39,7 +39,7 @@ export class AuthService {
     return this.loggedIn;
   }
 
-  public getUserRole(): string {
+  public getUserRole(): UserRole | string {
     if (!this.userRole) {
       const user = this.getUserFromToken();
 

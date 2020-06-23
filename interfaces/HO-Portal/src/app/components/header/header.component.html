@@ -17,6 +17,10 @@
       <h1 class="ion-no-margin">
         {{ title }}
       </h1>
+      <ion-note>
+        {{ programTitle }}
+        &nbsp;<!-- 'placeholder' to reserve vertical space for async-loaded programTitle -->
+      </ion-note>
     </ion-col>
     <ion-col class="ion-text-right">
       <app-user-state></app-user-state>
@@ -52,61 +56,67 @@
     <ion-col class="horizontal-scroll-container">
       <div class="ion-text-nowrap">
         <ion-button
-          [routerLink]="['/program', programId, 'design']"
+          [routerLink]="['/program', programId, programPhases.design]"
           routerDirection="root"
           routerLinkActive
           #rlaDesign="routerLinkActive"
-          [fill]=" rlaDesign.isActive ? 'solid' : 'outline'"
+          [color]="rlaDesign.isActive ? 'primary' : 'medium'"
+          [fill]="activePhase === programPhases.design ? 'solid' : 'outline'"
           size="small"
         >
           {{ 'header.design'|translate }}
         </ion-button>
         <ion-button
-          [routerLink]="['/program', programId, 'registration-validation']"
+          [routerLink]="['/program', programId, convertToSlug(programPhases.registrationValidation)]"
           routerDirection="root"
           routerLinkActive
           #rlaRegistrationValidation="routerLinkActive"
-          [fill]=" rlaRegistrationValidation.isActive ? 'solid' : 'outline'"
+          [color]="rlaRegistrationValidation.isActive ? 'primary' : 'medium'"
+          [fill]="activePhase === programPhases.registrationValidation ? 'solid' : 'outline'"
           size="small"
         >
           {{ 'header.registration-validation'|translate }}
         </ion-button>
         <ion-button
-          [routerLink]="['/program', programId, 'inclusion']"
+          [routerLink]="['/program', programId, programPhases.inclusion]"
           routerDirection="root"
           routerLinkActive
           #rlaInclusion="routerLinkActive"
-          [fill]=" rlaInclusion.isActive ? 'solid' : 'outline'"
+          [color]="rlaInclusion.isActive ? 'primary' : 'medium'"
+          [fill]="activePhase === programPhases.inclusion ? 'solid' : 'outline'"
           size="small"
         >
           {{ 'header.inclusion'|translate }}
         </ion-button>
         <ion-button
-          [routerLink]="['/program', programId, 'review-inclusion']"
+          [routerLink]="['/program', programId, convertToSlug(programPhases.reviewInclusion)]"
           routerDirection="root"
           routerLinkActive
           #rlaReviewInclusion="routerLinkActive"
-          [fill]=" rlaReviewInclusion.isActive ? 'solid' : 'outline'"
+          [color]="rlaReviewInclusion.isActive ? 'primary' : 'medium'"
+          [fill]="activePhase === programPhases.reviewInclusion ? 'solid' : 'outline'"
           size="small"
         >
           {{ 'header.review-inclusion'|translate }}
         </ion-button>
         <ion-button
-          [routerLink]="['/program', programId, 'payment']"
+          [routerLink]="['/program', programId, programPhases.payment]"
           routerDirection="root"
           routerLinkActive
           #rlaPayment="routerLinkActive"
-          [fill]=" rlaPayment.isActive ? 'solid' : 'outline'"
+          [color]="rlaPayment.isActive ? 'primary' : 'medium'"
+          [fill]="activePhase === programPhases.payment ? 'solid' : 'outline'"
           size="small"
         >
           {{ 'header.payment'|translate }}
         </ion-button>
         <ion-button
-          [routerLink]="['/program', programId, 'evaluation']"
+          [routerLink]="['/program', programId, programPhases.evaluation]"
           routerDirection="root"
           routerLinkActive
           #rlaEvaluation="routerLinkActive"
-          [fill]=" rlaEvaluation.isActive ? 'solid' : 'outline'"
+          [color]="rlaEvaluation.isActive ? 'primary' : 'medium'"
+          [fill]="activePhase === programPhases.evaluation ? 'solid' : 'outline'"
           size="small"
         >
           {{ 'header.evaluation'|translate }}

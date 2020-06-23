@@ -5,15 +5,25 @@ import { HeaderComponent } from './header.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import apiProgramsMock from 'src/app/mocks/api.programs.mock';
+import { UserRole } from 'src/app/auth/user-role.enum';
+import { AuthService } from 'src/app/auth/auth.service';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
+  const mockUserRole = UserRole.ProjectOfficer;
+  const mockAuthService = jasmine.createSpyObj('AuthService', ['getUserRole']);
+  mockAuthService.getUserRole.and.returnValue(mockUserRole);
+
+  const mockProgramId = 1;
   const mockProgramsApi = jasmine.createSpyObj('ProgramsServiceApiService', [
     'getProgramById',
   ]);
+  mockProgramsApi.getProgramById.and.returnValue(
+    apiProgramsMock.programs[mockProgramId],
+  );
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -21,6 +31,10 @@ describe('HeaderComponent', () => {
       imports: [TranslateModule.forRoot(), RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
+        },
         {
           provide: ProgramsServiceApiService,
           useValue: mockProgramsApi,
