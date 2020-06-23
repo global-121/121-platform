@@ -11,7 +11,7 @@ class ResetDto {
   @IsNotEmpty()
   @IsString()
   public readonly secret: string;
-  @ApiModelProperty({ example: 'single, multi or demo' })
+  @ApiModelProperty({ example: 'demo / single' })
   public readonly script: string;
 }
 
@@ -28,8 +28,6 @@ export class ScriptsController {
     let seed;
     if (body.script == 'demo') {
       seed = new SeedDemoProgram(this.connection);
-    } else if (body.script == 'multi') {
-      seed = new SeedMultiProgram(this.connection);
     } else {
       seed = new SeedSingleProgram(this.connection);
     }
