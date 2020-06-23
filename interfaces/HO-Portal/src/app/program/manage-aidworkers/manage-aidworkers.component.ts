@@ -24,24 +24,20 @@ export class ManageAidworkersComponent implements OnInit {
       name: this.translate.instant(
         'page.program.manage-aidworkers.column-email',
       ),
-      draggable: false,
-      resizeable: false,
+      sortable: true,
     },
     {
       prop: 'created',
       name: this.translate.instant(
         'page.program.manage-aidworkers.column-created',
       ),
-      draggable: false,
-      resizeable: false,
+      sortable: true,
     },
     {
       prop: 'delete',
       name: this.translate.instant(
         'page.program.manage-aidworkers.column-delete',
       ),
-      draggable: false,
-      resizeable: false,
       sortable: false,
     },
   ];

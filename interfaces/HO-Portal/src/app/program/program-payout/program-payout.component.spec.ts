@@ -7,24 +7,27 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { AuthService } from 'src/app/auth/auth.service';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { ProgramPayoutComponent } from './program-payout.component';
+import { UserRole } from 'src/app/auth/user-role.enum';
 
 describe('ProgramPayoutComponent', () => {
   let component: ProgramPayoutComponent;
   let fixture: ComponentFixture<ProgramPayoutComponent>;
 
-  const authServiceMock = {
-    authenticationState$: of(null),
-  };
+  const mockUserRole = UserRole.ProjectOfficer;
+  const mockAuthService = jasmine.createSpyObj('AuthService', ['getUserRole']);
+  mockAuthService.getUserRole.and.returnValue(mockUserRole);
 
   const mockProgramId = 1;
   const mockProgramsApi = jasmine.createSpyObj('ProgramsServiceApiService', [
     'getProgramById',
     'getTotalIncluded',
+    'getPastInstallments',
   ]);
   mockProgramsApi.getProgramById.and.returnValue(
     apiProgramsMock.programs[mockProgramId],
   );
   mockProgramsApi.getTotalIncluded.and.returnValue(0);
+  mockProgramsApi.getPastInstallments.and.returnValue([]);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -34,7 +37,7 @@ describe('ProgramPayoutComponent', () => {
       providers: [
         {
           provide: AuthService,
-          useValue: authServiceMock,
+          useValue: mockAuthService,
         },
         {
           provide: ProgramsServiceApiService,

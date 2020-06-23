@@ -18,6 +18,9 @@
     *ngFor="let column of columns; let i = index;"
     [name]="column.name"
     [prop]="column.prop"
+    [sortable]="column.sortable"
+    resizeable="false"
+    draggable="false"
   >
     <ng-template
       *ngIf="column.prop === 'delete'"
