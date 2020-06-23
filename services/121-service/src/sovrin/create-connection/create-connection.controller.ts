@@ -128,13 +128,4 @@ export class CreateConnectionController {
       data.qrIdentifier,
     );
   }
-
-  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
-  @ApiBearerAuth()
-  @ApiOperation({ title: 'Get all connections' })
-  @ApiResponse({ status: 200, description: 'Got all connections' })
-  @Get('/all')
-  public async getConnections(): Promise<ConnectionEntity[]> {
-    return await this.createConnectionService.getConnections();
-  }
 }
