@@ -113,7 +113,6 @@ export class ProgramPayoutComponent implements OnChanges {
     const pastInstallments = await this.programsService.getPastInstallments(
       programId,
     );
-    console.log(this.installments);
     this.nrOfPastInstallments = pastInstallments.length;
     const pastInstallmentIds = pastInstallments.map((item) => item.installment);
     const frequency = program.distributionFrequency;
