@@ -692,14 +692,21 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    let count: number;
+    count = 0;
     for (let fsp of program.financialServiceProviders) {
-      await this.createSendPaymentListFsp(
+      count += await this.createSendPaymentListFsp(
         fsp,
         includedConnections,
         amount,
         program,
         installment,
       );
+    }
+    if (count === 0) {
+      const errors =
+        'No included connections with known FSP available. Payment aborted.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return { status: 'succes', message: 'Sent instructions to FSP' };
   }
@@ -832,6 +839,7 @@ export class ProgramService {
         this.storeTransaction(amount, connection, fsp, program, installment);
       }
     }
+    return paymentList.length;
   }
   private storeTransaction(
     amount: number,
