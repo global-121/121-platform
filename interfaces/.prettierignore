@@ -1,6 +1,7 @@
 # See .gitignore
 coverage/
 www/
+dist/
 platforms/
 plugins/
 resources/
