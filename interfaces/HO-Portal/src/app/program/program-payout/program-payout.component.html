@@ -34,7 +34,7 @@
         <confirm-prompt [disabled]="!isEnabled || !installment.firstOpen || totalIncluded === 0 || currentUserRole !== userRoleEnum.ProjectOfficer"
                         (confirm)="performPayout(installment); installment.isInProgress = true"
                         (cancel)="cancelPayout(installment)"
-                        [subHeader]="'page.programs.program-payout.total-amount'|translate"
+                        [subHeader]="'page.program.program-payout.total-amount'|translate"
                         [message]="confirmMessage"
         >
           {{ 'page.program.program-payout.start-payout'|translate }}

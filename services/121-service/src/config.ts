@@ -24,18 +24,22 @@ export const API = {
     {
       payout: 'https://example.com/post',
       name: 'Bank A',
+      id: 1,
     },
     {
       payout: 'https://example.com/post',
       name: 'Mobile Money Provider B',
+      id: 2,
     },
     {
       payout: 'https://example.com/post',
       name: 'FSP C - mixed attributes',
+      id: 3,
     },
     {
       payout: 'https://example.com/post',
       name: 'FSP D - no attributes',
+      id: 4,
     },
   ],
   paAccounts: {
