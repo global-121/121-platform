@@ -66,13 +66,6 @@
                         (isNewPhase)="onNewPhase($event)"
         ></app-phase-next>
 
-        <app-program-people [selectedPhase]="selectedPhase"
-                            [programId]="program?.id"
-                            [userRole]="currentUserRole"
-                            [refresh]="refresh"
-                            (isCompleted)="onPeopleCompleted($event)"
-        ></app-program-people>
-
       </ion-col>
     </ion-row>
   </ion-grid>
