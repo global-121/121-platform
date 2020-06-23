@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ProgramsServiceApiService } from './programs-service-api.service';
-import { BulkActionId } from './bulk-actions.models';
+import { BulkActionId } from '../models/bulk-actions.models';
 import { PersonRow } from '../models/person.model';
 
 @Injectable({

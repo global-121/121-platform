@@ -7,7 +7,7 @@ import { formatDate } from '@angular/common';
 import { AlertController } from '@ionic/angular';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
-import { BulkActionId, BulkAction } from 'src/app/services/bulk-actions.models';
+import { BulkActionId, BulkAction } from 'src/app/models/bulk-actions.models';
 
 @Component({
   selector: 'app-program-people-affected',

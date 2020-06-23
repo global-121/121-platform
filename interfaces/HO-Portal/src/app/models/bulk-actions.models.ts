@@ -1,5 +1,5 @@
 import { UserRole } from '../auth/user-role.enum';
-import { ProgramPhase } from '../models/program.model';
+import { ProgramPhase } from './program.model';
 
 export enum BulkActionId {
   chooseAction = 'choose-action',
