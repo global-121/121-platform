@@ -1,14 +1,14 @@
 {
   "published": false,
   "state": "design",
-  "location": "Location A",
+  "location": "Westeros",
   "ngo": "Yellow Cross",
   "countryId": 1,
   "title": {
     "en": "Cash program Westeros"
   },
   "description": {
-    "en": "Short description."
+    "en": "This program is aimed to help the commoners in Westeros most affected by the War of the Five Kings."
   },
   "descLocation": {
     "en": "Location such and such."
@@ -45,7 +45,7 @@
   "minimumScore": 0,
   "highestScoresX": 250,
   "meetingDocuments": {
-    "en": "Document 1; Document 2; Document 3"
+    "en": "Dragon license certificate; House birth certificate"
   },
   "notifications": {
     "en": {
