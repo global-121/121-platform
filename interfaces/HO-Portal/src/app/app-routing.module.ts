@@ -43,7 +43,7 @@ const routes: Routes = [
           './pages/aid-workers/aid-workers.module#AidWorkersPageModule',
         canActivate: [AuthGuard],
         data: {
-          roles: [UserRole.ProgramManager],
+          roles: [UserRole.ProjectOfficer],
         },
       },
       {
