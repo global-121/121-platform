@@ -113,8 +113,7 @@
         "total-amount": "Total amount to payout:",
         "payout-success": "Payout successful.",
         "none-included": "No included people yet.",
-        "export-list": "Export list",
-        "export-error": "Something went wrong with the export."
+        "export-list": "Export list"
       },
       "program-people-affected": {
         "section-title": "Manage People Affected (for Validation)",
@@ -212,6 +211,7 @@
     "confirm": "Are you sure?",
     "cancel": "Cancel",
     "ok": "OK",
+    "export-error": "Something went wrong with the export.",
     "unknown-error": "Something went wrong. Error is unknown."
   },
   "password-toggle": {

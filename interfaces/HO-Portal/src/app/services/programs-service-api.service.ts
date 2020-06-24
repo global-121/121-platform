@@ -103,12 +103,21 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  exportList(programId: number, installment: number): Promise<any> {
+  exportPaymentList(programId: number, installment: number): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/payment-details`, {
         programId,
         installment,
       })
+      .toPromise();
+  }
+
+  exportInclusionList(programId: number): Promise<any> {
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        `/programs/export-inclusion/${programId}`,
+      )
       .toPromise();
   }
 
