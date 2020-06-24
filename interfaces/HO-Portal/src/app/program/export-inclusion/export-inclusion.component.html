@@ -1,4 +1,5 @@
-<confirm-prompt (confirm)="getInclusionList()" 
+<confirm-prompt [disabled]="btnDisabled()"
+                (confirm)="getInclusionList()" 
                 [subHeader]="'page.program.export-inclusion.confirm-message'|translate" 
 >
   {{ 'page.program.export-inclusion.export-list'|translate }}

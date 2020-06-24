@@ -1,7 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input
+} from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController } from '@ionic/angular';
+import { UserRole } from 'src/app/auth/user-role.enum';
 
 @Component({
   selector: 'app-export-inclusion',
@@ -12,6 +17,9 @@ export class ExportInclusionComponent implements OnInit {
   @Input()
   public programId: number;
 
+  @Input()
+  public userRole: UserRole;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
@@ -20,8 +28,11 @@ export class ExportInclusionComponent implements OnInit {
 
   ngOnInit() {}
 
+  public btnDisabled() {
+    return this.userRole !== UserRole.ProgramManager;
+  }
+
   public getInclusionList() {
-    console.log(this.programId);
     this.programsService.exportInclusionList(this.programId).then(
       (res) => {
         const blob = new Blob([res.data], { type: 'text/csv' });
