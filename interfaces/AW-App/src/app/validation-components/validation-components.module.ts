@@ -10,6 +10,7 @@ import { ScanQrComponent } from './scan-qr/scan-qr.component';
 import { ValidateProgramComponent } from './validate-program/validate-program.component';
 import { DownloadDataComponent } from './download-data/download-data.component';
 import { UploadDataComponent } from './upload-data/upload-data.component';
+import { ValidateFspComponent } from './validate-fsp/validate-fsp.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { UploadDataComponent } from './upload-data/upload-data.component';
     ViewAppointmentsComponent,
     ScanQrComponent,
     ValidateProgramComponent,
+    ValidateFspComponent,
     DownloadDataComponent,
     UploadDataComponent
   ],
@@ -30,6 +32,7 @@ import { UploadDataComponent } from './upload-data/upload-data.component';
     ViewAppointmentsComponent,
     ScanQrComponent,
     ValidateProgramComponent,
+    ValidateFspComponent,
     DownloadDataComponent,
     UploadDataComponent
   ],
@@ -38,6 +41,7 @@ import { UploadDataComponent } from './upload-data/upload-data.component';
     ViewAppointmentsComponent,
     ScanQrComponent,
     ValidateProgramComponent,
+    ValidateFspComponent,
     DownloadDataComponent,
     UploadDataComponent
   ],
