@@ -10,8 +10,13 @@ import { ProgramPhase } from 'src/app/models/program.model';
 export class PaymentPage implements OnInit {
   public programId = this.route.snapshot.params.id;
   public thisPhase = ProgramPhase.payment;
+  public isReady: boolean;
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {}
+
+  public onReady(state: boolean) {
+    this.isReady = state;
+  }
 }

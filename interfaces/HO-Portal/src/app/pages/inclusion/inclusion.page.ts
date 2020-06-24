@@ -12,6 +12,7 @@ export class InclusionPage implements OnInit {
   public programId = this.route.snapshot.params.id;
   public userRole = this.authService.getUserRole();
   public thisPhase = ProgramPhase.inclusion;
+  public isReady: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -19,4 +20,8 @@ export class InclusionPage implements OnInit {
   ) {}
 
   ngOnInit() {}
+
+  public onReady(state: boolean) {
+    this.isReady = state;
+  }
 }

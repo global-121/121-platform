@@ -9,11 +9,12 @@
   <app-phase-next
     [programId]="programId"
     [selectedPhase]="thisPhase"
-    [phaseReady]="true"
+    [phaseReady]="isReady"
   ></app-phase-next>
 
   <app-program-payout
     [programId]="programId"
+    (isCompleted)="onReady($event)"
   ></app-program-payout>
 
 </ion-content>

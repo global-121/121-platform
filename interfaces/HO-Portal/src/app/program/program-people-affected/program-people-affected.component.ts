@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ProgramPhase, Program } from 'src/app/models/program.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Person, PersonRow } from 'src/app/models/person.model';
@@ -19,6 +19,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public programId: number;
   @Input()
   public userRole: UserRole;
+  @Output()
+  isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public program: Program;
   public activePhase: ProgramPhase;
