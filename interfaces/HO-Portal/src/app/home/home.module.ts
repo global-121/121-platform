@@ -6,11 +6,13 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { HomePage } from './home.page';
 import { ProgramsListComponent } from '../programs-list/programs-list.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     IonicModule,
+    SharedModule,
     RouterModule.forChild([
       {
         path: '',

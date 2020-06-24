@@ -5,11 +5,13 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { HelpPage } from './help.page';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     IonicModule,
+    SharedModule,
     RouterModule.forChild([
       {
         path: '',
