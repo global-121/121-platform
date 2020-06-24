@@ -1,71 +1,75 @@
-<section *ngIf="componentVisible">
-  <h2>{{ 'page.program.manage-aidworkers.section-title'|translate }}</h2>
-  <h4>{{ 'page.program.manage-aidworkers.view-aidworkers'|translate }}</h4>
+<h2>{{ 'page.program.manage-aidworkers.section-title'|translate }}</h2>
+<h4>{{ 'page.program.manage-aidworkers.view-aidworkers'|translate }}</h4>
 
-  <ngx-datatable class="bootstrap"
-                 limit="50"
-                 columnMode="force"
-                 rowHeight="auto"
-                 headerHeight="50"
-                 footerHeight="0"
-                 reorderable="false"
-                 sortType="multi"
-                 loadingIndicator="true"
-                 [columns]="columns"
-                 [rows]="aidworkers"
+<ngx-datatable
+  class="bootstrap"
+  limit="50"
+  columnMode="force"
+  rowHeight="auto"
+  headerHeight="50"
+  footerHeight="0"
+  reorderable="false"
+  sortType="multi"
+  loadingIndicator="true"
+  [columns]="columns"
+  [rows]="aidworkers"
+>
+  <ngx-datatable-column
+    *ngFor="let column of columns; let i = index;"
+    [name]="column.name"
+    [prop]="column.prop"
+    [sortable]="column.sortable"
+    resizeable="false"
+    draggable="false"
   >
-    <ngx-datatable-column *ngFor="let column of columns; let i = index;"
-                          name="{{column.name}}"
-                          prop="{{column.prop}}"
+    <ng-template
+      *ngIf="column.prop === 'delete'"
+      let-row="row"
+      ngx-datatable-cell-template
     >
-      <ng-template *ngIf="column.prop==='delete'"
-                  let-row="row"
-                  ngx-datatable-cell-template
+      <confirm-prompt
+        (confirm)="deleteAidworker(row)"
+        [subHeader]="'page.program.manage-aidworkers.column-delete'|translate"
+        size="small"
+        fill="outline"
       >
-        <confirm-prompt (confirm)="deleteAidworker(row)"
-                        [subHeader]="'page.program.manage-aidworkers.column-delete'|translate"
-                        size="small"
-                        fill="outline"
-        >
-          <ion-icon size="small" slot="icon-only" name="trash"></ion-icon>
-        </confirm-prompt>
-      </ng-template>
-    </ngx-datatable-column>
-  </ngx-datatable>
+        <ion-icon size="small" slot="icon-only" name="trash"></ion-icon>
+      </confirm-prompt>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
 
-  <h4>{{ 'page.program.manage-aidworkers.create-aidworker'|translate }}</h4>
+<h4>{{ 'page.program.manage-aidworkers.create-aidworker'|translate }}</h4>
 
-  <form (ngSubmit)="addAidworker()">
-    <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
-    <ion-row class="ion-align-items-center">
-      <ion-item>
-        <ion-label position="stacked">
-          {{ 'page.program.manage-aidworkers.email'|translate }}
-        </ion-label>
-        <ion-input type="email"
-                   name="emailAidworker"
-                   autocomplete="off"
-                   [(ngModel)]="emailAidworker"
-                   ngDefaultControl
-                   required
-        ></ion-input>
-      </ion-item>
-      <password-toggle-input name="passwordAidworker"
-                             [(ngModel)]="passwordAidworker"
-                             ngDefaultControl
-                             autocomplete="new-password"
-                             [minLength]="passwordMinLength"
-                             [labelShow]="'password-toggle.show'|translate"
-                             [labelHide]="'password-toggle.hide'|translate"
-                             [label]="'page.program.manage-aidworkers.create-password'|translate:{ minimalLength: passwordMinLength }"
-      ></password-toggle-input>
-      <ion-button type="submit">
-        <ion-icon name="person-add" size="small" slot="start"></ion-icon>
-        {{ 'page.program.manage-aidworkers.confirm'|translate }}
-      </ion-button>
-    </ion-row>
-  </form>
-
-
-
-</section>
+<form (ngSubmit)="addAidworker()">
+  <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
+  <ion-row class="ion-align-items-center">
+    <ion-item>
+      <ion-label position="stacked">
+        {{ 'page.program.manage-aidworkers.email'|translate }}
+      </ion-label>
+      <ion-input
+        type="email"
+        name="emailAidworker"
+        autocomplete="off"
+        [(ngModel)]="emailAidworker"
+        ngDefaultControl
+        required
+      ></ion-input>
+    </ion-item>
+    <password-toggle-input
+      name="passwordAidworker"
+      [(ngModel)]="passwordAidworker"
+      ngDefaultControl
+      autocomplete="new-password"
+      [minLength]="passwordMinLength"
+      [labelShow]="'password-toggle.show'|translate"
+      [labelHide]="'password-toggle.hide'|translate"
+      [label]="'page.program.manage-aidworkers.create-password'|translate:{ minimalLength: passwordMinLength }"
+    ></password-toggle-input>
+    <ion-button type="submit">
+      <ion-icon name="person-add" size="small" slot="start"></ion-icon>
+      {{ 'page.program.manage-aidworkers.confirm'|translate }}
+    </ion-button>
+  </ion-row>
+</form>

@@ -5,15 +5,27 @@ import { of } from 'rxjs';
 
 import { PhaseNextComponent } from './phase-next.component';
 import { AuthService } from 'src/app/auth/auth.service';
+import { ProgramPhaseService } from 'src/app/services/program-phase.service';
+import { UserRole } from 'src/app/auth/user-role.enum';
+import { ProgramPhase } from 'src/app/models/program.model';
 
 describe('PhaseNextComponent', () => {
   let component: PhaseNextComponent;
   let fixture: ComponentFixture<PhaseNextComponent>;
 
-  const authServiceMock = {
-    authenticationState$: of(null),
-    getUserRole: () => '',
-  };
+  const mockProgramId = 1;
+
+  const mockUserRole = UserRole.ProjectOfficer;
+  const mockAuthService = jasmine.createSpyObj('AuthService', ['getUserRole']);
+  mockAuthService.getUserRole.and.returnValue(mockUserRole);
+
+  const mockProgramPhase = ProgramPhase.design;
+  const mockProgramPhaseService = jasmine.createSpyObj('ProgramPhaseService', [
+    'getPhases',
+    'getActivePhase',
+  ]);
+  mockProgramPhaseService.getPhases.and.returnValue([]);
+  mockProgramPhaseService.getActivePhase.and.returnValue(mockProgramPhase);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -23,7 +35,11 @@ describe('PhaseNextComponent', () => {
       providers: [
         {
           provide: AuthService,
-          useValue: authServiceMock,
+          useValue: mockAuthService,
+        },
+        {
+          provide: ProgramPhaseService,
+          useValue: mockProgramPhaseService,
         },
       ],
     }).compileComponents();
@@ -32,6 +48,7 @@ describe('PhaseNextComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PhaseNextComponent);
     component = fixture.componentInstance;
+    component.programId = mockProgramId;
     fixture.detectChanges();
   });
 

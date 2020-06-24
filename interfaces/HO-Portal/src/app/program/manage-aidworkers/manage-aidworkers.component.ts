@@ -1,7 +1,5 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-
-import { ProgramPhase } from 'src/app/models/program.model';
 import { formatDate } from '@angular/common';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
@@ -12,27 +10,13 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './manage-aidworkers.component.html',
   styleUrls: ['./manage-aidworkers.component.scss'],
 })
-export class ManageAidworkersComponent implements OnChanges {
-  @Input()
-  public selectedPhase: string;
+export class ManageAidworkersComponent implements OnInit {
   @Input()
   public programId: number;
-  @Input()
-  public userRole: string;
 
   public emailAidworker: string;
   public passwordAidworker: string;
   public passwordMinLength = 8;
-
-  public componentVisible: boolean;
-  private presentInPhases = [
-    ProgramPhase.design,
-    ProgramPhase.registrationValidation,
-    ProgramPhase.inclusion,
-    ProgramPhase.reviewInclusion,
-    ProgramPhase.payment,
-    ProgramPhase.evaluation,
-  ];
 
   public columns = [
     {
@@ -40,24 +24,20 @@ export class ManageAidworkersComponent implements OnChanges {
       name: this.translate.instant(
         'page.program.manage-aidworkers.column-email',
       ),
-      draggable: false,
-      resizeable: false,
+      sortable: true,
     },
     {
       prop: 'created',
       name: this.translate.instant(
         'page.program.manage-aidworkers.column-created',
       ),
-      draggable: false,
-      resizeable: false,
+      sortable: true,
     },
     {
       prop: 'delete',
       name: this.translate.instant(
         'page.program.manage-aidworkers.column-delete',
       ),
-      draggable: false,
-      resizeable: false,
       sortable: false,
     },
   ];
@@ -76,27 +56,8 @@ export class ManageAidworkersComponent implements OnChanges {
     this.locale = this.translate.getBrowserCultureLang();
   }
 
-  ngOnInit() {}
-
-  async ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes.selectedPhase &&
-      typeof changes.selectedPhase.currentValue === 'string'
-    ) {
-      this.checkVisibility(this.selectedPhase);
-    }
-    if (
-      changes.programId &&
-      typeof changes.programId.currentValue === 'number'
-    ) {
-      this.loadData();
-    }
-  }
-
-  public checkVisibility(phase) {
-    this.componentVisible =
-      this.presentInPhases.includes(phase) &&
-      this.userRole !== UserRole.ProgramManager;
+  ngOnInit() {
+    this.loadData();
   }
 
   public async loadData() {
@@ -120,14 +81,13 @@ export class ManageAidworkersComponent implements OnChanges {
   }
 
   public async addAidworker() {
-    const role = 'aidworker';
     const status = 'active';
 
     this.programsService
       .addUser(
         this.emailAidworker,
         this.passwordAidworker,
-        role,
+        UserRole.Aidworker,
         status,
         this.countryId,
       )

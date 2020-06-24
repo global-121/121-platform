@@ -1,0 +1,64 @@
+<ion-grid>
+  <ion-row>
+    <ion-col size="1">
+      <ion-button
+        [title]="'header.home'|translate"
+        [attr.aria-label]="'header.home'|translate"
+        routerLink="/home"
+        routerDirection="root"
+        fill="clear"
+        size="small"
+        color="medium"
+      >
+        <ion-icon name="home" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col>
+      <h1 class="ion-no-margin">
+        {{ title }}
+      </h1>
+      <ion-note>
+        {{ programTitle }}
+        &nbsp;<!-- 'placeholder' to reserve vertical space for async-loaded programTitle -->
+      </ion-note>
+    </ion-col>
+    <ion-col class="ion-text-right">
+      <app-user-state></app-user-state>
+    </ion-col>
+  </ion-row>
+  <ion-row class="ion-align-items-center">
+    <ion-col size="auto">
+      <ion-button
+        [routerLink]="['/program', programId, 'dashboard']"
+        routerDirection="root"
+        routerLinkActive
+        #rlaDashboard="routerLinkActive"
+        [fill]=" rlaDashboard.isActive ? 'solid' : 'outline'"
+        size="small"
+      >
+        {{ 'header.dashboard'|translate }}
+      </ion-button>
+      <ion-button
+        [disabled]="!showManageAidworkers"
+        [routerLink]="['/program', programId, 'aid-workers']"
+        routerDirection="root"
+        routerLinkActive
+        #rlaAidWorkers="routerLinkActive"
+        [fill]=" rlaAidWorkers.isActive ? 'solid' : 'outline'"
+        size="small"
+      >
+        {{ 'header.aid-workers'|translate }}
+      </ion-button>
+    </ion-col>
+    <ion-col size="auto">
+      {{ 'header.phases'|translate }}:
+    </ion-col>
+    <ion-col class="horizontal-scroll-container">
+      <div class="ion-text-nowrap">
+        <app-phase-navigation
+          [programId]="programId"
+        ></app-phase-navigation>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>

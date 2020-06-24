@@ -1,0 +1,18 @@
+<ion-header>
+  <app-header
+    [title]="'page.dashboard.pageTitle'|translate"
+  ></app-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+
+  <div style="max-width: 33em; margin: auto;">
+    <app-metrics
+      [isCollapsed]="false"
+      [program]="program"
+    ></app-metrics>
+  </div>
+
+
+</ion-content>

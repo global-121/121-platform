@@ -1,54 +1,54 @@
-<section *ngIf="componentVisible">
-  <h2>{{ 'page.program.program-people.section-title'|translate }}</h2>
+<h2>{{ 'page.program.program-people.section-title'|translate }}</h2>
 
-  <p *ngIf="program?.highestScoresX">
-    {{ 'page.program.program-people.targetNumber'|translate }} {{program?.highestScoresX}}
-  </p>
-  <p *ngIf="checkNoConnectionsMessage() && !showSensitiveData">
-    {{ 'page.program.program-people.noConnections'|translate }}
-  </p>
-  <p *ngIf="checkNoConnectionsMessage() && showSensitiveData">
-    {{ 'page.program.program-people.noConnectionsPrivacy'|translate }}
-  </p>
+<p *ngIf="program?.highestScoresX">
+  {{ 'page.program.program-people.targetNumber'|translate }} {{program?.highestScoresX}}
+</p>
+<p *ngIf="checkNoConnectionsMessage() && !showSensitiveData">
+  {{ 'page.program.program-people.noConnections'|translate }}
+</p>
+<p *ngIf="checkNoConnectionsMessage() && showSensitiveData">
+  {{ 'page.program.program-people.noConnectionsPrivacy'|translate }}
+</p>
 
-  <ngx-datatable #people
-                 class="bootstrap"
-                 limit="50"
-                 columnMode="fixed"
-                 rowHeight="auto"
-                 scrollbarH="true"
-                 headerHeight="50"
-                 footerHeight="50"
-                 reorderable="false"
-                 sortType="multi"
-                 selectionType="checkbox"
-                 [displayCheck]="showCheckbox"
-                 loadingIndicator="true"
-                 [columns]="columns"
-                 [rows]="enrolledPeople"
-                 [selected]="selectedPeople"
-                 [messages]="tableMessages"
-                 (select)="updateSubmitWarning()"
-  ></ngx-datatable>
+<ngx-datatable
+  #people
+  class="bootstrap"
+  limit="50"
+  columnMode="fixed"
+  rowHeight="auto"
+  scrollbarH="true"
+  headerHeight="50"
+  footerHeight="50"
+  reorderable="false"
+  sortType="multi"
+  selectionType="checkbox"
+  [displayCheck]="showCheckbox"
+  loadingIndicator="true"
+  [columns]="columns"
+  [rows]="enrolledPeople"
+  [selected]="selectedPeople"
+  [messages]="tableMessages"
+  (select)="updateSubmitWarning()"
+></ngx-datatable>
 
-  <confirm-prompt [disabled]="confirmBtnDisabled()"
-                  (confirm)="submitInclusion()"
-                  [subHeader]="'page.program.program-people.submit-warningPrivacy'|translate"
-                  [message]="submitWarning.message"
-                  class="ion-float-end"
-                  *ngIf="showSensitiveData"
-  >
-    {{ 'page.program.program-people.submitPrivacy'|translate }}
-  </confirm-prompt>
+<confirm-prompt
+  [disabled]="confirmBtnDisabled()"
+  (confirm)="submitInclusion()"
+  [subHeader]="'page.program.program-people.submit-warningPrivacy'|translate"
+  [message]="submitWarning.message"
+  class="ion-float-end"
+  *ngIf="showSensitiveData"
+>
+  {{ 'page.program.program-people.submitPrivacy'|translate }}
+</confirm-prompt>
 
-  <confirm-prompt [disabled]="confirmBtnDisabled()"
-                  (confirm)="submitInclusion()"
-                  [subHeader]="'page.program.program-people.submit-warning'|translate"
-                  [message]="submitWarning.message"
-                  class="ion-float-end"
-                  *ngIf="!showSensitiveData"
-  >
-    {{ 'page.program.program-people.submit'|translate }}
-  </confirm-prompt>
-
-</section>
+<confirm-prompt
+  [disabled]="confirmBtnDisabled()"
+  (confirm)="submitInclusion()"
+  [subHeader]="'page.program.program-people.submit-warning'|translate"
+  [message]="submitWarning.message"
+  class="ion-float-end"
+  *ngIf="!showSensitiveData"
+>
+  {{ 'page.program.program-people.submit'|translate }}
+</confirm-prompt>

@@ -1,0 +1,20 @@
+<ion-header>
+  <app-header
+    [title]="'page.program.phases.reviewInclusion.label'|translate"
+  ></app-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <app-phase-next
+    [programId]="programId"
+    [selectedPhase]="thisPhase"
+    [phaseReady]="true"
+  ></app-phase-next>
+
+  <app-export-inclusion
+    [programId]="programId"
+    [userRole]="userRole"
+  ></app-export-inclusion>
+
+</ion-content>

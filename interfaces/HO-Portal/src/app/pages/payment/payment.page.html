@@ -1,0 +1,20 @@
+<ion-header>
+  <app-header
+    [title]="'page.program.phases.payment.label'|translate"
+  ></app-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <app-phase-next
+    [programId]="programId"
+    [selectedPhase]="thisPhase"
+    [phaseReady]="isReady"
+  ></app-phase-next>
+
+  <app-program-payout
+    [programId]="programId"
+    (isCompleted)="onReady($event)"
+  ></app-program-payout>
+
+</ion-content>

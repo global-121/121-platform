@@ -13,7 +13,6 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { ProgramsModule } from './program/program.module';
 
 import { Injector, APP_INITIALIZER } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -61,7 +60,6 @@ export function HttpLoaderFactory(http: HttpClient) {
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
-    ProgramsModule,
     AppRoutingModule,
     HttpClientModule,
     TranslateModule.forRoot({
