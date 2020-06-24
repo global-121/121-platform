@@ -1,11 +1,8 @@
 .phase-navigation {
-  --phase-navigation--indicator-width: 4px;
+  --phase-navigation--indicator-size: 4px;
 
   display: inline-block;
   position: relative;
-
-  // Add space between items:
-  margin-inline-end: 0.5em;
 }
 .phase-navigation--indicator {
   display: block;
@@ -13,7 +10,6 @@
   top: 100%;
   left: 2px;
   right: 2px;
-  border-top: 1px solid transparent;
-  border-bottom: var(--phase-navigation--indicator-width) solid
+  border-top: var(--phase-navigation--indicator-size) solid
     var(--ion-color-primary);
 }

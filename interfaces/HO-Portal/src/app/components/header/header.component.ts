@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
-import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
@@ -17,10 +17,7 @@ export class HeaderComponent implements OnInit {
 
   public programId: number;
   private program: Program;
-  public activePhase: ProgramPhase;
   public programTitle: string;
-
-  public programPhases = ProgramPhase;
 
   public showManageAidworkers: boolean;
 
@@ -46,7 +43,6 @@ export class HeaderComponent implements OnInit {
   private async loadProgramDetails() {
     this.program = await this.programsService.getProgramById(this.programId);
     this.programTitle = this.translatableString.get(this.program.title);
-    this.activePhase = this.program.state;
   }
 
   private canManageAidWorkers(): boolean {

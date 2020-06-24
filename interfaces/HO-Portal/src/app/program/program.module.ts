@@ -7,10 +7,9 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ProgramsRoutingModule } from './program-routing.module';
 
 import { ProgramComponent } from './program.component';
-import { PhaseNavigationComponent } from './phase-navigation/phase-navigation.component';
 
 @NgModule({
-  declarations: [ProgramComponent, PhaseNavigationComponent],
+  declarations: [ProgramComponent],
   imports: [
     CommonModule,
     FormsModule,

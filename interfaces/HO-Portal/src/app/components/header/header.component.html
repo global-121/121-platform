@@ -26,7 +26,7 @@
       <app-user-state></app-user-state>
     </ion-col>
   </ion-row>
-  <ion-row>
+  <ion-row class="ion-align-items-center">
     <ion-col size="auto">
       <ion-button
         [routerLink]="['/program', programId, 'dashboard']"
@@ -55,72 +55,9 @@
     </ion-col>
     <ion-col class="horizontal-scroll-container">
       <div class="ion-text-nowrap">
-        <ion-button
-          [routerLink]="['/program', programId, programPhases.design]"
-          routerDirection="root"
-          routerLinkActive
-          #rlaDesign="routerLinkActive"
-          [color]="rlaDesign.isActive ? 'primary' : 'medium'"
-          [fill]="activePhase === programPhases.design ? 'solid' : 'outline'"
-          size="small"
-        >
-          {{ 'header.design'|translate }}
-        </ion-button>
-        <ion-button
-          [routerLink]="['/program', programId, convertToSlug(programPhases.registrationValidation)]"
-          routerDirection="root"
-          routerLinkActive
-          #rlaRegistrationValidation="routerLinkActive"
-          [color]="rlaRegistrationValidation.isActive ? 'primary' : 'medium'"
-          [fill]="activePhase === programPhases.registrationValidation ? 'solid' : 'outline'"
-          size="small"
-        >
-          {{ 'header.registration-validation'|translate }}
-        </ion-button>
-        <ion-button
-          [routerLink]="['/program', programId, programPhases.inclusion]"
-          routerDirection="root"
-          routerLinkActive
-          #rlaInclusion="routerLinkActive"
-          [color]="rlaInclusion.isActive ? 'primary' : 'medium'"
-          [fill]="activePhase === programPhases.inclusion ? 'solid' : 'outline'"
-          size="small"
-        >
-          {{ 'header.inclusion'|translate }}
-        </ion-button>
-        <ion-button
-          [routerLink]="['/program', programId, convertToSlug(programPhases.reviewInclusion)]"
-          routerDirection="root"
-          routerLinkActive
-          #rlaReviewInclusion="routerLinkActive"
-          [color]="rlaReviewInclusion.isActive ? 'primary' : 'medium'"
-          [fill]="activePhase === programPhases.reviewInclusion ? 'solid' : 'outline'"
-          size="small"
-        >
-          {{ 'header.review-inclusion'|translate }}
-        </ion-button>
-        <ion-button
-          [routerLink]="['/program', programId, programPhases.payment]"
-          routerDirection="root"
-          routerLinkActive
-          #rlaPayment="routerLinkActive"
-          [color]="rlaPayment.isActive ? 'primary' : 'medium'"
-          [fill]="activePhase === programPhases.payment ? 'solid' : 'outline'"
-          size="small"
-        >
-          {{ 'header.payment'|translate }}
-        </ion-button>
-        <ion-button
-          [routerLink]="['/program', programId, programPhases.evaluation]"
-          routerDirection="root"
-          routerLinkActive
-          #rlaEvaluation="routerLinkActive"
-          [color]="rlaEvaluation.isActive ? 'primary' : 'medium'"
-          [fill]="activePhase === programPhases.evaluation ? 'solid' : 'outline'"
-          size="small"
-        >
-          {{ 'header.evaluation'|translate }}
-        </ion-button>
+        <app-phase-navigation
+          [programId]="programId"
+        ></app-phase-navigation>
       </div>
     </ion-col>
   </ion-row>

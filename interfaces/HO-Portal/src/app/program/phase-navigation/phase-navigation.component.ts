@@ -1,77 +1,49 @@
+import { Component, Input, OnInit } from '@angular/core';
 import {
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  Output,
-  EventEmitter,
-} from '@angular/core';
-import { Program } from 'src/app/models/program.model';
+  ProgramPhaseService,
+  Phase,
+} from 'src/app/services/program-phase.service';
 
 @Component({
   selector: 'app-phase-navigation',
   templateUrl: './phase-navigation.component.html',
   styleUrls: ['./phase-navigation.component.scss'],
 })
-export class PhaseNavigationComponent implements OnChanges {
+export class PhaseNavigationComponent implements OnInit {
   @Input()
-  public activePhase: string;
-  @Input()
-  public programPhases: any[];
-  @Output()
-  outputSelectedPhase: EventEmitter<string> = new EventEmitter<string>();
+  public programId: number;
 
-  public program: Program;
-  public activePhaseId: number;
-  public selectedPhaseId: number;
-  public selectedPhase: string;
+  public programPhases: Phase[];
+  private activePhase: Phase;
 
-  constructor() {}
+  constructor(private programPhaseService: ProgramPhaseService) {}
 
-  async ngOnChanges(changes: SimpleChanges) {
-    if (typeof changes.programPhases.currentValue === 'object') {
-      this.update();
-    }
-  }
-
-  private update() {
-    const activePhase = this.programPhases.find((item) => item.active);
-    this.activePhaseId = activePhase.id;
-    this.selectedPhaseId = this.activePhaseId;
-    this.activePhase = activePhase.phase;
-    this.selectedPhase = this.activePhase;
-  }
-
-  public changePhase(phase) {
-    const selectedPhaseObj = this.programPhases.find(
-      (item) => item.id === phase,
+  async ngOnInit() {
+    this.programPhases = await this.programPhaseService.getPhases(
+      this.programId,
     );
-    this.selectedPhase = selectedPhaseObj.phase;
-    this.selectedPhaseId = selectedPhaseObj.id;
-    this.outputSelectedPhase.emit(this.selectedPhase);
+    this.activePhase = this.programPhaseService.getActivePhase();
   }
 
-  public getColor(phase) {
-    let color = 'medium';
-
-    if (phase.id === this.selectedPhaseId) {
-      color = 'primary';
-    }
-
-    return color;
+  public isDisabled(phase: Phase): boolean {
+    return phase.id > this.activePhase.id;
   }
 
-  public getFill(phase) {
+  public getFill(phase: Phase): string {
     let fill = 'outline';
 
     if (phase.active) {
       fill = 'solid';
     }
 
-    if (phase.id > this.activePhaseId) {
+    if (this.isDisabled(phase)) {
       fill = 'clear';
     }
 
     return fill;
+  }
+
+  public convertToSlug(camelCase: string) {
+    return camelCase.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`);
   }
 }
