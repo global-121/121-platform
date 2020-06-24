@@ -218,18 +218,18 @@ export class ProgramPayoutComponent implements OnChanges {
   }
 
   public async exportList(installment) {
-    this.programsService.exportList(+this.programId, installment.id).then(
-      (res) => {
-        const blob = new Blob([res.data], { type: 'text/csv' });
-        saveAs(blob, res.fileName);
-      },
-      (err) => {
-        console.log('err: ', err);
-        this.actionResult(
-          this.translate.instant('page.program.program-payout.export-error'),
-        );
-      },
-    );
+    this.programsService
+      .exportPaymentList(+this.programId, installment.id)
+      .then(
+        (res) => {
+          const blob = new Blob([res.data], { type: 'text/csv' });
+          saveAs(blob, res.fileName);
+        },
+        (err) => {
+          console.log('err: ', err);
+          this.actionResult(this.translate.instant('common.export-error'));
+        },
+      );
   }
 
   private async actionResult(resultMessage: string) {

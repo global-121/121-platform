@@ -276,7 +276,7 @@ export class ProgramController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Total number of included per program',
+    description: 'List of people getting payment',
   })
   @Post('payment-details')
   public async getPaymentDetails(
@@ -286,6 +286,20 @@ export class ProgramController {
       data.programId,
       data.installment,
     );
+  }
+
+  @Roles(UserRole.ProgramManager)
+  @ApiOperation({
+    title: 'Get a list of included people for community review',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true })
+  @ApiResponse({
+    status: 200,
+    description: 'List of included people',
+  })
+  @Get('export-inclusion/:programId')
+  public async getInclusionList(@Param() params): Promise<any> {
+    return await this.programService.getInclusionList(params.programId);
   }
 
   @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)

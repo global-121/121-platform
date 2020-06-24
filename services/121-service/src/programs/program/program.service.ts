@@ -925,6 +925,36 @@ export class ProgramService {
     return response;
   }
 
+  public async getInclusionList(programId: number): Promise<any> {
+    const includedConnections = await (await this.getConnections(
+      programId,
+      true,
+    )).filter(i => i.status === 'included');
+    console.log(includedConnections);
+
+    const inclusionDetails = [];
+    includedConnections.forEach(rawConnection => {
+      let connection = {
+        name: rawConnection.name,
+        dateOfBirth: rawConnection.dob,
+        status: rawConnection.status,
+        createdDate: rawConnection.created,
+        registrationDate: rawConnection.appliedDate,
+        selectedForValidationDate: rawConnection.selectedForValidation,
+        validationDate: rawConnection.validationDate,
+        inclusionDate: rawConnection.inclusionDate,
+      };
+      inclusionDetails.push(connection);
+    });
+
+    const response = {
+      fileName: `inclusion-list-program-${programId}.csv`,
+      data: this.jsonToCsv(inclusionDetails),
+    };
+
+    return response;
+  }
+
   public async getPaymentDetailsInstallment(
     programId: number,
     installmentId: number,

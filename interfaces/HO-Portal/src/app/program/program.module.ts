@@ -16,6 +16,7 @@ import { ProgramPeopleComponent } from './program-people/program-people.componen
 import { ProgramPeopleAffectedComponent } from './program-people-affected/program-people-affected.component';
 import { ProgramDetailsComponent } from './program-details/program-details.component';
 import { ManageAidworkersComponent } from './manage-aidworkers/manage-aidworkers.component';
+import { ExportInclusionComponent } from './export-inclusion/export-inclusion.component';
 
 @NgModule({
   entryComponents: [ProgramJsonComponent],
@@ -30,6 +31,7 @@ import { ManageAidworkersComponent } from './manage-aidworkers/manage-aidworkers
     ProgramPeopleAffectedComponent,
     ProgramDetailsComponent,
     ManageAidworkersComponent,
+    ExportInclusionComponent,
   ],
   imports: [
     CommonModule,
