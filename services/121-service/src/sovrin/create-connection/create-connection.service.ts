@@ -1,3 +1,4 @@
+import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import {
   Injectable,
   HttpException,
@@ -9,7 +10,7 @@ import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
-import { Repository } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { DidDto } from '../../programs/program/dto/did.dto';
 import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
@@ -17,6 +18,7 @@ import { CredentialEntity } from '../credential/credential.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { ProgramService } from '../../programs/program/program.service';
+import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
 
 @Injectable()
 export class CreateConnectionService {
@@ -163,5 +165,38 @@ export class CreateConnectionService {
   public async getConnections(): Promise<ConnectionEntity[]> {
     let connections = await this.connectionRepository.find();
     return connections;
+  }
+
+  public async getFspAnswersAttributes(
+    did: string,
+  ): Promise<FspAnswersAttrInterface> {
+    const qb = await getRepository(ConnectionEntity)
+      .createQueryBuilder('connection')
+      .leftJoinAndSelect('connection.fsp', 'fsp')
+      .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
+      .where('connection.did = :did', { did: did });
+    const connection = await qb.getOne();
+    const fspAnswers = this.getFspAnswers(
+      connection.fsp.attributes,
+      connection.customData,
+    );
+    return { attributes: connection.fsp.attributes, answers: fspAnswers };
+  }
+
+  public getFspAnswers(
+    fspAttributes: FspAttributeEntity[],
+    customData: JSON,
+  ): object {
+    const fspAttributeNames = [];
+    for (const attribute of fspAttributes) {
+      fspAttributeNames.push(attribute.name);
+    }
+    const fspCustomData = {};
+    for (const key in customData) {
+      if (fspAttributeNames.includes(key)) {
+        fspCustomData[key] = customData[key];
+      }
+    }
+    return fspCustomData;
   }
 }
