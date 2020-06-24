@@ -10,9 +10,10 @@ import { ProgramPhase } from 'src/app/models/program.model';
 })
 export class InclusionPage implements OnInit {
   public programId = this.route.snapshot.params.id;
-  public userRole = this.authService.getUserRole();
   public thisPhase = ProgramPhase.inclusion;
   public isReady: boolean;
+
+  public userRole = this.authService.getUserRole();
 
   constructor(
     private route: ActivatedRoute,

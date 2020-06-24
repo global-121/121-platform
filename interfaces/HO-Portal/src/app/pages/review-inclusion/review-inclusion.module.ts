@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { ReviewInclusionPage } from './review-inclusion.page';
+import { ExportInclusionComponent } from 'src/app/program/export-inclusion/export-inclusion.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [ReviewInclusionPage],
+  declarations: [ReviewInclusionPage, ExportInclusionComponent],
 })
 export class ReviewInclusionPageModule {}

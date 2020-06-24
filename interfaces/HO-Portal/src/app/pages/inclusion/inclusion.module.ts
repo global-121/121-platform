@@ -7,7 +7,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
 
 import { InclusionPage } from './inclusion.page';
 import { ProgramPeopleComponent } from 'src/app/program/program-people/program-people.component';
-import { ExportInclusionComponent } from 'src/app/program/export-inclusion/export-inclusion.component';
 
 const routes: Routes = [
   {
@@ -24,10 +23,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [
-    InclusionPage,
-    ProgramPeopleComponent,
-    ExportInclusionComponent,
-  ],
+  declarations: [InclusionPage, ProgramPeopleComponent],
 })
 export class InclusionPageModule {}
