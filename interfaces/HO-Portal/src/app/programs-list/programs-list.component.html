@@ -13,7 +13,7 @@
       *ngFor="let program of items"
       detail="true"
       button="true"
-      [routerLink]="'/program/' + program.id + '/dashboard'"
+      [routerLink]="['/program', program.id, 'dashboard']"
       routerDirection="root"
     >
       <ion-label>

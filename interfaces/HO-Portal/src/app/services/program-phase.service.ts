@@ -81,7 +81,6 @@ export class ProgramPhaseService {
   }
 
   public getActivePhase(): Phase {
-    console.log('getActivePhase()', this.phases);
     return this.phases.find((phase) => phase.active);
   }
 
