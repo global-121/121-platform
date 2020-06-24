@@ -5,10 +5,12 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
+import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
 
 @NgModule({
   declarations: [
     DialogueTurnComponent,
+    QAndASetComponent,
   ],
   imports: [
     CommonModule,
@@ -17,6 +19,7 @@ import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
   ],
   exports: [
     DialogueTurnComponent,
+    QAndASetComponent,
     TranslateModule,
   ],
 })
