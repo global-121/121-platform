@@ -6,6 +6,12 @@
 
 <ion-content class="ion-padding">
 
+  <app-phase-next
+    [programId]="programId"
+    [selectedPhase]="thisPhase"
+    [phaseReady]="true"
+  ></app-phase-next>
+
   <app-program-details
     [programId]="programId"
   ></app-program-details>

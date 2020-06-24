@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-payment',
@@ -8,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PaymentPage implements OnInit {
   public programId = this.route.snapshot.params.id;
+  public thisPhase = ProgramPhase.payment;
 
   constructor(private route: ActivatedRoute) {}
 

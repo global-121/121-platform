@@ -8,14 +8,9 @@ import { ProgramsRoutingModule } from './program-routing.module';
 
 import { ProgramComponent } from './program.component';
 import { PhaseNavigationComponent } from './phase-navigation/phase-navigation.component';
-import { PhaseNextComponent } from './phase-next/phase-next.component';
 
 @NgModule({
-  declarations: [
-    ProgramComponent,
-    PhaseNavigationComponent,
-    PhaseNextComponent,
-  ],
+  declarations: [ProgramComponent, PhaseNavigationComponent],
   imports: [
     CommonModule,
     FormsModule,

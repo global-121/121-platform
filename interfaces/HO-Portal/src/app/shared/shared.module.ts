@@ -10,6 +10,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
 import { UserStateComponent } from '../components/user-state/user-state.component';
 import { HeaderComponent } from '../components/header/header.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     PasswordToggleInputComponent,
     HeaderComponent,
     UserStateComponent,
+    PhaseNextComponent,
   ],
   imports: [
     CommonModule,
@@ -31,6 +33,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     PasswordToggleInputComponent,
     HeaderComponent,
     UserStateComponent,
+    PhaseNextComponent,
     RouterModule,
     TranslateModule,
     NgxDatatableModule,

@@ -1,15 +1,18 @@
-<div style="display: flex;"
-     class="ion-align-items-center ion-justify-content-end"
+<div
+  style="display: flex;"
+  class="ion-align-items-center ion-justify-content-end"
 >
-  <ion-spinner *ngIf="isInProgress"
-               color="primary"
+  <ion-spinner
+    *ngIf="isInProgress"
+    color="primary"
   ></ion-spinner>
 
-  <confirm-prompt *ngIf="btnAvailable"
-                  [disabled]="checkDisabled()"
-                  (confirm)="advancePhase(activePhaseId)"
-                  [subHeader]="btnText"
-                  class="ion-margin-start"
+  <confirm-prompt
+    *ngIf="btnAvailable"
+    [disabled]="checkDisabled()"
+    (confirm)="advancePhase(activePhase?.id)"
+    [subHeader]="btnText"
+    class="ion-margin-start"
   >
     {{ btnText }}
   </confirm-prompt>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
+import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-inclusion',
@@ -10,6 +11,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class InclusionPage implements OnInit {
   public programId = this.route.snapshot.params.id;
   public userRole = this.authService.getUserRole();
+  public thisPhase = ProgramPhase.inclusion;
 
   constructor(
     private route: ActivatedRoute,

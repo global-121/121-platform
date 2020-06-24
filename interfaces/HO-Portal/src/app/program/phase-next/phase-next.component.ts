@@ -10,6 +10,10 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
+import {
+  ProgramPhaseService,
+  Phase,
+} from 'src/app/services/program-phase.service';
 
 @Component({
   selector: 'app-phase-next',
@@ -20,75 +24,73 @@ export class PhaseNextComponent implements OnChanges {
   @Input()
   public programId: number;
   @Input()
-  public programPhases: any[];
-  @Input()
-  public selectedPhase: string;
+  public selectedPhase: ProgramPhase;
   @Input()
   public phaseReady: boolean;
   @Output()
   isNewPhase: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  private programPhases: Phase[];
+  private programPhasesBackup: any[];
+
   public program: Program;
-  public activePhaseId: number;
-  public activePhase: string;
+  public activePhase: Phase;
+
   public btnAvailable: boolean;
-  public programPhasesBackup: any[];
   public btnText: string;
   public isInProgress = false;
-  private currentUserRole: string;
 
-  private firstChange = true;
+  private currentUserRole: string;
 
   constructor(
     private programsService: ProgramsServiceApiService,
     private authService: AuthService,
+    private programPhaseService: ProgramPhaseService,
   ) {}
 
   async ngOnInit() {
     this.currentUserRole = this.authService.getUserRole();
+    this.programPhases = await this.programPhaseService.getPhases(
+      this.programId,
+    );
+    this.updatePhases();
   }
 
   async ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes.programPhases &&
-      typeof changes.programPhases.currentValue === 'object'
-    ) {
-      this.updatePhases();
-      this.firstChange = false;
-    }
     if (
       changes.selectedPhase &&
       typeof changes.selectedPhase.currentValue === 'string' &&
       this.programPhasesBackup
     ) {
-      this.btnAvailable = this.selectedPhase !== ProgramPhase.evaluation;
+      this.btnAvailable = this.checkAvailable();
       this.btnText = this.fillBtnText();
     }
   }
 
-  public checkDisabled() {
+  private checkAvailable(): boolean {
+    return this.selectedPhase !== ProgramPhase.evaluation;
+  }
+
+  public checkDisabled(): boolean {
     return (
-      this.selectedPhase !== this.activePhase ||
-      // || !this.phaseReady
+      this.selectedPhase !== this.activePhase.name ||
       this.isInProgress ||
       this.currentUserRole !== UserRole.ProjectOfficer
     );
   }
 
   private async updatePhases() {
-    if (this.firstChange) {
+    if (!this.programPhasesBackup) {
       this.programPhasesBackup = this.programPhases;
     }
-    const activePhase = this.programPhases.find((item) => item.active);
-    this.activePhaseId = activePhase.id;
-    this.activePhase = activePhase.phase;
-    this.selectedPhase = this.activePhase;
-    this.btnText = activePhase.btnText;
+    this.activePhase = this.programPhaseService.getActivePhase();
+    this.selectedPhase = this.activePhase.name;
+    this.btnText = this.activePhase.btnText;
     this.btnAvailable = this.isNotLastPhase();
   }
 
-  private isNotLastPhase() {
-    const phases = Object.keys(ProgramPhase);
+  private isNotLastPhase(): boolean {
+    const phases = Object.keys(this.programPhases);
     const lastPhase = phases[phases.length - 1];
     return this.selectedPhase !== lastPhase;
   }
@@ -99,20 +101,20 @@ export class PhaseNextComponent implements OnChanges {
     ).btnText;
   }
 
-  public async advancePhase(phaseId) {
-    const nextPhaseId = phaseId + 1;
-    const phase = this.programPhases.find((item) => item.id === nextPhaseId)
-      .phase;
+  public async advancePhase(phaseId: number) {
+    const nextPhase = this.programPhaseService.getNextPhaseById(phaseId);
     this.isInProgress = true;
-    await this.programsService.advancePhase(this.programId, phase).then(
-      (response) => {
-        this.isInProgress = false;
-        this.isNewPhase.emit(true);
-      },
-      (error) => {
-        console.log(error);
-        this.isInProgress = false;
-      },
-    );
+    await this.programsService
+      .advancePhase(this.programId, nextPhase.name)
+      .then(
+        () => {
+          this.isInProgress = false;
+          this.isNewPhase.emit(true);
+        },
+        (error) => {
+          console.log(error);
+          this.isInProgress = false;
+        },
+      );
   }
 }
