@@ -27,6 +27,12 @@ const routes: Routes = [
     path: 'program/:id',
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'dashboard',
+        canActivate: [AuthGuard],
+      },
+      {
         path: 'dashboard',
         loadChildren: './pages/dashboard/dashboard.module#DashboardPageModule',
         canActivate: [AuthGuard],

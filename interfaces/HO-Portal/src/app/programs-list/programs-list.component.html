@@ -9,10 +9,12 @@
     {{ 'page.programs-list.not-available'|translate }}
   </div>
   <ion-list *ngIf="items">
-    <ion-item *ngFor="let program of items"
-              detail="true"
-              button="true"
-              [routerLink]="'/program/' + program.id"
+    <ion-item
+      *ngFor="let program of items"
+      detail="true"
+      button="true"
+      [routerLink]="'/program/' + program.id + '/dashboard'"
+      routerDirection="root"
     >
       <ion-label>
         {{ program.title }}<br>
