@@ -10,7 +10,7 @@
   <confirm-prompt
     *ngIf="btnAvailable"
     [disabled]="checkDisabled()"
-    (confirm)="advancePhase(activePhase?.id)"
+    (confirm)="advancePhase()"
     [subHeader]="btnText"
     class="ion-margin-start"
   >
