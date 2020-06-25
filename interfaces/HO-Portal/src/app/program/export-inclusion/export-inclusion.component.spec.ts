@@ -26,7 +26,6 @@ describe('ExportInclusionComponent', () => {
     btnText: 'btnText',
     active: true,
   };
-  let mockProgramPhaseService: jasmine.SpyObj<ProgramPhaseService>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -37,14 +36,17 @@ describe('ExportInclusionComponent', () => {
     }).compileComponents();
   }));
 
+  let mockProgramPhaseService: jasmine.SpyObj<ProgramPhaseService>;
   beforeEach(() => {
     mockProgramPhaseService = TestBed.get(ProgramPhaseService);
     mockProgramPhaseService.getActivePhase.and.returnValue(mockProgramPhase);
 
     fixture = TestBed.createComponent(ExportInclusionComponent);
     component = fixture.componentInstance;
+
     component.programId = mockProgramId;
     component.userRole = mockUserRole;
+
     fixture.detectChanges();
   });
 

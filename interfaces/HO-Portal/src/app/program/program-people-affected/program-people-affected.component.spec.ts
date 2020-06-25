@@ -6,41 +6,41 @@ import { ProgramPeopleAffectedComponent } from './program-people-affected.compon
 import { UserRole } from 'src/app/auth/user-role.enum';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { provideMagicalMock } from 'src/app/mocks/helpers';
 
 describe('ProgramPeopleAffectedComponent', () => {
   let component: ProgramPeopleAffectedComponent;
   let fixture: ComponentFixture<ProgramPeopleAffectedComponent>;
 
-  const mockUserRole = UserRole.ProgramManager;
   const mockProgramId = 1;
-  const mockProgramsApi = jasmine.createSpyObj('ProgramsServiceApiService', [
-    'getProgramById',
-    'getPeopleAffected',
-  ]);
-  mockProgramsApi.getProgramById.and.returnValue(
-    apiProgramsMock.programs[mockProgramId],
-  );
-  mockProgramsApi.getPeopleAffected.and.returnValue([]);
+  const mockUserRole = UserRole.ProgramManager;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ProgramPeopleAffectedComponent],
       imports: [TranslateModule.forRoot(), FormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ProgramsServiceApiService,
-          useValue: mockProgramsApi,
-        },
-      ],
+      providers: [provideMagicalMock(ProgramsServiceApiService)],
     }).compileComponents();
   }));
 
+  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
+
   beforeEach(() => {
+    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi.getProgramById.and.returnValue(
+      new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
+    );
+    mockProgramsApi.getPeopleAffected.and.returnValue(
+      new Promise((r) => r([])),
+    );
+
     fixture = TestBed.createComponent(ProgramPeopleAffectedComponent);
     component = fixture.componentInstance;
+
     component.programId = mockProgramId;
     component.userRole = mockUserRole;
+
     fixture.detectChanges();
   });
 

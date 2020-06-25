@@ -11,7 +11,7 @@ import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
-import { getRandomInt } from 'src/app/mocks/helpers';
+import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
 
 import { MetricsComponent } from './metrics.component';
 
@@ -26,9 +26,6 @@ describe('MetricsComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let testHost: TestHostComponent;
   let componentElement: HTMLElement;
-
-  let mockProgramsApi: any;
-  let mockTranslatableStringService: any;
 
   const fixtureProgram = apiProgramsMock.programs[0];
   const mockProgramMetrics: ProgramMetrics = {
@@ -48,38 +45,33 @@ describe('MetricsComponent', () => {
   };
 
   beforeEach(async(() => {
-    mockProgramsApi = jasmine.createSpyObj('ProgramsServiceApiService', [
-      'getMetricsById',
-    ]);
-    mockProgramsApi.getMetricsById.and.returnValue(mockProgramMetrics);
-
-    mockTranslatableStringService = jasmine.createSpyObj(
-      'TranslatableStringService',
-      ['get'],
-    );
-    mockTranslatableStringService.get.and.returnValue('');
-
     TestBed.configureTestingModule({
       declarations: [MetricsComponent, TestHostComponent],
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        {
-          provide: TranslatableStringService,
-          useValue: mockTranslatableStringService,
-        },
-        {
-          provide: ProgramsServiceApiService,
-          useValue: mockProgramsApi,
-        },
+        provideMagicalMock(TranslatableStringService),
+        provideMagicalMock(ProgramsServiceApiService),
       ],
     }).compileComponents();
   }));
 
+  let mockTranslatableStringService: jasmine.SpyObj<TranslatableStringService>;
+  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
+
   beforeEach(() => {
+    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi.getMetricsById.and.returnValue(
+      new Promise((r) => r(mockProgramMetrics)),
+    );
+
+    mockTranslatableStringService = TestBed.get(TranslatableStringService);
+    mockTranslatableStringService.get.and.returnValue('');
+
     fixture = TestBed.createComponent(TestHostComponent);
     testHost = fixture.componentInstance;
     componentElement = fixture.nativeElement.querySelector('app-metrics');
+
     fixture.detectChanges();
   });
 

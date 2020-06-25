@@ -5,26 +5,18 @@ import { DashboardPage } from './dashboard.page';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { provideMagicalMock } from 'src/app/mocks/helpers';
 
 describe('DashboardPage', () => {
   let component: DashboardPage;
   let fixture: ComponentFixture<DashboardPage>;
-
-  const mockProgramsApi = jasmine.createSpyObj('ProgramsServiceApiService', [
-    'getProgramById',
-  ]);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardPage],
       imports: [TranslateModule.forRoot(), RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        {
-          provide: ProgramsServiceApiService,
-          useValue: mockProgramsApi,
-        },
-      ],
+      providers: [provideMagicalMock(ProgramsServiceApiService)],
     }).compileComponents();
   }));
 
