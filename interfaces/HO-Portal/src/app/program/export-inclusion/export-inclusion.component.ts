@@ -3,6 +3,8 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController } from '@ionic/angular';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { ProgramPhaseService } from 'src/app/services/program-phase.service';
+import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-export-inclusion',
@@ -17,6 +19,7 @@ export class ExportInclusionComponent implements OnInit {
   public userRole: UserRole;
 
   constructor(
+    private programPhaseService: ProgramPhaseService,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
@@ -25,7 +28,12 @@ export class ExportInclusionComponent implements OnInit {
   ngOnInit() {}
 
   public btnDisabled() {
-    return this.userRole !== UserRole.ProgramManager;
+    const activePhase = this.programPhaseService.getActivePhase();
+
+    return (
+      activePhase.name !== ProgramPhase.reviewInclusion &&
+      this.userRole !== UserRole.ProgramManager
+    );
   }
 
   public getInclusionList() {
