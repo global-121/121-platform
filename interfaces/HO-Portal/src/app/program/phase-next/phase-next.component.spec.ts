@@ -5,9 +5,13 @@ import { of } from 'rxjs';
 
 import { PhaseNextComponent } from './phase-next.component';
 import { AuthService } from 'src/app/auth/auth.service';
-import { ProgramPhaseService } from 'src/app/services/program-phase.service';
+import {
+  ProgramPhaseService,
+  Phase,
+} from 'src/app/services/program-phase.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
-import { ProgramPhase } from 'src/app/models/program.model';
+import { ProgramPhase, Program } from 'src/app/models/program.model';
+import { camelCase2Kebab } from 'src/app/shared/camelcase-to-kebabcase';
 
 describe('PhaseNextComponent', () => {
   let component: PhaseNextComponent;
@@ -19,13 +23,22 @@ describe('PhaseNextComponent', () => {
   const mockAuthService = jasmine.createSpyObj('AuthService', ['getUserRole']);
   mockAuthService.getUserRole.and.returnValue(mockUserRole);
 
-  const mockProgramPhase = ProgramPhase.design;
+  const mockProgramPhase: Phase = {
+    id: 1,
+    name: ProgramPhase.design,
+    path: camelCase2Kebab(ProgramPhase.design),
+    label: 'label',
+    btnText: 'btnText',
+    active: true,
+  };
   const mockProgramPhaseService = jasmine.createSpyObj('ProgramPhaseService', [
     'getPhases',
     'getActivePhase',
+    'getPhaseByName',
   ]);
   mockProgramPhaseService.getPhases.and.returnValue([]);
   mockProgramPhaseService.getActivePhase.and.returnValue(mockProgramPhase);
+  mockProgramPhaseService.getPhaseByName.and.returnValue(mockProgramPhase);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

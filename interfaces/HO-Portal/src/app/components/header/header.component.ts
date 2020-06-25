@@ -36,10 +36,6 @@ export class HeaderComponent implements OnInit {
     this.loadProgramDetails();
   }
 
-  public convertToSlug(camelCase: string) {
-    return camelCase.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`);
-  }
-
   private async loadProgramDetails() {
     this.program = await this.programsService.getProgramById(this.programId);
     this.programTitle = this.translatableString.get(this.program.title);
