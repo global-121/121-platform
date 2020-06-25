@@ -7,26 +7,14 @@ import { AuthService } from 'src/app/auth/auth.service';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { ProgramPayoutComponent } from './program-payout.component';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { provideMagicalMock } from 'src/app/mocks/helpers';
 
 describe('ProgramPayoutComponent', () => {
   let component: ProgramPayoutComponent;
   let fixture: ComponentFixture<ProgramPayoutComponent>;
 
-  const mockUserRole = UserRole.ProjectOfficer;
-  const mockAuthService = jasmine.createSpyObj('AuthService', ['getUserRole']);
-  mockAuthService.getUserRole.and.returnValue(mockUserRole);
-
   const mockProgramId = 1;
-  const mockProgramsApi = jasmine.createSpyObj('ProgramsServiceApiService', [
-    'getProgramById',
-    'getTotalIncluded',
-    'getPastInstallments',
-  ]);
-  mockProgramsApi.getProgramById.and.returnValue(
-    apiProgramsMock.programs[mockProgramId],
-  );
-  mockProgramsApi.getTotalIncluded.and.returnValue(0);
-  mockProgramsApi.getPastInstallments.and.returnValue([]);
+  const mockUserRole = UserRole.ProjectOfficer;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -34,22 +22,33 @@ describe('ProgramPayoutComponent', () => {
       imports: [TranslateModule.forRoot(), FormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        {
-          provide: AuthService,
-          useValue: mockAuthService,
-        },
-        {
-          provide: ProgramsServiceApiService,
-          useValue: mockProgramsApi,
-        },
+        provideMagicalMock(AuthService),
+        provideMagicalMock(ProgramsServiceApiService),
       ],
     }).compileComponents();
   }));
 
+  let mockAuthService: jasmine.SpyObj<AuthService>;
+  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
+
   beforeEach(() => {
+    mockAuthService = TestBed.get(AuthService);
+    mockAuthService.getUserRole.and.returnValue(mockUserRole);
+
+    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi.getProgramById.and.returnValue(
+      new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
+    );
+    mockProgramsApi.getTotalIncluded.and.returnValue(new Promise((r) => r(0)));
+    mockProgramsApi.getPastInstallments.and.returnValue(
+      new Promise((r) => r([])),
+    );
+
     fixture = TestBed.createComponent(ProgramPayoutComponent);
     component = fixture.componentInstance;
+
     component.programId = mockProgramId;
+
     fixture.detectChanges();
   });
 

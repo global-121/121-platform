@@ -4,6 +4,7 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, Route } from '@angular/router';
 import { camelCase2Kebab } from '../shared/camelcase-to-kebabcase';
+import { PROGRAM_PHASE_ORDER } from '../program-phase-order';
 
 export class Phase {
   id: number;
@@ -37,34 +38,7 @@ export class ProgramPhaseService {
   }
 
   private createPhases() {
-    const phasesInput = [
-      {
-        id: 1,
-        name: ProgramPhase.design,
-      },
-      {
-        id: 2,
-        name: ProgramPhase.registrationValidation,
-      },
-      {
-        id: 3,
-        name: ProgramPhase.inclusion,
-      },
-      {
-        id: 4,
-        name: ProgramPhase.reviewInclusion,
-      },
-      {
-        id: 5,
-        name: ProgramPhase.payment,
-      },
-      {
-        id: 6,
-        name: ProgramPhase.evaluation,
-      },
-    ];
-
-    return phasesInput.map((phase) => ({
+    return PROGRAM_PHASE_ORDER.map((phase) => ({
       id: phase.id,
       name: phase.name,
       path: camelCase2Kebab(phase.name),

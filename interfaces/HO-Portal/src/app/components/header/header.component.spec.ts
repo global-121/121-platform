@@ -8,22 +8,14 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
+import { provideMagicalMock } from 'src/app/mocks/helpers';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 
-  const mockUserRole = UserRole.ProjectOfficer;
-  const mockAuthService = jasmine.createSpyObj('AuthService', ['getUserRole']);
-  mockAuthService.getUserRole.and.returnValue(mockUserRole);
-
   const mockProgramId = 1;
-  const mockProgramsApi = jasmine.createSpyObj('ProgramsServiceApiService', [
-    'getProgramById',
-  ]);
-  mockProgramsApi.getProgramById.and.returnValue(
-    apiProgramsMock.programs[mockProgramId],
-  );
+  const mockUserRole = UserRole.ProjectOfficer;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,19 +23,24 @@ describe('HeaderComponent', () => {
       imports: [TranslateModule.forRoot(), RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
-        {
-          provide: AuthService,
-          useValue: mockAuthService,
-        },
-        {
-          provide: ProgramsServiceApiService,
-          useValue: mockProgramsApi,
-        },
+        provideMagicalMock(AuthService),
+        provideMagicalMock(ProgramsServiceApiService),
       ],
     }).compileComponents();
   }));
 
+  let mockAuthService: jasmine.SpyObj<AuthService>;
+  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
+
   beforeEach(() => {
+    mockAuthService = TestBed.get(AuthService);
+    mockAuthService.getUserRole.and.returnValue(mockUserRole);
+
+    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi.getProgramById.and.returnValue(
+      new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
+    );
+
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
