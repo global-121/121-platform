@@ -3,13 +3,12 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
 import { UserRole } from './auth/user-role.enum';
 import { ProgramPhase } from './models/program.model';
-import { camelCase2Kebab } from './shared/camelcase-to-kebabcase';
 
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
     pathMatch: 'full',
+    redirectTo: 'home',
   },
   {
     path: 'login',
@@ -49,37 +48,49 @@ const routes: Routes = [
         },
       },
       {
-        path: camelCase2Kebab(ProgramPhase.design),
+        path: ProgramPhase.design,
         loadChildren: './pages/design/design.module#DesignPageModule',
         canActivate: [AuthGuard],
       },
       {
-        path: camelCase2Kebab(ProgramPhase.registrationValidation),
+        path: ProgramPhase.registrationValidation,
         loadChildren:
           './pages/registration-validation/registration-validation.module#RegistrationValidationPageModule',
         canActivate: [AuthGuard],
       },
       {
-        path: camelCase2Kebab(ProgramPhase.inclusion),
+        path: ProgramPhase.inclusion,
         loadChildren: './pages/inclusion/inclusion.module#InclusionPageModule',
         canActivate: [AuthGuard],
       },
       {
-        path: camelCase2Kebab(ProgramPhase.payment),
+        path: ProgramPhase.payment,
         loadChildren: './pages/payment/payment.module#PaymentPageModule',
         canActivate: [AuthGuard],
       },
       {
-        path: camelCase2Kebab(ProgramPhase.evaluation),
+        path: ProgramPhase.evaluation,
         loadChildren:
           './pages/evaluation/evaluation.module#EvaluationPageModule',
         canActivate: [AuthGuard],
       },
       {
-        path: camelCase2Kebab(ProgramPhase.reviewInclusion),
+        path: ProgramPhase.reviewInclusion,
         loadChildren:
           './pages/review-inclusion/review-inclusion.module#ReviewInclusionPageModule',
         canActivate: [AuthGuard],
+      },
+      {
+        // Fallback for change in url, from old to new syntax:
+        path: 'registration-validation',
+        pathMatch: 'full',
+        redirectTo: ProgramPhase.registrationValidation,
+      },
+      {
+        // Fallback for change in url, from old to new syntax:
+        path: 'review-inclusion',
+        pathMatch: 'full',
+        redirectTo: ProgramPhase.reviewInclusion,
       },
     ],
   },

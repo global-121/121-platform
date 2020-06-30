@@ -1,5 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -33,7 +32,6 @@ export class PhaseNextComponent implements OnInit {
   private currentUserRole: string;
 
   constructor(
-    private programsService: ProgramsServiceApiService,
     private authService: AuthService,
     private programPhaseService: ProgramPhaseService,
   ) {}
