@@ -45,7 +45,7 @@
     "@ngx-translate/http-loader": "^4.0.0",
     "@zxing/ngx-scanner": "^2.0.1",
     "angularx-qrcode": "^1.6.4",
-    "cordova-android": "^8.1.0",
+    "cordova-android": "^9.0.0",
     "cordova-browser": "^6.0.0",
     "cordova-ios": "^5.0.1",
     "core-js": "2.6.8",
