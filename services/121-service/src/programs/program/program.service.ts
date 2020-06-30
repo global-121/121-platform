@@ -930,7 +930,6 @@ export class ProgramService {
       programId,
       true,
     )).filter(i => i.status === 'included');
-    console.log(includedConnections);
 
     const inclusionDetails = [];
     includedConnections.forEach(rawConnection => {

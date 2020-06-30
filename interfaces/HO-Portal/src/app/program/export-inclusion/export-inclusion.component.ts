@@ -31,7 +31,7 @@ export class ExportInclusionComponent implements OnInit {
     const activePhase = this.programPhaseService.getActivePhase();
 
     return (
-      activePhase.name !== ProgramPhase.reviewInclusion &&
+      activePhase.name !== ProgramPhase.reviewInclusion ||
       this.userRole !== UserRole.ProgramManager
     );
   }
