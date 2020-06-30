@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import { ProgramPhase, Program } from '../models/program.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Router, Route } from '@angular/router';
-import { camelCase2Kebab } from '../shared/camelcase-to-kebabcase';
+import { Router } from '@angular/router';
 import { PROGRAM_PHASE_ORDER } from '../program-phase-order';
 
 export class Phase {
   id: number;
   name: ProgramPhase;
-  path: Route['path'] | string;
   label: string;
   btnText: string;
   active: boolean;
@@ -41,7 +39,6 @@ export class ProgramPhaseService {
     return PROGRAM_PHASE_ORDER.map((phase) => ({
       id: phase.id,
       name: phase.name,
-      path: camelCase2Kebab(phase.name),
       label: this.translate.instant(
         'page.program.phases.' + phase.name + '.label',
       ),
@@ -90,7 +87,7 @@ export class ProgramPhaseService {
           this.router.navigate([
             'program',
             this.programId,
-            newActivePhase.path,
+            newActivePhase.name,
           ]);
         },
         (error) => {

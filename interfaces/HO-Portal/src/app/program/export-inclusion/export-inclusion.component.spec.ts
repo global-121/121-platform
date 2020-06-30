@@ -21,7 +21,6 @@ describe('ExportInclusionComponent', () => {
   const mockProgramPhase: Phase = {
     id: 1,
     name: ProgramPhase.design,
-    path: 'path',
     label: 'label',
     btnText: 'btnText',
     active: true,

@@ -3,7 +3,7 @@
   class="phase-navigation"
 >
   <ion-button
-    [routerLink]="['/program', programId, phase.path]"
+    [routerLink]="['/program', programId, phase.name]"
     routerLinkActive
     #rlaPhase="routerLinkActive"
     [color]="rlaPhase.isActive ? 'primary' : 'medium'"
