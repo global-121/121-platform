@@ -7,7 +7,7 @@
     routerLinkActive
     #rlaPhase="routerLinkActive"
     [color]="rlaPhase.isActive ? 'primary' : 'medium'"
-    [disabled]="isDisabled(phase)"
+    [disabled]="phase.disabled"
     [fill]="getFill(phase)"
     size="small"
   >

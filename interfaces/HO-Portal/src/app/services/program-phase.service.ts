@@ -10,7 +10,8 @@ export class Phase {
   name: ProgramPhase;
   label: string;
   btnText: string;
-  active: boolean;
+  active?: boolean;
+  disabled?: boolean;
 }
 
 @Injectable({
@@ -19,8 +20,7 @@ export class Phase {
 export class ProgramPhaseService {
   private programId: number;
 
-  private program: Program;
-  public activePhaseName: string;
+  public activePhaseName: ProgramPhase;
   public phases: Phase[];
 
   constructor(
@@ -29,13 +29,17 @@ export class ProgramPhaseService {
     private router: Router,
   ) {}
 
-  private async loadProgram(programId: number) {
-    this.programId = programId;
-    this.program = await this.programsService.getProgramById(programId);
-    this.activePhaseName = this.program.state;
+  public async getPhases(programId: number): Promise<Phase[]> {
+    if (!this.phases) {
+      this.phases = this.createInitialPhases();
+    }
+    await this.loadProgram(programId);
+    this.updatePhaseStates();
+
+    return this.phases;
   }
 
-  private createPhases() {
+  private createInitialPhases(): Phase[] {
     return PROGRAM_PHASE_ORDER.map((phase) => ({
       id: phase.id,
       name: phase.name,
@@ -45,20 +49,25 @@ export class ProgramPhaseService {
       btnText: this.translate.instant(
         'page.program.phases.' + phase.name + '.btnText',
       ),
-      active: phase.name === this.activePhaseName,
     }));
   }
 
-  public async getPhases(programId: number): Promise<Phase[]> {
-    if (!this.phases) {
-      await this.updatePhases(programId);
-    }
-    return this.phases;
+  private async loadProgram(programId: number) {
+    this.programId = programId;
+    const program = await this.programsService.getProgramById(programId);
+    this.activePhaseName = program.state;
   }
 
-  private async updatePhases(programId: number) {
-    await this.loadProgram(programId);
-    this.phases = this.createPhases();
+  private updatePhaseStates() {
+    // Initially, `activePhase` will only contain `id` and `name` attributes from PROGRAM_PHASE_ORDER definition:
+    const activePhase = this.getPhaseByName(this.activePhaseName);
+
+    this.phases = this.phases.map((phase: Phase) => {
+      phase.active = phase.name === activePhase.name;
+      phase.disabled = phase.id > activePhase.id;
+
+      return phase;
+    });
   }
 
   public getActivePhase(): Phase {
@@ -81,8 +90,15 @@ export class ProgramPhaseService {
     await this.programsService
       .advancePhase(this.programId, nextPhase.name)
       .then(
-        async () => {
-          await this.updatePhases(this.programId);
+        async (result) => {
+          // When available, use the 'truth' from the back-end
+          if (result.state) {
+            this.activePhaseName = result.state;
+          } else {
+            // Else, fall back to previous knowledge
+            this.activePhaseName = nextPhase.name;
+          }
+          this.updatePhaseStates();
           const newActivePhase = this.getActivePhase();
           this.router.navigate([
             'program',
