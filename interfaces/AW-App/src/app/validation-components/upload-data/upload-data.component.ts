@@ -35,7 +35,11 @@ export class UploadDataComponent implements ValidationComponent {
       this.uploadDataStored = true;
       this.nrStored = credentials.length;
       for (const credential of credentials) {
+        if (this.uploadAborted) {
+          break;
+        }
         await this.issueCredential(credential);
+        await this.updateFsp(credential);
       }
       this.uploadReady = true;
     } else {
@@ -45,18 +49,37 @@ export class UploadDataComponent implements ValidationComponent {
   }
 
   public async issueCredential(credential: any): Promise<void> {
-    await this.programsService.issueCredential(
-      credential.did,
-      credential.programId,
-      credential.attributes
-    ).then(
-      async () => {
-        await this.removeCredentialByDid(credential.did);
-      },
-      () => {
-        this.uploadAborted = true;
+    if (credential.attributes) {
+      await this.programsService.issueCredential(
+        credential.did,
+        credential.programId,
+        credential.attributes
+      ).then(
+        async () => {
+          await this.removeCredentialByDid(credential.did);
+        },
+        () => {
+          this.uploadAborted = true;
+        }
+      );
+    }
+  }
+
+  public async updateFsp(credential: any): Promise<void> {
+    if (credential.fspanswers) {
+      for (const answer of credential.fspanswers) {
+        try {
+          await this.programsService.postConnectionCustomAttribute(
+            answer.did,
+            answer.code,
+            answer.value
+          )
+        } catch(error) {
+          this.uploadAborted = true;
+          return
+        }
       }
-    );
+    }
   }
 
   public async removeCredentialByDid(did: string): Promise<void>  {

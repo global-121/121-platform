@@ -1,4 +1,4 @@
-// import { Storage } from '@ionic/storage';
+import { Storage } from '@ionic/storage';
 import { Component } from '@angular/core';
 import { ValidationComponent } from '../validation-components.interface';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -11,6 +11,7 @@ import { ValidationComponents } from '../validation-components.enum';
 import { PaDataAttribute } from 'src/app/models/pa-data.model';
 import { FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
 import { Question, QuestionOption, AnswerSet, Answer } from 'src/app/models/q-and-a.models';
+import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 
 @Component({
   selector: 'app-validate-fsp',
@@ -28,6 +29,7 @@ export class ValidateFspComponent implements ValidationComponent {
   public showResultSuccess: boolean;
   public showResultError: boolean;
 
+  public ionicStorageTypes = IonicStorageTypes;
 
   constructor(
     public translatableString: TranslatableStringService,
@@ -36,7 +38,7 @@ export class ValidateFspComponent implements ValidationComponent {
     public sessionStorageService: SessionStorageService,
     public router: Router,
     public ionContent: IonContent,
-    // private storage: Storage,
+    private storage: Storage,
   ) { }
 
   async ngOnInit() {
@@ -132,8 +134,30 @@ export class ValidateFspComponent implements ValidationComponent {
     this.storeFspAnswersOffline(fspAnswers);
   }
 
-  public async storeFspAnswersOffline(answers: any) {
-    console.log('storeFspAnswersOffline',  answers);
+  public async storeFspAnswersOffline(fspanswers: any) {
+    let storedCredentials = await this.storage.get(
+      this.ionicStorageTypes.credentials,
+    );
+    if (!storedCredentials) {
+      storedCredentials = [];
+    }
+
+    // If credential was already stored update object else create new object
+    const currentCredentialIndex = storedCredentials.findIndex((obj => obj.did == this.did));
+    if (currentCredentialIndex) {
+      storedCredentials[currentCredentialIndex].fspanswers = fspanswers
+    } else {
+      const validatedFspData = {
+        did: this.did,
+        programId: this.programId,
+        fspanswers: fspanswers
+      };
+      storedCredentials.push(validatedFspData);
+    }
+    await this.storage.set(
+      this.ionicStorageTypes.credentials,
+      storedCredentials,
+    );
   }
 
   getNextSection() {
