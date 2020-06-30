@@ -1,3 +1,4 @@
+import { DidProgramDto } from './../credential/dto/did-program.dto';
 import { DidDto } from './dto/did.dto';
 import { CreateConnectionService } from './create-connection.service';
 import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
@@ -138,7 +139,7 @@ export class CreateConnectionController {
   })
   @Post('/get-fsp')
   public async getFspAnswersAttributes(
-    @Body() data: DidDto,
+    @Body() data: DidProgramDto,
   ): Promise<FspAnswersAttrInterface> {
     return await this.createConnectionService.getFspAnswersAttributes(data.did);
   }

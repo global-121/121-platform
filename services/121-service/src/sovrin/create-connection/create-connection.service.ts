@@ -18,7 +18,10 @@ import { CredentialEntity } from '../credential/credential.entity';
 import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { ProgramService } from '../../programs/program/program.service';
-import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
+import {
+  FspAnswersAttrInterface,
+  AnswerSet,
+} from 'src/programs/fsp/fsp-interface';
 
 @Injectable()
 export class CreateConnectionService {
@@ -180,13 +183,17 @@ export class CreateConnectionService {
       connection.fsp.attributes,
       connection.customData,
     );
-    return { attributes: connection.fsp.attributes, answers: fspAnswers };
+    return {
+      attributes: connection.fsp.attributes,
+      answers: fspAnswers,
+      did: did,
+    };
   }
 
   public getFspAnswers(
     fspAttributes: FspAttributeEntity[],
     customData: JSON,
-  ): object {
+  ): AnswerSet {
     const fspAttributeNames = [];
     for (const attribute of fspAttributes) {
       fspAttributeNames.push(attribute.name);
@@ -194,7 +201,10 @@ export class CreateConnectionService {
     const fspCustomData = {};
     for (const key in customData) {
       if (fspAttributeNames.includes(key)) {
-        fspCustomData[key] = customData[key];
+        fspCustomData[key] = {
+          code: key,
+          value: customData[key],
+        };
       }
     }
     return fspCustomData;

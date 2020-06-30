@@ -164,6 +164,7 @@ export class ScanQrComponent implements ValidationComponent {
 
   private async findPaData(did: string, programId: number): Promise<any> {
     let paData = await this.findPaDataOffline(did, programId);
+    console.log('paData: ', paData);
     if (!paData) {
       paData = await this.findPaDataOnline(did, programId);
     }
@@ -194,7 +195,7 @@ export class ScanQrComponent implements ValidationComponent {
   ): Promise<any> {
     console.log('findPaDataOffline()');
     const offlineData = await this.storage.get(
-      this.ionicStorageTypes.validationData,
+      this.ionicStorageTypes.validationProgramData,
     );
     if (!offlineData || !offlineData.length) {
       return;

@@ -12,6 +12,7 @@ import { PaDataAttribute } from 'src/app/models/pa-data.model';
 import { FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
 import { Question, QuestionOption, AnswerSet, Answer } from 'src/app/models/q-and-a.models';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { TimeoutError } from 'rxjs';
 
 @Component({
   selector: 'app-validate-fsp',
@@ -46,7 +47,7 @@ export class ValidateFspComponent implements ValidationComponent {
     this.did = paData[0].did;
     this.programId = paData[0].programId;
 
-    const attributesAnswers =  await this.programsService.getFspAttributesAsnwers(this.did, this.programId)
+    const attributesAnswers =  await this.findFspAnswers();
     console.log('attributesAnswers: ', attributesAnswers);
 
     this.questions = this.buildQuestions(attributesAnswers.attributes);
@@ -60,6 +61,47 @@ export class ValidateFspComponent implements ValidationComponent {
       this.sessionStorageService.type.paData,
     );
     return JSON.parse(paDataRaw);
+  }
+
+  private async findFspAnswers() {
+    let fspAnswers = await this.findFspAnswersOffline(this.did);
+    if (!fspAnswers) {
+      fspAnswers = await this.findFspAnswersOnline(this.did, this.programId);
+    }
+    return fspAnswers;
+  }
+
+  private async findFspAnswersOffline(did: string) {
+    console.log('findFspAnswersOffline()');
+    const offlineData = await this.storage.get(
+      this.ionicStorageTypes.validationFspData,
+    );
+    if (!offlineData || !offlineData.length) {
+      return offlineData
+    }
+    for (const fspPaData of offlineData) {
+      if (fspPaData.did == did) {
+        return fspPaData;
+      }
+    }
+  }
+
+  private async findFspAnswersOnline(did: string, programId: number) {
+    try {
+      const response = await this.programsService.getFspAttributesAsnwers(
+        did,
+        programId,
+      );
+      if (response.length === 0) {
+        return;
+      }
+      return response;
+    } catch (e) {
+      console.log('Error: ', e.name);
+      if (e.status === 0 || e instanceof TimeoutError) {
+        return;
+      }
+    }
   }
 
   private buildQuestions(fspAttributes: FspAttribute[]) {
