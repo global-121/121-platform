@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlertController } from '@ionic/angular';
@@ -11,12 +11,14 @@ import { ProgramPhase } from 'src/app/models/program.model';
   templateUrl: './export-inclusion.component.html',
   styleUrls: ['./export-inclusion.component.scss'],
 })
-export class ExportInclusionComponent implements OnInit {
+export class ExportInclusionComponent implements OnChanges {
   @Input()
   public programId: number;
 
   @Input()
   public userRole: UserRole;
+
+  public disabled: boolean = false;
 
   constructor(
     private programPhaseService: ProgramPhaseService,
@@ -25,7 +27,11 @@ export class ExportInclusionComponent implements OnInit {
     private alertController: AlertController,
   ) {}
 
-  ngOnInit() {}
+  ngOnChanges(changes: SimpleChanges) { 
+    if (changes.programId && changes.programId.currentValue === 'number') {
+      this.disabled = this.btnDisabled();
+    }
+  }
 
   public btnDisabled() {
     const activePhase = this.programPhaseService.getActivePhase();
