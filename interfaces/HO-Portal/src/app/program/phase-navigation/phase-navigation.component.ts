@@ -14,7 +14,6 @@ export class PhaseNavigationComponent implements OnInit {
   public programId: number;
 
   public programPhases: Phase[];
-  private activePhase: Phase;
 
   constructor(private programPhaseService: ProgramPhaseService) {}
 
@@ -22,11 +21,6 @@ export class PhaseNavigationComponent implements OnInit {
     this.programPhases = await this.programPhaseService.getPhases(
       this.programId,
     );
-    this.activePhase = this.programPhaseService.getActivePhase();
-  }
-
-  public isDisabled(phase: Phase): boolean {
-    return phase.id > this.activePhase.id;
   }
 
   public getFill(phase: Phase): string {
@@ -36,7 +30,7 @@ export class PhaseNavigationComponent implements OnInit {
       fill = 'solid';
     }
 
-    if (this.isDisabled(phase)) {
+    if (phase.disabled) {
       fill = 'clear';
     }
 
