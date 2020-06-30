@@ -54,6 +54,14 @@ export class QAndASetComponent {
 
   constructor() {}
 
+    ngOnInit() {
+    const answersArray = Object.keys(this.answers);
+    this.allQuestionsShown = this.checkAllQuestionsShown(
+      this.questions,
+      answersArray,
+    );
+  }
+
   private getQuestionByCode(questionCode: string): Question {
     const result = this.questions.find((question: Question) => {
       return question.code === questionCode;

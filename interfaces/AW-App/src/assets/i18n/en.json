@@ -65,12 +65,22 @@
       "change": "Change information",
       "confirm-button": "Save",
       "conclusion": "The validation data has been saved. Please make sure to upload it (now or when internet is available)."
+    },
+    "validate-fsp": {
+      "introduction": "Below you see the PA's information needed for the financial service provider. Check it with the PA, adapt where necessary, and confirm.",
+      "submit": "Confirm",
+      "dob-feedback": "The date of birth does not have a valid format. Please adjust and save again.",
+      "please-confirm": "Below is an overview of the PA's information. Please confirm.",
+      "change": "Change information",
+      "confirm-button": "Save",
+      "conclusion": "The financial service provider has been saved. Please make sure to upload it (now or when internet is available)."
     }
   },
   "connection": {
     "error-retry": "Something went wrong, do you want to try again?"
   },
   "shared": {
-    "submit-button": "Submit"
+    "submit-button": "Submit",
+    "validation-generc-error": "We cannot process some of your input. Please check and update one of your answers."
   }
 }

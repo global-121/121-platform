@@ -1,3 +1,4 @@
+import { PhoneNumberInputComponent } from './phone-number-input/phone-number-input.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -10,6 +11,7 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
 @NgModule({
   declarations: [
     DialogueTurnComponent,
+    PhoneNumberInputComponent,
     QAndASetComponent,
   ],
   imports: [
@@ -19,6 +21,7 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
   ],
   exports: [
     DialogueTurnComponent,
+    PhoneNumberInputComponent,
     QAndASetComponent,
     TranslateModule,
   ],

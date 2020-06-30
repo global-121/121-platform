@@ -36,7 +36,7 @@ export class ValidationPage implements OnInit {
     [ValidationComponents.mainMenu]: MainMenuComponent,
     [ValidationComponents.scanQr]: ScanQrComponent,
     [ValidationComponents.validateProgram]: ValidateProgramComponent,
-    [ValidationComponents.validateProgram]: ValidateFspComponent,
+    [ValidationComponents.validateFsp]: ValidateFspComponent,
     [ValidationComponents.viewAppointments]: ViewAppointmentsComponent,
     [ValidationComponents.downloadData]: DownloadDataComponent,
     [ValidationComponents.uploadData]: UploadDataComponent,

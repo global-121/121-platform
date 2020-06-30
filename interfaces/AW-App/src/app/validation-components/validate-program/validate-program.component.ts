@@ -260,7 +260,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   getNextSection() {
-    return ValidationComponents.mainMenu;
+    return ValidationComponents.validateFsp;
   }
 
   complete() {
