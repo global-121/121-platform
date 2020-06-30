@@ -18,7 +18,7 @@ export class ExportInclusionComponent implements OnChanges {
   @Input()
   public userRole: UserRole;
 
-  public disabled: boolean = false;
+  public disabled = false;
 
   constructor(
     private programPhaseService: ProgramPhaseService,
@@ -27,7 +27,7 @@ export class ExportInclusionComponent implements OnChanges {
     private alertController: AlertController,
   ) {}
 
-  ngOnChanges(changes: SimpleChanges) { 
+  ngOnChanges(changes: SimpleChanges) {
     if (changes.programId && changes.programId.currentValue === 'number') {
       this.disabled = this.btnDisabled();
     }
