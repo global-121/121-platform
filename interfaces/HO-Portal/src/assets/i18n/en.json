@@ -136,8 +136,9 @@
         "export-list": "Export list"
       },
       "program-people-affected": {
-        "section-title": "Manage People Affected (for Validation)",
+        "section-title": "Manage People Affected",
         "choose-action": "Choose action...",
+        "no-actions": "No actions available",
         "apply-action": "Apply action",
         "column": {
           "select": "Select",
@@ -148,7 +149,11 @@
           "selected-for-validation": "Selected for validation",
           "vulnerability-assessment-validated": "Validated Vulnerability Assessment",
           "final-score": "Validated inclusion score",
-          "temp-score": "Temporary inclusion score"
+          "temp-score": "Temporary inclusion score",
+          "included": "Included",
+          "name": "Name",
+          "dob": "Date of birth",
+          "payment": "Payment #"
         },
         "status": {
           "created": "Created",
@@ -160,14 +165,15 @@
           "rejected": "Rejected"
         },
         "actions": {
-          "select-for-validation": "Select for validation"
+          "select-for-validation": "Select for validation",
+          "include": "Include in program"
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
         "submit-warning-people-affected": "People Affected"
       },
       "program-people": {
-        "section-title": "Manage People Affected (for Inclusion)",
+        "section-title": "Manage People Affected (old: for Rejecting)",
         "targetNumber": "The target number of People Affected to include is: ",
         "noConnections": "There are no enrolled People Affected yet.",
         "noConnectionsPrivacy": "There are no included or excluded People Affected yet.",

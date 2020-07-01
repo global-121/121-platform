@@ -23,7 +23,7 @@ export class ProgramPeopleComponent implements OnInit {
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public selectedPhase = ProgramPhase.inclusion;
+  public selectedPhase = ProgramPhase.reviewInclusion;
   private activePhase: ProgramPhase;
 
   private locale: string;
@@ -322,7 +322,7 @@ export class ProgramPeopleComponent implements OnInit {
     let allPeopleData: any[];
 
     if (this.showSensitiveData) {
-      allPeopleData = await this.programsService.getEnrolledPrivacy(
+      allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,
       );
       this.enrolledPeople = await this.createTableData(allPeopleData);
@@ -330,7 +330,9 @@ export class ProgramPeopleComponent implements OnInit {
         this.enrolledPeople,
       );
     } else {
-      allPeopleData = await this.programsService.getEnrolled(this.programId);
+      allPeopleData = await this.programsService.getPeopleAffected(
+        this.programId,
+      );
       this.enrolledPeople = await this.createTableData(allPeopleData);
       this.newEnrolledPeople = this.enrolledPeople.filter(
         (i) => !i.included && !i.excluded,

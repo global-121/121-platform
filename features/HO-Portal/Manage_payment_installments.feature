@@ -38,6 +38,7 @@ Feature: Manage payment installments
     And the message "Payout successful" is shown
     And the processed installment has changed to "closed" with the date of today and has disabled buttons
     And the next installment now has a date 1 "month" from today and has enabled fields
+    And after page refresh the "manage people affected" component has updated values for "payment" columns
 
   Scenario: Send payment instructions with changed transfer value
     Given the user changes the Transfer value to "20"

@@ -733,14 +733,8 @@ export class ProgramService {
     programId: number,
     privacy: boolean,
   ): Promise<any[]> {
-    let selectedConnections;
-    if (!privacy) {
-      selectedConnections = await this.getAllConnections(programId);
-    } else {
-      selectedConnections = await this.getIncludedExcludedConnections(
-        programId,
-      );
-    }
+    const selectedConnections = await this.getAllConnections(programId);
+
     const connectionsResponse = [];
     for (let connection of selectedConnections) {
       const connectionResponse = {};
@@ -764,8 +758,8 @@ export class ProgramService {
       connectionResponse['validationDate'] = connection.validationDate;
       connectionResponse['inclusionDate'] = connection.inclusionDate;
       if (privacy) {
-        connectionResponse['name'] = connection.customData.name;
-        connectionResponse['dob'] = connection.customData.dob;
+        connectionResponse['name'] = connection.customData['name'];
+        connectionResponse['dob'] = connection.customData['dob'];
       }
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
       connectionsResponse.push(connectionResponse);
@@ -869,6 +863,16 @@ export class ProgramService {
       .groupBy('transaction.amount, transaction.installment')
       .getRawMany();
     return installments;
+  }
+
+  public async getTransactions(programId: number): Promise<any> {
+    const transactions = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select(['transaction.created AS installmentDate', 'installment', 'did'])
+      .leftJoin('transaction.connection', 'c')
+      .where('transaction.program.id = :programId', { programId: programId })
+      .getRawMany();
+    return transactions;
   }
 
   public async getFunds(programId: number): Promise<FundingOverview> {

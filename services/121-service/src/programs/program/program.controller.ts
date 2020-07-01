@@ -246,6 +246,18 @@ export class ProgramController {
   }
 
   @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
+  @ApiOperation({ title: 'Get transactions' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get Get transactions',
+  })
+  @Get('transactions/:programId')
+  public async getTransactions(@Param() param): Promise<any> {
+    return await this.programService.getTransactions(param.programId);
+  }
+
+  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
   @ApiOperation({ title: 'Get total number of included per program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({

@@ -12,10 +12,11 @@
     [phaseReady]="isReady"
   ></app-phase-next>
 
-  <app-program-people
+  <app-program-people-affected
     [programId]="programId"
     [userRole]="userRole"
+    [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"
-  ></app-program-people>
+  ></app-program-people-affected>
 
 </ion-content>

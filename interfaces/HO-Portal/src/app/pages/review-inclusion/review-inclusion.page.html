@@ -17,4 +17,17 @@
     [userRole]="userRole"
   ></app-export-inclusion>
 
+  <app-program-people-affected 
+    [programId]="programId" 
+    [userRole]="userRole" 
+    [thisPhase]="thisPhase"
+    (isCompleted)="onReady($event)"
+  ></app-program-people-affected>
+
+  <app-program-people 
+    [programId]="programId" 
+    [userRole]="userRole" 
+    (isCompleted)="onReady($event)"
+  ></app-program-people>
+
 </ion-content>

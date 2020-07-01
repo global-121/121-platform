@@ -11,6 +11,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 export class ReviewInclusionPage implements OnInit {
   public programId = this.route.snapshot.params.id;
   public thisPhase = ProgramPhase.reviewInclusion;
+  public isReady: boolean;
 
   public userRole = this.authService.getUserRole();
 
@@ -20,4 +21,8 @@ export class ReviewInclusionPage implements OnInit {
   ) {}
 
   ngOnInit() {}
+
+  public onReady(state: boolean) {
+    this.isReady = state;
+  }
 }
