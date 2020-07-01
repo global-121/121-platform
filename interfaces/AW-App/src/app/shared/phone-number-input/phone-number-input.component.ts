@@ -6,6 +6,7 @@ import {
   EventEmitter,
 } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { TimeoutError } from 'rxjs';
 
 @Component({
   selector: 'phone-number-input',
@@ -67,8 +68,13 @@ export class PhoneNumberInputComponent {
         isValid = typeof result.result !== 'undefined' ? result.result : false;
       },
       (error) => {
-        console.log('error: ', error.error);
-        isValid = false;
+        // If aidworker is offline do not check phonenumber online
+        if (error.status === 0 || error instanceof TimeoutError) {
+          isValid = true;
+        } else {
+          console.log('error: ', error.error);
+          isValid = false;
+        }
       },
     );
 
