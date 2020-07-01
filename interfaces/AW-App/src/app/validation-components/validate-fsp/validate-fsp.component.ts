@@ -47,13 +47,11 @@ export class ValidateFspComponent implements ValidationComponent {
     this.did = paData[0].did;
     this.programId = paData[0].programId;
 
-    const attributesAnswers =  await this.findFspAnswers();
-    console.log('attributesAnswers: ', attributesAnswers);
-
-    this.questions = this.buildQuestions(attributesAnswers.attributes);
-    this.customAttributeAnswers = attributesAnswers.answers;
-    console.log('this.customAttributeAnswers: ', this.customAttributeAnswers);
-
+    const attributesAnswers = await this.findFspAnswers();
+    if (!attributesAnswers) {
+      this.questions = this.buildQuestions(attributesAnswers.attributes);
+      this.customAttributeAnswers = attributesAnswers.answers;
+    }
   }
 
   private async getPaData(): Promise<PaDataAttribute[]> {
@@ -63,7 +61,7 @@ export class ValidateFspComponent implements ValidationComponent {
     return JSON.parse(paDataRaw);
   }
 
-  private async findFspAnswers() {
+  private async findFspAnswers(): Promise<any> {
     let fspAnswers = await this.findFspAnswersOffline(this.did);
     if (!fspAnswers) {
       fspAnswers = await this.findFspAnswersOnline(this.did, this.programId);
