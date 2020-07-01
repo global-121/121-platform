@@ -136,7 +136,7 @@
         "export-list": "Export list"
       },
       "program-people-affected": {
-        "section-title": "Manage People Affected (for Validation)",
+        "section-title": "Manage People Affected",
         "choose-action": "Choose action...",
         "apply-action": "Apply action",
         "column": {
@@ -148,7 +148,8 @@
           "selected-for-validation": "Selected for validation",
           "vulnerability-assessment-validated": "Validated Vulnerability Assessment",
           "final-score": "Validated inclusion score",
-          "temp-score": "Temporary inclusion score"
+          "temp-score": "Temporary inclusion score",
+          "included": "Included"
         },
         "status": {
           "created": "Created",
@@ -167,7 +168,7 @@
         "submit-warning-people-affected": "People Affected"
       },
       "program-people": {
-        "section-title": "Manage People Affected (for Inclusion)",
+        "section-title": "Manage People Affected (old: for Rejecting)",
         "targetNumber": "The target number of People Affected to include is: ",
         "noConnections": "There are no enrolled People Affected yet.",
         "noConnectionsPrivacy": "There are no included or excluded People Affected yet.",

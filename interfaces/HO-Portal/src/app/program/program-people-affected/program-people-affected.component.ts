@@ -19,6 +19,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public programId: number;
   @Input()
   public userRole: UserRole;
+  @Input()
+  public thisPhase: ProgramPhase;
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
@@ -29,6 +31,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   public columns: any[] = [];
+  public columnsAvailable: any[] = [];
 
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
@@ -87,18 +90,18 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       draggable: false,
       resizeable: false,
       sortable: true,
-      hidePhases: [],
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
     const columnDateWidth = 142;
     const columnScoreWidth = 90;
-    this.columns = [
+    this.columnsAvailable = [
       {
         prop: 'pa',
         name: this.translate.instant(
           'page.program.program-people-affected.column.person',
         ),
         ...columnDefaults,
+        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
         minWidth: 80,
       },
       {
@@ -107,6 +110,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.status',
         ),
         ...columnDefaults,
+        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
         minWidth: 80,
       },
       {
@@ -115,6 +119,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.digital-id-created',
         ),
         ...columnDefaults,
+        phases: [ProgramPhase.registrationValidation],
         width: columnDateWidth,
       },
       {
@@ -123,6 +128,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.vulnerability-assessment-completed',
         ),
         ...columnDefaults,
+        phases: [ProgramPhase.registrationValidation],
         width: columnDateWidth,
       },
       {
@@ -131,6 +137,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.temp-score',
         ),
         ...columnDefaults,
+        phases: [ProgramPhase.registrationValidation],
         width: columnScoreWidth,
       },
       {
@@ -139,6 +146,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.selected-for-validation',
         ),
         ...columnDefaults,
+        phases: [ProgramPhase.registrationValidation],
         width: columnDateWidth,
       },
       {
@@ -147,6 +155,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.vulnerability-assessment-validated',
         ),
         ...columnDefaults,
+        phases: [ProgramPhase.registrationValidation],
         width: columnDateWidth,
       },
       {
@@ -155,18 +164,41 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.final-score',
         ),
         ...columnDefaults,
+        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
         width: columnScoreWidth,
       },
+      {
+        prop: 'included',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.included',
+        ),
+        ...columnDefaults,
+        phases: [ProgramPhase.inclusion],
+        width: columnDateWidth,
+      },
     ];
+
+    this.loadColumns();
   }
 
   async ngOnInit() {
     this.program = await this.programsService.getProgramById(this.programId);
     this.activePhase = this.program.state;
 
+    this.loadColumns();
+
     await this.loadData();
 
     this.updateBulkActions();
+  }
+
+  private loadColumns() {
+    this.columns = [];
+    for (const column of this.columnsAvailable) {
+      if (column.phases.includes(this.thisPhase)) {
+        this.columns.push(column);
+      }
+    }
   }
 
   private updateBulkActions() {
@@ -177,6 +209,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       return action;
     });
   }
+
+
 
   private async loadData() {
     const allPeopleData = await this.programsService.getPeopleAffected(
@@ -228,6 +262,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ? formatDate(person.validationDate, this.dateFormat, this.locale)
         : null,
       finalScore: person.score,
+
+      included: person.inclusionDate
+        ? formatDate(person.inclusionDate, this.dateFormat, this.locale)
+        : null,
     } as PersonRow;
   }
 

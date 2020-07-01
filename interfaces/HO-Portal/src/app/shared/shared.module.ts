@@ -12,6 +12,7 @@ import { HeaderComponent } from '../components/header/header.component';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
+import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navi
     UserStateComponent,
     PhaseNextComponent,
     PhaseNavigationComponent,
+    ProgramPeopleAffectedComponent,
   ],
   imports: [
     CommonModule,
@@ -37,6 +39,7 @@ import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navi
     UserStateComponent,
     PhaseNextComponent,
     PhaseNavigationComponent,
+    ProgramPeopleAffectedComponent,
     RouterModule,
     TranslateModule,
     NgxDatatableModule,
