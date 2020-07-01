@@ -132,6 +132,26 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         minWidth: 80,
       },
       {
+        prop: 'name',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.name',
+        ),
+        ...columnDefaults,
+        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+        roles: [UserRole.ProgramManager],
+        width: 80,
+      },
+      {
+        prop: 'dob',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.dob',
+        ),
+        ...columnDefaults,
+        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+        roles: [UserRole.ProgramManager],
+        width: 80,
+      },
+      {
         prop: 'statusLabel',
         name: this.translate.instant(
           'page.program.program-people-affected.column.status',
@@ -205,26 +225,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.payment,
         ],
         width: columnDateWidth,
-      },
-      {
-        prop: 'name',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.name',
-        ),
-        ...columnDefaults,
-        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        roles: [UserRole.ProgramManager],
-        width: 80,
-      },
-      {
-        prop: 'dob',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.dob',
-        ),
-        ...columnDefaults,
-        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        roles: [UserRole.ProgramManager],
-        width: 80,
       },
     ];
     this.paymentColumnTemplate = {
