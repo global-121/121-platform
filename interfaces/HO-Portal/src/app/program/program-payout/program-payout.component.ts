@@ -25,7 +25,6 @@ export class ProgramPayoutComponent implements OnInit {
   public isEnabled = true;
   public isInProgress = false;
   public userRoleEnum = UserRole;
-  public programPhase = ProgramPhase;
   public currentUserRole: string;
 
   private program: Program;
