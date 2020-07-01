@@ -25,6 +25,7 @@ export class ProgramPayoutComponent implements OnInit {
   public isEnabled = true;
   public isInProgress = false;
   public userRoleEnum = UserRole;
+  public programPhase = ProgramPhase;
   public currentUserRole: string;
 
   private program: Program;
@@ -216,5 +217,15 @@ export class ProgramPayoutComponent implements OnInit {
       this.nrOfPastInstallments === this.nrOfInstallments;
 
     this.isCompleted.emit(isReady);
+  }
+
+  public payoutDisabled(installment) {
+    return (
+      !this.isEnabled ||
+      !installment.firstOpen ||
+      this.totalIncluded === 0 ||
+      this.currentUserRole !== UserRole.ProjectOfficer ||
+      this.activePhase !== ProgramPhase.payment
+    );
   }
 }
