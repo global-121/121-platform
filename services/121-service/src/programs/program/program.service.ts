@@ -733,14 +733,8 @@ export class ProgramService {
     programId: number,
     privacy: boolean,
   ): Promise<any[]> {
-    let selectedConnections;
-    if (!privacy) {
-      selectedConnections = await this.getAllConnections(programId);
-    } else {
-      selectedConnections = await this.getIncludedExcludedConnections(
-        programId,
-      );
-    }
+    const selectedConnections = await this.getAllConnections(programId);
+
     const connectionsResponse = [];
     for (let connection of selectedConnections) {
       const connectionResponse = {};
@@ -764,8 +758,8 @@ export class ProgramService {
       connectionResponse['validationDate'] = connection.validationDate;
       connectionResponse['inclusionDate'] = connection.inclusionDate;
       if (privacy) {
-        connectionResponse['name'] = connection.customData.name;
-        connectionResponse['dob'] = connection.customData.dob;
+        connectionResponse['name'] = connection.customData['name'];
+        connectionResponse['dob'] = connection.customData['dob'];
       }
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
       connectionsResponse.push(connectionResponse);
