@@ -3,76 +3,14 @@
   <dialogue-turn isSpoken="true">
     {{ 'validation.validate-program.introduction'|translate }}
   </dialogue-turn>
-  <dialogue-turn actor="self"
-                 *ngFor="let question of questions; let i=index; first as isFirst;"
-                [isConnected]="!isFirst"
-                isSpoken="true"
-  >
-    <ion-label>
-      {{ question.label }}
-    </ion-label>
-    <div [ngSwitch]="question.answerType">
-      <div *ngSwitchCase="answerTypes.Enum">
-        <ion-radio-group [name]="question.code"
-                         (ionChange)="changeAnswers($event)"
-        >
-          <ion-item *ngFor="let option of question.options"
-                    color="light"
-          >
-            <ion-label>{{ option.label }}</ion-label>
-            <ion-radio [value]="option.value"
-                       [checked]="(option.value === answers[question.code]?.value)"
-                       [disabled]="hasAnswered"
-            ></ion-radio>
-          </ion-item>
-        </ion-radio-group>
-      </div>
-      <div *ngSwitchCase="answerTypes.Number">
-        <ion-input type="text"
-                   inputmode="numeric"
-                   pattern="[0-9]*"
-                   [name]="question.code"
-                   (input)="inputAnswers($event)"
-                   (change)="changeAnswers($event)"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="hasAnswered"
-        ></ion-input>
-      </div>
-      <div *ngSwitchCase="answerTypes.Date">
-        <ion-input type="date"
-                   placeholder="dd-mm-yyyy"
-                   [name]="question.code"
-                   (change)="changeAnswers($event)"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="hasAnswered"
-        ></ion-input>
-      </div>
-      <div *ngSwitchDefault>
-        <ion-input type="text"
-                   [name]="question.code"
-                   (input)="inputAnswers($event)"
-                   (change)="changeAnswers($event)"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="hasAnswered"
-        ></ion-input>
-      </div>
-    </div>
-  </dialogue-turn>
-  <dialogue-turn actor="self"
-                 isConnected="true"
-                 *ngIf="!programCredentialIssued"
-                 [isSpoken]="!programCredentialIssued"
-  >
-    <p>
-      <ion-button type="submit"
-                  (click)="submit()"
-                  [disabled]="hasAnswered || !allQuestionsAnswered"
-                  expand="block"
-      >
-        {{ 'validation.validate-program.submit'|translate }}
-      </ion-button>
-    </p>
-  </dialogue-turn>
+  <q-and-a-set [questions]="questions"
+               [answers]="answers"
+               [(isSubmitted)]="hasAnswered"
+               [(isEditing)]="hasChangedAnswers"
+               (submit)="submit($event)"
+               submitLabel="validation.validate-program.submit"
+  ></q-and-a-set>
+
   <dialogue-turn *ngIf="dobFeedback"
                  [isSpoken]="dobFeedback"
   >
