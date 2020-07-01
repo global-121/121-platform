@@ -456,12 +456,22 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public onSelect(newSelected: PersonRow[]) {
+    // This extra hack for 'de-select all' to work properly
+    if (
+      this.headerChecked &&
+      newSelected.length === this.allPeopleAffected.length
+    ) {
+      newSelected = [];
+    }
+
     const allSelectable = this.allPeopleAffected.filter(this.isRowSelectable);
     const prevSelectedCount = this.selectedPeople.length;
     const cleanNewSelected = newSelected.filter(this.isRowSelectable);
 
     // We need to distinguish between the header-select case and the single-row-selection, as they both call the same function
-    const diffNewSelected = Math.abs(newSelected.length - prevSelectedCount);
+    const diffNewSelected = Math.abs(
+      cleanNewSelected.length - prevSelectedCount,
+    );
     const multiSelection = diffNewSelected > 1;
 
     if (!multiSelection) {
