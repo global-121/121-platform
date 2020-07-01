@@ -41,6 +41,8 @@ export class BulkActionsService {
           programId,
           selectedPeople,
         );
+      case BulkActionId.include:
+        return await this.programsService.include(programId, selectedPeople);
     }
   }
 }
