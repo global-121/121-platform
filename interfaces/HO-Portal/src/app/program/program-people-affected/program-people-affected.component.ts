@@ -67,6 +67,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       roles: [UserRole.ProjectOfficer],
       phases: [ProgramPhase.registrationValidation],
     },
+    {
+      id: BulkActionId.include,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.include',
+      ),
+      roles: [UserRole.ProjectOfficer],
+      phases: [ProgramPhase.inclusion],
+    },
   ];
 
   public submitWarning: any;
@@ -105,7 +114,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         minWidth: 80,
       },
       {
-        prop: 'status',
+        prop: 'statusLabel',
         name: this.translate.instant(
           'page.program.program-people-affected.column.status',
         ),
@@ -205,12 +214,33 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
         action.roles.includes(this.userRole) &&
-        action.phases.includes(this.activePhase);
+        action.phases.includes(this.activePhase) &&
+        action.phases.includes(this.thisPhase);
       return action;
     });
+    this.switchChooseActionToNoActions(this.bulkActions);
   }
 
+  private switchChooseActionToNoActions(bulkActions: BulkAction[]) {
+    const defaultAction = bulkActions.find(
+      (a) => a.id === BulkActionId.chooseAction,
+    );
 
+    if (this.nrEnabledActions(bulkActions) === 1) {
+      defaultAction.label = this.translate.instant(
+        'page.program.program-people-affected.no-actions',
+      );
+    } else {
+      defaultAction.label = this.translate.instant(
+        'page.program.program-people-affected.choose-action',
+      );
+    }
+  }
+
+  private nrEnabledActions(bulkActions: BulkAction[]) {
+    const enabledActions = bulkActions.filter((a) => a.enabled);
+    return enabledActions.length;
+  }
 
   private async loadData() {
     const allPeopleData = await this.programsService.getPeopleAffected(
@@ -241,7 +271,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       did: person.did,
       checkboxVisible: false,
       pa: `PA #${index}`,
-      status: this.translate.instant(
+      status: person.status,
+      statusLabel: this.translate.instant(
         'page.program.program-people-affected.status.' + person.status,
       ),
       digitalIdCreated: person.created

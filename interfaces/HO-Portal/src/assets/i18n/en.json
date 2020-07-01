@@ -138,6 +138,7 @@
       "program-people-affected": {
         "section-title": "Manage People Affected",
         "choose-action": "Choose action...",
+        "no-actions": "No actions available",
         "apply-action": "Apply action",
         "column": {
           "select": "Select",
@@ -161,7 +162,8 @@
           "rejected": "Rejected"
         },
         "actions": {
-          "select-for-validation": "Select for validation"
+          "select-for-validation": "Select for validation",
+          "include": "Include in program"
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",

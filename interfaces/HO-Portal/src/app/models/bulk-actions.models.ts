@@ -4,6 +4,7 @@ import { ProgramPhase } from './program.model';
 export enum BulkActionId {
   chooseAction = 'choose-action',
   selectForValidation = 'select-for-validation',
+  include = 'include',
 }
 
 export class BulkAction {

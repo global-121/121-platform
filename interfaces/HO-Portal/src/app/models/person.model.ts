@@ -22,7 +22,8 @@ export class PersonRow {
   did: string;
   checkboxVisible: boolean;
   pa: string; // Display label
-  status: string;
+  status: PaStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
+  statusLabel: string;
   digitalIdCreated?: string;
   vulnerabilityAssessmentCompleted?: string | null;
   tempScore?: number;

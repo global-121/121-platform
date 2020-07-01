@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { BulkActionId } from '../models/bulk-actions.models';
-import { PersonRow } from '../models/person.model';
+import { PersonRow, PaStatus } from '../models/person.model';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +18,13 @@ export class BulkActionsService {
           !personData.selectedForValidation &&
           !personData.vulnerabilityAssessmentValidated &&
           !personData.finalScore;
+        break;
+      case BulkActionId.include:
+        personData.checkboxVisible = [
+          PaStatus.registered,
+          PaStatus.selectedForValidation,
+          PaStatus.validated,
+        ].includes(PaStatus[personData.status]);
         break;
     }
     return personData;
