@@ -164,7 +164,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.temp-score',
         ),
         ...columnDefaults,
-        phases: [ProgramPhase.registrationValidation],
+        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
         width: columnScoreWidth,
       },
       {
