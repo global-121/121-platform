@@ -29,7 +29,7 @@ export class PhoneNumberInputComponent {
 
   private initialChecked = false;
 
-  constructor(private programService: ProgramsServiceApiService) {}
+  constructor(private programService: ProgramsServiceApiService) { }
 
   private setValidity(state: boolean, emit = true) {
     this.isValid = state;
@@ -66,8 +66,13 @@ export class PhoneNumberInputComponent {
         isValid = typeof result.result !== 'undefined' ? result.result : false;
       },
       (error) => {
-        console.log('error: ', error.error);
-        isValid = false;
+        // If aidworker is offline do not check phonenumber online
+        if (error.status === 0 || error instanceof TimeoutError) {
+          isValid = true;
+        } else {
+          console.log('error: ', error.error);
+          isValid = false;
+        }
       },
     );
 
