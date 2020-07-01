@@ -48,9 +48,11 @@ export class ValidateFspComponent implements ValidationComponent {
     this.programId = paData[0].programId;
 
     const attributesAnswers = await this.findFspAnswers();
-    if (!attributesAnswers) {
+    if (attributesAnswers && attributesAnswers.attributes) {
       this.questions = this.buildQuestions(attributesAnswers.attributes);
       this.customAttributeAnswers = attributesAnswers.answers;
+    } else {
+      this.complete();
     }
   }
 
@@ -66,6 +68,7 @@ export class ValidateFspComponent implements ValidationComponent {
     if (!fspAnswers) {
       fspAnswers = await this.findFspAnswersOnline(this.did, this.programId);
     }
+    console.log('fspAnswers: ', fspAnswers);
     return fspAnswers;
   }
 

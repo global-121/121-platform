@@ -18,16 +18,16 @@
       {{ 'validation.validate-program.dob-feedback'|translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn *ngIf="hasAnswered && !programCredentialIssued"
-                 [isSpoken]="hasAnswered && !programCredentialIssued"
+  <dialogue-turn *ngIf="hasAnswered && programCredentialIssued"
+                 [isSpoken]="hasAnswered"
   >
     <p>
       {{ 'validation.validate-program.please-confirm'|translate }}
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self"
-                 *ngIf="hasAnswered && !programCredentialIssued"
-                 [isSpoken]="hasAnswered && !programCredentialIssued"
+                 *ngIf="hasAnswered"
+                 [isSpoken]="hasAnswered"
   >
     <ul>
       <li *ngFor="let question of questions">
@@ -40,6 +40,7 @@
       <ion-button type="submit"
                   (click)="validateAttributes()"
                   expand="block"
+                  *ngIf="!programCredentialIssued"
       >
         {{ 'validation.validate-program.confirm-button'|translate }}
       </ion-button>
@@ -47,6 +48,7 @@
                   (click)="change()"
                   expand="block"
                   fill="outline"
+                  *ngIf="!programCredentialIssued"
       >
         {{ 'validation.validate-program.change'|translate }}
       </ion-button>

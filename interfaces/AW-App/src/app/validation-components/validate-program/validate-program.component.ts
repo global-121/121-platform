@@ -190,6 +190,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   public change() {
+    console.log('change: ');
     this.hasAnswered = false;
     this.changedAnswers = true;
   }
@@ -202,6 +203,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.hasAnswered = true;
     this.changedAnswers = false;
     this.dobFeedback = false;
+    console.log('this.programCredentialIssued: ', this.programCredentialIssued);
   }
 
   public postponeVerification() {
@@ -226,7 +228,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     const attributes = this.createAttributes(Object.values(this.answers));
     await this.storeCredentialOffline(attributes);
     this.programCredentialIssued = true;
-    this.answers = {};
+    // this.answers = {};
     this.complete();
   }
 

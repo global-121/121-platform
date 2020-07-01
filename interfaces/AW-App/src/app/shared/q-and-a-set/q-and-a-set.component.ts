@@ -54,12 +54,14 @@ export class QAndASetComponent {
 
   constructor() {}
 
-    ngOnInit() {
-    const answersArray = Object.keys(this.answers);
-    this.allQuestionsShown = this.checkAllQuestionsShown(
-      this.questions,
-      answersArray,
-    );
+  ngAfterContentInit() {
+    if (this.answers && this.questions) {
+      const answersArray = Object.keys(this.answers);
+      this.allQuestionsShown = this.checkAllQuestionsShown(
+        this.questions,
+        answersArray,
+      );
+    }
   }
 
   private getQuestionByCode(questionCode: string): Question {
