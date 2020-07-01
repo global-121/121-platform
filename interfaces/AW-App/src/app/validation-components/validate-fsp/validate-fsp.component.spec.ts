@@ -8,7 +8,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IonContent, IonicModule } from '@ionic/angular';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
-import { mockProgram } from 'src/app/mocks/api.program.mock';
+import { mockProgram, fspData } from 'src/app/mocks/api.program.mock';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
 import { SessionStorageType } from 'src/app/services/session-storage-types.enum';
@@ -27,7 +27,7 @@ describe('ValidateFspComponent', () => {
       {
         getProgramById: () => of(mockProgram).toPromise(),
         getPrefilledAnswers: () => of({}).toPromise(),
-        getFspAttributesAsnwers: () => of({}).toPromise(),
+        getFspAttributesAsnwers: () => of(fspData).toPromise(),
       },
     );
 
@@ -75,8 +75,6 @@ describe('ValidateFspComponent', () => {
           }
         }),
     };
-
-
 
     TestBed.configureTestingModule({
       declarations: [ ValidateFspComponent ],

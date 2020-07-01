@@ -23,3 +23,25 @@ export const mockProgram: Program = {
   financialServiceProviders: [],
   credDefId: '',
 };
+
+
+export const fspData = {
+  attributes: [
+    {
+      id: 1,
+      name: 'personalId',
+      label: {
+        en: 'What is your national ID, so we can transfer money to your bank account'
+      },
+      options: null,
+      answerType: 'text',
+    }
+  ],
+  answers: {
+    personalId: {
+      code: 'personalId',
+      value: 'vb'
+    }
+  },
+  did: 'did:sov:WGXNmAH5WtmyBN685MqxHD'
+};
