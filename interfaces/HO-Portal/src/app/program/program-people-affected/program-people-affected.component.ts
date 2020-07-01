@@ -68,13 +68,22 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       phases: [ProgramPhase.registrationValidation],
     },
     {
-      id: BulkActionId.include,
+      id: BulkActionId.includeProjectOfficer,
       enabled: false,
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
       ),
       roles: [UserRole.ProjectOfficer],
       phases: [ProgramPhase.inclusion],
+    },
+    {
+      id: BulkActionId.includeProgramManager,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.include',
+      ),
+      roles: [UserRole.ProgramManager],
+      phases: [ProgramPhase.reviewInclusion],
     },
   ];
 
@@ -99,6 +108,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       draggable: false,
       resizeable: false,
       sortable: true,
+      roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
     const columnDateWidth = 142;
@@ -110,7 +120,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.person',
         ),
         ...columnDefaults,
-        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+        ],
         minWidth: 80,
       },
       {
@@ -119,7 +133,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.status',
         ),
         ...columnDefaults,
-        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+        ],
         minWidth: 80,
       },
       {
@@ -182,7 +200,27 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.included',
         ),
         ...columnDefaults,
-        phases: [ProgramPhase.inclusion],
+        phases: [ProgramPhase.inclusion, ProgramPhase.reviewInclusion],
+        width: columnDateWidth,
+      },
+      {
+        prop: 'name',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.name',
+        ),
+        ...columnDefaults,
+        phases: [ProgramPhase.reviewInclusion],
+        roles: [UserRole.ProgramManager],
+        width: columnDateWidth,
+      },
+      {
+        prop: 'dob',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.dob',
+        ),
+        ...columnDefaults,
+        phases: [ProgramPhase.reviewInclusion],
+        roles: [UserRole.ProgramManager],
         width: columnDateWidth,
       },
     ];
@@ -204,7 +242,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private loadColumns() {
     this.columns = [];
     for (const column of this.columnsAvailable) {
-      if (column.phases.includes(this.thisPhase)) {
+      if (
+        column.phases.includes(this.thisPhase) &&
+        column.roles.includes(this.userRole)
+      ) {
         this.columns.push(column);
       }
     }
@@ -243,9 +284,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private async loadData() {
-    const allPeopleData = await this.programsService.getPeopleAffected(
-      this.programId,
-    );
+    let allPeopleData: Person[];
+    if (this.userRole === UserRole.ProjectOfficer) {
+      allPeopleData = await this.programsService.getPeopleAffected(
+        this.programId,
+      );
+    } else if (this.userRole === UserRole.ProgramManager) {
+      allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
+        this.programId,
+      );
+    }
     this.allPeopleAffected = this.createTableData(allPeopleData);
   }
 
@@ -293,10 +341,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ? formatDate(person.validationDate, this.dateFormat, this.locale)
         : null,
       finalScore: person.score,
-
       included: person.inclusionDate
         ? formatDate(person.inclusionDate, this.dateFormat, this.locale)
         : null,
+      name: person.name,
+      dob: person.dob,
     } as PersonRow;
   }
 

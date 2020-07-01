@@ -6,7 +6,6 @@ import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 import { InclusionPage } from './inclusion.page';
-import { ProgramPeopleComponent } from 'src/app/program/program-people/program-people.component';
 
 const routes: Routes = [
   {
@@ -23,6 +22,6 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [InclusionPage, ProgramPeopleComponent],
+  declarations: [InclusionPage],
 })
 export class InclusionPageModule {}

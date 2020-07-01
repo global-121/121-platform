@@ -150,7 +150,9 @@
           "vulnerability-assessment-validated": "Validated Vulnerability Assessment",
           "final-score": "Validated inclusion score",
           "temp-score": "Temporary inclusion score",
-          "included": "Included"
+          "included": "Included",
+          "name": "Name",
+          "dob": "Date of birth"
         },
         "status": {
           "created": "Created",

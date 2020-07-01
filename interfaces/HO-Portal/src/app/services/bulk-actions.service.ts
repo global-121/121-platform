@@ -19,11 +19,19 @@ export class BulkActionsService {
           !personData.vulnerabilityAssessmentValidated &&
           !personData.finalScore;
         break;
-      case BulkActionId.include:
+      case BulkActionId.includeProjectOfficer:
         personData.checkboxVisible = [
           PaStatus.registered,
           PaStatus.selectedForValidation,
           PaStatus.validated,
+        ].includes(PaStatus[personData.status]);
+        break;
+      case BulkActionId.includeProgramManager:
+        personData.checkboxVisible = [
+          PaStatus.registered,
+          PaStatus.selectedForValidation,
+          PaStatus.validated,
+          PaStatus.excluded, // Update this to 'rejected' during 'reject PBI'
         ].includes(PaStatus[personData.status]);
         break;
     }
@@ -41,7 +49,9 @@ export class BulkActionsService {
           programId,
           selectedPeople,
         );
-      case BulkActionId.include:
+      case BulkActionId.includeProjectOfficer:
+        return await this.programsService.include(programId, selectedPeople);
+      case BulkActionId.includeProgramManager:
         return await this.programsService.include(programId, selectedPeople);
     }
   }
