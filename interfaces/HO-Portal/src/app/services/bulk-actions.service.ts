@@ -12,12 +12,9 @@ export class BulkActionsService {
   updateCheckbox(action: BulkActionId, personData: PersonRow) {
     switch (action) {
       case BulkActionId.selectForValidation:
-        personData.checkboxVisible =
-          personData.vulnerabilityAssessmentCompleted &&
-          personData.tempScore &&
-          !personData.selectedForValidation &&
-          !personData.vulnerabilityAssessmentValidated &&
-          !personData.finalScore;
+        personData.checkboxVisible = [PaStatus.registered].includes(
+          PaStatus[personData.status],
+        );
         break;
       case BulkActionId.includeProjectOfficer:
         personData.checkboxVisible = [
