@@ -29,7 +29,8 @@ export class RetryInterceptor implements HttpInterceptor {
     const res = [
       '/sovrin/credential/get-answers',
       '/sovrin/create-connection/qr-find-did',
-      '/sovrin/create-connection/get-fsp/'
+      '/sovrin/create-connection/get-fsp/',
+      '/notifications/lookup'
     ];
     // Exclude interceptor for offline usage
     for (const re of res) {

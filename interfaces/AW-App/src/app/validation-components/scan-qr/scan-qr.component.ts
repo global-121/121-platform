@@ -107,6 +107,7 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   private async getPaIdentifier(data: string): Promise<PaQrCode | false> {
+    console.log('data: getPaIdentifier', data);
     if (this.isValidPaQrCode(data)) {
       return JSON.parse(data);
     }
@@ -164,7 +165,6 @@ export class ScanQrComponent implements ValidationComponent {
 
   private async findPaData(did: string, programId: number): Promise<any> {
     let paData = await this.findPaDataOffline(did, programId);
-    console.log('paData: ', paData);
     if (!paData) {
       paData = await this.findPaDataOnline(did, programId);
     }

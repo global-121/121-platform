@@ -73,10 +73,10 @@ export class UploadDataComponent implements ValidationComponent {
             answer.did,
             answer.code,
             answer.value
-          )
-        } catch(error) {
+          );
+        } catch (error) {
           this.uploadAborted = true;
-          return
+          return;
         }
       }
     }

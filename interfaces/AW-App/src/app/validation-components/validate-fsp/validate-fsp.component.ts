@@ -77,10 +77,10 @@ export class ValidateFspComponent implements ValidationComponent {
       this.ionicStorageTypes.validationFspData,
     );
     if (!offlineData || !offlineData.length) {
-      return offlineData
+      return offlineData;
     }
     for (const fspPaData of offlineData) {
-      if (fspPaData.did == did) {
+      if (fspPaData.did === did) {
         return fspPaData;
       }
     }
@@ -140,7 +140,7 @@ export class ValidateFspComponent implements ValidationComponent {
     this.conversationService.startLoading();
     this.customAttributeAnswers = $event;
 
-    const fspAnswers = []
+    const fspAnswers = [];
 
     this.showResultSuccess = null;
     this.showResultError = null;
@@ -185,14 +185,14 @@ export class ValidateFspComponent implements ValidationComponent {
     }
 
     // If credential was already stored update object else create new object
-    const currentCredentialIndex = storedCredentials.findIndex((obj => obj.did == this.did));
+    const currentCredentialIndex = storedCredentials.findIndex((obj => obj.did === this.did));
     if (currentCredentialIndex) {
-      storedCredentials[currentCredentialIndex].fspanswers = fspanswers
+      storedCredentials[currentCredentialIndex].fspanswers = fspanswers;
     } else {
       const validatedFspData = {
         did: this.did,
         programId: this.programId,
-        fspanswers: fspanswers
+        fspanswers,
       };
       storedCredentials.push(validatedFspData);
     }

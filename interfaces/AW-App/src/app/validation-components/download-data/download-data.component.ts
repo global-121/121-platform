@@ -33,7 +33,7 @@ export class DownloadDataComponent implements ValidationComponent {
 
   public validationData: ValidationAnswer[];
   public qrDidMapping: QrDidMap[];
-  public fspData: any
+  public fspData: any;
 
   public ionicStorageTypes = IonicStorageTypes;
 
@@ -63,7 +63,7 @@ export class DownloadDataComponent implements ValidationComponent {
     );
     await this.storage.set(this.ionicStorageTypes.validationProgramData, this.validationData);
     await this.storage.set(this.ionicStorageTypes.qrDidMapping, this.qrDidMapping);
-    await this.storage.set(this.ionicStorageTypes.validationFspData, this.fspData)
+    await this.storage.set(this.ionicStorageTypes.validationFspData, this.fspData);
 
     const myPrograms = await this.getProgramData(this.validationData);
     await this.storage.set(this.ionicStorageTypes.myPrograms, myPrograms);

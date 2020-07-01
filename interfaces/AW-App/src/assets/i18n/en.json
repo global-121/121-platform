@@ -81,6 +81,7 @@
   },
   "shared": {
     "submit-button": "Submit",
-    "validation-generc-error": "We cannot process some of your input. Please check and update one of your answers."
+    "validate-generic-error": "We cannot process some of your input. Please check and update one of your answers.",
+    "validate-phoneNumber": "We couldn't verify that phone-number. Please update and try again."
   }
 }
