@@ -17,4 +17,11 @@
     (isCompleted)="onReady($event)"
   ></app-program-payout>
 
+  <app-program-people-affected 
+    [programId]="programId"
+    [userRole]="userRole"
+    [thisPhase]="thisPhase"
+    (isCompleted)="onReady($event)"
+  ></app-program-people-affected>
+
 </ion-content>

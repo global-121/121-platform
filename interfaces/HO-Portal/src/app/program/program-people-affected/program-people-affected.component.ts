@@ -31,7 +31,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   public columns: any[] = [];
-  public columnsAvailable: any[] = [];
+  private columnsAvailable: any[] = [];
+  private paymentColumnTemplate: any = {};
+  private paymentColumns: any[] = [];
+  private pastInstallments: any[] = [];
 
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
@@ -83,7 +86,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         'page.program.program-people-affected.actions.include',
       ),
       roles: [UserRole.ProgramManager],
-      phases: [ProgramPhase.reviewInclusion],
+      phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
     },
   ];
 
@@ -108,6 +111,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       draggable: false,
       resizeable: false,
       sortable: true,
+      phases: [
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.reviewInclusion,
+        ProgramPhase.payment,
+      ],
       roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
@@ -120,11 +129,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.person',
         ),
         ...columnDefaults,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.reviewInclusion,
-        ],
         minWidth: 80,
       },
       {
@@ -133,11 +137,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.status',
         ),
         ...columnDefaults,
-        phases: [
-          ProgramPhase.registrationValidation,
-          ProgramPhase.inclusion,
-          ProgramPhase.reviewInclusion,
-        ],
         minWidth: 80,
       },
       {
@@ -200,7 +199,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.included',
         ),
         ...columnDefaults,
-        phases: [ProgramPhase.inclusion, ProgramPhase.reviewInclusion],
+        phases: [
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+          ProgramPhase.payment,
+        ],
         width: columnDateWidth,
       },
       {
@@ -209,9 +212,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.name',
         ),
         ...columnDefaults,
-        phases: [ProgramPhase.reviewInclusion],
+        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         roles: [UserRole.ProgramManager],
-        width: columnDateWidth,
+        width: 80,
       },
       {
         prop: 'dob',
@@ -219,11 +222,20 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.dob',
         ),
         ...columnDefaults,
-        phases: [ProgramPhase.reviewInclusion],
+        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         roles: [UserRole.ProgramManager],
-        width: columnDateWidth,
+        width: 80,
       },
     ];
+    this.paymentColumnTemplate = {
+      prop: 'payment',
+      name: this.translate.instant(
+        'page.program.program-people-affected.column.payment',
+      ),
+      ...columnDefaults,
+      phases: [ProgramPhase.payment],
+      width: columnDateWidth,
+    };
 
     this.loadColumns();
   }
@@ -233,6 +245,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.activePhase = this.program.state;
 
     this.loadColumns();
+    if (this.thisPhase === ProgramPhase.payment) {
+      this.addPaymentColumns();
+      this.pastInstallments = await this.programsService.getPastInstallments(
+        this.programId,
+      );
+    }
 
     await this.loadData();
 
@@ -251,6 +269,20 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }
   }
 
+  private addPaymentColumns() {
+    const nrOfInstallments = this.program.distributionDuration;
+
+    for (let p = 0; p < nrOfInstallments; p++) {
+      const column = JSON.parse(JSON.stringify(this.paymentColumnTemplate)); // Hack to clone without reference
+      column.prop += p + 1;
+      column.name += p + 1;
+      this.paymentColumns.push(column);
+    }
+    for (const column of this.paymentColumns) {
+      this.columns.push(column);
+    }
+  }
+
   private updateBulkActions() {
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
@@ -259,10 +291,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         action.phases.includes(this.thisPhase);
       return action;
     });
-    this.switchChooseActionToNoActions(this.bulkActions);
+    this.toggleChooseActionNoActions(this.bulkActions);
   }
 
-  private switchChooseActionToNoActions(bulkActions: BulkAction[]) {
+  private toggleChooseActionNoActions(bulkActions: BulkAction[]) {
     const defaultAction = bulkActions.find(
       (a) => a.id === BulkActionId.chooseAction,
     );
@@ -285,12 +317,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private async loadData() {
     let allPeopleData: Person[];
-    if (this.userRole === UserRole.ProjectOfficer) {
-      allPeopleData = await this.programsService.getPeopleAffected(
+    if (this.userRole === UserRole.ProgramManager) {
+      allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,
       );
-    } else if (this.userRole === UserRole.ProgramManager) {
-      allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
+    } else {
+      allPeopleData = await this.programsService.getPeopleAffected(
         this.programId,
       );
     }
@@ -315,7 +347,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private createPersonRow(person: Person, index: number): PersonRow {
-    return {
+    let personRow: PersonRow = {
       did: person.did,
       checkboxVisible: false,
       pa: `PA #${index}`,
@@ -346,7 +378,28 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         : null,
       name: person.name,
       dob: person.dob,
-    } as PersonRow;
+    };
+
+    personRow = this.fillPaymentColumns(personRow);
+    console.log(personRow);
+
+    return personRow;
+  }
+
+  private fillPaymentColumns(personRow: PersonRow): PersonRow {
+    this.paymentColumns.map((_, index) => {
+      const payment = this.pastInstallments.find(
+        (i) => i.installment === index + 1,
+      );
+      if (payment) {
+        personRow['payment' + (index + 1)] = formatDate(
+          payment.installmentDate,
+          this.dateFormat,
+          this.locale,
+        );
+      }
+    });
+    return personRow;
   }
 
   public selectAction() {

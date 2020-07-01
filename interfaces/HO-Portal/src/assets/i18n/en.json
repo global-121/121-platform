@@ -152,7 +152,8 @@
           "temp-score": "Temporary inclusion score",
           "included": "Included",
           "name": "Name",
-          "dob": "Date of birth"
+          "dob": "Date of birth",
+          "payment": "Payment #"
         },
         "status": {
           "created": "Created",

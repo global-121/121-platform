@@ -30,6 +30,9 @@ export class PersonRow {
   selectedForValidation?: string | null;
   vulnerabilityAssessmentValidated?: string | null;
   finalScore?: number;
+  included?: string | null;
+  name?: string | null;
+  dob?: string | null;
 }
 
 export enum PaStatus {
