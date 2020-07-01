@@ -35,11 +35,15 @@ export class UploadDataComponent implements ValidationComponent {
       this.uploadDataStored = true;
       this.nrStored = credentials.length;
       for (const credential of credentials) {
+        await this.issueCredential(credential);
         if (this.uploadAborted) {
           break;
         }
-        await this.issueCredential(credential);
         await this.updateFsp(credential);
+        if (this.uploadAborted) {
+          break;
+        }
+        await this.removeCredentialByDid(credential.did);
       }
       this.uploadReady = true;
     } else {
@@ -56,7 +60,7 @@ export class UploadDataComponent implements ValidationComponent {
         credential.attributes
       ).then(
         async () => {
-          await this.removeCredentialByDid(credential.did);
+          console.log('Upload credential succes for : ' + credential.did);
         },
         () => {
           this.uploadAborted = true;
@@ -74,6 +78,7 @@ export class UploadDataComponent implements ValidationComponent {
             answer.code,
             answer.value
           );
+          console.log('Upload fsp succes for : ' + credential.did + ' for ' + answer.code);
         } catch (error) {
           this.uploadAborted = true;
           return;

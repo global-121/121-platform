@@ -48,7 +48,7 @@ export class ValidateFspComponent implements ValidationComponent {
     this.programId = paData[0].programId;
 
     const attributesAnswers = await this.findFspAnswers();
-    if (attributesAnswers && attributesAnswers.attributes) {
+    if (attributesAnswers && attributesAnswers.attributes && attributesAnswers.attributes.length > 0) {
       this.questions = this.buildQuestions(attributesAnswers.attributes);
       this.customAttributeAnswers = attributesAnswers.answers;
     } else {
@@ -201,6 +201,7 @@ export class ValidateFspComponent implements ValidationComponent {
       this.ionicStorageTypes.credentials,
       storedCredentials,
     );
+    this.customAttributeAnswers = {};
   }
 
   getNextSection() {
