@@ -217,4 +217,14 @@ export class ProgramPayoutComponent implements OnInit {
 
     this.isCompleted.emit(isReady);
   }
+
+  public payoutDisabled(installment) {
+    return (
+      !this.isEnabled ||
+      !installment.firstOpen ||
+      this.totalIncluded === 0 ||
+      this.currentUserRole !== UserRole.ProjectOfficer ||
+      this.activePhase !== ProgramPhase.payment
+    );
+  }
 }
