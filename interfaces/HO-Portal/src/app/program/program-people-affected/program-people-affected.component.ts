@@ -34,7 +34,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private columnsAvailable: any[] = [];
   private paymentColumnTemplate: any = {};
   private paymentColumns: any[] = [];
-  private pastInstallments: any[] = [];
+  private pastTransactions: any[] = [];
 
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
@@ -247,7 +247,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.loadColumns();
     if (this.thisPhase === ProgramPhase.payment) {
       this.addPaymentColumns();
-      this.pastInstallments = await this.programsService.getPastInstallments(
+      this.pastTransactions = await this.programsService.getTransactions(
         this.programId,
       );
     }
@@ -381,19 +381,27 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     };
 
     personRow = this.fillPaymentColumns(personRow);
-    console.log(personRow);
 
     return personRow;
   }
 
   private fillPaymentColumns(personRow: PersonRow): PersonRow {
     this.paymentColumns.map((_, index) => {
-      const payment = this.pastInstallments.find(
+      const transactionsThisInstallment = this.pastTransactions.filter(
         (i) => i.installment === index + 1,
       );
-      if (payment) {
+      const didsThisInstallments = transactionsThisInstallment.map(
+        (t) => t.did,
+      );
+      console.log(transactionsThisInstallment);
+
+      if (
+        transactionsThisInstallment &&
+        didsThisInstallments.includes(personRow.did)
+      ) {
+        console.log(transactionsThisInstallment[0].installmentdate);
         personRow['payment' + (index + 1)] = formatDate(
-          payment.installmentDate,
+          transactionsThisInstallment[0].installmentdate,
           this.dateFormat,
           this.locale,
         );

@@ -865,6 +865,16 @@ export class ProgramService {
     return installments;
   }
 
+  public async getTransactions(programId: number): Promise<any> {
+    const transactions = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select(['transaction.created AS installmentDate', 'installment', 'did'])
+      .leftJoin('transaction.connection', 'c')
+      .where('transaction.program.id = :programId', { programId: programId })
+      .getRawMany();
+    return transactions;
+  }
+
   public async getFunds(programId: number): Promise<FundingOverview> {
     // TO DO: call Disberse-API here, for now static data.
 

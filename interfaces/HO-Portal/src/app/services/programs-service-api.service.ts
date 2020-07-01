@@ -89,6 +89,15 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  getTransactions(programId: number | string): Promise<any[]> {
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        `/programs/transactions/${programId}`,
+      )
+      .toPromise();
+  }
+
   submitPayout(
     programId: number,
     installment: number,
