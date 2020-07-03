@@ -10,41 +10,39 @@ import { ScanQrComponent } from './scan-qr/scan-qr.component';
 import { ValidateProgramComponent } from './validate-program/validate-program.component';
 import { DownloadDataComponent } from './download-data/download-data.component';
 import { UploadDataComponent } from './upload-data/upload-data.component';
+import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
 
 @NgModule({
   declarations: [
     MainMenuComponent,
     ViewAppointmentsComponent,
+    QrScannerComponent,
     ScanQrComponent,
     ValidateProgramComponent,
     DownloadDataComponent,
-    UploadDataComponent
+    UploadDataComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    FormsModule
-  ],
+  imports: [CommonModule, SharedModule, FormsModule, ZXingScannerModule],
   entryComponents: [
     MainMenuComponent,
     ViewAppointmentsComponent,
     ScanQrComponent,
+    QrScannerComponent,
     ValidateProgramComponent,
     DownloadDataComponent,
-    UploadDataComponent
+    UploadDataComponent,
   ],
   exports: [
     MainMenuComponent,
     ViewAppointmentsComponent,
     ScanQrComponent,
+    QrScannerComponent,
     ValidateProgramComponent,
     DownloadDataComponent,
-    UploadDataComponent
+    UploadDataComponent,
   ],
-  schemas: [
-    CUSTOM_ELEMENTS_SCHEMA
-  ],
-  providers: [ConversationService]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [ConversationService],
 })
-export class ValidationComponentsModule { }
-
+export class ValidationComponentsModule {}

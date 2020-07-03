@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{ 'qr-scanner.title'|translate }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="qr-scanner">
+
+  <div *ngIf="showCompatibilityError || showPermissionError"
+       class="ion-text-center ion-padding"
+  >
+    <ion-icon name="alert" size="large"></ion-icon>
+    <p *ngIf="showCompatibilityError">
+      {{ 'qr-scanner.error-not-compatible'|translate }}
+    </p>
+    <p *ngIf="showPermissionError">
+      {{ 'qr-scanner.error-no-permissions'|translate }}
+    </p>
+    <p *ngIf="showGenericError">
+      {{ 'qr-scanner.error-generic'|translate }}
+    </p>
+    <p class="ion-margin-top ion-text-center">
+      <ion-button type="button"
+                  (click)="tryAgain()"
+      >
+        <ion-icon name="refresh" size="small" slot="start"></ion-icon>
+        {{ 'qr-scanner.try-again'|translate }}
+      </ion-button>
+    </p>
+  </div>
+
+  <zxing-scanner #scanner
+                 [device]="currentCamera"
+                 previewFitMode="fill"
+                 (hasDevices)="onHasDevices($event)"
+                 (permissionResponse)="onPermissionResponse($event)"
+                 (torchCompatible)="onTorchCompatible($event)"
+                 [torch]="torchEnabled"
+                 (camerasFound)="onCamerasFound($event)"
+                 (camerasNotFound)="onCamerasNotFound()"
+                 (scanSuccess)="onScanSuccess($event)"
+                 (scanError)="onScanError()"
+                 class="qr-scanner--zxing-component"
+  ></zxing-scanner>
+
+  <ion-spinner name="dots"
+               class="qr-scanner--loading"
+  ></ion-spinner>
+
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button *ngIf="torchAvailable"
+                    [title]="'qr-scanner.toggle-flash'|translate"
+                    (click)="torchEnabled=!torchEnabled"
+                    [color]="torchEnabled ? 'success' : 'light'"
+                    class="ion-margin-vertical"
+    >
+      <ion-icon [name]="torchEnabled ? 'flash' : 'flash-off'"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button *ngIf="switchCamerasAvailable"
+                    [title]="'qr-scanner.switch-camera'|translate"
+                    (click)="switchCamera()"
+                    color="light"
+                    class="ion-margin-vertical"
+    >
+      <ion-icon name="reverse-camera"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
