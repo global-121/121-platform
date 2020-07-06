@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ScanQrComponent } from './scan-qr.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Storage } from '@ionic/storage';
+import { ModalController } from '@ionic/angular';
 
 const storageIonicMock: any = {
   get: () => new Promise<any>((resolve) => resolve('1')),
@@ -33,11 +34,13 @@ describe('ScanQrComponent', () => {
       providers: [
         {
           provide: Storage,
-          useValue: storageIonicMock
-        }
+          useValue: storageIonicMock,
+        },
+        {
+          provide: ModalController,
+        },
       ],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
