@@ -7,6 +7,7 @@ import { PaDataService } from 'src/app/services/padata.service';
 import { QrScannerComponent } from '../../shared/qr-scanner/qr-scanner.component';
 import { ModalController } from '@ionic/angular';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-preprinted-qrcode',
@@ -83,8 +84,12 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
   }
 
   private async showQrScannerModal() {
+    const componentProps =
+      environment.isDebug || environment.showDebug ? { debugInput: `` } : {};
+
     const qrScannerModal = await this.modalController.create({
       component: QrScannerComponent,
+      componentProps,
     });
 
     qrScannerModal

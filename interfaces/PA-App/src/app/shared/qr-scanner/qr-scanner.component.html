@@ -10,7 +10,10 @@
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-<ion-content class="qr-scanner">
+<ion-content
+  fullscreen="true"
+  class="qr-scanner"
+>
 
   <div *ngIf="showCompatibilityError || showPermissionError"
        class="ion-text-center ion-padding"
@@ -73,3 +76,24 @@
   </ion-fab>
 
 </ion-content>
+<ion-footer
+  *ngIf="debugInput"
+  translucent="true"
+  class="ion-padding-horizontal"
+>
+  <ion-textarea
+    #scanData
+    rows="2"
+    style="font-family: monospace"
+    [value]="debugInput"
+  ></ion-textarea>
+  <ion-button
+    expand="full"
+    color="tertiary"
+    class="ion-no-margin"
+    (click)="onScanSuccess(scanData.value)"
+  >
+    <ion-icon name="create" slot="start"></ion-icon>
+    Use as scanned data
+  </ion-button>
+</ion-footer>

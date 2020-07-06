@@ -10,6 +10,7 @@ import { TimeoutError } from 'rxjs';
 import { PaQrCode } from 'src/app/models/pa-qr-code.model';
 import { QrScannerComponent } from 'src/app/shared/qr-scanner/qr-scanner.component';
 import { ModalController } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-scan-qr',
@@ -50,8 +51,16 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   private async showQrScannerModal() {
+    const componentProps =
+      environment.isDebug || environment.showDebug
+        ? {
+            debugInput: `{ "did": "_did_",
+  "programId": 1 }`,
+          }
+        : {};
     const qrScannerModal = await this.modalController.create({
       component: QrScannerComponent,
+      componentProps,
     });
 
     qrScannerModal.onWillDismiss().then((data: any) => {

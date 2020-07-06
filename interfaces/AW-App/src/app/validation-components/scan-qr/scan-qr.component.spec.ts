@@ -17,6 +17,11 @@ describe('ScanQrComponent', () => {
   let component: ScanQrComponent;
   let fixture: ComponentFixture<ScanQrComponent>;
 
+  const modalControllerMock = jasmine.createSpyObj('ModalController', {
+    create: new Promise<any>((resolve) => resolve(true)),
+    onWillDismiss: new Promise<any>((resolve) => resolve(true)),
+  });
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ScanQrComponent],
@@ -38,6 +43,7 @@ describe('ScanQrComponent', () => {
         },
         {
           provide: ModalController,
+          useValue: modalControllerMock,
         },
       ],
     }).compileComponents();
