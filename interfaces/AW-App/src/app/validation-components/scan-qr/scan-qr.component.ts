@@ -39,7 +39,6 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   public async doScan() {
-    this.conversationService.startLoading();
     this.resetScan();
     this.scanError = false;
 
@@ -65,7 +64,6 @@ export class ScanQrComponent implements ValidationComponent {
 
     qrScannerModal.onWillDismiss().then((data: any) => {
       this.checkScannedData(data.data);
-      this.conversationService.stopLoading();
     });
 
     return await qrScannerModal.present();
