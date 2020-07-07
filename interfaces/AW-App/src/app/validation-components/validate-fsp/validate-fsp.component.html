@@ -37,18 +37,11 @@
     {{ 'validation.validate-fsp.no-fsp'|translate }}
     </p>
   </dialogue-turn>
-<<<<<<< HEAD
-  <dialogue-turn  [actor]="self"
-      *ngIf="backToMainMenu"
-      [isSpoken]="backToMainMenu"
-    >
-=======
   <dialogue-turn
     actor="self"
     *ngIf="backToMainMenu"
     [isSpoken]="backToMainMenu"
   >
->>>>>>> upstream/master
     <ion-button (click)="doReload()"
                 expand="block"
                 style="flex-basis:100%;"
