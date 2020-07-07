@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-
-import { PaDataService } from './padata.service';
-
 import { PersonalComponents } from '../personal-components/personal-components.enum';
+import { PaDataService } from './padata.service';
 
 @Injectable({
   providedIn: 'root',

@@ -1,14 +1,12 @@
 import {
-  ViewChildren,
-  QueryList,
-  OnInit,
-  AfterViewInit,
   AfterContentInit,
+  AfterViewInit,
   Input,
+  OnInit,
+  QueryList,
+  ViewChildren,
 } from '@angular/core';
-
 import { environment } from 'src/environments/environment';
-
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
 export abstract class PersonalComponent

@@ -1,14 +1,12 @@
 import { Component, Input } from '@angular/core';
+import { createRandomString } from 'src/app/helpers/createRandomString';
+import { ConversationService } from 'src/app/services/conversation.service';
+import { PaDataService } from 'src/app/services/padata.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SovrinService } from 'src/app/services/sovrin.service';
+import { environment } from 'src/environments/environment';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
-
-import { ConversationService } from 'src/app/services/conversation.service';
-import { SovrinService } from 'src/app/services/sovrin.service';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { PaDataService } from 'src/app/services/padata.service';
-
-import { createRandomString } from 'src/app/helpers/createRandomString';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-create-identity',

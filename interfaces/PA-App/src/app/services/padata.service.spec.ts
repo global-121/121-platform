@@ -1,14 +1,12 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-
+import { TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { MockIonicStorage } from '../mocks/ionic.storage.mock';
+import { JwtService } from './jwt.service';
 import { PaAccountApiService } from './pa-account-api.service';
+import { PaDataService } from './padata.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { SovrinService } from './sovrin.service';
-import { JwtService } from './jwt.service';
-
-import { PaDataService } from './padata.service';
 
 describe('PaDataService', () => {
   const mockJwtService = jasmine.createSpyObj('JwtService', {

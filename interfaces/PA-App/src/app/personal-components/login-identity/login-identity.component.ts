@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { PersonalComponent } from '../personal-component.class';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
+import { PersonalComponent } from '../personal-component.class';
 
 @Component({
   selector: 'app-login-identity',

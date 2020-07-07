@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-
 import { environment } from 'src/environments/environment';
-
 import { UserImsApiService } from './user-ims-api.service';
 
 declare var Global121: any;
