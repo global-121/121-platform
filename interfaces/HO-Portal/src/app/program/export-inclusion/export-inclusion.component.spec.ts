@@ -1,15 +1,15 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { ExportInclusionComponent } from './export-inclusion.component';
 import { UserRole } from 'src/app/auth/user-role.enum';
-import {
-  ProgramPhaseService,
-  Phase,
-} from 'src/app/services/program-phase.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramPhase } from 'src/app/models/program.model';
+import {
+  Phase,
+  ProgramPhaseService,
+} from 'src/app/services/program-phase.service';
+import { ExportInclusionComponent } from './export-inclusion.component';
 
 describe('ExportInclusionComponent', () => {
   let component: ExportInclusionComponent;

@@ -1,11 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DashboardPage } from './dashboard.page';
-import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { DashboardPage } from './dashboard.page';
 
 describe('DashboardPage', () => {
   let component: DashboardPage;

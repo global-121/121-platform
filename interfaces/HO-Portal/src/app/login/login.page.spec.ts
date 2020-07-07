@@ -1,11 +1,9 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { of } from 'rxjs';
-
 import { TranslateModule } from '@ngx-translate/core';
+import { of } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
-
 import { LoginPage } from './login.page';
 
 describe('LoginPage', () => {

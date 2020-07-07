@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ProgramPhase } from 'src/app/models/program.model';
 import { ActivatedRoute } from '@angular/router';
+import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-evaluation',

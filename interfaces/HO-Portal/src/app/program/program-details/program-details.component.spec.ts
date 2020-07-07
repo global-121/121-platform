@@ -1,10 +1,9 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ProgramDetailsComponent } from './program-details.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { ModalController } from '@ionic/angular';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { ProgramDetailsComponent } from './program-details.component';
 
 const modalSpy = jasmine.createSpyObj('Modal', ['present']);
 const modalCtrlSpy = jasmine.createSpyObj('ModalController', ['create']);

@@ -1,15 +1,15 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { PhaseNextComponent } from './phase-next.component';
 import { AuthService } from 'src/app/auth/auth.service';
-import {
-  ProgramPhaseService,
-  Phase,
-} from 'src/app/services/program-phase.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
-import { ProgramPhase } from 'src/app/models/program.model';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { ProgramPhase } from 'src/app/models/program.model';
+import {
+  Phase,
+  ProgramPhaseService,
+} from 'src/app/services/program-phase.service';
+import { PhaseNextComponent } from './phase-next.component';
 
 describe('PhaseNextComponent', () => {
   let component: PhaseNextComponent;

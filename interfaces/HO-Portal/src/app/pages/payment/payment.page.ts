@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ProgramPhase } from 'src/app/models/program.model';
 import { AuthService } from 'src/app/auth/auth.service';
+import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-payment',

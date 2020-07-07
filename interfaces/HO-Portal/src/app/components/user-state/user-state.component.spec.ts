@@ -1,7 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
 import { TranslateModule } from '@ngx-translate/core';
+import { of } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserStateComponent } from './user-state.component';
 

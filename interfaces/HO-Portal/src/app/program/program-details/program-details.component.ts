@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { ProgramJsonComponent } from '../program-json/program-json.component';
 
 @Component({

@@ -1,14 +1,14 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PhaseNavigationComponent } from './phase-navigation.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramPhase } from 'src/app/models/program.model';
 import {
-  ProgramPhaseService,
   Phase,
+  ProgramPhaseService,
 } from 'src/app/services/program-phase.service';
-import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { PhaseNavigationComponent } from './phase-navigation.component';
 
 describe('PhaseNavigationComponent', () => {
   let component: PhaseNavigationComponent;

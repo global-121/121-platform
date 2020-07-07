@@ -1,12 +1,12 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { formatCurrency } from '@angular/common';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { formatCurrency } from '@angular/common';
 import { saveAs } from 'file-saver';
-import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
-import { ProgramPhase, Program } from 'src/app/models/program.model';
+import { UserRole } from 'src/app/auth/user-role.enum';
+import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-program-payout',

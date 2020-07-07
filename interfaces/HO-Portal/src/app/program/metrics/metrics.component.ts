@@ -1,15 +1,13 @@
+import { formatCurrency, formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { formatDate, formatCurrency } from '@angular/common';
-
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-
-import { Program } from 'src/app/models/program.model';
 import {
-  ProgramMetrics,
-  MetricRow,
   MetricGroup,
+  MetricRow,
+  ProgramMetrics,
 } from 'src/app/models/program-metrics.model';
+import { Program } from 'src/app/models/program.model';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({

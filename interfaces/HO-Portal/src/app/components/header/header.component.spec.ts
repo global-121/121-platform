@@ -1,14 +1,13 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { HeaderComponent } from './header.component';
-import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import apiProgramsMock from 'src/app/mocks/api.programs.mock';
-import { UserRole } from 'src/app/auth/user-role.enum';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
+import { UserRole } from 'src/app/auth/user-role.enum';
+import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { HeaderComponent } from './header.component';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

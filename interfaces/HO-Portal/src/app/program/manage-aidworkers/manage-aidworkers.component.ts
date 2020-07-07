@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { formatDate } from '@angular/common';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
+import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+import { UserRole } from 'src/app/auth/user-role.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-manage-aidworkers',

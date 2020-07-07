@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { formatDate } from '@angular/common';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { UserRole } from 'src/app/auth/user-role.enum';
 import { Person } from 'src/app/models/person.model';
 import {
-  Program,
   InclusionCalculationType,
+  Program,
   ProgramPhase,
 } from 'src/app/models/program.model';
-import { formatDate } from '@angular/common';
-import { UserRole } from 'src/app/auth/user-role.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-program-people',
