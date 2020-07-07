@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { DashboardPage } from './dashboard.page';
-import { SharedModule } from 'src/app/shared/shared.module';
 import { MetricsComponent } from 'src/app/program/metrics/metrics.component';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { DashboardPage } from './dashboard.page';
 
 const routes: Routes = [
   {

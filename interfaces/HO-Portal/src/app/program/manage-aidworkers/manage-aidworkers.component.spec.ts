@@ -1,8 +1,7 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-
 import { ManageAidworkersComponent } from './manage-aidworkers.component';
 
 describe('ManageAidworkersComponent', () => {

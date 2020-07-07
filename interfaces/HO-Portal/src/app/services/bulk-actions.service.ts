@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ProgramsServiceApiService } from './programs-service-api.service';
 import { BulkActionId } from '../models/bulk-actions.models';
-import { PersonRow, PaStatus } from '../models/person.model';
+import { PaStatus, PersonRow } from '../models/person.model';
+import { ProgramsServiceApiService } from './programs-service-api.service';
 
 @Injectable({
   providedIn: 'root',

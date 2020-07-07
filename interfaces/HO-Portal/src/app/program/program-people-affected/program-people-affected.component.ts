@@ -1,13 +1,13 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { ProgramPhase, Program } from 'src/app/models/program.model';
-import { TranslateService } from '@ngx-translate/core';
-import { Person, PersonRow } from 'src/app/models/person.model';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatDate } from '@angular/common';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
+import { Person, PersonRow } from 'src/app/models/person.model';
+import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
-import { BulkActionId, BulkAction } from 'src/app/models/bulk-actions.models';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-program-people-affected',

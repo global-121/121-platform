@@ -1,18 +1,13 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-
-import { ProgramMetrics } from 'src/app/models/program-metrics.model';
-import { Program } from 'src/app/models/program.model';
-
+import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
-
+import { ProgramMetrics } from 'src/app/models/program-metrics.model';
+import { Program } from 'src/app/models/program.model';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { MetricsComponent } from './metrics.component';
 
 @Component({

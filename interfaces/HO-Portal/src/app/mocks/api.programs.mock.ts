@@ -1,6 +1,6 @@
 import {
-  Program,
   InclusionCalculationType,
+  Program,
   ProgramPhase,
 } from '../models/program.model';
 import { getRandomInt } from './helpers';

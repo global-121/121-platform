@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ProgramPhase, Program } from '../models/program.model';
-import { ProgramsServiceApiService } from './programs-service-api.service';
-import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { ProgramPhase } from '../models/program.model';
 import { PROGRAM_PHASE_ORDER } from '../program-phase-order';
+import { ProgramsServiceApiService } from './programs-service-api.service';
 
 export class Phase {
   id: number;

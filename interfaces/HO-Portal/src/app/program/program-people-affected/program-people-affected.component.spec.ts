@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
-import { ProgramPeopleAffectedComponent } from './program-people-affected.component';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ProgramPeopleAffectedComponent } from './program-people-affected.component';
 
 describe('ProgramPeopleAffectedComponent', () => {
   let component: ProgramPeopleAffectedComponent;

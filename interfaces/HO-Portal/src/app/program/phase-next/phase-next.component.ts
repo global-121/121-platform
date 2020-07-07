@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Program, ProgramPhase } from 'src/app/models/program.model';
-import { UserRole } from 'src/app/auth/user-role.enum';
 import { AuthService } from 'src/app/auth/auth.service';
+import { UserRole } from 'src/app/auth/user-role.enum';
+import { Program, ProgramPhase } from 'src/app/models/program.model';
 import {
-  ProgramPhaseService,
   Phase,
+  ProgramPhaseService,
 } from 'src/app/services/program-phase.service';
 
 @Component({

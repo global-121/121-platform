@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { environment } from '../../environments/environment';
-import { ApiService } from './api.service';
-
-import { Program } from '../models/program.model';
-import { Person } from '../models/person.model';
 import { PastInstallments } from '../models/past-installments.model';
+import { Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
+import { Program } from '../models/program.model';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root',

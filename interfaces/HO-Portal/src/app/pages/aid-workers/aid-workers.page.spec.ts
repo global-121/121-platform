@@ -1,9 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AidWorkersPage } from './aid-workers.page';
-import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { AidWorkersPage } from './aid-workers.page';
 
 describe('AidWorkersPage', () => {
   let component: AidWorkersPage;

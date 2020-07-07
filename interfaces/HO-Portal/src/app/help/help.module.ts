@@ -1,11 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-
-import { HelpPage } from './help.page';
 import { SharedModule } from '../shared/shared.module';
+import { HelpPage } from './help.page';
 
 @NgModule({
   imports: [

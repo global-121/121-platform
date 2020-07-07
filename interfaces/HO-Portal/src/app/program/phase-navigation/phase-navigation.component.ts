@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
-  ProgramPhaseService,
   Phase,
+  ProgramPhaseService,
 } from 'src/app/services/program-phase.service';
 
 @Component({
