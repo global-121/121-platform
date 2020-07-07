@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { environment } from '../../environments/environment';
-
-import { ApiService } from './api.service';
-
 import { Country } from '../models/country.model';
+import { Fsp } from '../models/fsp.model';
 import { Program } from '../models/program.model';
 import { Timeslot } from '../models/timeslot.model';
-import { Fsp } from '../models/fsp.model';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root',

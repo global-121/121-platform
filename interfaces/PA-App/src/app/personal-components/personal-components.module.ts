@@ -1,11 +1,11 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SharedModule } from '../shared/shared.module';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { QRCodeModule } from 'angularx-qrcode';
-
 import { ConversationService } from '../services/conversation.service';
-
+import { InfoPopupComponent } from '../shared/info-popup/info-popup.component';
+import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
+import { SharedModule } from '../shared/shared.module';
 import { CreateIdentityComponent } from './create-identity/create-identity.component';
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
 import { HandleProofComponent } from './handle-proof/handle-proof.component';
@@ -20,8 +20,6 @@ import { SelectProgramComponent } from './select-program/select-program.componen
 import { SetNotificationNumberComponent } from './set-notification-number/set-notification-number.component';
 import { SignupSigninComponent } from './signup-signin/signup-signin.component';
 import { StoreCredentialComponent } from './store-credential/store-credential.component';
-import { InfoPopupComponent } from '../shared/info-popup/info-popup.component';
-import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
 
 @NgModule({
   declarations: [

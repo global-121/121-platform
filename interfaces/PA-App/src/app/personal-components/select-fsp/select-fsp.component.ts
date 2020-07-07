@@ -1,24 +1,22 @@
 import { Component, Input } from '@angular/core';
-import { PersonalComponents } from '../personal-components.enum';
-
-import { ConversationService } from 'src/app/services/conversation.service';
-import { PaDataService } from 'src/app/services/padata.service';
-
-import { Program } from 'src/app/models/program.model';
 import {
   Fsp,
   FspAttribute,
   FspAttributeOption,
 } from 'src/app/models/fsp.model';
-import { PersonalComponent } from '../personal-component.class';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { Program } from 'src/app/models/program.model';
 import {
-  Question,
-  QuestionOption,
   Answer,
   AnswerSet,
+  Question,
+  QuestionOption,
 } from 'src/app/models/q-and-a.models';
+import { ConversationService } from 'src/app/services/conversation.service';
+import { PaDataService } from 'src/app/services/padata.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { PersonalComponent } from '../personal-component.class';
+import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
   selector: 'app-select-fsp',

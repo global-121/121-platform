@@ -1,13 +1,10 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-
 import { TranslateModule } from '@ngx-translate/core';
 import { QRCodeModule } from 'angularx-qrcode';
-
-import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
-
+import { PaDataService } from 'src/app/services/padata.service';
 import { SelectAppointmentComponent } from './select-appointment.component';
 
 describe('SelectAppointmentComponent', () => {

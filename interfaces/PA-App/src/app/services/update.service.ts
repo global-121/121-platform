@@ -1,12 +1,12 @@
-import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
-import { ProgramsServiceApiService } from './programs-service-api.service';
-import { PaDataService } from './padata.service';
+import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { PaDataService } from './padata.service';
+import { ProgramsServiceApiService } from './programs-service-api.service';
 
 @Injectable({
   providedIn: 'root',

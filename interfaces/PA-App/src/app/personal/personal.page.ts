@@ -1,28 +1,21 @@
 import {
   Component,
-  ViewChild,
-  OnInit,
-  ViewContainerRef,
   ComponentFactoryResolver,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { IonContent } from '@ionic/angular';
-import { environment } from 'src/environments/environment';
 import { Storage } from '@ionic/storage';
-
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import {
-  ConversationService,
-  ConversationSection,
-} from '../services/conversation.service';
-import { PersonalComponent } from '../personal-components/personal-component.class';
-
-import { PersonalComponents } from '../personal-components/personal-components.enum';
-
+import { TranslateService } from '@ngx-translate/core';
+import { environment } from 'src/environments/environment';
 import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
-import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
 import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
 import { MeetingReminderComponent } from '../personal-components/meeting-reminder/meeting-reminder.component';
+import { PersonalComponent } from '../personal-components/personal-component.class';
+import { PersonalComponents } from '../personal-components/personal-components.enum';
+import { PreprintedQrcodeComponent } from '../personal-components/preprinted-qrcode/preprinted-qrcode.component';
 import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
 import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectFspComponent } from '../personal-components/select-fsp/select-fsp.component';
@@ -31,8 +24,12 @@ import { SelectProgramComponent } from '../personal-components/select-program/se
 import { SetNotificationNumberComponent } from '../personal-components/set-notification-number/set-notification-number.component';
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
 import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
-import { TranslateService } from '@ngx-translate/core';
-import { PreprintedQrcodeComponent } from '../personal-components/preprinted-qrcode/preprinted-qrcode.component';
+import {
+  ConversationSection,
+  ConversationService,
+} from '../services/conversation.service';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
 
 @Component({
   selector: 'app-personal',

@@ -1,14 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { PersonalPage } from './personal.page';
-import { TranslateModule } from '@ngx-translate/core';
-
 import { Storage } from '@ionic/storage';
+import { TranslateModule } from '@ngx-translate/core';
 import { MockIonicStorage } from '../mocks/ionic.storage.mock';
-
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { ConversationService } from '../services/conversation.service';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { PersonalPage } from './personal.page';
 
 describe('PersonalPage', () => {
   let component: PersonalPage;

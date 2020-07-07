@@ -1,16 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { PersonalComponent } from '../personal-component.class';
-import { PersonalComponents } from '../personal-components.enum';
-
-import { environment } from 'src/environments/environment';
-
+import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { UpdateService } from 'src/app/services/update.service';
-import { SovrinService } from 'src/app/services/sovrin.service';
-
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { Program } from 'src/app/models/program.model';
+import { SovrinService } from 'src/app/services/sovrin.service';
+import { UpdateService } from 'src/app/services/update.service';
+import { environment } from 'src/environments/environment';
+import { PersonalComponent } from '../personal-component.class';
+import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
   selector: 'app-store-credential',

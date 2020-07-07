@@ -1,8 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TranslateModule } from '@ngx-translate/core';
-
 import { PlayTextAudioComponent } from './play-text-audio.component';
 
 describe('PlayTextAudioComponent', () => {

@@ -1,13 +1,11 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
-import { PaDataService } from 'src/app/services/padata.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
+import { PaDataService } from 'src/app/services/padata.service';
 import { UpdateService } from 'src/app/services/update.service';
-
 import { StoreCredentialComponent } from './store-credential.component';
 
 describe('StoreCredentialComponent', () => {

@@ -1,11 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { PersonalComponent } from '../personal-component.class';
-import { PersonalComponents } from '../personal-components.enum';
-
-import { PaDataService } from 'src/app/services/padata.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { PaDataService } from 'src/app/services/padata.service';
 import { environment } from 'src/environments/environment';
+import { PersonalComponent } from '../personal-component.class';
+import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
   selector: 'app-select-language',

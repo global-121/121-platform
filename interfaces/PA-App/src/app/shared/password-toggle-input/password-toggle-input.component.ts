@@ -1,8 +1,8 @@
 import {
   Component,
+  EventEmitter,
   Input,
   Output,
-  EventEmitter,
   ViewChild,
 } from '@angular/core';
 

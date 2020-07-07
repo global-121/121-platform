@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
-
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-
+import { User } from '../models/user.model';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
-
-import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',

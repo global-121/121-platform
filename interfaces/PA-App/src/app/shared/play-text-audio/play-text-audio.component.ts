@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Howl } from 'howler';
 import { environment } from 'src/environments/environment';
