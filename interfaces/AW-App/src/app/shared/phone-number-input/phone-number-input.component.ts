@@ -77,7 +77,6 @@ export class PhoneNumberInputComponent {
         }
       },
     );
-
     return isValid;
   }
 }
