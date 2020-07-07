@@ -11,10 +11,13 @@ import {
   Program,
   AnswerType,
   ProgramAttribute,
+  ProgramCriterium,
+  ProgramCriteriumOption,
 } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { PaDataAttribute } from 'src/app/models/pa-data.model';
+import { Question, QuestionOption, Answer } from 'src/app/models/q-and-a.models';
 
 @Component({
   selector: 'app-validate-program',
@@ -92,38 +95,31 @@ export class ValidateProgramComponent implements ValidationComponent {
     }
   }
 
-  private buildQuestions(customCriteria: Program['customCriteria']) {
-    const questions = customCriteria.map((criterium) => {
-      const question: Question = {
-        id: criterium.id,
-        code: criterium.criterium,
-        answerType: criterium.answerType,
-        label: this.translatableString.get(criterium.label),
-        options: this.buildOptions(criterium.options),
-      };
-      return question;
-    });
-
-    return questions;
+  private buildQuestions(customCriteria: ProgramCriterium[]) {
+    return customCriteria.map(
+      (criterium): Question => {
+        return {
+          code: criterium.criterium,
+          answerType: criterium.answerType,
+          label: this.translatableString.get(criterium.label),
+          options: !criterium.options
+            ? null
+            : this.buildOptions(criterium.options),
+        };
+      },
+    );
   }
 
-  private buildOptions(optionsRaw: any[]): QuestionOption[] {
-    if (!optionsRaw) {
-      return;
-    }
-
-    const options = [];
-
-    for (const option of optionsRaw) {
-      const questionOption: QuestionOption = {
-        id: option.id,
+  private buildOptions(optionSet: ProgramCriteriumOption[]): QuestionOption[] {
+    return optionSet.map((option) => {
+      return {
         value: option.option,
         label: this.translatableString.get(option.label),
       };
-      options.push(questionOption);
-    }
-    return options;
+    });
   }
+
+
 
   private getQuestionByCode(questionCode: string): Question {
     const result = this.questions.find((question: Question) => {
@@ -194,6 +190,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   public change() {
+    console.log('change: ');
     this.hasAnswered = false;
     this.changedAnswers = true;
   }
@@ -206,6 +203,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.hasAnswered = true;
     this.changedAnswers = false;
     this.dobFeedback = false;
+    console.log('this.programCredentialIssued: ', this.programCredentialIssued);
   }
 
   public postponeVerification() {
@@ -230,7 +228,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     const attributes = this.createAttributes(Object.values(this.answers));
     await this.storeCredentialOffline(attributes);
     this.programCredentialIssued = true;
-    this.answers = {};
+    // this.answers = {};
     this.complete();
   }
 
@@ -260,7 +258,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   getNextSection() {
-    return ValidationComponents.mainMenu;
+    return ValidationComponents.validateFsp;
   }
 
   complete() {
@@ -270,22 +268,4 @@ export class ValidateProgramComponent implements ValidationComponent {
       next: this.getNextSection(),
     });
   }
-}
-
-class Question {
-  id: number;
-  code: string;
-  answerType: AnswerType;
-  label: string;
-  options: QuestionOption[];
-}
-class QuestionOption {
-  id: number;
-  value: string;
-  label: string;
-}
-class Answer {
-  code: string;
-  value: string;
-  label: string;
 }

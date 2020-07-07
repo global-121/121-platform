@@ -13,6 +13,7 @@ import { ViewAppointmentsComponent } from '../validation-components/view-appoint
 import { ValidateProgramComponent } from '../validation-components/validate-program/validate-program.component';
 import { DownloadDataComponent } from '../validation-components/download-data/download-data.component';
 import { UploadDataComponent } from '../validation-components/upload-data/upload-data.component';
+import { ValidateFspComponent } from '../validation-components/validate-fsp/validate-fsp.component';
 
 @Component({
   selector: 'app-validation',
@@ -35,6 +36,7 @@ export class ValidationPage implements OnInit {
     [ValidationComponents.mainMenu]: MainMenuComponent,
     [ValidationComponents.scanQr]: ScanQrComponent,
     [ValidationComponents.validateProgram]: ValidateProgramComponent,
+    [ValidationComponents.validateFsp]: ValidateFspComponent,
     [ValidationComponents.viewAppointments]: ViewAppointmentsComponent,
     [ValidationComponents.downloadData]: DownloadDataComponent,
     [ValidationComponents.uploadData]: UploadDataComponent,

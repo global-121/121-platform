@@ -1,6 +1,7 @@
 export enum IonicStorageTypes {
   myPrograms = 'myPrograms',
-  validationData =  'validationData',
+  validationProgramData =  'validationProgramData',
+  validationFspData = 'validationFspData',
   credentials = 'credentials',
   qrDidMapping = 'qrDidMapping'
 }

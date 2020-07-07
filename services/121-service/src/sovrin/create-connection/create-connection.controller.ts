@@ -1,3 +1,4 @@
+import { DidProgramDto } from './../credential/dto/did-program.dto';
 import { DidDto } from './dto/did.dto';
 import { CreateConnectionService } from './create-connection.service';
 import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
@@ -19,6 +20,7 @@ import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
 import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
+import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('sovrin')
@@ -127,5 +129,18 @@ export class CreateConnectionController {
     return await this.createConnectionService.findDidWithQrIdentifier(
       data.qrIdentifier,
     );
+  }
+
+  @Roles(UserRole.Aidworker)
+  @ApiOperation({ title: 'Find fsp and attributes' })
+  @ApiResponse({
+    status: 200,
+    description: 'Found fsp and attributes',
+  })
+  @Post('/get-fsp')
+  public async getFspAnswersAttributes(
+    @Body() data: DidProgramDto,
+  ): Promise<FspAnswersAttrInterface> {
+    return await this.createConnectionService.getFspAnswersAttributes(data.did);
   }
 }

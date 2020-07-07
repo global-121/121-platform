@@ -9,6 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class RetryInterceptor implements HttpInterceptor {
   private retryTimeOut = 2000;
   private offlineTimeout = 3000;
+  private offlineLookupTimeout = 3000;
   private retryConfirmLabel: string;
 
   constructor(
@@ -26,12 +27,27 @@ export class RetryInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const res = ['/sovrin/credential/get-answers', '/sovrin/create-connection/qr-find-did'];
-    // Exclude interceptor for get prefilled answer requests
+    const res = [
+      '/sovrin/credential/get-answers',
+      '/sovrin/create-connection/qr-find-did',
+      '/sovrin/create-connection/get-fsp/'
+    ];
+    // Exclude interceptor for offline usage
     for (const re of res) {
       if (request.url.search(re) !== -1) {
         console.log('Exception retry-interceptor');
         return next.handle(request).pipe((timeout(this.offlineTimeout)));
+      }
+    }
+
+    const resLookup = [
+      '/notifications/lookup'
+    ];
+    // Let lookup timeout fast, so in case there is not internet this
+    for (const re of resLookup) {
+      if (request.url.search(re) !== -1) {
+        console.log('Exception lookup retry-interceptor');
+        return next.handle(request).pipe((timeout(this.offlineLookupTimeout)));
       }
     }
 
