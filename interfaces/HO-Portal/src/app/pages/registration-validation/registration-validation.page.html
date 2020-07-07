@@ -1,0 +1,22 @@
+<ion-header>
+  <app-header
+    [title]="'page.program.phases.registrationValidation.label'|translate"
+  ></app-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <app-phase-next
+    [programId]="programId"
+    [thisPhaseName]="thisPhase"
+    [phaseReady]="isReady"
+  ></app-phase-next>
+
+  <app-program-people-affected
+    [programId]="programId"
+    [userRole]="userRole"
+    [thisPhase]="thisPhase"
+    (isCompleted)="onReady($event)"
+  ></app-program-people-affected>
+
+</ion-content>

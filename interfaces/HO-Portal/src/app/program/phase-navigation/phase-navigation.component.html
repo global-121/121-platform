@@ -1,14 +1,21 @@
-<span *ngFor="let phase of programPhases"
-      class="phase-navigation"
+<span
+  *ngFor="let phase of programPhases"
+  class="phase-navigation"
 >
-  <ion-button [color]="getColor(phase)"
-              [fill]="getFill(phase)"
-              [disabled]="(phase.id > activePhaseId)"
-              (click)="changePhase(phase.id)"
+  <ion-button
+    [routerLink]="['/program', programId, phase.name]"
+    routerLinkActive
+    #rlaPhase="routerLinkActive"
+    [color]="rlaPhase.isActive ? 'primary' : 'medium'"
+    [disabled]="phase.disabled"
+    [fill]="getFill(phase)"
+    size="small"
   >
     {{ phase.label }}
   </ion-button>
-  <span *ngIf="(phase.id === selectedPhaseId)"
-        class="phase-navigation--indicator"
+
+  <span
+    *ngIf="rlaPhase.isActive"
+    class="phase-navigation--indicator"
   ></span>
 </span>

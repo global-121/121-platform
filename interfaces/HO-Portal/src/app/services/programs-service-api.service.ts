@@ -89,6 +89,15 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  getTransactions(programId: number | string): Promise<any[]> {
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        `/programs/transactions/${programId}`,
+      )
+      .toPromise();
+  }
+
   submitPayout(
     programId: number,
     installment: number,
@@ -103,7 +112,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  exportList(programId: number, installment: number): Promise<any> {
+  exportPaymentList(programId: number, installment: number): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/payment-details`, {
         programId,
@@ -112,9 +121,12 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getEnrolled(programId: number | string): Promise<Person[]> {
+  exportInclusionList(programId: number): Promise<any> {
     return this.apiService
-      .get(environment.url_121_service_api, `/programs/enrolled/${programId}`)
+      .get(
+        environment.url_121_service_api,
+        `/programs/export-inclusion/${programId}`,
+      )
       .toPromise();
   }
 
@@ -124,7 +136,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getEnrolledPrivacy(programId: number | string): Promise<Person[]> {
+  getPeopleAffectedPrivacy(programId: number | string): Promise<Person[]> {
     return this.apiService
       .get(
         environment.url_121_service_api,

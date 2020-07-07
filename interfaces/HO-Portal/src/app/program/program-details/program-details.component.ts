@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -11,14 +11,9 @@ import { ProgramJsonComponent } from '../program-json/program-json.component';
   templateUrl: './program-details.component.html',
   styleUrls: ['./program-details.component.scss'],
 })
-export class ProgramDetailsComponent implements OnChanges {
+export class ProgramDetailsComponent implements OnInit {
   @Input()
   public programId: number;
-  @Input()
-  public selectedPhase: string;
-
-  public componentVisible: boolean;
-  private presentInPhases = [ProgramPhase.design];
 
   public program: Program;
   public programArray: any;
@@ -38,28 +33,13 @@ export class ProgramDetailsComponent implements OnChanges {
     private programsService: ProgramsServiceApiService,
   ) {}
 
-  async ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes.selectedPhase &&
-      typeof changes.selectedPhase.currentValue === 'string'
-    ) {
-      this.checkVisibility(this.selectedPhase);
-    }
-    if (
-      changes.programId &&
-      typeof changes.programId.currentValue === 'number'
-    ) {
-      this.update();
-    }
+  async ngOnInit() {
+    this.update();
   }
 
   private async update() {
     this.program = await this.programsService.getProgramById(this.programId);
     this.programArray = this.generateArray(this.program);
-  }
-
-  public checkVisibility(phase) {
-    this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   public generateArray(obj) {

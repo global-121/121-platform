@@ -644,11 +644,23 @@ export class ProgramService {
     return customData;
   }
 
+  private async getIncludedConnections(
+    programId: number,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find({
+      relations: ['fsp'],
+    });
+    const includedConnections = [];
+    for (let connection of connections) {
+      if (connection.programsIncluded.includes(+programId)) {
+        includedConnections.push(connection);
+      }
+    }
+    return includedConnections;
+  }
+
   public async getTotalIncluded(programId): Promise<number> {
-    const includedConnections = (await this.getConnections(
-      programId,
-      false,
-    )).filter(connection => connection.status === PaStatus.included);
+    const includedConnections = await this.getIncludedConnections(programId);
     return includedConnections.length;
   }
 
@@ -665,11 +677,7 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const includedConnections = (await this.getConnections(
-      programId,
-      false,
-    )).filter(connection => connection.status === PaStatus.included);
-
+    const includedConnections = await this.getIncludedConnections(programId);
     if (includedConnections.length < 1) {
       const errors = 'There are no included PA for this program';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -684,14 +692,21 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
+    let count: number;
+    count = 0;
     for (let fsp of program.financialServiceProviders) {
-      await this.createSendPaymentListFsp(
+      count += await this.createSendPaymentListFsp(
         fsp,
         includedConnections,
         amount,
         program,
         installment,
       );
+    }
+    if (count === 0) {
+      const errors =
+        'No included connections with known FSP available. Payment aborted.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return { status: 'succes', message: 'Sent instructions to FSP' };
   }
@@ -718,14 +733,8 @@ export class ProgramService {
     programId: number,
     privacy: boolean,
   ): Promise<any[]> {
-    let selectedConnections;
-    if (!privacy) {
-      selectedConnections = await this.getAllConnections(programId);
-    } else {
-      selectedConnections = await this.getIncludedExcludedConnections(
-        programId,
-      );
-    }
+    const selectedConnections = await this.getAllConnections(programId);
+
     const connectionsResponse = [];
     for (let connection of selectedConnections) {
       const connectionResponse = {};
@@ -749,8 +758,8 @@ export class ProgramService {
       connectionResponse['validationDate'] = connection.validationDate;
       connectionResponse['inclusionDate'] = connection.inclusionDate;
       if (privacy) {
-        connectionResponse['name'] = connection.customData.name;
-        connectionResponse['dob'] = connection.customData.dob;
+        connectionResponse['name'] = connection.customData['name'];
+        connectionResponse['dob'] = connection.customData['dob'];
       }
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
       connectionsResponse.push(connectionResponse);
@@ -802,8 +811,7 @@ export class ProgramService {
     for (let connection of includedConnections) {
       if (connection.fsp && connection.fsp.id === fsp.id) {
         let paymentDetails = {
-          // phone: connection.phoneNumber,
-          id_details: connection.customData['id_number'],
+          idDetails: connection.customData['id_number'],
           amount: amount,
         };
         paymentList.push(paymentDetails);
@@ -811,20 +819,21 @@ export class ProgramService {
       }
     }
 
-    const fspAiSelected = API.fsp.find(obj => obj.name == fsp.fsp);
-
     if (paymentList.length > 0) {
-      const response = await this.httpService
-        .post(fspAiSelected.payout, paymentList)
-        .toPromise();
-      if (!response.data) {
-        const errors = 'Payment instruction not send';
-        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      }
+      // NOTE: This fake endpoint is commented out for now, can be uncommented when replaced with real endpoint
+      // const fspApiSelected = API.fsp.find(obj => obj.id === fsp.id);
+      // const response = await this.httpService
+      //   .post(fspApiSelected.payout, paymentList)
+      //   .toPromise();
+      // if (!response.data) {
+      //   const errors = 'Payment instruction not send';
+      //   throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      // }
       for (let connection of connectionsForFsp) {
         this.storeTransaction(amount, connection, fsp, program, installment);
       }
     }
+    return paymentList.length;
   }
   private storeTransaction(
     amount: number,
@@ -854,6 +863,16 @@ export class ProgramService {
       .groupBy('transaction.amount, transaction.installment')
       .getRawMany();
     return installments;
+  }
+
+  public async getTransactions(programId: number): Promise<any> {
+    const transactions = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select(['transaction.created AS installmentDate', 'installment', 'did'])
+      .leftJoin('transaction.connection', 'c')
+      .where('transaction.program.id = :programId', { programId: programId })
+      .getRawMany();
+    return transactions;
   }
 
   public async getFunds(programId: number): Promise<FundingOverview> {
@@ -905,6 +924,35 @@ export class ProgramService {
     const response = {
       fileName: `payment-details-${installmentTime}-installment-${programId}.csv`,
       data: this.jsonToCsv(paymentDetails),
+    };
+
+    return response;
+  }
+
+  public async getInclusionList(programId: number): Promise<any> {
+    const includedConnections = await (await this.getConnections(
+      programId,
+      true,
+    )).filter(i => i.status === 'included');
+
+    const inclusionDetails = [];
+    includedConnections.forEach(rawConnection => {
+      let connection = {
+        name: rawConnection.name,
+        dateOfBirth: rawConnection.dob,
+        status: rawConnection.status,
+        createdDate: rawConnection.created,
+        registrationDate: rawConnection.appliedDate,
+        selectedForValidationDate: rawConnection.selectedForValidation,
+        validationDate: rawConnection.validationDate,
+        inclusionDate: rawConnection.inclusionDate,
+      };
+      inclusionDetails.push(connection);
+    });
+
+    const response = {
+      fileName: `inclusion-list-program-${programId}.csv`,
+      data: this.jsonToCsv(inclusionDetails),
     };
 
     return response;

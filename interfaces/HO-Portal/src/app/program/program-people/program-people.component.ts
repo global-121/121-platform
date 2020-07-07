@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  Output,
-  EventEmitter,
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
@@ -23,28 +15,17 @@ import { UserRole } from 'src/app/auth/user-role.enum';
   templateUrl: './program-people.component.html',
   styleUrls: ['./program-people.component.scss'],
 })
-export class ProgramPeopleComponent implements OnChanges {
-  @Input()
-  public selectedPhase: string;
+export class ProgramPeopleComponent implements OnInit {
   @Input()
   public userRole: string;
   @Input()
   public programId: number;
-  @Input()
-  public refresh: boolean;
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public componentVisible: boolean;
-  private presentInPhases = [
-    ProgramPhase.design,
-    ProgramPhase.registrationValidation,
-    ProgramPhase.inclusion,
-    ProgramPhase.reviewInclusion,
-    ProgramPhase.payment,
-    ProgramPhase.evaluation,
-  ];
+  public selectedPhase = ProgramPhase.reviewInclusion;
   private activePhase: ProgramPhase;
+
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, hh:mm';
 
@@ -222,30 +203,9 @@ export class ProgramPeopleComponent implements OnChanges {
     };
   }
 
-  async ngOnChanges(changes: SimpleChanges) {
-    if (
-      changes.selectedPhase &&
-      typeof changes.selectedPhase.currentValue === 'string'
-    ) {
-      this.checkVisibility(this.selectedPhase);
-      this.update();
-    }
-    if (changes.userRole && typeof changes.userRole.currentValue === 'string') {
-      this.shouldShowSensitiveData(this.userRole);
-    }
-    if (
-      changes.programId &&
-      typeof changes.programId.currentValue === 'number'
-    ) {
-      this.update();
-    }
-    if (
-      this.programId &&
-      changes.refresh &&
-      typeof changes.refresh.currentValue === 'boolean'
-    ) {
-      this.update();
-    }
+  async ngOnInit() {
+    this.shouldShowSensitiveData(this.userRole);
+    this.update();
   }
 
   private async update() {
@@ -262,10 +222,6 @@ export class ProgramPeopleComponent implements OnChanges {
 
   private shouldShowSensitiveData(userRole) {
     this.showSensitiveData = userRole === UserRole.ProgramManager;
-  }
-
-  public checkVisibility(phase) {
-    this.componentVisible = this.presentInPhases.includes(phase);
   }
 
   private checkPhaseReady() {
@@ -291,15 +247,13 @@ export class ProgramPeopleComponent implements OnChanges {
       return (
         this.newEnrolledPeople.length === 0 ||
         this.activePhase !== ProgramPhase.inclusion ||
-        this.selectedPhase !== ProgramPhase.inclusion
+        false
       );
     }
   }
 
   public checkNoConnectionsMessage() {
-    return (
-      !this.enrolledPeople.length && this.selectedPhase !== ProgramPhase.design
-    );
+    return !this.enrolledPeople.length;
   }
 
   private async determineColumns() {
@@ -329,7 +283,6 @@ export class ProgramPeopleComponent implements OnChanges {
       (!column.privacy &&
         !column.hidePhases.includes(ProgramPhase[this.selectedPhase])) ||
       (column.prop === 'selected' &&
-        this.selectedPhase === this.activePhase &&
         ProgramPhase.inclusion === this.activePhase)
     );
   }
@@ -369,7 +322,7 @@ export class ProgramPeopleComponent implements OnChanges {
     let allPeopleData: any[];
 
     if (this.showSensitiveData) {
-      allPeopleData = await this.programsService.getEnrolledPrivacy(
+      allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,
       );
       this.enrolledPeople = await this.createTableData(allPeopleData);
@@ -377,7 +330,9 @@ export class ProgramPeopleComponent implements OnChanges {
         this.enrolledPeople,
       );
     } else {
-      allPeopleData = await this.programsService.getEnrolled(this.programId);
+      allPeopleData = await this.programsService.getPeopleAffected(
+        this.programId,
+      );
       this.enrolledPeople = await this.createTableData(allPeopleData);
       this.newEnrolledPeople = this.enrolledPeople.filter(
         (i) => !i.included && !i.excluded,
@@ -475,10 +430,6 @@ export class ProgramPeopleComponent implements OnChanges {
   }
 
   private defaultSelectedPeople(source: any[]): any[] {
-    if (this.selectedPhase !== ProgramPhase.inclusion) {
-      return [];
-    }
-
     if (
       this.program.inclusionCalculationType ===
       InclusionCalculationType.highestScoresX

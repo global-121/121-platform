@@ -2,18 +2,50 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
+import { UserStateComponent } from '../components/user-state/user-state.component';
+import { HeaderComponent } from '../components/header/header.component';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
+import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
+import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
+import { ProgramPeopleComponent } from '../program/program-people/program-people.component';
 
 @NgModule({
-  declarations: [ConfirmPromptComponent, PasswordToggleInputComponent],
-  imports: [CommonModule, IonicModule, FormsModule, TranslateModule.forChild()],
+  declarations: [
+    ConfirmPromptComponent,
+    PasswordToggleInputComponent,
+    HeaderComponent,
+    UserStateComponent,
+    PhaseNextComponent,
+    PhaseNavigationComponent,
+    ProgramPeopleComponent,
+    ProgramPeopleAffectedComponent,
+  ],
+  imports: [
+    CommonModule,
+    IonicModule,
+    FormsModule,
+    RouterModule,
+    TranslateModule.forChild(),
+    NgxDatatableModule,
+  ],
   exports: [
     ConfirmPromptComponent,
     PasswordToggleInputComponent,
+    HeaderComponent,
+    UserStateComponent,
+    PhaseNextComponent,
+    PhaseNavigationComponent,
+    ProgramPeopleComponent,
+    ProgramPeopleAffectedComponent,
+    RouterModule,
     TranslateModule,
+    NgxDatatableModule,
   ],
 })
 export class SharedModule {}

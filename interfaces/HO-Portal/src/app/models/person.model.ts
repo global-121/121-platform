@@ -22,13 +22,17 @@ export class PersonRow {
   did: string;
   checkboxVisible: boolean;
   pa: string; // Display label
-  status: string;
+  status: PaStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
+  statusLabel: string;
   digitalIdCreated?: string;
   vulnerabilityAssessmentCompleted?: string | null;
   tempScore?: number;
   selectedForValidation?: string | null;
   vulnerabilityAssessmentValidated?: string | null;
   finalScore?: number;
+  included?: string | null;
+  name?: string | null;
+  dob?: string | null;
 }
 
 export enum PaStatus {

@@ -1,7 +1,6 @@
 import { Storage } from '@ionic/storage';
 import { SessionStorageService } from './../../services/session-storage.service';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { ValidationComponent } from '../validation-components.interface';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -9,6 +8,9 @@ import { ValidationComponents } from '../validation-components.enum';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { TimeoutError } from 'rxjs';
 import { PaQrCode } from 'src/app/models/pa-qr-code.model';
+import { QrScannerComponent } from 'src/app/shared/qr-scanner/qr-scanner.component';
+import { ModalController } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-scan-qr',
@@ -16,6 +18,7 @@ import { PaQrCode } from 'src/app/models/pa-qr-code.model';
   styleUrls: ['./scan-qr.component.scss'],
 })
 export class ScanQrComponent implements ValidationComponent {
+  public scanResult: string;
   public scanError = false;
   public paDataResult = false;
   public unknownDidCombination = false;
@@ -24,41 +27,46 @@ export class ScanQrComponent implements ValidationComponent {
   public ionicStorageTypes = IonicStorageTypes;
 
   constructor(
-    private router: Router,
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
     public sessionStorageService: SessionStorageService,
     private storage: Storage,
+    private modalController: ModalController,
   ) {}
 
   async ngOnInit() {
-    this.scanQrCode();
+    this.doScan();
   }
 
-  public async scanQrCode() {
-    const storageSubscription = this.sessionStorageService
-      .watchStorage()
-      .subscribe(async (response) => {
-        // Only respond to scannedData changes:
-        if (response !== this.sessionStorageService.type.scannedData) {
-          return;
-        }
+  public async doScan() {
+    this.resetScan();
+    this.scanError = false;
 
-        this.conversationService.startLoading();
-        await this.sessionStorageService
-          .retrieve(this.sessionStorageService.type.scannedData)
-          .then((data) => this.checkScannedData(data))
-          .finally(() => {
-            // Always reset the scanned-data
-            this.sessionStorageService.destroyItem(
-              this.sessionStorageService.type.scannedData,
-            );
-          });
-        this.conversationService.stopLoading();
+    await this.showQrScannerModal();
+  }
 
-        storageSubscription.unsubscribe();
-      });
-    this.router.navigate(['/scan-qr']);
+  public resetScan() {
+    this.scanResult = null;
+  }
+
+  private async showQrScannerModal() {
+    const componentProps =
+      environment.isDebug || environment.showDebug
+        ? {
+            debugInput: `{ "did": "_did_",
+  "programId": 1 }`,
+          }
+        : {};
+    const qrScannerModal = await this.modalController.create({
+      component: QrScannerComponent,
+      componentProps,
+    });
+
+    qrScannerModal.onWillDismiss().then((data: any) => {
+      this.checkScannedData(data.data);
+    });
+
+    return await qrScannerModal.present();
   }
 
   private async checkScannedData(data: string) {
@@ -145,7 +153,6 @@ export class ScanQrComponent implements ValidationComponent {
     }
   }
 
-
   private async getPaIdentifierOnline(data: string): Promise<string> {
     console.log('getPaIdentifierOnline');
     try {
@@ -160,7 +167,6 @@ export class ScanQrComponent implements ValidationComponent {
         return;
       }
     }
-
   }
 
   private async findPaData(did: string, programId: number): Promise<any> {

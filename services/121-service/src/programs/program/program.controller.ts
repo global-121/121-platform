@@ -246,6 +246,18 @@ export class ProgramController {
   }
 
   @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
+  @ApiOperation({ title: 'Get transactions' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get Get transactions',
+  })
+  @Get('transactions/:programId')
+  public async getTransactions(@Param() param): Promise<any> {
+    return await this.programService.getTransactions(param.programId);
+  }
+
+  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
   @ApiOperation({ title: 'Get total number of included per program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -276,7 +288,7 @@ export class ProgramController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Total number of included per program',
+    description: 'List of people getting payment',
   })
   @Post('payment-details')
   public async getPaymentDetails(
@@ -286,6 +298,20 @@ export class ProgramController {
       data.programId,
       data.installment,
     );
+  }
+
+  @Roles(UserRole.ProgramManager)
+  @ApiOperation({
+    title: 'Get a list of included people for community review',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true })
+  @ApiResponse({
+    status: 200,
+    description: 'List of included people',
+  })
+  @Get('export-inclusion/:programId')
+  public async getInclusionList(@Param() params): Promise<any> {
+    return await this.programService.getInclusionList(params.programId);
   }
 
   @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
