@@ -1,16 +1,13 @@
 import { Component, Input } from '@angular/core';
-
+import { PaStatus } from 'src/app/models/pa-status.enum';
+import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { UpdateService } from 'src/app/services/update.service';
-
-import { SovrinService } from 'src/app/services/sovrin.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-
-import { PersonalComponents } from '../personal-components.enum';
+import { SovrinService } from 'src/app/services/sovrin.service';
+import { UpdateService } from 'src/app/services/update.service';
 import { PersonalComponent } from '../personal-component.class';
-import { Program } from 'src/app/models/program.model';
-import { PaStatus } from 'src/app/models/pa-status.enum';
+import { PersonalComponents } from '../personal-components.enum';
 
 enum InclusionStates {
   included = 'included',

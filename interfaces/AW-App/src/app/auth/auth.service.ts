@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { JwtService } from '../services/jwt.service';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
+import { JwtService } from '../services/jwt.service';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { UserRole } from './user-role.enum';
 
 @Injectable({

@@ -1,12 +1,10 @@
-import { IonicModule } from '@ionic/angular';
-import { RouterModule } from '@angular/router';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
+import { RouterModule } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { SharedModule } from '../shared/shared.module';
 import { ValidationComponentsModule } from '../validation-components/validation-components.module';
-
 import { ValidationPage } from './validation.page';
 
 @NgModule({
@@ -18,6 +16,6 @@ import { ValidationPage } from './validation.page';
     SharedModule,
     ValidationComponentsModule,
   ],
-  declarations: [ValidationPage]
+  declarations: [ValidationPage],
 })
-export class ValidationPageModule { }
+export class ValidationPageModule {}

@@ -1,21 +1,18 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { Storage } from '@ionic/storage';
-import { ValidateFspComponent } from './validate-fsp.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IonContent, IonicModule } from '@ionic/angular';
-import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
-import { mockProgram, fspData } from 'src/app/mocks/api.program.mock';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { SessionStorageService } from 'src/app/services/session-storage.service';
-import { SessionStorageType } from 'src/app/services/session-storage-types.enum';
-import { PaQrCode } from 'src/app/models/pa-qr-code.model';
-import { PaDataAttribute } from 'src/app/models/pa-data.model';
+import { Storage } from '@ionic/storage';
+import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
-
+import { fspData, mockProgram } from 'src/app/mocks/api.program.mock';
+import { PaDataAttribute } from 'src/app/models/pa-data.model';
+import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SessionStorageType } from 'src/app/services/session-storage-types.enum';
+import { SessionStorageService } from 'src/app/services/session-storage.service';
+import { ValidateFspComponent } from './validate-fsp.component';
 
 describe('ValidateFspComponent', () => {
   let component: ValidateFspComponent;
@@ -36,13 +33,6 @@ describe('ValidateFspComponent', () => {
       retrieve: (type: SessionStorageType) =>
         new Promise<any>((resolve) => {
           switch (type) {
-            case SessionStorageType.paData:
-              return resolve(
-                JSON.stringify({
-                  did: 'did:sov:example',
-                  programId: 1,
-                } as PaQrCode),
-              );
             case SessionStorageType.paData:
               return resolve(
                 JSON.stringify([
@@ -70,6 +60,8 @@ describe('ValidateFspComponent', () => {
           switch (type) {
             case IonicStorageTypes.myPrograms:
               return resolve([mockProgram]);
+            case IonicStorageTypes.credentials:
+              return resolve([{ did: '', programId: 1, attributes: [] }]);
             default:
               return resolve('1');
           }
@@ -77,12 +69,12 @@ describe('ValidateFspComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ ValidateFspComponent ],
+      declarations: [ValidateFspComponent],
       imports: [
         TranslateModule.forRoot(),
         IonicModule.forRoot(),
         RouterTestingModule.withRoutes([]),
-        HttpClientTestingModule
+        HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -100,11 +92,10 @@ describe('ValidateFspComponent', () => {
         },
         {
           provide: Storage,
-          useValue: ionicStorageMock
+          useValue: ionicStorageMock,
         },
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

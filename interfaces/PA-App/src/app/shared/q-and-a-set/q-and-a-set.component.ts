@@ -1,19 +1,19 @@
 import {
   Component,
-  Input,
-  ViewChildren,
-  QueryList,
-  Output,
   EventEmitter,
+  Input,
+  Output,
+  QueryList,
+  ViewChildren,
 } from '@angular/core';
-import { DialogueTurnComponent } from '../dialogue-turn/dialogue-turn.component';
 import {
+  Answer,
+  AnswerSet,
   AnswerType,
   Question,
   QuestionOption,
-  Answer,
-  AnswerSet,
 } from 'src/app/models/q-and-a.models';
+import { DialogueTurnComponent } from '../dialogue-turn/dialogue-turn.component';
 
 @Component({
   selector: 'q-and-a-set',

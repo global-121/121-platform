@@ -1,9 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ModalController } from '@ionic/angular';
-
-import { MoreInfoButtonComponent } from './more-info-button.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { MoreInfoButtonComponent } from './more-info-button.component';
 
 describe('MoreInfoButtonComponent', () => {
   let component: MoreInfoButtonComponent;

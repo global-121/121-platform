@@ -1,9 +1,8 @@
-import { TestBed, inject } from '@angular/core/testing';
-
-import { AuthGuard } from './auth.guard';
-import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { inject, TestBed } from '@angular/core/testing';
+import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { AuthGuard } from './auth.guard';
 
 describe('AuthGuard', () => {
   beforeEach(() => {

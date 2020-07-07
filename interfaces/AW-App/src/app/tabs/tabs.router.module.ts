@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TabsPage } from './tabs.page';
 import { AuthGuard } from '../auth/auth.guard';
+import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
   {
@@ -13,19 +13,20 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../account/account.module#AccountPageModule'
-          }
-        ]
+            loadChildren: '../account/account.module#AccountPageModule',
+          },
+        ],
       },
       {
         path: 'validation',
         children: [
           {
             path: '',
-            loadChildren: '../validation/validation.module#ValidationPageModule',
+            loadChildren:
+              '../validation/validation.module#ValidationPageModule',
             canActivate: [AuthGuard],
-          }
-        ]
+          },
+        ],
       },
       {
         path: 'tab3',
@@ -34,27 +35,25 @@ const routes: Routes = [
             path: '',
             loadChildren: '../tab3/tab3.module#Tab3PageModule',
             canActivate: [AuthGuard],
-          }
-        ]
+          },
+        ],
       },
       {
         path: '',
         redirectTo: '/tabs/account',
-        pathMatch: 'full'
-      }
-    ]
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: '',
     redirectTo: '/tabs/account',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(routes)
-  ],
-  exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
-export class TabsPageRoutingModule { }
+export class TabsPageRoutingModule {}

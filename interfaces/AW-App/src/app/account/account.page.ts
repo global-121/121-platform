@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { Events, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { CustomTranslateService } from '../services/custom-translate.service';
-import { ConversationService } from '../services/conversation.service';
+import { Events, ToastController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
+import { ConversationService } from '../services/conversation.service';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
   selector: 'app-account',
   templateUrl: 'account.page.html',
-  styleUrls: ['account.page.scss']
+  styleUrls: ['account.page.scss'],
 })
 export class AccountPage {
   public isLoggedIn: boolean;
@@ -23,21 +23,21 @@ export class AccountPage {
 
   constructor(
     private authService: AuthService,
-    public customTranslateService: CustomTranslateService,
+    public translate: TranslateService,
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
     private router: Router,
     public events: Events,
     public toastController: ToastController,
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.changedPassword = this.customTranslateService.translate('account.changed-password');
-    this.unequalPasswords = this.customTranslateService.translate('account.unequal-passwords');
-    this.wrongCredentials = this.customTranslateService.translate('account.wrong-credentials');
-    this.noConnection = this.customTranslateService.translate('account.no-connection');
-    this.loggedIn = this.customTranslateService.translate('account.logged-in');
-    this.loggedOut = this.customTranslateService.translate('account.logged-out');
+    this.changedPassword = this.translate.instant('account.changed-password');
+    this.unequalPasswords = this.translate.instant('account.unequal-passwords');
+    this.wrongCredentials = this.translate.instant('account.wrong-credentials');
+    this.noConnection = this.translate.instant('account.no-connection');
+    this.loggedIn = this.translate.instant('account.logged-in');
+    this.loggedOut = this.translate.instant('account.logged-out');
 
     this.isLoggedIn = this.authService.isLoggedIn();
   }
@@ -47,25 +47,27 @@ export class AccountPage {
 
     event.preventDefault();
 
-    this.authService.login(
-      event.target.elements.email.value,
-      event.target.elements.password.value
-    ).then(
-      (response) => {
-        console.log('LoginPage login:', response);
-        this.isLoggedIn = true;
-        this.createToast(this.loggedIn);
-        this.router.navigate(['/tabs/validation']);
-      },
-      (error) => {
-        console.log('LoginPage error: ', error.status);
-        if (error.status === 401) {
-          this.createToast(this.wrongCredentials);
-        } else {
-          this.createToast(this.noConnection);
-        }
-      }
-    );
+    this.authService
+      .login(
+        event.target.elements.email.value,
+        event.target.elements.password.value,
+      )
+      .then(
+        (response) => {
+          console.log('LoginPage login:', response);
+          this.isLoggedIn = true;
+          this.createToast(this.loggedIn);
+          this.router.navigate(['/tabs/validation']);
+        },
+        (error) => {
+          console.log('LoginPage error: ', error.status);
+          if (error.status === 401) {
+            this.createToast(this.wrongCredentials);
+          } else {
+            this.createToast(this.noConnection);
+          }
+        },
+      );
   }
 
   public async logout() {
@@ -84,25 +86,28 @@ export class AccountPage {
   }
 
   createToast(message) {
-    this.toastController.create({
-      header: message,
-      animated: true,
-      showCloseButton: true,
-      closeButtonText: 'Close',
-      cssClass: 'update-toast',
-      duration: 3000,
-      position: 'bottom',
-      buttons: [
-        {
-          side: 'start',
-          icon: 'share-alt',
-          handler: () => {
-            this.router.navigate(['tabs/validation']);
-          }
-        }]
-    }).then((obj) => {
-      obj.present();
-    });
+    this.toastController
+      .create({
+        header: message,
+        animated: true,
+        showCloseButton: true,
+        closeButtonText: 'Close',
+        cssClass: 'update-toast',
+        duration: 3000,
+        position: 'bottom',
+        buttons: [
+          {
+            side: 'start',
+            icon: 'share-alt',
+            handler: () => {
+              this.router.navigate(['tabs/validation']);
+            },
+          },
+        ],
+      })
+      .then((obj) => {
+        obj.present();
+      });
   }
 
   public async doChangePassword(event) {
@@ -118,5 +123,4 @@ export class AccountPage {
       this.createToast(this.unequalPasswords);
     }
   }
-
 }

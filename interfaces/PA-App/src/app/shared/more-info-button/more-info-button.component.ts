@@ -1,6 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { InfoPopupComponent } from '../info-popup/info-popup.component';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { InfoPopupComponent } from '../info-popup/info-popup.component';
 
 @Component({
   selector: 'more-info-button',

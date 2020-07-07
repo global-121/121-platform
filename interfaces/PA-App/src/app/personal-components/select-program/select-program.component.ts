@@ -1,13 +1,11 @@
 import { Component, Input } from '@angular/core';
+import { Program } from 'src/app/models/program.model';
+import { ConversationService } from 'src/app/services/conversation.service';
+import { PaDataService } from 'src/app/services/padata.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
-
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { PaDataService } from 'src/app/services/padata.service';
-import { ConversationService } from 'src/app/services/conversation.service';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-
-import { Program } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-select-program',

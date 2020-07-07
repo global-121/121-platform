@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { PersonalComponent } from '../personal-component.class';
-import { PersonalComponents } from '../personal-components.enum';
-import { ConversationService } from 'src/app/services/conversation.service';
-import { Program } from 'src/app/models/program.model';
-import { PaDataService } from 'src/app/services/padata.service';
-import { QrScannerComponent } from '../../shared/qr-scanner/qr-scanner.component';
 import { ModalController } from '@ionic/angular';
+import { Program } from 'src/app/models/program.model';
+import { ConversationService } from 'src/app/services/conversation.service';
+import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { QrScannerComponent } from '../../shared/qr-scanner/qr-scanner.component';
+import { PersonalComponent } from '../personal-component.class';
+import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
   selector: 'app-preprinted-qrcode',

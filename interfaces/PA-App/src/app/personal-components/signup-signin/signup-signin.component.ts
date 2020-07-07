@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { PersonalComponents } from '../personal-components.enum';
-import { PersonalComponent } from '../personal-component.class';
 import { environment } from 'src/environments/environment';
+import { PersonalComponent } from '../personal-component.class';
+import { PersonalComponents } from '../personal-components.enum';
 
 export enum idChoices {
   create = 'create-id',

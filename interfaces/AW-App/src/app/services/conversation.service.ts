@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConversationService {
   public state = {
@@ -47,15 +47,13 @@ export class ConversationService {
 
   private getHistory() {
     // Define a hard-coded history (for now):
-    const history = [
-    ];
-
+    const history = [];
 
     return history;
   }
 
   private hasHistory() {
-    return (this.history.length > 0);
+    return this.history.length > 0;
   }
 
   startNewConversation() {
@@ -66,7 +64,7 @@ export class ConversationService {
     console.log('ConversationService addSection(): ', sectionName);
 
     this.conversation.push({
-      name: sectionName
+      name: sectionName,
     });
   }
 
@@ -95,7 +93,6 @@ export class ConversationService {
   public getConversationUpToNow(): ConversationSection[] {
     return this.conversation;
   }
-
 }
 
 class ConversationHistorySection {

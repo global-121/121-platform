@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { ValidationComponent } from '../validation-components.interface';
-import { ConversationService } from 'src/app/services/conversation.service';
-import { ValidationComponents } from '../validation-components.enum';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
+import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
 
 class ValidationAnswer {
   id: number;
@@ -14,7 +14,6 @@ class ValidationAnswer {
   attribute: string;
   answer: string | number;
 }
-
 
 class QrDidMap {
   did: string;
@@ -40,10 +39,8 @@ export class DownloadDataComponent implements ValidationComponent {
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
-    private storage: Storage
+    private storage: Storage,
   ) {}
-
-
 
   async ngOnInit() {
     await this.downloadData();
@@ -59,16 +56,23 @@ export class DownloadDataComponent implements ValidationComponent {
       () => {
         this.downloadAborted = true;
         this.complete();
-      }
+      },
     );
-    await this.storage.set(this.ionicStorageTypes.validationProgramData, this.validationData);
-    await this.storage.set(this.ionicStorageTypes.qrDidMapping, this.qrDidMapping);
-    await this.storage.set(this.ionicStorageTypes.validationFspData, this.fspData);
+    await this.storage.set(
+      this.ionicStorageTypes.validationProgramData,
+      this.validationData,
+    );
+    await this.storage.set(
+      this.ionicStorageTypes.qrDidMapping,
+      this.qrDidMapping,
+    );
+    await this.storage.set(
+      this.ionicStorageTypes.validationFspData,
+      this.fspData,
+    );
 
     const myPrograms = await this.getProgramData(this.validationData);
     await this.storage.set(this.ionicStorageTypes.myPrograms, myPrograms);
-
-
 
     this.nrDownloaded = this.countUniqueDids(this.validationData);
     this.downloadReady = true;
@@ -84,7 +88,7 @@ export class DownloadDataComponent implements ValidationComponent {
       programRequests.push(
         this.programsService
           .getProgramById(programId)
-          .then((programData) => myPrograms.push(programData))
+          .then((programData) => myPrograms.push(programData)),
       );
     });
     await Promise.all(programRequests);

@@ -1,10 +1,10 @@
-import { ProgramsServiceApiService } from './../../services/programs-service-api.service';
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { ValidationComponent } from '../validation-components.interface';
-import { ValidationComponents } from '../validation-components.enum';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
+import { ProgramsServiceApiService } from './../../services/programs-service-api.service';
 
 @Component({
   selector: 'app-upload-data',
@@ -22,15 +22,17 @@ export class UploadDataComponent implements ValidationComponent {
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
-    private storage: Storage
-  ) { }
+    private storage: Storage,
+  ) {}
 
   async ngOnInit(): Promise<void> {
     await this.uploadData();
   }
 
   public async uploadData(): Promise<void> {
-    const credentials = await this.storage.get(this.ionicStorageTypes.credentials);
+    const credentials = await this.storage.get(
+      this.ionicStorageTypes.credentials,
+    );
     if (credentials && credentials.length > 0) {
       this.uploadDataStored = true;
       this.nrStored = credentials.length;
@@ -54,18 +56,20 @@ export class UploadDataComponent implements ValidationComponent {
 
   public async issueCredential(credential: any): Promise<void> {
     if (credential.attributes) {
-      await this.programsService.issueCredential(
-        credential.did,
-        credential.programId,
-        credential.attributes
-      ).then(
-        async () => {
-          console.log('Upload credential succes for : ' + credential.did);
-        },
-        () => {
-          this.uploadAborted = true;
-        }
-      );
+      await this.programsService
+        .issueCredential(
+          credential.did,
+          credential.programId,
+          credential.attributes,
+        )
+        .then(
+          async () => {
+            console.log('Upload credential succes for : ' + credential.did);
+          },
+          () => {
+            this.uploadAborted = true;
+          },
+        );
     }
   }
 
@@ -76,9 +80,11 @@ export class UploadDataComponent implements ValidationComponent {
           await this.programsService.postConnectionCustomAttribute(
             answer.did,
             answer.code,
-            answer.value
+            answer.value,
           );
-          console.log('Upload fsp succes for : ' + credential.did + ' for ' + answer.code);
+          console.log(
+            'Upload fsp succes for : ' + credential.did + ' for ' + answer.code,
+          );
         } catch (error) {
           this.uploadAborted = true;
           return;
@@ -87,10 +93,18 @@ export class UploadDataComponent implements ValidationComponent {
     }
   }
 
-  public async removeCredentialByDid(did: string): Promise<void>  {
-    const currentCredentials = await this.storage.get(this.ionicStorageTypes.credentials);
-    currentCredentials.splice(currentCredentials.findIndex(item => item.did === did), 1);
-    await this.storage.set(this.ionicStorageTypes.credentials, currentCredentials);
+  public async removeCredentialByDid(did: string): Promise<void> {
+    const currentCredentials = await this.storage.get(
+      this.ionicStorageTypes.credentials,
+    );
+    currentCredentials.splice(
+      currentCredentials.findIndex((item) => item.did === did),
+      1,
+    );
+    await this.storage.set(
+      this.ionicStorageTypes.credentials,
+      currentCredentials,
+    );
   }
 
   getNextSection(): string {
@@ -104,5 +118,4 @@ export class UploadDataComponent implements ValidationComponent {
       next: this.getNextSection(),
     });
   }
-
 }

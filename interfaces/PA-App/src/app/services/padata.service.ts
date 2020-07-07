@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-
-import { environment } from 'src/environments/environment';
-
 import { Storage } from '@ionic/storage';
-import { PaAccountApiService } from './pa-account-api.service';
-import { JwtService } from './jwt.service';
-
+import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { Program } from '../models/program.model';
+import { JwtService } from './jwt.service';
+import { PaAccountApiService } from './pa-account-api.service';
 import { PaDataTypes } from './padata-types.enum';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 import { SovrinService } from './sovrin.service';

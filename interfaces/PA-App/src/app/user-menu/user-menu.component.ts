@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {
   AlertController,
-  PopoverController,
   LoadingController,
+  PopoverController,
 } from '@ionic/angular';
-import { PaDataService } from 'src/app/services/padata.service';
 import { TranslateService } from '@ngx-translate/core';
+import { PaDataService } from 'src/app/services/padata.service';
 
 @Component({
   selector: 'app-user-menu',

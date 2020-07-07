@@ -1,9 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { SignupSigninComponent } from './signup-signin.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { SignupSigninComponent } from './signup-signin.component';
 
 describe('SignupSigninComponent', () => {
   let component: SignupSigninComponent;

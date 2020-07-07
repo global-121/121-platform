@@ -1,6 +1,6 @@
-import { Component, ViewChild, Input } from '@angular/core';
-import { ZXingScannerComponent } from '@zxing/ngx-scanner';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import { ZXingScannerComponent } from '@zxing/ngx-scanner';
 
 @Component({
   selector: 'qr-scanner',

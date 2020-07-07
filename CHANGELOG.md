@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- 2020-07-07: Removed Android build of AW-App, including all Cordova dependencies
+
 ---
 
 ## [0.4.0] - 2020-06-16

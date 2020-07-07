@@ -1,16 +1,13 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterModule } from '@angular/router';
-
-import { PaDataService } from 'src/app/services/padata.service';
-import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
-
-import { HandleProofComponent } from './handle-proof.component';
 import { Storage } from '@ionic/storage';
+import { TranslateModule } from '@ngx-translate/core';
 import { MockIonicStorage } from 'src/app/mocks/ionic.storage.mock';
+import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
+import { PaDataService } from 'src/app/services/padata.service';
+import { HandleProofComponent } from './handle-proof.component';
 
 describe('HandleProofComponent', () => {
   let component: HandleProofComponent;

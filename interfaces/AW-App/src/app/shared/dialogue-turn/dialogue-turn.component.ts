@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
 enum Actor {
@@ -29,12 +29,11 @@ export class DialogueTurnComponent implements OnInit {
 
   animate = environment.useAnimation;
 
-  constructor() {
-  }
+  constructor() {}
 
   ngOnInit() {
-    this.isSelf = (this.actor === Actor.self);
-    this.isSystem = (this.actor === Actor.system);
+    this.isSelf = this.actor === Actor.self;
+    this.isSystem = this.actor === Actor.system;
     this.moment = new Date();
   }
 

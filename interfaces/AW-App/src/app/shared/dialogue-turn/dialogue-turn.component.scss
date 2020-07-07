@@ -33,7 +33,8 @@
   position: absolute;
   top: var(--dialogue-turn--margin-around-card-vertical);
 
-  border-width: var(--dialogue-turn--speech-arrow-height) var(--dialogue-turn--speech-arrow-width);
+  border-width: var(--dialogue-turn--speech-arrow-height)
+    var(--dialogue-turn--speech-arrow-width);
   border-style: solid;
   border-color: transparent;
 }
@@ -107,7 +108,7 @@
 .dialogue-turn.is-spoken {
   .dialogue-turn--content {
     animation-name: speak;
-    animation-duration: .3s;
+    animation-duration: 0.3s;
     animation-direction: forwards;
     animation-iteration-count: 1;
   }

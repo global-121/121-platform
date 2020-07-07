@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
-import { environment } from 'src/environments/environment';
-
-import { PaDataService } from '../services/padata.service';
-
 import { PopoverController } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
+import { PaDataService } from '../services/padata.service';
 import { UserMenuComponent } from '../user-menu/user-menu.component';
 
 @Component({

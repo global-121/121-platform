@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { ValidationComponent } from '../validation-components.interface';
-import { ConversationService } from 'src/app/services/conversation.service';
-import { ValidationComponents } from '../validation-components.enum';
-
 import { Appointment } from 'src/app/models/appointment.model';
+import { ConversationService } from 'src/app/services/conversation.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
 
 @Component({
   selector: 'app-view-appointments',
@@ -12,7 +11,6 @@ import { Appointment } from 'src/app/models/appointment.model';
   styleUrls: ['./view-appointments.component.scss'],
 })
 export class ViewAppointmentsComponent implements ValidationComponent {
-
   public dateFormat = 'EEE, dd-MM-yyyy';
   public timeFormat = 'HH:mm';
 
@@ -26,7 +24,7 @@ export class ViewAppointmentsComponent implements ValidationComponent {
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
-  ) { }
+  ) {}
 
   async ngOnInit() {
     await this.getAppointments();
@@ -41,14 +39,13 @@ export class ViewAppointmentsComponent implements ValidationComponent {
     } else {
       this.noAppointments = false;
     }
-
   }
 
   public isSameDay(startDate: string, endDate: string) {
     const startDay = new Date(startDate).toDateString();
     const endDay = new Date(endDate).toDateString();
 
-    return (startDay === endDay);
+    return startDay === endDay;
   }
 
   public changeTimeslot($event) {
@@ -59,7 +56,7 @@ export class ViewAppointmentsComponent implements ValidationComponent {
   public submitTimeslot(timeslotChoice) {
     this.appointmentsByTimeslot = this.appointments.filter(
       // tslint:disable-next-line: triple-equals
-      timeslot => timeslot.timeslotId == timeslotChoice
+      (timeslot) => timeslot.timeslotId == timeslotChoice,
     )[0].appointments;
     this.timeslotSelected = true;
   }

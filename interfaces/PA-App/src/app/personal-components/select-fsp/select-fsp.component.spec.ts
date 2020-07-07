@@ -1,11 +1,10 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { SelectFspComponent } from './select-fsp.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { PaDataService } from 'src/app/services/padata.service';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { PaDataService } from 'src/app/services/padata.service';
+import { SelectFspComponent } from './select-fsp.component';
 
 describe('SelectFspComponent', () => {
   let component: SelectFspComponent;

@@ -1,16 +1,16 @@
-import { Storage } from '@ionic/storage';
-import { SessionStorageService } from './../../services/session-storage.service';
 import { Component } from '@angular/core';
-import { ValidationComponent } from '../validation-components.interface';
-import { ConversationService } from 'src/app/services/conversation.service';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { ValidationComponents } from '../validation-components.enum';
-import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { ModalController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
 import { TimeoutError } from 'rxjs';
 import { PaQrCode } from 'src/app/models/pa-qr-code.model';
+import { ConversationService } from 'src/app/services/conversation.service';
+import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { QrScannerComponent } from 'src/app/shared/qr-scanner/qr-scanner.component';
-import { ModalController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
+import { SessionStorageService } from './../../services/session-storage.service';
 
 @Component({
   selector: 'app-scan-qr',

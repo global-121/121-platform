@@ -1,10 +1,16 @@
 # See .gitignore
 coverage/
+
+# Ionic related files
 www/
 dist/
 platforms/
 plugins/
 resources/
 
+
 # Don't format HTML, waiting for https://github.com/prettier/prettier/pull/6644 to be possible
 *.html
+
+# Don't reorder imports for polyfills:
+src/polyfills.ts
