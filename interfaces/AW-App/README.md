@@ -1,9 +1,9 @@
-AW-App
-======
+# AW-App
 
-The front-end of the application an *Aid-Worker* uses to interact with the 121-platform.
+The front-end of the application an _Aid-Worker_ uses to interact with the 121-platform.
 
 ## Getting Started
+
 - Install [environment requirements](../README.md)
 - Install dependencies (from this folder):
 
@@ -13,27 +13,8 @@ The front-end of the application an *Aid-Worker* uses to interact with the 121-p
 
       npm start
 
-- or: Run the app and use the camera (in a local browser):
-
-      npm run dev:local
-
-- or: Run on an Android-device:
-
-      npm run dev:on-device
-
-For more options, see the documentation of the [Ionic/Cordova CLI](https://ionicframework.com/docs/cli/commands/cordova-run).
-
-
 ## Configuration
+
 Some specific information need to be configured before use:
 
 - Set the API-endpoint(s) in the [`environment.ts`](./src/environments/environment.ts)-file.
-
-
-## Deployment / Building
-To deploy a native build of this app, see the generic instructions in [/interfaces/README](../README.md#Deployment).
-
-After that, run: (with `<type>` as `--prod` or `--debug`)
-
-    npm run build:native -- <type>
-
