@@ -36,7 +36,7 @@ describe('ValidateFspComponent', () => {
       retrieve: (type: SessionStorageType) =>
         new Promise<any>((resolve) => {
           switch (type) {
-            case SessionStorageType.scannedData:
+            case SessionStorageType.paData:
               return resolve(
                 JSON.stringify({
                   did: 'did:sov:example',
