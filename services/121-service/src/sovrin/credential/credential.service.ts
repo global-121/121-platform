@@ -23,6 +23,11 @@ import { UserEntity } from '../../user/user.entity';
 
 import { API } from '../../config';
 import { DownloadData } from './interfaces/download-data.interface';
+import {
+  FspAnswersAttrInterface,
+  AnswerSet,
+} from 'src/programs/fsp/fsp-interface';
+import { FspAttributeEntity } from 'src/programs/fsp/fsp-attribute.entity';
 
 @Injectable()
 export class CredentialService {
@@ -169,6 +174,7 @@ export class CredentialService {
     }
     const data = {
       answers: await this.getAllPrefilledAnswers(user),
+      fspData: await this.getAllFspAnswerData(),
       didQrMapping: await this.getQrDidMapping(),
     };
     return data;
@@ -184,6 +190,49 @@ export class CredentialService {
       where: programIds,
     });
     return answers;
+  }
+
+  public async getAllFspAnswerData(): Promise<FspAnswersAttrInterface[]> {
+    const qb = await getRepository(ConnectionEntity)
+      .createQueryBuilder('connection')
+      .leftJoinAndSelect('connection.fsp', 'fsp')
+      .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
+      .where('connection.fsp IS NOT NULL');
+    const fspDataPerConnection = [];
+    const connections = await qb.getMany();
+    for (const connection of connections) {
+      const answers = this.getFspAnswers(
+        connection.fsp.attributes,
+        connection.customData,
+      );
+      const fspData = {
+        attributes: connection.fsp.attributes,
+        answers: answers,
+        did: connection.did,
+      };
+      fspDataPerConnection.push(fspData);
+    }
+    return fspDataPerConnection;
+  }
+
+  public getFspAnswers(
+    fspAttributes: FspAttributeEntity[],
+    customData: JSON,
+  ): AnswerSet {
+    const fspAttributeNames = [];
+    for (const attribute of fspAttributes) {
+      fspAttributeNames.push(attribute.name);
+    }
+    const fspCustomData = {};
+    for (const key in customData) {
+      if (fspAttributeNames.includes(key)) {
+        fspCustomData[key] = {
+          code: key,
+          value: customData[key],
+        };
+      }
+    }
+    return fspCustomData;
   }
 
   public async getQrDidMapping(): Promise<ConnectionEntity[]> {

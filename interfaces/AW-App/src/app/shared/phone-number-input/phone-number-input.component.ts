@@ -30,7 +30,7 @@ export class PhoneNumberInputComponent {
 
   private initialChecked = false;
 
-  constructor(private programService: ProgramsServiceApiService) { }
+  constructor(private programService: ProgramsServiceApiService) {}
 
   private setValidity(state: boolean, emit = true) {
     this.isValid = state;
@@ -40,6 +40,7 @@ export class PhoneNumberInputComponent {
   }
 
   public async onChange() {
+    console.log('onChange: ');
     // 'export' the value of the input-ELEMENT to be used as value of this COMPONENT
     this.value = this.telInput.value;
 
@@ -76,7 +77,6 @@ export class PhoneNumberInputComponent {
         }
       },
     );
-
     return isValid;
   }
 }

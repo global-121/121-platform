@@ -80,6 +80,51 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  getFspAttributesAsnwers(did: string, programId: number): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection/get-fsp/',
+        {
+          did,
+          programId,
+        },
+      )
+      .toPromise();
+  }
+
+  postConnectionCustomAttribute(
+    did: string,
+    key: string,
+    value: string,
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/sovrin/create-connection/custom-data',
+        {
+          did,
+          key,
+          value,
+        },
+        true,
+      )
+      .toPromise();
+  }
+
+  lookupPhoneNumber(phoneNumber: string): Promise<{ result: boolean }> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/notifications/lookup',
+        {
+          phoneNumber,
+        },
+        true,
+      )
+      .toPromise();
+  }
+
   downloadData(): Promise<any> {
     return this.apiService
       .get(environment.url_121_service_api, '/sovrin/credential/download-data')

@@ -1,6 +1,5 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { twilioClient } from '../twilio.client';
-import { resolve } from 'path';
 
 @Injectable()
 export class LookupService {

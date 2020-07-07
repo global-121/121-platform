@@ -115,6 +115,7 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   private async getPaIdentifier(data: string): Promise<PaQrCode | false> {
+    console.log('data: getPaIdentifier', data);
     if (this.isValidPaQrCode(data)) {
       return JSON.parse(data);
     }
@@ -200,7 +201,7 @@ export class ScanQrComponent implements ValidationComponent {
   ): Promise<any> {
     console.log('findPaDataOffline()');
     const offlineData = await this.storage.get(
-      this.ionicStorageTypes.validationData,
+      this.ionicStorageTypes.validationProgramData,
     );
     if (!offlineData || !offlineData.length) {
       return;
