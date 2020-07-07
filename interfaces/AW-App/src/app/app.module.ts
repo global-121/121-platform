@@ -1,24 +1,21 @@
-import { NgModule } from '@angular/core';
+import { LOCATION_INITIALIZED } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
-
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
-
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-import { httpInterceptorProviders } from './http-interceptors/index';
-
-import { Injector, APP_INITIALIZER } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { LOCATION_INITIALIZED } from '@angular/common';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { httpInterceptorProviders } from './http-interceptors/index';
 
 export function appInitializerFactory(
   translate: TranslateService,

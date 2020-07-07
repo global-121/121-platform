@@ -1,14 +1,13 @@
-import { Injectable } from '@angular/core';
 import {
-  HttpRequest,
-  HttpHandler,
   HttpEvent,
+  HttpHandler,
   HttpInterceptor,
+  HttpRequest,
 } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { retryWhen, concatMap, delay, timeout } from 'rxjs/operators';
-
+import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable, of, throwError } from 'rxjs';
+import { concatMap, delay, retryWhen, timeout } from 'rxjs/operators';
 
 @Injectable()
 export class RetryInterceptor implements HttpInterceptor {

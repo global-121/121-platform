@@ -1,13 +1,11 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TranslateModule } from '@ngx-translate/core';
 import { RouterTestingModule } from '@angular/router/testing';
-
-import { ScanQrComponent } from './scan-qr.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { Storage } from '@ionic/storage';
 import { ModalController } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
+import { TranslateModule } from '@ngx-translate/core';
+import { ScanQrComponent } from './scan-qr.component';
 
 const storageIonicMock: any = {
   get: () => new Promise<any>((resolve) => resolve('1')),

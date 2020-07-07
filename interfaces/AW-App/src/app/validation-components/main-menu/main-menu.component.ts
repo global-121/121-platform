@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { Storage } from '@ionic/storage';
-import { CustomTranslateService } from 'src/app/services/custom-translate.service';
-import { ValidationComponent } from '../validation-components.interface';
-import { ConversationService } from 'src/app/services/conversation.service';
 import { Router } from '@angular/router';
-import { ValidationComponents } from '../validation-components.enum';
+import { Storage } from '@ionic/storage';
+import { ConversationService } from 'src/app/services/conversation.service';
+import { CustomTranslateService } from 'src/app/services/custom-translate.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
 
 @Component({
   selector: 'app-main-menu',

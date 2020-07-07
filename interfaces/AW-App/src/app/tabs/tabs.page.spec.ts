@@ -1,8 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { TabsPage } from './tabs.page';
 import { TranslateModule } from '@ngx-translate/core';
+import { TabsPage } from './tabs.page';
 
 describe('TabsPage', () => {
   let component: TabsPage;

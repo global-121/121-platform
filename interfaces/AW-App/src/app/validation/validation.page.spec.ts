@@ -1,11 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ValidationPage } from './validation.page';
-import { TranslateModule } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConversationService } from '../services/conversation.service';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { ValidationPage } from './validation.page';
 
 describe('ValidationPage', () => {
   let component: ValidationPage;

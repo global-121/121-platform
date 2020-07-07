@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { Events, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
-import { CustomTranslateService } from '../services/custom-translate.service';
-import { ConversationService } from '../services/conversation.service';
+import { Events, ToastController } from '@ionic/angular';
 import { AuthService } from '../auth/auth.service';
+import { ConversationService } from '../services/conversation.service';
+import { CustomTranslateService } from '../services/custom-translate.service';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
   selector: 'app-account',

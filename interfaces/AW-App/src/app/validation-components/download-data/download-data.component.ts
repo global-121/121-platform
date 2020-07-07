@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { ValidationComponent } from '../validation-components.interface';
-import { ConversationService } from 'src/app/services/conversation.service';
-import { ValidationComponents } from '../validation-components.enum';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { Storage } from '@ionic/storage';
+import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
 
 class ValidationAnswer {
   id: number;

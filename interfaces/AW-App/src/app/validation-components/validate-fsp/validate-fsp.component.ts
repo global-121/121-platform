@@ -1,23 +1,23 @@
-import { Storage } from '@ionic/storage';
 import { Component } from '@angular/core';
-import { ValidationComponent } from '../validation-components.interface';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { ConversationService } from 'src/app/services/conversation.service';
-import { SessionStorageService } from 'src/app/services/session-storage.service';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
-import { ValidationComponents } from '../validation-components.enum';
-import { PaDataAttribute } from 'src/app/models/pa-data.model';
+import { Storage } from '@ionic/storage';
+import { TimeoutError } from 'rxjs';
 import { FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
+import { PaDataAttribute } from 'src/app/models/pa-data.model';
 import {
+  Answer,
+  AnswerSet,
   Question,
   QuestionOption,
-  AnswerSet,
-  Answer,
 } from 'src/app/models/q-and-a.models';
+import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
-import { TimeoutError } from 'rxjs';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SessionStorageService } from 'src/app/services/session-storage.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
 
 @Component({
   selector: 'app-validate-fsp',

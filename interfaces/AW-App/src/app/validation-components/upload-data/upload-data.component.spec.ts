@@ -1,9 +1,8 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateModule } from '@ngx-translate/core';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Storage } from '@ionic/storage';
-
+import { TranslateModule } from '@ngx-translate/core';
 import { UploadDataComponent } from './upload-data.component';
 
 const mockCredentials = [{ did: '', programId: 1, attributes: [] }];

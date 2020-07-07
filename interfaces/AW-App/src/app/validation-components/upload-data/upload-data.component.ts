@@ -1,10 +1,10 @@
-import { ProgramsServiceApiService } from './../../services/programs-service-api.service';
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { ValidationComponent } from '../validation-components.interface';
-import { ValidationComponents } from '../validation-components.enum';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
+import { ProgramsServiceApiService } from './../../services/programs-service-api.service';
 
 @Component({
   selector: 'app-upload-data',

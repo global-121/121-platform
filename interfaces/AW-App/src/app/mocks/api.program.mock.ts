@@ -1,4 +1,4 @@
-import { Program, AnswerType } from '../models/program.model';
+import { AnswerType, Program } from '../models/program.model';
 
 export const mockProgram: Program = {
   id: 1,

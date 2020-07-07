@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { ValidationComponent } from '../validation-components.interface';
-import { ConversationService } from 'src/app/services/conversation.service';
-import { ValidationComponents } from '../validation-components.enum';
-
 import { Appointment } from 'src/app/models/appointment.model';
+import { ConversationService } from 'src/app/services/conversation.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
 
 @Component({
   selector: 'app-view-appointments',
