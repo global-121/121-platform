@@ -13,14 +13,16 @@ const storageIonicMock: any = {
   get: () => new Promise<any>((resolve) => resolve('1')),
 };
 
+const modalControllerMock = {
+  create: () => new Promise<any>((resolve) => resolve(modalControllerMock)),
+  present: () => new Promise<any>((resolve) => resolve(modalControllerMock)),
+  onWillDismiss: () =>
+    new Promise<any>((resolve) => resolve(modalControllerMock)),
+};
+
 describe('ScanQrComponent', () => {
   let component: ScanQrComponent;
   let fixture: ComponentFixture<ScanQrComponent>;
-
-  const modalControllerMock = jasmine.createSpyObj('ModalController', {
-    create: new Promise<any>((resolve) => resolve(true)),
-    onWillDismiss: new Promise<any>((resolve) => resolve(true)),
-  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
