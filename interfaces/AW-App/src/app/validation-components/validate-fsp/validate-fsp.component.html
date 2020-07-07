@@ -44,7 +44,7 @@
   </dialogue-turn>
   <dialogue-turn  [actor]="self"
       *ngIf="backToMainMenu"
-      [isSpoken]="fspQuestionAvailable"
+      [isSpoken]="backToMainMenu"
     >
     <ion-button (click)="doReload()"
                 expand="block"
