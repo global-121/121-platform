@@ -72,7 +72,7 @@
   >
     <dialogue-turn [isSpoken]="checkValidationErrors(question.code)">
       <p *ngIf="(question.answerType === answerType.phoneNumber) && validationErrors.includes('phoneNumber')">
-        {{ 'shared.validate-phoneNumber'|translate }}
+        {{ 'shared.validate-phone-number'|translate }}
       </p>
     </dialogue-turn>
   </div>
