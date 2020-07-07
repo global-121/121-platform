@@ -14,6 +14,6 @@ import { SharedModule } from '../shared/shared.module';
     RouterModule.forChild([{ path: '', component: AccountPage }]),
     SharedModule,
   ],
-  declarations: [AccountPage]
+  declarations: [AccountPage],
 })
-export class AccountPageModule { }
+export class AccountPageModule {}

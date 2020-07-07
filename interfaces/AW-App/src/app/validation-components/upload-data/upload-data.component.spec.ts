@@ -17,20 +17,16 @@ describe('UploadDataComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UploadDataComponent ],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule
-      ],
+      declarations: [UploadDataComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: Storage,
-          useValue: storageIonicMock
-        }
-      ]
-    })
-    .compileComponents();
+          useValue: storageIonicMock,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -18,6 +18,6 @@ import { ValidationPage } from './validation.page';
     SharedModule,
     ValidationComponentsModule,
   ],
-  declarations: [ValidationPage]
+  declarations: [ValidationPage],
 })
-export class ValidationPageModule { }
+export class ValidationPageModule {}

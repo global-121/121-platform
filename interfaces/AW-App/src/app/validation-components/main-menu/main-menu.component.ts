@@ -23,26 +23,47 @@ export class MainMenuComponent implements ValidationComponent {
     public customTranslateService: CustomTranslateService,
     public conversationService: ConversationService,
     public router: Router,
-    private storage: Storage
-  ) { }
+    private storage: Storage,
+  ) {}
 
   async ngOnInit() {
-
     this.menuOptions = [
-      { id: 'download-data', option: this.customTranslateService.translate('validation.main-menu.download-data'), disabled: false },
-      { id: 'view-appointments', option: this.customTranslateService.translate('validation.main-menu.view-appointments'), disabled: false },
-      { id: 'scan-qr', option: this.customTranslateService.translate('validation.main-menu.scan-qr'), disabled: false },
+      {
+        id: 'download-data',
+        option: this.customTranslateService.translate(
+          'validation.main-menu.download-data',
+        ),
+        disabled: false,
+      },
+      {
+        id: 'view-appointments',
+        option: this.customTranslateService.translate(
+          'validation.main-menu.view-appointments',
+        ),
+        disabled: false,
+      },
+      {
+        id: 'scan-qr',
+        option: this.customTranslateService.translate(
+          'validation.main-menu.scan-qr',
+        ),
+        disabled: false,
+      },
       {
         id: 'upload-data',
-        option: this.customTranslateService.translate('validation.main-menu.upload-data'), // + (await this.getNrUploadWaitingString()),
+        option: this.customTranslateService.translate(
+          'validation.main-menu.upload-data',
+        ), // + (await this.getNrUploadWaitingString()),
         counter: await this.getNrUploadWaiting(),
-        disabled: false
+        disabled: false,
       },
     ];
   }
 
   private async getNrUploadWaiting() {
-    const credentials = await this.storage.get(this.ionicStorageTypes.credentials);
+    const credentials = await this.storage.get(
+      this.ionicStorageTypes.credentials,
+    );
     if (credentials) {
       return credentials.length;
     } else {
@@ -82,5 +103,4 @@ export class MainMenuComponent implements ValidationComponent {
       next: this.getNextSection(),
     });
   }
-
 }

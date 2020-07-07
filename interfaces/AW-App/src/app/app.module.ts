@@ -20,23 +20,36 @@ import { LOCATION_INITIALIZED } from '@angular/common';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
-export function appInitializerFactory(translate: TranslateService, injector: Injector) {
-
+export function appInitializerFactory(
+  translate: TranslateService,
+  injector: Injector,
+) {
   const langToSet = 'en';
 
-  return () => new Promise<any>((resolve: any) => {
-    const locationInitialized = injector.get(LOCATION_INITIALIZED, Promise.resolve(null));
-    locationInitialized.then(() => {
-      translate.setDefaultLang(langToSet);
-      translate.use(langToSet).subscribe(() => {
-        console.log(`Successfully initialized '${langToSet}' language.`);
-      }, (err) => {
-        console.log(`Problem with '${langToSet}' language initialization: `, err);
-      }, () => {
-        resolve(null);
+  return () =>
+    new Promise<any>((resolve: any) => {
+      const locationInitialized = injector.get(
+        LOCATION_INITIALIZED,
+        Promise.resolve(null),
+      );
+      locationInitialized.then(() => {
+        translate.setDefaultLang(langToSet);
+        translate.use(langToSet).subscribe(
+          () => {
+            console.log(`Successfully initialized '${langToSet}' language.`);
+          },
+          (err) => {
+            console.log(
+              `Problem with '${langToSet}' language initialization: `,
+              err,
+            );
+          },
+          () => {
+            resolve(null);
+          },
+        );
       });
     });
-  });
 }
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -57,17 +70,15 @@ export function HttpLoaderFactory(http: HttpClient) {
       loader: {
         provide: TranslateLoader,
         useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
     IonicStorageModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
     }),
   ],
-  exports: [
-    TranslateModule
-  ],
+  exports: [TranslateModule],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     httpInterceptorProviders,
@@ -75,9 +86,9 @@ export function HttpLoaderFactory(http: HttpClient) {
       provide: APP_INITIALIZER,
       useFactory: appInitializerFactory,
       deps: [TranslateService, Injector],
-      multi: true
-    }
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

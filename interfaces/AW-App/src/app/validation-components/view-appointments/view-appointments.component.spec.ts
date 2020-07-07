@@ -14,24 +14,25 @@ describe('ViewAppointmentsComponent', () => {
 
   beforeEach(async(() => {
     // Mock the used service:
-    const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getAppointments']);
-    programsServiceApiService.getAppointments.and.returnValue(of(mockAppointmentsResponse.appointments));
+    const programsServiceApiService = jasmine.createSpyObj(
+      'ProgramsServiceApiService',
+      ['getAppointments'],
+    );
+    programsServiceApiService.getAppointments.and.returnValue(
+      of(mockAppointmentsResponse.appointments),
+    );
 
     TestBed.configureTestingModule({
       declarations: [ViewAppointmentsComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: ProgramsServiceApiService,
           useValue: programsServiceApiService,
-        }
-      ]
-    })
-      .compileComponents();
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -70,12 +70,12 @@ describe('ValidateFspComponent', () => {
     };
 
     TestBed.configureTestingModule({
-      declarations: [ ValidateFspComponent ],
+      declarations: [ValidateFspComponent],
       imports: [
         TranslateModule.forRoot(),
         IonicModule.forRoot(),
         RouterTestingModule.withRoutes([]),
-        HttpClientTestingModule
+        HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -93,11 +93,10 @@ describe('ValidateFspComponent', () => {
         },
         {
           provide: Storage,
-          useValue: ionicStorageMock
+          useValue: ionicStorageMock,
         },
-      ]
-    })
-    .compileComponents();
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -17,19 +17,15 @@ describe('MainMenuComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MainMenuComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterModule.forRoot([]),
-      ],
+      imports: [TranslateModule.forRoot(), RouterModule.forRoot([])],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: Storage,
-          useValue: storageIonicMock
-        }
-      ]
-    })
-      .compileComponents();
+          useValue: storageIonicMock,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

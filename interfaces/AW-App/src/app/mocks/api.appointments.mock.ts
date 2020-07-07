@@ -8,12 +8,12 @@ const appointmentsArray = [
       {
         id: 4,
         did: 'did:sov:VZep2esamA8y1cbnFFXgdK',
-        status: 'validated'
-      }
-    ]
-  }
+        status: 'validated',
+      },
+    ],
+  },
 ];
 
 export default {
-  appointments: appointmentsArray
+  appointments: appointmentsArray,
 };

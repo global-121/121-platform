@@ -2,14 +2,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class CustomTranslateService {
-
-  constructor(
-    public translateService: TranslateService
-  ) { }
+  constructor(public translateService: TranslateService) {}
 
   public translate(messageKey) {
     let result: string;

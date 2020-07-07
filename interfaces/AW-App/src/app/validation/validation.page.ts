@@ -1,4 +1,10 @@
-import { Component, ViewChild, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
+import {
+  Component,
+  ViewChild,
+  OnInit,
+  ViewContainerRef,
+  ComponentFactoryResolver,
+} from '@angular/core';
 import { IonContent } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 import { Storage } from '@ionic/storage';
@@ -80,9 +86,7 @@ export class ValidationPage implements OnInit {
   }
 
   private getComponentFactory(name: string) {
-    return this.resolver.resolveComponentFactory(
-      this.availableSections[name]
-    );
+    return this.resolver.resolveComponentFactory(this.availableSections[name]);
   }
 
   public insertSection(name: string) {
@@ -94,9 +98,7 @@ export class ValidationPage implements OnInit {
 
     this.scrollDown();
 
-    this.container.createComponent(
-      this.getComponentFactory(name)
-    );
+    this.container.createComponent(this.getComponentFactory(name));
   }
 
   public scrollDown() {

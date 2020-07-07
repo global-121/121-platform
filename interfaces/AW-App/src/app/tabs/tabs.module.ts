@@ -16,6 +16,6 @@ import { TabsPage } from './tabs.page';
     TabsPageRoutingModule,
     TranslateModule.forChild(),
   ],
-  declarations: [TabsPage]
+  declarations: [TabsPage],
 })
-export class TabsPageModule { }
+export class TabsPageModule {}

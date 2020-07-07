@@ -17,7 +17,11 @@ import {
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { PaDataAttribute } from 'src/app/models/pa-data.model';
-import { Question, QuestionOption, Answer } from 'src/app/models/q-and-a.models';
+import {
+  Question,
+  QuestionOption,
+  Answer,
+} from 'src/app/models/q-and-a.models';
 
 @Component({
   selector: 'app-validate-program',
@@ -118,8 +122,6 @@ export class ValidateProgramComponent implements ValidationComponent {
       };
     });
   }
-
-
 
   private getQuestionByCode(questionCode: string): Question {
     const result = this.questions.find((question: Question) => {

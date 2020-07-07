@@ -14,11 +14,7 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
     PhoneNumberInputComponent,
     QAndASetComponent,
   ],
-  imports: [
-    CommonModule,
-    IonicModule,
-    TranslateModule.forChild(),
-  ],
+  imports: [CommonModule, IonicModule, TranslateModule.forChild()],
   exports: [
     DialogueTurnComponent,
     PhoneNumberInputComponent,
@@ -26,4 +22,4 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
     TranslateModule,
   ],
 })
-export class SharedModule { }
+export class SharedModule {}

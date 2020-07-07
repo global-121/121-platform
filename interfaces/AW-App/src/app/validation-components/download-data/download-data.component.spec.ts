@@ -17,19 +17,15 @@ describe('DownloadDataComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DownloadDataComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: Storage,
-          useValue: storageIonicMock
-        }
-      ]
-    })
-    .compileComponents();
+          useValue: storageIonicMock,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

@@ -9,7 +9,7 @@ import { AuthService } from '../auth/auth.service';
 @Component({
   selector: 'app-account',
   templateUrl: 'account.page.html',
-  styleUrls: ['account.page.scss']
+  styleUrls: ['account.page.scss'],
 })
 export class AccountPage {
   public isLoggedIn: boolean;
@@ -29,15 +29,25 @@ export class AccountPage {
     private router: Router,
     public events: Events,
     public toastController: ToastController,
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.changedPassword = this.customTranslateService.translate('account.changed-password');
-    this.unequalPasswords = this.customTranslateService.translate('account.unequal-passwords');
-    this.wrongCredentials = this.customTranslateService.translate('account.wrong-credentials');
-    this.noConnection = this.customTranslateService.translate('account.no-connection');
+    this.changedPassword = this.customTranslateService.translate(
+      'account.changed-password',
+    );
+    this.unequalPasswords = this.customTranslateService.translate(
+      'account.unequal-passwords',
+    );
+    this.wrongCredentials = this.customTranslateService.translate(
+      'account.wrong-credentials',
+    );
+    this.noConnection = this.customTranslateService.translate(
+      'account.no-connection',
+    );
     this.loggedIn = this.customTranslateService.translate('account.logged-in');
-    this.loggedOut = this.customTranslateService.translate('account.logged-out');
+    this.loggedOut = this.customTranslateService.translate(
+      'account.logged-out',
+    );
 
     this.isLoggedIn = this.authService.isLoggedIn();
   }
@@ -47,25 +57,27 @@ export class AccountPage {
 
     event.preventDefault();
 
-    this.authService.login(
-      event.target.elements.email.value,
-      event.target.elements.password.value
-    ).then(
-      (response) => {
-        console.log('LoginPage login:', response);
-        this.isLoggedIn = true;
-        this.createToast(this.loggedIn);
-        this.router.navigate(['/tabs/validation']);
-      },
-      (error) => {
-        console.log('LoginPage error: ', error.status);
-        if (error.status === 401) {
-          this.createToast(this.wrongCredentials);
-        } else {
-          this.createToast(this.noConnection);
-        }
-      }
-    );
+    this.authService
+      .login(
+        event.target.elements.email.value,
+        event.target.elements.password.value,
+      )
+      .then(
+        (response) => {
+          console.log('LoginPage login:', response);
+          this.isLoggedIn = true;
+          this.createToast(this.loggedIn);
+          this.router.navigate(['/tabs/validation']);
+        },
+        (error) => {
+          console.log('LoginPage error: ', error.status);
+          if (error.status === 401) {
+            this.createToast(this.wrongCredentials);
+          } else {
+            this.createToast(this.noConnection);
+          }
+        },
+      );
   }
 
   public async logout() {
@@ -84,25 +96,28 @@ export class AccountPage {
   }
 
   createToast(message) {
-    this.toastController.create({
-      header: message,
-      animated: true,
-      showCloseButton: true,
-      closeButtonText: 'Close',
-      cssClass: 'update-toast',
-      duration: 3000,
-      position: 'bottom',
-      buttons: [
-        {
-          side: 'start',
-          icon: 'share-alt',
-          handler: () => {
-            this.router.navigate(['tabs/validation']);
-          }
-        }]
-    }).then((obj) => {
-      obj.present();
-    });
+    this.toastController
+      .create({
+        header: message,
+        animated: true,
+        showCloseButton: true,
+        closeButtonText: 'Close',
+        cssClass: 'update-toast',
+        duration: 3000,
+        position: 'bottom',
+        buttons: [
+          {
+            side: 'start',
+            icon: 'share-alt',
+            handler: () => {
+              this.router.navigate(['tabs/validation']);
+            },
+          },
+        ],
+      })
+      .then((obj) => {
+        obj.present();
+      });
   }
 
   public async doChangePassword(event) {
@@ -118,5 +133,4 @@ export class AccountPage {
       this.createToast(this.unequalPasswords);
     }
   }
-
 }

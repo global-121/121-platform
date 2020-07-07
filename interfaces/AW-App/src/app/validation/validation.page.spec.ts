@@ -13,9 +13,12 @@ describe('ValidationPage', () => {
 
   beforeEach(async(() => {
     // Mock the used services:
-    const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getCountries']);
+    const programsServiceApiService = jasmine.createSpyObj(
+      'ProgramsServiceApiService',
+      ['getCountries'],
+    );
     const conversationService = jasmine.createSpyObj('ConversationService', {
-      state: { isLoading: false, },
+      state: { isLoading: false },
       sectionCompleted$: jasmine.createSpy(),
       shouldScroll$: jasmine.createSpy(),
       getConversationUpToNow: [{}, {}],
@@ -27,9 +30,7 @@ describe('ValidationPage', () => {
     TestBed.configureTestingModule({
       declarations: [ValidationPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      imports: [TranslateModule.forRoot()],
       providers: [
         {
           provide: ProgramsServiceApiService,
@@ -43,7 +44,7 @@ describe('ValidationPage', () => {
           provide: Storage,
           useValue: storageIonicMock,
         },
-      ]
+      ],
     }).compileComponents();
   }));
 
@@ -56,5 +57,4 @@ describe('ValidationPage', () => {
   xit('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });
