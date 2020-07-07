@@ -200,7 +200,9 @@ export class ProgramPayoutComponent implements OnInit {
           text: this.translate.instant('common.ok'),
           handler: () => {
             alert.dismiss(true);
-            if (refresh) window.location.reload();
+            if (refresh) {
+              window.location.reload();
+            }
             return false;
           },
         },
