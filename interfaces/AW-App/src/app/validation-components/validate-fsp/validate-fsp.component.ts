@@ -30,6 +30,8 @@ export class ValidateFspComponent implements ValidationComponent {
   public showResultSuccess: boolean;
   public showResultError: boolean;
 
+  public fspQuestionAvailable = true;
+
   public ionicStorageTypes = IonicStorageTypes;
 
   constructor(
@@ -52,7 +54,8 @@ export class ValidateFspComponent implements ValidationComponent {
       this.questions = this.buildQuestions(attributesAnswers.attributes);
       this.customAttributeAnswers = attributesAnswers.answers;
     } else {
-      this.complete();
+      this.fspQuestionAvailable = false;
+      console.log('this.fspQuestionAvailable : ', this.fspQuestionAvailable );
     }
   }
 
@@ -161,7 +164,6 @@ export class ValidateFspComponent implements ValidationComponent {
           this.isEditing = false;
           this.showResultSuccess = true;
           this.showResultError = false;
-          this.complete();
         },
         () => {
           // in case of error:
@@ -202,6 +204,10 @@ export class ValidateFspComponent implements ValidationComponent {
       storedCredentials,
     );
     this.customAttributeAnswers = {};
+  }
+
+  public doReload(): void {
+    window.location.reload();
   }
 
   getNextSection() {

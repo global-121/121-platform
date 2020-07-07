@@ -32,6 +32,12 @@
       <p>
         {{ 'validation.validate-fsp.conclusion'|translate }}
       </p>
+      <ion-button (click)="doReload()"
+                  expand="block"
+                  style="flex-basis:100%;"
+      >
+      {{ 'validation.validate-fsp.back-menu'|translate }}
+      </ion-button>
     </dialogue-turn>
     <dialogue-turn [actor]="self"
                    *ngIf="showResultError"
@@ -42,5 +48,20 @@
       </p>
     </dialogue-turn>
   </form>
+
+  <dialogue-turn  [actor]="self"
+                  *ngIf="!fspQuestionAvailable"
+                  [isSpoken]="fspQuestionAvailable"
+    >
+    <p>
+    {{ 'validation.validate-fsp.no-fsp'|translate }}
+    </p>
+    <ion-button (click)="doReload()"
+                expand="block"
+                style="flex-basis:100%;"
+    >
+    {{ 'validation.validate-fsp.back-menu'|translate }}
+    </ion-button>
+    </dialogue-turn>
 
 </section>

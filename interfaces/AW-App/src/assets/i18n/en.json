@@ -67,11 +67,15 @@
       "conclusion": "The validation data has been saved. Please make sure to upload it (now or when internet is available)."
     },
     "validate-fsp": {
-      "introduction": "Below you see the PA's information needed for the financial service provider. Check it with the PA, adapt where necessary, and confirm.",
-      "submit": "Confirm",
+      "introduction": "Below you see the PA's information for the specific program. Check it with the PA, adapt where necessary, and confirm.",
+      "submit": "Submit answers",
       "dob-feedback": "The date of birth does not have a valid format. Please adjust and save again.",
-      "confirm-button": "Save",
-      "conclusion": "The financial service provider has been saved. Please make sure to upload it (now or when internet is available)."
+      "please-confirm": "Below is an overview of the PA's information. Please confirm and submit.",
+      "change": "Change information",
+      "confirm-button": "Issue Program Credential",
+      "no-fsp": "There are no FSP to validate",
+      "back-menu": "Back to main menu",
+      "conclusion": "The financial service provider data has been saved. Please make sure to upload it (now or when internet is available)."
     }
   },
   "connection": {
