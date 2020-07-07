@@ -25,8 +25,4 @@ export class PaymentPage implements OnInit {
   public onReady(state: boolean) {
     this.isReady = state;
   }
-
-  public triggerRefresh() {
-    window.location.reload();
-  }
 }

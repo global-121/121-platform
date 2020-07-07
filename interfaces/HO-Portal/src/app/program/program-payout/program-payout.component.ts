@@ -18,8 +18,6 @@ export class ProgramPayoutComponent implements OnInit {
   public programId: number;
 
   @Output()
-  triggerRefresh: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public isEnabled = true;
@@ -165,6 +163,7 @@ export class ProgramPayoutComponent implements OnInit {
             this.translate.instant(
               'page.program.program-payout.payout-success',
             ),
+            true,
           );
           this.createInstallments(this.programId);
         },
@@ -193,7 +192,7 @@ export class ProgramPayoutComponent implements OnInit {
       );
   }
 
-  private async actionResult(resultMessage: string) {
+  private async actionResult(resultMessage: string, refresh: boolean = false) {
     const alert = await this.alertController.create({
       message: resultMessage,
       buttons: [
@@ -201,6 +200,9 @@ export class ProgramPayoutComponent implements OnInit {
           text: this.translate.instant('common.ok'),
           handler: () => {
             alert.dismiss(true);
+            if (refresh) {
+              window.location.reload();
+            }
             return false;
           },
         },
