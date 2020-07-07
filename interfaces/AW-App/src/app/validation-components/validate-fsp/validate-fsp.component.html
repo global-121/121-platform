@@ -1,13 +1,4 @@
 <section #startMeeting>
-  <dialogue-turn [actor]="self"
-                 *ngIf="fspSubmitted"
-                 [isSpoken]="fspSubmitted"
-  >
-    <p>
-      <span [innerHTML]="'validation.validate-fsp.conclusion'|translate:{ name:'<strong>'+chosenFsp?.fsp+'</strong>' }"></span>
-    </p>
-  </dialogue-turn>
-
   <form *ngIf="questions?.length">
     <dialogue-turn isConnected="true"
                    isSpoken="true"
@@ -32,12 +23,6 @@
       <p>
         {{ 'validation.validate-fsp.conclusion'|translate }}
       </p>
-      <ion-button (click)="doReload()"
-                  expand="block"
-                  style="flex-basis:100%;"
-      >
-      {{ 'validation.validate-fsp.back-menu'|translate }}
-      </ion-button>
     </dialogue-turn>
     <dialogue-turn [actor]="self"
                    *ngIf="showResultError"
@@ -56,6 +41,11 @@
     <p>
     {{ 'validation.validate-fsp.no-fsp'|translate }}
     </p>
+  </dialogue-turn>
+  <dialogue-turn  [actor]="self"
+      *ngIf="backToMainMenu"
+      [isSpoken]="fspQuestionAvailable"
+    >
     <ion-button (click)="doReload()"
                 expand="block"
                 style="flex-basis:100%;"
