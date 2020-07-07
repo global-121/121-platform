@@ -70,6 +70,15 @@
   "connection": {
     "error-retry": "Something went wrong, do you want to try again?"
   },
+  "qr-scanner": {
+    "title": "Scan QR-code",
+    "error-not-compatible": "Your device is not able to scan",
+    "error-no-permissions": "Please allow the camera to be used or check if its not already in use and try again.",
+    "error-generic": "Something went wrong.",
+    "switch-camera": "Switch camera",
+    "try-again": "Try again",
+    "toggle-flash": "Toggle flash-light"
+  },
   "shared": {
     "submit-button": "Submit"
   }

@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ScanQrComponent } from './scan-qr.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Storage } from '@ionic/storage';
+import { ModalController } from '@ionic/angular';
 
 const storageIonicMock: any = {
   get: () => new Promise<any>((resolve) => resolve('1')),
@@ -15,6 +16,11 @@ const storageIonicMock: any = {
 describe('ScanQrComponent', () => {
   let component: ScanQrComponent;
   let fixture: ComponentFixture<ScanQrComponent>;
+
+  const modalControllerMock = jasmine.createSpyObj('ModalController', {
+    create: new Promise<any>((resolve) => resolve(true)),
+    onWillDismiss: new Promise<any>((resolve) => resolve(true)),
+  });
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,11 +39,14 @@ describe('ScanQrComponent', () => {
       providers: [
         {
           provide: Storage,
-          useValue: storageIonicMock
-        }
+          useValue: storageIonicMock,
+        },
+        {
+          provide: ModalController,
+          useValue: modalControllerMock,
+        },
       ],
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   beforeEach(() => {
