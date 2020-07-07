@@ -6,8 +6,9 @@ import { Storage } from '@ionic/storage';
 
 import { UploadDataComponent } from './upload-data.component';
 
+const mockCredentials = [{ did: '', programId: 1, attributes: [] }];
 const storageIonicMock: any = {
-  get: () => new Promise<any>((resolve) => resolve('1')),
+  get: () => new Promise<any>((resolve) => resolve(mockCredentials)),
 };
 
 describe('UploadDataComponent', () => {

@@ -12,10 +12,8 @@ import { mockProgram, fspData } from 'src/app/mocks/api.program.mock';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SessionStorageService } from 'src/app/services/session-storage.service';
 import { SessionStorageType } from 'src/app/services/session-storage-types.enum';
-import { PaQrCode } from 'src/app/models/pa-qr-code.model';
 import { PaDataAttribute } from 'src/app/models/pa-data.model';
 import { of } from 'rxjs';
-
 
 describe('ValidateFspComponent', () => {
   let component: ValidateFspComponent;
@@ -36,13 +34,6 @@ describe('ValidateFspComponent', () => {
       retrieve: (type: SessionStorageType) =>
         new Promise<any>((resolve) => {
           switch (type) {
-            case SessionStorageType.paData:
-              return resolve(
-                JSON.stringify({
-                  did: 'did:sov:example',
-                  programId: 1,
-                } as PaQrCode),
-              );
             case SessionStorageType.paData:
               return resolve(
                 JSON.stringify([
@@ -70,6 +61,8 @@ describe('ValidateFspComponent', () => {
           switch (type) {
             case IonicStorageTypes.myPrograms:
               return resolve([mockProgram]);
+            case IonicStorageTypes.credentials:
+              return resolve([{ did: '', programId: 1, attributes: [] }]);
             default:
               return resolve('1');
           }
