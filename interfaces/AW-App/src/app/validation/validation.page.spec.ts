@@ -1,11 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ValidationPage } from './validation.page';
-import { TranslateModule } from '@ngx-translate/core';
 import { Storage } from '@ionic/storage';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConversationService } from '../services/conversation.service';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { ValidationPage } from './validation.page';
 
 describe('ValidationPage', () => {
   let component: ValidationPage;
@@ -13,9 +12,12 @@ describe('ValidationPage', () => {
 
   beforeEach(async(() => {
     // Mock the used services:
-    const programsServiceApiService = jasmine.createSpyObj('ProgramsServiceApiService', ['getCountries']);
+    const programsServiceApiService = jasmine.createSpyObj(
+      'ProgramsServiceApiService',
+      ['getCountries'],
+    );
     const conversationService = jasmine.createSpyObj('ConversationService', {
-      state: { isLoading: false, },
+      state: { isLoading: false },
       sectionCompleted$: jasmine.createSpy(),
       shouldScroll$: jasmine.createSpy(),
       getConversationUpToNow: [{}, {}],
@@ -27,9 +29,7 @@ describe('ValidationPage', () => {
     TestBed.configureTestingModule({
       declarations: [ValidationPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      imports: [TranslateModule.forRoot()],
       providers: [
         {
           provide: ProgramsServiceApiService,
@@ -43,7 +43,7 @@ describe('ValidationPage', () => {
           provide: Storage,
           useValue: storageIonicMock,
         },
-      ]
+      ],
     }).compileComponents();
   }));
 
@@ -56,5 +56,4 @@ describe('ValidationPage', () => {
   xit('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });

@@ -1,19 +1,23 @@
-import { Component, ViewChild, OnInit, ViewContainerRef, ComponentFactoryResolver } from '@angular/core';
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { IonContent } from '@ionic/angular';
-import { environment } from 'src/environments/environment';
 import { Storage } from '@ionic/storage';
-
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 import { ConversationService } from '../services/conversation.service';
-
-import { ValidationComponents } from '../validation-components/validation-components.enum';
+import { ProgramsServiceApiService } from '../services/programs-service-api.service';
+import { DownloadDataComponent } from '../validation-components/download-data/download-data.component';
 import { MainMenuComponent } from '../validation-components/main-menu/main-menu.component';
 import { ScanQrComponent } from '../validation-components/scan-qr/scan-qr.component';
-import { ViewAppointmentsComponent } from '../validation-components/view-appointments/view-appointments.component';
-import { ValidateProgramComponent } from '../validation-components/validate-program/validate-program.component';
-import { DownloadDataComponent } from '../validation-components/download-data/download-data.component';
 import { UploadDataComponent } from '../validation-components/upload-data/upload-data.component';
 import { ValidateFspComponent } from '../validation-components/validate-fsp/validate-fsp.component';
+import { ValidateProgramComponent } from '../validation-components/validate-program/validate-program.component';
+import { ValidationComponents } from '../validation-components/validation-components.enum';
+import { ViewAppointmentsComponent } from '../validation-components/view-appointments/view-appointments.component';
 
 @Component({
   selector: 'app-validation',
@@ -80,9 +84,7 @@ export class ValidationPage implements OnInit {
   }
 
   private getComponentFactory(name: string) {
-    return this.resolver.resolveComponentFactory(
-      this.availableSections[name]
-    );
+    return this.resolver.resolveComponentFactory(this.availableSections[name]);
   }
 
   public insertSection(name: string) {
@@ -94,9 +96,7 @@ export class ValidationPage implements OnInit {
 
     this.scrollDown();
 
-    this.container.createComponent(
-      this.getComponentFactory(name)
-    );
+    this.container.createComponent(this.getComponentFactory(name));
   }
 
   public scrollDown() {

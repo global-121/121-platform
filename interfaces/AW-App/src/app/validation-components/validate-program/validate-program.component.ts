@@ -1,23 +1,27 @@
-import { Storage } from '@ionic/storage';
-import { Router } from '@angular/router';
 import { Component } from '@angular/core';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { ValidationComponent } from '../validation-components.interface';
-import { ConversationService } from 'src/app/services/conversation.service';
+import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
-import { ValidationComponents } from '../validation-components.enum';
-import { SessionStorageService } from 'src/app/services/session-storage.service';
+import { Storage } from '@ionic/storage';
+import { PaDataAttribute } from 'src/app/models/pa-data.model';
 import {
-  Program,
   AnswerType,
+  Program,
   ProgramAttribute,
   ProgramCriterium,
   ProgramCriteriumOption,
 } from 'src/app/models/program.model';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import {
+  Answer,
+  Question,
+  QuestionOption,
+} from 'src/app/models/q-and-a.models';
+import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
-import { PaDataAttribute } from 'src/app/models/pa-data.model';
-import { Question, QuestionOption, Answer } from 'src/app/models/q-and-a.models';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SessionStorageService } from 'src/app/services/session-storage.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
 
 @Component({
   selector: 'app-validate-program',
@@ -118,8 +122,6 @@ export class ValidateProgramComponent implements ValidationComponent {
       };
     });
   }
-
-
 
   private getQuestionByCode(questionCode: string): Question {
     const result = this.questions.find((question: Question) => {

@@ -1,18 +1,23 @@
-import { Storage } from '@ionic/storage';
 import { Component } from '@angular/core';
-import { ValidationComponent } from '../validation-components.interface';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { ConversationService } from 'src/app/services/conversation.service';
-import { SessionStorageService } from 'src/app/services/session-storage.service';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
-import { ValidationComponents } from '../validation-components.enum';
-import { PaDataAttribute } from 'src/app/models/pa-data.model';
-import { FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
-import { Question, QuestionOption, AnswerSet, Answer } from 'src/app/models/q-and-a.models';
-import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { Storage } from '@ionic/storage';
 import { TimeoutError } from 'rxjs';
+import { FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
+import { PaDataAttribute } from 'src/app/models/pa-data.model';
+import {
+  Answer,
+  AnswerSet,
+  Question,
+  QuestionOption,
+} from 'src/app/models/q-and-a.models';
+import { ConversationService } from 'src/app/services/conversation.service';
+import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SessionStorageService } from 'src/app/services/session-storage.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { ValidationComponents } from '../validation-components.enum';
+import { ValidationComponent } from '../validation-components.interface';
 
 @Component({
   selector: 'app-validate-fsp',
@@ -43,7 +48,7 @@ export class ValidateFspComponent implements ValidationComponent {
     public router: Router,
     public ionContent: IonContent,
     private storage: Storage,
-  ) { }
+  ) {}
 
   async ngOnInit() {
     const paData = await this.getPaData();
@@ -51,13 +56,17 @@ export class ValidateFspComponent implements ValidationComponent {
     this.programId = paData[0].programId;
 
     const attributesAnswers = await this.findFspAnswers();
-    if (attributesAnswers && attributesAnswers.attributes && attributesAnswers.attributes.length > 0) {
+    if (
+      attributesAnswers &&
+      attributesAnswers.attributes &&
+      attributesAnswers.attributes.length > 0
+    ) {
       this.questions = this.buildQuestions(attributesAnswers.attributes);
       this.customAttributeAnswers = attributesAnswers.answers;
     } else {
       this.fspQuestionAvailable = false;
       this.backToMainMenu = true;
-      console.log('this.fspQuestionAvailable : ', this.fspQuestionAvailable );
+      console.log('this.fspQuestionAvailable : ', this.fspQuestionAvailable);
     }
   }
 
@@ -153,12 +162,12 @@ export class ValidateFspComponent implements ValidationComponent {
     this.processInOrder(
       Object.values(this.customAttributeAnswers),
       (answer: Answer) =>
-          fspAnswers.push({
-            did: this.did,
-            code: answer.code,
-            value: answer.value,
-          })
-     )
+        fspAnswers.push({
+          did: this.did,
+          code: answer.code,
+          value: answer.value,
+        }),
+    )
       .then(
         () => {
           // in case of success:
@@ -191,7 +200,9 @@ export class ValidateFspComponent implements ValidationComponent {
     }
 
     // If credential was already stored update object else create new object
-    const currentCredentialIndex = storedCredentials.findIndex((obj => obj.did === this.did));
+    const currentCredentialIndex = storedCredentials.findIndex(
+      (obj) => obj.did === this.did,
+    );
     if (currentCredentialIndex) {
       storedCredentials[currentCredentialIndex].fspanswers = fspanswers;
     } else {
@@ -223,5 +234,4 @@ export class ValidateFspComponent implements ValidationComponent {
       next: this.getNextSection(),
     });
   }
-
 }

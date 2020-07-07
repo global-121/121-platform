@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-
-import { Program } from '../models/program.model';
-
+import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { Program } from '../models/program.model';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
 
