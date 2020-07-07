@@ -1,0 +1,16 @@
+.qr-scanner {
+  position: relative;
+}
+
+.qr-scanner--zxing-component {
+  position: relative;
+  z-index: 1;
+}
+
+.qr-scanner--loading {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

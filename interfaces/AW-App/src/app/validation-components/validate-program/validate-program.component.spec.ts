@@ -14,7 +14,6 @@ import { SessionStorageType } from 'src/app/services/session-storage-types.enum'
 
 import { mockProgram } from 'src/app/mocks/api.program.mock';
 import { PaDataAttribute } from 'src/app/models/pa-data.model';
-import { PaQrCode } from 'src/app/models/pa-qr-code.model';
 
 import { ValidateProgramComponent } from './validate-program.component';
 
@@ -36,13 +35,6 @@ describe('ValidateProgramComponent', () => {
       retrieve: (type: SessionStorageType) =>
         new Promise<any>((resolve) => {
           switch (type) {
-            case SessionStorageType.scannedData:
-              return resolve(
-                JSON.stringify({
-                  did: 'did:sov:example',
-                  programId: 1,
-                } as PaQrCode),
-              );
             case SessionStorageType.paData:
               return resolve(
                 JSON.stringify([
