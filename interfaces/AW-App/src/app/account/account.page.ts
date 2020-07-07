@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Events, ToastController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
 import { ConversationService } from '../services/conversation.service';
-import { CustomTranslateService } from '../services/custom-translate.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class AccountPage {
 
   constructor(
     private authService: AuthService,
-    public customTranslateService: CustomTranslateService,
+    public translate: TranslateService,
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
     private router: Router,
@@ -32,22 +32,12 @@ export class AccountPage {
   ) {}
 
   ngOnInit() {
-    this.changedPassword = this.customTranslateService.translate(
-      'account.changed-password',
-    );
-    this.unequalPasswords = this.customTranslateService.translate(
-      'account.unequal-passwords',
-    );
-    this.wrongCredentials = this.customTranslateService.translate(
-      'account.wrong-credentials',
-    );
-    this.noConnection = this.customTranslateService.translate(
-      'account.no-connection',
-    );
-    this.loggedIn = this.customTranslateService.translate('account.logged-in');
-    this.loggedOut = this.customTranslateService.translate(
-      'account.logged-out',
-    );
+    this.changedPassword = this.translate.instant('account.changed-password');
+    this.unequalPasswords = this.translate.instant('account.unequal-passwords');
+    this.wrongCredentials = this.translate.instant('account.wrong-credentials');
+    this.noConnection = this.translate.instant('account.no-connection');
+    this.loggedIn = this.translate.instant('account.logged-in');
+    this.loggedOut = this.translate.instant('account.logged-out');
 
     this.isLoggedIn = this.authService.isLoggedIn();
   }
