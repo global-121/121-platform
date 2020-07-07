@@ -4,8 +4,6 @@ import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { AppComponent } from './app.component';
@@ -13,7 +11,6 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 
 import { httpInterceptorProviders } from './http-interceptors/index';
 
@@ -72,9 +69,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     TranslateModule
   ],
   providers: [
-    StatusBar,
-    SplashScreen,
-    QRScanner,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     httpInterceptorProviders,
     {
