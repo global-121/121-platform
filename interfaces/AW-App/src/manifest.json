@@ -1,12 +1,13 @@
 {
+  "$schema": "https://json.schemastore.org/web-manifest",
   "name": "AW-App",
   "short_name": "AW-App",
   "theme_color": "#4253d6",
   "background_color": "#cccccc",
   "display": "standalone",
   "orientation": "portrait",
-  "scope": "/",
-  "start_url": "/",
+  "scope": "./",
+  "start_url": "./",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
