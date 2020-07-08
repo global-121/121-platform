@@ -13,6 +13,7 @@ import { ProgramPeopleAffectedComponent } from '../program/program-people-affect
 import { ProgramPeopleComponent } from '../program/program-people/program-people.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
+import { ExportListComponent } from '../program/export-list/export-list.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     PhaseNavigationComponent,
     ProgramPeopleComponent,
     ProgramPeopleAffectedComponent,
+    ExportListComponent,
   ],
   imports: [
     CommonModule,
@@ -42,6 +44,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     PhaseNavigationComponent,
     ProgramPeopleComponent,
     ProgramPeopleAffectedComponent,
+    ExportListComponent,
     RouterModule,
     TranslateModule,
     NgxDatatableModule,

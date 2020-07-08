@@ -47,16 +47,19 @@ export class ExportListComponent implements OnChanges {
       ['string', 'number'].includes(typeof changes.programId.currentValue)
     ) {
       await this.programPhaseService.getPhases(this.programId);
-      this.disabled = this.btnDisabled();
+      this.disabled = !this.btnEnabled();
     }
   }
 
-  public btnDisabled() {
+  public btnEnabled() {
     const activePhase = this.programPhaseService.getActivePhase();
 
     return (
-      activePhase.name !== ProgramPhase.reviewInclusion ||
-      this.userRole !== UserRole.ProgramManager
+      ((activePhase.name == ProgramPhase.reviewInclusion &&
+        this.exportType === ExportType.included) ||
+        (activePhase.name == ProgramPhase.registrationValidation &&
+          this.exportType === ExportType.selectedForValidation)) &&
+      this.userRole === UserRole.ProgramManager
     );
   }
 

@@ -12,6 +12,12 @@
     [phaseReady]="isReady"
   ></app-phase-next>
 
+  <app-export-list 
+    [programId]="programId" 
+    [userRole]="userRole" 
+    [exportType]="enumExportType.selectedForValidation"
+  ></app-export-list>
+
   <app-program-people-affected
     [programId]="programId"
     [userRole]="userRole"
