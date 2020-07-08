@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
-import { ProgramPhase } from 'src/app/models/program.model';
 import { ExportType } from 'src/app/models/export-type.model';
+import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
   selector: 'app-review-inclusion',

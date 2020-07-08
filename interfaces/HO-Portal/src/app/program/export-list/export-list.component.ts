@@ -2,10 +2,10 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramPhase } from 'src/app/models/program.model';
 import { ProgramPhaseService } from 'src/app/services/program-phase.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { ExportType } from 'src/app/models/export-type.model';
 
 @Component({
   selector: 'app-export-list',
