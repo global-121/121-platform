@@ -17,7 +17,6 @@ import { ProgramService } from '../../programs/program/program.service';
 import { PrefilledAnswerDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialEntity } from './credential.entity';
-import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { UserEntity } from '../../user/user.entity';
 
@@ -43,8 +42,6 @@ export class CredentialService {
   >;
   @InjectRepository(CredentialEntity)
   private readonly credentialRepository: Repository<CredentialEntity>;
-  @InjectRepository(AppointmentEntity)
-  private readonly appointmentRepository: Repository<AppointmentEntity>;
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
 
@@ -314,17 +311,8 @@ export class CredentialService {
     await this.credentialRepository.save(credentialData);
 
     await this.cleanupIssueCredData(payload.did, payload.programId);
-    await this.updateAppointmentStatus(payload.did);
     await this.updateConnectionStatus(payload.did);
     await this.paAccountsCredentialReady(payload.did, payload.programId);
-  }
-
-  private async updateAppointmentStatus(did): Promise<void> {
-    let appointmentUpdated = await this.appointmentRepository.findOne({
-      did: did,
-    });
-    appointmentUpdated.status = 'validated';
-    await this.appointmentRepository.save(appointmentUpdated);
   }
 
   private async updateConnectionStatus(did): Promise<void> {

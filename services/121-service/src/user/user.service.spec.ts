@@ -1,4 +1,3 @@
-import { AvailabilityEntity } from './../schedule/appointment/availability.entity';
 import { UserService } from './user.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from './user.entity';
@@ -47,10 +46,6 @@ describe('User service', (): void => {
           },
           {
             provide: getRepositoryToken(ProgramEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(AvailabilityEntity),
             useFactory: repositoryMockFactory,
           },
           {

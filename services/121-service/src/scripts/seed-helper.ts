@@ -5,7 +5,6 @@ import { FinancialServiceProviderEntity } from './../programs/fsp/financial-serv
 import { UserEntity } from '../user/user.entity';
 import { CustomCriterium } from '../programs/program/custom-criterium.entity';
 import { FspAttributeEntity } from './../programs/fsp/fsp-attribute.entity';
-import { AvailabilityEntity } from '../schedule/appointment/availability.entity';
 import crypto from 'crypto';
 
 export class SeedHelper {
@@ -103,24 +102,5 @@ export class SeedHelper {
     });
     user_d.assignedProgram.push(program_d);
     await userRepository.save(user_d);
-  }
-
-  public async availabilityForAidworker(
-    availability,
-    aidworkerId: number,
-  ): Promise<void> {
-    const availabilityRepository = this.connection.getRepository(
-      AvailabilityEntity,
-    );
-    const userRepository = this.connection.getRepository(UserEntity);
-    let aidworker = await userRepository.findOne(aidworkerId);
-
-    let newAvailability = new AvailabilityEntity();
-    newAvailability.aidworker = aidworker;
-    newAvailability.startDate = availability.startDate;
-    newAvailability.endDate = availability.endDate;
-    newAvailability.location = availability.location;
-
-    await availabilityRepository.save(newAvailability);
   }
 }

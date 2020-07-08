@@ -15,7 +15,6 @@ import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialRequestEntity } from './credential-request.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
-import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { SchemaService } from '../schema/schema.service';
 import { ProofService } from '../proof/proof.service';
 import { HttpModule } from '@nestjs/common';
@@ -72,14 +71,6 @@ describe('CredentialService', (): void => {
           },
           {
             provide: getRepositoryToken(UserEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(AppointmentEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(AppointmentEntity),
             useFactory: repositoryMockFactory,
           },
           {
