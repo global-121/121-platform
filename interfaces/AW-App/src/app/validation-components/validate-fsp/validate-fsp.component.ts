@@ -198,14 +198,17 @@ export class ValidateFspComponent implements ValidationComponent {
     if (!storedCredentials) {
       storedCredentials = [];
     }
-
+    console.log('storedCredentials hier: ', storedCredentials);
+    console.log('did: ', this.did);
     // If credential was already stored update object else create new object
     const currentCredentialIndex = storedCredentials.findIndex(
       (obj) => obj.did === this.did,
     );
-    if (currentCredentialIndex) {
+    console.log('currentCredentialIndex: ', currentCredentialIndex);
+    if (currentCredentialIndex || currentCredentialIndex === 0) {
       storedCredentials[currentCredentialIndex].fspanswers = fspanswers;
     } else {
+      console.log('else: ');
       const validatedFspData = {
         did: this.did,
         programId: this.programId,
