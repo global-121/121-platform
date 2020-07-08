@@ -19,6 +19,10 @@ export class ExportListComponent implements OnChanges {
   public userRole: UserRole;
   @Input()
   public exportType: ExportType;
+  @Input()
+  public paymentInstallment: number;
+  @Input()
+  public paymentExportAvailable: boolean;
 
   public disabled: boolean;
 
@@ -58,22 +62,27 @@ export class ExportListComponent implements OnChanges {
       ((activePhase.name === ProgramPhase.reviewInclusion &&
         this.exportType === ExportType.included) ||
         (activePhase.name === ProgramPhase.registrationValidation &&
-          this.exportType === ExportType.selectedForValidation)) &&
+          this.exportType === ExportType.selectedForValidation) ||
+        (activePhase.name === ProgramPhase.payment &&
+          this.exportType === ExportType.payment &&
+          this.paymentExportAvailable)) &&
       this.userRole === UserRole.ProgramManager
     );
   }
 
   public getExportList() {
-    this.programsService.exportList(+this.programId, this.exportType).then(
-      (res) => {
-        const blob = new Blob([res.data], { type: 'text/csv' });
-        saveAs(blob, res.fileName);
-      },
-      (err) => {
-        console.log('err: ', err);
-        this.actionResult(this.translate.instant('common.export-error'));
-      },
-    );
+    this.programsService
+      .exportList(+this.programId, this.exportType, +this.paymentInstallment)
+      .then(
+        (res) => {
+          const blob = new Blob([res.data], { type: 'text/csv' });
+          saveAs(blob, res.fileName);
+        },
+        (err) => {
+          console.log('err: ', err);
+          this.actionResult(this.translate.instant('common.export-error'));
+        },
+      );
   }
 
   private async actionResult(resultMessage: string) {

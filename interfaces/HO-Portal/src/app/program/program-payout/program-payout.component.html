@@ -45,13 +45,20 @@
       >
         {{ 'page.program.program-payout.start-payout'|translate }}
       </confirm-prompt>
-      <ion-button
+      <app-export-list 
+        [programId]="programId" 
+        [userRole]="currentUserRole" 
+        [exportType]="enumExportType.payment"
+        [paymentInstallment]="installment.id"
+        [paymentExportAvailable]="installment.isExportAvailable"
+      ></app-export-list>
+      <!-- <ion-button
         [disabled]="currentUserRole !== userRoleEnum.ProgramManager || !installment.isExportAvailable"
         (click)="exportList(installment)"
       >
         <ion-icon name="download" slot="start"></ion-icon>
         {{ 'page.program.program-payout.export-list'|translate }}
-      </ion-button>
+      </ion-button> -->
 
       <ion-note
         *ngIf="totalIncluded === 0 && installment.firstOpen"

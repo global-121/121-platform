@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ExportType } from 'src/app/models/export-type.model';
 
 @Component({
   selector: 'app-program-payout',
@@ -19,6 +20,8 @@ export class ProgramPayoutComponent implements OnInit {
 
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  public enumExportType = ExportType;
 
   public isEnabled = true;
   public isInProgress = false;
