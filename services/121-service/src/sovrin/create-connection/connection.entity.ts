@@ -64,7 +64,7 @@ export class ConnectionEntity {
     default: () => 'array[]::integer[]',
     nullable: true,
   })
-  public programsExcluded: number[];
+  public programsRejected: number[];
 
   @Column('json', {
     default: {},
@@ -108,6 +108,13 @@ export class ConnectionEntity {
     nullable: true,
   })
   public inclusionDate: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
+  public rejectionDate: Date;
 
   @Column({
     type: 'timestamp',

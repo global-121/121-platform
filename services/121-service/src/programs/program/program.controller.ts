@@ -212,12 +212,12 @@ export class ProgramController {
     await this.programService.include(params.programId, data);
   }
 
-  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
-  @ApiOperation({ title: 'Exclude set of PAs' })
+  @Roles(UserRole.ProgramManager)
+  @ApiOperation({ title: 'Reject set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
-  @Post('exclude/:programId')
-  public async exclude(@Param() params, @Body() data: DidsDto): Promise<void> {
-    await this.programService.exclude(params.programId, data);
+  @Post('reject/:programId')
+  public async reject(@Param() params, @Body() data: DidsDto): Promise<void> {
+    await this.programService.reject(params.programId, data);
   }
 
   @Roles(UserRole.ProjectOfficer)

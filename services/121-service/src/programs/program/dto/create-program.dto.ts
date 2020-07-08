@@ -115,11 +115,11 @@ export class CreateProgramDto {
       en: {
         included:
           'You have been included in this program please wait for further instructions',
-        excluded: 'Unfortunately you have not been included for this program',
+        rejected: 'Unfortunately you have not been included for this program',
       },
       nl: {
         included: 'Je zit wel in het programma',
-        excluded: 'Je zit niet in het programma',
+        rejected: 'Je zit niet in het programma',
       },
     },
   })
