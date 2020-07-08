@@ -75,6 +75,12 @@ export class ExportListComponent implements OnChanges {
       .exportList(+this.programId, this.exportType, +this.paymentInstallment)
       .then(
         (res) => {
+          if (!res.data) {
+            this.actionResult(
+              this.translate.instant('page.program.export-list.no-data'),
+            );
+            return;
+          }
           const blob = new Blob([res.data], { type: 'text/csv' });
           saveAs(blob, res.fileName);
         },
