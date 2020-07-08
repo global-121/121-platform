@@ -32,10 +32,10 @@ export class ConnectionEntity {
   @Column({ nullable: true })
   public qrIdentifier: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'bigint' })
   public temporaryInclusionScore: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'bigint' })
   public inclusionScore: number;
 
   @Column('numeric', {
