@@ -5,20 +5,25 @@ import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramPhase } from 'src/app/models/program.model';
 import { ProgramPhaseService } from 'src/app/services/program-phase.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ExportType } from 'src/app/models/export-type.model';
 
 @Component({
-  selector: 'app-export-inclusion',
-  templateUrl: './export-inclusion.component.html',
-  styleUrls: ['./export-inclusion.component.scss'],
+  selector: 'app-export-list',
+  templateUrl: './export-list.component.html',
+  styleUrls: ['./export-list.component.scss'],
 })
-export class ExportInclusionComponent implements OnChanges {
+export class ExportListComponent implements OnChanges {
   @Input()
   public programId: number;
-
   @Input()
   public userRole: UserRole;
+  @Input()
+  public exportType: ExportType;
 
   public disabled: boolean;
+
+  public btnText: string;
+  public subHeader: string;
 
   constructor(
     private programPhaseService: ProgramPhaseService,
@@ -26,6 +31,15 @@ export class ExportInclusionComponent implements OnChanges {
     private translate: TranslateService,
     private alertController: AlertController,
   ) {}
+
+  ngOnInit() {
+    this.btnText = this.translate.instant(
+      'page.program.export-list.' + this.exportType + '.btn-text',
+    );
+    this.subHeader = this.translate.instant(
+      'page.program.export-list.' + this.exportType + '.confirm-message',
+    );
+  }
 
   async ngOnChanges(changes: SimpleChanges) {
     if (
@@ -46,8 +60,8 @@ export class ExportInclusionComponent implements OnChanges {
     );
   }
 
-  public getInclusionList() {
-    this.programsService.exportInclusionList(this.programId).then(
+  public getExportList() {
+    this.programsService.exportList(+this.programId, this.exportType).then(
       (res) => {
         const blob = new Blob([res.data], { type: 'text/csv' });
         saveAs(blob, res.fileName);

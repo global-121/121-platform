@@ -7,6 +7,7 @@ import { Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
 import { ApiService } from './api.service';
+import { ExportType } from '../models/export-type.model';
 
 @Injectable({
   providedIn: 'root',
@@ -119,12 +120,17 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  exportInclusionList(programId: number): Promise<any> {
+  exportList(
+    programId: number,
+    type: ExportType,
+    installment?: number,
+  ): Promise<any> {
     return this.apiService
-      .get(
-        environment.url_121_service_api,
-        `/programs/export-inclusion/${programId}`,
-      )
+      .post(environment.url_121_service_api, `/programs/export-list`, {
+        programId,
+        type,
+        installment,
+      })
       .toPromise();
   }
 

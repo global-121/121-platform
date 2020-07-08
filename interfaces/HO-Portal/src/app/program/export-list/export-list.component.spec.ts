@@ -9,11 +9,11 @@ import {
   Phase,
   ProgramPhaseService,
 } from 'src/app/services/program-phase.service';
-import { ExportInclusionComponent } from './export-inclusion.component';
+import { ExportListComponent } from './export-list.component';
 
-describe('ExportInclusionComponent', () => {
-  let component: ExportInclusionComponent;
-  let fixture: ComponentFixture<ExportInclusionComponent>;
+describe('ExportListComponent', () => {
+  let component: ExportListComponent;
+  let fixture: ComponentFixture<ExportListComponent>;
 
   const mockProgramId = 1;
   const mockUserRole = UserRole.ProjectOfficer;
@@ -28,7 +28,7 @@ describe('ExportInclusionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ExportInclusionComponent],
+      declarations: [ExportListComponent],
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [provideMagicalMock(ProgramPhaseService)],
@@ -40,7 +40,7 @@ describe('ExportInclusionComponent', () => {
     mockProgramPhaseService = TestBed.get(ProgramPhaseService);
     mockProgramPhaseService.getActivePhase.and.returnValue(mockProgramPhase);
 
-    fixture = TestBed.createComponent(ExportInclusionComponent);
+    fixture = TestBed.createComponent(ExportListComponent);
     component = fixture.componentInstance;
 
     component.programId = mockProgramId;

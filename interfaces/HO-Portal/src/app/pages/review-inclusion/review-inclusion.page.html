@@ -12,10 +12,11 @@
     [phaseReady]="true"
   ></app-phase-next>
 
-  <app-export-inclusion
+  <app-export-list
     [programId]="programId"
     [userRole]="userRole"
-  ></app-export-inclusion>
+    [exportType]="enumExportType.included"
+  ></app-export-list>
 
   <app-program-people-affected 
     [programId]="programId" 

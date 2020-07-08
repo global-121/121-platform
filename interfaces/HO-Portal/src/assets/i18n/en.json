@@ -206,9 +206,11 @@
       "program-modal": {
         "pageTitle": "Program JSON"
       },
-      "export-inclusion": {
-        "export-list": "Export inclusion list",
-        "confirm-message": "This will download a CSV-file with all included People Affected, to be used for a Community Review."
+      "export-list": {
+        "included": {
+          "btn-text": "Export inclusion list",
+          "confirm-message": "This will download a CSV-file with all included People Affected, to be used for a Community Review."
+        }
       },
       "manage-aidworkers": {
         "section-title": "Manage aidworkers",

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ProgramPhase } from 'src/app/models/program.model';
+import { ExportType } from 'src/app/models/export-type.model';
 
 @Component({
   selector: 'app-review-inclusion',
@@ -14,6 +15,8 @@ export class ReviewInclusionPage implements OnInit {
   public isReady: boolean;
 
   public userRole = this.authService.getUserRole();
+
+  public enumExportType = ExportType;
 
   constructor(
     private route: ActivatedRoute,
