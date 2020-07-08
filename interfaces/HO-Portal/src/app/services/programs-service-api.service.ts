@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { ExportType } from '../models/export-type.model';
 import { PastInstallments } from '../models/past-installments.model';
 import { Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
@@ -119,12 +120,17 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  exportInclusionList(programId: number): Promise<any> {
+  exportList(
+    programId: number,
+    type: ExportType,
+    installment?: number,
+  ): Promise<any> {
     return this.apiService
-      .get(
-        environment.url_121_service_api,
-        `/programs/export-inclusion/${programId}`,
-      )
+      .post(environment.url_121_service_api, `/programs/export-list`, {
+        programId,
+        type,
+        installment,
+      })
       .toPromise();
   }
 

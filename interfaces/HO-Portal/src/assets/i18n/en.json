@@ -132,8 +132,7 @@
         "total-included": "Number of PA included",
         "total-amount": "Total amount to payout:",
         "payout-success": "Payout successful.",
-        "none-included": "No included people yet.",
-        "export-list": "Export list"
+        "none-included": "No included people yet."
       },
       "program-people-affected": {
         "section-title": "Manage People Affected",
@@ -206,9 +205,20 @@
       "program-modal": {
         "pageTitle": "Program JSON"
       },
-      "export-inclusion": {
-        "export-list": "Export inclusion list",
-        "confirm-message": "This will download a CSV-file with all included People Affected, to be used for a Community Review."
+      "export-list": {
+        "no-data": "There are currently no People Affected to download",
+        "included": {
+          "btn-text": "Export inclusion list",
+          "confirm-message": "This will download a CSV-file with all included People Affected, to be used for a Community Review."
+        },
+        "selected-for-validation": {
+          "btn-text": "Export list: selected for validation",
+          "confirm-message": "This will download a CSV-file with all People Affected selected for validation, to be used for Validation visits."
+        },
+        "payment": {
+          "btn-text": "Export list",
+          "confirm-message": "This will download a CSV-file with all People Affected included in this payment, to be shared with institutions requiring this data."
+        }
       },
       "manage-aidworkers": {
         "section-title": "Manage aidworkers",

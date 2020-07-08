@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { saveAs } from 'file-saver';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { ExportType } from 'src/app/models/export-type.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -19,6 +20,8 @@ export class ProgramPayoutComponent implements OnInit {
 
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  public enumExportType = ExportType;
 
   public isEnabled = true;
   public isInProgress = false;

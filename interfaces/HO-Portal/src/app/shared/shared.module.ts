@@ -7,6 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { HeaderComponent } from '../components/header/header.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
+import { ExportListComponent } from '../program/export-list/export-list.component';
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
@@ -24,6 +25,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     PhaseNavigationComponent,
     ProgramPeopleComponent,
     ProgramPeopleAffectedComponent,
+    ExportListComponent,
   ],
   imports: [
     CommonModule,
@@ -42,6 +44,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     PhaseNavigationComponent,
     ProgramPeopleComponent,
     ProgramPeopleAffectedComponent,
+    ExportListComponent,
     RouterModule,
     TranslateModule,
     NgxDatatableModule,

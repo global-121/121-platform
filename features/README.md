@@ -16,10 +16,19 @@ Features
 Features of the 121-platform are described in this folder in a standardizes way using the [Gherkin-language](https://cucumber.io/docs/gherkin/).
 
 ### For Humanitarian Organization (HO-Portal)
+- [Navigate home and main menu](HO-Portal/Navigate_home_and_main_menu.feature)
+- [Navigate program phases](HO-Portal/Navigate_program_phases.feature)
 - [View metrics overview](HO-Portal/View_metrics_overview.feature)
+- [Manage aidworkers](HO-Portal/Manage_aidworkers.feature)
+- [Manage people affected](HO-Portal/Manage_people_affected.feature)
+- [Manage people in/excluded](HO-Portal/Select_people_for_validation.feature)
+- [Export selected for validation list](HO-Portal/Export_selected_for_validation_list.feature)
+- [Include people affected (Project Officer)](HO-Portal/Include_people_affected_PO.feature)
+- [Include people affected (Program Manager)](HO-Portal/Include_people_affected_PM.feature)
+- [Update inclusion decision (old: for excluding)](HO-Portal/Update_inclusion_decision.feature)
+- [Export inclusion list](HO-Portal/Export_Inclusion_List.feature)
 - [Manage payment installments](HO-Portal/Manage_payment_installments.feature)
-- [Manage people enrolled](HO-Portal/Manage_people_enrolled.feature)
-- [Manage people in/excluded](HO-Portal/Manage_people_in_or_excluded.feature)
+- [Export payment details](HO-Portal/Export_Payment_Details.feature)
 
 
 ### For Person/People Affected (PA-App)

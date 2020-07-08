@@ -27,6 +27,12 @@ Feature: Export payment details
     And the known "phonenumber"
     And all "connection.custromData"
 
+  Scenario: No "included" connections
+    Given a logged-in "program-manager" user
+    Given the installment has taken place
+    When the user clicks the "export list" button of a "closed" installment
+    Then an alert is shown that "no data can be downloaded"
+
   Scenario: Viewing the export options as project-officer
     Given a logged-in "project-officer" user
     When the user views the "program-payout" component
