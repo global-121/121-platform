@@ -31,23 +31,21 @@ Copy the two example `Dockerfile` files ...
 ... Also note the `NODE_ENV`-variable. Leave this as 'development' for local environment.
 
 ---
-
-## Docker-compose
-
+## Run in Production
 Run (from /services subfolder):
 
     docker-compose up -d --build
 
-## How to use
+## Run in Development
 
-The 4 `tykn-ssi-service` containers are started automatically by docker-compose. The others are not. The docker-compose sets up both services interactively, for now (development purposes) an `npm start` command is not included in the respective `Dockerfiles`. Instead you have to start both containers:
+Run (from /services subfolder):
 
-    docker start -i 121-service
-    docker start -i PA-accounts-service
+    docker-compose -f  docker-compose.yml -f  docker-compose.development.yml up -d --build
 
-and from the command-line, run:
+To follow the logs of the respective services run:
 
-    npm run start:dev
+    docker logs -f 121-service
+    docker logs -f PA-accounts-service
 
 Or other relevant commands (see README's in their subfolders).
 

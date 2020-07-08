@@ -17,7 +17,6 @@ node_modules
 #config files
 ormconfig.json
 src/secrets.ts
-Dockerfile
 
 # code testing coverage
 coverage
