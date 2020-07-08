@@ -11,12 +11,10 @@ import { ScanQrComponent } from './scan-qr/scan-qr.component';
 import { UploadDataComponent } from './upload-data/upload-data.component';
 import { ValidateFspComponent } from './validate-fsp/validate-fsp.component';
 import { ValidateProgramComponent } from './validate-program/validate-program.component';
-import { ViewAppointmentsComponent } from './view-appointments/view-appointments.component';
 
 @NgModule({
   declarations: [
     MainMenuComponent,
-    ViewAppointmentsComponent,
     QrScannerComponent,
     ScanQrComponent,
     ValidateProgramComponent,
@@ -27,7 +25,6 @@ import { ViewAppointmentsComponent } from './view-appointments/view-appointments
   imports: [CommonModule, SharedModule, FormsModule, ZXingScannerModule],
   entryComponents: [
     MainMenuComponent,
-    ViewAppointmentsComponent,
     ScanQrComponent,
     QrScannerComponent,
     ValidateProgramComponent,
@@ -37,7 +34,6 @@ import { ViewAppointmentsComponent } from './view-appointments/view-appointments
   ],
   exports: [
     MainMenuComponent,
-    ViewAppointmentsComponent,
     ScanQrComponent,
     QrScannerComponent,
     ValidateProgramComponent,

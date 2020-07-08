@@ -26,7 +26,6 @@
     "main-menu": {
       "introduction": "The following actions are available. Please select one.",
       "download-data": "Download validation data",
-      "view-appointments": "View appointments",
       "scan-qr": "Scan Person Affected's QR-code",
       "upload-data": "Upload validation data"
     },
@@ -34,14 +33,6 @@
       "downloading": "Validation data is being downloaded. Wait a second.",
       "download-result": "Validation data downloaded for {{nrDownloaded}} Persons Affected.",
       "download-aborted": "No validation data could be downloaded at this time. Please try again later."
-    },
-    "view-appointments": {
-      "introduction": "For the following timeslots appointments have been scheduled. Select a timeslot to see details.",
-      "no-appointments": "No appointments have been scheduled yet. Returning to main menu.",
-      "timeslot": "Timeslot",
-      "submit-button": "See appointments",
-      "appointments": "These are the appointments for the chosen timeslot:",
-      "main-menu": "Finished. Back to main menu."
     },
     "scan-qr": {
       "introduction": "Scan QR-code to retrieve Person Affected's information.",

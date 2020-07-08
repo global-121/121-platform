@@ -17,7 +17,6 @@ import { UploadDataComponent } from '../validation-components/upload-data/upload
 import { ValidateFspComponent } from '../validation-components/validate-fsp/validate-fsp.component';
 import { ValidateProgramComponent } from '../validation-components/validate-program/validate-program.component';
 import { ValidationComponents } from '../validation-components/validation-components.enum';
-import { ViewAppointmentsComponent } from '../validation-components/view-appointments/view-appointments.component';
 
 @Component({
   selector: 'app-validation',
@@ -41,7 +40,6 @@ export class ValidationPage implements OnInit {
     [ValidationComponents.scanQr]: ScanQrComponent,
     [ValidationComponents.validateProgram]: ValidateProgramComponent,
     [ValidationComponents.validateFsp]: ValidateFspComponent,
-    [ValidationComponents.viewAppointments]: ViewAppointmentsComponent,
     [ValidationComponents.downloadData]: DownloadDataComponent,
     [ValidationComponents.uploadData]: UploadDataComponent,
   };

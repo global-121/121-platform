@@ -34,13 +34,6 @@ export class MainMenuComponent implements ValidationComponent {
         disabled: false,
       },
       {
-        id: 'view-appointments',
-        option: this.translate.instant(
-          'validation.main-menu.view-appointments',
-        ),
-        disabled: false,
-      },
-      {
         id: 'scan-qr',
         option: this.translate.instant('validation.main-menu.scan-qr'),
         disabled: false,
@@ -79,8 +72,6 @@ export class MainMenuComponent implements ValidationComponent {
   getNextSection() {
     if (this.optionChoice === 'download-data') {
       return ValidationComponents.downloadData;
-    } else if (this.optionChoice === 'view-appointments') {
-      return ValidationComponents.viewAppointments;
     } else if (this.optionChoice === 'scan-qr') {
       return ValidationComponents.scanQr;
     } else if (this.optionChoice === 'upload-data') {
