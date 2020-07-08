@@ -5,7 +5,6 @@ import { environment } from '../../environments/environment';
 import { Country } from '../models/country.model';
 import { Fsp } from '../models/fsp.model';
 import { Program } from '../models/program.model';
-import { Timeslot } from '../models/timeslot.model';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -182,28 +181,6 @@ export class ProgramsServiceApiService {
         true,
       )
       .pipe(map((response) => response.status));
-  }
-
-  getTimeslots(programId: number): Promise<Timeslot[]> {
-    return this.apiService
-      .get(
-        environment.url_121_service_api,
-        '/appointment/availability/' + programId,
-      )
-      .toPromise();
-  }
-
-  postAppointment(timeslotId: number, did: string): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/appointment/register/' + timeslotId,
-        {
-          did,
-        },
-        true,
-      )
-      .toPromise();
   }
 
   postConnectionApply(did: string, programId: number): Promise<any> {

@@ -15,7 +15,6 @@ import { DidDto } from '../../programs/program/dto/did.dto';
 import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
 import { CredentialEntity } from '../credential/credential.entity';
-import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { ProgramService } from '../../programs/program/program.service';
 import {
@@ -37,8 +36,6 @@ export class CreateConnectionService {
   >;
   @InjectRepository(CredentialEntity)
   private readonly credentialRepository: Repository<CredentialEntity>;
-  @InjectRepository(AppointmentEntity)
-  private readonly appointmentRepository: Repository<AppointmentEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
 
@@ -89,9 +86,6 @@ export class CreateConnectionService {
       did: didObject.did,
     });
     await this.credentialRequestRepository.delete({
-      did: didObject.did,
-    });
-    await this.appointmentRepository.delete({
       did: didObject.did,
     });
     await this.credentialRepository.delete({

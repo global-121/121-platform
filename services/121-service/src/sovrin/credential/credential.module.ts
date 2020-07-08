@@ -10,7 +10,6 @@ import { ProgramEntity } from '../../programs/program/program.entity';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialRequestEntity } from './credential-request.entity';
 import { ProgramModule } from '../../programs/program/program.module';
-import { AppointmentEntity } from '../../schedule/appointment/appointment.entity';
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import { AppointmentEntity } from '../../schedule/appointment/appointment.entity
       CredentialAttributesEntity,
       CredentialRequestEntity,
       CredentialEntity,
-      AppointmentEntity,
     ]),
     forwardRef(() => ProgramModule),
     UserModule,

@@ -92,32 +92,7 @@ export class SeedMultiProgram implements InterfaceScript {
     await this.seedHelper.assignAidworker(2, 1);
     await this.seedHelper.assignAidworker(2, 2);
     await this.seedHelper.assignAidworker(2, 3);
-
-    // ***** CREATE AVAILABILITY FOR AN AIDWORKER *****
-    await this.seedHelper.availabilityForAidworker(
-      {
-        startDate: '2020-10-10T12:00:00Z',
-        endDate: '2020-10-10T13:00:00Z',
-        location: 'Address of location 1',
-      },
-      2,
-    );
-    await this.seedHelper.availabilityForAidworker(
-      {
-        startDate: '2020-10-11T18:00:00Z',
-        endDate: '2020-10-12T12:00:00Z',
-        location: 'Address of location 2',
-      },
-      2,
-    );
-    await this.seedHelper.availabilityForAidworker(
-      {
-        startDate: '2020-10-20T00:00:00Z',
-        endDate: '2020-10-20T23:59:59Z',
-        location: 'Address of location 3',
-      },
-      2,
-    );
+    await this.seedHelper.assignAidworker(2, 4);
   }
 }
 

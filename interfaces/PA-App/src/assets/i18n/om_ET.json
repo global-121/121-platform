@@ -61,28 +61,10 @@
       "supply-password": "Paaswoordii keessan:",
       "supply-username": "Maqaa-fayyadmaa keessan:"
     },
-    "meeting-reminder": {
-      "at": "Irratti",
+    "registration-summary": {
       "documents": "Dokumentoota kanneen fiduu keessan mirkaneeffadhaa:",
-      "from": "Irraa",
-      "meeting-count-down": "Beellamni walga'ii keessan guuyyoota {{daysToMeeting}} keessatti ta'a.",
-      "meeting-reminder": "Galatoomaa. Waa'ee walga'ii keessanii ilaalchisee wantoota isin beekuu qabdan kunooti:",
-      "meeting-today": "Beellamni walga'ii keessan ar'a ta'a.",
-      "meeting-tomorrow": "Beellamni walga'ii keessan bor ta'a.",
       "more-info-documents": "Waa'ee dokumantiiwwanii",
-      "qr-code": "Maaloo walga'ii keessan irratti  koodii -QR kana agarsiisaa.",
-      "till": "Hanga"
-    },
-    "select-appointment": {
-      "at": "Irratti",
-      "change": "Filmaata koo jijjiiri",
-      "conclusion": "Galatoomaa. Adda-baastuu Dijitaalaa keessan kakaasuufi appilikeeshinii pirogiraamiitiif beellamni qabattan mirkanaa'eera.",
-      "confirm": "Filmaata koo mirkaneessi",
-      "from": "Irraa",
-      "introduction": "Sadarkaan itti-aanu: Adda-baastuu Dijitaalaa kakaafachuufi appilikeeshinii pirogiraamiitiif filmaata keessan kennadhaa.",
-      "more-info-activation": "Waa'ee kakaasuu",
-      "thanks-repeat": "Filmaata itti-aanee jiru kana filattaniittu:",
-      "till": "Hanga"
+      "qr-code": "Maaloo walga'ii keessan irratti  koodii -QR kana agarsiisaa."
     },
     "select-country": {
       "conclusion": "Galatoomaa, {{country}} filattaniittu.",

@@ -6,11 +6,11 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { MeetingReminderComponent } from './meeting-reminder.component';
+import { RegistrationSummaryComponent } from './registration-summary.component';
 
-describe('MeetingReminderComponent', () => {
-  let component: MeetingReminderComponent;
-  let fixture: ComponentFixture<MeetingReminderComponent>;
+describe('RegistrationSummaryComponent', () => {
+  let component: RegistrationSummaryComponent;
+  let fixture: ComponentFixture<RegistrationSummaryComponent>;
 
   beforeEach(async(() => {
     const conversationService = jasmine.createSpyObj('ConversationService', {
@@ -20,7 +20,7 @@ describe('MeetingReminderComponent', () => {
     });
 
     TestBed.configureTestingModule({
-      declarations: [MeetingReminderComponent],
+      declarations: [RegistrationSummaryComponent],
       imports: [
         TranslateModule.forRoot(),
         HttpClientTestingModule,
@@ -41,7 +41,7 @@ describe('MeetingReminderComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MeetingReminderComponent);
+    fixture = TestBed.createComponent(RegistrationSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

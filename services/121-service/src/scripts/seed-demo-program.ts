@@ -73,34 +73,6 @@ export class SeedDemoProgram implements InterfaceScript {
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
     await this.seedHelper.assignAidworker(2, 1);
-    await this.seedHelper.assignAidworker(2, 2);
-    await this.seedHelper.assignAidworker(2, 3);
-
-    // ***** CREATE AVAILABILITY FOR AN AIDWORKER *****
-    await this.seedHelper.availabilityForAidworker(
-      {
-        startDate: '2020-10-10T12:00:00Z',
-        endDate: '2020-10-10T13:00:00Z',
-        location: 'Dorne',
-      },
-      2,
-    );
-    await this.seedHelper.availabilityForAidworker(
-      {
-        startDate: '2020-10-11T18:00:00Z',
-        endDate: '2020-10-12T12:00:00Z',
-        location: 'Casterly Rock',
-      },
-      2,
-    );
-    await this.seedHelper.availabilityForAidworker(
-      {
-        startDate: '2020-10-20T00:00:00Z',
-        endDate: '2020-10-20T23:59:59Z',
-        location: 'Highgarden',
-      },
-      2,
-    );
   }
 }
 

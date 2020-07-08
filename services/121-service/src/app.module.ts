@@ -1,4 +1,3 @@
-import { AppointmentModule } from './schedule/appointment/appointment.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
@@ -26,7 +25,6 @@ import { ScriptsModule } from './scripts/scripts.module';
     UserModule,
     CountryModule,
     HealthModule,
-    AppointmentModule,
     CreateConnectionModule,
     CredentialModule,
     ProofModule,

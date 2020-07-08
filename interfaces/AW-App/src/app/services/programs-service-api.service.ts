@@ -45,12 +45,6 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getAppointments(): Promise<any> {
-    return this.apiService
-      .get(environment.url_121_service_api, '/appointment/appointments')
-      .toPromise();
-  }
-
   public getDidByQrIdentifier(qrIdentifier: string): Promise<string> {
     return this.apiService
       .post(
