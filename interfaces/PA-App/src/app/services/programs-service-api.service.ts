@@ -5,7 +5,6 @@ import { environment } from '../../environments/environment';
 import { Country } from '../models/country.model';
 import { Fsp } from '../models/fsp.model';
 import { Program } from '../models/program.model';
-import { Timeslot } from '../models/timeslot.model';
 import { ApiService } from './api.service';
 
 @Injectable({
