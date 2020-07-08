@@ -16,7 +16,7 @@
   >
     {{ 'validation.upload-data.upload-result'|translate }}
   </dialogue-turn>
-  <dialogue-turn *ngIf="!uploadDataStored" [isSpoken]="!noUploadDataStored">
+  <dialogue-turn *ngIf="!uploadDataStored" [isSpoken]="!uploadDataStored">
     {{ 'validation.upload-data.no-upload-data-stored'|translate }}
   </dialogue-turn>
   <dialogue-turn *ngIf="uploadAborted" [isSpoken]="uploadAborted">
