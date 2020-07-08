@@ -36,7 +36,7 @@ import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
 import { ChangeStateDto } from './dto/change-state.dto';
-import { PaymentDetailsRequest } from './dto/payment-details-request.dto';
+import { ExportDetails } from './dto/export-details';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -284,34 +284,20 @@ export class ProgramController {
 
   @Roles(UserRole.ProgramManager)
   @ApiOperation({
-    title: 'Get a list payment details per person to share with officials',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of people getting payment',
-  })
-  @Post('payment-details')
-  public async getPaymentDetails(
-    @Body() data: PaymentDetailsRequest,
-  ): Promise<any> {
-    return await this.programService.getPaymentDetails(
-      data.programId,
-      data.installment,
-    );
-  }
-
-  @Roles(UserRole.ProgramManager)
-  @ApiOperation({
-    title: 'Get a list of included people for community review',
+    title: 'Get an exported list of people',
   })
   @ApiImplicitParam({ name: 'programId', required: true })
   @ApiResponse({
     status: 200,
-    description: 'List of included people',
+    description: 'List of people exported',
   })
-  @Get('export-inclusion/:programId')
-  public async getInclusionList(@Param() params): Promise<any> {
-    return await this.programService.getInclusionList(params.programId);
+  @Post('export-list/:programId')
+  public async getExportList(@Body() data: ExportDetails): Promise<any> {
+    return await this.programService.getExportList(
+      data.programId,
+      data.type,
+      data.installment,
+    );
   }
 
   @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)

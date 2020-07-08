@@ -30,8 +30,8 @@ import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
-import { API } from '../../config';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { ExportType } from './dto/export-details';
 
 @Injectable()
 export class ProgramService {
@@ -929,11 +929,38 @@ export class ProgramService {
     return response;
   }
 
-  public async getInclusionList(programId: number): Promise<any> {
-    const includedConnections = await (await this.getConnections(
+  public getExportList(
+    programId: number,
+    type: ExportType,
+    installment: number | null = null,
+  ): Promise<any> {
+    switch (type) {
+      case ExportType.included: {
+        return this.getInclusionList(programId);
+      }
+      case ExportType.selectedForValidation: {
+        return this.getSelectedForValidationList(programId);
+      }
+      case ExportType.payment: {
+        return this.getPaymentDetails(programId, installment);
+      }
+    }
+  }
+
+  private async getConnectionsWithStatus(
+    programId: number,
+    status: PaStatus,
+  ): Promise<any[]> {
+    return (await this.getConnections(programId, true)).filter(
+      i => i.status === status,
+    );
+  }
+
+  private async getInclusionList(programId: number): Promise<any> {
+    const includedConnections = await this.getConnectionsWithStatus(
       programId,
-      true,
-    )).filter(i => i.status === 'included');
+      PaStatus.included,
+    );
 
     const inclusionDetails = [];
     includedConnections.forEach(rawConnection => {
@@ -953,6 +980,33 @@ export class ProgramService {
     const response = {
       fileName: `inclusion-list-program-${programId}.csv`,
       data: this.jsonToCsv(inclusionDetails),
+    };
+
+    return response;
+  }
+
+  private async getSelectedForValidationList(programId: number): Promise<any> {
+    const selectedConnections = await this.getConnectionsWithStatus(
+      programId,
+      PaStatus.selectedForValidation,
+    );
+
+    const columnDetails = [];
+    selectedConnections.forEach(rawConnection => {
+      let connection = {
+        name: rawConnection.name,
+        dateOfBirth: rawConnection.dob,
+        status: rawConnection.status,
+        createdDate: rawConnection.created,
+        registrationDate: rawConnection.appliedDate,
+        selectedForValidationDate: rawConnection.selectedForValidation,
+      };
+      columnDetails.push(connection);
+    });
+
+    const response = {
+      fileName: `selected-for-validation-list-program-${programId}.csv`,
+      data: this.jsonToCsv(columnDetails),
     };
 
     return response;
