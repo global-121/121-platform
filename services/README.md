@@ -32,20 +32,25 @@ Copy the two example `Dockerfile` files ...
 
 ---
 
-## Docker-compose
-
 Run (from /services subfolder):
 
     docker-compose up -d --build
 
-## How to use
+All backend services should now be up and running if you uncommented the last lines of the 121-service & pa-accounts-service dockerfile.
 
-The 4 `tykn-ssi-service` containers are started automatically by docker-compose. The others are not. The docker-compose sets up both services interactively, for now (development purposes) an `npm start` command is not included in the respective `Dockerfiles`. Instead you have to start both containers:
+## Development
+
+The 4 `tykn-ssi-service` containers are always started automatically by docker-compose. If you want to develop in `121-service` or the `PA-accounts-service` and read the logs live you have to comment/remove the npm start commands in the docker files
+
+    121-service/Dockerfile
+    PA-accounts-service/Dockerfile
+
+and instead you have to start both containers manually:
 
     docker start -i 121-service
     docker start -i PA-accounts-service
 
-and from the command-line, run:
+and from the command-line in both interactive dockers, run:
 
     npm run start:dev
 
