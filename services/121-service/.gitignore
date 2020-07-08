@@ -19,4 +19,3 @@ swagger-spec.json
 # (local) Configuration files + Secrets
 ormconfig.json
 src/secrets.ts
-Dockerfile

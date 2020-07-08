@@ -1,0 +1,7 @@
+version: '3.7'
+
+services:
+  121-service:
+    command: ["npm", "run", "start:dev"]
+  PA-accounts-service:
+    command: ["npm", "run", "start:dev"]
