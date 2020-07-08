@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - 2020-07-07: Removed Android build of AW-App, including all Cordova dependencies
+- 2020-07-08: Removed everything appointment-related from PA-app, AW-app and 121-service. The latter requires dropping the database (e.g. through dropSchema=true in ormconfig.json) before it's (automatically) recreated by restarting 121-service.
 
 ---
 
