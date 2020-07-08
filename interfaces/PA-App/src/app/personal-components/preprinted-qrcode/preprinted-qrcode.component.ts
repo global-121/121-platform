@@ -130,7 +130,7 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.meetingReminder;
+    return PersonalComponents.registrationSummary;
   }
 
   complete() {

@@ -9,11 +9,11 @@ import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
-  selector: 'app-meeting-reminder',
-  templateUrl: './meeting-reminder.component.html',
-  styleUrls: ['./meeting-reminder.component.scss'],
+  selector: 'app-registration-summary',
+  templateUrl: './registration-summary.component.html',
+  styleUrls: ['./registration-summary.component.scss'],
 })
-export class MeetingReminderComponent extends PersonalComponent {
+export class RegistrationSummaryComponent extends PersonalComponent {
   @Input()
   public data: any;
 
@@ -98,28 +98,10 @@ export class MeetingReminderComponent extends PersonalComponent {
     this.qrDataString = JSON.stringify(qrData);
   }
 
-  private getDaysToAppointment(appointmentDate: Date) {
-    const currentDate = new Date();
-    const chosenDate = new Date(appointmentDate);
-    const oneDay = 24 * 60 * 60 * 1000; // hours * minutes * seconds * milliseconds
-
-    currentDate.setHours(0, 0, 0, 0);
-    chosenDate.setHours(0, 0, 0, 0);
-
-    const diff = chosenDate.getTime() - currentDate.getTime();
-
-    return Math.round(Math.abs(diff / oneDay));
-  }
-
   public async generateContent() {
     this.conversationService.startLoading();
 
     this.generateQrCode(this.did, this.program.id);
-
-    this.chosenTimeslot = await this.paData.retrieve(this.paData.type.timeslot);
-    this.daysToMeeting = this.getDaysToAppointment(
-      this.chosenTimeslot.startDate,
-    );
 
     this.conversationService.stopLoading();
   }
@@ -135,7 +117,7 @@ export class MeetingReminderComponent extends PersonalComponent {
 
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.meetingReminder,
+      name: PersonalComponents.registrationSummary,
       data: {
         isDisabled: this.isDisabled,
       },

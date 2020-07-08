@@ -184,28 +184,6 @@ export class ProgramsServiceApiService {
       .pipe(map((response) => response.status));
   }
 
-  getTimeslots(programId: number): Promise<Timeslot[]> {
-    return this.apiService
-      .get(
-        environment.url_121_service_api,
-        '/appointment/availability/' + programId,
-      )
-      .toPromise();
-  }
-
-  postAppointment(timeslotId: number, did: string): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/appointment/register/' + timeslotId,
-        {
-          did,
-        },
-        true,
-      )
-      .toPromise();
-  }
-
   postConnectionApply(did: string, programId: number): Promise<any> {
     return this.apiService
       .post(

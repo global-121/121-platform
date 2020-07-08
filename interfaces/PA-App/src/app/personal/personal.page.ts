@@ -12,11 +12,10 @@ import { environment } from 'src/environments/environment';
 import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
-import { MeetingReminderComponent } from '../personal-components/meeting-reminder/meeting-reminder.component';
+import { RegistrationSummaryComponent } from '../personal-components/registration-summary/registration-summary.component';
 import { PersonalComponent } from '../personal-components/personal-component.class';
 import { PersonalComponents } from '../personal-components/personal-components.enum';
 import { PreprintedQrcodeComponent } from '../personal-components/preprinted-qrcode/preprinted-qrcode.component';
-import { SelectAppointmentComponent } from '../personal-components/select-appointment/select-appointment.component';
 import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectFspComponent } from '../personal-components/select-fsp/select-fsp.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
@@ -53,9 +52,8 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
     [PersonalComponents.handleProof]: HandleProofComponent,
     [PersonalComponents.loginIdentity]: LoginIdentityComponent,
-    [PersonalComponents.meetingReminder]: MeetingReminderComponent,
+    [PersonalComponents.registrationSummary]: RegistrationSummaryComponent,
     [PersonalComponents.preprintedQrcode]: PreprintedQrcodeComponent,
-    [PersonalComponents.selectAppointment]: SelectAppointmentComponent,
     [PersonalComponents.selectCountry]: SelectCountryComponent,
     [PersonalComponents.selectFsp]: SelectFspComponent,
     [PersonalComponents.selectLanguage]: SelectLanguageComponent,

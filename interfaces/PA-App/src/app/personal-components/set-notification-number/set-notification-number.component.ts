@@ -130,7 +130,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.selectAppointment;
+    return PersonalComponents.preprintedQrcode;
   }
 
   complete() {

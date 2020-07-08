@@ -63,28 +63,10 @@
       "supply-password": "Nambala yanu yachinsinsi",
       "supply-username": "Dzina lanu"
     },
-    "meeting-reminder": {
-      "at": "Pa ",
+    "registration-summary": {
       "documents": "Onetsetsani kuti mwabweretsa zinthu izi",
-      "from": "Kochokera",
-      "meeting-count-down": "Mkumano wanu ulipo mumasiku {{daysToMeeting}} akubwerawa",
-      "meeting-reminder": "Zikomo. Izi ndi zonse zomwe mukufunika kudziwa zamkumano wanu",
-      "meeting-today": "Mkumano wanu ulipo lero",
-      "meeting-tomorrow": "Mkumano wanu ulipo mawa",
       "more-info-documents": "Zokhudza zitupa izi",
-      "qr-code": "Chonde onetsani nambala iyi pamkumano wanu",
-      "till": "Mpaka"
-    },
-    "select-appointment": {
-      "at": "Pa ",
-      "change": "Sinthani zosankha zanga",
-      "conclusion": "Zikomo. Pempho lanu loyatsa nambala ndi kupempha pulogalamu lavomerezedwa",
-      "confirm": "Tsimikizani zosankha zanga",
-      "from": "Kochokera",
-      "introduction": "Tsopano: Sankhani gawo lanu ya nambala kuti yiyambe ndikupempha pulogalamu",
-      "more-info-activation": "Kuyambitsa",
-      "thanks-repeat": "Mwasankha izi",
-      "till": "Mpaka"
+      "qr-code": "Chonde onetsani nambala iyi pamkumano wanu"
     },
     "select-country": {
       "conclusion": "Zikomo, mwasankha {{country}}",
