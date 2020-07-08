@@ -990,20 +990,23 @@ export class ProgramService {
       programId,
       PaStatus.selectedForValidation,
     );
-
     const columnDetails = [];
-    selectedConnections.forEach(rawConnection => {
+    for (const rawConnection of selectedConnections) {
+      console.log('rawConnection: ', rawConnection);
       let connection = {
         name: rawConnection.name,
         dateOfBirth: rawConnection.dob,
         status: rawConnection.status,
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
-        selectedForValidationDate: rawConnection.selectedForValidation,
+        selectedForValidationDate: rawConnection.selectedForValidationDate,
+        phoneNumber: (await this.connectionRepository
+          .createQueryBuilder('connection')
+          .select(['connection.phoneNumber'])
+          .getOne()).phoneNumber,
       };
       columnDetails.push(connection);
-    });
-
+    }
     const response = {
       fileName: `selected-for-validation-list-program-${programId}.csv`,
       data: this.jsonToCsv(columnDetails),
