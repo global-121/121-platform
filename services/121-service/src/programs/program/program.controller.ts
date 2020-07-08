@@ -286,12 +286,11 @@ export class ProgramController {
   @ApiOperation({
     title: 'Get an exported list of people',
   })
-  @ApiImplicitParam({ name: 'programId', required: true })
   @ApiResponse({
     status: 200,
     description: 'List of people exported',
   })
-  @Post('export-list/:programId')
+  @Post('export-list')
   public async getExportList(@Body() data: ExportDetails): Promise<any> {
     return await this.programService.getExportList(
       data.programId,
