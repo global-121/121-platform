@@ -5,6 +5,7 @@
   "scripts": {
     "ionic": "ionic",
     "ng": "ng",
+    "prestart": "npm install --no-optional --no-audit --no-fund",
     "start": "ng serve --port 0",
     "set-env-variables": "node ./_set-env-variabes.js",
     "prebuild": "npm run set-env-variables",
