@@ -30,10 +30,6 @@ WORKDIR /home/121/services/121-service/
 COPY package*.json ./
 RUN npm ci
 
-# Possible environments: development | production
-ARG NODE_ENV=development
-ENV NODE_ENV="${NODE_ENV}"
-
 # Regular:
 CMD ["npm", "start"]
 
