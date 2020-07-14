@@ -19,10 +19,6 @@ async function bootstrap(): Promise<void> {
     .build();
   const document = SwaggerModule.createDocument(app, options);
 
-  // Uncomment to output a JSON document of the API
-  // import fs from 'fs';
-  // fs.writeFileSync('./swagger-spec.json', JSON.stringify(document));
-
   SwaggerModule.setup('/docs', app, document);
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(PORT);

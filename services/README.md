@@ -1,6 +1,6 @@
 # Services
 
-This Readme deals with how to run all services simultaneously using docker-compose. For more information on individual services, see the Readme's in the respective subfolders.
+This Readme deals with how to run all services simultaneously using `docker-compose`. For more information on individual services, see their respective subfolders.
 
 ---
 
@@ -22,40 +22,33 @@ Copy a few secret files and get the right passwords from someone who knows:
     cp PA-accounts-service/src/example.secrets.ts PA-accounts-service/src/secrets.ts
     cp PA-accounts-service/example.ormconfig.json PA-accounts-service/ormconfig.json
 
-Copy the two example `Dockerfile` files ...
 
-    cp 121-service/example.Dockerfile 121-service/Dockerfile
-    cp PA-accounts-service/example.Dockerfile PA-accounts-service/Dockerfile 
-
-... and uncomment the appropriate last line (or leave as is, in which case you will need to start the containers and start the applications from within: see below).
-... Also note the `NODE_ENV`-variable. Leave this as 'development' for local environment.
-
----
 ## Run in Production
-Run (from /services subfolder):
+
+Run (from `/services` folder):
 
     docker-compose up -d --build
 
 ## Run in Development
 
-Run (from /services subfolder):
+Run (from `/services` folder):
 
     docker-compose -f  docker-compose.yml -f  docker-compose.development.yml up -d --build
 
 To follow the logs of the respective services run:
 
-    docker logs -f 121-service
-    docker logs -f PA-accounts-service
+    docker-compose logs --follow  121-service  PA-accounts-service
 
 Or other relevant commands (see README's in their subfolders).
 
 
-## How to use Swagger (with authorization features)
+## APIs
 
-Access 121-service Swagger API via `http://localhost:3000/docs`
-Access PA-accounts-service Swagger API via `http://localhost:3001/docs`
+We use the NestJS Swagger module for API documentation. [NestJS Swagger](https://github.com/nestjs/swagger).
 
+- Access the `121-service` Swagger-UI via: <http://localhost:3000/docs/>
+- Access the `PA-accounts-service` Swagger-UI via: <http://localhost:3001/docs/>
 
-## Swagger API docs
+### Authentication
 
-We use the NestJS swagger module for API documentation. [NestJS Swagger](https://github.com/nestjs/swagger) - [swagger.io](https://swagger.io/)
+All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authentication. The token should be passed with each request using the `Authorization` header with `Token` scheme. The JWT authentication middleware handles the validation and authentication of the token.
