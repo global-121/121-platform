@@ -1,5 +1,5 @@
 @ho-portal
-Feature: Include people affected by Program-manager (extension of Manage_people_affected.feature)
+Feature: Reject people affected (extension of Manage_people_affected.feature)
 
   Background:
     Given a logged-in "program-manager" user
@@ -12,15 +12,16 @@ Feature: Include people affected by Program-manager (extension of Manage_people_
     And for each person a "Temporary Inclusion Score" is shown (if already available)
     And for each person a "Validated Inclusion Score" is shown (if already available)
     And for each person an "Included" date+time is shown (if already available)
+    And for each person a "Rejected" date+time is shown (if already available)
 
-  Scenario: Use bulk-action "include for program"
+  Scenario: Use bulk-action "reject from program"
     Given the generic "select bulk action" scenario
-    When user selects the "include for program" action
-    Then the eligible rows are those with status "registered", "selected for validation" and "validated" and "rejected"
+    When user selects the "reject from program" action
+    Then the eligible rows are those with status "included"
 
-  Scenario: Confirm "include for program" action
+  Scenario: Confirm "reject from program" action
     Given the generic "confirm apply action" scenario
     When the "bulk action" is "select for validation"
-    Then the "changed data" is that the "included" timestamp is filled for the selected rows
-    And the "rejected" column remains visible, if it was available
+    Then the "changed data" is that the "rejected" timestamp is filled for the selected rows
+    And the "included" column remains filled
     And the "status" is updated

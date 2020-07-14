@@ -11,7 +11,7 @@ Feature: Export selected for validation list
     When the user clicks the "export list: selected for validation" and confirms the confirm prompt
     Then a csv is downloaded 
     And it shows a list of the connections that are "selected for validation"
-    And it shows the "name" and "dob" to be able to identify people
+    And it shows the "name" and "dob" and "phonenumber" to be able to identify people
     And it shows the dates at which the person reached each status, to be able to assess the trajectory towards "selected for validation"
     And the "export list" button remains enabled, so the action can be repeated infinitely
     And if no "selected for validation" connections then an alert is shown that "no data can be downloaded"
