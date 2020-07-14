@@ -88,6 +88,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       roles: [UserRole.ProgramManager],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
     },
+    {
+      id: BulkActionId.reject,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.reject',
+      ),
+      roles: [UserRole.ProgramManager],
+      phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+    },
   ];
 
   public submitWarning: any;

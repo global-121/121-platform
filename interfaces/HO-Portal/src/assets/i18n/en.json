@@ -166,7 +166,8 @@
         },
         "actions": {
           "select-for-validation": "Select for validation",
-          "include": "Include in program"
+          "include": "Include in program",
+          "reject": "Reject from program"
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",

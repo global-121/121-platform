@@ -28,8 +28,13 @@ export class BulkActionsService {
           PaStatus.registered,
           PaStatus.selectedForValidation,
           PaStatus.validated,
-          PaStatus.excluded, // Update this to 'rejected' during 'reject PBI'
+          PaStatus.rejected,
         ].includes(PaStatus[personData.status]);
+        break;
+      case BulkActionId.reject:
+        personData.checkboxVisible = [PaStatus.included].includes(
+          PaStatus[personData.status],
+        );
         break;
     }
     return personData;
@@ -50,6 +55,8 @@ export class BulkActionsService {
         return await this.programsService.include(programId, selectedPeople);
       case BulkActionId.includeProgramManager:
         return await this.programsService.include(programId, selectedPeople);
+      case BulkActionId.reject:
+        return await this.programsService.reject(programId, selectedPeople);
     }
   }
 }

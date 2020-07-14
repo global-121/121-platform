@@ -6,6 +6,7 @@ export enum BulkActionId {
   selectForValidation = 'select-for-validation',
   includeProjectOfficer = 'include-project-officer',
   includeProgramManager = 'include-program-manager',
+  reject = 'reject',
 }
 
 export class BulkAction {
