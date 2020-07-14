@@ -395,10 +395,10 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     let inclusionStatus: InclusionStatus;
-    if (
-      connection.programsIncluded.indexOf(parseInt(String(programId), 10)) > -1
-    ) {
+    if (connection.programsIncluded.includes(+programId)) {
       inclusionStatus = { status: 'included' };
+    } else if (connection.programsRejected.includes(+programId)) {
+      inclusionStatus = { status: 'rejected' };
     } else {
       inclusionStatus = { status: 'unavailable' };
     }
