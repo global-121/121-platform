@@ -173,37 +173,6 @@
         "submit-warning": "You are about to:",
         "submit-warning-people-affected": "People Affected"
       },
-      "program-people": {
-        "section-title": "Manage People Affected (old: for Rejecting)",
-        "targetNumber": "The target number of People Affected to include is: ",
-        "noConnections": "There are no enrolled People Affected yet.",
-        "noConnectionsPrivacy": "There are no included or excluded People Affected yet.",
-        "column": {
-          "person": "Person",
-          "process-started": "Process started",
-          "digital-id-created": "Digital ID Registered",
-          "digital-id-validated": "Digital ID Verified",
-          "vulnerability-assessment-created": "Vulnerability Assessment Registered",
-          "vulnerability-assessment-validated": "Vulnerability Assessment Verified",
-          "score": "Inclusion score",
-          "include": "Include",
-          "included": "Included",
-          "inclusion-communication": "Inclusion communication",
-          "payment": "Payment",
-          "name": "Name",
-          "dob": "Date of birth"
-        },
-        "included": "Included",
-        "excluded": "Excluded",
-        "submit-warning": "Inclusion will become final for:",
-        "submit-warning-pa-included": "PA's included:",
-        "submit-warning-pa-excluded": "PA's excluded:",
-        "submit-warningPrivacy": "Inclusion will be updated for:",
-        "submit-warning-pa-to-included": "PA's excluded > included:",
-        "submit-warning-pa-to-excluded": "PA's included > excluded:",
-        "submitPrivacy": "Update inclusion decision",
-        "submit": "Confirm inclusion decision"
-      },
       "program-modal": {
         "pageTitle": "Program JSON"
       },
