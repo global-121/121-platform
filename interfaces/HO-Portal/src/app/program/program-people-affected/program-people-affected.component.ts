@@ -226,6 +226,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ],
         width: columnDateWidth,
       },
+      {
+        prop: 'rejected',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.rejected',
+        ),
+        ...columnDefaults,
+        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+        width: columnDateWidth,
+      },
     ];
     this.paymentColumnTemplate = {
       prop: 'payment',
@@ -375,6 +384,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       finalScore: person.score,
       included: person.inclusionDate
         ? formatDate(person.inclusionDate, this.dateFormat, this.locale)
+        : null,
+      rejected: person.rejectionDate
+        ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
         : null,
       name: person.name,
       dob: person.dob,
