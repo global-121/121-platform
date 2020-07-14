@@ -113,9 +113,9 @@ export class CreateProgramDto {
   @ApiModelProperty({
     example: {
       en: {
-        included:
-          'You have been included in this program please wait for further instructions',
-        rejected: 'Unfortunately you have not been included for this program',
+        included: 'You have been included in this program.',
+        rejected:
+          'Unfortunately you have been rejected from the program, even though you were included initially.',
       },
       nl: {
         included: 'Je zit wel in het programma',

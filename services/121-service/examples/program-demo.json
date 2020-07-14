@@ -49,8 +49,8 @@
   },
   "notifications": {
     "en": {
-      "included": "You have been included in this program please wait for further instructions",
-      "excluded": "Unfortunately you have not been included for this program"
+      "included": "You have been included in this program.",
+      "rejected": "Unfortunately you have been rejected from this program, even though you were included initially."
     }
   },
   "customCriteria": [
