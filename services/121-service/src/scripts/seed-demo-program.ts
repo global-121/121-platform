@@ -28,13 +28,6 @@ export class SeedDemoProgram implements InterfaceScript {
     await seedInit.run();
 
     await this.seedHelper.addUser({
-      role: UserRole.Aidworker,
-      email: USERCONFIG.emailAidWorker,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordAidWorker,
-    });
-
-    await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
       email: USERCONFIG.emailProjectOfficer,
       countryId: USERCONFIG.countryId,
@@ -70,9 +63,6 @@ export class SeedDemoProgram implements InterfaceScript {
     // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
     const examplePrograms = [programDemo];
     await this.seedHelper.addPrograms(examplePrograms, 1);
-
-    // ***** ASSIGN AIDWORKER TO PROGRAM *****
-    await this.seedHelper.assignAidworker(2, 1);
   }
 }
 
