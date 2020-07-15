@@ -17,7 +17,7 @@ export class MainMenuComponent implements ValidationComponent {
   public optionChoice: string;
   public optionSelected: boolean;
 
-  public ionicStorageTypes = IonicStorageTypes;
+  private ionicStorageTypes = IonicStorageTypes;
 
   constructor(
     public translate: TranslateService,
@@ -27,6 +27,7 @@ export class MainMenuComponent implements ValidationComponent {
   ) {}
 
   async ngOnInit() {
+    const pendingUploadCount = await this.getNrUploadWaiting();
     this.menuOptions = [
       {
         id: 'download-data',
@@ -41,8 +42,8 @@ export class MainMenuComponent implements ValidationComponent {
       {
         id: 'upload-data',
         option: this.translate.instant('validation.main-menu.upload-data'),
-        counter: await this.getNrUploadWaiting(),
-        disabled: false,
+        counter: pendingUploadCount,
+        disabled: !pendingUploadCount,
       },
     ];
   }
@@ -51,11 +52,7 @@ export class MainMenuComponent implements ValidationComponent {
     const credentials = await this.storage.get(
       this.ionicStorageTypes.credentials,
     );
-    if (credentials) {
-      return credentials.length;
-    } else {
-      return 0;
-    }
+    return credentials ? credentials.length : 0;
   }
 
   public changeOption($event) {
