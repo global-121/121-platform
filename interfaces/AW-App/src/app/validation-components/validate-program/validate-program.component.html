@@ -19,8 +19,8 @@
       {{ 'validation.validate-program.dob-feedback'|translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn *ngIf="hasAnswered && programCredentialIssued"
-                 [isSpoken]="hasAnswered"
+  <dialogue-turn *ngIf="hasAnswered || programCredentialIssued"
+                 [isSpoken]="hasAnswered || programCredentialIssued"
   >
     <p>
       {{ 'validation.validate-program.please-confirm'|translate }}
