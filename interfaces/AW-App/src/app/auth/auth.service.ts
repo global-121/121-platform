@@ -68,37 +68,40 @@ export class AuthService {
     return user;
   }
 
-  public async login(email: string, password: string) {
-    return this.programsService.login(email, password).subscribe(
-      (response) => {
-        const user = response.user;
+  public async login(email: string, password: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.programsService.login(email, password).then(
+        (response) => {
+          const user = response.user;
 
-        this.authenticationState.next(user);
+          this.authenticationState.next(user);
 
-        if (!user || !user.token) {
-          return;
-        }
+          if (!user || !user.token) {
+            return;
+          }
 
-        if (user.role !== UserRole.Aidworker) {
-          return;
-        }
+          if (user.role !== UserRole.Aidworker) {
+            return;
+          }
 
-        this.jwtService.saveToken(user.token);
-        this.loggedIn = true;
-        this.userRole = user.role;
+          this.jwtService.saveToken(user.token);
+          this.loggedIn = true;
+          this.userRole = user.role;
 
-        if (this.redirectUrl) {
-          this.router.navigate([this.redirectUrl]);
-          this.redirectUrl = null;
-          return;
-        }
+          if (this.redirectUrl) {
+            this.router.navigate([this.redirectUrl]);
+            this.redirectUrl = null;
+            return;
+          }
 
-        this.router.navigate(['/tabs/validation']);
-      },
-      (error) => {
-        console.log('AuthService error: ', error);
-      },
-    );
+          return resolve();
+        },
+        (error) => {
+          console.log('AuthService error: ', error);
+          return reject(error);
+        },
+      );
+    });
   }
 
   public logout() {
