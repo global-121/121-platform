@@ -59,9 +59,8 @@ export class ScanQrComponent implements ValidationComponent {
         : {};
     const cssClass =
       environment.isDebug || environment.showDebug
-        ? ''
+        ? 'debugModal'
         : '';
-    console.log('cssClass: ', cssClass);
     const qrScannerModal = await this.modalController.create({
       component: QrScannerComponent,
       componentProps,
