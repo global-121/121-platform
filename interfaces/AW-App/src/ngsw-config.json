@@ -1,5 +1,19 @@
 {
   "index": "/index.html",
+  "dataGroups": [
+    {
+      "name": "api",
+      "urls": [
+        "**/api/**"
+      ],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "maxSize": 1,
+        "maxAge": "1s",
+        "timeout": "1s"
+      }
+    }
+  ],
   "assetGroups": [
     {
       "name": "app",
