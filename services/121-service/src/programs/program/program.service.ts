@@ -735,6 +735,8 @@ export class ProgramService {
       if (privacy) {
         connectionResponse['name'] = connection.customData['name'];
         connectionResponse['dob'] = connection.customData['dob'];
+        connectionResponse['phoneNumber'] =
+          connection.phoneNumber || connection.customData['phoneNumber'];
       }
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
       connectionsResponse.push(connectionResponse);
@@ -950,7 +952,6 @@ export class ProgramService {
     );
     const columnDetails = [];
     for (const rawConnection of selectedConnections) {
-      console.log('rawConnection: ', rawConnection);
       let connection = {
         name: rawConnection.name,
         dateOfBirth: rawConnection.dob,
@@ -958,10 +959,7 @@ export class ProgramService {
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
         selectedForValidationDate: rawConnection.selectedForValidationDate,
-        phoneNumber: (await this.connectionRepository
-          .createQueryBuilder('connection')
-          .select(['connection.phoneNumber'])
-          .getOne()).phoneNumber,
+        phoneNumber: rawConnection.phoneNumber,
       };
       columnDetails.push(connection);
     }
