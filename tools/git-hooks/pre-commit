@@ -33,6 +33,9 @@ check_if_need_to_be_in_sync() {
   fi
 }
 
+check_if_need_to_be_in_sync ".editorconfig"
+check_if_need_to_be_in_sync ".prettierignore"
+check_if_need_to_be_in_sync ".prettierrc.yml"
 check_if_need_to_be_in_sync "app/shared/dialogue-turn"
 check_if_need_to_be_in_sync "app/services/jwt.service"
 check_if_need_to_be_in_sync "app/services/api.service"
