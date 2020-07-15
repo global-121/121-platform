@@ -348,7 +348,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private createTableData(source: Person[]): PersonRow[] {
-    if (source.length === 0) {
+    if (!source || source.length === 0) {
       return [];
     }
     return source
