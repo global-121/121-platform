@@ -31,7 +31,7 @@ export class ValidateFspComponent implements ValidationComponent {
   public questions: Question[];
   public customAttributeAnswers: AnswerSet = {};
   public isSubmitted: boolean;
-  public isEditing: boolean;
+  public isEditing = true;
   public showResultSuccess: boolean;
   public showResultError: boolean;
 
