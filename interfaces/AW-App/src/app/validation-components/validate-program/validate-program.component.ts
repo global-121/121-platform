@@ -33,7 +33,6 @@ export class ValidateProgramComponent implements ValidationComponent {
   public programId: number;
   private currentProgram: Program;
   public programCredentialIssued = false;
-  public verificationPostponed = false;
 
   public questions: Question[];
   public answerTypes = AnswerType;
@@ -43,7 +42,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   public hasChangedAnswers = true;
   public dobFeedback = false;
 
-  public ionicStorageTypes = IonicStorageTypes;
+  private ionicStorageTypes = IonicStorageTypes;
 
   constructor(
     public translatableString: TranslatableStringService,
@@ -63,7 +62,6 @@ export class ValidateProgramComponent implements ValidationComponent {
     await this.getProgramQuestions();
     await this.initialAnswers(paData);
 
-    this.verificationPostponed = false;
     this.ionContent.scrollToBottom(300);
   }
 
@@ -167,7 +165,6 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   public change() {
-    console.log('change: ');
     this.hasAnswered = false;
     this.hasChangedAnswers = true;
   }
@@ -180,11 +177,6 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.hasAnswered = true;
     this.hasChangedAnswers = false;
     this.dobFeedback = false;
-    console.log('this.programCredentialIssued: ', this.programCredentialIssued);
-  }
-
-  public postponeVerification() {
-    this.verificationPostponed = true;
   }
 
   private createAttributes(answers: Answer[]): ProgramAttribute[] {
@@ -205,7 +197,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     const attributes = this.createAttributes(Object.values(this.answers));
     await this.storeCredentialOffline(attributes);
     this.programCredentialIssued = true;
-    // this.answers = {};
+    this.answers = {};
     this.complete();
   }
 
