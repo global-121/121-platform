@@ -24,7 +24,7 @@
       <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
       <ion-item color="light">
         <ion-label position="stacked">{{ 'account.email-label'|translate }}</ion-label>
-        <ion-input type="email"
+        <ion-input #email type="email"
                    name="email"
                    inputmode="email"
                    autocomplete="username email"
@@ -36,7 +36,7 @@
       </ion-item>
       <ion-item color="light">
         <ion-label position="stacked">{{ 'account.password-label'|translate }}</ion-label>
-        <ion-input type="password"
+        <ion-input #password type="password"
                    name="password"
                    autocomplete="current-password"
                    autocapitalize="off"
@@ -49,6 +49,7 @@
       <ion-button type="submit"
                   expand="block"
                   class="ion-margin-top"
+                  [disabled]="!email.value || !password.value"
       >
         {{ 'account.login-button'|translate }}
       </ion-button>
