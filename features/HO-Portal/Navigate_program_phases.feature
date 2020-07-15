@@ -13,10 +13,8 @@ Feature: Navigate program phases
     And sees the "move-to-next-phase"-button below the header, unless the "current program phase" is the last phase
     And this button is "disabled" for the "program-manager"
     And this button is "disabled" if the "selected phase" is not the "active phase"
-    And this button is "disabled" if "phase" is "inclusion" and there are "enrolled" but not "in/excluded" people in the "people-list"
-    And this button is "disabled" if "phase" is "payment" and not all "installments" are "closed" 
 
-  Scenario: Change to past phase
+  Scenario: View past phase
     Given the user views a "program" page
     When the user clicks one of the past phases in the "phase-navigation-bar"
     Then the background-color of the selected phase changes and reflects the "selected phase"
@@ -31,5 +29,5 @@ Feature: Navigate program phases
     When user clicks the "move-to-next-phase"-button
     Then highlighting in the "phase-navigation-bar" will move to the next phase, both background- and text-color, reflecting a change in both "current program phase" and "selected phase"
     And sees that the text of the of the "move-to-next-phase"-button changes, reflecting the meaning of the next phase-change.
-    And sees - depending on which state - that certain program-components in the page will (dis)appear. 
+    And sees - depending on which state - that certain program-components in the page will (dis)appear.
 
