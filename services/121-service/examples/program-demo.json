@@ -50,7 +50,7 @@
   "notifications": {
     "en": {
       "included": "You have been included in this program.",
-      "rejected": "Unfortunately you have been rejected from this program, even though you were included initially."
+      "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us."
     }
   },
   "customCriteria": [

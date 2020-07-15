@@ -115,7 +115,7 @@ export class CreateProgramDto {
       en: {
         included: 'You have been included in this program.',
         rejected:
-          'Unfortunately you have been rejected from the program, even though you were included initially.',
+          'Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us.',
       },
       nl: {
         included: 'Je zit wel in het programma',
