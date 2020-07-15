@@ -5,5 +5,4 @@ export enum PaStatus {
   validated = 'validated',
   included = 'included',
   rejected = 'rejected',
-  excluded = 'excluded',
 }

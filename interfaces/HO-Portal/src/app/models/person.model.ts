@@ -14,6 +14,7 @@ export class Person {
   selectedForValidationDate?: string;
   validationDate?: string;
   inclusionDate?: string;
+  rejectionDate?: string;
   status: PaStatus;
 }
 
@@ -31,6 +32,7 @@ export class PersonRow {
   vulnerabilityAssessmentValidated?: string | null;
   finalScore?: number;
   included?: string | null;
+  rejected?: string | null;
   name?: string | null;
   dob?: string | null;
 }
@@ -42,5 +44,4 @@ export enum PaStatus {
   validated = 'validated',
   included = 'included',
   rejected = 'rejected',
-  excluded = 'excluded',
 }

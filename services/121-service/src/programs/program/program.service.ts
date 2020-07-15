@@ -347,9 +347,6 @@ export class ProgramService {
       if (inclusionResult) {
         connection.programsIncluded.push(programId);
         this.notifyInclusionStatus(connection, programId, inclusionResult);
-      } else if (!inclusionResult) {
-        connection.programsExcluded.push(programId);
-        this.notifyInclusionStatus(connection, programId, inclusionResult);
       }
       inclusionRequestStatus = { status: 'done' };
     } else if (program.inclusionCalculationType === 'highestScoresX') {
@@ -370,13 +367,13 @@ export class ProgramService {
     this.smsService.notifyBySms(
       connection.phoneNumber,
       connection.preferredLanguage,
-      inclusionResult ? 'included' : 'excluded',
+      inclusionResult ? 'included' : 'rejected',
       programId,
     );
     this.voiceService.notifyByVoice(
       connection.phoneNumber,
       connection.preferredLanguage,
-      inclusionResult ? 'included' : 'excluded',
+      inclusionResult ? 'included' : 'rejected',
       programId,
     );
   }
@@ -398,14 +395,10 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     let inclusionStatus: InclusionStatus;
-    if (
-      connection.programsIncluded.indexOf(parseInt(String(programId), 10)) > -1
-    ) {
+    if (connection.programsIncluded.includes(+programId)) {
       inclusionStatus = { status: 'included' };
-    } else if (
-      connection.programsExcluded.indexOf(parseInt(String(programId), 10)) > -1
-    ) {
-      inclusionStatus = { status: 'excluded' };
+    } else if (connection.programsRejected.includes(+programId)) {
+      inclusionStatus = { status: 'rejected' };
     } else {
       inclusionStatus = { status: 'unavailable' };
     }
@@ -460,19 +453,19 @@ export class ProgramService {
         connection.programsIncluded.push(programId);
         this.notifyInclusionStatus(connection, programId, true);
       }
-      // Remove from exclusion-array, if present
-      const indexEx = connection.programsExcluded.indexOf(
+      // Remove from rejection-array, if present
+      const indexEx = connection.programsRejected.indexOf(
         parseInt(String(programId), 10),
       );
       if (indexEx > -1) {
-        connection.programsExcluded.splice(indexEx, 1);
+        connection.programsRejected.splice(indexEx, 1);
       }
-      connection = await this.updateInclusionDate(connection);
+      connection.inclusionDate = new Date();
       await this.connectionRepository.save(connection);
     }
   }
 
-  public async exclude(programId: number, dids: object): Promise<void> {
+  public async reject(programId: number, dids: object): Promise<void> {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
@@ -487,12 +480,12 @@ export class ProgramService {
         continue;
       }
 
-      // Add to exclusion-array, if not yet present
-      const indexEx = connection.programsExcluded.indexOf(
+      // Add to rejection-array, if not yet present
+      const indexEx = connection.programsRejected.indexOf(
         parseInt(String(programId), 10),
       );
       if (indexEx <= -1) {
-        connection.programsExcluded.push(programId);
+        connection.programsRejected.push(programId);
         this.notifyInclusionStatus(connection, programId, false);
       }
       // Remove from inclusion-array, if present
@@ -502,19 +495,9 @@ export class ProgramService {
       if (indexIn > -1) {
         connection.programsIncluded.splice(indexIn, 1);
       }
-      connection = await this.updateInclusionDate(connection);
+      connection.rejectionDate = new Date();
       await this.connectionRepository.save(connection);
     }
-  }
-
-  private async updateInclusionDate(
-    connection: ConnectionEntity,
-  ): Promise<ConnectionEntity> {
-    if (!connection.inclusionDate) {
-      connection.inclusionDate = new Date();
-      await this.connectionRepository.save(connection);
-    }
-    return connection;
   }
 
   public async calculateInclusionPrefilledAnswers(
@@ -715,8 +698,8 @@ export class ProgramService {
     let paStatus: PaStatus;
     if (connection.programsIncluded.includes(+programId)) {
       paStatus = PaStatus.included;
-    } else if (connection.programsExcluded.includes(+programId)) {
-      paStatus = PaStatus.excluded;
+    } else if (connection.programsRejected.includes(+programId)) {
+      paStatus = PaStatus.rejected;
     } else if (connection.validationDate) {
       paStatus = PaStatus.validated;
     } else if (connection.selectedForValidationDate) {
@@ -743,20 +726,12 @@ export class ProgramService {
       connectionResponse['tempScore'] = connection.temporaryInclusionScore;
       connectionResponse['created'] = connection.created;
       connectionResponse['updated'] = connection.updated;
-      connectionResponse['enrolled'] = connection.programsEnrolled.includes(
-        +programId,
-      );
-      connectionResponse['included'] = connection.programsIncluded.includes(
-        +programId,
-      );
-      connectionResponse['excluded'] = connection.programsExcluded.includes(
-        +programId,
-      );
       connectionResponse['appliedDate'] = connection.appliedDate;
       connectionResponse['selectedForValidationDate'] =
         connection.selectedForValidationDate;
       connectionResponse['validationDate'] = connection.validationDate;
       connectionResponse['inclusionDate'] = connection.inclusionDate;
+      connectionResponse['rejectionDate'] = connection.rejectionDate;
       if (privacy) {
         connectionResponse['name'] = connection.customData['name'];
         connectionResponse['dob'] = connection.customData['dob'];
@@ -776,23 +751,6 @@ export class ProgramService {
       if (
         connection.programsApplied.includes(+programId) || // Get connections applied to your program ..
         connection.programsApplied.length === 0 // .. and connections applied to no program (so excluding connections applied to other program)
-      ) {
-        enrolledConnections.push(connection);
-      }
-    return enrolledConnections;
-  }
-
-  private async getIncludedExcludedConnections(
-    programId,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
-      order: { inclusionScore: 'DESC' },
-    });
-    const enrolledConnections = [];
-    for (let connection of connections)
-      if (
-        connection.programsIncluded.includes(+programId) ||
-        connection.programsExcluded.includes(+programId)
       ) {
         enrolledConnections.push(connection);
       }
@@ -1090,7 +1048,7 @@ export class ProgramService {
     const connections = await this.getConnections(programId, false);
 
     metrics.included = this.filteredLength(connections, PaStatus.included);
-    metrics.excluded = this.filteredLength(connections, PaStatus.excluded);
+    metrics.excluded = this.filteredLength(connections, PaStatus.rejected);
     metrics.verified =
       this.filteredLength(connections, PaStatus.validated) +
       metrics.included +

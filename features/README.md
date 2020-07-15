@@ -25,7 +25,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Export selected for validation list](HO-Portal/Export_selected_for_validation_list.feature)
 - [Include people affected (Project Officer)](HO-Portal/Include_people_affected_PO.feature)
 - [Include people affected (Program Manager)](HO-Portal/Include_people_affected_PM.feature)
-- [Update inclusion decision (old: for excluding)](HO-Portal/Update_inclusion_decision.feature)
+- [Reject people affected](HO-Portal/Reject_people_affected.feature)
 - [Export inclusion list](HO-Portal/Export_Inclusion_List.feature)
 - [Manage payment installments](HO-Portal/Manage_payment_installments.feature)
 - [Export payment details](HO-Portal/Export_Payment_Details.feature)

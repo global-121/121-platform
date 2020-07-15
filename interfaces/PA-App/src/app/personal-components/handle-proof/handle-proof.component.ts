@@ -11,7 +11,7 @@ import { PersonalComponents } from '../personal-components.enum';
 
 enum InclusionStates {
   included = 'included',
-  excluded = 'excluded',
+  rejected = 'rejected',
   unavailable = 'unavailable',
 }
 
@@ -50,10 +50,6 @@ export class HandleProofComponent extends PersonalComponent {
   async ngOnInit() {
     this.currentProgram = await this.paData.getCurrentProgram();
 
-    if (this.data) {
-      this.initHistory();
-      return;
-    }
     await this.initNew();
   }
 
@@ -62,13 +58,6 @@ export class HandleProofComponent extends PersonalComponent {
       this.paData.type.phoneNumber,
     ));
     this.handleProof();
-  }
-
-  initHistory() {
-    this.isDisabled = true;
-    this.inclusionStatus = this.data.inclusionStatus;
-    this.hasNotificationNumberSet = this.data.hasNotificationNumberSet;
-    this.processStatus(this.inclusionStatus);
   }
 
   async handleProof() {
@@ -131,7 +120,7 @@ export class HandleProofComponent extends PersonalComponent {
   private async processStatus(inclusionStatus: string) {
     if (inclusionStatus === InclusionStates.included) {
       this.inclusionStatusPositive = true;
-    } else if (inclusionStatus === InclusionStates.excluded) {
+    } else if (inclusionStatus === InclusionStates.rejected) {
       this.inclusionStatusNegative = true;
     }
   }
@@ -153,7 +142,6 @@ export class HandleProofComponent extends PersonalComponent {
         console.log('Status Received:', this.inclusionStatus);
         this.processStatus(this.inclusionStatus);
         this.conversationService.stopLoading();
-        this.complete();
       });
   }
 

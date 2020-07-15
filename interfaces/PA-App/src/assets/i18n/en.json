@@ -63,9 +63,9 @@
     },
     "handle-proof": {
       "creating": "You have given us sufficient personal information to see if you can be part of the program.",
-      "inclusion-status-negative": "Thank you for your patience. You have not been included in the program.",
-      "inclusion-status-positive": "Thank you for your patience. You have been included in the program.",
-      "notify": "We will notify you if you have been included."
+      "inclusion-status-positive": "You have been included in the program.",
+      "inclusion-status-negative": "Unfortunately you have been rejected from the program, even though you were included initially.",
+      "notify": "We will notify you if you are included."
     },
     "login-identity": {
       "incorrect-credentials": "The combination of username and password you provided is not recognized. Please try again.",

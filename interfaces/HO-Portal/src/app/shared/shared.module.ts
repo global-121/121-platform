@@ -11,7 +11,6 @@ import { ExportListComponent } from '../program/export-list/export-list.componen
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
-import { ProgramPeopleComponent } from '../program/program-people/program-people.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
 
@@ -23,7 +22,6 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     UserStateComponent,
     PhaseNextComponent,
     PhaseNavigationComponent,
-    ProgramPeopleComponent,
     ProgramPeopleAffectedComponent,
     ExportListComponent,
   ],
@@ -42,7 +40,6 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     UserStateComponent,
     PhaseNextComponent,
     PhaseNavigationComponent,
-    ProgramPeopleComponent,
     ProgramPeopleAffectedComponent,
     ExportListComponent,
     RouterModule,
