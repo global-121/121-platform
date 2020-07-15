@@ -22,6 +22,7 @@ Copy a few secret files and get the right passwords from someone who knows:
     cp PA-accounts-service/src/example.secrets.ts PA-accounts-service/src/secrets.ts
     cp PA-accounts-service/example.ormconfig.json PA-accounts-service/ormconfig.json
 
+Environment variables are explained in the comments of the .env.example
 
 ## Run in Production
 
