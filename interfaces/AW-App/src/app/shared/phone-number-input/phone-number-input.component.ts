@@ -69,7 +69,11 @@ export class PhoneNumberInputComponent {
       },
       (error) => {
         // If aidworker is offline do not check phonenumber online
-        if (error.status === 0 || error instanceof TimeoutError) {
+        if (
+          error.status === 0 ||
+          error.status === 504 ||
+          error instanceof TimeoutError
+        ) {
           isValid = true;
         } else {
           console.log('error: ', error.error);
@@ -77,6 +81,7 @@ export class PhoneNumberInputComponent {
         }
       },
     );
+
     return isValid;
   }
 }

@@ -3,9 +3,11 @@
   <dialogue-turn isSpoken="true">
     {{ 'validation.validate-program.introduction'|translate }}
   </dialogue-turn>
+
   <q-and-a-set [questions]="questions"
                [answers]="answers"
                [(isSubmitted)]="hasAnswered"
+               [(isEditing)]="hasChangedAnswers"
                (submit)="submit()"
                submitLabel="validation.validate-program.submit"
   ></q-and-a-set>
@@ -39,7 +41,7 @@
       <ion-button type="submit"
                   (click)="validateAttributes()"
                   expand="block"
-                  *ngIf="!programCredentialIssued"
+                  [disabled]="programCredentialIssued"
       >
         {{ 'validation.validate-program.confirm-button'|translate }}
       </ion-button>
@@ -53,8 +55,7 @@
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self"
-                 *ngIf="programCredentialIssued"
+  <dialogue-turn *ngIf="programCredentialIssued"
                  [isSpoken]="programCredentialIssued"
   >
     {{ 'validation.validate-program.conclusion'|translate }}

@@ -33,18 +33,16 @@ export class ValidateProgramComponent implements ValidationComponent {
   public programId: number;
   private currentProgram: Program;
   public programCredentialIssued = false;
-  public verificationPostponed = false;
 
   public questions: Question[];
   public answerTypes = AnswerType;
   public answers: any = {};
 
-  public allQuestionsAnswered = true;
   public hasAnswered: boolean;
-  public changedAnswers: boolean;
+  public hasChangedAnswers = true;
   public dobFeedback = false;
 
-  public ionicStorageTypes = IonicStorageTypes;
+  private ionicStorageTypes = IonicStorageTypes;
 
   constructor(
     public translatableString: TranslatableStringService,
@@ -64,7 +62,6 @@ export class ValidateProgramComponent implements ValidationComponent {
     await this.getProgramQuestions();
     await this.initialAnswers(paData);
 
-    this.verificationPostponed = false;
     this.ionContent.scrollToBottom(300);
   }
 
@@ -142,12 +139,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     return option ? option.label : '';
   }
 
-  public inputAnswers($event) {
-    const questionCode = $event.target.name;
-    this.answers[questionCode] = new Answer();
-  }
-
-  private buildAnswers(questionCode: string, answerValue: string) {
+  private buildAnswer(questionCode: string, answerValue: string) {
     const question = this.getQuestionByCode(questionCode);
     const answer: Answer = {
       code: questionCode,
@@ -166,35 +158,15 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.answers[questionCode] = answer;
   }
 
-  public changeAnswers($event) {
-    const questionCode = $event.target.name;
-    const answerValue = $event.target.value;
-
-    this.buildAnswers(questionCode, answerValue);
-
-    this.checkAllQuestionsAnswered(this.answers);
-  }
-
   public initialAnswers(answers: PaDataAttribute[]) {
     for (const answerItem of answers) {
-      this.buildAnswers(answerItem.attribute, answerItem.answer);
+      this.buildAnswer(answerItem.attribute, answerItem.answer);
     }
-  }
-
-  private checkAllQuestionsAnswered(answers) {
-    for (const key in answers) {
-      if (answers[key].value === '') {
-        this.allQuestionsAnswered = false;
-        return;
-      }
-    }
-    this.allQuestionsAnswered = true;
   }
 
   public change() {
-    console.log('change: ');
     this.hasAnswered = false;
-    this.changedAnswers = true;
+    this.hasChangedAnswers = true;
   }
 
   public submit() {
@@ -203,13 +175,8 @@ export class ValidateProgramComponent implements ValidationComponent {
       return;
     }
     this.hasAnswered = true;
-    this.changedAnswers = false;
+    this.hasChangedAnswers = false;
     this.dobFeedback = false;
-    console.log('this.programCredentialIssued: ', this.programCredentialIssued);
-  }
-
-  public postponeVerification() {
-    this.verificationPostponed = true;
   }
 
   private createAttributes(answers: Answer[]): ProgramAttribute[] {
@@ -230,7 +197,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     const attributes = this.createAttributes(Object.values(this.answers));
     await this.storeCredentialOffline(attributes);
     this.programCredentialIssued = true;
-    // this.answers = {};
+    this.answers = {};
     this.complete();
   }
 
