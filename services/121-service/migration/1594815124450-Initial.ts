@@ -1,16 +1,18 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class transactionTablenameEdit1580121369430 implements MigrationInterface {
+export class Initial1594815124450 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "updated" SET DEFAULT CURRENT_TIMESTAMP`);
+        await queryRunner.query(`ALTER TABLE "121-service"."user" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."custom_criterium" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."custom_criterium" ALTER COLUMN "updated" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."credential_request" ALTER COLUMN "credentialRequest" SET DEFAULT null`);
+        await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsApplied" SET DEFAULT array[]::integer[]`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsEnrolled" SET DEFAULT array[]::integer[]`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsIncluded" SET DEFAULT array[]::integer[]`);
-        await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsExcluded" SET DEFAULT array[]::integer[]`);
+        await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsRejected" SET DEFAULT array[]::integer[]`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "updated" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."program" ALTER COLUMN "schemaId" SET DEFAULT null`);
@@ -30,12 +32,14 @@ export class transactionTablenameEdit1580121369430 implements MigrationInterface
         await queryRunner.query(`ALTER TABLE "121-service"."program" ALTER COLUMN "schemaId" DROP DEFAULT`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "updated" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "created" SET DEFAULT now()`);
-        await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsExcluded" SET DEFAULT ARRAY[]`);
+        await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsRejected" SET DEFAULT ARRAY[]`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsIncluded" SET DEFAULT ARRAY[]`);
         await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsEnrolled" SET DEFAULT ARRAY[]`);
+        await queryRunner.query(`ALTER TABLE "121-service"."connection" ALTER COLUMN "programsApplied" SET DEFAULT ARRAY[]`);
         await queryRunner.query(`ALTER TABLE "121-service"."credential_request" ALTER COLUMN "credentialRequest" DROP DEFAULT`);
         await queryRunner.query(`ALTER TABLE "121-service"."custom_criterium" ALTER COLUMN "updated" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."custom_criterium" ALTER COLUMN "created" SET DEFAULT now()`);
+        await queryRunner.query(`ALTER TABLE "121-service"."user" ALTER COLUMN "created" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "updated" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "created" SET DEFAULT now()`);
     }
