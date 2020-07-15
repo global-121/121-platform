@@ -11,7 +11,6 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
@@ -67,7 +66,7 @@ export function HttpLoaderFactory(http: HttpClient) {
       },
     }),
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
+      enabled: false,
     }),
   ],
   exports: [TranslateModule],
