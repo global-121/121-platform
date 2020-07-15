@@ -64,7 +64,7 @@
     "handle-proof": {
       "creating": "You have given us sufficient personal information to see if you can be part of the program.",
       "inclusion-status-positive": "You have been included in the program.",
-      "inclusion-status-negative": "Unfortunately you have been rejected from the program, even though you were included initially.",
+      "inclusion-status-negative": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us.",
       "notify": "We will notify you if you are included."
     },
     "login-identity": {
