@@ -6,14 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+---
+
+## [0.5.0] - 2020-07-15
+
 ### Changed
-- 2020-07-14: Moved NODE_ENV variable from respective Dockerfiles of 121-service and PA-accounts-service to services/docker-compose.yml and services/.env
+- 2020-07-14: Moved `NODE_ENV` variable from respective `Dockerfile`s of 121-service and PA-accounts-service to `services/docker-compose.yml` and `services/.env`
 
 ### Removed
 - 2020-07-07: Removed Android build of AW-App, including all Cordova dependencies
-- 2020-07-08: Removed everything appointment-related from PA-app, AW-app and 121-service. The latter requires dropping the database (e.g. through dropSchema=true in ormconfig.json) before it's (automatically) recreated by restarting 121-service.
+- 2020-07-08: Removed everything appointment-related from PA-app, AW-app and 121-service. The latter requires dropping the database (e.g. through `dropSchema: true` in `ormconfig.json`) before it's (automatically) recreated by restarting 121-service.
 
----
 
 ## [0.4.0] - 2020-06-16
 
@@ -68,7 +71,8 @@ Test hotfix-release to test automatic deployment of patch-releases.
 
 ---
 
-[Unreleased]: https://github.com/global-121/121-platform/compare/v0.4.0...master
+[Unreleased]: https://github.com/global-121/121-platform/compare/v0.5.0...master
+[0.5.0]: https://github.com/global-121/121-platform/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/global-121/121-platform/compare/v0.3.1...v0.4.0
 [0.3.1]: https://github.com/global-121/121-platform/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/global-121/121-platform/compare/v0.2.1...v0.3.0
