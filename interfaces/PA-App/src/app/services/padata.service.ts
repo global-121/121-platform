@@ -114,11 +114,7 @@ export class PaDataService {
 
     const paAccountApiOutput = await this.paAccountApi.retrieve(type);
 
-    // Only JSON.parse the output if it could result in something:
-    if (!paAccountApiOutput) {
-      return undefined;
-    }
-    return JSON.parse(paAccountApiOutput);
+    return paAccountApiOutput;
   }
 
   /////////////////////////////////////////////////////////////////////////////

@@ -35,11 +35,11 @@ export class DataStorageService {
       order: { created: 'DESC' },
     });
     if (!data || data.length === 0) {
-      const errors = { Data: ' not found' };
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      throw new HttpException('', HttpStatus.NOT_FOUND);
     }
 
     data[0].data = this.cryptr.decrypt(data[0].data);
-    return JSON.stringify(data[0].data);
+
+    return data[0].data;
   }
 }
