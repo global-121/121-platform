@@ -112,13 +112,7 @@ export class PaDataService {
       return this.ionStorage.get(type);
     }
 
-    const paAccountApiOutput = await this.paAccountApi.retrieve(type);
-
-    // Only JSON.parse the output if it could result in something:
-    if (!paAccountApiOutput) {
-      return undefined;
-    }
-    return JSON.parse(paAccountApiOutput);
+    return await this.paAccountApi.retrieve(type);
   }
 
   /////////////////////////////////////////////////////////////////////////////

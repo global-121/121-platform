@@ -55,7 +55,7 @@ export class PaAccountApiService {
       .toPromise();
   }
 
-  retrieve(type: string): Promise<any> {
+  retrieve(type: string): Promise<undefined | string | number | object> {
     console.log('PaAccountApiService : retrieve()');
 
     return this.apiService
@@ -65,6 +65,15 @@ export class PaAccountApiService {
         false,
       )
       .pipe(
+        map((value) => {
+          let data;
+          try {
+            data = JSON.parse(value);
+          } catch {
+            data = value;
+          }
+          return data;
+        }),
         catchError((error) => {
           if (error.error instanceof ErrorEvent) {
             // Client-side error:
