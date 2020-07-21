@@ -66,7 +66,13 @@ export class PaAccountApiService {
       )
       .pipe(
         map((value) => {
-          return value.data ? JSON.parse(value.data) : value;
+          let data;
+          try {
+            data = JSON.parse(value);
+          } catch {
+            data = value;
+          }
+          return data;
         }),
         catchError((error) => {
           if (error.error instanceof ErrorEvent) {

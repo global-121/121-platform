@@ -112,9 +112,7 @@ export class PaDataService {
       return this.ionStorage.get(type);
     }
 
-    const paAccountApiOutput = await this.paAccountApi.retrieve(type);
-
-    return paAccountApiOutput;
+    return await this.paAccountApi.retrieve(type);
   }
 
   /////////////////////////////////////////////////////////////////////////////
