@@ -13,7 +13,11 @@ export const URL_121_SERVICE = process.env.URL_121_SERVICE_API;
 export const URL_USERIMS = 'http://11.0.0.5:50003/api';
 
 let _walletPasswordEncryptionKey: string;
-if (['production', 'staging', 'test'].indexOf(process.env.NODE_ENV) > -1) {
+if (
+  process.env.NODE_ENV == 'production' ||
+  process.env.NODE_ENV == 'staging' ||
+  process.env.NODE_ENV == 'test'
+) {
   _walletPasswordEncryptionKey = process.env.WALLET_PASSWORD_ENCRYPTION_KEY;
   if (!_walletPasswordEncryptionKey && !_walletPasswordEncryptionKey.trim()) {
     console.error(
