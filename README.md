@@ -69,6 +69,9 @@ This follows the same process as a regular release + deployment. With some small
 - Merged PR's to 'master' branch are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
 - Make sure to update the environment-settings as soon as possible, preferably before the merge+deploy.
 
+### To "staging" environment
+- For all current intents and purposes the "staging" environment is treated exactly equal to "production" environment
+
 ### To "production" environment
 
 #### On initial deployment (only)
