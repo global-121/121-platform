@@ -52,7 +52,7 @@ http
         return
       }
       if (
-        process.env.NODE_ENV === "staging" &&
+        process.env.NODE_ENV === "test" &&
         payload.action === "closed" &&
         payload.pull_request.merged
       ) {
