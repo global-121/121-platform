@@ -40,6 +40,6 @@ export class DataStorageService {
 
     data[0].data = this.cryptr.decrypt(data[0].data);
 
-    return data[0].data;
+    return JSON.stringify(data[0].data);
   }
 }
