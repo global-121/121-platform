@@ -33,6 +33,7 @@ export class PersonRow {
   rejected?: string | null;
   name?: string | null;
   dob?: string | null;
+  phoneNumber?: string | null;
 }
 
 export enum PaStatus {
