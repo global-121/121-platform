@@ -18,32 +18,48 @@ export class NotificationComponent implements OnInit {
   @Input()
   public notificationType: NotificationType;
 
+  public disabled: boolean;
   public btnText: string;
   public subHeader: string;
+
+  private actionType: ActionType;
 
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.btnText = this.translate.instant(
       'page.program.notification.' + this.notificationType + '.btn-text',
     );
     this.subHeader = this.translate.instant(
       'page.program.notification.' + this.notificationType + '.confirm-message',
     );
+
+    this.actionType =
+      this.notificationType === NotificationType.include
+        ? ActionType.notifyIncluded
+        : null;
+
+    this.disabled = await this.btnDisabled();
+  }
+
+  public async btnDisabled() {
+    const actions = await this.programsService.retrieveActions(
+      this.actionType,
+      +this.programId,
+    );
+
+    return this.userRole === UserRole.ProgramManager || actions.length > 0;
   }
 
   public async notify() {
     await this.programsService.notify(+this.programId, this.notificationType);
 
-    const actionType =
-      this.notificationType === NotificationType.include
-        ? ActionType.notifyIncluded
-        : null;
-    if (actionType) {
-      await this.programsService.saveAction(actionType, +this.programId);
+    if (this.actionType) {
+      await this.programsService.saveAction(this.actionType, +this.programId);
+      this.disabled = await this.btnDisabled();
     }
   }
 }
