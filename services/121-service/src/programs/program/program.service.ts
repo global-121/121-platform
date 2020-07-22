@@ -347,7 +347,6 @@ export class ProgramService {
 
       if (inclusionResult) {
         connection.programsIncluded.push(programId);
-        this.notifyInclusionStatus(connection, programId, inclusionResult);
       }
       inclusionRequestStatus = { status: 'done' };
     } else if (program.inclusionCalculationType === 'highestScoresX') {
@@ -452,7 +451,6 @@ export class ProgramService {
       );
       if (indexIn <= -1) {
         connection.programsIncluded.push(programId);
-        this.notifyInclusionStatus(connection, programId, true);
       }
       // Remove from rejection-array, if present
       const indexEx = connection.programsRejected.indexOf(
