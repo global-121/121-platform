@@ -77,6 +77,17 @@
       "scoring": {}
     },
     {
+      "criterium": "phoneNumber",
+      "label": {
+        "en": "My phonenumber:"
+      },
+      "answerType": "tel",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    },
+    {
       "criterium": "sample",
       "label": {
         "en": "1. Sample vulnerability question:"
