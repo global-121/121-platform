@@ -130,7 +130,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
-    const columnDateWidth = 142;
+    const columnDateTimeWidth = 142;
+    const columnDateWidth = 100;
     const columnScoreWidth = 90;
     const columnPhoneNumberWidth = 130;
     this.columnsAvailable = [
@@ -140,7 +141,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.person',
         ),
         ...columnDefaults,
-        minWidth: 80,
+        width: 85,
       },
       {
         prop: 'name',
@@ -150,7 +151,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ...columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         roles: [UserRole.ProgramManager],
-        width: 80,
       },
       {
         prop: 'dob',
@@ -160,7 +160,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ...columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         roles: [UserRole.ProgramManager],
-        width: 80,
+        width: columnDateWidth,
       },
       {
         prop: 'phoneNumber',
@@ -178,7 +178,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.status',
         ),
         ...columnDefaults,
-        minWidth: 80,
+        width: 90,
       },
       {
         prop: 'digitalIdCreated',
@@ -187,7 +187,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...columnDefaults,
         phases: [ProgramPhase.registrationValidation],
-        width: columnDateWidth,
+        width: columnDateTimeWidth,
       },
       {
         prop: 'vulnerabilityAssessmentCompleted',
@@ -196,7 +196,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...columnDefaults,
         phases: [ProgramPhase.registrationValidation],
-        width: columnDateWidth,
+        width: columnDateTimeWidth,
       },
       {
         prop: 'tempScore',
@@ -214,7 +214,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...columnDefaults,
         phases: [ProgramPhase.registrationValidation],
-        width: columnDateWidth,
+        width: columnDateTimeWidth,
       },
       {
         prop: 'vulnerabilityAssessmentValidated',
@@ -223,7 +223,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...columnDefaults,
         phases: [ProgramPhase.registrationValidation],
-        width: columnDateWidth,
+        width: columnDateTimeWidth,
       },
       {
         prop: 'finalScore',
@@ -245,7 +245,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.reviewInclusion,
           ProgramPhase.payment,
         ],
-        width: columnDateWidth,
+        width: columnDateTimeWidth,
       },
       {
         prop: 'rejected',
@@ -254,7 +254,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        width: columnDateWidth,
+        width: columnDateTimeWidth,
       },
     ];
     this.paymentColumnTemplate = {
@@ -264,7 +264,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ),
       ...columnDefaults,
       phases: [ProgramPhase.payment],
-      width: columnDateWidth,
+      width: columnDateTimeWidth,
     };
 
     this.loadColumns();
@@ -427,13 +427,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       const didsThisInstallments = transactionsThisInstallment.map(
         (t) => t.did,
       );
-      console.log(transactionsThisInstallment);
 
       if (
         transactionsThisInstallment &&
         didsThisInstallments.includes(personRow.did)
       ) {
-        console.log(transactionsThisInstallment[0].installmentdate);
         personRow['payment' + (index + 1)] = formatDate(
           transactionsThisInstallment[0].installmentdate,
           this.dateFormat,
