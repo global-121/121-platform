@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 import { ActionService } from './action.service';
 import { ActionEntity } from './action.entity';
+import { ProgramEntity } from '../programs/program/program.entity';
 
 describe('Action service', (): void => {
   let service: ActionService;
@@ -19,6 +20,10 @@ describe('Action service', (): void => {
           },
           {
             provide: getRepositoryToken(UserEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,
           },
         ],
