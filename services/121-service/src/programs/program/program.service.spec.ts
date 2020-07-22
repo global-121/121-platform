@@ -21,6 +21,7 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { ActionEntity } from '../../actions/action.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -84,6 +85,10 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(TransactionEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ActionEntity),
             useFactory: repositoryMockFactory,
           },
         ],

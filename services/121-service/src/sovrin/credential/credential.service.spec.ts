@@ -21,6 +21,7 @@ import { HttpModule } from '@nestjs/common';
 import { ProtectionServiceProviderEntity } from '../../programs/program/protection-service-provider.entity';
 import { TransactionEntity } from '../../programs/program/transactions.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
+import { ActionEntity } from '../../actions/action.entity';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -87,6 +88,10 @@ describe('CredentialService', (): void => {
           },
           {
             provide: getRepositoryToken(TransactionEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ActionEntity),
             useFactory: repositoryMockFactory,
           },
         ],
