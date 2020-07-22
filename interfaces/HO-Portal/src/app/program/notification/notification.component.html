@@ -1,0 +1,8 @@
+<confirm-prompt 
+  [disabled]="disabled" 
+  (confirm)="notify()" 
+  [subHeader]="subHeader"
+>
+  <ion-icon name="call" slot="start"></ion-icon>
+  {{ btnText }}
+</confirm-prompt>
