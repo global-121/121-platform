@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
@@ -21,13 +22,19 @@ export class NotificationComponent implements OnInit {
   public disabled: boolean;
   public btnText: string;
   public subHeader: string;
+  public timestamp: string;
+
+  private locale: string;
+  private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   private actionType: ActionType;
 
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
-  ) {}
+  ) {
+    this.locale = this.translate.getBrowserCultureLang();
+  }
 
   async ngOnInit() {
     this.btnText = this.translate.instant(
@@ -45,13 +52,24 @@ export class NotificationComponent implements OnInit {
     this.disabled = await this.btnDisabled();
   }
 
-  public async btnDisabled() {
-    const actions = await this.programsService.retrieveActions(
-      this.actionType,
-      +this.programId,
-    );
+  private async retrieveStatusAndTimestamp() {
+    const timestamps = (
+      await this.programsService.retrieveActions(
+        this.actionType,
+        +this.programId,
+      )
+    ).map((a) => new Date(a.timestamp));
 
-    return this.userRole === UserRole.ProgramManager || actions.length > 0;
+    const maxTimestamp = new Date(Math.max.apply(null, timestamps));
+    this.timestamp = maxTimestamp
+      ? formatDate(maxTimestamp, this.dateFormat, this.locale)
+      : null;
+  }
+
+  public async btnDisabled() {
+    await this.retrieveStatusAndTimestamp();
+
+    return this.userRole === UserRole.ProgramManager || !!this.timestamp;
   }
 
   public async notify() {

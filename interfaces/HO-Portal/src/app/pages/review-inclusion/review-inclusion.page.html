@@ -12,17 +12,25 @@
     [phaseReady]="true"
   ></app-phase-next>
 
-  <app-export-list
-    [programId]="programId"
-    [userRole]="userRole"
-    [exportType]="enumExportType.included"
-  ></app-export-list>
+  <ion-row>
+    <app-export-list
+      [programId]="programId"
+      [userRole]="userRole"
+      [exportType]="enumExportType.included"
+    ></app-export-list>
+  </ion-row>
 
-  <app-notification 
-    [programId]="programId" 
-    [userRole]="userRole" 
-    [notificationType]="enumNotificationType.include"
-  ></app-notification>
+  <br>
+
+  <ion-row>
+    <app-notification
+      [programId]="programId"
+      [userRole]="userRole"
+      [notificationType]="enumNotificationType.include"
+    ></app-notification>
+  </ion-row>
+
+  <br>
 
   <app-program-people-affected 
     [programId]="programId" 

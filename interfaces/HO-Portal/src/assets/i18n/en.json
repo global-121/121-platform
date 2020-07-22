@@ -180,7 +180,8 @@
         "include": {
           "btn-text": "Notify included people affected",
           "confirm-message": "This will send an SMS and a voice call to all currently included people affected. Please make sure you are finished with the review process, to avoid possible confusion for people affected."
-        }
+        },
+        "timestamp": "Done on:"
       },
       "export-list": {
         "no-data": "There are currently no People Affected to download",
