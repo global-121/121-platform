@@ -8,6 +8,7 @@ import { Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -131,6 +132,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     };
     const columnDateWidth = 142;
     const columnScoreWidth = 90;
+    const columnPhoneNumberWidth = 130;
     this.columnsAvailable = [
       {
         prop: 'pa',
@@ -159,6 +161,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         roles: [UserRole.ProgramManager],
         width: 80,
+      },
+      {
+        prop: 'phoneNumber',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.phone-number',
+        ),
+        ...columnDefaults,
+        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+        roles: [UserRole.ProgramManager],
+        minWidth: columnPhoneNumberWidth,
       },
       {
         prop: 'statusLabel',
@@ -399,6 +411,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         : null,
       name: person.name,
       dob: person.dob,
+      phoneNumber: formatPhoneNumber(person.phoneNumber),
     };
 
     personRow = this.fillPaymentColumns(personRow);

@@ -153,6 +153,7 @@
           "rejected": "Rejected",
           "name": "Name",
           "dob": "Date of birth",
+          "phone-number": "Phonenumber",
           "payment": "Payment #"
         },
         "status": {
