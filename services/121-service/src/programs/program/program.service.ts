@@ -32,6 +32,7 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { SmsService } from '../../notifications/sms/sms.service';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ExportType } from './dto/export-details';
+import { NotificationType } from './dto/notification';
 
 @Injectable()
 export class ProgramService {
@@ -497,6 +498,31 @@ export class ProgramService {
       }
       connection.rejectionDate = new Date();
       await this.connectionRepository.save(connection);
+    }
+  }
+
+  public async notify(
+    programId: number,
+    notificationType: NotificationType,
+  ): Promise<void> {
+    let program = await this.programRepository.findOne(+programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    if (notificationType === NotificationType.include) {
+      const includedDids = (await this.getConnectionsWithStatus(
+        programId,
+        PaStatus.included,
+      )).map(i => i.did);
+
+      for (let did of includedDids) {
+        let connection = await this.connectionRepository.findOne({
+          where: { did: did },
+        });
+        this.notifyInclusionStatus(connection, programId, true);
+      }
     }
   }
 

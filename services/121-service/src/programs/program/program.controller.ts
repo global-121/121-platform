@@ -37,6 +37,7 @@ import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
 import { ChangeStateDto } from './dto/change-state.dto';
 import { ExportDetails } from './dto/export-details';
+import { NotificationDto } from './dto/notification';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -218,6 +219,13 @@ export class ProgramController {
   @Post('reject/:programId')
   public async reject(@Param() params, @Body() data: DidsDto): Promise<void> {
     await this.programService.reject(params.programId, data);
+  }
+
+  @Roles(UserRole.ProjectOfficer)
+  @ApiOperation({ title: 'Send notification to set of PAs' })
+  @Post('notify')
+  public async notify(@Body() data: NotificationDto): Promise<void> {
+    await this.programService.notify(data.programId, data.notificationType);
   }
 
   @Roles(UserRole.ProjectOfficer)
