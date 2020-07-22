@@ -10,6 +10,7 @@ import { IsEmail } from 'class-validator';
 const crypto = require('crypto');
 import { ProgramEntity } from '../programs/program/program.entity';
 import { StandardCriteriumEntity } from '../programs/standard-criterium/standard-criterium.entity';
+import { ActionEntity } from '../actions/action.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -42,6 +43,9 @@ export class UserEntity {
 
   @OneToMany(type => ProgramEntity, program => program.author)
   public programs: ProgramEntity[];
+
+  @OneToMany(type => ActionEntity, program => program.user)
+  public actions: ActionEntity[];
 
   @OneToMany(type => StandardCriteriumEntity, criterium => criterium.author)
   public criteriums: StandardCriteriumEntity[];

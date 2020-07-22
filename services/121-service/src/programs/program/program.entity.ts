@@ -16,6 +16,7 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
+import { ActionEntity } from '../../actions/action.entity';
 
 @Entity('program')
 export class ProgramEntity {
@@ -124,6 +125,9 @@ export class ProgramEntity {
 
   @ManyToOne(type => UserEntity, user => user.programs)
   public author: UserEntity;
+
+  @OneToMany(type => ActionEntity, program => program.user)
+  public actions: ActionEntity[];
 
   @OneToMany(type => CustomCriterium, customCriteria => customCriteria.program)
   public customCriteria: CustomCriterium[];
