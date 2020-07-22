@@ -35,6 +35,6 @@ export class NotificationComponent implements OnInit {
   }
 
   public async notify() {
-    this.programsService.notify(+this.programId, NotificationType.include);
+    this.programsService.notify(+this.programId, this.notificationType);
   }
 }
