@@ -33,6 +33,7 @@ import { SmsService } from '../../notifications/sms/sms.service';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
+import { ActionEntity, ActionType } from '../../actions/action.entity';
 
 @Injectable()
 export class ProgramService {
@@ -54,6 +55,8 @@ export class ProgramService {
   >;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(ActionEntity)
+  public actionRepository: Repository<ActionEntity>;
 
   public constructor(
     private readonly httpService: HttpService,
@@ -394,8 +397,14 @@ export class ProgramService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+
+    const notificationDone =
+      (await this.actionRepository.find({
+        where: { programId: programId, actionType: ActionType.notifyIncluded },
+      })).length > 0;
+
     let inclusionStatus: InclusionStatus;
-    if (connection.programsIncluded.includes(+programId)) {
+    if (connection.programsIncluded.includes(+programId) && notificationDone) {
       inclusionStatus = { status: 'included' };
     } else if (connection.programsRejected.includes(+programId)) {
       inclusionStatus = { status: 'rejected' };

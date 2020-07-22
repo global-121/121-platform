@@ -23,6 +23,7 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { SmsModule } from '../../notifications/sms/sms.module';
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { ActionEntity } from '../../actions/action.entity';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
       FinancialServiceProviderEntity,
       ProtectionServiceProviderEntity,
       TransactionEntity,
+      ActionEntity,
     ]),
     forwardRef(() => CredentialModule),
     UserModule,
