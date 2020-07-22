@@ -16,6 +16,7 @@ import { VoiceModule } from './notifications/voice/voice.module';
 import { FundingModule } from './funding/funding.module';
 import { LookupModule } from './notifications/lookup/lookup.module';
 import { ScriptsModule } from './scripts/scripts.module';
+import { ActionModule } from './actions/action.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ScriptsModule } from './scripts/scripts.module';
     FundingModule,
     LookupModule,
     ScriptsModule,
+    ActionModule,
   ],
   controllers: [AppController],
   providers: [],

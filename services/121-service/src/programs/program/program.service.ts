@@ -32,6 +32,8 @@ import { ProtectionServiceProviderEntity } from './protection-service-provider.e
 import { SmsService } from '../../notifications/sms/sms.service';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ExportType } from './dto/export-details';
+import { NotificationType } from './dto/notification';
+import { ActionEntity, ActionType } from '../../actions/action.entity';
 
 @Injectable()
 export class ProgramService {
@@ -53,6 +55,8 @@ export class ProgramService {
   >;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(ActionEntity)
+  public actionRepository: Repository<ActionEntity>;
 
   public constructor(
     private readonly httpService: HttpService,
@@ -346,7 +350,6 @@ export class ProgramService {
 
       if (inclusionResult) {
         connection.programsIncluded.push(programId);
-        this.notifyInclusionStatus(connection, programId, inclusionResult);
       }
       inclusionRequestStatus = { status: 'done' };
     } else if (program.inclusionCalculationType === 'highestScoresX') {
@@ -394,8 +397,14 @@ export class ProgramService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+
+    const notificationDone =
+      (await this.actionRepository.find({
+        where: { programId: programId, actionType: ActionType.notifyIncluded },
+      })).length > 0;
+
     let inclusionStatus: InclusionStatus;
-    if (connection.programsIncluded.includes(+programId)) {
+    if (connection.programsIncluded.includes(+programId) && notificationDone) {
       inclusionStatus = { status: 'included' };
     } else if (connection.programsRejected.includes(+programId)) {
       inclusionStatus = { status: 'rejected' };
@@ -451,7 +460,6 @@ export class ProgramService {
       );
       if (indexIn <= -1) {
         connection.programsIncluded.push(programId);
-        this.notifyInclusionStatus(connection, programId, true);
       }
       // Remove from rejection-array, if present
       const indexEx = connection.programsRejected.indexOf(
@@ -497,6 +505,31 @@ export class ProgramService {
       }
       connection.rejectionDate = new Date();
       await this.connectionRepository.save(connection);
+    }
+  }
+
+  public async notify(
+    programId: number,
+    notificationType: NotificationType,
+  ): Promise<void> {
+    let program = await this.programRepository.findOne(+programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    if (notificationType === NotificationType.include) {
+      const includedDids = (await this.getConnectionsWithStatus(
+        programId,
+        PaStatus.included,
+      )).map(i => i.did);
+
+      for (let did of includedDids) {
+        let connection = await this.connectionRepository.findOne({
+          where: { did: did },
+        });
+        this.notifyInclusionStatus(connection, programId, true);
+      }
     }
   }
 
