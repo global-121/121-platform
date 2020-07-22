@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { ActionType } from '../models/action-type.model';
 import { ExportType } from '../models/export-type.model';
 import { NotificationType } from '../models/notification-type.model';
 import { PastInstallments } from '../models/past-installments.model';
