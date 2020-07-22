@@ -7,8 +7,7 @@ import { SeedDev } from './seed-dev';
 import { SeedPilot } from './seed-pilot';
 import { SeedProd } from './seed-prod';
 import { SeedHelper } from './seed-helper';
-import { SeedMultiProgram } from './seed-multi-program';
-import { SeedSingleProgram } from './seed-single-program';
+import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPublish } from './seed-publish';
 import { ScriptsController } from './scripts.controller';
 
@@ -28,6 +27,7 @@ import { ScriptsController } from './scripts.controller';
     SeedPublish,
     SeedSingleProgram,
     SeedMultiProgram,
+    SeedPilotNLProgram,
   ],
   controllers: [ScriptsController],
 })
