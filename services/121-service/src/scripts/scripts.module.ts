@@ -1,15 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Arguments } from 'yargs';
+import { ScriptsController } from './scripts.controller';
 
 import { SeedInit } from './seed-init';
 import { SeedDev } from './seed-dev';
-import { SeedPilot } from './seed-pilot';
 import { SeedProd } from './seed-prod';
 import { SeedHelper } from './seed-helper';
+import { SeedMultiProgram } from './seed-program-multi';
+import { SeedSingleProgram } from './seed-program-single';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
+import { SeedDemoProgram } from './seed-program-demo';
 import { SeedPublish } from './seed-publish';
-import { ScriptsController } from './scripts.controller';
 
 @Module({
   imports: [
@@ -21,13 +23,13 @@ import { ScriptsController } from './scripts.controller';
   providers: [
     SeedDev,
     SeedInit,
-    SeedPilot,
     SeedProd,
     SeedHelper,
     SeedPublish,
     SeedSingleProgram,
     SeedMultiProgram,
     SeedPilotNLProgram,
+    SeedDemoProgram,
   ],
   controllers: [ScriptsController],
 })

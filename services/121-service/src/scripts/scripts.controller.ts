@@ -1,8 +1,9 @@
-import { SeedMultiProgram } from './seed-multi-program';
 import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiModelProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Connection } from 'typeorm';
+import { SeedSingleProgram } from './seed-program-single';
+import { SeedDemoProgram } from './seed-program-demo';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 
 class ResetDto {
