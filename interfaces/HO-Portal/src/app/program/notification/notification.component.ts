@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { ActionType } from 'src/app/models/action-type.model';
 import { NotificationType } from 'src/app/models/notification-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -35,6 +36,14 @@ export class NotificationComponent implements OnInit {
   }
 
   public async notify() {
-    this.programsService.notify(+this.programId, this.notificationType);
+    await this.programsService.notify(+this.programId, this.notificationType);
+
+    const actionType =
+      this.notificationType === NotificationType.include
+        ? ActionType.notifyIncluded
+        : null;
+    if (actionType) {
+      await this.programsService.saveAction(actionType, +this.programId);
+    }
   }
 }

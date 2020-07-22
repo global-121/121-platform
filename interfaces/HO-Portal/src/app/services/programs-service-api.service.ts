@@ -193,6 +193,14 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  saveAction(actionType: ActionType, programId: number | string): Promise<any> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/actions/save`, {
+        actionType,
+        programId,
+      })
+      .toPromise();
+  }
   addUser(
     email: string,
     password: string,
