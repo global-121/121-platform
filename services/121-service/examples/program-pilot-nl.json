@@ -1,14 +1,14 @@
 {
   "published": false,
   "state": "design",
-  "location": "Location Basic",
-  "ngo": "Test",
+  "location": "Nederland",
+  "ngo": "NLRC",
   "countryId": 1,
   "title": {
-    "en": "Basic program"
+    "en": "Pilot - NL"
   },
   "description": {
-    "en": "For testing purposes."
+    "en": "Program description"
   },
   "descLocation": {
     "en": "Location such and such."
@@ -21,10 +21,10 @@
   },
   "startDate": "2020-01-01T12:00:00Z",
   "endDate": "2020-12-31T12:00:00Z",
-  "currency": "MWK",
+  "currency": "EUR",
   "distributionFrequency": "month",
   "distributionDuration": 3,
-  "fixedTransferValue": 500,
+  "fixedTransferValue": 35,
   "financialServiceProviders": [
     {
       "id": 1
@@ -51,10 +51,6 @@
     "en": {
       "included": "You have been included in this program.",
       "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us."
-    },
-    "nl": {
-      "included": "Je zit wel in het programma",
-      "rejected": "Je zit niet in het programma"
     }
   },
   "customCriteria": [
@@ -81,9 +77,9 @@
       "scoring": {}
     },
     {
-      "criterium": "question1",
+      "criterium": "sample",
       "label": {
-        "en": "1. I am..."
+        "en": "1. Sample vulnerability question:"
       },
       "answerType": "dropdown",
       "criteriumType": "standard",
@@ -111,51 +107,6 @@
         "optionA": 3,
         "optionB": 6,
         "optionC": 9
-      }
-    },
-    {
-      "criterium": "question2",
-      "label": {
-        "en": "2. I am.."
-      },
-      "answerType": "dropdown",
-      "criteriumType": "standard",
-      "options": [
-        {
-          "option": "optionA",
-          "label": {
-            "en": "Option A"
-          }
-        },
-        {
-          "option": "optionB",
-          "label": {
-            "en": "Option B"
-          }
-        },
-        {
-          "option": "optionC",
-          "label": {
-            "en": "Option C"
-          }
-        }
-      ],
-      "scoring": {
-        "optionA": 3,
-        "optionB": 6,
-        "optionC": 9
-      }
-    },
-    {
-      "criterium": "question3",
-      "label": {
-        "en": "Question 3..."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 2
       }
     }
   ]
