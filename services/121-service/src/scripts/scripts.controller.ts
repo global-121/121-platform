@@ -3,15 +3,14 @@ import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiModelProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Connection } from 'typeorm';
-import { SeedSingleProgram } from './seed-single-program';
-import SeedDemoProgram from './seed-demo-program';
+import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 
 class ResetDto {
   @ApiModelProperty({ example: 'fill_in_secret' })
   @IsNotEmpty()
   @IsString()
   public readonly secret: string;
-  @ApiModelProperty({ example: 'demo / single' })
+  @ApiModelProperty({ example: 'demo / pilot-nl / single' })
   public readonly script: string;
 }
 
@@ -28,6 +27,8 @@ export class ScriptsController {
     let seed;
     if (body.script == 'demo') {
       seed = new SeedDemoProgram(this.connection);
+    } else if (body.script == 'pilot-nl') {
+      seed = new SeedPilotNLProgram(this.connection);
     } else {
       seed = new SeedSingleProgram(this.connection);
     }
