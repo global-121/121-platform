@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { ExportType } from '../models/export-type.model';
+import { NotificationType } from '../models/notification-type.model';
 import { PastInstallments } from '../models/past-installments.model';
 import { Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
@@ -176,6 +177,18 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/reject/${programId}`, {
         dids: JSON.stringify(dids),
+      })
+      .toPromise();
+  }
+
+  notify(
+    programId: number | string,
+    notificationType: NotificationType,
+  ): Promise<any> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/programs/notify`, {
+        programId,
+        notificationType,
       })
       .toPromise();
   }
