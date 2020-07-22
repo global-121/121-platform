@@ -60,7 +60,8 @@ export class NotificationComponent implements OnInit {
       )
     ).map((a) => new Date(a.timestamp));
 
-    const maxTimestamp = new Date(Math.max.apply(null, timestamps));
+    const maxTimestamp =
+      timestamps.length > 0 ? new Date(Math.max.apply(null, timestamps)) : null;
     this.timestamp = maxTimestamp
       ? formatDate(maxTimestamp, this.dateFormat, this.locale)
       : null;
