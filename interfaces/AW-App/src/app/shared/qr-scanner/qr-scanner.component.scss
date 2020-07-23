@@ -5,6 +5,7 @@
 .qr-scanner--zxing-component {
   position: relative;
   z-index: 1;
+  max-height: 100%; // Fixes a quirk with some webcams on desktop flickering the size of the <video>-element
 }
 
 .qr-scanner--loading {
