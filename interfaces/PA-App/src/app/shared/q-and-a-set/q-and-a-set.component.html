@@ -26,15 +26,12 @@
         </ion-radio-group>
       </div>
       <div *ngSwitchCase="answerType.Number">
-        <ion-input type="text"
-                   inputmode="numeric"
-                   pattern="[0-9]*"
-                   [name]="question.code"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="isSubmitted"
-                   (ionChange)="onAnswerChange(question.code,$event.target.value)"
-                   debounce="300"
-        ></ion-input>
+        <numeric-input ngDefaultControl
+                      [value]="answers[question.code]?.value"
+                      [disabled]="isSubmitted"
+                      (ionChange)="onAnswerChange(question.code, $event.target.value)"
+                      debounce="300"
+        ></numeric-input>
       </div>
       <div *ngSwitchCase="answerType.Date">
         <ion-input type="date"

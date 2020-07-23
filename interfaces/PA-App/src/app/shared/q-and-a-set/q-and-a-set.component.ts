@@ -1,4 +1,5 @@
 import {
+  AfterContentInit,
   Component,
   EventEmitter,
   Input,
@@ -20,7 +21,7 @@ import { DialogueTurnComponent } from '../dialogue-turn/dialogue-turn.component'
   templateUrl: './q-and-a-set.component.html',
   styleUrls: ['./q-and-a-set.component.scss'],
 })
-export class QAndASetComponent {
+export class QAndASetComponent implements AfterContentInit {
   @ViewChildren(DialogueTurnComponent)
   private turns: QueryList<DialogueTurnComponent>;
 
@@ -53,6 +54,15 @@ export class QAndASetComponent {
   public validationErrors: string[] = [];
 
   constructor() {}
+
+  ngAfterContentInit() {
+    if (this.answers && this.questions) {
+      this.allQuestionsShown = this.checkAllQuestionsShown(
+        this.questions,
+        Object.keys(this.answers),
+      );
+    }
+  }
 
   private getQuestionByCode(questionCode: string): Question {
     const result = this.questions.find((question: Question) => {

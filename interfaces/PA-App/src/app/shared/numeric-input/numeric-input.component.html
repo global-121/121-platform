@@ -1,0 +1,13 @@
+<ion-input
+  #numericInput
+  type="text"
+  inputmode="numeric"
+  pattern="[0-9]+"
+  [value]="value"
+  [autocomplete]="autocomplete"
+  [disabled]="disabled"
+  [placeholder]="placeholder"
+  (ionInput)="onInput()"
+  ngDefaultControl
+  required
+></ion-input>
