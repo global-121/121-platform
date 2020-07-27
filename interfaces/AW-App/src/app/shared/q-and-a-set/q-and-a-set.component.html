@@ -69,7 +69,10 @@
   >
     <dialogue-turn [isSpoken]="checkValidationErrors(question.code)">
       <p *ngIf="(question.answerType === answerType.phoneNumber) && validationErrors.includes('phoneNumber')">
-        {{ 'shared.validate-phone-number'|translate }}
+        {{ 'q-and-a-set.validation.phone-number'|translate }}
+      </p>
+      <p *ngIf="(question.answerType === answerType.Number)">
+        {{ 'q-and-a-set.validation.number'|translate }}
       </p>
     </dialogue-turn>
   </div>
@@ -80,7 +83,7 @@
                [isSpoken]="checkValidationErrors() && allQuestionsShown"
 >
   <p>
-    {{ 'shared.validate-generic-error'|translate }}
+    {{ 'q-and-a-set.validation.generic-error'|translate }}
   </p>
 </dialogue-turn>
 

@@ -70,12 +70,12 @@
   >
     <dialogue-turn [isSpoken]="checkValidationErrors(question.code)">
       <p *ngIf="(question.answerType === answerType.phoneNumber) && validationErrors.includes('phoneNumber')">
-        <play-text-audio key="validation.phoneNumber" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'validation.phoneNumber'|translate }}
+        <play-text-audio key="q-and-a-set.validation.phone-number" class="ion-float-start ion-margin-end"></play-text-audio>
+        {{ 'q-and-a-set.validation.phone-number'|translate }}
       </p>
       <p *ngIf="(question.answerType === answerType.Number)">
-        <play-text-audio key="validation.number" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'validation.number'|translate }}
+        <play-text-audio key="q-and-a-set.validation.number" class="ion-float-start ion-margin-end"></play-text-audio>
+        {{ 'q-and-a-set.validation.number'|translate }}
       </p>
     </dialogue-turn>
   </div>
@@ -86,8 +86,8 @@
                [isSpoken]="checkValidationErrors() && allQuestionsShown"
 >
   <p>
-    <play-text-audio key="validation.generic-error" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'validation.generic-error'|translate }}
+    <play-text-audio key="q-and-a-set.validation.generic-error" class="ion-float-start ion-margin-end"></play-text-audio>
+    {{ 'q-and-a-set.validation.generic-error'|translate }}
   </p>
 </dialogue-turn>
 
