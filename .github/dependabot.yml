@@ -13,6 +13,9 @@ updates:
   - dependency-name: "@angular-devkit/*"
     versions:
     - ">= 0.800"
+  - dependency-name: "@types/node"
+    versions:
+    - ">= 11"
   - dependency-name: tslint
     versions:
     - ">= 6"
@@ -42,6 +45,9 @@ updates:
   - dependency-name: "@angular-devkit/*"
     versions:
     - ">= 0.800"
+  - dependency-name: "@types/node"
+    versions:
+    - ">= 11"
   - dependency-name: tslint
     versions:
     - ">= 6"
@@ -71,6 +77,9 @@ updates:
   - dependency-name: "@angular-devkit/*"
     versions:
     - ">= 0.800"
+  - dependency-name: "@types/node"
+    versions:
+    - ">= 11"
   - dependency-name: tslint
     versions:
     - ">= 6"
