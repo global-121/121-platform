@@ -26,10 +26,11 @@
         </ion-radio-group>
       </div>
       <div *ngSwitchCase="answerType.Number">
-        <numeric-input ngDefaultControl
+        <numeric-input #numInput
+                       ngDefaultControl
                       [value]="answers[question.code]?.value"
                       [disabled]="isSubmitted"
-                      (ionChange)="onAnswerChange(question.code, $event.target.value)"
+                      (isValidChange)="onChangeWithValidation(question.code, numInput.value, numInput.isValid)"
                       debounce="300"
         ></numeric-input>
       </div>
