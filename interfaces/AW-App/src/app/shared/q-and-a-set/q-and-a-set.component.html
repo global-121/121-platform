@@ -59,7 +59,7 @@
                    ngDefaultControl
                    required
                    type="text"
-                   pattern="[\S]+"
+                   pattern=".*\S+.*"
                    [name]="question.code"
                    [disabled]="isSubmitted"
                    (ionChange)="onChangeWithValidation(question.code, defaultInput.value, !(defaultInput.invalid && (defaultInput.dirty || defaultInput.touched)))"
