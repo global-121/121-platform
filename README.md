@@ -77,6 +77,7 @@ This follows the same process as a regular release + deployment. With some small
 
 ### To "test" environment
 - Merged PR's to 'master' branch are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
+  - To skip deployment after a PR is merged, add `[SKIP CD]` to the title of the PR before merging. (For example when only updating documentation)
 - Make sure to update the environment-settings as soon as possible, preferably before the merge+deploy.
 
 ### To "production" environment
