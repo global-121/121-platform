@@ -54,11 +54,15 @@
         ></phone-number-input>
       </div>
       <div *ngSwitchDefault>
-        <ion-input type="text"
+        <ion-input #defaultInput="ngModel"
+                   [(ngModel)]="answerModels[question.code]"
+                   ngDefaultControl
+                   required
+                   type="text"
+                   pattern="[\S]+"
                    [name]="question.code"
-                   [value]="answers[question.code]?.value"
                    [disabled]="isSubmitted"
-                   (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                   (ionChange)="onChangeWithValidation(question.code, defaultInput.value, !(defaultInput.invalid && (defaultInput.dirty || defaultInput.touched)))"
                    debounce="300"
         ></ion-input>
       </div>

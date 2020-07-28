@@ -156,6 +156,7 @@
   "q-and-a-set": {
     "validation": {
       "generic-error": "We cannot process some of your input. Please check and update one of your answers.",
+      "required": "An answer is required for this question.",
       "number": "The answer needs to be a number.",
       "phone-number": "We couldn't verify that phone-number. Please update and try again."
     }

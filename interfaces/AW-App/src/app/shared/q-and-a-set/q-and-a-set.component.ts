@@ -30,6 +30,7 @@ export class QAndASetComponent implements AfterContentInit {
 
   @Input()
   public answers: AnswerSet = {};
+  public answerModels = {};
 
   @Input()
   public isSubmitted = false;
