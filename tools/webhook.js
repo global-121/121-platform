@@ -60,7 +60,10 @@ http
         return
       }
       if (
-        process.env.NODE_ENV === "production" &&
+        (
+          process.env.NODE_ENV === "production" ||
+          process.env.NODE_ENV === "staging"
+        ) &&
         payload.action === "released" &&
         payload.release.draft === false &&
         payload.release.target_commitish &&
