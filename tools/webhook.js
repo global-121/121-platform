@@ -47,10 +47,15 @@ http
       let payload = JSON.parse(str);
 
       if (
-        req.headers["x-hub-signature"] !== sig
+        req.headers["x-hub-signature"] !== sig ||
+        (
+          payload.pull_request.merged &&
+          payload.pull_request.title.includes("[SKIP CD]")
+        )
       ) {
         return
       }
+
       if (
         process.env.NODE_ENV === "test" &&
         payload.action === "closed" &&
@@ -59,6 +64,7 @@ http
         deploy()
         return
       }
+
       if (
         (
           process.env.NODE_ENV === "production" ||
