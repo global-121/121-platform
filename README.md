@@ -69,14 +69,6 @@ This follows the same process as a regular release + deployment. With some small
 - Merged PR's to 'master' branch are automatically deployed to the test-server. (via [webhook](tools/webhook.service), see: [/tools#GitHub-webhook](tools/README.md#github-webhook))
 - Make sure to update the environment-settings as soon as possible, preferably before the merge+deploy.
 
-### To "staging" environment
-- For all current intents and purposes the "staging" environment is treated exactly equal to "production" environment, except that no specific release is deployed, but any stable version of master-branch/"test" environment.
-- [ ] Decide on what version of master-branch to deploy (make sure that "test" environment is stable)
-- [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
-- [ ] Prepare the environment accordingly (in all `.env`-files)
-  - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):  
-        Run: `. ./tools/deploy.sh`
-
 ### To "production" environment
 
 #### On initial deployment (only)
@@ -95,6 +87,8 @@ This follows the same process as a regular release + deployment. With some small
   - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):  
         Run: `. ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v0.1.0`
 
+### To "staging" environment
+- This environment works exactly the same as the "production" environment
 
 ## Glossary
 
