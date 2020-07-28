@@ -27,6 +27,7 @@ export class SeedDemoProgram implements InterfaceScript {
     const seedInit = await new SeedInit(this.connection);
     await seedInit.run();
 
+    // ***** CREATE USERS *****
     await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
       email: USERCONFIG.emailProjectOfficer,
@@ -49,18 +50,7 @@ export class SeedDemoProgram implements InterfaceScript {
     await this.seedHelper.addFsp(fspBank);
     await this.seedHelper.addFsp(fspMobileMoney);
 
-    // ***** CREATE PROTECTION SERVICE PROVIDERS *****
-    const protectionServiceProviderRepository = this.connection.getRepository(
-      ProtectionServiceProviderEntity,
-    );
-    await protectionServiceProviderRepository.save([
-      { psp: 'Protection Service Provider A' },
-    ]);
-    await protectionServiceProviderRepository.save([
-      { psp: 'Protection Service Provider B' },
-    ]);
-
-    // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
+    // ***** CREATE PROGRAM *****
     const examplePrograms = [programDemo];
     await this.seedHelper.addPrograms(examplePrograms, 1);
   }

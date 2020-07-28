@@ -9,7 +9,6 @@ import { CountryEntity } from '../programs/country/country.entity';
 
 import fspBank from '../../examples/fsp-bank.json';
 import fspMobileMoney from '../../examples/fsp-mobile-money.json';
-import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
 
 import programPilotNL from '../../examples/program-pilot-nl.json';
 import { USERCONFIG } from '../secrets';
@@ -25,6 +24,7 @@ export class SeedPilotNLProgram implements InterfaceScript {
     const seedInit = await new SeedInit(this.connection);
     await seedInit.run();
 
+    // ***** CREATE USERS *****
     await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
       email: USERCONFIG.emailProjectOfficer,
@@ -47,18 +47,7 @@ export class SeedPilotNLProgram implements InterfaceScript {
     await this.seedHelper.addFsp(fspBank);
     await this.seedHelper.addFsp(fspMobileMoney);
 
-    // ***** CREATE PROTECTION SERVICE PROVIDERS *****
-    const protectionServiceProviderRepository = this.connection.getRepository(
-      ProtectionServiceProviderEntity,
-    );
-    await protectionServiceProviderRepository.save([
-      { psp: 'Protection Service Provider A' },
-    ]);
-    await protectionServiceProviderRepository.save([
-      { psp: 'Protection Service Provider B' },
-    ]);
-
-    // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
+    // ***** CREATE PROGRAM *****
     const examplePrograms = [programPilotNL];
     await this.seedHelper.addPrograms(examplePrograms, 1);
   }

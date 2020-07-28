@@ -31,6 +31,7 @@ export class SeedMultiProgram implements InterfaceScript {
     const seedInit = await new SeedInit(this.connection);
     await seedInit.run();
 
+    // ***** CREATE USERS *****
     await this.seedHelper.addUser({
       role: UserRole.Aidworker,
       email: USERCONFIG.emailAidWorker,

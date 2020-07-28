@@ -30,6 +30,7 @@ export class SeedSingleProgram implements InterfaceScript {
     const seedInit = await new SeedInit(this.connection);
     await seedInit.run();
 
+    // ***** CREATE USERS *****
     await this.seedHelper.addUser({
       role: UserRole.Aidworker,
       email: USERCONFIG.emailAidWorker,
@@ -72,7 +73,7 @@ export class SeedSingleProgram implements InterfaceScript {
       { psp: 'Protection Service Provider B' },
     ]);
 
-    // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
+    // ***** CREATE PROGRAM *****
     const examplePrograms = [programAnonymousExample1];
     await this.seedHelper.addPrograms(examplePrograms, 1);
 
