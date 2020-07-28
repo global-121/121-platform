@@ -23,6 +23,16 @@
 ## Documentation
 The documentation of the 121 platform can be found on the Wiki of this repository on GitHub.
 
+
+## Getting Started
+To set up a local development-environment:
+
+- Verify that your environment meets the requirements defined in:
+  - [interfaces/README](interfaces/README.md#environment-requirements) for the front-end interfaces
+  - [services/README](services/README.md) for the back-end services
+- Run: `npm run start:all` from *this* folder
+
+
 ## Testing
 - Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).
 - Each component has its own individual tests:
