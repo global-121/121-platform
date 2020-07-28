@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "npm run help",
-    "demo": "npm run start:all && npm run open:all",
+    "demo": "npx npm-run-all --print-label --parallel start:all open:all",
     "start:all": "npx npm-run-all --print-label --parallel start:services start:interfaces",
     "start:services": "cd services/ && docker-compose -f  docker-compose.yml -f  docker-compose.development.yml up -d --build",
     "start:interfaces": "npx npm-run-all --print-label --parallel start:pa start:aw start:ho",
