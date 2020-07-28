@@ -26,10 +26,11 @@
         </ion-radio-group>
       </div>
       <div *ngSwitchCase="answerType.Number">
-        <numeric-input ngDefaultControl
+        <numeric-input #numInput
+                       ngDefaultControl
                       [value]="answers[question.code]?.value"
                       [disabled]="isSubmitted"
-                      (ionChange)="onAnswerChange(question.code, $event.target.value)"
+                      (isValidChange)="onChangeWithValidation(question.code, numInput.value, numInput.isValid)"
                       debounce="300"
         ></numeric-input>
       </div>
@@ -69,8 +70,12 @@
   >
     <dialogue-turn [isSpoken]="checkValidationErrors(question.code)">
       <p *ngIf="(question.answerType === answerType.phoneNumber) && validationErrors.includes('phoneNumber')">
-        <play-text-audio key="validation.phoneNumber" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'validation.phoneNumber'|translate }}
+        <play-text-audio key="q-and-a-set.validation.phone-number" class="ion-float-start ion-margin-end"></play-text-audio>
+        {{ 'q-and-a-set.validation.phone-number'|translate }}
+      </p>
+      <p *ngIf="(question.answerType === answerType.Number)">
+        <play-text-audio key="q-and-a-set.validation.number" class="ion-float-start ion-margin-end"></play-text-audio>
+        {{ 'q-and-a-set.validation.number'|translate }}
       </p>
     </dialogue-turn>
   </div>
@@ -81,8 +86,8 @@
                [isSpoken]="checkValidationErrors() && allQuestionsShown"
 >
   <p>
-    <play-text-audio key="validation.generic-error" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'validation.generic-error'|translate }}
+    <play-text-audio key="q-and-a-set.validation.generic-error" class="ion-float-start ion-margin-end"></play-text-audio>
+    {{ 'q-and-a-set.validation.generic-error'|translate }}
   </p>
 </dialogue-turn>
 

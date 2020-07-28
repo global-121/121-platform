@@ -72,6 +72,13 @@
   "connection": {
     "error-retry": "Something went wrong, do you want to try again?"
   },
+  "q-and-a-set": {
+    "validation": {
+      "generic-error": "We cannot process some of your input. Please check and update one of your answers.",
+      "number": "The answer needs to be a number.",
+      "phone-number": "We couldn't verify that phone-number. Please update and try again."
+    }
+  },
   "qr-scanner": {
     "title": "Scan QR-code",
     "error-not-compatible": "Your device is not able to scan",
@@ -82,8 +89,6 @@
     "toggle-flash": "Toggle flash-light"
   },
   "shared": {
-    "submit-button": "Submit",
-    "validate-generic-error": "We cannot process some of your input. Please check and update one of your answers.",
-    "validate-phone-number": "We couldn't verify that phone-number. Please update and try again."
+    "submit-button": "Submit"
   }
 }

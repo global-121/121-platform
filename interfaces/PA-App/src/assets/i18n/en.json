@@ -135,7 +135,10 @@
       "introduction3": "If you do not want to enter your phone number, you will have to log in here for updates.",
       "introduction4": "At the end of the program, we will delete your number.",
       "skip": "Skip",
-      "submit": "Submit phone number"
+      "submit": "Submit phone number",
+      "validation": {
+        "phone-number": "We couldn't verify that phone-number. Please update and try again."
+      }
     },
     "signup-signin": {
       "create-id": "Create a Digital ID",
@@ -148,6 +151,13 @@
       "done": "Your Digital ID has been activated by {{ngo}}.",
       "received": "Your Digital ID is received on your device.",
       "stored": "Your Digital ID is stored in your wallet."
+    }
+  },
+  "q-and-a-set": {
+    "validation": {
+      "generic-error": "We cannot process some of your input. Please check and update one of your answers.",
+      "number": "The answer needs to be a number.",
+      "phone-number": "We couldn't verify that phone-number. Please update and try again."
     }
   },
   "qr-scanner": {
@@ -169,9 +179,5 @@
     "loading": "Loading",
     "pause": "Pause",
     "play": "Play"
-  },
-  "validation": {
-    "generic-error": "We cannot process some of your input. Please check and update one of your answers.",
-    "phoneNumber": "We couldn't verify that phone-number. Please update and try again."
   }
 }

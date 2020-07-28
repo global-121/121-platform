@@ -1,4 +1,10 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'numeric-input',
@@ -21,6 +27,11 @@ export class NumericInputComponent {
   @Input()
   public disabled: boolean;
 
+  @Input()
+  public isValid: boolean;
+  @Output()
+  public isValidChange = new EventEmitter<boolean>();
+
   constructor() {}
 
   public async onInput() {
@@ -37,5 +48,19 @@ export class NumericInputComponent {
 
     this.value = clean;
     nativeInput.setSelectionRange(cursorPosition, cursorPosition);
+  }
+
+  public async onChange() {
+    const nativeInput = await this.numericInput.getInputElement();
+    const nativeIsValid = nativeInput.checkValidity();
+
+    this.setValidity(nativeIsValid);
+  }
+
+  private setValidity(state: boolean, emit = true) {
+    this.isValid = state;
+    if (emit) {
+      this.isValidChange.emit(state);
+    }
   }
 }
