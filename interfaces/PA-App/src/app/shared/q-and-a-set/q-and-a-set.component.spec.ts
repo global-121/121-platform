@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { QAndASetComponent } from './q-and-a-set.component';
 
@@ -10,7 +11,7 @@ describe('QAndASetComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [QAndASetComponent],
-      imports: [TranslateModule.forRoot()],
+      imports: [TranslateModule.forRoot(), FormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));

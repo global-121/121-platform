@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
@@ -14,7 +15,7 @@ import { QAndASetComponent } from './q-and-a-set/q-and-a-set.component';
     PhoneNumberInputComponent,
     QAndASetComponent,
   ],
-  imports: [CommonModule, IonicModule, TranslateModule.forChild()],
+  imports: [CommonModule, IonicModule, FormsModule, TranslateModule.forChild()],
   exports: [
     DialogueTurnComponent,
     NumericInputComponent,

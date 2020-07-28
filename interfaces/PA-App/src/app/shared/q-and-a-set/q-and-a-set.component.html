@@ -54,11 +54,15 @@
         ></phone-number-input>
       </div>
       <div *ngSwitchDefault>
-        <ion-input type="text"
+        <ion-input #defaultInput="ngModel"
+                   [(ngModel)]="answerModels[question.code]"
+                   ngDefaultControl
+                   required
+                   type="text"
+                   pattern="[\S]+"
                    [name]="question.code"
-                   [value]="answers[question.code]?.value"
                    [disabled]="isSubmitted"
-                   (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                   (ionChange)="onChangeWithValidation(question.code, defaultInput.value, !(defaultInput.invalid && (defaultInput.dirty || defaultInput.touched)))"
                    debounce="300"
         ></ion-input>
       </div>
@@ -76,6 +80,10 @@
       <p *ngIf="(question.answerType === answerType.Number)">
         <play-text-audio key="q-and-a-set.validation.number" class="ion-float-start ion-margin-end"></play-text-audio>
         {{ 'q-and-a-set.validation.number'|translate }}
+      </p>
+      <p *ngIf="(question.answerType === answerType.Text)">
+        <play-text-audio key="q-and-a-set.validation.required" class="ion-float-start ion-margin-end"></play-text-audio>
+        {{ 'q-and-a-set.validation.required'|translate }}
       </p>
     </dialogue-turn>
   </div>
