@@ -8,7 +8,7 @@ Feature: Create Digital ID
     Given the PA accesses the PA-App in a web-browser
     Given the "select language"-step is shown
     Given the PA selects a language
-    Given the "signup/signin"-step is shown
+    Given the "sign-up/sign-in"-step is shown
     When the PA selects "Create a Digital ID"
     Then the "create identity"-step is shown
     When the PA completes the step
@@ -18,7 +18,7 @@ Feature: Create Digital ID
     When the PA completes the step
     Then the "enroll in a program"-step is shown
     When the PA completes the step
-    Then the "select FSP"-step is shown
+    Then the "select financial service provider"-step is shown
     When the PA completes the step
     Then the "set notification number"-step is shown
     When the PA completes the step
@@ -28,4 +28,3 @@ Feature: Create Digital ID
     And the "store credential"-step is shown
     When the PA meets with an AidWorker and validation is completed
     Then the "handle proof"-step is shown
-

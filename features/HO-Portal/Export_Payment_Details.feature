@@ -11,7 +11,7 @@ Feature: Export payment details
     Given a logged-in "program-manager" user
     Given the installment has not taken place
     When the user clicks the "export list" button of the "open" installment
-    Then a csv is downloaded 
+    Then a CSV-file is downloaded
     And it shows a list of the connections that are "included"
     And the known "phonenumber"
     And all "persistent data" required by the "government"
@@ -20,12 +20,12 @@ Feature: Export payment details
     Given a logged-in "program-manager" user
     Given the installment has taken place
     When the user clicks the "export list" button of a "closed" installment
-    Then a csv is dowloaded 
-    And it shows a list of the connections that are "included" 
+    Then a CSV-file is dowloaded
+    And it shows a list of the connections that are "included"
     And "transaction" information
     And the "installment-number"
     And the known "phonenumber"
-    And all "connection.custromData"
+    And all "connection.customData"
 
   Scenario: No "included" connections
     Given a logged-in "program-manager" user
@@ -36,4 +36,4 @@ Feature: Export payment details
   Scenario: Viewing the export options as project-officer
     Given a logged-in "project-officer" user
     When the user views the "program-payout" component
-    Then the export list buttton is disabled for all installments
+    Then the export list button is disabled for all installments

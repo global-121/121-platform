@@ -36,6 +36,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Create Digital ID](PA-App/Create_Digital_ID.feature)
 - [Use existing Digital ID](PA-App/Use_existing_Digital_ID.feature)
 - [Verify password input](PA-App/Verify_password_input.feature)
+- [Answer program questions](PA-App/Answer_program_questions.feature)
 - [Fill payment details](PA-App/Fill_payment_details.feature)
 - [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 - [Link preprinted QR-code](PA-App/Link-preprinted-QR-code.feature)
