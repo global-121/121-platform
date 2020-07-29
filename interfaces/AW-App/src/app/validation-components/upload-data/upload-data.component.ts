@@ -45,7 +45,22 @@ export class UploadDataComponent implements ValidationComponent {
         if (this.uploadAborted) {
           break;
         }
-        await this.removeCredentialByDid(credential.did);
+        await this.removeLocalStorageData(
+          credential.did,
+          this.ionicStorageTypes.credentials,
+        );
+        await this.removeLocalStorageData(
+          credential.did,
+          this.ionicStorageTypes.validationProgramData,
+        );
+        await this.removeLocalStorageData(
+          credential.did,
+          this.ionicStorageTypes.validationFspData,
+        );
+        await this.removeLocalStorageData(
+          credential.did,
+          this.ionicStorageTypes.qrDidMapping,
+        );
       }
       this.uploadReady = true;
     } else {
@@ -93,18 +108,13 @@ export class UploadDataComponent implements ValidationComponent {
     }
   }
 
-  public async removeCredentialByDid(did: string): Promise<void> {
-    const currentCredentials = await this.storage.get(
-      this.ionicStorageTypes.credentials,
-    );
-    currentCredentials.splice(
-      currentCredentials.findIndex((item) => item.did === did),
-      1,
-    );
-    await this.storage.set(
-      this.ionicStorageTypes.credentials,
-      currentCredentials,
-    );
+  public async removeLocalStorageData(
+    did: string,
+    ionicStorageType: IonicStorageTypes,
+  ): Promise<void> {
+    let data = await this.storage.get(this.ionicStorageTypes[ionicStorageType]);
+    data = data.filter((item) => item.did !== did);
+    await this.storage.set(this.ionicStorageTypes[ionicStorageType], data);
   }
 
   getNextSection(): string {

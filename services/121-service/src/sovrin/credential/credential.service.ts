@@ -19,14 +19,13 @@ import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialEntity } from './credential.entity';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { UserEntity } from '../../user/user.entity';
-
 import { API } from '../../config';
 import { DownloadData } from './interfaces/download-data.interface';
 import {
   FspAnswersAttrInterface,
   AnswerSet,
-} from 'src/programs/fsp/fsp-interface';
-import { FspAttributeEntity } from 'src/programs/fsp/fsp-attribute.entity';
+} from '../../programs/fsp/fsp-interface';
+import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 
 @Injectable()
 export class CredentialService {
@@ -190,13 +189,15 @@ export class CredentialService {
   }
 
   public async getAllFspAnswerData(): Promise<FspAnswersAttrInterface[]> {
-    const qb = await getRepository(ConnectionEntity)
+    const connections = await getRepository(ConnectionEntity)
       .createQueryBuilder('connection')
       .leftJoinAndSelect('connection.fsp', 'fsp')
       .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
-      .where('connection.fsp IS NOT NULL');
+      .where('connection.fsp IS NOT NULL')
+      .andWhere('connection.validationDate IS NULL') // Filter to only download data for PA's not validated yet
+      .getMany();
+
     const fspDataPerConnection = [];
-    const connections = await qb.getMany();
     for (const connection of connections) {
       const answers = this.getFspAnswers(
         connection.fsp.attributes,
@@ -236,6 +237,7 @@ export class CredentialService {
     return await this.connectionRepository
       .createQueryBuilder('connection')
       .select(['connection.qrIdentifier', 'connection.did'])
+      .where('connection.validationDate IS NULL') // Filter to only download data for PA's not validated yet
       .getMany();
   }
 
