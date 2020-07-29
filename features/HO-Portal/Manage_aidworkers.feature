@@ -39,11 +39,11 @@ Feature: Manage aidworkers
     And a "password" field is shown
     And a "password-toggle" button is shown
     And a "button" to "Add aidworker" is shown
-  
+
   Scenario: Add aidworker
     Given the user has filled in a correct "email" and "password"
     When the user clicks "Add aidworker"
-    Then a popup appears that the account is succesfully added
+    Then a popup appears that the account is successfully added
     And the popup reminds the user to inform the aidworker of this
     And the popup includes "email" and "password" to include in this notification
     And the aidworker appears in the "Current aidworkers" list now
@@ -51,7 +51,7 @@ Feature: Manage aidworkers
   Scenario: Add incorrect credentials
     Given the user has filled in an existing "email" or an incorrect "email" or "password"
     When the user clicks "Add aidworker"
-    Then a popup appears 
+    Then a popup appears
     And it says that "email" is not of correct format if email-format is incorrect
     And it says that "password" must be longer if password is too short
     And it says that "email" must be unique if there is already a "user" in the "system" with this "e-mail"

@@ -28,7 +28,7 @@ Feature: Link preprinted QR-code
     And sometimes the wrong camera is selected, resulting in a waiting screen
     When the PA clicks the "switch camera" button
     Then a camera preview is shown
-    
+
   Scenario: Successful scanning of QR-code
     Given the PA presses "yes" at the first question
     Given a "start scanner" button is shown and the "Scan QR-code" window is shown
@@ -51,7 +51,7 @@ Feature: Link preprinted QR-code
     Given a "start scanner" button is shown and the "Scan QR-code" window is shown
     Given the PA allows access to the camera(s)
     Given a camera preview is shown
-    Given the PA has a QR-code with data already registerd in the system
+    Given the PA has a QR-code with data already registered in the system
     When the PA moves the QR-code (sufficiently) into view
     Then "Scan QR-code" window is closed
     And a negative feedback message is shown
@@ -62,7 +62,7 @@ Feature: Link preprinted QR-code
     Given a "start scanner" button is shown and the "Scan QR-code" window is shown
     Given the PA allows access to the camera(s)
     Given a camera preview is shown
-    Given the PA has a QR-code with insufficcient data (nr of characters is less then 10)
+    Given the PA has a QR-code with insufficient data (number of characters is less then 10)
     When the PA moves the QR-code (sufficiently) into view
     Then "Scan QR-code" window is closed
     And a negative feedback message is shown
@@ -72,7 +72,7 @@ Feature: Link preprinted QR-code
     Given the PA presses "yes" at the first question
     Given a "start scanner" button is shown and the "Scan QR-code" window is shown
     Given the PA allows access to the camera(s)
-    Given the PA has previously scanned a QR-code with insufficcient data
+    Given the PA has previously scanned a QR-code with insufficient data
     Given a "try again" button is shown
     When the PA presses the "try again" button
     Then the "Scan QR-code" window is shown

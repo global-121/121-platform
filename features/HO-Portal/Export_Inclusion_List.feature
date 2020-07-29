@@ -9,7 +9,7 @@ Feature: Export inclusion list
 
   Scenario: Export inclusion list
     When the user clicks the "export inclusion list" and confirms the confirm prompt
-    Then a csv is downloaded 
+    Then a CSV-file is downloaded
     And it shows a list of the connections that are "included"
     And it shows the "name" and "dob" to be able to identify people
     And it shows the dates at which the person reached each status, to be able to assess the trajectory towards inclusion
@@ -19,4 +19,4 @@ Feature: Export inclusion list
   Scenario: Viewing the export options as project-officer
     Given a logged-in "project-officer" user
     When the user views the "review inclusion" page
-    Then the export list buttton is disabled
+    Then the export list button is disabled

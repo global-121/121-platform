@@ -15,7 +15,7 @@ Feature: Download validation data
     And the "main menu" is shown
 
   Scenario: Downloading validation data unsuccessfully
-    Given there is no internet connectifity
+    Given there is no internet connectivity
     When the user selects the "download validation data" option
     Then a popup that asks to try again is shown
     And the user can try again until it works

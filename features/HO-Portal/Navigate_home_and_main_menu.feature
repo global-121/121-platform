@@ -6,7 +6,7 @@ Feature: Navigate home page and main menu
     Then the user sees the "home page"
     And sees a list of all programs on this screen
     And sees a "menu" icon in the top-left of the screen
-    
+
   Scenario: Open a program-page
     Given a logged-in user
     Given the user views the "home page"
@@ -40,15 +40,12 @@ Feature: Navigate home page and main menu
     Given an opened "main menu"
     When the user clicks the "help" option
     Then the "help" page is shown
-        
+
   Scenario: Logout
     Given a logged-in user
     Given an opened "main menu"
     When the user clicks the "logout" option
-    Then the user is logged out 
+    Then the user is logged out
     And the "login" page is shown
     And the "main-menu" collapses
     And the "menu" icon disappears
-
-
-
