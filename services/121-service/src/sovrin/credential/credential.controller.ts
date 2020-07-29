@@ -83,21 +83,6 @@ export class CredentialController {
     return await this.credentialService.downloadData(userId);
   }
 
-  @Roles(UserRole.Aidworker)
-  @ApiOperation({
-    title: 'Delete prefilled answers (for AW, after issuing credential)',
-  })
-  @ApiResponse({ status: 200, description: 'Prefilled answers deleted' })
-  @Post('/delete-answers')
-  public async deletePrefilledAnswers(
-    @Body() deleteAnswers: DidProgramDto,
-  ): Promise<DeleteResult> {
-    return await this.credentialService.deletePrefilledAnswers(
-      deleteAnswers.did,
-      deleteAnswers.programId,
-    );
-  }
-
   @ApiOperation({ title: 'Post credential request (for PA)' })
   @ApiResponse({ status: 200, description: 'Credential request received' })
   @Post('/request')
