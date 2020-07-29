@@ -6,7 +6,6 @@
     "ng": "ng",
     "ionic": "ionic",
     "cordova": "cordova",
-    "prestart": "npm install --no-optional --no-audit --no-fund",
     "start": "ng serve --port 0",
     "dev:on-device": "npm run ionic -- cordova run android --device --consolelogs --livereload",
     "dev:local-android": "npm run ionic -- cordova run android --emulator --consolelogs --livereload",
