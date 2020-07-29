@@ -30,6 +30,7 @@ To set up a local development-environment:
 - Verify that your environment meets the requirements defined in:
   - [interfaces/README](interfaces/README.md#environment-requirements) for the front-end interfaces
   - [services/README](services/README.md) for the back-end services
+- Run: `npm run install:all` from *this* folder
 - Run: `npm run start:all` from *this* folder
 
 
