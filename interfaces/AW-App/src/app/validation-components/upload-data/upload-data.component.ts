@@ -47,19 +47,19 @@ export class UploadDataComponent implements ValidationComponent {
         }
         await this.removeLocalStorageData(
           credential.did,
-          this.ionicStorageTypes.credentials,
+          IonicStorageTypes.credentials,
         );
         await this.removeLocalStorageData(
           credential.did,
-          this.ionicStorageTypes.validationProgramData,
+          IonicStorageTypes.validationProgramData,
         );
         await this.removeLocalStorageData(
           credential.did,
-          this.ionicStorageTypes.validationFspData,
+          IonicStorageTypes.validationFspData,
         );
         await this.removeLocalStorageData(
           credential.did,
-          this.ionicStorageTypes.qrDidMapping,
+          IonicStorageTypes.qrDidMapping,
         );
       }
       this.uploadReady = true;
@@ -110,11 +110,11 @@ export class UploadDataComponent implements ValidationComponent {
 
   public async removeLocalStorageData(
     did: string,
-    ionicStorageType: IonicStorageTypes,
+    type: IonicStorageTypes,
   ): Promise<void> {
-    let data = await this.storage.get(this.ionicStorageTypes[ionicStorageType]);
+    let data = await this.storage.get(type);
     data = data.filter((item) => item.did !== did);
-    await this.storage.set(this.ionicStorageTypes[ionicStorageType], data);
+    await this.storage.set(type, data);
   }
 
   getNextSection(): string {
