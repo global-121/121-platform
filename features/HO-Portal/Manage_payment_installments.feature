@@ -70,5 +70,3 @@ Feature: Manage payment installments
     Given the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
     Then the message "Payout unsuccessful. Are there enough funds?" is shown
-
-

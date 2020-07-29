@@ -18,7 +18,7 @@ Feature: Navigate program phases
     Given the user views a "program" page
     When the user clicks one of the past phases in the "phase-navigation-bar"
     Then the background-color of the selected phase changes and reflects the "selected phase"
-    And the text-color ot the previous phase remains different and reflects the "current program phase"
+    And the text-color of the previous phase remains different and reflects the "current program phase"
     And sees that the "move-to-next-phase"-button is disabled, reflecting the read-only mode of past phases.
     And sees that the text of the of the "move-to-next-phase"-button changes, reflecting the meaning of the phase-change.
     And sees - depending on which state - that certain program-components in the page will (dis)appear.
@@ -30,4 +30,3 @@ Feature: Navigate program phases
     Then highlighting in the "phase-navigation-bar" will move to the next phase, both background- and text-color, reflecting a change in both "current program phase" and "selected phase"
     And sees that the text of the of the "move-to-next-phase"-button changes, reflecting the meaning of the next phase-change.
     And sees - depending on which state - that certain program-components in the page will (dis)appear.
-

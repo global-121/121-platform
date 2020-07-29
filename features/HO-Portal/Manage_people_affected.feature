@@ -16,7 +16,7 @@ Feature: Manage people affected (generic features)
 
   Scenario: View available actions
     When the user opens up the "choose action" dropdown
-    Then a list appears with availabe "bulk actions"
+    Then a list appears with available "bulk actions"
     And this is dependent on the currently logged-in "user" and "active phase" of the program
 
   Scenario: Select "bulk action" while rows eligible
@@ -45,7 +45,7 @@ Feature: Manage people affected (generic features)
     When the "user" clicks on the checkbox
     Then the row styling reflects selection by turning "blue"
     And the footer shows an updated number of selected people
-  
+
   Scenario: Select all rows given no row selection
     Given a "bulk action" is selected
     And the "header checkbox" has appeared

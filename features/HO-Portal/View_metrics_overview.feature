@@ -24,4 +24,3 @@ Feature: View metrics overview
     When the user clicks the "update"-button
     Then the most recent values for all metrics are shown
     And a new date for "Last updated" is shown
-
