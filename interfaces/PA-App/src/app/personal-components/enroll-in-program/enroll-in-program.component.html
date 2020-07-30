@@ -28,15 +28,6 @@
   ></q-and-a-set>
 
   <dialogue-turn [actor]="programDetails?.ngo"
-                 *ngIf="dobFeedback"
-                 [isSpoken]="dobFeedback"
-  >
-    <p>
-      <play-text-audio key="personal.enroll-in-program.dob-feedback" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.enroll-in-program.dob-feedback'|translate }}
-    </p>
-  </dialogue-turn>
-  <dialogue-turn [actor]="programDetails?.ngo"
                  *ngIf="hasAnswered"
                  [isSpoken]="hasAnswered"
   >

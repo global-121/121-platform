@@ -43,7 +43,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public allQuestionsShown = false;
   public hasAnswered: boolean;
   public hasChangedAnswers: boolean;
-  public dobFeedback = false;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -142,15 +141,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public submit($event) {
     this.answers = $event;
 
-    if (!this.answers.dob.value) {
-      this.changeAnswers();
-      this.dobFeedback = true;
-      return;
-    }
-
     this.hasAnswered = true;
     this.hasChangedAnswers = false;
-    this.dobFeedback = false;
     this.conversationService.scrollToEnd();
     this.paData.saveAnswers(this.programId, this.answers);
   }

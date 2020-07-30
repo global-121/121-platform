@@ -40,7 +40,6 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   public hasAnswered: boolean;
   public hasChangedAnswers = true;
-  public dobFeedback = false;
 
   private ionicStorageTypes = IonicStorageTypes;
 
@@ -170,13 +169,8 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   public submit() {
-    if (!this.answers.dob) {
-      this.dobFeedback = true;
-      return;
-    }
     this.hasAnswered = true;
     this.hasChangedAnswers = false;
-    this.dobFeedback = false;
   }
 
   private createAttributes(answers: Answer[]): ProgramAttribute[] {
