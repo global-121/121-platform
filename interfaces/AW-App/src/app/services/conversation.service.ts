@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { ValidationComponents } from '../validation-components/validation-components.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -57,7 +58,7 @@ export class ConversationService {
   }
 
   startNewConversation() {
-    this.addSection('main-menu');
+    this.addSection(ValidationComponents.validateProgram);
   }
 
   private addSection(sectionName) {

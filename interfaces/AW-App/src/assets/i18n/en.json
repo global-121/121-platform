@@ -66,6 +66,7 @@
       "confirm-button": "Issue Program Credential",
       "no-fsp": "There are no questions to validate for the chosen Financial Service Provider",
       "back-menu": "Back to main menu",
+      "generic-error": "Something went wrong.",
       "conclusion": "The financial service provider data has been saved. Please make sure to upload it (now or when internet is available)."
     }
   },
