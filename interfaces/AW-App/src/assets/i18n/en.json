@@ -51,7 +51,6 @@
     "validate-program": {
       "introduction": "Below you see the Person Affected's information for the specific program. Check it with the Person Affected, adapt where necessary, and confirm.",
       "submit": "Confirm",
-      "dob-feedback": "The date of birth does not have a valid format. Please adjust and save again.",
       "please-confirm": "Below is an overview of the Person Affected's information. Please confirm.",
       "change": "Change information",
       "confirm-button": "Save",
@@ -60,7 +59,6 @@
     "validate-fsp": {
       "introduction": "Below you see the Person Affected's information for the chosen Financial Service Provider. Check it with the Person Affected, adapt where necessary, and confirm.",
       "submit": "Submit answers",
-      "dob-feedback": "The date of birth does not have a valid format. Please adjust and save again.",
       "please-confirm": "Below is an overview of the Person Affected's information. Please confirm and submit.",
       "change": "Change information",
       "confirm-button": "Issue Program Credential",
@@ -76,9 +74,10 @@
   "q-and-a-set": {
     "validation": {
       "generic-error": "We cannot process some of your input. Please check and update one of your answers.",
-      "required": "An answer is required for this question.",
-      "number": "The answer needs to be a number.",
-      "phone-number": "We couldn't verify that phone-number. Please update and try again."
+      "required": "An answer is required for this question. Please adjust and try again.",
+      "number": "The answer needs to be a number. Please adjust and try again.",
+      "date": "The date does not have a valid format. Please adjust and try again.",
+      "phone-number": "We couldn't verify this phone-number. Please adjust and try again."
     }
   },
   "qr-scanner": {

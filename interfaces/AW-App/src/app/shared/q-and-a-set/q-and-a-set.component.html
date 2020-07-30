@@ -37,10 +37,14 @@
       <div *ngSwitchCase="answerType.Date">
         <ion-input type="date"
                    placeholder="dd-mm-yyyy"
+                   #dateInput="ngModel"
+                   [(ngModel)]="answerModels[question.code]"
+                   ngDefaultControl
+                   required
                    [name]="question.code"
                    [value]="answers[question.code]?.value"
                    [disabled]="isSubmitted"
-                   (ionChange)="onAnswerChange(question.code,$event.target.value)"
+                   (ionChange)="onChangeWithValidation(question.code, dateInput.value, !(dateInput.invalid && (dateInput.dirty || dateInput.touched)))"
                    debounce="100"
         ></ion-input>
       </div>
@@ -79,6 +83,9 @@
       </p>
       <p *ngIf="(question.answerType === answerType.Number)">
         {{ 'q-and-a-set.validation.number'|translate }}
+      </p>
+      <p *ngIf="(question.answerType === answerType.Date)">
+        {{ 'q-and-a-set.validation.date'|translate }}
       </p>
       <p *ngIf="(question.answerType === answerType.Text)">
         {{ 'q-and-a-set.validation.required'|translate }}

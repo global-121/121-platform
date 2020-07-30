@@ -13,13 +13,6 @@
                submitLabel="validation.validate-program.submit"
   ></q-and-a-set>
 
-  <dialogue-turn *ngIf="dobFeedback"
-                 [isSpoken]="dobFeedback"
-  >
-    <p>
-      {{ 'validation.validate-program.dob-feedback'|translate }}
-    </p>
-  </dialogue-turn>
   <dialogue-turn *ngIf="hasAnswered || programCredentialIssued"
                  [isSpoken]="hasAnswered || programCredentialIssued"
   >
