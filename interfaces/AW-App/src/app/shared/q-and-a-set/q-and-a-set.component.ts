@@ -1,10 +1,11 @@
 import {
-  AfterContentInit,
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChildren,
 } from '@angular/core';
 import {
@@ -21,7 +22,7 @@ import { DialogueTurnComponent } from '../dialogue-turn/dialogue-turn.component'
   templateUrl: './q-and-a-set.component.html',
   styleUrls: ['./q-and-a-set.component.scss'],
 })
-export class QAndASetComponent implements AfterContentInit {
+export class QAndASetComponent implements OnChanges {
   @ViewChildren(DialogueTurnComponent)
   private turns: QueryList<DialogueTurnComponent>;
 
@@ -48,6 +49,7 @@ export class QAndASetComponent implements AfterContentInit {
   @Input()
   public submitLabel = 'Submit';
 
+  @Input()
   public allQuestionsShown: boolean;
 
   public answerType = AnswerType;
@@ -56,13 +58,22 @@ export class QAndASetComponent implements AfterContentInit {
 
   constructor() {}
 
-  ngAfterContentInit() {
-    if (this.answers && this.questions) {
-      this.allQuestionsShown = this.checkAllQuestionsShown(
-        this.questions,
-        Object.keys(this.answers),
-      );
+  ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes.questions &&
+      typeof changes.questions.currentValue !== 'undefined'
+    ) {
+      this.fillAnswerModels(this.questions, this.answers);
     }
+  }
+
+  private fillAnswerModels(questions: Question[], answers: AnswerSet) {
+    questions.forEach((question) => {
+      if (!answers[question.code]) {
+        return;
+      }
+      this.answerModels[question.code] = answers[question.code].value;
+    });
   }
 
   private getQuestionByCode(questionCode: string): Question {
@@ -136,6 +147,10 @@ export class QAndASetComponent implements AfterContentInit {
   }
 
   private checkAllQuestionsShown(questions: Question[], answers: string[]) {
+    if (!questions || !answers) {
+      return false;
+    }
+
     return answers.length >= questions.length - 1;
   }
 

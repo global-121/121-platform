@@ -61,6 +61,7 @@
                    type="text"
                    pattern=".*\S+.*"
                    [name]="question.code"
+                   [value]="answers[question.code]?.value"
                    [disabled]="isSubmitted"
                    (ionChange)="onChangeWithValidation(question.code, defaultInput.value, !(defaultInput.invalid && (defaultInput.dirty || defaultInput.touched)))"
                    debounce="300"
@@ -78,6 +79,9 @@
       </p>
       <p *ngIf="(question.answerType === answerType.Number)">
         {{ 'q-and-a-set.validation.number'|translate }}
+      </p>
+      <p *ngIf="(question.answerType === answerType.Text)">
+        {{ 'q-and-a-set.validation.required'|translate }}
       </p>
     </dialogue-turn>
   </div>

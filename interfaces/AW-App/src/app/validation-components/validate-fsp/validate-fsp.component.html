@@ -10,6 +10,7 @@
                  [answers]="customAttributeAnswers"
                  [(isSubmitted)]="isSubmitted"
                  [(isEditing)]="isEditing"
+                 [allQuestionsShown]="true"
                  (submit)="saveCustomAttributes($event)"
                  submitLabel="validation.validate-fsp.submit"
     ></q-and-a-set>
@@ -25,7 +26,7 @@
                    [isSpoken]="showResultError"
     >
       <p>
-        {{ 'shared.validate-generic-error'|translate }}
+        {{ 'validation.validate-fsp.generic-error'|translate }}
       </p>
     </dialogue-turn>
   </form>

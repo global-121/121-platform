@@ -1,7 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
@@ -25,16 +24,7 @@ describe('ScanQrComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ScanQrComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        RouterTestingModule.withRoutes([
-          {
-            path: 'scan-qr',
-            redirectTo: '/',
-          },
-        ]),
-        HttpClientTestingModule,
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {

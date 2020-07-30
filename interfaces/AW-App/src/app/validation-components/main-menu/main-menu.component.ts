@@ -30,17 +30,17 @@ export class MainMenuComponent implements ValidationComponent {
     const pendingUploadCount = await this.getNrUploadWaiting();
     this.menuOptions = [
       {
-        id: 'download-data',
+        id: ValidationComponents.downloadData,
         option: this.translate.instant('validation.main-menu.download-data'),
         disabled: false,
       },
       {
-        id: 'scan-qr',
+        id: ValidationComponents.scanQr,
         option: this.translate.instant('validation.main-menu.scan-qr'),
         disabled: false,
       },
       {
-        id: 'upload-data',
+        id: ValidationComponents.uploadData,
         option: this.translate.instant('validation.main-menu.upload-data'),
         counter: pendingUploadCount,
         disabled: !pendingUploadCount,
@@ -63,17 +63,10 @@ export class MainMenuComponent implements ValidationComponent {
   public submitOption() {
     this.optionSelected = true;
     this.complete();
-    console.log('optionChoice: ', this.optionChoice);
   }
 
   getNextSection() {
-    if (this.optionChoice === 'download-data') {
-      return ValidationComponents.downloadData;
-    } else if (this.optionChoice === 'scan-qr') {
-      return ValidationComponents.scanQr;
-    } else if (this.optionChoice === 'upload-data') {
-      return ValidationComponents.uploadData;
-    }
+    return this.optionChoice;
   }
 
   complete() {
