@@ -2,8 +2,10 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChildren,
 } from '@angular/core';
 import {
@@ -20,7 +22,7 @@ import { DialogueTurnComponent } from '../dialogue-turn/dialogue-turn.component'
   templateUrl: './q-and-a-set.component.html',
   styleUrls: ['./q-and-a-set.component.scss'],
 })
-export class QAndASetComponent {
+export class QAndASetComponent implements OnChanges {
   @ViewChildren(DialogueTurnComponent)
   private turns: QueryList<DialogueTurnComponent>;
 
@@ -55,6 +57,24 @@ export class QAndASetComponent {
   public validationErrors: string[] = [];
 
   constructor() {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (
+      changes.questions &&
+      typeof changes.questions.currentValue !== 'undefined'
+    ) {
+      this.fillAnswerModels(this.questions, this.answers);
+    }
+  }
+
+  private fillAnswerModels(questions: Question[], answers: AnswerSet) {
+    questions.forEach((question) => {
+      if (!answers[question.code]) {
+        return;
+      }
+      this.answerModels[question.code] = answers[question.code].value;
+    });
+  }
 
   private getQuestionByCode(questionCode: string): Question {
     const result = this.questions.find((question: Question) => {
