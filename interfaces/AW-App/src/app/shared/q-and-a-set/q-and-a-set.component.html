@@ -80,6 +80,9 @@
       <p *ngIf="(question.answerType === answerType.Number)">
         {{ 'q-and-a-set.validation.number'|translate }}
       </p>
+      <p *ngIf="(question.answerType === answerType.Text)">
+        {{ 'q-and-a-set.validation.required'|translate }}
+      </p>
     </dialogue-turn>
   </div>
 
