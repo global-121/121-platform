@@ -28,7 +28,9 @@
       <div *ngSwitchCase="answerType.Number">
         <numeric-input #numInput
                        ngDefaultControl
-                      [value]="answers[question.code]?.value"
+                       required
+                       [name]="question.code"
+                       [value]="answers[question.code]?.value"
                       [disabled]="isSubmitted"
                       (isValidChange)="onChangeWithValidation(question.code, numInput.value, numInput.isValid)"
                       debounce="300"
@@ -52,6 +54,8 @@
         <phone-number-input #phoneNumberInput
                             [value]="answers[question.code]?.value"
                             ngDefaultControl
+                            required
+                            [name]="question.code"
                             [disabled]="isSubmitted"
                             (isValidChange)="onChangeWithValidation(question.code, phoneNumberInput.value, phoneNumberInput.isValid)"
                             debounce="500"

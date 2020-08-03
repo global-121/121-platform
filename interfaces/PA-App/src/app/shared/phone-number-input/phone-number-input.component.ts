@@ -18,10 +18,16 @@ export class PhoneNumberInputComponent {
   public telInput: any;
 
   @Input()
+  public name: string;
+
+  @Input()
   public value: string;
 
   @Input()
   public disabled: boolean;
+
+  @Input()
+  public required: boolean;
 
   @Input()
   public isValid: boolean;
