@@ -1,3 +1,5 @@
+<form #theForm="ngForm">
+
 <div *ngFor="let question of questions; let i=index; first as isFirst;">
 
   <dialogue-turn actor="self"
@@ -28,6 +30,7 @@
       <div *ngSwitchCase="answerType.Number">
         <numeric-input #numInput
                        ngDefaultControl
+                       [(ngModel)]="theFormModels[question.code]"
                        required
                        [name]="question.code"
                        [value]="answers[question.code]?.value"
@@ -40,7 +43,7 @@
         <ion-input type="date"
                    placeholder="dd-mm-yyyy"
                    #dateInput="ngModel"
-                   [(ngModel)]="answerModels[question.code]"
+                   [(ngModel)]="theFormModels[question.code]"
                    ngDefaultControl
                    required
                    [name]="question.code"
@@ -52,10 +55,11 @@
       </div>
       <div *ngSwitchCase="answerType.phoneNumber">
         <phone-number-input #phoneNumberInput
-                            [value]="answers[question.code]?.value"
                             ngDefaultControl
+                            [(ngModel)]="theFormModels[question.code]"
                             required
                             [name]="question.code"
+                            [value]="answers[question.code]?.value"
                             [disabled]="isSubmitted"
                             (isValidChange)="onChangeWithValidation(question.code, phoneNumberInput.value, phoneNumberInput.isValid)"
                             debounce="500"
@@ -63,7 +67,7 @@
       </div>
       <div *ngSwitchDefault>
         <ion-input #defaultInput="ngModel"
-                   [(ngModel)]="answerModels[question.code]"
+                   [(ngModel)]="theFormModels[question.code]"
                    ngDefaultControl
                    required
                    type="text"
@@ -103,8 +107,8 @@
 
 </div>
 
-<dialogue-turn *ngIf="checkValidationErrors() && allQuestionsShown"
-               [isSpoken]="checkValidationErrors() && allQuestionsShown"
+<dialogue-turn *ngIf="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown"
+               [isSpoken]="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown"
 >
   <p>
     <play-text-audio key="q-and-a-set.validation.generic-error" class="ion-float-start ion-margin-end"></play-text-audio>
@@ -114,8 +118,8 @@
 
 <dialogue-turn actor="self"
                isConnected="true"
-               *ngIf="!checkValidationErrors() && allQuestionsShown"
-               [isSpoken]="!checkValidationErrors() && allQuestionsShown"
+               *ngIf="(theForm.valid && (theForm.dirty || theForm.touched) && !checkValidationErrors()) && allQuestionsShown"
+               [isSpoken]="(theForm.valid && (theForm.dirty || theForm.touched) && !checkValidationErrors()) && allQuestionsShown"
 >
   <ion-row class="ion-nowrap ion-align-items-center">
     <play-text-audio [key]="submitLabel"
@@ -131,3 +135,5 @@
     </ion-button>
   </ion-row>
 </dialogue-turn>
+
+</form>
