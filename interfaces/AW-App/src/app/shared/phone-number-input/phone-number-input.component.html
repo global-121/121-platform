@@ -6,10 +6,11 @@
            placeholder="+0 000 000 000"
            minlength="8"
            maxlength="17"
+           [name]="name"
            [value]="value"
            [disabled]="disabled"
            (ionChange)="onChange()"
            debounce="500"
            ngDefaultControl
-           required
+           [required]="required"
 ></ion-input>

@@ -8,6 +8,7 @@ import {
   SimpleChanges,
   ViewChildren,
 } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import {
   Answer,
   AnswerSet,
@@ -31,7 +32,6 @@ export class QAndASetComponent implements OnChanges {
 
   @Input()
   public answers: AnswerSet = {};
-  public answerModels = {};
 
   @Input()
   public isSubmitted = false;
@@ -54,6 +54,9 @@ export class QAndASetComponent implements OnChanges {
 
   public answerType = AnswerType;
 
+  public theForm: NgForm;
+  public theFormModels = {};
+
   public validationErrors: string[] = [];
 
   constructor() {}
@@ -68,11 +71,14 @@ export class QAndASetComponent implements OnChanges {
   }
 
   private fillAnswerModels(questions: Question[], answers: AnswerSet) {
+    if (!this.answers || !this.answers.length) {
+      return;
+    }
     questions.forEach((question) => {
       if (!answers[question.code]) {
         return;
       }
-      this.answerModels[question.code] = answers[question.code].value;
+      this.theFormModels[question.code] = answers[question.code].value;
     });
   }
 
@@ -147,11 +153,7 @@ export class QAndASetComponent implements OnChanges {
   }
 
   private checkAllQuestionsShown(questions: Question[], answers: string[]) {
-    if (!questions || !answers) {
-      return false;
-    }
-
-    return answers.length >= questions.length - 1;
+    return answers.length === questions.length;
   }
 
   public onChangeWithValidation(

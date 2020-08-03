@@ -16,7 +16,13 @@ export class NumericInputComponent {
   public numericInput: any;
 
   @Input()
+  public name: string;
+
+  @Input()
   public value: string;
+
+  @Input()
+  public required: boolean;
 
   @Input()
   public autocomplete: string;
