@@ -154,7 +154,7 @@
   },
   "q-and-a-set": {
     "validation": {
-      "generic-error": "We cannot process some of your input. Please check and update one of your answers.",
+      "generic-error": "We cannot process some of your input. Please check and update your answers.",
       "required": "An answer is required for this question. Please adjust and try again.",
       "number": "The answer needs to be a number. Please adjust and try again.",
       "date": "The date does not have a valid format. Please adjust and try again.",
