@@ -35,7 +35,6 @@
             [(ngModel)]="theFormModels[question.code]"
             required
             [name]="question.code"
-            [value]="answers[question.code]?.value"
             [disabled]="isSubmitted"
             (isValidChange)="onChangeWithValidation(question.code, numInput.value, numInput.isValid)"
             debounce="300"
@@ -50,9 +49,8 @@
             placeholder="dd-mm-yyyy"
             required
             [name]="question.code"
-            [value]="answers[question.code]?.value"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, dateInput.value, !(dateInput.invalid && (dateInput.dirty || dateInput.touched)))"
+            (ionChange)="onChangeWithValidation(question.code, dateInput.value, (dateInput.valid && (dateInput.dirty || dateInput.touched)))"
             debounce="100"
           ></ion-input>
         </div>
@@ -63,7 +61,6 @@
             [(ngModel)]="theFormModels[question.code]"
             required
             [name]="question.code"
-            [value]="answers[question.code]?.value"
             [disabled]="isSubmitted"
             (isValidChange)="onChangeWithValidation(question.code, phoneNumberInput.value, phoneNumberInput.isValid)"
             debounce="500"
@@ -78,9 +75,8 @@
             pattern=".*\S+.*"
             required
             [name]="question.code"
-            [value]="answers[question.code]?.value"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, !(defaultInput.invalid && (defaultInput.dirty || defaultInput.touched)))"
+            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, (defaultInput.valid && (defaultInput.dirty || defaultInput.touched)))"
             debounce="300"
           ></ion-input>
         </div>
@@ -119,8 +115,8 @@
   <dialogue-turn
     actor="self"
     isConnected="true"
-    *ngIf="(theForm.valid && (theForm.dirty || theForm.touched) && !checkValidationErrors()) && allQuestionsShown"
-    [isSpoken]="(theForm.valid && (theForm.dirty || theForm.touched) && !checkValidationErrors()) && allQuestionsShown"
+    *ngIf="theForm.valid && !checkValidationErrors() && allQuestionsShown"
+    [isSpoken]="theForm.valid && !checkValidationErrors() && allQuestionsShown"
   >
     <ion-row class="ion-nowrap ion-align-items-center">
       <ion-button

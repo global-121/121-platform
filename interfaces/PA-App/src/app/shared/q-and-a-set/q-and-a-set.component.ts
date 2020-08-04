@@ -62,23 +62,18 @@ export class QAndASetComponent implements OnChanges {
   constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
+    // Wait for questions to finish loading, to only THEN parse the provided ansers:
     if (
       changes.questions &&
       typeof changes.questions.currentValue !== 'undefined'
     ) {
-      this.fillAnswerModels(this.questions, this.answers);
+      this.fillAnswerModels();
     }
   }
 
-  private fillAnswerModels(questions: Question[], answers: AnswerSet) {
-    if (!this.answers || !this.answers.length) {
-      return;
-    }
-    questions.forEach((question) => {
-      if (!answers[question.code]) {
-        return;
-      }
-      this.theFormModels[question.code] = answers[question.code].value;
+  private fillAnswerModels() {
+    Object.values(this.answers).forEach((item) => {
+      this.theFormModels[item.code] = item.value;
     });
   }
 
@@ -120,6 +115,10 @@ export class QAndASetComponent implements OnChanges {
   }
 
   public onAnswerChange(questionCode: string, answerValue: string) {
+    // Remove 'false positive' change-events on load/initiation of the component with data
+    if (!answerValue) {
+      return;
+    }
     const question = this.getQuestionByCode(questionCode);
     const answer = this.createAnswer(question, answerValue);
 
