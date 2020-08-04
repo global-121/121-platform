@@ -59,7 +59,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.programId = paData[0].programId;
 
     await this.getProgramQuestions();
-    await this.initialAnswers(paData);
+    this.initialAnswers(paData);
 
     this.ionContent.scrollToBottom(300);
   }
