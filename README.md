@@ -103,9 +103,6 @@ This follows the same process as a regular release + deployment. With some small
   - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):  
         Run: `. ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v0.1.0`
 
-### To "staging" environment
-- This environment works exactly the same as the "production" environment
-
 ## Glossary
 
 | Term          | Definition (_we_ use)                                                                                        |
