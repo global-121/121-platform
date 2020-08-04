@@ -7,6 +7,7 @@ enum Actor {
   ngoDorcas = 'Dorcas',
   ngoEagles = 'Eagles',
   ngoNLRC = 'NLRC',
+  ngoKRCS = 'KRCS',
 }
 
 @Component({
