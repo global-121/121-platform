@@ -1,0 +1,116 @@
+{
+  "published": false,
+  "state": "design",
+  "location": "Kenya",
+  "ngo": "KRCS",
+  "countryId": 1,
+  "title": {
+    "en": "Pilot - Kenya"
+  },
+  "description": {
+    "en": "Program description"
+  },
+  "descLocation": {
+    "en": "Location such and such."
+  },
+  "descHumanitarianObjective": {
+    "en": "Humanitarian objective of program is such and such."
+  },
+  "descCashType": {
+    "en": "Unconditional multi-purpose"
+  },
+  "startDate": "2020-01-01T12:00:00Z",
+  "endDate": "2020-12-31T12:00:00Z",
+  "currency": "KES",
+  "distributionFrequency": "month",
+  "distributionDuration": 3,
+  "fixedTransferValue": 35,
+  "financialServiceProviders": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ],
+  "inclusionCalculationType": "highestScoresX",
+  "minimumScore": 0,
+  "highestScoresX": 250,
+  "meetingDocuments": {
+    "en": "Document 1; Document 2; Document 3"
+  },
+  "notifications": {
+    "en": {
+      "included": "You have been included in this program.",
+      "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us."
+    }
+  },
+  "customCriteria": [
+    {
+      "criterium": "name",
+      "label": {
+        "en": "My full name:"
+      },
+      "answerType": "text",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    },
+    {
+      "criterium": "dob",
+      "label": {
+        "en": "My date of birth:"
+      },
+      "answerType": "date",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    },
+    {
+      "criterium": "phoneNumber",
+      "label": {
+        "en": "My phonenumber:"
+      },
+      "answerType": "tel",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    },
+    {
+      "criterium": "sample",
+      "label": {
+        "en": "1. Sample vulnerability question:"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "optionA",
+          "label": {
+            "en": "Option A"
+          }
+        },
+        {
+          "option": "optionB",
+          "label": {
+            "en": "Option B"
+          }
+        },
+        {
+          "option": "optionC",
+          "label": {
+            "en": "Option C"
+          }
+        }
+      ],
+      "scoring": {
+        "optionA": 3,
+        "optionB": 6,
+        "optionC": 9
+      }
+    }
+  ]
+}
