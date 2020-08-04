@@ -33,14 +33,6 @@
       "id": 2
     }
   ],
-  "protectionServiceProviders": [
-    {
-      "id": 1
-    },
-    {
-      "id": 2
-    }
-  ],
   "inclusionCalculationType": "highestScoresX",
   "minimumScore": 0,
   "highestScoresX": 250,
