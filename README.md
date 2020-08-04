@@ -70,7 +70,11 @@ This is how we create and publish a new release of the 121-platform.
 This follows the same process as a regular release + deployment. With some small changes.
 - Code does not need to be frozen. (As there is no active development on the release-branch)
 - Checkout the `release/<version>`-branch that needs the hotfix.
-- After the hotfix-release, apply the same fix (if applicable) to the master-branch in a regular PR
+- Create a new local branch (e.g. `release/<v0.x.1>`) and make the change
+- Push this branch directly to a new branch in the main repository, not to a personal fork.
+- Create a new release (see above) and publish it
+- The publish-command will invoke a webhook-signal, leading to an automatic deploy
+- After the hotfix-release, apply the same fix (if applicable) to the master-branch in a regular PR (by creating a PR from the hotfix-branch to `master`-branch)
 - Finally, add the hotfix-release to the [CHANGELOG](CHANGELOG.md) in the master-branch
 
 
