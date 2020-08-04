@@ -5,6 +5,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import { NgModel } from '@angular/forms';
 import { TimeoutError } from 'rxjs';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -18,10 +19,19 @@ export class PhoneNumberInputComponent {
   public telInput: any;
 
   @Input()
+  public name: string;
+
+  @Input()
+  public ngModel: NgModel;
+
+  @Input()
   public value: string;
 
   @Input()
   public disabled: boolean;
+
+  @Input()
+  public required: boolean;
 
   @Input()
   public isValid: boolean;
@@ -67,8 +77,12 @@ export class PhoneNumberInputComponent {
         isValid = typeof result.result !== 'undefined' ? result.result : false;
       },
       (error) => {
-        // If aidworker is offline do not check phonenumber online
-        if (error.status === 0 || error instanceof TimeoutError) {
+        // If offline do not check phonenumber online
+        if (
+          error.status === 0 ||
+          error.status === 504 ||
+          error instanceof TimeoutError
+        ) {
           isValid = true;
         } else {
           console.log('error: ', error.error);
