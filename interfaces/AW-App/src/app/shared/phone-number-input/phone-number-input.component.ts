@@ -5,6 +5,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import { NgModel } from '@angular/forms';
 import { TimeoutError } from 'rxjs';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
@@ -19,6 +20,9 @@ export class PhoneNumberInputComponent {
 
   @Input()
   public name: string;
+
+  @Input()
+  public ngModel: NgModel;
 
   @Input()
   public value: string;

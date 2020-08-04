@@ -5,6 +5,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'numeric-input',
@@ -17,6 +18,9 @@ export class NumericInputComponent {
 
   @Input()
   public name: string;
+
+  @Input()
+  public ngModel: NgModel;
 
   @Input()
   public value: string;
