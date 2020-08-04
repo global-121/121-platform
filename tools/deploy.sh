@@ -87,6 +87,12 @@ function deploy() {
     sudo cp -r www/ "$web_root/$web_app_dir"
   }
 
+  function restart_webhook_service() {
+    sudo service webhook restart
+
+    log "Webhook service restarted: "
+  }
+
   function update_version() {
     # Store version, accessible via web:
     sudo git describe --tags --dirty --broken | sudo tee "$web_root/VERSION.txt"
@@ -110,6 +116,8 @@ function deploy() {
 
   build_interface "HO-Portal" "$repo_ho" "$ho_dir"
   deploy_interface "HO-Portal" "$repo_ho" "$ho_dir"
+
+  restart_webhook_service
 
   update_version
 
