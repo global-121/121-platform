@@ -1,129 +1,140 @@
-<div *ngFor="let question of questions; let i=index; first as isFirst;">
+<form #theForm="ngForm">
 
-  <dialogue-turn actor="self"
-                 [isConnected]="!isFirst"
-                 [isSpoken]="isFirst || isSubmitted || isEditing"
-  >
-    <ion-label>
-      {{ question.label }}
-    </ion-label>
-    <div [ngSwitch]="question.answerType">
-      <div *ngSwitchCase="answerType.Enum">
-        <ion-radio-group [name]="question.code"
-                         (ionChange)="onAnswerChange(question.code,$event.target.value)"
-                         debounce="100"
-        >
-          <ion-item *ngFor="let option of question.options"
-                    color="light"
-                    lines="full"
+  <div *ngFor="let question of questions; let i=index; first as isFirst;">
+    <dialogue-turn
+      actor="self"
+      [isConnected]="!isFirst"
+      [isSpoken]="isFirst || isSubmitted || isEditing"
+    >
+      <ion-label>{{ question.label }}</ion-label>
+      <div [ngSwitch]="question.answerType">
+        <div *ngSwitchCase="answerType.Enum">
+          <ion-radio-group
+            [name]="question.code"
+            (ionChange)="onAnswerChange(question.code,$event.target.value)"
+            debounce="100"
           >
-            <ion-label>{{ option.label }}</ion-label>
-            <ion-radio [value]="option.value"
-                       [checked]="(option.value === answers[question.code]?.value)"
-                       [disabled]="isSubmitted"
-            ></ion-radio>
-          </ion-item>
-        </ion-radio-group>
+            <ion-item
+              *ngFor="let option of question.options"
+              color="light"
+              lines="full"
+            >
+              <ion-label>{{ option.label }}</ion-label>
+              <ion-radio
+                [value]="option.value"
+                [checked]="(option.value === answers[question.code]?.value)"
+                [disabled]="isSubmitted"
+              ></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </div>
+        <div *ngSwitchCase="answerType.Number">
+          <numeric-input
+            #numInput
+            ngDefaultControl
+            [(ngModel)]="theFormModels[question.code]"
+            required
+            [name]="question.code"
+            [disabled]="isSubmitted"
+            (isValidChange)="onChangeWithValidation(question.code, numInput.value, numInput.isValid)"
+            debounce="300"
+          ></numeric-input>
+        </div>
+        <div *ngSwitchCase="answerType.Date">
+          <ion-input
+            #dateInput="ngModel"
+            ngDefaultControl
+            [(ngModel)]="theFormModels[question.code]"
+            type="date"
+            placeholder="dd-mm-yyyy"
+            required
+            [name]="question.code"
+            [disabled]="isSubmitted"
+            (ionChange)="onChangeWithValidation(question.code, dateInput.value, (dateInput.valid && (dateInput.dirty || dateInput.touched)))"
+            debounce="100"
+          ></ion-input>
+        </div>
+        <div *ngSwitchCase="answerType.phoneNumber">
+          <phone-number-input
+            #phoneNumberInput
+            ngDefaultControl
+            [(ngModel)]="theFormModels[question.code]"
+            required
+            [name]="question.code"
+            [disabled]="isSubmitted"
+            (isValidChange)="onChangeWithValidation(question.code, phoneNumberInput.value, phoneNumberInput.isValid)"
+            debounce="500"
+          ></phone-number-input>
+        </div>
+        <div *ngSwitchDefault>
+          <ion-input
+            #defaultInput="ngModel"
+            ngDefaultControl
+            [(ngModel)]="theFormModels[question.code]"
+            type="text"
+            pattern=".*\S+.*"
+            required
+            [name]="question.code"
+            [disabled]="isSubmitted"
+            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, (defaultInput.valid && (defaultInput.dirty || defaultInput.touched)))"
+            debounce="300"
+          ></ion-input>
+        </div>
       </div>
-      <div *ngSwitchCase="answerType.Number">
-        <numeric-input #numInput
-                       ngDefaultControl
-                      [value]="answers[question.code]?.value"
-                      [disabled]="isSubmitted"
-                      (isValidChange)="onChangeWithValidation(question.code, numInput.value, numInput.isValid)"
-                      debounce="300"
-        ></numeric-input>
-      </div>
-      <div *ngSwitchCase="answerType.Date">
-        <ion-input type="date"
-                   placeholder="dd-mm-yyyy"
-                   #dateInput="ngModel"
-                   [(ngModel)]="answerModels[question.code]"
-                   ngDefaultControl
-                   required
-                   [name]="question.code"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="isSubmitted"
-                   (ionChange)="onChangeWithValidation(question.code, dateInput.value, !(dateInput.invalid && (dateInput.dirty || dateInput.touched)))"
-                   debounce="100"
-        ></ion-input>
-      </div>
-      <div *ngSwitchCase="answerType.phoneNumber">
-        <phone-number-input #phoneNumberInput
-                            [value]="answers[question.code]?.value"
-                            ngDefaultControl
-                            [disabled]="isSubmitted"
-                            (isValidChange)="onChangeWithValidation(question.code, phoneNumberInput.value, phoneNumberInput.isValid)"
-                            debounce="500"
-        ></phone-number-input>
-      </div>
-      <div *ngSwitchDefault>
-        <ion-input #defaultInput="ngModel"
-                   [(ngModel)]="answerModels[question.code]"
-                   ngDefaultControl
-                   required
-                   type="text"
-                   pattern=".*\S+.*"
-                   [name]="question.code"
-                   [value]="answers[question.code]?.value"
-                   [disabled]="isSubmitted"
-                   (ionChange)="onChangeWithValidation(question.code, defaultInput.value, !(defaultInput.invalid && (defaultInput.dirty || defaultInput.touched)))"
-                   debounce="300"
-        ></ion-input>
-      </div>
-    </div>
-  </dialogue-turn>
-
-  <div *ngIf="checkValidationErrors(question.code)"
-       class="ion-margin-bottom ion-padding-bottom"
-  >
-    <dialogue-turn [isSpoken]="checkValidationErrors(question.code)">
-      <p *ngIf="(question.answerType === answerType.phoneNumber) && validationErrors.includes('phoneNumber')">
-        <play-text-audio key="q-and-a-set.validation.phone-number" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'q-and-a-set.validation.phone-number'|translate }}
-      </p>
-      <p *ngIf="(question.answerType === answerType.Number)">
-        <play-text-audio key="q-and-a-set.validation.number" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'q-and-a-set.validation.number'|translate }}
-      </p>
-      <p *ngIf="(question.answerType === answerType.Date)">
-        <play-text-audio key="q-and-a-set.validation.date" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'q-and-a-set.validation.date'|translate }}
-      </p>
-      <p *ngIf="(question.answerType === answerType.Text)">
-        <play-text-audio key="q-and-a-set.validation.required" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'q-and-a-set.validation.required'|translate }}
-      </p>
     </dialogue-turn>
+    <div
+      *ngIf="checkValidationErrors(question.code)"
+      class="ion-margin-bottom ion-padding-bottom"
+    >
+      <dialogue-turn [isSpoken]="checkValidationErrors(question.code)">
+        <p *ngIf="(question.answerType === answerType.phoneNumber) && validationErrors.includes('phoneNumber')">
+          <play-text-audio key="q-and-a-set.validation.phone-number" class="ion-float-start ion-margin-end"></play-text-audio>
+          {{ 'q-and-a-set.validation.phone-number'|translate }}
+        </p>
+        <p *ngIf="(question.answerType === answerType.Number)">
+          <play-text-audio key="q-and-a-set.validation.number" class="ion-float-start ion-margin-end"></play-text-audio>
+          {{ 'q-and-a-set.validation.number'|translate }}
+        </p>
+        <p *ngIf="(question.answerType === answerType.Date)">
+          <play-text-audio key="q-and-a-set.validation.date" class="ion-float-start ion-margin-end"></play-text-audio>
+          {{ 'q-and-a-set.validation.date'|translate }}
+        </p>
+        <p *ngIf="(question.answerType === answerType.Text)">
+          <play-text-audio key="q-and-a-set.validation.required" class="ion-float-start ion-margin-end"></play-text-audio>
+          {{ 'q-and-a-set.validation.required'|translate }}
+        </p>
+      </dialogue-turn>
+    </div>
   </div>
 
-</div>
+  <dialogue-turn
+    *ngIf="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown"
+    [isSpoken]="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown"
+  >
+    <p>
+      <play-text-audio key="q-and-a-set.validation.generic-error" class="ion-float-start ion-margin-end"></play-text-audio>
+      {{ 'q-and-a-set.validation.generic-error'|translate }}
+    </p>
+  </dialogue-turn>
 
-<dialogue-turn *ngIf="checkValidationErrors() && allQuestionsShown"
-               [isSpoken]="checkValidationErrors() && allQuestionsShown"
->
-  <p>
-    <play-text-audio key="q-and-a-set.validation.generic-error" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'q-and-a-set.validation.generic-error'|translate }}
-  </p>
-</dialogue-turn>
+  <dialogue-turn
+    actor="self"
+    isConnected="true"
+    *ngIf="theForm.valid && !checkValidationErrors() && allQuestionsShown"
+    [isSpoken]="theForm.valid && !checkValidationErrors() && allQuestionsShown"
+  >
+    <ion-row class="ion-nowrap ion-align-items-center">
+      <play-text-audio [key]="submitLabel" size="default"></play-text-audio>
+      <ion-button
+        type="submit"
+        (click)="doSubmit()"
+        [disabled]="isSubmitted"
+        expand="block"
+        style="flex-basis:100%;"
+      >
+        {{ submitLabel|translate }}
+      </ion-button>
+    </ion-row>
+  </dialogue-turn>
 
-<dialogue-turn actor="self"
-               isConnected="true"
-               *ngIf="!checkValidationErrors() && allQuestionsShown"
-               [isSpoken]="!checkValidationErrors() && allQuestionsShown"
->
-  <ion-row class="ion-nowrap ion-align-items-center">
-    <play-text-audio [key]="submitLabel"
-                     size="default"
-    ></play-text-audio>
-    <ion-button type="submit"
-                (click)="doSubmit()"
-                [disabled]="isSubmitted"
-                expand="block"
-                style="flex-basis:100%;"
-    >
-      {{ submitLabel|translate }}
-    </ion-button>
-  </ion-row>
-</dialogue-turn>
+</form>

@@ -5,6 +5,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'numeric-input',
@@ -16,7 +17,16 @@ export class NumericInputComponent {
   public numericInput: any;
 
   @Input()
+  public name: string;
+
+  @Input()
+  public ngModel: NgModel;
+
+  @Input()
   public value: string;
+
+  @Input()
+  public required: boolean;
 
   @Input()
   public autocomplete: string;
