@@ -1,11 +1,11 @@
 {
   "published": false,
   "state": "design",
-  "location": "Nederland",
-  "ngo": "NLRC",
+  "location": "Kenya",
+  "ngo": "KRCS",
   "countryId": 1,
   "title": {
-    "en": "Pilot - NL"
+    "en": "Pilot - Kenya"
   },
   "description": {
     "en": "Program description"
@@ -21,7 +21,7 @@
   },
   "startDate": "2020-01-01T12:00:00Z",
   "endDate": "2020-12-31T12:00:00Z",
-  "currency": "EUR",
+  "currency": "KES",
   "distributionFrequency": "month",
   "distributionDuration": 3,
   "fixedTransferValue": 35,

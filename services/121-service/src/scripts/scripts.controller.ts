@@ -5,13 +5,14 @@ import { Connection } from 'typeorm';
 import { SeedSingleProgram } from './seed-program-single';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
+import SeedPilotKenProgram from './seed-program-pilot-ken';
 
 class ResetDto {
   @ApiModelProperty({ example: 'fill_in_secret' })
   @IsNotEmpty()
   @IsString()
   public readonly secret: string;
-  @ApiModelProperty({ example: 'demo / pilot-nl / single' })
+  @ApiModelProperty({ example: 'pilot-nl / pilot-ken / demo / single' })
   public readonly script: string;
 }
 
@@ -30,6 +31,8 @@ export class ScriptsController {
       seed = new SeedDemoProgram(this.connection);
     } else if (body.script == 'pilot-nl') {
       seed = new SeedPilotNLProgram(this.connection);
+    } else if (body.script == 'pilot-ken') {
+      seed = new SeedPilotKenProgram(this.connection);
     } else {
       seed = new SeedSingleProgram(this.connection);
     }
