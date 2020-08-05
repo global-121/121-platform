@@ -14,9 +14,7 @@ export class ProgramJsonComponent implements OnInit {
 
   ngOnInit() {}
 
-  async myDismiss() {
-    const result: Date = new Date();
-
-    await this.modalController.dismiss(result);
+  public closeModal() {
+    this.modalController.dismiss();
   }
 }

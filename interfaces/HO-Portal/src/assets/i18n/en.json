@@ -121,7 +121,8 @@
         "updated": "Program last updated at",
         "customCriteria": "Inclusion criteria",
         "aidworkers": "Assigned aidworkers",
-        "financialServiceProviders": "Financial Service-providers"
+        "financialServiceProviders": "Financial Service-providers",
+        "protectionServiceProviders": "Protection Service-providers"
       },
       "program-payout": {
         "section-title": "Manage Payments",
