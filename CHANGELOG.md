@@ -8,7 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.3] - 2020-08-05
+
+## Changed
+- 2020-08-05: Fixes for input-validation in both PA-app and AW-app
+
 ## [0.6.2] - 2020-08-04
+
+### Added
 - 2020-08-04: Added initial seed-script for Kenya pilot
 
 ## [0.6.1] - 2020-08-04
@@ -84,7 +91,9 @@ Test hotfix-release to test automatic deployment of patch-releases.
 
 ---
 
-[Unreleased]: https://github.com/global-121/121-platform/compare/v0.6.1...master
+[Unreleased]: https://github.com/global-121/121-platform/compare/v0.6.3...master
+[0.6.3]: https://github.com/global-121/121-platform/compare/v0.6.2...v0.6.3
+[0.6.2]: https://github.com/global-121/121-platform/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/global-121/121-platform/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/global-121/121-platform/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/global-121/121-platform/compare/v0.4.0...v0.5.0
