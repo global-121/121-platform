@@ -87,7 +87,8 @@
     "error-generic": "Something went wrong.",
     "switch-camera": "Switch camera",
     "try-again": "Try again",
-    "toggle-flash": "Toggle flash-light"
+    "toggle-flash": "Toggle flash-light",
+    "close": "Close"
   },
   "shared": {
     "submit-button": "Submit"

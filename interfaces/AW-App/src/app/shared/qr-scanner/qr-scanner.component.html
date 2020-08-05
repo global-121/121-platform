@@ -4,8 +4,8 @@
       {{ 'qr-scanner.title'|translate }}
     </ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="closeModal()">
-        <ion-icon name="close"></ion-icon>
+      <ion-button (click)="closeModal()" [attr.title]="'qr-scanner.close'|translate">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
