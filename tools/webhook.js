@@ -1,7 +1,7 @@
 const http = require("http");
 const crypto = require("crypto");
 const child_process = require("child_process");
-const exec = child_process.exec;
+const fs = require("fs");
 
 // ----------------------------------------------------------------------------
 //   Functions/Methods/etc:
@@ -12,7 +12,7 @@ const exec = child_process.exec;
  * @param {string} target (optional)
  */
 function deploy(target) {
-  exec(
+  child_process.exec(
     target
       ? `cd ${process.env.GLOBAL_121_REPO} && sudo ./tools/deploy.sh "${target}"`
       : `cd ${process.env.GLOBAL_121_REPO} && sudo ./tools/deploy.sh`,
@@ -24,6 +24,17 @@ function deploy(target) {
       }
     }
   );
+}
+
+/**
+ * Check whether to deploy/ignore a release
+ * @param {string} target
+ */
+function isPatchUpgrade(target) {
+  const currentVersion = fs.readFileSync(`${process.env.GLOBAL_121_WEB_ROOT}/VERSION.txt`, { encoding: 'utf-8' });
+  const currentMinorVersion = currentVersion.replace(/v0\.([0-9]+)\..*/s, 'v0.$1.');
+
+  return target.includes(currentMinorVersion);
 }
 
 // ----------------------------------------------------------------------------
@@ -67,14 +78,11 @@ http
       }
 
       if (
-        (
-          process.env.NODE_ENV === "production" ||
-          process.env.NODE_ENV === "staging"
-        ) &&
+        process.env.NODE_ENV === "production" &&
         payload.action === "released" &&
         payload.release.draft === false &&
         payload.release.target_commitish &&
-        payload.release.target_commitish.includes(process.env.VERSION)
+        isPatchUpgrade(payload.release.target_commitish)
       ) {
         deploy(payload.release.target_commitish);
         return
