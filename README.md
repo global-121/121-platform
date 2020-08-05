@@ -69,13 +69,26 @@ This is how we create and publish a new release of the 121-platform.
 
 This follows the same process as a regular release + deployment. With some small changes.
 - Code does not need to be frozen. (As there is no active development on the release-branch)
+
+#### Manual approach
 - Checkout the `release/<version>`-branch that needs the hotfix.
-- Create a new local branch (e.g. `release/<v0.x.1>`) and make the change
-- Push this branch directly to a new branch in the main repository, not to a personal fork.
-- Create a new release (see above) and publish it
-- The publish-command will invoke a webhook-signal, leading to an automatic deploy
-- After the hotfix-release, apply the same fix (if applicable) to the master-branch in a regular PR (by creating a PR from the hotfix-branch to `master`-branch)
-- Finally, add the hotfix-release to the [CHANGELOG](CHANGELOG.md) in the master-branch
+- Create a new local branch (e.g. `release/<v0.x.1>`) and make the changes
+- Push this branch directly to the main/upstream repository, not to a personal fork.
+- Create a new release (see above) and publish it.  
+  The publish-command will invoke the webhook(s), which trigger an automated deploy for environments on that same *minor* version.
+- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md)
+- After the hotfix-release, apply the same fix to the master-branch in a regular PR (by creating a PR from the hotfix-branch to `master`-branch)
+
+#### GitHub web-interface-only approach
+- Browse to the specific file that needs a fix on GitHub, click "edit" and make the changes  
+  The URL will look like: `https://github.com/global-121/121-platform/edit/release/v0.x.0/<path-to-file>`
+- Select "Create a new branch for this commit and start a pull request" from the "commit changes"-box
+- Use `release/v0.x.1` as the branch-name by clicking "Propose changes"  
+  This branch will now be created and is available to use for a new release
+- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md) and commit to the same `release/v0.x.1` branch.
+- Create a new release (see above) and publish it.  
+  The publish-command will invoke the webhook(s), which trigger an automated deploy for environments on that same *minor* version.
+- After the hotfix-release, apply the fixes to the master-branch by merging the PR created.
 
 
 ## Deployment
