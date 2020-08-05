@@ -9,7 +9,6 @@ import { SeedProd } from './seed-prod';
 import { SeedHelper } from './seed-helper';
 import { SeedMultiProgram } from './seed-program-multi';
 import { SeedSingleProgram } from './seed-program-single';
-import { SeedPilotKenProgram } from './seed-program-pilot-ken';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotKenProgram } from './seed-program-pilot-ken';
 import { SeedDemoProgram } from './seed-program-demo';
