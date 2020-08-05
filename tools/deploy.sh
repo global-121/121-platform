@@ -34,6 +34,13 @@ function deploy() {
     tput sgr0
   }
 
+  function clear_version() {
+    # Remove version, during deployment:
+    echo 'Deployment in progress...' | sudo tee "$web_root/VERSION.txt"
+
+    log "Version cleared during deployment"
+  }
+
   function update_code() {
     log "Updating code..."
     local target=$1 || false
@@ -105,7 +112,10 @@ function deploy() {
   #
   # Actual deployment:
   #
+  clear_version
+
   update_code "$target"
+
   build_services
 
   build_interface "PA-App" "$repo_pa" "$pa_dir"
@@ -117,9 +127,9 @@ function deploy() {
   build_interface "HO-Portal" "$repo_ho" "$ho_dir"
   deploy_interface "HO-Portal" "$repo_ho" "$ho_dir"
 
-  restart_webhook_service
-
   update_version
+
+  restart_webhook_service
 
   log "Done."
 }
