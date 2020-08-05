@@ -78,7 +78,15 @@ function deploy() {
     log "Building interface $app..."
 
     cd "$repo_path" || return
-    sudo npm ci --unsafe-perm
+
+    # When a target is provided, create a clean environment
+    if [[ -n "$target" ]]
+    then
+      sudo npm ci --unsafe-perm --no-audit --no-fund
+    else
+      sudo npm install --unsafe-perm --no-audit --no-fund
+    fi
+
     sudo npm run build -- --prod --base-href="$base_href"
   }
 
