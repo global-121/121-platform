@@ -5,7 +5,7 @@ import { Connection } from 'typeorm';
 import { SeedSingleProgram } from './seed-program-single';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
-import SeedPilotKenProgram from './seed-program-pilot-ken';
+import { SeedPilotKenProgram } from './seed-program-pilot-ken';
 
 class ResetDto {
   @ApiModelProperty({ example: 'fill_in_secret' })
