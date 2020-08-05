@@ -16,7 +16,7 @@ export class ProgramDetailsComponent implements OnInit {
   public programId: number;
 
   public program: Program;
-  public programArray: any;
+  public programProperties: { key: string; value: string }[];
 
   private techFeatures = [
     'countryId',
@@ -39,16 +39,18 @@ export class ProgramDetailsComponent implements OnInit {
 
   private async update() {
     this.program = await this.programsService.getProgramById(this.programId);
-    this.programArray = this.generateArray(this.program);
+    this.programProperties = this.generateProgramProperties(this.program);
   }
 
-  public generateArray(obj) {
-    return Object.keys(obj)
+  private generateProgramProperties(
+    program: Program,
+  ): { key: string; value: string }[] {
+    return Object.keys(program)
       .filter((key) => this.techFeatures.indexOf(key) === -1)
       .map((key) => {
         return {
           key: this.translate.instant('page.program.program-details.' + key),
-          value: this.translatableString.get(obj[key]),
+          value: this.translatableString.get(program[key]),
         };
       });
   }

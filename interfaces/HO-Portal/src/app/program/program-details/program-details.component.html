@@ -6,7 +6,7 @@
       {{ 'page.program.program-details.all'|translate }}
     </ion-button>
   </ion-item>
-  <ion-item *ngFor="let item of programArray">
+  <ion-item *ngFor="let item of programProperties">
     <ion-label>
       <strong>{{ item.key }}:</strong>
       <pre>{{ item.value | json }}</pre>
