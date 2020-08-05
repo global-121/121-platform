@@ -49,6 +49,7 @@ http
       if (
         req.headers["x-hub-signature"] !== sig ||
         (
+          payload.pull_request &&
           payload.pull_request.merged &&
           payload.pull_request.title.includes("[SKIP CD]")
         )

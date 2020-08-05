@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.6.2] - 2020-08-04
+- 2020-08-04: Added initial seed-script for Kenya pilot
+
+## [0.6.1] - 2020-08-04
+- 2020-08-04: Fixed a bug, which prevented correctly running the NL-seed script
+- 2020-08-04: Changed URL from staging.121.global to nlrc-staging.121.global in services/.env & interfaces/*/.env
+
 ## [0.6.0] - 2020-08-04
 
 ### Changed
@@ -77,7 +84,8 @@ Test hotfix-release to test automatic deployment of patch-releases.
 
 ---
 
-[Unreleased]: https://github.com/global-121/121-platform/compare/v0.6.0...master
+[Unreleased]: https://github.com/global-121/121-platform/compare/v0.6.1...master
+[0.6.1]: https://github.com/global-121/121-platform/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/global-121/121-platform/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/global-121/121-platform/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/global-121/121-platform/compare/v0.3.1...v0.4.0

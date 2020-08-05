@@ -34,6 +34,11 @@
           <img [alt]="actor" src="./assets/logos/nlrc.jpg">
         </ion-avatar>
       </ng-container>
+      <ng-container *ngSwitchCase="allActors.ngoKRCS">
+        <ion-avatar>
+          <img [alt]="actor" src="./assets/logos/krcs.jpg">
+        </ion-avatar>
+      </ng-container>
       <ng-container *ngSwitchDefault>
         <ion-avatar style="color:black; background:white; display:flex;">
           <b style="margin:auto; text-align: center;">{{ actor }}</b>

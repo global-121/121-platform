@@ -83,7 +83,7 @@
       </div>
     </dialogue-turn>
     <div
-      *ngIf="checkValidationErrors(question.code)"
+      *ngIf="checkValidationErrors(question.code) && !isSubmitted"
       class="ion-margin-bottom ion-padding-bottom"
     >
       <dialogue-turn [isSpoken]="checkValidationErrors(question.code)">
@@ -104,8 +104,8 @@
   </div>
 
   <dialogue-turn
-    *ngIf="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown"
-    [isSpoken]="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown"
+    *ngIf="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown && !isSubmitted"
+    [isSpoken]="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown && !isSubmitted"
   >
     <p>
       {{ 'q-and-a-set.validation.generic-error'|translate }}
@@ -120,7 +120,7 @@
   >
     <ion-row class="ion-nowrap ion-align-items-center">
       <ion-button
-        type="submit"
+        type="button"
         (click)="doSubmit()"
         [disabled]="isSubmitted"
         expand="block"

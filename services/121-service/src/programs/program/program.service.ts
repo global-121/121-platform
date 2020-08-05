@@ -79,6 +79,10 @@ export class ProgramService {
       .leftJoinAndSelect(
         'program.financialServiceProviders',
         'financialServiceProvider',
+      )
+      .leftJoinAndSelect(
+        'program.protectionServiceProviders',
+        'protectionServiceProvider',
       );
 
     qb.whereInIds([where]);
