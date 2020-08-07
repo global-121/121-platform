@@ -1,0 +1,19 @@
+// Colors are aligned between Referral-App and PA-App
+// See: /interfaces/Referral-App/src/app/tabs/tabs.page.scss
+// See: /interfaces/PA-App/src/app/tabs/tabs.page.scss
+
+ion-tab-bar {
+  border-bottom: none;
+}
+
+ion-tab-button {
+  &.tab-disabled {
+    opacity: 0.6;
+  }
+
+  &#tab-button-referral {
+    --color: var(--ion-color-dark-contrast);
+    --color-selected: var(--ion-color-dark-contrast);
+    --background: var(--ion-color-warning);
+  }
+}
