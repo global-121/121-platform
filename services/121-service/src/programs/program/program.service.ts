@@ -17,7 +17,8 @@ import {
   HttpService,
   HttpStatus,
 } from '@nestjs/common';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
+import { empty } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProgramEntity } from './program.entity';
@@ -38,6 +39,7 @@ import {
 import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
+import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
 import { INTERSOLVE } from '../../secrets';
 
 @Injectable()
@@ -60,6 +62,8 @@ export class ProgramService {
   >;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(FspCallLogEntity)
+  public fspCallLogRepository: Repository<FspCallLogEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
 
@@ -729,7 +733,7 @@ export class ProgramService {
         installment,
       );
       count += result.nrConnectionsFsp;
-      if (!result.paymentResult) {
+      if (result.paymentResult.status === 'error') {
         failedFsps.push(fsp.fsp);
       }
     }
@@ -741,8 +745,8 @@ export class ProgramService {
     if (failedFsps.length > 0) {
       const errors =
         "Payment failed for FSP's: " +
-        failedFsps.toString() +
-        ". This means that payments were sent for the other FSP's.";
+        failedFsps.join(', ') +
+        ". Payments for other FSP's (if any) were processed correctly.";
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
@@ -887,7 +891,14 @@ export class ProgramService {
     if (details.paymentList.length > 0) {
       paymentResult = await this.sendPayment(fsp, details.payload);
 
-      if (paymentResult) {
+      this.logFspCall(
+        fsp,
+        details.payload,
+        paymentResult.status,
+        paymentResult.message,
+      );
+
+      if (paymentResult.status === 'ok') {
         for (let connection of details.connectionsForFsp) {
           this.storeTransaction(amount, connection, fsp, program, installment);
         }
@@ -903,17 +914,45 @@ export class ProgramService {
         authorization: `Basic ${INTERSOLVE.authToken}`,
       };
 
-      return await this.httpService
-        .post(fsp.apiUrl, payload, {
+      let error;
+      const response = await this.httpService
+        .post(fsp.apiUrl + 'a', payload, {
           headers: headersRequest,
         })
-        .pipe(map(response => response.data))
+        .pipe(
+          map(response => response.data),
+          catchError(err => {
+            error = err;
+            return empty();
+          }),
+        )
         .toPromise();
+      return response
+        ? { status: 'ok', message: response }
+        : {
+            status: 'error',
+            message: { statusText: error.response.statusText },
+          };
     } else {
       // Handle other FSP's here
       // This will result in an HTTP-exception mentioning that no payment was done for this FSP
-      return null;
+      return { status: 'error', message: {} };
     }
+  }
+
+  private async logFspCall(
+    fsp: FinancialServiceProviderEntity,
+    payload,
+    status,
+    paymentResult,
+  ): Promise<any> {
+    const fspCallLog = new FspCallLogEntity();
+    fspCallLog.fsp = fsp;
+    fspCallLog.payload = payload;
+    fspCallLog.status = status;
+    fspCallLog.response = paymentResult;
+
+    await this.fspCallLogRepository.save(fspCallLog);
   }
 
   private storeTransaction(
