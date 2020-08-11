@@ -24,23 +24,7 @@ See the [/features/](../features/)-directory in this repository.
 
 ## Development
 
-### Environment Requirements
-The tools to run or build all interfaces:
-
-- [Git](https://git-scm.com/)
-
-- (Optional) [NVM - Node Version Manager](http://nvm.sh/)  
-  To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js.  
-  After installing NVM run:
-
-      nvm install && nvm install-latest-npm
-
-- (When not using NVM) [Node.js](https://nodejs.org/) **v10+ LTS**  
-  With NPM **v6.9+**
-
-
 ### Native environments
-
 #### Android
 When testing/debugging on Android and using the '`livereload`' functionality, it is required to add the following security exception in the app's `config.xml`, by adding the `<edit-config>`-block into the `<platform>`-block:
 

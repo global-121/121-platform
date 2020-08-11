@@ -39,40 +39,6 @@ The repository as can be seen contains, services and interfaces directories. The
 ### Install Git (https://git-scm.com/download/win)
 ### Install Docker (https://docs.docker.com/docker-for-windows/install/)
 
-## Setup Repository
-Download/Clone the Git repository.
-
-    git clone https://github.com/global-121/121-platform.git
-
-
-## Setup Interfaces
-Install dependencies for interfaces. Through command line navigate to each interface directory and install dependencies
-
-    cd interfaces/AW-App
-    npm install
-
-    cd interfaces/HO-Portal
-    npm install
-
-    cd interfaces/PA-App
-    npm install
-
-## Setup services
-
-Switch to the repository folder
-
-    cd services/
-
-Copy a few secret files and get the right passwords:
-
-    cp .env.example .env
-    cp 121-service/src/example.secrets.ts 121-service/src/secrets.ts
-    cp 121-service/example.ormconfig.json 121-service/ormconfig.json
-    cp PA-accounts-service/src/example.secrets.ts PA-accounts-service/src/secrets.ts
-    cp PA-accounts-service/example.ormconfig.json PA-accounts-service/ormconfig.json
-
-Environment variables are explained in the comments of the .env.example
-
 
 # 2. Linux
 ## Install dependencies
@@ -113,55 +79,15 @@ Can be done by following the steps at: https://docs.docker.com/compose/install/
 
 You are set!
 
-## Setup Repository
-Download/Clone the Git repository, so we can run the services and interfaces.
-
-    git clone https://github.com/global-121/121-platform.git
-
-
-## Setup Interfaces
-Install dependencies for interfaces. Through command line navigate to each interface directory and install dependencies
-
-    cd interfaces/AW-App
-    npm install
-
-    cd interfaces/HO-Portal
-    npm install
-
-    cd interfaces/PA-App
-    npm install
-
-## Setup services
-
-Switch to the repository folder
-
-    cd services/
-
-Copy a few secret files and get the right passwords:
-
-    cp .env.example .env
-    cp 121-service/src/example.secrets.ts 121-service/src/secrets.ts
-    cp 121-service/example.ormconfig.json 121-service/ormconfig.json
-    cp PA-accounts-service/src/example.secrets.ts PA-accounts-service/src/secrets.ts
-    cp PA-accounts-service/example.ormconfig.json PA-accounts-service/ormconfig.json
-
-Environment variables are explained in the comments of the .env.example
-- Run: `npm run install:all` from *this* folder
-- Run: `npm run start:all` from *this* folder
-
-In order to start either of the interfaces on development mode:
-- change directory to the respective interface `cd interfaces/*` and run `npm start`
-- or to run on an Android-device:
-      npm run dev:on-device
-
-For more options, see the documentation of the [Ionic/Cordova CLI](https://ionicframework.com/docs/cli/commands/cordova-run).
-
 # 3. MacOS
 ## Install dependencies
 ### Install Node.js (https://nodejs.org/en/download/)
 #### Choose an appropriate executable to install node.js
 ### Install Git https://git-scm.com/book/en/v2/Getting-Started-Installing-Git > Installing on macOS (section)
 ### Install Docker (https://docs.docker.com/docker-for-mac/install/)
+
+
+Once the dependencies are resolved depending on your OS, as above we can set-up the repositories and other environment variables
 
 ## Setup Repository
 Download/Clone the Git repository.
@@ -196,6 +122,19 @@ Copy a few secret files and get the right passwords:
     cp PA-accounts-service/example.ormconfig.json PA-accounts-service/ormconfig.json
 
 Environment variables are explained in the comments of the .env.example
+
+
+You can start in the development mode by following:
+- Run: `npm run install:all` from *this* folder
+- Run: `npm run start:all` from *this* folder
+
+In order to start either of the interfaces on development mode:
+- change directory to the respective interface `cd interfaces/*` and run `npm start`
+- or to run on an Android-device:
+      npm run dev:on-device
+
+For more options, see the documentation of the [Ionic/Cordova CLI](https://ionicframework.com/docs/cli/commands/cordova-run).
+
 
 ## Testing
 - Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).
