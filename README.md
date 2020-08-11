@@ -77,6 +77,11 @@ Can be done by following the steps at: https://docs.docker.com/compose/install/
 
     docker-compose --version
 
+#### Additionally, we need to install docker-machine as well, see: https://docs.docker.com/machine/install-machine/
+  
+    base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo mv /tmp/docker-machine /usr/local/bin/docker-machine &&   chmod +x /usr/local/bin/docker-machine
+
+    
 You are set!
 
 # 3. MacOS
@@ -85,6 +90,9 @@ You are set!
 #### Choose an appropriate executable to install node.js
 ### Install Git https://git-scm.com/book/en/v2/Getting-Started-Installing-Git > Installing on macOS (section)
 ### Install Docker (https://docs.docker.com/docker-for-mac/install/)
+### Install docker-machine, see: https://docs.docker.com/machine/install-machine/
+  
+     base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
 
 
 Once the dependencies are resolved depending on your OS, as above we can set-up the repositories and other environment variables
@@ -130,6 +138,11 @@ Install dependencies using npm
     
     cd services/121-service
     npm install
+
+Build docker to run in development (from `/services` folder)
+
+    docker-compose -f  docker-compose.yml -f  docker-compose.development.yml up -d --build 
+
 
 You can start in the development mode by following:
 - Run: `npm run install:all` from the root folder (`/121-platform`)
