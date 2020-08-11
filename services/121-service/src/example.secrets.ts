@@ -19,3 +19,9 @@ export const TWILIO = {
   testFromNumberVoice: '<your-testFromNumber>',
   testFromNumberSms: '<your-testFromNumber>',
 };
+
+export const INTERSOLVE = {
+  authToken: '<token>',
+  productCode: '<productCode>',
+  packageCode: '<packageCode>',
+};

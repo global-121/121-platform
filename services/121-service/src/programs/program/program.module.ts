@@ -24,6 +24,7 @@ import { SmsModule } from '../../notifications/sms/sms.module';
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ActionEntity } from '../../actions/action.entity';
+import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ActionEntity } from '../../actions/action.entity';
       ProtectionServiceProviderEntity,
       TransactionEntity,
       ActionEntity,
+      FspCallLogEntity,
     ]),
     forwardRef(() => CredentialModule),
     UserModule,

@@ -10,7 +10,7 @@ import { CountryEntity } from '../programs/country/country.entity';
 
 import fspBank from '../../examples/fsp-bravos.json';
 import fspMobileMoney from '../../examples/fsp-pmesa.json';
-import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
+import fspIntersolve from '../../examples/fsp-intersolve.json';
 
 import programDemo from '../../examples/program-demo.json';
 import { USERCONFIG } from '../secrets';
@@ -47,6 +47,7 @@ export class SeedDemoProgram implements InterfaceScript {
     await countryRepository.save([{ country: 'Westeros' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
+    await this.seedHelper.addFsp(fspIntersolve);
     await this.seedHelper.addFsp(fspBank);
     await this.seedHelper.addFsp(fspMobileMoney);
 

@@ -22,6 +22,7 @@ import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ActionEntity } from '../../actions/action.entity';
+import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -73,6 +74,10 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(FinancialServiceProviderEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(FspCallLogEntity),
             useFactory: repositoryMockFactory,
           },
           {

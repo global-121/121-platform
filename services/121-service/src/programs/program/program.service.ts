@@ -17,6 +17,8 @@ import {
   HttpService,
   HttpStatus,
 } from '@nestjs/common';
+import { map, catchError } from 'rxjs/operators';
+import { empty } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProgramEntity } from './program.entity';
@@ -30,10 +32,15 @@ import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import {
+  FinancialServiceProviderEntity,
+  fspName,
+} from '../fsp/financial-service-provider.entity';
 import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
+import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
+import { INTERSOLVE } from '../../secrets';
 
 @Injectable()
 export class ProgramService {
@@ -55,6 +62,8 @@ export class ProgramService {
   >;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(FspCallLogEntity)
+  public fspCallLogRepository: Repository<FspCallLogEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
 
@@ -712,22 +721,35 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    let count: number;
-    count = 0;
+    let count = 0;
+    const failedFsps = [];
+    let result;
     for (let fsp of program.financialServiceProviders) {
-      count += await this.createSendPaymentListFsp(
+      result = await this.createSendPaymentListFsp(
         fsp,
         includedConnections,
         amount,
         program,
         installment,
       );
+      count += result.nrConnectionsFsp;
+      if (result.paymentResult.status === 'error') {
+        failedFsps.push(fsp.fsp);
+      }
     }
     if (count === 0) {
       const errors =
         'No included connections with known FSP available. Payment aborted.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+    if (failedFsps.length > 0) {
+      const errors =
+        "Payment failed for FSP's: " +
+        failedFsps.join(', ') +
+        ". Payments for other FSP's (if any) were processed correctly.";
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
     return { status: 'succes', message: 'Sent instructions to FSP' };
   }
 
@@ -796,6 +818,63 @@ export class ProgramService {
     return enrolledConnections;
   }
 
+  private createIntersolveDetails(paymentList): any {
+    const payload = {
+      expectedDeliveryDate: '2020-04-07T12:45:21.072Z',
+      extOrderReference: '123456',
+      extInvoiceReference: '123456F',
+      fulfillmentInstructions: 'enter instructions here',
+      personalCardText: 'Thank you',
+      customInvoiceAddress: false,
+      orderLines: [],
+    };
+
+    for (let item of paymentList) {
+      const orderLine = {
+        productCode: INTERSOLVE.productCode,
+        productValue: item.amount,
+        packageCode: INTERSOLVE.packageCode,
+        amount: 1,
+        customShipToAddress: true,
+        customShipToEmail: item.email,
+      };
+      payload.orderLines.push(orderLine);
+    }
+
+    return payload;
+  }
+
+  private async createPaymentDetails(
+    includedConnections: ConnectionEntity[],
+    amount: number,
+    fspId: number,
+  ): Promise<any> {
+    const fsp = await this.getFspById(fspId);
+    const paymentList = [];
+    const connectionsForFsp = [];
+    for (let connection of includedConnections) {
+      if (connection.fsp && connection.fsp.id === fsp.id) {
+        const paymentDetails = {
+          amount: amount,
+        };
+        for (let attribute of fsp.attributes) {
+          paymentDetails[attribute.name] =
+            connection.customData[attribute.name];
+        }
+        paymentList.push(paymentDetails);
+        connectionsForFsp.push(connection);
+      }
+    }
+
+    let payload;
+    if (fsp.fsp === fspName.intersolve) {
+      payload = this.createIntersolveDetails(paymentList);
+    } else {
+      payload = paymentList;
+    }
+    return { paymentList, connectionsForFsp, payload };
+  }
+
   private async createSendPaymentListFsp(
     fsp: FinancialServiceProviderEntity,
     includedConnections: ConnectionEntity[],
@@ -803,35 +882,79 @@ export class ProgramService {
     program: ProgramEntity,
     installment: number,
   ): Promise<any> {
-    const paymentList = [];
-    const connectionsForFsp = [];
-    for (let connection of includedConnections) {
-      if (connection.fsp && connection.fsp.id === fsp.id) {
-        let paymentDetails = {
-          idDetails: connection.customData['id_number'],
-          amount: amount,
-        };
-        paymentList.push(paymentDetails);
-        connectionsForFsp.push(connection);
-      }
-    }
+    const details = await this.createPaymentDetails(
+      includedConnections,
+      amount,
+      fsp.id,
+    );
+    let paymentResult;
+    if (details.paymentList.length > 0) {
+      paymentResult = await this.sendPayment(fsp, details.payload);
 
-    if (paymentList.length > 0) {
-      // NOTE: This fake endpoint is commented out for now, can be uncommented when replaced with real endpoint
-      // const fspApiSelected = API.fsp.find(obj => obj.id === fsp.id);
-      // const response = await this.httpService
-      //   .post(fspApiSelected.payout, paymentList)
-      //   .toPromise();
-      // if (!response.data) {
-      //   const errors = 'Payment instruction not send';
-      //   throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      // }
-      for (let connection of connectionsForFsp) {
-        this.storeTransaction(amount, connection, fsp, program, installment);
+      this.logFspCall(
+        fsp,
+        details.payload,
+        paymentResult.status,
+        paymentResult.message,
+      );
+
+      if (paymentResult.status === 'ok') {
+        for (let connection of details.connectionsForFsp) {
+          this.storeTransaction(amount, connection, fsp, program, installment);
+        }
       }
     }
-    return paymentList.length;
+    return { paymentResult, nrConnectionsFsp: details.paymentList.length };
   }
+
+  private async sendPayment(fsp, payload): Promise<any> {
+    if (fsp.fsp === fspName.intersolve) {
+      const headersRequest = {
+        accept: 'application/json',
+        authorization: `Basic ${INTERSOLVE.authToken}`,
+      };
+
+      let error;
+      const response = await this.httpService
+        .post(fsp.apiUrl, payload, {
+          headers: headersRequest,
+        })
+        .pipe(
+          map(response => response.data),
+          catchError(err => {
+            error = err;
+            return empty();
+          }),
+        )
+        .toPromise();
+      return response
+        ? { status: 'ok', message: response }
+        : {
+            status: 'error',
+            message: { statusText: error.response.statusText },
+          };
+    } else {
+      // Handle other FSP's here
+      // This will result in an HTTP-exception mentioning that no payment was done for this FSP
+      return { status: 'error', message: {} };
+    }
+  }
+
+  private async logFspCall(
+    fsp: FinancialServiceProviderEntity,
+    payload,
+    status,
+    paymentResult,
+  ): Promise<any> {
+    const fspCallLog = new FspCallLogEntity();
+    fspCallLog.fsp = fsp;
+    fspCallLog.payload = payload;
+    fspCallLog.status = status;
+    fspCallLog.response = paymentResult;
+
+    await this.fspCallLogRepository.save(fspCallLog);
+  }
+
   private storeTransaction(
     amount: number,
     connection: ConnectionEntity,
