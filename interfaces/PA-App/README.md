@@ -2,23 +2,6 @@
 
 The front-end of the application _People Affected_ use to interact with the 121-platform.
 
-## Getting Started
-
-- Install [environment requirements](../README.md)
-- Install dependencies (from this folder):
-
-      npm install
-
-- Start in development-mode:
-
-      npm start
-
-- or: Run on an Android-device:
-
-      npm run dev:on-device
-
-For more options, see the documentation of the [Ionic/Cordova CLI](https://ionicframework.com/docs/cli/commands/cordova-run).
-
 ## Configuration
 
 Some specific information need to be configured before use:

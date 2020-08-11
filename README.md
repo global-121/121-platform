@@ -78,9 +78,9 @@ Environment variables are explained in the comments of the .env.example
 ## Install dependencies
 ### Node.JS
 
-        sudo apt install nodejs 
+        sudo apt install nodejs
 
-### Install Git 
+### Install Git
 
         sudo apt install git-all
 
@@ -88,7 +88,7 @@ Environment variables are explained in the comments of the .env.example
 
 On linux distributions we need to install docker enginer and docker compose respectively. On other platforms docker-compose enginer is available through Docker Desktop. Read more at: https://docs.docker.com/engine/install/
 
-Docker compose relies on docker engine, so in order to get started we must install docker-engine first. (Read more at: https://docs.docker.com/engine/install/ubuntu/). Theere are various ways of installing docker engine (repository, packages or automated scripts). The official recommended way doing that is through setting up a repository. 
+Docker compose relies on docker engine, so in order to get started we must install docker-engine first. (Read more at: https://docs.docker.com/engine/install/ubuntu/). Theere are various ways of installing docker engine (repository, packages or automated scripts). The official recommended way doing that is through setting up a repository.
 
 #### First off, uninstall any old version of docker-engine.
 
@@ -108,7 +108,7 @@ Can be done by following the steps at: https://docs.docker.com/compose/install/
     sudo chmod +x /usr/local/bin/docker-compose
 
 #### Test the docker compose installation
-    
+
     docker-compose --version
 
 You are set!
@@ -149,6 +149,53 @@ Environment variables are explained in the comments of the .env.example
 - Run: `npm run install:all` from *this* folder
 - Run: `npm run start:all` from *this* folder
 
+In order to start either of the interfaces on development mode:
+- change directory to the respective interface `cd interfaces/*` and run `npm start`
+- or to run on an Android-device:
+      npm run dev:on-device
+
+For more options, see the documentation of the [Ionic/Cordova CLI](https://ionicframework.com/docs/cli/commands/cordova-run).
+
+# 3. MacOS
+## Install dependencies
+### Install Node.js (https://nodejs.org/en/download/)
+#### Choose an appropriate executable to install node.js
+### Install Git https://git-scm.com/book/en/v2/Getting-Started-Installing-Git > Installing on macOS (section)
+### Install Docker (https://docs.docker.com/docker-for-mac/install/)
+
+## Setup Repository
+Download/Clone the Git repository.
+
+    git clone https://github.com/global-121/121-platform.git
+
+
+## Setup Interfaces
+Install dependencies for interfaces. Through command line navigate to each interface directory and install dependencies
+
+    cd interfaces/AW-App
+    npm install
+
+    cd interfaces/HO-Portal
+    npm install
+
+    cd interfaces/PA-App
+    npm install
+
+## Setup services
+
+Switch to the repository folder
+
+    cd services/
+
+Copy a few secret files and get the right passwords:
+
+    cp .env.example .env
+    cp 121-service/src/example.secrets.ts 121-service/src/secrets.ts
+    cp 121-service/example.ormconfig.json 121-service/ormconfig.json
+    cp PA-accounts-service/src/example.secrets.ts PA-accounts-service/src/secrets.ts
+    cp PA-accounts-service/example.ormconfig.json PA-accounts-service/ormconfig.json
+
+Environment variables are explained in the comments of the .env.example
 
 ## Testing
 - Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).
