@@ -916,7 +916,7 @@ export class ProgramService {
 
       let error;
       const response = await this.httpService
-        .post(fsp.apiUrl + 'a', payload, {
+        .post(fsp.apiUrl, payload, {
           headers: headersRequest,
         })
         .pipe(
