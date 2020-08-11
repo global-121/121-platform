@@ -173,7 +173,7 @@ export class ProgramPayoutComponent implements OnInit {
         (err) => {
           console.log('err: ', err);
           if (err.error.errors) {
-            this.actionResult(err.error.errors);
+            this.actionResult(err.error.errors, true);
           }
           this.cancelPayout(installment);
         },
