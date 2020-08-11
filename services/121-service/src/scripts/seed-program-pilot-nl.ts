@@ -7,8 +7,6 @@ import { SeedInit } from './seed-init';
 
 import { CountryEntity } from '../programs/country/country.entity';
 
-import fspBank from '../../examples/fsp-bank.json';
-import fspMobileMoney from '../../examples/fsp-mobile-money.json';
 import fspIntersolve from '../../examples/fsp-intersolve.json';
 
 import programPilotNL from '../../examples/program-pilot-nl.json';
@@ -46,8 +44,6 @@ export class SeedPilotNLProgram implements InterfaceScript {
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
-    await this.seedHelper.addFsp(fspBank);
-    await this.seedHelper.addFsp(fspMobileMoney);
 
     // ***** CREATE PROGRAM *****
     const examplePrograms = [programPilotNL];

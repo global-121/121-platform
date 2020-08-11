@@ -12,6 +12,7 @@ import fspBank from '../../examples/fsp-bank.json';
 import fspMobileMoney from '../../examples/fsp-mobile-money.json';
 import fspMixedAttributes from '../../examples/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../examples/fsp-no-attributes.json';
+import fspIntersolve from '../../examples/fsp-intersolve.json';
 
 import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
 
@@ -57,6 +58,7 @@ export class SeedSingleProgram implements InterfaceScript {
     await countryRepository.save([{ country: 'Location A' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
+    await this.seedHelper.addFsp(fspIntersolve);
     await this.seedHelper.addFsp(fspBank);
     await this.seedHelper.addFsp(fspMobileMoney);
     await this.seedHelper.addFsp(fspMixedAttributes);
