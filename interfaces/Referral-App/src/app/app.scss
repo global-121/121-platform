@@ -1,0 +1,24 @@
+// App Styles
+// ----------------------------------------------------------------------------
+// Put style rules here that you want to apply to the entire application. These
+// styles are for the entire app and not just one component. Additionally, this
+// file can hold Sass mixins, functions, and placeholder classes to be imported
+// and used throughout the application.
+
+.loading-indicator {
+  display: flex;
+  min-height: 100px;
+  justify-content: center;
+}
+.loading-indicator--spinner {
+  margin: auto;
+}
+
+// ----------------------------------------------------------------------------
+
+// Override default styles to emphasize where to input
+// Make an exception for 'native' inputs in 'items':
+*:not(ion-item) > ion-input,
+ion-textarea {
+  --background: #dfe5fe !important;
+}
