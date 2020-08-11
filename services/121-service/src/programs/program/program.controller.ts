@@ -241,6 +241,15 @@ export class ProgramController {
     );
   }
 
+  @Roles(UserRole.ProjectOfficer)
+  @Post('intersolve/payment')
+  @ApiOperation({
+    title: 'This simple endpoint is developed to test Intersolve integration',
+  })
+  public async paymentIntersolve(): Promise<any> {
+    return await this.programService.paymentIntersolve();
+  }
+
   @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
   @ApiOperation({ title: 'Get status of payout-installments' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })

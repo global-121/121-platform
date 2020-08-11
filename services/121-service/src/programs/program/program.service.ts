@@ -17,6 +17,7 @@ import {
   HttpService,
   HttpStatus,
 } from '@nestjs/common';
+import { map } from 'rxjs/operators';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProgramEntity } from './program.entity';
@@ -30,10 +31,14 @@ import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import {
+  FinancialServiceProviderEntity,
+  fspName,
+} from '../fsp/financial-service-provider.entity';
 import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
+import { INTERSOLVE } from '../../secrets';
 
 @Injectable()
 export class ProgramService {
@@ -684,6 +689,50 @@ export class ProgramService {
     return includedConnections.length;
   }
 
+  public async paymentIntersolve(): Promise<any> {
+    const headersRequest = {
+      accept: 'application/json',
+      authorization: `Basic ${INTERSOLVE.authToken}`,
+    };
+
+    const fsp = await this.financialServiceProviderRepository.findOne({
+      where: { fsp: fspName.intersolve },
+    });
+
+    const payload = {
+      expectedDeliveryDate: '2020-04-07T12:45:21.072Z',
+      extOrderReference: '123456',
+      extInvoiceReference: '123456F',
+      fulfillmentInstructions: 'enter instructions here',
+      personalCardText: 'Thank you',
+      customInvoiceAddress: false,
+      orderLines: [
+        {
+          productCode: 'I619000501',
+          productValue: 5,
+          packageCode: 'E005',
+          amount: 1,
+          customShipToAddress: true,
+          customShipToEmail: 'jannisvisser@gmail.com',
+        },
+        {
+          productCode: 'I619000501',
+          productValue: 5,
+          packageCode: 'E005',
+          amount: 1,
+          customShipToAddress: true,
+          customShipToEmail: 'jannisvisser@redcross.nl',
+        },
+      ],
+    };
+
+    return this.httpService
+      .post(fsp.apiUrl, payload, {
+        headers: headersRequest,
+      })
+      .pipe(map(response => response.data));
+  }
+
   public async payout(
     programId: number,
     installment: number,
@@ -712,8 +761,7 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    let count: number;
-    count = 0;
+    let count = 0;
     for (let fsp of program.financialServiceProviders) {
       count += await this.createSendPaymentListFsp(
         fsp,
@@ -796,6 +844,42 @@ export class ProgramService {
     return enrolledConnections;
   }
 
+  private createIntersolveDetails(paymentList): any {
+    const payload = {
+      expectedDeliveryDate: '2020-04-07T12:45:21.072Z',
+      extOrderReference: '123456',
+      extInvoiceReference: '123456F',
+      fulfillmentInstructions: 'enter instructions here',
+      personalCardText: 'Thank you',
+      customInvoiceAddress: false,
+      orderLines: [],
+    };
+
+    for (let item of paymentList) {
+      const orderLine = {
+        productCode: 'I619000501',
+        productValue: item.amount,
+        packageCode: 'E005',
+        amount: 1,
+        customShipToAddress: true,
+        customShipToEmail: item.email,
+      };
+      payload.orderLines.push(orderLine);
+    }
+
+    return payload;
+  }
+
+  private async createPaymentDetails(paymentList, fspId: number): Promise<any> {
+    const fsp = await this.financialServiceProviderRepository.findOne(fspId);
+
+    if (fsp.fsp === fspName.intersolve) {
+      return this.createIntersolveDetails(paymentList);
+    } else {
+      return paymentList;
+    }
+  }
+
   private async createSendPaymentListFsp(
     fsp: FinancialServiceProviderEntity,
     includedConnections: ConnectionEntity[],
@@ -803,35 +887,63 @@ export class ProgramService {
     program: ProgramEntity,
     installment: number,
   ): Promise<any> {
+    fsp = await this.getFspById(fsp.id);
     const paymentList = [];
     const connectionsForFsp = [];
     for (let connection of includedConnections) {
       if (connection.fsp && connection.fsp.id === fsp.id) {
-        let paymentDetails = {
-          idDetails: connection.customData['id_number'],
+        const paymentDetails = {
           amount: amount,
         };
+        for (let attribute of fsp.attributes) {
+          paymentDetails[attribute.name] =
+            connection.customData[attribute.name];
+        }
         paymentList.push(paymentDetails);
         connectionsForFsp.push(connection);
       }
     }
 
     if (paymentList.length > 0) {
-      // NOTE: This fake endpoint is commented out for now, can be uncommented when replaced with real endpoint
-      // const fspApiSelected = API.fsp.find(obj => obj.id === fsp.id);
-      // const response = await this.httpService
-      //   .post(fspApiSelected.payout, paymentList)
-      //   .toPromise();
-      // if (!response.data) {
-      //   const errors = 'Payment instruction not send';
-      //   throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      // }
+      const payload = await this.createPaymentDetails(paymentList, fsp.id);
+      const result = await this.sendPayment(fsp, payload);
+
+      if (!result) {
+        const errors = 'Payment instruction not sent';
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      }
+
       for (let connection of connectionsForFsp) {
         this.storeTransaction(amount, connection, fsp, program, installment);
       }
     }
     return paymentList.length;
   }
+
+  private async sendPayment(fsp, payload): Promise<any> {
+    let headersRequest;
+    if (fsp.fsp === fspName.intersolve) {
+      headersRequest = {
+        accept: 'application/json',
+        authorization: `Basic ${INTERSOLVE.authToken}`,
+      };
+    } else {
+      headersRequest = {};
+    }
+
+    return await this.httpService
+      .post(fsp.apiUrl, payload, {
+        headers: headersRequest,
+      })
+      .pipe(
+        map(response => {
+          console.log(response.data);
+          return response.data;
+        }),
+      )
+      .toPromise();
+  }
+
   private storeTransaction(
     amount: number,
     connection: ConnectionEntity,

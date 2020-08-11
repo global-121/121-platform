@@ -18,6 +18,9 @@ export class FinancialServiceProviderEntity {
   @Column()
   public fsp: string;
 
+  @Column({ nullable: true })
+  public apiUrl: string;
+
   @OneToMany(_type => FspAttributeEntity, attributes => attributes.fsp)
   public attributes: FspAttributeEntity[];
 
@@ -35,4 +38,8 @@ export class FinancialServiceProviderEntity {
 
   @OneToMany(_type => ConnectionEntity, connection => connection.fsp)
   public connection: ConnectionEntity[];
+}
+
+export enum fspName {
+  intersolve = 'Intersolve',
 }
