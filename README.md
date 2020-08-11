@@ -32,20 +32,20 @@ Guide to setup local development environment for 121.
 
 The repository as can be seen contains, services and interfaces directories. The services are run using docker environment and the interfaces are individual Angular applications.
 
-1. Windows OS
-# Install dependencies
-## Install Node.js (https://nodejs.org/en/download/)
-### Choose an appropriate executable to install node.js
-## Install Git (https://git-scm.com/download/win)
-## Install Docker (https://docs.docker.com/docker-for-windows/install/)
+# 1. Windows OS
+## Install dependencies
+### Install Node.js (https://nodejs.org/en/download/)
+#### Choose an appropriate executable to install node.js
+### Install Git (https://git-scm.com/download/win)
+### Install Docker (https://docs.docker.com/docker-for-windows/install/)
 
-# Setup Repository
+## Setup Repository
 Download/Clone the Git repository.
 
     git clone https://github.com/global-121/121-platform.git
 
 
-# Setup Interfaces
+## Setup Interfaces
 Install dependencies for interfaces. Through command line navigate to each interface directory and install dependencies
 
     cd interfaces/AW-App
@@ -57,7 +57,7 @@ Install dependencies for interfaces. Through command line navigate to each inter
     cd interfaces/PA-App
     npm install
 
-# Setup services
+## Setup services
 
 Switch to the repository folder
 
@@ -74,52 +74,52 @@ Copy a few secret files and get the right passwords:
 Environment variables are explained in the comments of the .env.example
 
 
-2. Linux
-# Install dependencies
-## Node.JS
+# 2. Linux
+## Install dependencies
+### Node.JS
 
         sudo apt install nodejs 
 
-## Install Git 
+### Install Git 
 
         sudo apt install git-all
 
-## Install Docker
+### Install Docker
 
 On linux distributions we need to install docker enginer and docker compose respectively. On other platforms docker-compose enginer is available through Docker Desktop. Read more at: https://docs.docker.com/engine/install/
 
 Docker compose relies on docker engine, so in order to get started we must install docker-engine first. (Read more at: https://docs.docker.com/engine/install/ubuntu/). Theere are various ways of installing docker engine (repository, packages or automated scripts). The official recommended way doing that is through setting up a repository. 
 
-### First off, uninstall any old version of docker-engine.
+#### First off, uninstall any old version of docker-engine.
 
     sudo apt-get remove docker docker-engine docker.io containerd runc
 
-### Choose an installation method from the provided list at https://docs.docker.com/engine/install/ubuntu/#installation-methods and install docker-engine
+#### Choose an installation method from the provided list at https://docs.docker.com/engine/install/ubuntu/#installation-methods and install docker-engine
 
-### Test your docker installation
+#### Test your docker installation
 
      sudo docker run hello-world
 
-### Now install docker-compose
+#### Now install docker-compose
 Can be done by following the steps at: https://docs.docker.com/compose/install/
 
     sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
     sudo chmod +x /usr/local/bin/docker-compose
 
-### Test the docker compose installation
+#### Test the docker compose installation
     
     docker-compose --version
 
 You are set!
 
-# Setup Repository
+## Setup Repository
 Download/Clone the Git repository, so we can run the services and interfaces.
 
     git clone https://github.com/global-121/121-platform.git
 
 
-# Setup Interfaces
+## Setup Interfaces
 Install dependencies for interfaces. Through command line navigate to each interface directory and install dependencies
 
     cd interfaces/AW-App
@@ -131,7 +131,7 @@ Install dependencies for interfaces. Through command line navigate to each inter
     cd interfaces/PA-App
     npm install
 
-# Setup services
+## Setup services
 
 Switch to the repository folder
 
