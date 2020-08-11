@@ -1,0 +1,14 @@
+{
+  "fsp": "Intersolve",
+  "apiUrl": "https://trade-acc.intersolve.nl/rest/buyerapi/v1/orders",
+  "attributes": [
+    {
+      "name": "email",
+      "label": {
+        "en": "What is your email address, so you can receive payments through e-vouchers?"
+      },
+      "answerType": "text",
+      "options": null
+    }
+  ]
+}

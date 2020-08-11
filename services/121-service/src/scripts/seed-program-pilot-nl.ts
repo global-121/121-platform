@@ -9,6 +9,7 @@ import { CountryEntity } from '../programs/country/country.entity';
 
 import fspBank from '../../examples/fsp-bank.json';
 import fspMobileMoney from '../../examples/fsp-mobile-money.json';
+import fspIntersolve from '../../examples/fsp-intersolve.json';
 
 import programPilotNL from '../../examples/program-pilot-nl.json';
 import { USERCONFIG } from '../secrets';
@@ -44,6 +45,7 @@ export class SeedPilotNLProgram implements InterfaceScript {
     await countryRepository.save([{ country: 'Nederland' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
+    await this.seedHelper.addFsp(fspIntersolve);
     await this.seedHelper.addFsp(fspBank);
     await this.seedHelper.addFsp(fspMobileMoney);
 
