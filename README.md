@@ -125,8 +125,8 @@ Environment variables are explained in the comments of the .env.example
 
 
 You can start in the development mode by following:
-- Run: `npm run install:all` from *this* folder
-- Run: `npm run start:all` from *this* folder
+- Run: `npm run install:all` from the root folder (`/121-platform`)
+- Run: `npm run start:all` from the root folder (`/121-platform`)
 
 In order to start either of the interfaces on development mode:
 - change directory to the respective interface `cd interfaces/*` and run `npm start`
