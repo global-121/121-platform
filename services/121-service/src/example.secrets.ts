@@ -22,4 +22,6 @@ export const TWILIO = {
 
 export const INTERSOLVE = {
   authToken: '<token>',
+  productCode: '<productCode>',
+  packageCode: '<packageCode>',
 };

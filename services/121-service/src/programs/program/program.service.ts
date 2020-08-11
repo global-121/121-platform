@@ -718,20 +718,34 @@ export class ProgramService {
     }
 
     let count = 0;
+    const failedFsps = [];
+    let result;
     for (let fsp of program.financialServiceProviders) {
-      count += await this.createSendPaymentListFsp(
+      result = await this.createSendPaymentListFsp(
         fsp,
         includedConnections,
         amount,
         program,
         installment,
       );
+      count += result.nrConnectionsFsp;
+      if (!result.paymentResult) {
+        failedFsps.push(fsp.fsp);
+      }
     }
     if (count === 0) {
       const errors =
         'No included connections with known FSP available. Payment aborted.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+    if (failedFsps.length > 0) {
+      const errors =
+        "Payment failed for FSP's: " +
+        failedFsps.toString() +
+        ". This means that payments were sent for the other FSP's.";
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
     return { status: 'succes', message: 'Sent instructions to FSP' };
   }
 
@@ -813,9 +827,9 @@ export class ProgramService {
 
     for (let item of paymentList) {
       const orderLine = {
-        productCode: 'I619000501',
+        productCode: INTERSOLVE.productCode,
         productValue: item.amount,
-        packageCode: 'E005',
+        packageCode: INTERSOLVE.packageCode,
         amount: 1,
         customShipToAddress: true,
         customShipToEmail: item.email,
@@ -826,24 +840,12 @@ export class ProgramService {
     return payload;
   }
 
-  private async createPaymentDetails(paymentList, fspId: number): Promise<any> {
-    const fsp = await this.financialServiceProviderRepository.findOne(fspId);
-
-    if (fsp.fsp === fspName.intersolve) {
-      return this.createIntersolveDetails(paymentList);
-    } else {
-      return paymentList;
-    }
-  }
-
-  private async createSendPaymentListFsp(
-    fsp: FinancialServiceProviderEntity,
+  private async createPaymentDetails(
     includedConnections: ConnectionEntity[],
     amount: number,
-    program: ProgramEntity,
-    installment: number,
+    fspId: number,
   ): Promise<any> {
-    fsp = await this.getFspById(fsp.id);
+    const fsp = await this.getFspById(fspId);
     const paymentList = [];
     const connectionsForFsp = [];
     for (let connection of includedConnections) {
@@ -860,44 +862,58 @@ export class ProgramService {
       }
     }
 
-    if (paymentList.length > 0) {
-      const payload = await this.createPaymentDetails(paymentList, fsp.id);
-      const result = await this.sendPayment(fsp, payload);
+    let payload;
+    if (fsp.fsp === fspName.intersolve) {
+      payload = this.createIntersolveDetails(paymentList);
+    } else {
+      payload = paymentList;
+    }
+    return { paymentList, connectionsForFsp, payload };
+  }
 
-      if (!result) {
-        const errors = 'Payment instruction not sent';
-        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      }
+  private async createSendPaymentListFsp(
+    fsp: FinancialServiceProviderEntity,
+    includedConnections: ConnectionEntity[],
+    amount: number,
+    program: ProgramEntity,
+    installment: number,
+  ): Promise<any> {
+    const details = await this.createPaymentDetails(
+      includedConnections,
+      amount,
+      fsp.id,
+    );
+    let paymentResult;
+    if (details.paymentList.length > 0) {
+      paymentResult = await this.sendPayment(fsp, details.payload);
 
-      for (let connection of connectionsForFsp) {
-        this.storeTransaction(amount, connection, fsp, program, installment);
+      if (paymentResult) {
+        for (let connection of details.connectionsForFsp) {
+          this.storeTransaction(amount, connection, fsp, program, installment);
+        }
       }
     }
-    return paymentList.length;
+    return { paymentResult, nrConnectionsFsp: details.paymentList.length };
   }
 
   private async sendPayment(fsp, payload): Promise<any> {
-    let headersRequest;
     if (fsp.fsp === fspName.intersolve) {
-      headersRequest = {
+      const headersRequest = {
         accept: 'application/json',
         authorization: `Basic ${INTERSOLVE.authToken}`,
       };
-    } else {
-      headersRequest = {};
-    }
 
-    return await this.httpService
-      .post(fsp.apiUrl, payload, {
-        headers: headersRequest,
-      })
-      .pipe(
-        map(response => {
-          console.log(response.data);
-          return response.data;
-        }),
-      )
-      .toPromise();
+      return await this.httpService
+        .post(fsp.apiUrl, payload, {
+          headers: headersRequest,
+        })
+        .pipe(map(response => response.data))
+        .toPromise();
+    } else {
+      // Handle other FSP's here
+      // This will result in an HTTP-exception mentioning that no payment was done for this FSP
+      return null;
+    }
   }
 
   private storeTransaction(
