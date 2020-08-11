@@ -689,50 +689,6 @@ export class ProgramService {
     return includedConnections.length;
   }
 
-  public async paymentIntersolve(): Promise<any> {
-    const headersRequest = {
-      accept: 'application/json',
-      authorization: `Basic ${INTERSOLVE.authToken}`,
-    };
-
-    const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { fsp: fspName.intersolve },
-    });
-
-    const payload = {
-      expectedDeliveryDate: '2020-04-07T12:45:21.072Z',
-      extOrderReference: '123456',
-      extInvoiceReference: '123456F',
-      fulfillmentInstructions: 'enter instructions here',
-      personalCardText: 'Thank you',
-      customInvoiceAddress: false,
-      orderLines: [
-        {
-          productCode: 'I619000501',
-          productValue: 5,
-          packageCode: 'E005',
-          amount: 1,
-          customShipToAddress: true,
-          customShipToEmail: 'jannisvisser@gmail.com',
-        },
-        {
-          productCode: 'I619000501',
-          productValue: 5,
-          packageCode: 'E005',
-          amount: 1,
-          customShipToAddress: true,
-          customShipToEmail: 'jannisvisser@redcross.nl',
-        },
-      ],
-    };
-
-    return this.httpService
-      .post(fsp.apiUrl, payload, {
-        headers: headersRequest,
-      })
-      .pipe(map(response => response.data));
-  }
-
   public async payout(
     programId: number,
     installment: number,
