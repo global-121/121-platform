@@ -123,6 +123,13 @@ Copy a few secret files and get the right passwords:
 
 Environment variables are explained in the comments of the .env.example
 
+Install dependencies using npm
+
+    cd services/PA-accounts-service
+    npm install
+    
+    cd services/121-service
+    npm install
 
 You can start in the development mode by following:
 - Run: `npm run install:all` from the root folder (`/121-platform`)
