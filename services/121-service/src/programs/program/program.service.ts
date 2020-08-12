@@ -733,6 +733,7 @@ export class ProgramService {
         installment,
       );
       count += result.nrConnectionsFsp;
+
       if (result.paymentResult.status === 'error') {
         failedFsps.push(fsp.fsp);
       }
@@ -888,22 +889,31 @@ export class ProgramService {
       fsp.id,
     );
     let paymentResult;
-    if (details.paymentList.length > 0) {
-      paymentResult = await this.sendPayment(fsp, details.payload);
+    if (details.paymentList.length === 0) {
+      return {
+        paymentResult: {
+          status: 'error',
+          message: {},
+        },
+        nrConnectionsFsp: details.paymentList.length,
+      };
+    }
 
-      this.logFspCall(
-        fsp,
-        details.payload,
-        paymentResult.status,
-        paymentResult.message,
-      );
+    paymentResult = await this.sendPayment(fsp, details.payload);
 
-      if (paymentResult.status === 'ok') {
-        for (let connection of details.connectionsForFsp) {
-          this.storeTransaction(amount, connection, fsp, program, installment);
-        }
+    this.logFspCall(
+      fsp,
+      details.payload,
+      paymentResult.status,
+      paymentResult.message,
+    );
+
+    if (paymentResult.status === 'ok') {
+      for (let connection of details.connectionsForFsp) {
+        this.storeTransaction(amount, connection, fsp, program, installment);
       }
     }
+
     return { paymentResult, nrConnectionsFsp: details.paymentList.length };
   }
 
