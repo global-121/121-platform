@@ -6,8 +6,7 @@ import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 
 import { CountryEntity } from '../programs/country/country.entity';
-import fspBank from '../../examples/fsp-bank.json';
-import fspMobileMoney from '../../examples/fsp-mobile-money.json';
+import fspMpesa from '../../examples/fsp-mpesa.json';
 import programPilotKen from '../../examples/program-pilot-ken.json';
 import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
@@ -42,8 +41,7 @@ export class SeedPilotKenProgram implements InterfaceScript {
     await countryRepository.save([{ country: 'Kenya' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
-    await this.seedHelper.addFsp(fspBank);
-    await this.seedHelper.addFsp(fspMobileMoney);
+    await this.seedHelper.addFsp(fspMpesa);
 
     // ***** CREATE PROGRAM *****
     const examplePrograms = [programPilotKen];

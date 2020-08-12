@@ -28,9 +28,6 @@
   "financialServiceProviders": [
     {
       "id": 1
-    },
-    {
-      "id": 2
     }
   ],
   "inclusionCalculationType": "highestScoresX",
@@ -63,17 +60,6 @@
         "en": "My date of birth:"
       },
       "answerType": "date",
-      "criteriumType": "standard",
-      "options": null,
-      "persistence": true,
-      "scoring": {}
-    },
-    {
-      "criterium": "phoneNumber",
-      "label": {
-        "en": "My phonenumber:"
-      },
-      "answerType": "tel",
       "criteriumType": "standard",
       "options": null,
       "persistence": true,
