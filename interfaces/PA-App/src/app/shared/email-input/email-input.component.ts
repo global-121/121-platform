@@ -42,34 +42,16 @@ export class EmailInputComponent {
   @Output()
   public isValidChange = new EventEmitter<boolean>();
 
-  // private initialChecked = false;
-
   constructor() { }
-
 
   public async onChange() {
     this.value = this.emailInput.value;
-    console.log('this.emailInput.value;: ', this.emailInput.value);
+    console.log('this.emailInput.value: ', this.emailInput.value);
 
     const nativeInput = await this.emailInput.getInputElement();
     const nativeIsValid = nativeInput.checkValidity();
-    // if (!nativeIsValid) {
-    //   this.setValidity(false, this.initialChecked);
-    //   return;
-    // }
-
-    // // Only start emitting validity-states when the first check is passed once:
-    // this.initialChecked = true;
-
-    // const customIsValid = this.checkValidityRegex();
-    // console.log('customIsValid: ', customIsValid);
     this.setValidity(nativeIsValid);
   }
-
-  // private checkValidityRegex() {
-  //   const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  //   return re.test(this.value);
-  // }
 
   private setValidity(state: boolean, emit = true) {
     this.isValid = state;

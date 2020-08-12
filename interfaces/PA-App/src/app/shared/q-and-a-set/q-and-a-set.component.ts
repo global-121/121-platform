@@ -184,8 +184,6 @@ export class QAndASetComponent implements OnChanges {
   }
 
   public checkValidationErrors(questionCode?: string): boolean {
-    // console.log('this.validationErrors: ', this.validationErrors);
-
     if (!questionCode) {
       return this.validationErrors.length > 0;
     }
