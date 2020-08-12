@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { INTERSOLVE } from '../secrets';
+import { INTERSOLVE } from '../../secrets';
 import { ApiService } from './api.service';
 
 @Injectable()

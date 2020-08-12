@@ -1,4 +1,3 @@
-import { IntersolveApiService } from './../../funding/intersolve-api.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
@@ -42,6 +41,7 @@ import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
 import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
 import { INTERSOLVE, AFRICASTALKING } from '../../secrets';
+import { IntersolveApiService } from '../fsp/intersolve-api.service';
 
 @Injectable()
 export class ProgramService {
