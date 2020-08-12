@@ -1,0 +1,16 @@
+<ion-card>
+  <ion-card-header>
+    <ion-img
+      [src]="subCategory.subCategoryIcon"
+      [alt]="subCategory.subCategoryName"
+    ></ion-img>
+    <ion-card-title class="ion-text-center">{{
+      subCategory.subCategoryName
+    }}</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content></ion-card-content>
+</ion-card>
+<ion-text *ngIf="showDescription">{{
+  subCategory.subCategoryDescription
+}}</ion-text>

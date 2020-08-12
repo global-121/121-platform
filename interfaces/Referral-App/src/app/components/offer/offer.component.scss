@@ -1,0 +1,19 @@
+ion-card {
+  width: 150px;
+  height: 150px;
+  display: inline-block;
+  background: var(--ion-color-warning);
+
+  ion-img {
+    height: 85px;
+    width: 85px;
+    margin: auto;
+  }
+
+  ion-card-title {
+    font-weight: normal;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
