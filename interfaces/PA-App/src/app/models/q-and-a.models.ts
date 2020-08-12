@@ -5,6 +5,7 @@ export enum AnswerType {
   Date = 'date',
   Enum = 'dropdown',
   phoneNumber = 'tel',
+  email = 'email',
 }
 
 export class Question {
