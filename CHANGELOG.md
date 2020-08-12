@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - 2020-08-11: Added INTERSOLVE API-key to services/121-service/src/secrets.ts
 
+### Changed
+- 2020-08-12: Changed languages ny_MW, et_OM by sa_KE and la2_KE
+
 ---
 
 ## [0.6.3](https://github.com/global-121/121-platform/compare/v0.6.2...v0.6.3) - 2020-08-05
