@@ -1,10 +1,10 @@
-import { EmailInputComponent } from './email-input/email-input.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { EmailInputComponent } from './email-input/email-input.component';
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
 import { MoreInfoButtonComponent } from './more-info-button/more-info-button.component';
 import { NumericInputComponent } from './numeric-input/numeric-input.component';

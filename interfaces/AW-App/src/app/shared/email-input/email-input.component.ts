@@ -42,7 +42,7 @@ export class EmailInputComponent {
   @Output()
   public isValidChange = new EventEmitter<boolean>();
 
-  constructor() { }
+  constructor() {}
 
   public async onChange() {
     this.value = this.emailInput.value;

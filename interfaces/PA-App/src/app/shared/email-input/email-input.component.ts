@@ -42,12 +42,10 @@ export class EmailInputComponent {
   @Output()
   public isValidChange = new EventEmitter<boolean>();
 
-  constructor() { }
+  constructor() {}
 
   public async onChange() {
     this.value = this.emailInput.value;
-    console.log('this.emailInput.value: ', this.emailInput.value);
-
     const nativeInput = await this.emailInput.getInputElement();
     const nativeIsValid = nativeInput.checkValidity();
     this.setValidity(nativeIsValid);
