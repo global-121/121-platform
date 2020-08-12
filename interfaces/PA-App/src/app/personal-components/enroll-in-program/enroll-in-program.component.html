@@ -8,11 +8,6 @@
       <span [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:'<strong>'+programDetails?.title+'</strong>', ngo:'<strong>'+programDetails?.ngo+'</strong>' }"></span>
     </p>
 
-    <p>
-      <play-text-audio key="personal.enroll-in-program.introduction-questions" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.enroll-in-program.introduction-questions'|translate }}
-    </p>
-
     <more-info-button buttonKey="personal.enroll-in-program.more-info-questions"
                       messageKey="personal.enroll-in-program.info-message"
                       headingKey="personal.enroll-in-program.more-info-questions"
