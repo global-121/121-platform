@@ -25,3 +25,8 @@ export const INTERSOLVE = {
   productCode: '<productCode>',
   packageCode: '<packageCode>',
 };
+
+export const AFRICASTALKING = {
+  apiKey: '<apiKey>',
+  username: 'sandbox',
+};
