@@ -6,11 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.6.3...master)
 
+### Added
+- 2020-08-11: Added INTERSOLVE API-key to services/121-service/src/secrets.ts
+
 ---
 
 ## [0.6.3](https://github.com/global-121/121-platform/compare/v0.6.2...v0.6.3) - 2020-08-05
 
-## Changed
+### Changed
 - 2020-08-05: Fixes for input-validation in both PA-app and AW-app
 
 ## [0.6.2](https://github.com/global-121/121-platform/compare/v0.6.1...v0.6.2) - 2020-08-04
