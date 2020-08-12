@@ -2,10 +2,10 @@
   "published": false,
   "state": "design",
   "location": "Kenya",
-  "ngo": "KRCS",
+  "ngo": "Kenya Red Cross",
   "countryId": 1,
   "title": {
-    "en": "Pilot - Kenya"
+    "en": "Pilot"
   },
   "description": {
     "en": "Program description"
@@ -29,9 +29,6 @@
     {
       "id": 1
     },
-    {
-      "id": 2
-    }
   ],
   "inclusionCalculationType": "highestScoresX",
   "minimumScore": 0,
@@ -49,7 +46,7 @@
     {
       "criterium": "name",
       "label": {
-        "en": "My full name:"
+        "en": "Confirm full name:"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -63,17 +60,6 @@
         "en": "My date of birth:"
       },
       "answerType": "date",
-      "criteriumType": "standard",
-      "options": null,
-      "persistence": true,
-      "scoring": {}
-    },
-    {
-      "criterium": "phoneNumber",
-      "label": {
-        "en": "My phonenumber:"
-      },
-      "answerType": "tel",
       "criteriumType": "standard",
       "options": null,
       "persistence": true,

@@ -1,0 +1,13 @@
+{
+  "fsp": "M-Pesa",
+  "attributes": [
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Which phone number do you want to receive your M-Pesa code on?"
+      },
+      "answerType": "tel",
+      "options": null
+    }
+  ]
+}

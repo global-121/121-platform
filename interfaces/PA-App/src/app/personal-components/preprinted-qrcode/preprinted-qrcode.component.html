@@ -4,6 +4,20 @@
       <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.preprinted-qrcode.introduction'|translate }}
     </p>
+    <more-info-button 
+      buttonKey="personal.preprinted-qrcode.more-info-qr"
+      messageKey="personal.preprinted-qrcode.info-qr" 
+      headingKey="personal.preprinted-qrcode.more-info-qr"
+    ></more-info-button>
+  </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo"
+                 isConnected="true"
+  >
+    <p>
+      <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-start ion-margin-end">
+      </play-text-audio>
+      {{ 'personal.preprinted-qrcode.question'|translate }}
+    </p>
   </dialogue-turn>
 
   <dialogue-turn actor="self">
