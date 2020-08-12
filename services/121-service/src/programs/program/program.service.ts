@@ -1,3 +1,4 @@
+import { IntersolveApiService } from './../../funding/intersolve-api.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
@@ -78,6 +79,7 @@ export class ProgramService {
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
+    private readonly intersolveApiService: IntersolveApiService,
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
@@ -958,18 +960,7 @@ export class ProgramService {
     };
 
     let error;
-    const response = await this.httpService
-      .post(fsp.apiUrl, payload, {
-        headers: headersRequest,
-      })
-      .pipe(
-        map(response => response.data),
-        catchError(err => {
-          error = err;
-          return empty();
-        }),
-      )
-      .toPromise();
+    const response = this.intersolveApiService.sendPayment(fsp.apiUrl, payload);
     return response
       ? { status: 'ok', message: response }
       : {
