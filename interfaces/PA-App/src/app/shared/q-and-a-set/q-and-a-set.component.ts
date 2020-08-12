@@ -59,7 +59,7 @@ export class QAndASetComponent implements OnChanges {
 
   public validationErrors: string[] = [];
 
-  constructor() { }
+  constructor() {}
 
   ngOnChanges(changes: SimpleChanges) {
     // Wait for questions to finish loading, to only THEN parse the provided ansers:

@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
-import { EmailInputComponent } from './email-input/email-input.component';
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
+import { EmailInputComponent } from './email-input/email-input.component';
 import { MoreInfoButtonComponent } from './more-info-button/more-info-button.component';
 import { NumericInputComponent } from './numeric-input/numeric-input.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
@@ -46,4 +46,4 @@ import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
     TranslateModule,
   ],
 })
-export class SharedModule { }
+export class SharedModule {}
