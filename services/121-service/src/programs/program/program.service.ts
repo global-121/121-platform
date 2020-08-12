@@ -40,7 +40,7 @@ import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
 import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
-import { INTERSOLVE } from '../../secrets';
+import { INTERSOLVE, AFRICASTALKING } from '../../secrets';
 
 @Injectable()
 export class ProgramService {
@@ -845,6 +845,26 @@ export class ProgramService {
     return payload;
   }
 
+  private createAfricasTalkingDetails(paymentList): any {
+    const payload = {
+      username: AFRICASTALKING.username,
+      productName: AFRICASTALKING.productName,
+      recipients: [],
+    };
+
+    for (let item of paymentList) {
+      const recipient = {
+        phoneNumber: item.phoneNumber, // '+254711123466',
+        currencyCode: AFRICASTALKING.currencyCode,
+        amount: item.amount,
+        metadata: {},
+      };
+      payload.recipients.push(recipient);
+    }
+
+    return payload;
+  }
+
   private async createPaymentDetails(
     includedConnections: ConnectionEntity[],
     amount: number,
@@ -870,6 +890,8 @@ export class ProgramService {
     let payload;
     if (fsp.fsp === fspName.intersolve) {
       payload = this.createIntersolveDetails(paymentList);
+    } else if (fsp.fsp === fspName.mpesa) {
+      payload = this.createAfricasTalkingDetails(paymentList);
     } else {
       payload = paymentList;
     }
@@ -919,35 +941,71 @@ export class ProgramService {
 
   private async sendPayment(fsp, payload): Promise<any> {
     if (fsp.fsp === fspName.intersolve) {
-      const headersRequest = {
-        accept: 'application/json',
-        authorization: `Basic ${INTERSOLVE.authToken}`,
-      };
-
-      let error;
-      const response = await this.httpService
-        .post(fsp.apiUrl, payload, {
-          headers: headersRequest,
-        })
-        .pipe(
-          map(response => response.data),
-          catchError(err => {
-            error = err;
-            return empty();
-          }),
-        )
-        .toPromise();
-      return response
-        ? { status: 'ok', message: response }
-        : {
-            status: 'error',
-            message: { statusText: error.response.statusText },
-          };
+      return this.sendPaymentIntersolve(fsp, payload);
+    } else if (fsp.fsp === fspName.mpesa) {
+      return this.sendPaymentMpesa(fsp, payload);
     } else {
       // Handle other FSP's here
       // This will result in an HTTP-exception mentioning that no payment was done for this FSP
       return { status: 'error', message: {} };
     }
+  }
+
+  private async sendPaymentIntersolve(fsp, payload): Promise<any> {
+    const headersRequest = {
+      accept: 'application/json',
+      authorization: `Basic ${INTERSOLVE.authToken}`,
+    };
+
+    let error;
+    const response = await this.httpService
+      .post(fsp.apiUrl, payload, {
+        headers: headersRequest,
+      })
+      .pipe(
+        map(response => response.data),
+        catchError(err => {
+          error = err;
+          return empty();
+        }),
+      )
+      .toPromise();
+    return response
+      ? { status: 'ok', message: response }
+      : {
+          status: 'error',
+          message: { statusText: error.response.statusText },
+        };
+  }
+
+  private async sendPaymentMpesa(fsp, payload): Promise<any> {
+    const credentials = {
+      apiKey: AFRICASTALKING.apiKey,
+      username: AFRICASTALKING.username,
+    };
+    const AfricasTalking = require('africastalking')(credentials);
+    const payments = AfricasTalking.PAYMENTS;
+
+    let result;
+    await payments
+      .mobileB2C(payload)
+      .then((response: any) => {
+        console.log('response: ', response);
+        result = { response: response };
+      })
+      .catch((error: any) => {
+        // This catch is not working, also errors end up in the above response
+        console.log('error: ', error);
+        result = { error: error };
+      });
+
+    return !result.response.errorMessage &&
+      !result.response.entries[0].errorMessage
+      ? { status: 'ok', message: result.response }
+      : {
+          status: 'error',
+          message: { error: result.response },
+        };
   }
 
   private async logFspCall(
