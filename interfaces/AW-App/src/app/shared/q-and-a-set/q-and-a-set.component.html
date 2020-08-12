@@ -66,6 +66,18 @@
             debounce="500"
           ></phone-number-input>
         </div>
+        <div *ngSwitchCase="answerType.email">
+          <email-input
+            #emailInput
+            ngDefaultControl
+            [(ngModel)]="theFormModels[question.code]"
+            required
+            [name]="question.code"
+            [disabled]="isSubmitted"
+            (isValidChange)="onChangeWithValidation(question.code, emailInput.value, emailInput.isValid)"
+            debounce="1000"
+          ></email-input>
+        </div>
         <div *ngSwitchDefault>
           <ion-input
             #defaultInput="ngModel"
@@ -95,6 +107,9 @@
         </p>
         <p *ngIf="(question.answerType === answerType.Date)">
           {{ 'q-and-a-set.validation.date'|translate }}
+        </p>
+        <p *ngIf="(question.answerType === answerType.email)">
+          {{ 'q-and-a-set.validation.email'|translate }}
         </p>
         <p *ngIf="(question.answerType === answerType.Text)">
           {{ 'q-and-a-set.validation.required'|translate }}

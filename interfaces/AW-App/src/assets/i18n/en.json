@@ -77,7 +77,8 @@
       "required": "An answer is required for this question. Please adjust and try again.",
       "number": "The answer needs to be a number. Please adjust and try again.",
       "date": "The date does not have a valid format. Please adjust and try again.",
-      "phone-number": "We couldn't verify this phone-number. Please adjust and try again."
+      "phone-number": "We couldn't verify this phone-number. Please adjust and try again.",
+      "email": "The email does not have a valid format. Please adjust and try again."
     }
   },
   "qr-scanner": {

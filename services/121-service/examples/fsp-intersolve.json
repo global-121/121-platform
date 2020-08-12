@@ -7,7 +7,7 @@
       "label": {
         "en": "What is your email address, so you can receive payments through e-vouchers?"
       },
-      "answerType": "text",
+      "answerType": "email",
       "options": null
     }
   ]
