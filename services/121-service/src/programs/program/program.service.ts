@@ -733,8 +733,6 @@ export class ProgramService {
         installment,
       );
       count += result.nrConnectionsFsp;
-      console.log('fsp: ', fsp);
-      console.log('result paymentResult: ', result.paymentResult);
 
       if (result.paymentResult.status === 'error') {
         failedFsps.push(fsp.fsp);
