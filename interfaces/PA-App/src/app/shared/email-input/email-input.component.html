@@ -1,0 +1,16 @@
+<ion-input
+  #emailInput
+  type="text"
+  inputmode="email"
+  pattern="[A-Za-z0-9._%+-]{3,}@[a-zA-Z]{3,}([.]{1}[a-zA-Z]{2,}|[.]{1}[a-zA-Z]{2,}[.]{1}[a-zA-Z]{2,})"
+  [name]="name"
+  [(ngModel)]="ngModel"
+  [value]="value"
+  [autocomplete]="autocomplete"
+  [disabled]="disabled"
+  [placeholder]="placeholder"
+  (ionChange)="onChange()"
+  debounce="1000"
+  ngDefaultControl
+  [required]="required"
+></ion-input>

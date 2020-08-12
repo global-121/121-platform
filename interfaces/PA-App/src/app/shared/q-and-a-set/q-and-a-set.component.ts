@@ -59,7 +59,7 @@ export class QAndASetComponent implements OnChanges {
 
   public validationErrors: string[] = [];
 
-  constructor() {}
+  constructor() { }
 
   ngOnChanges(changes: SimpleChanges) {
     // Wait for questions to finish loading, to only THEN parse the provided ansers:
@@ -184,6 +184,8 @@ export class QAndASetComponent implements OnChanges {
   }
 
   public checkValidationErrors(questionCode?: string): boolean {
+    // console.log('this.validationErrors: ', this.validationErrors);
+
     if (!questionCode) {
       return this.validationErrors.length > 0;
     }

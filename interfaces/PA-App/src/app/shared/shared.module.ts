@@ -1,3 +1,4 @@
+import { EmailInputComponent } from './email-input/email-input.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +17,7 @@ import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 @NgModule({
   declarations: [
     DialogueTurnComponent,
+    EmailInputComponent,
     MoreInfoButtonComponent,
     NumericInputComponent,
     PasswordToggleInputComponent,
@@ -33,6 +35,7 @@ import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
   ],
   exports: [
     DialogueTurnComponent,
+    EmailInputComponent,
     NumericInputComponent,
     MoreInfoButtonComponent,
     PasswordToggleInputComponent,
@@ -43,4 +46,4 @@ import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
     TranslateModule,
   ],
 })
-export class SharedModule {}
+export class SharedModule { }
