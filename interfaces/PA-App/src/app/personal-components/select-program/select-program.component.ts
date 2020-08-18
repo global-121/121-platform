@@ -53,7 +53,7 @@ export class SelectProgramComponent extends PersonalComponent {
   private async getPrograms() {
     this.conversationService.startLoading();
 
-    this.countryChoice = await this.paData.retrieve(this.paData.type.country);
+    this.countryChoice = '1'; // await this.paData.retrieve(this.paData.type.country);
     this.programs = await this.programsService.getProgramsByCountryId(
       this.countryChoice,
     );

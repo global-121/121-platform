@@ -33,4 +33,11 @@
       <qrcode [qrdata]="qrDataString" level="H"></qrcode>
     </div>
   </dialogue-turn>
+  <dialogue-turn [actor]="program?.ngo" isConnected="true"
+  >
+    <p>
+      <play-text-audio key="personal.registration-summary.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
+      {{ 'personal.registration-summary.conclusion'|translate }}
+    </p>
+</dialogue-turn>
 </section>

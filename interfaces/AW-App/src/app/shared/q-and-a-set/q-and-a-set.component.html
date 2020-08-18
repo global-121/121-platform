@@ -1,4 +1,7 @@
-<form #theForm="ngForm">
+<form 
+  #theForm="ngForm" 
+  (keydown.enter)="$event.preventDefault()"
+>
 
   <div *ngFor="let question of questions; let i=index; first as isFirst;">
     <dialogue-turn
@@ -50,7 +53,7 @@
             required
             [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, dateInput.value, (dateInput.valid && (dateInput.dirty || dateInput.touched)))"
+            (ionChange)="onChangeWithValidation(question.code, dateInput.value, dateInput.valid)"
             debounce="100"
           ></ion-input>
         </div>
@@ -66,6 +69,18 @@
             debounce="500"
           ></phone-number-input>
         </div>
+        <div *ngSwitchCase="answerType.email">
+          <email-input
+            #emailInput
+            ngDefaultControl
+            [(ngModel)]="theFormModels[question.code]"
+            required
+            [name]="question.code"
+            [disabled]="isSubmitted"
+            (isValidChange)="onChangeWithValidation(question.code, emailInput.value, emailInput.isValid)"
+            debounce="1000"
+          ></email-input>
+        </div>
         <div *ngSwitchDefault>
           <ion-input
             #defaultInput="ngModel"
@@ -76,7 +91,7 @@
             required
             [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, (defaultInput.valid && (defaultInput.dirty || defaultInput.touched)))"
+            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, defaultInput.valid)"
             debounce="300"
           ></ion-input>
         </div>
@@ -95,6 +110,9 @@
         </p>
         <p *ngIf="(question.answerType === answerType.Date)">
           {{ 'q-and-a-set.validation.date'|translate }}
+        </p>
+        <p *ngIf="(question.answerType === answerType.email)">
+          {{ 'q-and-a-set.validation.email'|translate }}
         </p>
         <p *ngIf="(question.answerType === answerType.Text)">
           {{ 'q-and-a-set.validation.required'|translate }}

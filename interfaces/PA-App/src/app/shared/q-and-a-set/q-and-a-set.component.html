@@ -1,4 +1,7 @@
-<form #theForm="ngForm">
+<form 
+  #theForm="ngForm"
+  (keydown.enter)="$event.preventDefault()"
+>
 
   <div *ngFor="let question of questions; let i=index; first as isFirst;">
     <dialogue-turn
@@ -66,6 +69,18 @@
             debounce="500"
           ></phone-number-input>
         </div>
+        <div *ngSwitchCase="answerType.email">
+          <email-input
+            #emailInput
+            ngDefaultControl
+            [(ngModel)]="theFormModels[question.code]"
+            required
+            [name]="question.code"
+            [disabled]="isSubmitted"
+            (isValidChange)="onChangeWithValidation(question.code, emailInput.value, emailInput.isValid)"
+            debounce="1000"
+          ></email-input>
+        </div>
         <div *ngSwitchDefault>
           <ion-input
             #defaultInput="ngModel"
@@ -98,6 +113,10 @@
         <p *ngIf="(question.answerType === answerType.Date)">
           <play-text-audio key="q-and-a-set.validation.date" class="ion-float-start ion-margin-end"></play-text-audio>
           {{ 'q-and-a-set.validation.date'|translate }}
+        </p>
+        <p *ngIf="(question.answerType === answerType.email)">
+          <play-text-audio key="q-and-a-set.validation.date" class="ion-float-start ion-margin-end"></play-text-audio>
+          {{ 'q-and-a-set.validation.email'|translate }}
         </p>
         <p *ngIf="(question.answerType === answerType.Text)">
           <play-text-audio key="q-and-a-set.validation.required" class="ion-float-start ion-margin-end"></play-text-audio>

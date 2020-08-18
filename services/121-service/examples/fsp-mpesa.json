@@ -1,10 +1,10 @@
 {
-  "fsp": "M-PESA - mobile money",
+  "fsp": "M-Pesa",
   "attributes": [
     {
       "name": "phoneNumber",
       "label": {
-        "en": "What is your phonenumber, so we can send you mobile money?"
+        "en": "Which phone number do you want to receive your M-Pesa code on?"
       },
       "answerType": "tel",
       "options": null

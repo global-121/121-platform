@@ -2,17 +2,6 @@
 
 The front-end of the application an _Aid-Worker_ uses to interact with the 121-platform.
 
-## Getting Started
-
-- Install [environment requirements](../README.md)
-- Install dependencies (from this folder):
-
-      npm install
-
-- Start in development-mode:
-
-      npm start
-
 ## Configuration
 
 Some specific information need to be configured before use:
