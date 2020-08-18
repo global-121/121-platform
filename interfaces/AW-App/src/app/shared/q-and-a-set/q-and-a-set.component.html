@@ -1,4 +1,7 @@
-<form #theForm="ngForm">
+<form 
+  #theForm="ngForm" 
+  (keydown.enter)="$event.preventDefault()"
+>
 
   <div *ngFor="let question of questions; let i=index; first as isFirst;">
     <dialogue-turn
@@ -50,7 +53,7 @@
             required
             [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, dateInput.value, (dateInput.valid && (dateInput.dirty || dateInput.touched)))"
+            (ionChange)="onChangeWithValidation(question.code, dateInput.value, dateInput.valid)"
             debounce="100"
           ></ion-input>
         </div>
@@ -88,7 +91,7 @@
             required
             [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, (defaultInput.valid && (defaultInput.dirty || defaultInput.touched)))"
+            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, defaultInput.valid)"
             debounce="300"
           ></ion-input>
         </div>
