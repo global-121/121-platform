@@ -1,4 +1,7 @@
-<form #theForm="ngForm">
+<form 
+  #theForm="ngForm" 
+  (keydown.enter)="$event.preventDefault()"
+>
 
   <div *ngFor="let question of questions; let i=index; first as isFirst;">
     <dialogue-turn
