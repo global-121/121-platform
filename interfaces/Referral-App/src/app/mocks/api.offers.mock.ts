@@ -5,7 +5,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.wereldhuis.org',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -18,7 +18,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.boostamsterdam.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -31,7 +31,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.hvoquerido.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -44,7 +44,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.legerdesheils.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -57,7 +57,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.amsterdam.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -70,7 +70,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.amsterdam.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -83,7 +83,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.harriettubmanhuis.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -96,7 +96,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.noelhuis.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -109,7 +109,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.vluchtlingenwerk.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -122,7 +122,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.juridischolket.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -135,7 +135,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.askv.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -148,7 +148,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.amsterdam.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -161,7 +161,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.advocatenspreekuur.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -174,7 +174,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.doktersvandewereld.org',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -187,7 +187,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.oudezijds100.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -200,7 +200,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.spoedeisendepsychiatrieamsterdam.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -213,7 +213,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.oudezijds100.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -226,7 +226,7 @@ export default [
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
     offerDescription:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     offerLink: 'www.i-psy.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
