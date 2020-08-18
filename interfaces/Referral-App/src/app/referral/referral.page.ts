@@ -84,6 +84,7 @@ export class ReferralPage {
       this.clickCategory(this.category);
     } else if (this.category) {
       this.category = null;
+      this.router.navigate(['/tabs/referral']);
     }
   }
 
