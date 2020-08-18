@@ -1,10 +1,15 @@
-<ion-card>
-  <ion-card-header>
-    <ion-img [src]="offer.offerIcon" [alt]="offer.offerName"></ion-img>
-    <ion-card-title class="ion-text-center">
-      {{ offer.offerName }}
-    </ion-card-title>
-  </ion-card-header>
-
-  <ion-card-content></ion-card-content>
-</ion-card>
+<div class="offer">
+  <ion-card>
+    <ion-card-header>
+      <ion-img [src]="offer.offerIcon" [alt]="offer.offerName"></ion-img>
+      <ion-card-title class="ion-text-center">
+        {{ offer.offerName }}
+      </ion-card-title>
+    </ion-card-header>
+  </ion-card>
+  <ion-card-content>
+    <ion-text>
+      {{ offer.offerDescription }}
+    </ion-text>
+  </ion-card-content>
+</div>
