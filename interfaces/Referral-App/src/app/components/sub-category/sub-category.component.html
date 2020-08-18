@@ -1,16 +1,21 @@
-<ion-card>
-  <ion-card-header>
-    <ion-img
-      [src]="subCategory.subCategoryIcon"
-      [alt]="subCategory.subCategoryName"
-    ></ion-img>
-    <ion-card-title class="ion-text-center">{{
-      subCategory.subCategoryName
-    }}</ion-card-title>
-  </ion-card-header>
-
-  <ion-card-content></ion-card-content>
-</ion-card>
-<ion-text *ngIf="showDescription">{{
-  subCategory.subCategoryDescription
-}}</ion-text>
+<div class="sub-category" [class.position-relative]="!showDescription">
+  <ion-card>
+    <ion-card-header>
+      <ion-img
+        [src]="subCategory.subCategoryIcon"
+        [alt]="subCategory.subCategoryName"
+      ></ion-img>
+      <ion-card-title class="ion-text-center">
+        {{ subCategory.subCategoryName }}
+      </ion-card-title>
+    </ion-card-header>
+  </ion-card>
+  <ion-card-content
+    [class.vertical-text]="!showDescription"
+    [class.horizontal-text]="showDescription"
+  >
+    <ion-text>
+      {{ subCategory.subCategoryDescription }}
+    </ion-text>
+  </ion-card-content>
+</div>

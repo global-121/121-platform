@@ -1,3 +1,7 @@
+.category {
+  display: inline-block;
+}
+
 ion-card {
   width: 100px;
   height: 100px;
@@ -21,7 +25,9 @@ ion-card {
   }
 }
 
-ion-text {
+ion-card-content {
   position: absolute;
-  margin: 20px;
+  top: 0;
+  left: 100px;
+  margin: 15px;
 }
