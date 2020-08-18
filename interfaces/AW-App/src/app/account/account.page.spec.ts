@@ -8,6 +8,7 @@ import { AccountPage } from './account.page';
 fdescribe('AccountPage', () => {
   let component: AccountPage;
   let fixture: ComponentFixture<AccountPage>;
+  let event;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -19,6 +20,14 @@ fdescribe('AccountPage', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
+
+    event = {
+      preventDefault: function () {},
+      target: { elements: {
+        create: { value: ""},
+        confirm: { value: ""}
+      }}
+    }
   }));
 
   beforeEach(() => {
@@ -29,7 +38,28 @@ fdescribe('AccountPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    console.log("We Start here");
-    console.log(component.changePasswordForm);
+  });
+
+  it('ngOnInit: should set up variables', () => {
+    expect(component.isLoggedIn).toBeDefined();
+  });
+
+  it('doLogin: should call login of authService', () => {
+    expect(component.isLoggedIn).toBeDefined();
+    spyOn(event, "preventDefault");
+    component.doLogin(event);
+    expect(event.preventDefault).toHaveBeenCalled();
+  });
+
+  it('logout: should create toastController', () => {
+    spyOn(component, "createToast");
+    component.logout();
+    expect(component.createToast).toHaveBeenCalled();
+  });
+
+  it('doChangePassword: should call if create != confirm', () => {
+    spyOn(component, "createToast");
+    component.logout();
+    expect(component.createToast).toHaveBeenCalled();
   });
 });
