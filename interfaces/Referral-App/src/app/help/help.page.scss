@@ -1,0 +1,23 @@
+ion-header {
+  --ion-background-color: var(--ion-color-warning);
+}
+
+ion-content {
+  --ion-background-color: #f6f0eb;
+}
+
+.help-image-column {
+  flex-grow: 0;
+
+  .help-image {
+    width: 100px;
+    height: 100px;
+    margin: 15px auto;
+    background: white;
+  }
+}
+
+.help-call-icon {
+  font-size: 18px;
+  vertical-align: bottom;
+}
