@@ -10,5 +10,8 @@ export class OfferComponent {
   @Input('offer')
   offer: Offer;
 
+  @Input('show-details')
+  showDetails: boolean = false;
+
   constructor() {}
 }

@@ -1,4 +1,4 @@
-<div class="sub-category" [class.position-relative]="!showDescription">
+<div class="sub-category" [class.position-relative]="showBottomDescription">
   <ion-card>
     <ion-card-header>
       <ion-img
@@ -11,8 +11,8 @@
     </ion-card-header>
   </ion-card>
   <ion-card-content
-    [class.vertical-text]="!showDescription"
-    [class.horizontal-text]="showDescription"
+    [class.vertical-text]="showBottomDescription"
+    [class.horizontal-text]="showRightDescription"
   >
     <ion-text>
       {{ subCategory.subCategoryDescription }}

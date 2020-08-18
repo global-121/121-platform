@@ -52,6 +52,11 @@ export class ReferralPage {
           (subCategory) => subCategory.subCategoryID == params.subCategoryID,
         );
       }
+      if ('offerID' in params) {
+        this.offer = this.offers.find(
+          (offer) => offer.offerID == params.offerID,
+        );
+      }
     });
   }
 
@@ -77,6 +82,17 @@ export class ReferralPage {
     });
   }
 
+  public clickOffer(offer: Offer) {
+    this.offer = offer;
+    this.router.navigate(['/tabs/referral'], {
+      queryParams: {
+        categoryID: this.category.categoryID,
+        subCategoryID: this.subCategory.subCategoryID,
+        offerID: this.offer.offerID,
+      },
+    });
+  }
+
   goBack() {
     if (this.offer) {
       this.clickSubCategory(this.subCategory);
@@ -86,9 +102,5 @@ export class ReferralPage {
       this.category = null;
       this.router.navigate(['/tabs/referral']);
     }
-  }
-
-  public clickOffer(offer: Offer) {
-    this.offer = offer;
   }
 }

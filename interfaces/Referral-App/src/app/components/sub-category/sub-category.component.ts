@@ -10,8 +10,11 @@ export class SubCategoryComponent {
   @Input('sub-category')
   subCategory: SubCategory;
 
-  @Input('show-description')
-  showDescription: boolean = false;
+  @Input('show-right-description')
+  showRightDescription: boolean = false;
+
+  @Input('show-bottom-description')
+  showBottomDescription: boolean = false;
 
   constructor() {}
 }
