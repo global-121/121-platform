@@ -19,7 +19,7 @@
       <category
         [category]="category"
         [show-description]="true"
-        (click)="clickCategory(category)"
+        (click)="goBack()"
       ></category>
     </div>
     <div *ngIf="category && !subCategory">
@@ -33,7 +33,7 @@
       <sub-category
         [sub-category]="subCategory"
         [show-description]="true"
-        (click)="clickSubCategory(subCategory)"
+        (click)="goBack()"
       ></sub-category>
     </div>
   </div>
