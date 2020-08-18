@@ -57,9 +57,29 @@ fdescribe('AccountPage', () => {
     expect(component.createToast).toHaveBeenCalled();
   });
 
-  it('doChangePassword: should call if create != confirm', () => {
+ // async methods
+  fit('doChangePassword: should call changePassword if create == confirm', (done) => {
     spyOn(component, "createToast");
-    component.logout();
+    let spy = spyOn(component.programsService, "changePassword").and.returnValue(Promise.resolve(true));
+
+    component.doChangePassword(event);
+
+    spy.calls.mostRecent().returnValue.then(() => {
+        expect(component.createToast).toHaveBeenCalledWith(component.changedPassword);
+        expect(component.createToast).toHaveBeenCalled();
+        done();
+    });
+  });
+
+
+  fit('doChangePassword: should not call changePassword if create != confirm', () => {
+    spyOn(component, "createToast");
+    spyOn(component.programsService, "changePassword");
+    event.target.elements.create = "none";
+
+    component.doChangePassword(event);
+    expect(component.programsService.changePassword).not.toHaveBeenCalled();
     expect(component.createToast).toHaveBeenCalled();
   });
+
 });
