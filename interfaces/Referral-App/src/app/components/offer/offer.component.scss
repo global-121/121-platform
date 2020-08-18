@@ -1,8 +1,8 @@
 ion-card {
   width: 150px;
   height: 150px;
-  display: inline-block;
-  background: var(--ion-color-warning);
+  background: white;
+  cursor: pointer;
 
   ion-img {
     height: 85px;
@@ -13,7 +13,8 @@ ion-card {
   ion-card-title {
     font-weight: normal;
     overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    white-space: normal;
+    text-transform: uppercase;
+    font-size: .8rem;
   }
 }
