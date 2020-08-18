@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AccountPage } from './account.page';
 
-describe('AccountPage', () => {
+fdescribe('AccountPage', () => {
   let component: AccountPage;
   let fixture: ComponentFixture<AccountPage>;
 
@@ -29,5 +29,7 @@ describe('AccountPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    console.log("We Start here");
+    console.log(component.changePasswordForm);
   });
 });
