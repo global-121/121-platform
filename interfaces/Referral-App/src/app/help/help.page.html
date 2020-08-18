@@ -1,10 +1,42 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>help</ion-title>
+    <ion-title class="ion-text-center">
+      {{ 'tabs.referral-help-title'| translate }}
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content> </ion-content>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col class="help-image-column">
+        <ion-img
+          class="help-image"
+          src="https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png"
+        ></ion-img>
+      </ion-col>
+      <ion-col>
+        <p>
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industry's standard dummy text ever
+          since the 1500s, when an unknown printer took a galley of type and
+          scrambled it to make a type specimen book.
+        </p>
+        <p>
+          <ion-icon class="help-call-icon" name="call"></ion-icon> Helpline:
+          <a href="tel:+31 510 510 510">+31 510 510 510</a>
+        </p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <p><a href="#whatsapp">Link to WhatsApp</a></p>
+        <p><a href="#twitter">Link to Twitter</a></p>
+        <p><a href="#facebook">Link to Facebook</a></p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
 
 <ion-footer>
   <ion-toolbar>
