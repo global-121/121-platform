@@ -1,3 +1,4 @@
+import { FspModule } from './../fsp/fsp.module';
 import { FundingModule } from './../../funding/funding.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
 import { ProofModule } from './../../sovrin/proof/proof.module';
@@ -46,6 +47,7 @@ import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
     VoiceModule,
     forwardRef(() => ProofModule),
     FundingModule,
+    FspModule,
     HttpModule,
   ],
   providers: [ProgramService],

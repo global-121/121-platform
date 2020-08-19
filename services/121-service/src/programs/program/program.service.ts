@@ -41,6 +41,7 @@ import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
 import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
 import { INTERSOLVE, AFRICASTALKING } from '../../secrets';
+import { IntersolveApiService } from '../fsp/intersolve-api.service';
 
 @Injectable()
 export class ProgramService {
@@ -78,6 +79,7 @@ export class ProgramService {
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
+    private readonly intersolveApiService: IntersolveApiService,
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
@@ -958,18 +960,7 @@ export class ProgramService {
     };
 
     let error;
-    const response = await this.httpService
-      .post(fsp.apiUrl, payload, {
-        headers: headersRequest,
-      })
-      .pipe(
-        map(response => response.data),
-        catchError(err => {
-          error = err;
-          return empty();
-        }),
-      )
-      .toPromise();
+    const response = this.intersolveApiService.sendPayment(fsp.apiUrl, payload);
     return response
       ? { status: 'ok', message: response }
       : {
