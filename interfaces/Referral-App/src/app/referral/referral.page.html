@@ -1,9 +1,73 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      Referral
+    <ion-title class="ion-text-center">
+      {{ 'tabs.referral-title'| translate }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content></ion-content>
+<ion-content>
+  <div>
+    <div *ngIf="!category">
+      <category
+        *ngFor="let _category of categories"
+        [category]="_category"
+        (click)="clickCategory(_category)"
+      ></category>
+    </div>
+    <div *ngIf="category && !subCategory">
+      <category
+        [category]="category"
+        [showDescription]="true"
+        (click)="goBack()"
+      ></category>
+    </div>
+    <div *ngIf="category && !subCategory">
+      <sub-category
+        *ngFor="let _subCategory of subCategories | categoryFilter: category"
+        [subCategory]="_subCategory"
+        [showRightDescription]="false"
+        [showBottomDescription]="true"
+        (click)="clickSubCategory(_subCategory)"
+      ></sub-category>
+    </div>
+    <div *ngIf="category && subCategory">
+      <sub-category
+        [subCategory]="subCategory"
+        [showRightDescription]="true && !offer"
+        [showBottomDescription]="false"
+        (click)="goBack()"
+      ></sub-category>
+    </div>
+  </div>
+  <div *ngIf="category && subCategory && !offer">
+    <offer
+      *ngFor="let _offer of offers | categoryFilter: category | subCategoryFilter: subCategory"
+      [offer]="_offer"
+      (click)="clickOffer(_offer)"
+    ></offer>
+  </div>
+  <div *ngIf="category && subCategory && offer">
+    <offer
+      [offer]="offer"
+      [showDetails]="true"
+      (click)="clickOffer(offer)"
+    ></offer>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="start" *ngIf="category">
+      <ion-back-button
+        defaultHref="/tabs/referral"
+        (click)="goBack()"
+      ></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button href="/tabs/help">
+        <ion-icon slot="icon-only" name="help"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

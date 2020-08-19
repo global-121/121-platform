@@ -1,0 +1,23 @@
+<div class="offer">
+  <ion-card>
+    <ion-card-header>
+      <ion-img [src]="offer.offerIcon" [alt]="offer.offerName"></ion-img>
+      <ion-card-title class="ion-text-center">
+        {{ offer.offerName }}
+      </ion-card-title>
+    </ion-card-header>
+  </ion-card>
+  <ion-card-content>
+    <ion-text>
+      <p>{{ offer.offerDescription }}</p>
+      <div class="ion-margin-top" *ngIf="showDetails">
+        <p>
+          <a href="{{ offer.offerLink }}">{{ offer.offerLink }}</a>
+        </p>
+      </div>
+    </ion-text>
+  </ion-card-content>
+  <div class="ion-margin" *ngIf="showDetails">
+    <ion-img [src]="offer.offerImage" [alt]="offer.offerName"></ion-img>
+  </div>
+</div>

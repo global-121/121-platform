@@ -1,0 +1,21 @@
+<div class="sub-category" [class.position-relative]="showBottomDescription">
+  <ion-card>
+    <ion-card-header>
+      <ion-img
+        [src]="subCategory.subCategoryIcon"
+        [alt]="subCategory.subCategoryName"
+      ></ion-img>
+      <ion-card-title class="ion-text-center">
+        {{ subCategory.subCategoryName }}
+      </ion-card-title>
+    </ion-card-header>
+  </ion-card>
+  <ion-card-content
+    [class.vertical-text]="showBottomDescription"
+    [class.horizontal-text]="showRightDescription"
+  >
+    <ion-text>
+      {{ subCategory.subCategoryDescription }}
+    </ion-text>
+  </ion-card-content>
+</div>

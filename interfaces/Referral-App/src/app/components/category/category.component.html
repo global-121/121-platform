@@ -1,0 +1,18 @@
+<div class="category">
+  <ion-card>
+    <ion-card-header>
+      <ion-img
+        [src]="category.categoryIcon"
+        [alt]="category.categoryName"
+      ></ion-img>
+      <ion-card-title class="ion-text-center">
+        {{ category.categoryName }}
+      </ion-card-title>
+    </ion-card-header>
+  </ion-card>
+  <ion-card-content>
+    <ion-text *ngIf="showDescription">
+      {{ category.categoryDescription }}
+    </ion-text>
+  </ion-card-content>
+</div>

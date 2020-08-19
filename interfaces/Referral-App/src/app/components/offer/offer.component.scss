@@ -1,0 +1,31 @@
+.offer {
+  position: relative;
+}
+
+ion-card {
+  width: 150px;
+  height: 150px;
+  background: white;
+  cursor: pointer;
+
+  ion-img {
+    height: 85px;
+    width: 85px;
+    margin: auto;
+  }
+
+  ion-card-title {
+    font-weight: normal;
+    overflow: hidden;
+    white-space: normal;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+  }
+}
+
+ion-card-content {
+  position: absolute;
+  top: 0;
+  left: 150px;
+  margin: 15px;
+}
