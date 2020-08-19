@@ -46,5 +46,5 @@ export class FinancialServiceProviderEntity {
 
 export enum fspName {
   intersolve = 'Intersolve',
-  mpesa = 'M-PESA - mobile money',
+  mpesa = 'M-Pesa',
 }
