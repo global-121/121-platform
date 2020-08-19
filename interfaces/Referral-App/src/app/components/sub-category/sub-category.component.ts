@@ -7,14 +7,14 @@ import { SubCategory } from 'src/app/models/sub-category.model';
   styleUrls: ['./sub-category.component.scss'],
 })
 export class SubCategoryComponent {
-  @Input('sub-category')
+  @Input()
   subCategory: SubCategory;
 
-  @Input('show-right-description')
-  showRightDescription: boolean = false;
+  @Input()
+  showRightDescription = false;
 
-  @Input('show-bottom-description')
-  showBottomDescription: boolean = false;
+  @Input()
+  showBottomDescription = false;
 
   constructor() {}
 }

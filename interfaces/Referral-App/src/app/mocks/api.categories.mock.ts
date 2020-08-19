@@ -14,7 +14,7 @@ export default [
     categoryName: { en: 'Lawyer' },
     categoryIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    categoryDescription: { en: null },
+    categoryDescription: { en: ' ' },
   },
   {
     categoryID: 3,
