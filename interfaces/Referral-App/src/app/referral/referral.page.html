@@ -18,24 +18,24 @@
     <div *ngIf="category && !subCategory">
       <category
         [category]="category"
-        [show-description]="true"
+        [showDescription]="true"
         (click)="goBack()"
       ></category>
     </div>
     <div *ngIf="category && !subCategory">
       <sub-category
         *ngFor="let _subCategory of subCategories | categoryFilter: category"
-        [sub-category]="_subCategory"
-        [show-right-description]="false"
-        [show-bottom-description]="true"
+        [subCategory]="_subCategory"
+        [showRightDescription]="false"
+        [showBottomDescription]="true"
         (click)="clickSubCategory(_subCategory)"
       ></sub-category>
     </div>
     <div *ngIf="category && subCategory">
       <sub-category
-        [sub-category]="subCategory"
-        [show-right-description]="true && !offer"
-        [show-bottom-description]="false"
+        [subCategory]="subCategory"
+        [showRightDescription]="true && !offer"
+        [showBottomDescription]="false"
         (click)="goBack()"
       ></sub-category>
     </div>
@@ -50,7 +50,7 @@
   <div *ngIf="category && subCategory && offer">
     <offer
       [offer]="offer"
-      [show-details]="true"
+      [showDetails]="true"
       (click)="clickOffer(offer)"
     ></offer>
   </div>

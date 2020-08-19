@@ -7,11 +7,11 @@ import { Category } from 'src/app/models/category.model';
   styleUrls: ['./category.component.scss'],
 })
 export class CategoryComponent {
-  @Input('category')
+  @Input()
   category: Category;
 
-  @Input('show-description')
-  showDescription: boolean = false;
+  @Input()
+  showDescription = false;
 
   constructor() {}
 }

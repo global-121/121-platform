@@ -80,17 +80,18 @@ export class ReferralPage {
     this.route.queryParams.subscribe((params) => {
       if ('categoryID' in params) {
         this.category = this.categories.find(
-          (category) => category.categoryID == params.categoryID,
+          (category) => category.categoryID === Number(params.categoryID),
         );
       }
       if ('subCategoryID' in params) {
         this.subCategory = this.subCategories.find(
-          (subCategory) => subCategory.subCategoryID == params.subCategoryID,
+          (subCategory) =>
+            subCategory.subCategoryID === Number(params.subCategoryID),
         );
       }
       if ('offerID' in params) {
         this.offer = this.offers.find(
-          (offer) => offer.offerID == params.offerID,
+          (offer) => offer.offerID === Number(params.offerID),
         );
       }
     });

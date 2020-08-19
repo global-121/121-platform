@@ -7,11 +7,11 @@ import { Offer } from 'src/app/models/offer.model';
   styleUrls: ['./offer.component.scss'],
 })
 export class OfferComponent {
-  @Input('offer')
+  @Input()
   offer: Offer;
 
-  @Input('show-details')
-  showDetails: boolean = false;
+  @Input()
+  showDetails = false;
 
   constructor() {}
 }
