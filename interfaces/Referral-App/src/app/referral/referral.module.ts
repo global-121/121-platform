@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { HelpPage } from 'src/app/help/help.page';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ReferralPage } from './referral.page';
 
@@ -14,6 +15,7 @@ import { ReferralPage } from './referral.page';
     RouterModule.forChild([{ path: '', component: ReferralPage }]),
     SharedModule,
   ],
-  declarations: [ReferralPage],
+  declarations: [ReferralPage, HelpPage],
+  entryComponents: [HelpPage],
 })
 export class ReferralPageModule {}

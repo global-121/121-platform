@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { CategoryComponent } from 'src/app/components/category/category.component';
 import { OfferComponent } from 'src/app/components/offer/offer.component';
@@ -25,6 +26,11 @@ describe('ReferralPage', () => {
       ],
       imports: [TranslateModule.forRoot(), RouterModule.forRoot([])],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: ModalController,
+        },
+      ],
     }).compileComponents();
   }));
 
