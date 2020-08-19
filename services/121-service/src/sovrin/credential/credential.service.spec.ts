@@ -23,6 +23,8 @@ import { TransactionEntity } from '../../programs/program/transactions.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { ActionEntity } from '../../actions/action.entity';
 import { FspCallLogEntity } from '../../programs/fsp/fsp-call-log.entity';
+import { FspService } from '../../programs/fsp/fsp.service';
+import { FspApiService } from '../../programs/fsp/fsp-api.service';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -39,6 +41,8 @@ describe('CredentialService', (): void => {
           VoiceService,
           SmsService,
           FundingService,
+          FspService,
+          FspApiService,
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
             useFactory: repositoryMockFactory,
