@@ -4,6 +4,7 @@ import { Category } from 'src/app/models/category.model';
 import { Offer } from 'src/app/models/offer.model';
 import { SubCategory } from 'src/app/models/sub-category.model';
 import { OffersService } from 'src/app/services/offers.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-referral',
@@ -23,20 +24,55 @@ export class ReferralPage {
     public offersService: OffersService,
     private route: ActivatedRoute,
     private router: Router,
+    public translatableString: TranslatableStringService,
   ) {
     this.loadReferralData();
   }
 
   private loadReferralData() {
     this.offersService.getCategories().then((categories) => {
-      this.categories = categories;
+      this.categories = this.translateCategories(categories);
       this.offersService.getSubCategories().then((subCategories) => {
-        this.subCategories = subCategories;
+        this.subCategories = this.translateSubCategories(subCategories);
         this.offersService.getOffers().then((offers) => {
-          this.offers = offers;
+          this.offers = this.translateOffers(offers);
           this.readQueryParams();
         });
       });
+    });
+  }
+
+  private translateCategories(categories: Category[]) {
+    return categories.map((category: Category) => {
+      category.categoryName = this.translatableString.get(
+        category.categoryName,
+      );
+      category.categoryDescription = this.translatableString.get(
+        category.categoryDescription,
+      );
+      return category;
+    });
+  }
+
+  private translateSubCategories(subCategories: SubCategory[]) {
+    return subCategories.map((subCategory: SubCategory) => {
+      subCategory.subCategoryName = this.translatableString.get(
+        subCategory.subCategoryName,
+      );
+      subCategory.subCategoryDescription = this.translatableString.get(
+        subCategory.subCategoryDescription,
+      );
+      return subCategory;
+    });
+  }
+
+  private translateOffers(offers: Offer[]) {
+    return offers.map((offer: Offer) => {
+      offer.offerName = this.translatableString.get(offer.offerName);
+      offer.offerDescription = this.translatableString.get(
+        offer.offerDescription,
+      );
+      return offer;
     });
   }
 
