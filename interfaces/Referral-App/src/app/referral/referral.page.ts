@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
+import { HelpPage } from 'src/app/help/help.page';
 import { Category } from 'src/app/models/category.model';
 import { Offer } from 'src/app/models/offer.model';
 import { SubCategory } from 'src/app/models/sub-category.model';
@@ -25,6 +27,7 @@ export class ReferralPage {
     private route: ActivatedRoute,
     private router: Router,
     public translatableString: TranslatableStringService,
+    public modalController: ModalController,
   ) {
     this.loadReferralData();
   }
@@ -139,5 +142,12 @@ export class ReferralPage {
       this.category = null;
       this.router.navigate(['/tabs/referral']);
     }
+  }
+
+  async openHelpModal() {
+    const helpModal = await this.modalController.create({
+      component: HelpPage,
+    });
+    return await helpModal.present();
   }
 }
