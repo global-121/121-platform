@@ -1,25 +1,29 @@
 export default [
   {
     categoryID: 1,
-    categoryName: 'Shelter',
+    categoryName: { en: 'Shelter' },
     categoryIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    categoryDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    categoryDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
   },
   {
     categoryID: 2,
-    categoryName: 'Lawyer',
+    categoryName: { en: 'Lawyer' },
     categoryIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    categoryDescription: null,
+    categoryDescription: { en: null },
   },
   {
     categoryID: 3,
-    categoryName: 'Doctor',
+    categoryName: { en: 'Doctor' },
     categoryIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    categoryDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    categoryDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
   },
 ];

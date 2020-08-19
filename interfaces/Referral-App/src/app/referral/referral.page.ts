@@ -4,6 +4,7 @@ import { Category } from 'src/app/models/category.model';
 import { Offer } from 'src/app/models/offer.model';
 import { SubCategory } from 'src/app/models/sub-category.model';
 import { OffersService } from 'src/app/services/offers.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-referral',
@@ -23,13 +24,14 @@ export class ReferralPage {
     public offersService: OffersService,
     private route: ActivatedRoute,
     private router: Router,
+    public translatableString: TranslatableStringService,
   ) {
     this.loadReferralData();
   }
 
   private loadReferralData() {
     this.offersService.getCategories().then((categories) => {
-      this.categories = categories;
+      this.categories = this.translateCategories(categories);
       this.offersService.getSubCategories().then((subCategories) => {
         this.subCategories = subCategories;
         this.offersService.getOffers().then((offers) => {
@@ -37,6 +39,14 @@ export class ReferralPage {
           this.readQueryParams();
         });
       });
+    });
+  }
+
+  private translateCategories(categories: Category[]) {
+    return categories.map((category: Category) => {
+      category.categoryName = this.translatableString.get(category.categoryName);
+      category.categoryDescription = this.translatableString.get(category.categoryDescription);
+      return category;
     });
   }
 

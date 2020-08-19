@@ -1,6 +1,8 @@
+import { TranslatableString } from './translatable-string.model';
+
 export class Category {
   categoryID: number;
-  categoryName: string;
+  categoryName: TranslatableString | string;
   categoryIcon: string;
-  categoryDescription?: string;
+  categoryDescription?: TranslatableString | string;
 }
