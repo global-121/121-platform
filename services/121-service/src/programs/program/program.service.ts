@@ -14,11 +14,8 @@ import {
   HttpException,
   Inject,
   forwardRef,
-  HttpService,
   HttpStatus,
 } from '@nestjs/common';
-import { map, catchError } from 'rxjs/operators';
-import { empty } from 'rxjs';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProgramEntity } from './program.entity';
@@ -26,22 +23,16 @@ import { ProgramPhase } from '../../models/program-phase.model';
 import { PaStatus } from '../../models/pa-status.model';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
-
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
-import {
-  FinancialServiceProviderEntity,
-  fspName,
-} from '../fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
-import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
-import { INTERSOLVE, AFRICASTALKING } from '../../secrets';
-import { IntersolveApiService } from '../fsp/intersolve-api.service';
+import { FspService } from '../fsp/fsp.service';
 
 @Injectable()
 export class ProgramService {
@@ -63,13 +54,10 @@ export class ProgramService {
   >;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(FspCallLogEntity)
-  public fspCallLogRepository: Repository<FspCallLogEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
 
   public constructor(
-    private readonly httpService: HttpService,
     @Inject(forwardRef(() => CredentialService))
     private readonly credentialService: CredentialService,
     private readonly voiceService: VoiceService,
@@ -79,7 +67,7 @@ export class ProgramService {
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
-    private readonly intersolveApiService: IntersolveApiService,
+    private readonly fspService: FspService,
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
@@ -727,7 +715,7 @@ export class ProgramService {
     const failedFsps = [];
     let result;
     for (let fsp of program.financialServiceProviders) {
-      result = await this.createSendPaymentListFsp(
+      result = await this.fspService.createSendPaymentListFsp(
         fsp,
         includedConnections,
         amount,
@@ -821,218 +809,6 @@ export class ProgramService {
     return enrolledConnections;
   }
 
-  private createIntersolveDetails(paymentList): any {
-    const payload = {
-      expectedDeliveryDate: '2020-04-07T12:45:21.072Z',
-      extOrderReference: '123456',
-      extInvoiceReference: '123456F',
-      fulfillmentInstructions: 'enter instructions here',
-      personalCardText: 'Thank you',
-      customInvoiceAddress: false,
-      orderLines: [],
-    };
-
-    for (let item of paymentList) {
-      const orderLine = {
-        productCode: INTERSOLVE.productCode,
-        productValue: item.amount,
-        packageCode: INTERSOLVE.packageCode,
-        amount: 1,
-        customShipToAddress: true,
-        customShipToEmail: item.email,
-      };
-      payload.orderLines.push(orderLine);
-    }
-
-    return payload;
-  }
-
-  private createAfricasTalkingDetails(paymentList): any {
-    const payload = {
-      username: AFRICASTALKING.username,
-      productName: AFRICASTALKING.productName,
-      recipients: [],
-    };
-
-    for (let item of paymentList) {
-      const recipient = {
-        phoneNumber: item.phoneNumber, // '+254711123466',
-        currencyCode: AFRICASTALKING.currencyCode,
-        amount: item.amount,
-        metadata: {},
-      };
-      payload.recipients.push(recipient);
-    }
-
-    return payload;
-  }
-
-  private async createPaymentDetails(
-    includedConnections: ConnectionEntity[],
-    amount: number,
-    fspId: number,
-  ): Promise<any> {
-    const fsp = await this.getFspById(fspId);
-    const paymentList = [];
-    const connectionsForFsp = [];
-    for (let connection of includedConnections) {
-      if (connection.fsp && connection.fsp.id === fsp.id) {
-        const paymentDetails = {
-          amount: amount,
-        };
-        for (let attribute of fsp.attributes) {
-          paymentDetails[attribute.name] =
-            connection.customData[attribute.name];
-        }
-        paymentList.push(paymentDetails);
-        connectionsForFsp.push(connection);
-      }
-    }
-
-    let payload;
-    if (fsp.fsp === fspName.intersolve) {
-      payload = this.createIntersolveDetails(paymentList);
-    } else if (fsp.fsp === fspName.mpesa) {
-      payload = this.createAfricasTalkingDetails(paymentList);
-    } else {
-      payload = paymentList;
-    }
-    return { paymentList, connectionsForFsp, payload };
-  }
-
-  private async createSendPaymentListFsp(
-    fsp: FinancialServiceProviderEntity,
-    includedConnections: ConnectionEntity[],
-    amount: number,
-    program: ProgramEntity,
-    installment: number,
-  ): Promise<any> {
-    const details = await this.createPaymentDetails(
-      includedConnections,
-      amount,
-      fsp.id,
-    );
-    let paymentResult;
-    if (details.paymentList.length === 0) {
-      return {
-        paymentResult: {
-          status: 'error',
-          message: {},
-        },
-        nrConnectionsFsp: details.paymentList.length,
-      };
-    }
-
-    paymentResult = await this.sendPayment(fsp, details.payload);
-
-    this.logFspCall(
-      fsp,
-      details.payload,
-      paymentResult.status,
-      paymentResult.message,
-    );
-
-    if (paymentResult.status === 'ok') {
-      for (let connection of details.connectionsForFsp) {
-        this.storeTransaction(amount, connection, fsp, program, installment);
-      }
-    }
-
-    return { paymentResult, nrConnectionsFsp: details.paymentList.length };
-  }
-
-  private async sendPayment(fsp, payload): Promise<any> {
-    if (fsp.fsp === fspName.intersolve) {
-      return this.sendPaymentIntersolve(fsp, payload);
-    } else if (fsp.fsp === fspName.mpesa) {
-      return this.sendPaymentMpesa(fsp, payload);
-    } else {
-      // Handle other FSP's here
-      // This will result in an HTTP-exception mentioning that no payment was done for this FSP
-      return { status: 'error', message: {} };
-    }
-  }
-
-  private async sendPaymentIntersolve(fsp, payload): Promise<any> {
-    const headersRequest = {
-      accept: 'application/json',
-      authorization: `Basic ${INTERSOLVE.authToken}`,
-    };
-
-    let error;
-    const response = this.intersolveApiService.sendPayment(fsp.apiUrl, payload);
-    return response
-      ? { status: 'ok', message: response }
-      : {
-          status: 'error',
-          message: { statusText: error.response.statusText },
-        };
-  }
-
-  private async sendPaymentMpesa(fsp, payload): Promise<any> {
-    const credentials = {
-      apiKey: AFRICASTALKING.apiKey,
-      username: AFRICASTALKING.username,
-    };
-    const AfricasTalking = require('africastalking')(credentials);
-    const payments = AfricasTalking.PAYMENTS;
-
-    let result;
-    await payments
-      .mobileB2C(payload)
-      .then((response: any) => {
-        console.log('response: ', response);
-        result = { response: response };
-      })
-      .catch((error: any) => {
-        // This catch is not working, also errors end up in the above response
-        console.log('error: ', error);
-        result = { error: error };
-      });
-
-    return !result.response.errorMessage &&
-      !result.response.entries[0].errorMessage
-      ? { status: 'ok', message: result.response }
-      : {
-          status: 'error',
-          message: { error: result.response },
-        };
-  }
-
-  private async logFspCall(
-    fsp: FinancialServiceProviderEntity,
-    payload,
-    status,
-    paymentResult,
-  ): Promise<any> {
-    const fspCallLog = new FspCallLogEntity();
-    fspCallLog.fsp = fsp;
-    fspCallLog.payload = payload;
-    fspCallLog.status = status;
-    fspCallLog.response = paymentResult;
-
-    await this.fspCallLogRepository.save(fspCallLog);
-  }
-
-  private storeTransaction(
-    amount: number,
-    connection: ConnectionEntity,
-    fsp: FinancialServiceProviderEntity,
-    program: ProgramEntity,
-    installment: number,
-  ): any {
-    const transaction = new TransactionEntity();
-    transaction.amount = amount;
-    transaction.created = new Date();
-    transaction.connection = connection;
-    transaction.financialServiceProvider = fsp;
-    transaction.program = program;
-    transaction.installment = installment;
-    transaction.status = 'sent-order';
-
-    this.transactionRepository.save(transaction);
-  }
-
   public async getInstallments(programId: number): Promise<any> {
     const installments = await this.transactionRepository
       .createQueryBuilder('transaction')
@@ -1055,8 +831,7 @@ export class ProgramService {
   }
 
   public async getFunds(programId: number): Promise<FundingOverview> {
-    // TO DO: call Disberse-API here, for now static data.
-
+    // TO DO: call real API here, for now static data.
     const program = await this.programRepository.findOne({
       where: { id: programId },
     });
@@ -1067,13 +842,6 @@ export class ProgramService {
 
     const fundsDisberse = await this.fundingService.getProgramFunds(programId);
     return fundsDisberse;
-  }
-
-  public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
-    const fsp = await this.financialServiceProviderRepository.findOne(id, {
-      relations: ['attributes'],
-    });
-    return fsp;
   }
 
   public async getPaymentDetails(
