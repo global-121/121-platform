@@ -1,7 +1,9 @@
+import { TranslatableString } from './translatable-string.model';
+
 export class SubCategory {
   subCategoryID: number;
-  subCategoryName: string;
+  subCategoryName: TranslatableString | string;
   subCategoryIcon: string;
-  subCategoryDescription?: string;
+  subCategoryDescription?: TranslatableString | string;
   categoryID: number;
 }

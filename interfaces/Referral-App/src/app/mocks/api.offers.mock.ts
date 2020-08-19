@@ -1,11 +1,13 @@
 export default [
   {
     offerID: 1,
-    offerName: 'Wereld Huis',
+    offerName: { en: 'Wereld Huis' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.wereldhuis.org',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -14,11 +16,13 @@ export default [
   },
   {
     offerID: 2,
-    offerName: 'Boost',
+    offerName: { en: 'Boost' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.boostamsterdam.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -27,11 +31,13 @@ export default [
   },
   {
     offerID: 3,
-    offerName: 'Hvoquerido',
+    offerName: { en: 'Hvoquerido' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.hvoquerido.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -40,11 +46,13 @@ export default [
   },
   {
     offerID: 4,
-    offerName: 'Leger des Heils',
+    offerName: { en: 'Leger des Heils' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.legerdesheils.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -53,11 +61,13 @@ export default [
   },
   {
     offerID: 5,
-    offerName: 'Gemeente Amsterdam',
+    offerName: { en: 'Gemeente Amsterdam' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.amsterdam.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -66,11 +76,13 @@ export default [
   },
   {
     offerID: 6,
-    offerName: 'Ask V',
+    offerName: { en: 'Ask V' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.amsterdam.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -79,11 +91,13 @@ export default [
   },
   {
     offerID: 7,
-    offerName: 'Harriet Tubman Huis',
+    offerName: { en: 'Harriet Tubman Huis' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.harriettubmanhuis.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -92,11 +106,13 @@ export default [
   },
   {
     offerID: 8,
-    offerName: 'Janette Noelhuis',
+    offerName: { en: 'Janette Noelhuis' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.noelhuis.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -105,11 +121,13 @@ export default [
   },
   {
     offerID: 9,
-    offerName: 'Vluchtlingen Werk',
+    offerName: { en: 'Vluchtlingen Werk' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.vluchtlingenwerk.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -118,11 +136,13 @@ export default [
   },
   {
     offerID: 10,
-    offerName: 'Juridischolket',
+    offerName: { en: 'Juridischolket' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.juridischolket.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -131,11 +151,13 @@ export default [
   },
   {
     offerID: 11,
-    offerName: 'Ask V',
+    offerName: { en: 'Ask V' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.askv.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -144,11 +166,13 @@ export default [
   },
   {
     offerID: 12,
-    offerName: 'Gemeente Amsterdam',
+    offerName: { en: 'Gemeente Amsterdam' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.amsterdam.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -157,11 +181,13 @@ export default [
   },
   {
     offerID: 13,
-    offerName: 'Advocaten Spreekuur',
+    offerName: { en: 'Advocaten Spreekuur' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.advocatenspreekuur.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -170,11 +196,13 @@ export default [
   },
   {
     offerID: 14,
-    offerName: 'Dokters van de Wereld',
+    offerName: { en: 'Dokters van de Wereld' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.doktersvandewereld.org',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -183,11 +211,13 @@ export default [
   },
   {
     offerID: 15,
-    offerName: 'Oude Zijds 100',
+    offerName: { en: 'Oude Zijds 100' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.oudezijds100.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -196,11 +226,13 @@ export default [
   },
   {
     offerID: 16,
-    offerName: 'Spoedeisende Psychiatrie',
+    offerName: { en: 'Spoedeisende Psychiatrie' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.spoedeisendepsychiatrieamsterdam.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -209,11 +241,13 @@ export default [
   },
   {
     offerID: 17,
-    offerName: 'Oude Zijds 100',
+    offerName: { en: 'Oude Zijds 100' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.oudezijds100.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
@@ -222,11 +256,13 @@ export default [
   },
   {
     offerID: 18,
-    offerName: 'i-psy',
+    offerName: { en: 'i-psy' },
     offerIcon:
       'https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png',
-    offerDescription:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    offerDescription: {
+      en:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+    },
     offerLink: 'www.i-psy.nl',
     offerImage:
       'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',

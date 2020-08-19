@@ -33,9 +33,9 @@ export class ReferralPage {
     this.offersService.getCategories().then((categories) => {
       this.categories = this.translateCategories(categories);
       this.offersService.getSubCategories().then((subCategories) => {
-        this.subCategories = subCategories;
+        this.subCategories = this.translateSubCategories(subCategories);
         this.offersService.getOffers().then((offers) => {
-          this.offers = offers;
+          this.offers = this.translateOffers(offers);
           this.readQueryParams();
         });
       });
@@ -44,9 +44,35 @@ export class ReferralPage {
 
   private translateCategories(categories: Category[]) {
     return categories.map((category: Category) => {
-      category.categoryName = this.translatableString.get(category.categoryName);
-      category.categoryDescription = this.translatableString.get(category.categoryDescription);
+      category.categoryName = this.translatableString.get(
+        category.categoryName,
+      );
+      category.categoryDescription = this.translatableString.get(
+        category.categoryDescription,
+      );
       return category;
+    });
+  }
+
+  private translateSubCategories(subCategories: SubCategory[]) {
+    return subCategories.map((subCategory: SubCategory) => {
+      subCategory.subCategoryName = this.translatableString.get(
+        subCategory.subCategoryName,
+      );
+      subCategory.subCategoryDescription = this.translatableString.get(
+        subCategory.subCategoryDescription,
+      );
+      return subCategory;
+    });
+  }
+
+  private translateOffers(offers: Offer[]) {
+    return offers.map((offer: Offer) => {
+      offer.offerName = this.translatableString.get(offer.offerName);
+      offer.offerDescription = this.translatableString.get(
+        offer.offerDescription,
+      );
+      return offer;
     });
   }
 
