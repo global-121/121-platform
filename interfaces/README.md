@@ -146,30 +146,30 @@ Run these commands from every app's own 'root'-folder.
 
 ### UNIT TESTS
 There are a few reasons why we write unit tests cases:
-##### Unit tests are written to ensure the integrity the functional level aspect of the code written. It helps us identify mistakes, unnecessary code and also when there is room for improvement to make the code more intuitive and efficient.
-##### We also write unit test cases to clearly state what the method is supposed to do, so it is smoother for new joiners to be onboarded
-##### It helps us achieve recommended devOps protocols for maintaining code base while working within teams.
+-  Unit tests are written to ensure the integrity the functional level aspect of the code written. It helps us identify mistakes, unnecessary code and also when there is room for improvement to make the code more intuitive and efficient.
+-  We also write unit test cases to clearly state what the method is supposed to do, so it is smoother for new joiners to be onboarded
+-  It helps us achieve recommended devOps protocols for maintaining code base while working within teams.
 
 How are Unit Tests affected when we make changes within the code in future?
-##### Changes in code means, we are necessarily changing the flow/functionality at least in the functional level of the code. Which means, we must accommodate the changes within the corresponding unit test cases to reflect and support those changes.
-##### Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test file should be committed with the feature change/ ticket.
+-  Changes in code means, we are necessarily changing the flow/functionality at least in the functional level of the code. Which means, we must accommodate the changes within the corresponding unit test cases to reflect and support those changes.
+-  Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test file should be committed with the feature change/ ticket.
 
 
 Just in general we can keep following points in mind while writing the test cases.
-#### We should follow a practice to write to tests for all methods except the ones which are private.
-####  Every method which contains a sync call, returning a promise can be also spied and stubbed to verify the UI behavior through the means of unit tests cases
-####  We should aim to write a complementary test for each method written on the file
-####  Verify class declarations and modifications through methods
-##### boolean variables
-##### string variables
-#### Monitor changes within the HTML template and verify through test cases
-##### values within html tags or buttons etc.
-#### Create "it ("should...." scenarios for conditional code as well (e.g. if/else blocks)
-#### Use the "fit" and "fdescribe" to execute unit test cases that we are adding currently. Since angular test does not support test commands to target files specifically
-#### In order to provide more options, I have added phantomJS into the config files as well so a chrome browser is not needed to be launched every time we need to execute unit test case (type: "ng test ---browser=PhantomJS"
+-  We should follow a practice to write to tests for all methods except the ones which are private.
+-  Every method which contains a sync call, returning a promise can be also spied and stubbed to verify the UI behavior through the means of unit tests cases
+-  We should aim to write a complementary test for each method written on the file
+-  Verify class declarations and modifications through methods
+--  boolean variables
+--  string variables
+- Monitor changes within the HTML template and verify through test cases
+-  values within html tags or buttons etc.
+- Create "it ("should...." scenarios for conditional code as well (e.g. if/else blocks)
+- Use the "fit" and "fdescribe" to execute unit test cases that we are adding currently. Since angular test does not support test commands to target files specifically
+- In order to provide more options, I have added phantomJS into the config files as well so a chrome browser is not needed to be launched every time we need to execute unit test case (type: "ng test ---browser=PhantomJS"
 
-#### Testing global variables and objects, when are being defined or constructed
-##### Several methods serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
+- Testing global variables and objects, when are being defined or constructed
+- There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
         it('ngOnInit: should set up variables', () => {
           expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
           expect(component.someValye).toBeTruthy();  // check for a variable to be TRUE
@@ -177,7 +177,7 @@ Just in general we can keep following points in mind while writing the test case
         });
 
 #### Testing method callbacks and changes
-##### By utilizing the `spy` provided within the jasmine framework, we should always test and verify that the appropriate methods have been called.
+-  By utilizing the `spy` provided within the jasmine framework, we should always test and verify that the appropriate methods have been called.
 
         it('some_method: should call another fn', () => {
           spyOn(event, "preventDefault"); // Monitor the said method
@@ -186,31 +186,31 @@ Just in general we can keep following points in mind while writing the test case
         });
 
 #### Testing conditional statements
-##### Make separate `it` blocks for different conditions.
+-  Make separate `it` blocks for different conditions.
 
     it("Test when xyz === 'somethinf'") ....
     it("Test when xyz !== 'somethinf'") ....
 
 #### Testing conditional statements
-##### Make separate `it` blocks for different conditions.
+-  Make separate `it` blocks for different conditions.
 
         it("Test when xyz === 'somethinf'") ....
         it("Test when xyz !== 'somethinf'") ....
 
 
 #### Testing Async Mehthods (i.e. methods which make an API call)
-##### Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
+-  Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
 
       let spy = spyOn(component.programsService, "changePassword").and.returnValue(Promise.resolve(true));
 
 
-##### Based on the changes / executions upon the completion of the async request, we should aim to test the changes and modifications.
+-  Based on the changes / executions upon the completion of the async request, we should aim to test the changes and modifications.
 
     spy.calls.mostRecent().returnValue.then(() => { // block to test what happenes after the async calls.
         // Here goes expectations and changes
     });
 
-##### Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
+-  Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
 
     it('XYZ', (done) => {
       // spies and stubs
@@ -222,8 +222,8 @@ Just in general we can keep following points in mind while writing the test case
     });
 
 #### Testing HTML Tags
-##### By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
-##### HTML tags are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
+-  By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
+-  HTML tags are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
 
       it('label changes / tag changes', (done) => {
               fixture.detectChanges();
