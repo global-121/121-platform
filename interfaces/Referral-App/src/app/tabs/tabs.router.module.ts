@@ -17,15 +17,6 @@ const routes: Routes = [
         ],
       },
       {
-        path: 'help',
-        children: [
-          {
-            path: '',
-            loadChildren: '../help/help.module#HelpPageModule',
-          },
-        ],
-      },
-      {
         path: '',
         redirectTo: '/tabs/referral',
         pathMatch: 'full',

@@ -41,7 +41,9 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/referral"></ion-back-button>
+      <ion-button (click)="dismiss()">
+        <ion-icon name="arrow-back" class="help-back-icon"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-footer>
