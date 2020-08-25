@@ -30,14 +30,11 @@ export class FspController {
     return await this.fspService.getFspById(param.fspId);
   }
 
-  @ApiOperation({ title: 'Test endpoint to get AT balance' })
-  @Get('africastalking/balance')
-  public async getBalance(): Promise<FinancialServiceProviderEntity> {
-    return await this.fspService.getBalance();
-  }
-
-  @ApiOperation({ title: '...' })
-  @ApiResponse({ status: 200, description: '...' })
+  @ApiOperation({
+    title:
+      'Validation callback used by Africas Talking to request validity of payment to us.',
+  })
+  @ApiResponse({ status: 200, description: 'Validated' })
   @Post('africastalking/validation')
   public async statusCallback(
     @Body() africasTalkingValidationData: AfricasTalkingValidationDto,

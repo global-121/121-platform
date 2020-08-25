@@ -42,29 +42,6 @@ export class FspApiService {
         };
   }
 
-  public async getBalance(): Promise<any> {
-    const credentials = {
-      apiKey: AFRICASTALKING.apiKey,
-      username: AFRICASTALKING.username,
-    };
-    const AfricasTalking = require('africastalking')(credentials);
-    const application = AfricasTalking.APPLICATION;
-
-    let result;
-    await application
-      .fetchApplicationData()
-      .then((response: any) => {
-        console.log('response: ', response);
-        result = { response: response };
-      })
-      .catch((error: any) => {
-        // This catch is not working, also errors end up in the above response
-        console.log('error: ', error);
-        result = { error: error };
-      });
-    return result;
-  }
-
   public async sendPaymentMpesa(payload): Promise<any> {
     const credentials = {
       apiKey: AFRICASTALKING.apiKey,

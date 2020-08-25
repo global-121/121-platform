@@ -146,10 +146,6 @@ export class FspService {
     return payload;
   }
 
-  public getBalance(): Promise<any> {
-    return this.fspApiService.getBalance();
-  }
-
   public async sendPayment(fsp, payload): Promise<any> {
     if (fsp.fsp === fspName.intersolve) {
       return this.fspApiService.sendPaymentIntersolve(fsp, payload);
@@ -206,9 +202,8 @@ export class FspService {
   public async africasTalkingValidation(
     africasTalkingValidationData: AfricasTalkingValidationDto,
   ): Promise<any> {
-    console.log(africasTalkingValidationData);
     return {
-      status: 'Validated', // or "Failed"
+      status: 'Validated', // 'Validated' or 'Failed'
     };
   }
 }

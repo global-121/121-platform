@@ -2,13 +2,17 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsNumber } from 'class-validator';
 
 export class AfricasTalkingValidationDto {
-  @ApiModelProperty({ example: 'SomeTransactionID' })
+  @ApiModelProperty({ example: 'ATPid_1cbe5df027aca34ff15b885be975bfcd' })
   @IsString()
   public readonly transactionId: string;
 
-  @ApiModelProperty({ example: '+254711XXXYYY' })
+  @ApiModelProperty({ example: '+254711123467' })
   @IsString()
   public readonly phoneNumber: string;
+
+  @ApiModelProperty({ example: 'MobileB2C' })
+  @IsString()
+  public readonly category: string;
 
   @ApiModelProperty({ example: 'KES' })
   @IsString()
@@ -18,7 +22,7 @@ export class AfricasTalkingValidationDto {
   @IsNumber()
   public readonly amount: number;
 
-  @ApiModelProperty({ example: '12.34.56.78' })
+  @ApiModelProperty({ example: '212.78.193.200' })
   @IsString()
   public readonly sourceIpAddress: string;
 
