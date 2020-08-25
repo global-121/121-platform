@@ -170,6 +170,7 @@ Just in general we can keep following points in mind while writing the test case
 
 - Testing global variables and objects, when are being defined or constructed
 - There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
+        
         it('ngOnInit: should set up variables', () => {
           expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
           expect(component.someValye).toBeTruthy();  // check for a variable to be TRUE
@@ -188,8 +189,8 @@ Just in general we can keep following points in mind while writing the test case
 #### Testing conditional statements
 -  Make separate `it` blocks for different conditions.
 
-    it("Test when xyz === 'somethinf'") ....
-    it("Test when xyz !== 'somethinf'") ....
+        it("Test when xyz === 'somethinf'") ....
+        it("Test when xyz !== 'somethinf'") ....
 
 #### Testing conditional statements
 -  Make separate `it` blocks for different conditions.
@@ -201,36 +202,36 @@ Just in general we can keep following points in mind while writing the test case
 #### Testing Async Mehthods (i.e. methods which make an API call)
 -  Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
 
-      let spy = spyOn(component.programsService, "changePassword").and.returnValue(Promise.resolve(true));
+        let spy = spyOn(component.programsService, "changePassword").and.returnValue(Promise.resolve(true));
 
 
 -  Based on the changes / executions upon the completion of the async request, we should aim to test the changes and modifications.
 
-    spy.calls.mostRecent().returnValue.then(() => { // block to test what happenes after the async calls.
-        // Here goes expectations and changes
-    });
+        spy.calls.mostRecent().returnValue.then(() => { // block to test what happenes after the async calls.
+            // Here goes expectations and changes
+        });
 
 -  Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
 
-    it('XYZ', (done) => {
-      // spies and stubs
+        it('XYZ', (done) => {
+          // spies and stubs
 
-      spy.calls.mostRecent().returnValue.then(() => {
-          // tests
-          done(); // to complete the tests
-      });
-    });
+          spy.calls.mostRecent().returnValue.then(() => {
+              // tests
+              done(); // to complete the tests
+          });
+        });
 
 #### Testing HTML Tags
 -  By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
 -  HTML tags are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
 
-      it('label changes / tag changes', (done) => {
-              fixture.detectChanges();
-              expect(el.nativeElement.textContent).toBe('Login'); // verify the element
-              method_call() // call the method which is being tested
-              fixture.detectChanges()
-              expect(el.nativeElement.textContent).toBe('Logout'); // verify the changes     
-      });
+        it('label changes / tag changes', (done) => {
+                fixture.detectChanges();
+                expect(el.nativeElement.textContent).toBe('Login'); // verify the element
+                method_call() // call the method which is being tested
+                fixture.detectChanges()
+                expect(el.nativeElement.textContent).toBe('Logout'); // verify the changes     
+        });
 
 NOTE: It isn't necessary to test all the variables and all method calls, however a highlight of what the method is supposed to accomplish should be reflected within the test cases.
