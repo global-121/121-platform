@@ -47,11 +47,10 @@ describe('AccountPage', () => {
     expect(component.isLoggedIn).toBeDefined();
   });
 
-  fit('doLogin: should call login of authService', (done) => {
+  it('doLogin: should call login of authService', () => {
     spyOn(event, "preventDefault");
     component.doLogin(event);
     expect(event.preventDefault).toHaveBeenCalled();
-    done();
   });
 
   it('logout: should create toastController', () => {
