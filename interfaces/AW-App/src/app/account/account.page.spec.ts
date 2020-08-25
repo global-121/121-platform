@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AccountPage } from './account.page';
 
+
 describe('AccountPage', () => {
   let component: AccountPage;
   let fixture: ComponentFixture<AccountPage>;
@@ -16,7 +17,7 @@ describe('AccountPage', () => {
       imports: [
         TranslateModule.forRoot(),
         RouterTestingModule.withRoutes([]),
-        HttpClientTestingModule,
+        HttpClientTestingModule
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
@@ -25,7 +26,9 @@ describe('AccountPage', () => {
       preventDefault: function () {},
       target: { elements: {
         create: { value: ""},
-        confirm: { value: ""}
+        confirm: { value: ""},
+        email: {value: "dummy@email.com"},
+        password: {value: "dummy@email.com"}
       }}
     }
   }));
@@ -44,11 +47,11 @@ describe('AccountPage', () => {
     expect(component.isLoggedIn).toBeDefined();
   });
 
-  it('doLogin: should call login of authService', () => {
-    expect(component.isLoggedIn).toBeDefined();
+  fit('doLogin: should call login of authService', (done) => {
     spyOn(event, "preventDefault");
     component.doLogin(event);
     expect(event.preventDefault).toHaveBeenCalled();
+    done();
   });
 
   it('logout: should create toastController', () => {
