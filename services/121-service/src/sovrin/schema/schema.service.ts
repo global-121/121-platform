@@ -46,7 +46,6 @@ export class SchemaService {
       version: version,
       attributes: attributes,
     };
-    console.log(schemaPost);
     const apiString = API.schema;
 
     let responseSchema = await this.httpService

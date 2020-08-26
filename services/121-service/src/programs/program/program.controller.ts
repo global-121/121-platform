@@ -277,19 +277,6 @@ export class ProgramController {
     return await this.programService.getTotalIncluded(param.programId);
   }
 
-  @ApiOperation({ title: 'Get fsp' })
-  @ApiImplicitParam({ name: 'fspId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: 200,
-    description: 'Fsp with attributes',
-  })
-  @Get('fsp/:fspId')
-  public async getFspById(
-    @Param() param,
-  ): Promise<FinancialServiceProviderEntity> {
-    return await this.programService.getFspById(param.fspId);
-  }
-
   @Roles(UserRole.ProgramManager)
   @ApiOperation({
     title: 'Get an exported list of people',

@@ -1,3 +1,4 @@
+import { FspModule } from './../fsp/fsp.module';
 import { FundingModule } from './../../funding/funding.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
 import { ProofModule } from './../../sovrin/proof/proof.module';
@@ -21,10 +22,9 @@ import { UserModule } from '../../user/user.module';
 import { CustomCriterium } from './custom-criterium.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsModule } from '../../notifications/sms/sms.module';
-import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ActionEntity } from '../../actions/action.entity';
-import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
+import { TransactionEntity } from './transactions.entity';
 
 @Module({
   imports: [
@@ -35,9 +35,8 @@ import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
       ConnectionEntity,
       FinancialServiceProviderEntity,
       ProtectionServiceProviderEntity,
-      TransactionEntity,
       ActionEntity,
-      FspCallLogEntity,
+      TransactionEntity,
     ]),
     forwardRef(() => CredentialModule),
     UserModule,
@@ -46,6 +45,7 @@ import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
     VoiceModule,
     forwardRef(() => ProofModule),
     FundingModule,
+    FspModule,
     HttpModule,
   ],
   providers: [ProgramService],

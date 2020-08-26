@@ -17,6 +17,7 @@ import { FundingModule } from './funding/funding.module';
 import { LookupModule } from './notifications/lookup/lookup.module';
 import { ScriptsModule } from './scripts/scripts.module';
 import { ActionModule } from './actions/action.module';
+import { FspModule } from './programs/fsp/fsp.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ActionModule } from './actions/action.module';
     LookupModule,
     ScriptsModule,
     ActionModule,
+    FspModule,
   ],
   controllers: [AppController],
   providers: [],

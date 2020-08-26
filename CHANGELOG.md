@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.7.0](https://github.com/global-121/121-platform/compare/v0.6.3...v0.7.0) - 2020-08-18
 
 ### Added
+- 2020-08-12: Added AFRICASTALKING API-key to services/121-service/src/secrets.ts
 - 2020-08-11: Added INTERSOLVE API-key to services/121-service/src/secrets.ts
 
 ### Changed
