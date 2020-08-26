@@ -57,6 +57,17 @@ export class HandleProofComponent extends PersonalComponent {
     this.handleProof();
   }
 
+  async checkValidationSkipped() {
+    const inclusionStatus = await this.programService
+      .checkInclusionStatus(this.did, this.programId)
+      .toPromise();
+
+    return (
+      inclusionStatus === PaInclusionStates.included ||
+      inclusionStatus === PaInclusionStates.rejected
+    );
+  }
+
   async handleProof() {
     console.log('handleProof');
 
@@ -68,7 +79,10 @@ export class HandleProofComponent extends PersonalComponent {
     }
 
     let status: string;
-    if (!this.currentProgram.validation) {
+    const validationSkipped = await this.checkValidationSkipped();
+    console.log('validationSkipped: ', validationSkipped);
+
+    if (validationSkipped || !this.currentProgram.validation) {
       status = PaCredentialStatus.noValidation;
     } else {
       // Check if the enrollment was done earlier ..

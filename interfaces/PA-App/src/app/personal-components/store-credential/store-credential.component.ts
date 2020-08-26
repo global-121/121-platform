@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { PaInclusionStates } from 'src/app/models/pa-statuses.enum';
 import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -73,12 +74,30 @@ export class StoreCredentialComponent extends PersonalComponent {
   }
 
   async checkValidation() {
+    const validationSkipped = await this.checkValidationSkipped();
     if (
+      validationSkipped || // PA validation is skipped, but PA is included/rejected
       !this.currentProgram.validation // Program contains no validation
     ) {
       this.cancel();
     }
   }
+
+  async checkValidationSkipped() {
+    const programId = Number(
+      await this.paData.retrieve(this.paData.type.programId),
+    );
+    const did = await this.paData.retrieve(this.paData.type.did);
+    const inclusionStatus = await this.programsService
+      .checkInclusionStatus(did, programId)
+      .toPromise();
+
+    return (
+      inclusionStatus === PaInclusionStates.included ||
+      inclusionStatus === PaInclusionStates.rejected
+    );
+  }
+
   async startListening() {
     const did = await this.paData.retrieve(this.paData.type.did);
     if (!this.useLocalStorage) {
