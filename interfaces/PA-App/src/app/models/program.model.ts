@@ -14,6 +14,7 @@ export class Program {
   customCriteria: ProgramCriterium[];
   financialServiceProviders: Fsp[];
   credDefId: string;
+  validation: boolean;
 }
 
 export class ProgramCriterium {
