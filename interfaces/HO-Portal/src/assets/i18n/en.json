@@ -122,7 +122,8 @@
         "customCriteria": "Inclusion criteria",
         "aidworkers": "Assigned aidworkers",
         "financialServiceProviders": "Financial Service-providers",
-        "protectionServiceProviders": "Protection Service-providers"
+        "protectionServiceProviders": "Protection Service-providers",
+        "validation": "Program includes validation"
       },
       "program-payout": {
         "section-title": "Manage Payments",
