@@ -69,7 +69,7 @@ export class HandleProofComponent extends PersonalComponent {
 
     let status: string;
     if (!this.currentProgram.validation) {
-      status === PaCredentialStatus.noValidation;
+      status = PaCredentialStatus.noValidation;
     } else {
       // Check if the enrollment was done earlier ..
       let statusRetrieved: string;
