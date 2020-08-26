@@ -28,75 +28,72 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 ## Getting Started
 To set up a local development-environment:
 
+### On Windows
+#### Install dependencies
+- Install Node.js (https://nodejs.org/en/download/)  
+  To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'Node version manager'. 
+  Make sure to install the version specified in the [`.node-version`](.node-version)-file
+- Install Git (https://git-scm.com/download/win)
+- Install Docker (https://docs.docker.com/docker-for-windows/install/)
 
-Guide to setup local development environment for 121.
+### On Linux
+#### Install dependencies
+- Install Node.js  
+  To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
+  After installing NVM run:
 
-The repository as can be seen contains, services and interfaces directories. The services are run using docker environment and the interfaces are individual Angular applications.
+      nvm install && nvm install-latest-npm
 
-# 1. Windows OS
-## Install dependencies
-### Install Node.js (https://nodejs.org/en/download/)
-#### Choose an appropriate executable to install node.js
-### Install Git (https://git-scm.com/download/win)
-### Install Docker (https://docs.docker.com/docker-for-windows/install/)
+- Install Git
 
+      sudo apt install git-all
 
-# 2. Linux
-## Install dependencies
-### Node.JS
+- Install Docker  
+  On linux distributions we need to install `docker engine` and `docker-compose` respectively. On other platforms they are available through Docker Desktop. Read more at: https://docs.docker.com/engine/install/
 
-        sudo apt install nodejs
+`Docker compose` relies on `docker engine`, so in order to get started we must install `docker-engine` first. (Read more at: https://docs.docker.com/engine/install/ubuntu/). There are various ways of installing `docker engine` (repository, packages or automated scripts). The official recommended way doing that is through setting up a repository.
 
-### Install Git
+  - First off, uninstall any old version of docker-engine.
 
-        sudo apt install git-all
+        sudo apt-get remove docker docker-engine docker.io containerd runc
 
-### Install Docker
+  - Choose an installation method from the provided list at https://docs.docker.com/engine/install/ubuntu/#installation-methods and install `docker-engine`
+  - Test your docker installation
 
-On linux distributions we need to install docker enginer and docker compose respectively. On other platforms docker-compose enginer is available through Docker Desktop. Read more at: https://docs.docker.com/engine/install/
+        sudo docker run hello-world
 
-Docker compose relies on docker engine, so in order to get started we must install docker-engine first. (Read more at: https://docs.docker.com/engine/install/ubuntu/). Theere are various ways of installing docker engine (repository, packages or automated scripts). The official recommended way doing that is through setting up a repository.
+  - Now install docker-compose  
+    Can be done by following the steps at: https://docs.docker.com/compose/install/
 
-#### First off, uninstall any old version of docker-engine.
+        sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
 
-    sudo apt-get remove docker docker-engine docker.io containerd runc
+  - Test the docker compose installation
 
-#### Choose an installation method from the provided list at https://docs.docker.com/engine/install/ubuntu/#installation-methods and install docker-engine
+        docker-compose --version
 
-#### Test your docker installation
-
-     sudo docker run hello-world
-
-#### Now install docker-compose
-Can be done by following the steps at: https://docs.docker.com/compose/install/
-
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-
-    sudo chmod +x /usr/local/bin/docker-compose
-
-#### Test the docker compose installation
-
-    docker-compose --version
-
-#### Additionally, we need to install docker-machine as well, see: https://docs.docker.com/machine/install-machine/
+  - Additionally, we need to install `docker-machine` as well, see: https://docs.docker.com/machine/install-machine/
   
-    base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo mv /tmp/docker-machine /usr/local/bin/docker-machine &&   chmod +x /usr/local/bin/docker-machine
+        base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo mv /tmp/docker-machine /usr/local/bin/docker-machine &&   chmod +x /usr/local/bin/docker-machine
 
-    
-You are set!
+  - You are set!
 
-# 3. MacOS
-## Install dependencies
-### Install Node.js (https://nodejs.org/en/download/)
-#### Choose an appropriate executable to install node.js
-### Install Git https://git-scm.com/book/en/v2/Getting-Started-Installing-Git > Installing on macOS (section)
-### Install Docker (https://docs.docker.com/docker-for-mac/install/)
-### Install docker-machine, see: https://docs.docker.com/machine/install-machine/
-  
-     base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
+### On macOS
+#### Install dependencies
+- Install Node.js  
+  To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
+  After installing NVM run:
 
+      nvm install && nvm install-latest-npm
 
-Once the dependencies are resolved depending on your OS, as above we can set-up the repositories and other environment variables
+- Install Git  
+  https://git-scm.com/book/en/v2/Getting-Started-Installing-Git > Installing on macOS (section)
+- Install Docker (https://docs.docker.com/docker-for-mac/install/)  
+  Install docker-machine, see: https://docs.docker.com/machine/install-machine/
+
+        base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
+
+  Once the dependencies are resolved depending on your OS, as above we can set-up the repositories and other environment variables
 
 ## Setup Repository
 Download/Clone the Git repository.
@@ -105,56 +102,24 @@ Download/Clone the Git repository.
 
 
 ## Setup Interfaces
-Install dependencies for interfaces. Through command line navigate to each interface directory and install dependencies
+Install dependencies for the interfaces, from the root of this repository, run:
 
-    cd interfaces/AW-App
-    npm install
+    npm run install:interfaces
 
-    cd interfaces/HO-Portal
-    npm install
+Or to install 1 specific interface's dependencies, run: (where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`)
 
-    cd interfaces/PA-App
-    npm install
+    npm run install:<interface-name>
 
-## Setup services
+## Setup Services
 
-Switch to the repository folder
+Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
 
-    cd services/
+After that, you can start in development mode by running from the root folder:
+- `npm run start:services`
 
-Copy a few secret files and get the right passwords:
-
-    cp .env.example .env
-    cp 121-service/src/example.secrets.ts 121-service/src/secrets.ts
-    cp 121-service/example.ormconfig.json 121-service/ormconfig.json
-    cp PA-accounts-service/src/example.secrets.ts PA-accounts-service/src/secrets.ts
-    cp PA-accounts-service/example.ormconfig.json PA-accounts-service/ormconfig.json
-
-Environment variables are explained in the comments of the .env.example
-
-Install dependencies using npm
-
-    cd services/PA-accounts-service
-    npm install
-    
-    cd services/121-service
-    npm install
-
-Build docker to run in development (from `/services` folder)
-
-    docker-compose -f  docker-compose.yml -f  docker-compose.development.yml up -d --build 
-
-
-You can start in the development mode by following:
-- Run: `npm run install:all` from the root folder (`/121-platform`)
-- Run: `npm run start:all` from the root folder (`/121-platform`)
-
-In order to start either of the interfaces on development mode:
-- change directory to the respective interface `cd interfaces/*` and run `npm start`
-- or to run on an Android-device:
-      npm run dev:on-device
-
-For more options, see the documentation of the [Ionic/Cordova CLI](https://ionicframework.com/docs/cli/commands/cordova-run).
+To start either of the interfaces in development mode:
+- Run `npm run start:<interface-name>`, where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`.
+- Or explore the specific options(to run the native Android version, for example) as defined in each interface's own `package.json` or `README.md`.
 
 
 ## Testing
