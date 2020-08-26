@@ -33,6 +33,7 @@ const newProgramParameters = {
   meetingDocuments: JSON.parse('{"en": "documents"}'),
   customCriteria: [],
   notifications: JSON.parse('{}'),
+  validation: true,
 };
 
 const newSimpleProgramRO = {
