@@ -102,10 +102,7 @@ export class HandleProofComponent extends PersonalComponent {
       }
     }
 
-    if (
-      status === PaCredentialStatus.done ||
-      status === PaCredentialStatus.noValidation
-    ) {
+    if (status === PaCredentialStatus.done) {
       this.inclusionStatus = await this.programService
         .checkInclusionStatus(this.did, this.programId)
         .toPromise();
