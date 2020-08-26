@@ -1,5 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { PaInclusionStates, PaCredentialStatus } from 'src/app/models/pa-statuses.enum';
+import {
+  PaCredentialStatus,
+  PaInclusionStates,
+} from 'src/app/models/pa-statuses.enum';
 import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -65,9 +68,7 @@ export class HandleProofComponent extends PersonalComponent {
     }
 
     let status: string;
-    if (
-      !this.currentProgram.validation
-    ) {
+    if (!this.currentProgram.validation) {
       status === PaCredentialStatus.noValidation;
     } else {
       // Check if the enrollment was done earlier ..
