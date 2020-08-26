@@ -74,7 +74,6 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
   }
 
   async checkValidation() {
-    console.log('this.program.validation: ', this.program.validation);
     if (!this.program.validation) {
       this.cancel();
     }

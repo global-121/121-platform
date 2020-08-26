@@ -1,13 +1,21 @@
 <section #registrationSummary>
-  <dialogue-turn [actor]="program?.ngo">
+  <dialogue-turn 
+    [actor]="program?.ngo"
+    *ngIf="validation"
+    [isSpoken]="validation"
+  >
     <p>
-      <play-text-audio key="personal.registration-summary.introduction" class="ion-float-start ion-margin-end">
+      <play-text-audio key="personal.registration-summary.validation-conclusion" class="ion-float-start ion-margin-end">
       </play-text-audio>
-      {{ 'personal.registration-summary.introduction'|translate }}
+      {{ 'personal.registration-summary.validation-conclusion'|translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo" isConnected="true" *ngIf="meetingDocuments?.length"
-    [isSpoken]="meetingDocuments?.length">
+  <dialogue-turn 
+    [actor]="program?.ngo" 
+    isConnected="true" 
+    *ngIf="validation && meetingDocuments?.length"
+    [isSpoken]="validation && meetingDocuments?.length"
+  >
     <p>
       <play-text-audio key="personal.registration-summary.documents" class="ion-float-start ion-margin-end">
       </play-text-audio>
@@ -23,7 +31,12 @@
       headingKey="personal.registration-summary.more-info-documents" messageKey="personal.registration-summary.info-message">
     </more-info-button>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo" isConnected="true" *ngIf="showQrCode" [isSpoken]="showQrCode">
+  <dialogue-turn 
+    [actor]="program?.ngo" 
+    isConnected="true" 
+    *ngIf="validation && showQrCode" 
+    [isSpoken]="validation && showQrCode"
+  >
     <p>
       <play-text-audio key="personal.registration-summary.qr-code" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.registration-summary.qr-code'|translate }}
@@ -33,11 +46,14 @@
       <qrcode [qrdata]="qrDataString" level="H"></qrcode>
     </div>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo" isConnected="true"
+  <dialogue-turn 
+    [actor]="program?.ngo" 
+    *ngIf="!validation"
+    [isSpoken]="!validation"
   >
     <p>
-      <play-text-audio key="personal.registration-summary.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.registration-summary.conclusion'|translate }}
+      <play-text-audio key="personal.registration-summary.no-validation-conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
+      {{ 'personal.registration-summary.no-validation-conclusion'|translate }}
     </p>
 </dialogue-turn>
 </section>
