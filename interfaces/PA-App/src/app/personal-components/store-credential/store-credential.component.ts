@@ -48,6 +48,12 @@ export class StoreCredentialComponent extends PersonalComponent {
   }
 
   async initNew() {
+    await this.checkValidation();
+
+    if (this.isCanceled) {
+      return;
+    }
+
     if (this.isDebug) {
       return;
     }
@@ -55,11 +61,24 @@ export class StoreCredentialComponent extends PersonalComponent {
   }
 
   initHistory() {
+    this.isCanceled = this.data.isCanceled;
+
+    if (this.isCanceled) {
+      return;
+    }
+
     this.isDisabled = true;
     this.credentialReceived = this.data.credentialReceived;
     this.credentialStored = this.data.credentialStored;
   }
 
+  async checkValidation() {
+    if (
+      !this.currentProgram.validation // Program contains no validation
+    ) {
+      this.cancel();
+    }
+  }
   async startListening() {
     const did = await this.paData.retrieve(this.paData.type.did);
     if (!this.useLocalStorage) {
@@ -146,6 +165,17 @@ export class StoreCredentialComponent extends PersonalComponent {
       data: {
         credentialReceived: this.credentialReceived,
         credentialStored: this.credentialStored,
+      },
+      next: this.getNextSection(),
+    });
+  }
+
+  cancel() {
+    this.isCanceled = true;
+    this.conversationService.onSectionCompleted({
+      name: PersonalComponents.storeCredential,
+      data: {
+        isCanceled: this.isCanceled,
       },
       next: this.getNextSection(),
     });

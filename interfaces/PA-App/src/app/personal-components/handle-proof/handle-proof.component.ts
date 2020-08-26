@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { PaStatus } from 'src/app/models/pa-status.enum';
+import { PaInclusionStates, PaCredentialStatus } from 'src/app/models/pa-statuses.enum';
 import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -8,12 +8,6 @@ import { SovrinService } from 'src/app/services/sovrin.service';
 import { UpdateService } from 'src/app/services/update.service';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
-
-enum InclusionStates {
-  included = 'included',
-  rejected = 'rejected',
-  unavailable = 'unavailable',
-}
 
 @Component({
   selector: 'app-handle-proof',
@@ -70,37 +64,47 @@ export class HandleProofComponent extends PersonalComponent {
       return;
     }
 
-    // Check if the enrollment was done earlier ..
-    let statusRetrieved: string, status: string;
-    try {
-      statusRetrieved = await this.paData.retrieve(this.paData.type.status);
-    } catch {
-      statusRetrieved = '';
-    }
-    if (!statusRetrieved) {
-      // .. IF NO, THEN:
-      // Create proof
-      const proofRequest = await this.programService.getProofRequest(
-        this.programId,
-      );
-      const proof = await this.sovrinService.getProofFromWallet(
-        proofRequest,
-        this.wallet,
-      );
-
-      // Use proof
-      status = await this.programService.includeMe(
-        this.did,
-        this.programId,
-        proof.proof,
-      );
-      this.paData.store(this.paData.type.status, status);
+    let status: string;
+    if (
+      !this.currentProgram.validation
+    ) {
+      status === PaCredentialStatus.noValidation;
     } else {
-      // .. IF YES, THEN CONTINUE
-      status = statusRetrieved;
+      // Check if the enrollment was done earlier ..
+      let statusRetrieved: string;
+      try {
+        statusRetrieved = await this.paData.retrieve(this.paData.type.status);
+      } catch {
+        statusRetrieved = '';
+      }
+      if (!statusRetrieved) {
+        // .. IF NO, THEN:
+        // Create proof
+        const proofRequest = await this.programService.getProofRequest(
+          this.programId,
+        );
+        const proof = await this.sovrinService.getProofFromWallet(
+          proofRequest,
+          this.wallet,
+        );
+
+        // Use proof
+        status = await this.programService.includeMe(
+          this.did,
+          this.programId,
+          proof.proof,
+        );
+        this.paData.store(this.paData.type.status, status);
+      } else {
+        // .. IF YES, THEN CONTINUE
+        status = statusRetrieved;
+      }
     }
 
-    if (status === PaStatus.done) {
+    if (
+      status === PaCredentialStatus.done ||
+      status === PaCredentialStatus.noValidation
+    ) {
       this.inclusionStatus = await this.programService
         .checkInclusionStatus(this.did, this.programId)
         .toPromise();
@@ -118,9 +122,9 @@ export class HandleProofComponent extends PersonalComponent {
   }
 
   private async processStatus(inclusionStatus: string) {
-    if (inclusionStatus === InclusionStates.included) {
+    if (inclusionStatus === PaInclusionStates.included) {
       this.inclusionStatusPositive = true;
-    } else if (inclusionStatus === InclusionStates.rejected) {
+    } else if (inclusionStatus === PaInclusionStates.rejected) {
       this.inclusionStatusNegative = true;
     }
   }
