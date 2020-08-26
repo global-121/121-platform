@@ -105,6 +105,10 @@ export class CreateProgramDto {
   @IsNumber()
   public readonly highestScoresX: number;
 
+  @ApiModelProperty()
+  @IsBoolean()
+  public readonly validation: boolean;
+
   @ApiModelProperty({
     example: { en: 'Identity card;Health Insurance;Proof of children' },
   })

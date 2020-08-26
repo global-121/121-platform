@@ -12,4 +12,5 @@ export const mockProgram: Program = {
   customCriteria: [],
   financialServiceProviders: [],
   credDefId: '',
+  validation: true,
 };

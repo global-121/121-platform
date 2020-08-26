@@ -100,6 +100,9 @@ export class ProgramEntity {
   @Column({ default: false })
   public published: boolean;
 
+  @Column({ default: true })
+  public validation: boolean;
+
   @Column({ default: null })
   public schemaId: string;
 

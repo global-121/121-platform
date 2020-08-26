@@ -113,8 +113,10 @@ export class UploadDataComponent implements ValidationComponent {
     type: IonicStorageTypes,
   ): Promise<void> {
     let data = await this.storage.get(type);
-    data = data.filter((item) => item.did !== did);
-    await this.storage.set(type, data);
+    if (data) {
+      data = data.filter((item) => item.did !== did);
+      await this.storage.set(type, data);
+    }
   }
 
   getNextSection(): string {

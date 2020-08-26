@@ -17,6 +17,8 @@ export class RegistrationSummaryComponent extends PersonalComponent {
   @Input()
   public data: any;
 
+  public validation: boolean;
+
   private did: string;
 
   public dateFormat = 'EEE, dd-MM-yyyy';
@@ -49,11 +51,17 @@ export class RegistrationSummaryComponent extends PersonalComponent {
   }
 
   async initNew() {
-    await this.shouldShowQrCode();
+    this.validation = await this.checkValidation();
+
     await this.getDid();
     await this.getProgram();
-    await this.generateContent();
     await this.programsService.postConnectionApply(this.did, this.program.id);
+
+    if (this.validation) {
+      await this.shouldShowQrCode();
+      await this.generateContent();
+    }
+
     this.complete();
   }
 
@@ -62,6 +70,11 @@ export class RegistrationSummaryComponent extends PersonalComponent {
 
     // There is no difference between first use and future use of this component:
     this.initNew();
+  }
+
+  async checkValidation() {
+    const currentProgram = await this.paData.getCurrentProgram();
+    return currentProgram.validation;
   }
 
   private async shouldShowQrCode() {

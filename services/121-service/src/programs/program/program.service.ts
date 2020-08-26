@@ -156,6 +156,7 @@ export class ProgramService {
     program.descHumanitarianObjective = programData.descHumanitarianObjective;
     program.descCashType = programData.descCashType;
     program.countryId = programData.countryId;
+    program.validation = programData.validation;
     program.customCriteria = [];
     program.financialServiceProviders = [];
     program.protectionServiceProviders = [];

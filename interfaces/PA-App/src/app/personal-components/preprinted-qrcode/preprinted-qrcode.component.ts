@@ -49,16 +49,34 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
   }
 
   async initNew() {
+    await this.checkValidation();
+
+    if (this.isCanceled) {
+      return;
+    }
+
     this.conversationService.startLoading();
     this.did = await this.paData.retrieve(this.paData.type.did);
     this.conversationService.stopLoading();
   }
 
   async initHistory() {
+    this.isCanceled = this.data.isCanceled;
+
+    if (this.isCanceled) {
+      return;
+    }
+
     this.isDisabled = true;
     this.hasPreprinted = this.data.hasPreprinted;
     this.scanResult = this.data.scanResult;
     this.scanResultError = false;
+  }
+
+  async checkValidation() {
+    if (!this.program.validation) {
+      this.cancel();
+    }
   }
 
   public addPreprinted() {
@@ -142,6 +160,17 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
       data: {
         hasPreprinted: this.hasPreprinted,
         scanResult: this.scanResult,
+      },
+      next: this.getNextSection(),
+    });
+  }
+
+  cancel() {
+    this.isCanceled = true;
+    this.conversationService.onSectionCompleted({
+      name: PersonalComponents.preprintedQrcode,
+      data: {
+        isCanceled: this.isCanceled,
       },
       next: this.getNextSection(),
     });
