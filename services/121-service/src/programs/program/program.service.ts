@@ -1,3 +1,5 @@
+import { StatusMessageDto } from './../../shared/dto/status-message.dto';
+import { StatusEnum } from './../../shared/enum/status.enum';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
@@ -33,6 +35,7 @@ import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
 import { FspService } from '../fsp/fsp.service';
+import { FspPaymentResultDto } from '../fsp/dto/fsp-payment-results.dto';
 
 @Injectable()
 export class ProgramService {
@@ -687,7 +690,7 @@ export class ProgramService {
     programId: number,
     installment: number,
     amount: number,
-  ): Promise<any> {
+  ): Promise<StatusMessageDto> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
@@ -713,7 +716,7 @@ export class ProgramService {
 
     let count = 0;
     const failedFsps = [];
-    let result;
+    let result: FspPaymentResultDto;
     for (let fsp of program.financialServiceProviders) {
       result = await this.fspService.createSendPaymentListFsp(
         fsp,
@@ -724,7 +727,7 @@ export class ProgramService {
       );
       count += result.nrConnectionsFsp;
 
-      if (result.paymentResult.status === 'error') {
+      if (result.paymentResult.status === StatusEnum.error) {
         failedFsps.push(fsp.fsp);
       }
     }
@@ -741,7 +744,7 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    return { status: 'succes', message: 'Sent instructions to FSP' };
+    return { status: StatusEnum.succes, message: 'Sent instructions to FSP' };
   }
 
   private getPaStatus(connection, programId: number): PaStatus {

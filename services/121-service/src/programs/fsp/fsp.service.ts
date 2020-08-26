@@ -1,3 +1,5 @@
+import { StatusEnum } from './../../shared/enum/status.enum';
+import { StatusMessageDto } from '../../shared/dto/status-message.dto';
 import { Injectable } from '@nestjs/common';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import {
@@ -12,6 +14,8 @@ import { Repository } from 'typeorm';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { ProgramEntity } from '../program/program.entity';
 import { TransactionEntity } from '../program/transactions.entity';
+import { PaymentDetailsDto } from './dto/payment-details.dto';
+import { FspPaymentResultDto } from './dto/fsp-payment-results.dto';
 
 @Injectable()
 export class FspService {
@@ -32,7 +36,7 @@ export class FspService {
     amount: number,
     program: ProgramEntity,
     installment: number,
-  ): Promise<any> {
+  ): Promise<FspPaymentResultDto> {
     const details = await this.createPaymentDetails(
       includedConnections,
       amount,
@@ -42,7 +46,7 @@ export class FspService {
     if (details.paymentList.length === 0) {
       return {
         paymentResult: {
-          status: 'error',
+          status: StatusEnum.error,
           message: {},
         },
         nrConnectionsFsp: details.paymentList.length,
@@ -51,16 +55,16 @@ export class FspService {
 
     paymentResult = await this.sendPayment(fsp, details.payload);
 
-    this.logFspCall(
+    await this.logFspCall(
       fsp,
       details.payload,
       paymentResult.status,
       paymentResult.message,
     );
 
-    if (paymentResult.status === 'ok') {
+    if (paymentResult.status === StatusEnum.succes) {
       for (let connection of details.connectionsForFsp) {
-        this.storeTransaction(amount, connection, fsp, program, installment);
+        await this.storeTransaction(amount, connection, fsp, program, installment);
       }
     }
 
@@ -71,7 +75,7 @@ export class FspService {
     includedConnections: ConnectionEntity[],
     amount: number,
     fspId: number,
-  ): Promise<any> {
+  ): Promise<PaymentDetailsDto> {
     const fsp = await this.getFspById(fspId);
     const paymentList = [];
     const connectionsForFsp = [];
@@ -100,7 +104,7 @@ export class FspService {
     return { paymentList, connectionsForFsp, payload };
   }
 
-  private createIntersolveDetails(paymentList): any {
+  private createIntersolveDetails(paymentList: any[]): object {
     const payload = {
       expectedDeliveryDate: '2020-04-07T12:45:21.072Z',
       extOrderReference: '123456',
@@ -126,7 +130,7 @@ export class FspService {
     return payload;
   }
 
-  private createAfricasTalkingDetails(paymentList): any {
+  private createAfricasTalkingDetails(paymentList: any[]): object {
     const payload = {
       username: AFRICASTALKING.username,
       productName: AFRICASTALKING.productName,
@@ -146,15 +150,16 @@ export class FspService {
     return payload;
   }
 
-  public async sendPayment(fsp, payload): Promise<any> {
+  public async sendPayment(fsp: FinancialServiceProviderEntity, payload): Promise<StatusMessageDto> {
     if (fsp.fsp === fspName.intersolve) {
-      return this.fspApiService.sendPaymentIntersolve(fsp, payload);
+      return this.fspApiService.sendPaymentIntersolve(fsp.apiUrl, payload);
     } else if (fsp.fsp === fspName.mpesa) {
       return this.fspApiService.sendPaymentMpesa(payload);
     } else {
+      const status = StatusEnum.error;
       // Handle other FSP's here
       // This will result in an HTTP-exception mentioning that no payment was done for this FSP
-      return { status: 'error', message: {} };
+      return { status, message: {} };
     }
   }
 
@@ -163,7 +168,7 @@ export class FspService {
     payload,
     status,
     paymentResult,
-  ): Promise<any> {
+  ): Promise<void> {
     const fspCallLog = new FspCallLogEntity();
     fspCallLog.fsp = fsp;
     fspCallLog.payload = payload;
@@ -173,13 +178,13 @@ export class FspService {
     await this.fspCallLogRepository.save(fspCallLog);
   }
 
-  private storeTransaction(
+  private async storeTransaction(
     amount: number,
     connection: ConnectionEntity,
     fsp: FinancialServiceProviderEntity,
     program: ProgramEntity,
     installment: number,
-  ): any {
+  ): Promise<void> {
     const transaction = new TransactionEntity();
     transaction.amount = amount;
     transaction.created = new Date();
