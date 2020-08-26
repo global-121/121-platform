@@ -78,7 +78,7 @@ When changing the name of the NGO (`program.ngo`), this has effect on the PA-app
 
 ---
 
-## Service specifics
+## External services
 
 ### Use Twilio API during development
 
@@ -97,3 +97,7 @@ See: [`src/notifications/voice/voice.service.ts`](`src/notifications/voice/voice
 
 - Mp3's that are used when sending voice notifications can be added to the `voice`-folder:  
   The folder structure follows the pattern: `voice/<programId>/<language>/<notification-key>.mp3`
+
+### Use Africa's Talking API during development
+
+If setting up a validation callback, use ngrok (see above) here as well during development.
