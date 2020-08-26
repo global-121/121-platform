@@ -52,12 +52,16 @@ export class RegistrationSummaryComponent extends PersonalComponent {
 
   async initNew() {
     this.validation = !(await this.checkValidation());
-
-    await this.shouldShowQrCode();
+    
     await this.getDid();
     await this.getProgram();
-    await this.generateContent();
     await this.programsService.postConnectionApply(this.did, this.program.id);
+
+    if (this.validation) {
+      await this.shouldShowQrCode();
+      await this.generateContent();
+    }
+    
     this.complete();
   }
 
