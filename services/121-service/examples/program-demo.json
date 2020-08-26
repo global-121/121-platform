@@ -35,14 +35,12 @@
     },
     {
       "id": 3
-    }
-  ],
-  "protectionServiceProviders": [
-    {
-      "id": 1
     },
     {
-      "id": 2
+      "id": 4
+    },
+    {
+      "id": 5
     }
   ],
   "inclusionCalculationType": "highestScoresX",

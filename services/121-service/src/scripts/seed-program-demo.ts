@@ -9,8 +9,10 @@ import { SeedInit } from './seed-init';
 import { CountryEntity } from '../programs/country/country.entity';
 
 import fspBank from '../../examples/fsp-bravos.json';
-import fspMobileMoney from '../../examples/fsp-pmesa.json';
+import fspMixedAttributes from '../../examples/fsp-mixed-attributes.json';
+import fspNoAttributes from '../../examples/fsp-no-attributes.json';
 import fspIntersolve from '../../examples/fsp-intersolve.json';
+import fspMpesa from '../../examples/fsp-mpesa.json';
 
 import programDemo from '../../examples/program-demo.json';
 import { USERCONFIG } from '../secrets';
@@ -48,8 +50,10 @@ export class SeedDemoProgram implements InterfaceScript {
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
+    await this.seedHelper.addFsp(fspMpesa);
     await this.seedHelper.addFsp(fspBank);
-    await this.seedHelper.addFsp(fspMobileMoney);
+    await this.seedHelper.addFsp(fspMixedAttributes);
+    await this.seedHelper.addFsp(fspNoAttributes);
 
     // ***** CREATE PROGRAM *****
     const examplePrograms = [programDemo];
