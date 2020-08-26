@@ -112,38 +112,12 @@ Or to install 1 specific interface's dependencies, run: (where `<interface-name>
 
 ## Setup Services
 
-Switch to the repository folder
+Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
 
-    cd services/
+After that, you can start in development mode by running from the root folder:
+- `npm run start:services`
 
-Copy a few secret files and get the right passwords:
-
-    cp .env.example .env
-    cp 121-service/src/example.secrets.ts 121-service/src/secrets.ts
-    cp 121-service/example.ormconfig.json 121-service/ormconfig.json
-    cp PA-accounts-service/src/example.secrets.ts PA-accounts-service/src/secrets.ts
-    cp PA-accounts-service/example.ormconfig.json PA-accounts-service/ormconfig.json
-
-Environment variables are explained in the comments of the [.env.example](services/.env.example)-file
-
-Install dependencies using npm
-
-    cd services/PA-accounts-service
-    npm install
-    
-    cd services/121-service
-    npm install
-
-Build docker to run in development (from `/services` folder)
-
-    docker-compose -f  docker-compose.yml -f  docker-compose.development.yml up -d --build 
-
-
-You can start in the development mode by following:
-- Run: `npm run install:all` from the root folder (`/121-platform`)
-- Run: `npm run start:all` from the root folder (`/121-platform`)
-
-In order to start either of the interfaces in development mode:
+To start either of the interfaces in development mode:
 - Run `npm run start:<interface-name>`, where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`.
 - Or explore the specific options(to run the native Android version, for example) as defined in each interface's own `package.json` or `README.md`.
 
