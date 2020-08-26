@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.7.1...master)
 
+### Added
+- 2020-08-19: Added GLOBAL_121_REF_DIR=Referral-app to tools/.env
+
+### Changed
+- 2020-08-19: Deploy script & apache2 conf changed, so possibly need to restart
+
 ---
 
 ## [0.7.1](https://github.com/global-121/121-platform/compare/v0.7.0...v0.7.1) - 2020-08-18
