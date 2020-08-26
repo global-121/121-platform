@@ -51,8 +51,8 @@ export class RegistrationSummaryComponent extends PersonalComponent {
   }
 
   async initNew() {
-    this.validation = !(await this.checkValidation());
-    
+    this.validation = await this.checkValidation();
+
     await this.getDid();
     await this.getProgram();
     await this.programsService.postConnectionApply(this.did, this.program.id);
@@ -61,7 +61,7 @@ export class RegistrationSummaryComponent extends PersonalComponent {
       await this.shouldShowQrCode();
       await this.generateContent();
     }
-    
+
     this.complete();
   }
 
