@@ -1,5 +1,5 @@
-<form 
-  #theForm="ngForm" 
+<form
+  #theForm="ngForm"
   (keydown.enter)="$event.preventDefault()"
 >
 
@@ -9,7 +9,9 @@
       [isConnected]="!isFirst"
       [isSpoken]="isFirst || isSubmitted || isEditing"
     >
-      <ion-label>{{ question.label }}</ion-label>
+      <p>
+        <ion-label>{{ question.label }}</ion-label>
+      </p>
       <div [ngSwitch]="question.answerType">
         <div *ngSwitchCase="answerType.Enum">
           <ion-radio-group
@@ -22,7 +24,7 @@
               color="light"
               lines="full"
             >
-              <ion-label>{{ option.label }}</ion-label>
+              <ion-label class="ion-text-wrap ion-padding-end">{{ option.label }}</ion-label>
               <ion-radio
                 [value]="option.value"
                 [checked]="(option.value === answers[question.code]?.value)"
