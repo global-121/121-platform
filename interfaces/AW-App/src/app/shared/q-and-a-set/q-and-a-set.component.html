@@ -55,7 +55,7 @@
             required
             [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, dateInput.value, dateInput.valid)"
+            (ionChange)="onChangeWithValidation(question.code, dateInput.value, dateInput.valid && ((dateInput.dirty || dateInput.touched) || allQuestionsShown))"
             debounce="100"
           ></ion-input>
         </div>
@@ -72,16 +72,19 @@
           ></phone-number-input>
         </div>
         <div *ngSwitchCase="answerType.email">
-          <email-input
-            #emailInput
+          <ion-input
+            #emailInput="ngModel"
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
             required
             [name]="question.code"
             [disabled]="isSubmitted"
-            (isValidChange)="onChangeWithValidation(question.code, emailInput.value, emailInput.isValid)"
-            debounce="1000"
-          ></email-input>
+            (ionChange)="onChangeWithValidation(question.code, emailInput.value, emailInput.valid && ((emailInput.dirty || emailInput.touched) || allQuestionsShown))"
+            debounce="300"
+          ></ion-input>
         </div>
         <div *ngSwitchDefault>
           <ion-input
@@ -93,7 +96,7 @@
             required
             [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, defaultInput.valid)"
+            (ionChange)="onChangeWithValidation(question.code, defaultInput.value, defaultInput.valid && ((defaultInput.dirty || defaultInput.touched) || allQuestionsShown))"
             debounce="300"
           ></ion-input>
         </div>

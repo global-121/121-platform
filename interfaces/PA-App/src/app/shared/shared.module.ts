@@ -5,7 +5,6 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { DialogueTurnComponent } from './dialogue-turn/dialogue-turn.component';
-import { EmailInputComponent } from './email-input/email-input.component';
 import { MoreInfoButtonComponent } from './more-info-button/more-info-button.component';
 import { NumericInputComponent } from './numeric-input/numeric-input.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
@@ -17,7 +16,6 @@ import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
 @NgModule({
   declarations: [
     DialogueTurnComponent,
-    EmailInputComponent,
     MoreInfoButtonComponent,
     NumericInputComponent,
     PasswordToggleInputComponent,
@@ -35,7 +33,6 @@ import { QrScannerComponent } from './qr-scanner/qr-scanner.component';
   ],
   exports: [
     DialogueTurnComponent,
-    EmailInputComponent,
     NumericInputComponent,
     MoreInfoButtonComponent,
     PasswordToggleInputComponent,
