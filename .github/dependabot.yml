@@ -8,32 +8,23 @@ updates:
   versioning-strategy: increase-if-necessary
   ignore:
   - dependency-name: "@angular/*"
-    versions:
-    - ">= 8, >= 0.800"
+    versions: ["^8", "^0.800.x"]
   - dependency-name: "@angular-devkit/*"
-    versions:
-    - ">= 0.800"
+    versions: ["^0.800.x"]
   - dependency-name: "@types/node"
-    versions:
-    - ">= 11"
+    versions: ["^11"]
   - dependency-name: tslint
-    versions:
-    - ">= 6"
+    versions: ["^6"]
   - dependency-name: codelyzer
-    versions:
-    - ">= 6"
+    versions: ["^6"]
   - dependency-name: core-js
-    versions:
-    - ">= 3"
+    versions: ["^3"]
   - dependency-name: tslib
-    versions:
-    - ">= 2"
+    versions: ["^2"]
   - dependency-name: "@ngx-translate/http-loader"
-    versions:
-    - ">= 5"
+    versions: ["^5"]
   - dependency-name: ngx-translate-lint
-    versions:
-    - ">= 1.4, < 1.6.0"
+    versions: ["^1.4.x", "^1.6.0"]
 
 - package-ecosystem: npm
   directory: "/interfaces/AW-App"
@@ -43,32 +34,25 @@ updates:
   versioning-strategy: increase-if-necessary
   ignore:
   - dependency-name: "@angular/*"
-    versions:
-    - ">= 8, >= 0.800"
+    versions: ["^8", "^0.800.x"]
   - dependency-name: "@angular-devkit/*"
-    versions:
-    - ">= 0.800"
+    versions: ["^0.800.x"]
+  - dependency-name: "@ionic/storage"
+    versions: ["^2.3.0"]
   - dependency-name: "@types/node"
-    versions:
-    - ">= 11"
+    versions: ["^11"]
   - dependency-name: tslint
-    versions:
-    - ">= 6"
+    versions: ["^6"]
   - dependency-name: codelyzer
-    versions:
-    - ">= 6"
+    versions: ["^6"]
   - dependency-name: core-js
-    versions:
-    - ">= 3"
+    versions: ["^3"]
   - dependency-name: tslib
-    versions:
-    - ">= 2"
+    versions: ["^2"]
   - dependency-name: "@ngx-translate/http-loader"
-    versions:
-    - ">= 5"
+    versions: ["^5"]
   - dependency-name: ngx-translate-lint
-    versions:
-    - ">= 1.4, < 1.6.0"
+    versions: ["^1.4.x", "^1.6.0"]
 
 - package-ecosystem: npm
   directory: "/interfaces/PA-App"
@@ -78,35 +62,27 @@ updates:
   versioning-strategy: increase-if-necessary
   ignore:
   - dependency-name: "@angular/*"
-    versions:
-    - ">= 8, >= 0.800"
+    versions: ["^8", "^0.800.x"]
   - dependency-name: "@angular-devkit/*"
-    versions:
-    - ">= 0.800"
+    versions: ["^0.800.x"]
+  - dependency-name: "@ionic/storage"
+    versions: ["^2.3.0"]
   - dependency-name: "@types/node"
-    versions:
-    - ">= 11"
+    versions: ["^11"]
   - dependency-name: tslint
-    versions:
-    - ">= 6"
+    versions: ["^6"]
   - dependency-name: codelyzer
-    versions:
-    - ">= 6"
+    versions: ["^6"]
   - dependency-name: core-js
-    versions:
-    - ">= 3"
+    versions: ["^3"]
   - dependency-name: tslib
-    versions:
-    - ">= 2"
+    versions: ["^2"]
   - dependency-name: "@ngx-translate/http-loader"
-    versions:
-    - ">= 5"
+    versions: ["^5"]
   - dependency-name: ngx-translate-lint
-    versions:
-    - ">= 1.4, < 1.6.0"
+    versions: ["^1.4.x", "^1.6.0"]
   - dependency-name: angularx-qrcode
-    versions:
-    - ">= 2.1"
+    versions: ["^2.1.x"]
 
 - package-ecosystem: npm
   directory: "/interfaces/Referral-App"
@@ -116,26 +92,20 @@ updates:
   versioning-strategy: increase-if-necessary
   ignore:
   - dependency-name: "@angular/*"
-    versions:
-    - ">= 8, >= 0.800"
+    versions: ["^8", "^0.800.x"]
   - dependency-name: "@angular-devkit/*"
-    versions:
-    - ">= 0.800"
+    versions: ["^0.800.x"]
+  - dependency-name: "@ionic/storage"
+    versions: ["^2.3.0"]
   - dependency-name: "@types/node"
-    versions:
-    - ">= 11"
+    versions: ["^11"]
   - dependency-name: tslint
-    versions:
-    - ">= 6"
+    versions: ["^6"]
   - dependency-name: codelyzer
-    versions:
-    - ">= 6"
+    versions: ["^6"]
   - dependency-name: core-js
-    versions:
-    - ">= 3"
+    versions: ["^3"]
   - dependency-name: tslib
-    versions:
-    - ">= 2"
+    versions: ["^2"]
   - dependency-name: "@ngx-translate/http-loader"
-    versions:
-    - ">= 5"
+    versions: ["^5"]
