@@ -19,6 +19,9 @@ updates:
   - dependency-name: tslint
     versions:
     - ">= 6"
+  - dependency-name: codelyzer
+    versions:
+    - ">= 6"
   - dependency-name: core-js
     versions:
     - ">= 3"
@@ -51,6 +54,9 @@ updates:
   - dependency-name: tslint
     versions:
     - ">= 6"
+  - dependency-name: codelyzer
+    versions:
+    - ">= 6"
   - dependency-name: core-js
     versions:
     - ">= 3"
@@ -81,6 +87,9 @@ updates:
     versions:
     - ">= 11"
   - dependency-name: tslint
+    versions:
+    - ">= 6"
+  - dependency-name: codelyzer
     versions:
     - ">= 6"
   - dependency-name: core-js
@@ -116,6 +125,9 @@ updates:
     versions:
     - ">= 11"
   - dependency-name: tslint
+    versions:
+    - ">= 6"
+  - dependency-name: codelyzer
     versions:
     - ">= 6"
   - dependency-name: core-js
