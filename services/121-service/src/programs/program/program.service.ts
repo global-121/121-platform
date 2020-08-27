@@ -77,6 +77,7 @@ export class ProgramService {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium')
+      .addOrderBy('customCriterium.id', 'ASC')
       .leftJoinAndSelect('program.aidworkers', 'aidworker')
       .leftJoinAndSelect(
         'program.financialServiceProviders',
@@ -95,7 +96,8 @@ export class ProgramService {
   public async findAll(query): Promise<ProgramsRO> {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
-      .leftJoinAndSelect('program.customCriteria', 'customCriterium');
+      .leftJoinAndSelect('program.customCriteria', 'customCriterium')
+      .addOrderBy('customCriterium.id', 'ASC');
 
     qb.where('1 = 1');
 
@@ -123,6 +125,7 @@ export class ProgramService {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium')
+      .addOrderBy('customCriterium.id', 'ASC')
       .where('"countryId" = :countryId', { countryId: query });
 
     let programs = await qb.getMany();
