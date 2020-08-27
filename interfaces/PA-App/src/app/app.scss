@@ -63,3 +63,8 @@ dialogue-turn ion-button {
 dialogue-turn ion-card-content p {
   margin-bottom: var(--ion-margin, 16px) !important;
 }
+
+// Add top-border to sets of radio-buttons:
+ion-radio-group ion-item:first-of-type:not(:last-of-type) {
+  --border-width: 1px 0;
+}
