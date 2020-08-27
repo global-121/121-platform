@@ -11,6 +11,7 @@
         <ion-item *ngFor="let country of countries"
                   color="light"
                   class="ion-no-padding ion-text-wrap"
+                  lines="full"
         >
           <ion-label>{{ country.country }}</ion-label>
           <ion-radio [value]="country.id"
