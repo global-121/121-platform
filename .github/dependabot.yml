@@ -1,3 +1,4 @@
+# See: https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates#configuration-options-for-dependabotyml
 version: 2
 updates:
 - package-ecosystem: npm
@@ -8,23 +9,23 @@ updates:
   versioning-strategy: increase-if-necessary
   ignore:
   - dependency-name: "@angular/*"
-    versions: ["^8", "^0.800.x"]
+    versions: [">= 8.0.0", ">= 0.800.0"]
   - dependency-name: "@angular-devkit/*"
-    versions: ["^0.800.x"]
+    versions: [">= 0.800.0"]
   - dependency-name: "@types/node"
-    versions: ["^11"]
+    versions: [">= 11.0.0"]
   - dependency-name: tslint
-    versions: ["^6"]
+    versions: [">= 6.0.0"]
   - dependency-name: codelyzer
-    versions: ["^6"]
+    versions: [">= 6.0.0"]
   - dependency-name: core-js
-    versions: ["^3"]
+    versions: [">= 3.0.0"]
   - dependency-name: tslib
-    versions: ["^2"]
+    versions: [">= 2.0.0"]
   - dependency-name: "@ngx-translate/http-loader"
-    versions: ["^5"]
+    versions: [">= 5.0.0"]
   - dependency-name: ngx-translate-lint
-    versions: ["^1.4.x", "^1.6.0"]
+    versions: [">= 1.4.0", ">= 1.6.0"]
 
 - package-ecosystem: npm
   directory: "/interfaces/AW-App"
@@ -34,25 +35,25 @@ updates:
   versioning-strategy: increase-if-necessary
   ignore:
   - dependency-name: "@angular/*"
-    versions: ["^8", "^0.800.x"]
+    versions: [">= 8.0.0", ">= 0.800.0"]
   - dependency-name: "@angular-devkit/*"
-    versions: ["^0.800.x"]
+    versions: [">= 0.800.0"]
   - dependency-name: "@ionic/storage"
-    versions: ["^2.3.0"]
+    versions: [">= 2.3.0"]
   - dependency-name: "@types/node"
-    versions: ["^11"]
+    versions: [">= 11.0.0"]
   - dependency-name: tslint
-    versions: ["^6"]
+    versions: [">= 6.0.0"]
   - dependency-name: codelyzer
-    versions: ["^6"]
+    versions: [">= 6.0.0"]
   - dependency-name: core-js
-    versions: ["^3"]
+    versions: [">= 3.0.0"]
   - dependency-name: tslib
-    versions: ["^2"]
+    versions: [">= 2.0.0"]
   - dependency-name: "@ngx-translate/http-loader"
-    versions: ["^5"]
+    versions: [">= 5.0.0"]
   - dependency-name: ngx-translate-lint
-    versions: ["^1.4.x", "^1.6.0"]
+    versions: [">= 1.4.0", ">= 1.6.0"]
 
 - package-ecosystem: npm
   directory: "/interfaces/PA-App"
@@ -62,27 +63,27 @@ updates:
   versioning-strategy: increase-if-necessary
   ignore:
   - dependency-name: "@angular/*"
-    versions: ["^8", "^0.800.x"]
+    versions: [">= 8.0.0", ">= 0.800.0"]
   - dependency-name: "@angular-devkit/*"
-    versions: ["^0.800.x"]
+    versions: [">= 0.800.0"]
   - dependency-name: "@ionic/storage"
-    versions: ["^2.3.0"]
+    versions: [">= 2.3.0"]
   - dependency-name: "@types/node"
-    versions: ["^11"]
+    versions: [">= 11.0.0"]
   - dependency-name: tslint
-    versions: ["^6"]
+    versions: [">= 6.0.0"]
   - dependency-name: codelyzer
-    versions: ["^6"]
+    versions: [">= 6.0.0"]
   - dependency-name: core-js
-    versions: ["^3"]
+    versions: [">= 3.0.0"]
   - dependency-name: tslib
-    versions: ["^2"]
+    versions: [">= 2.0.0"]
   - dependency-name: "@ngx-translate/http-loader"
-    versions: ["^5"]
+    versions: [">= 5.0.0"]
   - dependency-name: ngx-translate-lint
-    versions: ["^1.4.x", "^1.6.0"]
+    versions: [">= 1.4.0", ">= 1.6.0"]
   - dependency-name: angularx-qrcode
-    versions: ["^2.1.x"]
+    versions: [">= 2.1.0"]
 
 - package-ecosystem: npm
   directory: "/interfaces/Referral-App"
@@ -92,20 +93,20 @@ updates:
   versioning-strategy: increase-if-necessary
   ignore:
   - dependency-name: "@angular/*"
-    versions: ["^8", "^0.800.x"]
+    versions: [">= 8.0.0", ">= 0.800.0"]
   - dependency-name: "@angular-devkit/*"
-    versions: ["^0.800.x"]
+    versions: [">= 0.800.0"]
   - dependency-name: "@ionic/storage"
-    versions: ["^2.3.0"]
+    versions: [">= 2.3.0"]
   - dependency-name: "@types/node"
-    versions: ["^11"]
+    versions: [">= 11.0.0"]
   - dependency-name: tslint
-    versions: ["^6"]
+    versions: [">= 6.0.0"]
   - dependency-name: codelyzer
-    versions: ["^6"]
+    versions: [">= 6.0.0"]
   - dependency-name: core-js
-    versions: ["^3"]
+    versions: [">= 3.0.0"]
   - dependency-name: tslib
-    versions: ["^2"]
+    versions: [">= 2.0.0"]
   - dependency-name: "@ngx-translate/http-loader"
-    versions: ["^5"]
+    versions: [">= 5.0.0"]
