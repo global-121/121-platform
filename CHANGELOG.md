@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.7.1...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.7.2...master)
 
 ### Added
 - 2020-08-19: Added GLOBAL_121_REF_DIR=Referral-app to tools/.env
@@ -14,17 +14,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.7.2](https://github.com/global-121/121-platform/compare/v0.7.1...v0.7.2) - 2020-08-27
+
+### Changed
+- 2020-08-27: Update program-data for Kenya pilot environment + required fixes to display it correctly
+
 ## [0.7.1](https://github.com/global-121/121-platform/compare/v0.7.0...v0.7.1) - 2020-08-18
--2020-08-18: Fixes for input-validation in both PA-app and AW-app
+- 2020-08-18: Fixes for input-validation in both PA-app and AW-app
 
 ## [0.7.0](https://github.com/global-121/121-platform/compare/v0.6.3...v0.7.0) - 2020-08-18
 
 ### Added
-- 2020-08-12: Added AFRICASTALKING API-key to services/121-service/src/secrets.ts
-- 2020-08-11: Added INTERSOLVE API-key to services/121-service/src/secrets.ts
+- 2020-08-12: Added `AFRICASTALKING` API-key to `services/121-service/src/secrets.ts`
+- 2020-08-11: Added `INTERSOLVE` API-key to `services/121-service/src/secrets.ts`
 
 ### Changed
-- 2020-08-12: Changed languages ny_MW, et_OM by sa_KE and la2_KE
+- 2020-08-12: Changed languages `ny_MW`, `et_OM` by `sa_KE` and `la2_KE`
 
 ---
 
@@ -40,7 +45,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.6.1](https://github.com/global-121/121-platform/compare/v0.6.0...v0.6.1) - 2020-08-04
 - 2020-08-04: Fixed a bug, which prevented correctly running the NL-seed script
-- 2020-08-04: Changed URL from staging.121.global to nlrc-staging.121.global in services/.env & interfaces/*/.env
+- 2020-08-04: Changed URL from `staging.121.global` to `nlrc-staging.121.global` in `services/.env` & `interfaces/*/.env`
 
 ## [0.6.0](https://github.com/global-121/121-platform/compare/v0.5.0...v0.6.0) - 2020-08-04
 
@@ -63,7 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.0](https://github.com/global-121/121-platform/compare/v0.3.1...v0.4.0) - 2020-06-16
 
 ### Changed
-- 2020-06-09: Add `IPV4_121_SERVICE`, `PORT_121_SERVICE`, `SUBDOMAIN_121_SERVICE`, `EXTERNAL_121_SERVICE_URL`, `URL_PA_ACCOUNTS_SERVICE_API`, `IPV4_PA_ACCOUNTS_SERVICE` , `PORT_PA_ACCOUNTS_SERVICE`, `SUBDOMAIN_PA_ACCOUNTS_SERVICE` and `URL_121_SERVICE_API`  to `services/.env` AB#1965 
+- 2020-06-09: Add `IPV4_121_SERVICE`, `PORT_121_SERVICE`, `SUBDOMAIN_121_SERVICE`, `EXTERNAL_121_SERVICE_URL`, `URL_PA_ACCOUNTS_SERVICE_API`, `IPV4_PA_ACCOUNTS_SERVICE` , `PORT_PA_ACCOUNTS_SERVICE`, `SUBDOMAIN_PA_ACCOUNTS_SERVICE` and `URL_121_SERVICE_API`  to `services/.env` AB#1965
 - 2020-05-26 - Webhook in production-mode triggers deploy-script only once per published release
 
 ---
