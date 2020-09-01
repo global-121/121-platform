@@ -171,11 +171,13 @@ Keep the following points in mind while writing test cases:
 - Testing global variables and objects, when are being defined or constructed
 - There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
         
-        it('ngOnInit: should set up variables', () => {
-          expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
-          expect(component.someValye).toBeTruthy();  // check for a variable to be TRUE
-          expect(component.someValye).toBeFalsy();  // check for a variable to be FALSE
-        });
+```ts
+it('ngOnInit: should set up variables', () => {
+  expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
+  expect(component.someValye).toBeTruthy();  // check for a variable to be TRUE
+  expect(component.someValye).toBeFalsy();  // check for a variable to be FALSE
+});
+```
 
 #### Testing method callbacks and changes
 -  By utilizing the `spy` provided within the jasmine framework, we should always test and verify that the appropriate methods have been called.
