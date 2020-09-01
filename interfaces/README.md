@@ -190,16 +190,9 @@ it('ngOnInit: should set up variables', () => {
 
 #### Testing conditional statements
 -  Make separate `it` blocks for different conditions.
-
-        it("Test when xyz === 'somethinf'") ....
-        it("Test when xyz !== 'somethinf'") ....
-
-#### Testing conditional statements
--  Make separate `it` blocks for different conditions.
-
-        it("Test when xyz === 'somethinf'") ....
-        it("Test when xyz !== 'somethinf'") ....
-
+```ts
+it("Test when xyz === 'some-value'", () => {})
+it("Test when xyz !== 'some-value'", () => {})
 
 #### Testing Async Mehthods (i.e. methods which make an API call)
 -  Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
