@@ -151,7 +151,7 @@ There are a few reasons why we write unit tests cases:
 -  It helps us achieve recommended devOps protocols for maintaining code base while working within teams.
 
 How are Unit Tests affected when we make changes within the code in future?
--  Changes in code means, we are necessarily changing the flow/functionality at least in the functional level of the code. Which means, we must accommodate the changes within the corresponding unit test cases to reflect and support those changes.
+-  We should aim to write and update unit tests along side the current development, so that our tests are up to date and also reflect the changes done. Helps us stay in track
 -  Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test-scenario or spec-file should be committed together with the feature change.
 
 
@@ -184,9 +184,16 @@ A short introduction tutorial, to start off writing test cases can be found at: 
 
 
 #### Testing method callbacks and changes
--  By utilizing the `spy` provided within the jasmine framework, we should always test and verify that the appropriate methods have been called.
+-  In order to test for methods to have been called, or been called with certain arguments use `spy` and `toHaveBeenCalled`/ `toHaveBeenCalledWith` matchers.
 
 ```ts
+
+//Code
+function  doLogin (params:type) {
+    event.preventDefault()
+}
+
+//Test
 it('some_method: should call another fn', () => {
   spyOn(event, "preventDefault"); // Monitor the said method
   component.doLogin(event); // call some_method
