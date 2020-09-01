@@ -178,6 +178,9 @@ it('ngOnInit: should set up variables', () => {
 });
 ```
 
+The methods written as `toBeTruthy` are called matchers, they help us compare the expected values, their types, whether a method was called, the arguments of the methods and also their existence. There are various methods provided by the testing module. We can find a detailed list of those methods and their usage here: https://jasmine.github.io/api/3.5/matchers.html
+
+
 #### Testing method callbacks and changes
 -  By utilizing the `spy` provided within the jasmine framework, we should always test and verify that the appropriate methods have been called.
 
@@ -219,11 +222,3 @@ it("Test when xyz !== 'some-value'", () => {})
 #### Testing HTML Tags
 -  By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
 -  HTML tags are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
-
-        it('label changes / tag changes', (done) => {
-                fixture.detectChanges();
-                expect(el.nativeElement.textContent).toBe('Login'); // verify the element
-                method_call() // call the method which is being tested
-                fixture.detectChanges()
-                expect(el.nativeElement.textContent).toBe('Logout'); // verify the changes     
-        });
