@@ -57,7 +57,7 @@
     "@types/jest": "^24.0.13",
     "@types/node": "10.x",
     "@typescript-eslint/eslint-plugin": "^1.10.2",
-    "@typescript-eslint/parser": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.3",
     "atob": ">=2.1.0",
     "deep-extend": ">=0.5.1",
     "eslint": "^5.0.0",
