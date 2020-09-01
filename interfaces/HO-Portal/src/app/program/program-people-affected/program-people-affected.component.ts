@@ -61,6 +61,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ProgramPhase.payment,
         ProgramPhase.evaluation,
       ],
+      showIfNoValidation: true,
     },
     {
       id: BulkActionId.selectForValidation,
@@ -70,6 +71,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ),
       roles: [UserRole.ProjectOfficer],
       phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: false,
     },
     {
       id: BulkActionId.includeProjectOfficer,
@@ -79,6 +81,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ),
       roles: [UserRole.ProjectOfficer],
       phases: [ProgramPhase.inclusion],
+      showIfNoValidation: true,
     },
     {
       id: BulkActionId.includeProgramManager,
@@ -88,6 +91,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ),
       roles: [UserRole.ProgramManager],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+      showIfNoValidation: true,
     },
     {
       id: BulkActionId.reject,
@@ -97,6 +101,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ),
       roles: [UserRole.ProgramManager],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+      showIfNoValidation: true,
     },
   ];
 
@@ -128,6 +133,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ProgramPhase.payment,
       ],
       roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
+      showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
     const columnDateTimeWidth = 142;
@@ -205,6 +211,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...columnDefaults,
         phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
+        showIfNoValidation: false,
         width: columnScoreWidth,
       },
       {
@@ -214,6 +221,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...columnDefaults,
         phases: [ProgramPhase.registrationValidation],
+        showIfNoValidation: false,
         width: columnDateTimeWidth,
       },
       {
@@ -223,6 +231,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...columnDefaults,
         phases: [ProgramPhase.registrationValidation],
+        showIfNoValidation: false,
         width: columnDateTimeWidth,
       },
       {
@@ -292,11 +301,19 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     for (const column of this.columnsAvailable) {
       if (
         column.phases.includes(this.thisPhase) &&
-        column.roles.includes(this.userRole)
+        column.roles.includes(this.userRole) &&
+        this.checkValidationColumnOrAction(column)
       ) {
         this.columns.push(column);
       }
     }
+  }
+
+  private checkValidationColumnOrAction(columnOrAction) {
+    return (
+      (columnOrAction.showIfNoValidation && !this.program.validation) ||
+      this.program.validation
+    );
   }
 
   private addPaymentColumns() {
@@ -318,7 +335,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       action.enabled =
         action.roles.includes(this.userRole) &&
         action.phases.includes(this.activePhase) &&
-        action.phases.includes(this.thisPhase);
+        action.phases.includes(this.thisPhase) &&
+        this.checkValidationColumnOrAction(action);
       return action;
     });
     this.toggleChooseActionNoActions(this.bulkActions);
@@ -370,7 +388,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private sortPeopleByTempScore(a: Person, b: Person) {
     if (a.tempScore === b.tempScore) {
-      return a.did > b.did ? -1 : 1;
+      return a.created > b.created ? -1 : 1;
     } else {
       return a.tempScore > b.tempScore ? -1 : 1;
     }

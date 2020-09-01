@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ExportType } from 'src/app/models/export-type.model';
-import { ProgramPhase } from 'src/app/models/program.model';
+import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
   selector: 'app-registration-validation',
@@ -11,6 +12,7 @@ import { ProgramPhase } from 'src/app/models/program.model';
 })
 export class RegistrationValidationPage implements OnInit {
   public programId = this.route.snapshot.params.id;
+  public program: Program;
   public userRole = this.authService.getUserRole();
   public thisPhase = ProgramPhase.registrationValidation;
   public isReady: boolean;
@@ -20,9 +22,12 @@ export class RegistrationValidationPage implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private authService: AuthService,
+    private programsService: ProgramsServiceApiService,
   ) {}
 
-  ngOnInit() {}
+  async ngOnInit() {
+    this.program = await this.programsService.getProgramById(this.programId);
+  }
 
   public onReady(state: boolean) {
     this.isReady = state;

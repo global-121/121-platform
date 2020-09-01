@@ -563,6 +563,9 @@ export class ProgramService {
       where: { did: did },
     });
     connection.temporaryInclusionScore = score;
+    if (!program.validation) {
+      connection.inclusionScore = score;
+    }
     await this.connectionRepository.save(connection);
   }
 

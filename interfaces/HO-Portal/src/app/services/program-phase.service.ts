@@ -21,6 +21,7 @@ export class ProgramPhaseService {
   private programId: number;
 
   public activePhaseName: ProgramPhase;
+  private validation: boolean;
   public phases: Phase[];
 
   constructor(
@@ -56,6 +57,7 @@ export class ProgramPhaseService {
     this.programId = programId;
     const program = await this.programsService.getProgramById(programId);
     this.activePhaseName = program.state;
+    this.validation = program.validation;
   }
 
   private updatePhaseStates() {
@@ -65,6 +67,18 @@ export class ProgramPhaseService {
     this.phases = this.phases.map((phase: Phase) => {
       phase.active = phase.name === activePhase.name;
       phase.disabled = phase.id > activePhase.id;
+
+      if (
+        !this.validation &&
+        phase.name === ProgramPhase.registrationValidation
+      ) {
+        phase.label = this.translate.instant(
+          'page.program.phases.' + phase.name + '.label-no-validation',
+        );
+        phase.btnText = this.translate.instant(
+          'page.program.phases.' + phase.name + '.btnText-no-validation',
+        );
+      }
 
       return phase;
     });

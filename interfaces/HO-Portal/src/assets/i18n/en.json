@@ -51,7 +51,9 @@
         },
         "registrationValidation": {
           "label": "Registration & validation",
-          "btnText": "Close registration & validation"
+          "btnText": "Close registration & validation",
+          "label-no-validation": "Registration",
+          "btnText-no-validation": "Close registration"
         },
         "inclusion": {
           "label": "Inclusion",
@@ -149,7 +151,7 @@
           "vulnerability-assessment-completed": "Completed Vulnerability Assessment",
           "selected-for-validation": "Selected for validation",
           "vulnerability-assessment-validated": "Validated Vulnerability Assessment",
-          "final-score": "Validated inclusion score",
+          "final-score": "Inclusion score",
           "temp-score": "Temporary inclusion score",
           "included": "Included",
           "rejected": "Rejected",
