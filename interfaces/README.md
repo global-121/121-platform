@@ -222,14 +222,16 @@ it("Test when xyz !== 'some-value'", () => {})
 
 -  Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
 
-        it('XYZ', (done) => {
-          // spies and stubs
+```ts
+it('XYZ', (done) => {
+  // spies and stubs
 
-          spy.calls.mostRecent().returnValue.then(() => {
-              // tests
-              done(); // to complete the tests
-          });
-        });
+  spy.calls.mostRecent().returnValue.then(() => {
+    // tests
+    done(); // to complete the tests
+  });
+});
+```
 
 #### Testing HTML Tags
 -  By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
