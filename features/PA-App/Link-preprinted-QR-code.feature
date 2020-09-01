@@ -1,6 +1,13 @@
 @pa-app
 Feature: Link preprinted QR-code
 
+  Scenario: Program validation disabled
+    Given the program is set up with "validation" "disabled"
+    When the PA is at the "preprinted qr-code"-step in the conversation
+    Then nothing is shown
+    And the next section is loaded
+
+
   Background:
     Given the PA is at the "preprinted qr-code"-step in the conversation
     Given the PA has a QR-code with enough data available
