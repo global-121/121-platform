@@ -184,17 +184,20 @@ The methods written as `toBeTruthy` are called matchers, they help us compare th
 #### Testing method callbacks and changes
 -  By utilizing the `spy` provided within the jasmine framework, we should always test and verify that the appropriate methods have been called.
 
-        it('some_method: should call another fn', () => {
-          spyOn(event, "preventDefault"); // Monitor the said method
-          component.doLogin(event); // call some_method
-          expect(event.preventDefault).toHaveBeenCalled(); // check for the monitored method to have been called
-        });
+```ts
+it('some_method: should call another fn', () => {
+  spyOn(event, "preventDefault"); // Monitor the said method
+  component.doLogin(event); // call some_method
+  expect(event.preventDefault).toHaveBeenCalled(); // check for the monitored method to have been called
+});
+```
 
 #### Testing conditional statements
 -  Make separate `it` blocks for different conditions.
 ```ts
 it("Test when xyz === 'some-value'", () => {})
 it("Test when xyz !== 'some-value'", () => {})
+```
 
 #### Testing Async Mehthods (i.e. methods which make an API call)
 -  Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
