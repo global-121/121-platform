@@ -159,9 +159,7 @@ Keep the following points in mind while writing test cases:
 -  We should follow a practice to write to tests for all methods except the ones which are private.
 -  Every method which contains an async call, can be tested by returning a promise that can be spied and stubbed to verify the UI behavior.
 -  We should aim to write a complementary test for each method written on the file
--  Verify class declarations and modifications through methods
---  boolean variables
---  string variables
+-  Verify class declarations and modifications through methods, boolean variables, string variables, etc.
 - Monitor changes within the HTML template and verify through test cases
 -  values within html tags or buttons etc.
 - Create "it ("should...." scenarios for conditional code as well (e.g. if/else blocks)
