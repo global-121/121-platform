@@ -163,7 +163,7 @@ Keep the following points in mind while writing test cases:
 - Monitor changes within the HTML template and verify through test cases
 -  values within html tags or buttons etc.
 - Create "it ("should...." scenarios for conditional code as well (e.g. if/else blocks)
-- Use the "fit" and "fdescribe" to execute unit test cases that we are adding currently. Since angular test does not support test commands to target files specifically
+- Use the "`fit`" and "`fdescribe`" to execute only the unit test cases that you are currently working on. Make sure **not** to commit these commands.
 - In order to provide more options, I have added phantomJS into the config files as well so a chrome browser is not needed to be launched every time we need to execute unit test case (type: "ng test ---browser=PhantomJS"
 
 - Testing global variables and objects, when are being defined or constructed
