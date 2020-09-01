@@ -187,13 +187,13 @@ A short introduction tutorial, to start off writing test cases can be found at: 
 -  In order to test for methods to have been called, or been called with certain arguments use `spy` and `toHaveBeenCalled`/ `toHaveBeenCalledWith` matchers.
 
 ```ts
-
-//Code
-function  doLogin (params:type) {
-    event.preventDefault()
+// Code
+public doLogin(event: Event) {
+  event.preventDefault();
+  // ...rest of the actual method.
 }
 
-//Test
+// Test
 it('some_method: should call another fn', () => {
   spyOn(event, "preventDefault"); // Monitor the said method
   component.doLogin(event); // call some_method
