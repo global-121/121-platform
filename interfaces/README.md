@@ -152,7 +152,7 @@ There are a few reasons why we write unit tests cases:
 
 How are Unit Tests affected when we make changes within the code in future?
 -  Changes in code means, we are necessarily changing the flow/functionality at least in the functional level of the code. Which means, we must accommodate the changes within the corresponding unit test cases to reflect and support those changes.
--  Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test file should be committed with the feature change/ ticket.
+-  Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test-scenario or spec-file should be committed together with the feature change.
 
 
 Just in general we can keep following points in mind while writing the test cases.
