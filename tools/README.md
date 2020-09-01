@@ -46,13 +46,12 @@ This is currently set up. To reproduce, you would follow these steps:
 
 1. Create a `systemd-service`.  
    Use the template [`webhook.service`](webhook.service), fill in:  
-   * Set `User` to `global121` or `global121production`  
-     This should reflect a user-account with the appropriate permissions.
-   * Set `NODE_ENV` to `test` or `staging` or `production`
-   * Set `GLOBAL_121_REPO` to the absolute path of this git-repository
-   * Set `GITHUB_WEBHOOK_SECRET` to the value configured on [GitHub](../settings/hooks)
-   * (optional) Set `VERSION` to a minor release-number(leaving off the last patch-digit) to enable automatic deployment of patch-releases for that minor version. For example, setting `VERSION=0.1.` would automatically deploy releases like `v0.1.1`, `v0.1.2`, etc.
 
+   - Set `User` to a user-account with the appropriate permissions.
+   - Set `NODE_ENV` to `test` for "Continuous deployment" or `production` for "Releases-only"
+   - Set `GLOBAL_121_REPO` to the absolute path of this git-repository
+   - Set `GLOBAL_121_WEB_ROOT` to the absolute path of the deployment location of the web-apps
+   - Set `GITHUB_WEBHOOK_SECRET` to the value configured on [GitHub](https://github.com/global-121/121-platform/settings/hooks)
 
 2. Enable the webhook service:
 

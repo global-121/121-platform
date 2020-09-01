@@ -7,10 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.7.2...master)
 
 ### Added
-- 2020-08-19: Added GLOBAL_121_REF_DIR=Referral-app to tools/.env
+- 2020-08-19: Added `GLOBAL_121_REF_DIR` to `tools/.env`
+- 2020-09-01: `GLOBAL_121_WEB_ROOT` now also used by `webhook.service`; Needs update + restart.
 
 ### Changed
 - 2020-08-19: Deploy script & apache2 conf changed, so possibly need to restart
+
+### Removed
+- 2020-09-01: Remove `VERSION`-env variable used by `webhook.service`; Needs update + restart.
 
 ---
 
