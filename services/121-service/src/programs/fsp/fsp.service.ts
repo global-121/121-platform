@@ -64,14 +64,20 @@ export class FspService {
 
     if (paymentResult.status === StatusEnum.succes) {
       for (let connection of details.connectionsForFsp) {
-        await this.storeTransaction(amount, connection, fsp, program, installment);
+        await this.storeTransaction(
+          amount,
+          connection,
+          fsp,
+          program,
+          installment,
+        );
       }
     }
 
     return { paymentResult, nrConnectionsFsp: details.paymentList.length };
   }
 
-  public async createPaymentDetails(
+  private async createPaymentDetails(
     includedConnections: ConnectionEntity[],
     amount: number,
     fspId: number,
@@ -150,7 +156,10 @@ export class FspService {
     return payload;
   }
 
-  public async sendPayment(fsp: FinancialServiceProviderEntity, payload): Promise<StatusMessageDto> {
+  public async sendPayment(
+    fsp: FinancialServiceProviderEntity,
+    payload,
+  ): Promise<StatusMessageDto> {
     if (fsp.fsp === fspName.intersolve) {
       return this.fspApiService.sendPaymentIntersolve(fsp.apiUrl, payload);
     } else if (fsp.fsp === fspName.mpesa) {
