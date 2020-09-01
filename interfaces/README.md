@@ -216,9 +216,12 @@ it("Test when xyz !== 'some-value'", () => {})
 
 -  Based on the changes / executions upon the completion of the async request, we should aim to test the changes and modifications.
 
-        spy.calls.mostRecent().returnValue.then(() => { // block to test what happenes after the async calls.
-            // Here goes expectations and changes
-        });
+```ts
+// block to test what happens after the async calls:
+spy.calls.mostRecent().returnValue.then(() => {
+  // Here goes expectations and changes
+});
+```
 
 -  Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
 
