@@ -85,6 +85,7 @@ describe('Fsp service', (): void => {
         status: StatusEnum.succes,
         message: {},
       };
+      // @ts-ignore
       spyOn(service, 'createPaymentDetails').and.returnValue(
         Promise.resolve(paymentDetailsDto),
       );
@@ -113,6 +114,7 @@ describe('Fsp service', (): void => {
         status: StatusEnum.succes,
         message: {},
       };
+      // @ts-ignore
       spyOn(service, 'createPaymentDetails').and.returnValue(
         Promise.resolve(paymentDetailsDto),
       );
@@ -143,6 +145,7 @@ describe('Fsp service', (): void => {
         status: StatusEnum.error,
         message: {},
       };
+      // @ts-ignore
       spyOn(service, 'createPaymentDetails').and.returnValue(
         Promise.resolve(paymentDetailsDto),
       );
@@ -183,6 +186,7 @@ describe('Fsp service', (): void => {
     fspMpesa.fsp = fspName.mpesa;
     const payload = 1;
     it('should return default values', async (): Promise<void> => {
+      // @ts-ignore
       const result = await service.createPaymentDetails(connections, 10, 1);
       expect(result.connectionsForFsp).toBeDefined();
       expect(service).toBeDefined();
@@ -196,6 +200,7 @@ describe('Fsp service', (): void => {
       );
       // @ts-ignore
       spyOn(service, 'createIntersolveDetails').and.returnValue(payload);
+      // @ts-ignore
       const result = await service.createPaymentDetails(connections, amount, 1);
       expect(result.payload).toBe(payload);
     });
@@ -221,6 +226,7 @@ describe('Fsp service', (): void => {
       );
       // @ts-ignore
       spyOn(service, 'createIntersolveDetails').and.returnValue(payload);
+      // @ts-ignore
       const result = await service.createPaymentDetails(
         connsInstersolve,
         amount,
@@ -240,6 +246,7 @@ describe('Fsp service', (): void => {
 
       // @ts-ignore
       spyOn(service, 'createAfricasTalkingDetails').and.returnValue(payload);
+      // @ts-ignore
       await service.createPaymentDetails(connections, amount, 1);
       // @ts-ignore
       expect(service.createAfricasTalkingDetails).toHaveBeenCalled();
