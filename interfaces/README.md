@@ -166,9 +166,9 @@ Keep the following points in mind while writing test cases:
 - Use the "`fit`" and "`fdescribe`" to execute only the unit test cases that you are currently working on. Make sure **not** to commit these commands.
 - In order to provide more options, I have added phantomJS into the config files as well so a chrome browser is not needed to be launched every time we need to execute unit test case (type: "ng test ---browser=PhantomJS"
 
-- Testing global variables and objects, when they are being defined or constructed
+- Testing class variables and objects, when they are being defined or constructed
 - There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
-        
+
 ```ts
 it('ngOnInit: should set up variables', () => {
   expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
