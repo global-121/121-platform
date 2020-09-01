@@ -155,7 +155,7 @@ How are Unit Tests affected when we make changes within the code in future?
 -  Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test-scenario or spec-file should be committed together with the feature change.
 
 
-Just in general we can keep following points in mind while writing the test cases.
+Keep the following points in mind while writing test cases:
 -  We should follow a practice to write to tests for all methods except the ones which are private.
 -  Every method which contains a sync call, returning a promise can be also spied and stubbed to verify the UI behavior through the means of unit tests cases
 -  We should aim to write a complementary test for each method written on the file
