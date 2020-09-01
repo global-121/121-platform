@@ -15,4 +15,5 @@ export class BulkAction {
   label: string;
   roles: UserRole[];
   phases: ProgramPhase[];
+  showIfNoValidation: boolean;
 }

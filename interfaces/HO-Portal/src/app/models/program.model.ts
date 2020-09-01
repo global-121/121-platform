@@ -25,6 +25,7 @@ export class Program {
   created: string;
   updated: string;
   state: ProgramPhase;
+  validation: boolean;
 }
 
 export enum InclusionCalculationType {
