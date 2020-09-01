@@ -157,7 +157,7 @@ How are Unit Tests affected when we make changes within the code in future?
 
 Keep the following points in mind while writing test cases:
 -  We should follow a practice to write to tests for all methods except the ones which are private.
--  Every method which contains a sync call, returning a promise can be also spied and stubbed to verify the UI behavior through the means of unit tests cases
+-  Every method which contains an async call, can be tested by returning a promise that can be spied and stubbed to verify the UI behavior.
 -  We should aim to write a complementary test for each method written on the file
 -  Verify class declarations and modifications through methods
 --  boolean variables
