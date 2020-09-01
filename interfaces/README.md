@@ -180,6 +180,8 @@ it('ngOnInit: should set up variables', () => {
 
 The methods written as `toBeTruthy` are called matchers, they help us compare the expected values, their types, whether a method was called, the arguments of the methods and also their existence. There are various methods provided by the testing module. We can find a detailed list of those methods and their usage here: https://jasmine.github.io/api/3.5/matchers.html
 
+A short introduction tutorial, to start off writing test cases can be found at: https://jasmine.github.io/tutorials/your_first_suite
+
 
 #### Testing method callbacks and changes
 -  By utilizing the `spy` provided within the jasmine framework, we should always test and verify that the appropriate methods have been called.
