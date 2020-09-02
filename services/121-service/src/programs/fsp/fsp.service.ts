@@ -16,6 +16,8 @@ import { ProgramEntity } from '../program/program.entity';
 import { TransactionEntity } from '../program/transactions.entity';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { FspPaymentResultDto } from './dto/fsp-payment-results.dto';
+import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
+import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 
 @Injectable()
 export class FspService {
@@ -26,6 +28,10 @@ export class FspService {
   @InjectRepository(FinancialServiceProviderEntity)
   public financialServiceProviderRepository: Repository<
     FinancialServiceProviderEntity
+  >;
+  @InjectRepository(AfricasTalkingNotificationEntity)
+  public africasTalkingNotificationRepository: Repository<
+    AfricasTalkingNotificationEntity
   >;
 
   public constructor(private readonly fspApiService: FspApiService) {}
@@ -239,5 +245,8 @@ export class FspService {
   public async africasTalkingNotification(
     africasTalkingNotificationData: AfricasTalkingNotificationDto,
   ): Promise<void> {
+    await this.africasTalkingNotificationRepository.save(
+      africasTalkingNotificationData,
+    );
   }
 }

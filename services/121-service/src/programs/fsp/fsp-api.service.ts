@@ -28,7 +28,10 @@ export class FspApiService {
       .toPromise();
   }
 
-  public async sendPaymentIntersolve(apiUrl: string, payload): Promise<StatusMessageDto> {
+  public async sendPaymentIntersolve(
+    apiUrl: string,
+    payload,
+  ): Promise<StatusMessageDto> {
     const headersRequest = {
       accept: 'application/json',
       authorization: `Basic ${INTERSOLVE.authToken}`,
