@@ -1,0 +1,9 @@
+.enroll-in-program--contact-details {
+  // Style the inserted HTML from the database:
+  a[href^="https://wa.me/"]
+  {
+    font-weight: bold;
+    color: inherit;
+    white-space: nowrap;
+  }
+}

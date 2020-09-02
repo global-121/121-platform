@@ -15,6 +15,10 @@ export class TranslatableStringService {
   }
 
   public get(property: TranslatableString | string): string {
+    if (!property) {
+      return '';
+    }
+
     if (typeof property !== 'object') {
       return property;
     }
