@@ -90,7 +90,7 @@ export class OffersService {
       offerOpeningHoursWeekends: offerRow[14], // Opening Hours Weekends
       offerForWhom: offerRow[15], // For whom?
       offerCapacity: offerRow[16], // Capacity?
-      offerVisible: offerRow[4] === "Show", // Visible?
+      offerVisible: offerRow[4] === 'Show', // Visible?
       subCategoryID: parseInt(offerRow[1]), // Sub-Category ID
       categoryID: parseInt(offerRow[2]), // Category ID
     };
@@ -102,7 +102,9 @@ export class OffersService {
     )
       .then((response) => response.json())
       .then((response) => {
-        return response.values.map(this.convertCategoryRowToOfferObject).filter(offer => offer.offerVisible);
+        return response.values
+          .map(this.convertCategoryRowToOfferObject)
+          .filter((offer) => offer.offerVisible);
       })
       .catch((_) => {
         return [];
