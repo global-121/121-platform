@@ -13,7 +13,7 @@ export class OffersService {
   private categorySheetName = 'Categories';
   private subCategorySheetName = 'Sub-Categories';
   private offerSheetName = 'Offers';
-  private spreadsheetRange = 'A2:H';
+  private spreadsheetRange = 'A2:Z';
 
   constructor() {}
 
@@ -66,18 +66,25 @@ export class OffersService {
 
   convertCategoryRowToOfferObject(offerRow): Offer {
     return {
-      offerID: parseInt(offerRow[0]),
+      offerID: parseInt(offerRow[3]), // Offer ID
       offerName: {
-        en: offerRow[1],
+        en: offerRow[4], // Name
       },
-      offerIcon: offerRow[2],
+      offerIcon: offerRow[5], // Icon
       offerDescription: {
-        en: offerRow[3],
+        en: offerRow[6], // What service?
       },
-      offerLink: offerRow[4],
-      offerImage: offerRow[5],
-      subCategoryID: parseInt(offerRow[6]),
-      categoryID: parseInt(offerRow[7]),
+      offerLink: offerRow[9], // Link to Website
+      offerImage: offerRow[10], // Image
+      offerNumber: offerRow[7], // Phone Number
+      offerEmail: offerRow[8], // Email Address
+      offerAddress: offerRow[11], // Address
+      offerOpeningHoursWeekdays: offerRow[12], // Opening Hours Weekdays
+      offerOpeningHoursWeekends: offerRow[13], // Opening Hours Weekends
+      offerForWhom: offerRow[14], // For whom?
+      offerCapacity: offerRow[15], // Capacity?
+      subCategoryID: parseInt(offerRow[1]), // Sub-Category ID
+      categoryID: parseInt(offerRow[2]), // Category ID
     };
   }
 

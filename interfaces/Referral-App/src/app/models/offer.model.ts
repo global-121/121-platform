@@ -7,6 +7,13 @@ export class Offer {
   offerDescription: TranslatableString | string;
   offerLink?: string;
   offerImage: string;
+  offerNumber?: string;
+  offerEmail?: string;
+  offerAddress?: string;
+  offerOpeningHoursWeekdays?: string;
+  offerOpeningHoursWeekends?: string;
+  offerForWhom?: string;
+  offerCapacity?: string;
   subCategoryID: number;
   categoryID: number;
 }
