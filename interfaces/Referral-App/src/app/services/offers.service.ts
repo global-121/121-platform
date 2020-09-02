@@ -37,6 +37,9 @@ export class OffersService {
       .then((response) => response.json())
       .then((response) => {
         return response.values.map(this.convertCategoryRowToCategoryObject);
+      })
+      .catch((_) => {
+        return [];
       });
   }
 
@@ -61,6 +64,9 @@ export class OffersService {
       .then((response) => response.json())
       .then((response) => {
         return response.values.map(this.convertCategoryRowToSubCategoryObject);
+      })
+      .catch((_) => {
+        return [];
       });
   }
 
@@ -95,6 +101,9 @@ export class OffersService {
       .then((response) => response.json())
       .then((response) => {
         return response.values.map(this.convertCategoryRowToOfferObject);
+      })
+      .catch((_) => {
+        return [];
       });
   }
 }
