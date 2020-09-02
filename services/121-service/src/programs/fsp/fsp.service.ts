@@ -235,4 +235,9 @@ export class FspService {
       status: 'Validated', // 'Validated' or 'Failed'
     };
   }
+
+  public async africasTalkingNotification(
+    africasTalkingNotificationData: AfricasTalkingNotificationDto,
+  ): Promise<void> {
+  }
 }

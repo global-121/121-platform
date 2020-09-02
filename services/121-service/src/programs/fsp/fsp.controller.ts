@@ -8,6 +8,7 @@ import {
 } from '@nestjs/swagger';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
+import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 
 @ApiUseTags('fsp')
 @Controller('fsp')
@@ -36,11 +37,25 @@ export class FspController {
   })
   @ApiResponse({ status: 200, description: 'Validated' })
   @Post('africastalking/validation')
-  public async statusCallback(
+  public async validationCallback(
     @Body() africasTalkingValidationData: AfricasTalkingValidationDto,
   ): Promise<void> {
     return await this.fspService.africasTalkingValidation(
       africasTalkingValidationData,
+    );
+  }
+
+  @ApiOperation({
+    title:
+      'Notification callback used by Africas Talking to notify status of payment to us.',
+  })
+  @ApiResponse({ status: 200, description: 'Validated' })
+  @Post('africastalking/notification')
+  public async notificationCallback(
+    @Body() africasTalkingNotificationData: AfricasTalkingNotificationDto,
+  ): Promise<void> {
+    await this.fspService.africasTalkingNotification(
+      africasTalkingNotificationData,
     );
   }
 }
