@@ -3,6 +3,7 @@ import { TranslatableString } from './translatable-string.model';
 export class Program {
   id: number;
   author: object;
+  contactDetails?: string | TranslatableString;
   countryId: number;
   startDate: string;
   endDate?: string;

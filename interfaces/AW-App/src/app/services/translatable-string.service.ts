@@ -15,7 +15,15 @@ export class TranslatableStringService {
   }
 
   public get(property: TranslatableString | string): string {
-    let label = property[this.languageCode];
+    if (!property) {
+      return '';
+    }
+
+    if (typeof property !== 'object') {
+      return property;
+    }
+
+    let label: any = property[this.languageCode];
 
     if (!label) {
       label = property[this.fallbackLanguageCode];

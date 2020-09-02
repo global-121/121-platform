@@ -102,6 +102,7 @@
         "location": "Location",
         "title": "Title",
         "ngo": "NGO",
+        "contactDetails": "Contact details",
         "startDate": "Start date",
         "endDate": "End date",
         "currency": "Currency",
