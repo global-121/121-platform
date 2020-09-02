@@ -41,6 +41,8 @@ export class FspService {
       includedConnections,
       amount,
       fsp.id,
+      program.id,
+      installment,
     );
     let paymentResult;
     if (details.paymentList.length === 0) {
@@ -81,6 +83,8 @@ export class FspService {
     includedConnections: ConnectionEntity[],
     amount: number,
     fspId: number,
+    programId: number,
+    installment: number,
   ): Promise<PaymentDetailsDto> {
     const fsp = await this.getFspById(fspId);
     const paymentList = [];
@@ -103,7 +107,11 @@ export class FspService {
     if (fsp.fsp === fspName.intersolve) {
       payload = this.createIntersolveDetails(paymentList);
     } else if (fsp.fsp === fspName.mpesa) {
-      payload = this.createAfricasTalkingDetails(paymentList);
+      payload = this.createAfricasTalkingDetails(
+        paymentList,
+        programId,
+        installment,
+      );
     } else {
       payload = paymentList;
     }
@@ -136,7 +144,11 @@ export class FspService {
     return payload;
   }
 
-  private createAfricasTalkingDetails(paymentList: any[]): object {
+  private createAfricasTalkingDetails(
+    paymentList: any[],
+    programId: number,
+    installment: number,
+  ): object {
     const payload = {
       username: AFRICASTALKING.username,
       productName: AFRICASTALKING.productName,
@@ -148,7 +160,10 @@ export class FspService {
         phoneNumber: item.phoneNumber, // '+254711123466',
         currencyCode: AFRICASTALKING.currencyCode,
         amount: item.amount,
-        metadata: {},
+        metadata: {
+          programId: String(programId),
+          installment: String(installment),
+        },
       };
       payload.recipients.push(recipient);
     }
