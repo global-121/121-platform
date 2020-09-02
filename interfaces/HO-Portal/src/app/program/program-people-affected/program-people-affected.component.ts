@@ -446,15 +446,21 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         (t) => t.did,
       );
 
-      if (
-        transactionsThisInstallment &&
-        didsThisInstallments.includes(personRow.did)
-      ) {
-        personRow['payment' + (index + 1)] = formatDate(
-          transactionsThisInstallment[0].installmentdate,
-          this.dateFormat,
-          this.locale,
-        );
+      if (transactionsThisInstallment.length) {
+        if (didsThisInstallments.includes(personRow.did)) {
+          const transaction = transactionsThisInstallment.find(
+            (i) => i.did === personRow.did,
+          );
+          if (transaction.status === 'success') {
+            personRow['payment' + (index + 1)] = formatDate(
+              transaction.installmentdate,
+              this.dateFormat,
+              this.locale,
+            );
+          } else {
+            personRow['payment' + (index + 1)] = transaction.error;
+          }
+        }
       }
     });
     return personRow;

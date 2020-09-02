@@ -58,10 +58,19 @@ export class FspService {
           message: {},
         },
         nrConnectionsFsp: details.paymentList.length,
+        nrSuccessfull: details.paymentList.length,
       };
     }
 
     paymentResult = await this.sendPayment(fsp, details.payload);
+    const enrichedTransactions = this.getEnrichedTransactions(
+      paymentResult,
+      details.connectionsForFsp,
+      fsp,
+    );
+    const successfullTransactions = enrichedTransactions.filter(
+      i => i.status === StatusEnum.success,
+    );
 
     await this.logFspCall(
       fsp,
@@ -70,19 +79,59 @@ export class FspService {
       paymentResult.message,
     );
 
-    if (paymentResult.status === StatusEnum.succes) {
-      for (let connection of details.connectionsForFsp) {
-        await this.storeTransaction(
-          amount,
-          connection,
-          fsp,
-          program,
-          installment,
-        );
-      }
+    for (let connection of enrichedTransactions) {
+      await this.storeTransaction(
+        amount,
+        connection,
+        fsp,
+        program,
+        installment,
+      );
     }
 
-    return { paymentResult, nrConnectionsFsp: details.paymentList.length };
+    return {
+      paymentResult,
+      nrConnectionsFsp: details.paymentList.length,
+      nrSuccessfull: successfullTransactions.length,
+    };
+  }
+
+  private getEnrichedTransactions(
+    paymentResult,
+    connectionsForFsp,
+    fsp,
+  ): any[] {
+    let enrichedTransactions;
+    if (paymentResult.status === StatusEnum.success) {
+      if (fsp.fsp === fspName.mpesa) {
+        enrichedTransactions = [];
+        for (let transaction of paymentResult.message.entries) {
+          const enrichedTransaction = connectionsForFsp.find(
+            i => i.customData['phoneNumber'] === transaction.phoneNumber,
+          );
+          enrichedTransaction['status'] =
+            transaction.status === 'Queued'
+              ? StatusEnum.success
+              : StatusEnum.error;
+          enrichedTransaction['errorMessage'] = transaction.errorMessage
+            ? 'Failed: ' + transaction.errorMessage
+            : '';
+          enrichedTransactions.push(enrichedTransaction);
+        }
+      } else {
+        enrichedTransactions = connectionsForFsp;
+        enrichedTransactions.forEach(i => {
+          i['status'] = StatusEnum.success;
+        });
+      }
+    } else {
+      enrichedTransactions = connectionsForFsp;
+      enrichedTransactions.forEach(i => {
+        i['status'] = StatusEnum.error;
+        i['errorMessage'] = 'Whole FSP failed: ' + paymentResult.message.error;
+      });
+    }
+    return enrichedTransactions;
   }
 
   private async createPaymentDetails(
@@ -189,7 +238,7 @@ export class FspService {
       const status = StatusEnum.error;
       // Handle other FSP's here
       // This will result in an HTTP-exception mentioning that no payment was done for this FSP
-      return { status, message: {} };
+      return { status, message: { error: 'FSP not integrated yet.' } };
     }
   }
 
@@ -210,7 +259,7 @@ export class FspService {
 
   private async storeTransaction(
     amount: number,
-    connection: ConnectionEntity,
+    connection: any,
     fsp: FinancialServiceProviderEntity,
     program: ProgramEntity,
     installment: number,
@@ -222,7 +271,8 @@ export class FspService {
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
     transaction.installment = installment;
-    transaction.status = 'sent-order';
+    transaction.status = connection.status;
+    transaction.errorMessage = connection.errorMessage;
 
     this.transactionRepository.save(transaction);
   }
