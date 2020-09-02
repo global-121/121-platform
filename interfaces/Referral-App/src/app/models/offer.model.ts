@@ -14,6 +14,7 @@ export class Offer {
   offerOpeningHoursWeekends?: string;
   offerForWhom?: string;
   offerCapacity?: string;
+  offerVisible: boolean;
   subCategoryID: number;
   categoryID: number;
 }

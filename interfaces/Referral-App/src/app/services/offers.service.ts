@@ -75,21 +75,22 @@ export class OffersService {
     return {
       offerID: parseInt(offerRow[3]), // Offer ID
       offerName: {
-        en: offerRow[4], // Name
+        en: offerRow[5], // Name
       },
-      offerIcon: offerRow[5], // Icon
+      offerIcon: offerRow[6], // Icon
       offerDescription: {
-        en: offerRow[6], // What service?
+        en: offerRow[7], // What service?
       },
-      offerLink: offerRow[9], // Link to Website
-      offerImage: offerRow[10], // Image
-      offerNumber: offerRow[7], // Phone Number
-      offerEmail: offerRow[8], // Email Address
-      offerAddress: offerRow[11], // Address
-      offerOpeningHoursWeekdays: offerRow[12], // Opening Hours Weekdays
-      offerOpeningHoursWeekends: offerRow[13], // Opening Hours Weekends
-      offerForWhom: offerRow[14], // For whom?
-      offerCapacity: offerRow[15], // Capacity?
+      offerLink: offerRow[10], // Link to Website
+      offerImage: offerRow[11], // Image
+      offerNumber: offerRow[8], // Phone Number
+      offerEmail: offerRow[9], // Email Address
+      offerAddress: offerRow[12], // Address
+      offerOpeningHoursWeekdays: offerRow[13], // Opening Hours Weekdays
+      offerOpeningHoursWeekends: offerRow[14], // Opening Hours Weekends
+      offerForWhom: offerRow[15], // For whom?
+      offerCapacity: offerRow[16], // Capacity?
+      offerVisible: offerRow[4] === "Show", // Visible?
       subCategoryID: parseInt(offerRow[1]), // Sub-Category ID
       categoryID: parseInt(offerRow[2]), // Category ID
     };
@@ -101,7 +102,7 @@ export class OffersService {
     )
       .then((response) => response.json())
       .then((response) => {
-        return response.values.map(this.convertCategoryRowToOfferObject);
+        return response.values.map(this.convertCategoryRowToOfferObject).filter(offer => offer.offerVisible);
       })
       .catch((_) => {
         return [];
