@@ -2,14 +2,15 @@ import { Injectable } from '@angular/core';
 import { Category } from 'src/app/models/category.model';
 import { Offer } from 'src/app/models/offer.model';
 import { SubCategory } from 'src/app/models/sub-category.model';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OffersService {
-  private spreadsheetURL = 'https://sheets.googleapis.com/v4/spreadsheets';
-  private spreadsheetId = '1OANMuGJxGBQ2ba3xVfKvTpD0EGQM-ukUrgRyN9tzMbQ';
-  private spreadsheetKey = 'AIzaSyCJW0xxT4kgdUIzVGBVu3X39QxYrYBLzdY';
+  private spreadsheetURL = environment.google_sheets_api_url;
+  private spreadsheetId = environment.google_sheets_sheet_id;
+  private spreadsheetKey = environment.google_sheets_api_key;
   private categorySheetName = 'Categories';
   private subCategorySheetName = 'Sub-Categories';
   private offerSheetName = 'Offers';
