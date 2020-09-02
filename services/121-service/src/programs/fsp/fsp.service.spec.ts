@@ -13,6 +13,7 @@ import { HttpModule } from '@nestjs/common/http';
 import { ProgramEntity } from '../program/program.entity';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
+import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 
 describe('Fsp service', (): void => {
   let service: FspService;
@@ -35,6 +36,10 @@ describe('Fsp service', (): void => {
           },
           {
             provide: getRepositoryToken(FinancialServiceProviderEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(AfricasTalkingNotificationEntity),
             useFactory: repositoryMockFactory,
           },
         ],

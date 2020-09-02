@@ -103,6 +103,10 @@ describe('CredentialService', (): void => {
             provide: getRepositoryToken(ActionEntity),
             useFactory: repositoryMockFactory,
           },
+          {
+            provide: getRepositoryToken(AfricasTalkingNotificationEntity),
+            useFactory: repositoryMockFactory,
+          },
         ],
       }).compile();
 

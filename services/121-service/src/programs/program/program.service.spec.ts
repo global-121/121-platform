@@ -25,6 +25,7 @@ import { ActionEntity } from '../../actions/action.entity';
 import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
 import { FspService } from '../fsp/fsp.service';
 import { FspApiService } from '../fsp/fsp-api.service';
+import { AfricasTalkingNotificationEntity } from '../fsp/africastalking-notification.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -98,6 +99,10 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(ActionEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(AfricasTalkingNotificationEntity),
             useFactory: repositoryMockFactory,
           },
         ],
