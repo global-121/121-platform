@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - 2020-08-19: Deploy script & apache2 conf changed, so possibly need to restart
+- 2020-09-03: Corrected "Samburu" language-code, possibly need to update `NG_LOCALES` value for PA-App.
 
 ### Removed
 - 2020-09-01: Remove `VERSION`-env variable used by `webhook.service`; Needs update + restart.
