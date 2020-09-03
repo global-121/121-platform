@@ -1,9 +1,4 @@
 {
-  "tabs": {
-    "you": "You",
-    "community": "Community",
-    "account": "Account"
-  },
   "account": {
     "change-password": "Change password",
     "delete-account-header": "Enter your password if you are sure you want to delete your Digital ID",
@@ -54,17 +49,17 @@
     "enroll-in-program": {
       "change": "Change my information",
       "info-message": "With 121 we will ask you to create and fill in certain information about yourself.<br>Below describes who sees what when.<br><br>When using 121 you may share the following information below in different ways:<br><ol><li>Your name (from physical document)</li><li>Your date of birth (from physical document)</li><li>Your username (create)</li><li>Your password (create)</li><li>Your selection of a program </li><li>Your answers to the questionnaire (per program) (incl name & DOB pilot)</li><li>Your selection of a potential Financial service provider</li><li>Your Bank Account Number</li><li>Your Telephone Number</li></ol>",
-      "introduction": "Hello this is {{ngo}}.",
       "introduction-information": "To make sure you get the best possible help and a fair process, we need some personal information.",
+      "introduction": "Hello this is {{ngo}}.",
       "more-info-questions": "About personal information",
       "please-confirm": "Below is an overview of your information. Please check and submit.",
-      "submit": "Save my information",
-      "submit-confirm": "Submit my information"
+      "submit-confirm": "Submit my information",
+      "submit": "Save my information"
     },
     "handle-proof": {
       "creating": "You have given us sufficient personal information to see if you can be part of the program.",
-      "inclusion-status-positive": "You have been included in the program.",
       "inclusion-status-negative": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us.",
+      "inclusion-status-positive": "You have been included in the program.",
       "notify": "We will notify you if you are included."
     },
     "login-identity": {
@@ -75,58 +70,58 @@
       "supply-password": "Your password:",
       "supply-username": "Your username:"
     },
+    "preprinted-qrcode": {
+      "error": "The scanned QR)code cannot be used, please try another one.",
+      "info-qr": "More text to come",
+      "introduction": "The Aidworker/Volunteer will scan a QR-code to link your information and give it to you. Please keep your physical QR-code safe.",
+      "more-info-qr": "About QR-codes",
+      "no": "No",
+      "question": "Does the Aidworker/Volunteer have a pre-printed QR-code to scan?",
+      "result-ok": "The scanned QR-code is now connected to your Digital ID and personal information. Please keep your physical QR-code safe.",
+      "start-scanner": "Start scanner",
+      "try-again": "Try again",
+      "yes": "Yes"
+    },
     "registration-summary": {
-      "validation-conclusion": "Thank you. Your registration is now complete. An aidworker of the NGO will organize a meeting with you to validate your information, probably by visiting your home.",
-      "no-validation-conclusion": "Thank you. Your registration is now complete. You will be informed if you have been included within [X amount of time].",
       "documents": "Make sure to have these documents ready:",
       "info-message": "To activate your Digital ID<br> <br> When you create your Digital ID you will receive a print out of your digital ID that looks like this.<br> You will need to bring this and the following physical documents below to a meeting with an Aid worker to Activate your Digital ID.<br> <ul> <li>Your National Identity Card</li> </ul><br> What if I don’t have a card? Then you have 2 options: <ol> <li>Bring a letter from the chief that confirms his/her identity</li> <li>Bring your X number (need the name of this number like BSN number) from the National Bureau of Registration. You will have to pay for a new one the price will be X.</li> </ol>",
       "more-info-documents": "About these documents",
-      "qr-code": "Please show this QR-code to the aidworker when asked."
-    },
-    "preprinted-qrcode": {
-      "introduction": "The Aidworker/Volunteer will scan a QR-code to link your information and give it to you. Please keep your physical QR-code safe.",
-      "question": "Does the Aidworker/Volunteer have a pre-printed QR-code to scan?",
-      "more-info-qr": "About QR-codes",
-      "info-qr": "More text to come",
-      "yes": "Yes",
-      "no": "No",
-      "start-scanner": "Start scanner",
-      "try-again": "Try again",
-      "error": "The scanned QR)code cannot be used, please try another one.",
-      "result-ok": "The scanned QR-code is now connected to your Digital ID and personal information. Please keep your physical QR-code safe."
+      "no-validation-conclusion": "Thank you. Your registration is now complete. You will be informed if you have been included within [X amount of time].",
+      "qr-code": "Please show this QR-code to the aidworker when asked.",
+      "validation-conclusion": "Thank you. Your registration is now complete. An aidworker of the NGO will organize a meeting with you to validate your information, probably by visiting your home."
     },
     "select-country": {
       "conclusion": "Thank you, you have selected {{country}}.",
       "introduction": " Next step: select your location."
     },
     "select-fsp": {
-      "conclusion": "Thank you. You have selected the option {{name}}.",
-      "introduction": "Please select how you would like to receive your money, if you are included in the program.",
       "attributes": {
         "error": "Something went wrong, please try again.",
         "introduction": "For this option we also need the following:",
         "submit": "Save my information",
         "success": "Thank you. Your additional information is saved."
-      }
+      },
+      "conclusion": "Thank you. You have selected the option {{name}}.",
+      "introduction": "Please select how you would like to receive your money, if you are included in the program."
     },
     "select-language": {
       "info-message": "With the 121 platform, we aim to make Cash Based Aid safe, fast & fair, to help you if you have been affected by disasters and crises to meet your own needs. 121 will help you<br><ul><li>Create a Digtial ID</li><li>Know which programs are available in your area</li><li>Apply to the programs</li><li>Understand who sees your information</li></ul>",
-      "more-info": "About 121",
-      "result": "Thank you, you have selected {{language}}.",
       "intro": "To register for this program, you will need to use 121.",
       "introduction": {
         "en": "Welcome to 121. Please select your language.",
-        "saq_KE": "Samburu intro text: to include",
         "la2_KE": "Language 2 intro text: to include",
         "ny_MW": "Takulandilani ku 121. Chonde sankhani chiyankhulo chanu.",
-        "om_ET": "Baga gara 121'tti nagaan dhuftan. Maaloo qooqa keessan filadhaa."
+        "om_ET": "Baga gara 121'tti nagaan dhuftan. Maaloo qooqa keessan filadhaa.",
+        "saq_KE": "Samburu intro text: to include"
       },
+      "more-info": "About 121",
+      "result": "Thank you, you have selected {{language}}.",
       "language": {
         "en": "English",
-        "saq_KE": "Samburu",
         "la2_KE": "Language 2",
         "ny_MW": "Chichewa",
-        "om_ET": "Afaan Oromoo"
+        "om_ET": "Afaan Oromoo",
+        "saq_KE": "Samburu"
       }
     },
     "select-program": {
@@ -164,23 +159,23 @@
   },
   "q-and-a-set": {
     "validation": {
-      "generic-error": "We cannot process some of your input. Please check and update your answers.",
-      "required": "An answer is required for this question. Please adjust and try again.",
-      "number": "The answer needs to be a number. Please adjust and try again.",
       "date": "The date does not have a valid format. Please adjust and try again.",
+      "email": "The email does not have a valid format. Please adjust and try again.",
+      "generic-error": "We cannot process some of your input. Please check and update your answers.",
+      "number": "The answer needs to be a number. Please adjust and try again.",
       "phone-number": "We couldn't verify this phone-number. Please adjust and try again.",
-      "email": "The email does not have a valid format. Please adjust and try again."
+      "required": "An answer is required for this question. Please adjust and try again."
     }
   },
   "qr-scanner": {
-    "title": "Scan QR-code",
-    "error-not-compatible": "Your device is not able to scan",
-    "error-no-permissions": "Please allow the camera to be used or check if its not already in use and try again.",
+    "close": "Close",
     "error-generic": "Something went wrong.",
+    "error-no-permissions": "Please allow the camera to be used or check if its not already in use and try again.",
+    "error-not-compatible": "Your device is not able to scan",
     "switch-camera": "Switch camera",
-    "try-again": "Try again",
+    "title": "Scan QR-code",
     "toggle-flash": "Toggle flash-light",
-    "close": "Close"
+    "try-again": "Try again"
   },
   "shared": {
     "cancel-button": "Cancel",
@@ -192,5 +187,10 @@
     "loading": "Loading",
     "pause": "Pause",
     "play": "Play"
+  },
+  "tabs": {
+    "account": "Account",
+    "community": "Community",
+    "you": "You"
   }
 }

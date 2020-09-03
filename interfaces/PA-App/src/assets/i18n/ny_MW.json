@@ -1,8 +1,4 @@
 {
-  "tabs": {
-    "you": "Inu",
-    "community": "Dera"
-  },
   "account": {
     "change-password": "Sinthani nambala yanga yachinsinsi",
     "delete-account-header": "Yikani nambala yanu ya chinsinsi ngati mukufuna kufufuta nambala yanu",
@@ -127,5 +123,9 @@
     "more-info": "Werengani zina",
     "submit-button": "Tumizani"
   },
-  "speak-text": {}
+  "speak-text": {},
+  "tabs": {
+    "community": "Dera",
+    "you": "Inu"
+  }
 }
