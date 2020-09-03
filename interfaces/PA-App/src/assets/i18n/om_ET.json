@@ -32,7 +32,6 @@
       "create-password": "Paaswoordii koo tolchi",
       "create-username": "Maqaa-fayyadamaa koo tolchi:",
       "introduction": "Adda-baastuu Dijitaalaa tolfachuudhaaf sadarkaawwan itti-aanan kanneen xumuruun sin barbaachisa.",
-      "more-info-digital-id": "Waa'ee Adda-baastuu Dijiitaalaa",
       "more-info-password": "Waa'ee paaswoordiiwwanii",
       "more-info-username-pw": "Waa'ee maqaa-fayyadamttaniifi paaswoordii keessanii",
       "password-only": "Create my password",
@@ -97,7 +96,10 @@
       "introduction3": "Lakkoofsa bilbilaa keessan galchuu hin barbaaddan yoo ta'e, haaromsuudhaaf asiin seenuu qabdu.",
       "introduction4": "Dhuma sagantichaaratti, lakkoofsa keessan ni haqna.",
       "skip": "Irra darbi",
-      "submit": "Lakkoofsa bilbilaa galchi"
+      "submit": "Lakkoofsa bilbilaa galchi",
+      "validation": {
+        "phone-number": "Tikulephera kupeza foni nambala mwayikayo. Chonde yikaniso ndiye muyeseso"
+      }
     },
     "signup-signin": {
       "create-id": "Adda-baastuu Dijitaalaa tolchi",
@@ -111,12 +113,17 @@
       "stored": "Adda-baastuun Dijitaalaa keessan qabee keessa kaa'ameera."
     }
   },
+  "q-and-a-set": {
+    "validation": {
+      "generic-error": "Tikulephera kugwiritsa ntchito zina za zomwe mwapereka. Chonde onaniso ndikuyankha ena mwamayankho omwe mukuyenera kupereka",
+      "phone-number": "Tikulephera kupeza foni nambala mwayikayo. Chonde yikaniso ndiye muyeseso"
+    }
+  },
   "shared": {
     "cancel-button": "Dhiisaa",
     "close-button": "Cufi",
     "more-info": "Dabalataan dubbisaa...",
     "submit-button": "Galchi"
   },
-  "speak-text": {},
-  "validation": {}
+  "speak-text": {}
 }

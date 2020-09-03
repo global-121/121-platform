@@ -32,7 +32,6 @@
       "create-password": "Pangani nambala yanga ya chinsinsi",
       "create-username": "Pangani dzina langa",
       "introduction": "Kuti mupange nambala mufunika kumaliza izi",
-      "more-info-digital-id": "Nambala yanu",
       "more-info-password": "Nambala yanu yachinsinsi",
       "more-info-username-pw": "Zokhudza dzina lanu ndi nambala ya chinsinsi",
       "submit-username": "Pangani dzina langa",
@@ -99,17 +98,27 @@
       "introduction3": "Ngati simukufuna kuyika nambala yanu ya foni, mukuyenera kulowa apa kuti muone zambiri",
       "introduction4": "Pakutha pandondomeko iyi tizafufuta nambala yanu",
       "skip": "Dumphani",
-      "submit": "Tumizani foni nambala"
+      "submit": "Tumizani foni nambala",
+      "validation": {
+        "phone-number": "Tikulephera kupeza foni nambala mwayikayo. Chonde yikaniso ndiye muyeseso"
+      }
     },
     "signup-signin": {
       "create-id": "Pangani nambala",
       "introduction": "Chonde sankhani nambala yanu",
-      "login-id": "Gwiritsani ntchito nambala yanga"
+      "login-id": "Gwiritsani ntchito nambala yanga",
+      "more-info-digital-id": "Nambala yanu"
     },
     "store-credential": {
       "done": "Nambala yanu yayatsidwa ndi {{ngo}}",
       "received": "Nambala yanu yalandilidwa kuchokera ku foni yanu",
       "stored": "Nambala yanu yasungidwa mu foni yanu"
+    }
+  },
+  "q-and-a-set": {
+    "validation": {
+      "generic-error": "Tikulephera kugwiritsa ntchito zina za zomwe mwapereka. Chonde onaniso ndikuyankha ena mwamayankho omwe mukuyenera kupereka",
+      "phone-number": "Tikulephera kupeza foni nambala mwayikayo. Chonde yikaniso ndiye muyeseso"
     }
   },
   "shared": {
@@ -118,9 +127,5 @@
     "more-info": "Werengani zina",
     "submit-button": "Tumizani"
   },
-  "speak-text": {},
-  "validation": {
-    "generic-error": "Tikulephera kugwiritsa ntchito zina za zomwe mwapereka. Chonde onaniso ndikuyankha ena mwamayankho omwe mukuyenera kupereka",
-    "phoneNumber": "Tikulephera kupeza foni nambala mwayikayo. Chonde yikaniso ndiye muyeseso"
-  }
+  "speak-text": {}
 }
