@@ -130,7 +130,7 @@
       },
       "program-payout": {
         "section-title": "Manage Payments",
-        "installment-nr": "Installment #",
+        "installment-nr": "Payment #",
         "closed": "Closed",
         "open": "Open",
         "start-payout": "Start payout now",
