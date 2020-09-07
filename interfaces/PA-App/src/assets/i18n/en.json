@@ -109,19 +109,19 @@
       "intro": "To register for this program, you will need to use 121.",
       "introduction": {
         "en": "Welcome to 121. Please select your language.",
-        "la2_KE": "Language 2 intro text: to include",
         "ny_MW": "Takulandilani ku 121. Chonde sankhani chiyankhulo chanu.",
         "om_ET": "Baga gara 121'tti nagaan dhuftan. Maaloo qooqa keessan filadhaa.",
-        "saq_KE": "Samburu intro text: to include"
+        "saq_KE": "[Samburu intro text]",
+        "tuv_KE": "[Turkana intro text]"
       },
       "more-info": "About 121",
       "result": "Thank you, you have selected {{language}}.",
       "language": {
         "en": "English",
-        "la2_KE": "Language 2",
         "ny_MW": "Chichewa",
         "om_ET": "Afaan Oromoo",
-        "saq_KE": "Samburu"
+        "saq_KE": "Samburu",
+        "tuv_KE": "Turkana"
       }
     },
     "select-program": {
