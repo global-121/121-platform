@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Country } from '../models/country.model';
 import { Fsp } from '../models/fsp.model';
+import { InstanceInfo } from '../models/instance.model';
 import { Program } from '../models/program.model';
 import { ApiService } from './api.service';
 
@@ -12,6 +13,12 @@ import { ApiService } from './api.service';
 })
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService) {}
+
+  getInstanceInformation(): Promise<InstanceInfo> {
+    return this.apiService
+      .get(environment.url_121_service_api, '/instance')
+      .toPromise();
+  }
 
   getCountries(): Promise<Country[]> {
     return this.apiService
