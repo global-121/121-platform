@@ -8,6 +8,7 @@ import { ConnectionEntity } from '../../sovrin/create-connection/connection.enti
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { TransactionEntity } from '../program/transactions.entity';
 import { FspCallLogEntity } from './fsp-call-log.entity';
+import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { FspCallLogEntity } from './fsp-call-log.entity';
       FinancialServiceProviderEntity,
       TransactionEntity,
       FspCallLogEntity,
+      AfricasTalkingNotificationEntity,
     ]),
   ],
   providers: [FspService, FspApiService],

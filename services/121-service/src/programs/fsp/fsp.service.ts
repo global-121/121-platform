@@ -16,6 +16,8 @@ import { ProgramEntity } from '../program/program.entity';
 import { TransactionEntity } from '../program/transactions.entity';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { FspPaymentResultDto } from './dto/fsp-payment-results.dto';
+import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
+import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 
 @Injectable()
 export class FspService {
@@ -26,6 +28,10 @@ export class FspService {
   @InjectRepository(FinancialServiceProviderEntity)
   public financialServiceProviderRepository: Repository<
     FinancialServiceProviderEntity
+  >;
+  @InjectRepository(AfricasTalkingNotificationEntity)
+  public africasTalkingNotificationRepository: Repository<
+    AfricasTalkingNotificationEntity
   >;
 
   public constructor(private readonly fspApiService: FspApiService) {}
@@ -41,6 +47,8 @@ export class FspService {
       includedConnections,
       amount,
       fsp.id,
+      program.id,
+      installment,
     );
     let paymentResult;
     if (details.paymentList.length === 0) {
@@ -50,10 +58,22 @@ export class FspService {
           message: {},
         },
         nrConnectionsFsp: details.paymentList.length,
+        nrSuccessfull: details.paymentList.length,
       };
     }
 
     paymentResult = await this.sendPayment(fsp, details.payload);
+
+    const enrichedTransactions = await this.getEnrichedTransactions(
+      paymentResult,
+      details.connectionsForFsp,
+      fsp,
+      program.id,
+      installment,
+    );
+    const successfullTransactions = enrichedTransactions.filter(
+      i => i.status === StatusEnum.success,
+    );
 
     await this.logFspCall(
       fsp,
@@ -62,25 +82,107 @@ export class FspService {
       paymentResult.message,
     );
 
-    if (paymentResult.status === StatusEnum.succes) {
-      for (let connection of details.connectionsForFsp) {
-        await this.storeTransaction(
-          amount,
-          connection,
-          fsp,
-          program,
-          installment,
-        );
-      }
+    for (let connection of enrichedTransactions) {
+      await this.storeTransaction(
+        amount,
+        connection,
+        fsp,
+        program,
+        installment,
+      );
     }
 
-    return { paymentResult, nrConnectionsFsp: details.paymentList.length };
+    return {
+      paymentResult,
+      nrConnectionsFsp: details.paymentList.length,
+      nrSuccessfull: successfullTransactions.length,
+    };
+  }
+
+  private async getEnrichedTransactions(
+    paymentResult,
+    connectionsForFsp,
+    fsp,
+    programId: number,
+    installment: number,
+  ): Promise<any[]> {
+    let enrichedTransactions;
+    if (paymentResult.status === StatusEnum.success) {
+      if (fsp.fsp === fspName.mpesa) {
+        enrichedTransactions = [];
+        for (let transaction of paymentResult.message.entries) {
+          let notification;
+          if (!transaction.errorMessage) {
+            notification = await this.listenAfricasTalkingtNotification(
+              transaction,
+              programId,
+              installment,
+            );
+          }
+
+          const enrichedTransaction = connectionsForFsp.find(
+            i => i.customData.phoneNumber === transaction.phoneNumber,
+          );
+
+          enrichedTransaction.status =
+            transaction.errorMessage || notification.status === 'Failed'
+              ? StatusEnum.error
+              : StatusEnum.success;
+
+          enrichedTransaction.errorMessage = transaction.errorMessage
+            ? 'Failed: ' + transaction.errorMessage
+            : notification.status === 'Failed'
+            ? 'Failed: ' + notification.description
+            : '';
+
+          enrichedTransactions.push(enrichedTransaction);
+        }
+      } else {
+        enrichedTransactions = connectionsForFsp;
+        enrichedTransactions.forEach(i => {
+          i.status = StatusEnum.success;
+        });
+      }
+    } else {
+      enrichedTransactions = connectionsForFsp;
+      enrichedTransactions.forEach(i => {
+        i.status = StatusEnum.error;
+        i.errorMessage = 'Whole FSP failed: ' + paymentResult.message.error;
+      });
+    }
+    return enrichedTransactions;
+  }
+
+  private async listenAfricasTalkingtNotification(
+    transaction,
+    programId: number,
+    installment: number,
+  ): Promise<any> {
+    let filteredNotifications = [];
+    while (filteredNotifications.length === 0) {
+      const notifications = await this.africasTalkingNotificationRepository.find(
+        {
+          where: { destination: transaction.phoneNumber },
+          order: { timestamp: 'DESC' },
+        },
+      );
+      filteredNotifications = notifications.filter(i => {
+        return (
+          i.value === transaction.value &&
+          i.requestMetadata['installment'] === String(installment) &&
+          i.requestMetadata['programId'] === String(programId)
+        );
+      });
+    }
+    return filteredNotifications[0];
   }
 
   private async createPaymentDetails(
     includedConnections: ConnectionEntity[],
     amount: number,
     fspId: number,
+    programId: number,
+    installment: number,
   ): Promise<PaymentDetailsDto> {
     const fsp = await this.getFspById(fspId);
     const paymentList = [];
@@ -103,7 +205,11 @@ export class FspService {
     if (fsp.fsp === fspName.intersolve) {
       payload = this.createIntersolveDetails(paymentList);
     } else if (fsp.fsp === fspName.mpesa) {
-      payload = this.createAfricasTalkingDetails(paymentList);
+      payload = this.createAfricasTalkingDetails(
+        paymentList,
+        programId,
+        installment,
+      );
     } else {
       payload = paymentList;
     }
@@ -136,7 +242,11 @@ export class FspService {
     return payload;
   }
 
-  private createAfricasTalkingDetails(paymentList: any[]): object {
+  private createAfricasTalkingDetails(
+    paymentList: any[],
+    programId: number,
+    installment: number,
+  ): object {
     const payload = {
       username: AFRICASTALKING.username,
       productName: AFRICASTALKING.productName,
@@ -145,10 +255,13 @@ export class FspService {
 
     for (let item of paymentList) {
       const recipient = {
-        phoneNumber: item.phoneNumber, // '+254711123466',
+        phoneNumber: item.phoneNumber,
         currencyCode: AFRICASTALKING.currencyCode,
         amount: item.amount,
-        metadata: {},
+        metadata: {
+          programId: String(programId),
+          installment: String(installment),
+        },
       };
       payload.recipients.push(recipient);
     }
@@ -167,8 +280,8 @@ export class FspService {
     } else {
       const status = StatusEnum.error;
       // Handle other FSP's here
-      // This will result in an HTTP-exception mentioning that no payment was done for this FSP
-      return { status, message: {} };
+      // This will result in an HTTP-exception
+      return { status, message: { error: 'FSP not integrated yet.' } };
     }
   }
 
@@ -189,7 +302,7 @@ export class FspService {
 
   private async storeTransaction(
     amount: number,
-    connection: ConnectionEntity,
+    connection: any,
     fsp: FinancialServiceProviderEntity,
     program: ProgramEntity,
     installment: number,
@@ -201,7 +314,8 @@ export class FspService {
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
     transaction.installment = installment;
-    transaction.status = 'sent-order';
+    transaction.status = connection.status;
+    transaction.errorMessage = connection.errorMessage;
 
     this.transactionRepository.save(transaction);
   }
@@ -219,5 +333,13 @@ export class FspService {
     return {
       status: 'Validated', // 'Validated' or 'Failed'
     };
+  }
+
+  public async africasTalkingNotification(
+    africasTalkingNotificationData: AfricasTalkingNotificationDto,
+  ): Promise<void> {
+    await this.africasTalkingNotificationRepository.save(
+      africasTalkingNotificationData,
+    );
   }
 }

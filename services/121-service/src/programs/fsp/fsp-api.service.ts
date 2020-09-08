@@ -11,36 +11,42 @@ export class FspApiService {
 
   private async post(url: string, headers: any, payload: any): Promise<any> {
     const endcodedURI = encodeURI(url);
-    return this.httpService
+    let result;
+    await this.httpService
       .post(endcodedURI, payload, {
         headers: headers,
       })
       .pipe(
-        tap(response =>
-          console.log(`ApiService POST: ${url}`, `\nResponse:`, response),
-        ),
+        tap(response => {
+          console.log(`ApiService POST: ${url}`, `\nResponse:`, response);
+          result = { response: response };
+        }),
         map(response => response.data),
         catchError(err => {
           console.log('err: ', err);
+          result = { error: err };
           return empty();
         }),
       )
       .toPromise();
+    return result;
   }
 
-  public async sendPaymentIntersolve(apiUrl: string, payload): Promise<StatusMessageDto> {
+  public async sendPaymentIntersolve(
+    apiUrl: string,
+    payload,
+  ): Promise<StatusMessageDto> {
     const headersRequest = {
       accept: 'application/json',
       authorization: `Basic ${INTERSOLVE.authToken}`,
     };
 
-    let error;
-    const response = await this.post(apiUrl, headersRequest, payload);
-    return response
-      ? { status: StatusEnum.succes, message: response }
+    const result = await this.post(apiUrl, headersRequest, payload);
+    return result.response
+      ? { status: StatusEnum.success, message: result.response }
       : {
           status: StatusEnum.error,
-          message: { statusText: error.response.statusText },
+          message: { error: result.error.response.statusText },
         };
   }
 
@@ -65,12 +71,15 @@ export class FspApiService {
         result = { error: error };
       });
 
-    return !result.response.errorMessage &&
-      !result.response.entries[0].errorMessage
-      ? { status: StatusEnum.succes, message: result.response }
-      : {
-          status: StatusEnum.error,
-          message: { error: result.response },
-        };
+    if (result.error) {
+      return { status: StatusEnum.error, message: { error: result.error } };
+    } else if (result.response.errorMessage) {
+      return {
+        status: StatusEnum.error,
+        message: { error: result.response.errorMessage },
+      };
+    } else {
+      return { status: StatusEnum.success, message: result.response };
+    }
   }
 }

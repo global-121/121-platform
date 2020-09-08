@@ -13,6 +13,7 @@ import { HttpModule } from '@nestjs/common/http';
 import { ProgramEntity } from '../program/program.entity';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
+import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 
 describe('Fsp service', (): void => {
   let service: FspService;
@@ -35,6 +36,10 @@ describe('Fsp service', (): void => {
           },
           {
             provide: getRepositoryToken(FinancialServiceProviderEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(AfricasTalkingNotificationEntity),
             useFactory: repositoryMockFactory,
           },
         ],
@@ -60,10 +65,10 @@ describe('Fsp service', (): void => {
     const fsp = new FinancialServiceProviderEntity();
     fsp.id = 1;
 
-    const connectionList = [1];
+    const connectionList = [new ConnectionEntity()];
     const paymentDetailsDto = {
       paymentList: connectionList,
-      connectionsForFsp: [1],
+      connectionsForFsp: connectionList,
     };
 
     it('should return default values', async (): Promise<void> => {
@@ -82,7 +87,7 @@ describe('Fsp service', (): void => {
       void
     > => {
       const statusMessageDto = {
-        status: StatusEnum.succes,
+        status: StatusEnum.success,
         message: {},
       };
       // @ts-ignore
@@ -106,12 +111,12 @@ describe('Fsp service', (): void => {
         1,
       );
       expect(result.nrConnectionsFsp).toBe(connectionList.length);
-      expect(result.paymentResult.status).toBe(StatusEnum.succes);
+      expect(result.paymentResult.status).toBe(StatusEnum.success);
     });
 
     it('should return paymentResult status succes', async (): Promise<void> => {
       const statusMessageDto = {
-        status: StatusEnum.succes,
+        status: StatusEnum.success,
         message: {},
       };
       // @ts-ignore
@@ -134,7 +139,7 @@ describe('Fsp service', (): void => {
         1,
       );
       expect(result.nrConnectionsFsp).toBe(connectionList.length);
-      expect(result.paymentResult.status).toBe(StatusEnum.succes);
+      expect(result.paymentResult.status).toBe(StatusEnum.success);
       // This ts-ignore can be used to test if a private function has been called
       // @ts-ignore
       expect(service.storeTransaction).toHaveBeenCalled();
@@ -168,10 +173,6 @@ describe('Fsp service', (): void => {
       );
       expect(result.nrConnectionsFsp).toBe(connectionList.length);
       expect(result.paymentResult.status).toBe(StatusEnum.error);
-
-      // This ts-ignore can be used to test if a private function has been called
-      // @ts-ignore
-      expect(service.storeTransaction).not.toHaveBeenCalled();
     });
   });
 

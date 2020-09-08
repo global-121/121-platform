@@ -177,7 +177,8 @@
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
-        "submit-warning-people-affected": "People Affected"
+        "submit-warning-people-affected": "People Affected",
+        "transaction-failed": " Transaction failed"
       },
       "program-modal": {
         "pageTitle": "Program JSON"

@@ -23,6 +23,9 @@ export class TransactionEntity {
   @Column()
   public status: string;
 
+  @Column({ nullable: true })
+  public errorMessage: string;
+
   @ManyToOne(_type => ProgramEntity, program => program.transactions)
   public program: ProgramEntity;
 
