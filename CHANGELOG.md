@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - 2020-08-19: Deploy script & apache2 conf changed, so possibly need to restart
+- 0220-09-08: Change AFRICASTALKING.productName in `121-service/src/secrets.ts` to appropriate value (KRCS-staging server only!)
 
 ### Removed
 - 2020-09-01: Remove `VERSION`-env variable used by `webhook.service`; Needs update + restart.
