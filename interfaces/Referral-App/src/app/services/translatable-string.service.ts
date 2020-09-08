@@ -7,15 +7,21 @@ import { TranslatableString } from '../models/translatable-string.model';
 })
 export class TranslatableStringService {
   private fallbackLanguageCode: string;
-  private languageCode: string;
 
   constructor(private translate: TranslateService) {
     this.fallbackLanguageCode = this.translate.getDefaultLang();
-    this.languageCode = this.translate.currentLang;
   }
 
   public get(property: TranslatableString | string): string {
-    let label = property[this.languageCode];
+    if (!property) {
+      return '';
+    }
+
+    if (typeof property !== 'object') {
+      return property;
+    }
+
+    let label: any = property[this.translate.currentLang];
 
     if (!label) {
       label = property[this.fallbackLanguageCode];
