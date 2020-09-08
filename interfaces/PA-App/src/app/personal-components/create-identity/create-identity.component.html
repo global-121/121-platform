@@ -1,4 +1,4 @@
-<dialogue-turn>
+<dialogue-turn [actor]="instanceNgoName">
   <p>
     <play-text-audio key="personal.create-identity.consent-question" class="ion-float-start ion-margin-end"></play-text-audio>
     {{ 'personal.create-identity.consent-question'|translate }}
@@ -6,7 +6,7 @@
 
   <more-info-button
     buttonKey="personal.create-identity.more-info-data-policy"
-    messageKey="personal.create-identity.info-message-data-policy"
+    [message]="instanceDataPolicy"
     headingKey="personal.create-identity.more-info-data-policy"
   ></more-info-button>
 </dialogue-turn>

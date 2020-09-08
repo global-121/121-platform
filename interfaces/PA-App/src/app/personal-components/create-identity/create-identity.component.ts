@@ -4,6 +4,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { environment } from 'src/environments/environment';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -19,6 +20,9 @@ export class CreateIdentityComponent extends PersonalComponent {
 
   public useLocalStorage: boolean;
   public passwordMinLength = 4;
+
+  public instanceNgoName: string;
+  public instanceDataPolicy: string;
 
   public userConsent = false;
 
@@ -38,12 +42,15 @@ export class CreateIdentityComponent extends PersonalComponent {
     public sovrinService: SovrinService,
     public programsServiceApiService: ProgramsServiceApiService,
     public paData: PaDataService,
+    private translatableStringService: TranslatableStringService,
   ) {
     super();
     this.useLocalStorage = environment.localStorage;
   }
 
   ngOnInit() {
+    this.getInstanceInformation();
+
     if (this.data) {
       this.initHistory();
     }
@@ -56,6 +63,15 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.confirm = this.data.password;
     this.usernameSubmitted = true;
     this.initialInput = true;
+  }
+
+  private async getInstanceInformation() {
+    const instanceData = await this.programsServiceApiService.getInstanceInformation();
+
+    this.instanceNgoName = instanceData.name;
+    this.instanceDataPolicy = this.translatableStringService.get(
+      instanceData.dataPolicy,
+    );
   }
 
   public consent(consent: boolean) {
