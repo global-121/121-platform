@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - 2020-08-19: Deploy script & apache2 conf changed, so possibly need to restart
+- 2020-09-03: Corrected "Samburu" language-code, need to update `NG_LOCALES` value for PA-App.
+- 2020-09-07: Add "Turkana" as language, need to update `NG_LOCALES` value for PA-App.
 - 0220-09-08: Change AFRICASTALKING.productName in `121-service/src/secrets.ts` to appropriate value (KRCS-staging server only!)
 
 ### Removed

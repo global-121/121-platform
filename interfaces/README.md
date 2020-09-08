@@ -30,6 +30,7 @@ See the [/features/](../features/)-directory in this repository.
 ## Development
 
 ### Native environments
+
 #### Android
 When testing/debugging on Android and using the '`livereload`' functionality, it is required to add the following security exception in the app's `config.xml`, by adding the `<edit-config>`-block into the `<platform>`-block:
 
@@ -146,23 +147,22 @@ Run these commands from every app's own 'root'-folder.
 
 ### UNIT TESTS
 There are a few reasons why we write unit tests cases:
--  Unit tests are written to ensure the integrity the functional level aspect of the code written. It helps us identify mistakes, unnecessary code and also when there is room for improvement to make the code more intuitive and efficient.
--  We also write unit test cases to clearly state what the method is supposed to do, so it is smoother for new joiners to be onboarded
--  It helps us achieve recommended devOps protocols for maintaining code base while working within teams.
+- Unit tests are written to ensure the integrity the functional level aspect of the code written. It helps us identify mistakes, unnecessary code and also when there is room for improvement to make the code more intuitive and efficient.
+- We also write unit test cases to clearly state what the method is supposed to do, so it is smoother for new joiners to be onboarded
+- It helps us achieve recommended devOps protocols for maintaining code base while working within teams.
 
 How are Unit Tests affected when we make changes within the code in future?
--  We should aim to write and update unit tests along side the current development, so that our tests are up to date and also reflect the changes done. Helps us stay in track
--  Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test-scenario or spec-file should be committed together with the feature change.
+- We should aim to write and update unit tests along side the current development, so that our tests are up to date and also reflect the changes done. Helps us stay in track
+- Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test-scenario or spec-file should be committed together with the feature change.
 
 
 Keep the following points in mind while writing test cases:
--  We should follow a practice to write to tests for all methods except the ones which are private.
--  Every method which contains an async call, can be tested by returning a promise that can be spied and stubbed to verify the UI behavior.
--  We should aim to write a complementary test for each method written on the file
--  Verify class declarations and modifications through methods, boolean variables, string variables, etc.
-- Monitor changes within the HTML template and verify through test cases
--  values within html tags or buttons etc.
-- Create "it ("should...." scenarios for conditional code as well (e.g. if/else blocks)
+- We should follow a practice to write to tests for all methods except the ones which are private.
+- Every method which contains an async call, can be tested by returning a promise that can be spied and stubbed to verify the UI behavior.
+- We should aim to write a complementary test for each method written on the file
+- Verify class declarations and modifications through methods, boolean variables, string variables, etc.
+- Monitor changes within the HTML template(values of attributes, content of buttons) and verify through test cases
+- Create "`it ("should....`" scenarios for conditional code as well (e.g. if/else blocks)
 - NOTE: It isn't necessary to test all the variables and all method calls, however a highlight of what the method is supposed to accomplish should be reflected within the test cases.
 - Use the "`fit`" and "`fdescribe`" to execute only the unit test cases that you are currently working on. Make sure **not** to commit these commands.
 
@@ -183,7 +183,7 @@ A short introduction tutorial, to start off writing test cases can be found at: 
 
 
 #### Testing method callbacks and changes
--  In order to test for methods to have been called, or been called with certain arguments use `spy` and `toHaveBeenCalled`/ `toHaveBeenCalledWith` matchers.
+- In order to test for methods to have been called, or been called with certain arguments use `spy` and `toHaveBeenCalled`/ `toHaveBeenCalledWith` matchers.
 
 ```ts
 // Code
@@ -201,21 +201,21 @@ it('some_method: should call another fn', () => {
 ```
 
 #### Testing conditional statements
--  Make separate `it` blocks for different conditions.
+- Make separate `it` blocks for different conditions.
+
 ```ts
 it("Test when xyz === 'some-value'", () => {})
 it("Test when xyz !== 'some-value'", () => {})
 ```
 
-#### Testing Async Mehthods (i.e. methods which make an API call)
--  Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
+#### Testing Async methods (i.e. methods which make an API call)
+- Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
 
 ```ts
 let spy = spyOn(component.programsService, "changePassword").and.returnValue(Promise.resolve(true));
 ```
 
-
--  Based on the changes / executions upon the completion of the async request, we should aim to test the changes and modifications.
+- Based on the changes / executions upon the completion of the async request, we should aim to test the changes and modifications.
 
 ```ts
 // block to test what happens after the async calls:
@@ -224,7 +224,7 @@ spy.calls.mostRecent().returnValue.then(() => {
 });
 ```
 
--  Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
+- Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
 
 ```ts
 it('XYZ', (done) => {
@@ -237,6 +237,6 @@ it('XYZ', (done) => {
 });
 ```
 
-#### Testing HTML Tags
--  By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
--  HTML tags are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
+#### Testing HTML elements
+- By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
+- HTML elements are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use

@@ -47,7 +47,7 @@
     {
       "criterium": "name",
       "label": {
-        "en": "My full name:"
+        "en": "Confirm full name:"
       },
       "answerType": "text",
       "criteriumType": "standard",
