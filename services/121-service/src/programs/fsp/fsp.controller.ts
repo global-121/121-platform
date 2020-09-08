@@ -49,7 +49,7 @@ export class FspController {
     title:
       'Notification callback used by Africas Talking to notify status of payment to us.',
   })
-  @ApiResponse({ status: 200, description: 'Validated' })
+  @ApiResponse({ status: 200, description: 'Notified' })
   @Post('africastalking/notification')
   public async notificationCallback(
     @Body() africasTalkingNotificationData: AfricasTalkingNotificationDto,

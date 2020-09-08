@@ -857,6 +857,7 @@ export class ProgramService {
       ])
       .leftJoin('transaction.connection', 'c')
       .where('transaction.program.id = :programId', { programId: programId })
+      .orderBy('transaction.created', 'DESC')
       .getRawMany();
     return transactions;
   }

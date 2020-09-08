@@ -63,10 +63,13 @@ export class FspService {
     }
 
     paymentResult = await this.sendPayment(fsp, details.payload);
-    const enrichedTransactions = this.getEnrichedTransactions(
+
+    const enrichedTransactions = await this.getEnrichedTransactions(
       paymentResult,
       details.connectionsForFsp,
       fsp,
+      program.id,
+      installment,
     );
     const successfullTransactions = enrichedTransactions.filter(
       i => i.status === StatusEnum.success,
@@ -96,42 +99,82 @@ export class FspService {
     };
   }
 
-  private getEnrichedTransactions(
+  private async getEnrichedTransactions(
     paymentResult,
     connectionsForFsp,
     fsp,
-  ): any[] {
+    programId: number,
+    installment: number,
+  ): Promise<any[]> {
     let enrichedTransactions;
     if (paymentResult.status === StatusEnum.success) {
       if (fsp.fsp === fspName.mpesa) {
         enrichedTransactions = [];
         for (let transaction of paymentResult.message.entries) {
+          let notification;
+          if (!transaction.errorMessage) {
+            notification = await this.listenAfricasTalkingtNotification(
+              transaction,
+              programId,
+              installment,
+            );
+          }
+
           const enrichedTransaction = connectionsForFsp.find(
-            i => i.customData['phoneNumber'] === transaction.phoneNumber,
+            i => i.customData.phoneNumber === transaction.phoneNumber,
           );
-          enrichedTransaction['status'] =
-            transaction.status === 'Queued'
-              ? StatusEnum.success
-              : StatusEnum.error;
-          enrichedTransaction['errorMessage'] = transaction.errorMessage
+
+          enrichedTransaction.status =
+            transaction.errorMessage || notification.status === 'Failed'
+              ? StatusEnum.error
+              : StatusEnum.success;
+
+          enrichedTransaction.errorMessage = transaction.errorMessage
             ? 'Failed: ' + transaction.errorMessage
+            : notification.status === 'Failed'
+            ? 'Failed: ' + notification.description
             : '';
+
           enrichedTransactions.push(enrichedTransaction);
         }
       } else {
         enrichedTransactions = connectionsForFsp;
         enrichedTransactions.forEach(i => {
-          i['status'] = StatusEnum.success;
+          i.status = StatusEnum.success;
         });
       }
     } else {
       enrichedTransactions = connectionsForFsp;
       enrichedTransactions.forEach(i => {
-        i['status'] = StatusEnum.error;
-        i['errorMessage'] = 'Whole FSP failed: ' + paymentResult.message.error;
+        i.status = StatusEnum.error;
+        i.errorMessage = 'Whole FSP failed: ' + paymentResult.message.error;
       });
     }
     return enrichedTransactions;
+  }
+
+  private async listenAfricasTalkingtNotification(
+    transaction,
+    programId: number,
+    installment: number,
+  ): Promise<any> {
+    let filteredNotifications = [];
+    while (filteredNotifications.length === 0) {
+      const notifications = await this.africasTalkingNotificationRepository.find(
+        {
+          where: { destination: transaction.phoneNumber },
+          order: { timestamp: 'DESC' },
+        },
+      );
+      filteredNotifications = notifications.filter(i => {
+        return (
+          i.value === transaction.value &&
+          i.requestMetadata['installment'] === String(installment) &&
+          i.requestMetadata['programId'] === String(programId)
+        );
+      });
+    }
+    return filteredNotifications[0];
   }
 
   private async createPaymentDetails(
@@ -212,7 +255,7 @@ export class FspService {
 
     for (let item of paymentList) {
       const recipient = {
-        phoneNumber: item.phoneNumber, // '+254711123466',
+        phoneNumber: item.phoneNumber,
         currencyCode: AFRICASTALKING.currencyCode,
         amount: item.amount,
         metadata: {
@@ -237,7 +280,7 @@ export class FspService {
     } else {
       const status = StatusEnum.error;
       // Handle other FSP's here
-      // This will result in an HTTP-exception mentioning that no payment was done for this FSP
+      // This will result in an HTTP-exception
       return { status, message: { error: 'FSP not integrated yet.' } };
     }
   }

@@ -440,26 +440,19 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private fillPaymentColumns(personRow: PersonRow): PersonRow {
     this.paymentColumns.map((_, index) => {
       const transactionsThisInstallment = this.pastTransactions.filter(
-        (i) => i.installment === index + 1,
-      );
-      const didsThisInstallments = transactionsThisInstallment.map(
-        (t) => t.did,
+        (i) => i.installment === index + 1 && i.did === personRow.did,
       );
 
       if (transactionsThisInstallment.length) {
-        if (didsThisInstallments.includes(personRow.did)) {
-          const transaction = transactionsThisInstallment.find(
-            (i) => i.did === personRow.did,
+        const transaction = transactionsThisInstallment[0];
+        if (transaction.status === 'success') {
+          personRow['payment' + (index + 1)] = formatDate(
+            transaction.installmentdate,
+            this.dateFormat,
+            this.locale,
           );
-          if (transaction.status === 'success') {
-            personRow['payment' + (index + 1)] = formatDate(
-              transaction.installmentdate,
-              this.dateFormat,
-              this.locale,
-            );
-          } else {
-            personRow['payment' + (index + 1)] = transaction.error;
-          }
+        } else {
+          personRow['payment' + (index + 1)] = transaction.error;
         }
       }
     });

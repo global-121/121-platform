@@ -10,9 +10,10 @@ export class AfricasTalkingValidationDto {
   @IsString()
   public readonly phoneNumber: string;
 
-  @ApiModelProperty({ example: 'MobileB2C' })
-  @IsString()
-  public readonly category: string;
+  // This property is in API-documentation, but is not always included in payload in practice
+  // @ApiModelProperty({ example: 'MobileB2C' })
+  // @IsString()
+  // public readonly category: string;
 
   @ApiModelProperty({ example: 'KES' })
   @IsString()
@@ -22,10 +23,11 @@ export class AfricasTalkingValidationDto {
   @IsNumber()
   public readonly amount: number;
 
-  @ApiModelProperty({ example: '212.78.193.200' })
-  @IsString()
-  public readonly sourceIpAddress: string;
+  // This property is in API-documentation, but is not always included in payload in practice
+  // @ApiModelProperty({ example: '212.78.193.200' })
+  // @IsString()
+  // public readonly sourceIpAddress: string;
 
-  @ApiModelProperty({ example: { shopId: '1234', itemId: 'abcdef' } })
+  @ApiModelProperty({ example: { programId: '1', installment: '1' } })
   public readonly metadata: JSON;
 }
