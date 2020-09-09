@@ -9,7 +9,7 @@ import { ModalController } from '@ionic/angular';
 export class PaymentErrorPopupComponent implements OnInit {
   public error: string;
   public column: string;
-  
+
   constructor(private modalController: ModalController) {}
 
   ngOnInit() {}
