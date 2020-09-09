@@ -25,3 +25,16 @@ ion-content {
 .help-back-icon {
   font-size: 24px;
 }
+
+.help-social-image {
+  height: 64px;
+  width: 64px;
+  display: inline-block;
+  margin: 16px;
+
+  &.help-whatsapp-image {
+    height: 96px;
+    width: 96px;
+    margin: 0;
+  }
+}

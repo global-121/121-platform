@@ -23,9 +23,24 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <p><a href="{{ help.helpWhatsApp }}">Link to WhatsApp</a></p>
-        <p><a href="{{ help.helpTwitter }}">Link to Twitter</a></p>
-        <p><a href="{{ help.helpFacebook }}">Link to Facebook</a></p>
+        <a href="{{ help.helpWhatsApp }}">
+          <ion-img
+            class="help-social-image help-whatsapp-image"
+            src="assets/icons/whatsapp.png"
+          ></ion-img>
+        </a>
+        <a href="{{ help.helpTwitter }}">
+          <ion-img
+            class="help-social-image help-twitter-image"
+            src="assets/icons/twitter.svg"
+          ></ion-img>
+        </a>
+        <a href="{{ help.helpFacebook }}">
+          <ion-img
+            class="help-social-image help-facebook-image"
+            src="assets/icons/facebook.png"
+          ></ion-img>
+        </a>
       </ion-col>
     </ion-row>
   </ion-grid>
