@@ -1,0 +1,14 @@
+{
+  "fsp": "Intersolve",
+  "apiUrl": "https://trade-acc.intersolve.nl/rest/buyerapi/v1/orders",
+  "attributes": [
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "What is your Whatsapp phonenumber, so we can send you vouchers through Whatsapp?"
+      },
+      "answerType": "tel",
+      "options": null
+    }
+  ]
+}
