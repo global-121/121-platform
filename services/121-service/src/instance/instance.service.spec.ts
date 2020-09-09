@@ -1,10 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserEntity } from '../user/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 import { InstanceService } from './instance.service';
 import { InstanceEntity } from './instance.entity';
-import { ProgramEntity } from '../programs/program/program.entity';
+import { MockType } from '../mock/mock.type';
+import { Repository } from 'typeorm';
+
+const instanceRepositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
+  (): any => ({
+    findOne: jest.fn(entity => new InstanceEntity()),
+  }),
+);
 
 describe('Instance service', (): void => {
   let service: InstanceService;
@@ -16,15 +21,7 @@ describe('Instance service', (): void => {
           InstanceService,
           {
             provide: getRepositoryToken(InstanceEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(UserEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(ProgramEntity),
-            useFactory: repositoryMockFactory,
+            useFactory: instanceRepositoryMockFactory,
           },
         ],
       }).compile();
@@ -35,5 +32,15 @@ describe('Instance service', (): void => {
 
   it('should be defined', (): void => {
     expect(service).toBeDefined();
+  });
+
+  describe.only('getInstance', (): void => {
+    it('should return an instance', async (): Promise<void> => {
+      const instance = new InstanceEntity();
+
+      const result = await service.getInstance();
+
+      expect(result).toStrictEqual(instance);
+    });
   });
 });
