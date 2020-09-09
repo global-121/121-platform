@@ -1,0 +1,6 @@
+<soap:Header>
+  <Authenticate xmlns="http://www.loyaltyinabox.com/giftcard_6_8/">
+      <UserName>0</UserName>
+      <Password>0</Password>
+  </Authenticate>
+</soap:Header>

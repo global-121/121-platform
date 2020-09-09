@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <soap:Body>
+      <IssueCard xmlns="http://www.loyaltyinabox.com/giftcard_6_8/">
+        <TransactionHeader>
+            <SequenceNumber>0</SequenceNumber>
+            <OperatorId>0</OperatorId>
+            <ClientReference>nothing</ClientReference>
+            <RefPos>1</RefPos>
+         </TransactionHeader>
+        <EAN>0</EAN>
+        <Currency>eur</Currency>
+        <Value>0</Value>
+        <Mode>IssueAndActivateCard</Mode>
+      </IssueCard>
+   </soap:Body>
+</soap:Envelope>

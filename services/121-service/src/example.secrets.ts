@@ -24,6 +24,9 @@ export const INTERSOLVE = {
   authToken: '<token>',
   productCode: '<productCode>',
   packageCode: '<packageCode>',
+  username: '<username>',
+  password: '<password>',
+  ean: '62752508',
 };
 
 export const AFRICASTALKING = {
