@@ -10,7 +10,7 @@ ion-card {
   width: 150px;
   height: 150px;
   display: inline-block;
-  background: var(--ion-color-warning);
+  background: #ffc001;
   cursor: pointer;
   overflow: visible;
   vertical-align: top;
@@ -19,7 +19,6 @@ ion-card {
     height: 85px;
     width: 85px;
     margin: auto;
-    background-color: white;
     padding: 5%;
   }
 

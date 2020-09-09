@@ -6,14 +6,13 @@ ion-card {
   width: 100px;
   height: 100px;
   display: inline-block;
-  background: var(--ion-color-warning);
+  background: #ffc001;
   cursor: pointer;
 
   ion-img {
     height: 45px;
     width: 45px;
     margin: auto;
-    background-color: white;
     padding: 5%;
   }
 
