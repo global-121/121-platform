@@ -7,6 +7,9 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./payment-error-popup.component.scss'],
 })
 export class PaymentErrorPopupComponent implements OnInit {
+  public error: string;
+  public column: string;
+  
   constructor(private modalController: ModalController) {}
 
   ngOnInit() {}

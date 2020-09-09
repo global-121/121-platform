@@ -461,7 +461,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return personRow;
   }
 
-  public async errorPopup(row, column): Promise<false> {
+  public async errorPopup(row, column) {
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentErrorPopupComponent,
       componentProps: {
@@ -471,7 +471,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     });
 
     await modal.present();
-    return false;
   }
 
   public selectAction() {
