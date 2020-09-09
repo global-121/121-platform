@@ -173,10 +173,11 @@ export class ProgramPayoutComponent implements OnInit {
             )
             .concat(
               response.nrFailed > 0
-                ? this.translate.instant(
-                    'page.program.program-payout.result-failure',
-                    { nrFailed: response.nrFailed },
-                  )
+                ? ' ' +
+                    this.translate.instant(
+                      'page.program.program-payout.result-failure',
+                      { nrFailed: response.nrFailed },
+                    )
                 : '',
             );
           this.actionResult(message, true);
