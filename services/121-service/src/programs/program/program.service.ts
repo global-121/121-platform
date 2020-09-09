@@ -751,21 +751,8 @@ export class ProgramService {
 
     return {
       status: StatusEnum.success,
-      message: ''
-        .concat(
-          nrSuccessfull > 0
-            ? "Successfully sent instructions to FSP's for " +
-                String(nrSuccessfull) +
-                " PA's."
-            : '',
-        )
-        .concat(
-          nrFailed > 0
-            ? 'Payment request failed for ' +
-                String(nrFailed) +
-                " PA's. Inspect the table below for details."
-            : '',
-        ),
+      nrSuccessfull,
+      nrFailed,
     };
   }
 

@@ -162,14 +162,24 @@ export class ProgramPayoutComponent implements OnInit {
       .then(
         (response) => {
           installment.isInProgress = false;
-          // We now get a hard-coded English response from the back-end here. To be improved.
-          this.actionResult(response.message, true);
-          // this.actionResult(
-          //   this.translate.instant(
-          //     'page.program.program-payout.payout-success',
-          //   ),
-          //   true,
-          // );
+          const message = ''
+            .concat(
+              response.nrSuccessfull > 0
+                ? this.translate.instant(
+                    'page.program.program-payout.result-success',
+                    { nrSuccessfull: response.nrSuccessfull },
+                  )
+                : '',
+            )
+            .concat(
+              response.nrFailed > 0
+                ? this.translate.instant(
+                    'page.program.program-payout.result-failure',
+                    { nrFailed: response.nrFailed },
+                  )
+                : '',
+            );
+          this.actionResult(message, true);
           this.createInstallments(this.programId);
         },
         (err) => {
