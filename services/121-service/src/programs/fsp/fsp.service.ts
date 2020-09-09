@@ -18,6 +18,7 @@ import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { FspPaymentResultDto } from './dto/fsp-payment-results.dto';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
+import { DEBUG } from '../../config';
 
 @Injectable()
 export class FspService {
@@ -158,6 +159,9 @@ export class FspService {
     programId: number,
     installment: number,
   ): Promise<any> {
+    if (DEBUG) {
+      return { status: 'Success' };
+    }
     let filteredNotifications = [];
     while (filteredNotifications.length === 0) {
       const notifications = await this.africasTalkingNotificationRepository.find(
