@@ -13,10 +13,16 @@ export class ActionEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public timestamp: Date;
 
-  @ManyToOne(type => UserEntity, user => user.actions)
+  @ManyToOne(
+    type => UserEntity,
+    user => user.actions,
+  )
   public user: UserEntity;
 
-  @ManyToOne(type => ProgramEntity, program => program.actions)
+  @ManyToOne(
+    type => ProgramEntity,
+    program => program.actions,
+  )
   public program: ProgramEntity;
 }
 

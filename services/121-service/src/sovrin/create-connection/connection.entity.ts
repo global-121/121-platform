@@ -71,7 +71,10 @@ export class ConnectionEntity {
   })
   public customData: JSON;
 
-  @OneToMany(type => TransactionEntity, transactions => transactions.connection)
+  @OneToMany(
+    type => TransactionEntity,
+    transactions => transactions.connection,
+  )
   public transactions: TransactionEntity[];
 
   @Column({

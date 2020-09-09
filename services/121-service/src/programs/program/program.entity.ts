@@ -129,16 +129,28 @@ export class ProgramEntity {
     this.updated = new Date();
   }
 
-  @ManyToOne(type => UserEntity, user => user.programs)
+  @ManyToOne(
+    type => UserEntity,
+    user => user.programs,
+  )
   public author: UserEntity;
 
-  @OneToMany(type => ActionEntity, program => program.user)
+  @OneToMany(
+    type => ActionEntity,
+    program => program.user,
+  )
   public actions: ActionEntity[];
 
-  @OneToMany(type => CustomCriterium, customCriteria => customCriteria.program)
+  @OneToMany(
+    type => CustomCriterium,
+    customCriteria => customCriteria.program,
+  )
   public customCriteria: CustomCriterium[];
 
-  @ManyToMany(type => UserEntity, aidworker => aidworker.assignedProgram)
+  @ManyToMany(
+    type => UserEntity,
+    aidworker => aidworker.assignedProgram,
+  )
   @JoinTable()
   public aidworkers: UserEntity[];
 
@@ -148,9 +160,15 @@ export class ProgramEntity {
   )
   public credentialRequests: CredentialRequestEntity[];
 
-  @OneToMany(type => CredentialEntity, credential => credential.program)
+  @OneToMany(
+    type => CredentialEntity,
+    credential => credential.program,
+  )
   public credentials: CredentialEntity[];
 
-  @OneToMany(type => TransactionEntity, transactions => transactions.program)
+  @OneToMany(
+    type => TransactionEntity,
+    transactions => transactions.program,
+  )
   public transactions: TransactionEntity[];
 }

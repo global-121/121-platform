@@ -38,6 +38,9 @@ export class StandardCriteriumEntity {
     this.updated = new Date();
   }
 
-  @ManyToOne(type => UserEntity, user => user.criteriums)
+  @ManyToOne(
+    type => UserEntity,
+    user => user.criteriums,
+  )
   public author: UserEntity;
 }

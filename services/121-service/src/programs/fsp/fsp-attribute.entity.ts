@@ -18,6 +18,9 @@ export class FspAttributeEntity {
   @Column()
   public answerType: string;
 
-  @ManyToOne(_type => FinancialServiceProviderEntity, fsp => fsp.attributes)
+  @ManyToOne(
+    _type => FinancialServiceProviderEntity,
+    fsp => fsp.attributes,
+  )
   public fsp: FinancialServiceProviderEntity;
 }
