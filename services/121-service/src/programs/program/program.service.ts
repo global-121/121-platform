@@ -410,9 +410,14 @@ export class ProgramService {
     }
 
     const notificationDone =
-      (await this.actionRepository.find({
-        where: { programId: programId, actionType: ActionType.notifyIncluded },
-      })).length > 0;
+      (
+        await this.actionRepository.find({
+          where: {
+            programId: programId,
+            actionType: ActionType.notifyIncluded,
+          },
+        })
+      ).length > 0;
 
     let inclusionStatus: InclusionStatus;
     if (connection.programsIncluded.includes(+programId) && notificationDone) {
@@ -530,10 +535,9 @@ export class ProgramService {
     }
 
     if (notificationType === NotificationType.include) {
-      const includedDids = (await this.getConnectionsWithStatus(
-        programId,
-        PaStatus.included,
-      )).map(i => i.did);
+      const includedDids = (
+        await this.getConnectionsWithStatus(programId, PaStatus.included)
+      ).map(i => i.did);
 
       for (let did of includedDids) {
         let connection = await this.connectionRepository.findOne({

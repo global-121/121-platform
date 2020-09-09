@@ -1,3 +1,5 @@
+import { IntersolveApiService } from './api/instersolve.api.service';
+import { SoapService } from './api/soap.service';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { fspName } from './financial-service-provider.entity';
 /* eslint-disable jest/no-jasmine-globals */
@@ -8,12 +10,14 @@ import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
 import { TransactionEntity } from '../program/transactions.entity';
 import { FspCallLogEntity } from './fsp-call-log.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { FspApiService } from './fsp-api.service';
 import { HttpModule } from '@nestjs/common/http';
 import { ProgramEntity } from '../program/program.entity';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
+import { AfricasTalkingApiService } from './api/africas-talking.api.service';
+import { AfricasTalkingService } from './africas-talking.service';
+import { IntersolveService } from './intersolve.service';
 
 describe('Fsp service', (): void => {
   let service: FspService;
@@ -25,7 +29,11 @@ describe('Fsp service', (): void => {
         imports: [HttpModule],
         providers: [
           FspService,
-          FspApiService,
+          AfricasTalkingApiService,
+          AfricasTalkingService,
+          SoapService,
+          IntersolveService,
+          IntersolveApiService,
           {
             provide: getRepositoryToken(TransactionEntity),
             useFactory: repositoryMockFactory,
@@ -144,7 +152,6 @@ describe('Fsp service', (): void => {
       // @ts-ignore
       expect(service.storeTransaction).toHaveBeenCalled();
     });
-
     it('should return paymentResult status error', async (): Promise<void> => {
       const statusMessageDto = {
         status: StatusEnum.error,
@@ -185,7 +192,7 @@ describe('Fsp service', (): void => {
     const fspMpesa = new FinancialServiceProviderEntity();
     fspMpesa.id = 1;
     fspMpesa.fsp = fspName.mpesa;
-    const payload = 1;
+    const paymentList = [];
     it('should return default values', async (): Promise<void> => {
       // @ts-ignore
       const result = await service.createPaymentDetails(connections, 10, 1);
@@ -200,13 +207,11 @@ describe('Fsp service', (): void => {
         Promise.resolve(fspIntersolve),
       );
       // @ts-ignore
-      spyOn(service, 'createIntersolveDetails').and.returnValue(payload);
-      // @ts-ignore
       const result = await service.createPaymentDetails(connections, amount, 1);
-      expect(result.payload).toBe(payload);
+      expect(result.paymentList.length).toBe(paymentList.length);
     });
 
-    it('should return call createIntersolveDetails and return nr of intersolve connections', async (): Promise<
+    it('should return nr of intersolve connections', async (): Promise<
       void
     > => {
       const connectionInterSolve = new ConnectionEntity();
@@ -226,8 +231,6 @@ describe('Fsp service', (): void => {
         Promise.resolve(fspIntersolve),
       );
       // @ts-ignore
-      spyOn(service, 'createIntersolveDetails').and.returnValue(payload);
-      // @ts-ignore
       const result = await service.createPaymentDetails(
         connsInstersolve,
         amount,
@@ -236,21 +239,6 @@ describe('Fsp service', (): void => {
       expect(result.connectionsForFsp.length).toBe(connsInstersolve.length);
       expect(result.paymentList[0].amount).toBe(amount);
       expect(result.paymentList[0].phone).toBe('+21');
-      // @ts-ignore
-      expect(service.createIntersolveDetails).toHaveBeenCalled();
-    });
-
-    it('should call createAfricasTalkingDetails with fspMpesa', async (): Promise<
-      void
-    > => {
-      spyOn(service, 'getFspById').and.returnValue(Promise.resolve(fspMpesa));
-
-      // @ts-ignore
-      spyOn(service, 'createAfricasTalkingDetails').and.returnValue(payload);
-      // @ts-ignore
-      await service.createPaymentDetails(connections, amount, 1);
-      // @ts-ignore
-      expect(service.createAfricasTalkingDetails).toHaveBeenCalled();
     });
   });
 });

@@ -22,10 +22,16 @@ export class FinancialServiceProviderEntity {
   @Column({ nullable: true })
   public apiUrl: string;
 
-  @OneToMany(_type => FspAttributeEntity, attributes => attributes.fsp)
+  @OneToMany(
+    _type => FspAttributeEntity,
+    attributes => attributes.fsp,
+  )
   public attributes: FspAttributeEntity[];
 
-  @OneToMany(_type => FspCallLogEntity, logs => logs.fsp)
+  @OneToMany(
+    _type => FspCallLogEntity,
+    logs => logs.fsp,
+  )
   public logs: FspCallLogEntity[];
 
   @ManyToMany(
@@ -40,7 +46,10 @@ export class FinancialServiceProviderEntity {
   )
   public transactions: TransactionEntity[];
 
-  @OneToMany(_type => ConnectionEntity, connection => connection.fsp)
+  @OneToMany(
+    _type => ConnectionEntity,
+    connection => connection.fsp,
+  )
   public connection: ConnectionEntity[];
 }
 

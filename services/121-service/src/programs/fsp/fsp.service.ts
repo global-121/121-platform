@@ -1,3 +1,7 @@
+import { AfricasTalkingService } from './africas-talking.service';
+import { IntersolveService } from './intersolve.service';
+import { IntersolveApiService } from './api/instersolve.api.service';
+import { SoapService } from './api/soap.service';
 import { StatusEnum } from './../../shared/enum/status.enum';
 import { StatusMessageDto } from '../../shared/dto/status-message.dto';
 import { Injectable } from '@nestjs/common';
@@ -7,7 +11,7 @@ import {
   FinancialServiceProviderEntity,
 } from './financial-service-provider.entity';
 import { INTERSOLVE, AFRICASTALKING } from '../../secrets';
-import { FspApiService } from './fsp-api.service';
+import { AfricasTalkingApiService } from './api/africas-talking.api.service';
 import { FspCallLogEntity } from './fsp-call-log.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -35,7 +39,11 @@ export class FspService {
     AfricasTalkingNotificationEntity
   >;
 
-  public constructor(private readonly fspApiService: FspApiService) {}
+  public constructor(
+    private readonly africasTalkingService: AfricasTalkingService,
+    private readonly intersolveService: IntersolveService,
+    private readonly intersolveApiService: IntersolveApiService,
+  ) {}
 
   public async createSendPaymentListFsp(
     fsp: FinancialServiceProviderEntity,
@@ -48,8 +56,6 @@ export class FspService {
       includedConnections,
       amount,
       fsp.id,
-      program.id,
-      installment,
     );
     let paymentResult;
     if (details.paymentList.length === 0) {
@@ -63,7 +69,12 @@ export class FspService {
       };
     }
 
-    paymentResult = await this.sendPayment(fsp, details.payload);
+    paymentResult = await this.sendPayment(
+      fsp,
+      details.paymentList,
+      program.id,
+      installment,
+    );
 
     const enrichedTransactions = await this.getEnrichedTransactions(
       paymentResult,
@@ -78,7 +89,7 @@ export class FspService {
 
     await this.logFspCall(
       fsp,
-      details.payload,
+      details.paymentList,
       paymentResult.status,
       paymentResult.message,
     );
@@ -187,8 +198,6 @@ export class FspService {
     includedConnections: ConnectionEntity[],
     amount: number,
     fspId: number,
-    programId: number,
-    installment: number,
   ): Promise<PaymentDetailsDto> {
     const fsp = await this.getFspById(fspId);
     const paymentList = [];
@@ -206,83 +215,23 @@ export class FspService {
         connectionsForFsp.push(connection);
       }
     }
-
-    let payload;
-    if (fsp.fsp === fspName.intersolve) {
-      payload = this.createIntersolveDetails(paymentList);
-    } else if (fsp.fsp === fspName.mpesa) {
-      payload = this.createAfricasTalkingDetails(
-        paymentList,
-        programId,
-        installment,
-      );
-    } else {
-      payload = paymentList;
-    }
-    return { paymentList, connectionsForFsp, payload };
-  }
-
-  private createIntersolveDetails(paymentList: any[]): object {
-    const payload = {
-      expectedDeliveryDate: '2020-04-07T12:45:21.072Z',
-      extOrderReference: '123456',
-      extInvoiceReference: '123456F',
-      fulfillmentInstructions: 'enter instructions here',
-      personalCardText: 'Thank you',
-      customInvoiceAddress: false,
-      orderLines: [],
-    };
-
-    for (let item of paymentList) {
-      const orderLine = {
-        productCode: INTERSOLVE.productCode,
-        productValue: item.amount,
-        packageCode: INTERSOLVE.packageCode,
-        amount: 1,
-        customShipToAddress: true,
-        customShipToEmail: item.email,
-      };
-      payload.orderLines.push(orderLine);
-    }
-
-    return payload;
-  }
-
-  private createAfricasTalkingDetails(
-    paymentList: any[],
-    programId: number,
-    installment: number,
-  ): object {
-    const payload = {
-      username: AFRICASTALKING.username,
-      productName: AFRICASTALKING.productName,
-      recipients: [],
-    };
-
-    for (let item of paymentList) {
-      const recipient = {
-        phoneNumber: item.phoneNumber,
-        currencyCode: AFRICASTALKING.currencyCode,
-        amount: item.amount,
-        metadata: {
-          programId: String(programId),
-          installment: String(installment),
-        },
-      };
-      payload.recipients.push(recipient);
-    }
-
-    return payload;
+    return { connectionsForFsp, paymentList };
   }
 
   public async sendPayment(
     fsp: FinancialServiceProviderEntity,
     payload,
+    programId,
+    installment,
   ): Promise<StatusMessageDto> {
     if (fsp.fsp === fspName.intersolve) {
-      return this.fspApiService.sendPaymentIntersolve(fsp.apiUrl, payload);
+      return this.intersolveService.sendPayment(payload);
     } else if (fsp.fsp === fspName.mpesa) {
-      return this.fspApiService.sendPaymentMpesa(payload);
+      return this.africasTalkingService.sendPayment(
+        payload,
+        programId,
+        installment,
+      );
     } else {
       const status = StatusEnum.error;
       // Handle other FSP's here
@@ -333,19 +282,8 @@ export class FspService {
     return fsp;
   }
 
-  public async africasTalkingValidation(
-    africasTalkingValidationData: AfricasTalkingValidationDto,
-  ): Promise<any> {
-    return {
-      status: 'Validated', // 'Validated' or 'Failed'
-    };
-  }
-
-  public async africasTalkingNotification(
-    africasTalkingNotificationData: AfricasTalkingNotificationDto,
-  ): Promise<void> {
-    await this.africasTalkingNotificationRepository.save(
-      africasTalkingNotificationData,
-    );
+  public async testSoap(): Promise<any> {
+    console.log('testSoap:');
+    await this.intersolveApiService.test();
   }
 }

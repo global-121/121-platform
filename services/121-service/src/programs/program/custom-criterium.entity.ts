@@ -41,7 +41,10 @@ export class CustomCriterium {
     this.updated = new Date();
   }
 
-  @ManyToOne(_type => ProgramEntity, program => program.customCriteria)
+  @ManyToOne(
+    _type => ProgramEntity,
+    program => program.customCriteria,
+  )
   public program: ProgramEntity;
 
   @Column({ default: false })

@@ -1,3 +1,4 @@
+import { AfricasTalkingService } from './africas-talking.service';
 import { Post, Body, Controller, Get, Param } from '@nestjs/common';
 import { FspService } from './fsp.service';
 import {
@@ -14,8 +15,13 @@ import { AfricasTalkingNotificationDto } from './dto/africas-talking-notificatio
 @Controller('fsp')
 export class FspController {
   private readonly fspService: FspService;
-  public constructor(fspService: FspService) {
+  private readonly africasTalkingService: AfricasTalkingService;
+  public constructor(
+    fspService: FspService,
+    africasTalkingService: AfricasTalkingService,
+  ) {
     this.fspService = fspService;
+    this.africasTalkingService = africasTalkingService;
   }
 
   @ApiOperation({ title: 'Get fsp' })
@@ -40,9 +46,18 @@ export class FspController {
   public async validationCallback(
     @Body() africasTalkingValidationData: AfricasTalkingValidationDto,
   ): Promise<void> {
-    return await this.fspService.africasTalkingValidation(
+    return await this.africasTalkingService.africasTalkingValidation(
       africasTalkingValidationData,
     );
+  }
+
+  @ApiOperation({
+    title: 'Test this thing',
+  })
+  @ApiResponse({ status: 200, description: 'Tested' })
+  @Post('test')
+  public async testSoap(): Promise<any> {
+    return await this.fspService.testSoap();
   }
 
   @ApiOperation({
@@ -54,7 +69,7 @@ export class FspController {
   public async notificationCallback(
     @Body() africasTalkingNotificationData: AfricasTalkingNotificationDto,
   ): Promise<void> {
-    await this.fspService.africasTalkingNotification(
+    await this.africasTalkingService.africasTalkingNotification(
       africasTalkingNotificationData,
     );
   }

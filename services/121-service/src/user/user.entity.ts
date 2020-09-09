@@ -41,15 +41,27 @@ export class UserEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created: Date;
 
-  @OneToMany(type => ProgramEntity, program => program.author)
+  @OneToMany(
+    type => ProgramEntity,
+    program => program.author,
+  )
   public programs: ProgramEntity[];
 
-  @OneToMany(type => ActionEntity, program => program.user)
+  @OneToMany(
+    type => ActionEntity,
+    program => program.user,
+  )
   public actions: ActionEntity[];
 
-  @OneToMany(type => StandardCriteriumEntity, criterium => criterium.author)
+  @OneToMany(
+    type => StandardCriteriumEntity,
+    criterium => criterium.author,
+  )
   public criteriums: StandardCriteriumEntity[];
 
-  @ManyToMany(type => ProgramEntity, program => program.aidworkers)
+  @ManyToMany(
+    type => ProgramEntity,
+    program => program.aidworkers,
+  )
   public assignedProgram: ProgramEntity[];
 }

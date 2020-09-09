@@ -17,7 +17,8 @@
     "seed:publish": "npx ts-node src/scripts seed-publish",
     "seed:pilot": "npx ts-node src/scripts seed-pilot",
     "test": "jest --config=jest.json",
-    "test:watch": "npm test -- --watchAll",
+    "test:watch": "npm test -- --watch",
+    "test:watchall": "npm test -- --watchAll",
     "test:coverage": "npm test -- --coverage --coverageDirectory=coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "migration:generate": "npm run typeorm migration:generate -- -n",
@@ -40,6 +41,7 @@
     "class-validator": "^0.9.1",
     "crypto": "^1.0.1",
     "crypto-js": "^3.1.9-1",
+    "easy-soap-request": "^3.3.3",
     "jsonwebtoken": "^8.1.1",
     "mysql": "^2.15.0",
     "passport": "^0.4.0",
@@ -48,10 +50,12 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.4.0",
     "slug": "^1.0.0",
+    "soap": "^0.33.0",
     "tsc-watch": "^2.1.2",
     "twilio": "^3.36.0",
     "typeorm": "^0.2.15",
-    "typescript": "^3.3.1"
+    "typescript": "^3.3.1",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@types/jest": "^24.0.13",
