@@ -19,7 +19,7 @@ export class AfricasTalkingApiService {
     await payments
       .mobileB2C(payload)
       .then((response: any) => {
-        console.log('response: ', response);
+        console.log('response africastalking: ', response);
         result = { response: response };
       })
       .catch((error: any) => {
@@ -28,12 +28,15 @@ export class AfricasTalkingApiService {
         result = { error: error };
       });
 
-    return !result.response.errorMessage &&
-      !result.response.entries[0].errorMessage
-      ? { status: StatusEnum.succes, message: result.response }
-      : {
-          status: StatusEnum.error,
-          message: { error: result.response },
-        };
+    if (result.error) {
+      return { status: StatusEnum.error, message: { error: result.error } };
+    } else if (result.response.errorMessage) {
+      return {
+        status: StatusEnum.error,
+        message: { error: result.response.errorMessage },
+      };
+    } else {
+      return { status: StatusEnum.success, message: result.response };
+    }
   }
 }

@@ -5,7 +5,6 @@ Feature: Manage payment installments
     Given a logged-in "project-officer" user
     Given the user views the page "program-details"
 
-
   Scenario: View payment installments of a program
     Given a number of "X" installments in the program
     Given the installment frequency is "month"
@@ -29,16 +28,25 @@ Feature: Manage payment installments
     And the button "OK" is shown
     And the button "Cancel" is shown
 
-  Scenario: Send payment instructions
+  Scenario: Send payment instructions with at least 1 succesfull transaction
     Given the installment frequency is "month"
     Given the user clicks the button "start payout now"
     Given the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
     Then the payment instructions list is sent to the Financial Service Provider
-    And the message "Payout successful" is shown
+    And the message "Payout successfull for X PA's and failed for Y (if Y>0) PA's" is shown
     And the processed installment has changed to "closed" with the date of today and has disabled buttons
     And the next installment now has a date 1 "month" from today and has enabled fields
     And after page refresh the "manage people affected" component has updated values for "payment" columns
+    And the "payment" column has the transaction date if successfull
+    And the "payment" column has 'Failed' + an error message if unsuccesfull
+
+  Scenario: Send payment instructions with 0 succesfull transactions
+    Given payment instructions are sent to the Financial Service Provider
+    Then the message "Payout failed for all PA's" is shown
+    And the installment is not processed, so the payout overview does not "move" to the next installment
+    And after page refresh the "manage people affected" component has updated values for "payment" columns
+    And the "payment" column has 'Failed' + an error message if unsuccesfull
 
   Scenario: Send payment instructions with changed transfer value
     Given the user changes the Transfer value to "20"
@@ -47,7 +55,7 @@ Feature: Manage payment installments
     When the user clicks the button "OK"
     Then the payment instructions list is sent to the Financial Service Provider
     And the payment instructions contain the transfer value "20"
-    And the message "Payout successful" is shown
+    And the message is shown according to the success of the transactions
 
   Scenario: Cancel send payment instructions
     Given the user clicks the button "start payout now"
@@ -60,7 +68,7 @@ Feature: Manage payment installments
     Given the user clicks the button "start payout now"
     Given the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
-    Then the message "Payout unsuccessful. Are there enough funds?" is shown
+    Then the message "Failed for whole FSP. FSP not integrated (yet)." is shown
 
   Scenario: Not enough funds available
     Given available funds "X"

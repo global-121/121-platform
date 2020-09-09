@@ -142,6 +142,7 @@ export class ProgramService {
     let program = new ProgramEntity();
     program.location = programData.location;
     program.ngo = programData.ngo;
+    program.contactDetails = programData.contactDetails;
     program.title = programData.title;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
@@ -721,7 +722,8 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    let count = 0;
+    let nrConnectionsFsp = 0,
+      nrSuccessfull = 0;
     const failedFsps = [];
     let result: FspPaymentResultDto;
     for (let fsp of program.financialServiceProviders) {
@@ -732,26 +734,39 @@ export class ProgramService {
         program,
         installment,
       );
-      count += result.nrConnectionsFsp;
+      nrConnectionsFsp += result.nrConnectionsFsp;
+      nrSuccessfull += result.nrSuccessfull;
 
       if (result.paymentResult.status === StatusEnum.error) {
         failedFsps.push(fsp.fsp);
       }
     }
-    if (count === 0) {
+    const nrFailed = nrConnectionsFsp - nrSuccessfull;
+
+    if (nrConnectionsFsp === 0) {
       const errors =
         'No included connections with known FSP available. Payment aborted.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    if (failedFsps.length > 0) {
-      const errors =
-        "Payment failed for FSP's: " +
-        failedFsps.join(', ') +
-        ". Payments for other FSP's (if any) were processed correctly.";
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
 
-    return { status: StatusEnum.succes, message: 'Sent instructions to FSP' };
+    return {
+      status: StatusEnum.success,
+      message: ''
+        .concat(
+          nrSuccessfull > 0
+            ? "Successfully sent instructions to FSP's for " +
+                String(nrSuccessfull) +
+                " PA's."
+            : '',
+        )
+        .concat(
+          nrFailed > 0
+            ? 'Payment request failed for ' +
+                String(nrFailed) +
+                " PA's. Inspect the table below for details."
+            : '',
+        ),
+    };
   }
 
   private getPaStatus(connection, programId: number): PaStatus {
@@ -825,6 +840,7 @@ export class ProgramService {
       .select('transaction.amount, transaction.installment')
       .addSelect('MIN(transaction.created)', 'installmentDate')
       .where('transaction.program.id = :programId', { programId: programId })
+      .andWhere("transaction.status = 'success'")
       .groupBy('transaction.amount, transaction.installment')
       .getRawMany();
     return installments;
@@ -833,9 +849,16 @@ export class ProgramService {
   public async getTransactions(programId: number): Promise<any> {
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select(['transaction.created AS installmentDate', 'installment', 'did'])
+      .select([
+        'transaction.created AS installmentDate',
+        'installment',
+        'did',
+        'status',
+        'transaction.errorMessage as error',
+      ])
       .leftJoin('transaction.connection', 'c')
       .where('transaction.program.id = :programId', { programId: programId })
+      .orderBy('transaction.created', 'DESC')
       .getRawMany();
     return transactions;
   }

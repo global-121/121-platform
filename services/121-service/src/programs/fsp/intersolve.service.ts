@@ -15,7 +15,7 @@ export class IntersolveService {
       for (let paymentInfo of payload) {
         await this.sendIndividualPayment(paymentInfo);
       }
-      return { status: StatusEnum.succes, message: ' ' };
+      return { status: StatusEnum.success, message: ' ' };
     } catch (e) {
       console.log('e: ', e);
       return { status: StatusEnum.error, message: ' ' };

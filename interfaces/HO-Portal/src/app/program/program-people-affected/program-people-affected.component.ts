@@ -1,6 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
@@ -9,6 +9,7 @@ import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
+import { PaymentErrorPopupComponent } from '../payment-error-popup/payment-error-popup.component';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -34,7 +35,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public columns: any[] = [];
   private columnsAvailable: any[] = [];
   private paymentColumnTemplate: any = {};
-  private paymentColumns: any[] = [];
+  public paymentColumns: any[] = [];
   private pastTransactions: any[] = [];
 
   public allPeopleAffected: PersonRow[] = [];
@@ -112,6 +113,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     public translate: TranslateService,
     private bulkActionService: BulkActionsService,
     private alertController: AlertController,
+    public modalController: ModalController,
   ) {
     this.locale = this.translate.getBrowserCultureLang();
 
@@ -325,9 +327,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       column.name += p + 1;
       this.paymentColumns.push(column);
     }
-    for (const column of this.paymentColumns) {
-      this.columns.push(column);
-    }
   }
 
   private updateBulkActions() {
@@ -440,24 +439,38 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private fillPaymentColumns(personRow: PersonRow): PersonRow {
     this.paymentColumns.map((_, index) => {
       const transactionsThisInstallment = this.pastTransactions.filter(
-        (i) => i.installment === index + 1,
-      );
-      const didsThisInstallments = transactionsThisInstallment.map(
-        (t) => t.did,
+        (i) => i.installment === index + 1 && i.did === personRow.did,
       );
 
-      if (
-        transactionsThisInstallment &&
-        didsThisInstallments.includes(personRow.did)
-      ) {
-        personRow['payment' + (index + 1)] = formatDate(
-          transactionsThisInstallment[0].installmentdate,
-          this.dateFormat,
-          this.locale,
-        );
+      if (transactionsThisInstallment.length) {
+        const transaction = transactionsThisInstallment[0];
+        if (transaction.status === 'success') {
+          personRow['payment' + (index + 1)] = formatDate(
+            transaction.installmentdate,
+            this.dateFormat,
+            this.locale,
+          );
+        } else {
+          (personRow['payment' + (index + 1)] = this.translate.instant(
+            'page.program.program-people-affected.failed',
+          )),
+            (personRow['payment' + (index + 1) + '-error'] = transaction.error);
+        }
       }
     });
     return personRow;
+  }
+
+  public async errorPopup(row, column) {
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: PaymentErrorPopupComponent,
+      componentProps: {
+        column: column.name,
+        error: row[column.prop + '-error'],
+      },
+    });
+
+    await modal.present();
   }
 
   public selectAction() {

@@ -102,6 +102,7 @@
         "location": "Location",
         "title": "Title",
         "ngo": "NGO",
+        "contactDetails": "Contact details",
         "startDate": "Start date",
         "endDate": "End date",
         "currency": "Currency",
@@ -129,7 +130,7 @@
       },
       "program-payout": {
         "section-title": "Manage Payments",
-        "installment-nr": "Installment #",
+        "installment-nr": "Payment #",
         "closed": "Closed",
         "open": "Open",
         "start-payout": "Start payout now",
@@ -176,7 +177,9 @@
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
-        "submit-warning-people-affected": "People Affected"
+        "submit-warning-people-affected": "People Affected",
+        "transaction-failed": "Transaction failed",
+        "failed": "Failed"
       },
       "program-modal": {
         "pageTitle": "Program JSON"

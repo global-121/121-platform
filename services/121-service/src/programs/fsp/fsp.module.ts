@@ -12,6 +12,7 @@ import { FspCallLogEntity } from './fsp-call-log.entity';
 import { SoapService } from './api/soap.service';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { IntersolveService } from './intersolve.service';
+import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { IntersolveService } from './intersolve.service';
       FinancialServiceProviderEntity,
       TransactionEntity,
       FspCallLogEntity,
+      AfricasTalkingNotificationEntity,
     ]),
   ],
   providers: [

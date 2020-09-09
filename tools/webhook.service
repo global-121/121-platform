@@ -5,11 +5,11 @@ After=network.target
 [Service]
 Environment=NODE_ENV=production
 Environment=NODE_PORT=3099
-Environment=VERSION=v0.1.
 Environment=GLOBAL_121_REPO=/home/121-platform/
-Environment=GITHUB_WEBHOOK_SECRET=secret
+Environment=GLOBAL_121_WEB_ROOT=/var/www/
+Environment=GITHUB_WEBHOOK_SECRET=<secret>
 Type=simple
-User=global121production
+User=<user>
 ExecStart=/usr/bin/nodejs /home/121-platform/tools/webhook.js
 Restart=on-failure
 

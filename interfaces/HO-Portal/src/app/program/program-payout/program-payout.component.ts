@@ -160,20 +160,22 @@ export class ProgramPayoutComponent implements OnInit {
     this.programsService
       .submitPayout(+this.programId, installment.id, +installment.amount)
       .then(
-        () => {
+        (response) => {
           installment.isInProgress = false;
-          this.actionResult(
-            this.translate.instant(
-              'page.program.program-payout.payout-success',
-            ),
-            true,
-          );
+          // We now get a hard-coded English response from the back-end here. To be improved.
+          this.actionResult(response.message, true);
+          // this.actionResult(
+          //   this.translate.instant(
+          //     'page.program.program-payout.payout-success',
+          //   ),
+          //   true,
+          // );
           this.createInstallments(this.programId);
         },
         (err) => {
           console.log('err: ', err);
           if (err.error.errors) {
-            this.actionResult(err.error.errors, true);
+            this.actionResult(err.error.errors);
           }
           this.cancelPayout(installment);
         },

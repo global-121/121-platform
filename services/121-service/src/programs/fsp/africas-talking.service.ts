@@ -1,22 +1,42 @@
 import { StatusMessageDto } from './../../shared/dto/status-message.dto';
-import { AfricasTalkingApiService } from './api/africas-talking.api.service';
 import { Injectable } from '@nestjs/common';
-import { INTERSOLVE, AFRICASTALKING } from '../../secrets';
+import { AFRICASTALKING } from '../../secrets';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
+import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
+import { Repository } from 'typeorm';
+import { AfricasTalkingApiService } from './api/africas-talking.api.service';
 
 @Injectable()
 export class AfricasTalkingService {
+  @InjectRepository(AfricasTalkingNotificationEntity)
+  public africasTalkingNotificationRepository: Repository<
+    AfricasTalkingNotificationEntity
+  >;
   public constructor(
-    private readonly AfricasTalkingApiService: AfricasTalkingApiService,
+    private readonly africasTalkingApiService: AfricasTalkingApiService,
   ) {}
 
-  public async sendPayment(paymentList: any[]): Promise<StatusMessageDto> {
+  public async sendPayment(
+    paymentList: any[],
+    programId,
+    installment,
+  ): Promise<StatusMessageDto> {
     console.log('paymentList: ', paymentList);
-    const payload = this.createAfricasTalkingDetails(paymentList);
-    return await this.AfricasTalkingApiService.sendPaymentMpesa(payload);
+    const payload = this.createAfricasTalkingDetails(
+      paymentList,
+      programId,
+      installment,
+    );
+    return await this.africasTalkingApiService.sendPaymentMpesa(payload);
   }
 
-  public createAfricasTalkingDetails(paymentList: any[]): object {
+  public createAfricasTalkingDetails(
+    paymentList: any[],
+    programId: number,
+    installment: number,
+  ): object {
     const payload = {
       username: AFRICASTALKING.username,
       productName: AFRICASTALKING.productName,
@@ -25,10 +45,13 @@ export class AfricasTalkingService {
 
     for (let item of paymentList) {
       const recipient = {
-        phoneNumber: item.phoneNumber, // '+254711123466',
+        phoneNumber: item.phoneNumber,
         currencyCode: AFRICASTALKING.currencyCode,
         amount: item.amount,
-        metadata: {},
+        metadata: {
+          programId: String(programId),
+          installment: String(installment),
+        },
       };
       payload.recipients.push(recipient);
     }
@@ -42,5 +65,13 @@ export class AfricasTalkingService {
     return {
       status: 'Validated', // 'Validated' or 'Failed'
     };
+  }
+
+  public async africasTalkingNotification(
+    africasTalkingNotificationData: AfricasTalkingNotificationDto,
+  ): Promise<void> {
+    await this.africasTalkingNotificationRepository.save(
+      africasTalkingNotificationData,
+    );
   }
 }

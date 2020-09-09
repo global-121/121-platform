@@ -1,3 +1,5 @@
+import { SoapService } from './../../programs/fsp/api/soap.service';
+import { AfricasTalkingService } from './../../programs/fsp/africas-talking.service';
 import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
@@ -24,7 +26,10 @@ import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-ser
 import { ActionEntity } from '../../actions/action.entity';
 import { FspCallLogEntity } from '../../programs/fsp/fsp-call-log.entity';
 import { FspService } from '../../programs/fsp/fsp.service';
-import { AfricasTalkingApiService } from '../../programs/fsp/fsp-api.service';
+import { AfricasTalkingNotificationEntity } from '../../programs/fsp/africastalking-notification.entity';
+import { AfricasTalkingApiService } from '../../programs/fsp/api/africas-talking.api.service';
+import { IntersolveService } from '../../programs/fsp/intersolve.service';
+import { IntersolveApiService } from '../../programs/fsp/api/instersolve.api.service';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -43,6 +48,10 @@ describe('CredentialService', (): void => {
           FundingService,
           FspService,
           AfricasTalkingApiService,
+          AfricasTalkingService,
+          IntersolveService,
+          IntersolveApiService,
+          SoapService,
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
             useFactory: repositoryMockFactory,
@@ -101,6 +110,10 @@ describe('CredentialService', (): void => {
           },
           {
             provide: getRepositoryToken(ActionEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(AfricasTalkingNotificationEntity),
             useFactory: repositoryMockFactory,
           },
         ],

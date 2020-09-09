@@ -32,6 +32,7 @@ export class IntersolveApiService {
     );
 
     const responseBody = await this.soapService.post(payload);
+    console.log('responseBody intersolve: ', responseBody);
     const result = {
       cardId: responseBody.IssueCardResponse.CardId._text,
       pin: parseInt(responseBody.IssueCardResponse.PIN._text),
