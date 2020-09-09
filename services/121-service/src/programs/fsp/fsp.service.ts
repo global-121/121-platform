@@ -130,9 +130,9 @@ export class FspService {
               : StatusEnum.success;
 
           enrichedTransaction.errorMessage = transaction.errorMessage
-            ? 'Failed: ' + transaction.errorMessage
+            ? transaction.errorMessage
             : notification.status === 'Failed'
-            ? 'Failed: ' + notification.description
+            ? notification.description
             : '';
 
           enrichedTransactions.push(enrichedTransaction);
