@@ -102,6 +102,7 @@
         "location": "Location",
         "title": "Title",
         "ngo": "NGO",
+        "contactDetails": "Contact details",
         "startDate": "Start date",
         "endDate": "End date",
         "currency": "Currency",
@@ -129,7 +130,7 @@
       },
       "program-payout": {
         "section-title": "Manage Payments",
-        "installment-nr": "Installment #",
+        "installment-nr": "Payment #",
         "closed": "Closed",
         "open": "Open",
         "start-payout": "Start payout now",

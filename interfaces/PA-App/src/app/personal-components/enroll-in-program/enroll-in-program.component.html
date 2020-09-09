@@ -1,11 +1,29 @@
 <section>
-  <dialogue-turn [actor]="programDetails?.ngo"
-                 *ngIf="programDetails?.title"
-                 [isSpoken]="programDetails?.title"
+  <dialogue-turn
+    [actor]="programDetails?.ngo"
+    *ngIf="programDetails?.ngo"
+    [isSpoken]="programDetails?.ngo"
   >
     <p>
       <play-text-audio key="personal.enroll-in-program.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ programTitle:'<strong>'+programDetails?.title+'</strong>', ngo:'<strong>'+programDetails?.ngo+'</strong>' }"></span>
+      <span [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ ngo:'<strong>'+programDetails?.ngo+'</strong>' }"></span>
+    </p>
+    <p
+      *ngIf="programDetails?.contactDetails"
+      [innerHTML]="programDetails.contactDetails"
+      class="enroll-in-program--contact-details"
+    ></p>
+
+  </dialogue-turn>
+  <dialogue-turn
+    [actor]="programDetails?.ngo"
+    *ngIf="programDetails?.ngo"
+    [isSpoken]="programDetails?.ngo"
+    isConnected="true"
+  >
+    <p>
+      <play-text-audio key="personal.enroll-in-program.introduction-information" class="ion-float-start ion-margin-end"></play-text-audio>
+      <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate:{ ngo:'<strong>'+programDetails?.ngo+'</strong>' }"></span>
     </p>
 
     <more-info-button buttonKey="personal.enroll-in-program.more-info-questions"
@@ -31,11 +49,6 @@
       <play-text-audio key="personal.enroll-in-program.please-confirm" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.enroll-in-program.please-confirm'|translate }}
     </p>
-
-    <more-info-button buttonKey="personal.enroll-in-program.more-info-share"
-                      messageKey="personal.enroll-in-program.info-message-share"
-                      headingKey="personal.enroll-in-program.more-info-share"
-    ></more-info-button>
   </dialogue-turn>
   <dialogue-turn actor="self"
                  *ngIf="hasAnswered"

@@ -4,6 +4,9 @@
   "state": "design",
   "location": "Nederland",
   "ngo": "NLRC",
+  "contactDetails": {
+    "en": "Contact us via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/+31600000000'>+31 6 00 00 00 00</a>"
+  },
   "countryId": 1,
   "title": {
     "en": "Pilot - NL"

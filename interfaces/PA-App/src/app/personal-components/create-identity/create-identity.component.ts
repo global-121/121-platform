@@ -20,6 +20,8 @@ export class CreateIdentityComponent extends PersonalComponent {
   public useLocalStorage: boolean;
   public passwordMinLength = 4;
 
+  public userConsent = false;
+
   public initialInput = false;
   public usernameSubmitted = false;
   public username: string;
@@ -54,6 +56,14 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.confirm = this.data.password;
     this.usernameSubmitted = true;
     this.initialInput = true;
+  }
+
+  public consent(consent: boolean) {
+    if (!consent) {
+      window.location.reload();
+      return;
+    }
+    this.userConsent = consent;
   }
 
   public async submitCredentials(

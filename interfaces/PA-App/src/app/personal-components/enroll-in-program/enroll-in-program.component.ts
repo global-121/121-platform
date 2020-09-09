@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import {
   Program,
   ProgramAttribute,
@@ -24,6 +24,7 @@ import { PersonalComponents } from '../personal-components.enum';
   selector: 'app-enroll-in-program',
   templateUrl: './enroll-in-program.component.html',
   styleUrls: ['./enroll-in-program.component.scss'],
+  encapsulation: ViewEncapsulation.None, // Disabled because we need to style inserted HTML from the database
 })
 export class EnrollInProgramComponent extends PersonalComponent {
   @Input()
@@ -101,8 +102,12 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   private buildDetails(response: Program) {
     const programDetails = [];
-    const details = ['ngo', 'title', 'description'];
+    const details = ['ngo', 'title', 'description', 'contactDetails'];
     for (const detail of details) {
+      // Skip optional, non-existing program-properties
+      if (!response[detail]) {
+        continue;
+      }
       programDetails[detail] = this.translatableString.get(response[detail]);
     }
 

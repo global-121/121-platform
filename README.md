@@ -29,14 +29,16 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 To set up a local development-environment:
 
 ### On Windows
+
 #### Install dependencies
-- Install Node.js (https://nodejs.org/en/download/)  
-  To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'Node version manager'. 
+- Install Node.js (<https://nodejs.org/en/download/>)  
+  To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'Node version manager'.  
   Make sure to install the version specified in the [`.node-version`](.node-version)-file
-- Install Git (https://git-scm.com/download/win)
-- Install Docker (https://docs.docker.com/docker-for-windows/install/)
+- Install Git (<https://git-scm.com/download/win>)
+- Install Docker (<https://docs.docker.com/docker-for-windows/install/>)
 
 ### On Linux
+
 #### Install dependencies
 - Install Node.js  
   To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
@@ -49,21 +51,21 @@ To set up a local development-environment:
       sudo apt install git-all
 
 - Install Docker  
-  On linux distributions we need to install `docker engine` and `docker-compose` respectively. On other platforms they are available through Docker Desktop. Read more at: https://docs.docker.com/engine/install/
+  On linux distributions we need to install `docker engine` and `docker-compose` respectively. On other platforms they are available through Docker Desktop. Read more at: <https://docs.docker.com/engine/install/>
 
-`Docker compose` relies on `docker engine`, so in order to get started we must install `docker-engine` first. (Read more at: https://docs.docker.com/engine/install/ubuntu/). There are various ways of installing `docker engine` (repository, packages or automated scripts). The official recommended way doing that is through setting up a repository.
+  `Docker compose` relies on `docker engine`, so in order to get started we must install `docker-engine` first. (Read more at: <https://docs.docker.com/engine/install/ubuntu/>). There are various ways of installing `docker engine` (repository, packages or automated scripts). The official recommended way doing that is through setting up a repository.
 
   - First off, uninstall any old version of docker-engine.
 
         sudo apt-get remove docker docker-engine docker.io containerd runc
 
-  - Choose an installation method from the provided list at https://docs.docker.com/engine/install/ubuntu/#installation-methods and install `docker-engine`
+  - Choose an installation method from the provided list at <https://docs.docker.com/engine/install/ubuntu/#installation-methods> and install `docker-engine`
   - Test your docker installation
 
         sudo docker run hello-world
 
   - Now install docker-compose  
-    Can be done by following the steps at: https://docs.docker.com/compose/install/
+    Can be done by following the steps at: <https://docs.docker.com/compose/install/>
 
         sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         sudo chmod +x /usr/local/bin/docker-compose
@@ -72,13 +74,14 @@ To set up a local development-environment:
 
         docker-compose --version
 
-  - Additionally, we need to install `docker-machine` as well, see: https://docs.docker.com/machine/install-machine/
+  - Additionally, we need to install `docker-machine` as well, see: <https://docs.docker.com/machine/install-machine/>
   
         base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo mv /tmp/docker-machine /usr/local/bin/docker-machine &&   chmod +x /usr/local/bin/docker-machine
 
   - You are set!
 
 ### On macOS
+
 #### Install dependencies
 - Install Node.js  
   To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
@@ -87,9 +90,9 @@ To set up a local development-environment:
       nvm install && nvm install-latest-npm
 
 - Install Git  
-  https://git-scm.com/book/en/v2/Getting-Started-Installing-Git > Installing on macOS (section)
-- Install Docker (https://docs.docker.com/docker-for-mac/install/)  
-  Install docker-machine, see: https://docs.docker.com/machine/install-machine/
+  <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git> > Installing on macOS (section)
+- Install Docker (<https://docs.docker.com/docker-for-mac/install/>)  
+  Install docker-machine, see: <https://docs.docker.com/machine/install-machine/>
 
         base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
 
