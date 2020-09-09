@@ -18,6 +18,7 @@ import { LookupModule } from './notifications/lookup/lookup.module';
 import { ScriptsModule } from './scripts/scripts.module';
 import { ActionModule } from './actions/action.module';
 import { FspModule } from './programs/fsp/fsp.module';
+import { InstanceModule } from './instance/instance.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { FspModule } from './programs/fsp/fsp.module';
     ScriptsModule,
     ActionModule,
     FspModule,
+    InstanceModule,
   ],
   controllers: [AppController],
   providers: [],

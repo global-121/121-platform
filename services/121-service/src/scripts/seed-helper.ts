@@ -5,6 +5,7 @@ import { FinancialServiceProviderEntity } from './../programs/fsp/financial-serv
 import { UserEntity } from '../user/user.entity';
 import { CustomCriterium } from '../programs/program/custom-criterium.entity';
 import { FspAttributeEntity } from './../programs/fsp/fsp-attribute.entity';
+import { InstanceEntity } from '../instance/instance.entity';
 import crypto from 'crypto';
 
 export class SeedHelper {
@@ -21,6 +22,17 @@ export class SeedHelper {
         status: 'active',
       },
     ]);
+  }
+
+  public async addInstance(
+    exampleInstance: Record<string, any>,
+  ): Promise<void> {
+    const instanceRepository = this.connection.getRepository(InstanceEntity);
+
+    const instanceDump = JSON.stringify(exampleInstance);
+    const instance = JSON.parse(instanceDump);
+
+    await instanceRepository.save(instance);
   }
 
   public async addPrograms(
@@ -96,11 +108,11 @@ export class SeedHelper {
   ): Promise<void> {
     const userRepository = this.connection.getRepository(UserEntity);
     const programRepository = this.connection.getRepository(ProgramEntity);
-    const program_d = await programRepository.findOne(programId); // Assign programId=1 ...
-    const user_d = await userRepository.findOne(userId, {
+    const program = await programRepository.findOne(programId); // Assign programId=1 ...
+    const user = await userRepository.findOne(userId, {
       relations: ['assignedProgram'],
     });
-    user_d.assignedProgram.push(program_d);
-    await userRepository.save(user_d);
+    user.assignedProgram.push(program);
+    await userRepository.save(user);
   }
 }

@@ -1,0 +1,11 @@
+{
+  "name": "NLRC",
+  "displayName": {
+    "en": "Netherlands Red Cross",
+    "nl": "Rode Kruis"
+  },
+  "dataPolicy": {
+    "en": "[long text of data-policy]",
+    "nl": "[lange tekst van de data richtlijnen]"
+  }
+}

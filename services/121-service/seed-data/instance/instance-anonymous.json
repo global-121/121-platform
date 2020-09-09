@@ -1,0 +1,9 @@
+{
+  "name": "NGO A",
+  "displayName": {
+    "en": "NGO A"
+  },
+  "dataPolicy": {
+    "en": "[long text of data-policy]"
+  }
+}

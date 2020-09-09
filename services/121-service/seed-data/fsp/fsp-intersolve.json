@@ -5,7 +5,7 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "What is your Whatsapp phonenumber, so we can send you vouchers through Whatsapp?"
+        "en": "What is your WhatsApp phonenumber, so we can send you vouchers through WhatsApp?"
       },
       "answerType": "tel",
       "options": null

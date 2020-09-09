@@ -14,7 +14,7 @@ RUN apt-get update && \
   software-properties-common \
   apt-transport-https
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get install -y nodejs
 
 RUN mkdir --parents /home/121/services/PA-accounts-service/
