@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.7.2...master)
 
 ### Added
-- 2020-09-09: Added INTERSOLVE.username, INTERSOLVE.password, INTERSOLVE.ean in `121-service/src/secrets.ts` 
+- 2020-09-09: Added INTERSOLVE.username, INTERSOLVE.password, INTERSOLVE.ean, INTERSOLVE.url in `121-service/src/secrets.ts` 
 
 ### Added
 - 2020-08-19: Added `GLOBAL_121_REF_DIR` to `tools/.env`
