@@ -24,7 +24,7 @@ export class SpreadsheetService {
 
   convertCategoryRowToCategoryObject(categoryRow): Category {
     return {
-      categoryID: parseInt(categoryRow[0]),
+      categoryID: Number(categoryRow[0]),
       categoryName: {
         en: categoryRow[1],
       },
@@ -37,7 +37,9 @@ export class SpreadsheetService {
 
   getCategories(): Promise<Category[]> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values/${this.categorySheetName}!${this.spreadsheetRange}?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
+        `/${this.categorySheetName}!${this.spreadsheetRange}` +
+        `?key=${this.spreadsheetKey}`,
     )
       .then((response) => response.json())
       .then((response) => {
@@ -50,7 +52,7 @@ export class SpreadsheetService {
 
   convertSubCategoryRowToSubCategoryObject(subCategoryRow): SubCategory {
     return {
-      subCategoryID: parseInt(subCategoryRow[0]),
+      subCategoryID: Number(subCategoryRow[0]),
       subCategoryName: {
         en: subCategoryRow[1],
       },
@@ -58,13 +60,15 @@ export class SpreadsheetService {
       subCategoryDescription: {
         en: subCategoryRow[3],
       },
-      categoryID: parseInt(subCategoryRow[4]),
+      categoryID: Number(subCategoryRow[4]),
     };
   }
 
   getSubCategories(): Promise<SubCategory[]> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values/${this.subCategorySheetName}!${this.spreadsheetRange}?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
+        `/${this.subCategorySheetName}!${this.spreadsheetRange}` +
+        `?key=${this.spreadsheetKey}`,
     )
       .then((response) => response.json())
       .then((response) => {
@@ -79,7 +83,7 @@ export class SpreadsheetService {
 
   convertOfferRowToOfferObject(offerRow): Offer {
     return {
-      offerID: parseInt(offerRow[3]), // Offer ID
+      offerID: Number(offerRow[3]), // Offer ID
       offerName: {
         en: offerRow[5], // Name
       },
@@ -97,14 +101,16 @@ export class SpreadsheetService {
       offerForWhom: offerRow[15], // For whom?
       offerCapacity: offerRow[16], // Capacity?
       offerVisible: offerRow[4] === 'Show', // Visible?
-      subCategoryID: parseInt(offerRow[1]), // Sub-Category ID
-      categoryID: parseInt(offerRow[2]), // Category ID
+      subCategoryID: Number(offerRow[1]), // Sub-Category ID
+      categoryID: Number(offerRow[2]), // Category ID
     };
   }
 
   getOffers(): Promise<Offer[]> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values/${this.offerSheetName}!${this.spreadsheetRange}?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
+        `/${this.offerSheetName}!${this.spreadsheetRange}` +
+        `?key=${this.spreadsheetKey}`,
     )
       .then((response) => response.json())
       .then((response) => {
@@ -136,7 +142,9 @@ export class SpreadsheetService {
 
   getHelp(): Promise<Help> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values/${this.helpSheetName}!${this.helpSheetRange}?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
+        `/${this.helpSheetName}!${this.helpSheetRange}` +
+        `?key=${this.spreadsheetKey}`,
     )
       .then((response) => response.json())
       .then((response) => {
