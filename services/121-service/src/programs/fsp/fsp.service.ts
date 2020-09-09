@@ -159,6 +159,8 @@ export class FspService {
     programId: number,
     installment: number,
   ): Promise<any> {
+    // Don't listen to notification locally, because callback URL is not set
+    // If you want to work on this piece of code, disable this DEBUG-workaround
     if (DEBUG) {
       return { status: 'Success' };
     }
