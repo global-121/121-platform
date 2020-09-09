@@ -24,7 +24,7 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { ActionEntity } from '../../actions/action.entity';
 import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
 import { FspService } from '../fsp/fsp.service';
-import { FspApiService } from '../fsp/fsp-api.service';
+import { AfricasTalkingApiService } from '../fsp/fsp-api.service';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -43,7 +43,7 @@ describe('Program service', (): void => {
           ProofService,
           FundingService,
           FspService,
-          FspApiService,
+          AfricasTalkingApiService,
           {
             provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,

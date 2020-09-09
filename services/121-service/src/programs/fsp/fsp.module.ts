@@ -1,13 +1,17 @@
+import { AfricasTalkingService } from './africas-talking.service';
 import { Module, HttpModule } from '@nestjs/common';
 import { FspService } from './fsp.service';
 import { FspController } from './fsp.controller';
-import { FspApiService } from './fsp-api.service';
+import { AfricasTalkingApiService } from './api/africas-talking.api.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProgramEntity } from '../program/program.entity';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { TransactionEntity } from '../program/transactions.entity';
 import { FspCallLogEntity } from './fsp-call-log.entity';
+import { SoapService } from './api/soap.service';
+import { IntersolveApiService } from './api/instersolve.api.service';
+import { IntersolveService } from './intersolve.service';
 
 @Module({
   imports: [
@@ -20,8 +24,22 @@ import { FspCallLogEntity } from './fsp-call-log.entity';
       FspCallLogEntity,
     ]),
   ],
-  providers: [FspService, FspApiService],
+  providers: [
+    AfricasTalkingService,
+    FspService,
+    AfricasTalkingApiService,
+    IntersolveService,
+    IntersolveApiService,
+    SoapService,
+  ],
   controllers: [FspController],
-  exports: [FspService, FspApiService],
+  exports: [
+    AfricasTalkingService,
+    FspService,
+    AfricasTalkingApiService,
+    IntersolveService,
+    IntersolveApiService,
+    SoapService,
+  ],
 })
 export class FspModule {}

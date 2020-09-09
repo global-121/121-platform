@@ -6,7 +6,7 @@ import { UserEntity } from '../../user/user.entity';
 import { TransactionEntity } from '../program/transactions.entity';
 import { FspCallLogEntity } from './fsp-call-log.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
-import { FspApiService } from './fsp-api.service';
+import { AfricasTalkingApiService } from './fsp-api.service';
 import { HttpModule } from '@nestjs/common/http';
 import { ProgramEntity } from '../program/program.entity';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
@@ -23,7 +23,7 @@ describe('Fsp service', (): void => {
         imports: [HttpModule],
         providers: [
           FspService,
-          FspApiService,
+          AfricasTalkingApiService,
           {
             provide: getRepositoryToken(TransactionEntity),
             useFactory: repositoryMockFactory,
@@ -54,81 +54,118 @@ describe('Fsp service', (): void => {
   });
 
   describe('createSendPaymentListFsp', (): void => {
-    const connections = [new ConnectionEntity]
+    const connections = [new ConnectionEntity()];
     const program = new ProgramEntity();
     const fsp = new FinancialServiceProviderEntity();
-    fsp.id = 1
+    fsp.id = 1;
 
-    const connectionList = [1]
-    const paymentDetailsDto  = {
+    const connectionList = [1];
+    const paymentDetailsDto = {
       paymentList: connectionList,
       connectionsForFsp: [1],
-    }
-
+    };
 
     it('should return default values', async (): Promise<void> => {
-      const result = await service.createSendPaymentListFsp(fsp,connections,10, program, 1);
-      expect(result.nrConnectionsFsp).toBeDefined()
+      const result = await service.createSendPaymentListFsp(
+        fsp,
+        connections,
+        10,
+        program,
+        1,
+      );
+      expect(result.nrConnectionsFsp).toBeDefined();
       expect(service).toBeDefined();
     });
 
     it('should return paymentResult status succes', async (): Promise<void> => {
-
       const statusMessageDto = {
         status: StatusEnum.succes,
-        message: {}
-      }
-      spyOn(service, "createPaymentDetails").and.returnValue(Promise.resolve(paymentDetailsDto));
-      spyOn(service, "sendPayment").and.returnValue(Promise.resolve(statusMessageDto));
-      spyOn(service, "logFspCall").and.returnValue(Promise.resolve());
+        message: {},
+      };
+      spyOn(service, 'createPaymentDetails').and.returnValue(
+        Promise.resolve(paymentDetailsDto),
+      );
+      spyOn(service, 'sendPayment').and.returnValue(
+        Promise.resolve(statusMessageDto),
+      );
+      spyOn(service, 'logFspCall').and.returnValue(Promise.resolve());
       // Comment add <any> to mock private functions
-      spyOn<any>(service, "storeTransaction").and.returnValue(Promise.resolve());
+      spyOn<any>(service, 'storeTransaction').and.returnValue(
+        Promise.resolve(),
+      );
 
-
-      const result = await service.createSendPaymentListFsp(fsp,connections,10, program, 1)
-      expect(result.nrConnectionsFsp).toBe(connectionList.length)
-      expect(result.paymentResult.status).toBe(StatusEnum.succes)
+      const result = await service.createSendPaymentListFsp(
+        fsp,
+        connections,
+        10,
+        program,
+        1,
+      );
+      expect(result.nrConnectionsFsp).toBe(connectionList.length);
+      expect(result.paymentResult.status).toBe(StatusEnum.succes);
     });
 
     it('should return paymentResult status succes', async (): Promise<void> => {
-
       const statusMessageDto = {
         status: StatusEnum.succes,
-        message: {}
-      }
-      spyOn(service, "createPaymentDetails").and.returnValue(Promise.resolve(paymentDetailsDto));
-      spyOn(service, "sendPayment").and.returnValue(Promise.resolve(statusMessageDto));
-      spyOn(service, "logFspCall").and.returnValue(Promise.resolve());
+        message: {},
+      };
+      spyOn(service, 'createPaymentDetails').and.returnValue(
+        Promise.resolve(paymentDetailsDto),
+      );
+      spyOn(service, 'sendPayment').and.returnValue(
+        Promise.resolve(statusMessageDto),
+      );
+      spyOn(service, 'logFspCall').and.returnValue(Promise.resolve());
       // Add <any> to mock private functions
-      spyOn<any>(service, "storeTransaction").and.returnValue(Promise.resolve());
+      spyOn<any>(service, 'storeTransaction').and.returnValue(
+        Promise.resolve(),
+      );
 
-      const result = await service.createSendPaymentListFsp(fsp,connections,10, program, 1)
-      expect(result.nrConnectionsFsp).toBe(connectionList.length)
-      expect(result.paymentResult.status).toBe(StatusEnum.succes)
+      const result = await service.createSendPaymentListFsp(
+        fsp,
+        connections,
+        10,
+        program,
+        1,
+      );
+      expect(result.nrConnectionsFsp).toBe(connectionList.length);
+      expect(result.paymentResult.status).toBe(StatusEnum.succes);
       // This ts-ignore can be used to test if a private function has been called
       // @ts-ignore
-      expect(service.storeTransaction).toHaveBeenCalled()
-
-    });  it('should return paymentResult status error', async (): Promise<void> => {
-
+      expect(service.storeTransaction).toHaveBeenCalled();
+    });
+    it('should return paymentResult status error', async (): Promise<void> => {
       const statusMessageDto = {
         status: StatusEnum.error,
-        message: {}
-      }
-      spyOn(service, "createPaymentDetails").and.returnValue(Promise.resolve(paymentDetailsDto));
+        message: {},
+      };
+      spyOn(service, 'createPaymentDetails').and.returnValue(
+        Promise.resolve(paymentDetailsDto),
+      );
 
-      spyOn(service, "sendPayment").and.returnValue(Promise.resolve(statusMessageDto));
-      spyOn(service, "logFspCall").and.returnValue(Promise.resolve());
+      spyOn(service, 'sendPayment').and.returnValue(
+        Promise.resolve(statusMessageDto),
+      );
+      spyOn(service, 'logFspCall').and.returnValue(Promise.resolve());
       // Add <any> to mock private functions
-      spyOn<any>(service, "storeTransaction").and.returnValue(Promise.resolve());
+      spyOn<any>(service, 'storeTransaction').and.returnValue(
+        Promise.resolve(),
+      );
 
-      const result = await service.createSendPaymentListFsp(fsp,connections,10, program, 1)
-      expect(result.nrConnectionsFsp).toBe(connectionList.length)
-      expect(result.paymentResult.status).toBe(StatusEnum.error)
+      const result = await service.createSendPaymentListFsp(
+        fsp,
+        connections,
+        10,
+        program,
+        1,
+      );
+      expect(result.nrConnectionsFsp).toBe(connectionList.length);
+      expect(result.paymentResult.status).toBe(StatusEnum.error);
 
       // This ts-ignore can be used to test if a private function has been called
       // @ts-ignore
-      expect(service.storeTransaction).not.toHaveBeenCalled()
+      expect(service.storeTransaction).not.toHaveBeenCalled();
     });
   });
 });
