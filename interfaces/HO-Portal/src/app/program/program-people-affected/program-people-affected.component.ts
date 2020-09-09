@@ -35,7 +35,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public columns: any[] = [];
   private columnsAvailable: any[] = [];
   private paymentColumnTemplate: any = {};
-  private paymentColumns: any[] = [];
+  public paymentColumns: any[] = [];
   private pastTransactions: any[] = [];
 
   public allPeopleAffected: PersonRow[] = [];
@@ -327,9 +327,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       column.name += p + 1;
       this.paymentColumns.push(column);
     }
-    // for (const column of this.paymentColumns) {
-    //   this.columns.push(column);
-    // }
   }
 
   private updateBulkActions() {
