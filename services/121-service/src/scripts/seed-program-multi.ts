@@ -8,17 +8,18 @@ import { SeedInit } from './seed-init';
 
 import { CountryEntity } from '../programs/country/country.entity';
 
-import fspBank from '../../examples/fsp-bank.json';
-import fspMobileMoney from '../../examples/fsp-mobile-money.json';
-import fspMixedAttributes from '../../examples/fsp-mixed-attributes.json';
-import fspNoAttributes from '../../examples/fsp-no-attributes.json';
-import fspIntersolve from '../../examples/fsp-intersolve.json';
-import fspMpesa from '../../examples/fsp-mpesa.json';
+import fspBank from '../../seed-data/fsp/fsp-bank.json';
+import fspMobileMoney from '../../seed-data/fsp/fsp-mobile-money.json';
+import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
+import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
+import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
+import fspMpesa from '../../seed-data/fsp/fsp-mpesa.json';
 
 import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
 
-import programAnonymousExample1 from '../../examples/program-anonymous1.json';
-import programAnonymousExample2 from '../../examples/program-anonymous2.json';
+import programAnonymousExample1 from '../../seed-data/program/program-anonymous1.json';
+import programAnonymousExample2 from '../../seed-data/program/program-anonymous2.json';
+import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
 import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
 
@@ -98,6 +99,10 @@ export class SeedMultiProgram implements InterfaceScript {
     await this.seedHelper.assignAidworker(2, 2);
     await this.seedHelper.assignAidworker(2, 3);
     await this.seedHelper.assignAidworker(2, 4);
+
+    // ***** CREATE INSTANCE *****
+    // NOTE: the multi-NGO setting of this seed-script does not comply with this single-NGO instance. We choose 'NGO A' here.
+    await this.seedHelper.addInstance(instanceAnonymous);
   }
 }
 

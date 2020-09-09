@@ -7,9 +7,10 @@ import { SeedInit } from './seed-init';
 
 import { CountryEntity } from '../programs/country/country.entity';
 
-import fspIntersolve from '../../examples/fsp-intersolve.json';
+import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 
-import programPilotNL from '../../examples/program-pilot-nl.json';
+import programPilotNL from '../../seed-data/program/program-pilot-nl.json';
+import instancePilotNL from '../../seed-data/instance/instance-pilot-nl.json';
 import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
 
@@ -48,6 +49,9 @@ export class SeedPilotNLProgram implements InterfaceScript {
     // ***** CREATE PROGRAM *****
     const examplePrograms = [programPilotNL];
     await this.seedHelper.addPrograms(examplePrograms, 1);
+
+    // ***** CREATE INSTANCE *****
+    await this.seedHelper.addInstance(instancePilotNL);
   }
 }
 

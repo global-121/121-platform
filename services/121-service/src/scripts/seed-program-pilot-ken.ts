@@ -6,8 +6,9 @@ import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 
 import { CountryEntity } from '../programs/country/country.entity';
-import fspMpesa from '../../examples/fsp-mpesa.json';
-import programPilotKen from '../../examples/program-pilot-ken.json';
+import fspMpesa from '../../seed-data/fsp/fsp-mpesa.json';
+import programPilotKen from '../../seed-data/program/program-pilot-ken.json';
+import instancePilotKen from '../../seed-data/instance/instance-pilot-ken.json';
 import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
 
@@ -46,6 +47,9 @@ export class SeedPilotKenProgram implements InterfaceScript {
     // ***** CREATE PROGRAM *****
     const examplePrograms = [programPilotKen];
     await this.seedHelper.addPrograms(examplePrograms, 1);
+
+    // ***** CREATE INSTANCE *****
+    await this.seedHelper.addInstance(instancePilotKen);
   }
 }
 
