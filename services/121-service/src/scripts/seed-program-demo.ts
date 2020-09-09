@@ -8,13 +8,14 @@ import { SeedInit } from './seed-init';
 
 import { CountryEntity } from '../programs/country/country.entity';
 
-import fspBank from '../../examples/fsp-bravos.json';
-import fspMixedAttributes from '../../examples/fsp-mixed-attributes.json';
-import fspNoAttributes from '../../examples/fsp-no-attributes.json';
-import fspIntersolve from '../../examples/fsp-intersolve.json';
-import fspMpesa from '../../examples/fsp-mpesa.json';
+import fspBank from '../../seed-data/fsp/fsp-bravos.json';
+import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
+import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
+import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
+import fspMpesa from '../../seed-data/fsp/fsp-mpesa.json';
 
-import programDemo from '../../examples/program-demo.json';
+import programDemo from '../../seed-data/program/program-demo.json';
+import instanceDemo from '../../seed-data/instance/instance-demo.json';
 import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
 
@@ -58,6 +59,9 @@ export class SeedDemoProgram implements InterfaceScript {
     // ***** CREATE PROGRAM *****
     const examplePrograms = [programDemo];
     await this.seedHelper.addPrograms(examplePrograms, 1);
+
+    // ***** CREATE INSTANCE *****
+    await this.seedHelper.addInstance(instanceDemo);
   }
 }
 
