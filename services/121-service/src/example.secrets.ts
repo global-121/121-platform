@@ -26,7 +26,7 @@ export const INTERSOLVE = {
   packageCode: '<packageCode>',
   username: '<username>',
   password: '<password>',
-  ean: '62752508',
+  ean: '<ean>',
 };
 
 export const AFRICASTALKING = {
