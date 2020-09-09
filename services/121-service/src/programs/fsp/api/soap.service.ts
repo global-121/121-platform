@@ -12,15 +12,13 @@ export class SoapService {
     payload = await this.setSoapHeader(payload);
     const xml = convert.js2xml(payload);
     console.log('xml request: ', xml);
-    const url =
-      'https://service-acc.intersolve.nl/webservices/webapigeneric.asp';
     const headersIntersolve = {
       'user-agent': 'sampleTest',
       'Content-Type': 'text/xml;charset=UTF-8',
     };
     const { response } = await soapRequest({
       headers: headersIntersolve,
-      url: url,
+      url: INTERSOLVE.url,
       xml: xml,
       timeout: 2000,
     });

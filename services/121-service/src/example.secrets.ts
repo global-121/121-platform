@@ -27,6 +27,7 @@ export const INTERSOLVE = {
   username: '<username>',
   password: '<password>',
   ean: '<ean>',
+  url: '<url>',
 };
 
 export const AFRICASTALKING = {
