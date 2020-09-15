@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { SECRET } from '../secrets';
 import { validate } from 'class-validator';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
@@ -188,7 +187,7 @@ export class UserService {
         role: user.role,
         exp: exp.getTime() / 1000,
       },
-      SECRET,
+      process.env.121_SERVICE_SECRETS_SECRET,
     );
 
     return result;

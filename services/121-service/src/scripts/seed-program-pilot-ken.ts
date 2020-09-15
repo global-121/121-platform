@@ -9,7 +9,6 @@ import { CountryEntity } from '../programs/country/country.entity';
 import fspMpesa from '../../seed-data/fsp/fsp-mpesa.json';
 import programPilotKen from '../../seed-data/program/program-pilot-ken.json';
 import instancePilotKen from '../../seed-data/instance/instance-pilot-ken.json';
-import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
 
 @Injectable()
@@ -25,16 +24,16 @@ export class SeedPilotKenProgram implements InterfaceScript {
     // ***** CREATE USERS *****
     await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
-      email: USERCONFIG.emailProjectOfficer,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProjectOfficer,
+      email: process.env.121_SERVICE_USERCONFIG_emailProjectOfficer,
+      countryId: process.env.121_SERVICE_USERCONFIG_countryId,
+      password: process.env.121_SERVICE_USERCONFIG_passwordProjectOfficer,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProgramManager,
-      email: USERCONFIG.emailProgramManager,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProgramManager,
+      email: process.env.121_SERVICE_USERCONFIG_emailProgramManager,
+      countryId: process.env.121_SERVICE_USERCONFIG_countryId,
+      password: process.env.121_SERVICE_USERCONFIG_passwordProgramManager,
     });
 
     // ***** CREATE COUNTRIES *****

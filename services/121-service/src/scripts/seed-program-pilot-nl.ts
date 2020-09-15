@@ -11,7 +11,6 @@ import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 
 import programPilotNL from '../../seed-data/program/program-pilot-nl.json';
 import instancePilotNL from '../../seed-data/instance/instance-pilot-nl.json';
-import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
 
 @Injectable()
@@ -27,16 +26,16 @@ export class SeedPilotNLProgram implements InterfaceScript {
     // ***** CREATE USERS *****
     await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
-      email: USERCONFIG.emailProjectOfficer,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProjectOfficer,
+      email: process.env.121_SERVICE_USERCONFIG_emailProjectOfficer,
+      countryId: process.env.121_SERVICE_USERCONFIG_countryId,
+      password: process.env.121_SERVICE_USERCONFIG_passwordProjectOfficer,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProgramManager,
-      email: USERCONFIG.emailProgramManager,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProgramManager,
+      email: process.env.121_SERVICE_USERCONFIG_emailProgramManager,
+      countryId: process.env.121_SERVICE_USERCONFIG_countryId,
+      password: process.env.121_SERVICE_USERCONFIG_passwordProgramManager,
     });
 
     // ***** CREATE COUNTRIES *****

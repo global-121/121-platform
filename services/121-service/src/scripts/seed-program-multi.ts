@@ -37,23 +37,23 @@ export class SeedMultiProgram implements InterfaceScript {
     // ***** CREATE USERS *****
     await this.seedHelper.addUser({
       role: UserRole.Aidworker,
-      email: USERCONFIG.emailAidWorker,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordAidWorker,
+      email: process.env.121_SERVICE_USERCONFIG_emailAidWorker,
+      countryId: process.env.121_SERVICE_USERCONFIG_countryId,
+      password: process.env.121_SERVICE_USERCONFIG_passwordAidWorker,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
-      email: USERCONFIG.emailProjectOfficer,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProjectOfficer,
+      email: process.env.121_SERVICE_USERCONFIG_emailProjectOfficer,
+      countryId: process.env.121_SERVICE_USERCONFIG_countryId,
+      password: process.env.121_SERVICE_USERCONFIG_passwordProjectOfficer,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProgramManager,
-      email: USERCONFIG.emailProgramManager,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProgramManager,
+      email: process.env.121_SERVICE_USERCONFIG_emailProgramManager,
+      countryId: process.env.121_SERVICE_USERCONFIG_countryId,
+      password: process.env.121_SERVICE_USERCONFIG_passwordProgramManager,
     });
 
     // ***** CREATE COUNTRIES *****
