@@ -20,7 +20,6 @@ import { ProtectionServiceProviderEntity } from '../programs/program/protection-
 import programAnonymousExample1 from '../../seed-data/program/program-anonymous1.json';
 import programAnonymousExample2 from '../../seed-data/program/program-anonymous2.json';
 import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
-import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
 
 @Injectable()
