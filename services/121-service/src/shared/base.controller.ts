@@ -7,7 +7,7 @@ export class BaseController {
     if (!authorization) return null;
 
     const token = authorization.split(' ')[1];
-    const decoded: any = jwt.verify(token, process.env.121_SERVICE_SECRETS_SECRET);
+    const decoded: any = jwt.verify(token, process.env.A121_SERVICE_SECRETS_SECRET);
     return decoded.id;
   }
 }

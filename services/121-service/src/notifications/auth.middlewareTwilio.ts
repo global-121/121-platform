@@ -2,7 +2,7 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { twilio } from './twilio.client';
-import { TWILIO } from '../secrets';
+import { TWILIO } from '../tokens/twilio';
 import { EXTERNAL_API } from '../config';
 
 @Injectable()

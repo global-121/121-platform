@@ -1,6 +1,6 @@
 import { EXTERNAL_API } from './../../config';
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { TWILIO } from '../../secrets';
+import { TWILIO } from '../../tokens/twilio';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';

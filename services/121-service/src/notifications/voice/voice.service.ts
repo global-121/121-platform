@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TWILIO } from '../../secrets';
+import { TWILIO } from '../../tokens/twilio';
 import { twilioClient, twilio } from '../twilio.client';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { InjectRepository } from '@nestjs/typeorm';

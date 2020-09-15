@@ -1,7 +1,7 @@
 import { IntersolveGetCardResponse } from './dto/intersolve-get-card-response.dto';
 import { SoapService } from './soap.service';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
-import { INTERSOLVE } from './../../../secrets';
+import { INTERSOLVE } from './../../../tokens/intersolve';
 import { Injectable } from '@nestjs/common';
 import { IntersolveSoapElements } from './enum/intersolve-soap.enum';
 

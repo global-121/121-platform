@@ -187,7 +187,7 @@ export class UserService {
         role: user.role,
         exp: exp.getTime() / 1000,
       },
-      process.env.121_SERVICE_SECRETS_SECRET,
+      process.env.A121_SERVICE_SECRETS_SECRET,
     );
 
     return result;

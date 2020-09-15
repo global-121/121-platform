@@ -1,6 +1,6 @@
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { Injectable, HttpService } from '@nestjs/common';
-import { AFRICASTALKING } from '../../../secrets';
+import { AFRICASTALKING } from '../../../tokens/africastalking';
 import { StatusMessageDto } from '../../../shared/dto/status-message.dto';
 
 @Injectable()

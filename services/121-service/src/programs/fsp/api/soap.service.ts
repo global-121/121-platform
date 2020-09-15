@@ -1,7 +1,7 @@
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import * as convert from 'xml-js';
-import { INTERSOLVE } from '../../../secrets';
+import { INTERSOLVE } from '../../../tokens/intersolve';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

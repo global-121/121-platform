@@ -1,6 +1,6 @@
 import { StatusMessageDto } from './../../shared/dto/status-message.dto';
 import { Injectable } from '@nestjs/common';
-import { AFRICASTALKING } from '../../secrets';
+import { AFRICASTALKING } from '../../tokens/africastalking';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { InjectRepository } from '@nestjs/typeorm';

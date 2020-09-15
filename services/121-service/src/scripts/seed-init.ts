@@ -19,10 +19,10 @@ export class SeedInit implements InterfaceScript {
     await userRepository.save([
       {
         role: UserRole.Admin,
-        email: process.env.121_SERVICE_USERCONFIG_emailAdmin,
-        countryId: process.env.121_SERVICE_USERCONFIG_countryId,
+        email: process.env.A121_SERVICE_USERCONFIG_emailAdmin,
+        countryId: process.env.A121_SERVICE_USERCONFIG_countryId,
         password: crypto
-          .createHmac('sha256', process.env.121_SERVICE_USERCONFIG_passwordAdmin)
+          .createHmac('sha256', process.env.A121_SERVICE_USERCONFIG_passwordAdmin)
           .digest('hex'),
         status: 'active',
       },
