@@ -11,6 +11,9 @@ export class OfferComponent {
   offer: Offer;
 
   @Input()
+  goBack = () => {};
+
+  @Input()
   showDetails = false;
 
   constructor() {}
