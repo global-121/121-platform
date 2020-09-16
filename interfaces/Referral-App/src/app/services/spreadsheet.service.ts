@@ -19,15 +19,27 @@ export class SpreadsheetService {
 
   constructor() {}
 
+  static readCellValue(row, key): string {
+    return row[key].$t;
+  }
+
   convertCategoryRowToCategoryObject(categoryRow): Category {
     return {
-      categoryID: Number(categoryRow['gsx$categoryid']['$t']),
+      categoryID: Number(
+        SpreadsheetService.readCellValue(categoryRow, 'gsx$categoryid'),
+      ),
       categoryName: {
-        en: categoryRow['gsx$categoryname']['$t'],
+        en: SpreadsheetService.readCellValue(categoryRow, 'gsx$categoryname'),
       },
-      categoryIcon: categoryRow['gsx$categoryicon']['$t'],
+      categoryIcon: SpreadsheetService.readCellValue(
+        categoryRow,
+        'gsx$categoryicon',
+      ),
       categoryDescription: {
-        en: categoryRow['gsx$categorydescription']['$t'],
+        en: SpreadsheetService.readCellValue(
+          categoryRow,
+          'gsx$categorydescription',
+        ),
       },
     };
   }
@@ -48,15 +60,28 @@ export class SpreadsheetService {
 
   convertSubCategoryRowToSubCategoryObject(subCategoryRow): SubCategory {
     return {
-      subCategoryID: Number(subCategoryRow['gsx$subcategoryid']['$t']),
+      subCategoryID: Number(
+        SpreadsheetService.readCellValue(subCategoryRow, 'gsx$subcategoryid'),
+      ),
       subCategoryName: {
-        en: subCategoryRow['gsx$subcategoryname']['$t'],
+        en: SpreadsheetService.readCellValue(
+          subCategoryRow,
+          'gsx$subcategoryname',
+        ),
       },
-      subCategoryIcon: subCategoryRow['gsx$subcategoryicon']['$t'],
+      subCategoryIcon: SpreadsheetService.readCellValue(
+        subCategoryRow,
+        'gsx$subcategoryicon',
+      ),
       subCategoryDescription: {
-        en: subCategoryRow['gsx$subcategorydescription']['$t'],
+        en: SpreadsheetService.readCellValue(
+          subCategoryRow,
+          'gsx$subcategorydescription',
+        ),
       },
-      categoryID: Number(subCategoryRow['gsx$categoryid']['$t']),
+      categoryID: Number(
+        SpreadsheetService.readCellValue(subCategoryRow, 'gsx$categoryid'),
+      ),
     };
   }
 
@@ -78,26 +103,48 @@ export class SpreadsheetService {
 
   convertOfferRowToOfferObject(offerRow): Offer {
     return {
-      offerID: Number(offerRow['gsx$offerid']['$t']),
+      offerID: Number(
+        SpreadsheetService.readCellValue(offerRow, 'gsx$offerid'),
+      ),
       offerName: {
-        en: offerRow['gsx$name']['$t'],
+        en: SpreadsheetService.readCellValue(offerRow, 'gsx$name'),
       },
-      offerIcon: offerRow['gsx$icon']['$t'],
+      offerIcon: SpreadsheetService.readCellValue(offerRow, 'gsx$icon'),
       offerDescription: {
-        en: offerRow['gsx$whatservice']['$t'],
+        en: SpreadsheetService.readCellValue(offerRow, 'gsx$whatservice'),
       },
-      offerLink: offerRow['gsx$linktowebsite']['$t'],
-      offerImage: offerRow['gsx$image']['$t'],
-      offerNumber: offerRow['gsx$phonenumber']['$t'],
-      offerEmail: offerRow['gsx$emailaddress']['$t'],
-      offerAddress: offerRow['gsx$address']['$t'],
-      offerOpeningHoursWeekdays: offerRow['gsx$openinghoursweekdays']['$t'],
-      offerOpeningHoursWeekends: offerRow['gsx$openinghoursweekends']['$t'],
-      offerForWhom: offerRow['gsx$forwhom']['$t'],
-      offerCapacity: offerRow['gsx$capacity']['$t'],
-      offerVisible: offerRow['gsx$visible']['$t'] === 'Show',
-      subCategoryID: Number(offerRow['gsx$sub-categoryid']['$t']),
-      categoryID: Number(offerRow['gsx$categoryid']['$t']),
+      offerLink: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$linktowebsite',
+      ),
+      offerImage: SpreadsheetService.readCellValue(offerRow, 'gsx$image'),
+      offerNumber: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$phonenumber',
+      ),
+      offerEmail: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$emailaddress',
+      ),
+      offerAddress: SpreadsheetService.readCellValue(offerRow, 'gsx$address'),
+      offerOpeningHoursWeekdays: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$openinghoursweekdays',
+      ),
+      offerOpeningHoursWeekends: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$openinghoursweekends',
+      ),
+      offerForWhom: SpreadsheetService.readCellValue(offerRow, 'gsx$forwhom'),
+      offerCapacity: SpreadsheetService.readCellValue(offerRow, 'gsx$capacity'),
+      offerVisible:
+        SpreadsheetService.readCellValue(offerRow, 'gsx$visible') === 'Show',
+      subCategoryID: Number(
+        SpreadsheetService.readCellValue(offerRow, 'gsx$sub-categoryid'),
+      ),
+      categoryID: Number(
+        SpreadsheetService.readCellValue(offerRow, 'gsx$categoryid'),
+      ),
     };
   }
 
@@ -119,17 +166,17 @@ export class SpreadsheetService {
 
   convertHelpRowToHelpObject(helpRows): Help {
     return {
-      helpIcon: helpRows[0]['gsx$value']['$t'],
+      helpIcon: SpreadsheetService.readCellValue(helpRows[0], 'gsx$value'),
       helpText: {
-        en: helpRows[1]['gsx$value']['$t'],
+        en: SpreadsheetService.readCellValue(helpRows[1], 'gsx$value'),
       },
       helpPhoneLabel: {
-        en: helpRows[2]['gsx$value']['$t'],
+        en: SpreadsheetService.readCellValue(helpRows[2], 'gsx$value'),
       },
-      helpPhone: helpRows[3]['gsx$value']['$t'],
-      helpWhatsApp: helpRows[4]['gsx$value']['$t'],
-      helpFacebook: helpRows[5]['gsx$value']['$t'],
-      helpTwitter: helpRows[6]['gsx$value']['$t'],
+      helpPhone: SpreadsheetService.readCellValue(helpRows[3], 'gsx$value'),
+      helpWhatsApp: SpreadsheetService.readCellValue(helpRows[4], 'gsx$value'),
+      helpFacebook: SpreadsheetService.readCellValue(helpRows[5], 'gsx$value'),
+      helpTwitter: SpreadsheetService.readCellValue(helpRows[6], 'gsx$value'),
     };
   }
 
