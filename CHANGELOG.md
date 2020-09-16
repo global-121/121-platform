@@ -4,20 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.7.2...master)
+---
 
-### Added
-- 2020-09-09: Added INTERSOLVE.username, INTERSOLVE.password, INTERSOLVE.ean, INTERSOLVE.url in `121-service/src/secrets.ts` 
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.7.2...master)
 
 ### Added
 - 2020-08-19: Added `GLOBAL_121_REF_DIR` to `tools/.env`
 - 2020-09-01: `GLOBAL_121_WEB_ROOT` now also used by `webhook.service`; Needs update + restart.
+- 2020-09-09: Added `INTERSOLVE.username`, `INTERSOLVE.password`, `INTERSOLVE.ean`, `INTERSOLVE.url` in `121-service/src/secrets.ts` 
 
 ### Changed
 - 2020-08-19: Deploy script & apache2 conf changed, so possibly need to restart
 - 2020-09-03: Corrected "Samburu" language-code, need to update `NG_LOCALES` value for PA-App.
 - 2020-09-07: Add "Turkana" as language, need to update `NG_LOCALES` value for PA-App.
-- 0220-09-08: Change AFRICASTALKING.productName in `121-service/src/secrets.ts` to appropriate value (KRCS-staging server only!)
+- 0220-09-08: Change `AFRICASTALKING.productName` in `121-service/src/secrets.ts` to appropriate value (KRCS-staging server only!)
 
 ### Removed
 - 2020-09-01: Remove `VERSION`-env variable used by `webhook.service`; Needs update + restart.
