@@ -1,8 +1,9 @@
+import { ProgramEntity } from './../../programs/program/program.entity';
 import { EXTERNAL_API } from './../../config';
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { TWILIO } from '../../secrets';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
 import { ProgramService } from '../../programs/program/program.service';
@@ -12,10 +13,7 @@ export class SmsService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
-  public constructor(
-    @Inject(forwardRef(() => ProgramService))
-    private readonly programService: ProgramService,
-  ) {}
+  public constructor() {}
 
   public async notifyBySms(
     recipientPhoneNr: string,
@@ -51,7 +49,8 @@ export class SmsService {
     key: string,
     programId: number,
   ): Promise<string> {
-    const program = await this.programService.findOne(programId);
+    const program = await getRepository(ProgramEntity).findOne(programId);
+    console.log('program: ', program);
     return program.notifications[language][key];
   }
 
