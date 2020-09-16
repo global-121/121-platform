@@ -23,19 +23,19 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <a href="{{ help.helpWhatsApp }}">
+        <a href="{{ help.helpWhatsApp }}" *ngIf="help.helpWhatsApp">
           <ion-img
             class="help-social-image help-whatsapp-image"
             src="assets/icons/whatsapp.png"
           ></ion-img>
         </a>
-        <a href="{{ help.helpTwitter }}">
+        <a href="{{ help.helpTwitter }}" *ngIf="help.helpTwitter">
           <ion-img
             class="help-social-image help-twitter-image"
             src="assets/icons/twitter.svg"
           ></ion-img>
         </a>
-        <a href="{{ help.helpFacebook }}">
+        <a href="{{ help.helpFacebook }}" *ngIf="help.helpFacebook">
           <ion-img
             class="help-social-image help-facebook-image"
             src="assets/icons/facebook.png"
