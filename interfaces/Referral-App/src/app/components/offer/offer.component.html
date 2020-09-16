@@ -5,6 +5,12 @@
         [src]="offer.offerIcon"
         [alt]="offer.offerName"
         (click)="goBack()"
+        *ngIf="goBack"
+      ></ion-img>
+      <ion-img
+        [src]="offer.offerIcon"
+        [alt]="offer.offerName"
+        *ngIf="!goBack"
       ></ion-img>
       <ion-card-title class="ion-text-center">
         {{ offer.offerName }}

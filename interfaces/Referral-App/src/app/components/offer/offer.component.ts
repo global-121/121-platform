@@ -11,10 +11,10 @@ export class OfferComponent {
   offer: Offer;
 
   @Input()
-  goBack = () => {};
+  showDetails = false;
 
   @Input()
-  showDetails = false;
+  goBack;
 
   constructor() {}
 }
