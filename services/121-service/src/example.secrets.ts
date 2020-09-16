@@ -14,7 +14,9 @@ export const USERCONFIG = {
 
 export const TWILIO = {
   sid: 'AC<your-sid>',
-  authToken: 'AC<your-sid>',
+  tokenSid: '<tokenSid>',
+  messagingSid: '<messagingSid>',
+  tokenSecret: '<tokenSecret>',
   testToNumber: '<your-testToNumber>',
   testFromNumberVoice: '<your-testFromNumber>',
   testFromNumberSms: '<your-testFromNumber>',

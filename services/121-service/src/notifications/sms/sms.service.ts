@@ -29,18 +29,21 @@ export class SmsService {
     }
   }
 
-  public async sendSms(message: string, recipientPhoneNr: string) {
+  public async sendSms(
+    message: string,
+    recipientPhoneNr: string,
+  ): Promise<void> {
     // Overwrite recipient phone number for testing phase
     // recipientPhoneNr = TWILIO.testToNumber;
-
     twilioClient.messages
       .create({
         body: message,
-        from: TWILIO.testFromNumberSms, // This parameter could be specifief per program
+        messagingServiceSid: TWILIO.messagingSid,
         statusCallback: EXTERNAL_API.callbackUrlSms,
         to: recipientPhoneNr,
       })
-      .then(message => this.storeSendSms(message));
+      .then(message => this.storeSendSms(message))
+      .catch(err => console.log('Error twillio', err));
   }
 
   public async getSmsText(
@@ -52,12 +55,12 @@ export class SmsService {
     return program.notifications[language][key];
   }
 
-  public storeSendSms(message) {
+  public storeSendSms(message): void {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
     twilioMessage.body = message.body;
     twilioMessage.to = message.to;
-    twilioMessage.from = message.from;
+    twilioMessage.from = message.messagingServiceSid;
     twilioMessage.sid = message.sid;
     twilioMessage.status = message.status;
     twilioMessage.type = NotificationType.Sms;
@@ -72,7 +75,7 @@ export class SmsService {
     return await this.twilioMessageRepository.findOne(findOneOptions);
   }
 
-  public async statusCallback(callbackData) {
+  public async statusCallback(callbackData): Promise<void> {
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus },
