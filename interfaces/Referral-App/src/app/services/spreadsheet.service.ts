@@ -12,38 +12,46 @@ import helpMock from '../mocks/help.mock';
 export class SpreadsheetService {
   private spreadsheetURL = environment.google_sheets_api_url;
   private spreadsheetId = environment.google_sheets_sheet_id;
-  private spreadsheetKey = environment.google_sheets_api_key;
-  private categorySheetName = 'Categories';
-  private subCategorySheetName = 'Sub-Categories';
-  private offerSheetName = 'Offers';
-  private helpSheetName = 'Help';
-  private spreadsheetRange = 'A2:Z';
-  private helpSheetRange = 'A1:B7';
+  private categorySheetIndex = 2;
+  private subCategorySheetIndex = 3;
+  private offerSheetIndex = 1;
+  private helpSheetIndex = 5;
 
   constructor() {}
 
+  static readCellValue(row, key): string {
+    return row[key].$t;
+  }
+
   convertCategoryRowToCategoryObject(categoryRow): Category {
     return {
-      categoryID: Number(categoryRow[0]),
+      categoryID: Number(
+        SpreadsheetService.readCellValue(categoryRow, 'gsx$categoryid'),
+      ),
       categoryName: {
-        en: categoryRow[1],
+        en: SpreadsheetService.readCellValue(categoryRow, 'gsx$categoryname'),
       },
-      categoryIcon: categoryRow[2],
+      categoryIcon: SpreadsheetService.readCellValue(
+        categoryRow,
+        'gsx$categoryicon',
+      ),
       categoryDescription: {
-        en: categoryRow[3],
+        en: SpreadsheetService.readCellValue(
+          categoryRow,
+          'gsx$categorydescription',
+        ),
       },
     };
   }
 
   getCategories(): Promise<Category[]> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
-        `/${this.categorySheetName}!${this.spreadsheetRange}` +
-        `?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.categorySheetIndex}` +
+        '/public/values?alt=json',
     )
       .then((response) => response.json())
       .then((response) => {
-        return response.values.map(this.convertCategoryRowToCategoryObject);
+        return response.feed.entry.map(this.convertCategoryRowToCategoryObject);
       })
       .catch((_) => {
         return [];
@@ -52,27 +60,39 @@ export class SpreadsheetService {
 
   convertSubCategoryRowToSubCategoryObject(subCategoryRow): SubCategory {
     return {
-      subCategoryID: Number(subCategoryRow[0]),
+      subCategoryID: Number(
+        SpreadsheetService.readCellValue(subCategoryRow, 'gsx$subcategoryid'),
+      ),
       subCategoryName: {
-        en: subCategoryRow[1],
+        en: SpreadsheetService.readCellValue(
+          subCategoryRow,
+          'gsx$subcategoryname',
+        ),
       },
-      subCategoryIcon: subCategoryRow[2],
+      subCategoryIcon: SpreadsheetService.readCellValue(
+        subCategoryRow,
+        'gsx$subcategoryicon',
+      ),
       subCategoryDescription: {
-        en: subCategoryRow[3],
+        en: SpreadsheetService.readCellValue(
+          subCategoryRow,
+          'gsx$subcategorydescription',
+        ),
       },
-      categoryID: Number(subCategoryRow[4]),
+      categoryID: Number(
+        SpreadsheetService.readCellValue(subCategoryRow, 'gsx$categoryid'),
+      ),
     };
   }
 
   getSubCategories(): Promise<SubCategory[]> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
-        `/${this.subCategorySheetName}!${this.spreadsheetRange}` +
-        `?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.subCategorySheetIndex}` +
+        '/public/values?alt=json',
     )
       .then((response) => response.json())
       .then((response) => {
-        return response.values.map(
+        return response.feed.entry.map(
           this.convertSubCategoryRowToSubCategoryObject,
         );
       })
@@ -83,38 +103,59 @@ export class SpreadsheetService {
 
   convertOfferRowToOfferObject(offerRow): Offer {
     return {
-      offerID: Number(offerRow[3]), // Offer ID
+      offerID: Number(
+        SpreadsheetService.readCellValue(offerRow, 'gsx$offerid'),
+      ),
       offerName: {
-        en: offerRow[5], // Name
+        en: SpreadsheetService.readCellValue(offerRow, 'gsx$name'),
       },
-      offerIcon: offerRow[6], // Icon
+      offerIcon: SpreadsheetService.readCellValue(offerRow, 'gsx$icon'),
       offerDescription: {
-        en: offerRow[7], // What service?
+        en: SpreadsheetService.readCellValue(offerRow, 'gsx$whatservice'),
       },
-      offerLink: offerRow[10], // Link to Website
-      offerImage: offerRow[11], // Image
-      offerNumber: offerRow[8], // Phone Number
-      offerEmail: offerRow[9], // Email Address
-      offerAddress: offerRow[12], // Address
-      offerOpeningHoursWeekdays: offerRow[13], // Opening Hours Weekdays
-      offerOpeningHoursWeekends: offerRow[14], // Opening Hours Weekends
-      offerForWhom: offerRow[15], // For whom?
-      offerCapacity: offerRow[16], // Capacity?
-      offerVisible: offerRow[4] === 'Show', // Visible?
-      subCategoryID: Number(offerRow[1]), // Sub-Category ID
-      categoryID: Number(offerRow[2]), // Category ID
+      offerLink: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$linktowebsite',
+      ),
+      offerImage: SpreadsheetService.readCellValue(offerRow, 'gsx$image'),
+      offerNumber: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$phonenumber',
+      ),
+      offerEmail: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$emailaddress',
+      ),
+      offerAddress: SpreadsheetService.readCellValue(offerRow, 'gsx$address'),
+      offerOpeningHoursWeekdays: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$openinghoursweekdays',
+      ),
+      offerOpeningHoursWeekends: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$openinghoursweekends',
+      ),
+      offerForWhom: SpreadsheetService.readCellValue(offerRow, 'gsx$forwhom'),
+      offerCapacity: SpreadsheetService.readCellValue(offerRow, 'gsx$capacity'),
+      offerVisible:
+        SpreadsheetService.readCellValue(offerRow, 'gsx$visible') === 'Show',
+      subCategoryID: Number(
+        SpreadsheetService.readCellValue(offerRow, 'gsx$sub-categoryid'),
+      ),
+      categoryID: Number(
+        SpreadsheetService.readCellValue(offerRow, 'gsx$categoryid'),
+      ),
     };
   }
 
   getOffers(): Promise<Offer[]> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
-        `/${this.offerSheetName}!${this.spreadsheetRange}` +
-        `?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.offerSheetIndex}` +
+        '/public/values?alt=json',
     )
       .then((response) => response.json())
       .then((response) => {
-        return response.values
+        return response.feed.entry
           .map(this.convertOfferRowToOfferObject)
           .filter((offer) => offer.offerVisible);
       })
@@ -123,32 +164,30 @@ export class SpreadsheetService {
       });
   }
 
-  convertHelpRowToHelpObject(helpRow): Help {
-    console.log(helpRow);
+  convertHelpRowToHelpObject(helpRows): Help {
     return {
-      helpIcon: helpRow[0][1],
+      helpIcon: SpreadsheetService.readCellValue(helpRows[0], 'gsx$value'),
       helpText: {
-        en: helpRow[1][1],
+        en: SpreadsheetService.readCellValue(helpRows[1], 'gsx$value'),
       },
       helpPhoneLabel: {
-        en: helpRow[2][1],
+        en: SpreadsheetService.readCellValue(helpRows[2], 'gsx$value'),
       },
-      helpPhone: helpRow[3][1],
-      helpWhatsApp: helpRow[4][1],
-      helpFacebook: helpRow[5][1],
-      helpTwitter: helpRow[6][1],
+      helpPhone: SpreadsheetService.readCellValue(helpRows[3], 'gsx$value'),
+      helpWhatsApp: SpreadsheetService.readCellValue(helpRows[4], 'gsx$value'),
+      helpFacebook: SpreadsheetService.readCellValue(helpRows[5], 'gsx$value'),
+      helpTwitter: SpreadsheetService.readCellValue(helpRows[6], 'gsx$value'),
     };
   }
 
   getHelp(): Promise<Help> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
-        `/${this.helpSheetName}!${this.helpSheetRange}` +
-        `?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.helpSheetIndex}` +
+        '/public/values?alt=json',
     )
       .then((response) => response.json())
       .then((response) => {
-        return this.convertHelpRowToHelpObject(response.values);
+        return this.convertHelpRowToHelpObject(response.feed.entry);
       })
       .catch((_) => {
         return helpMock;
