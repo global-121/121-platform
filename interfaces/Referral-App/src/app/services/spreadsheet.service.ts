@@ -12,38 +12,34 @@ import helpMock from '../mocks/help.mock';
 export class SpreadsheetService {
   private spreadsheetURL = environment.google_sheets_api_url;
   private spreadsheetId = environment.google_sheets_sheet_id;
-  private spreadsheetKey = environment.google_sheets_api_key;
-  private categorySheetName = 'Categories';
-  private subCategorySheetName = 'Sub-Categories';
-  private offerSheetName = 'Offers';
-  private helpSheetName = 'Help';
-  private spreadsheetRange = 'A2:Z';
-  private helpSheetRange = 'A1:B7';
+  private categorySheetIndex = 2;
+  private subCategorySheetIndex = 3;
+  private offerSheetIndex = 1;
+  private helpSheetIndex = 5;
 
   constructor() {}
 
   convertCategoryRowToCategoryObject(categoryRow): Category {
     return {
-      categoryID: Number(categoryRow[0]),
+      categoryID: Number(categoryRow['gsx$categoryid']['$t']),
       categoryName: {
-        en: categoryRow[1],
+        en: categoryRow['gsx$categoryname']['$t'],
       },
-      categoryIcon: categoryRow[2],
+      categoryIcon: categoryRow['gsx$categoryicon']['$t'],
       categoryDescription: {
-        en: categoryRow[3],
+        en: categoryRow['gsx$categorydescription']['$t'],
       },
     };
   }
 
   getCategories(): Promise<Category[]> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
-        `/${this.categorySheetName}!${this.spreadsheetRange}` +
-        `?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.categorySheetIndex}` +
+        '/public/values?alt=json',
     )
       .then((response) => response.json())
       .then((response) => {
-        return response.values.map(this.convertCategoryRowToCategoryObject);
+        return response.feed.entry.map(this.convertCategoryRowToCategoryObject);
       })
       .catch((_) => {
         return [];
@@ -52,27 +48,26 @@ export class SpreadsheetService {
 
   convertSubCategoryRowToSubCategoryObject(subCategoryRow): SubCategory {
     return {
-      subCategoryID: Number(subCategoryRow[0]),
+      subCategoryID: Number(subCategoryRow['gsx$subcategoryid']['$t']),
       subCategoryName: {
-        en: subCategoryRow[1],
+        en: subCategoryRow['gsx$subcategoryname']['$t'],
       },
-      subCategoryIcon: subCategoryRow[2],
+      subCategoryIcon: subCategoryRow['gsx$subcategoryicon']['$t'],
       subCategoryDescription: {
-        en: subCategoryRow[3],
+        en: subCategoryRow['gsx$subcategorydescription']['$t'],
       },
-      categoryID: Number(subCategoryRow[4]),
+      categoryID: Number(subCategoryRow['gsx$categoryid']['$t']),
     };
   }
 
   getSubCategories(): Promise<SubCategory[]> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
-        `/${this.subCategorySheetName}!${this.spreadsheetRange}` +
-        `?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.subCategorySheetIndex}` +
+        '/public/values?alt=json',
     )
       .then((response) => response.json())
       .then((response) => {
-        return response.values.map(
+        return response.feed.entry.map(
           this.convertSubCategoryRowToSubCategoryObject,
         );
       })
@@ -83,38 +78,37 @@ export class SpreadsheetService {
 
   convertOfferRowToOfferObject(offerRow): Offer {
     return {
-      offerID: Number(offerRow[3]), // Offer ID
+      offerID: Number(offerRow['gsx$offerid']['$t']),
       offerName: {
-        en: offerRow[5], // Name
+        en: offerRow['gsx$name']['$t'],
       },
-      offerIcon: offerRow[6], // Icon
+      offerIcon: offerRow['gsx$icon']['$t'],
       offerDescription: {
-        en: offerRow[7], // What service?
+        en: offerRow['gsx$whatservice']['$t'],
       },
-      offerLink: offerRow[10], // Link to Website
-      offerImage: offerRow[11], // Image
-      offerNumber: offerRow[8], // Phone Number
-      offerEmail: offerRow[9], // Email Address
-      offerAddress: offerRow[12], // Address
-      offerOpeningHoursWeekdays: offerRow[13], // Opening Hours Weekdays
-      offerOpeningHoursWeekends: offerRow[14], // Opening Hours Weekends
-      offerForWhom: offerRow[15], // For whom?
-      offerCapacity: offerRow[16], // Capacity?
-      offerVisible: offerRow[4] === 'Show', // Visible?
-      subCategoryID: Number(offerRow[1]), // Sub-Category ID
-      categoryID: Number(offerRow[2]), // Category ID
+      offerLink: offerRow['gsx$linktowebsite']['$t'],
+      offerImage: offerRow['gsx$image']['$t'],
+      offerNumber: offerRow['gsx$phonenumber']['$t'],
+      offerEmail: offerRow['gsx$emailaddress']['$t'],
+      offerAddress: offerRow['gsx$address']['$t'],
+      offerOpeningHoursWeekdays: offerRow['gsx$openinghoursweekdays']['$t'],
+      offerOpeningHoursWeekends: offerRow['gsx$openinghoursweekends']['$t'],
+      offerForWhom: offerRow['gsx$forwhom']['$t'],
+      offerCapacity: offerRow['gsx$capacity']['$t'],
+      offerVisible: offerRow['gsx$visible']['$t'] === 'Show',
+      subCategoryID: Number(offerRow['gsx$sub-categoryid']['$t']),
+      categoryID: Number(offerRow['gsx$categoryid']['$t']),
     };
   }
 
   getOffers(): Promise<Offer[]> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
-        `/${this.offerSheetName}!${this.spreadsheetRange}` +
-        `?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.offerSheetIndex}` +
+        '/public/values?alt=json',
     )
       .then((response) => response.json())
       .then((response) => {
-        return response.values
+        return response.feed.entry
           .map(this.convertOfferRowToOfferObject)
           .filter((offer) => offer.offerVisible);
       })
@@ -123,32 +117,30 @@ export class SpreadsheetService {
       });
   }
 
-  convertHelpRowToHelpObject(helpRow): Help {
-    console.log(helpRow);
+  convertHelpRowToHelpObject(helpRows): Help {
     return {
-      helpIcon: helpRow[0][1],
+      helpIcon: helpRows[0]['gsx$value']['$t'],
       helpText: {
-        en: helpRow[1][1],
+        en: helpRows[1]['gsx$value']['$t'],
       },
       helpPhoneLabel: {
-        en: helpRow[2][1],
+        en: helpRows[2]['gsx$value']['$t'],
       },
-      helpPhone: helpRow[3][1],
-      helpWhatsApp: helpRow[4][1],
-      helpFacebook: helpRow[5][1],
-      helpTwitter: helpRow[6][1],
+      helpPhone: helpRows[3]['gsx$value']['$t'],
+      helpWhatsApp: helpRows[4]['gsx$value']['$t'],
+      helpFacebook: helpRows[5]['gsx$value']['$t'],
+      helpTwitter: helpRows[6]['gsx$value']['$t'],
     };
   }
 
   getHelp(): Promise<Help> {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/values` +
-        `/${this.helpSheetName}!${this.helpSheetRange}` +
-        `?key=${this.spreadsheetKey}`,
+      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.helpSheetIndex}` +
+        '/public/values?alt=json',
     )
       .then((response) => response.json())
       .then((response) => {
-        return this.convertHelpRowToHelpObject(response.values);
+        return this.convertHelpRowToHelpObject(response.feed.entry);
       })
       .catch((_) => {
         return helpMock;
