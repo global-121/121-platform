@@ -6,7 +6,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { NgModel } from '@angular/forms';
-import { TimeoutError } from 'rxjs';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
@@ -38,15 +37,13 @@ export class PhoneNumberInputComponent {
   @Output()
   public isValidChange = new EventEmitter<boolean>();
 
-  private initialChecked = false;
+  private defaultValidity = true;
 
   constructor(private programService: ProgramsServiceApiService) {}
 
-  private setValidity(state: boolean, emit = true) {
+  private setValidity(state: boolean) {
     this.isValid = state;
-    if (emit) {
-      this.isValidChange.emit(state);
-    }
+    this.isValidChange.emit(state);
   }
 
   public async onChange() {
@@ -57,12 +54,9 @@ export class PhoneNumberInputComponent {
     const nativeIsValid = nativeInput.checkValidity();
 
     if (!nativeIsValid) {
-      this.setValidity(false, this.initialChecked);
+      this.setValidity(nativeIsValid);
       return;
     }
-
-    // Only start emitting validity-states when the first check is passed once:
-    this.initialChecked = true;
 
     const customIsValid = await this.checkValidityOnline();
     this.setValidity(customIsValid);
@@ -74,20 +68,18 @@ export class PhoneNumberInputComponent {
 
     await this.programService.lookupPhoneNumber(phoneNumber).then(
       (result) => {
-        isValid = typeof result.result !== 'undefined' ? result.result : false;
+        // Onlyu if there is a valid result, use that:
+        if (typeof result.result !== 'undefined') {
+          isValid = result.result;
+          return;
+        }
+        // Otherwise, use the default value:
+        isValid = this.defaultValidity;
       },
       (error) => {
-        // If offline do not check phonenumber online
-        if (
-          error.status === 0 ||
-          error.status === 504 ||
-          error instanceof TimeoutError
-        ) {
-          isValid = true;
-        } else {
-          console.log('error: ', error.error);
-          isValid = false;
-        }
+        console.log('lookupPhoneNumber error: ', error);
+        // Allow any input as valid in case of errors during lookup
+        isValid = this.defaultValidity;
       },
     );
 
