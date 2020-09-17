@@ -103,7 +103,6 @@ export class SelectProgramComponent extends PersonalComponent {
       data: {
         chosenProgram: {
           id: chosenProgram.id,
-          ngo: chosenProgram.ngo,
           title: chosenProgram.title,
           description: chosenProgram.description,
         },
