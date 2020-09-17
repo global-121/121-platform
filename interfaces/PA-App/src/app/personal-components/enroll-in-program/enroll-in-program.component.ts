@@ -1,4 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { InstanceInfo } from 'src/app/models/instance.model';
 import {
   Program,
   ProgramAttribute,
@@ -34,6 +35,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   private currentProgram: Program;
   private credDefId: string;
 
+  public instanceDetails: any | InstanceInfo;
   public programDetails: any;
 
   public questions: Question[];
@@ -74,13 +76,22 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.hasChangedAnswers = false;
   }
 
-  initNew() {
-    this.getProgramDetails();
+  async initNew() {
+    this.conversationService.startLoading();
+    await this.getInstanceInformation();
+    await this.getProgramDetails();
+    this.conversationService.stopLoading();
+  }
+
+  private async getInstanceInformation() {
+    this.instanceDetails = await this.programsService.getInstanceInformation();
+
+    this.instanceDetails.displayName = this.translatableString.get(
+      this.instanceDetails.displayName,
+    );
   }
 
   private async getProgramDetails() {
-    this.conversationService.startLoading();
-
     this.programId = Number(
       await this.paData.retrieve(this.paData.type.programId),
     );
@@ -89,8 +100,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
     );
     this.prepareProgramDetails(this.currentProgram);
     this.paData.saveProgram(this.programId, this.currentProgram);
-
-    this.conversationService.stopLoading();
   }
 
   public prepareProgramDetails(program: Program) {
@@ -102,7 +111,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   private buildDetails(response: Program) {
     const programDetails = [];
-    const details = ['ngo', 'title', 'description', 'contactDetails'];
+    const details = ['title', 'description', 'contactDetails'];
     for (const detail of details) {
       // Skip optional, non-existing program-properties
       if (!response[detail]) {

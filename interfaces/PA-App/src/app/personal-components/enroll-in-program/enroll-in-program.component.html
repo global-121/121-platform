@@ -1,12 +1,12 @@
 <section>
   <dialogue-turn
-    [actor]="programDetails?.ngo"
-    *ngIf="programDetails?.ngo"
-    [isSpoken]="programDetails?.ngo"
+    [actor]="instanceDetails?.name"
+    *ngIf="instanceDetails"
+    [isSpoken]="instanceDetails"
   >
     <p>
       <play-text-audio key="personal.enroll-in-program.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ ngo:'<strong>'+programDetails?.ngo+'</strong>' }"></span>
+      <span [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ ngo:'<strong>'+instanceDetails?.displayName+'</strong>' }"></span>
     </p>
     <p
       *ngIf="programDetails?.contactDetails"
@@ -16,14 +16,14 @@
 
   </dialogue-turn>
   <dialogue-turn
-    [actor]="programDetails?.ngo"
-    *ngIf="programDetails?.ngo"
-    [isSpoken]="programDetails?.ngo"
+    [actor]="instanceDetails?.name"
+    *ngIf="instanceDetails"
+    [isSpoken]="instanceDetails"
     isConnected="true"
   >
     <p>
       <play-text-audio key="personal.enroll-in-program.introduction-information" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate:{ ngo:'<strong>'+programDetails?.ngo+'</strong>' }"></span>
+      <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate:{ ngo:'<strong>'+instanceDetails?.displayName+'</strong>' }"></span>
     </p>
 
     <more-info-button buttonKey="personal.enroll-in-program.more-info-questions"
@@ -41,7 +41,7 @@
                submitLabel="personal.enroll-in-program.submit"
   ></q-and-a-set>
 
-  <dialogue-turn [actor]="programDetails?.ngo"
+  <dialogue-turn [actor]="instanceDetails?.name"
                  *ngIf="hasAnswered"
                  [isSpoken]="hasAnswered"
   >

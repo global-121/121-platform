@@ -5,7 +5,7 @@
   "location": "Nederland",
   "ngo": "NLRC",
   "contactDetails": {
-    "en": "Contact us via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/+31600000000'>+31 6 00 00 00 00</a>"
+    "en": "If you have questions during registration, contact us via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/+31600000000'>+31 6 00 00 00 00</a>"
   },
   "countryId": 1,
   "title": {
@@ -50,7 +50,7 @@
     {
       "criterium": "name",
       "label": {
-        "en": "My full name:"
+        "en": "My full name: (Including first, second and last-names)"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -59,20 +59,20 @@
       "scoring": {}
     },
     {
-      "criterium": "dob",
+      "criterium": "vnumber",
       "label": {
-        "en": "My date of birth:"
+        "en": "My V number:"
       },
-      "answerType": "date",
+      "answerType": "number",
       "criteriumType": "standard",
       "options": null,
       "persistence": true,
       "scoring": {}
     },
     {
-      "criterium": "phoneNumber",
+      "criterium": "phoneNumberWhatsApp",
       "label": {
-        "en": "My phonenumber:"
+        "en": "Number to reach me via WhatsApp: (It should look like: +00 0 00 00 00 00)"
       },
       "answerType": "tel",
       "criteriumType": "standard",
@@ -81,37 +81,15 @@
       "scoring": {}
     },
     {
-      "criterium": "sample",
+      "criterium": "phoneNumberSMS",
       "label": {
-        "en": "1. Sample vulnerability question:"
+        "en": "Number to reach me via SMS: (It should look like: +31 6 00 00 00 00)"
       },
-      "answerType": "dropdown",
+      "answerType": "tel",
       "criteriumType": "standard",
-      "options": [
-        {
-          "option": "optionA",
-          "label": {
-            "en": "Option A"
-          }
-        },
-        {
-          "option": "optionB",
-          "label": {
-            "en": "Option B"
-          }
-        },
-        {
-          "option": "optionC",
-          "label": {
-            "en": "Option C"
-          }
-        }
-      ],
-      "scoring": {
-        "optionA": 3,
-        "optionB": 6,
-        "optionC": 9
-      }
+      "options": null,
+      "persistence": true,
+      "scoring": {}
     }
   ]
 }

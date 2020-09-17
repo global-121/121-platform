@@ -30,7 +30,7 @@
       "consent-question": "Do you consent?",
       "create-password-explanation": "Enter a password of at least {{minimalLength}} characters:",
       "create-password": "Create my password",
-      "create-username": "Enter first and second name:",
+      "create-username": "Enter full name:",
       "info-message-password": "[about passwords]",
       "info-message-username-pw": "To create a Digital Identity you need to create the following <br><br>3. Your name<br>4. Your Password<br><br>If you create a Digital ID for this pilot program it will be stored securely on the Netherlands Red Cross Server.  What is a Server? In this case the server is the physical computer that a server program runs on and it is owned by The Netherlands Red Cross.",
       "introduction": "To create a Digital ID you need to complete the following steps.",
@@ -105,7 +105,7 @@
     },
     "select-language": {
       "info-message": "With the 121 platform, we aim to make Cash Based Aid safe, fast & fair, to help you if you have been affected by disasters and crises to meet your own needs. 121 will help you<br><ul><li>Create a Digtial ID</li><li>Know which programs are available in your area</li><li>Apply to the programs</li><li>Understand who sees your information</li></ul>",
-      "intro": "To register for this program, you will need to use 121.",
+      "intro": "Welcome to 121. You can use 121 to apply for aid.",
       "introduction": {
         "en": "Welcome to 121. Please select your language.",
         "ny_MW": "Takulandilani ku 121. Chonde sankhani chiyankhulo chanu.",
