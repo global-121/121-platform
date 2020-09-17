@@ -101,7 +101,7 @@
         "success": "Thank you. Your additional information is saved."
       },
       "conclusion": "Thank you. You have selected the option {{name}}.",
-      "introduction": "Please select how you would like to receive your money, if you are included in the program."
+      "introduction": "Please select how you would like to receive your aid, if you are included in the program."
     },
     "select-language": {
       "info-message": "With the 121 platform, we aim to make Cash Based Aid safe, fast & fair, to help you if you have been affected by disasters and crises to meet your own needs. 121 will help you<br><ul><li>Create a Digtial ID</li><li>Know which programs are available in your area</li><li>Apply to the programs</li><li>Understand who sees your information</li></ul>",
@@ -134,7 +134,7 @@
       "conclusion-submitted": "Thank you. You will now receive notifications on this phone number: {{phone}}",
       "input-label": "Phone number (with country-code)",
       "introduction1": "It is optional to enter your phone number.",
-      "introduction2": "We use this to send you text-notifications if you are included and when you receive money.",
+      "introduction2": "We use this to send you text-notifications if you are included and when you receive aid.",
       "introduction3": "If you do not want to enter your phone number, you will have to log in here for updates.",
       "introduction4": "At the end of the program, we will delete your number.",
       "skip": "Skip",
