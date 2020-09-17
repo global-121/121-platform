@@ -14,7 +14,7 @@ Feature: Verify phone number input
   Scenario: Accept a correct phone number value
     Given a "phone-number"-input is shown
     When the PA fills in the phone number correctly
-    Then a positive feedback message is shown
+    Then the PA is able to proceed
 
     Examples:
       | Correct phone number value |
@@ -22,3 +22,9 @@ Feature: Verify phone number input
       | 1234567890                 |
       | (1) 234567890              |
       | (1) 234 56 78 90           |
+
+  Scenario: Accept an incorrect phone number value
+    Given a "phone-number"-input is shown
+    Given the online lookup is not available
+    When the PA fills in the phone number incorrectly
+    Then the PA is able to proceed
