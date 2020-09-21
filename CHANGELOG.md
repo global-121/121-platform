@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2020-09-03: Corrected "Samburu" language-code, need to update `NG_LOCALES` value for PA-App.
 - 2020-09-07: Add "Turkana" as language, need to update `NG_LOCALES` value for PA-App.
 - 2020-09-08: Change `AFRICASTALKING.productName` in `121-service/src/secrets.ts` to appropriate value (KRCS-staging server only!)
+- 2020-09-12: Changed `docker-compose/Dockerfile` set-up of 121-service and PA-accounts-service to use Node.js base-image
 
 ### Removed
 - 2020-09-01: Remove `VERSION`-env variable used by `webhook.service`; Needs update + restart.

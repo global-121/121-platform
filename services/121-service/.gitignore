@@ -6,6 +6,7 @@ npm-debug.log*
 
 # Dependency directory
 node_modules
+.config/configstore
 
 # Generated assets / caches
 .npm
