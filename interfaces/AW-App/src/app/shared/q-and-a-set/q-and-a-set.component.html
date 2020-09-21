@@ -107,7 +107,7 @@
       class="ion-margin-bottom ion-padding-bottom"
     >
       <dialogue-turn [isSpoken]="checkValidationErrors(question.code)">
-        <p *ngIf="(question.answerType === answerType.phoneNumber) && validationErrors.includes('phoneNumber')">
+        <p *ngIf="(question.answerType === answerType.phoneNumber)">
           {{ 'q-and-a-set.validation.phone-number'|translate }}
         </p>
         <p *ngIf="(question.answerType === answerType.Number)">
