@@ -1,12 +1,11 @@
 import { ProgramEntity } from './../../programs/program/program.entity';
 import { EXTERNAL_API } from './../../config';
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { TWILIO } from '../../secrets';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
-import { ProgramService } from '../../programs/program/program.service';
 
 @Injectable()
 export class SmsService {
@@ -50,7 +49,6 @@ export class SmsService {
     programId: number,
   ): Promise<string> {
     const program = await getRepository(ProgramEntity).findOne(programId);
-    console.log('program: ', program);
     return program.notifications[language][key];
   }
 
