@@ -53,10 +53,14 @@ export const EXTERNAL_API = {
     process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/sms/status',
   callbackUrlVoice:
     process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/voice/status',
+  callbackUrlWhatsapp:
+    process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/whatsapp/status',
   voiceXmlUrl:
     process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/voice/xml/',
   voiceMp3lUrl:
     process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/voice/mp3/',
+  imageCodeUrl:
+    process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/imageCode/',
   africasTalkingValidationUrl:
     process.env.EXTERNAL_121_SERVICE_URL + 'api/fsp/africastalking/validation/',
 };

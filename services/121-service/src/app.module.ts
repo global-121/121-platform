@@ -1,3 +1,4 @@
+import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
@@ -40,6 +41,7 @@ import { InstanceModule } from './instance/instance.module';
     ActionModule,
     FspModule,
     InstanceModule,
+    WhatsappModule,
   ],
   controllers: [AppController],
   providers: [],

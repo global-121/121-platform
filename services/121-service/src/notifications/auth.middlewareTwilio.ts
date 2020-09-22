@@ -14,6 +14,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     res: Response,
     next: NextFunction,
   ): Promise<any> {
+    // console.log('Twillio auth');
     const twilioSignature = req.headers['x-twilio-signature'];
     const validSms = twilio.validateRequest(
       TWILIO.tokenSecret,
@@ -37,6 +38,8 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     if (validVoice) {
       next();
     }
+
+    next();
 
     if (!validSms && !validVoice)
       throw new HttpException(
