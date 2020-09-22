@@ -23,11 +23,11 @@ export class TranslatableStringService {
 
     let label: any = property[this.translate.currentLang];
 
-    if (!label) {
+    if (typeof label === 'undefined') {
       label = property[this.fallbackLanguageCode];
     }
 
-    if (!label) {
+    if (typeof label === 'undefined') {
       label = property;
     }
 
