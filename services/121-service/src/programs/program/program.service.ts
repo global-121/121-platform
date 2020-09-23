@@ -413,7 +413,7 @@ export class ProgramService {
       (
         await this.actionRepository.find({
           where: {
-            programId: programId,
+            program: { id: programId },
             actionType: ActionType.notifyIncluded,
           },
         })
