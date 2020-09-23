@@ -14,6 +14,4 @@ module.exports = {
   },
   dropSchema: false,
   synchronize: true,
-  logging: ['query'],
-  logger: 'file',
 };
