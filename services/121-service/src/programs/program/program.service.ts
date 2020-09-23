@@ -381,13 +381,13 @@ export class ProgramService {
     this.smsService.notifyBySms(
       connection.phoneNumber,
       connection.preferredLanguage,
-      inclusionResult ? 'included' : 'rejected',
+      inclusionResult ? PaStatus.included : PaStatus.rejected,
       programId,
     );
     this.voiceService.notifyByVoice(
       connection.phoneNumber,
       connection.preferredLanguage,
-      inclusionResult ? 'included' : 'rejected',
+      inclusionResult ? PaStatus.included : PaStatus.rejected,
       programId,
     );
   }
@@ -421,9 +421,9 @@ export class ProgramService {
 
     let inclusionStatus: InclusionStatus;
     if (connection.programsIncluded.includes(+programId) && notificationDone) {
-      inclusionStatus = { status: 'included' };
+      inclusionStatus = { status: PaStatus.included };
     } else if (connection.programsRejected.includes(+programId)) {
-      inclusionStatus = { status: 'rejected' };
+      inclusionStatus = { status: PaStatus.rejected };
     } else {
       inclusionStatus = { status: 'unavailable' };
     }
