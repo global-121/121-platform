@@ -15,10 +15,6 @@ node_modules
 #IDEs
 .idea
 
-#config files
-ormconfig.json
-src/secrets.ts
-
 # code testing coverage
 coverage
 
