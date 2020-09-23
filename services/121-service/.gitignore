@@ -16,7 +16,3 @@ swagger-spec.json
 
 #IDEs
 .idea
-
-# (local) Configuration files + Secrets
-ormconfig.json
-src/secrets.ts

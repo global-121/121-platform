@@ -2,7 +2,6 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { twilio } from './twilio.client';
-import { TWILIO } from '../secrets';
 import { EXTERNAL_API } from '../config';
 
 @Injectable()
@@ -16,7 +15,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
   ): Promise<any> {
     const twilioSignature = req.headers['x-twilio-signature'];
     const validSms = twilio.validateRequest(
-      TWILIO.authToken,
+      process.env.TWILIO_AUTHTOKEN,
       twilioSignature,
       EXTERNAL_API.callbackUrlSms,
       req.body,
@@ -26,7 +25,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     }
 
     const validVoice = twilio.validateRequest(
-      TWILIO.authToken,
+      process.env.TWILIO_AUTHTOKEN,
       twilioSignature,
       EXTERNAL_API.callbackUrlVoice,
       req.body,
