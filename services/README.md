@@ -52,4 +52,4 @@ All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authenticatio
 
 ### Adding third party API tokens
 
-All the tokens and access keys for third party APIs are added on the .env file and subsequently imported using the environment variables within typescript files.
+All the tokens and access keys for third party APIs should be added on the .env file and subsequently imported using the environment variables within typescript files.
