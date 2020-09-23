@@ -1,7 +1,6 @@
 import { IntersolveGetCardResponse } from './dto/intersolve-get-card-response.dto';
 import { SoapService } from './soap.service';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
-import { INTERSOLVE } from './../../../secrets';
 import { Injectable } from '@nestjs/common';
 import { IntersolveSoapElements } from './enum/intersolve-soap.enum';
 
@@ -28,7 +27,7 @@ export class IntersolveApiService {
       payload,
       IntersolveSoapElements.IssueCard,
       'EAN',
-      INTERSOLVE.ean,
+      process.env.INTERSOLVE_EAN,
     );
 
     const responseBody = await this.soapService.post(payload);

@@ -1,7 +1,6 @@
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import * as convert from 'xml-js';
-import { INTERSOLVE } from '../../../secrets';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -18,7 +17,7 @@ export class SoapService {
     };
     const { response } = await soapRequest({
       headers: headersIntersolve,
-      url: INTERSOLVE.url,
+      url: process.env.INTERSOLVE_URL,
       xml: xml,
       timeout: 2000,
     });
@@ -32,9 +31,9 @@ export class SoapService {
     let header = await this.readXmlAsJs('header');
     const headerPart = header['elements'][0];
     headerPart['elements'][0]['elements'][0]['elements'][0]['text'] =
-      INTERSOLVE.username;
+      process.env.INTERSOLVE_USERNAME;
     headerPart['elements'][0]['elements'][1]['elements'][0]['text'] =
-      INTERSOLVE.password;
+      process.env.INTERSOLVE_PASSWORD;
     payload['elements'][0]['elements'].unshift(headerPart);
     return payload;
   }

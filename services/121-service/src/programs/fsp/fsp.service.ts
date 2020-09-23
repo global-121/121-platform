@@ -10,7 +10,6 @@ import {
   fspName,
   FinancialServiceProviderEntity,
 } from './financial-service-provider.entity';
-import { INTERSOLVE, AFRICASTALKING } from '../../secrets';
 import { AfricasTalkingApiService } from './api/africas-talking.api.service';
 import { FspCallLogEntity } from './fsp-call-log.entity';
 import { InjectRepository } from '@nestjs/typeorm';

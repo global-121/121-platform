@@ -1,4 +1,2 @@
-import { TWILIO } from '../secrets';
-
-export const twilioClient = require('twilio')(TWILIO.sid, TWILIO.authToken);
+export const twilioClient = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTHTOKEN);
 export const twilio = require('twilio');

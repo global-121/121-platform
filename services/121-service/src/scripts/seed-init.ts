@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
-import { USERCONFIG } from '../secrets';
 import crypto from 'crypto';
 
 @Injectable()
@@ -20,10 +19,10 @@ export class SeedInit implements InterfaceScript {
     await userRepository.save([
       {
         role: UserRole.Admin,
-        email: USERCONFIG.emailAdmin,
-        countryId: USERCONFIG.countryId,
+        email: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+        countryId: process.env.USERCONFIG_121_SERVICE_COUNTRY_ID,
         password: crypto
-          .createHmac('sha256', USERCONFIG.passwordAdmin)
+          .createHmac('sha256', process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN)
           .digest('hex'),
         status: 'active',
       },
