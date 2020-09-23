@@ -40,7 +40,9 @@
   "notifications": {
     "en": {
       "included": "You have been included in this program.",
-      "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us."
+      "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us.",
+      "whatsappPayment": "Please reply to this message within 24 hours to receive your voucher",
+      "whatsappReply": "For further questions please contact this number"
     }
   },
   "customCriteria": [

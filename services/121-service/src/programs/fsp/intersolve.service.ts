@@ -4,8 +4,9 @@ import { Injectable } from '@nestjs/common';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
+import { ProgramEntity } from '../program/program.entity';
 
 @Injectable()
 export class IntersolveService {
@@ -13,6 +14,10 @@ export class IntersolveService {
   private readonly intersolveBarcodeRepository: Repository<
     IntersolveBarcodeEntity
   >;
+
+  private readonly programId = 1;
+  private readonly language = 'en';
+
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
     private readonly whatsappService: WhatsappService,
@@ -32,9 +37,7 @@ export class IntersolveService {
   }
 
   public async sendIndividualPayment(paymentInfo): Promise<any> {
-    console.log('paymentInfo: ', paymentInfo);
     const amountInCents = paymentInfo.amount * 100;
-    console.log('amountInCents: ', amountInCents);
     const voucherInfo = await this.intersolveApiService.issueCard(
       amountInCents,
     );
@@ -50,11 +53,11 @@ export class IntersolveService {
     pin: number,
     phoneNumber: string,
   ): Promise<any> {
-    this.whatsappService.sendWhatsapp(
-      'Please reply to this message within 24 hours to receive your voucher',
-      phoneNumber,
-      null,
-    );
+    const program = await getRepository(ProgramEntity).findOne(this.programId);
+    const whatsappPayment =
+      program.notifications[this.language]['whatsappPayment'];
+
+    this.whatsappService.sendWhatsapp(whatsappPayment, phoneNumber, null);
     const barcodeData = new IntersolveBarcodeEntity();
     barcodeData.barcode = cardNumber;
     barcodeData.pin = pin.toString();

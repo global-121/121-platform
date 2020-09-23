@@ -18,6 +18,9 @@ export class WhatsappService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
+  private readonly programId = 1;
+  private readonly language = 'en';
+
   public constructor(private readonly imageCodeService: ImageCodeService) {}
 
   public async notifyByWhatsapp(
@@ -117,11 +120,12 @@ export class WhatsappService {
       intersolveBarcode.send = true;
       await this.intersolveBarcodeRepository.save(intersolveBarcode);
     } else {
-      await this.sendWhatsapp(
-        'For further questions please contact this number',
-        fromNumber,
-        null,
+      const program = await getRepository(ProgramEntity).findOne(
+        this.programId,
       );
+      const whatsappReply =
+        program.notifications[this.language]['whatsappReply'];
+      await this.sendWhatsapp(whatsappReply, fromNumber, null);
     }
   }
 }
