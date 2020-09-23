@@ -21,6 +21,10 @@ pool:
   vmImage: 'ubuntu-16.04'
 
 steps:
+  - task: CmdLine@2
+    inputs:
+      script: cp services/PA-accounts-service/src/example.secrets.ts services/PA-accounts-service/src/secrets.ts
+
   - task: NodeTool@0
     inputs:
       versionSpec: '10.x'
@@ -32,3 +36,5 @@ steps:
   - script: npm test
     displayName: Tests
     workingDirectory: services/PA-accounts-service/
+    env:
+      SECRETS_PA_ACCOUNTS_SERVICE_SECRET: test
