@@ -6,9 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.8.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.8.1...master)
 
 ---
+
+## [0.8.1](https://github.com/global-121/121-platform/compare/v0.8.0...v0.8.1) - 2020-09-23
+
+### Changed
+- 2020-09-23: Disable TypeORM-logging to file because of node-permissions issue
+
 
 ## [0.8.0](https://github.com/global-121/121-platform/compare/v0.7.1...v0.8.0) - 2020-09-23
 
