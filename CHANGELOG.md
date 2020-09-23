@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - 2020-08-19: Added `GLOBAL_121_REF_DIR` to `tools/.env`
 - 2020-09-01: `GLOBAL_121_WEB_ROOT` now also used by `webhook.service`; Needs update + restart.
-- 2020-09-09: Added `INTERSOLVE.username`, `INTERSOLVE.password`, `INTERSOLVE.ean`, `INTERSOLVE.url` in `121-service/src/secrets.ts` 
+- 2020-09-09: Added `INTERSOLVE.username`, `INTERSOLVE.password`, `INTERSOLVE.ean`, `INTERSOLVE.url` in `121-service/src/secrets.ts`
 
 ### Changed
 - 2020-08-19: Deploy script & apache2 conf changed, so possibly need to restart
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2020-09-07: Add "Turkana" as language, need to update `NG_LOCALES` value for PA-App.
 - 2020-09-08: Change `AFRICASTALKING.productName` in `121-service/src/secrets.ts` to appropriate value (KRCS-staging server only!)
 - 2020-09-12: Changed `docker-compose/Dockerfile` set-up of 121-service and PA-accounts-service to use Node.js base-image
+- 2020-09-23: Refactored `secrets.ts` and `ormconfig.json` into the central `services/.env`-file
 
 ### Removed
 - 2020-09-01: Remove `VERSION`-env variable used by `webhook.service`; Needs update + restart.
