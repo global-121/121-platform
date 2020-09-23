@@ -267,7 +267,7 @@ export class FspService {
     transaction.status = connection.status;
     transaction.errorMessage = connection.errorMessage;
 
-    this.transactionRepository.save(transaction);
+    // this.transactionRepository.save(transaction);
   }
 
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {

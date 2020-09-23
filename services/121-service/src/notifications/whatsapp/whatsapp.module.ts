@@ -11,9 +11,13 @@ import { WhatsappService } from './whatsapp.service';
 import { WhatsappController } from './whatsapp.controller';
 import { TwilioMessageEntity } from '../twilio.entity';
 import { ImageCodeModule } from '../imagecode/image-code.module';
+import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TwilioMessageEntity]), ImageCodeModule],
+  imports: [
+    TypeOrmModule.forFeature([TwilioMessageEntity, IntersolveBarcodeEntity]),
+    ImageCodeModule,
+  ],
   providers: [WhatsappService],
   controllers: [WhatsappController],
   exports: [WhatsappService],

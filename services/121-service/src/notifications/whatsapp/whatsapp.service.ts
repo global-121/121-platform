@@ -7,9 +7,14 @@ import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { ImageCodeService } from '../imagecode/image-code.service';
+import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 
 @Injectable()
 export class WhatsappService {
+  @InjectRepository(IntersolveBarcodeEntity)
+  private readonly intersolveBarcodeRepository: Repository<
+    IntersolveBarcodeEntity
+  >;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
@@ -32,23 +37,32 @@ export class WhatsappService {
     recipientPhoneNr: string,
     barcodeString: string,
   ): Promise<void> {
-    console.log('Whatsapp message: ', message);
     let mediaUrl = '';
     if (barcodeString) {
       mediaUrl = await this.imageCodeService.createBarcode(barcodeString);
+      twilioClient.messages
+        .create({
+          body: message,
+          messagingServiceSid: TWILIO.messagingSid,
+          from: 'whatsapp:' + TWILIO.fromNumberWhatsapp,
+          statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
+          to: 'whatsapp:' + recipientPhoneNr,
+          mediaUrl: mediaUrl,
+        })
+        .then(message => this.storeSendWhatsapp(message))
+        .catch(err => console.log('Error twillio', err));
+    } else {
+      twilioClient.messages
+        .create({
+          body: message,
+          messagingServiceSid: TWILIO.messagingSid,
+          from: 'whatsapp:' + TWILIO.fromNumberWhatsapp,
+          statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
+          to: 'whatsapp:' + recipientPhoneNr,
+        })
+        .then(message => this.storeSendWhatsapp(message))
+        .catch(err => console.log('Error twillio', err));
     }
-
-    twilioClient.messages
-      .create({
-        body: message,
-        messagingServiceSid: TWILIO.messagingSid,
-        from: 'whatsapp:+14155238886',
-        statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
-        to: 'whatsapp:' + recipientPhoneNr,
-        mediaUrl: mediaUrl,
-      })
-      .then(message => this.storeSendWhatsapp(message))
-      .catch(err => console.log('Error twillio', err));
   }
 
   public async getWhatsappText(
@@ -86,5 +100,28 @@ export class WhatsappService {
       { sid: callbackData.MessageSid },
       { status: callbackData.MessageStatus },
     );
+  }
+
+  public async handleIncomming(callbackData): Promise<void> {
+    const fromNumber = callbackData.From.replace('whatsapp:', '');
+
+    const intersolveBarcode = await this.intersolveBarcodeRepository.findOne({
+      where: { phonenumber: fromNumber, send: false },
+    });
+    if (intersolveBarcode) {
+      await this.sendWhatsapp(
+        intersolveBarcode.pin,
+        intersolveBarcode.phonenumber,
+        intersolveBarcode.barcode,
+      );
+      intersolveBarcode.send = true;
+      await this.intersolveBarcodeRepository.save(intersolveBarcode);
+    } else {
+      await this.sendWhatsapp(
+        'For further questions please contact this number',
+        fromNumber,
+        null,
+      );
+    }
   }
 }

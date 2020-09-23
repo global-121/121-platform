@@ -1,5 +1,4 @@
 import { WhatsappModule } from './../../notifications/whatsapp/whatsapp.module';
-import { WhatsappService } from './../../notifications/whatsapp/whatsapp.service';
 import { AfricasTalkingService } from './africas-talking.service';
 import { Module, HttpModule } from '@nestjs/common';
 import { FspService } from './fsp.service';
@@ -15,6 +14,7 @@ import { SoapService } from './api/soap.service';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { IntersolveService } from './intersolve.service';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
+import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 
 @Module({
   imports: [
@@ -27,6 +27,7 @@ import { AfricasTalkingNotificationEntity } from './africastalking-notification.
       TransactionEntity,
       FspCallLogEntity,
       AfricasTalkingNotificationEntity,
+      IntersolveBarcodeEntity,
     ]),
   ],
   providers: [

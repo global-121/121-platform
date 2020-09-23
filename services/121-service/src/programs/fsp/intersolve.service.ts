@@ -3,9 +3,16 @@ import { StatusMessageDto } from './../../shared/dto/status-message.dto';
 import { Injectable } from '@nestjs/common';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from '../../shared/enum/status.enum';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 
 @Injectable()
 export class IntersolveService {
+  @InjectRepository(IntersolveBarcodeEntity)
+  private readonly intersolveBarcodeRepository: Repository<
+    IntersolveBarcodeEntity
+  >;
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
     private readonly whatsappService: WhatsappService,
@@ -43,12 +50,16 @@ export class IntersolveService {
     pin: number,
     phoneNumber: string,
   ): Promise<any> {
-    console.log(
-      'sendVoucherWhatsapp cardNumber: ',
-      cardNumber,
-      pin,
+    this.whatsappService.sendWhatsapp(
+      'Please reply to this message within 24 hours to receive your voucher',
       phoneNumber,
+      null,
     );
-    this.whatsappService.sendWhatsapp(pin.toString(), phoneNumber, cardNumber);
+    const barcodeData = new IntersolveBarcodeEntity();
+    barcodeData.barcode = cardNumber;
+    barcodeData.pin = pin.toString();
+    barcodeData.phonenumber = phoneNumber;
+    barcodeData.send = false;
+    this.intersolveBarcodeRepository.save(barcodeData);
   }
 }
