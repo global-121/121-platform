@@ -14,15 +14,11 @@ Switch to the repository folder
 
     cd services/
 
-Copy a few secret files and get the right passwords from someone who knows:
+Copy the centralized .env file
 
     cp .env.example .env
-    cp 121-service/src/example.secrets.ts 121-service/src/secrets.ts
-    cp 121-service/example.ormconfig.json 121-service/ormconfig.json
-    cp PA-accounts-service/src/example.secrets.ts PA-accounts-service/src/secrets.ts
-    cp PA-accounts-service/example.ormconfig.json PA-accounts-service/ormconfig.json
 
-Environment variables are explained in the comments of the .env.example
+Environment variables are explained in the comments of the .env.example, they should be set up prior to development
 
 ## Run in Production
 
@@ -53,3 +49,7 @@ We use the NestJS Swagger module for API documentation. [NestJS Swagger](https:/
 ### Authentication
 
 All services use [JSON Web Token](https://jwt.io/) (JWT) to handle authentication. The token should be passed with each request using the `Authorization` header with `Token` scheme. The JWT authentication middleware handles the validation and authentication of the token.
+
+### Adding third party API tokens
+
+All the tokens and access keys for third party APIs are added on the .env file and subsequently imported using the environment variables within typescript files.
