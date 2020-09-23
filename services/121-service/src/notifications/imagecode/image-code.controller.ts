@@ -2,6 +2,7 @@ import { Controller, Get, Param, Res } from '@nestjs/common';
 import { ApiResponse, ApiUseTags, ApiImplicitParam } from '@nestjs/swagger';
 import { ImageCodeService } from './image-code.service';
 import { Response } from 'express-serve-static-core';
+import stream from 'stream';
 
 @ApiUseTags('notifications')
 @Controller('notifications/imageCode')
@@ -19,13 +20,11 @@ export class ImageCodeController {
   @Get(':secret')
   public async get(@Param() params, @Res() response: Response): Promise<void> {
     const blob = await this.imageCodeService.get(params.secret);
-    var stream = require('stream');
     var bufferStream = new stream.PassThrough();
-    bufferStream.end(new Buffer(blob, 'binary'));
+    bufferStream.end(Buffer.from(blob, 'binary'));
     response.writeHead(200, {
       'Content-Type': 'image/png',
     });
-    // res is standered express res object
     bufferStream.pipe(response);
   }
 }

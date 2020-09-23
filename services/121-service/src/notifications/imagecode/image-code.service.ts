@@ -22,11 +22,13 @@ export class ImageCodeService {
       scale: 3, // 3x scaling factor
       height: 10, // Bar height, in millimeters
       includetext: true, // Show human-readable text
-      textxalign: 'center', // Always good to set this
+      textxalign: 'center', // Always good to set this,
+      backgroundcolor: 'FFFFFF',
+      padding: 10,
     });
 
     let barcode = new ImageCodeEntity();
-    barcode.secret = crypto.randomBytes(100).toString('hex');
+    barcode.secret = crypto.randomBytes(100).toString('hex') + '.png';
     barcode.image = image;
 
     this.imageRepository.save(barcode);
@@ -38,6 +40,8 @@ export class ImageCodeService {
 
   public async get(secret: string): Promise<any> {
     const imageCode = await this.imageRepository.findOne({ secret: secret });
+    // Removes the image from the database after getting it
+    // await this.imageRepository.remove(imageCode);
     return imageCode.image;
   }
 }

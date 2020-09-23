@@ -1,3 +1,4 @@
+import { WhatsappService } from './../../notifications/whatsapp/whatsapp.service';
 import { StatusMessageDto } from './../../shared/dto/status-message.dto';
 import { Injectable } from '@nestjs/common';
 import { IntersolveApiService } from './api/instersolve.api.service';
@@ -7,6 +8,7 @@ import { StatusEnum } from '../../shared/enum/status.enum';
 export class IntersolveService {
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
+    private readonly whatsappService: WhatsappService,
   ) {}
 
   public async sendPayment(payload): Promise<StatusMessageDto> {
@@ -32,7 +34,7 @@ export class IntersolveService {
     await this.sendVoucherWhatsapp(
       voucherInfo.cardId,
       voucherInfo.pin,
-      paymentInfo.phoneNumer,
+      paymentInfo.phoneNumber,
     );
   }
 
@@ -47,5 +49,6 @@ export class IntersolveService {
       pin,
       phoneNumber,
     );
+    this.whatsappService.sendWhatsapp(pin.toString(), phoneNumber, cardNumber);
   }
 }

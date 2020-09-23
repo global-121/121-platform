@@ -1,17 +1,13 @@
 import { AfricasTalkingService } from './africas-talking.service';
 import { IntersolveService } from './intersolve.service';
 import { IntersolveApiService } from './api/instersolve.api.service';
-import { SoapService } from './api/soap.service';
 import { StatusEnum } from './../../shared/enum/status.enum';
 import { StatusMessageDto } from '../../shared/dto/status-message.dto';
 import { Injectable } from '@nestjs/common';
-import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import {
   fspName,
   FinancialServiceProviderEntity,
 } from './financial-service-provider.entity';
-import { INTERSOLVE, AFRICASTALKING } from '../../secrets';
-import { AfricasTalkingApiService } from './api/africas-talking.api.service';
 import { FspCallLogEntity } from './fsp-call-log.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -20,7 +16,6 @@ import { ProgramEntity } from '../program/program.entity';
 import { TransactionEntity } from '../program/transactions.entity';
 import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { FspPaymentResultDto } from './dto/fsp-payment-results.dto';
-import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 import { DEBUG } from '../../config';
 

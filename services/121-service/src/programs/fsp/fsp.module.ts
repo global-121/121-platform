@@ -1,3 +1,5 @@
+import { WhatsappModule } from './../../notifications/whatsapp/whatsapp.module';
+import { WhatsappService } from './../../notifications/whatsapp/whatsapp.service';
 import { AfricasTalkingService } from './africas-talking.service';
 import { Module, HttpModule } from '@nestjs/common';
 import { FspService } from './fsp.service';
@@ -17,6 +19,7 @@ import { AfricasTalkingNotificationEntity } from './africastalking-notification.
 @Module({
   imports: [
     HttpModule,
+    WhatsappModule,
     TypeOrmModule.forFeature([
       ProgramEntity,
       ConnectionEntity,

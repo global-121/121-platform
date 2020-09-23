@@ -33,10 +33,9 @@ export class WhatsappService {
     barcodeString: string,
   ): Promise<void> {
     console.log('Whatsapp message: ', message);
-    // Overwrite recipient phone number for testing phase
-    // recipientPhoneNr = TWILIO.testToNumber;
+    let mediaUrl = '';
     if (barcodeString) {
-      await this.imageCodeService.createBarcode(barcodeString);
+      mediaUrl = await this.imageCodeService.createBarcode(barcodeString);
     }
 
     twilioClient.messages
@@ -46,7 +45,7 @@ export class WhatsappService {
         from: 'whatsapp:+14155238886',
         statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
         to: 'whatsapp:' + recipientPhoneNr,
-        mediaUrl: 'https://demo.twilio.com/owl.png',
+        mediaUrl: mediaUrl,
       })
       .then(message => this.storeSendWhatsapp(message))
       .catch(err => console.log('Error twillio', err));

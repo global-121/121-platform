@@ -31,6 +31,7 @@ export class IntersolveApiService {
       INTERSOLVE.ean,
     );
 
+    console.log('payload: ', payload);
     const responseBody = await this.soapService.post(payload);
     console.log('responseBody intersolve: ', responseBody);
     const result = {
