@@ -32,3 +32,21 @@ steps:
   - script: npm test
     displayName: Tests
     workingDirectory: services/121-service/
+    env:
+      SECRETS_121_SERVICE_SECRET: test
+      TWILIO_SID: ACtest
+      TWILIO_AUTH: test
+      TWILIO_TEST_TO_NUMBER: test
+      TWILIO_TEST_FROM_NUMBER_VOICE: test
+      TWILIO_TEST_FROM_NUMBER_SMS: test
+      INTERSOLVE_AUTH_TOKEN: test
+      INTERSOLVE_PRODUCT_CODE: test
+      INTERSOLVE_PACKAGE_CODE: test
+      INTERSOLVE_USERNAME: test
+      INTERSOLVE_PASSWORD: test
+      INTERSOLVE_EAN: test
+      INTERSOLVE_URL: test
+      AFRICASTALKING_API_KEY: test
+      AFRICASTALKING_USERNAME: test
+      AFRICASTALKING_PRODUCT_NAME-PRODUCT: test
+      AFRICASTALKING_CURRENCY_CODE: test
