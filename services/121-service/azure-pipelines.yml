@@ -21,10 +21,6 @@ pool:
   vmImage: 'ubuntu-16.04'
 
 steps:
-  - task: CmdLine@2
-    inputs:
-      script: cp services/121-service/src/example.secrets.ts services/121-service/src/secrets.ts
-
   - task: NodeTool@0
     inputs:
       versionSpec: '10.x'
