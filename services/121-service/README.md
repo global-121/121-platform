@@ -84,7 +84,7 @@ When changing the name of the NGO (`program.ngo`), this has effect on the PA-app
 
 See the Twilio API documentation: <https://www.twilio.com/docs>.
 
-- Get up to date `secrets.ts` file from someone who has it
+- Make sure the .env file is up to date containing the pertinent access keys 
 - Download `ngrok`: <https://ngrok.com/download>
 - Unzip `ngrok` `unzip /path/to/ngrok.zip`
 - Start `ngrok` to open your local port: `./ngrok http 3000` in the folder where you unzipped `ngrok`
