@@ -5,6 +5,7 @@ import { environment } from '../../environments/environment';
 import { Country } from '../models/country.model';
 import { Fsp } from '../models/fsp.model';
 import { InstanceInfo } from '../models/instance.model';
+import { PaInclusionStates } from '../models/pa-statuses.enum';
 import { Program } from '../models/program.model';
 import { ApiService } from './api.service';
 
@@ -177,7 +178,10 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  checkInclusionStatus(did: string, programId: number): Observable<any> {
+  checkInclusionStatus(
+    did: string,
+    programId: number,
+  ): Observable<PaInclusionStates> {
     return this.apiService
       .post(
         environment.url_121_service_api,

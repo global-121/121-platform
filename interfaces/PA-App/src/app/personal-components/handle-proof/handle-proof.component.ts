@@ -117,11 +117,7 @@ export class HandleProofComponent extends PersonalComponent {
     }
 
     if (status === PaCredentialStatus.done) {
-      this.inclusionStatus = await this.programService
-        .checkInclusionStatus(this.did, this.programId)
-        .toPromise();
-      this.processStatus(this.inclusionStatus);
-      this.conversationService.stopLoading();
+      await this.getInclusionStatus(this.did, this.programId);
       this.complete();
     } else {
       this.conversationService.stopLoading();
@@ -151,14 +147,11 @@ export class HandleProofComponent extends PersonalComponent {
 
   async getInclusionStatus(did: string, programId: number) {
     console.log('getInclusionStatus()');
-    this.programService
+    this.inclusionStatus = await this.programService
       .checkInclusionStatus(did, programId)
-      .subscribe((response) => {
-        this.inclusionStatus = response;
-        console.log('Status Received:', this.inclusionStatus);
-        this.processStatus(this.inclusionStatus);
-        this.conversationService.stopLoading();
-      });
+      .toPromise();
+    this.processStatus(this.inclusionStatus);
+    this.conversationService.stopLoading();
   }
 
   getNextSection() {
