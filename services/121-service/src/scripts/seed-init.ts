@@ -20,7 +20,7 @@ export class SeedInit implements InterfaceScript {
       {
         role: UserRole.Admin,
         email: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
-        countryId: process.env.USERCONFIG_121_SERVICE_COUNTRY_ID,
+        countryId: parseInt(process.env.USERCONFIG_121_SERVICE_COUNTRY_ID),
         password: crypto
           .createHmac('sha256', process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN)
           .digest('hex'),
