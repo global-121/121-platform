@@ -35,7 +35,7 @@ steps:
     env:
       SECRETS_121_SERVICE_SECRET: test
       TWILIO_SID: ACtest
-      TWILIO_AUTH: test
+      TWILIO_AUTHTOKEN: test
       TWILIO_TEST_TO_NUMBER: test
       TWILIO_TEST_FROM_NUMBER_VOICE: test
       TWILIO_TEST_FROM_NUMBER_SMS: test
