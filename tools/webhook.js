@@ -32,7 +32,7 @@ function deploy(target) {
  */
 function isPatchUpgrade(target) {
   const currentVersion = fs.readFileSync(`${process.env.GLOBAL_121_WEB_ROOT}/VERSION.txt`, { encoding: 'utf-8' });
-  const currentMinorVersion = currentVersion.replace(/v0\.([0-9]+)\..*/, 'v0.$1.');
+  const currentMinorVersion = currentVersion.replace(/v0\.([0-9]+)\.([\S\s]*)/, 'v0.$1.');
 
   return target.includes(currentMinorVersion);
 }
@@ -57,14 +57,17 @@ http
           .digest("hex");
       let payload = JSON.parse(str);
 
+      if (req.headers["x-hub-signature"] !== sig) {
+        console.warn('Invalid GitHub signature!');
+        return
+      }
+
       if (
-        req.headers["x-hub-signature"] !== sig ||
-        (
-          payload.pull_request &&
-          payload.pull_request.merged &&
-          payload.pull_request.title.includes("[SKIP CD]")
-        )
+        payload.pull_request &&
+        payload.pull_request.merged &&
+        payload.pull_request.title.includes("[SKIP CD]")
       ) {
+        console.log('PR deployment skipped with [SKIP CD]');
         return
       }
 
@@ -73,6 +76,7 @@ http
         payload.action === "closed" &&
         payload.pull_request.merged
       ) {
+        console.log('PR deployment for test-environment.');
         deploy()
         return
       }
@@ -84,6 +88,7 @@ http
         payload.release.target_commitish &&
         isPatchUpgrade(payload.release.target_commitish)
       ) {
+        console.log(`Release (hotfix) deployment for: ${payload.release.target_commitish}`);
         deploy(payload.release.target_commitish);
         return
       }

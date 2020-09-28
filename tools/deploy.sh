@@ -69,7 +69,7 @@ function deploy() {
 
     cd "$repo_services" || return
     sudo docker-compose up -d --build
-    sudo docker restart 121-service PA-accounts-service
+    sudo docker-compose restart 121-service PA-accounts-service
   }
 
   function build_interface() {
