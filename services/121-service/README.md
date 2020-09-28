@@ -38,7 +38,7 @@ To run this file locally, do:
 
 ### Seed the database
 
-Upon application start, automatically a basic seed-script is run which adds 1 `admin`-user. It will only do so, if no existing users are found. The password and e-mail for this user can be customized in centralized `.env` file within services
+Upon application start, automatically a basic seed-script is run which adds 1 `admin`-user. It will only do so, if no existing users are found. The password and e-mail for this user can be customized in centralized [`services/.env`](../.env.example) file.
 
 To seed the database with more data (e.g. programs) additional seed-scripts can be run manually.  
 **NOTE:** These seed-scripts delete _all existing data_. They cannot be run on production; When run locally or on test-environment, you are prompted with '`Are you sure? (y/n)`'.
@@ -84,7 +84,7 @@ When changing the name of the NGO (`program.ngo`), this has effect on the PA-app
 
 See the Twilio API documentation: <https://www.twilio.com/docs>.
 
-- Make sure the .env file is up to date containing the pertinent access keys 
+- Make sure the `.env` file is up to date containing the pertinent access keys
 - Download `ngrok`: <https://ngrok.com/download>
 - Unzip `ngrok` `unzip /path/to/ngrok.zip`
 - Start `ngrok` to open your local port: `./ngrok http 3000` in the folder where you unzipped `ngrok`
@@ -100,4 +100,4 @@ See: [`src/notifications/voice/voice.service.ts`](`src/notifications/voice/voice
 
 ### Use Africa's Talking API during development
 
-If setting up a validation callback, use ngrok (see above) here as well during development.
+If setting up a validation callback, use `ngrok` (see above) here as well during development.
