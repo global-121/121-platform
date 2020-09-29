@@ -40,7 +40,7 @@ export class ActionService {
     actionType: ActionType,
   ): Promise<ActionEntity[]> {
     const actions = await this.actionRepository.find({
-      where: { programId: programId, actionType: actionType },
+      where: { program: { id: programId }, actionType: actionType },
     });
 
     return actions;
