@@ -6,12 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.8.3...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.8.4...master)
+
+---
+
+## [0.8.4](https://github.com/global-121/121-platform/compare/v0.8.3...v0.8.4) - 2020-09-28
 
 ### Fixed
 - 2020-09-28: Hotfix/Patch-Releases can now be deployed automatically (again) by `webhook.js`
-
----
 
 ## [0.8.3](https://github.com/global-121/121-platform/compare/v0.8.2...v0.8.3) - 2020-09-28
 
