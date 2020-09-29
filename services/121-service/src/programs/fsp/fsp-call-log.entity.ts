@@ -6,7 +6,10 @@ export class FspCallLogEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @ManyToOne(_type => FinancialServiceProviderEntity, fsp => fsp.logs)
+  @ManyToOne(
+    _type => FinancialServiceProviderEntity,
+    fsp => fsp.logs,
+  )
   public fsp: FinancialServiceProviderEntity;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

@@ -24,11 +24,13 @@
                   lines="full"
         >
           <ion-label>
-            {{ program.ngo }}: {{ program.title }}
-            <br>
-            <ion-note class="ion-text-wrap">
-              {{ program.description }}
-            </ion-note>
+            {{ program.title }}
+            <ng-container *ngIf="program.description">
+              <br>
+              <ion-note class="ion-text-wrap">
+                {{ program.description }}
+              </ion-note>
+            </ng-container>
           </ion-label>
           <ion-radio [value]="program.id"
                      [checked]="(program.id === programChoice)"

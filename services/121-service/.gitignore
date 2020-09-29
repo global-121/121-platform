@@ -6,6 +6,7 @@ npm-debug.log*
 
 # Dependency directory
 node_modules
+.config/configstore
 
 # Generated assets / caches
 .npm
@@ -15,7 +16,3 @@ swagger-spec.json
 
 #IDEs
 .idea
-
-# (local) Configuration files + Secrets
-ormconfig.json
-src/secrets.ts

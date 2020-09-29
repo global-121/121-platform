@@ -51,8 +51,23 @@
     <offer
       [offer]="offer"
       [showDetails]="true"
+      [goBack]="goBack.bind(this)"
       (click)="clickOffer(offer)"
     ></offer>
+  </div>
+  <div
+    *ngIf="categories?.length === 0 || subCategories?.length === 0 || offers?.length === 0"
+  >
+    <ion-card class="ion-text-center">
+      <ion-card-header>
+        <ion-card-subtitle>Data Unavailable</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        Please reach out to us via
+        <a (click)="openHelpModal()">our help page</a>.
+      </ion-card-content>
+    </ion-card>
   </div>
 </ion-content>
 

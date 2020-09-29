@@ -60,7 +60,6 @@ services:
       - "50002:50002"
     healthcheck:
       test: "exit 0"
-    restart: unless-stopped
     networks:
       pool_network:
         ipv4_address: 11.0.0.4
@@ -82,7 +81,6 @@ services:
       - "./logs-volume:/var/log/userims"
     healthcheck:
       test: "exit 0"
-    restart: on-failure
     ports:
       - "50003:50003"
     networks:
@@ -114,18 +112,12 @@ services:
   121-service:
     build:
       context: 121-service
-      dockerfile: Dockerfile
     init: true
     container_name: 121-service
-    environment:
-      - EXTERNAL_121_SERVICE_URL=${EXTERNAL_121_SERVICE_URL}
-      - RESET_SECRET=${RESET_SECRET}
-      - PORT_121_SERVICE=${PORT_121_SERVICE}
-      - SUBDOMAIN_121_SERVICE=${SUBDOMAIN_121_SERVICE}
-      - URL_PA_ACCOUNTS_SERVICE_API=${URL_PA_ACCOUNTS_SERVICE_API}
-      - NODE_ENV=${NODE_ENV}
+    env_file:
+      - .env
     volumes:
-      - "./121-service:/home/121/services/121-service"
+      - "./121-service:/home/node/app"
     ports:
       - "${PORT_121_SERVICE}:${PORT_121_SERVICE}"
     stdin_open: true
@@ -139,18 +131,13 @@ services:
   PA-accounts-service:
     build:
       context: PA-accounts-service
-      dockerfile: Dockerfile
-    image: pa-accounts-node
+    image: services_pa-accounts-service
     init: true
-    container_name: PA-accounts-service
-    environment:
-      - WALLET_PASSWORD_ENCRYPTION_KEY=${WALLET_PASSWORD_ENCRYPTION_KEY}
-      - PORT_PA_ACCOUNTS_SERVICE=${PORT_PA_ACCOUNTS_SERVICE}
-      - SUBDOMAIN_PA_ACCOUNTS_SERVICE=${SUBDOMAIN_PA_ACCOUNTS_SERVICE}
-      - URL_121_SERVICE_API=${URL_121_SERVICE_API}
-      - NODE_ENV=${NODE_ENV}
+    container_name: pa-accounts-service
+    env_file:
+      - .env
     volumes:
-      - "./PA-accounts-service:/home/121/services/PA-accounts-service"
+      - "./PA-accounts-service:/home/node/app"
     ports:
       - "${PORT_PA_ACCOUNTS_SERVICE}:${PORT_PA_ACCOUNTS_SERVICE}"
     stdin_open: true

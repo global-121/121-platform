@@ -136,7 +136,8 @@
         "start-payout": "Start payout now",
         "total-included": "Number of PA included",
         "total-amount": "Total amount to payout:",
-        "payout-success": "Payout successful.",
+        "result-success": "Successfully sent instructions to FSP's for {{nrSuccessfull}} PA's.",
+        "result-failure": "Payment request failed for {{nrFailed}} PA's. Inspect the table below for details.",
         "none-included": "No included people yet."
       },
       "program-people-affected": {

@@ -12,4 +12,8 @@ export const environment = {
 
   // APIs:
   url_121_service_api: 'http://localhost:3000/api',
+
+  // Google Sheets:
+  google_sheets_api_url: '',
+  google_sheets_sheet_id: '',
 };

@@ -7,16 +7,13 @@ npm-debug.log*
 
 # Dependency directory
 node_modules
+.config/configstore
 
 # Optional npm cache directory
 .npm
 
 #IDEs
 .idea
-
-#config files
-ormconfig.json
-src/secrets.ts
 
 # code testing coverage
 coverage

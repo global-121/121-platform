@@ -1,13 +1,13 @@
 {
-  "fsp": "Intersolve",
+  "fsp": "Digital Voucher",
   "apiUrl": "https://trade-acc.intersolve.nl/rest/buyerapi/v1/orders",
   "attributes": [
     {
-      "name": "email",
+      "name": "phoneNumber",
       "label": {
-        "en": "What is your email address, so you can receive payments through e-vouchers?"
+        "en": "What is your WhatsApp phonenumber, so we can send you vouchers through WhatsApp?"
       },
-      "answerType": "email",
+      "answerType": "tel",
       "options": null
     }
   ]

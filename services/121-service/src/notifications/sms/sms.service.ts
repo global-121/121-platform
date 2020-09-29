@@ -1,6 +1,5 @@
 import { EXTERNAL_API } from './../../config';
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { TWILIO } from '../../secrets';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
@@ -31,12 +30,12 @@ export class SmsService {
 
   public async sendSms(message: string, recipientPhoneNr: string) {
     // Overwrite recipient phone number for testing phase
-    // recipientPhoneNr = TWILIO.testToNumber;
+    // recipientPhoneNr = process.env.TWILIO_TEST_TO_NUMBER;
 
     twilioClient.messages
       .create({
         body: message,
-        from: TWILIO.testFromNumberSms, // This parameter could be specifief per program
+        from: process.env.TWILIO_TEST_FROM_NUMBER_SMS, // This parameter could be specifief per program
         statusCallback: EXTERNAL_API.callbackUrlSms,
         to: recipientPhoneNr,
       })

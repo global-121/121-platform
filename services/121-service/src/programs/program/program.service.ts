@@ -381,13 +381,13 @@ export class ProgramService {
     this.smsService.notifyBySms(
       connection.phoneNumber,
       connection.preferredLanguage,
-      inclusionResult ? 'included' : 'rejected',
+      inclusionResult ? PaStatus.included : PaStatus.rejected,
       programId,
     );
     this.voiceService.notifyByVoice(
       connection.phoneNumber,
       connection.preferredLanguage,
-      inclusionResult ? 'included' : 'rejected',
+      inclusionResult ? PaStatus.included : PaStatus.rejected,
       programId,
     );
   }
@@ -410,15 +410,20 @@ export class ProgramService {
     }
 
     const notificationDone =
-      (await this.actionRepository.find({
-        where: { programId: programId, actionType: ActionType.notifyIncluded },
-      })).length > 0;
+      (
+        await this.actionRepository.find({
+          where: {
+            program: { id: programId },
+            actionType: ActionType.notifyIncluded,
+          },
+        })
+      ).length > 0;
 
     let inclusionStatus: InclusionStatus;
     if (connection.programsIncluded.includes(+programId) && notificationDone) {
-      inclusionStatus = { status: 'included' };
+      inclusionStatus = { status: PaStatus.included };
     } else if (connection.programsRejected.includes(+programId)) {
-      inclusionStatus = { status: 'rejected' };
+      inclusionStatus = { status: PaStatus.rejected };
     } else {
       inclusionStatus = { status: 'unavailable' };
     }
@@ -530,10 +535,9 @@ export class ProgramService {
     }
 
     if (notificationType === NotificationType.include) {
-      const includedDids = (await this.getConnectionsWithStatus(
-        programId,
-        PaStatus.included,
-      )).map(i => i.did);
+      const includedDids = (
+        await this.getConnectionsWithStatus(programId, PaStatus.included)
+      ).map(i => i.did);
 
       for (let did of includedDids) {
         let connection = await this.connectionRepository.findOne({
@@ -751,21 +755,8 @@ export class ProgramService {
 
     return {
       status: StatusEnum.success,
-      message: ''
-        .concat(
-          nrSuccessfull > 0
-            ? "Successfully sent instructions to FSP's for " +
-                String(nrSuccessfull) +
-                " PA's."
-            : '',
-        )
-        .concat(
-          nrFailed > 0
-            ? 'Payment request failed for ' +
-                String(nrFailed) +
-                " PA's. Inspect the table below for details."
-            : '',
-        ),
+      nrSuccessfull,
+      nrFailed,
     };
   }
 

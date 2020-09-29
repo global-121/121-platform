@@ -10,29 +10,37 @@
   <ion-grid>
     <ion-row>
       <ion-col class="help-image-column">
-        <ion-img
-          class="help-image"
-          src="https://www.510.global/wp-content/uploads/2017/07/510-LOGO-WEBSITE-01.png"
-        ></ion-img>
+        <ion-img class="help-image" [src]="help.helpIcon"></ion-img>
       </ion-col>
       <ion-col>
+        <p>{{ help.helpText }}</p>
         <p>
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book.
-        </p>
-        <p>
-          <ion-icon class="help-call-icon" name="call"></ion-icon> Helpline:
-          <a href="tel:+31 510 510 510">+31 510 510 510</a>
+          <ion-icon class="help-call-icon" name="call"></ion-icon> {{
+          help.helpPhoneLabel }}:
+          <a href="tel:{{ help.helpPhone }}">{{ help.helpPhone }}</a>
         </p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <p><a href="#whatsapp">Link to WhatsApp</a></p>
-        <p><a href="#twitter">Link to Twitter</a></p>
-        <p><a href="#facebook">Link to Facebook</a></p>
+        <a href="{{ help.helpWhatsApp }}" *ngIf="help.helpWhatsApp">
+          <ion-img
+            class="help-social-image help-whatsapp-image"
+            src="assets/icons/whatsapp.png"
+          ></ion-img>
+        </a>
+        <a href="{{ help.helpTwitter }}" *ngIf="help.helpTwitter">
+          <ion-img
+            class="help-social-image help-twitter-image"
+            src="assets/icons/twitter.svg"
+          ></ion-img>
+        </a>
+        <a href="{{ help.helpFacebook }}" *ngIf="help.helpFacebook">
+          <ion-img
+            class="help-social-image help-facebook-image"
+            src="assets/icons/facebook.png"
+          ></ion-img>
+        </a>
       </ion-col>
     </ion-row>
   </ion-grid>

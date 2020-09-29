@@ -1,3 +1,4 @@
+import { AfricasTalkingService } from './../fsp/africas-talking.service';
 import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
@@ -24,8 +25,11 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { ActionEntity } from '../../actions/action.entity';
 import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
 import { FspService } from '../fsp/fsp.service';
-import { FspApiService } from '../fsp/fsp-api.service';
 import { AfricasTalkingNotificationEntity } from '../fsp/africastalking-notification.entity';
+import { AfricasTalkingApiService } from '../fsp/api/africas-talking.api.service';
+import { IntersolveService } from '../fsp/intersolve.service';
+import { IntersolveApiService } from '../fsp/api/instersolve.api.service';
+import { SoapService } from '../fsp/api/soap.service';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -44,7 +48,11 @@ describe('Program service', (): void => {
           ProofService,
           FundingService,
           FspService,
-          FspApiService,
+          AfricasTalkingService,
+          AfricasTalkingApiService,
+          IntersolveService,
+          IntersolveApiService,
+          SoapService,
           {
             provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,

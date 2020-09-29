@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+   <soap:Body>
+      <GetCard xmlns="http://www.loyaltyinabox.com/giftcard_6_8/">
+        <CardId>0</CardId>
+        <PIN>0</PIN>
+      </GetCard>
+   </soap:Body>
+</soap:Envelope>

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { TWILIO } from '../../secrets';
 import { twilioClient, twilio } from '../twilio.client';
 import { NotificationType, TwilioMessageEntity } from '../twilio.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,14 +27,14 @@ export class VoiceService {
 
   public makeVoiceCall(mp3Param: string, recipientPhoneNr: string): void {
     // Overwrite recipient phone number for testing phase
-    // recipientPhoneNr = TWILIO.testToNumber;
+    // recipientPhoneNr = process.env.TWILIO_TEST_TO_NUMBER;
     twilioClient.calls
       .create({
         method: 'GET',
         url: EXTERNAL_API.voiceXmlUrl + mp3Param,
         to: recipientPhoneNr,
         statusCallback: EXTERNAL_API.callbackUrlVoice,
-        from: TWILIO.testFromNumberVoice,
+        from: process.env.TWILIO_TEST_FROM_NUMBER_VOICE,
       })
       .then(call => this.storeCall(call, mp3Param))
       .catch(err => {

@@ -9,7 +9,10 @@ export class CredentialRequestEntity {
   @Column()
   public did: string;
 
-  @ManyToOne(type => ProgramEntity, program => program.credentialRequests)
+  @ManyToOne(
+    type => ProgramEntity,
+    program => program.credentialRequests,
+  )
   public program: ProgramEntity;
 
   @Column('json', { default: null })

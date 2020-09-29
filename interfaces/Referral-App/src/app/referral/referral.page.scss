@@ -1,7 +1,23 @@
 ion-header {
-  --ion-background-color: var(--ion-color-warning);
+  --ion-background-color: #ffc001;
 }
 
 ion-content {
   --ion-background-color: #f6f0eb;
+}
+
+ion-card {
+  width: 300px;
+  margin: 5% auto;
+  background: #ffffff;
+}
+
+a {
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover,
+  &:focus {
+    color: #3171e0;
+  }
 }

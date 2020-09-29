@@ -26,7 +26,10 @@ export class TransactionEntity {
   @Column({ nullable: true })
   public errorMessage: string;
 
-  @ManyToOne(_type => ProgramEntity, program => program.transactions)
+  @ManyToOne(
+    _type => ProgramEntity,
+    program => program.transactions,
+  )
   public program: ProgramEntity;
 
   @Column({ default: 1 })
@@ -38,6 +41,9 @@ export class TransactionEntity {
   )
   public financialServiceProvider: FinancialServiceProviderEntity;
 
-  @ManyToOne(_type => ConnectionEntity, connection => connection.transactions)
+  @ManyToOne(
+    _type => ConnectionEntity,
+    connection => connection.transactions,
+  )
   public connection: ConnectionEntity;
 }

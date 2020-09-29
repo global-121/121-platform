@@ -9,7 +9,10 @@ export class CredentialEntity {
   @Column()
   public did: string;
 
-  @ManyToOne(type => ProgramEntity, program => program.credentials)
+  @ManyToOne(
+    type => ProgramEntity,
+    program => program.credentials,
+  )
   public program: ProgramEntity;
 
   @Column() // Store credentials encrypted
