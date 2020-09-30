@@ -114,6 +114,7 @@
         "highestScoresX": "Top X highest scores included",
         "meetingDocuments": "Meeting documents",
         "notifications": "Notification messages",
+        "phoneNumberPlaceholder": "Notification-number example value",
         "description": "Description: general",
         "descLocation": "Description: location",
         "descHumanitarianObjective": "Description: Humanatarian objective",
