@@ -38,6 +38,7 @@ export class SmsService {
         messagingServiceSid: TWILIO.messagingSid,
         statusCallback: EXTERNAL_API.callbackUrlSms,
         to: recipientPhoneNr,
+        mediaUrl: 'https://demo.twilio.com/owl.png',
       })
       .then(message => this.storeSendSms(message))
       .catch(err => console.log('Error twillio', err));
