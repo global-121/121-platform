@@ -118,6 +118,7 @@ export class SelectFspComponent extends PersonalComponent {
           code: attribute.name,
           answerType: attribute.answerType,
           label: this.translatableString.get(attribute.label),
+          placeholder: this.translatableString.get(attribute.placeholder),
           options: !attribute.options
             ? null
             : this.buildOptions(attribute.options),
