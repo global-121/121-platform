@@ -22,7 +22,6 @@ export class AfricasTalkingService {
     programId,
     installment,
   ): Promise<StatusMessageDto> {
-    console.log('paymentList: ', paymentList);
     const payload = this.createAfricasTalkingDetails(
       paymentList,
       programId,
