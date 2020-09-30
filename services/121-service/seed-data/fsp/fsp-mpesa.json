@@ -4,7 +4,7 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Which phone number do you want to receive your M-Pesa code on? (Including country-code, +000 000 00 00)"
+        "en": "Which phone number do you want to receive your M-Pesa code on? (With country-code. It should look like: +000 000 00 00)"
       },
       "placeholder": {
         "en": "+000 000 00 00"
