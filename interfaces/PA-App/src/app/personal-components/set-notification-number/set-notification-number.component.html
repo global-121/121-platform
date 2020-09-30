@@ -21,12 +21,15 @@
   </dialogue-turn>
   <dialogue-turn actor="self">
     <form (ngSubmit)="submitPhoneNumber(phone)">
-      <play-text-audio key="personal.set-notification-number.input-label"></play-text-audio>
-      <ion-label>{{ 'personal.set-notification-number.input-label'|translate }}</ion-label>
+      <p>
+        <play-text-audio key="personal.set-notification-number.input-label"></play-text-audio>
+        <ion-label [innerHTML]="'personal.set-notification-number.input-label'|translate:{ phoneNumberExample: '<strong class=\'ion-text-nowrap\'>' + placeholder + '</strong>' }"></ion-label>
+      </p>
 
       <phone-number-input name="phone"
                           [(ngModel)]="phone"
                           ngDefaultControl
+                          [placeholder]="placeholder"
                           [disabled]="isDisabled"
                           [(isValid)]="phoneNumberIsValid"
                           (ionFocus)="hasValidationError=false;"
