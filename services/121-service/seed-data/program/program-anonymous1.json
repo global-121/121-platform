@@ -85,7 +85,7 @@
     {
       "criterium": "dob",
       "label": {
-        "en": "My date of birth:"
+        "en": "My date of birth: (For example: 31-12-1970)"
       },
       "answerType": "date",
       "criteriumType": "standard",
