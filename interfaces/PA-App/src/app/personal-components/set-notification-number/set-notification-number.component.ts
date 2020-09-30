@@ -85,7 +85,11 @@ export class SetNotificationNumberComponent extends PersonalComponent {
 
   async getPlaceholder() {
     const currentProgram = await this.paData.getCurrentProgram();
-    return currentProgram.phoneNumberPlaceholder;
+    const phoneNumberPlaceholder = currentProgram.phoneNumberPlaceholder;
+    if (!phoneNumberPlaceholder) {
+      return '';
+    }
+    return phoneNumberPlaceholder;
   }
 
   private async checkExistingPhoneNumber() {

@@ -56,7 +56,7 @@
   >
     <ul>
       <li *ngFor="let question of questions">
-        {{ question.label }}<br>
+        <span [innerHTML]="question.label"></span><br>
         <strong>{{ answers[question.code]?.label }}</strong>
       </li>
     </ul>

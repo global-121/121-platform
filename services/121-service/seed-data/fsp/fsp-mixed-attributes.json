@@ -4,7 +4,7 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Phone number with country-code. It should look like: +000 000 00 00"
+        "en": "Phone number with country-code. It should look like: <strong>+000 000 00 00</strong>"
       },
       "placeholder": {
         "en": "+000 000 00 00"

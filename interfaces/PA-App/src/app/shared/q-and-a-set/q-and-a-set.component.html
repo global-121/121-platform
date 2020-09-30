@@ -10,7 +10,7 @@
       [isSpoken]="isFirst || isSubmitted || isEditing"
     >
       <p>
-        <ion-label>{{ question.label }}</ion-label>
+        <ion-label [innerHTML]="question.label"></ion-label>
       </p>
       <div [ngSwitch]="question.answerType">
         <div *ngSwitchCase="answerType.Enum">
