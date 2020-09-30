@@ -132,7 +132,7 @@
     "set-notification-number": {
       "conclusion-skipped": "You have chosen not to leave a phone number. Please log in back here regularly, to check on updates.",
       "conclusion-submitted": "Thank you. You will now receive notifications on this phone number: {{phone}}",
-      "input-label": "Phone number (with country-code)",
+      "input-label": "Phone number with country-code. It should look like: {{phoneNumberExample}}",
       "introduction1": "It is optional to enter your phone number.",
       "introduction2": "We use this to send you text-notifications if you are included and when you receive aid.",
       "introduction3": "If you do not want to enter your phone number, you will have to log in here for updates.",

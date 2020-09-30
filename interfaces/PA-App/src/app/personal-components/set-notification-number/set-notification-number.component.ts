@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { AnswerType } from 'src/app/models/q-and-a.models';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { environment } from 'src/environments/environment';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -24,6 +26,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   public choiceMade = false;
   public phoneNumber: string;
   public phone: any;
+  public placeholder: string;
   public ngo: string;
   public did: string;
 
@@ -35,6 +38,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     public translate: TranslateService,
     public paData: PaDataService,
     public programService: ProgramsServiceApiService,
+    private translatableString: TranslatableStringService,
   ) {
     super();
     this.useLocalStorage = environment.localStorage;
@@ -58,6 +62,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     }
 
     this.ngo = await this.getNgo();
+    this.placeholder = await this.getPlaceholder();
   }
 
   async initHistory() {
@@ -73,11 +78,24 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     this.phoneNumber = this.data.phoneNumber;
     this.phone = this.phoneNumber;
     this.ngo = await this.getNgo();
+    this.placeholder = await this.getPlaceholder();
   }
 
   async getNgo() {
     const currentProgram = await this.paData.getCurrentProgram();
     return currentProgram.ngo;
+  }
+
+  async getPlaceholder() {
+    const currentProgram = await this.paData.getCurrentProgram();
+    // Use the first phone-number question as data-store:
+    const phoneNumberQuestion = currentProgram.customCriteria.find(
+      (question) => question.answerType === AnswerType.phoneNumber,
+    );
+    if (!phoneNumberQuestion) {
+      return '';
+    }
+    return this.translatableString.get(phoneNumberQuestion.placeholder);
   }
 
   private async checkExistingPhoneNumber() {
