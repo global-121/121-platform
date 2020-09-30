@@ -27,23 +27,24 @@
       "confirm-password": "Confirm my password:",
       "consent-agree": "I agree",
       "consent-disagree": "I disagree",
-      "consent-question": "Do you consent?",
+      "consent-answer": "I have read the data policy (or it has been read to me).<br><br> I have:<br>- asked all questions about the program that I wanted too<br> - received the answers about the program I need. <br><br> I understand:<br> - who sees my information<br> - when they see my information<br> - that the personal information I provide is required to receive cash based aid.<br> - that I can leave the program at any time<br> - that I can have my personal information removed from the program database at any time.  <br> <br>  By pressing \"I agree\" I choose to participating in the program.<br> By pressing \"I disagree\" I choose not to participate in the program.",
+      "consent-question": "To apply for a program you need to agree to the data policy of the Kenya Red Cross. <br><br> Please read the data policy.",
       "create-password-explanation": "Enter a password of at least {{minimalLength}} characters:",
       "create-password": "Create my password",
-      "create-username": "Enter full name:",
+      "create-username": "Enter your full name:",
       "info-message-password": "[about passwords]",
-      "info-message-username-pw": "To create a Digital Identity you need to create the following <br><br>3. Your name<br>4. Your Password<br><br>If you create a Digital ID for this pilot program it will be stored securely on the Netherlands Red Cross Server.  What is a Server? In this case the server is the physical computer that a server program runs on and it is owned by The Netherlands Red Cross.",
+      "info-message-username-pw": "To create a Digital Identity you need to submit the following <br><br>- Your full name<br>- Your password (which you must create  using 4 numbers) <br><br>If you create a Digital ID for this pilot program it will be stored securely on the Netherlands Red Cross database.",
       "introduction": "To create a Digital ID you need to complete the following steps.",
       "more-info-data-policy": "Data policy",
       "more-info-password": "About passwords",
       "more-info-username-pw": "About names and password",
-      "password-only": "Create my password",
+      "password-only": "Submit",
       "password-too-short": "Please enter at least {{minimalLength}} characters.",
-      "submit-password": "Create my password",
-      "submit-username": "Submit name",
+      "submit-password": "Submit",
+      "submit-username": "Submit",
       "unequal-passwords": "The passwords you created are not the same. Please try again.",
-      "username-not-unique": "The username you created is not unique. Please try again.",
-      "username-password": "Enter your name and create a password."
+      "username-not-unique": "The name you entered is not unique. Please try again.",
+      "username-password": "Enter your full name and create your password."
     },
     "enroll-in-program": {
       "change": "Change my information",
@@ -104,14 +105,14 @@
       "introduction": "Please select how you would like to receive your aid, if you are included in the program."
     },
     "select-language": {
-      "info-message": "With the 121 platform, we aim to make Cash Based Aid safe, fast & fair, to help you if you have been affected by disasters and crises to meet your own needs. 121 will help you<br><ul><li>Create a Digtial ID</li><li>Know which programs are available in your area</li><li>Apply to the programs</li><li>Understand who sees your information</li></ul>",
-      "intro": "Welcome to 121. You can use 121 to apply for aid.",
+      "info-message": "With the 121 platform, we aim to make Cash Based Aid safe, fast & fair.<br> 121 will help you<br><ul><li>Create a Digtial ID</li><li>Know which programs are available in your area</li><li>Apply to the programs</li><li>Understand who sees your information</li></ul>",
+      "intro": "Welcome to 121. You can use 121 to apply for aid. You can read more about 121 in the blue button below.",
       "introduction": {
         "en": "Welcome to 121. Please select your language.",
         "ny_MW": "Takulandilani ku 121. Chonde sankhani chiyankhulo chanu.",
         "om_ET": "Baga gara 121'tti nagaan dhuftan. Maaloo qooqa keessan filadhaa.",
-        "saq_KE": "[Samburu intro text]",
-        "tuv_KE": "[Turkana intro text]"
+        "saq_KE": "[Samburu text]",
+        "tuv_KE": "[Turkana text]"
       },
       "more-info": "About 121",
       "result": "Thank you, you have selected {{language}}.",
@@ -145,7 +146,7 @@
     },
     "signup-signin": {
       "create-id": "Create a Digital ID",
-      "info-message": "The following two parts of your information is used to create a digital ID.<br><br>1. Your name (which you will create below)<br>2. Your Password (which must consists of 4 digits/numbers)<br><br>If you create a Digital ID for this pilot program it will be stored securely on the Netherlands Red Cross Server.  What is a Server? In this case the server is the physical computer that a server program runs on and it is owned by The Netherlands Red Cross.",
+      "info-message": "The following two parts of your information is used to create a digital ID.<br><br>- Your password (which you must create  using 4 numbers)<br><br>If you create a Digital ID for this pilot program it will be stored securely on the Netherlands Red Cross database.",
       "introduction": "To apply for a program, you need to have a valid Digital ID. Please create your Digital ID or use your existing Digital ID.",
       "login-id": "Use my Digital ID",
       "more-info-digital-id": "About Digital ID"

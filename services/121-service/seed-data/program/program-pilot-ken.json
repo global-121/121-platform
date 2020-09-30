@@ -6,7 +6,7 @@
   "ngo": "Kenya Red Cross",
   "countryId": 1,
   "title": {
-    "en": "Pilot"
+    "en": "Program"
   },
   "description": {
     "en": ""
@@ -48,7 +48,33 @@
     {
       "criterium": "multiple_choice",
       "label": {
-        "en": "Multiple options"
+        "en": "Sample question"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "optionA",
+          "label": {
+            "en": "Option A"
+          }
+        },
+        {
+          "option": "optionB",
+          "label": {
+            "en": "Option B"
+          }
+        }
+      ],
+      "scoring": {
+        "optionA": 0,
+        "optionB": 1
+      }
+    },
+    {
+      "criterium": "multiple_choice2",
+      "label": {
+        "en": "Sample question 2"
       },
       "answerType": "dropdown",
       "criteriumType": "standard",
