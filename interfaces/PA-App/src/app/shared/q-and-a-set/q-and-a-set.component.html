@@ -46,18 +46,17 @@
           ></numeric-input>
         </div>
         <div *ngSwitchCase="answerType.Date">
-          <ion-input
-            #dateInput="ngModel"
+          <date-input
+            #dateInput
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
             type="text"
-            placeholder="dd-mm-yyyy"
             required
             [name]="question.code"
             [disabled]="isSubmitted"
-            (ionChange)="onChangeWithValidation(question.code, dateInput.value, dateInput.valid && ((dateInput.dirty || dateInput.touched) || allQuestionsShown))"
+            (isValidChange)="onChangeWithValidation(question.code, dateInput.value, dateInput.isValid)"
             debounce="100"
-          ></ion-input>
+          ></date-input>
         </div>
         <div *ngSwitchCase="answerType.phoneNumber">
           <phone-number-input
