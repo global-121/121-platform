@@ -803,6 +803,7 @@ export class ProgramService {
         connectionResponse['dob'] = connection.customData['dob'];
         connectionResponse['phoneNumber'] =
           connection.phoneNumber || connection.customData['phoneNumber'];
+        connectionResponse['location'] = connection.customData['location'];
       }
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
       connectionsResponse.push(connectionResponse);
@@ -935,9 +936,10 @@ export class ProgramService {
 
     const inclusionDetails = [];
     includedConnections.forEach(rawConnection => {
-      let connection = {
+      let row = {
         name: rawConnection.name,
         dateOfBirth: rawConnection.dob,
+        location: rawConnection.location,
         status: rawConnection.status,
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
@@ -945,12 +947,12 @@ export class ProgramService {
         validationDate: rawConnection.validationDate,
         inclusionDate: rawConnection.inclusionDate,
       };
-      inclusionDetails.push(connection);
+      inclusionDetails.push(row);
     });
-
+    const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
     const response = {
       fileName: `inclusion-list-program-${programId}.csv`,
-      data: this.jsonToCsv(inclusionDetails),
+      data: this.jsonToCsv(filteredColumnDetails),
     };
 
     return response;
@@ -963,23 +965,46 @@ export class ProgramService {
     );
     const columnDetails = [];
     for (const rawConnection of selectedConnections) {
-      let connection = {
+      let row = {
         name: rawConnection.name,
         dateOfBirth: rawConnection.dob,
+        location: rawConnection.location,
         status: rawConnection.status,
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
         selectedForValidationDate: rawConnection.selectedForValidationDate,
         phoneNumber: rawConnection.phoneNumber,
       };
-      columnDetails.push(connection);
+      columnDetails.push(row);
     }
+    const filteredColumnDetails = this.filterUnusedColumn(columnDetails);
     const response = {
       fileName: `selected-for-validation-list-program-${programId}.csv`,
-      data: this.jsonToCsv(columnDetails),
+      data: this.jsonToCsv(filteredColumnDetails),
     };
 
     return response;
+  }
+
+  public filterUnusedColumn(columnDetails): object[] {
+    const emptyColumns = [];
+    for (let row of columnDetails) {
+      for (let key in row) {
+        if (row[key]) {
+          emptyColumns.push(key);
+        }
+      }
+    }
+    const filteredColumns = [];
+    for (let row of columnDetails) {
+      for (let key in row) {
+        if (!emptyColumns.includes(key)) {
+          delete row[key];
+        }
+      }
+      filteredColumns.push(row);
+    }
+    return filteredColumns;
   }
 
   public async getPaymentDetailsInstallment(

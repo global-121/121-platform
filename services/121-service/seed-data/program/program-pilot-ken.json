@@ -69,6 +69,30 @@
         "optionA": 0,
         "optionB": 1
       }
+    },
+    {
+      "criterium": "location",
+      "label": {
+        "en": "Which village/area do you live?"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "Oldonyiro",
+          "label": {
+            "en": "Oldonyiro"
+          }
+        },
+        {
+          "option": "Longopito",
+          "label": {
+            "en": "Longopito"
+          }
+        }
+      ],
+      "persistence": true,
+      "scoring": {}
     }
   ]
 }
