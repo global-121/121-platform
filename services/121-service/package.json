@@ -16,6 +16,7 @@
     "seed:single-program": "npx ts-node src/scripts seed-single-program",
     "seed:publish": "npx ts-node src/scripts seed-publish",
     "seed:pilot": "npx ts-node src/scripts seed-pilot",
+    "seed:ken": "npx ts-node src/scripts seed-program-pilot-ken",
     "test": "jest --config=jest.json",
     "test:watch": "npm test -- --watch",
     "test:watchall": "npm test -- --watchAll",
