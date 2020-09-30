@@ -1,7 +1,7 @@
 <dialogue-turn [actor]="instanceNgoName">
   <p>
     <play-text-audio key="personal.create-identity.consent-question" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-identity.consent-question'|translate }}
+    <span [innerHTML]="'personal.create-identity.consent-question'|translate"></span>
   </p>
 
   <more-info-button
@@ -11,7 +11,10 @@
   ></more-info-button>
 </dialogue-turn>
 <dialogue-turn actor="self">
-
+  <p>
+    <play-text-audio key="personal.create-identity.consent-answer" class="ion-float-start ion-margin-end"></play-text-audio>
+    <span [innerHTML]="'personal.create-identity.consent-answer'|translate"></span>
+  </p>
   <ion-row class="ion-nowrap ion-align-items-center">
     <play-text-audio key="personal.create-identity.consent-agree" size="default"></play-text-audio>
     <ion-button
