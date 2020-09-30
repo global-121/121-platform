@@ -5,7 +5,10 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "What is your WhatsApp phonenumber, so we can send you vouchers through WhatsApp?"
+        "en": "What is your WhatsApp phonenumber, so we can send you vouchers through WhatsApp? (Include the country-code, +31 6 00 00 00 00)"
+      },
+      "placeholder": {
+        "en": "+31 6 00 00 00 00"
       },
       "answerType": "tel",
       "options": null
