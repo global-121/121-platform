@@ -21,6 +21,9 @@ export class CustomCriterium {
   @Column()
   public answerType: string;
 
+  @Column('json', { nullable: true })
+  public placeholder: JSON;
+
   @Column()
   public criteriumType: string;
 
