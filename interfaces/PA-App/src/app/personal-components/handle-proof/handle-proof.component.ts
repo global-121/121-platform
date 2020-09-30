@@ -117,14 +117,14 @@ export class HandleProofComponent extends PersonalComponent {
     }
 
     if (status === PaCredentialStatus.done) {
-      await this.getInclusionStatus(this.did, this.programId);
+      await this.handleInclusionStatus(this.did, this.programId);
       this.complete();
     } else {
       this.conversationService.stopLoading();
       this.updateService
         .checkInclusionStatus(this.programId, this.did)
         .then(() => {
-          this.getInclusionStatus(this.did, this.programId);
+          this.handleInclusionStatus(this.did, this.programId);
         });
     }
   }
@@ -145,8 +145,7 @@ export class HandleProofComponent extends PersonalComponent {
     this.wallet = await this.paData.retrieve(this.paData.type.wallet);
   }
 
-  async getInclusionStatus(did: string, programId: number) {
-    console.log('getInclusionStatus()');
+  async handleInclusionStatus(did: string, programId: number) {
     this.inclusionStatus = await this.programService
       .checkInclusionStatus(did, programId)
       .toPromise();
