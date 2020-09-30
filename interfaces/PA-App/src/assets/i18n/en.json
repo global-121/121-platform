@@ -158,7 +158,7 @@
   },
   "q-and-a-set": {
     "validation": {
-      "date": "The date is not valid. Please enter a valid date. A valid date follows DD-MM-YYYY format, for example: 31-12-1970.",
+      "date": "The date format you inputted is not valid. A valid date format example is 31-12-1970 which follows day-month-year, DD-MM-YYYY",
       "email": "The email does not have a valid format. Please adjust and try again.",
       "generic-error": "We cannot process some of your input. Please check and update your answers.",
       "number": "The answer needs to be a number. Please adjust and try again.",
