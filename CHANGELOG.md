@@ -6,9 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.8.4...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.8.5...master)
 
 ---
+
+## [0.8.5](https://github.com/global-121/121-platform/compare/v0.8.4...v0.8.5) - 2020-09-30
+
+### Changed
+- 2020-09-30: Input-validation for phone-number/date questions
+- 2020-09-30: Update UI-text/program-questions for Kenya-pilot in seed-script
 
 ## [0.8.4](https://github.com/global-121/121-platform/compare/v0.8.3...v0.8.4) - 2020-09-28
 
