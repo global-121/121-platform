@@ -46,6 +46,7 @@
       "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us."
     }
   },
+  "phoneNumberPlaceholder": "+31 6 00 00 00 00",
   "customCriteria": [
     {
       "criterium": "name",
@@ -72,7 +73,7 @@
     {
       "criterium": "phoneNumberWhatsApp",
       "label": {
-        "en": "Number to reach me via WhatsApp: (It should look like: +00 0 00 00 00 00)"
+        "en": "Number to reach me via WhatsApp: (It should look like: <strong>+000 000 00 00</strong>)"
       },
       "placeholder": {
         "en": "+000 000 00 00"
@@ -86,10 +87,10 @@
     {
       "criterium": "phoneNumberSMS",
       "label": {
-        "en": "Number to reach me via SMS: (It should look like: +31 6 00 00 00 00)"
+        "en": "Number to reach me via SMS: (It should look like: <strong>+31 6 00 00 00 00</strong>)"
       },
       "placeholder": {
-        "en": "+000 000 00 00"
+        "en": "+31 6 00 00 00 00"
       },
       "answerType": "tel",
       "criteriumType": "standard",

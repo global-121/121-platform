@@ -16,6 +16,7 @@ export class Program {
   financialServiceProviders: Fsp[];
   credDefId: string;
   validation: boolean;
+  phoneNumberPlaceholder: string;
 }
 
 export class ProgramCriterium {

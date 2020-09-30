@@ -85,6 +85,9 @@ export class ProgramEntity {
   @Column('json')
   public notifications: JSON;
 
+  @Column({ nullable: true })
+  public phoneNumberPlaceholder: string;
+
   @Column('json')
   public description: JSON;
 

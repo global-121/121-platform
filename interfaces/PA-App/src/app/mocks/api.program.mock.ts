@@ -12,5 +12,6 @@ export const mockProgram: Program = {
   customCriteria: [],
   financialServiceProviders: [],
   credDefId: '',
+  phoneNumberPlaceholder: '+000 000 00 00',
   validation: true,
 };

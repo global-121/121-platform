@@ -134,6 +134,10 @@ export class CreateProgramDto {
   })
   public readonly notifications: JSON;
 
+  @ApiModelProperty({ example: '+000 000 00 00' })
+  @IsString()
+  public readonly phoneNumberPlaceholder: string;
+
   @ApiModelProperty({
     example: [
       {
