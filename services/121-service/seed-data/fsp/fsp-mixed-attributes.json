@@ -1,10 +1,13 @@
 {
-  "fsp": "FSP C - mixed attributes",
+  "fsp": "FSP - all attributes",
   "attributes": [
     {
       "name": "phoneNumber",
       "label": {
-        "en": "Your phonenumber"
+        "en": "Your phonenumber (including country-code, +000 000 00 00)"
+      },
+      "placeholder": {
+        "en": "+000 000 00 00"
       },
       "answerType": "tel",
       "options": null

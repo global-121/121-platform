@@ -13,6 +13,9 @@ export class FspAttributeEntity {
   public label: JSON;
 
   @Column('json', { nullable: true })
+  public placeholder: JSON;
+
+  @Column('json', { nullable: true })
   public options: JSON;
 
   @Column()
