@@ -1,10 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AnswerType } from 'src/app/models/q-and-a.models';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { environment } from 'src/environments/environment';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -38,7 +36,6 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     public translate: TranslateService,
     public paData: PaDataService,
     public programService: ProgramsServiceApiService,
-    private translatableString: TranslatableStringService,
   ) {
     super();
     this.useLocalStorage = environment.localStorage;
@@ -88,14 +85,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
 
   async getPlaceholder() {
     const currentProgram = await this.paData.getCurrentProgram();
-    // Use the first phone-number question as data-store:
-    const phoneNumberQuestion = currentProgram.customCriteria.find(
-      (question) => question.answerType === AnswerType.phoneNumber,
-    );
-    if (!phoneNumberQuestion) {
-      return '';
-    }
-    return this.translatableString.get(phoneNumberQuestion.placeholder);
+    return currentProgram.phoneNumberPlaceholder;
   }
 
   private async checkExistingPhoneNumber() {

@@ -155,6 +155,7 @@ export class ProgramService {
     program.highestScoresX = programData.highestScoresX;
     program.meetingDocuments = programData.meetingDocuments;
     program.notifications = programData.notifications;
+    program.phoneNumberPlaceholder = programData.phoneNumberPlaceholder;
     program.description = programData.description;
     program.descLocation = programData.descLocation;
     program.descHumanitarianObjective = programData.descHumanitarianObjective;

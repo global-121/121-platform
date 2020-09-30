@@ -70,6 +70,7 @@
       "rejected": "Je zit niet in het programma"
     }
   },
+  "phoneNumberPlaceholder": "+000 000 00 00",
   "customCriteria": [
     {
       "criterium": "name",

@@ -58,6 +58,7 @@
       "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us."
     }
   },
+  "phoneNumberPlaceholder": "+000 000 00 00",
   "customCriteria": [
     {
       "criterium": "name",
