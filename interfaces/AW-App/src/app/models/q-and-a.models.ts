@@ -12,6 +12,7 @@ export class Question {
   code: string;
   answerType: AnswerType;
   label: string;
+  placeholder?: string;
   options: QuestionOption[] | null;
 }
 

@@ -19,6 +19,7 @@ export class ProgramCriterium {
   criterium: string;
   answerType: AnswerType;
   label: TranslatableString;
+  placeholder?: TranslatableString;
   options: null | ProgramCriteriumOption[];
 }
 

@@ -65,6 +65,7 @@
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
             required
+            [placeholder]="question.placeholder"
             [name]="question.code"
             [disabled]="isSubmitted"
             (isValidChange)="onChangeWithValidation(question.code, phoneNumberInput.value, phoneNumberInput.isValid)"
