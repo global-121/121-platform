@@ -6,12 +6,8 @@ export const environment = {
   production: false,
 
   // Feature-switches:
-  isDebug: true, // Controls debugging features
-  showDebug: false, // Controls debugging features
-  useAnimation: false, // Use animations and delays in the interface
 
   // APIs:
-  url_121_service_api: 'http://localhost:3000/api',
 
   // Google Sheets:
   google_sheets_api_url: '',
