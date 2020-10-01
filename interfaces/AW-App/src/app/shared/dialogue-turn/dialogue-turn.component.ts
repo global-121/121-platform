@@ -4,6 +4,10 @@ import { environment } from 'src/environments/environment';
 enum Actor {
   system = 'system',
   self = 'self',
+  ngoDorcas = 'Dorcas',
+  ngoEagles = 'Eagles',
+  ngoNLRC = 'NLRC',
+  ngoKRCS = 'Kenya Red Cross',
 }
 
 @Component({
@@ -26,6 +30,8 @@ export class DialogueTurnComponent implements OnInit {
 
   isSelf: boolean;
   isSystem: boolean;
+
+  public allActors = Actor;
 
   animate = environment.useAnimation;
 

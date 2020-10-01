@@ -2,7 +2,7 @@
   #dateInput
   type="text"
   inputmode="text"
-  autocomplete="text"
+  autocomplete="off"
   pattern="^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[0-2])-(19[2-9][0-9]|20[0-1][0-9])$"
   placeholder="DD-MM-YYYY"
   minlength="10"
@@ -12,7 +12,7 @@
   [value]="value"
   [disabled]="disabled"
   (ionChange)="onChange()"
-  debounce="500"
+  debounce="300"
   ngDefaultControl
   [required]="required"
 ></ion-input>
