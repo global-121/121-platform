@@ -8,15 +8,43 @@
      }"
 >
   <div class="dialogue-turn--actor">
-    <ion-avatar *ngIf="isSystem" style="border-radius: 0 !important;">
-      <img src="./assets/avatar--121.svg">
-    </ion-avatar>
-    <ion-avatar *ngIf="isSelf" style="background:#2f4bfd; display:flex;">
-      <ion-icon name="person" color="light" size="large" style="margin:auto; color:white;"></ion-icon>
-    </ion-avatar>
-    <ion-avatar *ngIf="!isSystem && !isSelf" style="color:black; background:white; display:flex;">
-      <b style="margin:auto">{{ actor }}</b>
-    </ion-avatar>
+    <ng-container [ngSwitch]="actor">
+      <ng-container *ngSwitchCase="allActors.system">
+        <ion-avatar style="border-radius: 0 !important;">
+          <img src="./assets/logos/avatar--121.svg">
+        </ion-avatar>
+      </ng-container>
+      <ng-container *ngSwitchCase="allActors.self">
+        <ion-avatar style="background:#2f4bfd; display:flex;">
+          <ion-icon name="person" color="light" size="large" style="margin:auto;"></ion-icon>
+        </ion-avatar>
+      </ng-container>
+      <ng-container *ngSwitchCase="allActors.ngoDorcas">
+        <ion-avatar>
+          <img [alt]="actor" src="./assets/logos/dorcas.jpg">
+        </ion-avatar>
+      </ng-container>
+      <ng-container *ngSwitchCase="allActors.ngoEagles">
+        <ion-avatar>
+          <img [alt]="actor" src="./assets/logos/eagles-relief.png">
+        </ion-avatar>
+      </ng-container>
+      <ng-container *ngSwitchCase="allActors.ngoNLRC">
+        <ion-avatar>
+          <img [alt]="actor" src="./assets/logos/nlrc.jpg">
+        </ion-avatar>
+      </ng-container>
+      <ng-container *ngSwitchCase="allActors.ngoKRCS">
+        <ion-avatar>
+          <img [alt]="actor" src="./assets/logos/krcs.jpg">
+        </ion-avatar>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <ion-avatar style="color:black; background:white; display:flex;">
+          <b style="margin:auto; text-align: center;">{{ actor }}</b>
+        </ion-avatar>
+      </ng-container>
+    </ng-container>
   </div>
   <div class="dialogue-turn--content">
     <ion-card [color]="isSelf ? 'light' : 'dark'">
