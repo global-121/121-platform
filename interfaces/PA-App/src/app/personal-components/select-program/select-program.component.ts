@@ -16,8 +16,6 @@ export class SelectProgramComponent extends PersonalComponent {
   @Input()
   public data;
 
-  private countryChoice: string;
-
   public programs: Program[];
   public programChoice: number;
 
@@ -53,10 +51,7 @@ export class SelectProgramComponent extends PersonalComponent {
   private async getPrograms() {
     this.conversationService.startLoading();
 
-    this.countryChoice = '1'; // await this.paData.retrieve(this.paData.type.country);
-    this.programs = await this.programsService.getProgramsByCountryId(
-      this.countryChoice,
-    );
+    this.programs = await this.programsService.getAllPrograms();
     this.programs = this.translateProgramProperties(this.programs);
 
     this.conversationService.stopLoading();

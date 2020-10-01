@@ -16,7 +16,6 @@ import { PersonalComponent } from '../personal-components/personal-component.cla
 import { PersonalComponents } from '../personal-components/personal-components.enum';
 import { PreprintedQrcodeComponent } from '../personal-components/preprinted-qrcode/preprinted-qrcode.component';
 import { RegistrationSummaryComponent } from '../personal-components/registration-summary/registration-summary.component';
-import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectFspComponent } from '../personal-components/select-fsp/select-fsp.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
@@ -54,7 +53,6 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.loginIdentity]: LoginIdentityComponent,
     [PersonalComponents.registrationSummary]: RegistrationSummaryComponent,
     [PersonalComponents.preprintedQrcode]: PreprintedQrcodeComponent,
-    [PersonalComponents.selectCountry]: SelectCountryComponent,
     [PersonalComponents.selectFsp]: SelectFspComponent,
     [PersonalComponents.selectLanguage]: SelectLanguageComponent,
     [PersonalComponents.selectProgram]: SelectProgramComponent,

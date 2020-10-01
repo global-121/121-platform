@@ -59,10 +59,6 @@
       "more-info-documents": "Waa'ee dokumantiiwwanii",
       "qr-code": "Maaloo walga'ii keessan irratti  koodii -QR kana agarsiisaa."
     },
-    "select-country": {
-      "conclusion": "Galatoomaa, {{country}} filattaniittu.",
-      "introduction": "Sadarkaa itti aanuun iddoo keessan  filadhaa."
-    },
     "select-fsp": {
       "conclusion": "Galatoomaa. Filmaata keessan kennattanii jirtu {{name}}",
       "introduction": "Saganticha keessatti hammatamttaniittu yoo ta'e, maallaqa keessan akkamiin fudhachuu feetuu?",
