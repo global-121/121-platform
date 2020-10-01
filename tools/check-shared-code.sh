@@ -17,11 +17,11 @@ function check_shared_code() {
   set -a; [ -f ./tools/.env ] && . ./tools/.env; set +a;
 
   # Variables
-  local repo_services=$repo/services
   local repo_interfaces=$repo/interfaces
   local repo_pa=$repo_interfaces/PA-App
   local repo_ho=$repo_interfaces/HO-Portal
   local repo_aw=$repo_interfaces/AW-App
+  local repo_ref=$repo_interfaces/Referral-App
 
   function log() {
     printf "\n\n"
@@ -36,25 +36,37 @@ function check_shared_code() {
 
   function compare_code() {
     local path=$1
+    local from=$2
+    local to=$3
 
     log "Comparing shared file: $path..."
 
-    diff --recursive --unified $repo_pa/$path $repo_aw/$path | diff-so-fancy
+    diff --recursive --unified $from/$path $to/$path | diff-so-fancy
   }
 
-  compare_code "src/app/shared/dialogue-turn/"
-  compare_code "src/app/shared/q-and-a-set/"
-  compare_code "src/app/shared/qr-scanner/"
-  compare_code "src/app/shared/numeric-input/"
-  compare_code "src/app/shared/phone-number-input/"
+  compare_code "src/app/shared/dialogue-turn/" "$repo_pa" "$repo_aw"
+  compare_code "src/app/shared/q-and-a-set/" "$repo_pa" "$repo_aw"
+  compare_code "src/app/shared/qr-scanner/" "$repo_pa" "$repo_aw"
+  compare_code "src/app/shared/date-input/" "$repo_pa" "$repo_aw"
+  compare_code "src/app/shared/numeric-input/" "$repo_pa" "$repo_aw"
+  compare_code "src/app/shared/phone-number-input/" "$repo_pa" "$repo_aw"
 
-  compare_code "src/app/services/jwt.service.*"
-  compare_code "src/app/services/api.service.*"
-  compare_code "src/app/services/translatable-string.*"
+  compare_code "src/app/services/jwt.service.*" "$repo_pa" "$repo_aw"
+  compare_code "src/app/services/jwt.service.*" "$repo_pa" "$repo_ho"
+  compare_code "src/app/services/api.service.*" "$repo_pa" "$repo_aw"
+  compare_code "src/app/services/api.service.*" "$repo_pa" "$repo_ho"
+  compare_code "src/app/services/translatable-string.*" "$repo_pa" "$repo_aw"
+  compare_code "src/app/services/translatable-string.*" "$repo_pa" "$repo_ho"
 
-  compare_code ".editorconfig"
-  compare_code ".prettierignore"
-  compare_code ".prettierrc.yml"
+  compare_code ".editorconfig" "$repo_pa" "$repo_aw"
+  compare_code ".editorconfig" "$repo_pa" "$repo_ho"
+  compare_code ".editorconfig" "$repo_pa" "$repo_ref"
+  compare_code ".prettierignore" "$repo_pa" "$repo_aw"
+  compare_code ".prettierignore" "$repo_pa" "$repo_ho"
+  compare_code ".prettierignore" "$repo_pa" "$repo_ref"
+  compare_code ".prettierrc.yml" "$repo_pa" "$repo_aw"
+  compare_code ".prettierrc.yml" "$repo_pa" "$repo_ho"
+  compare_code ".prettierrc.yml" "$repo_pa" "$repo_ref"
 
   log "Done."
 }
