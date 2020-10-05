@@ -4,7 +4,6 @@ export class Program {
   id: number;
   author: object;
   contactDetails?: string | TranslatableString;
-  countryId: number;
   startDate: string;
   endDate?: string;
   title: string | TranslatableString;
