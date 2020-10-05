@@ -12,7 +12,6 @@ import { HandleProofComponent } from './handle-proof/handle-proof.component';
 import { LoginIdentityComponent } from './login-identity/login-identity.component';
 import { PreprintedQrcodeComponent } from './preprinted-qrcode/preprinted-qrcode.component';
 import { RegistrationSummaryComponent } from './registration-summary/registration-summary.component';
-import { SelectCountryComponent } from './select-country/select-country.component';
 import { SelectFspComponent } from './select-fsp/select-fsp.component';
 import { SelectLanguageComponent } from './select-language/select-language.component';
 import { SelectProgramComponent } from './select-program/select-program.component';
@@ -28,7 +27,6 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     LoginIdentityComponent,
     PreprintedQrcodeComponent,
     RegistrationSummaryComponent,
-    SelectCountryComponent,
     SelectFspComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
@@ -45,7 +43,6 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     LoginIdentityComponent,
     PreprintedQrcodeComponent,
     RegistrationSummaryComponent,
-    SelectCountryComponent,
     SelectFspComponent,
     SelectLanguageComponent,
     SelectProgramComponent,
@@ -62,7 +59,6 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     LoginIdentityComponent,
     PreprintedQrcodeComponent,
     RegistrationSummaryComponent,
-    SelectCountryComponent,
     SelectFspComponent,
     SelectLanguageComponent,
     SelectProgramComponent,

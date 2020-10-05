@@ -18,13 +18,7 @@ export class ProgramDetailsComponent implements OnInit {
   public program: Program;
   public programProperties: { key: string; value: string }[];
 
-  private techFeatures = [
-    'countryId',
-    'schemaId',
-    'credDefId',
-    'credOffer',
-    'proofRequest',
-  ];
+  private techFeatures = ['schemaId', 'credDefId', 'credOffer', 'proofRequest'];
 
   constructor(
     public modalController: ModalController,

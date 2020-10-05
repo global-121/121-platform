@@ -11,7 +11,6 @@ const programsArray: Program[] = [
     title: { en: 'Program Alpha' },
     description: { en: 'Description of program' },
     location: 'Location',
-    countryId: 1,
     startDate: '1970-01-01T01:01:01Z',
     currency: 'EUR',
     distributionFrequency: 'month',

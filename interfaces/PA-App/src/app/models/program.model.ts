@@ -7,7 +7,6 @@ export class Program {
   title: string | TranslatableString;
   description: string | TranslatableString;
   contactDetails?: string | TranslatableString;
-  countryId: number;
   created: string;
   updated: string;
   meetingDocuments?: string | TranslatableString;

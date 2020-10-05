@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Country } from '../models/country.model';
 import { Fsp } from '../models/fsp.model';
 import { InstanceInfo } from '../models/instance.model';
 import { PaInclusionStates } from '../models/pa-statuses.enum';
@@ -21,15 +20,9 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getCountries(): Promise<Country[]> {
+  getAllPrograms(): Promise<Program[]> {
     return this.apiService
-      .get(environment.url_121_service_api, '/programs/countries/all')
-      .toPromise();
-  }
-
-  getProgramsByCountryId(countryId: string): Promise<Program[]> {
-    return this.apiService
-      .get(environment.url_121_service_api, '/programs/country/' + countryId)
+      .get(environment.url_121_service_api, '/programs/')
       .pipe(map((response) => response.programs))
       .toPromise();
   }

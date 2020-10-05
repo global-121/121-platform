@@ -61,10 +61,6 @@
       "more-info-documents": "Zokhudza zitupa izi",
       "qr-code": "Chonde onetsani nambala iyi pamkumano wanu"
     },
-    "select-country": {
-      "conclusion": "Zikomo, mwasankha {{country}}",
-      "introduction": "Sankhani dera lanu"
-    },
     "select-fsp": {
       "conclusion": "Zikomo. Mwasankha {{name}}.",
       "introduction": "Mutati mwayikidwa mu pologalamu iyi, mungakonde kuti muzilandila bwanji ndalama zanu",

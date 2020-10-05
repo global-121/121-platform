@@ -5,7 +5,6 @@ export enum PersonalComponents {
   loginIdentity = 'login-identity',
   preprintedQrcode = 'preprinted-qrcode',
   registrationSummary = 'registration-summary',
-  selectCountry = 'select-country',
   selectFsp = 'select-fsp',
   selectLanguage = 'select-language',
   selectProgram = 'select-program',

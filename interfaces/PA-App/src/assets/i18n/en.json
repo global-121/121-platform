@@ -90,10 +90,6 @@
       "qr-code": "Please show this QR-code to the aidworker when asked.",
       "validation-conclusion": "Thank you. Your registration is now complete. An aidworker of the NGO will organize a meeting with you to validate your information, probably by visiting your home."
     },
-    "select-country": {
-      "conclusion": "Thank you, you have selected {{country}}.",
-      "introduction": " Next step: select your location."
-    },
     "select-fsp": {
       "attributes": {
         "error": "Something went wrong, please try again.",
