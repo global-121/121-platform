@@ -13,14 +13,16 @@
       <ion-radio-group (ionChange)="changeLanguage($event)">
         <ion-item *ngFor="let language of languages"
                   color="light"
-                  class="ion-no-padding ion-text-wrap"
                   lines="full"
+                  class="ion-no-padding"
         >
           <play-text-audio [key]="language.languageKey"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
-          <ion-label>{{ language.language }}</ion-label>
+          <ion-label class="ion-text-wrap ion-padding-end">
+            {{ language.language }}
+          </ion-label>
           <ion-radio [value]="language.id"></ion-radio>
         </ion-item>
       </ion-radio-group>
@@ -41,10 +43,12 @@
                  *ngIf="isDisabled"
                  [isSpoken]="isDisabled"
   >
-    <ion-item color="light"
-              class="ion-no-padding ion-text-wrap"
+    <ion-item
+      color="light"
+      lines="full"
+      class="ion-no-padding"
     >
-      <ion-label>{{ languageChoiceName }}</ion-label>
+      <ion-label class="ion-text-wrap ion-padding-end">{{ languageChoiceName }}</ion-label>
       <ion-radio checked="true" disabled="true"></ion-radio>
     </ion-item>
   </dialogue-turn>

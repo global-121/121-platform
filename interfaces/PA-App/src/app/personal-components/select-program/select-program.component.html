@@ -20,10 +20,10 @@
       <ion-radio-group (ionChange)="changeProgram($event)">
         <ion-item *ngFor="let program of programs"
                   color="light"
-                  class="ion-no-padding ion-text-wrap"
                   lines="full"
+                  class="ion-no-padding"
         >
-          <ion-label>
+          <ion-label class="ion-text-wrap ion-padding-end">
             {{ program.title }}
             <ng-container *ngIf="program.description">
               <br>
