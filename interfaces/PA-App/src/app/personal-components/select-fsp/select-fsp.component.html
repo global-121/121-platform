@@ -15,10 +15,10 @@
       >
         <ion-item *ngFor="let fsp of fsps"
                   color="light"
-                  class="ion-no-padding ion-text-wrap"
                   lines="full"
+                  class="ion-no-padding"
         >
-          <ion-label class="ion-text-wrap">
+          <ion-label class="ion-text-wrap ion-padding-end">
             {{ fsp.fsp }}
           </ion-label>
           <ion-radio [value]="fsp.id"
