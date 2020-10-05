@@ -4,7 +4,6 @@ export class Program {
   id: number;
   title: string | TranslatableString;
   description: string | TranslatableString;
-  countryId: number;
   created: string;
   updated: string;
   meetingDocuments?: string | TranslatableString;

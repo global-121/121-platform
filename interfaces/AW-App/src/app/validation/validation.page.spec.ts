@@ -14,7 +14,6 @@ describe('ValidationPage', () => {
     // Mock the used services:
     const programsServiceApiService = jasmine.createSpyObj(
       'ProgramsServiceApiService',
-      ['getCountries'],
     );
     const conversationService = jasmine.createSpyObj('ConversationService', {
       state: { isLoading: false },
