@@ -209,8 +209,7 @@ export class CreateConnectionService {
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  @Cron('* * * * *')
-  // @Cron('0 0 * * *')
+  @Cron('0 0 * * *')
   async cronDeleteOldUnfinishedConnections(): Promise<void> {
     console.log('Get old unfinished connections');
     const tsYesterday = Math.round(new Date().getTime()) - 24 * 60 * 60 * 1000;
