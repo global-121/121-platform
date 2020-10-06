@@ -45,7 +45,6 @@ export class ConversationService {
 
   public startLoading() {
     this.state.isLoading = true;
-    this.scrollToEnd();
   }
 
   public stopLoading() {

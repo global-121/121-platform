@@ -153,7 +153,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     this.hasAnswered = true;
     this.hasChangedAnswers = false;
-    this.conversationService.scrollToEnd();
     this.paData.saveAnswers(this.programId, this.answers);
   }
 
