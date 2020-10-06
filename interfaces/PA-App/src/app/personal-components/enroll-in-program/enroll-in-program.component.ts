@@ -97,6 +97,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   public prepareProgramDetails(program: Program) {
+    this.programId = program.id;
     this.credDefId = program.credDefId;
 
     this.programDetails = this.buildDetails(program);
