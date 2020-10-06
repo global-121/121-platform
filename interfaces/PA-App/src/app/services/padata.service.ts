@@ -44,7 +44,7 @@ export class PaDataService {
     window.sessionStorage.setItem(this.type.username, username);
   }
 
-  async getUsername(): Promise<string> {
+  public async getUsername(): Promise<string> {
     if (!this.username) {
       this.username = window.sessionStorage.getItem(this.type.username);
     }
@@ -87,7 +87,7 @@ export class PaDataService {
     return await this.getProgram(this.currentProgramId);
   }
 
-  async saveAnswers(programId: number, answers: any): Promise<any> {
+  public async saveAnswers(programId: number, answers: any): Promise<any> {
     this.myAnswers[programId] = answers;
     return this.store(this.type.myAnswers, this.myAnswers);
   }

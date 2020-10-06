@@ -13,4 +13,8 @@ export const MockPaDataService = {
   store: () => Promise.resolve(''),
   retrieve: () => Promise.resolve(''),
   createAccount: () => Promise.resolve(''),
+  login: () => Promise.resolve(''),
+  logout: () => {},
+  setDid: () => Promise.resolve(''),
+  deleteIdentity: () => Promise.resolve(''),
 };
