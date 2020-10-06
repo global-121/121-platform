@@ -210,5 +210,14 @@ export class CreateConnectionService {
   // @Cron('0 0 0 * * *')
   async cronGetOldConnections(): Promise<void> {
     console.log('Get old unfinished connections');
+    const tsYesterday = Math.round(new Date().getTime()) - 24 * 60 * 60 * 1000;
+
+    const noApplyConnections = await this.connectionRepository.find({
+      where: { appliedDate: null },
+    });
+    const oldConnections = noApplyConnections.filter(i => {
+      Math.round(new Date(i.created).getTime()) < tsYesterday;
+    });
+  }
   }
 }
