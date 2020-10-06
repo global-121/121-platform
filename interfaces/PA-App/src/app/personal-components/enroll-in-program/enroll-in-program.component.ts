@@ -7,6 +7,7 @@ import {
   ProgramCriteriumOption,
 } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
@@ -53,6 +54,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     public paData: PaDataService,
     public translatableString: TranslatableStringService,
     public conversationService: ConversationService,
+    private instanceService: InstanceService,
   ) {
     super();
   }
@@ -84,7 +86,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private async getInstanceInformation() {
-    this.instanceDetails = await this.programsService.getInstanceInformation();
+    this.instanceDetails = await this.instanceService.getInstanceInformation();
 
     this.instanceDetails.displayName = this.translatableString.get(
       this.instanceDetails.displayName,
