@@ -31,6 +31,7 @@
     "@nestjs/common": "^6.0.1",
     "@nestjs/core": "^6.0.1",
     "@nestjs/platform-express": "^6.0.1",
+    "@nestjs/schedule": "^0.4.1",
     "@nestjs/swagger": "^3.0.1",
     "@nestjs/terminus": "^6.1.4",
     "@nestjs/testing": "^6.0.1",

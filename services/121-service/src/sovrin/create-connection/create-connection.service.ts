@@ -6,6 +6,7 @@ import {
   Inject,
   forwardRef,
 } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -202,5 +203,12 @@ export class CreateConnectionService {
       }
     }
     return fspCustomData;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
+  @Cron('* * * * *')
+  // @Cron('0 0 0 * * *')
+  async cronGetOldConnections(): Promise<void> {
+    console.log('Get old unfinished connections');
   }
 }
