@@ -46,56 +46,85 @@
   "phoneNumberPlaceholder": "+254 000 000 000",
   "customCriteria": [
     {
-      "criterium": "multiple_choice",
+      "criterium": "firstName",
       "label": {
-        "en": "Sample question"
+        "en": "What is your first name?"
       },
-      "answerType": "dropdown",
+      "answerType": "text",
       "criteriumType": "standard",
-      "options": [
-        {
-          "option": "optionA",
-          "label": {
-            "en": "Option A"
-          }
-        },
-        {
-          "option": "optionB",
-          "label": {
-            "en": "Option B"
-          }
-        }
-      ],
-      "scoring": {
-        "optionA": 0,
-        "optionB": 1
-      }
+      "options": null,
+      "persistence": true,
+      "scoring": {}
     },
     {
-      "criterium": "multiple_choice2",
+      "criterium": "secondName",
       "label": {
-        "en": "Sample question 2"
+        "en": "What is your second name?"
+      },
+      "answerType": "text",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    },
+    {
+      "criterium": "thirdName",
+      "label": {
+        "en": "What is your third name?"
+      },
+      "answerType": "text",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    },
+    {
+      "criterium": "age",
+      "label": {
+        "en": "What is your age?"
       },
       "answerType": "dropdown",
       "criteriumType": "standard",
       "options": [
         {
-          "option": "optionA",
+          "option": "0_-_59_months",
           "label": {
-            "en": "Option A"
+            "en": "0 - 59 months"
           }
         },
         {
-          "option": "optionB",
+          "option": "5_-_12_yrs",
           "label": {
-            "en": "Option B"
+            "en": "5 - 12yrs"
+          }
+        },
+        {
+          "option": "13_-_17_yrs",
+          "label": {
+            "en": "13 - 17 yrs"
+          }
+        },
+        {
+          "option": "18_-_24_yrs",
+          "label": {
+            "en": "18 - 24 yrs"
+          }
+        },
+        {
+          "option": "25_-_59_yrs",
+          "label": {
+            "en": "25 - 59 yrs"
+          }
+        },
+        {
+          "option": "60_yrs_and_above",
+          "label": {
+            "en": "60 yrs and above"
           }
         }
       ],
-      "scoring": {
-        "optionA": 0,
-        "optionB": 1
-      }
+      "persistence": true,
+      "scoring": {}
     },
     {
       "criterium": "location",
@@ -106,19 +135,148 @@
       "criteriumType": "standard",
       "options": [
         {
-          "option": "Oldonyiro",
-          "label": {
-            "en": "Oldonyiro"
-          }
-        },
-        {
           "option": "Longopito",
           "label": {
             "en": "Longopito"
           }
+        },
+        {
+          "option": "Oldonyiro",
+          "label": {
+            "en": "Oldonyiro"
+          }
         }
       ],
       "persistence": true,
+      "scoring": {}
+    },
+    {
+      "criterium": "livelihoodStrategy",
+      "label": {
+        "en": "What is your household’s current livelihood strategy (as of last month)"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "Pastoralism",
+          "label": {
+            "en": "Pastoralism"
+          }
+        },
+        {
+          "option": "Agro_pastoralism",
+          "label": {
+            "en": "Agro-pastoralism"
+          }
+        },
+        {
+          "option": "Agriculture_Cropfarming",
+          "label": {
+            "en": "Agriculture/Crop Farming"
+          }
+        },
+        {
+          "option": "Fishing",
+          "label": {
+            "en": "Fishing"
+          }
+        },
+        {
+          "option": "Petty_trade",
+          "label": {
+            "en": "Petty trade [Hawking/Any Business in a small kiosk]"
+          }
+        },
+        {
+          "option": "casual_labour",
+          "label": {
+            "en": "Casual Labour"
+          }
+        },
+        {
+          "option": "sale_of_charcoal_firewood",
+          "label": {
+            "en": "Sale of Charcoal and or Firewood"
+          }
+        },
+        {
+          "option": "sale_bush_products",
+          "label": {
+            "en": "Sale of Bush Products [Wild meat/Building poles/grass/reeds/building stones]"
+          }
+        },
+        {
+          "option": "begging",
+          "label": {
+            "en": "Begging"
+          }
+        },
+        {
+          "option": "business_medium_large",
+          "label": {
+            "en": "Business [Medium or Large Scale]"
+          }
+        },
+        {
+          "option": "formal_salaried_jobs",
+          "label": {
+            "en": "Formal/Salaried Jobs [Police Officer/Teacher/Nurse  etc.]"
+          }
+        },
+        {
+          "option": "remmitance",
+          "label": {
+            "en": "Remmitances [Money from Relatives/Friends abroad]"
+          }
+        }
+      ],
+      "scoring": {}
+    },
+    {
+      "criterium": "cashassistance",
+      "label": {
+        "en": "As of TODAY are you receiving any form of cash assistance from Kenya Red Cross, Social Services, HSNP Group 1 or other humanitarian agencies?"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "Yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "No",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {}
+    },
+    {
+      "criterium": "foodassistance",
+      "label": {
+        "en": "As of TODAY are you receiving any form of food assistance from WFP, County Government of National Government?"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "Yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "No",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
       "scoring": {}
     }
   ]

@@ -4,10 +4,12 @@ import {
   Column,
   ManyToOne,
   BeforeUpdate,
+  Unique,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 
 @Entity()
+@Unique(['criterium'])
 export class CustomCriterium {
   @PrimaryGeneratedColumn()
   public id: number;
