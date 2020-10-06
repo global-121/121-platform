@@ -1,7 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  Unique,
+} from 'typeorm';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
 @Entity('fsp_attribute')
+@Unique(['name'])
 export class FspAttributeEntity {
   @PrimaryGeneratedColumn()
   public id: number;
