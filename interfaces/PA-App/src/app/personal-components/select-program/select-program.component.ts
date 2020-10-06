@@ -73,20 +73,16 @@ export class SelectProgramComponent extends PersonalComponent {
 
   public changeProgram($event) {
     this.programChoice = $event.detail.value;
-    this.paData.store(this.paData.type.programId, this.programChoice);
   }
 
   public submitProgram() {
-    const initialProgram = new Program();
-    initialProgram.id = this.programChoice;
-
-    this.paData.saveProgram(this.programChoice, initialProgram);
+    this.paData.setCurrentProgramId(this.programChoice);
 
     this.complete();
   }
 
   getNextSection() {
-    return PersonalComponents.enrollInProgram;
+    return PersonalComponents.signupSignin;
   }
 
   complete() {

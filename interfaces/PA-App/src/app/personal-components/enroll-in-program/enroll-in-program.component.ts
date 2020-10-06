@@ -92,14 +92,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private async getProgramDetails() {
-    this.programId = Number(
-      await this.paData.retrieve(this.paData.type.programId),
-    );
-    this.currentProgram = await this.programsService.getProgramById(
-      this.programId,
-    );
+    this.currentProgram = await this.paData.getCurrentProgram();
     this.prepareProgramDetails(this.currentProgram);
-    this.paData.saveProgram(this.programId, this.currentProgram);
   }
 
   public prepareProgramDetails(program: Program) {
