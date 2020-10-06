@@ -19,7 +19,9 @@ export class PaDataService {
 
   public hasAccount = false;
   private username: string;
-  public myPrograms: any = {};
+
+  private currentProgramId: number;
+  private myPrograms: Program[] = [];
   public myAnswers: any = {};
 
   private authenticationStateSource = new BehaviorSubject<boolean>(false);
@@ -56,30 +58,33 @@ export class PaDataService {
     });
   }
 
-  async saveProgram(programId: number, program: Program): Promise<any> {
-    this.myPrograms[programId] = program;
-    return this.store(this.type.myPrograms, this.myPrograms);
+  public setCurrentProgramId(programId: number) {
+    this.currentProgramId = programId;
+    this.store(this.type.programId, programId);
   }
 
-  async getProgram(programId: number): Promise<Program> {
+  private async getProgram(programId: number): Promise<Program> {
+    // If not already available, fall back to get it from the server
     if (!this.myPrograms[programId]) {
-      // Fall back to get it from the server
-      this.myPrograms = await this.retrieve(this.type.myPrograms);
+      this.myPrograms[programId] = await this.programService.getProgramById(
+        programId,
+      );
     }
 
-    return new Promise<Program>((resolve, reject) => {
-      if (!this.myPrograms[programId]) {
-        return reject();
-      }
-
-      return resolve(this.myPrograms[programId]);
-    });
+    return this.myPrograms[programId];
   }
 
-  async getCurrentProgram() {
-    const currentProgramId = await this.retrieve(this.type.programId);
+  public async getCurrentProgram(): Promise<Program> {
+    if (!this.currentProgramId) {
+      this.currentProgramId = Number(await this.retrieve(this.type.programId));
 
-    return this.getProgram(currentProgramId);
+      // Fall back to hard-coded value, if all else fails
+      if (!this.currentProgramId) {
+        this.currentProgramId = 1;
+      }
+    }
+
+    return await this.getProgram(this.currentProgramId);
   }
 
   async saveAnswers(programId: number, answers: any): Promise<any> {

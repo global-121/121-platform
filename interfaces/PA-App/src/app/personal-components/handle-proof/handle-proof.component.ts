@@ -72,9 +72,8 @@ export class HandleProofComponent extends PersonalComponent {
     console.log('handleProof');
 
     await this.gatherData();
-    const currentProgram: Program = this.paData.myPrograms[this.programId];
 
-    if (!currentProgram) {
+    if (!this.currentProgram) {
       return;
     }
 
