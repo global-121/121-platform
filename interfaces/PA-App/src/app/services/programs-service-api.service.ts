@@ -22,7 +22,7 @@ export class ProgramsServiceApiService {
 
   getAllPrograms(): Promise<Program[]> {
     return this.apiService
-      .get(environment.url_121_service_api, '/programs/')
+      .get(environment.url_121_service_api, '/programs/country/1')
       .pipe(map((response) => response.programs))
       .toPromise();
   }
