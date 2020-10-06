@@ -114,6 +114,16 @@ export class UserService {
     await this.userRepository.delete(user.id);
   }
 
+  public async deleteAccounts(dids: DidDto[]): Promise<any> {
+    dids.forEach(async did => {
+      const user = await this.userRepository.findOne({ where: { did: did } });
+      await this.dataStorageRepository.delete({
+        userId: user.id,
+      });
+      await this.userRepository.delete(user.id);
+    });
+  }
+
   public async findById(id: number): Promise<UserRO> {
     const user = await this.userRepository.findOne(id);
     if (!user) {
