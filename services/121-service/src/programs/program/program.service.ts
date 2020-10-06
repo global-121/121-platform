@@ -805,6 +805,9 @@ export class ProgramService {
         connectionResponse['phoneNumber'] =
           connection.phoneNumber || connection.customData['phoneNumber'];
         connectionResponse['location'] = connection.customData['location'];
+        connectionResponse['firstName'] = connection.customData['firstName'];
+        connectionResponse['secondName'] = connection.customData['secondName'];
+        connectionResponse['thirdName'] = connection.customData['thirdName'];
       }
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
       connectionsResponse.push(connectionResponse);
@@ -939,6 +942,9 @@ export class ProgramService {
     includedConnections.forEach(rawConnection => {
       let row = {
         name: rawConnection.name,
+        firstName: rawConnection.firstName,
+        secondName: rawConnection.secondName,
+        thirdName: rawConnection.thirdName,
         dateOfBirth: rawConnection.dob,
         location: rawConnection.location,
         status: rawConnection.status,
@@ -968,6 +974,9 @@ export class ProgramService {
     for (const rawConnection of selectedConnections) {
       let row = {
         name: rawConnection.name,
+        firstName: rawConnection.firstName,
+        secondName: rawConnection.secondName,
+        thirdName: rawConnection.thirdName,
         dateOfBirth: rawConnection.dob,
         location: rawConnection.location,
         status: rawConnection.status,
