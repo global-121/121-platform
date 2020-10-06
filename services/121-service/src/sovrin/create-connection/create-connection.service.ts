@@ -1,10 +1,8 @@
-import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import {
   Injectable,
   HttpException,
   HttpStatus,
-  Inject,
-  forwardRef,
+  HttpService,
 } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
@@ -15,6 +13,7 @@ import { Repository, getRepository } from 'typeorm';
 import { DidDto } from '../../programs/program/dto/did.dto';
 import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
+import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import { CredentialEntity } from '../credential/credential.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { ProgramService } from '../../programs/program/program.service';
@@ -22,6 +21,7 @@ import {
   FspAnswersAttrInterface,
   AnswerSet,
 } from 'src/programs/fsp/fsp-interface';
+import { API } from '../../config';
 
 @Injectable()
 export class CreateConnectionService {
@@ -40,7 +40,10 @@ export class CreateConnectionService {
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
 
-  public constructor(private readonly programService: ProgramService) {}
+  public constructor(
+    private readonly programService: ProgramService,
+    private readonly httpService: HttpService,
+  ) {}
 
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
@@ -207,17 +210,38 @@ export class CreateConnectionService {
 
   // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   @Cron('* * * * *')
-  // @Cron('0 0 0 * * *')
-  async cronGetOldConnections(): Promise<void> {
+  // @Cron('0 0 * * *')
+  async cronDeleteOldUnfinishedConnections(): Promise<void> {
     console.log('Get old unfinished connections');
     const tsYesterday = Math.round(new Date().getTime()) - 24 * 60 * 60 * 1000;
 
-    const noApplyConnections = await this.connectionRepository.find({
+    const unfinishedConnections = await this.connectionRepository.find({
       where: { appliedDate: null },
     });
-    const oldConnections = noApplyConnections.filter(i => {
-      Math.round(new Date(i.created).getTime()) < tsYesterday;
+    const oldUnfinishedConnections = unfinishedConnections.filter(i => {
+      const tsCreated = Math.round(new Date(i.created).getTime());
+      return tsCreated < tsYesterday;
+    });
+
+    oldUnfinishedConnections.forEach(connection => {
+      this.deleteConnection(connection.did);
     });
   }
+
+  private async deleteConnection(did: string): Promise<void> {
+    //1. Delete PA Account
+    const wallet = await this.httpService
+      .post(API.paAccounts.deleteAccount, { did: did })
+      .toPromise();
+
+    //2. Delete wallet
+    await this.httpService
+      .post(API.userIMS.deleteWallet, { wallet: JSON.parse(wallet.data) })
+      .toPromise();
+
+    //3. Delete data in 121-service
+    this.delete({ did });
+
+    console.log(`Deleted PA: ${did}`);
   }
 }

@@ -91,12 +91,11 @@ export class UserController {
     return await this.userService.deleteAccount(userId, passwordData);
   }
 
-  @UseGuards(RolesGuard)
   @ApiOperation({
-    title: 'Delete set of users and their storage (used from 121-service)',
+    title: 'Get wallet + Delete user and storage (used from 121-service)',
   })
-  @Post('users/delete')
-  public async deleteAccounts(@Body() dids: DidDto[]): Promise<void> {
-    return await this.userService.deleteAccounts(dids);
+  @Post('user/get-wallet-and-delete')
+  public async getWalletAndDeleteAccount(@Body() did: DidDto): Promise<any> {
+    return await this.userService.getWalletAndDeleteAccount(did.did);
   }
 }
