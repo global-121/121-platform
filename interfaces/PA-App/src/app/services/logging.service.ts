@@ -59,7 +59,6 @@ export class LoggingService {
     error: any,
     severityLevel: SeverityLevel = SeverityLevel.Error,
   ) {
-    console.log('APP INSIGHT');
     switch (severityLevel) {
       case SeverityLevel.Critical:
       case SeverityLevel.Error:
