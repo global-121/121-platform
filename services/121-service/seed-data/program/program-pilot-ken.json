@@ -39,7 +39,6 @@
   },
   "notifications": {
     "en": {
-      "registered": "You have been successfully registered for this program.",
       "included": "You have been included in this program.",
       "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us."
     }
@@ -172,7 +171,7 @@
           }
         },
         {
-          "option": "Agriculture_Cropfarming",
+          "option": "Agriculture_cropfarming",
           "label": {
             "en": "Agriculture/Crop Farming"
           }
@@ -190,49 +189,62 @@
           }
         },
         {
-          "option": "casual_labour",
+          "option": "Casual_labour",
           "label": {
             "en": "Casual Labour"
           }
         },
         {
-          "option": "sale_of_charcoal_firewood",
+          "option": "Sale_of_charcoal_firewood",
           "label": {
             "en": "Sale of Charcoal and or Firewood"
           }
         },
         {
-          "option": "sale_bush_products",
+          "option": "Sale_bush_products",
           "label": {
             "en": "Sale of Bush Products [Wild meat/Building poles/grass/reeds/building stones]"
           }
         },
         {
-          "option": "begging",
+          "option": "Begging",
           "label": {
             "en": "Begging"
           }
         },
         {
-          "option": "business_medium_large",
+          "option": "Business_medium_large",
           "label": {
             "en": "Business [Medium or Large Scale]"
           }
         },
         {
-          "option": "formal_salaried_jobs",
+          "option": "Formal_salaried_jobs",
           "label": {
             "en": "Formal/Salaried Jobs [Police Officer/Teacher/Nurse  etc.]"
           }
         },
         {
-          "option": "remmitance",
+          "option": "Remmitance",
           "label": {
             "en": "Remmitances [Money from Relatives/Friends abroad]"
           }
         }
       ],
-      "scoring": {}
+      "scoring": {
+        "Pastoralism": 0,
+        "Agro_pastoralism": 0,
+        "Agriculture_cropfarming": 0,
+        "Fishing": 0,
+        "Petty_trade": 0,
+        "Casual_labour": 0,
+        "Sale_of_charcoal_firewood": 0,
+        "Sale_bush_products": 0,
+        "Begging": 0,
+        "Business_medium_large": -9999,
+        "Formal_salaried_jobs": -9999,
+        "Remmitance": 0
+      }
     },
     {
       "criterium": "cashassistance",
@@ -255,7 +267,10 @@
           }
         }
       ],
-      "scoring": {}
+      "scoring": {
+        "Yes": -9999,
+        "No": 0
+      }
     },
     {
       "criterium": "foodassistance",
@@ -278,7 +293,10 @@
           }
         }
       ],
-      "scoring": {}
+      "scoring": {
+        "Yes": -9999,
+        "No": 0
+      }
     }
   ]
 }

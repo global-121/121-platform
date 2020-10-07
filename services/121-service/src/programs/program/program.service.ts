@@ -641,6 +641,10 @@ export class ProgramService {
     criterium: CustomCriterium,
     answerPA: object,
   ): number {
+    // If questions has no scoring system return 0;
+    if (Object.keys(criterium.scoring).length === 0) {
+      return 0;
+    }
     let score = 0;
     const options = JSON.parse(JSON.stringify(criterium.options));
     for (let value of options) {
