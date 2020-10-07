@@ -101,6 +101,22 @@ export class CreateConnectionController {
     );
   }
 
+  @Roles(UserRole.Aidworker)
+  @ApiOperation({
+    title: 'Overwrite custom data for connection user used by aidworker',
+  })
+  @ApiResponse({ status: 200, description: 'Custom data  set for connection' })
+  @Post('/custom-data/overwrite')
+  public async addCustomDataOverwrite(
+    @Body() customData: CustomDataDto,
+  ): Promise<ConnectionEntity> {
+    return await this.createConnectionService.addCustomDataOverwrite(
+      customData.did,
+      customData.key,
+      customData.value,
+    );
+  }
+
   @ApiOperation({ title: 'Set qr identifier for connection' })
   @ApiResponse({
     status: 201,
