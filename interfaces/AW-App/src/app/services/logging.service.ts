@@ -23,20 +23,6 @@ export class LoggingService {
 
     this.appInsightsEnabled = true;
     this.appInsights.loadAppInsights();
-    this.appInsights.addTelemetryInitializer(this.addTelemetryProcessor);
-  }
-
-  addTelemetryProcessor(envelope: any) {
-    const baseData = envelope.baseData;
-
-    // filter audio files
-    if (baseData.responseCode === 404 && baseData.name.match('/assets/i18n/')) {
-      return false;
-    }
-
-    // filter/sample data
-    // if all criterias pass then log
-    return true;
   }
 
   logPageView(name?: string) {
