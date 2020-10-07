@@ -1,5 +1,11 @@
 import { CredentialService } from './credential.service';
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { ApiOperation, ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
 import { DidProgramIdDto } from './dto/did-program-id.dto';
 
@@ -19,11 +25,13 @@ export class CredentialController {
     didProgramDto: DidProgramIdDto;
     apiKey: string;
   }): Promise<void> {
-    if (payload.apiKey === process.env.PA_API_KEY) {
-      return await this.credentialService.getCredentialHandleProof(
-        payload.didProgramDto.did,
-        payload.didProgramDto.programId,
-      );
+    if (payload.apiKey !== process.env.PA_API_KEY) {
+      throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
     }
+
+    return await this.credentialService.getCredentialHandleProof(
+      payload.didProgramDto.did,
+      payload.didProgramDto.programId,
+    );
   }
 }

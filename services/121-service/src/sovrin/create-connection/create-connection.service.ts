@@ -208,7 +208,7 @@ export class CreateConnectionService {
     return fspCustomData;
   }
 
-  public async deleteConnection(did: string): Promise<void> {
+  public async deleteRegistration(did: string): Promise<void> {
     //1. Delete PA Account
     const wallet = await this.httpService
       .post(API.paAccounts.deleteAccount, {

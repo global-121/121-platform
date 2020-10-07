@@ -100,8 +100,10 @@ export class UserController {
     did: string;
     apiKey: string;
   }): Promise<any> {
-    if (payload.apiKey === process.env.PA_API_KEY) {
-      return await this.userService.getWalletAndDeleteAccount(payload.did);
+    if (payload.apiKey !== process.env.PA_API_KEY) {
+      throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
     }
+
+    return await this.userService.getWalletAndDeleteAccount(payload.did);
   }
 }
