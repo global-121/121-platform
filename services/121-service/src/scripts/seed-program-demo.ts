@@ -6,8 +6,6 @@ import { SeedHelper } from './seed-helper';
 import { SeedPublish } from './seed-publish';
 import { SeedInit } from './seed-init';
 
-import { CountryEntity } from '../programs/country/country.entity';
-
 import fspBank from '../../seed-data/fsp/fsp-bravos.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
@@ -33,20 +31,14 @@ export class SeedDemoProgram implements InterfaceScript {
     await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROJECT_OFFICER,
-      countryId: parseInt(process.env.USERCONFIG_121_SERVICE_COUNTRY_ID),
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_OFFICER,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProgramManager,
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_MANAGER,
-      countryId: parseInt(process.env.USERCONFIG_121_SERVICE_COUNTRY_ID),
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_MANAGER,
     });
-
-    // ***** CREATE COUNTRIES *****
-    const countryRepository = this.connection.getRepository(CountryEntity);
-    await countryRepository.save([{ country: 'Westeros' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);

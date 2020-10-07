@@ -219,9 +219,4 @@ export class CreateProgramDto {
 
   @ApiModelProperty({ example: { en: 'descCashType' } })
   public readonly descCashType: JSON;
-
-  @ApiModelProperty({ example: 1 })
-  @IsNumber()
-  @IsNotEmpty()
-  public readonly countryId: number;
 }

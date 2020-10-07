@@ -107,31 +107,11 @@ export class ProgramService {
       });
     }
 
-    if ('countryId' in query) {
-      qb.andWhere('program.countryId = :countryId', {
-        countryId: query.countryId,
-      });
-    }
-
     qb.orderBy('program.created', 'DESC');
 
     const programsCount = await qb.getCount();
     const programs = await qb.getMany();
 
-    return { programs, programsCount };
-  }
-
-  public async findByCountry(query): Promise<ProgramsRO> {
-    const qb = await getRepository(ProgramEntity)
-      .createQueryBuilder('program')
-      .leftJoinAndSelect('program.customCriteria', 'customCriterium')
-      .addOrderBy('customCriterium.id', 'ASC')
-      .where('"countryId" = :countryId', { countryId: query });
-
-    let programs = await qb.getMany();
-    programs = programs.filter(program => program.published);
-
-    const programsCount = programs.length;
     return { programs, programsCount };
   }
 
@@ -160,7 +140,6 @@ export class ProgramService {
     program.descLocation = programData.descLocation;
     program.descHumanitarianObjective = programData.descHumanitarianObjective;
     program.descCashType = programData.descCashType;
-    program.countryId = programData.countryId;
     program.validation = programData.validation;
     program.customCriteria = [];
     program.financialServiceProviders = [];

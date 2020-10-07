@@ -10,7 +10,6 @@ const newProgramParameters = {
   location: 'Lilongwe',
   ngo: 'Dorcas',
   contactDetails: JSON.parse('{}'),
-  countryId: 265,
   title: JSON.parse('{"en": "pilot_program_1a"}'),
   description: JSON.parse(
     '{"en": "Program to help people hit by earthquake examplename"}',

@@ -4,7 +4,6 @@ import { UserEntity } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 import { ProgramEntity } from '../programs/program/program.entity';
-import { StandardCriteriumEntity } from '../programs/standard-criterium/standard-criterium.entity';
 
 const userRo = {
   user: {
@@ -13,7 +12,6 @@ const userRo = {
     token: undefined,
     role: undefined,
     status: undefined,
-    countryId: undefined,
     assignedProgramId: undefined,
   },
 };
@@ -22,7 +20,6 @@ const createUserDto = {
   email: 'test@example.org',
   role: undefined,
   status: undefined,
-  countryId: undefined,
   password: 'string',
 };
 
@@ -46,10 +43,6 @@ describe('User service', (): void => {
           },
           {
             provide: getRepositoryToken(ProgramEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(StandardCriteriumEntity),
             useFactory: repositoryMockFactory,
           },
         ],

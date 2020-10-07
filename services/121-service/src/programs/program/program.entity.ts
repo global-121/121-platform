@@ -100,9 +100,6 @@ export class ProgramEntity {
   @Column('json')
   public descCashType: JSON;
 
-  @Column()
-  public countryId: number;
-
   @Column({ default: false })
   public published: boolean;
 

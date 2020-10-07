@@ -9,7 +9,6 @@ import {
 import { IsEmail } from 'class-validator';
 const crypto = require('crypto');
 import { ProgramEntity } from '../programs/program/program.entity';
-import { StandardCriteriumEntity } from '../programs/standard-criterium/standard-criterium.entity';
 import { ActionEntity } from '../actions/action.entity';
 
 @Entity('user')
@@ -30,9 +29,6 @@ export class UserEntity {
   @Column({ nullable: true })
   public status: string;
 
-  @Column({ nullable: true })
-  public countryId: number;
-
   @BeforeInsert()
   public hashPassword(): any {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
@@ -52,12 +48,6 @@ export class UserEntity {
     program => program.user,
   )
   public actions: ActionEntity[];
-
-  @OneToMany(
-    type => StandardCriteriumEntity,
-    criterium => criterium.author,
-  )
-  public criteriums: StandardCriteriumEntity[];
 
   @ManyToMany(
     type => ProgramEntity,

@@ -5,8 +5,6 @@ import { Connection } from 'typeorm';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 
-import { CountryEntity } from '../programs/country/country.entity';
-
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 
 import programPilotNL from '../../seed-data/program/program-pilot-nl.json';
@@ -27,20 +25,14 @@ export class SeedPilotNLProgram implements InterfaceScript {
     await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROJECT_OFFICER,
-      countryId: parseInt(process.env.USERCONFIG_121_SERVICE_COUNTRY_ID),
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_OFFICER
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_OFFICER,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProgramManager,
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_MANAGER,
-      countryId: parseInt(process.env.USERCONFIG_121_SERVICE_COUNTRY_ID),
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_MANAGER
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_MANAGER,
     });
-
-    // ***** CREATE COUNTRIES *****
-    const countryRepository = this.connection.getRepository(CountryEntity);
-    await countryRepository.save([{ country: 'Nederland' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
