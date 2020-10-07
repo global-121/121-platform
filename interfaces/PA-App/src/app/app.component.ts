@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
-import { LoggingService } from './services/logging.service'
+import { LoggingService } from './services/logging.service';
 
 @Component({
   selector: 'app-root',
@@ -13,10 +13,10 @@ export class AppComponent {
     private platform: Platform,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
-    private loggingService: LoggingService
+    private loggingService: LoggingService,
   ) {
     this.initializeApp();
-    this.loggingService.logPageView()
+    this.loggingService.logPageView();
   }
 
   initializeApp() {

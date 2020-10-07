@@ -10,13 +10,37 @@ export class LoggingService {
     if (environment.ai_ikey && environment.ai_endpoint) {
       this.appInsights = new ApplicationInsights({
         config: {
+          connectionString:
+            'InstrumentationKey=' +
+            environment.ai_ikey +
+            ';IngestionEndpoint=' +
+            environment.ai_endpoint,
           instrumentationKey: environment.ai_ikey,
           enableAutoRouteTracking: true,
         },
       });
 
       this.appInsights.loadAppInsights();
+      this.appInsights.addTelemetryInitializer(this.addTelemetryProcessor);
     }
+  }
+
+  addTelemetryProcessor(envelope: any) {
+    const baseData = envelope.baseData;
+
+    // filter audio files
+    if (
+      baseData.responseCode === 404 &&
+      baseData.name.match(
+        '/assets/i18n/(en|de)/[a-z.-]*.(en|ny_MW|tuv_KE|saq_KE|om_ET).(webm|mp3)',
+      )
+    ) {
+      return false;
+    }
+
+    // filter/sample data
+
+    return false;
   }
 
   logPageView(name?: string, url?: string) {
