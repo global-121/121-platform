@@ -68,7 +68,9 @@ export class SelectLanguageComponent extends PersonalComponent {
 
   public changeLanguage($event) {
     this.languageChoice = $event.detail.value;
-    this.isDisabled = false;
+    if (this.isDisabled) {
+      return;
+    }
 
     this.translate.use(this.languageChoice);
     this.languageChoiceName = this.getLanguageName(this.languageChoice);
