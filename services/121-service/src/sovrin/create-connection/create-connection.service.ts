@@ -4,9 +4,7 @@ import {
   HttpStatus,
   HttpService,
 } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
-import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
 import { Repository, getRepository } from 'typeorm';
@@ -22,6 +20,9 @@ import {
   AnswerSet,
 } from 'src/programs/fsp/fsp-interface';
 import { API } from '../../config';
+import { SmsService } from '../../notifications/sms/sms.service';
+import { PaStatus } from '../../models/pa-status.model';
+import { ConnectionRequestDto } from './dto/connection-request.dto';
 
 @Injectable()
 export class CreateConnectionService {
@@ -43,6 +44,7 @@ export class CreateConnectionService {
   public constructor(
     private readonly programService: ProgramService,
     private readonly httpService: HttpService,
+    private readonly smsService: SmsService,
   ) {}
 
   // This is for SSI-solution
@@ -79,6 +81,12 @@ export class CreateConnectionService {
       connection.programsApplied.push(+programId);
       await this.connectionRepository.save(connection);
       this.programService.calculateInclusionPrefilledAnswers(did, programId);
+      this.smsService.notifyBySms(
+        connection.phoneNumber,
+        connection.preferredLanguage,
+        PaStatus.registered,
+        programId,
+      );
     }
   }
 
