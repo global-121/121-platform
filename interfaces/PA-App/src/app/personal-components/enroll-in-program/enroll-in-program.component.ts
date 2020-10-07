@@ -7,6 +7,7 @@ import {
   ProgramCriteriumOption,
 } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
@@ -53,6 +54,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     public paData: PaDataService,
     public translatableString: TranslatableStringService,
     public conversationService: ConversationService,
+    private instanceService: InstanceService,
   ) {
     super();
   }
@@ -84,7 +86,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private async getInstanceInformation() {
-    this.instanceDetails = await this.programsService.getInstanceInformation();
+    this.instanceDetails = await this.instanceService.getInstanceInformation();
 
     this.instanceDetails.displayName = this.translatableString.get(
       this.instanceDetails.displayName,
@@ -92,17 +94,12 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private async getProgramDetails() {
-    this.programId = Number(
-      await this.paData.retrieve(this.paData.type.programId),
-    );
-    this.currentProgram = await this.programsService.getProgramById(
-      this.programId,
-    );
+    this.currentProgram = await this.paData.getCurrentProgram();
     this.prepareProgramDetails(this.currentProgram);
-    this.paData.saveProgram(this.programId, this.currentProgram);
   }
 
   public prepareProgramDetails(program: Program) {
+    this.programId = program.id;
     this.credDefId = program.credDefId;
 
     this.programDetails = this.buildDetails(program);
@@ -158,7 +155,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     this.hasAnswered = true;
     this.hasChangedAnswers = false;
-    this.conversationService.scrollToEnd();
     this.paData.saveAnswers(this.programId, this.answers);
   }
 

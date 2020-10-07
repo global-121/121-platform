@@ -76,10 +76,9 @@ export class PersonalPage implements OnInit {
           nextAction === this.conversationService.conversationActions.afterLogin
         ) {
           this.loadComponents();
+          this.scrollDown();
           return;
         }
-
-        this.scrollDown();
 
         this.insertSection(nextAction);
       },
@@ -103,10 +102,6 @@ export class PersonalPage implements OnInit {
     this.loadComponents();
   }
 
-  ionViewDidEnter() {
-    this.scrollDown();
-  }
-
   private async loadComponents() {
     // Always start with a clean slate:
     this.container.clear();
@@ -116,10 +111,6 @@ export class PersonalPage implements OnInit {
     conversation.forEach((section: ConversationSection) => {
       this.insertSection(section.name, section.moment, section.data);
     });
-
-    window.setTimeout(() => {
-      this.scrollDown();
-    }, this.scrollSpeed);
   }
 
   private getComponentFactory(name: string) {
