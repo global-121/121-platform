@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { InstanceInfo } from 'src/app/models/instance.model';
+import { InstanceInformation } from 'src/app/models/instance.model';
 import {
   Program,
   ProgramAttribute,
@@ -36,7 +36,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   private currentProgram: Program;
   private credDefId: string;
 
-  public instanceDetails: any | InstanceInfo;
+  public instanceInformation: InstanceInformation;
   public programDetails: any;
 
   public questions: Question[];
@@ -86,11 +86,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private async getInstanceInformation() {
-    this.instanceDetails = await this.instanceService.getInstanceInformation();
-
-    this.instanceDetails.displayName = this.translatableString.get(
-      this.instanceDetails.displayName,
-    );
+    this.instanceInformation = await this.instanceService.getInstanceInformation();
   }
 
   private async getProgramDetails() {
