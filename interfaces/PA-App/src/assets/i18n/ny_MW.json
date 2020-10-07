@@ -72,7 +72,6 @@
       }
     },
     "select-language": {
-      "more-info": "Zokhuzana ndi 121",
       "result": "Zikomo, mwasankha {{language}}.",
       "introduction": {},
       "language": {}

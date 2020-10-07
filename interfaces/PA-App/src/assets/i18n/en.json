@@ -101,16 +101,13 @@
       "introduction": "Please select how you would like to receive your aid, if you are included in the program."
     },
     "select-language": {
-      "info-message": "With the 121 platform, we aim to make Cash Based Aid safe, fast & fair.<br> 121 will help you<br><ul><li>Create a Digtial ID</li><li>Know which programs are available in your area</li><li>Apply to the programs</li><li>Understand who sees your information</li></ul>",
-      "intro": "Welcome to 121. You can use 121 to apply for aid. You can read more about 121 in the blue button below.",
       "introduction": {
-        "en": "Welcome to 121. Please select your language.",
-        "ny_MW": "Takulandilani ku 121. Chonde sankhani chiyankhulo chanu.",
-        "om_ET": "Baga gara 121'tti nagaan dhuftan. Maaloo qooqa keessan filadhaa.",
+        "en": "Please select your language.",
+        "ny_MW": "Chonde sankhani chiyankhulo chanu.",
+        "om_ET": "Maaloo qooqa keessan filadhaa.",
         "saq_KE": "[Samburu text]",
         "tuv_KE": "[Turkana text]"
       },
-      "more-info": "About 121",
       "result": "Thank you, you have selected {{language}}.",
       "language": {
         "en": "English",
