@@ -1,12 +1,8 @@
 <section>
-  <dialogue-turn
-    [actor]="instanceDetails?.name"
-    *ngIf="instanceDetails"
-    [isSpoken]="instanceDetails"
-  >
+  <dialogue-turn>
     <p>
       <play-text-audio key="personal.enroll-in-program.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ ngo:'<strong>'+instanceDetails?.displayName+'</strong>' }"></span>
+      <span [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ ngo:'<strong>'+instanceInformation?.displayName+'</strong>' }"></span>
     </p>
     <p
       *ngIf="programDetails?.contactDetails"
@@ -16,14 +12,11 @@
 
   </dialogue-turn>
   <dialogue-turn
-    [actor]="instanceDetails?.name"
-    *ngIf="instanceDetails"
-    [isSpoken]="instanceDetails"
     isConnected="true"
   >
     <p>
       <play-text-audio key="personal.enroll-in-program.introduction-information" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate:{ ngo:'<strong>'+instanceDetails?.displayName+'</strong>' }"></span>
+      <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate:{ ngo:'<strong>'+instanceInformation?.displayName+'</strong>' }"></span>
     </p>
 
     <more-info-button buttonKey="personal.enroll-in-program.more-info-questions"
@@ -41,8 +34,7 @@
                submitLabel="personal.enroll-in-program.submit"
   ></q-and-a-set>
 
-  <dialogue-turn [actor]="instanceDetails?.name"
-                 *ngIf="hasAnswered"
+  <dialogue-turn *ngIf="hasAnswered"
                  [isSpoken]="hasAnswered"
   >
     <p>
