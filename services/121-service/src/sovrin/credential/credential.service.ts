@@ -282,6 +282,11 @@ export class CredentialService {
 
   // Used by Aidworker
   public async issue(payload: CredentialIssueDto): Promise<void> {
+    await this.storePersistentAnswers(
+      payload.attributes,
+      payload.programId,
+      payload.did,
+    );
     await this.checkForOldCredential(payload.did, payload.programId);
 
     // Get related credential offer
