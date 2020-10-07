@@ -19,7 +19,4 @@ export class CreateUserDto {
 
   @ApiModelProperty({ example: 'active' })
   public readonly status: string;
-
-  @ApiModelProperty({ example: 1 })
-  public readonly countryId: number;
 }

@@ -14,7 +14,7 @@ export class SeedPublish implements InterfaceScript {
   public async run(): Promise<void> {
     console.log('Checking if 121-service is online');
     let response = await this.httpService
-      .get(this.address + 'programs/country/1')
+      .get(this.address + 'programs/1')
       .toPromise();
 
     if (response.status !== 200) {

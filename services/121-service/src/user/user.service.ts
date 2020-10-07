@@ -43,7 +43,7 @@ export class UserService {
 
   public async create(dto: CreateUserDto): Promise<UserRO> {
     // check uniqueness of email
-    const { email, password, role, countryId } = dto;
+    const { email, password, role } = dto;
     const qb = await getRepository(UserEntity)
       .createQueryBuilder('user')
       .where('user.email = :email', { email });
@@ -63,7 +63,6 @@ export class UserService {
     newUser.email = email;
     newUser.password = password;
     newUser.role = role;
-    newUser.countryId = countryId;
 
     newUser.programs = [];
     newUser.assignedProgram = [];
@@ -200,7 +199,6 @@ export class UserService {
       token: this.generateJWT(user),
       role: user.role,
       status: user.status,
-      countryId: user.countryId,
       assignedProgramId: user.assignedProgram,
     };
     return { user: userRO };

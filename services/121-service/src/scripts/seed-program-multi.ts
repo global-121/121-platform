@@ -6,8 +6,6 @@ import { SeedHelper } from './seed-helper';
 import { SeedPublish } from './seed-publish';
 import { SeedInit } from './seed-init';
 
-import { CountryEntity } from '../programs/country/country.entity';
-
 import fspBank from '../../seed-data/fsp/fsp-bank.json';
 import fspMobileMoney from '../../seed-data/fsp/fsp-mobile-money.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
@@ -37,28 +35,20 @@ export class SeedMultiProgram implements InterfaceScript {
     await this.seedHelper.addUser({
       role: UserRole.Aidworker,
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_AID_WORKER,
-      countryId: parseInt(process.env.USERCONFIG_121_SERVICE_COUNTRY_ID),
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_AID_WORKER,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROJECT_OFFICER,
-      countryId: parseInt(process.env.USERCONFIG_121_SERVICE_COUNTRY_ID),
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_OFFICER,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProgramManager,
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_MANAGER,
-      countryId: parseInt(process.env.USERCONFIG_121_SERVICE_COUNTRY_ID),
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_MANAGER,
     });
-
-    // ***** CREATE COUNTRIES *****
-    const countryRepository = this.connection.getRepository(CountryEntity);
-    await countryRepository.save([{ country: 'Location A' }]);
-    await countryRepository.save([{ country: 'Location B' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
@@ -81,9 +71,7 @@ export class SeedMultiProgram implements InterfaceScript {
 
     // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
     const programAnonymousExample3 = { ...programAnonymousExample1 };
-    programAnonymousExample3.countryId = 2;
     const programAnonymousExample4 = { ...programAnonymousExample2 };
-    programAnonymousExample4.countryId = 2;
 
     const examplePrograms = [
       programAnonymousExample1,

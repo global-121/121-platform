@@ -227,7 +227,6 @@ export class ProgramsServiceApiService {
         password,
         role,
         status,
-        countryId: 1,
       })
       .toPromise();
   }
