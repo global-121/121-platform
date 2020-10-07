@@ -15,5 +15,5 @@ export const environment = {
 
   // Third-party tokens:
   ai_ikey: '',
-  ai_endpoint: ''
+  ai_endpoint: '',
 };
