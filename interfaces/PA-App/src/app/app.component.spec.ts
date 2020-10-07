@@ -5,6 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AppComponent } from './app.component';
+import { LoggingService } from './services/logging.service';
 
 describe('AppComponent', () => {
   let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
@@ -19,6 +20,7 @@ describe('AppComponent', () => {
       declarations: [AppComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        LoggingService,
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
