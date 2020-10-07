@@ -117,6 +117,18 @@ export class CreateConnectionService {
     customDataValue: string,
   ): Promise<ConnectionEntity> {
     const connection = await this.findOne(did);
+    if (!(customDataKey in connection.customData)) {
+      connection.customData[customDataKey] = customDataValue;
+    }
+    return await this.connectionRepository.save(connection);
+  }
+
+  public async addCustomDataOverwrite(
+    did: string,
+    customDataKey: string,
+    customDataValue: string,
+  ): Promise<ConnectionEntity> {
+    const connection = await this.findOne(did);
     connection.customData[customDataKey] = customDataValue;
     return await this.connectionRepository.save(connection);
   }
