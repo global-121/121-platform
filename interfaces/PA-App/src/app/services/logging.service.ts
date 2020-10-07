@@ -12,11 +12,7 @@ export class LoggingService {
     }
       this.appInsights = new ApplicationInsights({
         config: {
-          connectionString:
-            'InstrumentationKey=' +
-            environment.ai_ikey +
-            ';IngestionEndpoint=' +
-            environment.ai_endpoint,
+          connectionString: `InstrumentationKey=${environment.ai_ikey};IngestionEndpoint=${environment.ai_endpoint}`,
           instrumentationKey: environment.ai_ikey,
           enableAutoRouteTracking: true,
         },
