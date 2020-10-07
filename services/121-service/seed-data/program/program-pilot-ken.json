@@ -153,7 +153,7 @@
     {
       "criterium": "livelihoodStrategy",
       "label": {
-        "en": "What is your household’s current livelihood strategy (as of last month)"
+        "en": "What is your household’s current livelihood strategy (as of last month)?"
       },
       "answerType": "dropdown",
       "criteriumType": "standard",
