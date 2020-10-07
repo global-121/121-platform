@@ -208,26 +208,7 @@ export class CreateConnectionService {
     return fspCustomData;
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  @Cron('0 0 * * *')
-  async cronDeleteOldUnfinishedConnections(): Promise<void> {
-    console.log('Get old unfinished connections');
-    const tsYesterday = Math.round(new Date().getTime()) - 24 * 60 * 60 * 1000;
-
-    const unfinishedConnections = await this.connectionRepository.find({
-      where: { appliedDate: null },
-    });
-    const oldUnfinishedConnections = unfinishedConnections.filter(i => {
-      const tsCreated = Math.round(new Date(i.created).getTime());
-      return tsCreated < tsYesterday;
-    });
-
-    oldUnfinishedConnections.forEach(connection => {
-      this.deleteConnection(connection.did);
-    });
-  }
-
-  private async deleteConnection(did: string): Promise<void> {
+  public async deleteConnection(did: string): Promise<void> {
     //1. Delete PA Account
     const wallet = await this.httpService
       .post(API.paAccounts.deleteAccount, { did: did })

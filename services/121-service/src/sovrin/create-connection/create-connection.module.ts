@@ -25,5 +25,6 @@ import { ProgramModule } from '../../programs/program/program.module';
   ],
   providers: [CreateConnectionService],
   controllers: [CreateConnectionController],
+  exports: [CreateConnectionService],
 })
 export class CreateConnectionModule {}

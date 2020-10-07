@@ -1,3 +1,4 @@
+import { CronjobModule } from './cronjob/cronjob.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -29,6 +30,7 @@ import { InstanceModule } from './instance/instance.module';
     UserModule,
     CountryModule,
     HealthModule,
+    CronjobModule,
     CreateConnectionModule,
     CredentialModule,
     ProofModule,
