@@ -808,6 +808,7 @@ export class ProgramService {
         connectionResponse['firstName'] = connection.customData['firstName'];
         connectionResponse['secondName'] = connection.customData['secondName'];
         connectionResponse['thirdName'] = connection.customData['thirdName'];
+        connectionResponse['age'] = connection.customData['age'];
       }
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
       connectionsResponse.push(connectionResponse);
@@ -947,6 +948,7 @@ export class ProgramService {
         thirdName: rawConnection.thirdName,
         dateOfBirth: rawConnection.dob,
         location: rawConnection.location,
+        age: rawConnection.age,
         status: rawConnection.status,
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
@@ -979,6 +981,7 @@ export class ProgramService {
         thirdName: rawConnection.thirdName,
         dateOfBirth: rawConnection.dob,
         location: rawConnection.location,
+        age: rawConnection.age,
         status: rawConnection.status,
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
