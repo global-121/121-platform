@@ -111,7 +111,9 @@ export class CreateConnectionService {
     preferredLanguage: string,
   ): Promise<void> {
     const connection = await this.findOne(did);
-    connection.phoneNumber = phoneNumber;
+    if (!connection.phoneNumber) {
+      connection.phoneNumber = phoneNumber;
+    }
     connection.preferredLanguage = preferredLanguage;
     await this.connectionRepository.save(connection);
   }
