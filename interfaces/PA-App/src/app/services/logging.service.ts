@@ -6,48 +6,41 @@ import { environment } from 'src/environments/environment';
 @Injectable()
 export class LoggingService {
   appInsights: ApplicationInsights;
+  appInsightsEnabled: boolean;
+
   constructor() {
     if (!environment.ai_ikey || !environment.ai_endpoint) {
       return;
     }
-      this.appInsights = new ApplicationInsights({
-        config: {
-          connectionString: `InstrumentationKey=${environment.ai_ikey};IngestionEndpoint=${environment.ai_endpoint}`,
-          instrumentationKey: environment.ai_ikey,
-          enableAutoRouteTracking: true,
-        },
-      });
 
-      this.appInsights.loadAppInsights();
-      this.appInsights.addTelemetryInitializer(this.addTelemetryProcessor);
-    }
+    this.appInsights = new ApplicationInsights({
+      config: {
+        connectionString: `InstrumentationKey=${environment.ai_ikey};IngestionEndpoint=${environment.ai_endpoint}`,
+        instrumentationKey: environment.ai_ikey,
+        enableAutoRouteTracking: true,
+      },
+    });
+
+    this.appInsightsEnabled = true;
+    this.appInsights.loadAppInsights();
+    this.appInsights.addTelemetryInitializer(this.addTelemetryProcessor);
   }
 
   addTelemetryProcessor(envelope: any) {
     const baseData = envelope.baseData;
 
     // filter audio files
-    if (
-      baseData.responseCode === 404 &&
-      baseData.name.match(
-        '/assets/i18n/(en|de)/[a-z.-]*.(en|ny_MW|tuv_KE|saq_KE|om_ET).(webm|mp3)',
-      )
-    ) {
+    if (baseData.responseCode === 404 && baseData.name.match('/assets/i18n/')) {
       return false;
     }
 
     // filter/sample data
-
-    return false;
+    // if all criterias pass then log
+    return true;
   }
 
-  logPageView(name?: string, url?: string) {
-    if (environment.ai_ikey && environment.ai_endpoint) {
-      this.appInsights.trackPageView({
-        name: name,
-        uri: url,
-      });
-    }
+  logPageView(name?: string) {
+    this.appInsights.trackPageView({ name });
   }
 
   logError(error: any, severityLevel?: SeverityLevel) {
@@ -55,16 +48,14 @@ export class LoggingService {
   }
 
   logEvent(name: string, properties?: { [key: string]: any }) {
-    if (environment.ai_ikey && environment.ai_endpoint) {
-      this.appInsights.trackEvent({ name: name }, properties);
-    }
+    this.appInsights.trackEvent({ name }, properties);
   }
 
   logException(exception: Error, severityLevel?: SeverityLevel) {
-    if (environment.ai_ikey && environment.ai_endpoint) {
+    if (this.appInsightsEnabled) {
       this.appInsights.trackException({
-        exception: exception,
-        severityLevel: severityLevel,
+        exception,
+        severityLevel,
       });
     } else {
       this.displayOnConsole(exception, severityLevel);
@@ -72,9 +63,7 @@ export class LoggingService {
   }
 
   logTrace(message: string, properties?: { [key: string]: any }) {
-    if (environment.ai_ikey && environment.ai_endpoint) {
-      this.appInsights.trackTrace({ message: message }, properties);
-    }
+    this.appInsights.trackTrace({ message }, properties);
   }
 
   private displayOnConsole(
