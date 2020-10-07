@@ -45,7 +45,7 @@ export class PasswordToggleInputComponent {
   @Input()
   public labelHide = 'Hide password';
 
-  public inputType: 'password' | 'text' = 'password';
+  public inputType: 'password' | 'text' = 'text';
 
   constructor() {}
 
