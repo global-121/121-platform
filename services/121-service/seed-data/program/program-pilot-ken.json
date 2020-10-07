@@ -39,6 +39,7 @@
   },
   "notifications": {
     "en": {
+      "registered": "You have been successfully registered for this program.",
       "included": "You have been included in this program.",
       "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us."
     }
