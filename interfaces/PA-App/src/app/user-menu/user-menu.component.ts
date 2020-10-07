@@ -61,12 +61,10 @@ export class UserMenuComponent implements OnInit {
           text: this.translate.instant('shared.submit-button'),
           handler: (data) => {
             if (!data || !data.password) {
-              const passowordInput: HTMLInputElement = this.deletePasswordAlert.querySelector(
+              const passwordInput: HTMLInputElement = this.deletePasswordAlert.querySelector(
                 '[type=password]',
               );
-              if (passowordInput) {
-                passowordInput.focus();
-              }
+              passwordInput.focus();
 
               return false;
             }
@@ -79,7 +77,19 @@ export class UserMenuComponent implements OnInit {
         },
       ],
     });
-    await this.deletePasswordAlert.present();
+    await this.deletePasswordAlert.present().then(() => {
+      const passwordInput: HTMLInputElement = this.deletePasswordAlert.querySelector(
+        '[type=password]',
+      );
+      passwordInput.addEventListener('keypress', (event: KeyboardEvent) => {
+        if (event.key !== 'Enter' || !passwordInput.value) {
+          return false;
+        }
+        this.presentLoadingDelete();
+        this.deleteIdentity(passwordInput.value);
+      });
+      passwordInput.focus();
+    });
   }
 
   private deleteIdentity(password: string) {
@@ -88,7 +98,7 @@ export class UserMenuComponent implements OnInit {
         this.loadingDelete.dismiss();
         this.deletePasswordAlert.dismiss();
         this.showDeleteResult(
-          this.translate.instant('account.delete-succes'),
+          this.translate.instant('account.delete-success'),
           true,
         );
       },
