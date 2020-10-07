@@ -5,7 +5,7 @@
     "delete-account-message": "Deleting your Digital ID is irreversible, all your data will be lost!",
     "delete-digital-id": "Delete Digital ID",
     "delete-fail": "Something went wrong, your account could not by fully deleted.",
-    "delete-succes": "Your account has been succesfully deleted. You will now logout",
+    "delete-success": "Your account has been succesfully deleted. You will now logout",
     "enter-password": "Your Password",
     "logout": "Log out"
   },
