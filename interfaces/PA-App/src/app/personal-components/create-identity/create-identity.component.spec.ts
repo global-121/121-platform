@@ -6,7 +6,7 @@ import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { PaDataService } from 'src/app/services/padata.service';
 import { CreateIdentityComponent } from './create-identity.component';
 
-describe('CreatePasswordComponent', () => {
+describe('CreateIdentityComponent', () => {
   let component: CreateIdentityComponent;
   let fixture: ComponentFixture<CreateIdentityComponent>;
 
