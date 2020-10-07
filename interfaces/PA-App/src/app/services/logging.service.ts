@@ -7,7 +7,9 @@ import { environment } from 'src/environments/environment';
 export class LoggingService {
   appInsights: ApplicationInsights;
   constructor() {
-    if (environment.ai_ikey && environment.ai_endpoint) {
+    if (!environment.ai_ikey || !environment.ai_endpoint) {
+      return;
+    }
       this.appInsights = new ApplicationInsights({
         config: {
           connectionString:
