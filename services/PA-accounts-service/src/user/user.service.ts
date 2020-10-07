@@ -13,6 +13,7 @@ import crypto from 'crypto';
 import jwt = require('jsonwebtoken');
 import { DeleteUserDto } from './dto/delete-user.dts';
 import { DataStorageEntity } from '../data-storage/data-storage.entity';
+import { DataStorageService } from '../data-storage/data-storage.service';
 
 @Injectable()
 export class UserService {
@@ -21,7 +22,7 @@ export class UserService {
   @InjectRepository(DataStorageEntity)
   private readonly dataStorageRepository: Repository<DataStorageEntity>;
 
-  public constructor() {}
+  public constructor(private dataStorageService: DataStorageService) {}
 
   public async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
@@ -112,6 +113,23 @@ export class UserService {
       userId: user.id,
     });
     await this.userRepository.delete(user.id);
+  }
+
+  public async getWalletAndDeleteAccount(did: string): Promise<any> {
+    const user = await this.userRepository.findOne({ where: { did: did } });
+    if (!user) {
+      const errors = 'User not found or already deleted';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+
+    const wallet = await this.dataStorageService.get(user.id, 'wallet');
+
+    await this.dataStorageRepository.delete({
+      userId: user.id,
+    });
+    await this.userRepository.delete(user.id);
+
+    return wallet;
   }
 
   public async findById(id: number): Promise<UserRO> {

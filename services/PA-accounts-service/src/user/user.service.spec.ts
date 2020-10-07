@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
+import { DataStorageService } from '../data-storage/data-storage.service';
 
 const userRo = {
   user: {
@@ -32,6 +33,7 @@ describe('User service', (): void => {
       const module: TestingModule = await Test.createTestingModule({
         providers: [
           UserService,
+          DataStorageService,
           {
             provide: getRepositoryToken(UserEntity),
             useFactory: repositoryMockFactory,

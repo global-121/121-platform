@@ -1,5 +1,11 @@
 import { CredentialService } from './credential.service';
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { ApiOperation, ApiBearerAuth, ApiUseTags } from '@nestjs/swagger';
 import { DidProgramIdDto } from './dto/did-program-id.dto';
 
@@ -14,12 +20,18 @@ export class CredentialController {
   }
   @ApiOperation({ title: 'Gets the credential and stores it in the wallet' })
   @Post('get-credential-handle-proof')
-  public async getCredentialHandleProof(
-    @Body() didProgramDto: DidProgramIdDto,
-  ): Promise<void> {
+  public async getCredentialHandleProof(@Body()
+  payload: {
+    didProgramDto: DidProgramIdDto;
+    apiKey: string;
+  }): Promise<void> {
+    if (payload.apiKey !== process.env.PA_API_KEY) {
+      throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
+    }
+
     return await this.credentialService.getCredentialHandleProof(
-      didProgramDto.did,
-      didProgramDto.programId,
+      payload.didProgramDto.did,
+      payload.didProgramDto.programId,
     );
   }
 }

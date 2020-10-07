@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateConnectionService } from './create-connection.service';
 import { CreateConnectionController } from './create-connection.controller';
@@ -21,8 +21,10 @@ import { ProgramModule } from '../../programs/program/program.module';
     ]),
     ProgramModule,
     UserModule,
+    HttpModule,
   ],
   providers: [CreateConnectionService],
   controllers: [CreateConnectionController],
+  exports: [CreateConnectionService],
 })
 export class CreateConnectionModule {}

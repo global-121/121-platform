@@ -1,5 +1,7 @@
+import { CronjobModule } from './cronjob/cronjob.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 import { Connection } from 'typeorm';
 import { AppController } from './app.controller';
 import { ProgramModule } from './programs/program/program.module';
@@ -28,6 +30,7 @@ import { InstanceModule } from './instance/instance.module';
     UserModule,
     CountryModule,
     HealthModule,
+    CronjobModule,
     CreateConnectionModule,
     CredentialModule,
     ProofModule,
@@ -40,6 +43,7 @@ import { InstanceModule } from './instance/instance.module';
     ActionModule,
     FspModule,
     InstanceModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [],

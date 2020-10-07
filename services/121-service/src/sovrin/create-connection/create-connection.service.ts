@@ -1,11 +1,10 @@
-import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import {
   Injectable,
   HttpException,
   HttpStatus,
-  Inject,
-  forwardRef,
+  HttpService,
 } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,6 +13,7 @@ import { Repository, getRepository } from 'typeorm';
 import { DidDto } from '../../programs/program/dto/did.dto';
 import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
+import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import { CredentialEntity } from '../credential/credential.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { ProgramService } from '../../programs/program/program.service';
@@ -21,6 +21,7 @@ import {
   FspAnswersAttrInterface,
   AnswerSet,
 } from 'src/programs/fsp/fsp-interface';
+import { API } from '../../config';
 
 @Injectable()
 export class CreateConnectionService {
@@ -39,7 +40,10 @@ export class CreateConnectionService {
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
 
-  public constructor(private readonly programService: ProgramService) {}
+  public constructor(
+    private readonly programService: ProgramService,
+    private readonly httpService: HttpService,
+  ) {}
 
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
@@ -202,5 +206,25 @@ export class CreateConnectionService {
       }
     }
     return fspCustomData;
+  }
+
+  public async deleteRegistration(did: string): Promise<void> {
+    //1. Delete PA Account
+    const wallet = await this.httpService
+      .post(API.paAccounts.deleteAccount, {
+        did: did,
+        apiKey: process.env.PA_API_KEY,
+      })
+      .toPromise();
+
+    //2. Delete wallet
+    await this.httpService
+      .post(API.userIMS.deleteWallet, { wallet: JSON.parse(wallet.data) })
+      .toPromise();
+
+    //3. Delete data in 121-service
+    this.delete({ did });
+
+    console.log(`Deleted PA: ${did}`);
   }
 }
