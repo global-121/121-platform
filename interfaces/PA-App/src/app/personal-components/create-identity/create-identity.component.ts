@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { createRandomString } from 'src/app/helpers/createRandomString';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
@@ -43,6 +44,7 @@ export class CreateIdentityComponent extends PersonalComponent {
     public programsServiceApiService: ProgramsServiceApiService,
     public paData: PaDataService,
     private translatableStringService: TranslatableStringService,
+    private instanceService: InstanceService,
   ) {
     super();
     this.useLocalStorage = environment.localStorage;
@@ -66,7 +68,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   }
 
   private async getInstanceInformation() {
-    const instanceData = await this.programsServiceApiService.getInstanceInformation();
+    const instanceData = await this.instanceService.getInstanceInformation();
 
     this.instanceNgoName = instanceData.name;
     this.instanceDataPolicy = this.translatableStringService.get(
@@ -206,7 +208,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.selectProgram;
+    return PersonalComponents.enrollInProgram;
   }
 
   complete() {

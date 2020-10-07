@@ -211,7 +211,10 @@ export class CreateConnectionService {
   public async deleteConnection(did: string): Promise<void> {
     //1. Delete PA Account
     const wallet = await this.httpService
-      .post(API.paAccounts.deleteAccount, { did: did })
+      .post(API.paAccounts.deleteAccount, {
+        did: did,
+        apiKey: process.env.PA_API_KEY,
+      })
       .toPromise();
 
     //2. Delete wallet

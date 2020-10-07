@@ -387,14 +387,15 @@ export class CredentialService {
     did: string,
     programId: number,
   ): Promise<void> {
-    console.log('paAccountsCredentialReady');
     const data = {
       did: did,
       programId: programId,
     };
-    console.log(API.paAccounts.getCredentialHandleProof, data);
     await this.httpService
-      .post(API.paAccounts.getCredentialHandleProof, data)
+      .post(API.paAccounts.getCredentialHandleProof, {
+        didProgramDto: data,
+        apiKey: process.env.PA_API_KEY,
+      })
       .toPromise();
   }
 

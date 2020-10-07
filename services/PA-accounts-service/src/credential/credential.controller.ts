@@ -14,12 +14,16 @@ export class CredentialController {
   }
   @ApiOperation({ title: 'Gets the credential and stores it in the wallet' })
   @Post('get-credential-handle-proof')
-  public async getCredentialHandleProof(
-    @Body() didProgramDto: DidProgramIdDto,
-  ): Promise<void> {
-    return await this.credentialService.getCredentialHandleProof(
-      didProgramDto.did,
-      didProgramDto.programId,
-    );
+  public async getCredentialHandleProof(@Body()
+  payload: {
+    didProgramDto: DidProgramIdDto;
+    apiKey: string;
+  }): Promise<void> {
+    if (payload.apiKey === process.env.PA_API_KEY) {
+      return await this.credentialService.getCredentialHandleProof(
+        payload.didProgramDto.did,
+        payload.didProgramDto.programId,
+      );
+    }
   }
 }

@@ -14,6 +14,11 @@
   margin: auto;
 }
 
+// Add enough spacing to content-area to always have something to scroll
+.scroll-spacing {
+  min-height: 30vh;
+}
+
 // Additional text-utility
 .ion-text-ellipsis {
   overflow: hidden;

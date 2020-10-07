@@ -95,7 +95,13 @@ export class UserController {
     title: 'Get wallet + Delete user and storage (used from 121-service)',
   })
   @Post('user/get-wallet-and-delete')
-  public async getWalletAndDeleteAccount(@Body() did: DidDto): Promise<any> {
-    return await this.userService.getWalletAndDeleteAccount(did.did);
+  public async getWalletAndDeleteAccount(@Body()
+  payload: {
+    did: string;
+    apiKey: string;
+  }): Promise<any> {
+    if (payload.apiKey === process.env.PA_API_KEY) {
+      return await this.userService.getWalletAndDeleteAccount(payload.did);
+    }
   }
 }
