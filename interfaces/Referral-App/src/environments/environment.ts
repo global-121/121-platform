@@ -12,4 +12,8 @@ export const environment = {
   // Google Sheets:
   google_sheets_api_url: '',
   google_sheets_sheet_id: '',
+
+  // Third-party tokens:
+  ai_ikey: '',
+  ai_endpoint: '',
 };
