@@ -138,11 +138,9 @@
       }
     },
     "signup-signin": {
-      "create-id": "Create a Digital ID",
-      "info-message": "The following information is used to create a digital ID.<br><br>- Your password (which you must create  using 4 numbers)<br><br>If you create a Digital ID for this pilot program it will be stored securely on the Netherlands Red Cross database.",
-      "introduction": "To apply for a program, you need to have a valid Digital ID. Please create your Digital ID or use your existing Digital ID.",
-      "login-id": "Use my Digital ID",
-      "more-info-digital-id": "About Digital ID"
+      "create-id": "Create account",
+      "introduction": "To apply for this aid program, you need to have an account. Please create your account or use your existing account.",
+      "login-id": "Use my account"
     },
     "store-credential": {
       "done": "Your Digital ID has been activated by {{ngo}}.",

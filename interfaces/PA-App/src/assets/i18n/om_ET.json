@@ -95,8 +95,7 @@
     "signup-signin": {
       "create-id": "Adda-baastuu Dijitaalaa tolchi",
       "introduction": "Maaloo adda-baastuu Dijitaalaa keessan filadhaa.",
-      "login-id": "Adda-baastuu Dijitaalaa koo fayyadami",
-      "more-info-digital-id": "Waa'ee Adda-baastuu Dijiitaalaa"
+      "login-id": "Adda-baastuu Dijitaalaa koo fayyadami"
     },
     "store-credential": {
       "done": "Adda-baastuun Dijitaalaa keessan {{ngo}}'tiin kakaafameera.",

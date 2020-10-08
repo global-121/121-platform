@@ -97,8 +97,7 @@
     "signup-signin": {
       "create-id": "Pangani nambala",
       "introduction": "Chonde sankhani nambala yanu",
-      "login-id": "Gwiritsani ntchito nambala yanga",
-      "more-info-digital-id": "Nambala yanu"
+      "login-id": "Gwiritsani ntchito nambala yanga"
     },
     "store-credential": {
       "done": "Nambala yanu yayatsidwa ndi {{ngo}}",
