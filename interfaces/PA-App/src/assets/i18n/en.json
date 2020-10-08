@@ -47,8 +47,7 @@
       "introduction": "Hello this is {{ngo}}.",
       "more-info-questions": "About personal information",
       "please-confirm": "Below is an overview of your information. Please check and submit.",
-      "submit-confirm": "Submit my information",
-      "submit": "Save my information"
+      "submit-confirm": "Save my information"
     },
     "handle-proof": {
       "creating": "You have given us sufficient personal information to see if you can be part of the program.",

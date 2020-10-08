@@ -11,9 +11,7 @@
     ></p>
 
   </dialogue-turn>
-  <dialogue-turn
-    isConnected="true"
-  >
+  <dialogue-turn>
     <p>
       <play-text-audio key="personal.enroll-in-program.introduction-information" class="ion-float-start ion-margin-end"></play-text-audio>
       <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate:{ ngo:'<strong>'+instanceInformation?.displayName+'</strong>' }"></span>
@@ -31,7 +29,7 @@
                [(isEditing)]="hasChangedAnswers"
                [allQuestionsShown]="allQuestionsShown"
                (submit)="submit($event)"
-               submitLabel="personal.enroll-in-program.submit"
+               submitLabel="shared.submit-button"
   ></q-and-a-set>
 
   <dialogue-turn *ngIf="hasAnswered"
