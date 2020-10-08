@@ -1,6 +1,7 @@
 <section #selectProgram>
   <dialogue-turn *ngIf="programs?.length"
                  [isSpoken]="programs?.length"
+                 isConnected="true"
   >
     <p>
       <play-text-audio key="personal.select-program.introduction" class="ion-float-start ion-margin-end"></play-text-audio>

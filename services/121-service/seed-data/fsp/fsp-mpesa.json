@@ -53,6 +53,51 @@
       },
       "answerType": "tel",
       "options": null
+    },
+    {
+      "name": "phoneRelation",
+      "label": {
+        "en": "Who's phone will you use to receive the M-Pesa code?"
+      },
+      "answerType": "dropdown",
+      "options": [
+        {
+          "option": "self",
+          "label": {
+            "en": "My own"
+          }
+        },
+        {
+          "option": "partner",
+          "label": {
+            "en": "Spouse/partner"
+          }
+        },
+        {
+          "option": "child",
+          "label": {
+            "en": "Son/daugther"
+          }
+        },
+        {
+          "option": "sibling",
+          "label": {
+            "en": "Brother/sister"
+          }
+        },
+        {
+          "option": "friend",
+          "label": {
+            "en": "Neighbour/friend"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Someone else"
+          }
+        }
+      ]
     }
   ]
 }

@@ -25,12 +25,9 @@
     "create-identity": {
       "conclusion": "Zatheka! Mwapanga nambala yanu",
       "confirm-password": "Tsimikizani nambala yanga ya chinsinsi",
-      "create-password": "Pangani nambala yanga ya chinsinsi",
       "create-username": "Pangani dzina langa",
       "introduction": "Kuti mupange nambala mufunika kumaliza izi",
       "more-info-password": "Nambala yanu yachinsinsi",
-      "more-info-username-pw": "Zokhudza dzina lanu ndi nambala ya chinsinsi",
-      "submit-username": "Pangani dzina langa",
       "unequal-passwords": "Nambala yachinsinsi yomwe munapanga yasiyana. Chonde yesaniso",
       "username-not-unique": "Dzina lanu lomwe munalemba ndi la wamba. Chonde yesaniso",
       "username-password": "Pangani dzina lanu ndi nambala yachinsinsi"
@@ -40,8 +37,7 @@
       "introduction-information": "Kuti muthandizike bwino komanso kuti mukhale pandondomeko yabwino, tifuna mbiri yanu",
       "more-info-questions": "Zinthu zokhudza munthu",
       "please-confirm": "Pansipa pali zinthu zokhuza inu. Onani ndipo mupereke",
-      "submit": "Sungani mbiri yanga",
-      "submit-confirm": "Tumizani mbiri yanga"
+      "submit-confirm": "Sungani mbiri yanga"
     },
     "handle-proof": {
       "creating": "Mwatipatsa mbiri yanu yokwanila kuti tione ngati mungakhale nawo mu pulogalamu",
@@ -51,8 +47,6 @@
     "login-identity": {
       "incorrect-credentials": "Dzina lanu ndi nambala yachinsinsi yomwe mwapanga yakanidwa. Chonde yesaniso",
       "introduction": "Kuti mugwiritse nambala yanu lowetsani dzina lanu ndi nambala yanu yachinsinsi",
-      "submit-password": "Tumizani nambala yanga yachinsinsi",
-      "submit-username": "Tumizani dzina langa",
       "supply-password": "Nambala yanu yachinsinsi",
       "supply-username": "Dzina lanu"
     },
@@ -67,12 +61,10 @@
       "attributes": {
         "error": "China chinalakwika, chonde yesaniso",
         "introduction": "Pa gawo ili tifunanso izi",
-        "submit": "Sungani mbiri yanga",
         "success": "Zikomo. Mbiri yanu yowonjezera yasungika"
       }
     },
     "select-language": {
-      "more-info": "Zokhuzana ndi 121",
       "result": "Zikomo, mwasankha {{language}}.",
       "introduction": {},
       "language": {}
@@ -98,8 +90,7 @@
     "signup-signin": {
       "create-id": "Pangani nambala",
       "introduction": "Chonde sankhani nambala yanu",
-      "login-id": "Gwiritsani ntchito nambala yanga",
-      "more-info-digital-id": "Nambala yanu"
+      "login-id": "Gwiritsani ntchito nambala yanga"
     },
     "store-credential": {
       "done": "Nambala yanu yayatsidwa ndi {{ngo}}",

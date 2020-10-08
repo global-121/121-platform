@@ -51,18 +51,4 @@
       <span [innerHTML]="'personal.select-language.result'|translate:{ language:'<strong>'+languageChoiceName+'</strong>' }"></span>
     </p>
   </dialogue-turn>
-  <dialogue-turn isConnected="true"
-                 *ngIf="isDisabled"
-                 [isSpoken]="isDisabled"
-  >
-    <p>
-      <play-text-audio key="personal.select-language.intro" class="ion-float-start ion-margin-end">
-      </play-text-audio>
-      {{ 'personal.select-language.intro'|translate }}
-    </p>
-    <more-info-button buttonKey="personal.select-language.more-info"
-                      messageKey="personal.select-language.info-message"
-                      headingKey="personal.select-language.more-info"
-    ></more-info-button>
-  </dialogue-turn>
 </section>

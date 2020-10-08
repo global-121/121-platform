@@ -1,9 +1,9 @@
 {
   "account": {
     "change-password": "Change password",
-    "delete-account-header": "Enter your password if you are sure you want to delete your Digital ID",
-    "delete-account-message": "Deleting your Digital ID is irreversible, all your data will be lost!",
-    "delete-digital-id": "Delete Digital ID",
+    "delete-account-header": "Enter your password if you are sure you want to delete your account",
+    "delete-account-message": "Deleting your account is irreversible, all your data will be lost!",
+    "delete-digital-id": "Delete account",
     "delete-fail": "Something went wrong, your account could not by fully deleted.",
     "delete-success": "Your account has been succesfully deleted. You will now logout",
     "enter-password": "Your Password",
@@ -22,39 +22,38 @@
     "show": "Show password"
   },
   "personal": {
-    "create-identity": {
-      "conclusion": "Great! You have created a Digital ID.",
-      "confirm-password": "Confirm my password:",
-      "consent-agree": "I agree",
-      "consent-disagree": "I disagree",
-      "consent-answer": "I have read the data policy (or it has been read to me).<br><br> I have:<br>- asked all questions about the program that I wanted too<br> - received the answers about the program I need. <br><br> I understand:<br> - who sees my information<br> - when they see my information<br> - that the personal information I provide is required to receive cash based aid.<br> - that I can leave the program at any time<br> - that I can have my personal information removed from the program database at any time.  <br> <br>  By pressing \"I agree\" I choose to participating in the program.<br> By pressing \"I disagree\" I choose not to participate in the program.",
-      "consent-question": "To apply for a program you need to agree to the data policy of the Kenya Red Cross. <br><br> Please read the data policy.",
-      "create-password-explanation": "Enter a password of at least {{minimalLength}} characters:",
-      "create-password": "Create my password",
-      "create-username": "Enter your full name:",
-      "info-message-password": "[about passwords]",
-      "info-message-username-pw": "To create a Digital Identity you need to submit the following <br><br>- Your full name<br>- Your password (which you must create  using 4 numbers) <br><br>If you create a Digital ID for this pilot program it will be stored securely on the Netherlands Red Cross database.",
-      "introduction": "To create a Digital ID you need to complete the following steps.",
+    "consent-question": {
+      "agree": "I agree",
+      "answer": "I have read the data policy (or it has been read to me).<br><br> I have:<br>- asked all questions about the program that I wanted too<br> - received the answers about the program I need. <br><br> I understand:<br> - who sees my information<br> - when they see my information<br> - that the personal information I provide is required to receive cash based aid.<br> - that I can leave the program at any time<br> - that I can have my personal information removed from the program database at any time.  <br> <br>  By pressing \"I agree\" I choose to participating in the program.<br> By pressing \"I disagree\" I choose not to participate in the program.",
+      "disagree": "I disagree",
       "more-info-data-policy": "Data policy",
-      "more-info-password": "About passwords",
-      "more-info-username-pw": "About names and password",
-      "password-only": "Submit",
+      "question": "To apply for a program you need to agree to the data policy of {{ngo}}. <br><br> The Data policy explains how we secure your information. <br><br> Please read or listen to the data policy."
+    },
+    "create-identity": {
+      "conclusion": "Great! You have created an account.",
+      "confirm-password": "Confirm password:",
+      "create-password-explanation": "Enter a password of at least {{minimalLength}} characters:",
+      "create-username": "Enter your full name:",
+      "introduction": "To create an account you need to complete the following steps.",
+      "local": {
+        "conclusion": "Great! You have created a Digital ID.",
+        "create-password-only": "Create my password",
+        "info-message-password": "[about passwords]",
+        "introduction": "To create a Digital ID you need to complete the following steps.",
+        "more-info-password": "About passwords"
+      },
       "password-too-short": "Please enter at least {{minimalLength}} characters.",
-      "submit-password": "Submit",
-      "submit-username": "Submit",
       "unequal-passwords": "The passwords you created are not the same. Please try again.",
       "username-not-unique": "The name you entered is not unique. Please try again.",
-      "username-password": "Enter your full name and create your password."
+      "username-password": "Enter your name as on your National ID card and create a password."
     },
     "enroll-in-program": {
       "change": "Change my information",
       "info-message": "With 121 we will ask you to create and fill in certain information about yourself.<br>Below describes who sees what when.<br><br>When using 121 you may share the following information below in different ways:<br><ol><li>Your name (from physical document)</li><li>Your date of birth (from physical document)</li><li>Your username (create)</li><li>Your password (create)</li><li>Your selection of a program </li><li>Your answers to the questionnaire (per program) (incl name & DOB pilot)</li><li>Your selection of a potential Financial service provider</li><li>Your Bank Account Number</li><li>Your Telephone Number</li></ol>",
       "introduction-information": "To make sure you get the best possible help and a fair process, we need some personal information.",
-      "introduction": "Hello this is {{ngo}}.",
       "more-info-questions": "About personal information",
       "please-confirm": "Below is an overview of your information. Please check and submit.",
-      "submit-confirm": "Submit my information",
-      "submit": "Save my information"
+      "submit-confirm": "Save my information"
     },
     "handle-proof": {
       "creating": "You have given us sufficient personal information to see if you can be part of the program.",
@@ -63,12 +62,10 @@
       "notify": "We will notify you if you are included."
     },
     "login-identity": {
-      "incorrect-credentials": "The combination of username and password you provided is not recognized. Please try again.",
-      "introduction": "To use an existing Digital ID you need to log in with your username and password.",
-      "submit-password": "Submit my password",
-      "submit-username": "Submit my username",
+      "incorrect-credentials": "The combination of your full name and password you provided is not recognized. Please try again.",
+      "introduction": "To use an existing account you need to log in with your full name and password.",
       "supply-password": "Your password:",
-      "supply-username": "Your username:"
+      "supply-username": "Your full name:"
     },
     "preprinted-qrcode": {
       "error": "The scanned QR)code cannot be used, please try another one.",
@@ -77,16 +74,16 @@
       "more-info-qr": "About QR-codes",
       "no": "No",
       "question": "Does the Aidworker/Volunteer have a pre-printed QR-code to scan?",
-      "result-ok": "The scanned QR-code is now connected to your Digital ID and personal information. Please keep your physical QR-code safe.",
+      "result-ok": "The scanned QR-code is now connected to your account and personal information. Please keep your physical QR-code safe.",
       "start-scanner": "Start scanner",
       "try-again": "Try again",
       "yes": "Yes"
     },
     "registration-summary": {
       "documents": "Make sure to have these documents ready:",
-      "info-message": "To activate your Digital ID<br> <br> When you create your Digital ID you will receive a print out of your digital ID that looks like this.<br> You will need to bring this and the following physical documents below to a meeting with an Aid worker to Activate your Digital ID.<br> <ul> <li>Your National Identity Card</li> </ul><br> What if I don’t have a card? Then you have 2 options: <ol> <li>Bring a letter from the chief that confirms his/her identity</li> <li>Bring your X number (need the name of this number like BSN number) from the National Bureau of Registration. You will have to pay for a new one the price will be X.</li> </ol>",
+      "info-message": "To activate your account<br> <br> When you create your account you will receive a print out of your digital ID that looks like this.<br> You will need to bring this and the following physical documents below to a meeting with an Aid worker to activate your account.<br> <ul> <li>Your National Identity Card</li> </ul><br> What if I don’t have a card? Then you have 2 options: <ol> <li>Bring a letter from the chief that confirms his/her identity</li> <li>Bring your X number (need the name of this number like BSN number) from the National Bureau of Registration. You will have to pay for a new one the price will be X.</li> </ol>",
       "more-info-documents": "About these documents",
-      "no-validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS on the provided phone number shortly that confirms your registration.<br><br>You will be informed if you have been included within [X amount of time].",
+      "no-validation-conclusion": "Thank you. Your registration is now complete. <br><br> You should receive an SMS on the provided phone number shortly that confirms your registration.<br><br>You will be informed if you have been included within [X amount of time]. <br><br> This is the final message for now.",
       "qr-code": "Please show this QR-code to the aidworker when asked.",
       "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS on the provided phone number shortly that confirms your registration.<br><br>An aidworker of the NGO will organize a meeting with you to validate your information, probably by visiting your home."
     },
@@ -94,23 +91,19 @@
       "attributes": {
         "error": "Something went wrong, please try again.",
         "introduction": "For this option we also need the following:",
-        "submit": "Save my information",
         "success": "Thank you. Your additional information is saved."
       },
       "conclusion": "Thank you. You have selected the option {{name}}.",
       "introduction": "Please select how you would like to receive your aid, if you are included in the program."
     },
     "select-language": {
-      "info-message": "With the 121 platform, we aim to make Cash Based Aid safe, fast & fair.<br> 121 will help you<br><ul><li>Create a Digtial ID</li><li>Know which programs are available in your area</li><li>Apply to the programs</li><li>Understand who sees your information</li></ul>",
-      "intro": "Welcome to 121. You can use 121 to apply for aid. You can read more about 121 in the blue button below.",
       "introduction": {
-        "en": "Welcome to 121. Please select your language.",
-        "ny_MW": "Takulandilani ku 121. Chonde sankhani chiyankhulo chanu.",
-        "om_ET": "Baga gara 121'tti nagaan dhuftan. Maaloo qooqa keessan filadhaa.",
+        "en": "Please select your language.",
+        "ny_MW": "Chonde sankhani chiyankhulo chanu.",
+        "om_ET": "Maaloo qooqa keessan filadhaa.",
         "saq_KE": "[Samburu text]",
         "tuv_KE": "[Turkana text]"
       },
-      "more-info": "About 121",
       "result": "Thank you, you have selected {{language}}.",
       "language": {
         "en": "English",
@@ -121,10 +114,10 @@
       }
     },
     "select-program": {
-      "info-message": "The following text is dummy-text for how this could be written. We need input from you to fill this.<br>-------------------<br>How was the Pilot created?<br>This 121 Pilot has been created with the NGO who have worked together with your communities in<br><ul><li>Camp 1</li><li>Camp 2</li><li>Camp 3</li><li>Camp 4</li><li>Camp 5</li><li>Camp 6</li><li>Camp 7</li><li>Camp 8</li></ul><br>Together your community and the NGO decided how to Identify 250 households that are most in need of Cash based Aid. Needs are based on looking at family size and if or your family members are<br><ul><li>Chronically ill</li><li>Disabled</li><li>Pregnant</li><li>Lactating</li><li>Widowed</li></ul><br>If you are included in the program it will mean that you will receive the cash as<br><br><ul><li>unconditional, meaning to receive it you only need to fulfill the criteria of  “most in need”.</li><li>unrestricted, meaning whomever receives it, can spend it in any way they see fit.</li></ul><br>What will the each of the 250 households receive?<br>Together your community and the NGO decided to give <br>XXX given in 1 payment.<br><br>When will the each of the 250 households receive it?<br>Together your community and the NGO decided how to give<br>Payment 1 of 1: XXX on XX-XX-XXXX<br><br>Where will the each of the 250 households get it?<br>Together your community and the NGO decided Identified the following ways<br><ul><li>Bank XXX </ul><br>How does it work?<br>After 121 registration/Digital ID Creation and Registration/Digital ID Activation<br><br><ul><li>An initial list of included will be created.</li><li>This list will be shared within the community leaders</li><li>The existing community leaders will give feedback on the list to the NGO.</li><li>the NGO will take this feedback to create the final list (final decision is by the NGO)</li><li>If you have a phone number you will receive a text message to tell you if you are included</li></ul><br>If you do not have a phone number you will be able to see a list in your community to check if you are included or excluded.",
-      "introduction": "Next step: register for a program​.",
-      "more-info-programs": "About programs",
-      "no-published-programs": "There are currently no published programs for this location. Please return here later."
+      "info-message": "[about aid programs]",
+      "introduction": "You can use this app to apply for an aid program. Please select below.",
+      "more-info-programs": "About aid program",
+      "no-published-programs": "There are currently no programs available. Please return here later."
     },
     "set-notification-number": {
       "conclusion-skipped": "You have chosen not to leave a phone number. Please log in back here regularly, to check on updates.",
@@ -141,11 +134,9 @@
       }
     },
     "signup-signin": {
-      "create-id": "Create a Digital ID",
-      "info-message": "The following information is used to create a digital ID.<br><br>- Your password (which you must create  using 4 numbers)<br><br>If you create a Digital ID for this pilot program it will be stored securely on the Netherlands Red Cross database.",
-      "introduction": "To apply for a program, you need to have a valid Digital ID. Please create your Digital ID or use your existing Digital ID.",
-      "login-id": "Use my Digital ID",
-      "more-info-digital-id": "About Digital ID"
+      "create-id": "Create account",
+      "introduction": "To apply for this aid program, you need to have an account. Please create your account or use your existing account.",
+      "login-id": "Use my account"
     },
     "store-credential": {
       "done": "Your Digital ID has been activated by {{ngo}}.",
@@ -177,7 +168,7 @@
     "cancel-button": "Cancel",
     "close-button": "Close",
     "more-info": "Read more...",
-    "submit-button": "Submit"
+    "submit-button": "Send"
   },
   "speak-text": {
     "loading": "Loading",

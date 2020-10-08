@@ -25,11 +25,9 @@
     "create-identity": {
       "conclusion": "Gaariidha! Adda-baastuu Dijitaalaa tolfattaniittu.",
       "confirm-password": "Paaswoordii koo mirkaneessi:",
-      "create-password": "Paaswoordii koo tolchi",
       "create-username": "Maqaa-fayyadamaa koo tolchi:",
       "introduction": "Adda-baastuu Dijitaalaa tolfachuudhaaf sadarkaawwan itti-aanan kanneen xumuruun sin barbaachisa.",
       "more-info-password": "Waa'ee paaswoordiiwwanii",
-      "more-info-username-pw": "Waa'ee maqaa-fayyadamttaniifi paaswoordii keessanii",
       "password-only": "Create my password",
       "submit-password": "Create my password",
       "submit-username": "Maqaa-fayyadamaa koo tolchi",
@@ -42,15 +40,12 @@
       "introduction-information": "Gargaarsa jira jedhame argachuu keessaniifi adeemsa bilisaa ta'uu isaa mirkaneeffachuuf odeeffannoo dhuunfaa hanga tokko ni barbaadna.",
       "more-info-questions": "Waa'ee odeeffannoo dhuunfaa",
       "please-confirm": "Kan armaan gadii odeeffannoo keessan waliigalaati. Maaloo ilaaluun mirkaneeffadhaa galchaa.",
-      "submit": "Odeeffannoo koo ol naaf kaa'i",
-      "submit-confirm": "Odeeffannoo koo galchi"
+      "submit-confirm": "Odeeffannoo koo ol naaf kaa'i"
     },
     "handle-proof": {},
     "login-identity": {
       "incorrect-credentials": "Walta'insi maqaa fayyadamaafi paaswoordiin isin tolfattan hin fudhatamne. Maaloo irra deebi'aa yaalaa.",
       "introduction": "Adda-baastuu Dijitaalaa duraan jiru fayyadamuuf maqaa-fayyadamtaniifi paaswoordiitiin seenuu sin barbaachisa.",
-      "submit-password": "Paaswoordii koo galchi",
-      "submit-username": "Maqaa-fayadamaa koo galchi",
       "supply-password": "Paaswoordii keessan:",
       "supply-username": "Maqaa-fayyadmaa keessan:"
     },
@@ -65,12 +60,10 @@
       "attributes": {
         "error": "Maaloo dogoggorri ta'e uumameera, irra deebi'aa  yaalaa.",
         "introduction": "Filmaata kanaaf wanta itti aanus ni barbaadna:",
-        "submit": "Odeeffannoo koo ol naaf kaa'i",
         "success": "Galatoomaa. Odeeffannoon dabalataa keessan ol kaa'ameera."
       }
     },
     "select-language": {
-      "more-info": "Waa'ee 121",
       "result": "Galatoomaa, {{language}} filattaniittu.",
       "introduction": {},
       "language": {}
@@ -96,8 +89,7 @@
     "signup-signin": {
       "create-id": "Adda-baastuu Dijitaalaa tolchi",
       "introduction": "Maaloo adda-baastuu Dijitaalaa keessan filadhaa.",
-      "login-id": "Adda-baastuu Dijitaalaa koo fayyadami",
-      "more-info-digital-id": "Waa'ee Adda-baastuu Dijiitaalaa"
+      "login-id": "Adda-baastuu Dijitaalaa koo fayyadami"
     },
     "store-credential": {
       "done": "Adda-baastuun Dijitaalaa keessan {{ngo}}'tiin kakaafameera.",

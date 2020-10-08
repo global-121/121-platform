@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Fsp } from 'src/app/models/fsp.model';
-import { InstanceInformation } from 'src/app/models/instance.model';
+import { InstanceData } from 'src/app/models/instance.model';
 import { PaInclusionStates } from 'src/app/models/pa-statuses.enum';
 import { Program } from 'src/app/models/program.model';
 import { ApiService } from 'src/app/services/api.service';
@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService) {}
 
-  getInstanceInformation(): Promise<InstanceInformation> {
+  getInstanceInformation(): Promise<InstanceData> {
     return this.apiService
       .get(environment.url_121_service_api, '/instance')
       .toPromise();

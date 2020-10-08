@@ -1,49 +1,31 @@
-<dialogue-turn>
+<dialogue-turn
+  *ngIf="useLocalStorage"
+  [isSpoken]="useLocalStorage"
+>
   <p>
-    <play-text-audio key="personal.create-identity.consent-question" class="ion-float-start ion-margin-end"></play-text-audio>
-    <span [innerHTML]="'personal.create-identity.consent-question'|translate"></span>
+    <play-text-audio key="personal.create-identity.local.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
+    {{ 'personal.create-identity.local.introduction'|translate }}
+  </p>
+</dialogue-turn>
+<dialogue-turn
+  *ngIf="useLocalStorage"
+  [isSpoken]="useLocalStorage"
+  isConnected="true"
+>
+  <p>
+    <play-text-audio key="personal.create-identity.local.create-password-only" class="ion-float-start ion-margin-end"></play-text-audio>
+    {{ 'personal.create-identity.local.create-password-only'|translate }}
   </p>
 
   <more-info-button
-    buttonKey="personal.create-identity.more-info-data-policy"
-    [message]="instanceInformation?.dataPolicy"
-    headingKey="personal.create-identity.more-info-data-policy"
+    buttonKey="personal.create-identity.local.more-info-password"
+    messageKey="personal.create-identity.local.info-message-password"
+    headingKey="personal.create-identity.local.more-info-password"
   ></more-info-button>
 </dialogue-turn>
-<dialogue-turn actor="self">
-  <p>
-    <play-text-audio key="personal.create-identity.consent-answer" class="ion-float-start ion-margin-end"></play-text-audio>
-    <span [innerHTML]="'personal.create-identity.consent-answer'|translate"></span>
-  </p>
-  <ion-row class="ion-nowrap ion-align-items-center">
-    <play-text-audio key="personal.create-identity.consent-agree" size="default"></play-text-audio>
-    <ion-button
-      type="button"
-      (click)="consent(true)"
-      [disabled]="isDisabled || userConsent"
-      expand="block"
-      style="flex-basis:100%;"
-    >
-      {{ 'personal.create-identity.consent-agree'|translate }}
-    </ion-button>
-  </ion-row>
-  <ion-row class="ion-nowrap ion-align-items-center">
-    <play-text-audio key="personal.create-identity.consent-disagree" size="default"></play-text-audio>
-    <ion-button
-      type="button"
-      (click)="consent(false)"
-      [disabled]="isDisabled"
-      expand="block"
-      style="flex-basis:100%;"
-      fill="outline"
-    >
-      {{ 'personal.create-identity.consent-disagree'|translate }}
-    </ion-button>
-  </ion-row>
-</dialogue-turn>
 <dialogue-turn
-  *ngIf="userConsent"
-  [isSpoken]="userConsent"
+  *ngIf="!useLocalStorage"
+  [isSpoken]="!useLocalStorage"
 >
   <p>
     <play-text-audio key="personal.create-identity.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
@@ -51,68 +33,42 @@
   </p>
 </dialogue-turn>
 <dialogue-turn
-  *ngIf="userConsent && useLocalStorage"
-  [isSpoken]="userConsent && useLocalStorage"
-  isConnected="true"
->
-  <p>
-    <play-text-audio key="personal.create-identity.password-only" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-identity.password-only'|translate }}
-  </p>
-
-  <more-info-button
-    buttonKey="personal.create-identity.more-info-password"
-    messageKey="personal.create-identity.info-message-password"
-    headingKey="personal.create-identity.more-info-password"
-  ></more-info-button>
-</dialogue-turn>
-<dialogue-turn
-  *ngIf="userConsent && !useLocalStorage"
-  [isSpoken]="userConsent && !useLocalStorage"
+  *ngIf="!useLocalStorage"
+  [isSpoken]="!useLocalStorage"
   isConnected="true"
 >
   <p>
     <play-text-audio key="personal.create-identity.username-password" class="ion-float-start ion-margin-end"></play-text-audio>
     {{ 'personal.create-identity.username-password'|translate }}
   </p>
-
-  <more-info-button
-    buttonKey="personal.create-identity.more-info-username-pw"
-    messageKey="personal.create-identity.info-message-username-pw"
-    headingKey="personal.create-identity.more-info-username-pw"
-  ></more-info-button>
 </dialogue-turn>
-<dialogue-turn
-  *ngIf="userConsent"
-  [isSpoken]="userConsent"
-  actor="self"
->
+<dialogue-turn actor="self">
   <form (ngSubmit)="submitCredentials(username,create,confirm)">
     <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
 
     <div *ngIf="!useLocalStorage">
-      <div>
+      <p>
         <play-text-audio key="personal.create-identity.create-username" class="ion-margin-end"></play-text-audio>
         <ion-label>{{ 'personal.create-identity.create-username'|translate }}</ion-label>
-        <ion-input
-          type="text"
-          name="username"
-          [(ngModel)]="username"
-          ngDefaultControl
-          [disabled]="isDisabled"
-        ></ion-input>
-      </div>
+      </p>
+      <ion-input
+        type="text"
+        name="username"
+        [(ngModel)]="username"
+        ngDefaultControl
+        [disabled]="isDisabled"
+      ></ion-input>
       <ion-row
         *ngIf="username && !usernameSubmitted"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="personal.create-identity.submit-username" size="default"></play-text-audio>
+        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
         <ion-button
           [disabled]="usernameSubmitted || isDisabled"
           type="submit"
           expand="block"
           style="flex-basis:100%"
-        >{{ 'personal.create-identity.submit-username'|translate }}</ion-button>
+        >{{ 'shared.submit-button'|translate }}</ion-button>
       </ion-row>
     </div>
     <div
@@ -130,7 +86,6 @@
         [disabled]="isDisabled"
         autocomplete="new-password"
         [minLength]="passwordMinLength"
-        [label]="'personal.create-identity.create-password'|translate"
         [labelShow]="'password-toggle.show'|translate"
         [labelHide]="'password-toggle.hide'|translate"
         [(isValid)]="createIsValid"
@@ -148,18 +103,21 @@
         *ngIf="create && !initialInput"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="personal.create-identity.submit-password" size="default"></play-text-audio>
+        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
         <ion-button
           [disabled]="!createIsValid || initialInput || isDisabled"
           type="submit"
           expand="block"
           style="flex-basis:100%"
-        >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
+        >{{ 'shared.submit-button'|translate }}</ion-button>
       </ion-row>
     </div>
 
     <div *ngIf="initialInput">
-      <play-text-audio key="personal.create-identity.confirm-password" class="ion-margin-end"></play-text-audio>
+      <p>
+        <play-text-audio key="personal.create-identity.confirm-password" class="ion-margin-end"></play-text-audio>
+        <ion-label>{{ 'personal.create-identity.confirm-password'|translate }}</ion-label>
+      </p>
       <password-toggle-input
         name="confirm"
         [(ngModel)]="confirm"
@@ -167,7 +125,6 @@
         [disabled]="isDisabled"
         autocomplete="new-password"
         [minLength]="passwordMinLength"
-        [label]="'personal.create-identity.confirm-password'|translate"
         [labelShow]="'password-toggle.show'|translate"
         [labelHide]="'password-toggle.hide'|translate"
       ></password-toggle-input>
@@ -175,13 +132,13 @@
         *ngIf="create && confirm && !isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="personal.create-identity.submit-password" size="default"></play-text-audio>
+        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
         <ion-button
           [disabled]="isInProgress || isDisabled"
           type="submit"
           expand="block"
           style="flex-basis:100%"
-        >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
+        >{{ 'shared.submit-button'|translate }}</ion-button>
       </ion-row>
     </div>
   </form>
@@ -208,7 +165,11 @@
   *ngIf="isDisabled"
   [isSpoken]="isDisabled"
 >
-  <p>
+  <p *ngIf="useLocalStorage">
+    <play-text-audio key="personal.create-identity.local.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
+    {{ 'personal.create-identity.local.conclusion'|translate }}
+  </p>
+  <p *ngIf="!useLocalStorage">
     <play-text-audio key="personal.create-identity.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
     {{ 'personal.create-identity.conclusion'|translate }}
   </p>

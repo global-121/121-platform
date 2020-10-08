@@ -3,7 +3,7 @@
   "validation": false,
   "state": "design",
   "location": "Kenya",
-  "ngo": "Kenya Red Cross",
+  "ngo": "KRCS",
   "title": {
     "en": "Program"
   },
@@ -58,7 +58,7 @@
     {
       "criterium": "secondName",
       "label": {
-        "en": "What is your second name?"
+        "en": "What is your second name? <br> If you do not have a second name type: NA​"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -69,7 +69,7 @@
     {
       "criterium": "thirdName",
       "label": {
-        "en": "What is your third name?"
+        "en": "What is your third name? <br> If you do not have a third name type: NA​"
       },
       "answerType": "text",
       "criteriumType": "standard",

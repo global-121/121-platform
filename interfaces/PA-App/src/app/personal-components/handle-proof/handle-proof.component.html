@@ -1,6 +1,5 @@
 <section>
-  <dialogue-turn 
-    [actor]="currentProgram?.ngo"
+  <dialogue-turn
     *ngIf="currentProgram?.validation"
     [isSpoken]="currentProgram?.validation"
   >
@@ -14,8 +13,7 @@
     </p>
   </dialogue-turn>
 
-  <dialogue-turn 
-    [actor]="currentProgram?.ngo"
+  <dialogue-turn
     *ngIf="inclusionStatus"
     [isSpoken]="inclusionStatus"
   >

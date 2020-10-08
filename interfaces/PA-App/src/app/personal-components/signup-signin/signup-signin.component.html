@@ -4,10 +4,6 @@
       <play-text-audio key="personal.signup-signin.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.signup-signin.introduction'|translate }}
     </p>
-    <more-info-button buttonKey="personal.signup-signin.more-info-digital-id"
-                      messageKey="personal.signup-signin.info-message"
-                      headingKey="personal.signup-signin.more-info-digital-id"
-    ></more-info-button>
   </dialogue-turn>
   <dialogue-turn actor="self">
       <ion-radio-group (ionChange)="changeSignupSignin($event.detail.value)">
