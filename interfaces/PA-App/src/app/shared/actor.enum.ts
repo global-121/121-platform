@@ -4,5 +4,5 @@ export enum Actor {
   ngoDorcas = 'Dorcas',
   ngoEagles = 'Eagles',
   ngoNLRC = 'NLRC',
-  ngoKRCS = 'Kenya Red Cross',
+  ngoKRCS = 'KRCS',
 }
