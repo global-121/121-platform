@@ -12,22 +12,18 @@ export class InstanceService {
   constructor(
     private programsService: ProgramsServiceApiService,
     private translatableString: TranslatableStringService,
-  ) {
-    this.getInstanceInformation();
-  }
+  ) {}
 
   public async getInstanceInformation(): Promise<InstanceInformation> {
     // If not already available, fall back to get it from the server
     if (!this.instanceInformation) {
-      this.instanceInformation = await this.programsService.getInstanceInformation();
+      const instanceData = await this.programsService.getInstanceInformation();
 
-      this.instanceInformation.displayName = this.translatableString.get(
-        this.instanceInformation.displayName,
-      );
-
-      this.instanceInformation.dataPolicy = this.translatableString.get(
-        this.instanceInformation.dataPolicy,
-      );
+      this.instanceInformation = {
+        name: instanceData.name,
+        displayName: this.translatableString.get(instanceData.displayName),
+        dataPolicy: this.translatableString.get(instanceData.dataPolicy),
+      };
     }
 
     return this.instanceInformation;
