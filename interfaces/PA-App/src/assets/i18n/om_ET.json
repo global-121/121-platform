@@ -46,8 +46,6 @@
     "login-identity": {
       "incorrect-credentials": "Walta'insi maqaa fayyadamaafi paaswoordiin isin tolfattan hin fudhatamne. Maaloo irra deebi'aa yaalaa.",
       "introduction": "Adda-baastuu Dijitaalaa duraan jiru fayyadamuuf maqaa-fayyadamtaniifi paaswoordiitiin seenuu sin barbaachisa.",
-      "submit-password": "Paaswoordii koo galchi",
-      "submit-username": "Maqaa-fayadamaa koo galchi",
       "supply-password": "Paaswoordii keessan:",
       "supply-username": "Maqaa-fayyadmaa keessan:"
     },

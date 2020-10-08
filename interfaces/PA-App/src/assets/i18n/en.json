@@ -56,12 +56,10 @@
       "notify": "We will notify you if you are included."
     },
     "login-identity": {
-      "incorrect-credentials": "The combination of username and password you provided is not recognized. Please try again.",
-      "introduction": "To use an existing Digital ID you need to log in with your username and password.",
-      "submit-password": "Submit my password",
-      "submit-username": "Submit my username",
+      "incorrect-credentials": "The combination of your full name and password you provided is not recognized. Please try again.",
+      "introduction": "To use an existing account you need to log in with your full name and password.",
       "supply-password": "Your password:",
-      "supply-username": "Your username:"
+      "supply-username": "Your full name:"
     },
     "preprinted-qrcode": {
       "error": "The scanned QR)code cannot be used, please try another one.",

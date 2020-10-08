@@ -47,8 +47,6 @@
     "login-identity": {
       "incorrect-credentials": "Dzina lanu ndi nambala yachinsinsi yomwe mwapanga yakanidwa. Chonde yesaniso",
       "introduction": "Kuti mugwiritse nambala yanu lowetsani dzina lanu ndi nambala yanu yachinsinsi",
-      "submit-password": "Tumizani nambala yanga yachinsinsi",
-      "submit-username": "Tumizani dzina langa",
       "supply-password": "Nambala yanu yachinsinsi",
       "supply-username": "Dzina lanu"
     },
