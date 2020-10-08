@@ -1,5 +1,4 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { InstanceInformation } from 'src/app/models/instance.model';
 import {
   Program,
   ProgramAttribute,
@@ -7,7 +6,6 @@ import {
   ProgramCriteriumOption,
 } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
@@ -36,7 +34,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
   private currentProgram: Program;
   private credDefId: string;
 
-  public instanceInformation: InstanceInformation;
   public programDetails: any;
 
   public questions: Question[];
@@ -54,7 +51,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
     public paData: PaDataService,
     public translatableString: TranslatableStringService,
     public conversationService: ConversationService,
-    private instanceService: InstanceService,
   ) {
     super();
   }
@@ -80,13 +76,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   async initNew() {
     this.conversationService.startLoading();
-    await this.getInstanceInformation();
     await this.getProgramDetails();
     this.conversationService.stopLoading();
-  }
-
-  private async getInstanceInformation() {
-    this.instanceInformation = await this.instanceService.getInstanceInformation();
   }
 
   private async getProgramDetails() {

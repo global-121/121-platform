@@ -10,6 +10,7 @@ import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import { ConsentQuestionComponent } from '../personal-components/consent-question/consent-question.component';
+import { ContactDetailsComponent } from '../personal-components/contact-details/contact-details.component';
 import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
@@ -49,6 +50,7 @@ export class PersonalPage implements OnInit {
 
   public availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
+    [PersonalComponents.contactDetails]: ContactDetailsComponent,
     [PersonalComponents.createIdentity]: CreateIdentityComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
     [PersonalComponents.handleProof]: HandleProofComponent,

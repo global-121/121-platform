@@ -7,6 +7,7 @@ import { InfoPopupComponent } from '../shared/info-popup/info-popup.component';
 import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
 import { SharedModule } from '../shared/shared.module';
 import { ConsentQuestionComponent } from './consent-question/consent-question.component';
+import { ContactDetailsComponent } from './contact-details/contact-details.component';
 import { CreateIdentityComponent } from './create-identity/create-identity.component';
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
 import { HandleProofComponent } from './handle-proof/handle-proof.component';
@@ -23,6 +24,7 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
 @NgModule({
   declarations: [
     ConsentQuestionComponent,
+    ContactDetailsComponent,
     CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
@@ -40,6 +42,7 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
   imports: [CommonModule, SharedModule, FormsModule, QRCodeModule],
   entryComponents: [
     ConsentQuestionComponent,
+    ContactDetailsComponent,
     CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
@@ -57,6 +60,7 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
   ],
   exports: [
     ConsentQuestionComponent,
+    ContactDetailsComponent,
     CreateIdentityComponent,
     EnrollInProgramComponent,
     HandleProofComponent,
