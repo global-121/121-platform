@@ -87,7 +87,6 @@
       "attributes": {
         "error": "Something went wrong, please try again.",
         "introduction": "For this option we also need the following:",
-        "submit": "Save my information",
         "success": "Thank you. Your additional information is saved."
       },
       "conclusion": "Thank you. You have selected the option {{name}}.",
