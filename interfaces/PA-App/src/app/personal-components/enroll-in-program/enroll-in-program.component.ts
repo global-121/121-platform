@@ -226,7 +226,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
       data: {
         currentProgram: {
           id: this.currentProgram.id,
-          ngo: this.currentProgram.ngo,
           title: this.currentProgram.title,
           description: this.currentProgram.description,
           customCriteria: this.currentProgram.customCriteria,

@@ -1,6 +1,5 @@
-<section #registrationSummary>
-  <dialogue-turn 
-    [actor]="program?.ngo"
+<section>
+  <dialogue-turn
     *ngIf="validation"
     [isSpoken]="validation"
   >
@@ -9,9 +8,8 @@
       </play-text-audio>
     </p>
   </dialogue-turn>
-  <dialogue-turn 
-    [actor]="program?.ngo" 
-    isConnected="true" 
+  <dialogue-turn
+    isConnected="true"
     *ngIf="validation && meetingDocuments?.length"
     [isSpoken]="validation && meetingDocuments?.length"
   >
@@ -30,10 +28,9 @@
       headingKey="personal.registration-summary.more-info-documents" messageKey="personal.registration-summary.info-message">
     </more-info-button>
   </dialogue-turn>
-  <dialogue-turn 
-    [actor]="program?.ngo" 
-    isConnected="true" 
-    *ngIf="validation && showQrCode" 
+  <dialogue-turn
+    isConnected="true"
+    *ngIf="validation && showQrCode"
     [isSpoken]="validation && showQrCode"
   >
     <p>
@@ -45,8 +42,7 @@
       <qrcode [qrdata]="qrDataString" level="H"></qrcode>
     </div>
   </dialogue-turn>
-  <dialogue-turn 
-    [actor]="program?.ngo" 
+  <dialogue-turn
     *ngIf="!validation"
     [isSpoken]="!validation"
   >
