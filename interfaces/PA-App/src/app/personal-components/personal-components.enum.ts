@@ -1,4 +1,5 @@
 export enum PersonalComponents {
+  consentQuestion = 'consent-question',
   createIdentity = 'create-identity',
   enrollInProgram = 'enroll-in-program',
   handleProof = 'handle-proof',

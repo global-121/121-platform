@@ -1,10 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { createRandomString } from 'src/app/helpers/createRandomString';
-import { InstanceInformation } from 'src/app/models/instance.model';
 import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
@@ -22,10 +20,6 @@ export class CreateIdentityComponent extends PersonalComponent {
   public useLocalStorage: boolean;
   public passwordMinLength = 4;
 
-  public instanceInformation: InstanceInformation;
-
-  public userConsent = false;
-
   public initialInput = false;
   public usernameSubmitted = false;
   public username: string;
@@ -42,15 +36,12 @@ export class CreateIdentityComponent extends PersonalComponent {
     public sovrinService: SovrinService,
     public programsServiceApiService: ProgramsServiceApiService,
     public paData: PaDataService,
-    private instanceService: InstanceService,
   ) {
     super();
     this.useLocalStorage = environment.localStorage;
   }
 
   ngOnInit() {
-    this.getInstanceInformation();
-
     if (this.data) {
       this.initHistory();
     }
@@ -65,18 +56,6 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.initialInput = true;
   }
 
-  private async getInstanceInformation() {
-    this.instanceInformation = await this.instanceService.getInstanceInformation();
-  }
-
-  public consent(consent: boolean) {
-    if (!consent) {
-      window.location.reload();
-      return;
-    }
-    this.userConsent = consent;
-  }
-
   public async submitCredentials(
     username: string,
     create: string,
@@ -88,7 +67,7 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.usernameNotUnique = false;
     this.unequalPasswords = false;
 
-    if (!username) {
+    if (!username && !this.useLocalStorage) {
       this.usernameSubmitted = false;
       this.isInProgress = false;
       console.log('No username. ⛔️');

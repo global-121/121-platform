@@ -82,7 +82,7 @@ export class SelectProgramComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.signupSignin;
+    return PersonalComponents.consentQuestion;
   }
 
   complete() {

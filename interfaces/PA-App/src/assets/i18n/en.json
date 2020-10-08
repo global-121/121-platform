@@ -22,20 +22,26 @@
     "show": "Show password"
   },
   "personal": {
+    "consent-question": {
+      "agree": "I agree",
+      "answer": "I have read the data policy (or it has been read to me).<br><br> I have:<br>- asked all questions about the program that I wanted too<br> - received the answers about the program I need. <br><br> I understand:<br> - who sees my information<br> - when they see my information<br> - that the personal information I provide is required to receive cash based aid.<br> - that I can leave the program at any time<br> - that I can have my personal information removed from the program database at any time.  <br> <br>  By pressing \"I agree\" I choose to participating in the program.<br> By pressing \"I disagree\" I choose not to participate in the program.",
+      "disagree": "I disagree",
+      "more-info-data-policy": "Data policy",
+      "question": "To apply for a program you need to agree to the data policy of {{ngo}}. <br><br> The Data policy explains how we secure your information. <br><br> Please read or listen to the data policy."
+    },
     "create-identity": {
       "conclusion": "Great! You have created an account.",
       "confirm-password": "Confirm password:",
-      "consent-agree": "I agree",
-      "consent-disagree": "I disagree",
-      "consent-answer": "I have read the data policy (or it has been read to me).<br><br> I have:<br>- asked all questions about the program that I wanted too<br> - received the answers about the program I need. <br><br> I understand:<br> - who sees my information<br> - when they see my information<br> - that the personal information I provide is required to receive cash based aid.<br> - that I can leave the program at any time<br> - that I can have my personal information removed from the program database at any time.  <br> <br>  By pressing \"I agree\" I choose to participating in the program.<br> By pressing \"I disagree\" I choose not to participate in the program.",
-      "consent-question": "To apply for a program you need to agree to the data policy of the Kenya Red Cross. <br><br> Please read the data policy.",
       "create-password-explanation": "Enter a password of at least {{minimalLength}} characters:",
-      "create-password-only": "Create my password",
       "create-username": "Enter your full name:",
-      "info-message-password": "[about passwords]",
       "introduction": "To create an account you need to complete the following steps.",
-      "more-info-data-policy": "Data policy",
-      "more-info-password": "About passwords",
+      "local": {
+        "conclusion": "Great! You have created a Digital ID.",
+        "create-password-only": "Create my password",
+        "info-message-password": "[about passwords]",
+        "introduction": "To create a Digital ID you need to complete the following steps.",
+        "more-info-password": "About passwords"
+      },
       "password-too-short": "Please enter at least {{minimalLength}} characters.",
       "unequal-passwords": "The passwords you created are not the same. Please try again.",
       "username-not-unique": "The name you entered is not unique. Please try again.",
