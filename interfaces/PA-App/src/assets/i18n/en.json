@@ -23,28 +23,22 @@
   },
   "personal": {
     "create-identity": {
-      "conclusion": "Great! You have created a Digital ID.",
-      "confirm-password": "Confirm my password:",
+      "conclusion": "Great! You have created an account.",
+      "confirm-password": "Confirm password:",
       "consent-agree": "I agree",
       "consent-disagree": "I disagree",
       "consent-answer": "I have read the data policy (or it has been read to me).<br><br> I have:<br>- asked all questions about the program that I wanted too<br> - received the answers about the program I need. <br><br> I understand:<br> - who sees my information<br> - when they see my information<br> - that the personal information I provide is required to receive cash based aid.<br> - that I can leave the program at any time<br> - that I can have my personal information removed from the program database at any time.  <br> <br>  By pressing \"I agree\" I choose to participating in the program.<br> By pressing \"I disagree\" I choose not to participate in the program.",
       "consent-question": "To apply for a program you need to agree to the data policy of the Kenya Red Cross. <br><br> Please read the data policy.",
       "create-password-explanation": "Enter a password of at least {{minimalLength}} characters:",
-      "create-password": "Create my password",
       "create-username": "Enter your full name:",
       "info-message-password": "[about passwords]",
-      "info-message-username-pw": "To create a Digital Identity you need to submit the following <br><br>- Your full name<br>- Your password (which you must create  using 4 numbers) <br><br>If you create a Digital ID for this pilot program it will be stored securely on the Netherlands Red Cross database.",
-      "introduction": "To create a Digital ID you need to complete the following steps.",
+      "introduction": "To create an account you need to complete the following steps.",
       "more-info-data-policy": "Data policy",
       "more-info-password": "About passwords",
-      "more-info-username-pw": "About names and password",
-      "password-only": "Submit",
       "password-too-short": "Please enter at least {{minimalLength}} characters.",
-      "submit-password": "Submit",
-      "submit-username": "Submit",
       "unequal-passwords": "The passwords you created are not the same. Please try again.",
       "username-not-unique": "The name you entered is not unique. Please try again.",
-      "username-password": "Enter your full name and create your password."
+      "username-password": "Enter your name as on your National ID card and create a password."
     },
     "enroll-in-program": {
       "change": "Change my information",

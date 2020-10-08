@@ -75,12 +75,6 @@
     <play-text-audio key="personal.create-identity.username-password" class="ion-float-start ion-margin-end"></play-text-audio>
     {{ 'personal.create-identity.username-password'|translate }}
   </p>
-
-  <more-info-button
-    buttonKey="personal.create-identity.more-info-username-pw"
-    messageKey="personal.create-identity.info-message-username-pw"
-    headingKey="personal.create-identity.more-info-username-pw"
-  ></more-info-button>
 </dialogue-turn>
 <dialogue-turn
   *ngIf="userConsent"
@@ -91,28 +85,28 @@
     <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
 
     <div *ngIf="!useLocalStorage">
-      <div>
+      <p>
         <play-text-audio key="personal.create-identity.create-username" class="ion-margin-end"></play-text-audio>
         <ion-label>{{ 'personal.create-identity.create-username'|translate }}</ion-label>
-        <ion-input
-          type="text"
-          name="username"
-          [(ngModel)]="username"
-          ngDefaultControl
-          [disabled]="isDisabled"
-        ></ion-input>
-      </div>
+      </p>
+      <ion-input
+        type="text"
+        name="username"
+        [(ngModel)]="username"
+        ngDefaultControl
+        [disabled]="isDisabled"
+      ></ion-input>
       <ion-row
         *ngIf="username && !usernameSubmitted"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="personal.create-identity.submit-username" size="default"></play-text-audio>
+        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
         <ion-button
           [disabled]="usernameSubmitted || isDisabled"
           type="submit"
           expand="block"
           style="flex-basis:100%"
-        >{{ 'personal.create-identity.submit-username'|translate }}</ion-button>
+        >{{ 'shared.submit-button'|translate }}</ion-button>
       </ion-row>
     </div>
     <div
@@ -130,7 +124,6 @@
         [disabled]="isDisabled"
         autocomplete="new-password"
         [minLength]="passwordMinLength"
-        [label]="'personal.create-identity.create-password'|translate"
         [labelShow]="'password-toggle.show'|translate"
         [labelHide]="'password-toggle.hide'|translate"
         [(isValid)]="createIsValid"
@@ -148,18 +141,21 @@
         *ngIf="create && !initialInput"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="personal.create-identity.submit-password" size="default"></play-text-audio>
+        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
         <ion-button
           [disabled]="!createIsValid || initialInput || isDisabled"
           type="submit"
           expand="block"
           style="flex-basis:100%"
-        >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
+        >{{ 'shared.submit-button'|translate }}</ion-button>
       </ion-row>
     </div>
 
     <div *ngIf="initialInput">
-      <play-text-audio key="personal.create-identity.confirm-password" class="ion-margin-end"></play-text-audio>
+      <p>
+        <play-text-audio key="personal.create-identity.confirm-password" class="ion-margin-end"></play-text-audio>
+        <ion-label>{{ 'personal.create-identity.confirm-password'|translate }}</ion-label>
+      </p>
       <password-toggle-input
         name="confirm"
         [(ngModel)]="confirm"
@@ -167,7 +163,6 @@
         [disabled]="isDisabled"
         autocomplete="new-password"
         [minLength]="passwordMinLength"
-        [label]="'personal.create-identity.confirm-password'|translate"
         [labelShow]="'password-toggle.show'|translate"
         [labelHide]="'password-toggle.hide'|translate"
       ></password-toggle-input>
@@ -175,13 +170,13 @@
         *ngIf="create && confirm && !isDisabled"
         class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="personal.create-identity.submit-password" size="default"></play-text-audio>
+        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
         <ion-button
           [disabled]="isInProgress || isDisabled"
           type="submit"
           expand="block"
           style="flex-basis:100%"
-        >{{ 'personal.create-identity.submit-password'|translate }}</ion-button>
+        >{{ 'shared.submit-button'|translate }}</ion-button>
       </ion-row>
     </div>
   </form>

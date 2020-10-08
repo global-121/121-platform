@@ -25,12 +25,9 @@
     "create-identity": {
       "conclusion": "Zatheka! Mwapanga nambala yanu",
       "confirm-password": "Tsimikizani nambala yanga ya chinsinsi",
-      "create-password": "Pangani nambala yanga ya chinsinsi",
       "create-username": "Pangani dzina langa",
       "introduction": "Kuti mupange nambala mufunika kumaliza izi",
       "more-info-password": "Nambala yanu yachinsinsi",
-      "more-info-username-pw": "Zokhudza dzina lanu ndi nambala ya chinsinsi",
-      "submit-username": "Pangani dzina langa",
       "unequal-passwords": "Nambala yachinsinsi yomwe munapanga yasiyana. Chonde yesaniso",
       "username-not-unique": "Dzina lanu lomwe munalemba ndi la wamba. Chonde yesaniso",
       "username-password": "Pangani dzina lanu ndi nambala yachinsinsi"

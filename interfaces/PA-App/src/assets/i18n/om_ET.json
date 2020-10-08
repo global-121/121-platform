@@ -25,11 +25,9 @@
     "create-identity": {
       "conclusion": "Gaariidha! Adda-baastuu Dijitaalaa tolfattaniittu.",
       "confirm-password": "Paaswoordii koo mirkaneessi:",
-      "create-password": "Paaswoordii koo tolchi",
       "create-username": "Maqaa-fayyadamaa koo tolchi:",
       "introduction": "Adda-baastuu Dijitaalaa tolfachuudhaaf sadarkaawwan itti-aanan kanneen xumuruun sin barbaachisa.",
       "more-info-password": "Waa'ee paaswoordiiwwanii",
-      "more-info-username-pw": "Waa'ee maqaa-fayyadamttaniifi paaswoordii keessanii",
       "password-only": "Create my password",
       "submit-password": "Create my password",
       "submit-username": "Maqaa-fayyadamaa koo tolchi",
