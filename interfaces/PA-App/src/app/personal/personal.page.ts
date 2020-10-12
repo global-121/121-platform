@@ -84,7 +84,7 @@ export class PersonalPage implements OnInit {
           return;
         }
 
-        this.insertSection(nextAction);
+        this.insertSection({ animate: true }, nextAction);
       },
     );
     // Listen for scroll events
@@ -113,7 +113,12 @@ export class PersonalPage implements OnInit {
     const conversation = await this.conversationService.getConversationUpToNow();
 
     conversation.forEach((section: ConversationSection) => {
-      this.insertSection(section.name, section.moment, section.data);
+      this.insertSection(
+        { animate: false },
+        section.name,
+        section.moment,
+        section.data,
+      );
     });
   }
 
@@ -121,7 +126,12 @@ export class PersonalPage implements OnInit {
     return this.resolver.resolveComponentFactory(this.availableSections[name]);
   }
 
-  public insertSection(name: string, moment?: number, data?: any) {
+  public insertSection(
+    options: { animate: boolean } = { animate: environment.useAnimation },
+    name: string,
+    moment?: number,
+    data?: any,
+  ) {
     if (!name) {
       return;
     }
@@ -131,10 +141,11 @@ export class PersonalPage implements OnInit {
     const componentRef = this.container.createComponent(
       this.getComponentFactory(name),
     );
-    const componentInstance: PersonalComponent = componentRef.instance;
+    const componentInstance: any | PersonalComponent = componentRef.instance;
 
     componentInstance.moment = moment;
     componentInstance.data = data;
+    componentInstance.animate = options.animate;
   }
 
   public scrollDown() {
