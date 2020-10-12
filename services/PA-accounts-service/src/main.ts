@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+const appInsights = require("applicationinsights");
+
 
 async function bootstrap(): Promise<void> {
   const appOptions = { cors: true };
@@ -23,3 +25,5 @@ async function bootstrap(): Promise<void> {
   await app.listen(process.env.PORT || PORT);
 }
 bootstrap();
+appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
+appInsights.start();
