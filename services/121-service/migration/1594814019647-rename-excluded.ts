@@ -3,8 +3,6 @@ import {MigrationInterface, QueryRunner} from "typeorm";
 export class renameExcluded1594814019647 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
-        await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
-        await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "updated" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."user" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."custom_criterium" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."custom_criterium" ALTER COLUMN "updated" SET DEFAULT CURRENT_TIMESTAMP`);
@@ -40,8 +38,6 @@ export class renameExcluded1594814019647 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "121-service"."custom_criterium" ALTER COLUMN "updated" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."custom_criterium" ALTER COLUMN "created" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."user" ALTER COLUMN "created" SET DEFAULT now()`);
-        await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "updated" SET DEFAULT now()`);
-        await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "created" SET DEFAULT now()`);
     }
 
 }

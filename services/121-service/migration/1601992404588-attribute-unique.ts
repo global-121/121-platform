@@ -23,8 +23,6 @@ export class attributeUnique1601992404588 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "121-service"."program" ALTER COLUMN "proofRequest" SET DEFAULT null`);
         await queryRunner.query(`ALTER TABLE "121-service"."program" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."program" ALTER COLUMN "updated" SET DEFAULT CURRENT_TIMESTAMP`);
-        await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
-        await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "updated" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."user" ALTER COLUMN "created" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."action" ALTER COLUMN "timestamp" SET DEFAULT CURRENT_TIMESTAMP`);
         await queryRunner.query(`ALTER TABLE "121-service"."at_notification" ALTER COLUMN "timestamp" SET DEFAULT CURRENT_TIMESTAMP`);
@@ -38,8 +36,6 @@ export class attributeUnique1601992404588 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "121-service"."at_notification" ALTER COLUMN "timestamp" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."action" ALTER COLUMN "timestamp" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."user" ALTER COLUMN "created" SET DEFAULT now()`);
-        await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "updated" SET DEFAULT now()`);
-        await queryRunner.query(`ALTER TABLE "121-service"."standard_criterium" ALTER COLUMN "created" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."program" ALTER COLUMN "updated" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."program" ALTER COLUMN "created" SET DEFAULT now()`);
         await queryRunner.query(`ALTER TABLE "121-service"."program" ALTER COLUMN "proofRequest" DROP DEFAULT`);
