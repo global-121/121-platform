@@ -41,7 +41,7 @@ export class PersonalPage implements OnInit {
   public ionContent: IonContent;
 
   @ViewChild('conversationContainer', { read: ViewContainerRef })
-  public container;
+  public container: ViewContainerRef;
 
   public isDebug: boolean = environment.isDebug;
   public showDebug: boolean = environment.showDebug;
@@ -75,12 +75,12 @@ export class PersonalPage implements OnInit {
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.updateConversation$.subscribe(
-      (nextAction: string) => {
+      async (nextAction: string) => {
         if (
           nextAction === this.conversationService.conversationActions.afterLogin
         ) {
-          this.loadComponents();
-          this.scrollDown();
+          await this.loadComponents();
+          this.scrollDownWhenReady();
           return;
         }
 
@@ -97,13 +97,14 @@ export class PersonalPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     // Prevent automatic behaviour while debugging/developing:
     if (this.isDebug && this.showDebug) {
       return;
     }
 
-    this.loadComponents();
+    await this.loadComponents();
+    this.scrollDownWhenReady();
   }
 
   private async loadComponents() {
@@ -152,13 +153,33 @@ export class PersonalPage implements OnInit {
     this.ionContent.scrollToBottom(this.scrollSpeed);
   }
 
+  public scrollToLastSection() {
+    const lastSection: any = this.container.get(this.container.length - 1);
+
+    if (!lastSection || !lastSection.rootNodes || !lastSection.rootNodes[0]) {
+      return;
+    }
+    lastSection.rootNodes[0].scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'nearest',
+    });
+  }
+
+  private async scrollDownWhenReady() {
+    window.setTimeout(() => {
+      this.scrollToLastSection();
+    }, 600);
+  }
+
   public debugClearAllStorage() {
     this.storage.clear();
     window.localStorage.clear();
     window.sessionStorage.clear();
   }
 
-  public debugStartFromHistory() {
-    this.loadComponents();
+  public async debugStartFromHistory() {
+    await this.loadComponents();
+    this.scrollDownWhenReady();
   }
 }

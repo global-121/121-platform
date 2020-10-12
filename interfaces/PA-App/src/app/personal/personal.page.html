@@ -75,6 +75,13 @@
     </ion-button>
 
     <ion-button color="tertiary" size="small" fill="clear"
+                title="Scroll to last section"
+                (click)="scrollToLastSection()"
+    >
+      <ion-icon name="download" size="small" slot="icon-only"></ion-icon>
+    </ion-button>
+
+    <ion-button color="tertiary" size="small" fill="clear"
                 title="Clear conversation"
                 (click)="this.container.clear()"
     >
