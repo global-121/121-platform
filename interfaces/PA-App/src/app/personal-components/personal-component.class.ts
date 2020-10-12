@@ -38,6 +38,11 @@ export abstract class PersonalComponent
    */
   moment: number;
 
+  /**
+   * Wether to animate the turns in the component
+   */
+  animate = environment.useAnimation;
+
   constructor() {}
 
   /**
@@ -64,7 +69,12 @@ export abstract class PersonalComponent
   private setupTurns() {
     this.turns.forEach((turn: DialogueTurnComponent, index: number) => {
       this.setTurnDateTime(turn);
-      this.animateTurn(turn, this.turnSpeed * (index + 1));
+      if (this.animate) {
+        this.animateTurn(turn, this.turnSpeed * (index + 1));
+      } else {
+        turn.animate = false;
+        turn.show();
+      }
     });
   }
 

@@ -29,7 +29,9 @@ export class ConversationService {
   }
 
   public async getConversationUpToNow(): Promise<ConversationSection[]> {
+    this.startLoading();
     await this.init();
+    this.stopLoading();
     return this.conversation;
   }
 

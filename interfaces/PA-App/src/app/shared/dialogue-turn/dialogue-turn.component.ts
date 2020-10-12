@@ -22,13 +22,14 @@ export class DialogueTurnComponent implements OnInit {
   @Input()
   isConnected = false;
 
+  @Input()
+  animate = environment.useAnimation;
+
   isSelf: boolean;
   isSystem: boolean;
 
   public allActors = Actor;
   public instanceInformation: InstanceInformation;
-
-  animate = environment.useAnimation;
 
   constructor(private instanceService: InstanceService) {}
 

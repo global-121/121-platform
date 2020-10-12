@@ -3,7 +3,7 @@
   (keydown.enter)="$event.preventDefault()"
 >
 
-  <div *ngFor="let question of questions; let i=index; first as isFirst;">
+  <ng-container *ngFor="let question of questions; let i=index; first as isFirst;">
     <dialogue-turn
       actor="self"
       [isConnected]="!isFirst"
@@ -128,7 +128,7 @@
         </p>
       </dialogue-turn>
     </div>
-  </div>
+  </ng-container>
 
   <dialogue-turn
     *ngIf="((theForm.invalid && (theForm.dirty || theForm.touched)) || checkValidationErrors()) && allQuestionsShown && !isSubmitted"
