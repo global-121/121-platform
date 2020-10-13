@@ -13,6 +13,7 @@ import {
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { LoggingService } from './services/logging.service';
 
 export function appInitializerFactory(
   translate: TranslateService,
