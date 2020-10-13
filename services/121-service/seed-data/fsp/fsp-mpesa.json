@@ -57,7 +57,7 @@
     {
       "name": "phoneRelation",
       "label": {
-        "en": "Who's phone will you use to receive the M-Pesa code?"
+        "en": "Whose phone number will you use to receive the M-Pesa code? <br>Please ensure its someone you trust and agrees with collecting the cash on your behalf."
       },
       "answerType": "dropdown",
       "options": [
