@@ -57,7 +57,6 @@ export class SelectProgramComponent extends PersonalComponent {
 
   private async getInstanceInformation() {
     this.instanceInformation = await this.instanceService.getInstanceInformation();
-    console.log('this.instanceInformation: ', this.instanceInformation);
   }
 
   private async getPrograms() {

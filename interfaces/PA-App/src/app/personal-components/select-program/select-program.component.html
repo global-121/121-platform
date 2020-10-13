@@ -8,9 +8,11 @@
       {{ 'personal.select-program.introduction'|translate }}
     </p>
 
-    <more-info-button buttonKey="personal.select-program.more-info-programs"
-                      [message]="instanceInformation?.aboutProgram"
-                      headingKey="personal.select-program.more-info-programs"
+    <more-info-button
+      *ngIf="instanceInformation?.aboutProgram"
+      buttonKey="personal.select-program.more-info-programs"
+      [message]="instanceInformation?.aboutProgram"
+      headingKey="personal.select-program.more-info-programs"
     ></more-info-button>
   </dialogue-turn>
   <dialogue-turn actor="self"
