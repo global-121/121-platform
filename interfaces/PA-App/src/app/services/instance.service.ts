@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { InstanceInformation } from '../models/instance.model';
@@ -8,7 +8,7 @@ import { InstanceInformation } from '../models/instance.model';
   providedIn: 'root',
 })
 export class InstanceService {
-  private cachedInstanceInformation = new Subject<InstanceInformation>();
+  private cachedInstanceInformation = new ReplaySubject<InstanceInformation>();
   public instanceInformation = this.cachedInstanceInformation.asObservable();
 
   constructor(

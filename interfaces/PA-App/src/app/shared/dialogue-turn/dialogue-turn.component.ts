@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { first } from 'rxjs/operators';
 import { InstanceService } from 'src/app/services/instance.service';
 import { Actor } from 'src/app/shared/actor.enum';
 import { environment } from 'src/environments/environment';
@@ -33,16 +34,17 @@ export class DialogueTurnComponent implements OnInit {
 
   ngOnInit() {
     this.moment = new Date();
+    this.isSelf = this.actor === Actor.self;
+    this.isSystem = this.actor === Actor.system;
     this.getInstanceInformation();
   }
 
   private async getInstanceInformation() {
-    const instanceInformationSubscription = this.instanceService.instanceInformation.subscribe(
-      (instanceInformation) => {
+    this.instanceService.instanceInformation
+      .pipe(first())
+      .subscribe((instanceInformation) => {
         this.updateActor(instanceInformation.name);
-        instanceInformationSubscription.unsubscribe();
-      },
-    );
+      });
   }
 
   updateActor(newActor: Actor) {

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { first } from 'rxjs/operators';
 import { InstanceInformation } from 'src/app/models/instance.model';
 import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
@@ -39,12 +40,11 @@ export class ConsentQuestionComponent extends PersonalComponent {
   }
 
   private async getInstanceInformation() {
-    const instanceInformationSubscription = this.instanceService.instanceInformation.subscribe(
-      (instanceInformation) => {
+    this.instanceService.instanceInformation
+      .pipe(first())
+      .subscribe((instanceInformation) => {
         this.instanceInformation = instanceInformation;
-        instanceInformationSubscription.unsubscribe();
-      },
-    );
+      });
   }
 
   public consent(consent: boolean) {
