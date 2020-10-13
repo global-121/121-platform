@@ -7,4 +7,8 @@ export const environment = {
 
   // APIs
   url_121_service_api: 'http://localhost:3000/api',
+
+  // Third-party tokens:
+  ai_ikey: '',
+  ai_endpoint: '',
 };
