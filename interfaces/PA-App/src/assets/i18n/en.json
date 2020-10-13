@@ -24,10 +24,10 @@
   "personal": {
     "consent-question": {
       "agree": "I agree",
-      "answer": "I have read the data policy (or it has been read to me).<br><br> I have:<br>- asked all questions about the program that I wanted too<br> - received the answers about the program I need. <br><br> I understand:<br> - who sees my information<br> - when they see my information<br> - that the personal information I provide is required to receive cash based aid.<br> - that I can leave the program at any time<br> - that I can have my personal information removed from the program database at any time.  <br> <br>  By pressing \"I agree\" I choose to participating in the program.<br> By pressing \"I disagree\" I choose not to participate in the program.",
+      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to receive cash based aid. <br><br> I understand who sees my personal information.<br><br> By pressing \"I agree\" I choose to participate in the aid program. <br><br> By pressing \"I disagree\" I choose not to participate in the aid program.",
       "disagree": "I disagree",
-      "more-info-data-policy": "Data policy",
-      "question": "To apply for a program you need to agree to the data policy of {{ngo}}. <br><br> The Data policy explains how we secure your information. <br><br> Please read or listen to the data policy."
+      "more-info-personal-information": "Personal information",
+      "question": "To apply for this aid program you need to agree to <strong>how we secure your personal information.</strong><br /><br /> Please read or listen to how we secure your personal information."
     },
     "create-identity": {
       "conclusion": "Great! You have created an account.",
