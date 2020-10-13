@@ -1,26 +1,28 @@
-import { Component, Input } from '@angular/core';
-import { Program } from 'src/app/models/program.model';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
+import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-contact-details',
   templateUrl: './contact-details.component.html',
   styleUrls: ['./contact-details.component.scss'],
+  encapsulation: ViewEncapsulation.None, // Disabled because we need to style inserted HTML from the database
 })
 export class ContactDetailsComponent extends PersonalComponent {
   @Input()
   public data: any;
 
-  public programDetails: Program;
+  public contactDetails: string;
 
   public isCanceled = false;
 
   constructor(
     public conversationService: ConversationService,
     private paData: PaDataService,
+    private translatableString: TranslatableStringService,
   ) {
     super();
   }
@@ -40,11 +42,16 @@ export class ContactDetailsComponent extends PersonalComponent {
   }
 
   private async getProgramDetails() {
-    this.programDetails = await this.paData.getCurrentProgram();
+    const programDetails = await this.paData.getCurrentProgram();
 
-    if (!this.programDetails.contactDetails) {
+    if (!programDetails.contactDetails) {
       this.isCanceled = true;
+      return;
     }
+
+    this.contactDetails = this.translatableString.get(
+      programDetails.contactDetails,
+    );
   }
 
   getNextSection() {

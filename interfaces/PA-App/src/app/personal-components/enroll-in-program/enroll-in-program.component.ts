@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import {
   Program,
   ProgramAttribute,
@@ -24,7 +24,6 @@ import { PersonalComponents } from '../personal-components.enum';
   selector: 'app-enroll-in-program',
   templateUrl: './enroll-in-program.component.html',
   styleUrls: ['./enroll-in-program.component.scss'],
-  encapsulation: ViewEncapsulation.None, // Disabled because we need to style inserted HTML from the database
 })
 export class EnrollInProgramComponent extends PersonalComponent {
   @Input()
