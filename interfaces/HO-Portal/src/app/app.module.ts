@@ -72,6 +72,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   ],
   exports: [TranslateModule],
   providers: [
+    LoggingService,
     {
       provide: RouteReuseStrategy,
       useClass: IonicRouteStrategy,
