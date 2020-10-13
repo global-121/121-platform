@@ -39,7 +39,12 @@ export class ConsentQuestionComponent extends PersonalComponent {
   }
 
   private async getInstanceInformation() {
-    this.instanceInformation = await this.instanceService.getInstanceInformation();
+    const instanceInformationSubscription = this.instanceService.instanceInformation.subscribe(
+      (instanceInformation) => {
+        this.instanceInformation = instanceInformation;
+        instanceInformationSubscription.unsubscribe();
+      },
+    );
   }
 
   public consent(consent: boolean) {

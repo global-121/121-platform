@@ -1,32 +1,31 @@
 import { Injectable } from '@angular/core';
-import { InstanceInformation } from 'src/app/models/instance.model';
+import { Subject } from 'rxjs';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { InstanceInformation } from '../models/instance.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InstanceService {
-  private instanceInformation: InstanceInformation;
+  private cachedInstanceInformation = new Subject<InstanceInformation>();
+  public instanceInformation = this.cachedInstanceInformation.asObservable();
 
   constructor(
     private programsService: ProgramsServiceApiService,
     private translatableString: TranslatableStringService,
-  ) {}
+  ) {
+    this.getInstanceInformation();
+  }
 
-  public async getInstanceInformation(): Promise<InstanceInformation> {
-    // If not already available, fall back to get it from the server
-    if (!this.instanceInformation) {
-      const instanceData = await this.programsService.getInstanceInformation();
+  private async getInstanceInformation() {
+    const instanceData = await this.programsService.getInstanceInformation();
 
-      this.instanceInformation = {
-        name: instanceData.name,
-        displayName: this.translatableString.get(instanceData.displayName),
-        dataPolicy: this.translatableString.get(instanceData.dataPolicy),
-        aboutProgram: this.translatableString.get(instanceData.aboutProgram),
-      };
-    }
-
-    return this.instanceInformation;
+    this.cachedInstanceInformation.next({
+      name: instanceData.name,
+      displayName: this.translatableString.get(instanceData.displayName),
+      dataPolicy: this.translatableString.get(instanceData.dataPolicy),
+      aboutProgram: this.translatableString.get(instanceData.aboutProgram),
+    });
   }
 }

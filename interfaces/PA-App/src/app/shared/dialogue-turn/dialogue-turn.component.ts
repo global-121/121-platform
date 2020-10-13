@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { InstanceInformation } from 'src/app/models/instance.model';
 import { InstanceService } from 'src/app/services/instance.service';
 import { Actor } from 'src/app/shared/actor.enum';
 import { environment } from 'src/environments/environment';
@@ -29,7 +28,6 @@ export class DialogueTurnComponent implements OnInit {
   isSystem: boolean;
 
   public allActors = Actor;
-  public instanceInformation: InstanceInformation;
 
   constructor(private instanceService: InstanceService) {}
 
@@ -39,8 +37,12 @@ export class DialogueTurnComponent implements OnInit {
   }
 
   private async getInstanceInformation() {
-    this.instanceInformation = await this.instanceService.getInstanceInformation();
-    this.updateActor(this.instanceInformation.name);
+    const instanceInformationSubscription = this.instanceService.instanceInformation.subscribe(
+      (instanceInformation) => {
+        this.updateActor(instanceInformation.name);
+        instanceInformationSubscription.unsubscribe();
+      },
+    );
   }
 
   updateActor(newActor: Actor) {

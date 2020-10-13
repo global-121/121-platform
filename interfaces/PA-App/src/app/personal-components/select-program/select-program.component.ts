@@ -56,8 +56,12 @@ export class SelectProgramComponent extends PersonalComponent {
   }
 
   private async getInstanceInformation() {
-    this.instanceInformation = await this.instanceService.getInstanceInformation();
-    console.log('this.instanceInformation: ', this.instanceInformation);
+    const instanceInformationSubscription = this.instanceService.instanceInformation.subscribe(
+      (instanceInformation) => {
+        this.instanceInformation = instanceInformation;
+        instanceInformationSubscription.unsubscribe();
+      },
+    );
   }
 
   private async getPrograms() {
