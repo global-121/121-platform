@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { first } from 'rxjs/operators';
 import { InstanceInformation } from 'src/app/models/instance.model';
 import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -56,7 +57,11 @@ export class SelectProgramComponent extends PersonalComponent {
   }
 
   private async getInstanceInformation() {
-    this.instanceInformation = await this.instanceService.getInstanceInformation();
+    this.instanceService.instanceInformation
+      .pipe(first())
+      .subscribe((instanceInformation) => {
+        this.instanceInformation = instanceInformation;
+      });
   }
 
   private async getPrograms() {
