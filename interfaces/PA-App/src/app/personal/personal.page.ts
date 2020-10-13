@@ -84,7 +84,7 @@ export class PersonalPage implements OnInit {
           return;
         }
 
-        this.insertSection({ animate: true }, nextAction);
+        this.insertSection(nextAction);
       },
     );
     // Listen for scroll events
@@ -115,8 +115,8 @@ export class PersonalPage implements OnInit {
 
     conversation.forEach((section: ConversationSection) => {
       this.insertSection(
-        { animate: false },
         section.name,
+        { animate: false },
         section.moment,
         section.data,
       );
@@ -128,8 +128,8 @@ export class PersonalPage implements OnInit {
   }
 
   public insertSection(
-    options: { animate: boolean } = { animate: environment.useAnimation },
     name: string,
+    options: { animate: boolean } = { animate: environment.useAnimation },
     moment?: number,
     data?: any,
   ) {
