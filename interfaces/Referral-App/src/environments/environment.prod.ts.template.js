@@ -11,5 +11,9 @@ export const environment = {
   // Google Sheets API:
   google_sheets_api_url: '${process.env.GOOGLE_SHEETS_API_URL}',
   google_sheets_sheet_id: '${process.env.GOOGLE_SHEETS_SHEET_ID}',
+
+  // Third-party tokens:
+  ai_ikey: '${process.env.NG_AI_IKEY}',
+  ai_endpoint: '${process.env.NG_AI_ENDPOINT}',
 };
 `;
