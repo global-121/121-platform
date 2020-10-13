@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
+import { InstanceInformation } from 'src/app/models/instance.model';
 import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -16,6 +18,8 @@ export class SelectProgramComponent extends PersonalComponent {
   @Input()
   public data;
 
+  public instanceInformation: InstanceInformation;
+
   public programs: Program[];
   public programChoice: number;
 
@@ -24,11 +28,14 @@ export class SelectProgramComponent extends PersonalComponent {
     public paData: PaDataService,
     public conversationService: ConversationService,
     public translatableString: TranslatableStringService,
+    private instanceService: InstanceService,
   ) {
     super();
   }
 
   ngOnInit() {
+    this.getInstanceInformation();
+
     if (this.data) {
       this.initHistory();
       return;
@@ -46,6 +53,11 @@ export class SelectProgramComponent extends PersonalComponent {
 
   async initNew() {
     await this.getPrograms();
+  }
+
+  private async getInstanceInformation() {
+    this.instanceInformation = await this.instanceService.getInstanceInformation();
+    console.log('this.instanceInformation: ', this.instanceInformation);
   }
 
   private async getPrograms() {

@@ -5,5 +5,8 @@
   },
   "dataPolicy": {
     "en": "[long text of data-policy]"
+  },
+  "aboutProgram": {
+    "en": "[about aid program]"
   }
 }

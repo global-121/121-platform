@@ -114,7 +114,6 @@
       }
     },
     "select-program": {
-      "info-message": "[about aid programs]",
       "introduction": "You can use this app to apply for an aid program. Please select below.",
       "more-info-programs": "About aid program",
       "no-published-programs": "There are currently no programs available. Please return here later."

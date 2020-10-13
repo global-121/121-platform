@@ -7,5 +7,9 @@
   "dataPolicy": {
     "en": "[long text of data-policy]",
     "nl": "[lange tekst van de data richtlijnen]"
+  },
+  "aboutProgram": {
+    "en": "[about aid program]",
+    "nl": "[over het hulp programma]"
   }
 }
