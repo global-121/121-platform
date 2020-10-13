@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-const appInsights = require("applicationinsights");
+const appInsights = require('applicationinsights');
 
 
 async function bootstrap(): Promise<void> {
