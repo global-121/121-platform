@@ -23,6 +23,7 @@ export class InstanceService {
         name: instanceData.name,
         displayName: this.translatableString.get(instanceData.displayName),
         dataPolicy: this.translatableString.get(instanceData.dataPolicy),
+        aboutProgram: this.translatableString.get(instanceData.aboutProgram),
       };
     }
 
