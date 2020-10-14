@@ -35,9 +35,6 @@ export class ProgramEntity {
   @Column()
   public ngo: string;
 
-  @Column('json', { default: null })
-  public contactDetails: JSON;
-
   @Column()
   public startDate: Date;
 

@@ -122,7 +122,6 @@ export class ProgramService {
     let program = new ProgramEntity();
     program.location = programData.location;
     program.ngo = programData.ngo;
-    program.contactDetails = programData.contactDetails;
     program.title = programData.title;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
