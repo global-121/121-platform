@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Offer } from 'src/app/models/offer.model';
+import { LoggingService } from 'src/app/services/logging.service';
 
 @Component({
   selector: 'offer',
@@ -16,5 +17,12 @@ export class OfferComponent {
   @Input()
   goBack;
 
-  constructor() {}
+  constructor(private loggingService: LoggingService) {}
+
+  public logClick(name) {
+    this.loggingService.logEvent('referral-offer-click', {
+      name,
+      offerName: this.offer.offerName,
+    });
+  }
 }

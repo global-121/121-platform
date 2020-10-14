@@ -8,6 +8,7 @@ import { OfferComponent } from 'src/app/components/offer/offer.component';
 import { SubCategoryComponent } from 'src/app/components/sub-category/sub-category.component';
 import { CategoryFilterPipe } from 'src/app/pipes/category-filter.pipe';
 import { SubCategoryFilterPipe } from 'src/app/pipes/sub-category-filter.pipe';
+import { LoggingService } from 'src/app/services/logging.service';
 import { ReferralPage } from './referral.page';
 
 describe('ReferralPage', () => {
@@ -29,6 +30,9 @@ describe('ReferralPage', () => {
       providers: [
         {
           provide: ModalController,
+        },
+        {
+          provide: LoggingService,
         },
       ],
     }).compileComponents();
