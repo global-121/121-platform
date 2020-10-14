@@ -1,4 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { first } from 'rxjs/operators';
 import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -40,12 +41,16 @@ export class ContactDetailsComponent extends PersonalComponent {
   }
 
   private async getProgramDetails() {
-    const instanceInformation = await this.instanceService.instanceInformation.toPromise();
+    const instanceInformation = await this.instanceService.instanceInformation
+      .pipe(first())
+      .toPromise();
 
     if (!instanceInformation.contactDetails) {
       this.isCanceled = true;
       return;
     }
+
+    this.contactDetails = instanceInformation.contactDetails;
   }
 
   getNextSection() {
