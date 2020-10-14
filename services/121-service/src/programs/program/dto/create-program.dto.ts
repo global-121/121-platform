@@ -31,11 +31,6 @@ export class CreateProgramDto {
   @IsString()
   public readonly ngo: string;
 
-  @ApiModelProperty({
-    example: { en: 'Contact us at: help@example.org' },
-  })
-  public readonly contactDetails: JSON;
-
   @ApiModelProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()

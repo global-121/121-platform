@@ -16,4 +16,7 @@ export class InstanceEntity {
 
   @Column('json', { nullable: true })
   public aboutProgram: JSON;
+
+  @Column('json', { default: null })
+  public contactDetails: JSON;
 }
