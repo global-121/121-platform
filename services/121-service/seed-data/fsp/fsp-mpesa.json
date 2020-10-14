@@ -2,62 +2,9 @@
   "fsp": "M-Pesa",
   "attributes": [
     {
-      "name": "personalPhone",
-      "label": {
-        "en": "Do you have a personal sim card/mobile phone number? <br><br> If you do not have a personal sim card/mobile phone number, nominate someone who you TRUST and is comfortable receiving the MONEY (Cash Transfer) on your behalf. <br><br> PLEASE NOTE: The nominated person MUST have a phone number REGISTERED with Safaricom  using their OWN National ID."
-      },
-      "answerType": "dropdown",
-      "options": [
-        {
-          "option": "Yes",
-          "label": {
-            "en": "Yes"
-          }
-        },
-        {
-          "option": "No",
-          "label": {
-            "en": "No"
-          }
-        }
-      ]
-    },
-    {
-      "name": "phoneSafaricom",
-      "label": {
-        "en": "Is the phone number registered with Safaricom using your National ID?"
-      },
-      "answerType": "dropdown",
-      "options": [
-        {
-          "option": "Yes",
-          "label": {
-            "en": "Yes"
-          }
-        },
-        {
-          "option": "No",
-          "label": {
-            "en": "No"
-          }
-        }
-      ]
-    },
-    {
-      "name": "phoneNumber",
-      "label": {
-        "en": "Which phone number do you want to receive your M-Pesa code on? (With country-code. It should look like: <strong>+254 000 000 000</strong>)"
-      },
-      "placeholder": {
-        "en": "+254 000 000 000"
-      },
-      "answerType": "tel",
-      "options": null
-    },
-    {
       "name": "phoneRelation",
       "label": {
-        "en": "Whose phone number will you use to receive the M-Pesa code? <br>Please ensure its someone you trust and agrees with collecting the cash on your behalf."
+        "en": "Whose phone number will you use to receive the M-Pesa code?<br><br>Please ensure its someone you trust and agrees with collecting the cash on your behalf.<br><br>Please note, you can only use a phone number/sim card that is registered with Safaricom."
       },
       "answerType": "dropdown",
       "options": [
@@ -74,9 +21,15 @@
           }
         },
         {
+          "option": "parent",
+          "label": {
+            "en": "Parent"
+          }
+        },
+        {
           "option": "child",
           "label": {
-            "en": "Son/daugther"
+            "en": "Son/daughter"
           }
         },
         {
@@ -86,18 +39,47 @@
           }
         },
         {
+          "option": "grandparent",
+          "label": {
+            "en": "Grandparent"
+          }
+        },
+        {
+          "option": "inlaw",
+          "label": {
+            "en": "In-law"
+          }
+        },
+        {
           "option": "friend",
           "label": {
             "en": "Neighbour/friend"
           }
         },
         {
+          "option": "community-leader",
+          "label": {
+            "en": "Community leader (chief/spiritual leader/committee leader/teacher...)"
+          }
+        },
+        {
           "option": "other",
           "label": {
-            "en": "Someone else"
+            "en": "Other"
           }
         }
       ]
+    },
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Which phone number do you want to receive your M-Pesa code on? (With country-code. It should look like: <strong>+254 000 000 000</strong>)"
+      },
+      "placeholder": {
+        "en": "+254 000 000 000"
+      },
+      "answerType": "tel",
+      "options": null
     }
   ]
 }

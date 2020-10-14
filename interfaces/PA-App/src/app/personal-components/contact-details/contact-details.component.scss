@@ -1,7 +1,6 @@
 .contact-details--content {
   // Style the inserted HTML from the database:
-  a[href^="https://wa.me/"]
-  {
+  a[href] {
     font-weight: bold;
     color: inherit;
     white-space: nowrap;
