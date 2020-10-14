@@ -65,7 +65,8 @@
       "criteriumType": "standard",
       "options": null,
       "persistence": true,
-      "scoring": {}
+      "scoring": {},
+      "pattern": "^\\d{10}$"
     },
     {
       "criterium": "phoneNumberWhatsApp",
