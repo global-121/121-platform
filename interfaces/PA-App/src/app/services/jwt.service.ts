@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class JwtService {
-  private tokenKey = 'jwt';
+  private tokenKey = 'jwt-PA';
 
   public getToken(): string | undefined {
     return window.sessionStorage[this.tokenKey];
