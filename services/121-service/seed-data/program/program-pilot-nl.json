@@ -69,21 +69,7 @@
       "pattern": "^\\d{10}$"
     },
     {
-      "criterium": "phoneNumberWhatsApp",
-      "label": {
-        "en": "Number to reach me via WhatsApp: (It should look like: <strong>+000 000 00 00</strong>)"
-      },
-      "placeholder": {
-        "en": "+000 000 00 00"
-      },
-      "answerType": "tel",
-      "criteriumType": "standard",
-      "options": null,
-      "persistence": true,
-      "scoring": {}
-    },
-    {
-      "criterium": "phoneNumberSMS",
+      "criterium": "phoneNumber",
       "label": {
         "en": "Number to reach me via SMS: (It should look like: <strong>+31 6 00 00 00 00</strong>)"
       },
