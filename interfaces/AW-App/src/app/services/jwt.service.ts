@@ -5,7 +5,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
   providedIn: 'root',
 })
 export class JwtService {
-  private tokenKey = 'jwt';
+  private tokenKey = 'jwt-AW';
   private jwtHelper = new JwtHelperService();
 
   public getToken(): string | undefined {
