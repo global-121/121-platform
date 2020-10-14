@@ -74,5 +74,12 @@
         <pre class="ion-margin">{{ offer.offerCapacity }}</pre>
       </ion-label>
     </ion-item>
+    <ion-item *ngIf="offer.offerBasicRight">
+      <ion-icon name="hand" slot="start"></ion-icon>
+      <ion-label>
+        Basic Rights:
+        <pre class="ion-margin">{{ offer.offerBasicRight }}</pre>
+      </ion-label>
+    </ion-item>
   </div>
 </div>
