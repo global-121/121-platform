@@ -208,9 +208,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private async storePhoneNumber() {
-    const phoneNumberAnswer = this.answers[
-      this.paData.type.phoneNumber
-    ];
+    const phoneNumberAnswer = this.answers[this.paData.type.phoneNumber];
 
     if (phoneNumberAnswer) {
       return await this.paData.store(
