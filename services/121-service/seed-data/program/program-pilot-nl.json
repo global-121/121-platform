@@ -69,7 +69,7 @@
       "pattern": "^\\d{10}$"
     },
     {
-      "criterium": "phoneNumberWhatsApp",
+      "criterium": "whatsappPhoneNumber",
       "label": {
         "en": "Number to reach me via WhatsApp: (It should look like: <strong>+0000000000</strong>)"
       },
@@ -83,7 +83,7 @@
       "scoring": {}
     },
     {
-      "criterium": "phoneNumberSMS",
+      "criterium": "phoneNumber",
       "label": {
         "en": "Number to reach me via SMS: (It should look like: <strong>+31600000000</strong>)"
       },
