@@ -70,10 +70,10 @@
     {
       "criterium": "phoneNumberWhatsApp",
       "label": {
-        "en": "Number to reach me via WhatsApp: (It should look like: <strong>+000 000 00 00</strong>)"
+        "en": "Number to reach me via WhatsApp: (It should look like: <strong>+0000000000</strong>)"
       },
       "placeholder": {
-        "en": "+000 000 00 00"
+        "en": "+0000000000"
       },
       "answerType": "tel",
       "criteriumType": "standard",
@@ -84,10 +84,10 @@
     {
       "criterium": "phoneNumberSMS",
       "label": {
-        "en": "Number to reach me via SMS: (It should look like: <strong>+31 6 00 00 00 00</strong>)"
+        "en": "Number to reach me via SMS: (It should look like: <strong>+31600000000</strong>)"
       },
       "placeholder": {
-        "en": "+31 6 00 00 00 00"
+        "en": "+31600000000"
       },
       "answerType": "tel",
       "criteriumType": "standard",

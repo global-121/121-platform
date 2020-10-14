@@ -32,7 +32,7 @@ const newProgramParameters = {
   meetingDocuments: JSON.parse('{"en": "documents"}'),
   customCriteria: [],
   notifications: JSON.parse('{}'),
-  phoneNumberPlaceholder: '+000 000 00 00',
+  phoneNumberPlaceholder: '+0000000000',
   validation: true,
 };
 
