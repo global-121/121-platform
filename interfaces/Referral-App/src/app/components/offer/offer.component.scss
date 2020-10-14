@@ -29,9 +29,16 @@ ion-card-content {
   position: absolute;
   top: 0;
   left: 150px;
-  margin: 15px;
+  margin: 0 15px;
+  height: 150px;
+  overflow: auto;
+}
+
+ion-label {
+  white-space: normal !important;
 }
 
 pre {
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+  white-space: pre-wrap;
 }
