@@ -114,9 +114,10 @@ export class EnrollInProgramComponent extends PersonalComponent {
           answerType: criterium.answerType,
           label: this.translatableString.get(criterium.label),
           placeholder: this.translatableString.get(criterium.placeholder),
-          options: !criterium.options
-            ? null
-            : this.buildOptions(criterium.options),
+          pattern: criterium.pattern,
+          options: criterium.options
+            ? this.buildOptions(criterium.options)
+            : null,
         };
       },
     );

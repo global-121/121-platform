@@ -59,9 +59,12 @@
     {
       "criterium": "vnumber",
       "label": {
-        "en": "My V number:"
+        "en": "My V number: (It needs to be 10 digits long)"
       },
-      "answerType": "number",
+      "placeholder": {
+        "en": "0000000000"
+      },
+      "answerType": "numeric",
       "criteriumType": "standard",
       "options": null,
       "persistence": true,

@@ -183,12 +183,12 @@ export class QAndASetComponent implements OnChanges {
     }
   }
 
-  public checkValidationErrors(questionCode?: string): boolean {
-    if (!questionCode) {
-      return this.validationErrors.length > 0;
-    }
-
+  public checkValidationError(questionCode: string): boolean {
     return this.validationErrors.includes(questionCode);
+  }
+
+  public checkValidationErrors(): boolean {
+    return this.validationErrors.length > 0;
   }
 
   public doSubmit() {
