@@ -1,0 +1,137 @@
+{
+  "fsp": "FSP_all_attributes",
+  "fspDisplayName": {
+    "en": "FSP - all attributes"
+  },
+  "attributes": [
+    {
+      "name": "phoneNumber",
+      "label": {
+        "en": "Your phone number with country-code. It should look like: <strong>+000 000 00 00</strong>"
+      },
+      "placeholder": {
+        "en": "+000 000 00 00"
+      },
+      "answerType": "tel",
+      "options": null
+    },
+    {
+      "name": "number",
+      "label": {
+        "en": "Your number"
+      },
+      "answerType": "numeric",
+      "options": null
+    },
+    {
+      "name": "numberPattern",
+      "label": {
+        "en": "Your number of fixed syntax (For example: 000000)"
+      },
+      "placeholder": {
+        "en": "000000"
+      },
+      "pattern": "\\d{6}",
+      "answerType": "numeric",
+      "options": null
+    },
+    {
+      "name": "date",
+      "label": {
+        "en": "Your date"
+      },
+      "answerType": "date",
+      "options": null
+    },
+    {
+      "name": "email",
+      "label": {
+        "en": "Your email"
+      },
+      "placeholder": {
+        "en": "your.name@example.com"
+      },
+      "answerType": "email",
+      "options": null
+    },
+    {
+      "name": "openAnswer",
+      "label": {
+        "en": "Your answer"
+      },
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "openAnswerPlaceholder",
+      "label": {
+        "en": "Your answer with example"
+      },
+      "placeholder": {
+        "en": "Example input"
+      },
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "openAnswerPattern",
+      "label": {
+        "en": "Your answer with fixed syntax (3 uppercase characters only)"
+      },
+      "placeholder": {
+        "en": "'ABC' not 'abc'"
+      },
+      "pattern": "[A-Z]{3}",
+      "answerType": "text",
+      "options": null
+    },
+    {
+      "name": "fixedChoice",
+      "label": {
+        "en": "Your choice"
+      },
+      "answerType": "dropdown",
+      "options": [
+        {
+          "option": "true",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "false",
+          "label": {
+            "en": "No"
+          }
+        }
+      ]
+    },
+    {
+      "name": "fixedChoiceMultiple",
+      "label": {
+        "en": "Your (multiple) choice"
+      },
+      "answerType": "dropdown",
+      "options": [
+        {
+          "option": "A",
+          "label": {
+            "en": "Option A"
+          }
+        },
+        {
+          "option": "B",
+          "label": {
+            "en": "Option B"
+          }
+        },
+        {
+          "option": "C",
+          "label": {
+            "en": "Option C"
+          }
+        }
+      ]
+    }
+  ]
+}

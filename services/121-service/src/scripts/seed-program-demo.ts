@@ -7,7 +7,7 @@ import { SeedPublish } from './seed-publish';
 import { SeedInit } from './seed-init';
 
 import fspBank from '../../seed-data/fsp/fsp-bravos.json';
-import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
+import fspAllAttributes from '../../seed-data/fsp/fsp-all-attributes.json';
 import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 import fspMpesa from '../../seed-data/fsp/fsp-mpesa.json';
@@ -44,7 +44,7 @@ export class SeedDemoProgram implements InterfaceScript {
     await this.seedHelper.addFsp(fspIntersolve);
     await this.seedHelper.addFsp(fspMpesa);
     await this.seedHelper.addFsp(fspBank);
-    await this.seedHelper.addFsp(fspMixedAttributes);
+    await this.seedHelper.addFsp(fspAllAttributes);
     await this.seedHelper.addFsp(fspNoAttributes);
 
     // ***** CREATE PROGRAM *****

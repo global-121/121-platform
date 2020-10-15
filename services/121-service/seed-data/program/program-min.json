@@ -1,0 +1,80 @@
+{
+  "published": false,
+  "validation": false,
+  "state": "design",
+  "location": "Location A",
+  "ngo": "NGO A",
+  "title": {
+    "en": "Program A (minimal)"
+  },
+  "description": {
+    "en": ""
+  },
+  "descLocation": {
+    "en": ""
+  },
+  "descHumanitarianObjective": {
+    "en": ""
+  },
+  "descCashType": {
+    "en": ""
+  },
+  "startDate": "2020-01-01T12:00:00Z",
+  "endDate": "2020-12-31T12:00:00Z",
+  "currency": "EUR",
+  "distributionFrequency": "month",
+  "distributionDuration": 3,
+  "fixedTransferValue": 10,
+  "financialServiceProviders": [
+    {
+      "id": 1
+    }
+  ],
+  "protectionServiceProviders": [
+    {
+      "id": 1
+    }
+  ],
+  "inclusionCalculationType": "highestScoresX",
+  "minimumScore": 0,
+  "highestScoresX": 250,
+  "meetingDocuments": {
+    "en": ""
+  },
+  "notifications": {
+    "en": {
+      "registered": "You have been successfully registered for this program.",
+      "included": "You have been included in this program.",
+      "rejected": "You have not been included in this program."
+    }
+  },
+  "phoneNumberPlaceholder": "+000 000 00 00",
+  "customCriteria": [
+    {
+      "criterium": "fixed_choice",
+      "label": {
+        "en": "Fixed choice (knockout-answer: Yes)"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "true",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "false",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
+      "scoring": {
+        "true": -9999,
+        "false": 0
+      }
+    }
+  ]
+}

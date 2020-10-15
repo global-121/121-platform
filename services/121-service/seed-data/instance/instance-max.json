@@ -1,0 +1,19 @@
+{
+  "name": "ngomax",
+  "displayName": {
+    "en": "NGO All",
+    "nl": "NGO Alles"
+  },
+  "contactDetails": {
+    "en": "Contact us via <a href='mailto:info@example.org'>info@example.org</a>, or via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/+0000000000'>+00 00 00 00 00</a>",
+    "nl": "Neem contact op via <a href='mailto:info@example.nl'>info@example.nl</a>, of via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/+3160000000'>+31 6 00 00 00 00</a>"
+  },
+  "dataPolicy": {
+    "en": "[<b>long text</b> of <i>data-policy</i>]",
+    "nl": "[<b>lange tekst</b> van het <i>data beleid</i>]"
+  },
+  "aboutProgram": {
+    "en": "[about <i><b>aid program</b></i>]",
+    "nl": "[over <i><b>hulp programma</b></i>]"
+  }
+}

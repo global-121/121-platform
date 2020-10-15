@@ -5,23 +5,28 @@
   "location": "Location B",
   "ngo": "NGO B",
   "title": {
-    "en": "Program 2"
+    "en": "Program B (max)",
+    "nl": "Programma B (max)"
   },
   "description": {
-    "en": "Short description."
+    "en": "Program with validation and (almost) all features.",
+    "nl": "Programma met validatie en (bijna) alle functies."
   },
   "descLocation": {
-    "en": "Location such and such."
+    "en": "Description of location.",
+    "nl": "Beschrijving van de locatie."
   },
   "descHumanitarianObjective": {
-    "en": "Humanitarian objective of program is such and such."
+    "en": "The humanitarian objective of this program.",
+    "nl": "Het humanitaire doel van dit programma."
   },
   "descCashType": {
-    "en": "Unconditional multi-purpose"
+    "en": "Unconditional multi-purpose",
+    "nl": "Onconditioneel meerdere doelen"
   },
   "startDate": "2020-01-01T12:00:00Z",
   "endDate": "2020-12-31T12:00:00Z",
-  "currency": "MWK",
+  "currency": "EUR",
   "distributionFrequency": "month",
   "distributionDuration": 3,
   "fixedTransferValue": 10,
@@ -31,18 +36,6 @@
     },
     {
       "id": 2
-    },
-    {
-      "id": 3
-    },
-    {
-      "id": 4
-    },
-    {
-      "id": 5
-    },
-    {
-      "id": 6
     }
   ],
   "protectionServiceProviders": [
@@ -57,7 +50,8 @@
   "minimumScore": 0,
   "highestScoresX": 250,
   "meetingDocuments": {
-    "en": "Document 1; Document 2; Document 3"
+    "en": "Document 1; Document 2; Document 3",
+    "nl": "Document 1; Document 2; Document 3"
   },
   "notifications": {
     "en": {
@@ -68,16 +62,17 @@
       "whatsappReply": "For further questions please contact this number"
     },
     "nl": {
-      "included": "Je zit wel in het programma",
-      "rejected": "Je zit niet in het programma"
+      "included": "Je zit wel in het programma.",
+      "rejected": "Je zit niet in het programma."
     }
   },
   "phoneNumberPlaceholder": "+000 000 00 00",
   "customCriteria": [
     {
-      "criterium": "name",
+      "criterium": "text",
       "label": {
-        "en": "My full name:"
+        "en": "Text input:",
+        "nl": "Tekst input:"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -86,9 +81,34 @@
       "scoring": {}
     },
     {
-      "criterium": "dob",
+      "criterium": "number",
       "label": {
-        "en": "My date of birth: Format is day-month-year example: 31-12-1970"
+        "en": "Numeric input:",
+        "nl": "Numerieke input:"
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {
+        "multiplier": 7
+      }
+    },
+    {
+      "criterium": "phoneNumber",
+      "label": {
+        "en": "Phone-number input:",
+        "nl": "Telefoon-nummer input:"
+      },
+      "answerType": "tel",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {}
+    },
+    {
+      "criterium": "date",
+      "label": {
+        "en": "Date input:",
+        "nl": "Datum input:"
       },
       "answerType": "date",
       "criteriumType": "standard",
@@ -97,81 +117,77 @@
       "scoring": {}
     },
     {
-      "criterium": "question1",
+      "criterium": "email",
       "label": {
-        "en": "1. I am..."
+        "en": "E-mail input:",
+        "nl": "E-mail input:"
       },
-      "answerType": "dropdown",
-      "criteriumType": "standard",
-      "options": [
-        {
-          "option": "optionA",
-          "label": {
-            "en": "Option A"
-          }
-        },
-        {
-          "option": "optionB",
-          "label": {
-            "en": "Option B"
-          }
-        },
-        {
-          "option": "optionC",
-          "label": {
-            "en": "Option C"
-          }
-        }
-      ],
-      "scoring": {
-        "optionA": 3,
-        "optionB": 6,
-        "optionC": 9
-      }
-    },
-    {
-      "criterium": "question2",
-      "label": {
-        "en": "2. I am.."
-      },
-      "answerType": "dropdown",
-      "criteriumType": "standard",
-      "options": [
-        {
-          "option": "optionA",
-          "label": {
-            "en": "Option A"
-          }
-        },
-        {
-          "option": "optionB",
-          "label": {
-            "en": "Option B"
-          }
-        },
-        {
-          "option": "optionC",
-          "label": {
-            "en": "Option C"
-          }
-        }
-      ],
-      "scoring": {
-        "optionA": 3,
-        "optionB": 6,
-        "optionC": 9
-      }
-    },
-    {
-      "criterium": "question3",
-      "label": {
-        "en": "Question 3..."
-      },
-      "answerType": "numeric",
+      "answerType": "email",
       "criteriumType": "standard",
       "options": null,
+      "scoring": {}
+    },
+    {
+      "criterium": "fixed_choice",
+      "label": {
+        "en": "Fixed choice (knockout-answer: Yes)"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "true",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "false",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
       "scoring": {
-        "multiplier": 2
+        "true": -9999,
+        "false": 0
+      }
+    },
+    {
+      "criterium": "multiple_choice",
+      "label": {
+        "en": "Multiple options:",
+        "nl": "Meerkeuze vraag:"
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "optionA",
+          "label": {
+            "en": "Option A",
+            "nl": "Optie A"
+          }
+        },
+        {
+          "option": "optionB",
+          "label": {
+            "en": "Option B",
+            "nl": "Optie B"
+          }
+        },
+        {
+          "option": "optionC",
+          "label": {
+            "en": "Option C",
+            "nl": "Optie C"
+          }
+        }
+      ],
+      "scoring": {
+        "optionA": 3,
+        "optionB": 6,
+        "optionC": 9
       }
     }
   ]
