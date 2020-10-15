@@ -24,6 +24,7 @@ export class ProgramCriterium {
   answerType: AnswerType;
   label: TranslatableString;
   placeholder?: TranslatableString;
+  pattern?: string; // Remember to escape the special characters in the string!
   options: null | ProgramCriteriumOption[];
 }
 

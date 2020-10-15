@@ -41,6 +41,8 @@
             [(ngModel)]="theFormModels[question.code]"
             required
             [name]="question.code"
+            [placeholder]="question.placeholder"
+            [pattern]="question.pattern"
             [disabled]="isSubmitted"
             (isValidChange)="onChangeWithValidation(question.code, numInput.value, numInput.isValid)"
           ></numeric-input>
@@ -91,7 +93,8 @@
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
             type="text"
-            pattern=".*\S+.*"
+            [placeholder]="question.placeholder"
+            [pattern]="question.pattern ? question.pattern : '.*\\S+.*'"
             required
             [name]="question.code"
             [disabled]="isSubmitted"

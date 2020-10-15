@@ -35,6 +35,9 @@ export class NumericInputComponent {
   public placeholder: string;
 
   @Input()
+  public pattern: string;
+
+  @Input()
   public disabled: boolean;
 
   @Input()
