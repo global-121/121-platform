@@ -24,7 +24,7 @@
   "personal": {
     "consent-question": {
       "agree": "I agree",
-      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to receive cash based aid. <br><br> I understand who sees my personal information.<br><br> By pressing \"I agree\" I choose to participate in the aid program. <br><br> By pressing \"I disagree\" I choose not to participate in the aid program.",
+      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to receive cash aid.   <br><br>   I understand who sees my personal information.   <br><br>   By pressing &ldquo;<b>I agree</b>&rdquo; I choose to participate in the aid program.   <br><br>   By pressing &ldquo;<b>I disagree</b>&rdquo; I choose not to participate in the aid program.",
       "disagree": "I disagree",
       "more-info-personal-information": "About personal information",
       "question": "To apply for this aid program you need to agree to <strong>how we secure your personal information.</strong><br /><br /> Please read or listen to how we secure your personal information."
@@ -52,7 +52,7 @@
       "introduction-information": "To make sure you get the best possible help and a fair process, we need some personal information.",
       "more-info-questions": "About personal information",
       "please-confirm": "Below is an overview of your information. Please check and submit.",
-      "submit-confirm": "Save my information"
+      "submit-confirm": "Send my information"
     },
     "handle-proof": {
       "creating": "You have given us sufficient personal information to see if you can be part of the program.",
@@ -80,9 +80,9 @@
     },
     "registration-summary": {
       "documents": "Make sure to have these documents ready:",
-      "info-message": "To activate your account<br> <br> When you create your account you will receive a print out of your digital ID that looks like this.<br> You will need to bring this and the following physical documents below to a meeting with an Aid worker to activate your account.<br> <ul> <li>Your National Identity Card</li> </ul><br> What if I don’t have a card? Then you have 2 options: <ol> <li>Bring a letter from the chief that confirms his/her identity</li> <li>Bring your X number (need the name of this number like BSN number) from the National Bureau of Registration. You will have to pay for a new one the price will be X.</li> </ol>",
+      "info-message": "To activate your account   <br><br>   When you create your account you will receive a print out of your digital ID that looks like this.<br> You will need to bring this and the following physical documents below to a meeting with an Aid worker to activate your account.<br> <ul> <li>Your National Identity Card</li> </ul><br> What if I don’t have a card? Then you have 2 options: <ol> <li>Bring a letter from the chief that confirms his/her identity</li> <li>Bring your X number (need the name of this number like BSN number) from the National Bureau of Registration. You will have to pay for a new one the price will be X.</li> </ol>",
       "more-info-documents": "About these documents",
-      "no-validation-conclusion": "Thank you. Your registration is now complete. <br><br> You should receive an SMS on the provided phone number shortly that confirms your registration.<br><br>You will be informed if you have been included within [X amount of time]. <br><br> This is the final message for now.",
+      "no-validation-conclusion": "Thank you. Your registration is now complete.   <br><br>   You should receive an SMS on the provided phone number shortly that confirms your registration.   <br><br>   You will be informed if your application has been successful within a week.   <br><br>   This is the final message for now.",
       "qr-code": "Please show this QR-code to the aidworker when asked.",
       "validation-conclusion": "Thank you. Your registration is now complete. You should receive an SMS on the provided phone number shortly that confirms your registration.<br><br>An aidworker of the NGO will organize a meeting with you to validate your information, probably by visiting your home."
     },
@@ -90,9 +90,9 @@
       "attributes": {
         "error": "Something went wrong, please try again.",
         "introduction": "For this option we also need the following:",
-        "success": "Thank you. Your additional information is saved."
+        "success": "Thank you. Your information is saved."
       },
-      "conclusion": "Thank you. You have selected the option {{name}}.",
+      "conclusion": "Thank you. You have selected {{name}}.",
       "introduction": "Please select how you would like to receive your aid, if you are included in the program."
     },
     "select-language": {
