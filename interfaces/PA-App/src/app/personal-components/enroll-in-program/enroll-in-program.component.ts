@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { first } from 'rxjs/operators';
+import { InstanceInformation } from 'src/app/models/instance.model';
 import {
   Program,
   ProgramAttribute,
@@ -6,6 +8,7 @@ import {
   ProgramCriteriumOption,
 } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
@@ -34,6 +37,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   private credDefId: string;
 
   public programDetails: any;
+  public instanceInformation: InstanceInformation;
 
   public questions: Question[];
   public answerTypes = AnswerType;
@@ -50,11 +54,14 @@ export class EnrollInProgramComponent extends PersonalComponent {
     public paData: PaDataService,
     public translatableString: TranslatableStringService,
     public conversationService: ConversationService,
+    private instanceService: InstanceService,
   ) {
     super();
   }
 
   ngOnInit() {
+    this.getInstanceInformation();
+
     if (this.data) {
       this.initHistory();
       return;
@@ -77,6 +84,14 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.conversationService.startLoading();
     await this.getProgramDetails();
     this.conversationService.stopLoading();
+  }
+
+  private async getInstanceInformation() {
+    this.instanceService.instanceInformation
+      .pipe(first())
+      .subscribe((instanceInformation) => {
+        this.instanceInformation = instanceInformation;
+      });
   }
 
   private async getProgramDetails() {

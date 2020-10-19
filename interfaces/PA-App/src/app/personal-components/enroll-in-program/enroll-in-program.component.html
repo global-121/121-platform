@@ -5,9 +5,11 @@
       <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate"></span>
     </p>
 
-    <more-info-button buttonKey="personal.enroll-in-program.more-info-questions"
-                      messageKey="personal.enroll-in-program.info-message"
-                      headingKey="personal.enroll-in-program.more-info-questions"
+    <more-info-button
+      *ngIf="instanceInformation?.dataPolicy"
+      buttonKey="personal.enroll-in-program.more-info-questions"
+      [message]="instanceInformation?.dataPolicy"
+      headingKey="personal.enroll-in-program.more-info-questions"
     ></more-info-button>
   </dialogue-turn>
 
