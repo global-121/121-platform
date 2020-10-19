@@ -5,6 +5,7 @@ import { ProgramService } from './program.service';
 import { ProgramEntity } from './program.entity';
 import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
 import { RolesGuard } from '../../roles.guard';
+import { ProgramPhase } from '../../models/program-phase.model';
 
 const newProgramParameters = {
   location: 'Lilongwe',
@@ -39,7 +40,7 @@ const newProgramParameters = {
 const newSimpleProgramRO = {
   id: 1,
   title: JSON.parse('{"en": "title"}'),
-  state: 'registrationValidation',
+  state: ProgramPhase.registrationValidation,
 };
 
 export class ProgramServiceMock {
@@ -183,7 +184,7 @@ describe('ProgramController', (): void => {
         );
 
       await programController.changeState(1, {
-        newState: 'registrationValidation',
+        newState: ProgramPhase.registrationValidation,
       });
       expect(spy).toHaveBeenCalled();
     });
@@ -196,7 +197,7 @@ describe('ProgramController', (): void => {
           (): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO),
         );
 
-      await programController.changeState(1, { newState: 'design' });
+      await programController.changeState(1, { newState: ProgramPhase.design });
       expect(spy).toHaveBeenCalled();
     });
   });
