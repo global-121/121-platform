@@ -786,7 +786,10 @@ export class ProgramService {
         connectionResponse['dob'] = connection.customData['dob'];
         connectionResponse['phoneNumber'] =
           connection.phoneNumber || connection.customData['phoneNumber'];
+        connectionResponse['whatsappPhoneNumber'] =
+          connection.customData['whatsappPhoneNumber'];
         connectionResponse['location'] = connection.customData['location'];
+        connectionResponse['vnumber'] = connection.customData['vnumber'];
         connectionResponse['firstName'] = connection.customData['firstName'];
         connectionResponse['secondName'] = connection.customData['secondName'];
         connectionResponse['thirdName'] = connection.customData['thirdName'];
@@ -928,6 +931,9 @@ export class ProgramService {
         firstName: rawConnection.firstName,
         secondName: rawConnection.secondName,
         thirdName: rawConnection.thirdName,
+        whatsappPhoneNumber: rawConnection.whatsappPhoneNumber,
+        phoneNumber: rawConnection.phoneNumber,
+        vnumber: rawConnection.vnumber,
         dateOfBirth: rawConnection.dob,
         location: rawConnection.location,
         age: rawConnection.age,
@@ -961,6 +967,9 @@ export class ProgramService {
         firstName: rawConnection.firstName,
         secondName: rawConnection.secondName,
         thirdName: rawConnection.thirdName,
+        whatsappPhoneNumber: rawConnection.whatsappPhoneNumber,
+        phoneNumber: rawConnection.phoneNumber,
+        vnumber: rawConnection.vnumber,
         dateOfBirth: rawConnection.dob,
         location: rawConnection.location,
         age: rawConnection.age,
@@ -968,7 +977,6 @@ export class ProgramService {
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
         selectedForValidationDate: rawConnection.selectedForValidationDate,
-        phoneNumber: rawConnection.phoneNumber,
       };
       columnDetails.push(row);
     }

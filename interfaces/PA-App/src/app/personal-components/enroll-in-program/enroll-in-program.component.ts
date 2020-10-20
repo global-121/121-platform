@@ -164,6 +164,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.conversationService.startLoading();
     this.isDisabled = true;
     await this.executeSovrinFlow();
+    await this.storePhoneNumber();
     this.conversationService.stopLoading();
     this.complete();
   }
@@ -220,6 +221,17 @@ export class EnrollInProgramComponent extends PersonalComponent {
     });
 
     return attributes;
+  }
+
+  private async storePhoneNumber() {
+    const phoneNumberAnswer = this.answers[this.paData.type.phoneNumber];
+
+    if (phoneNumberAnswer) {
+      return await this.paData.store(
+        this.paData.type.phoneNumber,
+        phoneNumberAnswer.value,
+      );
+    }
   }
 
   getNextSection() {
