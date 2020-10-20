@@ -20,6 +20,7 @@ export const TWILIO = {
   testToNumber: '<your-testToNumber>',
   testFromNumberVoice: '<your-testFromNumber>',
   testFromNumberSms: '<your-testFromNumber>',
+  fromNumberWhatsapp: '<from>',
 };
 
 export const INTERSOLVE = {

@@ -30,11 +30,12 @@ export class SoapService {
 
   private async setSoapHeader(payload: any): Promise<any> {
     let header = await this.readXmlAsJs('header');
-    const headerPart = header['elements'][0];
-    headerPart['elements'][0]['elements'][0]['elements'][0]['text'] =
-      INTERSOLVE.username;
-    headerPart['elements'][0]['elements'][1]['elements'][0]['text'] =
-      INTERSOLVE.password;
+    let headerPart = this.getChild(header, 0);
+    headerPart = this.setValue(headerPart, [0, 0, 0], INTERSOLVE.username);
+    headerPart = this.setValue(headerPart, [0, 1, 0], INTERSOLVE.password);
+    // headerPart['elements'][0]['elements'][0]['elements'][0]['text'] = ;
+    // headerPart['elements'][0]['elements'][1]['elements'][0]['text'] =
+    //   INTERSOLVE.password;
     payload['elements'][0]['elements'].unshift(headerPart);
     return payload;
   }
@@ -53,17 +54,73 @@ export class SoapService {
   public changeSoapBody(
     payload: any,
     mainElement: string,
-    subElement: string,
+    subElements: string[],
     value: string,
   ): any {
-    const iBody = this.findSoapIndex(payload['elements'][0], 'soap:Body');
-    const soapBody = payload['elements'][0]['elements'][iBody];
-    const iMainEl = this.findSoapIndex(soapBody, mainElement);
-    const mainElementPart = soapBody['elements'][iMainEl];
-    const iSubEl = this.findSoapIndex(mainElementPart, subElement);
-    payload['elements'][0]['elements'][iBody]['elements'][iMainEl]['elements'][
-      iSubEl
-    ]['elements'][0]['text'] = value;
+    console.log('changeSoapBody', mainElement, subElements, value);
+    const envelopeXML = this.getChild(payload, 0);
+    const bodyIndex = this.findSoapIndex(envelopeXML, 'soap:Body');
+    const soapBodyXML = this.getChild(envelopeXML, bodyIndex);
+    const mainElementIndex = this.findSoapIndex(soapBodyXML, mainElement);
+    const mainElementXML = soapBodyXML['elements'][mainElementIndex];
+    let rootElement = mainElementXML;
+    let pathIndices: number[] = [0, bodyIndex, mainElementIndex];
+    let subElementIndex = -1;
+    for (let subElement in subElements) {
+      console.log('changeSoapBody subElements', subElements);
+      console.log('changeSoapBody subElement', subElement);
+      console.log('changeSoapBody rootElement', rootElement);
+      console.log('changeSoapBody subElementIndex', subElementIndex);
+      subElementIndex = this.findSoapIndex(rootElement, subElement);
+      if (subElementIndex >= 0) {
+        pathIndices.push(subElementIndex);
+        rootElement = this.getChild(rootElement, subElementIndex);
+      }
+    }
+    pathIndices.push(0);
+    payload = this.setValue(payload, pathIndices, value);
     return payload;
+  }
+
+  private getChild(xml: any, index: number): any {
+    return xml['elements'][index];
+  }
+
+  private setValue(xml: any, indices: number[], value: string): any {
+    // console.log(
+    //   'setValue start',
+    //   JSON.stringify(xml),
+    //   JSON.stringify(indices),
+    //   value,
+    // );
+    const firstIndex = indices.shift();
+    if (indices.length > 0) {
+      console.log(
+        'setValue loop',
+        JSON.stringify(xml),
+        JSON.stringify(indices),
+        value,
+      );
+      xml['elements'][firstIndex] = this.setValue(
+        this.getChild(xml, firstIndex),
+        indices,
+        value,
+      );
+    } else {
+      console.log(
+        'setValue exit',
+        JSON.stringify(xml),
+        JSON.stringify(indices),
+        value,
+      );
+      xml['elements'][firstIndex]['text'] = value;
+    }
+    // console.log(
+    //   'setValue end',
+    //   JSON.stringify(xml),
+    //   JSON.stringify(indices),
+    //   value,
+    // );
+    return xml;
   }
 }
