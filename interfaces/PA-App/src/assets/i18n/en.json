@@ -92,7 +92,7 @@
         "introduction": "For this option we also need the following:",
         "success": "Thank you. Your information is saved."
       },
-      "conclusion": "Thank you. You have selected {{name}}.",
+      "conclusion": "Thank you. You have selected '{{name}}'.",
       "introduction": "Please select how you would like to receive your aid, if you are included in the program."
     },
     "select-language": {
