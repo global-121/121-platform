@@ -20,7 +20,6 @@ export class IntersolveApiService {
   }
 
   public async issueCard(amount: number): Promise<IntersolveIssueCardResponse> {
-    // public async issueCard(amount: number): Promise<any> {
     console.log('issueCard soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.IssueCard,
@@ -31,28 +30,17 @@ export class IntersolveApiService {
       ['Value'],
       amount.toString(),
     );
-    console.log('amount.toString(): ', amount.toString());
-    console.log('payload: ', payload);
-    console.log('process.env.INTERSOLVE_EAN: ', process.env.INTERSOLVE_EAN);
     payload = this.soapService.changeSoapBody(
       payload,
       IntersolveSoapElements.IssueCard,
       ['EAN'],
       process.env.INTERSOLVE_EAN,
     );
-    console.log(
-      'issueCard payload before RefPos added',
-      JSON.stringify(payload),
-    );
     payload = this.soapService.changeSoapBody(
       payload,
       IntersolveSoapElements.IssueCard,
       ['TransactionHeader', 'RefPos'],
       '121',
-    );
-    console.log(
-      'issueCard payload after RefPos added',
-      JSON.stringify(payload),
     );
 
     console.log('payload: ', payload);
@@ -88,6 +76,7 @@ export class IntersolveApiService {
       pin.toString(),
     );
 
+    console.log('payload: ', payload);
     const responseBody = await this.soapService.post(payload);
     console.log('responseBody: ', responseBody);
     const result = {
