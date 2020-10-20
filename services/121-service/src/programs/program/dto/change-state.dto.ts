@@ -3,9 +3,12 @@ import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
 import { ProgramPhase } from '../../../models/program-phase.model';
 
 export class ChangeStateDto {
-  @ApiModelProperty({ example: 'registrationValidation' })
+  @ApiModelProperty({
+    enum: ProgramPhase,
+    example: ProgramPhase.registrationValidation,
+  })
   @IsNotEmpty()
   @IsString()
   @IsEnum(ProgramPhase)
-  public readonly newState: string;
+  public readonly newState: ProgramPhase;
 }

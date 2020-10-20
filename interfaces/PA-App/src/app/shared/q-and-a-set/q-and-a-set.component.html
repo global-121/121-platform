@@ -41,6 +41,8 @@
             [(ngModel)]="theFormModels[question.code]"
             required
             [name]="question.code"
+            [placeholder]="question.placeholder"
+            [pattern]="question.pattern"
             [disabled]="isSubmitted"
             (isValidChange)="onChangeWithValidation(question.code, numInput.value, numInput.isValid)"
           ></numeric-input>
@@ -91,7 +93,8 @@
             ngDefaultControl
             [(ngModel)]="theFormModels[question.code]"
             type="text"
-            pattern=".*\S+.*"
+            [placeholder]="question.placeholder"
+            [pattern]="question.pattern ? question.pattern : '.*\\S+.*'"
             required
             [name]="question.code"
             [disabled]="isSubmitted"
@@ -102,10 +105,10 @@
       </div>
     </dialogue-turn>
     <div
-      *ngIf="checkValidationErrors(question.code) && !isSubmitted"
+      *ngIf="checkValidationError(question.code) && !isSubmitted"
       class="ion-margin-bottom ion-padding-bottom"
     >
-      <dialogue-turn [isSpoken]="checkValidationErrors(question.code)">
+      <dialogue-turn [isSpoken]="checkValidationError(question.code)">
         <p *ngIf="(question.answerType === answerType.phoneNumber)">
           <play-text-audio key="q-and-a-set.validation.phone-number" class="ion-float-start ion-margin-end"></play-text-audio>
           {{ 'q-and-a-set.validation.phone-number'|translate }}

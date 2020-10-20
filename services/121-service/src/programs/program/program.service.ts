@@ -195,7 +195,7 @@ export class ProgramService {
 
   public async changeState(
     programId: number,
-    newState: string,
+    newState: ProgramPhase,
   ): Promise<SimpleProgramRO> {
     await this.changeProgramValue(programId, {
       state: newState,

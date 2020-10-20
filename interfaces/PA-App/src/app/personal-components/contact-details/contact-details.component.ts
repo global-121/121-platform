@@ -1,9 +1,9 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { first } from 'rxjs/operators';
 import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { PaDataService } from 'src/app/services/padata.service';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { InstanceService } from 'src/app/services/instance.service';
 
 @Component({
   selector: 'app-contact-details',
@@ -21,8 +21,7 @@ export class ContactDetailsComponent extends PersonalComponent {
 
   constructor(
     public conversationService: ConversationService,
-    private paData: PaDataService,
-    private translatableString: TranslatableStringService,
+    private instanceService: InstanceService,
   ) {
     super();
   }
@@ -42,16 +41,16 @@ export class ContactDetailsComponent extends PersonalComponent {
   }
 
   private async getProgramDetails() {
-    const programDetails = await this.paData.getCurrentProgram();
+    const instanceInformation = await this.instanceService.instanceInformation
+      .pipe(first())
+      .toPromise();
 
-    if (!programDetails.contactDetails) {
+    if (!instanceInformation.contactDetails) {
       this.isCanceled = true;
       return;
     }
 
-    this.contactDetails = this.translatableString.get(
-      programDetails.contactDetails,
-    );
+    this.contactDetails = instanceInformation.contactDetails;
   }
 
   getNextSection() {

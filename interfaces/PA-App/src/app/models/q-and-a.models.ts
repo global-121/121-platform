@@ -13,6 +13,7 @@ export class Question {
   answerType: AnswerType;
   label: string;
   placeholder?: string;
+  pattern?: string;
   options: QuestionOption[] | null;
 }
 

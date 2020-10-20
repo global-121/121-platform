@@ -5,7 +5,7 @@
     "nl": "Rode Kruis"
   },
   "dataPolicy": {
-    "en": "[long text of data-policy]",
+    "en": "<p>We, &ldquo;Loket Ongedocumenteerden Amsterdam (LOA)&rdquo; and &ldquo;The Netherlands Red Cross (Rode Kruis)&rdquo;&nbsp; need to ask you the information below in order to provide cash aid. This will be done using supermarket vouchers. We do this to help people who are on the Loket waiting list for shelter in Amsterdam.</p><p>We will ask you your:</p><ul><li>First name, last name</li><li>Password (4 numbers you will need to create)</li><li>V-number</li><li>Phone number for SMS</li><li>Phone number for WhatsApp</li></ul><p>This information will be stored securely on a Rode Kruis computer and shared with The Loket Amsterdam to ensure a fair process.</p><p>Twilio will receive your number to send:</p><ul><li>SMS&rsquo;s to inform you on the aid program</li><li>WhatsApp&rsquo;s to send supermarket vouchers (if your application is successful)</li></ul><p>You can leave the aid program and delete your personal information at any time.</p><p>If you have any questions, please contact us via WhatsApp on: +31 6 00 00 00 00</p>",
     "nl": "[lange tekst van de data richtlijnen]"
   },
   "aboutProgram": {
@@ -13,6 +13,6 @@
     "nl": "[over het hulp programma]"
   },
   "contactDetails": {
-    "en": "If you have questions during registration, contact us via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/+31600000000'>+31 6 00 00 00 00</a>"
+    "en": "This app is from The Netherlands Red Cross (Rode Kruis). If you have any questions whilst using this app you can, contact us via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/+31600000000'>+31 6 00 00 00 00</a>.<br>Available between 12noon to 8pm. Monday to Friday."
   }
 }
