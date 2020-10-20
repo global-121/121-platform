@@ -20,7 +20,7 @@ export class SoapService {
       xml: xml,
       timeout: 2000,
     });
-    const { body, statusCode } = response;
+    const { body } = response;
     const jsonResponse = convert.xml2js(body, { compact: true });
     return jsonResponse['soap:Envelope']['soap:Body'];
   }

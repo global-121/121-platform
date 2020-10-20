@@ -90,13 +90,13 @@ export class FspService {
     );
 
     for (let connection of enrichedTransactions) {
-      // await this.storeTransaction(
-      //   amount,
-      //   connection,
-      //   fsp,
-      //   program,
-      //   installment,
-      // );
+      await this.storeTransaction(
+        amount,
+        connection,
+        fsp,
+        program,
+        installment,
+      );
     }
 
     return {
