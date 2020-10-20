@@ -4,6 +4,7 @@ import { TranslatableString } from './translatable-string.model';
 export class Fsp {
   id: number;
   fsp: string;
+  fspDisplayName: string;
   attributes?: FspAttribute[];
 }
 
