@@ -98,7 +98,7 @@ export class SelectProgramComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.contactDetails;
+    return PersonalComponents.consentQuestion;
   }
 
   complete() {
