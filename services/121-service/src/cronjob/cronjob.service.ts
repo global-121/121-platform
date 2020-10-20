@@ -13,9 +13,9 @@ export class CronjobService {
     private readonly connectionService: CreateConnectionService,
   ) {}
 
-  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  @Cron('0 0 * * *')
-  // @Cron('/10 * * * *') // Use this line to test every 10 seconds instead of every day at midnight
+  // Use CronExpression.EVERY_10_SECONDS for testing instead of: CronExpression.EVERY_DAY_AT_MIDNIGHT or:
+  // @Cron(CronExpression.EVERY_DAY_AT_NOON)
+  @Cron(new Date(Date.now() - 1000)) // To disable running the task, set to run it in the past
   async cronDeleteOldUnfinishedConnections(): Promise<void> {
     console.log('Get old unfinished connections');
     const tsYesterday = Math.round(new Date().getTime()) - 24 * 60 * 60 * 1000;
