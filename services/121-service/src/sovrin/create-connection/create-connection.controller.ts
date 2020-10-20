@@ -21,6 +21,7 @@ import { UserRole } from '../../user-role.enum';
 import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
+import { GetDidByPhoneNameDto } from './dto/get-did-by-name-phone';
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('sovrin')
@@ -101,11 +102,15 @@ export class CreateConnectionController {
     );
   }
 
-  @Roles(UserRole.Aidworker)
+  @Roles(UserRole.Aidworker, UserRole.ProgramManager)
   @ApiOperation({
-    title: 'Overwrite custom data for connection user used by aidworker',
+    title:
+      'Overwrite custom data for connection used by AW (app) or PM (Swagger)',
   })
-  @ApiResponse({ status: 200, description: 'Custom data  set for connection' })
+  @ApiResponse({
+    status: 200,
+    description: 'Custom data overwritten for connection',
+  })
   @Post('/custom-data/overwrite')
   public async addCustomDataOverwrite(
     @Body() customData: CustomDataDto,
@@ -114,6 +119,43 @@ export class CreateConnectionController {
       customData.did,
       customData.key,
       customData.value,
+    );
+  }
+
+  @Roles(UserRole.Aidworker, UserRole.ProgramManager)
+  @ApiOperation({
+    title:
+      'Overwrite phone number for connection used by AW (app) or PM (Swagger)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Phone number overwritten for connection',
+  })
+  @Post('/phone/overwrite')
+  public async phoneNumberOverwrite(
+    @Body() setPhoneRequest: SetPhoneRequestDto,
+  ): Promise<ConnectionEntity> {
+    return await this.createConnectionService.phoneNumberOverwrite(
+      setPhoneRequest.did,
+      setPhoneRequest.phonenumber,
+    );
+  }
+
+  @Roles(UserRole.ProgramManager)
+  @ApiOperation({
+    title: 'Find DID by name and/or phone number for PM (Swagger)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returned connections which match at least one of criteria',
+  })
+  @Post('/get-did/name-phone')
+  public async getDidByPhoneAndOrName(
+    @Body() getDidByPhoneNameDto: GetDidByPhoneNameDto,
+  ): Promise<ConnectionEntity[]> {
+    return await this.createConnectionService.getDidByPhoneAndOrName(
+      getDidByPhoneNameDto.phoneNumber,
+      getDidByPhoneNameDto.name,
     );
   }
 
