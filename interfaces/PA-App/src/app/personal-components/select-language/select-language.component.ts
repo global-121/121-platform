@@ -83,7 +83,7 @@ export class SelectLanguageComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.selectProgram;
+    return PersonalComponents.contactDetails;
   }
 
   complete() {

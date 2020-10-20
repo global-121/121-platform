@@ -54,7 +54,7 @@ export class ContactDetailsComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.consentQuestion;
+    return PersonalComponents.selectProgram;
   }
 
   complete() {

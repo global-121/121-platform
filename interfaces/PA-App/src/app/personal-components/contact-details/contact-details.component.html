@@ -1,5 +1,5 @@
 <section *ngIf="!isCanceled">
-  <dialogue-turn>
+  <dialogue-turn [isConnected]="true">
     <p
       [innerHTML]="contactDetails"
       class="contact-details--content"
