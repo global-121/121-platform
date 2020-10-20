@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository } from 'typeorm';
 import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 import { ProgramEntity } from '../program/program.entity';
+import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
 
 @Injectable()
 export class IntersolveService {
@@ -43,11 +44,18 @@ export class IntersolveService {
       amountInCents,
       this.intersolveRefPos,
     );
-    await this.sendVoucherWhatsapp(
-      voucherInfo.cardId,
-      voucherInfo.pin,
-      paymentInfo.phoneNumber,
-    );
+    if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
+      await this.sendVoucherWhatsapp(
+        voucherInfo.cardId,
+        voucherInfo.pin,
+        paymentInfo.phoneNumber,
+      );
+    } else {
+      await this.intersolveApiService.cancel(
+        voucherInfo.cardId,
+        voucherInfo.transactionId,
+      );
+    }
   }
 
   public async sendVoucherWhatsapp(

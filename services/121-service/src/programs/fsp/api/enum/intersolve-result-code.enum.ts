@@ -1,0 +1,16 @@
+export enum IntersolveResultCode {
+  Ok = 0,
+  AuthorizationFailed = 3,
+  InvalidParameters = 5,
+  InvalidOrUnknownRetailer = 9,
+  UnableToCancel = 18,
+  CannotCancel = 19,
+  CardOrCustomerDoesNotExist = 101,
+  CardExpired = 102,
+  CardBlocked = 103,
+  CardInactive = 119,
+  IncorrectActivationOrPurchaseValue = 120,
+  CardUnavailable = 127,
+  PINInvalid = 211,
+  EANInvalid = 212,
+}

@@ -62,6 +62,8 @@ export class IntersolveApiService {
     const responseBody = await this.soapService.post(payload);
     console.log('responseBody intersolve: ', responseBody);
     const result = {
+      resultCode: responseBody.IssueCardResponse.ResultCode._text,
+      resultDescription: responseBody.IssueCardResponse.ResultDescription._text,
       cardId: responseBody.IssueCardResponse.CardId._text,
       pin: parseInt(responseBody.IssueCardResponse.PIN._text),
       balance: parseInt(responseBody.IssueCardResponse.CardNewBalance._text),
@@ -98,6 +100,8 @@ export class IntersolveApiService {
     const responseBody = await this.soapService.post(payload);
     console.log('responseBody: ', responseBody);
     const result = {
+      resultCode: responseBody.GetCardResponse.ResultCode._text,
+      resultDescription: responseBody.GetCardResponse.ResultDescription._text,
       status: responseBody.GetCardResponse.Card.Status._text,
       balance: parseInt(responseBody.GetCardResponse.Card.Balance._text),
     };
