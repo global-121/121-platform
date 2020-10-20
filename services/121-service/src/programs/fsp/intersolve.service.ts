@@ -17,6 +17,7 @@ export class IntersolveService {
 
   private readonly programId = 1;
   private readonly language = 'en';
+  private readonly intersolveRefPos = '121';
 
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
@@ -40,6 +41,7 @@ export class IntersolveService {
     const amountInCents = paymentInfo.amount * 100;
     const voucherInfo = await this.intersolveApiService.issueCard(
       amountInCents,
+      this.intersolveRefPos,
     );
     await this.sendVoucherWhatsapp(
       voucherInfo.cardId,
