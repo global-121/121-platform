@@ -93,25 +93,26 @@ export class ProgramService {
     return program;
   }
 
-  public async findAll(query): Promise<ProgramsRO> {
+  public async findAll(): Promise<ProgramsRO> {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium')
       .addOrderBy('customCriterium.id', 'ASC');
 
     qb.where('1 = 1');
-
-    if ('location' in query) {
-      qb.andWhere('lower(program.location) LIKE :location', {
-        location: `%${query.location.toLowerCase()}%`,
-      });
-    }
-
     qb.orderBy('program.created', 'DESC');
 
-    const programsCount = await qb.getCount();
     const programs = await qb.getMany();
+    const programsCount = programs.length;
 
+    return { programs, programsCount };
+  }
+
+  public async getPublishedPrograms(): Promise<ProgramsRO> {
+    let programs = (await this.findAll()).programs;
+    console.log('programs: ', programs);
+    programs = programs.filter(program => program.published);
+    const programsCount = programs.length;
     return { programs, programsCount };
   }
 

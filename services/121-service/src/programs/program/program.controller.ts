@@ -67,11 +67,17 @@ export class ProgramController {
   }
 
   @ApiOperation({ title: 'Get all programs' })
-  @ApiImplicitQuery({ name: 'location', required: false })
   @ApiResponse({ status: 200, description: 'Return all programs.' })
   @Get()
-  public async findAll(@Query() query): Promise<ProgramsRO> {
-    return await this.programService.findAll(query);
+  public async findAll(): Promise<ProgramsRO> {
+    return await this.programService.findAll();
+  }
+
+  @ApiOperation({ title: 'Get published programs' })
+  @ApiResponse({ status: 200, description: 'Return all published programs.' })
+  @Get('published/all')
+  public async getPublishedPrograms(): Promise<ProgramsRO> {
+    return await this.programService.getPublishedPrograms();
   }
 
   @Roles(UserRole.ProjectOfficer)
