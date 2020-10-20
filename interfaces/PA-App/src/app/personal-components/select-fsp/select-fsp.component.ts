@@ -107,6 +107,9 @@ export class SelectFspComponent extends PersonalComponent {
 
     // Update FSPs with more details:
     this.chosenFsp = await this.programsService.getFspById(this.fspChoice);
+    this.chosenFsp.fspDisplayName = this.translatableString.get(
+      this.chosenFsp.fspDisplayName,
+    );
 
     if (!this.chosenFsp.attributes.length) {
       return this.complete();
