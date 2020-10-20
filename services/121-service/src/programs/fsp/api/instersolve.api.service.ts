@@ -10,16 +10,23 @@ export class IntersolveApiService {
   public constructor(private readonly soapService: SoapService) {}
 
   public async test(): Promise<any> {
-    const resultIssueCard = await this.issueCard(2500);
+    const refPos = '121';
+    const resultIssueCard = await this.issueCard(2500, refPos);
     const resultGetCard = await this.getCard(
       resultIssueCard.cardId,
       resultIssueCard.pin,
     );
-    const resultCancelTransactionByRefPosCard = await this.cancelTransactionByRefPos();
+    const resultCancelTransactionByRefPosCard = await this.cancelTransactionByRefPos(
+      resultIssueCard.cardId,
+      refPos,
+    );
     const resultCancel = await this.cancel();
   }
 
-  public async issueCard(amount: number): Promise<IntersolveIssueCardResponse> {
+  public async issueCard(
+    amount: number,
+    refPos: string,
+  ): Promise<IntersolveIssueCardResponse> {
     console.log('issueCard soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.IssueCard,
@@ -40,7 +47,7 @@ export class IntersolveApiService {
       payload,
       IntersolveSoapElements.IssueCard,
       ['TransactionHeader', 'RefPos'],
-      '121',
+      refPos,
     );
 
     console.log('payload: ', payload);
@@ -87,9 +94,10 @@ export class IntersolveApiService {
     return result;
   }
 
-  public async cancelTransactionByRefPos(): Promise<
-    IntersolveCancelTransactionByRefPosResponse
-  > {
+  public async cancelTransactionByRefPos(
+    cardId: string,
+    refPos: string,
+  ): Promise<IntersolveCancelTransactionByRefPosResponse> {
     console.log('cancelTransactionByRefPos soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.CancelTransactionByRefPos,
@@ -100,13 +108,27 @@ export class IntersolveApiService {
       ['EAN'],
       process.env.INTERSOLVE_EAN,
     );
+    payload = this.soapService.changeSoapBody(
+      payload,
+      IntersolveSoapElements.CancelTransactionByRefPos,
+      ['CardId'],
+      cardId,
+    );
+    payload = this.soapService.changeSoapBody(
+      payload,
+      IntersolveSoapElements.CancelTransactionByRefPos,
+      ['RefPosToCancel'],
+      refPos,
+    );
 
     console.log('payload: ', payload);
     const responseBody = await this.soapService.post(payload);
     console.log('responseBody intersolve: ', responseBody);
     const result = {
-      resultCode: 1,
-      resultDescription: '21',
+      resultCode:
+        responseBody.CancelTransactionByRefPosResponse.ResultCode._text,
+      resultDescription:
+        responseBody.CancelTransactionByRefPosResponse.ResultDescription._text,
     };
     console.log('result: ', result);
     return result;
