@@ -121,6 +121,25 @@ export class CreateConnectionController {
     );
   }
 
+  @Roles(UserRole.Aidworker, UserRole.ProgramManager)
+  @ApiOperation({
+    title:
+      'Overwrite phone number for connection used by AW (app) or PM (Swagger)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Phone number overwritten for connection',
+  })
+  @Post('/phone/overwrite')
+  public async phoneNumberOverwrite(
+    @Body() setPhoneRequest: SetPhoneRequestDto,
+  ): Promise<ConnectionEntity> {
+    return await this.createConnectionService.phoneNumberOverwrite(
+      setPhoneRequest.did,
+      setPhoneRequest.phonenumber,
+    );
+  }
+
   @ApiOperation({ title: 'Set qr identifier for connection' })
   @ApiResponse({
     status: 201,
