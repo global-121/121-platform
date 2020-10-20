@@ -3,19 +3,18 @@
   "validation": false,
   "state": "design",
   "location": "Kenya",
-  "ngo": "Kenya Red Cross",
-  "countryId": 1,
+  "ngo": "KRCS",
   "title": {
-    "en": "Pilot"
+    "en": "121 Digital Cash Assistance Program"
   },
   "description": {
-    "en": "Program description"
+    "en": ""
   },
   "descLocation": {
-    "en": "Location such and such."
+    "en": ""
   },
   "descHumanitarianObjective": {
-    "en": "Humanitarian objective of program is such and such."
+    "en": ""
   },
   "descCashType": {
     "en": "Unconditional multi-purpose"
@@ -25,7 +24,7 @@
   "currency": "KES",
   "distributionFrequency": "month",
   "distributionDuration": 3,
-  "fixedTransferValue": 35,
+  "fixedTransferValue": 10,
   "financialServiceProviders": [
     {
       "id": 1
@@ -35,21 +34,23 @@
   "minimumScore": 0,
   "highestScoresX": 250,
   "meetingDocuments": {
-    "en": "Document 1; Document 2; Document 3"
+    "en": ""
   },
   "notifications": {
     "en": {
+      "registered": "You have been successfully registered for this program.",
       "included": "You have been included in this program.",
       "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us.",
       "whatsappPayment": "Please reply to this message within 24 hours to receive your voucher",
       "whatsappReply": "For further questions please contact this number"
     }
   },
+  "phoneNumberPlaceholder": "+254 000 000 000",
   "customCriteria": [
     {
-      "criterium": "name",
+      "criterium": "firstName",
       "label": {
-        "en": "Confirm full name:"
+        "en": "What is your first name?"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -58,86 +59,31 @@
       "scoring": {}
     },
     {
-      "criterium": "dob",
+      "criterium": "secondName",
       "label": {
-        "en": "My date of birth:"
+        "en": "What is your second name? <br> If you do not have a second name type: NA​"
       },
-      "answerType": "date",
+      "answerType": "text",
       "criteriumType": "standard",
       "options": null,
       "persistence": true,
       "scoring": {}
     },
     {
-      "criterium": "village",
+      "criterium": "thirdName",
       "label": {
-        "en": "Which village/area do you live?"
+        "en": "What is your third name? <br> If you do not have a third name type: NA​"
       },
-      "answerType": "dropdown",
+      "answerType": "text",
       "criteriumType": "standard",
-      "options": [
-        {
-          "option": "village1",
-          "label": {
-            "en": "Village1"
-          }
-        },
-        {
-          "option": "village2",
-          "label": {
-            "en": "Village2"
-          }
-        },
-        {
-          "option": "village3",
-          "label": {
-            "en": "Village3"
-          }
-        },
-        {
-          "option": "village4",
-          "label": {
-            "en": "Village4"
-          }
-        }
-      ],
-      "scoring": {
-        "village1": 0,
-        "village2": 0,
-        "village3": 0,
-        "village4": 0
-      }
+      "options": null,
+      "persistence": true,
+      "scoring": {}
     },
     {
-      "criterium": "ben_gender",
+      "criterium": "age",
       "label": {
-        "en": "What is your gender?"
-      },
-      "answerType": "dropdown",
-      "criteriumType": "standard",
-      "options": [
-        {
-          "option": "female",
-          "label": {
-            "en": "Female"
-          }
-        },
-        {
-          "option": "male",
-          "label": {
-            "en": "Male"
-          }
-        }
-      ],
-      "scoring": {
-        "female": 0,
-        "male": 0
-      }
-    },
-    {
-      "criterium": "What_is_the_age_of_beneficiary",
-      "label": {
-        "en": "How old are you?"
+        "en": "What is your age?"
       },
       "answerType": "dropdown",
       "criteriumType": "standard",
@@ -173,376 +119,67 @@
           }
         },
         {
-          "option": "60_yrs_and_abo",
+          "option": "60_yrs_and_above",
           "label": {
             "en": "60 yrs and above"
           }
         }
       ],
-      "scoring": {
-        "0_-_59_months": 0,
-        "5_-_12_yrs": 0,
-        "13_-_17_yrs": 0,
-        "18_-_24_yrs": 0,
-        "25_-_59_yrs": 0,
-        "60_yrs_and_abo": 0
-      }
+      "persistence": true,
+      "scoring": {}
     },
     {
-      "criterium": "What_is_the_marital_tatus_of_beneficiary",
+      "criterium": "location",
       "label": {
-        "en": "What is your marital status?"
+        "en": "Which village/area do you live?"
       },
       "answerType": "dropdown",
       "criteriumType": "standard",
       "options": [
         {
-          "option": "single",
+          "option": "Longopito",
           "label": {
-            "en": "Single"
+            "en": "Longopito"
           }
         },
         {
-          "option": "married",
+          "option": "Oldonyiro",
           "label": {
-            "en": "Married"
-          }
-        },
-        {
-          "option": "separated",
-          "label": {
-            "en": "Separated"
-          }
-        },
-        {
-          "option": "divorced",
-          "label": {
-            "en": "Divorced"
-          }
-        },
-        {
-          "option": "widow_widower",
-          "label": {
-            "en": "Widow/Widower"
+            "en": "Oldonyiro"
           }
         }
       ],
-      "scoring": {
-        "single": 0,
-        "married": 0,
-        "separated": 0,
-        "divorced": 0,
-        "widow_widower": 0
-      }
+      "persistence": true,
+      "scoring": {}
     },
     {
-      "criterium": "ben_id_number",
+      "criterium": "livelihoodStrategy",
       "label": {
-        "en": "What is your number of National ID card? Or fill in: '0'."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "What_best_describes_ad_of_this_household",
-      "label": {
-        "en": "What best describes the head of this household?"
+        "en": "What is your household’s current livelihood strategy (as of last month)?"
       },
       "answerType": "dropdown",
       "criteriumType": "standard",
       "options": [
         {
-          "option": "child_below_17",
-          "label": {
-            "en": "Child below 17 years old"
-          }
-        },
-        {
-          "option": "adult_18_years",
-          "label": {
-            "en": "Adult 18 years and above"
-          }
-        }
-      ],
-      "scoring": {
-        "child_below_17": 0,
-        "adult_18_years": 0
-      }
-    },
-    {
-      "criterium": "HH_status",
-      "label": {
-        "en": "Which best describes your household’s residence status?"
-      },
-      "answerType": "dropdown",
-      "criteriumType": "standard",
-      "options": [
-        {
-          "option": "regular_host",
-          "label": {
-            "en": "Regular/Host community"
-          }
-        },
-        {
-          "option": "idp_emigrant",
-          "label": {
-            "en": "IDP/Emigrant in search for water and pasture"
-          }
-        }
-      ],
-      "scoring": {
-        "regular_host": 0,
-        "idp_emigrant": 0
-      }
-    },
-    {
-      "criterium": "male_count",
-      "label": {
-        "en": "How many male members live in the household (IN TOTAL)?"
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "female_counts",
-      "label": {
-        "en": "How many female members live in the household (IN TOTAL)?"
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "boy_child_less_than_5_years",
-      "label": {
-        "en": "How many male children aged less than 5 years (0 - 59 months) live in the household?"
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "girl_child_less_than_5_years",
-      "label": {
-        "en": "How many female children aged less than 5 years (0 - 59 months) live in the household?"
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "boys_between_5_and_17",
-      "label": {
-        "en": "How many males aged between 5 - 17 years live in the household?"
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "girls_between_5_and_17",
-      "label": {
-        "en": "How many females aged between 5 - 17 years live in the household?"
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "males_between_18_and_49",
-      "label": {
-        "en": "How many male adults aged between 18 - 49 years live in the household?"
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "females_between_18_and_49",
-      "label": {
-        "en": "How many female adults aged between 18 - 49 years live in the household?"
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "males_above_50_years",
-      "label": {
-        "en": "How many male adults aged between 50 years and above live in the household?"
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "females_above_50_years",
-      "label": {
-        "en": "How many female adults aged between 50 years and above live in the household?"
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "disabled_no",
-      "label": {
-        "en": "How many disabled persons? If none, fill in: '0'."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "orphans_no",
-      "label": {
-        "en": "How many orphans? If none, fill in: '0'."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "pl_women_no",
-      "label": {
-        "en": "How many pregnant women? If none, fill in: '0'."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "pl_lact_no",
-      "label": {
-        "en": "How many lactating mothers? If none, fill in: '0'."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "chronic_no",
-      "label": {
-        "en": "How many chronically ill persons? If none, fill in: '0'."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "otp_sfp_child",
-      "label": {
-        "en": "How many children malnourished (enrolled in OTP or SFP program) below 5 years? If none, fill in: '0'."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "otp_sfp_childa5",
-      "label": {
-        "en": "How many children malnourished (enrolled in OTP or SFP program) 5 - 17 years? If none, fill in: '0'."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "otp_sfp_adult",
-      "label": {
-        "en": "How many persons malnourished (enrolled in OTP or SFP program) above 18 years? If none, fill in: '0'."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {
-        "multiplier": 0
-      }
-    },
-    {
-      "criterium": "livelihood_strategy",
-      "label": {
-        "en": "What is your household’s current livelihood strategy (as of last month)"
-      },
-      "answerType": "dropdown",
-      "criteriumType": "standard",
-      "options": [
-        {
-          "option": "pastoralism",
+          "option": "Pastoralism",
           "label": {
             "en": "Pastoralism"
           }
         },
         {
-          "option": "agro_pastoralism",
+          "option": "Agro_pastoralism",
           "label": {
             "en": "Agro-pastoralism"
           }
         },
         {
-          "option": "agriculture_cropfarming",
+          "option": "Agriculture_cropfarming",
           "label": {
             "en": "Agriculture/Crop Farming"
           }
         },
         {
-          "option": "fishing",
+          "option": "Fishing",
           "label": {
             "en": "Fishing"
           }
@@ -554,157 +191,114 @@
           }
         },
         {
-          "option": "casual_labour",
+          "option": "Casual_labour",
           "label": {
             "en": "Casual Labour"
           }
         },
         {
-          "option": "sale_of_charcoal_firewood",
+          "option": "Sale_of_charcoal_firewood",
           "label": {
             "en": "Sale of Charcoal and or Firewood"
           }
         },
         {
-          "option": "sale_bush_products",
+          "option": "Sale_bush_products",
           "label": {
             "en": "Sale of Bush Products [Wild meat/Building poles/grass/reeds/building stones]"
           }
         },
         {
-          "option": "begging",
+          "option": "Begging",
           "label": {
             "en": "Begging"
           }
         },
         {
-          "option": "business_medium_large",
+          "option": "Business_medium_large",
           "label": {
             "en": "Business [Medium or Large Scale]"
           }
         },
         {
-          "option": "formal_salaried_jobs",
+          "option": "Formal_salaried_jobs",
           "label": {
-            "en": "Formal/Salaried Jobs [Police Officer/Teacher/Nurse etc.]"
+            "en": "Formal/Salaried Jobs [Police Officer/Teacher/Nurse  etc.]"
           }
         },
         {
-          "option": "remmitance",
+          "option": "Remmitance",
           "label": {
             "en": "Remmitances [Money from Relatives/Friends abroad]"
-          }
-        },
-        {
-          "option": "other",
-          "label": {
-            "en": "Other"
           }
         }
       ],
       "scoring": {
-        "pastoralism": 0,
-        "agro_pastoralism": 0,
-        "agriculture_cropfarming": 0,
-        "fishing": 0,
+        "Pastoralism": 0,
+        "Agro_pastoralism": 0,
+        "Agriculture_cropfarming": 0,
+        "Fishing": 0,
         "Petty_trade": 0,
-        "casual_labour": 0,
-        "sale_of_charcoal_firewood": 0,
-        "sale_bush_products": 0,
-        "begging": 0,
-        "business_medium_large": 0,
-        "formal_salaried_jobs": 0,
-        "remmitance": 0,
-        "other": 0
+        "Casual_labour": 0,
+        "Sale_of_charcoal_firewood": 0,
+        "Sale_bush_products": 0,
+        "Begging": 0,
+        "Business_medium_large": -9999,
+        "Formal_salaried_jobs": -9999,
+        "Remmitance": 0
       }
     },
     {
-      "criterium": "If_OTHER_specify",
+      "criterium": "cashassistance",
       "label": {
-        "en": "If your household’s current livelihood strategy (as of last month) is Other, specify. Or fill in '-'."
-      },
-      "answerType": "text",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {}
-    },
-    {
-      "criterium": "regular_income",
-      "label": {
-        "en": "Did you earn any income last MONTH?"
+        "en": "As of TODAY are you receiving any form of cash assistance from Kenya Red Cross, Social Services, HSNP Group 1 or other humanitarian agencies?"
       },
       "answerType": "dropdown",
       "criteriumType": "standard",
       "options": [
         {
-          "option": "yes",
+          "option": "Yes",
           "label": {
             "en": "Yes"
           }
         },
         {
-          "option": "no",
+          "option": "No",
           "label": {
             "en": "No"
           }
         }
       ],
       "scoring": {
-        "yes": 0,
-        "no": 0
+        "Yes": -9999,
+        "No": 0
       }
     },
     {
-      "criterium": "income_source_explain",
+      "criterium": "foodassistance",
       "label": {
-        "en": "In the LAST 12 Months, has your household LOST any source of income? If not, fill in '-'."
+        "en": "As of TODAY are you receiving any form of food assistance from WFP, County Government of National Government?"
       },
-      "answerType": "text",
+      "answerType": "dropdown",
       "criteriumType": "standard",
-      "options": null,
-      "scoring": {}
-    },
-    {
-      "criterium": "debt_amount",
-      "label": {
-        "en": "As of last month, how much debt does your household owe [Amount in Kshs]? If not, fil in '0'."
-      },
-      "answerType": "numeric",
-      "criteriumType": "standard",
-      "options": null,
+      "options": [
+        {
+          "option": "Yes",
+          "label": {
+            "en": "Yes"
+          }
+        },
+        {
+          "option": "No",
+          "label": {
+            "en": "No"
+          }
+        }
+      ],
       "scoring": {
-        "multiplier": 0
+        "Yes": -9999,
+        "No": 0
       }
-    },
-    {
-      "criterium": "cash",
-      "label": {
-        "en": "As of TODAY, are you receiving any Cash Assistance from any organisation? If not, fill in '-'."
-      },
-      "answerType": "text",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {}
-    },
-    {
-      "criterium": "nfis",
-      "label": {
-        "en": "As of TODAY, are you receiving any Non Food Items [Soap/Cooking Utensils/Blankets + Beddings/Jerry Cans/Buckets etc.] from any organisation? If not, fill in '-'."
-      },
-      "answerType": "text",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {}
-    },
-    {
-      "criterium": "food",
-      "label": {
-        "en": "As of TODAY, are you receiving any Food Aid from any organisation? If not, fill in '-'."
-      },
-      "answerType": "text",
-      "criteriumType": "standard",
-      "options": null,
-      "scoring": {}
     }
   ]
 }

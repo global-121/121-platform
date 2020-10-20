@@ -114,14 +114,8 @@ services:
       context: 121-service
     init: true
     container_name: 121-service
-    user: node
-    environment:
-      - EXTERNAL_121_SERVICE_URL=${EXTERNAL_121_SERVICE_URL}
-      - RESET_SECRET=${RESET_SECRET}
-      - PORT_121_SERVICE=${PORT_121_SERVICE}
-      - SUBDOMAIN_121_SERVICE=${SUBDOMAIN_121_SERVICE}
-      - URL_PA_ACCOUNTS_SERVICE_API=${URL_PA_ACCOUNTS_SERVICE_API}
-      - NODE_ENV=${NODE_ENV}
+    env_file:
+      - .env
     volumes:
       - "./121-service:/home/node/app"
     ports:
@@ -140,13 +134,8 @@ services:
     image: services_pa-accounts-service
     init: true
     container_name: pa-accounts-service
-    user: node
-    environment:
-      - WALLET_PASSWORD_ENCRYPTION_KEY=${WALLET_PASSWORD_ENCRYPTION_KEY}
-      - PORT_PA_ACCOUNTS_SERVICE=${PORT_PA_ACCOUNTS_SERVICE}
-      - SUBDOMAIN_PA_ACCOUNTS_SERVICE=${SUBDOMAIN_PA_ACCOUNTS_SERVICE}
-      - URL_121_SERVICE_API=${URL_121_SERVICE_API}
-      - NODE_ENV=${NODE_ENV}
+    env_file:
+      - .env
     volumes:
       - "./PA-accounts-service:/home/node/app"
     ports:

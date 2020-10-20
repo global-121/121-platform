@@ -2,9 +2,81 @@
   "fsp": "M-Pesa",
   "attributes": [
     {
+      "name": "phoneRelation",
+      "label": {
+        "en": "Whose phone number will you use to receive the M-Pesa SMS?<br><br>Please ensure its someone you trust and agrees with collecting the cash on your behalf.<br><br>Please note, you can only use a phone number/sim card that is registered with Safaricom."
+      },
+      "answerType": "dropdown",
+      "options": [
+        {
+          "option": "self",
+          "label": {
+            "en": "My own"
+          }
+        },
+        {
+          "option": "partner",
+          "label": {
+            "en": "Spouse/partner"
+          }
+        },
+        {
+          "option": "parent",
+          "label": {
+            "en": "Parent"
+          }
+        },
+        {
+          "option": "child",
+          "label": {
+            "en": "Son/daughter"
+          }
+        },
+        {
+          "option": "sibling",
+          "label": {
+            "en": "Brother/sister"
+          }
+        },
+        {
+          "option": "grandparent",
+          "label": {
+            "en": "Grandparent"
+          }
+        },
+        {
+          "option": "inlaw",
+          "label": {
+            "en": "In-law"
+          }
+        },
+        {
+          "option": "friend",
+          "label": {
+            "en": "Neighbour/friend"
+          }
+        },
+        {
+          "option": "community-leader",
+          "label": {
+            "en": "Community leader (chief/spiritual leader/committee leader/teacher...)"
+          }
+        },
+        {
+          "option": "other",
+          "label": {
+            "en": "Other"
+          }
+        }
+      ]
+    },
+    {
       "name": "phoneNumber",
       "label": {
-        "en": "Which phone number do you want to receive your M-Pesa code on?"
+        "en": "Which phone number do you want to receive your M-Pesa SMS on? (With country-code. It should look like: <strong>+254 000 000 000</strong>)"
+      },
+      "placeholder": {
+        "en": "+254 000 000 000"
       },
       "answerType": "tel",
       "options": null

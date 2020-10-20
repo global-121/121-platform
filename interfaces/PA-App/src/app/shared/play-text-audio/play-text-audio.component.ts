@@ -134,8 +134,14 @@ export class PlayTextAudioComponent implements OnInit {
         this.iconName = 'play';
         break;
       case PlayerState.error:
+        if (!this.alwaysVisible) {
+          this.iconName = 'alert';
+        } else {
+          this.iconName = 'play';
+        }
+        break;
       default:
-        this.iconName = 'alert';
+        this.iconName = 'play';
     }
   }
 }

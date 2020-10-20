@@ -220,7 +220,6 @@ export class ProgramsServiceApiService {
     password: string,
     role: string,
     status: string,
-    countryId: number,
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/user`, {
@@ -228,7 +227,6 @@ export class ProgramsServiceApiService {
         password,
         role,
         status,
-        countryId,
       })
       .toPromise();
   }

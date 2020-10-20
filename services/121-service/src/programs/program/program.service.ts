@@ -106,31 +106,11 @@ export class ProgramService {
       });
     }
 
-    if ('countryId' in query) {
-      qb.andWhere('program.countryId = :countryId', {
-        countryId: query.countryId,
-      });
-    }
-
     qb.orderBy('program.created', 'DESC');
 
     const programsCount = await qb.getCount();
     const programs = await qb.getMany();
 
-    return { programs, programsCount };
-  }
-
-  public async findByCountry(query): Promise<ProgramsRO> {
-    const qb = await getRepository(ProgramEntity)
-      .createQueryBuilder('program')
-      .leftJoinAndSelect('program.customCriteria', 'customCriterium')
-      .addOrderBy('customCriterium.id', 'ASC')
-      .where('"countryId" = :countryId', { countryId: query });
-
-    let programs = await qb.getMany();
-    programs = programs.filter(program => program.published);
-
-    const programsCount = programs.length;
     return { programs, programsCount };
   }
 
@@ -141,7 +121,6 @@ export class ProgramService {
     let program = new ProgramEntity();
     program.location = programData.location;
     program.ngo = programData.ngo;
-    program.contactDetails = programData.contactDetails;
     program.title = programData.title;
     program.startDate = programData.startDate;
     program.endDate = programData.endDate;
@@ -154,11 +133,11 @@ export class ProgramService {
     program.highestScoresX = programData.highestScoresX;
     program.meetingDocuments = programData.meetingDocuments;
     program.notifications = programData.notifications;
+    program.phoneNumberPlaceholder = programData.phoneNumberPlaceholder;
     program.description = programData.description;
     program.descLocation = programData.descLocation;
     program.descHumanitarianObjective = programData.descHumanitarianObjective;
     program.descCashType = programData.descCashType;
-    program.countryId = programData.countryId;
     program.validation = programData.validation;
     program.customCriteria = [];
     program.financialServiceProviders = [];
@@ -215,7 +194,7 @@ export class ProgramService {
 
   public async changeState(
     programId: number,
-    newState: string,
+    newState: ProgramPhase,
   ): Promise<SimpleProgramRO> {
     await this.changeProgramValue(programId, {
       state: newState,
@@ -380,13 +359,13 @@ export class ProgramService {
     this.smsService.notifyBySms(
       connection.phoneNumber,
       connection.preferredLanguage,
-      inclusionResult ? 'included' : 'rejected',
+      inclusionResult ? PaStatus.included : PaStatus.rejected,
       programId,
     );
     this.voiceService.notifyByVoice(
       connection.phoneNumber,
       connection.preferredLanguage,
-      inclusionResult ? 'included' : 'rejected',
+      inclusionResult ? PaStatus.included : PaStatus.rejected,
       programId,
     );
   }
@@ -412,7 +391,7 @@ export class ProgramService {
       (
         await this.actionRepository.find({
           where: {
-            programId: programId,
+            program: { id: programId },
             actionType: ActionType.notifyIncluded,
           },
         })
@@ -420,9 +399,9 @@ export class ProgramService {
 
     let inclusionStatus: InclusionStatus;
     if (connection.programsIncluded.includes(+programId) && notificationDone) {
-      inclusionStatus = { status: 'included' };
+      inclusionStatus = { status: PaStatus.included };
     } else if (connection.programsRejected.includes(+programId)) {
-      inclusionStatus = { status: 'rejected' };
+      inclusionStatus = { status: PaStatus.rejected };
     } else {
       inclusionStatus = { status: 'unavailable' };
     }
@@ -639,6 +618,10 @@ export class ProgramService {
     criterium: CustomCriterium,
     answerPA: object,
   ): number {
+    // If questions has no scoring system return 0;
+    if (Object.keys(criterium.scoring).length === 0) {
+      return 0;
+    }
     let score = 0;
     const options = JSON.parse(JSON.stringify(criterium.options));
     for (let value of options) {
@@ -802,6 +785,14 @@ export class ProgramService {
         connectionResponse['dob'] = connection.customData['dob'];
         connectionResponse['phoneNumber'] =
           connection.phoneNumber || connection.customData['phoneNumber'];
+        connectionResponse['whatsappPhoneNumber'] =
+          connection.customData['whatsappPhoneNumber'];
+        connectionResponse['location'] = connection.customData['location'];
+        connectionResponse['vnumber'] = connection.customData['vnumber'];
+        connectionResponse['firstName'] = connection.customData['firstName'];
+        connectionResponse['secondName'] = connection.customData['secondName'];
+        connectionResponse['thirdName'] = connection.customData['thirdName'];
+        connectionResponse['age'] = connection.customData['age'];
       }
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
       connectionsResponse.push(connectionResponse);
@@ -934,9 +925,17 @@ export class ProgramService {
 
     const inclusionDetails = [];
     includedConnections.forEach(rawConnection => {
-      let connection = {
+      let row = {
         name: rawConnection.name,
+        firstName: rawConnection.firstName,
+        secondName: rawConnection.secondName,
+        thirdName: rawConnection.thirdName,
+        whatsappPhoneNumber: rawConnection.whatsappPhoneNumber,
+        phoneNumber: rawConnection.phoneNumber,
+        vnumber: rawConnection.vnumber,
         dateOfBirth: rawConnection.dob,
+        location: rawConnection.location,
+        age: rawConnection.age,
         status: rawConnection.status,
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
@@ -944,12 +943,12 @@ export class ProgramService {
         validationDate: rawConnection.validationDate,
         inclusionDate: rawConnection.inclusionDate,
       };
-      inclusionDetails.push(connection);
+      inclusionDetails.push(row);
     });
-
+    const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
     const response = {
       fileName: `inclusion-list-program-${programId}.csv`,
-      data: this.jsonToCsv(inclusionDetails),
+      data: this.jsonToCsv(filteredColumnDetails),
     };
 
     return response;
@@ -962,23 +961,52 @@ export class ProgramService {
     );
     const columnDetails = [];
     for (const rawConnection of selectedConnections) {
-      let connection = {
+      let row = {
         name: rawConnection.name,
+        firstName: rawConnection.firstName,
+        secondName: rawConnection.secondName,
+        thirdName: rawConnection.thirdName,
+        whatsappPhoneNumber: rawConnection.whatsappPhoneNumber,
+        phoneNumber: rawConnection.phoneNumber,
+        vnumber: rawConnection.vnumber,
         dateOfBirth: rawConnection.dob,
+        location: rawConnection.location,
+        age: rawConnection.age,
         status: rawConnection.status,
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
         selectedForValidationDate: rawConnection.selectedForValidationDate,
-        phoneNumber: rawConnection.phoneNumber,
       };
-      columnDetails.push(connection);
+      columnDetails.push(row);
     }
+    const filteredColumnDetails = this.filterUnusedColumn(columnDetails);
     const response = {
       fileName: `selected-for-validation-list-program-${programId}.csv`,
-      data: this.jsonToCsv(columnDetails),
+      data: this.jsonToCsv(filteredColumnDetails),
     };
 
     return response;
+  }
+
+  public filterUnusedColumn(columnDetails): object[] {
+    const emptyColumns = [];
+    for (let row of columnDetails) {
+      for (let key in row) {
+        if (row[key]) {
+          emptyColumns.push(key);
+        }
+      }
+    }
+    const filteredColumns = [];
+    for (let row of columnDetails) {
+      for (let key in row) {
+        if (!emptyColumns.includes(key)) {
+          delete row[key];
+        }
+      }
+      filteredColumns.push(row);
+    }
+    return filteredColumns;
   }
 
   public async getPaymentDetailsInstallment(

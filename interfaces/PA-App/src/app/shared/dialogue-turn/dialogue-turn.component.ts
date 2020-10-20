@@ -1,14 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { first } from 'rxjs/operators';
+import { InstanceService } from 'src/app/services/instance.service';
+import { Actor } from 'src/app/shared/actor.enum';
 import { environment } from 'src/environments/environment';
-
-enum Actor {
-  system = 'system',
-  self = 'self',
-  ngoDorcas = 'Dorcas',
-  ngoEagles = 'Eagles',
-  ngoNLRC = 'NLRC',
-  ngoKRCS = 'Kenya Red Cross',
-}
 
 @Component({
   selector: 'dialogue-turn',
@@ -28,19 +22,37 @@ export class DialogueTurnComponent implements OnInit {
   @Input()
   isConnected = false;
 
+  @Input()
+  animate = environment.useAnimation;
+
   isSelf: boolean;
   isSystem: boolean;
 
   public allActors = Actor;
 
-  animate = environment.useAnimation;
-
-  constructor() {}
+  constructor(private instanceService: InstanceService) {}
 
   ngOnInit() {
+    this.moment = new Date();
     this.isSelf = this.actor === Actor.self;
     this.isSystem = this.actor === Actor.system;
-    this.moment = new Date();
+    this.getInstanceInformation();
+  }
+
+  private async getInstanceInformation() {
+    this.instanceService.instanceInformation
+      .pipe(first())
+      .subscribe((instanceInformation) => {
+        this.updateActor(instanceInformation.name);
+      });
+  }
+
+  updateActor(newActor: Actor) {
+    if (this.actor === Actor.system) {
+      this.actor = newActor;
+    }
+    this.isSelf = this.actor === Actor.self;
+    this.isSystem = this.actor === Actor.system;
   }
 
   show() {

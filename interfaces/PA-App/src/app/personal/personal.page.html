@@ -75,6 +75,13 @@
     </ion-button>
 
     <ion-button color="tertiary" size="small" fill="clear"
+                title="Scroll to last section"
+                (click)="scrollToLastSection()"
+    >
+      <ion-icon name="download" size="small" slot="icon-only"></ion-icon>
+    </ion-button>
+
+    <ion-button color="tertiary" size="small" fill="clear"
                 title="Clear conversation"
                 (click)="this.container.clear()"
     >
@@ -94,7 +101,7 @@
 
 <ion-content color="medium" class="ion-padding-vertical">
 
-  <div #conversationContainer></div>
+  <ng-container #conversationContainer></ng-container>
 
   <div class="loading-indicator">
     <ion-spinner name="dots"
@@ -102,5 +109,7 @@
                  class="loading-indicator--spinner"
     ></ion-spinner>
   </div>
+
+  <div class="scroll-spacing"></div>
 
 </ion-content>

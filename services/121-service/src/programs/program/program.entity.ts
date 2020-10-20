@@ -35,9 +35,6 @@ export class ProgramEntity {
   @Column()
   public ngo: string;
 
-  @Column('json', { default: null })
-  public contactDetails: JSON;
-
   @Column()
   public startDate: Date;
 
@@ -85,6 +82,9 @@ export class ProgramEntity {
   @Column('json')
   public notifications: JSON;
 
+  @Column({ nullable: true })
+  public phoneNumberPlaceholder: string;
+
   @Column('json')
   public description: JSON;
 
@@ -96,9 +96,6 @@ export class ProgramEntity {
 
   @Column('json')
   public descCashType: JSON;
-
-  @Column()
-  public countryId: number;
 
   @Column({ default: false })
   public published: boolean;

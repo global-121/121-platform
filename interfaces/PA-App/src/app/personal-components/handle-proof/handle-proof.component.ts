@@ -72,9 +72,8 @@ export class HandleProofComponent extends PersonalComponent {
     console.log('handleProof');
 
     await this.gatherData();
-    const currentProgram: Program = this.paData.myPrograms[this.programId];
 
-    if (!currentProgram) {
+    if (!this.currentProgram) {
       return;
     }
 
@@ -117,18 +116,14 @@ export class HandleProofComponent extends PersonalComponent {
     }
 
     if (status === PaCredentialStatus.done) {
-      this.inclusionStatus = await this.programService
-        .checkInclusionStatus(this.did, this.programId)
-        .toPromise();
-      this.processStatus(this.inclusionStatus);
-      this.conversationService.stopLoading();
+      await this.handleInclusionStatus(this.did, this.programId);
       this.complete();
     } else {
       this.conversationService.stopLoading();
       this.updateService
         .checkInclusionStatus(this.programId, this.did)
         .then(() => {
-          this.getInclusionStatus(this.did, this.programId);
+          this.handleInclusionStatus(this.did, this.programId);
         });
     }
   }
@@ -149,16 +144,12 @@ export class HandleProofComponent extends PersonalComponent {
     this.wallet = await this.paData.retrieve(this.paData.type.wallet);
   }
 
-  async getInclusionStatus(did: string, programId: number) {
-    console.log('getInclusionStatus()');
-    this.programService
+  async handleInclusionStatus(did: string, programId: number) {
+    this.inclusionStatus = await this.programService
       .checkInclusionStatus(did, programId)
-      .subscribe((response) => {
-        this.inclusionStatus = response;
-        console.log('Status Received:', this.inclusionStatus);
-        this.processStatus(this.inclusionStatus);
-        this.conversationService.stopLoading();
-      });
+      .toPromise();
+    this.processStatus(this.inclusionStatus);
+    this.conversationService.stopLoading();
   }
 
   getNextSection() {

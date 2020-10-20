@@ -15,7 +15,6 @@ describe('PersonalPage', () => {
     // Mock the used services:
     const programsServiceApiService = jasmine.createSpyObj(
       'ProgramsServiceApiService',
-      ['getCountries'],
     );
     const conversationService = jasmine.createSpyObj('ConversationService', {
       getConversationUpToNow: [{}, {}],

@@ -1,18 +1,14 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 import { DataStorageEntity } from '../data-storage/data-storage.entity';
+import { DataStorageService } from '../data-storage/data-storage.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([DataStorageEntity, UserEntity])],
-  providers: [UserService],
+  providers: [UserService, DataStorageService],
   controllers: [UserController],
   exports: [UserService],
 })

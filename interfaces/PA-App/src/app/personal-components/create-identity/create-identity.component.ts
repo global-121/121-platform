@@ -1,13 +1,12 @@
 import { Component, Input } from '@angular/core';
 import { createRandomString } from 'src/app/helpers/createRandomString';
+import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
+import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { environment } from 'src/environments/environment';
-import { PersonalComponent } from '../personal-component.class';
-import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
   selector: 'app-create-identity',
@@ -20,11 +19,6 @@ export class CreateIdentityComponent extends PersonalComponent {
 
   public useLocalStorage: boolean;
   public passwordMinLength = 4;
-
-  public instanceNgoName: string;
-  public instanceDataPolicy: string;
-
-  public userConsent = false;
 
   public initialInput = false;
   public usernameSubmitted = false;
@@ -42,15 +36,12 @@ export class CreateIdentityComponent extends PersonalComponent {
     public sovrinService: SovrinService,
     public programsServiceApiService: ProgramsServiceApiService,
     public paData: PaDataService,
-    private translatableStringService: TranslatableStringService,
   ) {
     super();
     this.useLocalStorage = environment.localStorage;
   }
 
   ngOnInit() {
-    this.getInstanceInformation();
-
     if (this.data) {
       this.initHistory();
     }
@@ -65,23 +56,6 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.initialInput = true;
   }
 
-  private async getInstanceInformation() {
-    const instanceData = await this.programsServiceApiService.getInstanceInformation();
-
-    this.instanceNgoName = instanceData.name;
-    this.instanceDataPolicy = this.translatableStringService.get(
-      instanceData.dataPolicy,
-    );
-  }
-
-  public consent(consent: boolean) {
-    if (!consent) {
-      window.location.reload();
-      return;
-    }
-    this.userConsent = consent;
-  }
-
   public async submitCredentials(
     username: string,
     create: string,
@@ -93,7 +67,7 @@ export class CreateIdentityComponent extends PersonalComponent {
     this.usernameNotUnique = false;
     this.unequalPasswords = false;
 
-    if (!username) {
+    if (!username && !this.useLocalStorage) {
       this.usernameSubmitted = false;
       this.isInProgress = false;
       console.log('No username. ⛔️');
@@ -206,7 +180,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.selectProgram;
+    return PersonalComponents.enrollInProgram;
   }
 
   complete() {

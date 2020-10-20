@@ -4,39 +4,43 @@
       <play-text-audio key="personal.signup-signin.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.signup-signin.introduction'|translate }}
     </p>
-    <more-info-button buttonKey="personal.signup-signin.more-info-digital-id"
-                      messageKey="personal.signup-signin.info-message"
-                      headingKey="personal.signup-signin.more-info-digital-id"
-    ></more-info-button>
   </dialogue-turn>
   <dialogue-turn actor="self">
       <ion-radio-group (ionChange)="changeSignupSignin($event.detail.value)">
-        <ion-item color="light"
-                  class="ion-no-padding ion-text-wrap"
-                  [disabled]="typeChosen"
-                  lines="full"
+        <ion-item
+          color="light"
+          lines="full"
+          class="ion-no-padding"
         >
           <play-text-audio key="personal.signup-signin.create-id"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
-          <ion-label>{{ 'personal.signup-signin.create-id'|translate }}</ion-label>
-          <ion-radio [value]="idChoices.create"
-                     [checked]="signupSigninChoice === idChoices.create"
+          <ion-label class="ion-text-wrap ion-padding-end">
+            {{ 'personal.signup-signin.create-id'|translate }}
+          </ion-label>
+          <ion-radio
+            [value]="idChoices.create"
+            [checked]="signupSigninChoice === idChoices.create"
+            [disabled]="typeChosen"
           ></ion-radio>
         </ion-item>
-        <ion-item color="light"
-                  class="ion-no-padding ion-text-wrap"
-                  [disabled]="useLocalStorage || typeChosen"
-                  lines="full"
+        <ion-item
+          color="light"
+          class="ion-no-padding"
+          lines="full"
         >
           <play-text-audio key="personal.signup-signin.login-id"
                            slot="start"
                            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
-          <ion-label>{{ 'personal.signup-signin.login-id'|translate }}</ion-label>
-          <ion-radio [value]="idChoices.login"
-                     [checked]="signupSigninChoice === idChoices.login"
+          <ion-label class="ion-text-wrap ion-padding-end">
+            {{ 'personal.signup-signin.login-id'|translate }}
+          </ion-label>
+          <ion-radio
+            [value]="idChoices.login"
+            [checked]="signupSigninChoice === idChoices.login"
+            [disabled]="useLocalStorage || typeChosen"
           ></ion-radio>
         </ion-item>
       </ion-radio-group>

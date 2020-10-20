@@ -6,8 +6,6 @@ import { SeedHelper } from './seed-helper';
 import { SeedPublish } from './seed-publish';
 import { SeedInit } from './seed-init';
 
-import { CountryEntity } from '../programs/country/country.entity';
-
 import fspBank from '../../seed-data/fsp/fsp-bank.json';
 import fspMobileMoney from '../../seed-data/fsp/fsp-mobile-money.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
@@ -20,7 +18,6 @@ import { ProtectionServiceProviderEntity } from '../programs/program/protection-
 import programAnonymousExample1 from '../../seed-data/program/program-anonymous1.json';
 import programAnonymousExample2 from '../../seed-data/program/program-anonymous2.json';
 import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
-import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
 
 @Injectable()
@@ -37,29 +34,21 @@ export class SeedMultiProgram implements InterfaceScript {
     // ***** CREATE USERS *****
     await this.seedHelper.addUser({
       role: UserRole.Aidworker,
-      email: USERCONFIG.emailAidWorker,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordAidWorker,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_AID_WORKER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_AID_WORKER,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
-      email: USERCONFIG.emailProjectOfficer,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProjectOfficer,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROJECT_OFFICER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_OFFICER,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProgramManager,
-      email: USERCONFIG.emailProgramManager,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProgramManager,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_MANAGER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_MANAGER,
     });
-
-    // ***** CREATE COUNTRIES *****
-    const countryRepository = this.connection.getRepository(CountryEntity);
-    await countryRepository.save([{ country: 'Location A' }]);
-    await countryRepository.save([{ country: 'Location B' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
@@ -82,9 +71,7 @@ export class SeedMultiProgram implements InterfaceScript {
 
     // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
     const programAnonymousExample3 = { ...programAnonymousExample1 };
-    programAnonymousExample3.countryId = 2;
     const programAnonymousExample4 = { ...programAnonymousExample2 };
-    programAnonymousExample4.countryId = 2;
 
     const examplePrograms = [
       programAnonymousExample1,

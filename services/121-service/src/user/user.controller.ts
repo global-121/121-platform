@@ -56,13 +56,12 @@ export class UserController {
     }
 
     const token = await this.userService.generateJWT(_user);
-    const { email, role, status, countryId } = _user;
+    const { email, role, status } = _user;
     const user = {
       email,
       token,
       role,
       status,
-      countryId,
     };
 
     return { user };

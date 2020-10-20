@@ -6,14 +6,72 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+<<<<<<< HEAD
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.7.2...master)
+=======
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.9.0...master)
+
+---
+
+## [0.9.0](https://github.com/global-121/121-platform/compare/v0.8.6...v0.9.0) - 2020-10-13
+
+### Added
+- 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of PA-App
+- 2020-10-07: Added `PA_API_KEY` to `services/.env`
+- 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of AW-App
+- 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of HO-Portal
+- 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of Referral-App
+- 2020-10-13: Added `APPLICATION_INSIGHT_IKEY` and `APPLICATION_INSIGHT_ENDPOINT` to `services/.env`-file
+
+---
+
+## [0.8.6](https://github.com/global-121/121-platform/compare/v0.8.5...v0.8.6) - 2020-09-30
+
+### Changed
+- 2020-09-30: Input-placeholder for phone-number question as FSP custom-data
+- 2020-09-30: Update UI-text/program-questions for Kenya-pilot in seed-script
+
+## [0.8.5](https://github.com/global-121/121-platform/compare/v0.8.4...v0.8.5) - 2020-09-30
+
+### Changed
+- 2020-09-30: Input-validation for phone-number/date questions
+- 2020-09-30: Update UI-text/program-questions for Kenya-pilot in seed-script
+
+## [0.8.4](https://github.com/global-121/121-platform/compare/v0.8.3...v0.8.4) - 2020-09-28
+
+### Fixed
+- 2020-09-28: Hotfix/Patch-Releases can now be deployed automatically (again) by `webhook.js`
+
+## [0.8.3](https://github.com/global-121/121-platform/compare/v0.8.2...v0.8.3) - 2020-09-28
+
+### Changed
+- 2020-09-28: Update program-questions for Kenya-pilot in seed-script
+
+## [0.8.2](https://github.com/global-121/121-platform/compare/v0.8.1...v0.8.2) - 2020-09-24
+
+### Changed
+- 2020-09-24: `deploy.sh` only builds/deploys interfaces defined with a `GLOBAL_121_*_DIR`-variable in [tools/.env](tools/.env.example).
+
+### Security
+- 2020-09-24: Re-enabled TypeORM-logging by running `121-service` and `PA-accounts-service` as user `root` instead of `node`.
+
+## [0.8.1](https://github.com/global-121/121-platform/compare/v0.8.0...v0.8.1) - 2020-09-23
+
+### Changed
+- 2020-09-23: Disable TypeORM-logging to file because of node-permissions issue
+
+## [0.8.0](https://github.com/global-121/121-platform/compare/v0.7.1...v0.8.0) - 2020-09-23
+>>>>>>> master
 
 ### Added
 - 2020-08-19: Added `GLOBAL_121_REF_DIR` to `tools/.env`
 - 2020-09-01: `GLOBAL_121_WEB_ROOT` now also used by `webhook.service`; Needs update + restart.
 - 2020-09-09: Added `INTERSOLVE.username`, `INTERSOLVE.password`, `INTERSOLVE.ean`, `INTERSOLVE.url` in `121-service/src/secrets.ts`
+<<<<<<< HEAD
 - 2020-09-09: Added TWILIO.tokenSid, TWILIO.messagingSid, TWILIO.secret in `121-service/src/secrets.ts`  
+=======
+>>>>>>> master
 
 ### Changed
 - 2020-08-19: Deploy script & apache2 conf changed, so possibly need to restart
@@ -21,6 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2020-09-07: Add "Turkana" as language, need to update `NG_LOCALES` value for PA-App.
 - 2020-09-08: Change `AFRICASTALKING.productName` in `121-service/src/secrets.ts` to appropriate value (KRCS-staging server only!)
 - 2020-09-12: Changed `docker-compose/Dockerfile` set-up of 121-service and PA-accounts-service to use Node.js base-image
+- 2020-09-23: Refactored `secrets.ts` and `ormconfig.json` into the central `services/.env`-file
 
 ### Removed
 - 2020-09-01: Remove `VERSION`-env variable used by `webhook.service`; Needs update + restart.

@@ -1,19 +1,17 @@
-import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import {
   Injectable,
   HttpException,
   HttpStatus,
-  Inject,
-  forwardRef,
+  HttpService,
 } from '@nestjs/common';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
-import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
 import { Repository, getRepository } from 'typeorm';
 import { DidDto } from '../../programs/program/dto/did.dto';
 import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
+import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import { CredentialEntity } from '../credential/credential.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { ProgramService } from '../../programs/program/program.service';
@@ -21,6 +19,10 @@ import {
   FspAnswersAttrInterface,
   AnswerSet,
 } from 'src/programs/fsp/fsp-interface';
+import { API } from '../../config';
+import { SmsService } from '../../notifications/sms/sms.service';
+import { PaStatus } from '../../models/pa-status.model';
+import { ConnectionRequestDto } from './dto/connection-request.dto';
 
 @Injectable()
 export class CreateConnectionService {
@@ -39,7 +41,11 @@ export class CreateConnectionService {
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
 
-  public constructor(private readonly programService: ProgramService) {}
+  public constructor(
+    private readonly programService: ProgramService,
+    private readonly httpService: HttpService,
+    private readonly smsService: SmsService,
+  ) {}
 
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
@@ -75,6 +81,12 @@ export class CreateConnectionService {
       connection.programsApplied.push(+programId);
       await this.connectionRepository.save(connection);
       this.programService.calculateInclusionPrefilledAnswers(did, programId);
+      this.smsService.notifyBySms(
+        connection.phoneNumber,
+        connection.preferredLanguage,
+        PaStatus.registered,
+        programId,
+      );
     }
   }
 
@@ -99,7 +111,9 @@ export class CreateConnectionService {
     preferredLanguage: string,
   ): Promise<void> {
     const connection = await this.findOne(did);
-    connection.phoneNumber = phoneNumber;
+    if (!connection.phoneNumber) {
+      connection.phoneNumber = phoneNumber;
+    }
     connection.preferredLanguage = preferredLanguage;
     await this.connectionRepository.save(connection);
   }
@@ -112,6 +126,18 @@ export class CreateConnectionService {
   }
 
   public async addCustomData(
+    did: string,
+    customDataKey: string,
+    customDataValue: string,
+  ): Promise<ConnectionEntity> {
+    const connection = await this.findOne(did);
+    if (!(customDataKey in connection.customData)) {
+      connection.customData[customDataKey] = customDataValue;
+    }
+    return await this.connectionRepository.save(connection);
+  }
+
+  public async addCustomDataOverwrite(
     did: string,
     customDataKey: string,
     customDataValue: string,
@@ -202,5 +228,25 @@ export class CreateConnectionService {
       }
     }
     return fspCustomData;
+  }
+
+  public async deleteRegistration(did: string): Promise<void> {
+    //1. Delete PA Account
+    const wallet = await this.httpService
+      .post(API.paAccounts.deleteAccount, {
+        did: did,
+        apiKey: process.env.PA_API_KEY,
+      })
+      .toPromise();
+
+    //2. Delete wallet
+    await this.httpService
+      .post(API.userIMS.deleteWallet, { wallet: JSON.parse(wallet.data) })
+      .toPromise();
+
+    //3. Delete data in 121-service
+    this.delete({ did });
+
+    console.log(`Deleted PA: ${did}`);
   }
 }

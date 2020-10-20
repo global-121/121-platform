@@ -97,29 +97,37 @@ export class CredentialService {
     programId: number,
     prefilledAnswers: PrefilledAnswerDto[],
   ): Promise<any[]> {
-    //Delete existing entries for this DID*program first.
-
-    await this.credentialAttributesRepository.delete({
-      did: did,
-      programId: programId,
-    });
-
     //Then save new information
     let credentials = [];
     for (let answer of prefilledAnswers) {
-      let credential = new CredentialAttributesEntity();
-      credential.did = did;
-      credential.attributeId = answer.attributeId;
-      credential.attribute = answer.attribute;
-      credential.answer = answer.answer;
-      let newCredential;
-      credential.programId = programId;
-      newCredential = await this.credentialAttributesRepository.save(
-        credential,
-      );
-      credentials.push(newCredential);
+      const oldAttribute = await this.credentialAttributesRepository.findOne({
+        where: { did: did, programId: programId, attribute: answer.attribute },
+      });
+      if (!oldAttribute) {
+        let credential = new CredentialAttributesEntity();
+        credential.did = did;
+        credential.attributeId = answer.attributeId;
+        credential.attribute = answer.attribute;
+        credential.answer = answer.answer;
+        let newCredential;
+        credential.programId = programId;
+
+        newCredential = await this.credentialAttributesRepository.save(
+          credential,
+        );
+        credentials.push(newCredential);
+      }
     }
-    await this.storePersistentAnswers(prefilledAnswers, programId, did);
+
+    const connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+    if (
+      !connection.customData ||
+      Object.keys(connection.customData).length === 0
+    ) {
+      await this.storePersistentAnswers(prefilledAnswers, programId, did);
+    }
     return credentials;
   }
 
@@ -274,6 +282,11 @@ export class CredentialService {
 
   // Used by Aidworker
   public async issue(payload: CredentialIssueDto): Promise<void> {
+    await this.storePersistentAnswers(
+      payload.attributes,
+      payload.programId,
+      payload.did,
+    );
     await this.checkForOldCredential(payload.did, payload.programId);
 
     // Get related credential offer
@@ -300,7 +313,6 @@ export class CredentialService {
       },
       attributes: attributesPost,
     };
-
     const response = await this.httpService
       .post(API.credential.issue, credentialPost)
       .toPromise();
@@ -387,14 +399,15 @@ export class CredentialService {
     did: string,
     programId: number,
   ): Promise<void> {
-    console.log('paAccountsCredentialReady');
     const data = {
       did: did,
       programId: programId,
     };
-    console.log(API.paAccounts.getCredentialHandleProof, data);
     await this.httpService
-      .post(API.paAccounts.getCredentialHandleProof, data)
+      .post(API.paAccounts.getCredentialHandleProof, {
+        didProgramDto: data,
+        apiKey: process.env.PA_API_KEY,
+      })
       .toPromise();
   }
 

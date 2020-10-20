@@ -7,7 +7,6 @@ export class Program {
   title: string | TranslatableString;
   description: string | TranslatableString;
   contactDetails?: string | TranslatableString;
-  countryId: number;
   created: string;
   updated: string;
   meetingDocuments?: string | TranslatableString;
@@ -16,6 +15,7 @@ export class Program {
   financialServiceProviders: Fsp[];
   credDefId: string;
   validation: boolean;
+  phoneNumberPlaceholder: string;
 }
 
 export class ProgramCriterium {
@@ -23,6 +23,8 @@ export class ProgramCriterium {
   criterium: string;
   answerType: AnswerType;
   label: TranslatableString;
+  placeholder?: TranslatableString;
+  pattern?: string; // Remember to escape the special characters in the string!
   options: null | ProgramCriteriumOption[];
 }
 

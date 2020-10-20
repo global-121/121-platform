@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   BeforeUpdate,
+  Index,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 
@@ -13,6 +14,7 @@ export class CustomCriterium {
   public id: number;
 
   @Column()
+  @Index({ unique: true })
   public criterium: string;
 
   @Column('json')
@@ -20,6 +22,9 @@ export class CustomCriterium {
 
   @Column()
   public answerType: string;
+
+  @Column('json', { nullable: true })
+  public placeholder: JSON;
 
   @Column()
   public criteriumType: string;
@@ -49,4 +54,7 @@ export class CustomCriterium {
 
   @Column({ default: false })
   public persistence: boolean;
+
+  @Column({ nullable: true })
+  public pattern: string;
 }

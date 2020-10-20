@@ -9,6 +9,8 @@ import { IonContent } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
+import { ConsentQuestionComponent } from '../personal-components/consent-question/consent-question.component';
+import { ContactDetailsComponent } from '../personal-components/contact-details/contact-details.component';
 import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
@@ -16,7 +18,6 @@ import { PersonalComponent } from '../personal-components/personal-component.cla
 import { PersonalComponents } from '../personal-components/personal-components.enum';
 import { PreprintedQrcodeComponent } from '../personal-components/preprinted-qrcode/preprinted-qrcode.component';
 import { RegistrationSummaryComponent } from '../personal-components/registration-summary/registration-summary.component';
-import { SelectCountryComponent } from '../personal-components/select-country/select-country.component';
 import { SelectFspComponent } from '../personal-components/select-fsp/select-fsp.component';
 import { SelectLanguageComponent } from '../personal-components/select-language/select-language.component';
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
@@ -40,7 +41,7 @@ export class PersonalPage implements OnInit {
   public ionContent: IonContent;
 
   @ViewChild('conversationContainer', { read: ViewContainerRef })
-  public container;
+  public container: ViewContainerRef;
 
   public isDebug: boolean = environment.isDebug;
   public showDebug: boolean = environment.showDebug;
@@ -48,13 +49,14 @@ export class PersonalPage implements OnInit {
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
   public availableSections = {
+    [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
+    [PersonalComponents.contactDetails]: ContactDetailsComponent,
     [PersonalComponents.createIdentity]: CreateIdentityComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
     [PersonalComponents.handleProof]: HandleProofComponent,
     [PersonalComponents.loginIdentity]: LoginIdentityComponent,
     [PersonalComponents.registrationSummary]: RegistrationSummaryComponent,
     [PersonalComponents.preprintedQrcode]: PreprintedQrcodeComponent,
-    [PersonalComponents.selectCountry]: SelectCountryComponent,
     [PersonalComponents.selectFsp]: SelectFspComponent,
     [PersonalComponents.selectLanguage]: SelectLanguageComponent,
     [PersonalComponents.selectProgram]: SelectProgramComponent,
@@ -73,15 +75,14 @@ export class PersonalPage implements OnInit {
   ) {
     // Listen for completed sections, to continue with next steps
     this.conversationService.updateConversation$.subscribe(
-      (nextAction: string) => {
+      async (nextAction: string) => {
         if (
           nextAction === this.conversationService.conversationActions.afterLogin
         ) {
-          this.loadComponents();
+          await this.loadComponents();
+          this.scrollDownWhenReady();
           return;
         }
-
-        this.scrollDown();
 
         this.insertSection(nextAction);
       },
@@ -96,17 +97,14 @@ export class PersonalPage implements OnInit {
     });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     // Prevent automatic behaviour while debugging/developing:
     if (this.isDebug && this.showDebug) {
       return;
     }
 
-    this.loadComponents();
-  }
-
-  ionViewDidEnter() {
-    this.scrollDown();
+    await this.loadComponents();
+    this.scrollDownWhenReady();
   }
 
   private async loadComponents() {
@@ -116,19 +114,25 @@ export class PersonalPage implements OnInit {
     const conversation = await this.conversationService.getConversationUpToNow();
 
     conversation.forEach((section: ConversationSection) => {
-      this.insertSection(section.name, section.moment, section.data);
+      this.insertSection(
+        section.name,
+        { animate: false },
+        section.moment,
+        section.data,
+      );
     });
-
-    window.setTimeout(() => {
-      this.scrollDown();
-    }, this.scrollSpeed);
   }
 
   private getComponentFactory(name: string) {
     return this.resolver.resolveComponentFactory(this.availableSections[name]);
   }
 
-  public insertSection(name: string, moment?: number, data?: any) {
+  public insertSection(
+    name: string,
+    options: { animate: boolean } = { animate: environment.useAnimation },
+    moment?: number,
+    data?: any,
+  ) {
     if (!name) {
       return;
     }
@@ -138,14 +142,34 @@ export class PersonalPage implements OnInit {
     const componentRef = this.container.createComponent(
       this.getComponentFactory(name),
     );
-    const componentInstance: PersonalComponent = componentRef.instance;
+    const componentInstance: any | PersonalComponent = componentRef.instance;
 
     componentInstance.moment = moment;
     componentInstance.data = data;
+    componentInstance.animate = options.animate;
   }
 
   public scrollDown() {
     this.ionContent.scrollToBottom(this.scrollSpeed);
+  }
+
+  public scrollToLastSection() {
+    const lastSection: any = this.container.get(this.container.length - 1);
+
+    if (!lastSection || !lastSection.rootNodes || !lastSection.rootNodes[0]) {
+      return;
+    }
+    lastSection.rootNodes[0].scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'nearest',
+    });
+  }
+
+  private async scrollDownWhenReady() {
+    window.setTimeout(() => {
+      this.scrollToLastSection();
+    }, 600);
   }
 
   public debugClearAllStorage() {
@@ -154,7 +178,8 @@ export class PersonalPage implements OnInit {
     window.sessionStorage.clear();
   }
 
-  public debugStartFromHistory() {
-    this.loadComponents();
+  public async debugStartFromHistory() {
+    await this.loadComponents();
+    this.scrollDownWhenReady();
   }
 }

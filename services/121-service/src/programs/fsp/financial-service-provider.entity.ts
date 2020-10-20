@@ -54,6 +54,6 @@ export class FinancialServiceProviderEntity {
 }
 
 export enum fspName {
-  intersolve = 'Intersolve',
+  intersolve = 'Digital Voucher',
   mpesa = 'M-Pesa',
 }

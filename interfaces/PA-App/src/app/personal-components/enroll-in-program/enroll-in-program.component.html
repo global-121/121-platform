@@ -1,34 +1,15 @@
 <section>
-  <dialogue-turn
-    [actor]="instanceDetails?.name"
-    *ngIf="instanceDetails"
-    [isSpoken]="instanceDetails"
-  >
-    <p>
-      <play-text-audio key="personal.enroll-in-program.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.enroll-in-program.introduction'|translate:{ ngo:'<strong>'+instanceDetails?.displayName+'</strong>' }"></span>
-    </p>
-    <p
-      *ngIf="programDetails?.contactDetails"
-      [innerHTML]="programDetails.contactDetails"
-      class="enroll-in-program--contact-details"
-    ></p>
-
-  </dialogue-turn>
-  <dialogue-turn
-    [actor]="instanceDetails?.name"
-    *ngIf="instanceDetails"
-    [isSpoken]="instanceDetails"
-    isConnected="true"
-  >
+  <dialogue-turn>
     <p>
       <play-text-audio key="personal.enroll-in-program.introduction-information" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate:{ ngo:'<strong>'+instanceDetails?.displayName+'</strong>' }"></span>
+      <span [innerHTML]="'personal.enroll-in-program.introduction-information'|translate"></span>
     </p>
 
-    <more-info-button buttonKey="personal.enroll-in-program.more-info-questions"
-                      messageKey="personal.enroll-in-program.info-message"
-                      headingKey="personal.enroll-in-program.more-info-questions"
+    <more-info-button
+      *ngIf="instanceInformation?.dataPolicy"
+      buttonKey="personal.enroll-in-program.more-info-questions"
+      [message]="instanceInformation?.dataPolicy"
+      headingKey="personal.enroll-in-program.more-info-questions"
     ></more-info-button>
   </dialogue-turn>
 
@@ -38,11 +19,10 @@
                [(isEditing)]="hasChangedAnswers"
                [allQuestionsShown]="allQuestionsShown"
                (submit)="submit($event)"
-               submitLabel="personal.enroll-in-program.submit"
+               submitLabel="shared.submit-button"
   ></q-and-a-set>
 
-  <dialogue-turn [actor]="instanceDetails?.name"
-                 *ngIf="hasAnswered"
+  <dialogue-turn *ngIf="hasAnswered"
                  [isSpoken]="hasAnswered"
   >
     <p>
@@ -56,7 +36,7 @@
   >
     <ul>
       <li *ngFor="let question of questions">
-        {{ question.label }}<br>
+        <span [innerHTML]="question.label"></span><br>
         <strong>{{ answers[question.code]?.label }}</strong>
       </li>
     </ul>

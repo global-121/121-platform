@@ -102,6 +102,7 @@ export class ValidateProgramComponent implements ValidationComponent {
           code: criterium.criterium,
           answerType: criterium.answerType,
           label: this.translatableString.get(criterium.label),
+          placeholder: this.translatableString.get(criterium.placeholder),
           options: !criterium.options
             ? null
             : this.buildOptions(criterium.options),

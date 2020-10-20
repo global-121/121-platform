@@ -1,7 +1,6 @@
 import { ProgramEntity } from './../../programs/program/program.entity';
 import { EXTERNAL_API } from './../../config';
 import { Injectable } from '@nestjs/common';
-import { TWILIO } from '../../secrets';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
@@ -35,10 +34,9 @@ export class SmsService {
     twilioClient.messages
       .create({
         body: message,
-        messagingServiceSid: TWILIO.messagingSid,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.callbackUrlSms,
         to: recipientPhoneNr,
-        mediaUrl: 'https://demo.twilio.com/owl.png',
       })
       .then(message => this.storeSendSms(message))
       .catch(err => console.log('Error twillio', err));

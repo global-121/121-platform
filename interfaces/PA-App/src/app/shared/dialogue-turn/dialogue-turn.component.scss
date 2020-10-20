@@ -97,15 +97,12 @@
 }
 
 .dialogue-turn.is-pending {
-  opacity: 0;
-
-  .dialogue-turn--content {
-    opacity: 0;
-    transform: scale(0.2);
-  }
+  display: none;
 }
 
 .dialogue-turn.is-spoken {
+  display: flex;
+
   .dialogue-turn--content {
     animation-name: speak;
     animation-duration: 0.3s;
@@ -117,6 +114,7 @@
 @keyframes speak {
   0% {
     opacity: 0;
+    transform: scale(1);
   }
   50% {
     opacity: 0.2;

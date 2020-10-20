@@ -30,5 +30,7 @@ ion-card-content {
   position: absolute;
   top: 0;
   left: 100px;
-  margin: 15px;
+  margin: 0 15px;
+  height: 150px;
+  overflow: auto;
 }

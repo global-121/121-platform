@@ -1,6 +1,9 @@
 import { Component, Input } from '@angular/core';
+import { first } from 'rxjs/operators';
+import { InstanceInformation } from 'src/app/models/instance.model';
 import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -16,7 +19,7 @@ export class SelectProgramComponent extends PersonalComponent {
   @Input()
   public data;
 
-  private countryChoice: string;
+  public instanceInformation: InstanceInformation;
 
   public programs: Program[];
   public programChoice: number;
@@ -26,11 +29,14 @@ export class SelectProgramComponent extends PersonalComponent {
     public paData: PaDataService,
     public conversationService: ConversationService,
     public translatableString: TranslatableStringService,
+    private instanceService: InstanceService,
   ) {
     super();
   }
 
   ngOnInit() {
+    this.getInstanceInformation();
+
     if (this.data) {
       this.initHistory();
       return;
@@ -50,13 +56,18 @@ export class SelectProgramComponent extends PersonalComponent {
     await this.getPrograms();
   }
 
+  private async getInstanceInformation() {
+    this.instanceService.instanceInformation
+      .pipe(first())
+      .subscribe((instanceInformation) => {
+        this.instanceInformation = instanceInformation;
+      });
+  }
+
   private async getPrograms() {
     this.conversationService.startLoading();
 
-    this.countryChoice = '1'; // await this.paData.retrieve(this.paData.type.country);
-    this.programs = await this.programsService.getProgramsByCountryId(
-      this.countryChoice,
-    );
+    this.programs = await this.programsService.getAllPrograms();
     this.programs = this.translateProgramProperties(this.programs);
 
     this.conversationService.stopLoading();
@@ -78,20 +89,16 @@ export class SelectProgramComponent extends PersonalComponent {
 
   public changeProgram($event) {
     this.programChoice = $event.detail.value;
-    this.paData.store(this.paData.type.programId, this.programChoice);
   }
 
   public submitProgram() {
-    const initialProgram = new Program();
-    initialProgram.id = this.programChoice;
-
-    this.paData.saveProgram(this.programChoice, initialProgram);
+    this.paData.setCurrentProgramId(this.programChoice);
 
     this.complete();
   }
 
   getNextSection() {
-    return PersonalComponents.enrollInProgram;
+    return PersonalComponents.consentQuestion;
   }
 
   complete() {

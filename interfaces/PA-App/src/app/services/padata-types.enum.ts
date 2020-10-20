@@ -1,6 +1,5 @@
 export enum PaDataTypes {
   conversationHistory = 'conversationHistory',
-  country = 'countryId',
   credDefId = 'credDefId',
   credentialRequest = 'credentialRequest',
   did = 'did',
@@ -8,7 +7,6 @@ export enum PaDataTypes {
   fsp = 'fsp',
   language = 'languageCode',
   myAnswers = 'myAnswers',
-  myPrograms = 'myPrograms',
   programId = 'programId',
   phoneNumber = 'phoneNumber',
   status = 'status',

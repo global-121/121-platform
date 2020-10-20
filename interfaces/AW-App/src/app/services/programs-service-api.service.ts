@@ -97,7 +97,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/create-connection/custom-data',
+        '/sovrin/create-connection/custom-data/overwrite',
         {
           did,
           key,

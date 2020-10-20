@@ -12,6 +12,7 @@ export class FspAttribute {
   name: string;
   answerType: AnswerType;
   label: TranslatableString;
+  placeholder?: TranslatableString;
   options: FspAttributeOption[] | null;
 }
 

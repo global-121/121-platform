@@ -1,6 +1,5 @@
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { Injectable, HttpService } from '@nestjs/common';
-import { AFRICASTALKING } from '../../../secrets';
 import { StatusMessageDto } from '../../../shared/dto/status-message.dto';
 
 @Injectable()
@@ -9,8 +8,8 @@ export class AfricasTalkingApiService {
 
   public async sendPaymentMpesa(payload): Promise<StatusMessageDto> {
     const credentials = {
-      apiKey: AFRICASTALKING.apiKey,
-      username: AFRICASTALKING.username,
+      apiKey: process.env.AFRICASTALKING_API_KEY,
+      username: process.env.AFRICASTALKING_USERNAME
     };
     const AfricasTalking = require('africastalking')(credentials);
     const payments = AfricasTalking.PAYMENTS;

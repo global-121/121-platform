@@ -4,7 +4,6 @@ export class Program {
   id: number;
   title: string | TranslatableString;
   description: string | TranslatableString;
-  countryId: number;
   created: string;
   updated: string;
   meetingDocuments?: string | TranslatableString;
@@ -19,6 +18,7 @@ export class ProgramCriterium {
   criterium: string;
   answerType: AnswerType;
   label: TranslatableString;
+  placeholder?: TranslatableString;
   options: null | ProgramCriteriumOption[];
 }
 

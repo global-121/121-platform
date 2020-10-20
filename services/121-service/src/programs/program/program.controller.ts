@@ -66,25 +66,12 @@ export class ProgramController {
     return await this.programService.getFunds(params.id);
   }
 
-  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager, UserRole.Aidworker)
   @ApiOperation({ title: 'Get all programs' })
   @ApiImplicitQuery({ name: 'location', required: false })
-  @ApiImplicitQuery({ name: 'countryId', required: false })
   @ApiResponse({ status: 200, description: 'Return all programs.' })
   @Get()
   public async findAll(@Query() query): Promise<ProgramsRO> {
     return await this.programService.findAll(query);
-  }
-
-  @ApiImplicitParam({ name: 'countryId', required: true, type: 'integer' })
-  @ApiOperation({ title: 'Get published programs by country id' })
-  @ApiResponse({
-    status: 200,
-    description: 'Return all published programs by country',
-  })
-  @Get('country/:countryId')
-  public async findByCountry(@Param() param): Promise<ProgramsRO> {
-    return await this.programService.findByCountry(param.countryId);
   }
 
   @Roles(UserRole.ProjectOfficer)

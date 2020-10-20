@@ -31,11 +31,6 @@ export class CreateProgramDto {
   @IsString()
   public readonly ngo: string;
 
-  @ApiModelProperty({
-    example: { en: 'Contact us at: help@example.org' },
-  })
-  public readonly contactDetails: JSON;
-
   @ApiModelProperty({ example: '2020-05-23T18:25:43.511Z' })
   @IsNotEmpty()
   @IsDateString()
@@ -134,6 +129,10 @@ export class CreateProgramDto {
   })
   public readonly notifications: JSON;
 
+  @ApiModelProperty({ example: '+000 000 00 00' })
+  @IsString()
+  public readonly phoneNumberPlaceholder: string;
+
   @ApiModelProperty({
     example: [
       {
@@ -215,9 +214,4 @@ export class CreateProgramDto {
 
   @ApiModelProperty({ example: { en: 'descCashType' } })
   public readonly descCashType: JSON;
-
-  @ApiModelProperty({ example: 1 })
-  @IsNumber()
-  @IsNotEmpty()
-  public readonly countryId: number;
 }

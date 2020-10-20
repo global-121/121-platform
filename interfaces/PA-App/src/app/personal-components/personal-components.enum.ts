@@ -1,11 +1,12 @@
 export enum PersonalComponents {
+  consentQuestion = 'consent-question',
+  contactDetails = 'contact-details',
   createIdentity = 'create-identity',
   enrollInProgram = 'enroll-in-program',
   handleProof = 'handle-proof',
   loginIdentity = 'login-identity',
   preprintedQrcode = 'preprinted-qrcode',
   registrationSummary = 'registration-summary',
-  selectCountry = 'select-country',
   selectFsp = 'select-fsp',
   selectLanguage = 'select-language',
   selectProgram = 'select-program',

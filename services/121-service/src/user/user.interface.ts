@@ -3,7 +3,6 @@ export interface UserData {
   token: string;
   role: string;
   status: string;
-  countryId: number;
 }
 
 export interface UserRO {

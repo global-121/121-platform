@@ -1,15 +1,18 @@
 <section #selectProgram>
   <dialogue-turn *ngIf="programs?.length"
                  [isSpoken]="programs?.length"
+                 isConnected="true"
   >
     <p>
       <play-text-audio key="personal.select-program.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-program.introduction'|translate }}
     </p>
 
-    <more-info-button buttonKey="personal.select-program.more-info-programs"
-                      messageKey="personal.select-program.info-message"
-                      headingKey="personal.select-program.more-info-programs"
+    <more-info-button
+      *ngIf="instanceInformation?.aboutProgram"
+      buttonKey="personal.select-program.more-info-programs"
+      [message]="instanceInformation?.aboutProgram"
+      headingKey="personal.select-program.more-info-programs"
     ></more-info-button>
   </dialogue-turn>
   <dialogue-turn actor="self"
@@ -20,10 +23,10 @@
       <ion-radio-group (ionChange)="changeProgram($event)">
         <ion-item *ngFor="let program of programs"
                   color="light"
-                  class="ion-no-padding ion-text-wrap"
                   lines="full"
+                  class="ion-no-padding"
         >
-          <ion-label>
+          <ion-label class="ion-text-wrap ion-padding-end">
             {{ program.title }}
             <ng-container *ngIf="program.description">
               <br>

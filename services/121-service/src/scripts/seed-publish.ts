@@ -1,6 +1,7 @@
 import { Injectable, HttpService } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { PORT } from '../config';
+import { ProgramPhase } from '../models/program-phase.model';
 
 @Injectable()
 export class SeedPublish implements InterfaceScript {
@@ -14,7 +15,7 @@ export class SeedPublish implements InterfaceScript {
   public async run(): Promise<void> {
     console.log('Checking if 121-service is online');
     let response = await this.httpService
-      .get(this.address + 'programs/country/1')
+      .get(this.address + 'programs/1')
       .toPromise();
 
     if (response.status !== 200) {
@@ -33,7 +34,7 @@ export class SeedPublish implements InterfaceScript {
 
       this.httpService
         .post(this.address + 'programs/changeState/' + idString, {
-          newState: 'registrationValidation',
+          newState: ProgramPhase.registrationValidation,
         })
         .toPromise()
         .then(() => {

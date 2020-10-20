@@ -17,7 +17,6 @@ export class SeedHelper {
       {
         role: userInput.role,
         email: userInput.email,
-        countryId: userInput.countryId,
         password: crypto.createHmac('sha256', userInput.password).digest('hex'),
         status: 'active',
       },

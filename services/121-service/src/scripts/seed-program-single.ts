@@ -6,8 +6,6 @@ import { SeedHelper } from './seed-helper';
 import { SeedPublish } from './seed-publish';
 import { SeedInit } from './seed-init';
 
-import { CountryEntity } from '../programs/country/country.entity';
-
 import fspBank from '../../seed-data/fsp/fsp-bank.json';
 import fspMobileMoney from '../../seed-data/fsp/fsp-mobile-money.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
@@ -19,7 +17,6 @@ import { ProtectionServiceProviderEntity } from '../programs/program/protection-
 
 import programAnonymousExample1 from '../../seed-data/program/program-anonymous1.json';
 import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
-import { USERCONFIG } from '../secrets';
 import { UserRole } from '../user-role.enum';
 
 @Injectable()
@@ -36,28 +33,21 @@ export class SeedSingleProgram implements InterfaceScript {
     // ***** CREATE USERS *****
     await this.seedHelper.addUser({
       role: UserRole.Aidworker,
-      email: USERCONFIG.emailAidWorker,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordAidWorker,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_AID_WORKER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_AID_WORKER,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProjectOfficer,
-      email: USERCONFIG.emailProjectOfficer,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProjectOfficer,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROJECT_OFFICER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_OFFICER,
     });
 
     await this.seedHelper.addUser({
       role: UserRole.ProgramManager,
-      email: USERCONFIG.emailProgramManager,
-      countryId: USERCONFIG.countryId,
-      password: USERCONFIG.passwordProgramManager,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_MANAGER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_MANAGER,
     });
-
-    // ***** CREATE COUNTRIES *****
-    const countryRepository = this.connection.getRepository(CountryEntity);
-    await countryRepository.save([{ country: 'Location A' }]);
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);

@@ -1,18 +1,16 @@
 <section *ngIf="!isCanceled">
-  <dialogue-turn [actor]="program?.ngo">
+  <dialogue-turn>
     <p>
       <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.preprinted-qrcode.introduction'|translate }}
     </p>
-    <more-info-button 
+    <more-info-button
       buttonKey="personal.preprinted-qrcode.more-info-qr"
-      messageKey="personal.preprinted-qrcode.info-qr" 
+      messageKey="personal.preprinted-qrcode.info-qr"
       headingKey="personal.preprinted-qrcode.more-info-qr"
     ></more-info-button>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo"
-                 isConnected="true"
-  >
+  <dialogue-turn isConnected="true">
     <p>
       <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-start ion-margin-end">
       </play-text-audio>
@@ -72,8 +70,7 @@
     </ion-row>
   </dialogue-turn>
 
-  <dialogue-turn [actor]="program?.ngo"
-                 *ngIf="hasPreprinted && scanResult"
+  <dialogue-turn *ngIf="hasPreprinted && scanResult"
                  [isSpoken]="hasPreprinted && scanResult"
   >
     <div *ngIf="!scanResultError">

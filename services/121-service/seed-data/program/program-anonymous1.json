@@ -4,7 +4,6 @@
   "state": "design",
   "location": "Location A",
   "ngo": "NGO A",
-  "countryId": 1,
   "title": {
     "en": "Program 1"
   },
@@ -25,7 +24,7 @@
   "currency": "MWK",
   "distributionFrequency": "month",
   "distributionDuration": 3,
-  "fixedTransferValue": 500,
+  "fixedTransferValue": 10,
   "financialServiceProviders": [
     {
       "id": 1
@@ -62,6 +61,7 @@
   },
   "notifications": {
     "en": {
+      "registered": "You have been successfully registered for this program.",
       "included": "You have been included in this program.",
       "rejected": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us.",
       "whatsappPayment": "Please reply to this message within 24 hours to receive your voucher",
@@ -72,6 +72,7 @@
       "rejected": "Je zit niet in het programma"
     }
   },
+  "phoneNumberPlaceholder": "+000 000 00 00",
   "customCriteria": [
     {
       "criterium": "name",
@@ -87,7 +88,7 @@
     {
       "criterium": "dob",
       "label": {
-        "en": "My date of birth:"
+        "en": "My date of birth: Format is day-month-year example: 31-12-1970"
       },
       "answerType": "date",
       "criteriumType": "standard",

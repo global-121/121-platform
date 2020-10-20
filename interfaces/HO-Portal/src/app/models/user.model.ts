@@ -3,5 +3,4 @@ export class User {
   email: string;
   role: string;
   status?: string;
-  countryId?: string;
 }

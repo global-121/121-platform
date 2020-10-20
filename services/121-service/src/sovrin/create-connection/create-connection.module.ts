@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateConnectionService } from './create-connection.service';
 import { CreateConnectionController } from './create-connection.controller';
@@ -9,6 +9,7 @@ import { CredentialRequestEntity } from '../credential/credential-request.entity
 import { CredentialEntity } from '../credential/credential.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { ProgramModule } from '../../programs/program/program.module';
+import { SmsModule } from '../../notifications/sms/sms.module';
 
 @Module({
   imports: [
@@ -21,8 +22,11 @@ import { ProgramModule } from '../../programs/program/program.module';
     ]),
     ProgramModule,
     UserModule,
+    HttpModule,
+    SmsModule,
   ],
   providers: [CreateConnectionService],
   controllers: [CreateConnectionController],
+  exports: [CreateConnectionService],
 })
 export class CreateConnectionModule {}

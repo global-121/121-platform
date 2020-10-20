@@ -137,6 +137,10 @@ export class SpreadsheetService {
       ),
       offerForWhom: SpreadsheetService.readCellValue(offerRow, 'gsx$forwhom'),
       offerCapacity: SpreadsheetService.readCellValue(offerRow, 'gsx$capacity'),
+      offerBasicRight: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$basicright',
+      ),
       offerVisible:
         SpreadsheetService.readCellValue(offerRow, 'gsx$visible') === 'Show',
       subCategoryID: Number(

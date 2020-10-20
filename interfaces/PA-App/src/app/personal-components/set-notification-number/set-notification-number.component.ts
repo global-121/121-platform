@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
+import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
-import { PersonalComponent } from '../personal-component.class';
-import { PersonalComponents } from '../personal-components.enum';
 
 @Component({
   selector: 'app-set-notification-number',
@@ -24,7 +24,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   public choiceMade = false;
   public phoneNumber: string;
   public phone: any;
-  public ngo: string;
+  public placeholder: string;
   public did: string;
 
   public hasValidationError: boolean;
@@ -57,7 +57,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
       return;
     }
 
-    this.ngo = await this.getNgo();
+    this.placeholder = await this.getPlaceholder();
   }
 
   async initHistory() {
@@ -72,12 +72,16 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     this.phoneSkipped = this.data.phoneSkipped;
     this.phoneNumber = this.data.phoneNumber;
     this.phone = this.phoneNumber;
-    this.ngo = await this.getNgo();
+    this.placeholder = await this.getPlaceholder();
   }
 
-  async getNgo() {
+  async getPlaceholder() {
     const currentProgram = await this.paData.getCurrentProgram();
-    return currentProgram.ngo;
+    const phoneNumberPlaceholder = currentProgram.phoneNumberPlaceholder;
+    if (!phoneNumberPlaceholder) {
+      return '';
+    }
+    return phoneNumberPlaceholder;
   }
 
   private async checkExistingPhoneNumber() {

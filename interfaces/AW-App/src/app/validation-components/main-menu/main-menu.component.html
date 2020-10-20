@@ -8,10 +8,10 @@
     <ion-radio-group (ionChange)="changeOption($event)">
       <ion-item *ngFor="let option of menuOptions"
                 color="light"
-                class="ion-no-padding ion-text-wrap"
+                class="ion-no-padding"
                 [disabled]="option.disabled || optionSelected"
       >
-        <ion-label>
+        <ion-label class="ion-text-wrap ion-padding-end">
           {{ option.option }}
           &nbsp;
           <ion-badge

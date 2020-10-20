@@ -4,7 +4,10 @@
     {
       "name": "phoneNumber",
       "label": {
-        "en": "What is your phonenumber, so we can send you mobile money"
+        "en": "What is your phonenumber, so we can send you mobile money (With country-code. It should look like: <strong>+000 000 00 00</strong>)"
+      },
+      "placeholder": {
+        "en": "+000 000 00 00"
       },
       "answerType": "tel",
       "options": null

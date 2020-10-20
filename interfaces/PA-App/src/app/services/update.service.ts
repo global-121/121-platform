@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { PaInclusionStates } from '../models/pa-statuses.enum';
 import { PaDataService } from './padata.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -86,15 +87,15 @@ export class UpdateService {
         programId,
         did,
       ).subscribe((isStatusAvailable) => {
-        console.log('isStatusAvailable', isStatusAvailable);
-        if (isStatusAvailable !== 'unavailable') {
-          subscription.unsubscribe();
-          this.createUpdateToast(
-            'notification.inclusion',
-            this.pagesNav.inclusion,
-          );
-          resolve();
+        if (isStatusAvailable === PaInclusionStates.unavailable) {
+          return;
         }
+        subscription.unsubscribe();
+        this.createUpdateToast(
+          'notification.inclusion',
+          this.pagesNav.inclusion,
+        );
+        resolve();
       });
     });
   }

@@ -1,5 +1,6 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { InstanceInfo } from 'src/app/models/instance.model';
+import { Component, Input } from '@angular/core';
+import { first } from 'rxjs/operators';
+import { InstanceInformation } from 'src/app/models/instance.model';
 import {
   Program,
   ProgramAttribute,
@@ -7,6 +8,7 @@ import {
   ProgramCriteriumOption,
 } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
@@ -25,7 +27,6 @@ import { PersonalComponents } from '../personal-components.enum';
   selector: 'app-enroll-in-program',
   templateUrl: './enroll-in-program.component.html',
   styleUrls: ['./enroll-in-program.component.scss'],
-  encapsulation: ViewEncapsulation.None, // Disabled because we need to style inserted HTML from the database
 })
 export class EnrollInProgramComponent extends PersonalComponent {
   @Input()
@@ -35,8 +36,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
   private currentProgram: Program;
   private credDefId: string;
 
-  public instanceDetails: any | InstanceInfo;
   public programDetails: any;
+  public instanceInformation: InstanceInformation;
 
   public questions: Question[];
   public answerTypes = AnswerType;
@@ -53,11 +54,14 @@ export class EnrollInProgramComponent extends PersonalComponent {
     public paData: PaDataService,
     public translatableString: TranslatableStringService,
     public conversationService: ConversationService,
+    private instanceService: InstanceService,
   ) {
     super();
   }
 
   ngOnInit() {
+    this.getInstanceInformation();
+
     if (this.data) {
       this.initHistory();
       return;
@@ -78,31 +82,25 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   async initNew() {
     this.conversationService.startLoading();
-    await this.getInstanceInformation();
     await this.getProgramDetails();
     this.conversationService.stopLoading();
   }
 
   private async getInstanceInformation() {
-    this.instanceDetails = await this.programsService.getInstanceInformation();
-
-    this.instanceDetails.displayName = this.translatableString.get(
-      this.instanceDetails.displayName,
-    );
+    this.instanceService.instanceInformation
+      .pipe(first())
+      .subscribe((instanceInformation) => {
+        this.instanceInformation = instanceInformation;
+      });
   }
 
   private async getProgramDetails() {
-    this.programId = Number(
-      await this.paData.retrieve(this.paData.type.programId),
-    );
-    this.currentProgram = await this.programsService.getProgramById(
-      this.programId,
-    );
+    this.currentProgram = await this.paData.getCurrentProgram();
     this.prepareProgramDetails(this.currentProgram);
-    this.paData.saveProgram(this.programId, this.currentProgram);
   }
 
   public prepareProgramDetails(program: Program) {
+    this.programId = program.id;
     this.credDefId = program.credDefId;
 
     this.programDetails = this.buildDetails(program);
@@ -130,9 +128,11 @@ export class EnrollInProgramComponent extends PersonalComponent {
           code: criterium.criterium,
           answerType: criterium.answerType,
           label: this.translatableString.get(criterium.label),
-          options: !criterium.options
-            ? null
-            : this.buildOptions(criterium.options),
+          placeholder: this.translatableString.get(criterium.placeholder),
+          pattern: criterium.pattern,
+          options: criterium.options
+            ? this.buildOptions(criterium.options)
+            : null,
         };
       },
     );
@@ -157,7 +157,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     this.hasAnswered = true;
     this.hasChangedAnswers = false;
-    this.conversationService.scrollToEnd();
     this.paData.saveAnswers(this.programId, this.answers);
   }
 
@@ -165,6 +164,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.conversationService.startLoading();
     this.isDisabled = true;
     await this.executeSovrinFlow();
+    await this.storePhoneNumber();
     this.conversationService.stopLoading();
     this.complete();
   }
@@ -223,6 +223,17 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return attributes;
   }
 
+  private async storePhoneNumber() {
+    const phoneNumberAnswer = this.answers[this.paData.type.phoneNumber];
+
+    if (phoneNumberAnswer) {
+      return await this.paData.store(
+        this.paData.type.phoneNumber,
+        phoneNumberAnswer.value,
+      );
+    }
+  }
+
   getNextSection() {
     return PersonalComponents.selectFsp;
   }
@@ -233,7 +244,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
       data: {
         currentProgram: {
           id: this.currentProgram.id,
-          ngo: this.currentProgram.ngo,
           title: this.currentProgram.title,
           description: this.currentProgram.description,
           customCriteria: this.currentProgram.customCriteria,

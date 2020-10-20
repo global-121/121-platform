@@ -3,9 +3,12 @@
   "apiUrl": "https://trade-acc.intersolve.nl/rest/buyerapi/v1/orders",
   "attributes": [
     {
-      "name": "phoneNumber",
+      "name": "whatsappPhoneNumber",
       "label": {
-        "en": "What is your WhatsApp phonenumber, so we can send you vouchers through WhatsApp?"
+        "en": "What is your WhatsApp phonenumber, so we can send you vouchers through WhatsApp? (Include the country-code, +000 000 00 00)"
+      },
+      "placeholder": {
+        "en": "+000 000 00 00"
       },
       "answerType": "tel",
       "options": null

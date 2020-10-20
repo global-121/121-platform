@@ -1,6 +1,5 @@
 import { EXTERNAL_API } from '../../config';
 import { Injectable } from '@nestjs/common';
-import { TWILIO } from '../../secrets';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
@@ -46,8 +45,8 @@ export class WhatsappService {
       twilioClient.messages
         .create({
           body: message,
-          messagingServiceSid: TWILIO.messagingSid,
-          from: 'whatsapp:' + TWILIO.fromNumberWhatsapp,
+          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+          from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
           statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
           to: 'whatsapp:' + recipientPhoneNr,
           mediaUrl: mediaUrl,
@@ -58,8 +57,8 @@ export class WhatsappService {
       twilioClient.messages
         .create({
           body: message,
-          messagingServiceSid: TWILIO.messagingSid,
-          from: 'whatsapp:' + TWILIO.fromNumberWhatsapp,
+          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+          from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
           statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
           to: 'whatsapp:' + recipientPhoneNr,
         })

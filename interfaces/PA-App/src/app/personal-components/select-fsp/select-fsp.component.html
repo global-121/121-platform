@@ -1,5 +1,5 @@
 <section>
-  <dialogue-turn [actor]="program?.ngo">
+  <dialogue-turn>
     <p>
       <play-text-audio key="personal.select-fsp.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.select-fsp.introduction'|translate }}
@@ -15,10 +15,10 @@
       >
         <ion-item *ngFor="let fsp of fsps"
                   color="light"
-                  class="ion-no-padding ion-text-wrap"
                   lines="full"
+                  class="ion-no-padding"
         >
-          <ion-label class="ion-text-wrap">
+          <ion-label class="ion-text-wrap ion-padding-end">
             {{ fsp.fsp }}
           </ion-label>
           <ion-radio [value]="fsp.id"
@@ -41,8 +41,7 @@
       </ion-row>
     </form>
   </dialogue-turn>
-  <dialogue-turn [actor]="program?.ngo"
-                 *ngIf="fspSubmitted"
+  <dialogue-turn *ngIf="fspSubmitted"
                  [isSpoken]="fspSubmitted"
   >
     <p>
@@ -66,11 +65,10 @@
                  [(isSubmitted)]="isSubmitted"
                  [(isEditing)]="isEditing"
                  (submit)="submitCustomAttributes($event)"
-                 submitLabel="personal.select-fsp.attributes.submit"
+                 submitLabel="shared.submit-button"
     ></q-and-a-set>
 
-    <dialogue-turn [actor]="program?.ngo"
-                   *ngIf="showResultSuccess"
+    <dialogue-turn *ngIf="showResultSuccess"
                    [isSpoken]="showResultSuccess"
     >
       <p>
@@ -78,8 +76,7 @@
         {{ 'personal.select-fsp.attributes.success'|translate }}
       </p>
     </dialogue-turn>
-    <dialogue-turn [actor]="program?.ngo"
-                   *ngIf="showResultError"
+    <dialogue-turn *ngIf="showResultError"
                    [isSpoken]="showResultError"
     >
       <p>

@@ -69,13 +69,19 @@ function deploy() {
 
     cd "$repo_services" || return
     sudo docker-compose up -d --build
-    sudo docker restart 121-service PA-accounts-service
+    sudo docker-compose restart 121-service PA-accounts-service
   }
 
   function build_interface() {
     local app=$1
     local repo_path=$2
-    local base_href="/$3/"
+    local base_href=$3
+
+    if [[ -z "$base_href" ]]
+    then
+      log "Skipped building interface $app... Target directory not defined."
+      return
+    fi
 
     log "Building interface $app..."
 
@@ -89,13 +95,19 @@ function deploy() {
       sudo npm install --unsafe-perm --no-audit --no-fund
     fi
 
-    sudo npm run build -- --prod --base-href="$base_href"
+    sudo npm run build -- --prod --base-href="/$base_href/"
   }
 
   function deploy_interface() {
     local app=$1
     local repo_path=$2
     local web_app_dir=$3
+
+    if [[ -z "$3" ]]
+    then
+      log "Skipped deploying interface $app... Target directory not defined."
+      return
+    fi
 
     log "Deploying interface $app..."
 
@@ -136,7 +148,7 @@ function deploy() {
 
   build_interface "HO-Portal" "$repo_ho" "$ho_dir"
   deploy_interface "HO-Portal" "$repo_ho" "$ho_dir"
-  
+
   build_interface "Referral-App" "$repo_ref" "$ref_dir"
   deploy_interface "Referral-App" "$repo_ref" "$ref_dir"
 
@@ -145,6 +157,9 @@ function deploy() {
   restart_webhook_service
 
   log "Done."
+
+  # Return to start:
+  cd "$repo" || return
 }
 
 deploy "$@"

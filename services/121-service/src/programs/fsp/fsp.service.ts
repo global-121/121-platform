@@ -219,6 +219,7 @@ export class FspService {
     programId,
     installment,
   ): Promise<StatusMessageDto> {
+    console.log('fsp', fsp);
     if (fsp.fsp === fspName.intersolve) {
       return this.intersolveService.sendPayment(payload);
     } else if (fsp.fsp === fspName.mpesa) {

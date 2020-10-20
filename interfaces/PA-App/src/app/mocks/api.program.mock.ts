@@ -4,7 +4,6 @@ export const mockProgram: Program = {
   id: 1,
   title: 'Program Test Title',
   description: 'Program Test Description',
-  countryId: 1,
   created: new Date().toISOString(),
   updated: new Date().toISOString(),
   meetingDocuments: 'document;document;',
@@ -12,5 +11,6 @@ export const mockProgram: Program = {
   customCriteria: [],
   financialServiceProviders: [],
   credDefId: '',
+  phoneNumberPlaceholder: '+000 000 00 00',
   validation: true,
 };

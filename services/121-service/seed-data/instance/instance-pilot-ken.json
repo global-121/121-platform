@@ -1,9 +1,12 @@
 {
-  "name": "Kenya Red Cross",
+  "name": "KRCS",
   "displayName": {
     "en": "Kenya Red Cross"
   },
   "dataPolicy": {
-    "en": "[long text of data-policy]"
+    "en": "<p>[last updated 05-10-2020]</p><p>We, &ldquo;The Kenya Red Cross Society (KRCS)&rdquo; and &ldquo;The Netherlands Red Cross (NLRC)&rdquo; need to ask you the information below in order to provide cash aid. This will be done using M-PESA mobile money. We do this to help the people in your community who are most affected by drought.</p>   <p>We will ask you your:</p> <ul> <li>First name, second name &amp; third name</li> <li>Password (4 numbers you will need to create)</li> <li>Age group</li> <li>Village/Area</li> <li>Current livelihood strategy</li> <li>If you are currently receiving aid</li> <li>Phone number</li> </ul>   <p>This information will be stored securely on an NLRC computer and shared with KRCS and your community to ensure a fair inclusion process.</p>   <p>&ldquo;Twilio&rdquo; will receive your number to send an sms.</p><p>&ldquo;Africa's Talking&rdquo; will receive your number to send a code (if you are included).</p>   <p>You can leave the aid program and delete your personal information at any time. Please ask the Aid worker how.</p>   <p>If you have more questions, please ask the Aid worker.</p>"
+  },
+  "aboutProgram": {
+    "en": "<p>This is an aid program for drought response. It aims to help a total of 350 households with income support in [LOCATION A] or [LOCATION B].</p>   <h2>Inclusion criteria</h2><p>Your community has agreed that the most vulnerable in your community are:</p><ul class='ion-padding-start'><li>Widowed, divorced, pregnant or lactating women with children under 5 years of age who have no source of income</li><li>Household: <ul class='ion-padding-start'><li>Headed by widows or divorced women with no income</li><li>Headed by chronically ill such as people who are terminal</li><li>With severely malnourished child(ren) under 5 years of age</li><li>Listed under Hunger Safety Net Programme (HSNP) group 2</li></ul></li><li>Poor and vulnerable: <ul class='ion-padding-start'><li>culturally/socially discriminated special interest groups</li><li>people of over 60 years</li></ul></li></ul><p>The more vulnerable you are the higher you will be prioritized for assistance</p>   <h2>Exclusion criteria</h2><p>To be eligible you or someone from your household <strong><u>should not</u></strong>:</p><ul class='ion-padding-start'><li>be employed in the formal sector</li><li>be owning a business</li><li>currently receive cash transfers or food aid</li></ul>   <h2>Cash Transfer Mechanism</h2><p>This aid program uses M-Pesa</p>   <h2>Transfer Amount</h2><p>2 payments of 4500 KES</p><p>Total 9000 KES</p>   <h2>Timeline</h2><p>Payment 1: Due November 2020</p><p>Payment 2: Due December 2020</p>"
   }
 }

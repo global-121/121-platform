@@ -1,7 +1,6 @@
 import soapRequest from 'easy-soap-request';
 import fs from 'fs';
 import * as convert from 'xml-js';
-import { INTERSOLVE } from '../../../secrets';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -18,7 +17,7 @@ export class SoapService {
     };
     const { response } = await soapRequest({
       headers: headersIntersolve,
-      url: INTERSOLVE.url,
+      url: process.env.INTERSOLVE_URL,
       xml: xml,
       timeout: 2000,
     });
@@ -31,11 +30,16 @@ export class SoapService {
   private async setSoapHeader(payload: any): Promise<any> {
     let header = await this.readXmlAsJs('header');
     let headerPart = this.getChild(header, 0);
-    headerPart = this.setValue(headerPart, [0, 0, 0], INTERSOLVE.username);
-    headerPart = this.setValue(headerPart, [0, 1, 0], INTERSOLVE.password);
-    // headerPart['elements'][0]['elements'][0]['elements'][0]['text'] = ;
-    // headerPart['elements'][0]['elements'][1]['elements'][0]['text'] =
-    //   INTERSOLVE.password;
+    headerPart = this.setValue(
+      headerPart,
+      [0, 0, 0],
+      process.env.INTERSOLVE_USERNAME,
+    );
+    headerPart = this.setValue(
+      headerPart,
+      [0, 1, 0],
+      process.env.INTERSOLVE_PASSWORD,
+    );
     payload['elements'][0]['elements'].unshift(headerPart);
     return payload;
   }
@@ -87,32 +91,32 @@ export class SoapService {
   }
 
   private setValue(xml: any, indices: number[], value: string): any {
-    // console.log(
-    //   'setValue start',
-    //   JSON.stringify(xml),
-    //   JSON.stringify(indices),
-    //   value,
-    // );
+    console.log(
+      'setValue start',
+      JSON.stringify(xml),
+      JSON.stringify(indices),
+      value,
+    );
     const firstIndex = indices.shift();
     if (indices.length > 0) {
-      console.log(
-        'setValue loop',
-        JSON.stringify(xml),
-        JSON.stringify(indices),
-        value,
-      );
+      // console.log(
+      //   'setValue loop',
+      //   JSON.stringify(xml),
+      //   JSON.stringify(indices),
+      //   value,
+      // );
       xml['elements'][firstIndex] = this.setValue(
         this.getChild(xml, firstIndex),
         indices,
         value,
       );
     } else {
-      console.log(
-        'setValue exit',
-        JSON.stringify(xml),
-        JSON.stringify(indices),
-        value,
-      );
+      // console.log(
+      //   'setValue exit',
+      //   JSON.stringify(xml),
+      //   JSON.stringify(indices),
+      //   value,
+      // );
       xml['elements'][firstIndex]['text'] = value;
     }
     // console.log(

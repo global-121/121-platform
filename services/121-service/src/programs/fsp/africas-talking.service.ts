@@ -1,6 +1,5 @@
 import { StatusMessageDto } from './../../shared/dto/status-message.dto';
 import { Injectable } from '@nestjs/common';
-import { AFRICASTALKING } from '../../secrets';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,7 +22,6 @@ export class AfricasTalkingService {
     programId,
     installment,
   ): Promise<StatusMessageDto> {
-    console.log('paymentList: ', paymentList);
     const payload = this.createAfricasTalkingDetails(
       paymentList,
       programId,
@@ -38,15 +36,15 @@ export class AfricasTalkingService {
     installment: number,
   ): object {
     const payload = {
-      username: AFRICASTALKING.username,
-      productName: AFRICASTALKING.productName,
+      username: process.env.AFRICASTALKING_USERNAME,
+      productName: process.env.AFRICASTALKING_PRODUCT_NAME,
       recipients: [],
     };
 
     for (let item of paymentList) {
       const recipient = {
         phoneNumber: item.phoneNumber,
-        currencyCode: AFRICASTALKING.currencyCode,
+        currencyCode: process.env.AFRICASTALKING_CURRENCY_CODE,
         amount: item.amount,
         metadata: {
           programId: String(programId),

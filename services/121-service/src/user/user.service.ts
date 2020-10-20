@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { SECRET } from '../secrets';
 import { validate } from 'class-validator';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
@@ -44,7 +43,7 @@ export class UserService {
 
   public async create(dto: CreateUserDto): Promise<UserRO> {
     // check uniqueness of email
-    const { email, password, role, countryId } = dto;
+    const { email, password, role } = dto;
     const qb = await getRepository(UserEntity)
       .createQueryBuilder('user')
       .where('user.email = :email', { email });
@@ -64,7 +63,6 @@ export class UserService {
     newUser.email = email;
     newUser.password = password;
     newUser.role = role;
-    newUser.countryId = countryId;
 
     newUser.programs = [];
     newUser.assignedProgram = [];
@@ -188,7 +186,7 @@ export class UserService {
         role: user.role,
         exp: exp.getTime() / 1000,
       },
-      SECRET,
+      process.env.SECRETS_121_SERVICE_SECRET,
     );
 
     return result;
@@ -201,7 +199,6 @@ export class UserService {
       token: this.generateJWT(user),
       role: user.role,
       status: user.status,
-      countryId: user.countryId,
       assignedProgramId: user.assignedProgram,
     };
     return { user: userRO };
