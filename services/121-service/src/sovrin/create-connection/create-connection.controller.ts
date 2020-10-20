@@ -21,6 +21,7 @@ import { UserRole } from '../../user-role.enum';
 import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
+import { GetDidByPhoneNameDto } from './dto/get-did-by-name-phone';
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('sovrin')
@@ -137,6 +138,25 @@ export class CreateConnectionController {
     return await this.createConnectionService.phoneNumberOverwrite(
       setPhoneRequest.did,
       setPhoneRequest.phonenumber,
+    );
+  }
+
+  @Roles(UserRole.Aidworker, UserRole.ProgramManager)
+  @ApiOperation({
+    title:
+      'Overwrite phone number for connection used by AW (app) or PM (Swagger)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Phone number overwritten for connection',
+  })
+  @Post('/get-did/name-phone')
+  public async getDidByPhoneAndOrName(
+    @Body() getDidByPhoneNameDto: GetDidByPhoneNameDto,
+  ): Promise<ConnectionEntity[]> {
+    return await this.createConnectionService.getDidByPhoneAndOrName(
+      getDidByPhoneNameDto.phoneNumber,
+      getDidByPhoneNameDto.name,
     );
   }
 

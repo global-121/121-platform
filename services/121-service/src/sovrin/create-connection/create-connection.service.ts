@@ -137,6 +137,22 @@ export class CreateConnectionService {
     return await this.connectionRepository.save(connection);
   }
 
+  public async getDidByPhoneAndOrName(
+    phoneNumber?: string,
+    name?: string,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find();
+    return connections.filter(c => {
+      return (
+        (name && c.customData['name'] === name) ||
+        (phoneNumber &&
+          (c.customData['phoneNumber'] === phoneNumber ||
+            c.customData['whatsappPhoneNumber'] === phoneNumber ||
+            c.phoneNumber === phoneNumber))
+      );
+    });
+  }
+
   public async addCustomDataOverwrite(
     did: string,
     customDataKey: string,
