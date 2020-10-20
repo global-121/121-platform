@@ -946,6 +946,7 @@ export class ProgramService {
         selectedForValidationDate: rawConnection.selectedForValidation,
         validationDate: rawConnection.validationDate,
         inclusionDate: rawConnection.inclusionDate,
+        financialServiceProvider: rawConnection.fsp,
       };
       inclusionDetails.push(row);
     });
@@ -980,6 +981,7 @@ export class ProgramService {
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
         selectedForValidationDate: rawConnection.selectedForValidationDate,
+        financialServiceProvider: rawConnection.fsp,
       };
       columnDetails.push(row);
     }
@@ -1024,8 +1026,10 @@ export class ProgramService {
         'transaction.installment',
         'connection.phoneNumber',
         'connection.customData',
+        'fsp.fsp AS financialServiceProvider',
       ])
       .leftJoin('transaction.connection', 'connection')
+      .leftJoin('connection.fsp', 'fsp')
       .where('transaction.program.id = :programId', { programId: programId })
       .andWhere('transaction.installment = :installmentId', {
         installmentId: installmentId,
@@ -1040,7 +1044,9 @@ export class ProgramService {
         'connection.phoneNumber',
         'connection.customData',
         'connection.programsIncluded',
+        'fsp.fsp AS financialServiceProvider',
       ])
+      .leftJoin('connection.fsp', 'fsp')
       .getRawMany();
     const rawPaymentDetails = [];
     for (let connection of connections) {
