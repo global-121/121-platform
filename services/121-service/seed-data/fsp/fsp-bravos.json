@@ -1,5 +1,8 @@
 {
   "fsp": "Iron Bank of Braavos",
+  "fspDisplayName": {
+    "en": "Iron Bank of Braavos"
+  },
   "attributes": [
     {
       "name": "personalId",

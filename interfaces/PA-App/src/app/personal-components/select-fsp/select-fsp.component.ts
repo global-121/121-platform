@@ -65,6 +65,10 @@ export class SelectFspComponent extends PersonalComponent {
   async initNew() {
     this.conversationService.startLoading();
     this.fsps = this.program.financialServiceProviders;
+    this.fsps.forEach(
+      (fsp) =>
+        (fsp.fspDisplayName = this.translatableString.get(fsp.fspDisplayName)),
+    );
     this.did = await this.paData.retrieve(this.paData.type.did);
     this.conversationService.stopLoading();
   }

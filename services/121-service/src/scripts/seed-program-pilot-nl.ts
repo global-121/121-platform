@@ -6,6 +6,7 @@ import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
+import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whatsapp.json';
 
 import programPilotNL from '../../seed-data/program/program-pilot-nl.json';
 import instancePilotNL from '../../seed-data/instance/instance-pilot-nl.json';
@@ -36,6 +37,7 @@ export class SeedPilotNLProgram implements InterfaceScript {
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
+    await this.seedHelper.addFsp(fspIntersolveNoWhatsapp);
 
     // ***** CREATE PROGRAM *****
     const examplePrograms = [programPilotNL];

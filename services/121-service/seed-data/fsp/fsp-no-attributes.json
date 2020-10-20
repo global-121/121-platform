@@ -1,4 +1,7 @@
 {
   "fsp": "FSP - no attributes",
+  "fspDisplayName": {
+    "en": "FSP - no attributes"
+  },
   "attributes": []
 }

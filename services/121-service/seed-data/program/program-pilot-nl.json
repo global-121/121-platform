@@ -28,6 +28,9 @@
   "financialServiceProviders": [
     {
       "id": 1
+    },
+    {
+      "id": 2
     }
   ],
   "inclusionCalculationType": "highestScoresX",
