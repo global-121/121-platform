@@ -161,7 +161,8 @@
           "name": "Name",
           "dob": "Date of birth",
           "phone-number": "Phonenumber",
-          "payment": "Payment #"
+          "payment": "Payment #",
+          "fsp": "Financial Service Provider"
         },
         "status": {
           "created": "Created",

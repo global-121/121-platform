@@ -769,6 +769,7 @@ export class ProgramService {
 
     const connectionsResponse = [];
     for (let connection of selectedConnections) {
+      console.log;
       const connectionResponse = {};
       connectionResponse['did'] = connection.did;
       connectionResponse['score'] = connection.inclusionScore;
@@ -781,6 +782,7 @@ export class ProgramService {
       connectionResponse['validationDate'] = connection.validationDate;
       connectionResponse['inclusionDate'] = connection.inclusionDate;
       connectionResponse['rejectionDate'] = connection.rejectionDate;
+      connectionResponse['fsp'] = connection.fsp?.fsp;
       if (privacy) {
         connectionResponse['name'] = connection.customData['name'];
         connectionResponse['dob'] = connection.customData['dob'];
@@ -803,6 +805,7 @@ export class ProgramService {
 
   private async getAllConnections(programId): Promise<ConnectionEntity[]> {
     const connections = await this.connectionRepository.find({
+      relations: ['fsp'],
       order: { inclusionScore: 'DESC' },
     });
     const enrolledConnections = [];
