@@ -1,5 +1,6 @@
 {
-  "fsp": "Digital Voucher",
+  "fsp": "intersolve-digital",
+  "fspDisplayName": "Send supermarket voucher to my WhatsApp",
   "apiUrl": "https://trade-acc.intersolve.nl/rest/buyerapi/v1/orders",
   "attributes": [
     {
