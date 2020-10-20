@@ -101,11 +101,15 @@ export class CreateConnectionController {
     );
   }
 
-  @Roles(UserRole.Aidworker)
+  @Roles(UserRole.Aidworker, UserRole.ProgramManager)
   @ApiOperation({
-    title: 'Overwrite custom data for connection user used by aidworker',
+    title:
+      'Overwrite custom data for connection used by AW (app) or PM (Swagger)',
   })
-  @ApiResponse({ status: 200, description: 'Custom data  set for connection' })
+  @ApiResponse({
+    status: 200,
+    description: 'Custom data overwritten for connection',
+  })
   @Post('/custom-data/overwrite')
   public async addCustomDataOverwrite(
     @Body() customData: CustomDataDto,

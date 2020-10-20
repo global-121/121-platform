@@ -143,6 +143,11 @@ export class CreateConnectionService {
     customDataValue: string,
   ): Promise<ConnectionEntity> {
     const connection = await this.findOne(did);
+    if (!connection.customData[customDataKey]) {
+      const errors = 'This custom data property is not known for this PA.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
     connection.customData[customDataKey] = customDataValue;
     return await this.connectionRepository.save(connection);
   }
