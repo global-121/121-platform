@@ -27,9 +27,13 @@
       <ion-icon name="globe" slot="start"></ion-icon>
       <ion-label>
         Website:
-        <a href="{{ offer.offerLink }}" (click)="logClick('website')">{{
-          offer.offerLink
-        }}</a>
+        <a
+          href="{{ offer.offerLink }}"
+          (click)="logClick('website')"
+          target="_blank"
+          rel="noopener"
+          >{{ offer.offerLink }}</a
+        >
       </ion-label>
     </ion-item>
     <ion-item *ngIf="offer.offerOpeningHoursWeekdays">

@@ -15,11 +15,11 @@
       <ion-col>
         <p>{{ help.helpText }}</p>
         <p>
-          <ion-icon class="help-call-icon" name="call"></ion-icon> {{
-          help.helpPhoneLabel }}:
-          <a href="tel:{{ help.helpPhone }}" (click)="logClick('phone')"
-            >{{ help.helpPhone }}</a
-          >
+          <ion-icon class="help-call-icon" name="call"></ion-icon>
+          {{ help.helpPhoneLabel }}:
+          <a href="tel:{{ help.helpPhone }}" (click)="logClick('phone')">
+            {{ help.helpPhone }}
+          </a>
         </p>
       </ion-col>
     </ion-row>
@@ -29,6 +29,8 @@
           href="{{ help.helpWhatsApp }}"
           *ngIf="help.helpWhatsApp"
           (click)="logClick('whatsapp')"
+          target="_blank"
+          rel="noopener"
         >
           <ion-img
             class="help-social-image help-whatsapp-image"
@@ -39,6 +41,8 @@
           href="{{ help.helpTwitter }}"
           *ngIf="help.helpTwitter"
           (click)="logClick('twitter')"
+          target="_blank"
+          rel="noopener"
         >
           <ion-img
             class="help-social-image help-twitter-image"
@@ -49,6 +53,8 @@
           href="{{ help.helpFacebook }}"
           *ngIf="help.helpFacebook"
           (click)="logClick('facebook')"
+          target="_blank"
+          rel="noopener"
         >
           <ion-img
             class="help-social-image help-facebook-image"
