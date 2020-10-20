@@ -20,8 +20,6 @@ export class IntersolveApiService {
   }
 
   public async issueCard(amount: number): Promise<IntersolveIssueCardResponse> {
-    // public async issueCard(amount: number): Promise<any> {
-    console.log('issueCard soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.IssueCard,
     );
@@ -31,18 +29,11 @@ export class IntersolveApiService {
       ['Value'],
       amount.toString(),
     );
-    console.log('amount.toString(): ', amount.toString());
-    console.log('payload: ', payload);
-    console.log('process.env.INTERSOLVE_EAN: ', process.env.INTERSOLVE_EAN);
     payload = this.soapService.changeSoapBody(
       payload,
       IntersolveSoapElements.IssueCard,
       ['EAN'],
       process.env.INTERSOLVE_EAN,
-    );
-    console.log(
-      'issueCard payload before RefPos added',
-      JSON.stringify(payload),
     );
     payload = this.soapService.changeSoapBody(
       payload,
@@ -50,20 +41,13 @@ export class IntersolveApiService {
       ['TransactionHeader', 'RefPos'],
       '121',
     );
-    console.log(
-      'issueCard payload after RefPos added',
-      JSON.stringify(payload),
-    );
 
-    console.log('payload: ', payload);
     const responseBody = await this.soapService.post(payload);
-    console.log('responseBody intersolve: ', responseBody);
     const result = {
       cardId: responseBody.IssueCardResponse.CardId._text,
       pin: parseInt(responseBody.IssueCardResponse.PIN._text),
       balance: parseInt(responseBody.IssueCardResponse.CardNewBalance._text),
     };
-    console.log('result: ', result);
     return result;
   }
 
@@ -71,7 +55,6 @@ export class IntersolveApiService {
     cardId: string,
     pin: number,
   ): Promise<IntersolveGetCardResponse> {
-    console.log('getCard soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.GetCard,
     );
@@ -89,19 +72,16 @@ export class IntersolveApiService {
     );
 
     const responseBody = await this.soapService.post(payload);
-    console.log('responseBody: ', responseBody);
     const result = {
       status: responseBody.GetCardResponse.Card.Status._text,
       balance: parseInt(responseBody.GetCardResponse.Card.Balance._text),
     };
-    console.log('result: ', result);
     return result;
   }
 
   public async cancelTransactionByRefPos(): Promise<
     IntersolveCancelTransactionByRefPosResponse
   > {
-    console.log('cancelTransactionByRefPos soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.CancelTransactionByRefPos,
     );
@@ -111,15 +91,11 @@ export class IntersolveApiService {
       ['EAN'],
       process.env.INTERSOLVE_EAN,
     );
-
-    console.log('payload: ', payload);
     const responseBody = await this.soapService.post(payload);
-    console.log('responseBody intersolve: ', responseBody);
     const result = {
       resultCode: 1,
       resultDescription: '21',
     };
-    console.log('result: ', result);
     return result;
   }
 

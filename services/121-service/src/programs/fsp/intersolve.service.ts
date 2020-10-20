@@ -24,7 +24,6 @@ export class IntersolveService {
   ) {}
 
   public async sendPayment(payload): Promise<StatusMessageDto> {
-    console.log('payload: ', payload);
     try {
       for (let paymentInfo of payload) {
         await this.sendIndividualPayment(paymentInfo);
@@ -41,10 +40,11 @@ export class IntersolveService {
     const voucherInfo = await this.intersolveApiService.issueCard(
       amountInCents,
     );
+    console.log('paymentInfo: ', paymentInfo);
     await this.sendVoucherWhatsapp(
       voucherInfo.cardId,
       voucherInfo.pin,
-      paymentInfo.phoneNumber,
+      paymentInfo.whatsappPhoneNumber,
     );
   }
 

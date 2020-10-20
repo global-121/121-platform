@@ -10,7 +10,6 @@ export class SoapService {
   public async post(payload: any): Promise<any> {
     payload = await this.setSoapHeader(payload);
     const xml = convert.js2xml(payload);
-    console.log('xml request: ', xml);
     const headersIntersolve = {
       'user-agent': 'sampleTest',
       'Content-Type': 'text/xml;charset=UTF-8',
@@ -22,7 +21,6 @@ export class SoapService {
       timeout: 2000,
     });
     const { body, statusCode } = response;
-    console.log('statusCode: ', statusCode);
     const jsonResponse = convert.xml2js(body, { compact: true });
     return jsonResponse['soap:Envelope']['soap:Body'];
   }
@@ -61,7 +59,6 @@ export class SoapService {
     subElements: string[],
     value: string,
   ): any {
-    console.log('changeSoapBody', mainElement, subElements, value);
     const envelopeXML = this.getChild(payload, 0);
     const bodyIndex = this.findSoapIndex(envelopeXML, 'soap:Body');
     const soapBodyXML = this.getChild(envelopeXML, bodyIndex);
@@ -69,16 +66,15 @@ export class SoapService {
     const mainElementXML = soapBodyXML['elements'][mainElementIndex];
     let rootElement = mainElementXML;
     let pathIndices: number[] = [0, bodyIndex, mainElementIndex];
-    let subElementIndex = -1;
-    for (let subElement in subElements) {
-      console.log('changeSoapBody subElements', subElements);
-      console.log('changeSoapBody subElement', subElement);
-      console.log('changeSoapBody rootElement', rootElement);
-      console.log('changeSoapBody subElementIndex', subElementIndex);
-      subElementIndex = this.findSoapIndex(rootElement, subElement);
-      if (subElementIndex >= 0) {
-        pathIndices.push(subElementIndex);
-        rootElement = this.getChild(rootElement, subElementIndex);
+    let subElementXMLIndex = -1;
+    for (let subElementIndex in subElements) {
+      subElementXMLIndex = this.findSoapIndex(
+        rootElement,
+        subElements[subElementIndex],
+      );
+      if (subElementXMLIndex >= 0) {
+        pathIndices.push(subElementXMLIndex);
+        rootElement = this.getChild(rootElement, subElementXMLIndex);
       }
     }
     pathIndices.push(0);
@@ -91,40 +87,16 @@ export class SoapService {
   }
 
   private setValue(xml: any, indices: number[], value: string): any {
-    console.log(
-      'setValue start',
-      JSON.stringify(xml),
-      JSON.stringify(indices),
-      value,
-    );
     const firstIndex = indices.shift();
     if (indices.length > 0) {
-      // console.log(
-      //   'setValue loop',
-      //   JSON.stringify(xml),
-      //   JSON.stringify(indices),
-      //   value,
-      // );
       xml['elements'][firstIndex] = this.setValue(
         this.getChild(xml, firstIndex),
         indices,
         value,
       );
     } else {
-      // console.log(
-      //   'setValue exit',
-      //   JSON.stringify(xml),
-      //   JSON.stringify(indices),
-      //   value,
-      // );
       xml['elements'][firstIndex]['text'] = value;
     }
-    // console.log(
-    //   'setValue end',
-    //   JSON.stringify(xml),
-    //   JSON.stringify(indices),
-    //   value,
-    // );
     return xml;
   }
 }

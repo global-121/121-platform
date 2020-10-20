@@ -107,21 +107,19 @@ export class WhatsappService {
   public async handleIncomming(callbackData): Promise<void> {
     const fromNumber = callbackData.From.replace('whatsapp:', '');
 
+    const program = await getRepository(ProgramEntity).findOne(this.programId);
     const intersolveBarcode = await this.intersolveBarcodeRepository.findOne({
       where: { phonenumber: fromNumber, send: false },
     });
     if (intersolveBarcode) {
       await this.sendWhatsapp(
-        intersolveBarcode.pin,
+        program.notifications[this.language]['whatsappVoucher'],
         intersolveBarcode.phonenumber,
         intersolveBarcode.barcode,
       );
       intersolveBarcode.send = true;
       await this.intersolveBarcodeRepository.save(intersolveBarcode);
     } else {
-      const program = await getRepository(ProgramEntity).findOne(
-        this.programId,
-      );
       const whatsappReply =
         program.notifications[this.language]['whatsappReply'];
       await this.sendWhatsapp(whatsappReply, fromNumber, null);

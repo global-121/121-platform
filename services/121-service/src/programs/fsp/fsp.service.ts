@@ -90,13 +90,13 @@ export class FspService {
     );
 
     for (let connection of enrichedTransactions) {
-      await this.storeTransaction(
-        amount,
-        connection,
-        fsp,
-        program,
-        installment,
-      );
+      // await this.storeTransaction(
+      //   amount,
+      //   connection,
+      //   fsp,
+      //   program,
+      //   installment,
+      // );
     }
 
     return {
@@ -276,10 +276,5 @@ export class FspService {
       relations: ['attributes'],
     });
     return fsp;
-  }
-
-  public async testSoap(): Promise<any> {
-    console.log('testSoap:');
-    await this.intersolveApiService.test();
   }
 }
