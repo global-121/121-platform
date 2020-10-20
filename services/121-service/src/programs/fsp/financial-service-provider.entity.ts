@@ -19,8 +19,8 @@ export class FinancialServiceProviderEntity {
   @Column()
   public fsp: string;
 
-  @Column({ nullable: true })
-  public fspDisplayName: string;
+  @Column('json', { nullable: true })
+  public fspDisplayName: JSON;
 
   @Column({ nullable: true })
   public apiUrl: string;
@@ -57,6 +57,7 @@ export class FinancialServiceProviderEntity {
 }
 
 export enum fspName {
-  intersolve = 'Intersolve',
+  intersolve = 'Intersolve-whatsapp',
+  intersolveNoWhatsapp = 'Intersolve-no-whatsapp',
   mpesa = 'M-Pesa',
 }

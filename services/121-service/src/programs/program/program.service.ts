@@ -110,7 +110,6 @@ export class ProgramService {
 
   public async getPublishedPrograms(): Promise<ProgramsRO> {
     let programs = (await this.findAll()).programs;
-    console.log('programs: ', programs);
     programs = programs.filter(program => program.published);
     const programsCount = programs.length;
     return { programs, programsCount };
