@@ -1,5 +1,6 @@
 {
   "fsp": "M-Pesa",
+  "fspDisplayName": "M-Pesa",
   "attributes": [
     {
       "name": "phoneRelation",

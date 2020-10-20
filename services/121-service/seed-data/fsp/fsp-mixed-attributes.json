@@ -1,5 +1,6 @@
 {
   "fsp": "FSP - all attributes",
+  "fspDisplayName": "FSP - all attributes",
   "attributes": [
     {
       "name": "phoneNumber",

@@ -1,5 +1,6 @@
 {
   "fsp": "Mobile Money Provider B",
+  "fspDisplayName": "Mobile Money Provider B",
   "attributes": [
     {
       "name": "phoneNumber",

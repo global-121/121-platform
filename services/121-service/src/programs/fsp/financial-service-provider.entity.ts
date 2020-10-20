@@ -20,6 +20,9 @@ export class FinancialServiceProviderEntity {
   public fsp: string;
 
   @Column({ nullable: true })
+  public fspDisplayName: string;
+
+  @Column({ nullable: true })
   public apiUrl: string;
 
   @OneToMany(
