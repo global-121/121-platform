@@ -3,8 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { HelpPage } from 'src/app/help/help.page';
 import { Category } from 'src/app/models/category.model';
+import { AnalyticsEventName } from 'src/app/models/event-name.model';
 import { Offer } from 'src/app/models/offer.model';
 import { SubCategory } from 'src/app/models/sub-category.model';
+import { LoggingService } from 'src/app/services/logging.service';
 import { OffersService } from 'src/app/services/offers.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
@@ -28,6 +30,7 @@ export class ReferralPage {
     private router: Router,
     public translatableString: TranslatableStringService,
     public modalController: ModalController,
+    private loggingService: LoggingService,
   ) {
     this.loadReferralData();
   }
@@ -100,10 +103,14 @@ export class ReferralPage {
     });
   }
 
-  public clickCategory(category: Category) {
+  public clickCategory(category: Category, isBack: boolean = false) {
     this.category = category;
     this.subCategory = null;
     this.offer = null;
+    this.loggingService.logEvent(
+      AnalyticsEventName.ReferralCategoryClick,
+      this.getLogProperties(isBack),
+    );
     this.router.navigate(['/tabs/referral'], {
       queryParams: {
         categoryID: this.category.categoryID,
@@ -111,9 +118,13 @@ export class ReferralPage {
     });
   }
 
-  public clickSubCategory(subCategory: SubCategory) {
+  public clickSubCategory(subCategory: SubCategory, isBack: boolean = false) {
     this.subCategory = subCategory;
     this.offer = null;
+    this.loggingService.logEvent(
+      AnalyticsEventName.ReferralSubCategoryClick,
+      this.getLogProperties(isBack),
+    );
     this.router.navigate(['/tabs/referral'], {
       queryParams: {
         categoryID: this.category.categoryID,
@@ -122,8 +133,12 @@ export class ReferralPage {
     });
   }
 
-  public clickOffer(offer: Offer) {
+  public clickOffer(offer: Offer, isBack: boolean = false) {
     this.offer = offer;
+    this.loggingService.logEvent(
+      AnalyticsEventName.ReferralOfferClick,
+      this.getLogProperties(isBack),
+    );
     this.router.navigate(['/tabs/referral'], {
       queryParams: {
         categoryID: this.category.categoryID,
@@ -135,16 +150,46 @@ export class ReferralPage {
 
   goBack() {
     if (this.offer) {
-      this.clickSubCategory(this.subCategory);
+      this.loggingService.logEvent(
+        AnalyticsEventName.ReferralBackFromOffer,
+        this.getLogProperties(true),
+      );
+      this.clickSubCategory(this.subCategory, true);
     } else if (this.subCategory) {
+      this.loggingService.logEvent(
+        AnalyticsEventName.ReferralBackFromSubCategory,
+        this.getLogProperties(true),
+      );
       this.clickCategory(this.category);
     } else if (this.category) {
+      this.loggingService.logEvent(
+        AnalyticsEventName.ReferralBackFromCategory,
+        this.getLogProperties(true),
+      );
       this.category = null;
       this.router.navigate(['/tabs/referral']);
     }
   }
 
+  getLogProperties(isBack: boolean) {
+    const logParams: { [key: string]: any } = { isBack };
+    if (this.offer) {
+      logParams.offerName = this.offer.offerName;
+    }
+    if (this.subCategory) {
+      logParams.subCategory = this.subCategory.subCategoryName;
+    }
+    if (this.category) {
+      logParams.category = this.category.categoryName;
+    }
+    return logParams;
+  }
+
   async openHelpModal() {
+    this.loggingService.logEvent(
+      AnalyticsEventName.ReferralHelpPageOpen,
+      this.getLogProperties(false),
+    );
     const helpModal = await this.modalController.create({
       component: HelpPage,
     });
