@@ -14,7 +14,7 @@ export class CronjobService {
   ) {}
 
   // Use CronExpression.EVERY_10_SECONDS for testing instead of: CronExpression.EVERY_DAY_AT_MIDNIGHT or:
-  // @Cron(CronExpression.EVERY_DAY_AT_NOON)
+  // @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   // async cronDeleteOldUnfinishedConnections(): Promise<void> {
   //   console.log('Get old unfinished connections');
   //   const tsYesterday = Math.round(new Date().getTime()) - 24 * 60 * 60 * 1000;
