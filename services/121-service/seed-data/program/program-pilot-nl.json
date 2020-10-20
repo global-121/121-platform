@@ -61,20 +61,8 @@
       "label": {
         "en": "My V number: (It needs to be 10 digits long)"
       },
-      "answerType": "number",
-      "criteriumType": "standard",
-      "options": null,
-      "persistence": true,
-      "scoring": {},
-      "pattern": "^\\d{10}$"
-    },
-    {
-      "criterium": "whatsappPhoneNumber",
-      "label": {
-        "en": "Number to reach me via WhatsApp: (It should look like: <strong>+0000000000</strong>)"
-      },
       "placeholder": {
-        "en": "+0000000000"
+        "en": "0000000000"
       },
       "answerType": "numeric",
       "criteriumType": "standard",
