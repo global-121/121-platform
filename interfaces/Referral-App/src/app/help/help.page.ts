@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import helpMock from 'src/app/mocks/help.mock';
+import { AnalyticsEventName } from 'src/app/models/event-name.model';
 import { Help } from 'src/app/models/help.model';
 import { HelpService } from 'src/app/services/help.service';
 import { LoggingService } from 'src/app/services/logging.service';
@@ -36,13 +37,15 @@ export class HelpPage {
   }
 
   dismiss() {
-    this.loggingService.logEvent('referral-help-page-close');
+    this.loggingService.logEvent(AnalyticsEventName.ReferralHelpPageClose);
     this.modalController.dismiss({
       dismissed: true,
     });
   }
 
   public logClick(name) {
-    this.loggingService.logEvent('referral-help-click', { name });
+    this.loggingService.logEvent(AnalyticsEventName.ReferralHelpClick, {
+      name,
+    });
   }
 }
