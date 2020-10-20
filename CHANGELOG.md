@@ -6,12 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-<<<<<<< HEAD
-
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.7.2...master)
-=======
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.9.0...master)
 
+### Added
+- 2020-10-01: Added `TWILIO_SID`, `TWILIO_PROGRAM_TOKEN_SID`, `TWILIO_PROGRAM_TOKEN_SECRET` `TWILIO_WHATSAPP_NUMBER` `TWILIO_MESSAGING_SID` to `.env` to `services/.env`
+- 2020-10-07: Removed `TWILIO_TEST_TO_NUMBER`, `TWILIO_TEST_FROM_NUMBER_VOICE` ,`TWILIO_TEST_FROM_NUMBER_SMS` from `services/.env`
 ---
 
 ## [0.9.0](https://github.com/global-121/121-platform/compare/v0.8.6...v0.9.0) - 2020-10-13
@@ -23,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of HO-Portal
 - 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of Referral-App
 - 2020-10-13: Added `APPLICATION_INSIGHT_IKEY` and `APPLICATION_INSIGHT_ENDPOINT` to `services/.env`-file
+
 
 ---
 
@@ -62,16 +62,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2020-09-23: Disable TypeORM-logging to file because of node-permissions issue
 
 ## [0.8.0](https://github.com/global-121/121-platform/compare/v0.7.1...v0.8.0) - 2020-09-23
->>>>>>> master
 
 ### Added
 - 2020-08-19: Added `GLOBAL_121_REF_DIR` to `tools/.env`
 - 2020-09-01: `GLOBAL_121_WEB_ROOT` now also used by `webhook.service`; Needs update + restart.
 - 2020-09-09: Added `INTERSOLVE.username`, `INTERSOLVE.password`, `INTERSOLVE.ean`, `INTERSOLVE.url` in `121-service/src/secrets.ts`
-<<<<<<< HEAD
-- 2020-09-09: Added TWILIO.tokenSid, TWILIO.messagingSid, TWILIO.secret in `121-service/src/secrets.ts`  
-=======
->>>>>>> master
 
 ### Changed
 - 2020-08-19: Deploy script & apache2 conf changed, so possibly need to restart
