@@ -141,14 +141,13 @@ export class CreateConnectionController {
     );
   }
 
-  @Roles(UserRole.Aidworker, UserRole.ProgramManager)
+  @Roles(UserRole.ProgramManager)
   @ApiOperation({
-    title:
-      'Overwrite phone number for connection used by AW (app) or PM (Swagger)',
+    title: 'Find DID by name and/or phone number for PM (Swagger)',
   })
   @ApiResponse({
     status: 200,
-    description: 'Phone number overwritten for connection',
+    description: 'Returned connections which match at least one of criteria',
   })
   @Post('/get-did/name-phone')
   public async getDidByPhoneAndOrName(
