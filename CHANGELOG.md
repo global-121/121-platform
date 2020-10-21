@@ -15,8 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- 2020-10-01: Added `TWILIO_SID`, `TWILIO_PROGRAM_TOKEN_SID`, `TWILIO_PROGRAM_TOKEN_SECRET` `TWILIO_WHATSAPP_NUMBER` `TWILIO_MESSAGING_SID` to `.env` to `services/.env`
-- 2020-10-07: Removed `TWILIO_TEST_TO_NUMBER`, `TWILIO_TEST_FROM_NUMBER_VOICE` ,`TWILIO_TEST_FROM_NUMBER_SMS` from `services/.env`
+- 2020-10-21: Added `TWILIO_SID`, `TWILIO_PROGRAM_TOKEN_SID`, `TWILIO_PROGRAM_TOKEN_SECRET` `TWILIO_WHATSAPP_NUMBER` `TWILIO_MESSAGING_SID` to `.env` to `services/.env`
+- 2020-10-21: Removed `TWILIO_TEST_TO_NUMBER`, `TWILIO_TEST_FROM_NUMBER_VOICE` ,`TWILIO_TEST_FROM_NUMBER_SMS` from `services/.env`
+- 2020-10-21: Added package to 121-service `docker exec 121-service npm install bwip-js@^2.0.10` 
 
 ---
 
