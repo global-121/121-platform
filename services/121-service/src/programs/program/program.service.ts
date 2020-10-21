@@ -363,12 +363,6 @@ export class ProgramService {
       inclusionResult ? PaStatus.included : PaStatus.rejected,
       programId,
     );
-    this.voiceService.notifyByVoice(
-      connection.phoneNumber,
-      connection.preferredLanguage,
-      inclusionResult ? PaStatus.included : PaStatus.rejected,
-      programId,
-    );
   }
 
   public async getInclusionStatus(
@@ -769,7 +763,6 @@ export class ProgramService {
 
     const connectionsResponse = [];
     for (let connection of selectedConnections) {
-      console.log;
       const connectionResponse = {};
       connectionResponse['did'] = connection.did;
       connectionResponse['score'] = connection.inclusionScore;
