@@ -1,3 +1,4 @@
+import { CustomCriterium } from './../../programs/program/custom-criterium.entity';
 import {
   Injectable,
   HttpException,
@@ -40,6 +41,10 @@ export class CreateConnectionService {
   private readonly credentialRepository: Repository<CredentialEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
+  @InjectRepository(FspAttributeEntity)
+  private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(CustomCriterium)
+  private readonly customCriteriumRepository: Repository<CustomCriterium>;
 
   public constructor(
     private readonly programService: ProgramService,
@@ -112,7 +117,7 @@ export class CreateConnectionService {
   ): Promise<void> {
     const connection = await this.findOne(did);
     if (!connection.phoneNumber) {
-      connection.phoneNumber = phoneNumber;
+      connection.phoneNumber = phoneNumber.replace(/\D/g, '');
     }
     connection.preferredLanguage = preferredLanguage;
     await this.connectionRepository.save(connection);
@@ -128,13 +133,41 @@ export class CreateConnectionService {
   public async addCustomData(
     did: string,
     customDataKey: string,
-    customDataValue: string,
+    customDataValueRaw: string,
   ): Promise<ConnectionEntity> {
     const connection = await this.findOne(did);
+    const customDataValue = await this.cleanData(
+      customDataKey,
+      customDataValueRaw,
+    );
     if (!(customDataKey in connection.customData)) {
       connection.customData[customDataKey] = customDataValue;
     }
     return await this.connectionRepository.save(connection);
+  }
+  public async cleanData(
+    customDataKey: string,
+    customDataValue: string,
+  ): Promise<string> {
+    const answerTypeTel = 'tel';
+    const phonenumberTypedAnswers = [];
+    const fspTelAttributes = await this.fspAttributeRepository.find({
+      where: { answerType: answerTypeTel },
+    });
+    for (let fspAttr of fspTelAttributes) {
+      phonenumberTypedAnswers.push(fspAttr.name);
+    }
+    const customCriteriumAttrs = await this.customCriteriumRepository.find({
+      where: { answerType: answerTypeTel },
+    });
+    for (let criteriumAttr of customCriteriumAttrs) {
+      phonenumberTypedAnswers.push(criteriumAttr.criterium);
+    }
+    if (phonenumberTypedAnswers.includes(customDataKey)) {
+      return customDataValue.replace(/\D/g, '');
+    } else {
+      return customDataValue;
+    }
   }
 
   public async getDidByPhoneAndOrName(
@@ -156,8 +189,12 @@ export class CreateConnectionService {
   public async addCustomDataOverwrite(
     did: string,
     customDataKey: string,
-    customDataValue: string,
+    customDataValueRaw: string,
   ): Promise<ConnectionEntity> {
+    const customDataValue = await this.cleanData(
+      customDataKey,
+      customDataValueRaw,
+    );
     const connection = await this.findOne(did);
     if (!connection) {
       const errors = 'This PA is not known.';
@@ -185,7 +222,11 @@ export class CreateConnectionService {
     connection.phoneNumber = phoneNumber;
     await this.connectionRepository.save(connection);
 
-    return await this.addCustomDataOverwrite(did, 'phoneNumber', phoneNumber);
+    return await this.addCustomDataOverwrite(
+      did,
+      'phoneNumber',
+      phoneNumber.replace(/\D/g, ''),
+    );
   }
 
   public async addQrIdentifier(

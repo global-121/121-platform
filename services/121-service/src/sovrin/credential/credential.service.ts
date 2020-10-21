@@ -43,6 +43,8 @@ export class CredentialService {
   private readonly credentialRepository: Repository<CredentialEntity>;
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
+  @InjectRepository(FspAttributeEntity)
+  private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
 
   public constructor(
     @Inject(forwardRef(() => ProgramService))
@@ -95,9 +97,13 @@ export class CredentialService {
   public async prefilledAnswers(
     did: string,
     programId: number,
-    prefilledAnswers: PrefilledAnswerDto[],
+    prefilledAnswersRaw: PrefilledAnswerDto[],
   ): Promise<any[]> {
     //Then save new information
+    const prefilledAnswers = await this.cleanAnswers(
+      prefilledAnswersRaw,
+      programId,
+    );
     let credentials = [];
     for (let answer of prefilledAnswers) {
       const oldAttribute = await this.credentialAttributesRepository.findOne({
@@ -131,7 +137,43 @@ export class CredentialService {
     return credentials;
   }
 
-  public async storePersistentAnswers(answers, programId, did): Promise<void> {
+  public async cleanAnswers(
+    answers: PrefilledAnswerDto[],
+    programId: number,
+  ): Promise<PrefilledAnswerDto[]> {
+    const answerTypeTel = 'tel';
+    const program = await this.programService.findOne(programId);
+    const phonenumberTypedAnswers = [];
+    for (let criterium of program.customCriteria) {
+      if (criterium.answerType == answerTypeTel) {
+        phonenumberTypedAnswers.push(criterium.criterium);
+      }
+    }
+    const fspTelAttributes = await this.fspAttributeRepository.find({
+      where: { answerType: answerTypeTel },
+    });
+    for (let fspAttr of fspTelAttributes) {
+      phonenumberTypedAnswers.push(fspAttr.name);
+    }
+
+    const cleanedAnswers = [];
+    for (let answer of answers) {
+      if (phonenumberTypedAnswers.includes(answer.attribute)) {
+        answer.answer = answer.answer.replace(/\D/g, '');
+        cleanedAnswers.push(answer);
+      } else {
+        cleanedAnswers.push(answer);
+      }
+    }
+    return cleanedAnswers;
+  }
+
+  public async storePersistentAnswers(
+    answersRaw,
+    programId,
+    did,
+  ): Promise<void> {
+    const answers = await this.cleanAnswers(answersRaw, programId);
     let program = await this.programRepository.findOne(programId, {
       relations: ['customCriteria'],
     });

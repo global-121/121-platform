@@ -34,6 +34,7 @@ import { WhatsappService } from '../../notifications/whatsapp/whatsapp.service';
 import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
+import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -128,6 +129,10 @@ describe('CredentialService', (): void => {
           },
           {
             provide: getRepositoryToken(IntersolveBarcodeEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(FspAttributeEntity),
             useFactory: repositoryMockFactory,
           },
         ],
