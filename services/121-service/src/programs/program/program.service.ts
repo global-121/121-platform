@@ -64,7 +64,6 @@ export class ProgramService {
     @Inject(forwardRef(() => CredentialService))
     private readonly credentialService: CredentialService,
     private readonly voiceService: VoiceService,
-    @Inject(forwardRef(() => SmsService))
     private readonly smsService: SmsService,
     private readonly schemaService: SchemaService,
     @Inject(forwardRef(() => ProofService))

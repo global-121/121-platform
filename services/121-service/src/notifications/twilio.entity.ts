@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 export enum NotificationType {
   Sms = 'sms',
   Call = 'call',
+  Whatsapp = 'whatsapp',
 }
 
 @Entity('twilio-message')
@@ -32,5 +33,5 @@ export class TwilioMessageEntity {
   public type: NotificationType;
 
   @Column({ type: 'timestamp' })
-  dateCreated: Date;
+  public dateCreated: Date;
 }
