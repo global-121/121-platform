@@ -19,7 +19,7 @@ export class PrefilledAnswerDto {
   @ApiModelProperty()
   @IsNotEmpty()
   @IsNumber()
-  public readonly answer: string;
+  public answer: string;
 }
 
 export class PrefilledAnswersDto {

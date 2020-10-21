@@ -1,3 +1,4 @@
+import { CustomCriterium } from './../../programs/program/custom-criterium.entity';
 import { HttpModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CreateConnectionService } from './create-connection.service';
@@ -10,6 +11,7 @@ import { CredentialEntity } from '../credential/credential.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { ProgramModule } from '../../programs/program/program.module';
 import { SmsModule } from '../../notifications/sms/sms.module';
+import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { SmsModule } from '../../notifications/sms/sms.module';
       CredentialRequestEntity,
       CredentialEntity,
       FinancialServiceProviderEntity,
+      FspAttributeEntity,
+      CustomCriterium,
     ]),
     ProgramModule,
     UserModule,

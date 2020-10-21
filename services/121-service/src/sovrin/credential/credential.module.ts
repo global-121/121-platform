@@ -10,6 +10,7 @@ import { ProgramEntity } from '../../programs/program/program.entity';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
 import { CredentialRequestEntity } from './credential-request.entity';
 import { ProgramModule } from '../../programs/program/program.module';
+import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ProgramModule } from '../../programs/program/program.module';
       CredentialAttributesEntity,
       CredentialRequestEntity,
       CredentialEntity,
+      FspAttributeEntity,
     ]),
     forwardRef(() => ProgramModule),
     UserModule,
