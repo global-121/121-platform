@@ -12,7 +12,7 @@ export class IntersolveApiService {
 
   public async issueCard(
     amount: number,
-    refPos: number,
+    refPos: string,
   ): Promise<IntersolveIssueCardResponse> {
     console.log('issueCard soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
@@ -34,10 +34,11 @@ export class IntersolveApiService {
       payload,
       IntersolveSoapElements.IssueCard,
       ['TransactionHeader', 'RefPos'],
-      String(refPos),
+      refPos,
     );
 
     const responseBody = await this.soapService.post(payload);
+    console.log('responseBody: ', responseBody);
     const result = {
       resultCode: responseBody.IssueCardResponse.ResultCode._text,
       resultDescription: responseBody.IssueCardResponse.ResultDescription._text,
@@ -84,7 +85,7 @@ export class IntersolveApiService {
 
   public async cancelTransactionByRefPos(
     cardId: string,
-    refPos: number,
+    refPos: string,
   ): Promise<IntersolveCancelTransactionByRefPosResponse> {
     console.log('cancelTransactionByRefPos soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
@@ -106,7 +107,7 @@ export class IntersolveApiService {
       payload,
       IntersolveSoapElements.CancelTransactionByRefPos,
       ['RefPosToCancel'],
-      String(refPos),
+      refPos,
     );
 
     const responseBody = await this.soapService.post(payload);
