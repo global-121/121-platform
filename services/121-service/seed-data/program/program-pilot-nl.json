@@ -41,9 +41,9 @@
   },
   "notifications": {
     "en": {
-      "registered": "This is a message from the Red Cross.\n We have received your application for support.\n You will receive another SMS message with more information within [variable].",
-      "included": "This is a message from the Red Cross.\n Your application to the Red Cross program has been successful and confirmed.\n You will receive another message about your first Albert Heijn supermarket voucher within [variable].",
-      "rejected": "This is a message from the Red Cross.\n Your application to the program has not been successful and cannot be confirmed.\n If you can, please reach out to us on WhatsApp for more information: [+31600000000]"
+      "registered": "This is a message from the Red Cross.\nWe have received your application for support.\nYou will receive another SMS message with more information within [variable].",
+      "included": "This is a message from the Red Cross.\nYour application to the Red Cross program has been successful and confirmed.\nYou will receive another message about your first Albert Heijn supermarket voucher within [variable].",
+      "rejected": "This is a message from the Red Cross.\nYour application to the program has not been successful and cannot be confirmed.\nIf you can, please reach out to us on WhatsApp for more information: [+31600000000]"
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
