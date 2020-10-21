@@ -1,11 +1,7 @@
-name: Azure Static Web Apps CI/CD
+name: Azure Static Web Apps CI/CD - Referral-App
 
 on:
   push:
-    branches:
-      - master
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
     branches:
       - master
 
@@ -28,9 +24,15 @@ jobs:
           ###### Repository/Build Configurations - These values can be configured to match you app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "/interfaces/Referral-App" # App source code path
-          api_location: "api" # Api source code path - optional
+          api_location: "" # Api source code path - optional
+          app_build_command: "npm run build -- --prod"
           app_artifact_location: "dist" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+        env: 
+          GOOGLE_SHEETS_API_URL: ${{ secrets.REF_GOOGLE_SHEETS_API_URL }}
+          GOOGLE_SHEETS_SHEET_ID: ${{ secrets.REF_GOOGLE_SHEETS_SHEET_ID }}
+          NG_AI_IKEY: ${{ secrets.NG_AI_IKEY }}
+          NG_AI_ENDPOINT: ${{ secrets.NG_AI_ENDPOINT }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
