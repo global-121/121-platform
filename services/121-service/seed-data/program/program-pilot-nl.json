@@ -71,8 +71,7 @@
       "criteriumType": "standard",
       "options": null,
       "persistence": true,
-      "scoring": {},
-      "pattern": "^\\d{10}$"
+      "scoring": {}
     },
     {
       "criterium": "vnumber",
