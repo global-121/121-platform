@@ -363,12 +363,6 @@ export class ProgramService {
       inclusionResult ? PaStatus.included : PaStatus.rejected,
       programId,
     );
-    this.voiceService.notifyByVoice(
-      connection.phoneNumber,
-      connection.preferredLanguage,
-      inclusionResult ? PaStatus.included : PaStatus.rejected,
-      programId,
-    );
   }
 
   public async getInclusionStatus(
