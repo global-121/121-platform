@@ -763,7 +763,6 @@ export class ProgramService {
 
     const connectionsResponse = [];
     for (let connection of selectedConnections) {
-      console.log;
       const connectionResponse = {};
       connectionResponse['did'] = connection.did;
       connectionResponse['score'] = connection.inclusionScore;
