@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository } from 'typeorm';
 import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 import { ProgramEntity } from '../program/program.entity';
+import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
+import crypto from 'crypto';
 
 @Injectable()
 export class IntersolveService {
@@ -17,7 +19,6 @@ export class IntersolveService {
 
   private readonly programId = 1;
   private readonly language = 'en';
-  private readonly intersolveRefPos = '121';
 
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
@@ -37,16 +38,31 @@ export class IntersolveService {
   }
 
   public async sendIndividualPayment(paymentInfo): Promise<any> {
+    const intersolveRefPos = crypto.randomBytes(16).toString('hex');
     const amountInCents = paymentInfo.amount * 100;
     const voucherInfo = await this.intersolveApiService.issueCard(
       amountInCents,
-      this.intersolveRefPos,
+      intersolveRefPos,
     );
-    await this.sendVoucherWhatsapp(
-      voucherInfo.cardId,
-      voucherInfo.pin,
-      paymentInfo.whatsappPhoneNumber,
-    );
+    if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
+      await this.sendVoucherWhatsapp(
+        voucherInfo.cardId,
+        voucherInfo.pin,
+        paymentInfo.whatsappPhoneNumber,
+      );
+    } else {
+      if (voucherInfo.transactionId) {
+        await this.intersolveApiService.cancel(
+          voucherInfo.cardId,
+          voucherInfo.transactionId,
+        );
+      } else {
+        await this.intersolveApiService.cancelTransactionByRefPos(
+          voucherInfo.cardId,
+          intersolveRefPos,
+        );
+      }
+    }
   }
 
   public async sendVoucherWhatsapp(
