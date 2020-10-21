@@ -267,6 +267,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         width: columnDateTimeWidth,
       },
+      {
+        prop: 'fsp',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.fsp',
+        ),
+        ...columnDefaults,
+        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+        width: columnDateTimeWidth,
+      },
     ];
     this.paymentColumnTemplate = {
       prop: 'payment',
@@ -429,6 +438,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       name: person.name,
       dob: person.dob,
       phoneNumber: formatPhoneNumber(person.phoneNumber),
+      fsp: person.fsp,
     };
 
     personRow = this.fillPaymentColumns(personRow);

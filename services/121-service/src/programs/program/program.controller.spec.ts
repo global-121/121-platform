@@ -128,7 +128,7 @@ describe('ProgramController', (): void => {
           (): Promise<ProgramsRO> => Promise.resolve(programsAll),
         );
 
-      const controllerResult = await programController.findAll(['']);
+      const controllerResult = await programController.findAll();
       expect(spy).toHaveBeenCalled();
       expect(controllerResult).toStrictEqual(programsAll);
     });

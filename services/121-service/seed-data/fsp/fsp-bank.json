@@ -1,5 +1,8 @@
 {
   "fsp": "Bank A",
+  "fspDisplayName": {
+    "en": "Bank A"
+  },
   "attributes": [
     {
       "name": "personalId",

@@ -26,7 +26,14 @@
     <ion-item *ngIf="offer.offerLink">
       <ion-icon name="globe" slot="start"></ion-icon>
       <ion-label>
-        Website: <a href="{{ offer.offerLink }}">{{ offer.offerLink }}</a>
+        Website:
+        <a
+          href="{{ offer.offerLink }}"
+          (click)="logClick('website')"
+          target="_blank"
+          rel="noopener"
+          >{{ offer.offerLink }}</a
+        >
       </ion-label>
     </ion-item>
     <ion-item *ngIf="offer.offerOpeningHoursWeekdays">
@@ -49,7 +56,10 @@
       <ion-icon name="mail" slot="start"></ion-icon>
       <ion-label>
         Email:
-        <a href="mailto:{{ offer.offerEmail }}?subject=Sent via Referral App">
+        <a
+          href="mailto:{{ offer.offerEmail }}?subject=Sent via Referral App"
+          (click)="logClick('email')"
+        >
           {{ offer.offerEmail }}
         </a>
       </ion-label>
@@ -57,7 +67,10 @@
     <ion-item *ngIf="offer.offerNumber">
       <ion-icon name="call" slot="start"></ion-icon>
       <ion-label>
-        Phone: <a href="tel:{{ offer.offerNumber }}">{{ offer.offerNumber }}</a>
+        Phone:
+        <a href="tel:{{ offer.offerNumber }}" (click)="logClick('phone')">{{
+          offer.offerNumber
+        }}</a>
       </ion-label>
     </ion-item>
     <ion-item *ngIf="offer.offerAddress">

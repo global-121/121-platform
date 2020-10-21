@@ -137,14 +137,55 @@ export class CreateConnectionService {
     return await this.connectionRepository.save(connection);
   }
 
+  public async getDidByPhoneAndOrName(
+    phoneNumber?: string,
+    name?: string,
+  ): Promise<ConnectionEntity[]> {
+    const connections = await this.connectionRepository.find();
+    return connections.filter(c => {
+      return (
+        (name && c.customData['name'] === name) ||
+        (phoneNumber &&
+          (c.customData['phoneNumber'] === phoneNumber ||
+            c.customData['whatsappPhoneNumber'] === phoneNumber ||
+            c.phoneNumber === phoneNumber))
+      );
+    });
+  }
+
   public async addCustomDataOverwrite(
     did: string,
     customDataKey: string,
     customDataValue: string,
   ): Promise<ConnectionEntity> {
     const connection = await this.findOne(did);
+    if (!connection) {
+      const errors = 'This PA is not known.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    if (!connection.customData[customDataKey]) {
+      const errors = 'This custom data property is not known for this PA.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
     connection.customData[customDataKey] = customDataValue;
     return await this.connectionRepository.save(connection);
+  }
+
+  public async phoneNumberOverwrite(
+    did: string,
+    phoneNumber: string,
+  ): Promise<ConnectionEntity> {
+    const connection = await this.findOne(did);
+    if (!connection) {
+      const errors = 'This PA is not known.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    // Save as notification first, in case it is not a known custom-data property, which would yield an HTTP-exception
+    connection.phoneNumber = phoneNumber;
+    await this.connectionRepository.save(connection);
+
+    return await this.addCustomDataOverwrite(did, 'phoneNumber', phoneNumber);
   }
 
   public async addQrIdentifier(

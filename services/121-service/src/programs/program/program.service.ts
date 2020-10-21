@@ -92,25 +92,25 @@ export class ProgramService {
     return program;
   }
 
-  public async findAll(query): Promise<ProgramsRO> {
+  public async findAll(): Promise<ProgramsRO> {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.customCriteria', 'customCriterium')
       .addOrderBy('customCriterium.id', 'ASC');
 
     qb.where('1 = 1');
-
-    if ('location' in query) {
-      qb.andWhere('lower(program.location) LIKE :location', {
-        location: `%${query.location.toLowerCase()}%`,
-      });
-    }
-
     qb.orderBy('program.created', 'DESC');
 
-    const programsCount = await qb.getCount();
     const programs = await qb.getMany();
+    const programsCount = programs.length;
 
+    return { programs, programsCount };
+  }
+
+  public async getPublishedPrograms(): Promise<ProgramsRO> {
+    let programs = (await this.findAll()).programs;
+    programs = programs.filter(program => program.published);
+    const programsCount = programs.length;
     return { programs, programsCount };
   }
 
@@ -768,6 +768,7 @@ export class ProgramService {
 
     const connectionsResponse = [];
     for (let connection of selectedConnections) {
+      console.log;
       const connectionResponse = {};
       connectionResponse['did'] = connection.did;
       connectionResponse['score'] = connection.inclusionScore;
@@ -780,6 +781,7 @@ export class ProgramService {
       connectionResponse['validationDate'] = connection.validationDate;
       connectionResponse['inclusionDate'] = connection.inclusionDate;
       connectionResponse['rejectionDate'] = connection.rejectionDate;
+      connectionResponse['fsp'] = connection.fsp?.fsp;
       if (privacy) {
         connectionResponse['name'] = connection.customData['name'];
         connectionResponse['dob'] = connection.customData['dob'];
@@ -802,6 +804,7 @@ export class ProgramService {
 
   private async getAllConnections(programId): Promise<ConnectionEntity[]> {
     const connections = await this.connectionRepository.find({
+      relations: ['fsp'],
       order: { inclusionScore: 'DESC' },
     });
     const enrolledConnections = [];
@@ -942,6 +945,7 @@ export class ProgramService {
         selectedForValidationDate: rawConnection.selectedForValidation,
         validationDate: rawConnection.validationDate,
         inclusionDate: rawConnection.inclusionDate,
+        financialServiceProvider: rawConnection.fsp,
       };
       inclusionDetails.push(row);
     });
@@ -976,6 +980,7 @@ export class ProgramService {
         createdDate: rawConnection.created,
         registrationDate: rawConnection.appliedDate,
         selectedForValidationDate: rawConnection.selectedForValidationDate,
+        financialServiceProvider: rawConnection.fsp,
       };
       columnDetails.push(row);
     }
@@ -1020,8 +1025,10 @@ export class ProgramService {
         'transaction.installment',
         'connection.phoneNumber',
         'connection.customData',
+        'fsp.fsp AS financialServiceProvider',
       ])
       .leftJoin('transaction.connection', 'connection')
+      .leftJoin('connection.fsp', 'fsp')
       .where('transaction.program.id = :programId', { programId: programId })
       .andWhere('transaction.installment = :installmentId', {
         installmentId: installmentId,
@@ -1036,7 +1043,9 @@ export class ProgramService {
         'connection.phoneNumber',
         'connection.customData',
         'connection.programsIncluded',
+        'fsp.fsp AS financialServiceProvider',
       ])
+      .leftJoin('connection.fsp', 'fsp')
       .getRawMany();
     const rawPaymentDetails = [];
     for (let connection of connections) {

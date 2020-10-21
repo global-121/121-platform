@@ -29,7 +29,14 @@ export class LoggingService {
   }
 
   logPageView(name?: string) {
-    this.appInsights.trackPageView({ name });
+    if (this.appInsightsEnabled) {
+      this.appInsights.trackPageView({ name });
+    } else {
+      this.displayOnConsole(
+        'trackPageView - name: ' + name,
+        SeverityLevel.Information,
+      );
+    }
   }
 
   logError(error: any, severityLevel?: SeverityLevel) {
@@ -37,7 +44,17 @@ export class LoggingService {
   }
 
   logEvent(name: string, properties?: { [key: string]: any }) {
-    this.appInsights.trackEvent({ name }, properties);
+    if (this.appInsightsEnabled) {
+      this.appInsights.trackEvent({ name }, properties);
+    } else {
+      this.displayOnConsole(
+        'logEvent - name: ' +
+          name +
+          ' properties: ' +
+          JSON.stringify(properties),
+        SeverityLevel.Information,
+      );
+    }
   }
 
   logException(exception: Error, severityLevel?: SeverityLevel) {
@@ -52,7 +69,17 @@ export class LoggingService {
   }
 
   logTrace(message: string, properties?: { [key: string]: any }) {
-    this.appInsights.trackTrace({ message }, properties);
+    if (this.appInsightsEnabled) {
+      this.appInsights.trackTrace({ message }, properties);
+    } else {
+      this.displayOnConsole(
+        'logTrace - message: ' +
+          message +
+          ' properties: ' +
+          JSON.stringify(properties),
+        SeverityLevel.Information,
+      );
+    }
   }
 
   private displayOnConsole(

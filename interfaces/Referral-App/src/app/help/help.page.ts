@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import helpMock from 'src/app/mocks/help.mock';
+import { AnalyticsEventName } from 'src/app/models/event-name.model';
 import { Help } from 'src/app/models/help.model';
 import { HelpService } from 'src/app/services/help.service';
+import { LoggingService } from 'src/app/services/logging.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
@@ -17,6 +19,7 @@ export class HelpPage {
     public modalController: ModalController,
     public helpService: HelpService,
     public translatableString: TranslatableStringService,
+    private loggingService: LoggingService,
   ) {
     this.loadHelpDetails();
   }
@@ -34,8 +37,15 @@ export class HelpPage {
   }
 
   dismiss() {
+    this.loggingService.logEvent(AnalyticsEventName.ReferralHelpPageClose);
     this.modalController.dismiss({
       dismissed: true,
+    });
+  }
+
+  public logClick(name) {
+    this.loggingService.logEvent(AnalyticsEventName.ReferralHelpClick, {
+      name,
     });
   }
 }
