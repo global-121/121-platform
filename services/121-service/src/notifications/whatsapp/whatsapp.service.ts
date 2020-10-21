@@ -114,7 +114,7 @@ export class WhatsappService {
     if (intersolveBarcode) {
       await this.sendWhatsapp(
         program.notifications[this.language]['whatsappVoucher'],
-        intersolveBarcode.phonenumber,
+        intersolveBarcode.whatsappPhoneNumber,
         intersolveBarcode.barcode,
       );
       intersolveBarcode.send = true;

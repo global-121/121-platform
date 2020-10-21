@@ -8,6 +8,7 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
+import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 
 @Entity('connection')
 export class ConnectionEntity {
@@ -130,4 +131,10 @@ export class ConnectionEntity {
   public updateTimestamp(): void {
     this.updated = new Date();
   }
+
+  @OneToMany(
+    type => IntersolveBarcodeEntity,
+    barcode => barcode.connection,
+  )
+  public barcodes: IntersolveBarcodeEntity[];
 }

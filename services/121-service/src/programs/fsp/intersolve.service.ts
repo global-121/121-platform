@@ -9,6 +9,7 @@ import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 import { ProgramEntity } from '../program/program.entity';
 import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
 import crypto from 'crypto';
+import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 
 @Injectable()
 export class IntersolveService {
@@ -16,6 +17,8 @@ export class IntersolveService {
   private readonly intersolveBarcodeRepository: Repository<
     IntersolveBarcodeEntity
   >;
+  @InjectRepository(ConnectionEntity)
+  private readonly connectionRepository: Repository<ConnectionEntity>;
 
   private readonly programId = 1;
   private readonly language = 'en';
@@ -82,8 +85,17 @@ export class IntersolveService {
     const barcodeData = new IntersolveBarcodeEntity();
     barcodeData.barcode = cardNumber;
     barcodeData.pin = pin.toString();
-    barcodeData.phonenumber = phoneNumber;
+    barcodeData.whatsappPhoneNumber = phoneNumber;
     barcodeData.send = false;
     this.intersolveBarcodeRepository.save(barcodeData);
+  }
+
+  public async exportVouchers(did: string): Promise<IntersolveBarcodeEntity[]> {
+    const connection = await this.connectionRepository.findOne({
+      where: { did: did },
+      relations: ['barcodes'],
+    });
+    const vouchers = connection.barcodes;
+    return vouchers;
   }
 }

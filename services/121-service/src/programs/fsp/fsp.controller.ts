@@ -10,6 +10,9 @@ import {
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
+import { IntersolveService } from './intersolve.service';
+import { DidDto } from '../program/dto/did.dto';
+import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 
 @ApiUseTags('fsp')
 @Controller('fsp')
@@ -19,6 +22,7 @@ export class FspController {
   public constructor(
     fspService: FspService,
     africasTalkingService: AfricasTalkingService,
+    private intersolveService: IntersolveService,
   ) {
     this.fspService = fspService;
     this.africasTalkingService = africasTalkingService;
@@ -63,5 +67,16 @@ export class FspController {
     await this.africasTalkingService.africasTalkingNotification(
       africasTalkingNotificationData,
     );
+  }
+
+  @ApiOperation({
+    title: 'Export Intersolve vouchers',
+  })
+  @ApiResponse({ status: 200, description: 'Vouchers exported' })
+  @Post('intersolve/export-voucher')
+  public async exportVouchers(
+    @Body() didDto: DidDto,
+  ): Promise<IntersolveBarcodeEntity[]> {
+    return await this.intersolveService.exportVouchers(didDto.did);
   }
 }
