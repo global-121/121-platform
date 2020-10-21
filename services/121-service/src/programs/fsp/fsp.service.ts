@@ -1,6 +1,5 @@
 import { AfricasTalkingService } from './africas-talking.service';
 import { IntersolveService } from './intersolve.service';
-import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from './../../shared/enum/status.enum';
 import { StatusMessageDto } from '../../shared/dto/status-message.dto';
 import { Injectable } from '@nestjs/common';
@@ -37,7 +36,6 @@ export class FspService {
   public constructor(
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly intersolveService: IntersolveService,
-    private readonly intersolveApiService: IntersolveApiService,
   ) {}
 
   public async createSendPaymentListFsp(

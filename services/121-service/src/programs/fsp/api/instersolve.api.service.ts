@@ -10,30 +10,9 @@ import { IntersolveCancelResponse } from './dto/intersolve-cancel-response.dto';
 export class IntersolveApiService {
   public constructor(private readonly soapService: SoapService) {}
 
-  public async test(): Promise<any> {
-    const refPos = '121';
-    const cancelUsingRefPos = false;
-    const resultIssueCard = await this.issueCard(2500, refPos);
-    const resultGetCard = await this.getCard(
-      resultIssueCard.cardId,
-      resultIssueCard.pin,
-    );
-    if (cancelUsingRefPos) {
-      const resultCancelTransactionByRefPosCard = await this.cancelTransactionByRefPos(
-        resultIssueCard.cardId,
-        refPos,
-      );
-    } else {
-      const resultCancel = await this.cancel(
-        resultIssueCard.cardId,
-        resultIssueCard.transactionId,
-      );
-    }
-  }
-
   public async issueCard(
     amount: number,
-    refPos: string,
+    refPos: number,
   ): Promise<IntersolveIssueCardResponse> {
     console.log('issueCard soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
@@ -55,7 +34,7 @@ export class IntersolveApiService {
       payload,
       IntersolveSoapElements.IssueCard,
       ['TransactionHeader', 'RefPos'],
-      refPos,
+      String(refPos),
     );
 
     const responseBody = await this.soapService.post(payload);
@@ -105,7 +84,7 @@ export class IntersolveApiService {
 
   public async cancelTransactionByRefPos(
     cardId: string,
-    refPos: string,
+    refPos: number,
   ): Promise<IntersolveCancelTransactionByRefPosResponse> {
     console.log('cancelTransactionByRefPos soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
@@ -127,7 +106,7 @@ export class IntersolveApiService {
       payload,
       IntersolveSoapElements.CancelTransactionByRefPos,
       ['RefPosToCancel'],
-      refPos,
+      String(refPos),
     );
 
     const responseBody = await this.soapService.post(payload);
