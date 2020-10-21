@@ -56,8 +56,8 @@
     },
     "handle-proof": {
       "creating": "You have given us sufficient personal information to see if you can be part of the program.",
-      "inclusion-status-negative": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us.",
-      "inclusion-status-positive": "You have been included in the program.",
+      "inclusion-status-negative": "Your application to the program has not been successful and cannot be confirmed.<br><br>If you can, please reach out to us on WhatsApp for more information: <a target='_blank' rel='noopener' href='https://wa.me/+31600000000'>+31 6 00 00 00 00</a>",
+      "inclusion-status-positive": "Your application to the Red Cross program has been successful and confirmed.<br><br>You will receive another message about your first Albert Heijn supermarket voucher within [variable].",
       "notify": "We will notify you if you are included."
     },
     "login-identity": {
