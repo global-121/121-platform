@@ -1,89 +1,103 @@
 <section>
   <dialogue-turn>
     <p>
-      <play-text-audio key="personal.select-fsp.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.select-fsp.introduction'|translate }}
+      <play-text-audio
+        key="personal.select-fsp.introduction"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      {{ 'personal.select-fsp.introduction' | translate }}
     </p>
   </dialogue-turn>
-  <dialogue-turn actor="self"
-                 *ngIf="fsps"
-                 [isSpoken]="fsps"
-  >
+  <dialogue-turn actor="self" *ngIf="fsps" [isSpoken]="fsps">
     <form (submit)="submitFsp()">
-      <ion-radio-group name="fsps"
-                       (ionChange)="changeFsp($event)"
-      >
-        <ion-item *ngFor="let fsp of fsps"
-                  color="light"
-                  lines="full"
-                  class="ion-no-padding"
+      <ion-radio-group name="fsps" (ionChange)="changeFsp($event)">
+        <ion-item
+          *ngFor="let fsp of fsps"
+          color="light"
+          lines="full"
+          class="ion-no-padding"
         >
           <ion-label class="ion-text-wrap ion-padding-end">
             {{ fsp.fspDisplayName }}
           </ion-label>
-          <ion-radio [value]="fsp.id"
-                     [checked]="(fsp.id === fspChoice)"
-                     [disabled]="fspSubmitted"
+          <ion-radio
+            [value]="fsp.id"
+            [checked]="fsp.id === fspChoice"
+            [disabled]="fspSubmitted"
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <ion-row *ngIf="fspChoice && !fspSubmitted"
-               class="ion-nowrap ion-align-items-center ion-margin-top"
+      <ion-row
+        *ngIf="fspChoice && !fspSubmitted"
+        class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button"
-                         size="default"
+        <play-text-audio
+          key="shared.submit-button"
+          size="default"
         ></play-text-audio>
-        <ion-button type="submit"
-                    [disabled]="fspSubmitted || isDisabled"
-                    expand="block"
-                    style="flex-basis:100%"
-        >{{ 'shared.submit-button'|translate }}</ion-button>
+        <ion-button
+          type="submit"
+          [disabled]="fspSubmitted || isDisabled"
+          expand="block"
+          style="flex-basis: 100%"
+          >{{ 'shared.submit-button' | translate }}</ion-button
+        >
       </ion-row>
     </form>
   </dialogue-turn>
-  <dialogue-turn *ngIf="fspSubmitted"
-                 [isSpoken]="fspSubmitted"
-  >
+  <dialogue-turn *ngIf="fspSubmitted" [isSpoken]="fspSubmitted">
     <p>
-      <play-text-audio key="personal.select-fsp.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
-      <span [innerHTML]="'personal.select-fsp.conclusion'|translate:{ name:'<strong>'+chosenFsp?.fspDisplayName+'</strong>' }"></span>
+      <play-text-audio
+        key="personal.select-fsp.conclusion"
+        class="ion-float-start ion-margin-end"
+      ></play-text-audio>
+      <span
+        [innerHTML]="
+          'personal.select-fsp.conclusion'
+            | translate
+              : { name: '<strong>' + chosenFsp?.fspDisplayName + '</strong>' }
+        "
+      ></span>
     </p>
   </dialogue-turn>
 
   <form *ngIf="questions?.length">
-    <dialogue-turn isConnected="true"
-                   isSpoken="true"
-    >
+    <dialogue-turn isConnected="true" isSpoken="true">
       <p>
-        <play-text-audio key="personal.select-fsp.attributes.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'personal.select-fsp.attributes.introduction'|translate }}
+        <play-text-audio
+          key="personal.select-fsp.attributes.introduction"
+          class="ion-float-start ion-margin-end"
+        ></play-text-audio>
+        {{ 'personal.select-fsp.attributes.introduction' | translate }}
       </p>
     </dialogue-turn>
 
-    <q-and-a-set [questions]="questions"
-                 [answers]="customAttributeAnswers"
-                 [(isSubmitted)]="isSubmitted"
-                 [(isEditing)]="isEditing"
-                 (submit)="submitCustomAttributes($event)"
-                 submitLabel="shared.submit-button"
+    <q-and-a-set
+      [questions]="questions"
+      [answers]="customAttributeAnswers"
+      [(isSubmitted)]="isSubmitted"
+      [(isEditing)]="isEditing"
+      (submit)="submitCustomAttributes($event)"
+      submitLabel="shared.submit-button"
     ></q-and-a-set>
 
-    <dialogue-turn *ngIf="showResultSuccess"
-                   [isSpoken]="showResultSuccess"
-    >
+    <dialogue-turn *ngIf="showResultSuccess" [isSpoken]="showResultSuccess">
       <p>
-        <play-text-audio key="personal.select-fsp.attributes.success" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'personal.select-fsp.attributes.success'|translate }}
+        <play-text-audio
+          key="personal.select-fsp.attributes.success"
+          class="ion-float-start ion-margin-end"
+        ></play-text-audio>
+        {{ 'personal.select-fsp.attributes.success' | translate }}
       </p>
     </dialogue-turn>
-    <dialogue-turn *ngIf="showResultError"
-                   [isSpoken]="showResultError"
-    >
+    <dialogue-turn *ngIf="showResultError" [isSpoken]="showResultError">
       <p>
-        <play-text-audio key="personal.select-fsp.attributes.error" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'personal.select-fsp.attributes.error'|translate }}
+        <play-text-audio
+          key="personal.select-fsp.attributes.error"
+          class="ion-float-start ion-margin-end"
+        ></play-text-audio>
+        {{ 'personal.select-fsp.attributes.error' | translate }}
       </p>
     </dialogue-turn>
   </form>
-
 </section>

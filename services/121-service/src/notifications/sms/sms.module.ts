@@ -13,10 +13,7 @@ import { SmsController } from './sms.controller';
 import { TwilioMessageEntity } from '../twilio.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([TwilioMessageEntity]),
-    forwardRef(() => ProgramModule),
-  ],
+  imports: [TypeOrmModule.forFeature([TwilioMessageEntity])],
   providers: [SmsService],
   controllers: [SmsController],
   exports: [SmsService],

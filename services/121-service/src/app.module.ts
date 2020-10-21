@@ -1,3 +1,4 @@
+import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
 import { CronjobModule } from './cronjob/cronjob.module';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -39,6 +40,7 @@ import { InstanceModule } from './instance/instance.module';
     ActionModule,
     FspModule,
     InstanceModule,
+    WhatsappModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],

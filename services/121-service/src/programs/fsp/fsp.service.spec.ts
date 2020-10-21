@@ -1,3 +1,4 @@
+import { TwilioMessageEntity } from './../../notifications/twilio.entity';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { SoapService } from './api/soap.service';
 import { FspAttributeEntity } from './fsp-attribute.entity';
@@ -18,6 +19,10 @@ import { AfricasTalkingNotificationEntity } from './africastalking-notification.
 import { AfricasTalkingApiService } from './api/africas-talking.api.service';
 import { AfricasTalkingService } from './africas-talking.service';
 import { IntersolveService } from './intersolve.service';
+import { WhatsappService } from '../../notifications/whatsapp/whatsapp.service';
+import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
+import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
+import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 
 describe('Fsp service', (): void => {
   let service: FspService;
@@ -32,8 +37,10 @@ describe('Fsp service', (): void => {
           AfricasTalkingApiService,
           AfricasTalkingService,
           SoapService,
+          ImageCodeService,
           IntersolveService,
           IntersolveApiService,
+          WhatsappService,
           {
             provide: getRepositoryToken(TransactionEntity),
             useFactory: repositoryMockFactory,
@@ -48,6 +55,18 @@ describe('Fsp service', (): void => {
           },
           {
             provide: getRepositoryToken(AfricasTalkingNotificationEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ImageCodeEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(IntersolveBarcodeEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(TwilioMessageEntity),
             useFactory: repositoryMockFactory,
           },
         ],
