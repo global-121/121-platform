@@ -38,14 +38,10 @@ export class IntersolveService {
   }
 
   public async sendIndividualPayment(paymentInfo): Promise<any> {
-    const intersolveRefPosInt = parseInt(
-      crypto.randomBytes(16).toString('hex'),
+    const intersolveRefPos = parseInt(
+      crypto.randomBytes(5).toString('hex'),
       16,
     );
-    const intersolveRefPos = intersolveRefPosInt
-      .toLocaleString('fullwide', { useGrouping: false })
-      .substring(1, 12);
-    console.log('intersolveRefPos: ', intersolveRefPos);
 
     const amountInCents = paymentInfo.amount * 100;
     const voucherInfo = await this.intersolveApiService.issueCard(
