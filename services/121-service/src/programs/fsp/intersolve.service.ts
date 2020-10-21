@@ -1,16 +1,31 @@
+import { WhatsappService } from './../../notifications/whatsapp/whatsapp.service';
 import { StatusMessageDto } from './../../shared/dto/status-message.dto';
 import { Injectable } from '@nestjs/common';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from '../../shared/enum/status.enum';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, getRepository } from 'typeorm';
+import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
+import { ProgramEntity } from '../program/program.entity';
+import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
+import crypto from 'crypto';
 
 @Injectable()
 export class IntersolveService {
+  @InjectRepository(IntersolveBarcodeEntity)
+  private readonly intersolveBarcodeRepository: Repository<
+    IntersolveBarcodeEntity
+  >;
+
+  private readonly programId = 1;
+  private readonly language = 'en';
+
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
+    private readonly whatsappService: WhatsappService,
   ) {}
 
   public async sendPayment(payload): Promise<StatusMessageDto> {
-    console.log('payload: ', payload);
     try {
       for (let paymentInfo of payload) {
         await this.sendIndividualPayment(paymentInfo);
@@ -23,17 +38,39 @@ export class IntersolveService {
   }
 
   public async sendIndividualPayment(paymentInfo): Promise<any> {
-    console.log('paymentInfo: ', paymentInfo);
+    const intersolveRefPosInt = parseInt(
+      crypto.randomBytes(16).toString('hex'),
+      16,
+    );
+    const intersolveRefPos = intersolveRefPosInt
+      .toLocaleString('fullwide', { useGrouping: false })
+      .substring(1, 12);
+    console.log('intersolveRefPos: ', intersolveRefPos);
+
     const amountInCents = paymentInfo.amount * 100;
-    console.log('amountInCents: ', amountInCents);
     const voucherInfo = await this.intersolveApiService.issueCard(
       amountInCents,
+      intersolveRefPos,
     );
-    await this.sendVoucherWhatsapp(
-      voucherInfo.cardId,
-      voucherInfo.pin,
-      paymentInfo.phoneNumer,
-    );
+    if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
+      await this.sendVoucherWhatsapp(
+        voucherInfo.cardId,
+        voucherInfo.pin,
+        paymentInfo.whatsappPhoneNumber,
+      );
+    } else {
+      if (voucherInfo.transactionId) {
+        await this.intersolveApiService.cancel(
+          voucherInfo.cardId,
+          voucherInfo.transactionId,
+        );
+      } else {
+        await this.intersolveApiService.cancelTransactionByRefPos(
+          voucherInfo.cardId,
+          intersolveRefPos,
+        );
+      }
+    }
   }
 
   public async sendVoucherWhatsapp(
@@ -41,11 +78,16 @@ export class IntersolveService {
     pin: number,
     phoneNumber: string,
   ): Promise<any> {
-    console.log(
-      'sendVoucherWhatsapp cardNumber: ',
-      cardNumber,
-      pin,
-      phoneNumber,
-    );
+    const program = await getRepository(ProgramEntity).findOne(this.programId);
+    const whatsappPayment =
+      program.notifications[this.language]['whatsappPayment'];
+
+    this.whatsappService.sendWhatsapp(whatsappPayment, phoneNumber, null);
+    const barcodeData = new IntersolveBarcodeEntity();
+    barcodeData.barcode = cardNumber;
+    barcodeData.pin = pin.toString();
+    barcodeData.phonenumber = phoneNumber;
+    barcodeData.send = false;
+    this.intersolveBarcodeRepository.save(barcodeData);
   }
 }

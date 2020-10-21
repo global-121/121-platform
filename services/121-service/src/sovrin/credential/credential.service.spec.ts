@@ -30,6 +30,10 @@ import { AfricasTalkingNotificationEntity } from '../../programs/fsp/africastalk
 import { AfricasTalkingApiService } from '../../programs/fsp/api/africas-talking.api.service';
 import { IntersolveService } from '../../programs/fsp/intersolve.service';
 import { IntersolveApiService } from '../../programs/fsp/api/instersolve.api.service';
+import { WhatsappService } from '../../notifications/whatsapp/whatsapp.service';
+import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
+import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
+import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -49,9 +53,11 @@ describe('CredentialService', (): void => {
           FspService,
           AfricasTalkingApiService,
           AfricasTalkingService,
+          ImageCodeService,
           IntersolveService,
           IntersolveApiService,
           SoapService,
+          WhatsappService,
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
             useFactory: repositoryMockFactory,
@@ -114,6 +120,14 @@ describe('CredentialService', (): void => {
           },
           {
             provide: getRepositoryToken(AfricasTalkingNotificationEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ImageCodeEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(IntersolveBarcodeEntity),
             useFactory: repositoryMockFactory,
           },
         ],

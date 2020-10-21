@@ -43,7 +43,10 @@
     "en": {
       "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within [variable].",
       "included": "This is a message from the Red Cross.\n\nYour application to the Red Cross program has been successful and confirmed.\n\nYou will receive another message about your first Albert Heijn supermarket voucher within [variable].",
-      "rejected": "This is a message from the Red Cross.\n\nYour application to the program has not been successful and cannot be confirmed.\n\nIf you can, please reach out to us on WhatsApp for more information: [+31600000000]"
+      "rejected": "This is a message from the Red Cross.\n\nYour application to the program has not been successful and cannot be confirmed.\n\nIf you can, please reach out to us on WhatsApp for more information: [+31600000000]",
+      "whatsappPayment": "This is a message from the Red Cross.\nYour €35 Albert Heijn supermarket voucher is ready to be sent.\nPlease reply “yes” to this message in order to receive the voucher.",
+      "whatsappReply": "For further questions please contact this number",
+      "whatsappVoucher": "This is a message from the Red Cross.\nYou are receiving this supermarket voucher because you are currently on the Loket waiting list for Shelter in Amsterdam and you applied for support from the Red Cross. The value of this voucher is €35. This amount can be spent at any Albert Heijn supermarket in the Netherlands.\nYou don’t have to spend everything at once. So keep this voucher in your phone and re-use it until the amount is finished.\nTo use the voucher, choose what you want to buy and let the cashier scan the voucher on your phone.\nMore information about the supermarket voucher is here: https://example.org"
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
