@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.9.0...master)
 
+### Notes
+
+- 2020-10-21: Sources updated up to [commit `b977df9...`](https://github.com/global-121/121-platform/commit/b977df994ceac254bb1d007a9f5087b3f42cb31a) in [Transifex](https://www.transifex.com/redcrossnl/121-platform/content/)
+
 ### Added
 
 - 2020-10-01: Added `TWILIO_SID`, `TWILIO_PROGRAM_TOKEN_SID`, `TWILIO_PROGRAM_TOKEN_SECRET` `TWILIO_WHATSAPP_NUMBER` `TWILIO_MESSAGING_SID` to `.env` to `services/.env`
