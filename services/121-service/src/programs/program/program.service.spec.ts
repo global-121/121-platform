@@ -1,3 +1,4 @@
+import { ImageCodeService } from './../../notifications/imagecode/image-code.service';
 import { AfricasTalkingService } from './../fsp/africas-talking.service';
 import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
@@ -30,6 +31,9 @@ import { AfricasTalkingApiService } from '../fsp/api/africas-talking.api.service
 import { IntersolveService } from '../fsp/intersolve.service';
 import { IntersolveApiService } from '../fsp/api/instersolve.api.service';
 import { SoapService } from '../fsp/api/soap.service';
+import { WhatsappService } from '../../notifications/whatsapp/whatsapp.service';
+import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
+import { IntersolveBarcodeEntity } from '../fsp/intersolve-barcode.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -50,9 +54,11 @@ describe('Program service', (): void => {
           FspService,
           AfricasTalkingService,
           AfricasTalkingApiService,
+          ImageCodeService,
           IntersolveService,
           IntersolveApiService,
           SoapService,
+          WhatsappService,
           {
             provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,
@@ -111,6 +117,14 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(AfricasTalkingNotificationEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ImageCodeEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(IntersolveBarcodeEntity),
             useFactory: repositoryMockFactory,
           },
         ],

@@ -1,20 +1,17 @@
+import { ProgramEntity } from './../../programs/program/program.entity';
 import { EXTERNAL_API } from './../../config';
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
-import { ProgramService } from '../../programs/program/program.service';
 
 @Injectable()
 export class SmsService {
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
 
-  public constructor(
-    @Inject(forwardRef(() => ProgramService))
-    private readonly programService: ProgramService,
-  ) {}
+  public constructor() {}
 
   public async notifyBySms(
     recipientPhoneNr: string,
@@ -28,18 +25,21 @@ export class SmsService {
     }
   }
 
-  public async sendSms(message: string, recipientPhoneNr: string) {
+  public async sendSms(
+    message: string,
+    recipientPhoneNr: string,
+  ): Promise<void> {
     // Overwrite recipient phone number for testing phase
-    // recipientPhoneNr = process.env.TWILIO_TEST_TO_NUMBER;
-
+    // recipientPhoneNr = TWILIO.testToNumber;
     twilioClient.messages
       .create({
         body: message,
-        from: process.env.TWILIO_TEST_FROM_NUMBER_SMS, // This parameter could be specifief per program
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
         statusCallback: EXTERNAL_API.callbackUrlSms,
         to: recipientPhoneNr,
       })
-      .then(message => this.storeSendSms(message));
+      .then(message => this.storeSendSms(message))
+      .catch(err => console.log('Error twillio', err));
   }
 
   public async getSmsText(
@@ -47,16 +47,16 @@ export class SmsService {
     key: string,
     programId: number,
   ): Promise<string> {
-    const program = await this.programService.findOne(programId);
+    const program = await getRepository(ProgramEntity).findOne(programId);
     return program.notifications[language][key];
   }
 
-  public storeSendSms(message) {
+  public storeSendSms(message): void {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
     twilioMessage.body = message.body;
     twilioMessage.to = message.to;
-    twilioMessage.from = message.from;
+    twilioMessage.from = message.messagingServiceSid;
     twilioMessage.sid = message.sid;
     twilioMessage.status = message.status;
     twilioMessage.type = NotificationType.Sms;
@@ -71,7 +71,7 @@ export class SmsService {
     return await this.twilioMessageRepository.findOne(findOneOptions);
   }
 
-  public async statusCallback(callbackData) {
+  public async statusCallback(callbackData): Promise<void> {
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
       { status: callbackData.SmsStatus },

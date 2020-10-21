@@ -52,15 +52,6 @@ export class FspController {
   }
 
   @ApiOperation({
-    title: 'Test this thing',
-  })
-  @ApiResponse({ status: 200, description: 'Tested' })
-  @Post('test')
-  public async testSoap(): Promise<any> {
-    return await this.fspService.testSoap();
-  }
-
-  @ApiOperation({
     title:
       'Notification callback used by Africas Talking to notify status of payment to us.',
   })
