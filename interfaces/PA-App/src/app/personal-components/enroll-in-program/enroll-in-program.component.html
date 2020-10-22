@@ -42,32 +42,57 @@
     </ul>
 
     <div class="ion-margin-top">
-      <ion-row class="ion-nowrap ion-align-items-center">
-        <play-text-audio key="personal.enroll-in-program.submit-confirm"
-                         size="default"
-        ></play-text-audio>
-        <ion-button type="submit"
-                    (click)="submitConfirm()"
-                    [disabled]="isDisabled"
-                    expand="block"
-                    style="flex-basis:100%;"
+      <ion-radio-group (ionChange)="submitChoice = $event.detail.value">
+        <ion-item
+          color="light"
+          lines="full"
+          class="ion-no-padding"
         >
-          {{ 'personal.enroll-in-program.submit-confirm'|translate }}
-        </ion-button>
-      </ion-row>
-      <ion-row class="ion-nowrap ion-align-items-center">
-        <play-text-audio key="personal.enroll-in-program.change"
-                         size="default"
-        ></play-text-audio>
-        <ion-button type="button"
-                    (click)="changeAnswers()"
-                    [disabled]="isDisabled"
-                    expand="block"
-                    style="flex-basis:100%;"
-                    fill="outline"
+          <play-text-audio
+            key="personal.enroll-in-program.submit-confirm"
+            slot="start"
+            class="ion-no-margin ion-margin-end"
+          ></play-text-audio>
+          <ion-label class="ion-text-wrap ion-padding-end">
+            {{ 'personal.enroll-in-program.submit-confirm'|translate }}
+          </ion-label>
+          <ion-radio
+            [value]="submitActions.confirm"
+            [checked]="isDisabled"
+            [disabled]="isDisabled"
+          ></ion-radio>
+        </ion-item>
+        <ion-item
+          color="light"
+          class="ion-no-padding"
+          lines="full"
         >
-          {{ 'personal.enroll-in-program.change'|translate }}
-        </ion-button>
+          <play-text-audio
+            key="personal.enroll-in-program.change"
+            slot="start"
+            class="ion-no-margin ion-margin-end"
+          ></play-text-audio>
+          <ion-label class="ion-text-wrap ion-padding-end">
+            {{ 'personal.enroll-in-program.change'|translate }}
+          </ion-label>
+          <ion-radio
+            [value]="submitActions.change"
+            [disabled]="isDisabled"
+          ></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <ion-row
+        *ngIf="submitChoice && !isDisabled"
+        class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
+        <ion-button
+          type="button"
+          (click)="doSubmitAction()"
+          [disabled]="isDisabled || !submitChoice"
+          expand="block"
+          style="flex-basis:100%"
+        >{{ 'shared.submit-button'|translate }}</ion-button>
       </ion-row>
     </div>
   </dialogue-turn>
