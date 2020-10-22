@@ -6,6 +6,11 @@ import { PersonalComponents } from 'src/app/personal-components/personal-compone
 import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
 
+export enum ConsentChoices {
+  agree = 'agree',
+  disagree = 'disagree',
+}
+
 @Component({
   selector: 'app-consent-question',
   templateUrl: './consent-question.component.html',
@@ -17,7 +22,9 @@ export class ConsentQuestionComponent extends PersonalComponent {
 
   public instanceInformation: InstanceInformation;
 
-  public userConsent = false;
+  public consentChoices = ConsentChoices;
+  public consentChoice: ConsentChoices | null;
+  public userConsent: boolean;
 
   constructor(
     public conversationService: ConversationService,
@@ -47,12 +54,16 @@ export class ConsentQuestionComponent extends PersonalComponent {
       });
   }
 
-  public consent(consent: boolean) {
-    if (!consent) {
+  public changeConsent(consentChoice: ConsentChoices) {
+    this.consentChoice = consentChoice;
+    this.userConsent = consentChoice === ConsentChoices.agree;
+  }
+
+  public submitConsent() {
+    if (!this.userConsent) {
       window.location.reload();
       return;
     }
-    this.userConsent = consent;
     this.complete();
   }
 

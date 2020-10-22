@@ -23,6 +23,11 @@ import {
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
+export enum SubmitActions {
+  confirm = 'confirm',
+  change = 'change',
+}
+
 @Component({
   selector: 'app-enroll-in-program',
   templateUrl: './enroll-in-program.component.html',
@@ -47,6 +52,9 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public allQuestionsShown = false;
   public hasAnswered: boolean;
   public hasChangedAnswers: boolean;
+
+  public submitActions = SubmitActions;
+  public submitChoice: SubmitActions;
 
   constructor(
     public programsService: ProgramsServiceApiService,
@@ -147,17 +155,28 @@ export class EnrollInProgramComponent extends PersonalComponent {
     });
   }
 
-  public changeAnswers() {
-    this.hasAnswered = false;
-    this.hasChangedAnswers = true;
-  }
-
   public submit($event) {
     this.answers = $event;
 
     this.hasAnswered = true;
     this.hasChangedAnswers = false;
     this.paData.saveAnswers(this.programId, this.answers);
+  }
+
+  public doSubmitAction() {
+    if (this.submitChoice === SubmitActions.change) {
+      this.changeAnswers();
+      return;
+    }
+    if (this.submitChoice === SubmitActions.confirm) {
+      this.submitConfirm();
+      return;
+    }
+  }
+
+  public changeAnswers() {
+    this.hasAnswered = false;
+    this.hasChangedAnswers = true;
   }
 
   public async submitConfirm() {
