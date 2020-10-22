@@ -1,9 +1,23 @@
 name: Azure Static Web Apps CI/CD - Referral-App
 
 on:
+  workflow_dispatch: # To enable running the workflow manually
   push:
     branches:
       - master
+      - release/*
+    paths:
+      - 'interfaces/Referral-app/**'
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - master
+    paths:
+      - 'interfaces/Referral-app/**'
+  release:
+    types: [published]
+    branches:
+      - release/*
 
 jobs:
   build_and_deploy_job:
@@ -11,9 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
         with:
-          submodules: true
+          node-version: '10.x'
+      - uses: actions/checkout@v2
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v0.0.1-preview
