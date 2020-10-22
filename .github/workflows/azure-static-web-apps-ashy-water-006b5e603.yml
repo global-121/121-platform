@@ -25,9 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '10.x'
       - uses: actions/checkout@v2
       - name: Build And Deploy
         id: builddeploy
