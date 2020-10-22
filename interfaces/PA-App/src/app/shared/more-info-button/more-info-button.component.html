@@ -1,17 +1,15 @@
 <ion-row class="ion-padding-top ion-margin-vertical ion-nowrap ion-align-items-center">
-  <div *ngIf="buttonKey" style="flex-shrink: 0;">
-    <play-text-audio [key]="buttonKey"></play-text-audio>
-    &nbsp;
-  </div>
-  <ion-button
-    type="button"
-    size="small"
-    fill="outline"
-    color="light"
-    (click)="openInfoPopup()"
+  <play-text-audio [key]="buttonKey"></play-text-audio>
+  <ion-button type="button"
+              size="small"
+              (click)="openInfoPopup()"
+              [ngClass]="{
+                'ion-no-margin': !!buttonKey
+              }"
   >
-    <ion-icon name="information-circle-outline" size="small" slot="start"></ion-icon>
+
     <ng-container *ngIf="buttonKey">{{ buttonKey|translate }}</ng-container>
     <ng-content *ngIf="!buttonKey"></ng-content>
+
   </ion-button>
 </ion-row>
