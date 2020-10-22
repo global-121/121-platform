@@ -5,23 +5,11 @@ on:
   push:
     branches:
       - master
-      - release/*
     paths:
       - 'interfaces/Referral-app/**'
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - master
-    paths:
-      - 'interfaces/Referral-app/**'
-  release:
-    types: [published]
-    branches:
-      - release/*
 
 jobs:
   build_and_deploy_job:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
@@ -45,15 +33,3 @@ jobs:
           GOOGLE_SHEETS_SHEET_ID: ${{ secrets.REF_GOOGLE_SHEETS_SHEET_ID }}
           NG_AI_IKEY: ${{ secrets.NG_AI_IKEY }}
           NG_AI_ENDPOINT: ${{ secrets.NG_AI_ENDPOINT }}
-
-  close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close Pull Request Job
-    steps:
-      - name: Close Pull Request
-        id: closepullrequest
-        uses: Azure/static-web-apps-deploy@v0.0.1-preview
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ASHY_WATER_006B5E603 }}
-          action: "close"
