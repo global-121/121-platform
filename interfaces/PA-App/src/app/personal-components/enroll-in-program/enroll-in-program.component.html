@@ -34,10 +34,10 @@
                  *ngIf="hasAnswered"
                  [isSpoken]="hasAnswered"
   >
-    <ul>
-      <li *ngFor="let question of questions">
+    <ul class="ion-padding-start">
+      <li *ngFor="let question of questions" class="ion-margin-vertical">
         <span [innerHTML]="question.label"></span><br>
-        <strong>{{ answers[question.code]?.label }}</strong>
+        <strong class="answer-emphasis">{{ answers[question.code]?.label }}</strong>
       </li>
     </ul>
 
