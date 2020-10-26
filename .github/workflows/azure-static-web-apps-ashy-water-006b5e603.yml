@@ -1,4 +1,4 @@
-name: Azure Static Web Apps CI/CD - Referral-App
+name: Azure Static Web Apps - Deploy Referral-App
 
 on:
   workflow_dispatch: # To enable running the workflow manually
@@ -27,8 +27,9 @@ jobs:
           api_location: "" # Api source code path - optional
           app_build_command: "npm run build -- --prod"
           app_artifact_location: "www" # Built app content directory - optional
+          routes_location: "/interfaces/Referral-App/" # Location of routes.json, relative to repo-root
           ###### End of Repository/Build Configurations ######
-        env: 
+        env:
           GOOGLE_SHEETS_API_URL: ${{ secrets.REF_GOOGLE_SHEETS_API_URL }}
           GOOGLE_SHEETS_SHEET_ID: ${{ secrets.REF_GOOGLE_SHEETS_SHEET_ID }}
           NG_AI_IKEY: ${{ secrets.NG_AI_IKEY }}
