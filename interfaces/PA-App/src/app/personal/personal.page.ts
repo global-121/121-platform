@@ -80,7 +80,7 @@ export class PersonalPage implements OnInit {
           nextAction === this.conversationService.conversationActions.afterLogin
         ) {
           await this.loadComponents();
-          this.scrollDownWhenReady();
+          this.scrollToLastWhenReady();
           return;
         }
 
@@ -91,6 +91,10 @@ export class PersonalPage implements OnInit {
     this.conversationService.shouldScroll$.subscribe((toY: number) => {
       if (toY === -1) {
         return this.scrollDown();
+      }
+
+      if (toY === -2) {
+        return this.scrollToLastWhenReady();
       }
 
       this.ionContent.scrollToPoint(0, toY, this.scrollSpeed);
@@ -104,7 +108,7 @@ export class PersonalPage implements OnInit {
     }
 
     await this.loadComponents();
-    this.scrollDownWhenReady();
+    this.scrollToLastWhenReady();
   }
 
   private async loadComponents() {
@@ -166,7 +170,7 @@ export class PersonalPage implements OnInit {
     });
   }
 
-  private async scrollDownWhenReady() {
+  private async scrollToLastWhenReady() {
     window.setTimeout(() => {
       this.scrollToLastSection();
     }, 600);
@@ -180,6 +184,6 @@ export class PersonalPage implements OnInit {
 
   public async debugStartFromHistory() {
     await this.loadComponents();
-    this.scrollDownWhenReady();
+    this.scrollToLastWhenReady();
   }
 }

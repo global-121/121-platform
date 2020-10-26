@@ -177,6 +177,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public changeAnswers() {
     this.hasAnswered = false;
     this.hasChangedAnswers = true;
+    this.conversationService.scrollToLastSection();
   }
 
   public async submitConfirm() {
