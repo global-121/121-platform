@@ -48,7 +48,11 @@ function convertM4aToMp3(locale) {
         `${ffmpegPath} -n -i ${file} -c:a libmp3lame -q:a 8 ${outputFile}`,
       );
     });
-  process.exit();
+
+  // Add extra timeout, to allow the last file-conversion to finish
+  setTimeout(() => {
+    process.exit();
+  }, 1000);
 }
 
 /**
@@ -71,7 +75,11 @@ function generateAssetsAudio(locale) {
 
       return exec(`${ffmpegPath} -n -i ${file} -dash 1 ${outputFile}`);
     });
-  process.exit();
+
+  // Add extra timeout, to allow the last file-conversion to finish
+  setTimeout(() => {
+    process.exit();
+  }, 1000);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
