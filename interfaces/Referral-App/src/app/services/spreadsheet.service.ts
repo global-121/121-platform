@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { Category } from 'src/app/models/category.model';
 import { Help } from 'src/app/models/help.model';
 import { Offer } from 'src/app/models/offer.model';
+import { SeverityLevel } from 'src/app/models/severity-level.model';
 import { SubCategory } from 'src/app/models/sub-category.model';
+import { LoggingService } from 'src/app/services/logging.service';
 import { environment } from 'src/environments/environment';
 import helpMock from '../mocks/help.mock';
 
@@ -16,6 +18,7 @@ export class SpreadsheetService {
   private subCategorySheetIndex = 3;
   private offerSheetIndex = 1;
   private helpSheetIndex = 5;
+  private loggingService = LoggingService;
 
   constructor() {}
 
@@ -53,7 +56,8 @@ export class SpreadsheetService {
       .then((response) => {
         return response.feed.entry.map(this.convertCategoryRowToCategoryObject);
       })
-      .catch((_) => {
+      .catch((error) => {
+        this.loggingService.logException(error, SeverityLevel.Critical);
         return [];
       });
   }
@@ -96,7 +100,8 @@ export class SpreadsheetService {
           this.convertSubCategoryRowToSubCategoryObject,
         );
       })
-      .catch((_) => {
+      .catch((error) => {
+        this.loggingService.logException(error, SeverityLevel.Critical);
         return [];
       });
   }
@@ -163,7 +168,8 @@ export class SpreadsheetService {
           .map(this.convertOfferRowToOfferObject)
           .filter((offer) => offer.offerVisible);
       })
-      .catch((_) => {
+      .catch((error) => {
+        this.loggingService.logException(error, SeverityLevel.Critical);
         return [];
       });
   }
@@ -193,7 +199,8 @@ export class SpreadsheetService {
       .then((response) => {
         return this.convertHelpRowToHelpObject(response.feed.entry);
       })
-      .catch((_) => {
+      .catch((error) => {
+        this.loggingService.logException(error, SeverityLevel.Critical);
         return helpMock;
       });
   }
