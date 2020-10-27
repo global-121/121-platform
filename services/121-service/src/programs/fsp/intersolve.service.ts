@@ -10,6 +10,7 @@ import { ProgramEntity } from '../program/program.entity';
 import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
 import crypto from 'crypto';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { ImageCodeService } from 'src/notifications/imagecode/image-code.service';
 
 @Injectable()
 export class IntersolveService {
@@ -26,12 +27,14 @@ export class IntersolveService {
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
     private readonly whatsappService: WhatsappService,
+    private readonly imageCodeService: ImageCodeService,
   ) {}
 
   public async sendPayment(payload): Promise<StatusMessageDto> {
+    const whatsapp = true;
     try {
       for (let paymentInfo of payload) {
-        await this.sendIndividualPayment(paymentInfo);
+        await this.sendIndividualPayment(paymentInfo, whatsapp);
       }
       return { status: StatusEnum.success, message: ' ' };
     } catch (e) {
@@ -40,7 +43,23 @@ export class IntersolveService {
     }
   }
 
-  public async sendIndividualPayment(paymentInfo): Promise<any> {
+  public async sendPaymentNoWhatsapp(payload): Promise<StatusMessageDto> {
+    const whatsapp = false;
+    try {
+      for (let paymentInfo of payload) {
+        await this.sendIndividualPayment(paymentInfo, whatsapp);
+      }
+      return { status: StatusEnum.success, message: ' ' };
+    } catch (e) {
+      console.log('e: ', e);
+      return { status: StatusEnum.error, message: ' ' };
+    }
+  }
+
+  public async sendIndividualPayment(
+    paymentInfo,
+    whatsapp: boolean,
+  ): Promise<any> {
     const intersolveRefPos = parseInt(
       crypto.randomBytes(5).toString('hex'),
       16,
@@ -52,11 +71,19 @@ export class IntersolveService {
       intersolveRefPos,
     );
     if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
-      await this.sendVoucherWhatsapp(
-        voucherInfo.cardId,
-        voucherInfo.pin,
-        paymentInfo.whatsappPhoneNumber,
-      );
+      if (whatsapp) {
+        await this.sendVoucherWhatsapp(
+          voucherInfo.cardId,
+          voucherInfo.pin,
+          paymentInfo.whatsappPhoneNumber,
+        );
+      } else {
+        await this.storeVoucherNoWhatsapp(
+          voucherInfo.cardId,
+          voucherInfo.pin,
+          paymentInfo.whatsappPhoneNumber,
+        );
+      }
     } else {
       if (voucherInfo.transactionId) {
         await this.intersolveApiService.cancel(
@@ -88,6 +115,21 @@ export class IntersolveService {
     barcodeData.whatsappPhoneNumber = phoneNumber;
     barcodeData.send = false;
     this.intersolveBarcodeRepository.save(barcodeData);
+  }
+
+  public async storeVoucherNoWhatsapp(
+    cardNumber: string,
+    pin: number,
+    phoneNumber: string,
+  ): Promise<any> {
+    const barcodeData = new IntersolveBarcodeEntity();
+    barcodeData.barcode = cardNumber;
+    barcodeData.pin = pin.toString();
+    barcodeData.whatsappPhoneNumber = phoneNumber;
+    barcodeData.send = false;
+    this.intersolveBarcodeRepository.save(barcodeData);
+
+    await this.imageCodeService.createBarcode(barcodeData.barcode);
   }
 
   public async exportVouchers(did: string): Promise<IntersolveBarcodeEntity[]> {

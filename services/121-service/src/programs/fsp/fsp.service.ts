@@ -220,6 +220,8 @@ export class FspService {
     console.log('fsp', fsp);
     if (fsp.fsp === fspName.intersolve) {
       return this.intersolveService.sendPayment(payload);
+    } else if (fsp.fsp === fspName.intersolveNoWhatsapp) {
+      return this.intersolveService.sendPaymentNoWhatsapp(payload);
     } else if (fsp.fsp === fspName.mpesa) {
       return this.africasTalkingService.sendPayment(
         payload,
