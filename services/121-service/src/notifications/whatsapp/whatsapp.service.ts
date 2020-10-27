@@ -109,7 +109,7 @@ export class WhatsappService {
 
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     const intersolveBarcode = await this.intersolveBarcodeRepository.findOne({
-      where: { phonenumber: fromNumber, send: false },
+      where: { whatsappPhoneNumber: fromNumber, send: false },
     });
     if (intersolveBarcode) {
       await this.sendWhatsapp(
