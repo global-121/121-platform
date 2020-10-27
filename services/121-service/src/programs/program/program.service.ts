@@ -776,8 +776,7 @@ export class ProgramService {
       connectionResponse['rejectionDate'] = connection.rejectionDate;
       connectionResponse['fsp'] = connection.fsp?.fsp;
       if (privacy) {
-        connectionResponse['name'] = connection.customData['name'];
-        connectionResponse['dob'] = connection.customData['dob'];
+        connectionResponse['name'] = this.getName(connection.customData);
         connectionResponse['phoneNumber'] =
           connection.phoneNumber || connection.customData['phoneNumber'];
         connectionResponse['whatsappPhoneNumber'] =
@@ -929,7 +928,6 @@ export class ProgramService {
         whatsappPhoneNumber: rawConnection.whatsappPhoneNumber,
         phoneNumber: rawConnection.phoneNumber,
         vnumber: rawConnection.vnumber,
-        dateOfBirth: rawConnection.dob,
         location: rawConnection.location,
         age: rawConnection.age,
         status: rawConnection.status,
@@ -966,7 +964,6 @@ export class ProgramService {
         whatsappPhoneNumber: rawConnection.whatsappPhoneNumber,
         phoneNumber: rawConnection.phoneNumber,
         vnumber: rawConnection.vnumber,
-        dateOfBirth: rawConnection.dob,
         location: rawConnection.location,
         age: rawConnection.age,
         status: rawConnection.status,

@@ -5,7 +5,6 @@ export class Person {
   tempScore?: number;
   score?: number;
   name?: string;
-  dob?: string;
   created?: string;
   updated?: string;
   appliedDate?: string;
@@ -33,7 +32,6 @@ export class PersonRow {
   included?: string | null;
   rejected?: string | null;
   name?: string | null;
-  dob?: string | null;
   phoneNumber?: string | null;
   fsp?: string | null;
 }

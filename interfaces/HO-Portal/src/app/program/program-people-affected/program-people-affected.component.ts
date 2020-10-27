@@ -161,16 +161,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         roles: [UserRole.ProgramManager],
       },
       {
-        prop: 'dob',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.dob',
-        ),
-        ...columnDefaults,
-        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        roles: [UserRole.ProgramManager],
-        width: columnDateWidth,
-      },
-      {
         prop: 'phoneNumber',
         name: this.translate.instant(
           'page.program.program-people-affected.column.phone-number',
@@ -436,7 +426,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
         : null,
       name: person.name,
-      dob: person.dob,
       phoneNumber: formatPhoneNumber(person.phoneNumber),
       fsp: person.fsp,
     };
