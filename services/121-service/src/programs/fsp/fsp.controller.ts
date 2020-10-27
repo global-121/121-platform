@@ -1,5 +1,5 @@
 import { AfricasTalkingService } from './africas-talking.service';
-import { Post, Body, Controller, Get, Param } from '@nestjs/common';
+import { Post, Body, Controller, Get, Param, Res } from '@nestjs/common';
 import { FspService } from './fsp.service';
 import {
   ApiUseTags,
@@ -10,6 +10,10 @@ import {
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
+import { IntersolveService } from './intersolve.service';
+import { DidDto } from '../program/dto/did.dto';
+import { Response } from 'express-serve-static-core';
+import stream from 'stream';
 
 @ApiUseTags('fsp')
 @Controller('fsp')
@@ -19,6 +23,7 @@ export class FspController {
   public constructor(
     fspService: FspService,
     africasTalkingService: AfricasTalkingService,
+    private intersolveService: IntersolveService,
   ) {
     this.fspService = fspService;
     this.africasTalkingService = africasTalkingService;
@@ -63,5 +68,25 @@ export class FspController {
     await this.africasTalkingService.africasTalkingNotification(
       africasTalkingNotificationData,
     );
+  }
+
+  @ApiOperation({
+    title: 'Export Intersolve vouchers',
+  })
+  @ApiResponse({ status: 200, description: 'Vouchers exported' })
+  @Post('intersolve/export-voucher')
+  public async exportVouchers(
+    @Body() didDto: DidDto,
+    //   @Res() response: Response,
+    // ): Promise<void> {
+  ): Promise<any> {
+    const blob = await this.intersolveService.exportVouchers(didDto.did);
+    // var bufferStream = new stream.PassThrough();
+    // bufferStream.end(Buffer.from(blob, 'binary'));
+    // response.writeHead(200, {
+    //   'Content-Type': 'image/png',
+    // });
+    // bufferStream.pipe(response);
+    return blob;
   }
 }

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 
 @Entity('intersolve_barcode')
 export class IntersolveBarcodeEntity {
@@ -8,8 +9,8 @@ export class IntersolveBarcodeEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public timestamp: Date;
 
-  @Column()
-  public phonenumber: string;
+  @Column({ nullable: true })
+  public whatsappPhoneNumber: string;
 
   @Column()
   public pin: string;
@@ -19,4 +20,10 @@ export class IntersolveBarcodeEntity {
 
   @Column({ nullable: true })
   public send: boolean;
+
+  @OneToMany(
+    type => ImageCodeExportVouchersEntity,
+    image => image.barcode,
+  )
+  public image: ImageCodeExportVouchersEntity[];
 }

@@ -23,6 +23,7 @@ import { WhatsappService } from '../../notifications/whatsapp/whatsapp.service';
 import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
 import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
+import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 
 describe('Fsp service', (): void => {
   let service: FspService;
@@ -62,11 +63,19 @@ describe('Fsp service', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
+            provide: getRepositoryToken(ImageCodeExportVouchersEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
             provide: getRepositoryToken(IntersolveBarcodeEntity),
             useFactory: repositoryMockFactory,
           },
           {
             provide: getRepositoryToken(TwilioMessageEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(ConnectionEntity),
             useFactory: repositoryMockFactory,
           },
         ],

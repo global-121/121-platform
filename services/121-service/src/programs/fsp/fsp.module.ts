@@ -15,6 +15,9 @@ import { IntersolveApiService } from './api/instersolve.api.service';
 import { IntersolveService } from './intersolve.service';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
+import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
+import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
+import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
 
 @Module({
   imports: [
@@ -28,6 +31,8 @@ import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
       FspCallLogEntity,
       AfricasTalkingNotificationEntity,
       IntersolveBarcodeEntity,
+      ImageCodeExportVouchersEntity,
+      ImageCodeEntity,
     ]),
   ],
   providers: [
@@ -37,6 +42,7 @@ import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
     IntersolveService,
     IntersolveApiService,
     SoapService,
+    ImageCodeService,
   ],
   controllers: [FspController],
   exports: [
@@ -46,6 +52,7 @@ import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
     IntersolveService,
     IntersolveApiService,
     SoapService,
+    ImageCodeService,
   ],
 })
 export class FspModule {}
