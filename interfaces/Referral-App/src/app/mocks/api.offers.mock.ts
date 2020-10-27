@@ -9,8 +9,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.wereldhuis.org',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 1,
     categoryID: 1,
   },
@@ -24,8 +22,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.boostamsterdam.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 1,
     categoryID: 1,
   },
@@ -39,8 +35,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.hvoquerido.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 2,
     categoryID: 1,
   },
@@ -54,8 +48,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.legerdesheils.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 2,
     categoryID: 1,
   },
@@ -69,8 +61,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.amsterdam.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 2,
     categoryID: 1,
   },
@@ -84,8 +74,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.amsterdam.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 2,
     categoryID: 1,
   },
@@ -99,8 +87,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.harriettubmanhuis.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 3,
     categoryID: 1,
   },
@@ -114,8 +100,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.noelhuis.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 3,
     categoryID: 1,
   },
@@ -129,8 +113,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.vluchtlingenwerk.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 4,
     categoryID: 2,
   },
@@ -144,8 +126,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.juridischolket.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 4,
     categoryID: 2,
   },
@@ -159,8 +139,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.askv.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 4,
     categoryID: 2,
   },
@@ -174,8 +152,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.amsterdam.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 4,
     categoryID: 2,
   },
@@ -189,8 +165,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.advocatenspreekuur.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 4,
     categoryID: 2,
   },
@@ -204,8 +178,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.doktersvandewereld.org',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 5,
     categoryID: 3,
   },
@@ -219,8 +191,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.oudezijds100.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 5,
     categoryID: 3,
   },
@@ -234,8 +204,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.spoedeisendepsychiatrieamsterdam.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 6,
     categoryID: 3,
   },
@@ -249,8 +217,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.oudezijds100.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 6,
     categoryID: 3,
   },
@@ -264,8 +230,6 @@ export default [
         'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
     },
     offerLink: 'www.i-psy.nl',
-    offerImage:
-      'https://www.510.global/wp-content/uploads/2019/04/510-ALL-DISASTER-PHASES-DIRECT-DIGITAL-AID-2-1200x600.png',
     subCategoryID: 6,
     categoryID: 3,
   },

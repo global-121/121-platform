@@ -6,7 +6,6 @@ export class Offer {
   offerIcon: string;
   offerDescription: TranslatableString | string;
   offerLink?: string;
-  offerImage: string;
   offerNumber?: string;
   offerEmail?: string;
   offerAddress?: string;

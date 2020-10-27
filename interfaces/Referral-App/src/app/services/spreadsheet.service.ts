@@ -117,7 +117,6 @@ export class SpreadsheetService {
         offerRow,
         'gsx$linktowebsite',
       ),
-      offerImage: SpreadsheetService.readCellValue(offerRow, 'gsx$image'),
       offerNumber: SpreadsheetService.readCellValue(
         offerRow,
         'gsx$phonenumber',
