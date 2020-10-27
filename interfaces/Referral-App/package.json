@@ -16,7 +16,7 @@
     "test": "ng test --no-watch --browsers=ChromeHeadless",
     "test:dev": "ng test",
     "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss}\"",
-    "lint": "ng lint && npm run lint:syntax",
+    "lint": "npm run lint:syntax",
     "fix:syntax": "npm run lint:syntax -- --write",
     "e2e": "ng e2e"
   },
