@@ -204,6 +204,7 @@ export class FspService {
           paymentDetails[attribute.name] =
             connection.customData[attribute.name];
         }
+        paymentDetails['did'] = connection.did;
         paymentList.push(paymentDetails);
         connectionsForFsp.push(connection);
       }
@@ -219,9 +220,9 @@ export class FspService {
   ): Promise<StatusMessageDto> {
     console.log('fsp', fsp);
     if (fsp.fsp === fspName.intersolve) {
-      return this.intersolveService.sendPayment(payload);
+      return this.intersolveService.sendPayment(payload, true);
     } else if (fsp.fsp === fspName.intersolveNoWhatsapp) {
-      return this.intersolveService.sendPaymentNoWhatsapp(payload);
+      return this.intersolveService.sendPayment(payload, false);
     } else if (fsp.fsp === fspName.mpesa) {
       return this.africasTalkingService.sendPayment(
         payload,

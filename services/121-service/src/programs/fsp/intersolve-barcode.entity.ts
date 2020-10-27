@@ -9,7 +9,7 @@ export class IntersolveBarcodeEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public timestamp: Date;
 
-  @Column()
+  @Column({ nullable: true })
   public whatsappPhoneNumber: string;
 
   @Column()

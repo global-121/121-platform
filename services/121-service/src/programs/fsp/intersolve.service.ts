@@ -10,7 +10,7 @@ import { ProgramEntity } from '../program/program.entity';
 import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
 import crypto from 'crypto';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
-import { ImageCodeService } from 'src/notifications/imagecode/image-code.service';
+import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
 
 @Injectable()
 export class IntersolveService {
@@ -30,21 +30,10 @@ export class IntersolveService {
     private readonly imageCodeService: ImageCodeService,
   ) {}
 
-  public async sendPayment(payload): Promise<StatusMessageDto> {
-    const whatsapp = true;
-    try {
-      for (let paymentInfo of payload) {
-        await this.sendIndividualPayment(paymentInfo, whatsapp);
-      }
-      return { status: StatusEnum.success, message: ' ' };
-    } catch (e) {
-      console.log('e: ', e);
-      return { status: StatusEnum.error, message: ' ' };
-    }
-  }
-
-  public async sendPaymentNoWhatsapp(payload): Promise<StatusMessageDto> {
-    const whatsapp = false;
+  public async sendPayment(
+    payload,
+    whatsapp: boolean,
+  ): Promise<StatusMessageDto> {
     try {
       for (let paymentInfo of payload) {
         await this.sendIndividualPayment(paymentInfo, whatsapp);
@@ -76,12 +65,14 @@ export class IntersolveService {
           voucherInfo.cardId,
           voucherInfo.pin,
           paymentInfo.whatsappPhoneNumber,
+          paymentInfo.did,
         );
       } else {
         await this.storeVoucherNoWhatsapp(
           voucherInfo.cardId,
           voucherInfo.pin,
           paymentInfo.whatsappPhoneNumber,
+          paymentInfo.did,
         );
       }
     } else {
@@ -103,41 +94,72 @@ export class IntersolveService {
     cardNumber: string,
     pin: number,
     phoneNumber: string,
+    did: string,
   ): Promise<any> {
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     const whatsappPayment =
       program.notifications[this.language]['whatsappPayment'];
-
     this.whatsappService.sendWhatsapp(whatsappPayment, phoneNumber, null);
-    const barcodeData = new IntersolveBarcodeEntity();
-    barcodeData.barcode = cardNumber;
-    barcodeData.pin = pin.toString();
-    barcodeData.whatsappPhoneNumber = phoneNumber;
-    barcodeData.send = false;
-    this.intersolveBarcodeRepository.save(barcodeData);
+
+    const barcodeData = await this.storeBarcodeData(
+      cardNumber,
+      pin,
+      phoneNumber,
+      did,
+    );
+
+    // Also store in 2nd table in case of whatsApp (for exporting voucher in case of lost phone)
+    await this.imageCodeService.createBarcodeExportVouchers(
+      barcodeData.barcode,
+      did,
+    );
   }
 
   public async storeVoucherNoWhatsapp(
     cardNumber: string,
     pin: number,
     phoneNumber: string,
+    did: string,
   ): Promise<any> {
+    const barcodeData = await this.storeBarcodeData(
+      cardNumber,
+      pin,
+      phoneNumber,
+      did,
+    );
+
+    await this.imageCodeService.createBarcodeExportVouchers(
+      barcodeData.barcode,
+      did,
+    );
+  }
+
+  private async storeBarcodeData(
+    cardNumber: string,
+    pin: number,
+    phoneNumber: string,
+    did: string,
+  ): Promise<IntersolveBarcodeEntity> {
+    const connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
     const barcodeData = new IntersolveBarcodeEntity();
     barcodeData.barcode = cardNumber;
     barcodeData.pin = pin.toString();
     barcodeData.whatsappPhoneNumber = phoneNumber;
     barcodeData.send = false;
-    this.intersolveBarcodeRepository.save(barcodeData);
-
-    await this.imageCodeService.createBarcode(barcodeData.barcode);
+    barcodeData.connection = connection;
+    return this.intersolveBarcodeRepository.save(barcodeData);
   }
 
-  public async exportVouchers(did: string): Promise<IntersolveBarcodeEntity[]> {
+  public async exportVouchers(did: string): Promise<any[]> {
     const connection = await this.connectionRepository.findOne({
       where: { did: did },
-      relations: ['barcodes'],
+      relations: ['barcodes', 'images'],
     });
-    const vouchers = connection.barcodes;
-    return vouchers;
+    // const vouchers = connection.barcodes;
+    const images = connection.images;
+    console.log('images: ', images);
+    return images;
   }
 }

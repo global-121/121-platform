@@ -5,16 +5,19 @@ import { ImageCodeEntity } from './image-code.entity';
 import { Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../config';
 import crypto from 'crypto';
-import { ImageCodeNoWhatsappEntity } from './image-code-no-whatsapp.entity';
+import { ImageCodeExportVouchers } from './image-code-export-vouchers.entity';
+import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 
 @Injectable()
 export class ImageCodeService {
   @InjectRepository(ImageCodeEntity)
   private readonly imageRepository: Repository<ImageCodeEntity>;
-  @InjectRepository(ImageCodeNoWhatsappEntity)
-  private readonly imageNoWhatsappRepository: Repository<
-    ImageCodeNoWhatsappEntity
+  @InjectRepository(ImageCodeExportVouchers)
+  private readonly imageExportVouchersRepository: Repository<
+    ImageCodeExportVouchers
   >;
+  @InjectRepository(ConnectionEntity)
+  private readonly connectionRepository: Repository<ConnectionEntity>;
 
   public constructor() {}
 
@@ -31,14 +34,19 @@ export class ImageCodeService {
     return EXTERNAL_API.imageCodeUrl + barcode.secret;
   }
 
-  public async createBarcodeNoWhatsapp(
+  public async createBarcodeExportVouchers(
     code: string,
-  ): Promise<ImageCodeNoWhatsappEntity> {
+    did: string,
+  ): Promise<ImageCodeExportVouchers> {
+    const connection = await this.connectionRepository.findOne({
+      where: { did: did },
+    });
     const image = await this.generateBarCode(code);
 
-    let barcode = new ImageCodeNoWhatsappEntity();
+    let barcode = new ImageCodeExportVouchers();
     barcode.image = image;
-    return this.imageNoWhatsappRepository.save(barcode);
+    barcode.connection = connection;
+    return this.imageExportVouchersRepository.save(barcode);
   }
 
   public async generateBarCode(code: string): Promise<string> {

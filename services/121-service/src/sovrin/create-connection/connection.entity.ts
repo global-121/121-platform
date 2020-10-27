@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
+import { ImageCodeExportVouchers } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 
 @Entity('connection')
 export class ConnectionEntity {
@@ -137,4 +138,10 @@ export class ConnectionEntity {
     barcode => barcode.connection,
   )
   public barcodes: IntersolveBarcodeEntity[];
+
+  @OneToMany(
+    type => ImageCodeExportVouchers,
+    image => image.connection,
+  )
+  public images: ImageCodeExportVouchers[];
 }
