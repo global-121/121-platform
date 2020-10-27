@@ -74,6 +74,10 @@ describe('Fsp service', (): void => {
             provide: getRepositoryToken(TwilioMessageEntity),
             useFactory: repositoryMockFactory,
           },
+          {
+            provide: getRepositoryToken(ConnectionEntity),
+            useFactory: repositoryMockFactory,
+          },
         ],
       }).compile();
 
