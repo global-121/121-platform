@@ -152,7 +152,7 @@ export class FspService {
       enrichedTransactions = connectionsForFsp;
       enrichedTransactions.forEach(i => {
         i.status = StatusEnum.error;
-        i.errorMessage = 'Whole FSP failed: ' + paymentResult.message.error;
+        i.errorMessage = 'Whole FSP failed: ' + paymentResult.message;
       });
     }
     return enrichedTransactions;
