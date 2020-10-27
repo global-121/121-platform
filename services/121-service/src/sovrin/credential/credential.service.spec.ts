@@ -35,7 +35,7 @@ import { ImageCodeService } from '../../notifications/imagecode/image-code.servi
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
-import { ImageCodeExportVouchers } from '../../notifications/imagecode/image-code-export-vouchers.entity';
+import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -129,7 +129,7 @@ describe('CredentialService', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
-            provide: getRepositoryToken(ImageCodeExportVouchers),
+            provide: getRepositoryToken(ImageCodeExportVouchersEntity),
             useFactory: repositoryMockFactory,
           },
           {

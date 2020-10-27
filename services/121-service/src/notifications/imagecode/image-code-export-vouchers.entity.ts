@@ -2,7 +2,7 @@ import { ConnectionEntity } from '../../sovrin/create-connection/connection.enti
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 @Entity('imagecode_export_vouchers')
-export class ImageCodeExportVouchers {
+export class ImageCodeExportVouchersEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 

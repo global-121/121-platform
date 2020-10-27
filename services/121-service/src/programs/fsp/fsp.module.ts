@@ -16,7 +16,7 @@ import { IntersolveService } from './intersolve.service';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
-import { ImageCodeExportVouchers } from '../../notifications/imagecode/image-code-export-vouchers.entity';
+import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
 
 @Module({
@@ -31,7 +31,7 @@ import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity
       FspCallLogEntity,
       AfricasTalkingNotificationEntity,
       IntersolveBarcodeEntity,
-      ImageCodeExportVouchers,
+      ImageCodeExportVouchersEntity,
       ImageCodeEntity,
     ]),
   ],

@@ -1,5 +1,5 @@
 import { AfricasTalkingService } from './africas-talking.service';
-import { Post, Body, Controller, Get, Param } from '@nestjs/common';
+import { Post, Body, Controller, Get, Param, Res } from '@nestjs/common';
 import { FspService } from './fsp.service';
 import {
   ApiUseTags,
@@ -12,7 +12,8 @@ import { FinancialServiceProviderEntity } from './financial-service-provider.ent
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { IntersolveService } from './intersolve.service';
 import { DidDto } from '../program/dto/did.dto';
-import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
+import { Response } from 'express-serve-static-core';
+import stream from 'stream';
 
 @ApiUseTags('fsp')
 @Controller('fsp')
@@ -76,7 +77,14 @@ export class FspController {
   @Post('intersolve/export-voucher')
   public async exportVouchers(
     @Body() didDto: DidDto,
-  ): Promise<IntersolveBarcodeEntity[]> {
-    return await this.intersolveService.exportVouchers(didDto.did);
+    @Res() response: Response,
+  ): Promise<void> {
+    const blob = await this.intersolveService.exportVouchers(didDto.did);
+    var bufferStream = new stream.PassThrough();
+    bufferStream.end(Buffer.from(blob, 'binary'));
+    response.writeHead(200, {
+      'Content-Type': 'image/png',
+    });
+    bufferStream.pipe(response);
   }
 }

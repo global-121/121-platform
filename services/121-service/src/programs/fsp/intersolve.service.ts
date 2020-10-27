@@ -152,7 +152,7 @@ export class IntersolveService {
     return this.intersolveBarcodeRepository.save(barcodeData);
   }
 
-  public async exportVouchers(did: string): Promise<any[]> {
+  public async exportVouchers(did: string): Promise<any> {
     const connection = await this.connectionRepository.findOne({
       where: { did: did },
       relations: ['barcodes', 'images'],
@@ -160,6 +160,6 @@ export class IntersolveService {
     // const vouchers = connection.barcodes;
     const images = connection.images;
     console.log('images: ', images);
-    return images;
+    return images[0].image;
   }
 }
