@@ -26,6 +26,7 @@ jobs:
 
       - name: Run node install, lint, build and test scripts
         id: nodescripts
+        working-directory: ./interfaces/Referral-App
         run: |
           npm ci
           npm run lint --if-present
