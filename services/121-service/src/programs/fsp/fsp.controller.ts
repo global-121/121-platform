@@ -77,14 +77,16 @@ export class FspController {
   @Post('intersolve/export-voucher')
   public async exportVouchers(
     @Body() didDto: DidDto,
-    @Res() response: Response,
-  ): Promise<void> {
+    //   @Res() response: Response,
+    // ): Promise<void> {
+  ): Promise<any> {
     const blob = await this.intersolveService.exportVouchers(didDto.did);
-    var bufferStream = new stream.PassThrough();
-    bufferStream.end(Buffer.from(blob, 'binary'));
-    response.writeHead(200, {
-      'Content-Type': 'image/png',
-    });
-    bufferStream.pipe(response);
+    // var bufferStream = new stream.PassThrough();
+    // bufferStream.end(Buffer.from(blob, 'binary'));
+    // response.writeHead(200, {
+    //   'Content-Type': 'image/png',
+    // });
+    // bufferStream.pipe(response);
+    return blob;
   }
 }

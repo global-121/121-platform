@@ -1,5 +1,5 @@
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 
 @Entity('intersolve_barcode')
 export class IntersolveBarcodeEntity {
@@ -21,9 +21,9 @@ export class IntersolveBarcodeEntity {
   @Column({ nullable: true })
   public send: boolean;
 
-  @ManyToOne(
-    type => ConnectionEntity,
-    connection => connection.barcodes,
+  @OneToMany(
+    type => ImageCodeExportVouchersEntity,
+    image => image.barcode,
   )
-  public connection: ConnectionEntity;
+  public image: ImageCodeExportVouchersEntity[];
 }

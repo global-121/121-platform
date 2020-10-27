@@ -105,14 +105,10 @@ export class IntersolveService {
       cardNumber,
       pin,
       phoneNumber,
-      did,
     );
 
     // Also store in 2nd table in case of whatsApp (for exporting voucher in case of lost phone)
-    await this.imageCodeService.createBarcodeExportVouchers(
-      barcodeData.barcode,
-      did,
-    );
+    await this.imageCodeService.createBarcodeExportVouchers(barcodeData, did);
   }
 
   public async storeVoucherNoWhatsapp(
@@ -125,41 +121,35 @@ export class IntersolveService {
       cardNumber,
       pin,
       phoneNumber,
-      did,
     );
 
-    await this.imageCodeService.createBarcodeExportVouchers(
-      barcodeData.barcode,
-      did,
-    );
+    await this.imageCodeService.createBarcodeExportVouchers(barcodeData, did);
   }
 
   private async storeBarcodeData(
     cardNumber: string,
     pin: number,
     phoneNumber: string,
-    did: string,
   ): Promise<IntersolveBarcodeEntity> {
-    const connection = await this.connectionRepository.findOne({
-      where: { did: did },
-    });
     const barcodeData = new IntersolveBarcodeEntity();
     barcodeData.barcode = cardNumber;
     barcodeData.pin = pin.toString();
     barcodeData.whatsappPhoneNumber = phoneNumber;
     barcodeData.send = false;
-    barcodeData.connection = connection;
     return this.intersolveBarcodeRepository.save(barcodeData);
   }
 
   public async exportVouchers(did: string): Promise<any> {
     const connection = await this.connectionRepository.findOne({
       where: { did: did },
-      relations: ['barcodes', 'images'],
+      relations: ['images', 'images.barcode'],
     });
-    // const vouchers = connection.barcodes;
-    const images = connection.images;
-    console.log('images: ', images);
-    return images[0].image;
+    const images = connection.images.map(image => {
+      return {
+        timestamp: image.barcode.timestamp,
+        image: image.image,
+      };
+    });
+    return images;
   }
 }

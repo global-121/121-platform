@@ -134,12 +134,6 @@ export class ConnectionEntity {
   }
 
   @OneToMany(
-    type => IntersolveBarcodeEntity,
-    barcode => barcode.connection,
-  )
-  public barcodes: IntersolveBarcodeEntity[];
-
-  @OneToMany(
     type => ImageCodeExportVouchersEntity,
     image => image.connection,
   )

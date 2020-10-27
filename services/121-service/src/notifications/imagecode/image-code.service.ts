@@ -7,6 +7,7 @@ import { EXTERNAL_API } from '../../config';
 import crypto from 'crypto';
 import { ImageCodeExportVouchersEntity } from './image-code-export-vouchers.entity';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { IntersolveBarcodeEntity } from 'src/programs/fsp/intersolve-barcode.entity';
 
 @Injectable()
 export class ImageCodeService {
@@ -35,17 +36,18 @@ export class ImageCodeService {
   }
 
   public async createBarcodeExportVouchers(
-    code: string,
+    barcodeData: IntersolveBarcodeEntity,
     did: string,
   ): Promise<ImageCodeExportVouchersEntity> {
     const connection = await this.connectionRepository.findOne({
       where: { did: did },
     });
-    const image = await this.generateBarCode(code);
+    const image = await this.generateBarCode(barcodeData.barcode);
 
     let barcode = new ImageCodeExportVouchersEntity();
     barcode.image = image;
     barcode.connection = connection;
+    barcode.barcode = barcodeData;
     return this.imageExportVouchersRepository.save(barcode);
   }
 
