@@ -12,12 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 
 - 2020-10-21: Sources updated up to [commit `b977df9...`](https://github.com/global-121/121-platform/commit/b977df994ceac254bb1d007a9f5087b3f42cb31a) in [Transifex](https://www.transifex.com/redcrossnl/121-platform/content/)
+- 2020-10-27: Sources updated up to [commit `15a2c44...`](https://github.com/global-121/121-platform/commit/15a2c442655e7fa02cff65917b9e67adaffeb4c2) in [Transifex](https://www.transifex.com/redcrossnl/121-platform/content/)
 
 ### Added
 
 - 2020-10-21: Added `TWILIO_SID`, `TWILIO_PROGRAM_TOKEN_SID`, `TWILIO_PROGRAM_TOKEN_SECRET` `TWILIO_WHATSAPP_NUMBER` `TWILIO_MESSAGING_SID` to `.env` to `services/.env`
 - 2020-10-21: Removed `TWILIO_TEST_TO_NUMBER`, `TWILIO_TEST_FROM_NUMBER_VOICE` ,`TWILIO_TEST_FROM_NUMBER_SMS` from `services/.env`
-- 2020-10-21: Added package to 121-service `docker exec 121-service npm install bwip-js@^2.0.10` 
+- 2020-10-21: Added package to 121-service `docker-compose exec 121-service npm install bwip-js@^2.0.10`
 
 ---
 
