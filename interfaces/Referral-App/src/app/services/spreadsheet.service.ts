@@ -18,15 +18,14 @@ export class SpreadsheetService {
   private subCategorySheetIndex = 3;
   private offerSheetIndex = 1;
   private helpSheetIndex = 5;
-  private loggingService = LoggingService;
 
-  constructor() {}
+  constructor(public loggingService: LoggingService) {}
 
   static readCellValue(row, key): string {
     return row[key].$t;
   }
 
-  convertCategoryRowToCategoryObject(categoryRow): Category {
+  convertCategoryRowToCategoryObject = (categoryRow): Category => {
     return {
       categoryID: Number(
         SpreadsheetService.readCellValue(categoryRow, 'gsx$categoryid'),
@@ -45,9 +44,9 @@ export class SpreadsheetService {
         ),
       },
     };
-  }
+  };
 
-  getCategories(): Promise<Category[]> {
+  getCategories = (): Promise<Category[]> => {
     return fetch(
       `${this.spreadsheetURL}/${this.spreadsheetId}/${this.categorySheetIndex}` +
         '/public/values?alt=json',
@@ -60,9 +59,9 @@ export class SpreadsheetService {
         this.loggingService.logException(error, SeverityLevel.Critical);
         return [];
       });
-  }
+  };
 
-  convertSubCategoryRowToSubCategoryObject(subCategoryRow): SubCategory {
+  convertSubCategoryRowToSubCategoryObject = (subCategoryRow): SubCategory => {
     return {
       subCategoryID: Number(
         SpreadsheetService.readCellValue(subCategoryRow, 'gsx$subcategoryid'),
@@ -87,9 +86,9 @@ export class SpreadsheetService {
         SpreadsheetService.readCellValue(subCategoryRow, 'gsx$categoryid'),
       ),
     };
-  }
+  };
 
-  getSubCategories(): Promise<SubCategory[]> {
+  getSubCategories = (): Promise<SubCategory[]> => {
     return fetch(
       `${this.spreadsheetURL}/${this.spreadsheetId}/${this.subCategorySheetIndex}` +
         '/public/values?alt=json',
@@ -104,9 +103,9 @@ export class SpreadsheetService {
         this.loggingService.logException(error, SeverityLevel.Critical);
         return [];
       });
-  }
+  };
 
-  convertOfferRowToOfferObject(offerRow): Offer {
+  convertOfferRowToOfferObject = (offerRow): Offer => {
     return {
       offerID: Number(
         SpreadsheetService.readCellValue(offerRow, 'gsx$offerid'),
@@ -155,9 +154,9 @@ export class SpreadsheetService {
         SpreadsheetService.readCellValue(offerRow, 'gsx$categoryid'),
       ),
     };
-  }
+  };
 
-  getOffers(): Promise<Offer[]> {
+  getOffers = (): Promise<Offer[]> => {
     return fetch(
       `${this.spreadsheetURL}/${this.spreadsheetId}/${this.offerSheetIndex}` +
         '/public/values?alt=json',
@@ -172,9 +171,9 @@ export class SpreadsheetService {
         this.loggingService.logException(error, SeverityLevel.Critical);
         return [];
       });
-  }
+  };
 
-  convertHelpRowToHelpObject(helpRows): Help {
+  convertHelpRowToHelpObject = (helpRows): Help => {
     return {
       helpIcon: SpreadsheetService.readCellValue(helpRows[0], 'gsx$value'),
       helpText: {
@@ -188,9 +187,9 @@ export class SpreadsheetService {
       helpFacebook: SpreadsheetService.readCellValue(helpRows[5], 'gsx$value'),
       helpTwitter: SpreadsheetService.readCellValue(helpRows[6], 'gsx$value'),
     };
-  }
+  };
 
-  getHelp(): Promise<Help> {
+  getHelp = (): Promise<Help> => {
     return fetch(
       `${this.spreadsheetURL}/${this.spreadsheetId}/${this.helpSheetIndex}` +
         '/public/values?alt=json',
@@ -203,5 +202,5 @@ export class SpreadsheetService {
         this.loggingService.logException(error, SeverityLevel.Critical);
         return helpMock;
       });
-  }
+  };
 }
