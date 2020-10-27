@@ -101,6 +101,10 @@ export class ProgramPayoutComponent implements OnInit {
         // Set dates
         if (i === 0) {
           installment.installmentDate = new Date();
+        } else if (frequency === 'week') {
+          installment.installmentDate = new Date(
+            maxInstallmentDate.setDate(maxInstallmentDate.getDate() + 7),
+          );
         } else if (frequency === 'month' || 1 === 1) {
           // For now do the same in all other cases then 'month'
           installment.installmentDate = new Date(
