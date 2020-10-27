@@ -63,7 +63,7 @@ export class MetricsComponent implements OnChanges {
   private renderUpdated() {
     this.lastUpdated = this.getValueOrUnknown(
       this.programMetrics.updated,
-      (value) => formatDate(value, 'full', this.locale),
+      (value) => formatDate(value, 'EEEE, dd-MM-yyyy - HH:mm', this.locale),
     );
   }
 
@@ -83,7 +83,7 @@ export class MetricsComponent implements OnChanges {
       icon: 'calendar',
       label: 'page.program.program-details.startDate',
       value: this.getValueOrEmpty(this.program.startDate, (value) =>
-        formatDate(value, 'shortDate', this.locale),
+        formatDate(value, 'dd-MM-yyyy', this.locale),
       ),
     });
     this.metricsMap.set(`${group}.endDate`, {
@@ -91,7 +91,7 @@ export class MetricsComponent implements OnChanges {
       icon: 'calendar',
       label: 'page.program.program-details.endDate',
       value: this.getValueOrEmpty(this.program.endDate, (value) =>
-        formatDate(value, 'shortDate', this.locale),
+        formatDate(value, 'dd-MM-yyyy', this.locale),
       ),
     });
     this.metricsMap.set(`${group}.location`, {
