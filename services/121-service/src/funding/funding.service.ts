@@ -10,9 +10,9 @@ export class FundingService {
     const totalTransferred = Math.floor(Math.random() * (49999 - 1 + 1)) + 1;
 
     const fundsDisberse = {
-      totalRaised: totalRaised,
-      totalTransferred: totalTransferred,
-      totalAvailable: totalRaised - totalTransferred,
+      totalRaised: undefined,
+      totalTransferred: undefined,
+      totalAvailable: undefined,
       updated: new Date(),
     };
     return fundsDisberse;
