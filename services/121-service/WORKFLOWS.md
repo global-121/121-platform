@@ -31,6 +31,6 @@ In this file we document "how to do X", manually. As not everything is possible 
 
    3. Use the found connection `did` to update the phone-numbers.
       - Use: [`/sovrin/create-connection/phone/overwrite`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_phone_overwrite)  
-        To store the new SMS phone-number
+        To store the new SMS phone-number. (Make sure to ONLY include the numbers, no whitespace or `+`)
       - Use: [`/sovrin/create-connection/custom-data/overwrite`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_custom_data_overwrite)  
-        To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`.
+        To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (Make sure to ONLY include the numbers, no whitespace or `+`)
