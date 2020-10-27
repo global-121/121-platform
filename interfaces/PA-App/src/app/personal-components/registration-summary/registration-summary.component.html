@@ -3,9 +3,9 @@
     *ngIf="validation"
     [isSpoken]="validation"
   >
-    <p [innerHTML]="'personal.registration-summary.validation-conclusion'|translate">
-      <play-text-audio key="personal.registration-summary.validation-conclusion" class="ion-float-start ion-margin-end">
-      </play-text-audio>
+    <p>
+      <play-text-audio key="personal.registration-summary.validation-conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
+      <span [innerHTML]="'personal.registration-summary.validation-conclusion'|translate"></span>
     </p>
   </dialogue-turn>
   <dialogue-turn
@@ -46,8 +46,9 @@
     *ngIf="!validation"
     [isSpoken]="!validation"
   >
-    <p [innerHTML]="'personal.registration-summary.no-validation-conclusion'|translate">
+    <p>
       <play-text-audio key="personal.registration-summary.no-validation-conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
+      <span [innerHTML]="'personal.registration-summary.no-validation-conclusion'|translate"></span>
     </p>
 </dialogue-turn>
 </section>
