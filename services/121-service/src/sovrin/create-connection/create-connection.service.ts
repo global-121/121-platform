@@ -144,7 +144,13 @@ export class CreateConnectionService {
     const connections = await this.connectionRepository.find();
     return connections.filter(c => {
       return (
-        (name && c.customData['name'] === name) ||
+        (name &&
+          (c.customData['name'] === name ||
+            c.customData['nameFirst'] === name ||
+            c.customData['nameLast'] === name ||
+            c.customData['firstName'] === name ||
+            c.customData['secondName'] === name ||
+            c.customData['thirdName'] === name)) ||
         (phoneNumber &&
           (c.customData['phoneNumber'] === phoneNumber ||
             c.customData['whatsappPhoneNumber'] === phoneNumber ||
