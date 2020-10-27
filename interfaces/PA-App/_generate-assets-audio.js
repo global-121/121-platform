@@ -45,7 +45,7 @@ function convertM4aToMp3(locale) {
       console.log(`Converting to: ${outputFile}`);
 
       return exec(
-        `${ffmpegPath} -n -i ${file} -c:a libmp3lame -q:a 8 ${outputFile}`,
+        `${ffmpegPath} -i ${file} -c:a libmp3lame -q:a 8 ${outputFile}`,
       );
     });
 
@@ -73,7 +73,7 @@ function generateAssetsAudio(locale) {
 
       console.log(`Generating: ${outputFile}`);
 
-      return exec(`${ffmpegPath} -n -i ${file} -dash 1 ${outputFile}`);
+      return exec(`${ffmpegPath} -i ${file} -dash 1 ${outputFile}`);
     });
 
   // Add extra timeout, to allow the last file-conversion to finish
