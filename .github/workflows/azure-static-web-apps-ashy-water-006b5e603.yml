@@ -5,13 +5,13 @@ on:
     branches:
       - master
     paths:
-      - "interfaces/Referral-app/**/*"
+      - "interfaces/Referral-App/**/*"
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - master
     paths:
-      - "interfaces/Referral-app/**/*"
+      - "interfaces/Referral-App/**/*"
 
 jobs:
   build_and_deploy_job:
