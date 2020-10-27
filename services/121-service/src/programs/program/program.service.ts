@@ -754,6 +754,25 @@ export class ProgramService {
     return paStatus;
   }
 
+  private getName(customData): string {
+    if (customData['name']) {
+      return customData['name'];
+    } else if (customData['firstName']) {
+      return (
+        customData['firstName'] +
+        (customData['secondName'] ? ' ' + customData['secondName'] : '') +
+        (customData['thirdName'] ? ' ' + customData['thirdName'] : '')
+      );
+    } else if (customData['nameFirst']) {
+      return (
+        customData['nameFirst'] +
+        (customData['nameLast'] ? ' ' + customData['nameLast'] : '')
+      );
+    } else {
+      return '';
+    }
+  }
+
   public async getConnections(
     programId: number,
     privacy: boolean,
@@ -783,9 +802,6 @@ export class ProgramService {
           connection.customData['whatsappPhoneNumber'];
         connectionResponse['location'] = connection.customData['location'];
         connectionResponse['vnumber'] = connection.customData['vnumber'];
-        connectionResponse['firstName'] = connection.customData['firstName'];
-        connectionResponse['secondName'] = connection.customData['secondName'];
-        connectionResponse['thirdName'] = connection.customData['thirdName'];
         connectionResponse['age'] = connection.customData['age'];
       }
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
@@ -922,9 +938,6 @@ export class ProgramService {
     includedConnections.forEach(rawConnection => {
       let row = {
         name: rawConnection.name,
-        firstName: rawConnection.firstName,
-        secondName: rawConnection.secondName,
-        thirdName: rawConnection.thirdName,
         whatsappPhoneNumber: rawConnection.whatsappPhoneNumber,
         phoneNumber: rawConnection.phoneNumber,
         vnumber: rawConnection.vnumber,
@@ -958,9 +971,6 @@ export class ProgramService {
     for (const rawConnection of selectedConnections) {
       let row = {
         name: rawConnection.name,
-        firstName: rawConnection.firstName,
-        secondName: rawConnection.secondName,
-        thirdName: rawConnection.thirdName,
         whatsappPhoneNumber: rawConnection.whatsappPhoneNumber,
         phoneNumber: rawConnection.phoneNumber,
         vnumber: rawConnection.vnumber,
