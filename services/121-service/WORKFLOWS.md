@@ -9,6 +9,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 1. PA gets in contact with **Pilot-team** if phone is lost
 2. **Pilot-team** provides to **121-dev-team**:
    - Name and/or old WhatsApp phone-number and/or old SMS phone-number (as entered in the PA-App)
+   - Name can be any of the first/second/third/last name attributes
    - New WhatsApp phone-number (if need to replace)
    - New SMS phone-number (if need to replace)
 3. **121-dev-team**:
