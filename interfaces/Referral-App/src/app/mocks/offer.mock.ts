@@ -4,7 +4,6 @@ export default {
   offerIcon: 'Mock Offer Icon',
   offerDescription: 'Mock Offer Description',
   offerLink: 'Mock Offer Link',
-  offerImage: 'Mock Offer Image',
   offerNumber: 'Mock Offer Number',
   offerEmail: 'Mock Offer Email',
   offerAddress: 'Mock Offer Address',
