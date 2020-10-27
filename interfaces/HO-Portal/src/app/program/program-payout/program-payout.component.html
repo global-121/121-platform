@@ -14,7 +14,7 @@
         </ion-note>
         <br>
         <ion-note>
-          {{ installment.installmentDate|date:"dd-MM-y" }}
+          {{ installment.installmentDate|date:"yyyy-MM-dd" }}
         </ion-note>
       </p>
       <ion-item
@@ -45,9 +45,9 @@
       >
         {{ 'page.program.program-payout.start-payout'|translate }}
       </confirm-prompt>
-      <app-export-list 
-        [programId]="programId" 
-        [userRole]="currentUserRole" 
+      <app-export-list
+        [programId]="programId"
+        [userRole]="currentUserRole"
         [exportType]="enumExportType.payment"
         [paymentInstallment]="installment.id"
         [paymentExportAvailable]="installment.isExportAvailable"

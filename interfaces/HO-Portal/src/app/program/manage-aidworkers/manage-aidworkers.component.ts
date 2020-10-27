@@ -45,7 +45,7 @@ export class ManageAidworkersComponent implements OnInit {
 
   public tableMessages: any;
   private locale: string;
-  private dateFormat = 'yyyy-MM-dd, hh:mm';
+  private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   constructor(
     public translate: TranslateService,
