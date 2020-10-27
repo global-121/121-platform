@@ -34,6 +34,7 @@ import { SoapService } from '../fsp/api/soap.service';
 import { WhatsappService } from '../../notifications/whatsapp/whatsapp.service';
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
 import { IntersolveBarcodeEntity } from '../fsp/intersolve-barcode.entity';
+import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -125,6 +126,10 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(IntersolveBarcodeEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(FspAttributeEntity),
             useFactory: repositoryMockFactory,
           },
         ],

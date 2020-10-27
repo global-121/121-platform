@@ -12,9 +12,10 @@
           lines="full"
           class="ion-no-padding"
         >
-          <play-text-audio key="personal.signup-signin.create-id"
-                           slot="start"
-                           class="ion-no-margin ion-margin-end"
+          <play-text-audio
+            key="personal.signup-signin.create-id"
+            slot="start"
+            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
           <ion-label class="ion-text-wrap ion-padding-end">
             {{ 'personal.signup-signin.create-id'|translate }}
@@ -30,9 +31,10 @@
           class="ion-no-padding"
           lines="full"
         >
-          <play-text-audio key="personal.signup-signin.login-id"
-                           slot="start"
-                           class="ion-no-margin ion-margin-end"
+          <play-text-audio
+            key="personal.signup-signin.login-id"
+            slot="start"
+            class="ion-no-margin ion-margin-end"
           ></play-text-audio>
           <ion-label class="ion-text-wrap ion-padding-end">
             {{ 'personal.signup-signin.login-id'|translate }}
@@ -44,17 +46,17 @@
           ></ion-radio>
         </ion-item>
       </ion-radio-group>
-      <ion-row *ngIf="signupSigninChoice && !typeChosen"
-               class="ion-nowrap ion-align-items-center ion-margin-top"
+      <ion-row
+        *ngIf="signupSigninChoice && !typeChosen"
+        class="ion-nowrap ion-align-items-center ion-margin-top"
       >
-        <play-text-audio key="shared.submit-button"
-                         size="default"
-        ></play-text-audio>
-        <ion-button type="submit"
-                    (click)="submitSignupSignin()"
-                    [disabled]="typeChosen"
-                    expand="block"
-                    style="flex-basis:100%"
+        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
+        <ion-button
+          type="submit"
+          (click)="submitSignupSignin()"
+          [disabled]="typeChosen"
+          expand="block"
+          style="flex-basis:100%"
         >{{ 'shared.submit-button'|translate }}</ion-button>
       </ion-row>
   </dialogue-turn>

@@ -57,6 +57,10 @@ export class ConversationService {
     this.shouldScrollSource.next(-1);
   }
 
+  public scrollToLastSection() {
+    this.shouldScrollSource.next(-2);
+  }
+
   private async getHistory() {
     let history = await this.paData.retrieve(
       this.paData.type.conversationHistory,

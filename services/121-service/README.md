@@ -60,14 +60,16 @@ To seed the database with more data (e.g. programs) additional seed-scripts can 
 
 When changing the name of the NGO (`program.ngo`), this has effect on the PA-app NGO-logo-processing, which is hard-coded on the value of this attribute. So code-changes are needed in the PA-app. See the [PA-App README](../../interfaces/PA-App/README.md).
 
-### API Sign-up/Sign-in
+### API Sign-up/Log-in
 
-- If you have no users in your database yet, start with 'USER /POST user'. Leave the default input as is, and execute.
-- If you have already created the above user earlier, start with 'USER /POST user/login'. Leave the default input as is, and execute.
+- If you have no users in your database yet, start with: '`user` / `POST` `/user`'. Change the example-value where necessary, and execute.
+- If you have already created the above user earlier, start with '`user` / `POST` `/user/login`'. Change the example-value where necessary, and execute.
 - In either case, copy the value of the `token`-attribute from the response.
 - Click 'Authorize' (top-right) and fill in `Token <copied token>`
-- This will now give you access to all hitherto forbidden API-calls.
-- NOTE: for ease of development, if not logged in, it will take the default-user. So you do need to create this default user with email `test@example.org`, but the Authorize part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of the Swagger UI, i.e. after each code change.
+- This will now give you access to all the API-endpoints applicable to the created users' user-role.
+
+**NOTE:** for ease of local development (in [DEBUG-mode](./src/config.ts#L1)), the first/default-user will be used for all requests.
+This user **_HAS_** to be created first, but the 'Authorize'-part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of the Swagger UI, i.e. after each code change.
 
 #### Admin vs other users
 

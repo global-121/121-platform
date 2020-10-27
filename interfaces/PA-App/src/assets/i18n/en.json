@@ -24,7 +24,7 @@
   "personal": {
     "consent-question": {
       "agree": "I agree",
-      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to receive cash aid.   <br><br>   I understand who sees my personal information.   <br><br>   By pressing &ldquo;<b>I agree</b>&rdquo; I choose to participate in the aid program.   <br><br>   By pressing &ldquo;<b>I disagree</b>&rdquo; I choose not to participate in the aid program.",
+      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to send my personal information to receive cash aid.   <br><br>   I understand who sees my personal information.   <br><br>   By pressing &quot;<b>I agree</b>&quot; I choose to participate in the aid program.   <br><br>   By pressing &quot;<b>I disagree</b>&quot; I choose not to participate in the aid program.",
       "disagree": "I disagree",
       "more-info-personal-information": "About personal information",
       "question": "To apply for this aid program you need to agree to <strong>how we secure your personal information.</strong><br /><br /> Please read or listen to how we secure your personal information."
@@ -67,7 +67,7 @@
       "supply-username": "Your full name:"
     },
     "preprinted-qrcode": {
-      "error": "The scanned QR)code cannot be used, please try another one.",
+      "error": "The scanned QR-code cannot be used, please try another one.",
       "info-qr": "More text to come",
       "introduction": "The Aidworker/Volunteer will scan a QR-code to link your information and give it to you. Please keep your physical QR-code safe.",
       "more-info-qr": "About QR-codes",
