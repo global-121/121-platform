@@ -1,6 +1,6 @@
 import { WhatsappService } from './../../notifications/whatsapp/whatsapp.service';
 import { StatusMessageDto } from './../../shared/dto/status-message.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -33,7 +33,7 @@ export class IntersolveService {
       return { status: StatusEnum.success, message: ' ' };
     } catch (e) {
       console.log('e: ', e);
-      return { status: StatusEnum.error, message: ' ' };
+      return { status: StatusEnum.error, message: e.message };
     }
   }
 
@@ -66,6 +66,8 @@ export class IntersolveService {
           intersolveRefPos,
         );
       }
+      const error = 'Intersolve error: ' + voucherInfo.resultDescription;
+      throw new HttpException(error, HttpStatus.NOT_FOUND);
     }
   }
 

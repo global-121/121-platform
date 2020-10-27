@@ -42,11 +42,11 @@ export class IntersolveApiService {
     const result = {
       resultCode: responseBody.IssueCardResponse.ResultCode._text,
       resultDescription: responseBody.IssueCardResponse.ResultDescription._text,
-      cardId: responseBody.IssueCardResponse.CardId._text,
-      pin: parseInt(responseBody.IssueCardResponse.PIN._text),
-      balance: parseInt(responseBody.IssueCardResponse.CardNewBalance._text),
+      cardId: responseBody.IssueCardResponse.CardId?._text,
+      pin: parseInt(responseBody.IssueCardResponse.PIN?._text),
+      balance: parseInt(responseBody.IssueCardResponse.CardNewBalance?._text),
       transactionId: parseInt(
-        responseBody.IssueCardResponse.TransactionId._text,
+        responseBody.IssueCardResponse.TransactionId?._text,
       ),
     };
     return result;
