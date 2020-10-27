@@ -22,9 +22,9 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v1
         with:
-          node-version: "10.x"
+          node-version: "12.x"
 
-      - name: Run node install, lint, build and test scripts
+      - name: Run node ci, lint, build and test scripts
         id: nodescripts
         working-directory: ./interfaces/Referral-App
         run: |
