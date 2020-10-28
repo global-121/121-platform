@@ -11,6 +11,36 @@ const exec = require('child_process').exec;
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 
 /**
+ * Log the output of the `exec`-command
+ * @param {String} error
+ * @param {String} stdOut
+ * @param {String} stdErr
+ */
+function logOutput(error, stdOut, stdErr) {
+  if (error) {
+    console.error(stdErr);
+    return process.exit(1);
+  }
+  console.log(stdOut);
+  console.log(stdErr);
+}
+
+/**
+ * @param {String} type
+ * @returns {Array}
+ */
+function getSourceFiles(type) {
+  const files = fs.readdirSync('./').filter((file) => file.match(`${type}$`));
+
+  if (!files || !files.length) {
+    console.warn(`No files found of type: ${type}`);
+    return process.exit(1);
+  }
+
+  return files;
+}
+
+/**
  * Perform check(s) on source paths/files before proceeding...
  * @param {String} locale
  */
@@ -19,7 +49,7 @@ function checkSourceExists(locale) {
 
   if (!locale || !fs.existsSync(sourcePath)) {
     console.warn(`No folder available for locale: ${locale}`);
-    return process.exit();
+    return process.exit(1);
   }
 
   // Change to requested folder:
@@ -36,23 +66,27 @@ function convertM4aToMp3(locale) {
 
   checkSourceExists(locale);
 
-  // Run `ffmpeg` command on all source-files:
-  fs.readdirSync('./')
-    .filter((file) => file.match(`${sourceFileType}$`))
-    .forEach((file) => {
-      const outputFile = file.replace(sourceFileType, outputFileType);
+  const sourceFiles = getSourceFiles(sourceFileType);
 
-      console.log(`Converting to: ${outputFile}`);
+  if (!sourceFiles) {
+    return;
+  }
 
-      return exec(
-        `${ffmpegPath} -i ${file} -c:a libmp3lame -q:a 8 ${outputFile}`,
-      );
-    });
+  sourceFiles.forEach((file) => {
+    const outputFile = file.replace(sourceFileType, outputFileType);
+
+    console.log(`Converting to: ${outputFile}`);
+
+    exec(
+      `${ffmpegPath} -i ${file} -c:a libmp3lame -q:a 8 ${outputFile}`,
+      logOutput,
+    );
+  });
 
   // Add extra timeout, to allow the last file-conversion to finish
   setTimeout(() => {
     process.exit();
-  }, 1000);
+  }, 3000);
 }
 
 /**
@@ -64,22 +98,24 @@ function generateAssetsAudio(locale) {
   const outputFileType = '.webm';
 
   checkSourceExists(locale);
+  const sourceFiles = getSourceFiles(sourceFileType);
 
-  // Run `ffmpeg` command on all source-files:
-  fs.readdirSync('./')
-    .filter((file) => file.match(`${sourceFileType}$`))
-    .forEach((file) => {
-      const outputFile = file.replace(sourceFileType, outputFileType);
+  if (!sourceFiles) {
+    return;
+  }
 
-      console.log(`Generating: ${outputFile}`);
+  sourceFiles.forEach((file) => {
+    const outputFile = file.replace(sourceFileType, outputFileType);
 
-      return exec(`${ffmpegPath} -i ${file} -dash 1 ${outputFile}`);
-    });
+    console.log(`Generating: ${outputFile}`);
+
+    exec(`${ffmpegPath} -i ${file} -dash 1 ${outputFile}`, logOutput);
+  });
 
   // Add extra timeout, to allow the last file-conversion to finish
   setTimeout(() => {
     process.exit();
-  }, 1000);
+  }, 3000);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
