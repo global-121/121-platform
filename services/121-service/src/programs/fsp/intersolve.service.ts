@@ -31,7 +31,7 @@ export class IntersolveService {
   ) {}
 
   public async sendPayment(
-    payload,
+    payload: any,
     whatsapp: boolean,
   ): Promise<StatusMessageDto> {
     try {
@@ -46,7 +46,7 @@ export class IntersolveService {
   }
 
   public async sendIndividualPayment(
-    paymentInfo,
+    paymentInfo: any,
     whatsapp: boolean,
   ): Promise<any> {
     const intersolveRefPos = parseInt(
@@ -66,6 +66,7 @@ export class IntersolveService {
           voucherInfo.pin,
           paymentInfo.whatsappPhoneNumber,
           paymentInfo.did,
+          paymentInfo.installment,
         );
       } else {
         await this.storeVoucherNoWhatsapp(
@@ -73,6 +74,7 @@ export class IntersolveService {
           voucherInfo.pin,
           paymentInfo.whatsappPhoneNumber,
           paymentInfo.did,
+          paymentInfo.installment,
         );
       }
     } else {
@@ -97,6 +99,7 @@ export class IntersolveService {
     pin: number,
     phoneNumber: string,
     did: string,
+    installment: number,
   ): Promise<any> {
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     const whatsappPayment =
@@ -107,6 +110,7 @@ export class IntersolveService {
       cardNumber,
       pin,
       phoneNumber,
+      installment,
     );
 
     // Also store in 2nd table in case of whatsApp (for exporting voucher in case of lost phone)
@@ -118,11 +122,13 @@ export class IntersolveService {
     pin: number,
     phoneNumber: string,
     did: string,
+    installment: number,
   ): Promise<any> {
     const barcodeData = await this.storeBarcodeData(
       cardNumber,
       pin,
       phoneNumber,
+      installment,
     );
 
     await this.imageCodeService.createBarcodeExportVouchers(barcodeData, did);
@@ -132,26 +138,39 @@ export class IntersolveService {
     cardNumber: string,
     pin: number,
     phoneNumber: string,
+    installment: number,
   ): Promise<IntersolveBarcodeEntity> {
     const barcodeData = new IntersolveBarcodeEntity();
     barcodeData.barcode = cardNumber;
     barcodeData.pin = pin.toString();
     barcodeData.whatsappPhoneNumber = phoneNumber;
     barcodeData.send = false;
+    barcodeData.installment = installment;
     return this.intersolveBarcodeRepository.save(barcodeData);
   }
 
-  public async exportVouchers(did: string): Promise<any> {
+  public async exportVouchers(did: string, installment: number): Promise<any> {
     const connection = await this.connectionRepository.findOne({
       where: { did: did },
       relations: ['images', 'images.barcode'],
     });
-    const images = connection.images.map(image => {
-      return {
-        timestamp: image.barcode.timestamp,
-        image: image.image,
-      };
-    });
-    return images;
+    if (!connection) {
+      throw new HttpException(
+        'PA with this DID not found',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const image = connection.images.find(
+      image => image.barcode.installment === installment,
+    );
+    if (!image) {
+      throw new HttpException(
+        'Image not found. Maybe this installment was not (yet) made to this PA.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return image.image;
   }
 }
