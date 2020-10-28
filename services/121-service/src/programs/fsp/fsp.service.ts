@@ -126,7 +126,9 @@ export class FspService {
           }
 
           const enrichedTransaction = connectionsForFsp.find(
-            i => i.customData.phoneNumber === transaction.phoneNumber,
+            i =>
+              i.customData.phoneNumber ===
+              transaction.phoneNumber.replace(/\D/g, ''),
           );
 
           enrichedTransaction.status =
