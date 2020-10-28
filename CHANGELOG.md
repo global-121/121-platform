@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.9.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.10.0...master)
+
+---
+
+## [0.10.0](https://github.com/global-121/121-platform/compare/v0.9.0...v0.10.0) - 2020-10-28
 
 ### Notes
 
