@@ -11,7 +11,7 @@ import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dt
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { IntersolveService } from './intersolve.service';
-import { DidDto } from '../program/dto/did.dto';
+import { ExportVoucherDto } from './dto/export-voucher.dto';
 import { Response } from 'express-serve-static-core';
 import stream from 'stream';
 
@@ -76,17 +76,18 @@ export class FspController {
   @ApiResponse({ status: 200, description: 'Vouchers exported' })
   @Post('intersolve/export-voucher')
   public async exportVouchers(
-    @Body() didDto: DidDto,
-    //   @Res() response: Response,
-    // ): Promise<void> {
-  ): Promise<any> {
-    const blob = await this.intersolveService.exportVouchers(didDto.did);
-    // var bufferStream = new stream.PassThrough();
-    // bufferStream.end(Buffer.from(blob, 'binary'));
-    // response.writeHead(200, {
-    //   'Content-Type': 'image/png',
-    // });
-    // bufferStream.pipe(response);
-    return blob;
+    @Body() exportVoucherDto: ExportVoucherDto,
+    @Res() response: Response,
+  ): Promise<void> {
+    const blob = await this.intersolveService.exportVouchers(
+      exportVoucherDto.did,
+      exportVoucherDto.installment,
+    );
+    var bufferStream = new stream.PassThrough();
+    bufferStream.end(Buffer.from(blob, 'binary'));
+    response.writeHead(200, {
+      'Content-Type': 'image/png',
+    });
+    bufferStream.pipe(response);
   }
 }

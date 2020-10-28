@@ -49,6 +49,7 @@ export class FspService {
       includedConnections,
       amount,
       fsp.id,
+      installment,
     );
     let paymentResult;
     if (details.paymentList.length === 0) {
@@ -191,6 +192,7 @@ export class FspService {
     includedConnections: ConnectionEntity[],
     amount: number,
     fspId: number,
+    installment: number,
   ): Promise<PaymentDetailsDto> {
     const fsp = await this.getFspById(fspId);
     const paymentList = [];
@@ -205,6 +207,7 @@ export class FspService {
             connection.customData[attribute.name];
         }
         paymentDetails['did'] = connection.did;
+        paymentDetails['installment'] = installment;
         paymentList.push(paymentDetails);
         connectionsForFsp.push(connection);
       }
@@ -220,9 +223,11 @@ export class FspService {
   ): Promise<StatusMessageDto> {
     console.log('fsp', fsp);
     if (fsp.fsp === fspName.intersolve) {
-      return this.intersolveService.sendPayment(payload, true);
+      const whatsapp = true;
+      return this.intersolveService.sendPayment(payload, whatsapp);
     } else if (fsp.fsp === fspName.intersolveNoWhatsapp) {
-      return this.intersolveService.sendPayment(payload, false);
+      const whatsapp = false;
+      return this.intersolveService.sendPayment(payload, whatsapp);
     } else if (fsp.fsp === fspName.mpesa) {
       return this.africasTalkingService.sendPayment(
         payload,
