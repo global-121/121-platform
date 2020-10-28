@@ -21,12 +21,14 @@ export class CronjobService {
 
     const programId = 1;
     const language = 'en';
-    const yesterday = (d => new Date(d.setDate(d.getDate() - 1)))(new Date());
+    const sixteenHours = 16 * 60 * 60 * 1000;
+    const sixteenHoursAgo = (d =>
+      new Date(d.setTime(d.getTime() - sixteenHours)))(new Date());
 
     const program = await getRepository(ProgramEntity).findOne(programId);
     const unsentIntersolveBarcodes = await this.intersolveBarcodeRepository.find(
       {
-        where: { send: false, timestamp: LessThan(yesterday) },
+        where: { send: false, timestamp: LessThan(sixteenHoursAgo) },
       },
     );
 
