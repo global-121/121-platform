@@ -9,6 +9,7 @@ import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
+import { environment } from 'src/environments/environment';
 import { PaymentErrorPopupComponent } from '../payment-error-popup/payment-error-popup.component';
 
 @Component({
@@ -115,7 +116,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     private alertController: AlertController,
     public modalController: ModalController,
   ) {
-    this.locale = this.translate.getBrowserCultureLang();
+    this.locale = environment.defaultLocale;
 
     this.submitWarning = {
       message: '',

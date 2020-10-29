@@ -8,6 +8,7 @@ import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-program-payout',
@@ -45,7 +46,7 @@ export class ProgramPayoutComponent implements OnInit {
     private alertController: AlertController,
     private authService: AuthService,
   ) {
-    this.locale = this.translate.getBrowserCultureLang();
+    this.locale = environment.defaultLocale;
   }
 
   async ngOnInit() {

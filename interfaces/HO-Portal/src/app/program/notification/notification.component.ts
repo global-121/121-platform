@@ -5,6 +5,7 @@ import { UserRole } from 'src/app/auth/user-role.enum';
 import { ActionType } from 'src/app/models/action-type.model';
 import { NotificationType } from 'src/app/models/notification-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-notification',
@@ -33,7 +34,7 @@ export class NotificationComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
   ) {
-    this.locale = this.translate.getBrowserCultureLang();
+    this.locale = environment.defaultLocale;
   }
 
   async ngOnInit() {
