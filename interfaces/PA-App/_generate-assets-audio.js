@@ -4,10 +4,11 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 const fs = require('fs');
-const exec = require('child_process').exec;
+const { execSync } = require('child_process');
 
 // Documentation: https://www.ffmpeg.org/ffmpeg.html
 // Also: https://trac.ffmpeg.org/wiki/Encode/MP3
+// Also: https://trac.ffmpeg.org/wiki/Encode/VP9
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 
 /**
@@ -77,8 +78,8 @@ function convertM4aToMp3(locale) {
 
     console.log(`Converting to: ${outputFile}`);
 
-    exec(
-      `${ffmpegPath} -y -i ${file} -c:a libmp3lame -q:a 8 ${outputFile}`,
+    execSync(
+      `${ffmpegPath} -loglevel warning -y -i ${file} -map_metadata -1 -codec:a libmp3lame -q:a 8 ${outputFile}`,
       logOutput,
     );
   });
@@ -109,7 +110,10 @@ function generateAssetsAudio(locale) {
 
     console.log(`Generating: ${outputFile}`);
 
-    exec(`${ffmpegPath} -y -i ${file} -dash 1 ${outputFile}`, logOutput);
+    execSync(
+      `${ffmpegPath} -loglevel warning -y -i ${file} -map_metadata -1  -b:a 64K  -dash 1 ${outputFile}`,
+      logOutput,
+    );
   });
 
   // Add extra timeout, to allow the last file-conversion to finish
