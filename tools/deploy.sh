@@ -50,7 +50,7 @@ function deploy() {
 
   function clear_version() {
     # Remove version, during deployment:
-    echo 'Deployment in progress...' | sudo tee "$web_root/VERSION.txt"
+    echo 'Deployment in progress...' | tee "$web_root/VERSION.txt"
 
     log "Version cleared during deployment"
   }
@@ -60,19 +60,19 @@ function deploy() {
     local target=$1 || false
 
     cd "$repo" || return
-    sudo git reset --hard
-    sudo git fetch --all --tags
+    git reset --hard
+    git fetch --all --tags
 
     # When a target is provided, checkout that
     if [[ -n "$target" ]]
     then
       log "Checking out: $target"
 
-      sudo git checkout -b "$target" --track upstream/"$target"
+      git checkout -b "$target" --track upstream/"$target"
     else
       log "Pulling latest changes"
 
-      sudo git pull --ff-only
+      git pull --ff-only
     fi
   }
 
@@ -80,8 +80,8 @@ function deploy() {
     log "Updating/building services..."
 
     cd "$repo_services" || return
-    sudo docker-compose up -d --build
-    sudo docker-compose restart 121-service PA-accounts-service
+    docker-compose up -d --build
+    docker-compose restart 121-service PA-accounts-service
   }
 
   function build_interface() {
@@ -102,12 +102,12 @@ function deploy() {
     # When a target is provided, create a clean environment
     if [[ -n "$target" ]]
     then
-      sudo npm ci --unsafe-perm --no-audit --no-fund
+      npm ci --unsafe-perm --no-audit --no-fund
     else
-      sudo npm install --unsafe-perm --no-audit --no-fund
+      npm install --unsafe-perm --no-audit --no-fund
     fi
 
-    sudo npm run build -- --prod --base-href="/$base_href/"
+    npm run build -- --prod --base-href="/$base_href/"
   }
 
   function deploy_interface() {
@@ -124,19 +124,19 @@ function deploy() {
     log "Deploying interface $app..."
 
     cd "$repo_path" || return
-    sudo rm -rfv "${web_root:?}/$web_app_dir"
-    sudo cp -rv www/ "$web_root/$web_app_dir"
+    rm -rfv "${web_root:?}/$web_app_dir"
+    cp -rv www/ "$web_root/$web_app_dir"
   }
 
   function restart_webhook_service() {
-    sudo service webhook restart
+    service webhook restart
 
     log "Webhook service restarted: "
   }
 
   function update_version() {
     # Store version, accessible via web:
-    sudo git describe --tags --dirty --broken | sudo tee "$web_root/VERSION.txt"
+    git describe --tags --dirty --broken | tee "$web_root/VERSION.txt"
 
     log "Deployed: "
     cat "$web_root/VERSION.txt"
