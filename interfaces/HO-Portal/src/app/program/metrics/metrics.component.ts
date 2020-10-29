@@ -9,6 +9,7 @@ import {
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-metrics',
@@ -34,7 +35,7 @@ export class MetricsComponent implements OnChanges {
     private translatableString: TranslatableStringService,
     private programService: ProgramsServiceApiService,
   ) {
-    this.locale = this.translate.getBrowserCultureLang();
+    this.locale = environment.defaultLocale;
   }
 
   async ngOnChanges(changes: SimpleChanges) {
