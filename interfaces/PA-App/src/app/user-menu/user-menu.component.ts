@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   AlertController,
   LoadingController,
-  PopoverController,
+  ModalController,
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -19,7 +19,7 @@ export class UserMenuComponent implements OnInit {
   private loadingDelete: HTMLIonLoadingElement;
 
   constructor(
-    private popoverController: PopoverController,
+    private modalController: ModalController,
     private paData: PaDataService,
     private translate: TranslateService,
     private alertController: AlertController,
@@ -32,7 +32,7 @@ export class UserMenuComponent implements OnInit {
   }
 
   close() {
-    this.popoverController.dismiss();
+    this.modalController.dismiss();
   }
 
   logout() {

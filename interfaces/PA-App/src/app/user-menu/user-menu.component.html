@@ -1,39 +1,53 @@
 <ion-content>
-  <ion-list lines="full">
-    <ion-item button="true"
-              [disabled]="!isLoggedIn"
-              (click)="logout()"
-              detail="true"
-              detail-icon="log-out"
-              class="ion-text-nowrap"
+  <ion-list
+    lines="full"
+    class="ion-no-padding"
+  >
+    <ion-item
+      button="true"
+      [disabled]="!isLoggedIn"
+      (click)="logout()"
+      detail="true"
+      detail-icon="log-out"
+      [attr.aria-label]="'account.logout'|translate"
     >
       <ion-text>
         {{ 'account.logout'|translate }}
       </ion-text>
-      <ion-text class="ion-margin-start ion-text-ellipsis">
+      <ion-text class="ion-margin-start">
         <strong>{{ username }}</strong>
       </ion-text>
     </ion-item>
-    <ion-item button="true"
-              disabled
-              detail="true"
-              detail-icon="key"
+    <ion-item
+      button="true"
+      disabled
+      detail="true"
+      detail-icon="key"
+      [attr.aria-label]="'account.change-password'|translate"
     >
       {{ 'account.change-password'|translate }}
     </ion-item>
-    <ion-item button="true"
-              [disabled]="!isLoggedIn"
-              (click)="deletePrompt()"
-              detail="true"
-              detail-icon="trash"
+    <ion-item
+      button="true"
+      [disabled]="!isLoggedIn"
+      (click)="deletePrompt()"
+      detail="true"
+      detail-icon="trash"
+      [attr.aria-label]="'account.delete-digital-id'|translate"
     >
       {{ 'account.delete-digital-id'|translate }}
     </ion-item>
-    <ion-button type="button"
-                (click)="close()"
-                expand="block"
+    <ion-button
+      type="button"
+      (click)="close()"
+      expand="block"
     >
-      <ion-icon name="close" size="small"></ion-icon>
+      <ion-icon
+        name="close"
+        size="small"
+        slot="start"
+        aria-hidden="true"
+      ></ion-icon>
       {{ 'shared.close-button'|translate }}
     </ion-button>
   </ion-list>
