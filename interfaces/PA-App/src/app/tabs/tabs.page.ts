@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PopoverController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 import { PaDataService } from '../services/padata.service';
 import { UserMenuComponent } from '../user-menu/user-menu.component';
@@ -15,7 +15,7 @@ export class TabsPage {
   public isLoggedIn = false;
 
   constructor(
-    public popoverController: PopoverController,
+    private modalController: ModalController,
     public paData: PaDataService,
   ) {
     this.useLocalStorage = environment.localStorage;
@@ -29,10 +29,10 @@ export class TabsPage {
     });
   }
 
-  async openUserMenu(ev: any) {
-    const popover = await this.popoverController.create({
+  async openUserMenu() {
+    const popover = await this.modalController.create({
       component: UserMenuComponent,
-      event: ev,
+      cssClass: 'user-menu-modal',
     });
 
     return await popover.present();
