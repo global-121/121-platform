@@ -10,6 +10,7 @@ function deploy() {
   set -a; [ -f ./tools/.env ] && . ./tools/.env; set +a;
 
   # Variables
+  local log_file=$GLOBAL_121_DEPLOY_LOG_FILE
   local repo_services=$repo/services
   local repo_interfaces=$repo/interfaces
   local repo_pa=$repo_interfaces/PA-App
@@ -34,6 +35,17 @@ function deploy() {
     printf "\n"
     # reset highlight/warn:
     tput sgr0
+  }
+
+  function setup_log_file() {
+    # If a log-file is specified in the ENV-variable
+    # Output all STDOUT and STDERR to file AND to console
+    if [[ -n "$log_file" ]]
+    then
+      touch "$log_file"
+      # All output to one file and all output to the screen
+      exec > >(tee "$log_file") 2>&1
+    fi
   }
 
   function clear_version() {
@@ -112,8 +124,8 @@ function deploy() {
     log "Deploying interface $app..."
 
     cd "$repo_path" || return
-    sudo rm -rf "$web_root/$web_app_dir"
-    sudo cp -r www/ "$web_root/$web_app_dir"
+    sudo rm -rfv "${web_root:?}/$web_app_dir"
+    sudo cp -rv www/ "$web_root/$web_app_dir"
   }
 
   function restart_webhook_service() {
@@ -134,6 +146,8 @@ function deploy() {
   #
   # Actual deployment:
   #
+  setup_log_file
+
   clear_version
 
   update_code "$target"
