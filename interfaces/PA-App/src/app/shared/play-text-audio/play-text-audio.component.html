@@ -10,13 +10,15 @@
             (click)="toggleState()"
             class="play-text-audio"
 >
-  <img *ngIf="iconName === 'play'" 
-       src="./assets/icons/ear-outline-white.svg" 
+  <img *ngIf="iconName === 'play'"
+       src="./assets/icons/ear-outline-white.svg"
        class="ear-icon"
+       aria-hidden="true"
   >
-  <ion-icon *ngIf="iconName !== 'play'" 
+  <ion-icon *ngIf="iconName !== 'play'"
             [name]="iconName"
             size="small"
             slot="icon-only"
+            aria-hidden="true"
   ></ion-icon>
 </ion-button>
