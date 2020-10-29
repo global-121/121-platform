@@ -27,14 +27,14 @@ function deploy() {
   # Arguments
   local target=$1 || false
 
+  ###########################################################################
+
   function log() {
     printf "\n\n"
-    # highlight/warn:
-    tput setaf 3
-    echo "$@"
+    echo "------------------------------------------------------------------------------"
+    echo " $@"
+    echo "------------------------------------------------------------------------------"
     printf "\n"
-    # reset highlight/warn:
-    tput sgr0
   }
 
   function setup_log_file() {
