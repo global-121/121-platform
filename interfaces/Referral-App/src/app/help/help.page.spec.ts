@@ -1,7 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ModalController } from '@ionic/angular';
-import { TranslateModule } from '@ngx-translate/core';
 import { LoggingService } from 'src/app/services/logging.service';
 import { HelpPage } from './help.page';
 
@@ -11,7 +10,6 @@ describe('HelpPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forRoot()],
       declarations: [HelpPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [

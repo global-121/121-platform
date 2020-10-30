@@ -1,12 +1,22 @@
 <ion-header>
   <ion-toolbar>
     <ion-title class="ion-text-center">
-      {{ 'tabs.referral-title'| translate }}
+      {{ referralPageData.referralPageTitle }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        {{ referralPageData.referralPageGreeting }}
+      </ion-card-title>
+      <ion-card-subtitle>
+        {{ referralPageData.referralPageInstructions }}
+      </ion-card-subtitle>
+    </ion-card-header>
+  </ion-card>
   <div>
     <div *ngIf="!category">
       <category
@@ -58,7 +68,7 @@
   <div
     *ngIf="categories?.length === 0 || subCategories?.length === 0 || offers?.length === 0"
   >
-    <ion-card class="ion-text-center">
+    <ion-card class="referral-data-unavailable-card ion-text-center">
       <ion-card-header>
         <ion-card-subtitle>Data Unavailable</ion-card-subtitle>
       </ion-card-header>
@@ -81,7 +91,7 @@
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="openHelpModal()">
-        <ion-icon slot="icon-only" name="help"></ion-icon>
+        <ion-text>{{referralPageData.referralHelpButtonLabel}}</ion-text>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

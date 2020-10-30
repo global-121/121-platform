@@ -2,13 +2,15 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { HelpPage } from 'src/app/help/help.page';
+import mockReferralPageData from 'src/app/mocks/referral-page-data.mock';
 import { Category } from 'src/app/models/category.model';
 import { AnalyticsEventName } from 'src/app/models/event-name.model';
 import { Offer } from 'src/app/models/offer.model';
+import { ReferralPageData } from 'src/app/models/referral-page-data';
 import { SubCategory } from 'src/app/models/sub-category.model';
 import { LoggingService } from 'src/app/services/logging.service';
 import { OffersService } from 'src/app/services/offers.service';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { ReferralPageDataService } from 'src/app/services/referral-page-data.service';
 
 @Component({
   selector: 'app-referral',
@@ -24,62 +26,36 @@ export class ReferralPage {
   public subCategory: SubCategory;
   public offer: Offer;
 
+  public referralPageData: ReferralPageData = mockReferralPageData;
+
   constructor(
     public offersService: OffersService,
     private route: ActivatedRoute,
     private router: Router,
-    public translatableString: TranslatableStringService,
     public modalController: ModalController,
     private loggingService: LoggingService,
+    private referralPageDataService: ReferralPageDataService,
   ) {
     this.loadReferralData();
   }
 
   private loadReferralData() {
-    this.offersService.getCategories().then((categories) => {
-      this.categories = this.translateCategories(categories);
-      this.offersService.getSubCategories().then((subCategories) => {
-        this.subCategories = this.translateSubCategories(subCategories);
-        this.offersService.getOffers().then((offers) => {
-          this.offers = this.translateOffers(offers);
-          this.readQueryParams();
+    this.referralPageDataService
+      .getReferralPageData()
+      .then((referralPageData) => {
+        this.referralPageData = referralPageData;
+        console.log(this.referralPageData);
+        this.offersService.getCategories().then((categories) => {
+          this.categories = categories;
+          this.offersService.getSubCategories().then((subCategories) => {
+            this.subCategories = subCategories;
+            this.offersService.getOffers().then((offers) => {
+              this.offers = offers;
+              this.readQueryParams();
+            });
+          });
         });
       });
-    });
-  }
-
-  private translateCategories(categories: Category[]) {
-    return categories.map((category: Category) => {
-      category.categoryName = this.translatableString.get(
-        category.categoryName,
-      );
-      category.categoryDescription = this.translatableString.get(
-        category.categoryDescription,
-      );
-      return category;
-    });
-  }
-
-  private translateSubCategories(subCategories: SubCategory[]) {
-    return subCategories.map((subCategory: SubCategory) => {
-      subCategory.subCategoryName = this.translatableString.get(
-        subCategory.subCategoryName,
-      );
-      subCategory.subCategoryDescription = this.translatableString.get(
-        subCategory.subCategoryDescription,
-      );
-      return subCategory;
-    });
-  }
-
-  private translateOffers(offers: Offer[]) {
-    return offers.map((offer: Offer) => {
-      offer.offerName = this.translatableString.get(offer.offerName);
-      offer.offerDescription = this.translatableString.get(
-        offer.offerDescription,
-      );
-      return offer;
-    });
   }
 
   private readQueryParams() {
