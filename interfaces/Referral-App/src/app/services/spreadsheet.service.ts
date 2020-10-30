@@ -58,7 +58,9 @@ export class SpreadsheetService {
         return response.feed.entry.map(this.convertCategoryRowToCategoryObject);
       })
       .catch((error) => {
-        this.loggingService.logException(error, SeverityLevel.Critical);
+        if (this.loggingService) {
+          this.loggingService.logException(error, SeverityLevel.Critical);
+        }
         return [];
       });
   };
@@ -98,7 +100,9 @@ export class SpreadsheetService {
         );
       })
       .catch((error) => {
-        this.loggingService.logException(error, SeverityLevel.Critical);
+        if (this.loggingService) {
+          this.loggingService.logException(error, SeverityLevel.Critical);
+        }
         return [];
       });
   };
@@ -164,7 +168,9 @@ export class SpreadsheetService {
           .filter((offer) => offer.offerVisible);
       })
       .catch((error) => {
-        this.loggingService.logException(error, SeverityLevel.Critical);
+        if (this.loggingService) {
+          this.loggingService.logException(error, SeverityLevel.Critical);
+        }
         return [];
       });
   };
@@ -195,7 +201,9 @@ export class SpreadsheetService {
         return this.convertHelpRowToHelpObject(response.feed.entry);
       })
       .catch((error) => {
-        this.loggingService.logException(error, SeverityLevel.Critical);
+        if (this.loggingService) {
+          this.loggingService.logException(error, SeverityLevel.Critical);
+        }
         return helpMock;
       });
   };
@@ -235,7 +243,9 @@ export class SpreadsheetService {
         );
       })
       .catch((error) => {
-        this.loggingService.logException(error, SeverityLevel.Critical);
+        if (this.loggingService) {
+          this.loggingService.logException(error, SeverityLevel.Critical);
+        }
         return referralPageDataMock;
       });
   };
