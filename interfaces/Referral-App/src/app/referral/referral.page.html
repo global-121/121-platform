@@ -7,7 +7,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-card>
+  <ion-card *ngIf="!category">
     <ion-card-header>
       <ion-card-title>
         {{ referralPageData.referralPageGreeting }}
