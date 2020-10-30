@@ -1,10 +1,8 @@
-import { TranslatableString } from './translatable-string.model';
-
 export class Offer {
   offerID: number;
-  offerName: TranslatableString | string;
+  offerName: string;
   offerIcon: string;
-  offerDescription: TranslatableString | string;
+  offerDescription: string;
   offerLink?: string;
   offerNumber?: string;
   offerEmail?: string;

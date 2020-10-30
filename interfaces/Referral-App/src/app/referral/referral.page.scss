@@ -7,9 +7,14 @@ ion-content {
 }
 
 ion-card {
-  width: 300px;
-  margin: 5% auto;
   background: #ffffff;
+  box-shadow: none;
+  white-space: pre-line;
+
+  &.referral-data-unavailable-card {
+    width: 300px;
+    margin: 5% auto;
+  }
 }
 
 a {

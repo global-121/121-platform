@@ -5,7 +5,6 @@ import { AnalyticsEventName } from 'src/app/models/event-name.model';
 import { Help } from 'src/app/models/help.model';
 import { HelpService } from 'src/app/services/help.service';
 import { LoggingService } from 'src/app/services/logging.service';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 
 @Component({
   selector: 'app-help',
@@ -18,7 +17,6 @@ export class HelpPage {
   constructor(
     public modalController: ModalController,
     public helpService: HelpService,
-    public translatableString: TranslatableStringService,
     private loggingService: LoggingService,
   ) {
     this.loadHelpDetails();
@@ -26,14 +24,8 @@ export class HelpPage {
 
   loadHelpDetails() {
     this.helpService.getHelp().then((help) => {
-      this.help = this.translateHelpDetails(help);
+      this.help = help;
     });
-  }
-
-  translateHelpDetails(help: Help): Help {
-    help.helpText = this.translatableString.get(help.helpText);
-    help.helpPhoneLabel = this.translatableString.get(help.helpPhoneLabel);
-    return help;
   }
 
   dismiss() {

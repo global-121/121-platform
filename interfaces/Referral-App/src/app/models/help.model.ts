@@ -1,9 +1,8 @@
-import { TranslatableString } from './translatable-string.model';
-
 export class Help {
+  helpPageTitle: string;
   helpIcon: string;
-  helpText: TranslatableString | string;
-  helpPhoneLabel: TranslatableString | string;
+  helpText: string;
+  helpPhoneLabel: string;
   helpPhone: string;
   helpWhatsApp: string;
   helpTwitter: string;
