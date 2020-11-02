@@ -79,6 +79,7 @@ export class PhaseNextComponent implements OnInit {
     this.isInProgress = true;
     this.programPhaseService.advancePhase().finally(() => {
       this.isInProgress = false;
+      this.activePhase = this.programPhaseService.getActivePhase();
     });
   }
 }
