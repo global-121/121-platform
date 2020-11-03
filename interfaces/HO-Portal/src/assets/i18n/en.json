@@ -162,6 +162,7 @@
           "dob": "Date of birth",
           "phone-number": "Phonenumber",
           "payment": "Payment #",
+          "vnumber": "V-number",
           "fsp": "Financial Service Provider"
         },
         "status": {
