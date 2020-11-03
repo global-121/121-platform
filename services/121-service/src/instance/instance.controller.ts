@@ -25,7 +25,7 @@ export class InstanceController {
 
   @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Update instance' })
-  @Post()
+  @Post('update')
   public async updateInstance(
     @Body() updateInstanceDto: UpdateInstanceDto,
   ): Promise<InstanceEntity> {

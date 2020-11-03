@@ -1,9 +1,10 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty } from 'class-validator';
 
 export class UpdateInstanceDto {
   @ApiModelProperty({ example: 'NGO-name' })
   @IsString()
+  @IsNotEmpty()
   public readonly name: string;
 
   @ApiModelProperty({ example: { en: 'NGO display name' } })
