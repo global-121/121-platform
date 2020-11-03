@@ -18,6 +18,7 @@ import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
 import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
+import { FspAttributeEntity } from './fsp-attribute.entity';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity
       IntersolveBarcodeEntity,
       ImageCodeExportVouchersEntity,
       ImageCodeEntity,
+      FspAttributeEntity,
     ]),
   ],
   providers: [

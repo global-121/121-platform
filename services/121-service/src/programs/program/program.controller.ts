@@ -1,5 +1,4 @@
 import { ProgramMetrics } from './dto/program-metrics.dto';
-import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { DidDto, DidsDto } from './dto/did.dto';
 import {
@@ -8,7 +7,6 @@ import {
   Body,
   Put,
   Delete,
-  Query,
   Param,
   Controller,
   UseGuards,
@@ -24,7 +22,6 @@ import {
   ApiResponse,
   ApiOperation,
   ApiImplicitParam,
-  ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
 import { DeleteResult } from 'typeorm';
@@ -38,6 +35,9 @@ import { UserRole } from '../../user-role.enum';
 import { ChangeStateDto } from './dto/change-state.dto';
 import { ExportDetails } from './dto/export-details';
 import { NotificationDto } from './dto/notification';
+import { CustomCriterium } from './custom-criterium.entity';
+import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
+import { UpdateProgramDto } from './dto/update-program.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -93,23 +93,6 @@ export class ProgramController {
     @Body() programData: CreateProgramDto,
   ): Promise<ProgramEntity> {
     return this.programService.create(userId, programData);
-  }
-
-  @Roles(UserRole.ProjectOfficer)
-  @ApiOperation({ title: 'Change program' })
-  @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
-  @ApiResponse({
-    status: 201,
-    description: 'The program has been successfully changed.',
-  })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Put(':id')
-  public async update(
-    @Param() params,
-    @User('id') userId: number,
-    @Body() programData: CreateProgramDto,
-  ): Promise<ProgramRO> {
-    return this.programService.update(params.id, programData);
   }
 
   @Roles(UserRole.ProjectOfficer)
@@ -298,5 +281,30 @@ export class ProgramController {
   @Get('metrics/:id')
   public async getMetrics(@Param() params): Promise<ProgramMetrics> {
     return await this.programService.getMetrics(params.id);
+  }
+
+  @Roles(UserRole.Admin)
+  @ApiOperation({ title: 'Update program' })
+  @ApiImplicitParam({ name: 'programId', required: true })
+  @Post('update/program/:programId')
+  public async updateProgram(
+    @Param() params,
+    @Body() updateProgramDto: UpdateProgramDto,
+  ): Promise<ProgramEntity> {
+    return await this.programService.updateProgram(
+      params.programId,
+      updateProgramDto,
+    );
+  }
+
+  @Roles(UserRole.Admin)
+  @ApiOperation({ title: 'Update custom criterium' })
+  @Post('update/custom-criterium')
+  public async updateCustomCriterium(
+    @Body() updateCustomCriteriumDto: UpdateCustomCriteriumDto,
+  ): Promise<CustomCriterium> {
+    return await this.programService.updateCustomCriterium(
+      updateCustomCriteriumDto,
+    );
   }
 }

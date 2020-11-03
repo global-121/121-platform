@@ -14,6 +14,10 @@ import { IntersolveService } from './intersolve.service';
 import { ExportVoucherDto } from './dto/export-voucher.dto';
 import { Response } from 'express-serve-static-core';
 import stream from 'stream';
+import { UserRole } from '../../user-role.enum';
+import { Roles } from '../../roles.decorator';
+import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
+import { FspAttributeEntity } from './fsp-attribute.entity';
 
 @ApiUseTags('fsp')
 @Controller('fsp')
@@ -89,5 +93,23 @@ export class FspController {
       'Content-Type': 'image/png',
     });
     bufferStream.pipe(response);
+  }
+
+  @Roles(UserRole.Admin)
+  @ApiOperation({ title: 'Update FSP' })
+  @Post('update/fsp')
+  public async updateFsp(
+    @Body() updateFspDto: UpdateFspDto,
+  ): Promise<FinancialServiceProviderEntity> {
+    return await this.fspService.updateFsp(updateFspDto);
+  }
+
+  @Roles(UserRole.Admin)
+  @ApiOperation({ title: 'Update FSP attribute' })
+  @Post('update/fsp-attribute')
+  public async updateFspAttribute(
+    @Body() updateFspAttributeDto: UpdateFspAttributeDto,
+  ): Promise<FspAttributeEntity> {
+    return await this.fspService.updateFspAttribute(updateFspAttributeDto);
   }
 }
