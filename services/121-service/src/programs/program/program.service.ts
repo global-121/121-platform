@@ -36,6 +36,8 @@ import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
 import { FspService } from '../fsp/fsp.service';
 import { FspPaymentResultDto } from '../fsp/dto/fsp-payment-results.dto';
+import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
+import { UpdateProgramDto } from './dto/update-program.dto';
 
 @Injectable()
 export class ProgramService {
@@ -186,6 +188,45 @@ export class ProgramService {
     let updated = Object.assign(toUpdate, programData);
     const program = await this.programRepository.save(updated);
     return { program };
+  }
+
+  public async updateProgram(
+    programId: number,
+    updateProgramDto: UpdateProgramDto,
+  ): Promise<ProgramEntity> {
+    const program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = `No program found with id ${programId}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    for (let attribute in updateProgramDto) {
+      program[attribute] = updateProgramDto[attribute];
+    }
+
+    await this.programRepository.save(program);
+    return program;
+  }
+
+  public async updateCustomCriterium(
+    updateCustomCriteriumDto: UpdateCustomCriteriumDto,
+  ): Promise<CustomCriterium> {
+    const criterium = await this.customCriteriumRepository.findOne({
+      where: { criterium: updateCustomCriteriumDto.criterium },
+    });
+    if (!criterium) {
+      const errors = `No criterium found with name ${updateCustomCriteriumDto.criterium}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    for (let attribute in updateCustomCriteriumDto) {
+      if (attribute !== 'criterium') {
+        criterium[attribute] = updateCustomCriteriumDto[attribute];
+      }
+    }
+
+    await this.customCriteriumRepository.save(criterium);
+    return criterium;
   }
 
   public async delete(programId: number): Promise<DeleteResult> {

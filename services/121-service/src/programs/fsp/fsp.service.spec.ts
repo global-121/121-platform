@@ -55,6 +55,10 @@ describe('Fsp service', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
+            provide: getRepositoryToken(FspAttributeEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
             provide: getRepositoryToken(AfricasTalkingNotificationEntity),
             useFactory: repositoryMockFactory,
           },

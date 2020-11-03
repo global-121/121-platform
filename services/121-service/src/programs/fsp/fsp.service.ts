@@ -2,7 +2,7 @@ import { AfricasTalkingService } from './africas-talking.service';
 import { IntersolveService } from './intersolve.service';
 import { StatusEnum } from './../../shared/enum/status.enum';
 import { StatusMessageDto } from '../../shared/dto/status-message.dto';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   fspName,
   FinancialServiceProviderEntity,
@@ -17,6 +17,8 @@ import { PaymentDetailsDto } from './dto/payment-details.dto';
 import { FspPaymentResultDto } from './dto/fsp-payment-results.dto';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 import { DEBUG } from '../../config';
+import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
+import { FspAttributeEntity } from './fsp-attribute.entity';
 
 @Injectable()
 export class FspService {
@@ -28,6 +30,8 @@ export class FspService {
   public financialServiceProviderRepository: Repository<
     FinancialServiceProviderEntity
   >;
+  @InjectRepository(FspAttributeEntity)
+  public fspAttributeRepository: Repository<FspAttributeEntity>;
   @InjectRepository(AfricasTalkingNotificationEntity)
   public africasTalkingNotificationRepository: Repository<
     AfricasTalkingNotificationEntity
@@ -284,5 +288,52 @@ export class FspService {
       relations: ['attributes'],
     });
     return fsp;
+  }
+
+  public async updateFsp(
+    updateFspDto: UpdateFspDto,
+  ): Promise<FinancialServiceProviderEntity> {
+    const fsp = await this.financialServiceProviderRepository.findOne({
+      where: { fsp: updateFspDto.fsp },
+    });
+    if (!fsp) {
+      const errors = `No fsp found with name ${updateFspDto.fsp}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    for (let key in updateFspDto) {
+      if (key !== 'fsp') {
+        fsp[key] = updateFspDto[key];
+      }
+    }
+
+    await this.financialServiceProviderRepository.save(fsp);
+    return fsp;
+  }
+
+  public async updateFspAttribute(
+    updateFspAttributeDto: UpdateFspAttributeDto,
+  ): Promise<FspAttributeEntity> {
+    const fspAttributes = await this.fspAttributeRepository.find({
+      where: { name: updateFspAttributeDto.name },
+      relations: ['fsp'],
+    });
+    // Filter out the right fsp, if fsp-attribute name occurs across multiple fsp's
+    const fspAttribute = fspAttributes.filter(
+      a => a.fsp.fsp === updateFspAttributeDto.fsp,
+    )[0];
+    if (!fspAttribute) {
+      const errors = `No fspAttribute found with name ${updateFspAttributeDto.name} in fsp with name ${updateFspAttributeDto.fsp}`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    for (let key in updateFspAttributeDto) {
+      if (key !== 'name' && key !== 'fsp') {
+        fspAttribute[key] = updateFspAttributeDto[key];
+      }
+    }
+
+    await this.fspAttributeRepository.save(fspAttribute);
+    return fspAttribute;
   }
 }
