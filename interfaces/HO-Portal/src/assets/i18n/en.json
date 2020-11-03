@@ -158,6 +158,7 @@
           "temp-score": "Temporary inclusion score",
           "included": "Included",
           "rejected": "Rejected",
+          "notified-of-inclusion": "Notified of inclusion",
           "name": "Name",
           "dob": "Date of birth",
           "phone-number": "Phonenumber",
@@ -177,7 +178,8 @@
         "actions": {
           "select-for-validation": "Select for validation",
           "include": "Include in program",
-          "reject": "Reject from program"
+          "reject": "Reject from program",
+          "notify-included": "Notify included People Affected"
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",

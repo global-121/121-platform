@@ -198,6 +198,17 @@ export class ProgramController {
   }
 
   @Roles(UserRole.ProjectOfficer)
+  @ApiOperation({ title: 'Notify of inclusion set of PAs' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @Post('notify-selected-included/:programId')
+  public async notifySelectedIncluded(
+    @Param() params,
+    @Body() data: DidsDto,
+  ): Promise<void> {
+    await this.programService.notifySelectedIncluded(params.programId, data);
+  }
+
+  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Send notification to set of PAs' })
   @Post('notify')
   public async notify(@Body() data: NotificationDto): Promise<void> {
