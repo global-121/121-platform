@@ -1,0 +1,15 @@
+{
+  "name": "cypress-tests",
+  "version": "1.0.0",
+  "description": "Run integration tests on various interfaces",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "121.global",
+  "homepage": "https://www.121.global/",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^5.5.0"
+  }
+}
