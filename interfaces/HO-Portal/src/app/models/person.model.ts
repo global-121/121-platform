@@ -14,6 +14,7 @@ export class Person {
   rejectionDate?: string;
   status: PaStatus;
   fsp?: string;
+  vnumber?: string;
 }
 
 // Model for display (in table)
@@ -34,6 +35,7 @@ export class PersonRow {
   name?: string | null;
   phoneNumber?: string | null;
   fsp?: string | null;
+  vnumber?: string | null;
 }
 
 export enum PaStatus {
