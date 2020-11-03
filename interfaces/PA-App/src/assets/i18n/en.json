@@ -24,7 +24,7 @@
   "personal": {
     "consent-question": {
       "agree": "I agree",
-      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to send my personal information to receive cash aid.   <br><br>   I understand who sees my personal information.   <br><br>   By pressing &quot;<b>I agree</b>&quot; I choose to participate in the aid program.   <br><br>   By pressing &quot;<b>I disagree</b>&quot; I choose not to participate in the aid program.",
+      "answer": "I have read/listened to how my personal information will be stored securely. I understand that it is required to send my personal information to receive cash aid.   <br><br>   I understand who sees my personal information.   <br><br>   By tapping &quot;<b>I agree</b>&quot; I choose to participate in the aid program.   <br><br>   By tapping &quot;<b>I disagree</b>&quot; I choose not to participate in the aid program.",
       "disagree": "I disagree",
       "more-info-personal-information": "About personal information",
       "question": "To apply for this aid program you need to agree to <strong>how we secure your personal information.</strong><br /><br /> Please read or listen to how we secure your personal information."
@@ -37,7 +37,7 @@
       "introduction": "To create an account you need to complete the following steps.",
       "local": {
         "conclusion": "Great! You have created a Digital ID.",
-        "create-password-only": "Create my password",
+        "create-password-only": "Create a password",
         "info-message-password": "[about passwords]",
         "introduction": "To create a Digital ID you need to complete the following steps.",
         "more-info-password": "About passwords"
@@ -51,13 +51,13 @@
       "change": "Change my information",
       "introduction-information": "To make sure you get the best possible help and a fair process, we need some personal information.",
       "more-info-questions": "About personal information",
-      "please-confirm": "Below is an overview of your information. Please check and submit.",
+      "please-confirm": "Below is an overview of your information. Please check and then tap send.",
       "submit-confirm": "Send my information"
     },
     "handle-proof": {
       "creating": "You have given us sufficient personal information to see if you can be part of the program.",
-      "inclusion-status-negative": "Your application to the program has not been successful and cannot be confirmed.<br><br>If you can, please reach out to us on WhatsApp for more information: <a target='_blank' rel='noopener' href='https://wa.me/+31600000000'>+31 6 00 00 00 00</a>",
-      "inclusion-status-positive": "Your application to the Red Cross program has been successful and confirmed.<br><br>You will receive another message about your first Albert Heijn supermarket voucher within [variable].",
+      "inclusion-status-negative": "Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us.",
+      "inclusion-status-positive": "You have been included in the program.",
       "notify": "We will notify you if you are included."
     },
     "login-identity": {
@@ -118,15 +118,15 @@
       "no-published-programs": "There are currently no programs available. Please return here later."
     },
     "set-notification-number": {
-      "conclusion-skipped": "You have chosen not to leave a phone number. Please log in back here regularly, to check on updates.",
+      "conclusion-skipped": "You have not left a phone number for us to reach you on. Please log in back here regularly, to check on updates.",
       "conclusion-submitted": "Thank you. You will now receive notifications on this phone number: {{phone}}",
-      "input-label": "Phone number with country-code. It should look like: {{phoneNumberExample}}",
+      "input-label": "Your phone number with country-code. It should look like this example: {{phoneNumberExample}}",
       "introduction1": "It is optional to enter your phone number.",
-      "introduction2": "We use this to send you text-notifications if you are included and when you receive aid.",
-      "introduction3": "If you do not want to enter your phone number, you will have to log in here for updates.",
+      "introduction2": "We use this to send you text-notifications if you are included and when you may receive aid.",
+      "introduction3": "If you do not want to enter your phone number, you will have to log in to this app for updates.",
       "introduction4": "At the end of the program, we will delete your number.",
       "skip": "Skip",
-      "submit": "Submit phone number",
+      "submit": "Send phone number",
       "validation": {
         "phone-number": "We couldn't verify that phone-number. Please update and try again."
       }
@@ -146,7 +146,7 @@
     "validation": {
       "date": "The date format you inputted is not valid. A valid date format example is 31-12-1970 which follows day-month-year, DD-MM-YYYY",
       "email": "The email needs to have a valid format. For example: 'full.name@example.com'. Please adjust and try again.",
-      "generic-error": "We cannot process some of your input. Please check and update your answers.",
+      "generic-error": "We cannot process some of your answers. Please check and update your answers.",
       "number": "The answer needs to be a valid number. Please adjust and try again.",
       "phone-number": "We couldn't verify this phone-number. Please adjust and try again.",
       "required": "An answer is required for this question. Please adjust and try again."

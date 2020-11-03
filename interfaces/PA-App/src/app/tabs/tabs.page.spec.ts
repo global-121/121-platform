@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { PopoverController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { MockPaDataService } from '../mocks/padata.service.mock';
 import { PaDataService } from '../services/padata.service';
@@ -17,7 +17,7 @@ describe('TabsPage', () => {
       imports: [TranslateModule.forRoot()],
       providers: [
         {
-          provide: PopoverController,
+          provide: ModalController,
         },
         {
           provide: PaDataService,

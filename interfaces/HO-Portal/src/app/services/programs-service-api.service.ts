@@ -4,8 +4,8 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { ActionType } from '../models/action-type.model';
 import { ExportType } from '../models/export-type.model';
+import { InstallmentData } from '../models/installment.model';
 import { NotificationType } from '../models/notification-type.model';
-import { PastInstallments } from '../models/past-installments.model';
 import { Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
@@ -81,11 +81,20 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getPastInstallments(programId: number | string): Promise<PastInstallments[]> {
+  getPastInstallments(programId: number | string): Promise<InstallmentData[]> {
     return this.apiService
       .get(
         environment.url_121_service_api,
         `/programs/installments/${programId}`,
+      )
+      .pipe(
+        map((response) => {
+          return response.map((element) => {
+            // Remap `installment`-property to `id`:
+            element.id = element.installment;
+            return element;
+          });
+        }),
       )
       .toPromise();
   }

@@ -17,17 +17,13 @@
     *ngIf="inclusionStatus"
     [isSpoken]="inclusionStatus"
   >
-    <p 
-      *ngIf="inclusionStatusNegative"
-      [innerHTML]="'personal.handle-proof.inclusion-status-negative'|translate"
-    >
+    <p *ngIf="inclusionStatusNegative">
       <play-text-audio key="personal.handle-proof.inclusion-status-negative" class="ion-float-start ion-margin-end"></play-text-audio>
+      <span [innerHTML]="'personal.handle-proof.inclusion-status-negative'|translate"></span>
     </p>
-    <p 
-      *ngIf="inclusionStatusPositive"
-      [innerHTML]="'personal.handle-proof.inclusion-status-positive'|translate"
-    >
+    <p *ngIf="inclusionStatusPositive">
       <play-text-audio key="personal.handle-proof.inclusion-status-positive" class="ion-float-start ion-margin-end"></play-text-audio>
+      <span [innerHTML]="'personal.handle-proof.inclusion-status-positive'|translate"></span>
     </p>
   </dialogue-turn>
 </section>

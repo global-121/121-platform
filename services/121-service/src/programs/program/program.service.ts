@@ -196,11 +196,15 @@ export class ProgramService {
     programId: number,
     newState: ProgramPhase,
   ): Promise<SimpleProgramRO> {
+    const oldState = (await this.programRepository.findOne(programId)).state;
     await this.changeProgramValue(programId, {
       state: newState,
     });
     const changedProgram = await this.findOne(programId);
-    if (newState === ProgramPhase.registrationValidation) {
+    if (
+      oldState === ProgramPhase.design &&
+      newState === ProgramPhase.registrationValidation
+    ) {
       await this.publish(programId);
     }
     return this.buildProgramRO(changedProgram);

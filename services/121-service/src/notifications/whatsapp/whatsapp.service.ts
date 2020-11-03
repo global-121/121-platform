@@ -104,12 +104,12 @@ export class WhatsappService {
     );
   }
 
-  public async handleIncomming(callbackData): Promise<void> {
+  public async handleIncoming(callbackData): Promise<void> {
     const fromNumber = callbackData.From.replace('whatsapp:+', '');
 
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     const intersolveBarcode = await this.intersolveBarcodeRepository.findOne({
-      where: { phonenumber: fromNumber, send: false },
+      where: { whatsappPhoneNumber: fromNumber, send: false },
     });
     if (intersolveBarcode) {
       await this.sendWhatsapp(

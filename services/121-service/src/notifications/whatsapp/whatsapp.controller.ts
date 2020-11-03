@@ -35,6 +35,6 @@ export class WhatsappController {
 
   @Post('incoming')
   public async incoming(@Body() callbackData: any): Promise<void> {
-    return await this.whatsappService.handleIncomming(callbackData);
+    return await this.whatsappService.handleIncoming(callbackData);
   }
 }

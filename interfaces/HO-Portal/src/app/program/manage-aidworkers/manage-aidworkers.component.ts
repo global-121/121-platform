@@ -4,6 +4,7 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-manage-aidworkers',
@@ -52,7 +53,7 @@ export class ManageAidworkersComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private alertController: AlertController,
   ) {
-    this.locale = this.translate.getBrowserCultureLang();
+    this.locale = environment.defaultLocale;
   }
 
   ngOnInit() {

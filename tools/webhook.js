@@ -12,15 +12,21 @@ const fs = require("fs");
  * @param {string} target (optional)
  */
 function deploy(target) {
+  const command = `cd ${process.env.GLOBAL_121_REPO} && sudo ./tools/deploy.sh`;
+
+  if (target) {
+    command += ` "${target}"`;
+  }
+
   child_process.exec(
-    target
-      ? `cd ${process.env.GLOBAL_121_REPO} && sudo ./tools/deploy.sh "${target}"`
-      : `cd ${process.env.GLOBAL_121_REPO} && sudo ./tools/deploy.sh`,
-    function (error, stdout, stderr) {
+    command,
+    {
+      maxBuffer: 10 * 1024 * 1024,
+    },
+    function (error) {
       if (error) {
-        console.log(stderr);
-      } else {
-        console.log(stdout);
+        console.error(error);
+        return;
       }
     }
   );

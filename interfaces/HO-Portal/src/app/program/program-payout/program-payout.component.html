@@ -32,7 +32,6 @@
           [(ngModel)]="installment.amount"
           [ngModelOptions]="{ standalone: true }"
           ngDefaultControl
-          (change)="updateTotalAmountMessage(installment)"
         ></ion-input>
       </ion-item>
 
@@ -41,7 +40,7 @@
         (confirm)="performPayout(installment); installment.isInProgress = true"
         (cancel)="cancelPayout(installment)"
         [subHeader]="'page.program.program-payout.total-amount'|translate"
-        [message]="confirmMessage"
+        [message]="getTotalAmountMessage(installment)"
       >
         {{ 'page.program.program-payout.start-payout'|translate }}
       </confirm-prompt>
@@ -52,13 +51,6 @@
         [paymentInstallment]="installment.id"
         [paymentExportAvailable]="installment.isExportAvailable"
       ></app-export-list>
-      <!-- <ion-button
-        [disabled]="currentUserRole !== userRoleEnum.ProgramManager || !installment.isExportAvailable"
-        (click)="exportList(installment)"
-      >
-        <ion-icon name="download" slot="start"></ion-icon>
-        {{ 'page.program.program-payout.export-list'|translate }}
-      </ion-button> -->
 
       <ion-note
         *ngIf="totalIncluded === 0 && installment.firstOpen"

@@ -10,6 +10,7 @@ function deploy() {
   set -a; [ -f ./tools/.env ] && . ./tools/.env; set +a;
 
   # Variables
+  local log_file=$GLOBAL_121_DEPLOY_LOG_FILE
   local repo_services=$repo/services
   local repo_interfaces=$repo/interfaces
   local repo_pa=$repo_interfaces/PA-App
@@ -26,19 +27,30 @@ function deploy() {
   # Arguments
   local target=$1 || false
 
+  ###########################################################################
+
   function log() {
     printf "\n\n"
-    # highlight/warn:
-    tput setaf 3
-    echo "$@"
+    echo "------------------------------------------------------------------------------"
+    echo " $@"
+    echo "------------------------------------------------------------------------------"
     printf "\n"
-    # reset highlight/warn:
-    tput sgr0
+  }
+
+  function setup_log_file() {
+    # If a log-file is specified in the ENV-variable
+    # Output all STDOUT and STDERR to file AND to console
+    if [[ -n "$log_file" ]]
+    then
+      touch "$log_file"
+      # All output to one file and all output to the screen
+      exec > >(tee "$log_file") 2>&1
+    fi
   }
 
   function clear_version() {
     # Remove version, during deployment:
-    echo 'Deployment in progress...' | sudo tee "$web_root/VERSION.txt"
+    echo 'Deployment in progress...' | tee "$web_root/VERSION.txt"
 
     log "Version cleared during deployment"
   }
@@ -48,19 +60,19 @@ function deploy() {
     local target=$1 || false
 
     cd "$repo" || return
-    sudo git reset --hard
-    sudo git fetch --all --tags
+    git reset --hard
+    git fetch --all --tags
 
     # When a target is provided, checkout that
     if [[ -n "$target" ]]
     then
       log "Checking out: $target"
 
-      sudo git checkout -b "$target" --track upstream/"$target"
+      git checkout -b "$target" --track upstream/"$target"
     else
       log "Pulling latest changes"
 
-      sudo git pull --ff-only
+      git pull --ff-only
     fi
   }
 
@@ -68,8 +80,8 @@ function deploy() {
     log "Updating/building services..."
 
     cd "$repo_services" || return
-    sudo docker-compose up -d --build
-    sudo docker-compose restart 121-service PA-accounts-service
+    docker-compose up -d --build
+    docker-compose restart 121-service PA-accounts-service
   }
 
   function build_interface() {
@@ -90,12 +102,12 @@ function deploy() {
     # When a target is provided, create a clean environment
     if [[ -n "$target" ]]
     then
-      sudo npm ci --unsafe-perm --no-audit --no-fund
+      npm ci --unsafe-perm --no-audit --no-fund
     else
-      sudo npm install --unsafe-perm --no-audit --no-fund
+      npm install --unsafe-perm --no-audit --no-fund
     fi
 
-    sudo npm run build -- --prod --base-href="/$base_href/"
+    npm run build -- --prod --base-href="/$base_href/"
   }
 
   function deploy_interface() {
@@ -112,19 +124,19 @@ function deploy() {
     log "Deploying interface $app..."
 
     cd "$repo_path" || return
-    sudo rm -rf "$web_root/$web_app_dir"
-    sudo cp -r www/ "$web_root/$web_app_dir"
+    rm -rfv "${web_root:?}/$web_app_dir"
+    cp -rv www/ "$web_root/$web_app_dir"
   }
 
   function restart_webhook_service() {
-    sudo service webhook restart
+    service webhook restart
 
     log "Webhook service restarted: "
   }
 
   function update_version() {
     # Store version, accessible via web:
-    sudo git describe --tags --dirty --broken | sudo tee "$web_root/VERSION.txt"
+    git describe --tags --dirty --broken | tee "$web_root/VERSION.txt"
 
     log "Deployed: "
     cat "$web_root/VERSION.txt"
@@ -134,6 +146,8 @@ function deploy() {
   #
   # Actual deployment:
   #
+  setup_log_file
+
   clear_version
 
   update_code "$target"

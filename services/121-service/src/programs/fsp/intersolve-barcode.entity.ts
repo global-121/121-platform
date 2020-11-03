@@ -10,6 +10,9 @@ export class IntersolveBarcodeEntity {
   public timestamp: Date;
 
   @Column({ nullable: true })
+  public installment: number;
+
+  @Column({ nullable: true })
   public whatsappPhoneNumber: string;
 
   @Column()

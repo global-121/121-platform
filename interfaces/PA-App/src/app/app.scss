@@ -90,6 +90,13 @@ ion-modal.more-info-popup {
   --max-height: 80vh;
 }
 
+// UserMenu triggered by account-tab should look like a menu
+ion-modal.user-menu-modal {
+  --max-width: 20em;
+  --max-height: calc(4 * 3em); // Height of 4 menu-items
+  --border-radius: 0.25em;
+}
+
 // Make long text fit on buttons
 // This is scoped to inside dialogue-turns ONLY, to limit the side-effects on other ion-button elements
 dialogue-turn ion-button {

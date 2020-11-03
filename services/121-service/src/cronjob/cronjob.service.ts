@@ -1,35 +1,51 @@
-import { CreateConnectionService } from './../sovrin/create-connection/create-connection.service';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConnectionEntity } from '../sovrin/create-connection/connection.entity';
-import { Repository } from 'typeorm';
+import { getRepository, LessThan, Repository } from 'typeorm';
+import { IntersolveBarcodeEntity } from '../programs/fsp/intersolve-barcode.entity';
+import { ProgramEntity } from '../programs/program/program.entity';
+import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 
 @Injectable()
 export class CronjobService {
-  @InjectRepository(ConnectionEntity)
-  private readonly connectionRepository: Repository<ConnectionEntity>;
-  public constructor(
-    private readonly connectionService: CreateConnectionService,
-  ) {}
+  @InjectRepository(IntersolveBarcodeEntity)
+  private readonly intersolveBarcodeRepository: Repository<
+    IntersolveBarcodeEntity
+  >;
 
-  // Use CronExpression.EVERY_10_SECONDS for testing instead of: CronExpression.EVERY_DAY_AT_MIDNIGHT or:
-  // @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  // async cronDeleteOldUnfinishedConnections(): Promise<void> {
-  //   console.log('Get old unfinished connections');
-  //   const tsYesterday = Math.round(new Date().getTime()) - 24 * 60 * 60 * 1000;
-  //   // const tsYesterday = Math.round(new Date().getTime()); // Use this line to test just created connections, instead of 24h old;
+  public constructor(private whatsappService: WhatsappService) {}
 
-  //   const unfinishedConnections = await this.connectionRepository.find({
-  //     where: { appliedDate: null },
-  //   });
-  //   const oldUnfinishedConnections = unfinishedConnections.filter(i => {
-  //     const tsCreated = Math.round(new Date(i.created).getTime());
-  //     return tsCreated < tsYesterday;
-  //   });
+  @Cron(CronExpression.EVERY_DAY_AT_NOON)
+  private async cronSendWhatsappReminders(): Promise<void> {
+    console.log('Execution Started: cronSendWhatsappReminders');
 
-  //   oldUnfinishedConnections.forEach(connection => {
-  //     this.connectionService.deleteRegistration(connection.did);
-  //   });
-  // }
+    const programId = 1;
+    const language = 'en';
+    const sixteenHours = 16 * 60 * 60 * 1000;
+    const sixteenHoursAgo = (d =>
+      new Date(d.setTime(d.getTime() - sixteenHours)))(new Date());
+
+    const program = await getRepository(ProgramEntity).findOne(programId);
+    const unsentIntersolveBarcodes = await this.intersolveBarcodeRepository.find(
+      {
+        where: { send: false, timestamp: LessThan(sixteenHoursAgo) },
+      },
+    );
+
+    unsentIntersolveBarcodes.forEach(async unsentIntersolveBarcode => {
+      const whatsappPayment =
+        program.notifications[language]['whatsappPayment'];
+      const fromNumber = unsentIntersolveBarcode.whatsappPhoneNumber;
+      await this.whatsappService.sendWhatsapp(
+        whatsappPayment,
+        fromNumber,
+        null,
+      );
+    });
+
+    console.log(
+      `cronSendWhatsappReminders: ${unsentIntersolveBarcodes.length} unsent Intersolve barcodes`,
+    );
+    console.log('Execution Complete: cronSendWhatsappReminders');
+  }
 }

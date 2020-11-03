@@ -43,10 +43,10 @@
     "en": {
       "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week.",
       "included": "This is a message from the Red Cross.\n\nYour application to the Red Cross program has been successful and confirmed.\n\nYou will receive another message about your first Albert Heijn supermarket voucher within 1 week.",
-      "rejected": "This is a message from the Red Cross.\n\nYour application to the program has not been successful and cannot be confirmed.\n\nIf you can, please reach out to us on WhatsApp for more information: +31600000000.\n\nAnother option is to go to the Loket on Monday - Thursday between 10.00 – 12.00 for more information.",
-      "whatsappPayment": "This is a message from the Red Cross.\nYour €35 Albert Heijn supermarket voucher is ready to be sent.\nPlease reply “yes” to this message in order to receive the voucher.",
-      "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk",
-      "whatsappVoucher": "This is a message from the Red Cross.\nYou are receiving this supermarket voucher because you are currently on the Loket waiting list for Shelter in Amsterdam and you applied for support from the Red Cross. The value of this voucher is €35. This amount can be spent at any Albert Heijn supermarket in the Netherlands.\nYou don’t have to spend everything at once. So keep this voucher in your phone and re-use it until the amount is finished.\nTo use the voucher, choose what you want to buy and let the cashier scan the voucher on your phone.\nMore information about the supermarket voucher is here: https://example.org"
+      "rejected": "This is a message from the Red Cross.\n\nYour application to the program has not been successful and cannot be confirmed.\n\nIf you can, please reach out to us on WhatsApp for more information: +31614458781.\n\nAnother option is to go to the Loket on Monday - Thursday between 10.00 – 12.00 for more information.",
+      "whatsappPayment": "This is a message from the Red Cross.\n\nYour €35 Albert Heijn supermarket voucher is ready to be sent.\n\nPlease reply “yes” to this message in order to receive the voucher.",
+      "whatsappVoucher": "This is a message from the Red Cross.\n\nYou are receiving this supermarket voucher because you are currently on the Loket waiting list for Shelter in Amsterdam and you applied for support from the Red Cross. The value of this voucher is €35. This amount can be spent at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep this voucher in your phone and re-use it until the amount is finished.\n\nTo use the voucher, choose what you want to buy and let the cashier scan the voucher on your phone.\n\nMore information about the supermarket voucher is here: https://rodekru.is/ah-voucher-info",
+      "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781"
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
@@ -76,7 +76,7 @@
     {
       "criterium": "vnumber",
       "label": {
-        "en": "Your V-number consists of 10 numbers. You can find it on your (former) permit of stay or on a letter from the IND.   <br><br>   If you can’t find your V-Number, please contact the Rode Kruis helpdesk via WhatsApp on: <a href='https://wa.me/31600000000' target='_blank' rel='noopener'>+31 6 00 00 00 00</a>   <br><br>   Please enter your V-Number:"
+        "en": "Your V-number consists of 10 numbers. You can find it on your (former) permit of stay or on a letter from the IND.   <br><br>   If you can’t find your V-Number, please contact the Rode Kruis helpdesk via WhatsApp on: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a>   <br><br>   Please enter your V-Number:"
       },
       "placeholder": {
         "en": "0000000000"

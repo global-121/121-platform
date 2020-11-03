@@ -6,8 +6,10 @@ import { saveAs } from 'file-saver';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
+import { Installment, InstallmentData } from 'src/app/models/installment.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-program-payout',
@@ -29,13 +31,10 @@ export class ProgramPayoutComponent implements OnInit {
   public currentUserRole: string;
 
   private program: Program;
-  private locale: string;
   public nrOfInstallments: number;
   public nrOfPastInstallments: number;
-  public installments: any[];
+  public installments: Installment[];
   public totalIncluded: number;
-
-  public confirmMessage: string;
 
   private activePhase: ProgramPhase;
 
@@ -44,9 +43,7 @@ export class ProgramPayoutComponent implements OnInit {
     private translate: TranslateService,
     private alertController: AlertController,
     private authService: AuthService,
-  ) {
-    this.locale = this.translate.getBrowserCultureLang();
-  }
+  ) {}
 
   async ngOnInit() {
     this.currentUserRole = this.authService.getUserRole();
@@ -54,10 +51,10 @@ export class ProgramPayoutComponent implements OnInit {
 
     this.program = await this.programsService.getProgramById(this.programId);
 
-    this.createInstallments(this.programId);
+    this.createInstallments();
   }
 
-  private async createInstallments(programId) {
+  private async createInstallments() {
     this.totalIncluded = await this.programsService.getTotalIncluded(
       this.programId,
     );
@@ -68,26 +65,22 @@ export class ProgramPayoutComponent implements OnInit {
       .fill(1)
       .map((_, index) => ({
         id: index + 1,
-        amount: String,
+        amount: 0,
         installmentDate: new Date(),
-        statusOpen: Boolean,
-        firstOpen: Boolean,
       }));
 
     const pastInstallments = await this.programsService.getPastInstallments(
-      programId,
+      this.programId,
     );
     this.nrOfPastInstallments = pastInstallments.length;
-    const pastInstallmentIds = pastInstallments.map((item) => item.installment);
-    const frequency = this.program.distributionFrequency;
+    const pastInstallmentIds = pastInstallments.map((item) => item.id);
 
-    let i = 0;
     let maxInstallmentDate: Date;
-    for (const installment of this.installments) {
+    this.installments.forEach((installment, index) => {
       if (pastInstallmentIds.includes(installment.id)) {
-        const pastInstallment = pastInstallments.filter(
-          (item) => item.installment === installment.id,
-        )[0];
+        const pastInstallment = pastInstallments.find(
+          (item) => item.id === installment.id,
+        );
         installment.amount = pastInstallment.amount;
         installment.installmentDate = pastInstallment.installmentDate;
         installment.statusOpen = false;
@@ -99,13 +92,13 @@ export class ProgramPayoutComponent implements OnInit {
         installment.statusOpen = true;
 
         // Set dates
-        if (i === 0) {
+        if (index === 0) {
           installment.installmentDate = new Date();
-        } else if (frequency === 'week') {
+        } else if (this.program.distributionFrequency === 'week') {
           installment.installmentDate = new Date(
             maxInstallmentDate.setDate(maxInstallmentDate.getDate() + 7),
           );
-        } else if (frequency === 'month' || 1 === 1) {
+        } else {
           // For now do the same in all other cases then 'month'
           installment.installmentDate = new Date(
             maxInstallmentDate.setMonth(maxInstallmentDate.getMonth() + 1),
@@ -113,56 +106,50 @@ export class ProgramPayoutComponent implements OnInit {
         }
         maxInstallmentDate = new Date(installment.installmentDate);
 
-        // Determine first 'open' installment
-        if (i === 0 || !this.installments[i - 1].statusOpen) {
-          installment.firstOpen = true;
-          this.updateTotalAmountMessage(installment);
-        } else {
-          installment.firstOpen = false;
-        }
+        installment.firstOpen = this.isFirstOpen(index);
       }
+
       installment.isExportAvailable = this.isExportAvailable(installment);
-      i += 1;
-    }
+    });
 
     this.checkPhaseReady();
   }
 
-  public isExportAvailable(installment) {
-    if (installment.firstOpen && this.totalIncluded > 0) {
-      return true;
-    } else if (!installment.statusOpen) {
-      return true;
-    } else {
-      return false;
-    }
+  private isFirstOpen(index: number) {
+    const previousInstallment = this.installments[index - 1];
+    return index === 0 || !previousInstallment.statusOpen;
   }
 
-  public updateTotalAmountMessage(installment) {
-    const totalCost = this.totalIncluded * +installment.amount;
+  public isExportAvailable(installment: Installment) {
+    return (
+      (installment.firstOpen && this.totalIncluded > 0) ||
+      !installment.statusOpen
+    );
+  }
+
+  public getTotalAmountMessage(installment: InstallmentData) {
+    const totalCost = this.totalIncluded * installment.amount;
     const symbol = `${this.program.currency} `;
     const totalCostFormatted = formatCurrency(
       totalCost,
-      this.locale,
+      environment.defaultLocale,
       symbol,
       this.program.currency,
     );
 
-    this.confirmMessage = `${
-      this.totalIncluded
-    } * ${+installment.amount} = ${totalCostFormatted}`;
+    return `${this.totalIncluded} * ${installment.amount} = ${totalCostFormatted}`;
   }
 
-  public cancelPayout(installment) {
+  public cancelPayout(installment: Installment) {
     this.isEnabled = true;
     installment.isInProgress = false;
   }
 
-  public async performPayout(installment) {
+  public async performPayout(installment: Installment) {
     installment.isInProgress = true;
     console.log('Paying out...', installment.amount);
     this.programsService
-      .submitPayout(+this.programId, installment.id, +installment.amount)
+      .submitPayout(+this.programId, installment.id, installment.amount)
       .then(
         (response) => {
           installment.isInProgress = false;
@@ -185,7 +172,7 @@ export class ProgramPayoutComponent implements OnInit {
                 : '',
             );
           this.actionResult(message, true);
-          this.createInstallments(this.programId);
+          this.createInstallments();
         },
         (err) => {
           console.log('err: ', err);
@@ -197,7 +184,7 @@ export class ProgramPayoutComponent implements OnInit {
       );
   }
 
-  public async exportList(installment) {
+  public async exportList(installment: Installment) {
     this.programsService
       .exportPaymentList(+this.programId, installment.id)
       .then(
@@ -240,7 +227,7 @@ export class ProgramPayoutComponent implements OnInit {
     this.isCompleted.emit(isReady);
   }
 
-  public payoutDisabled(installment) {
+  public payoutDisabled(installment: Installment) {
     return (
       !this.isEnabled ||
       !installment.firstOpen ||

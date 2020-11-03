@@ -1,12 +1,7 @@
 <ion-header>
-  <app-header 
-    *ngIf="program?.validation"
-    [title]="'page.program.phases.registrationValidation.label'|translate"
+  <app-header
+    [title]="(program?.validation ? 'page.program.phases.registrationValidation.label' : 'page.program.phases.registrationValidation.label-no-validation') | translate"
   ></app-header>
-  <app-header 
-    *ngIf="!program?.validation" 
-    [title]="'page.program.phases.registrationValidation.label-no-validation'|translate">
-  </app-header>
 </ion-header>
 
 <ion-content class="ion-padding">
@@ -17,10 +12,10 @@
     [phaseReady]="isReady"
   ></app-phase-next>
 
-  <app-export-list 
+  <app-export-list
     *ngIf="program?.validation"
-    [programId]="programId" 
-    [userRole]="userRole" 
+    [programId]="programId"
+    [userRole]="userRole"
     [exportType]="enumExportType.selectedForValidation"
   ></app-export-list>
 
