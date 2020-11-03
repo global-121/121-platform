@@ -4,7 +4,9 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ---
 
-     
+> ⚠️ All links here go to the [test-vm](https://test-vm.121.global/), so all URLs mentioned need to be changed to the correct environment.
+
+
 ## Export supermarket voucher for PA
 There are 2 reasons why a voucher would need to be exported.
 - Because the PA has selected not to have whatsApp.
@@ -19,10 +21,10 @@ Steps to follow:
   
    1. Find the `connection` of the PA that we want to update, using `Find DID of PA in database based on name and/or phone number` scenario below.
    2. Use the found connection `did` to export the voucher
-      - Use: [`/fsp/intersolve/export-voucher`](https://test-vm.121.global/121-service/docs/#/fsp/post_fsp_intersolve_export_voucher) to export the voucher.
-        Fill in the `did` and the `installment` number (e.g. 1).
-      - Repeat this exercise if multiple installments.
-      - Send the images back to the **Pilot-team** and make sure it's clear what PA (name/phone number) and payment/installment they're about.
+     - Use: [`/fsp/intersolve/export-voucher`](https://test-vm.121.global/121-service/docs/#/fsp/post_fsp_intersolve_export_voucher) to export the voucher.
+       Fill in the `did` and the `installment` number (e.g. 1).
+     - Repeat this exercise if multiple installments.
+     - Send the images back to the **Pilot-team** and make sure it's clear what PA (name/phone number) and payment/installment they're about.
    3. If the use case is a lost phone, continue with the `Change SMS and/or WhatsApp phone-number for PA` manual below
 
 3. **Pilot-team** will either e-mail or physically hand voucher(s) to PA. 
@@ -40,15 +42,14 @@ Steps to follow:
 
    1. Find the `connection` of the PA that we want to update, using `Find DID of PA in database based on name and/or phone number` scenario below.
    2. Use the found connection `did` to update the phone-numbers.
-      - Use: [`/sovrin/create-connection/phone/overwrite`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_phone_overwrite)  
-        To store the new SMS phone-number. (Make sure to ONLY include the numbers, no whitespace or `+`)
-      - Use: [`/sovrin/create-connection/custom-data/overwrite`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_custom_data_overwrite)  
-        To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (Make sure to ONLY include the numbers, no whitespace or `+`)
+     - Use: [`/sovrin/create-connection/phone/overwrite`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_phone_overwrite)  
+       To store the new SMS phone-number. (Make sure to ONLY include the numbers, no whitespace or `+`)
+     - Use: [`/sovrin/create-connection/custom-data/overwrite`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_custom_data_overwrite)  
+       To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (Make sure to ONLY include the numbers, no whitespace or `+`)
 
 ## Find DID of PA in database based on name and/or phone number 
 1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) as a "`program-manager`"-role user
 2. Find the `connection` of the PA that we want to update.  
-  (All links here go to the `test-vm`, so URL needs to be changed to correct environment)
 
   Use the endpoint: [`/sovrin/create-connection/get-did/name-phone`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_get_did_name_phone)  
   Where you can optionally fill in `name` and/or old `phoneNumber` to search for.
