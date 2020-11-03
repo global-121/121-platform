@@ -183,13 +183,6 @@ export class ProgramService {
     return newProgram;
   }
 
-  public async update(id: number, programData: any): Promise<ProgramRO> {
-    let toUpdate = await this.programRepository.findOne({ id: id });
-    let updated = Object.assign(toUpdate, programData);
-    const program = await this.programRepository.save(updated);
-    return { program };
-  }
-
   public async updateProgram(
     programId: number,
     updateProgramDto: UpdateProgramDto,

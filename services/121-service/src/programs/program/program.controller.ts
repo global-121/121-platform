@@ -96,23 +96,6 @@ export class ProgramController {
   }
 
   @Roles(UserRole.ProjectOfficer)
-  @ApiOperation({ title: 'Change program' })
-  @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
-  @ApiResponse({
-    status: 201,
-    description: 'The program has been successfully changed.',
-  })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Put(':id')
-  public async update(
-    @Param() params,
-    @User('id') userId: number,
-    @Body() programData: CreateProgramDto,
-  ): Promise<ProgramRO> {
-    return this.programService.update(params.id, programData);
-  }
-
-  @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Delete program' })
   @ApiResponse({
     status: 201,
