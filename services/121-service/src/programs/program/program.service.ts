@@ -1,5 +1,3 @@
-import { StatusMessageDto } from './../../shared/dto/status-message.dto';
-import { StatusEnum } from './../../shared/enum/status.enum';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
@@ -38,11 +36,11 @@ import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
 import { FspService } from '../fsp/fsp.service';
-import { FspPaymentResultDto } from '../fsp/dto/fsp-payment-results.dto';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
 import { PaymentTransactionResultDto } from '../fsp/dto/payment-transaction-result';
+import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 
 @Injectable()
 export class ProgramService {
@@ -756,63 +754,36 @@ export class ProgramService {
       amount,
     );
     return paymentTransactionResult;
-
-    // let nrConnectionsFsp = 0,
-    //   nrSuccessfull = 0;
-    // const failedFsps = [];
-    // let result: FspPaymentResultDto;
-    // for (let fsp of program.financialServiceProviders) {
-    //   result = await this.fspService.createSendPaymentListFsp(
-    //     fsp,
-    //     includedConnections,
-    //     amount,
-    //     program,
-    //     installment,
-    //   );
-    //   nrConnectionsFsp += result.nrConnectionsFsp;
-    //   nrSuccessfull += result.nrSuccessfull;
-
-    //   if (result.paymentResult.status === StatusEnum.error) {
-    //     failedFsps.push(fsp.fsp);
-    //   }
-    // }
-    // const nrFailed = nrConnectionsFsp - nrSuccessfull;
-
-    // if (nrConnectionsFsp === 0) {
-    //   const errors =
-    //     'No included connections with known FSP available. Payment aborted.';
-    //   throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    // }
-
-    // return {
-    //   status: StatusEnum.success,
-    //   nrSuccessfull,
-    //   nrFailed,
-    // };
   }
 
-  private createPaPaymentDataList(
+  private async createPaPaymentDataList(
     includedConnections: ConnectionEntity[],
-  ): PaPaymentDataDto[] {
+  ): Promise<PaPaymentDataDto[]> {
     let paPaymentDataList = [];
     for (let includedConnection of includedConnections) {
       const paPaymentData = new PaPaymentDataDto();
       paPaymentData.did = includedConnection.did;
-      paPaymentData.fspName = fspName[includedConnection.fsp.fsp];
-      paPaymentData.paymentAddress = this.getPaymentAddress(includedConnection);
+      console.log('includedConnections: ', includedConnections);
+      const fsp = await this.fspService.getFspById(includedConnection.fsp.id);
+      paPaymentData.fspName = fspName[fsp.fsp];
+      paPaymentData.paymentAddress = await this.getPaymentAddress(
+        includedConnection,
+        fsp.attributes,
+      );
 
       paPaymentDataList.push(paPaymentData);
     }
     return paPaymentDataList;
   }
 
-  private getPaymentAddress(
+  private async getPaymentAddress(
     includedConnection: ConnectionEntity,
-  ): null | string {
-    if (includedConnection.fsp.attributes.length === 0) {
+    fspAttributes: FspAttributeEntity[],
+  ): Promise<null | string> {
+    if (fspAttributes.length === 0) {
       return null;
     } else {
-      const paymentAddressColumn = includedConnection.fsp.attributes[0].name;
+      const paymentAddressColumn = fspAttributes[0].name;
       return includedConnection.customData[paymentAddressColumn];
     }
   }

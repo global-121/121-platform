@@ -10,7 +10,7 @@ export class AfricasTalkingApiService {
   public async sendPayment(payload): Promise<FspTransactionResultDto> {
     const credentials = {
       apiKey: process.env.AFRICASTALKING_API_KEY,
-      username: process.env.AFRICASTALKING_USERNAME,
+      username: 'sandbox', // process.env.AFRICASTALKING_USERNAME,
     };
     const AfricasTalking = require('africastalking')(credentials);
     const payments = AfricasTalking.PAYMENTS;
@@ -23,7 +23,7 @@ export class AfricasTalkingApiService {
         result = { response: response };
       })
       .catch((error: any) => {
-        // This catch is not working, also errors end up in the above response
+        // This catch is not working, also errors end up in the above response // UPDATE: is this comment old or still valid?
         console.log('error: ', error);
         result = { error: error };
       });

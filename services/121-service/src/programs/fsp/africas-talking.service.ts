@@ -57,8 +57,8 @@ export class AfricasTalkingService {
     amount: number,
   ): object {
     const payload = {
-      username: process.env.AFRICASTALKING_USERNAME,
-      productName: process.env.AFRICASTALKING_PRODUCT_NAME,
+      username: 'sandbox', // process.env.AFRICASTALKING_USERNAME,
+      productName: 'staging-product', // process.env.AFRICASTALKING_PRODUCT_NAME,
       recipients: [],
     };
 
