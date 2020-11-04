@@ -90,6 +90,7 @@ export class FspService {
     );
     const africasTalkingTransactionResult = await this.africasTalkingService.sendPayment(
       africasTalkingPaPayment,
+      programId,
       installment,
       amount,
     );
@@ -103,14 +104,14 @@ export class FspService {
       fspName.intersolve,
     );
     this.storeAllTransactions(
-      intersolveTransactionResult.paList,
+      intersolveNoWhatsappTransactionResult.paList,
       programId,
       installment,
       amount,
       fspName.intersolveNoWhatsapp,
     );
     this.storeAllTransactions(
-      intersolveTransactionResult.paList,
+      africasTalkingTransactionResult.paList,
       programId,
       installment,
       amount,
@@ -188,35 +189,6 @@ export class FspService {
     this.transactionRepository.save(transaction);
   }
 
-  private async listenAfricasTalkingtNotification(
-    transaction,
-    programId: number,
-    installment: number,
-  ): Promise<any> {
-    // Don't listen to notification locally, because callback URL is not set
-    // If you want to work on this piece of code, disable this DEBUG-workaround
-    if (DEBUG) {
-      return { status: 'Success' };
-    }
-    let filteredNotifications = [];
-    while (filteredNotifications.length === 0) {
-      const notifications = await this.africasTalkingNotificationRepository.find(
-        {
-          where: { destination: transaction.phoneNumber },
-          order: { timestamp: 'DESC' },
-        },
-      );
-      filteredNotifications = notifications.filter(i => {
-        return (
-          i.value === transaction.value &&
-          i.requestMetadata['installment'] === String(installment) &&
-          i.requestMetadata['programId'] === String(programId)
-        );
-      });
-    }
-    return filteredNotifications[0];
-  }
-
   // public async createSendPaymentListFsp(
   //   fsp: FinancialServiceProviderEntity,
   //   includedConnections: ConnectionEntity[],
@@ -284,61 +256,61 @@ export class FspService {
   //   };
   // }
 
-  private async getEnrichedTransactions(
-    paymentResult,
-    connectionsForFsp,
-    fsp,
-    programId: number,
-    installment: number,
-  ): Promise<any[]> {
-    let enrichedTransactions;
-    if (paymentResult.status === StatusEnum.success) {
-      if (fsp.fsp === fspName.mpesa) {
-        enrichedTransactions = [];
-        for (let transaction of paymentResult.message.entries) {
-          let notification;
-          if (!transaction.errorMessage) {
-            notification = await this.listenAfricasTalkingtNotification(
-              transaction,
-              programId,
-              installment,
-            );
-          }
+  // private async getEnrichedTransactions(
+  //   paymentResult,
+  //   connectionsForFsp,
+  //   fsp,
+  //   programId: number,
+  //   installment: number,
+  // ): Promise<any[]> {
+  //   let enrichedTransactions;
+  //   if (paymentResult.status === StatusEnum.success) {
+  //     if (fsp.fsp === fspName.mpesa) {
+  //       enrichedTransactions = [];
+  //       for (let transaction of paymentResult.message.entries) {
+  //         let notification;
+  //         if (!transaction.errorMessage) {
+  //           notification = await this.listenAfricasTalkingtNotification(
+  //             transaction,
+  //             programId,
+  //             installment,
+  //           );
+  //         }
 
-          const enrichedTransaction = connectionsForFsp.find(
-            i =>
-              i.customData.phoneNumber ===
-              transaction.phoneNumber.replace(/\D/g, ''),
-          );
+  //         const enrichedTransaction = connectionsForFsp.find(
+  //           i =>
+  //             i.customData.phoneNumber ===
+  //             transaction.phoneNumber.replace(/\D/g, ''),
+  //         );
 
-          enrichedTransaction.status =
-            transaction.errorMessage || notification.status === 'Failed'
-              ? StatusEnum.error
-              : StatusEnum.success;
+  //         enrichedTransaction.status =
+  //           transaction.errorMessage || notification.status === 'Failed'
+  //             ? StatusEnum.error
+  //             : StatusEnum.success;
 
-          enrichedTransaction.errorMessage = transaction.errorMessage
-            ? transaction.errorMessage
-            : notification.status === 'Failed'
-            ? notification.description
-            : '';
+  //         enrichedTransaction.errorMessage = transaction.errorMessage
+  //           ? transaction.errorMessage
+  //           : notification.status === 'Failed'
+  //           ? notification.description
+  //           : '';
 
-          enrichedTransactions.push(enrichedTransaction);
-        }
-      } else {
-        enrichedTransactions = connectionsForFsp;
-        enrichedTransactions.forEach(i => {
-          i.status = StatusEnum.success;
-        });
-      }
-    } else {
-      enrichedTransactions = connectionsForFsp;
-      enrichedTransactions.forEach(i => {
-        i.status = StatusEnum.error;
-        i.errorMessage = 'Whole FSP failed: ' + paymentResult.message;
-      });
-    }
-    return enrichedTransactions;
-  }
+  //         enrichedTransactions.push(enrichedTransaction);
+  //       }
+  //     } else {
+  //       enrichedTransactions = connectionsForFsp;
+  //       enrichedTransactions.forEach(i => {
+  //         i.status = StatusEnum.success;
+  //       });
+  //     }
+  //   } else {
+  //     enrichedTransactions = connectionsForFsp;
+  //     enrichedTransactions.forEach(i => {
+  //       i.status = StatusEnum.error;
+  //       i.errorMessage = 'Whole FSP failed: ' + paymentResult.message;
+  //     });
+  //   }
+  //   return enrichedTransactions;
+  // }
 
   // public async sendPayment(
   //   fsp: FinancialServiceProviderEntity,

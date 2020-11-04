@@ -1,15 +1,16 @@
 import { StatusEnum } from '../../../shared/enum/status.enum';
-import { Injectable, HttpService } from '@nestjs/common';
-import { StatusMessageDto } from '../../../shared/dto/status-message.dto';
+import { Injectable } from '@nestjs/common';
+import { FspTransactionResultDto } from '../dto/payment-transaction-result';
+import { fspName } from '../financial-service-provider.entity';
 
 @Injectable()
 export class AfricasTalkingApiService {
   public constructor() {}
 
-  public async sendPaymentMpesa(payload): Promise<StatusMessageDto> {
+  public async sendPayment(payload): Promise<FspTransactionResultDto> {
     const credentials = {
       apiKey: process.env.AFRICASTALKING_API_KEY,
-      username: process.env.AFRICASTALKING_USERNAME
+      username: process.env.AFRICASTALKING_USERNAME,
     };
     const AfricasTalking = require('africastalking')(credentials);
     const payments = AfricasTalking.PAYMENTS;
@@ -27,15 +28,21 @@ export class AfricasTalkingApiService {
         result = { error: error };
       });
 
+    const fspTransactionResult = new FspTransactionResultDto();
+    fspTransactionResult.fspName = fspName.africasTalking;
+
     if (result.error) {
-      return { status: StatusEnum.error, message: { error: result.error } };
+      fspTransactionResult.status = StatusEnum.error;
+      fspTransactionResult.message = { error: result.error };
     } else if (result.response.errorMessage) {
-      return {
-        status: StatusEnum.error,
-        message: { error: result.response.errorMessage },
+      fspTransactionResult.status = StatusEnum.error;
+      fspTransactionResult.message = {
+        error: result.response.errorMessage,
       };
     } else {
-      return { status: StatusEnum.success, message: result.response };
+      fspTransactionResult.status = StatusEnum.success;
+      fspTransactionResult.message = result.response;
     }
+    return fspTransactionResult;
   }
 }

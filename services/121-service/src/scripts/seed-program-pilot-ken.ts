@@ -5,7 +5,7 @@ import { Connection } from 'typeorm';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 
-import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json.json';
+import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 import programPilotKen from '../../seed-data/program/program-pilot-ken.json';
 import instancePilotKen from '../../seed-data/instance/instance-pilot-ken.json';
 import { UserRole } from '../user-role.enum';
