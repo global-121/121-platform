@@ -11,12 +11,17 @@ import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
 import crypto from 'crypto';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
+import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
 
 @Injectable()
 export class IntersolveService {
   @InjectRepository(IntersolveBarcodeEntity)
   private readonly intersolveBarcodeRepository: Repository<
     IntersolveBarcodeEntity
+  >;
+  @InjectRepository(IntersolveInstructionsEntity)
+  private readonly intersolveInstructionsRepository: Repository<
+    IntersolveInstructionsEntity
   >;
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
@@ -173,4 +178,10 @@ export class IntersolveService {
 
     return image.image;
   }
+
+  public async getInstruction(): Promise<any> {
+    return this.intersolveInstructionsRepository.findOne(1);
+  }
+
+  public async postInstruction(instructionBlob): Promise<any> {}
 }

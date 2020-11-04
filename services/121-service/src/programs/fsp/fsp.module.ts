@@ -1,3 +1,4 @@
+import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
 import { WhatsappModule } from './../../notifications/whatsapp/whatsapp.module';
 import { AfricasTalkingService } from './africas-talking.service';
 import { Module, HttpModule } from '@nestjs/common';
@@ -31,6 +32,7 @@ import { FspAttributeEntity } from './fsp-attribute.entity';
       TransactionEntity,
       FspCallLogEntity,
       AfricasTalkingNotificationEntity,
+      IntersolveInstructionsEntity,
       IntersolveBarcodeEntity,
       ImageCodeExportVouchersEntity,
       ImageCodeEntity,
