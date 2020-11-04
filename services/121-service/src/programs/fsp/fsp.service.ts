@@ -79,14 +79,19 @@ export class FspService {
     const intersolveTransactionResult = await this.intersolveService.sendPayment(
       intersolvePaPayment,
       true,
+      amount,
+      installment,
     );
     const intersolveNoWhatsappTransactionResult = await this.intersolveService.sendPayment(
       intersolveNoWhatsappPaPayment,
       false,
+      amount,
+      installment,
     );
     const africasTalkingTransactionResult = await this.africasTalkingService.sendPayment(
       africasTalkingPaPayment,
       installment,
+      amount,
     );
 
     // Call transactions

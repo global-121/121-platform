@@ -49,8 +49,7 @@ export class WhatsappService {
           to: 'whatsapp:' + recipientPhoneNr,
           mediaUrl: mediaUrl,
         })
-        .then(message => this.storeSendWhatsapp(message))
-        .catch(err => console.log('Error twillio', err));
+        .then(message => this.storeSendWhatsapp(message));
     } else {
       twilioClient.messages
         .create({
@@ -60,8 +59,7 @@ export class WhatsappService {
           statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
           to: 'whatsapp:' + recipientPhoneNr,
         })
-        .then(message => this.storeSendWhatsapp(message))
-        .catch(err => console.log('Error twillio', err));
+        .then(message => this.storeSendWhatsapp(message));
     }
   }
 
