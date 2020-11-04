@@ -1,5 +1,6 @@
 describe('Login Page', () => {
   beforeEach(() => {
+    cy.setHoPortal();
     cy.server();
   });
 
