@@ -42,6 +42,7 @@ import { FspPaymentResultDto } from '../fsp/dto/fsp-payment-results.dto';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
+import { PaymentTransactionResultDto } from '../fsp/dto/payment-transaction-result';
 
 @Injectable()
 export class ProgramService {
@@ -720,7 +721,7 @@ export class ProgramService {
     programId: number,
     installment: number,
     amount: number,
-  ): Promise<StatusMessageDto> {
+  ): Promise<PaymentTransactionResultDto> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
@@ -754,7 +755,7 @@ export class ProgramService {
       installment,
       amount,
     );
-    console.log('paymentTransactionResult: ', paymentTransactionResult);
+    return paymentTransactionResult;
 
     // let nrConnectionsFsp = 0,
     //   nrSuccessfull = 0;

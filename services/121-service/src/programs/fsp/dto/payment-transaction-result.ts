@@ -11,6 +11,7 @@ export class PaymentTransactionResultDto {
 export class FspTransactionResultDto {
   public fspName: fspName;
   public status: StatusEnum;
+  public message: any;
   public paList: PaTransactionResultDto[];
 }
 
