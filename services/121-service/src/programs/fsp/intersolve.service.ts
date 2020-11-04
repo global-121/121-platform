@@ -183,5 +183,7 @@ export class IntersolveService {
     return this.intersolveInstructionsRepository.findOne(1);
   }
 
-  public async postInstruction(instructionBlob): Promise<any> {}
+  public async postInstruction(instructionsFileBlob): Promise<any> {
+    console.log(instructionsFileBlob);
+  }
 }

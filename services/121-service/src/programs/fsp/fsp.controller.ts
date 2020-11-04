@@ -16,6 +16,7 @@ import {
   ApiResponse,
   ApiOperation,
   ApiImplicitParam,
+  ApiImplicitFile,
 } from '@nestjs/swagger';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
@@ -126,13 +127,18 @@ export class FspController {
   @ApiOperation({
     title: 'Post intersolve instructions',
   })
+  @ApiImplicitFile({
+    name: 'image',
+    required: true,
+    description: 'Upload image with voucher instructions',
+  })
   @ApiResponse({ status: 200, description: 'Post intersolve instructions' })
   @Post('intersolve/instruction')
   @UseInterceptors(FileInterceptor('image'))
   public async postIntersolveInstructions(
-    @Body() instructionsBlob,
+    @UploadedFile() instructionsFileBlob,
   ): Promise<void> {
-    await this.intersolveService.postInstruction(instructionsBlob);
+    await this.intersolveService.postInstruction(instructionsFileBlob);
   }
 
   @Roles(UserRole.Admin)
