@@ -19,9 +19,19 @@ import { AfricasTalkingNotificationEntity } from './africastalking-notification.
 import { DEBUG } from '../../config';
 import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
 import { FspAttributeEntity } from './fsp-attribute.entity';
+import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
+import {
+  FspTransactionResultDto,
+  PaTransactionResultDto,
+  PaymentTransactionResultDto,
+} from './dto/payment-transaction-result';
 
 @Injectable()
 export class FspService {
+  @InjectRepository(ProgramEntity)
+  public programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ConnectionEntity)
+  public connectionRepository: Repository<ConnectionEntity>;
   @InjectRepository(FspCallLogEntity)
   public fspCallLogRepository: Repository<FspCallLogEntity>;
   @InjectRepository(TransactionEntity)
@@ -41,6 +51,109 @@ export class FspService {
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly intersolveService: IntersolveService,
   ) {}
+
+  public async payout(
+    paPaymentDataList: PaPaymentDataDto[],
+    programId: number,
+    installment: number,
+    amount: number,
+  ): Promise<PaymentTransactionResultDto> {
+    // Split List in 2 lists
+    const intersolvePaPayment = [];
+    const intersolveNoWhatsappPaPayment = [];
+    const africasTalkingPaPayment = [];
+    for (let paPaymentData of paPaymentDataList) {
+      if (paPaymentData.fspName === fspName.intersolve) {
+        intersolvePaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === fspName.intersolveNoWhatsapp) {
+        intersolveNoWhatsappPaPayment.push(paPaymentData);
+      } else if (paPaymentData.fspName === fspName.africasTalking) {
+        africasTalkingPaPayment.push(paPaymentData);
+      } else {
+        console.log('fsp does not exist: paPaymentData: ', paPaymentData);
+        throw new HttpException('fsp does not exist.', HttpStatus.NOT_FOUND);
+      }
+    }
+
+    // Call individual services
+    const intersolveTransactionResult = await this.intersolveService.sendPayment(
+      intersolvePaPayment,
+      true,
+    );
+    const intersolveNoWhatsappTransactionResult = await this.intersolveService.sendPayment(
+      intersolveNoWhatsappPaPayment,
+      false,
+    );
+    const africasTalkingTransactionResult = await this.africasTalkingService.sendPayment(
+      africasTalkingPaPayment,
+      installment,
+    );
+
+    // Call transactions
+    this.storeAllTransactions(
+      intersolveTransactionResult.paList,
+      programId,
+      installment,
+      amount,
+      fspName.intersolve,
+    );
+    this.storeAllTransactions(
+      intersolveTransactionResult.paList,
+      programId,
+      installment,
+      amount,
+      fspName.intersolveNoWhatsapp,
+    );
+    this.storeAllTransactions(
+      intersolveTransactionResult.paList,
+      programId,
+      installment,
+      amount,
+      fspName.africasTalking,
+    );
+
+    // Calculate aggregates
+    const fspTransactionResults = [
+      ...intersolveTransactionResult.paList,
+      ...intersolveNoWhatsappTransactionResult.paList,
+      ...africasTalkingTransactionResult.paList,
+    ];
+    return this.calcAggregateStatus(fspTransactionResults);
+  }
+
+  private calcAggregateStatus(
+    fspTransactionResults: PaTransactionResultDto[],
+  ): PaymentTransactionResultDto {
+    const result = new PaymentTransactionResultDto();
+    result.nrSuccessfull = 0;
+    result.nrFailed = 0;
+    for (let paTransactionResult of fspTransactionResults) {
+      if (paTransactionResult.status === StatusEnum.success) {
+        result.nrSuccessfull += 1;
+      } else if (paTransactionResult.status === StatusEnum.error) {
+        result.nrFailed += 1;
+      }
+    }
+    return result;
+  }
+
+  private async storeAllTransactions(
+    transactions: PaTransactionResultDto[],
+    programId: number,
+    installment: number,
+    amount: number,
+    fspName: fspName,
+  ): Promise<void> {
+    for (let transaction of transactions) {
+      await this.storeTransaction(
+        transaction,
+        programId,
+        installment,
+        amount,
+        fspName,
+      );
+    }
+  }
 
   public async createSendPaymentListFsp(
     fsp: FinancialServiceProviderEntity,
@@ -248,28 +361,36 @@ export class FspService {
     }
   }
 
-  public async logFspCall(
-    fsp: FinancialServiceProviderEntity,
-    payload,
-    status,
-    paymentResult,
-  ): Promise<void> {
-    const fspCallLog = new FspCallLogEntity();
-    fspCallLog.fsp = fsp;
-    fspCallLog.payload = payload;
-    fspCallLog.status = status;
-    fspCallLog.response = paymentResult;
+  // public async logFspCall(
+  //   fsp: FinancialServiceProviderEntity,
+  //   payload,
+  //   status,
+  //   paymentResult,
+  // ): Promise<void> {
+  //   const fspCallLog = new FspCallLogEntity();
+  //   fspCallLog.fsp = fsp;
+  //   fspCallLog.payload = payload;
+  //   fspCallLog.status = status;
+  //   fspCallLog.response = paymentResult;
 
-    await this.fspCallLogRepository.save(fspCallLog);
-  }
+  //   await this.fspCallLogRepository.save(fspCallLog);
+  // }
 
   private async storeTransaction(
-    amount: number,
-    connection: any,
-    fsp: FinancialServiceProviderEntity,
-    program: ProgramEntity,
+    transactionResponse: PaTransactionResultDto,
+    programId: number,
     installment: number,
+    amount: number,
+    fspName: fspName,
   ): Promise<void> {
+    const program = await this.programRepository.findOne(programId);
+    const fsp = await this.financialServiceProviderRepository.findOne({
+      where: { fsp: fspName },
+    });
+    const connection = await this.connectionRepository.findOne({
+      where: { did: transactionResponse.did },
+    });
+
     const transaction = new TransactionEntity();
     transaction.amount = amount;
     transaction.created = new Date();
@@ -277,8 +398,8 @@ export class FspService {
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
     transaction.installment = installment;
-    transaction.status = connection.status;
-    transaction.errorMessage = connection.errorMessage;
+    transaction.status = transactionResponse.status;
+    transaction.errorMessage = transactionResponse.message;
 
     this.transactionRepository.save(transaction);
   }

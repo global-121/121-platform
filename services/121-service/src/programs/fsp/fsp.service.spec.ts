@@ -221,9 +221,9 @@ describe('Fsp service', (): void => {
     const fspIntersolve = new FinancialServiceProviderEntity();
     fspIntersolve.id = 1;
     fspIntersolve.fsp = fspName.intersolve;
-    const fspMpesa = new FinancialServiceProviderEntity();
-    fspMpesa.id = 1;
-    fspMpesa.fsp = fspName.mpesa;
+    const fspAfricasTalking = new FinancialServiceProviderEntity();
+    fspAfricasTalking.id = 1;
+    fspAfricasTalking.fsp = fspName.africasTalking;
     const paymentList = [];
     it('should return default values', async (): Promise<void> => {
       // @ts-ignore

@@ -30,7 +30,10 @@ import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import {
+  FinancialServiceProviderEntity,
+  fspName,
+} from '../fsp/financial-service-provider.entity';
 import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
@@ -38,6 +41,7 @@ import { FspService } from '../fsp/fsp.service';
 import { FspPaymentResultDto } from '../fsp/dto/fsp-payment-results.dto';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
+import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
 
 @Injectable()
 export class ProgramService {
@@ -740,38 +744,76 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    let nrConnectionsFsp = 0,
-      nrSuccessfull = 0;
-    const failedFsps = [];
-    let result: FspPaymentResultDto;
-    for (let fsp of program.financialServiceProviders) {
-      result = await this.fspService.createSendPaymentListFsp(
-        fsp,
-        includedConnections,
-        amount,
-        program,
-        installment,
-      );
-      nrConnectionsFsp += result.nrConnectionsFsp;
-      nrSuccessfull += result.nrSuccessfull;
+    const paPaymentDataList = await this.createPaPaymentDataList(
+      includedConnections,
+    );
 
-      if (result.paymentResult.status === StatusEnum.error) {
-        failedFsps.push(fsp.fsp);
-      }
+    const paymentTransactionResult = await this.fspService.payout(
+      paPaymentDataList,
+      programId,
+      installment,
+      amount,
+    );
+    console.log('paymentTransactionResult: ', paymentTransactionResult);
+
+    // let nrConnectionsFsp = 0,
+    //   nrSuccessfull = 0;
+    // const failedFsps = [];
+    // let result: FspPaymentResultDto;
+    // for (let fsp of program.financialServiceProviders) {
+    //   result = await this.fspService.createSendPaymentListFsp(
+    //     fsp,
+    //     includedConnections,
+    //     amount,
+    //     program,
+    //     installment,
+    //   );
+    //   nrConnectionsFsp += result.nrConnectionsFsp;
+    //   nrSuccessfull += result.nrSuccessfull;
+
+    //   if (result.paymentResult.status === StatusEnum.error) {
+    //     failedFsps.push(fsp.fsp);
+    //   }
+    // }
+    // const nrFailed = nrConnectionsFsp - nrSuccessfull;
+
+    // if (nrConnectionsFsp === 0) {
+    //   const errors =
+    //     'No included connections with known FSP available. Payment aborted.';
+    //   throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    // }
+
+    // return {
+    //   status: StatusEnum.success,
+    //   nrSuccessfull,
+    //   nrFailed,
+    // };
+  }
+
+  private createPaPaymentDataList(
+    includedConnections: ConnectionEntity[],
+  ): PaPaymentDataDto[] {
+    let paPaymentDataList = [];
+    for (let includedConnection of includedConnections) {
+      const paPaymentData = new PaPaymentDataDto();
+      paPaymentData.did = includedConnection.did;
+      paPaymentData.fspName = fspName[includedConnection.fsp.fsp];
+      paPaymentData.paymentAddress = this.getPaymentAddress(includedConnection);
+
+      paPaymentDataList.push(paPaymentData);
     }
-    const nrFailed = nrConnectionsFsp - nrSuccessfull;
+    return paPaymentDataList;
+  }
 
-    if (nrConnectionsFsp === 0) {
-      const errors =
-        'No included connections with known FSP available. Payment aborted.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+  private getPaymentAddress(
+    includedConnection: ConnectionEntity,
+  ): null | string {
+    if (includedConnection.fsp.attributes.length === 0) {
+      return null;
+    } else {
+      const paymentAddressColumn = includedConnection.fsp.attributes[0].name;
+      return includedConnection.customData[paymentAddressColumn];
     }
-
-    return {
-      status: StatusEnum.success,
-      nrSuccessfull,
-      nrFailed,
-    };
   }
 
   private getPaStatus(connection, programId: number): PaStatus {
