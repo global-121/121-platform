@@ -155,72 +155,129 @@ export class FspService {
     }
   }
 
-  public async createSendPaymentListFsp(
-    fsp: FinancialServiceProviderEntity,
-    includedConnections: ConnectionEntity[],
-    amount: number,
-    program: ProgramEntity,
+  private async storeTransaction(
+    transactionResponse: PaTransactionResultDto,
+    programId: number,
     installment: number,
-  ): Promise<FspPaymentResultDto> {
-    const details = await this.createPaymentDetails(
-      includedConnections,
-      amount,
-      fsp.id,
-      installment,
-    );
-    let paymentResult;
-    if (details.paymentList.length === 0) {
-      return {
-        paymentResult: {
-          status: StatusEnum.error,
-          message: {},
-        },
-        nrConnectionsFsp: details.paymentList.length,
-        nrSuccessfull: details.paymentList.length,
-      };
-    }
+    amount: number,
+    fspName: fspName,
+  ): Promise<void> {
+    const program = await this.programRepository.findOne(programId);
+    const fsp = await this.financialServiceProviderRepository.findOne({
+      where: { fsp: fspName },
+    });
+    const connection = await this.connectionRepository.findOne({
+      where: { did: transactionResponse.did },
+    });
 
-    paymentResult = await this.sendPayment(
-      fsp,
-      details.paymentList,
-      program.id,
-      installment,
-    );
+    const transaction = new TransactionEntity();
+    transaction.amount = amount;
+    transaction.created = new Date();
+    transaction.connection = connection;
+    transaction.financialServiceProvider = fsp;
+    transaction.program = program;
+    transaction.installment = installment;
+    transaction.status = transactionResponse.status;
+    transaction.errorMessage = transactionResponse.message;
 
-    const enrichedTransactions = await this.getEnrichedTransactions(
-      paymentResult,
-      details.connectionsForFsp,
-      fsp,
-      program.id,
-      installment,
-    );
-    const successfullTransactions = enrichedTransactions.filter(
-      i => i.status === StatusEnum.success,
-    );
-
-    await this.logFspCall(
-      fsp,
-      details.paymentList,
-      paymentResult.status,
-      paymentResult.message,
-    );
-
-    for (let connection of enrichedTransactions) {
-      await this.storeTransaction(
-        amount,
-        connection,
-        fsp,
-        program,
-        installment,
-      );
-    }
-
-    return {
-      paymentResult,
-      nrConnectionsFsp: details.paymentList.length,
-      nrSuccessfull: successfullTransactions.length,
-    };
+    this.transactionRepository.save(transaction);
   }
+
+  private async listenAfricasTalkingtNotification(
+    transaction,
+    programId: number,
+    installment: number,
+  ): Promise<any> {
+    // Don't listen to notification locally, because callback URL is not set
+    // If you want to work on this piece of code, disable this DEBUG-workaround
+    if (DEBUG) {
+      return { status: 'Success' };
+    }
+    let filteredNotifications = [];
+    while (filteredNotifications.length === 0) {
+      const notifications = await this.africasTalkingNotificationRepository.find(
+        {
+          where: { destination: transaction.phoneNumber },
+          order: { timestamp: 'DESC' },
+        },
+      );
+      filteredNotifications = notifications.filter(i => {
+        return (
+          i.value === transaction.value &&
+          i.requestMetadata['installment'] === String(installment) &&
+          i.requestMetadata['programId'] === String(programId)
+        );
+      });
+    }
+    return filteredNotifications[0];
+  }
+
+  // public async createSendPaymentListFsp(
+  //   fsp: FinancialServiceProviderEntity,
+  //   includedConnections: ConnectionEntity[],
+  //   amount: number,
+  //   program: ProgramEntity,
+  //   installment: number,
+  // ): Promise<FspPaymentResultDto> {
+  //   const details = await this.createPaymentDetails(
+  //     includedConnections,
+  //     amount,
+  //     fsp.id,
+  //     installment,
+  //   );
+  //   let paymentResult;
+  //   if (details.paymentList.length === 0) {
+  //     return {
+  //       paymentResult: {
+  //         status: StatusEnum.error,
+  //         message: {},
+  //       },
+  //       nrConnectionsFsp: details.paymentList.length,
+  //       nrSuccessfull: details.paymentList.length,
+  //     };
+  //   }
+
+  //   paymentResult = await this.sendPayment(
+  //     fsp,
+  //     details.paymentList,
+  //     program.id,
+  //     installment,
+  //   );
+
+  //   const enrichedTransactions = await this.getEnrichedTransactions(
+  //     paymentResult,
+  //     details.connectionsForFsp,
+  //     fsp,
+  //     program.id,
+  //     installment,
+  //   );
+  //   const successfullTransactions = enrichedTransactions.filter(
+  //     i => i.status === StatusEnum.success,
+  //   );
+
+  //   await this.logFspCall(
+  //     fsp,
+  //     details.paymentList,
+  //     paymentResult.status,
+  //     paymentResult.message,
+  //   );
+
+  //   for (let connection of enrichedTransactions) {
+  //     await this.storeTransaction(
+  //       amount,
+  //       connection,
+  //       fsp,
+  //       program,
+  //       installment,
+  //     );
+  //   }
+
+  //   return {
+  //     paymentResult,
+  //     nrConnectionsFsp: details.paymentList.length,
+  //     nrSuccessfull: successfullTransactions.length,
+  //   };
+  // }
 
   private async getEnrichedTransactions(
     paymentResult,
@@ -278,88 +335,32 @@ export class FspService {
     return enrichedTransactions;
   }
 
-  private async listenAfricasTalkingtNotification(
-    transaction,
-    programId: number,
-    installment: number,
-  ): Promise<any> {
-    // Don't listen to notification locally, because callback URL is not set
-    // If you want to work on this piece of code, disable this DEBUG-workaround
-    if (DEBUG) {
-      return { status: 'Success' };
-    }
-    let filteredNotifications = [];
-    while (filteredNotifications.length === 0) {
-      const notifications = await this.africasTalkingNotificationRepository.find(
-        {
-          where: { destination: transaction.phoneNumber },
-          order: { timestamp: 'DESC' },
-        },
-      );
-      filteredNotifications = notifications.filter(i => {
-        return (
-          i.value === transaction.value &&
-          i.requestMetadata['installment'] === String(installment) &&
-          i.requestMetadata['programId'] === String(programId)
-        );
-      });
-    }
-    return filteredNotifications[0];
-  }
-
-  private async createPaymentDetails(
-    includedConnections: ConnectionEntity[],
-    amount: number,
-    fspId: number,
-    installment: number,
-  ): Promise<PaymentDetailsDto> {
-    const fsp = await this.getFspById(fspId);
-    const paymentList = [];
-    const connectionsForFsp = [];
-    for (let connection of includedConnections) {
-      if (connection.fsp && connection.fsp.id === fsp.id) {
-        const paymentDetails = {
-          amount: amount,
-        };
-        for (let attribute of fsp.attributes) {
-          paymentDetails[attribute.name] =
-            connection.customData[attribute.name];
-        }
-        paymentDetails['did'] = connection.did;
-        paymentDetails['installment'] = installment;
-        paymentList.push(paymentDetails);
-        connectionsForFsp.push(connection);
-      }
-    }
-    return { connectionsForFsp, paymentList };
-  }
-
-  public async sendPayment(
-    fsp: FinancialServiceProviderEntity,
-    payload,
-    programId,
-    installment,
-  ): Promise<StatusMessageDto> {
-    console.log('fsp', fsp);
-    if (fsp.fsp === fspName.intersolve) {
-      const whatsapp = true;
-      return this.intersolveService.sendPayment(payload, whatsapp);
-    } else if (fsp.fsp === fspName.intersolveNoWhatsapp) {
-      const whatsapp = false;
-      return this.intersolveService.sendPayment(payload, whatsapp);
-    } else if (fsp.fsp === fspName.mpesa) {
-      return this.africasTalkingService.sendPayment(
-        payload,
-        programId,
-        installment,
-      );
-    } else {
-      const status = StatusEnum.error;
-      // Handle other FSP's here
-      // This will result in an HTTP-exception
-      return { status, message: { error: 'FSP not integrated yet.' } };
-    }
-  }
+  // public async sendPayment(
+  //   fsp: FinancialServiceProviderEntity,
+  //   payload,
+  //   programId,
+  //   installment,
+  // ): Promise<StatusMessageDto> {
+  //   console.log('fsp', fsp);
+  //   if (fsp.fsp === fspName.intersolve) {
+  //     const whatsapp = true;
+  //     return this.intersolveService.sendPayment(payload, whatsapp);
+  //   } else if (fsp.fsp === fspName.intersolveNoWhatsapp) {
+  //     const whatsapp = false;
+  //     return this.intersolveService.sendPayment(payload, whatsapp);
+  //   } else if (fsp.fsp === fspName.mpesa) {
+  //     return this.africasTalkingService.sendPayment(
+  //       payload,
+  //       programId,
+  //       installment,
+  //     );
+  //   } else {
+  //     const status = StatusEnum.error;
+  //     // Handle other FSP's here
+  //     // This will result in an HTTP-exception
+  //     return { status, message: { error: 'FSP not integrated yet.' } };
+  //   }
+  // }
 
   // public async logFspCall(
   //   fsp: FinancialServiceProviderEntity,
@@ -375,34 +376,6 @@ export class FspService {
 
   //   await this.fspCallLogRepository.save(fspCallLog);
   // }
-
-  private async storeTransaction(
-    transactionResponse: PaTransactionResultDto,
-    programId: number,
-    installment: number,
-    amount: number,
-    fspName: fspName,
-  ): Promise<void> {
-    const program = await this.programRepository.findOne(programId);
-    const fsp = await this.financialServiceProviderRepository.findOne({
-      where: { fsp: fspName },
-    });
-    const connection = await this.connectionRepository.findOne({
-      where: { did: transactionResponse.did },
-    });
-
-    const transaction = new TransactionEntity();
-    transaction.amount = amount;
-    transaction.created = new Date();
-    transaction.connection = connection;
-    transaction.financialServiceProvider = fsp;
-    transaction.program = program;
-    transaction.installment = installment;
-    transaction.status = transactionResponse.status;
-    transaction.errorMessage = transactionResponse.message;
-
-    this.transactionRepository.save(transaction);
-  }
 
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
     const fsp = await this.financialServiceProviderRepository.findOne(id, {

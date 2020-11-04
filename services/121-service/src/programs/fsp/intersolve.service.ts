@@ -33,7 +33,7 @@ export class IntersolveService {
   public async sendPayment(
     payload: any,
     whatsapp: boolean,
-  ): Promise<StatusMessageDto> {
+  ): Promise<FspTransactionResultDto> {
     try {
       for (let paymentInfo of payload) {
         await this.sendIndividualPayment(paymentInfo, whatsapp);
