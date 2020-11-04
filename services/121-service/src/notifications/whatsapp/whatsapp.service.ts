@@ -37,11 +37,9 @@ export class WhatsappService {
   public async sendWhatsapp(
     message: string,
     recipientPhoneNr: string,
-    barcodeData: null | IntersolveBarcodeEntity,
+    mediaUrl: null | string,
   ): Promise<void> {
-    let mediaUrl = '';
-    if (barcodeData) {
-      mediaUrl = await this.imageCodeService.createVoucherUrl(barcodeData);
+    if (mediaUrl) {
       twilioClient.messages
         .create({
           body: message,
@@ -112,10 +110,13 @@ export class WhatsappService {
       where: { whatsappPhoneNumber: fromNumber, send: false },
     });
     if (intersolveBarcode) {
+      const mediaUrl = await this.imageCodeService.createVoucherUrl(
+        intersolveBarcode,
+      );
       await this.sendWhatsapp(
         program.notifications[this.language]['whatsappVoucher'],
         intersolveBarcode.whatsappPhoneNumber,
-        intersolveBarcode,
+        mediaUrl,
       );
       intersolveBarcode.send = true;
       await this.intersolveBarcodeRepository.save(intersolveBarcode);

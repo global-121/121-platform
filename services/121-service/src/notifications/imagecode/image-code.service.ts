@@ -30,7 +30,7 @@ export class ImageCodeService {
     barcode.secret = crypto.randomBytes(100).toString('hex');
     barcode.image = await this.generateVoucherImage({
       dateTime: barcodeData.timestamp,
-      amount: 35,
+      amount: barcodeData.amount,
       code: barcodeData.barcode,
       pin: barcodeData.pin,
     });
@@ -50,7 +50,7 @@ export class ImageCodeService {
     });
     barcode.image = await this.generateVoucherImage({
       dateTime: barcodeData.timestamp,
-      amount: 35,
+      amount: barcodeData.amount,
       code: barcodeData.barcode,
       pin: barcodeData.pin,
     });

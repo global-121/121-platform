@@ -67,6 +67,7 @@ export class IntersolveService {
           paymentInfo.whatsappPhoneNumber,
           paymentInfo.did,
           paymentInfo.installment,
+          paymentInfo.amount,
         );
       } else {
         await this.storeVoucherNoWhatsapp(
@@ -75,6 +76,7 @@ export class IntersolveService {
           paymentInfo.whatsappPhoneNumber,
           paymentInfo.did,
           paymentInfo.installment,
+          paymentInfo.amount,
         );
       }
     } else {
@@ -100,6 +102,7 @@ export class IntersolveService {
     phoneNumber: string,
     did: string,
     installment: number,
+    amount: number,
   ): Promise<any> {
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     const whatsappPayment =
@@ -111,6 +114,7 @@ export class IntersolveService {
       pin,
       phoneNumber,
       installment,
+      amount,
     );
 
     // Also store in 2nd table in case of whatsApp (for exporting voucher in case of lost phone)
@@ -123,12 +127,14 @@ export class IntersolveService {
     phoneNumber: string,
     did: string,
     installment: number,
+    amount: number,
   ): Promise<any> {
     const barcodeData = await this.storeBarcodeData(
       cardNumber,
       pin,
       phoneNumber,
       installment,
+      amount,
     );
 
     await this.imageCodeService.createBarcodeExportVouchers(barcodeData, did);
@@ -139,6 +145,7 @@ export class IntersolveService {
     pin: number,
     phoneNumber: string,
     installment: number,
+    amount: number,
   ): Promise<IntersolveBarcodeEntity> {
     const barcodeData = new IntersolveBarcodeEntity();
     barcodeData.barcode = cardNumber;
@@ -146,6 +153,7 @@ export class IntersolveService {
     barcodeData.whatsappPhoneNumber = phoneNumber;
     barcodeData.send = false;
     barcodeData.installment = installment;
+    barcodeData.amount = amount;
     return this.intersolveBarcodeRepository.save(barcodeData);
   }
 
