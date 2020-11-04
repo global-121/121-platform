@@ -7,7 +7,6 @@ import { twilioClient } from '../twilio.client';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { ImageCodeService } from '../imagecode/image-code.service';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
-import { ImageCodeEntity } from '../imagecode/image-code.entity';
 
 @Injectable()
 export class WhatsappService {
