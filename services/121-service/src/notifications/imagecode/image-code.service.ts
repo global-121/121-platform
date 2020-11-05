@@ -64,8 +64,8 @@ export class ImageCodeService {
     return await bwipjs.toBuffer({
       bcid: 'code128',
       text: code,
-      scale: 1,
-      height: 18,
+      scale: 2,
+      height: 15,
       includetext: false,
       backgroundcolor: 'FFFFFF',
       padding: 10,
@@ -95,10 +95,10 @@ export class ImageCodeService {
       'november',
       'december',
     ];
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = monthNames[date.getMonth()];
 
-    return `${date.getDate()} ${
-      monthNames[date.getMonth()]
-    } ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+    return `${day} ${month} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
   }
 
   public async generateVoucherImage(voucherData: {
@@ -114,20 +114,24 @@ export class ImageCodeService {
     const voucher = await Jimp.read(voucherBaseFile).then(async image => {
       // Add the generated barcode
       await Jimp.read(barcodeImage).then(async barcode => {
-        image.composite(barcode, 100, 440);
+        image.composite(barcode, 120, 652);
       });
 
-      await Jimp.loadFont(Jimp.FONT_SANS_14_BLACK).then(font => {
-        image.print(font, 392, 87, voucherData.amount); // End of "title"
+      await Jimp.loadFont(Jimp.FONT_SANS_16_BLACK).then(font => {
+        image.print(font, 640, 79, this.formatDate(voucherData.dateTime)); // Date+time in the top-right corner
+        image.print(font, 108, 614, `${voucherData.amount} Albert Heijn`); // Below "Dit ticket is geldig voor", after "€"
+        image.print(font, 640, 604, `Euro ${voucherData.amount}.00`); // Below "Prijs:"
+        image.print(font, 640, 730, voucherData.pin); // Below "Pincode:"
+        image.print(font, 225, 800, voucherData.code); // Barcode numbers
       });
 
-      await Jimp.loadFont(Jimp.FONT_SANS_12_BLACK).then(font => {
-        image.print(font, 431, 46, this.formatDate(voucherData.dateTime)); // Date+time in the top-right corner
-        image.print(font, 72, 408, `${voucherData.amount} Albert Heijn`); // Below "Dit ticket is geldig voor", after "€"
-        image.print(font, 431, 400, `Euro ${voucherData.amount}.00`); // Below "Prijs:"
-        image.print(font, 431, 487, voucherData.pin); // Below "Pincode:"
-        image.print(font, 150, 534, voucherData.code); // Barcode numbers
+      // Add a 'scaled' amount to the title of the voucher
+      const titleAmount = new Jimp(50, 50);
+      await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK).then(font => {
+        titleAmount.print(font, 0, 0, voucherData.amount);
       });
+      titleAmount.scale(0.7);
+      image.composite(titleAmount, 583, 138);
 
       return image;
     });
