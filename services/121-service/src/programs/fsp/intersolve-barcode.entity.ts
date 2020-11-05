@@ -21,7 +21,7 @@ export class IntersolveBarcodeEntity {
   @Column()
   public barcode: string;
 
-  @Column()
+  @Column({ nullable: true })
   public amount: number;
 
   @Column({ nullable: true })
