@@ -763,9 +763,15 @@ export class ProgramService {
     for (let includedConnection of includedConnections) {
       const paPaymentData = new PaPaymentDataDto();
       paPaymentData.did = includedConnection.did;
-      console.log('includedConnections: ', includedConnections);
       const fsp = await this.fspService.getFspById(includedConnection.fsp.id);
-      paPaymentData.fspName = fspName[fsp.fsp];
+      // NOTE: this is ugly, but spent too much time already on how to automate this..
+      if (fsp.fsp === fspName.intersolve) {
+        paPaymentData.fspName = fspName.intersolve;
+      } else if (fsp.fsp === fspName.intersolveNoWhatsapp) {
+        paPaymentData.fspName = fspName.intersolveNoWhatsapp;
+      } else if (fsp.fsp === fspName.africasTalking) {
+        paPaymentData.fspName = fspName.africasTalking;
+      }
       paPaymentData.paymentAddress = await this.getPaymentAddress(
         includedConnection,
         fsp.attributes,
@@ -780,12 +786,22 @@ export class ProgramService {
     includedConnection: ConnectionEntity,
     fspAttributes: FspAttributeEntity[],
   ): Promise<null | string> {
-    if (fspAttributes.length === 0) {
-      return null;
-    } else {
-      const paymentAddressColumn = fspAttributes[0].name;
-      return includedConnection.customData[paymentAddressColumn];
+    for (let attribute of fspAttributes) {
+      // NOTE: this is still not ideal, as it is hard-coded. No other quick solution was found.
+      if (
+        attribute.name === 'phoneNumber' ||
+        attribute.name === 'whatsappPhoneNumber'
+      ) {
+        const paymentAddressColumn = attribute.name;
+        return includedConnection.customData[paymentAddressColumn];
+      }
     }
+    return null;
+    // if (fspAttributes.length === 0) {
+    //   return null;
+    // } else {
+    //   const paymentAddressColumn = fspAttributes[0].name;
+    // }
   }
 
   private getPaStatus(connection, programId: number): PaStatus {

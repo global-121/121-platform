@@ -1,4 +1,3 @@
-import { ApiModelProperty } from '@nestjs/swagger';
 import { StatusEnum } from 'src/shared/enum/status.enum';
 
 import { fspName } from '../financial-service-provider.entity';

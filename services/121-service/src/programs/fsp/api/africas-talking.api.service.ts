@@ -10,7 +10,7 @@ export class AfricasTalkingApiService {
   public async sendPayment(payload): Promise<FspTransactionResultDto> {
     const credentials = {
       apiKey: process.env.AFRICASTALKING_API_KEY,
-      username: 'sandbox', // process.env.AFRICASTALKING_USERNAME,
+      username: process.env.AFRICASTALKING_USERNAME,
     };
     const AfricasTalking = require('africastalking')(credentials);
     const payments = AfricasTalking.PAYMENTS;

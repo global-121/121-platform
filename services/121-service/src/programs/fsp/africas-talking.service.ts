@@ -57,8 +57,8 @@ export class AfricasTalkingService {
     amount: number,
   ): object {
     const payload = {
-      username: 'sandbox', // process.env.AFRICASTALKING_USERNAME,
-      productName: 'staging-product', // process.env.AFRICASTALKING_PRODUCT_NAME,
+      username: process.env.AFRICASTALKING_USERNAME,
+      productName: process.env.AFRICASTALKING_PRODUCT_NAME,
       recipients: [],
     };
 
@@ -123,13 +123,14 @@ export class AfricasTalkingService {
       }
     } else if (paymentRequestResult.status === StatusEnum.error) {
       fspTransactionResult.status = StatusEnum.error;
+      // NOTE: We have no message-attribute at fsp-level
       // fspTransactionResult.message = 'Whole FSP failed: ' + paymentResult.message;
       for (let pa of paymentList) {
         const paTransactionResult = new PaTransactionResultDto();
         paTransactionResult.did = pa.did;
         paTransactionResult.status = StatusEnum.error;
         paTransactionResult.message =
-          'Whole FSP failed: ' + paymentRequestResult.message;
+          'Whole FSP failed: ' + paymentRequestResult.message.error;
         fspTransactionResult.paList.push(paTransactionResult);
       }
     }
@@ -143,9 +144,9 @@ export class AfricasTalkingService {
   ): Promise<any> {
     // Don't listen to notification locally, because callback URL is not set
     // If you want to work on this piece of code, disable this DEBUG-workaround
-    if (DEBUG) {
-      return { status: 'Success' };
-    }
+    // if (DEBUG) {
+    //   return { status: 'Success' };
+    // }
     let filteredNotifications = [];
     while (filteredNotifications.length === 0) {
       const notifications = await this.africasTalkingNotificationRepository.find(

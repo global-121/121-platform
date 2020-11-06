@@ -44,6 +44,7 @@ export class IntersolveService {
     installment: number,
   ): Promise<FspTransactionResultDto> {
     const result = new FspTransactionResultDto();
+    result.paList = [];
     for (let paymentInfo of paPaymentList) {
       const isolatedResult = await this.sendIndividualPayment(
         paymentInfo,
@@ -78,16 +79,22 @@ export class IntersolveService {
       amountInCents,
       intersolveRefPos,
     );
-    if (voucherInfo.resultCode != IntersolveResultCode.Ok) {
+    if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
       const transferResult = await this.transferVoucher(
         voucherInfo,
         paymentInfo,
         useWhatsapp,
-        amountInCents,
+        amount,
         installment,
       );
-      result.message = transferResult.message;
-      result.status = transferResult.status;
+      if (transferResult) {
+        result.status = transferResult.status;
+        result.message = transferResult.message;
+      } else {
+        result.status = StatusEnum.error;
+        result.message =
+          'Voucher created, but something went wrong in sending voucher.';
+      }
     } else {
       if (voucherInfo.transactionId) {
         await this.intersolveApiService.cancel(
@@ -105,7 +112,7 @@ export class IntersolveService {
         voucherInfo.resultCode +
         ' message: ' +
         voucherInfo.resultDescription;
-      result.status;
+      result.status = StatusEnum.error;
     }
     return result;
   }
