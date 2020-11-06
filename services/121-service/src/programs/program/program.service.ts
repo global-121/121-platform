@@ -797,11 +797,6 @@ export class ProgramService {
       }
     }
     return null;
-    // if (fspAttributes.length === 0) {
-    //   return null;
-    // } else {
-    //   const paymentAddressColumn = fspAttributes[0].name;
-    // }
   }
 
   private getPaStatus(connection, programId: number): PaStatus {

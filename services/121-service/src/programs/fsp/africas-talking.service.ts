@@ -144,9 +144,9 @@ export class AfricasTalkingService {
   ): Promise<any> {
     // Don't listen to notification locally, because callback URL is not set
     // If you want to work on this piece of code, disable this DEBUG-workaround
-    // if (DEBUG) {
-    //   return { status: 'Success' };
-    // }
+    if (DEBUG) {
+      return { status: 'Success' };
+    }
     let filteredNotifications = [];
     while (filteredNotifications.length === 0) {
       const notifications = await this.africasTalkingNotificationRepository.find(
