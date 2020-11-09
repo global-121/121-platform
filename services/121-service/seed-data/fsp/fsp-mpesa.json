@@ -1,12 +1,14 @@
 {
   "fsp": "M-Pesa",
   "fspDisplayName": {
+    "tuv_KE": "M-Pesa",
     "en": "M-Pesa"
   },
   "attributes": [
     {
       "name": "phoneRelation",
       "label": {
+        "tuv_KE": "A namba ani ethakio taanyuneia ikoi aa ng'aropia a M-PESA?   <br><br>   Kime towoor itungunani nipe nenyami.   <br><br>   Teyen atamar a namba ni igiritae alo Safaricom bon ethakio. ",
         "en": "Whose phone number will you use to receive the M-Pesa SMS?<br><br>Please ensure its someone you trust and agrees with collecting the cash on your behalf.<br><br>Please note, you can only use a phone number/sim card that is registered with Safaricom."
       },
       "answerType": "dropdown",
@@ -14,60 +16,70 @@
         {
           "option": "self",
           "label": {
+            "tuv_KE": "Akang'",
             "en": "My own"
           }
         },
         {
           "option": "partner",
           "label": {
+            "tuv_KE": "Lokilekang'/naberu kang'",
             "en": "Spouse/partner"
           }
         },
         {
           "option": "parent",
           "label": {
+            "tuv_KE": "Nkaurea kang'",
             "en": "Parent"
           }
         },
         {
           "option": "child",
           "label": {
+            "tuv_KE": "Lokokang'/nakokang'",
             "en": "Son/daughter"
           }
         },
         {
           "option": "sibling",
           "label": {
+            "tuv_KE": "Lokatokang'/nakatokang'",
             "en": "Brother/sister"
           }
         },
         {
           "option": "grandparent",
           "label": {
+            "tuv_KE": "Akuiya",
             "en": "Grandparent"
           }
         },
         {
           "option": "inlaw",
           "label": {
+            "tuv_KE": "Ekamuran",
             "en": "In-law"
           }
         },
         {
           "option": "friend",
           "label": {
+            "tuv_KE": "Ekimoret/epae",
             "en": "Neighbour/friend"
           }
         },
         {
           "option": "community-leader",
           "label": {
+            "tuv_KE": "Nkarikok ebuku. (ekatukon/Nkarikok a nganisaem/ejapolon nkomitii/ng'umalimui..)",
             "en": "Community leader (chief/spiritual leader/committee leader/teacher...)"
           }
         },
         {
           "option": "other",
           "label": {
+            "tuv_KE": "Luche",
             "en": "Other"
           }
         }
@@ -76,9 +88,11 @@
     {
       "name": "phoneNumber",
       "label": {
+        "tuv_KE": "A namba ani a diit ithaki yong taanyuneia SMS a M-PESA? (Ichamit ikoni ne <strong>+254 000 000 000</strong>)",
         "en": "Which phone number do you want to receive your M-Pesa SMS on? (With country-code. It should look like: <strong>+254 000 000 000</strong>)"
       },
       "placeholder": {
+        "tuv_KE": "+254 000 000 000",
         "en": "+254 000 000 000"
       },
       "answerType": "tel",
