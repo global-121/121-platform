@@ -5,6 +5,7 @@
   "location": "Kenya",
   "ngo": "KRCS",
   "title": {
+    "saq_KE": "121 Digital reto ee ropiani",
     "tuv_KE": "121 Digital aking'arakinio a ng'aropiai",
     "en": "121 Digital Cash Assistance Program"
   },
@@ -38,6 +39,11 @@
     "en": ""
   },
   "notifications": {
+    "saq_KE": {
+      "registered": "Eta taa ingero ta reto.",
+      "included": "Ikitipikaki ana reto.",
+      "rejected": "Tapaliki iyoo amu mitum ana reto. Tanaa keyatae niyeu niparu tooshoki iyoo."
+    },
     "tuv_KE": {
       "registered": "Kigirakin iyo niajokon tomaa",
       "included": "Kiwakin iyong tomaa na king'arakino na.",
@@ -54,6 +60,7 @@
     {
       "criterium": "firstName",
       "label": {
+        "saq_KE": "Ka ng'arna ino ekwe",
         "tuv_KE": "Ali ekurkon lo e king'aren",
         "en": "What is your first name?"
       },
@@ -66,6 +73,7 @@
     {
       "criterium": "secondName",
       "label": {
+        "saq_KE": "Ka ng'arna ino na are. <br> Tanaa miyata ng'ero NA",
         "tuv_KE": "Ali ekirokon la ng'arei. <br> Ali kemam kigirak NA",
         "en": "What is your second name? <br> If you do not have a second name type: NA​"
       },
@@ -78,6 +86,7 @@
     {
       "criterium": "thirdName",
       "label": {
+        "saq_KE": "Ka ng'arna ino ne uni. <br> Tanaa miyata ng'ero NA",
         "tuv_KE": "Ali ekirokon la ng'auni. <br> Kigirak NA",
         "en": "What is your third name? <br> If you do not have a third name type: NA​"
       },
@@ -90,6 +99,7 @@
     {
       "criterium": "age",
       "label": {
+        "saq_KE": "Larini aja iyata",
         "tuv_KE": "Nkaru nyiai iting'it",
         "en": "What is your age?"
       },
@@ -99,6 +109,7 @@
         {
           "option": "0_-_59_months",
           "label": {
+            "saq_KE": "0 - 59 lapatin",
             "tuv_KE": "0 - 59 ng'ilapio",
             "en": "0 - 59 months"
           }
@@ -106,6 +117,7 @@
         {
           "option": "5_-_12_yrs",
           "label": {
+            "saq_KE": "5 - 12 larin",
             "tuv_KE": "5 - 12 nkaru",
             "en": "5 - 12yrs"
           }
@@ -113,6 +125,7 @@
         {
           "option": "13_-_17_yrs",
           "label": {
+            "saq_KE": "13-17 larin",
             "tuv_KE": "13 - 17 nkaru",
             "en": "13 - 17 yrs"
           }
@@ -120,6 +133,7 @@
         {
           "option": "18_-_24_yrs",
           "label": {
+            "saq_KE": "18-24 larin",
             "tuv_KE": "18 - 24 nkaru",
             "en": "18 - 24 yrs"
           }
@@ -127,6 +141,7 @@
         {
           "option": "25_-_59_yrs",
           "label": {
+            "saq_KE": "25-59 larin",
             "tuv_KE": "25 - 59 nkaru",
             "en": "25 - 59 yrs"
           }
@@ -134,6 +149,7 @@
         {
           "option": "60_yrs_and_above",
           "label": {
+            "saq_KE": "60 larin neilep",
             "tuv_KE": "60 nkaru toloto ng'aren",
             "en": "60 yrs and above"
           }
@@ -145,6 +161,7 @@
     {
       "criterium": "location",
       "label": {
+        "saq_KE": "Aji nikimanya?",
         "tuv_KE": "Alowai ilomit?",
         "en": "Which village/area do you live?"
       },
@@ -170,6 +187,7 @@
     {
       "criterium": "livelihoodStrategy",
       "label": {
+        "saq_KE": "Nyoo shake lkasi linji pi itumeme ndaa ta leapaa loisha",
         "tuv_KE": "Nyo ithubete taanyut akimuj elap alobeen",
         "en": "What is your household’s current livelihood strategy (as of last month)?"
       },
@@ -179,6 +197,7 @@
         {
           "option": "Pastoralism",
           "label": {
+            "saq_KE": "Laramatak",
             "tuv_KE": "Ng'ibaren",
             "en": "Pastoralism"
           }
@@ -186,6 +205,7 @@
         {
           "option": "Agro_pastoralism",
           "label": {
+            "saq_KE": "Laramatak ne unisho",
             "tuv_KE": "Akitare ka ng'ibaren",
             "en": "Agro-pastoralism"
           }
@@ -193,6 +213,7 @@
         {
           "option": "Agriculture_cropfarming",
           "label": {
+            "saq_KE": "Launisho",
             "tuv_KE": "Akitare",
             "en": "Agriculture/Crop Farming"
           }
@@ -200,6 +221,7 @@
         {
           "option": "Fishing",
           "label": {
+            "saq_KE": "Loo utai singiri",
             "tuv_KE": "Nkerumak Nkolia",
             "en": "Fishing"
           }
@@ -207,6 +229,7 @@
         {
           "option": "Petty_trade",
           "label": {
+            "saq_KE": "Biasharani kunini",
             "tuv_KE": "Ebesherea lo edit",
             "en": "Petty trade [Hawking/Any Business in a small kiosk]"
           }
@@ -214,6 +237,7 @@
         {
           "option": "Casual_labour",
           "label": {
+            "saq_KE": "Lkasi le enkaik",
             "tuv_KE": "E kibarua",
             "en": "Casual Labour"
           }
@@ -221,6 +245,7 @@
         {
           "option": "Sale_of_charcoal_firewood",
           "label": {
+            "saq_KE": "Aamir nkuk olkeek",
             "tuv_KE": "Akiyep ng'atotol ka ng'akito",
             "en": "Sale of Charcoal and or Firewood"
           }
@@ -228,6 +253,7 @@
         {
           "option": "Sale_bush_products",
           "label": {
+            "saq_KE": "Aamir ntokitin naingwa ntimi etuwana lom oo ng'iri e lowarak",
             "tuv_KE": "Agelera ng'iboro la amoni. Ng'inyia, akiring' a moni ka ng'apiro",
             "en": "Sale of Bush Products [Wild meat/Building poles/grass/reeds/building stones]"
           }
@@ -235,6 +261,7 @@
         {
           "option": "Begging",
           "label": {
+            "saq_KE": "Lasayak",
             "tuv_KE": "Akilipa",
             "en": "Begging"
           }
@@ -242,6 +269,7 @@
         {
           "option": "Business_medium_large",
           "label": {
+            "saq_KE": "Biasharani nkutiti oo sapuki",
             "tuv_KE": "E biashara lo apolon",
             "en": "Business [Medium or Large Scale]"
           }
@@ -249,6 +277,7 @@
         {
           "option": "Formal_salaried_jobs",
           "label": {
+            "saq_KE": "Lotii lkasin",
             "tuv_KE": "Ekathi",
             "en": "Formal/Salaried Jobs [Police Officer/Teacher/Nurse  etc.]"
           }
@@ -256,6 +285,7 @@
         {
           "option": "Remmitance",
           "label": {
+            "saq_KE": "Ropiani nangwaa boo. Nkirewakita ng'era oshoreta",
             "tuv_KE": "Kitumanakinio iyong ng'aropia. Ng'ide kon ori ng'ipaai",
             "en": "Remmitances [Money from Relatives/Friends abroad]"
           }
@@ -279,6 +309,7 @@
     {
       "criterium": "cashassistance",
       "label": {
+        "saq_KE": "Amaa tata itomito reto e ropiani naingwa KRCS, serekali, HSNG group 1, tanaa lukule aretok",
         "tuv_KE": "Tokona iye aking'arakinio a ng'aropiai iyanyunini a lo KRCS, ngithikalei, HSNP ori ng'iche karetok",
         "en": "As of TODAY are you receiving any form of cash assistance from Kenya Red Cross, Social Services, HSNP Group 1 or other humanitarian agencies?"
       },
@@ -288,6 +319,7 @@
         {
           "option": "Yes",
           "label": {
+            "saq_KE": "Ee",
             "tuv_KE": "Eee",
             "en": "Yes"
           }
@@ -295,6 +327,7 @@
         {
           "option": "No",
           "label": {
+            "saq_KE": "A a",
             "tuv_KE": "A a",
             "en": "No"
           }
@@ -308,6 +341,7 @@
     {
       "criterium": "foodassistance",
       "label": {
+        "saq_KE": "Ama tata itumito reto e ndaa naingwa WFP tanaa serekali kini tanaa serekali sapuk",
         "tuv_KE": "Tokona iye akimuj iyanyunini iyong alo WFP or nthirikalei Lua kaunti or Napolon",
         "en": "As of TODAY are you receiving any form of food assistance from WFP, County Government of National Government?"
       },
@@ -317,6 +351,7 @@
         {
           "option": "Yes",
           "label": {
+            "saq_KE": "Ee",
             "tuv_KE": "Eee",
             "en": "Yes"
           }
@@ -324,6 +359,7 @@
         {
           "option": "No",
           "label": {
+            "saq_KE": "A a",
             "tuv_KE": "A a",
             "en": "No"
           }
