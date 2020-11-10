@@ -6,7 +6,6 @@ import { IntersolveBarcodeEntity } from '../programs/fsp/intersolve-barcode.enti
 import { ProgramEntity } from '../programs/program/program.entity';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolveRequestEntity } from '../programs/fsp/intersolve-request.entity';
-import { IntersolveResultCode } from '../programs/fsp/api/enum/intersolve-result-code.enum';
 import { IntersolveApiService } from '../programs/fsp/api/instersolve.api.service';
 
 @Injectable()
@@ -98,13 +97,8 @@ export class CronjobService {
       );
       intersolveRequest.cancelByRefPosResultCode =
         cancelByRefPosResponse.resultCode;
-      if (cancelByRefPosResponse.resultCode === IntersolveResultCode.Ok) {
-        intersolveRequest.isCancelled = true;
-      }
     } catch (Error) {
       console.log('Error cancelling by refpos id', Error, intersolveRequest);
     }
-    intersolveRequest.updated = new Date();
-    await this.intersolveRequestRepository.save(intersolveRequest);
   }
 }
