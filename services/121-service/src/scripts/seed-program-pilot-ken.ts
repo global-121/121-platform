@@ -5,7 +5,7 @@ import { Connection } from 'typeorm';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 
-import fspMpesa from '../../seed-data/fsp/fsp-mpesa.json';
+import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 import programPilotKen from '../../seed-data/program/program-pilot-ken.json';
 import instancePilotKen from '../../seed-data/instance/instance-pilot-ken.json';
 import { UserRole } from '../user-role.enum';
@@ -34,7 +34,7 @@ export class SeedPilotKenProgram implements InterfaceScript {
     });
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
-    await this.seedHelper.addFsp(fspMpesa);
+    await this.seedHelper.addFsp(fspAfricasTalking);
 
     // ***** CREATE PROGRAM *****
     const examplePrograms = [programPilotKen];

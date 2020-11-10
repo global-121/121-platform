@@ -10,7 +10,7 @@ import fspBank from '../../seed-data/fsp/fsp-bravos.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
-import fspMpesa from '../../seed-data/fsp/fsp-mpesa.json';
+import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 
 import programDemo from '../../seed-data/program/program-demo.json';
 import instanceDemo from '../../seed-data/instance/instance-demo.json';
@@ -42,7 +42,7 @@ export class SeedDemoProgram implements InterfaceScript {
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
-    await this.seedHelper.addFsp(fspMpesa);
+    await this.seedHelper.addFsp(fspAfricasTalking);
     await this.seedHelper.addFsp(fspBank);
     await this.seedHelper.addFsp(fspMixedAttributes);
     await this.seedHelper.addFsp(fspNoAttributes);

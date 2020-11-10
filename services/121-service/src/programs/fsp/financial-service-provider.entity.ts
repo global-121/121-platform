@@ -59,5 +59,5 @@ export class FinancialServiceProviderEntity {
 export enum fspName {
   intersolve = 'Intersolve-whatsapp',
   intersolveNoWhatsapp = 'Intersolve-no-whatsapp',
-  mpesa = 'M-Pesa',
+  africasTalking = 'Africas-talking',
 }

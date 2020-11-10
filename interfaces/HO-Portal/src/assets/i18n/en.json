@@ -137,8 +137,9 @@
         "start-payout": "Start payout now",
         "total-included": "Number of PA included",
         "total-amount": "Total amount to payout:",
-        "result-success": "Successfully sent instructions to FSP's for {{nrSuccessfull}} PA's.",
-        "result-failure": "Payment request failed for {{nrFailed}} PA's. Inspect the table below for details.",
+        "result-success": "Successfully sent instructions to FSP's for {{nrSuccessfull}} PA(s).",
+        "result-failure": "Payment request failed for {{nrFailed}} PA(s). Inspect the PA-table below for details.",
+        "result-waiting": "Payment status not yet received for {{nrWaiting}} PA(s). Inspect the PA-table below for the up-to-date status of the payment(s).",
         "none-included": "No included people yet."
       },
       "program-people-affected": {
@@ -185,7 +186,8 @@
         "submit-warning": "You are about to:",
         "submit-warning-people-affected": "People Affected",
         "transaction-failed": "Transaction failed",
-        "failed": "Failed"
+        "failed": "Failed",
+        "waiting": "Waiting"
       },
       "program-modal": {
         "pageTitle": "Program JSON"

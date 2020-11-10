@@ -1,5 +1,3 @@
-import { StatusMessageDto } from './../../shared/dto/status-message.dto';
-import { StatusEnum } from './../../shared/enum/status.enum';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
@@ -25,19 +23,25 @@ import { ProgramPhase } from '../../models/program-phase.model';
 import { PaStatus } from '../../models/pa-status.model';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
-import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
+import { ProgramsRO, SimpleProgramRO } from './program.interface';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
-import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import {
+  FinancialServiceProviderEntity,
+  fspName,
+} from '../fsp/financial-service-provider.entity';
 import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
 import { ActionEntity, ActionType } from '../../actions/action.entity';
 import { FspService } from '../fsp/fsp.service';
-import { FspPaymentResultDto } from '../fsp/dto/fsp-payment-results.dto';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
+import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
+import { PaymentTransactionResultDto } from '../fsp/dto/payment-transaction-result.dto';
+import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { StatusEnum } from '../../shared/enum/status.enum';
 
 @Injectable()
 export class ProgramService {
@@ -741,7 +745,7 @@ export class ProgramService {
     programId: number,
     installment: number,
     amount: number,
-  ): Promise<StatusMessageDto> {
+  ): Promise<PaymentTransactionResultDto> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
@@ -765,38 +769,60 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    let nrConnectionsFsp = 0,
-      nrSuccessfull = 0;
-    const failedFsps = [];
-    let result: FspPaymentResultDto;
-    for (let fsp of program.financialServiceProviders) {
-      result = await this.fspService.createSendPaymentListFsp(
-        fsp,
-        includedConnections,
-        amount,
-        program,
-        installment,
-      );
-      nrConnectionsFsp += result.nrConnectionsFsp;
-      nrSuccessfull += result.nrSuccessfull;
+    const paPaymentDataList = await this.createPaPaymentDataList(
+      includedConnections,
+    );
 
-      if (result.paymentResult.status === StatusEnum.error) {
-        failedFsps.push(fsp.fsp);
+    const paymentTransactionResult = await this.fspService.payout(
+      paPaymentDataList,
+      programId,
+      installment,
+      amount,
+    );
+    return paymentTransactionResult;
+  }
+
+  private async createPaPaymentDataList(
+    includedConnections: ConnectionEntity[],
+  ): Promise<PaPaymentDataDto[]> {
+    let paPaymentDataList = [];
+    for (let includedConnection of includedConnections) {
+      const paPaymentData = new PaPaymentDataDto();
+      paPaymentData.did = includedConnection.did;
+      const fsp = await this.fspService.getFspById(includedConnection.fsp.id);
+      // NOTE: this is ugly, but spent too much time already on how to automate this..
+      if (fsp.fsp === fspName.intersolve) {
+        paPaymentData.fspName = fspName.intersolve;
+      } else if (fsp.fsp === fspName.intersolveNoWhatsapp) {
+        paPaymentData.fspName = fspName.intersolveNoWhatsapp;
+      } else if (fsp.fsp === fspName.africasTalking) {
+        paPaymentData.fspName = fspName.africasTalking;
+      }
+      paPaymentData.paymentAddress = await this.getPaymentAddress(
+        includedConnection,
+        fsp.attributes,
+      );
+
+      paPaymentDataList.push(paPaymentData);
+    }
+    return paPaymentDataList;
+  }
+
+  private async getPaymentAddress(
+    includedConnection: ConnectionEntity,
+    fspAttributes: FspAttributeEntity[],
+  ): Promise<null | string> {
+    for (let attribute of fspAttributes) {
+      // NOTE: this is still not ideal, as it is hard-coded. No other quick solution was found.
+      if (
+        attribute.name === 'phoneNumber' ||
+        attribute.name === 'whatsappPhoneNumber'
+      ) {
+        const paymentAddressColumn = attribute.name;
+        return includedConnection.customData[paymentAddressColumn];
       }
     }
-    const nrFailed = nrConnectionsFsp - nrSuccessfull;
-
-    if (nrConnectionsFsp === 0) {
-      const errors =
-        'No included connections with known FSP available. Payment aborted.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    return {
-      status: StatusEnum.success,
-      nrSuccessfull,
-      nrFailed,
-    };
+    return null;
   }
 
   private getPaStatus(connection, programId: number): PaStatus {
@@ -1098,6 +1124,7 @@ export class ProgramService {
       .andWhere('transaction.installment = :installmentId', {
         installmentId: installmentId,
       })
+      .andWhere('transaction.status = :status', { status: StatusEnum.success })
       .getRawMany();
   }
 
