@@ -131,7 +131,7 @@ export class IntersolveApiService {
     const intersolveRequest = await this.intersolveRequestRepository.findOne({
       refPos,
     });
-    intersolveRequest.created = intersolveRequest.created;
+    intersolveRequest.updated = null;
     intersolveRequest.isCancelled =
       result.resultCode == IntersolveResultCode.Ok;
     intersolveRequest.cancellationAttempts =
