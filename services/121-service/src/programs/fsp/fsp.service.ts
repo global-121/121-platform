@@ -57,7 +57,6 @@ export class FspService {
     amount: number,
   ): Promise<PaymentTransactionResultDto> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
-    console.log('paLists: ', paLists);
 
     const transactionResults = await this.makePaymentRequest(
       paLists,
