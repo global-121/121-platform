@@ -1,6 +1,7 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{column}} {{'page.program.program-people-affected.failed' | translate}}</ion-title>
+    <ion-title *ngIf="error">{{column}} {{'page.program.program-people-affected.failed' | translate}}</ion-title>
+    <ion-title *ngIf="voucher">{{column}}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="closeModal()" [attr.title]="'common.cancel'|translate">
         <ion-icon name="close" slot="icon-only"></ion-icon>
@@ -10,7 +11,10 @@
 </ion-header>
 
 <ion-content color="light">
-  <ion-item>
+  <ion-item *ngIf="error">
     {{error}}
+  </ion-item>
+  <ion-item *ngIf="voucher">
+    {{voucher}}
   </ion-item>
 </ion-content>

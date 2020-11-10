@@ -134,7 +134,13 @@
       >
         {{value}} <ion-icon name="open"></ion-icon>
       </span>
-      <span *ngIf="value!=='Failed'">{{value}}</span>
+      <span 
+        *ngIf="value && value!=='Failed'" 
+        (click)="voucherPopup(row,column)"
+        class="failedCell"
+      >
+        {{value}} <ion-icon name="open"></ion-icon>
+      </span>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>

@@ -507,6 +507,21 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     await modal.present();
   }
 
+  public async voucherPopup(row, column) {
+    const installment = Number(column.name.substring(column.name.length - 1));
+    const voucher = await this.programsService.exportVoucher(row.did, installment);
+    console.log('voucher: ', voucher);
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: PaymentErrorPopupComponent,
+      componentProps: {
+        column: column.name,
+        voucher,
+      },
+    });
+
+    await modal.present();
+  }
+
   public selectAction() {
     if (this.action === BulkActionId.chooseAction) {
       this.resetBulkAction();
