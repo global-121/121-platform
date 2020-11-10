@@ -10,7 +10,7 @@ export class IntersolveRequestEntity {
   public created: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public updated: number;
+  public updated: Date;
 
   @Column()
   public refPos: number;
