@@ -487,6 +487,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
             this.dateFormat,
             this.locale,
           );
+        } else if (transaction.status === 'waiting') {
+          personRow['payment' + (index + 1)] = this.translate.instant(
+            'page.program.program-people-affected.waiting',
+          );
         } else {
           (personRow['payment' + (index + 1)] = this.translate.instant(
             'page.program.program-people-affected.failed',
