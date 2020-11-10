@@ -10,7 +10,7 @@ import { StatusEnum } from '../../shared/enum/status.enum';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from './dto/payment-transaction-result';
+} from './dto/payment-transaction-result.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import { DEBUG } from '../../config';
 

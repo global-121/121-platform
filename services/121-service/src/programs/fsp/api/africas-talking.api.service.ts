@@ -1,6 +1,6 @@
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { Injectable } from '@nestjs/common';
-import { FspTransactionResultDto } from '../dto/payment-transaction-result';
+import { FspTransactionResultDto } from '../dto/payment-transaction-result.dto';
 import { fspName } from '../financial-service-provider.entity';
 
 @Injectable()

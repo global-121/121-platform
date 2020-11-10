@@ -23,7 +23,7 @@ import { ProgramPhase } from '../../models/program-phase.model';
 import { PaStatus } from '../../models/pa-status.model';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
-import { ProgramRO, ProgramsRO, SimpleProgramRO } from './program.interface';
+import { ProgramsRO, SimpleProgramRO } from './program.interface';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
@@ -39,8 +39,9 @@ import { FspService } from '../fsp/fsp.service';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
-import { PaymentTransactionResultDto } from '../fsp/dto/payment-transaction-result';
+import { PaymentTransactionResultDto } from '../fsp/dto/payment-transaction-result.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { StatusEnum } from '../../shared/enum/status.enum';
 
 @Injectable()
 export class ProgramService {

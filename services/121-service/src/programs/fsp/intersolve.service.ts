@@ -1,7 +1,5 @@
 import { IntersolveIssueCardResponse } from './api/dto/intersolve-issue-card-response.dto';
-import { fspName } from './financial-service-provider.entity';
 import { WhatsappService } from './../../notifications/whatsapp/whatsapp.service';
-import { StatusMessageDto } from './../../shared/dto/status-message.dto';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from '../../shared/enum/status.enum';
@@ -16,7 +14,7 @@ import { ImageCodeService } from '../../notifications/imagecode/image-code.servi
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-} from './dto/payment-transaction-result';
+} from './dto/payment-transaction-result.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 
 @Injectable()

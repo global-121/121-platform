@@ -1,7 +1,6 @@
 import { AfricasTalkingService } from './africas-talking.service';
 import { IntersolveService } from './intersolve.service';
 import { StatusEnum } from './../../shared/enum/status.enum';
-import { StatusMessageDto } from '../../shared/dto/status-message.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   fspName,
@@ -13,8 +12,6 @@ import { Repository } from 'typeorm';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { ProgramEntity } from '../program/program.entity';
 import { TransactionEntity } from '../program/transactions.entity';
-import { PaymentDetailsDto } from './dto/payment-details.dto';
-import { FspPaymentResultDto } from './dto/fsp-payment-results.dto';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 import { DEBUG } from '../../config';
 import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
@@ -24,7 +21,7 @@ import {
   FspTransactionResultDto,
   PaTransactionResultDto,
   PaymentTransactionResultDto,
-} from './dto/payment-transaction-result';
+} from './dto/payment-transaction-result.dto';
 
 @Injectable()
 export class FspService {
