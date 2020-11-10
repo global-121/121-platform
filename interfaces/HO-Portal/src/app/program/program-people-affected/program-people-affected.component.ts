@@ -112,7 +112,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         'page.program.program-people-affected.actions.notify-included',
       ),
       roles: [UserRole.ProjectOfficer],
-      phases: [ProgramPhase.reviewInclusion],
+      phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
     },
   ];
