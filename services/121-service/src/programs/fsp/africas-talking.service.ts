@@ -12,7 +12,6 @@ import {
   PaTransactionResultDto,
 } from './dto/payment-transaction-result.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
-import { DEBUG } from '../../config';
 
 @Injectable()
 export class AfricasTalkingService {
@@ -43,8 +42,6 @@ export class AfricasTalkingService {
     const fspTransactionResult = await this.getFsptransactionResult(
       paymentRequestResult,
       paymentList,
-      programId,
-      installment,
     );
 
     return fspTransactionResult;
@@ -83,8 +80,6 @@ export class AfricasTalkingService {
   private async getFsptransactionResult(
     paymentRequestResult: FspTransactionResultDto,
     paymentList: PaPaymentDataDto[],
-    programId: number,
-    installment: number,
   ): Promise<FspTransactionResultDto> {
     let fspTransactionResult = new FspTransactionResultDto();
     fspTransactionResult.fspName = fspName.africasTalking;
@@ -94,15 +89,6 @@ export class AfricasTalkingService {
       fspTransactionResult.status = StatusEnum.success;
 
       for (let transaction of paymentRequestResult.message.entries) {
-        // let notification;
-        // if (!transaction.errorMessage) {
-        //   notification = await this.getNotification(
-        //     transaction,
-        //     programId,
-        //     installment,
-        //   );
-        // }
-
         const paTransactionResult = new PaTransactionResultDto();
 
         const pa = paymentList.find(
@@ -127,7 +113,7 @@ export class AfricasTalkingService {
         paTransactionResult.did = pa.did;
         paTransactionResult.status = StatusEnum.error;
         paTransactionResult.message =
-          'Whole FSP failed: ' + paymentRequestResult.message.error;
+          'Whole payment request failed: ' + paymentRequestResult.message.error;
         fspTransactionResult.paList.push(paTransactionResult);
       }
     }

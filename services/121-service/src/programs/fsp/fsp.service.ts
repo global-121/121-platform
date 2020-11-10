@@ -235,21 +235,6 @@ export class FspService {
     return result;
   }
 
-  // public async logFspCall(
-  //   fsp: FinancialServiceProviderEntity,
-  //   payload,
-  //   status,
-  //   paymentResult,
-  // ): Promise<void> {
-  //   const fspCallLog = new FspCallLogEntity();
-  //   fspCallLog.fsp = fsp;
-  //   fspCallLog.payload = payload;
-  //   fspCallLog.status = status;
-  //   fspCallLog.response = paymentResult;
-
-  //   await this.fspCallLogRepository.save(fspCallLog);
-  // }
-
   public async checkPaymentValidation(
     fsp: fspName,
     africasTalkingValidationData?: AfricasTalkingValidationDto,
