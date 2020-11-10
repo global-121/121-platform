@@ -169,14 +169,18 @@
       "criteriumType": "standard",
       "options": [
         {
-          "option": "Longopito",
+          "option": "location_kipsing",
           "label": {
-            "en": "Longopito"
+            "saq_KE": "Kipsing",
+            "tuv_KE": "Kipsing",
+            "en": "Kipsing"
           }
         },
         {
-          "option": "Oldonyiro",
+          "option": "location_oldonyiro",
           "label": {
+            "saq_KE": "Oldonyiro",
+            "tuv_KE": "Oldonyiro",
             "en": "Oldonyiro"
           }
         }
@@ -185,7 +189,7 @@
       "scoring": {}
     },
     {
-      "criterium": "livelihoodStrategy",
+      "criterium": "livelihood_strategy",
       "label": {
         "saq_KE": "Nyoo shake lkasi linji pi itumeme ndaa ta leapaa loisha",
         "tuv_KE": "Nyo ithubete taanyut akimuj elap alobeen",
@@ -195,7 +199,7 @@
       "criteriumType": "standard",
       "options": [
         {
-          "option": "Pastoralism",
+          "option": "livelihood_pastoralism",
           "label": {
             "saq_KE": "Laramatak",
             "tuv_KE": "Ng'ibaren",
@@ -203,7 +207,7 @@
           }
         },
         {
-          "option": "Agro_pastoralism",
+          "option": "livelihood_agro_pastoralism",
           "label": {
             "saq_KE": "Laramatak ne unisho",
             "tuv_KE": "Akitare ka ng'ibaren",
@@ -211,7 +215,7 @@
           }
         },
         {
-          "option": "Agriculture_cropfarming",
+          "option": "livelihood_agriculture_cropfarming",
           "label": {
             "saq_KE": "Launisho",
             "tuv_KE": "Akitare",
@@ -219,7 +223,7 @@
           }
         },
         {
-          "option": "Fishing",
+          "option": "livelihood_fishing",
           "label": {
             "saq_KE": "Loo utai singiri",
             "tuv_KE": "Nkerumak Nkolia",
@@ -227,7 +231,7 @@
           }
         },
         {
-          "option": "Petty_trade",
+          "option": "livelihood_petty_trade",
           "label": {
             "saq_KE": "Biasharani kunini",
             "tuv_KE": "Ebesherea lo edit",
@@ -235,7 +239,7 @@
           }
         },
         {
-          "option": "Casual_labour",
+          "option": "livelihood_casual_labour",
           "label": {
             "saq_KE": "Lkasi le enkaik",
             "tuv_KE": "E kibarua",
@@ -243,7 +247,7 @@
           }
         },
         {
-          "option": "Sale_of_charcoal_firewood",
+          "option": "livelihood_sale_of_charcoal_firewood",
           "label": {
             "saq_KE": "Aamir nkuk olkeek",
             "tuv_KE": "Akiyep ng'atotol ka ng'akito",
@@ -251,7 +255,7 @@
           }
         },
         {
-          "option": "Sale_bush_products",
+          "option": "livelihood_sale_bush_products",
           "label": {
             "saq_KE": "Aamir ntokitin naingwa ntimi etuwana lom oo ng'iri e lowarak",
             "tuv_KE": "Agelera ng'iboro la amoni. Ng'inyia, akiring' a moni ka ng'apiro",
@@ -259,7 +263,7 @@
           }
         },
         {
-          "option": "Begging",
+          "option": "livelihood_begging",
           "label": {
             "saq_KE": "Lasayak",
             "tuv_KE": "Akilipa",
@@ -267,7 +271,7 @@
           }
         },
         {
-          "option": "Business_medium_large",
+          "option": "livelihood_business_medium_large",
           "label": {
             "saq_KE": "Biasharani nkutiti oo sapuki",
             "tuv_KE": "E biashara lo apolon",
@@ -275,7 +279,7 @@
           }
         },
         {
-          "option": "Formal_salaried_jobs",
+          "option": "livelihood_formal_salaried_jobs",
           "label": {
             "saq_KE": "Lotii lkasin",
             "tuv_KE": "Ekathi",
@@ -283,7 +287,7 @@
           }
         },
         {
-          "option": "Remmitance",
+          "option": "livelihood_remmitance",
           "label": {
             "saq_KE": "Ropiani nangwaa boo. Nkirewakita ng'era oshoreta",
             "tuv_KE": "Kitumanakinio iyong ng'aropia. Ng'ide kon ori ng'ipaai",
@@ -292,22 +296,22 @@
         }
       ],
       "scoring": {
-        "Pastoralism": 0,
-        "Agro_pastoralism": 0,
-        "Agriculture_cropfarming": 0,
-        "Fishing": 0,
-        "Petty_trade": 0,
-        "Casual_labour": 0,
-        "Sale_of_charcoal_firewood": 0,
-        "Sale_bush_products": 0,
-        "Begging": 0,
-        "Business_medium_large": -9999,
-        "Formal_salaried_jobs": -9999,
-        "Remmitance": 0
+        "livelihood_pastoralism": 0,
+        "livelihood_agro_pastoralism": 0,
+        "livelihood_agriculture_cropfarming": 0,
+        "livelihood_fishing": 0,
+        "livelihood_petty_trade": 0,
+        "livelihood_casual_labour": 0,
+        "livelihood_sale_of_charcoal_firewood": 0,
+        "livelihood_sale_bush_products": 0,
+        "livelihood_begging": 0,
+        "livelihood_business_medium_large": -9999,
+        "livelihood_formal_salaried_jobs": -9999,
+        "livelihood_remmitance": 0
       }
     },
     {
-      "criterium": "cashassistance",
+      "criterium": "cash_assistance",
       "label": {
         "saq_KE": "Amaa tata itomito reto e ropiani naingwa KRCS, serekali, HSNG group 1, tanaa lukule aretok",
         "tuv_KE": "Tokona iye aking'arakinio a ng'aropiai iyanyunini a lo KRCS, ngithikalei, HSNP ori ng'iche karetok",
@@ -317,7 +321,7 @@
       "criteriumType": "standard",
       "options": [
         {
-          "option": "Yes",
+          "option": "cash_assistance_yes",
           "label": {
             "saq_KE": "Ee",
             "tuv_KE": "Eee",
@@ -325,7 +329,7 @@
           }
         },
         {
-          "option": "No",
+          "option": "cash_assistance_no",
           "label": {
             "saq_KE": "A a",
             "tuv_KE": "A a",
@@ -334,12 +338,12 @@
         }
       ],
       "scoring": {
-        "Yes": -9999,
-        "No": 0
+        "cash_assistance_yes": -9999,
+        "cash_assistance_no": 0
       }
     },
     {
-      "criterium": "foodassistance",
+      "criterium": "food_assistance",
       "label": {
         "saq_KE": "Ama tata itumito reto e ndaa naingwa WFP tanaa serekali kini tanaa serekali sapuk",
         "tuv_KE": "Tokona iye akimuj iyanyunini iyong alo WFP or nthirikalei Lua kaunti or Napolon",
@@ -349,7 +353,7 @@
       "criteriumType": "standard",
       "options": [
         {
-          "option": "Yes",
+          "option": "food_assistance_yes",
           "label": {
             "saq_KE": "Ee",
             "tuv_KE": "Eee",
@@ -357,7 +361,7 @@
           }
         },
         {
-          "option": "No",
+          "option": "food_assistance_no",
           "label": {
             "saq_KE": "A a",
             "tuv_KE": "A a",
@@ -366,8 +370,8 @@
         }
       ],
       "scoring": {
-        "Yes": -9999,
-        "No": 0
+        "food_assistance_yes": -9999,
+        "food_assistance_no": 0
       }
     }
   ]
