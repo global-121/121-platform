@@ -74,7 +74,6 @@ export class CronjobService {
     const twoWeeksAgo = (d => new Date(d.setTime(d.getTime() - twoWeeks)))(
       new Date(),
     );
-    console.log('hello did we reach this point');
     const failedIntersolveRquests = await this.intersolveRequestRepository.find(
       {
         where: {
@@ -87,7 +86,8 @@ export class CronjobService {
       this.cancelRequestRefpos(intersolveRequest);
     }
   }
-  public async cancelRequestRefpos(
+
+  private async cancelRequestRefpos(
     intersolveRequest: IntersolveRequestEntity,
   ): Promise<void> {
     intersolveRequest.cancellationAttempts =
