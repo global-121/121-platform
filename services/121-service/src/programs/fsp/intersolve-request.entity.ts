@@ -11,7 +11,7 @@ export class IntersolveRequestEntity {
   public created: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public updated: number;
+  public updated: Date;
 
   @Column()
   public refpos: number;
@@ -35,7 +35,7 @@ export class IntersolveRequestEntity {
   public pin: number;
 
   @Column()
-  public blance: number;
+  public balance: number;
 
   @Column()
   public transactionId: number;
