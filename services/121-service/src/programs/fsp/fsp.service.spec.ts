@@ -24,6 +24,7 @@ import { ImageCodeService } from '../../notifications/imagecode/image-code.servi
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
 import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
+import { IntersolveRequestEntity } from './intersolve-request.entity';
 
 describe('Fsp service', (): void => {
   let service: FspService;
@@ -80,6 +81,10 @@ describe('Fsp service', (): void => {
           },
           {
             provide: getRepositoryToken(ConnectionEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(IntersolveRequestEntity),
             useFactory: repositoryMockFactory,
           },
         ],

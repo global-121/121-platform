@@ -87,7 +87,6 @@ export class IntersolveService {
         );
       } else {
         await this.intersolveApiService.cancelTransactionByRefPos(
-          voucherInfo.cardId,
           intersolveRefPos,
         );
       }

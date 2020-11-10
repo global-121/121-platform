@@ -9,7 +9,7 @@
             <RefPos>1</RefPos>
          </TransactionHeader>
         <EAN>0</EAN>
-        <Currency>eur</Currency>
+        <Currency>EUR</Currency>
         <Value>0</Value>
         <Mode>IssueAndActivateCard</Mode>
       </IssueCard>

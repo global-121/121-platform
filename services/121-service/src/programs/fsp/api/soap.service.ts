@@ -18,7 +18,7 @@ export class SoapService {
       headers: headersIntersolve,
       url: process.env.INTERSOLVE_URL,
       xml: xml,
-      timeout: 2000,
+      timeout: 30000,
     });
     const { body } = response;
     const jsonResponse = convert.xml2js(body, { compact: true });
