@@ -13,7 +13,6 @@ import { ConnectionEntity } from '../../sovrin/create-connection/connection.enti
 import { ProgramEntity } from '../program/program.entity';
 import { TransactionEntity } from '../program/transactions.entity';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
-import { DEBUG } from '../../config';
 import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
@@ -22,6 +21,8 @@ import {
   PaTransactionResultDto,
   PaymentTransactionResultDto,
 } from './dto/payment-transaction-result.dto';
+import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
+import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 
 @Injectable()
 export class FspService {
@@ -221,10 +222,13 @@ export class FspService {
   ): PaymentTransactionResultDto {
     const result = new PaymentTransactionResultDto();
     result.nrSuccessfull = 0;
+    result.nrWaiting = 0;
     result.nrFailed = 0;
     for (let paTransactionResult of fspTransactionResults) {
       if (paTransactionResult.status === StatusEnum.success) {
         result.nrSuccessfull += 1;
+      } else if (paTransactionResult.status === StatusEnum.waiting) {
+        result.nrWaiting += 1;
       } else if (paTransactionResult.status === StatusEnum.error) {
         result.nrFailed += 1;
       }
@@ -246,6 +250,36 @@ export class FspService {
 
   //   await this.fspCallLogRepository.save(fspCallLog);
   // }
+
+  public async checkPaymentValidation(
+    fsp: fspName,
+    africasTalkingValidationData?: AfricasTalkingValidationDto,
+  ): Promise<any> {
+    if (fsp === fspName.africasTalking) {
+      return this.africasTalkingService.checkValidation(
+        africasTalkingValidationData,
+      );
+    }
+  }
+
+  public async processPaymentNotification(
+    fsp: fspName,
+    africasTalkingNotificationData?: AfricasTalkingNotificationDto,
+  ): Promise<void> {
+    if (fsp === fspName.africasTalking) {
+      const enrichedNotification = await this.africasTalkingService.processNotification(
+        africasTalkingNotificationData,
+      );
+
+      this.storeTransaction(
+        enrichedNotification.paTransactionResult,
+        enrichedNotification.programId,
+        enrichedNotification.installment,
+        enrichedNotification.amount,
+        fspName.africasTalking,
+      );
+    }
+  }
 
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
     const fsp = await this.financialServiceProviderRepository.findOne(id, {

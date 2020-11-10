@@ -4,6 +4,7 @@ import { fspName } from '../financial-service-provider.entity';
 
 export class PaymentTransactionResultDto {
   public nrFailed: number;
+  public nrWaiting: number;
   public nrSuccessfull: number;
 }
 

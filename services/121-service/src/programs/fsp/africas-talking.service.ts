@@ -70,6 +70,8 @@ export class AfricasTalkingService {
         metadata: {
           programId: String(programId),
           installment: String(installment),
+          did: String(item.did),
+          amount: String(amount),
         },
       };
       payload.recipients.push(recipient);
@@ -92,14 +94,14 @@ export class AfricasTalkingService {
       fspTransactionResult.status = StatusEnum.success;
 
       for (let transaction of paymentRequestResult.message.entries) {
-        let notification;
-        if (!transaction.errorMessage) {
-          notification = await this.listenAfricasTalkingtNotification(
-            transaction,
-            programId,
-            installment,
-          );
-        }
+        // let notification;
+        // if (!transaction.errorMessage) {
+        //   notification = await this.getNotification(
+        //     transaction,
+        //     programId,
+        //     installment,
+        //   );
+        // }
 
         const paTransactionResult = new PaTransactionResultDto();
 
@@ -108,23 +110,18 @@ export class AfricasTalkingService {
         );
         paTransactionResult.did = pa.did;
 
-        paTransactionResult.status =
-          transaction.errorMessage || notification.status === 'Failed'
-            ? StatusEnum.error
-            : StatusEnum.success;
+        paTransactionResult.status = transaction.errorMessage
+          ? StatusEnum.error
+          : StatusEnum.waiting;
 
         paTransactionResult.message = transaction.errorMessage
           ? transaction.errorMessage
-          : notification.status === 'Failed'
-          ? notification.description
-          : '';
+          : 'No notification of payment status received yet.';
 
         fspTransactionResult.paList.push(paTransactionResult);
       }
     } else if (paymentRequestResult.status === StatusEnum.error) {
       fspTransactionResult.status = StatusEnum.error;
-      // NOTE: We have no message-attribute at fsp-level
-      // fspTransactionResult.message = 'Whole FSP failed: ' + paymentResult.message;
       for (let pa of paymentList) {
         const paTransactionResult = new PaTransactionResultDto();
         paTransactionResult.did = pa.did;
@@ -137,48 +134,34 @@ export class AfricasTalkingService {
     return fspTransactionResult;
   }
 
-  private async listenAfricasTalkingtNotification(
-    transaction,
-    programId: number,
-    installment: number,
-  ): Promise<any> {
-    // Don't listen to notification locally, because callback URL is not set
-    // If you want to work on this piece of code, disable this DEBUG-workaround
-    if (DEBUG) {
-      return { status: 'Success' };
-    }
-    let filteredNotifications = [];
-    while (filteredNotifications.length === 0) {
-      const notifications = await this.africasTalkingNotificationRepository.find(
-        {
-          where: { destination: transaction.phoneNumber },
-          order: { timestamp: 'DESC' },
-        },
-      );
-      filteredNotifications = notifications.filter(i => {
-        return (
-          i.value === transaction.value &&
-          i.requestMetadata['installment'] === String(installment) &&
-          i.requestMetadata['programId'] === String(programId)
-        );
-      });
-    }
-    return filteredNotifications[0];
-  }
-
-  public async africasTalkingValidation(
+  public async checkValidation(
     africasTalkingValidationData: AfricasTalkingValidationDto,
   ): Promise<any> {
+    africasTalkingValidationData;
     return {
       status: 'Validated', // 'Validated' or 'Failed'
     };
   }
 
-  public async africasTalkingNotification(
+  public async processNotification(
     africasTalkingNotificationData: AfricasTalkingNotificationDto,
-  ): Promise<void> {
-    await this.africasTalkingNotificationRepository.save(
+  ): Promise<any> {
+    const notification = await this.africasTalkingNotificationRepository.save(
       africasTalkingNotificationData,
     );
+
+    const paTransactionResult = new PaTransactionResultDto();
+    paTransactionResult.did = notification.requestMetadata['did'];
+    paTransactionResult.status =
+      notification.status === 'Failed' ? StatusEnum.error : StatusEnum.success;
+    paTransactionResult.message =
+      notification.status === 'Failed' ? notification.description : '';
+
+    return {
+      paTransactionResult,
+      programId: notification.requestMetadata['programId'],
+      installment: notification.requestMetadata['installment'],
+      amount: Number(notification.requestMetadata['amount']),
+    };
   }
 }
