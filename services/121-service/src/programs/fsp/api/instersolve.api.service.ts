@@ -77,7 +77,7 @@ export class IntersolveApiService {
       intersolveRequest.balance = result.balance;
       intersolveRequest.transactionId = result.transactionId;
       intersolveRequest.toCancel =
-        result.resultCode !== IntersolveResultCode.Ok;
+        result.resultCode != IntersolveResultCode.Ok;
     } catch (Error) {
       console.log('Error: ', Error);
       intersolveRequest.toCancel = true;
