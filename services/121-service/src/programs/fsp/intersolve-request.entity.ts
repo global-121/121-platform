@@ -3,8 +3,8 @@ import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
 
 @Entity('intersolve_request')
 export class IntersolveRequestEntity {
-  @PrimaryGeneratedColumn('uuid')
-  public id: string;
+  @PrimaryGeneratedColumn()
+  public id: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created: Date;
@@ -12,7 +12,7 @@ export class IntersolveRequestEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public updated: Date;
 
-  @Column()
+  @Column({ type: 'bigint' })
   public refPos: number;
 
   @Column()
@@ -24,7 +24,7 @@ export class IntersolveRequestEntity {
   @Column({ nullable: true })
   public clientReference: number;
 
-  @Column()
+  @Column({ nullable: true })
   public resultCodeIssueCard: IntersolveResultCode;
 
   @Column({ nullable: true })
@@ -50,4 +50,7 @@ export class IntersolveRequestEntity {
 
   @Column({ nullable: true })
   public cancelResultCode: IntersolveResultCode;
+
+  @Column({ default: false })
+  public toCancel: boolean;
 }

@@ -19,6 +19,13 @@ export class IntersolveApiService {
 
   public constructor(private readonly soapService: SoapService) {}
 
+  // If we get one of these codes back from a cancel by refpos, stop cancelling
+  private readonly stopCancelByRefposCodes = [
+    IntersolveResultCode.Ok,
+    IntersolveResultCode.InvalidOrUnknownRetailer,
+    IntersolveResultCode.UnableToCancel,
+  ];
+
   public async issueCard(
     amount: number,
     refPos: number,
@@ -45,29 +52,35 @@ export class IntersolveApiService {
       String(refPos),
     );
 
-    const responseBody = await this.soapService.post(payload);
-    const result = {
-      resultCode: responseBody.IssueCardResponse.ResultCode._text,
-      resultDescription: responseBody.IssueCardResponse.ResultDescription._text,
-      cardId: responseBody.IssueCardResponse.CardId?._text,
-      pin: parseInt(responseBody.IssueCardResponse.PIN?._text),
-      balance: parseInt(responseBody.IssueCardResponse.CardNewBalance?._text),
-      transactionId: parseInt(
-        responseBody.IssueCardResponse.TransactionId?._text,
-      ),
-    };
-
     const intersolveRequest = new IntersolveRequestEntity();
     intersolveRequest.refPos = refPos;
     intersolveRequest.EAN = Number(process.env.INTERSOLVE_EAN);
     intersolveRequest.value = amount;
-    intersolveRequest.resultCodeIssueCard = result.resultCode;
-    intersolveRequest.cardId = result.cardId;
-    intersolveRequest.PIN = result.pin;
-    intersolveRequest.balance = result.balance;
-    intersolveRequest.transactionId = result.transactionId;
-    await this.intersolveRequestRepository.save(intersolveRequest);
 
+    let result = new IntersolveIssueCardResponse();
+    try {
+      const responseBody = await this.soapService.post(payload);
+      result = {
+        resultCode: responseBody.IssueCardResponse.ResultCode._text,
+        resultDescription:
+          responseBody.IssueCardResponse.ResultDescription._text,
+        cardId: responseBody.IssueCardResponse.CardId?._text,
+        pin: parseInt(responseBody.IssueCardResponse.PIN?._text),
+        balance: parseInt(responseBody.IssueCardResponse.CardNewBalance?._text),
+        transactionId: parseInt(
+          responseBody.IssueCardResponse.TransactionId?._text,
+        ),
+      };
+      intersolveRequest.resultCodeIssueCard = result.resultCode;
+      intersolveRequest.cardId = result.cardId;
+      intersolveRequest.PIN = result.pin;
+      intersolveRequest.balance = result.balance;
+      intersolveRequest.transactionId = result.transactionId;
+    } catch (Error) {
+      console.log('Error: ', Error);
+      intersolveRequest.toCancel = true;
+    }
+    await this.intersolveRequestRepository.save(intersolveRequest);
     return result;
   }
 
@@ -127,16 +140,18 @@ export class IntersolveApiService {
       resultDescription:
         responseBody.CancelTransactionByRefPosResponse.ResultDescription._text,
     };
-
     const intersolveRequest = await this.intersolveRequestRepository.findOne({
       refPos,
     });
-    intersolveRequest.updated = null;
+    intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled =
       result.resultCode == IntersolveResultCode.Ok;
     intersolveRequest.cancellationAttempts =
       intersolveRequest.cancellationAttempts + 1;
     intersolveRequest.cancelByRefPosResultCode = result.resultCode;
+    intersolveRequest.toCancel = !(
+      result.resultCode in this.stopCancelByRefposCodes
+    );
     await this.intersolveRequestRepository.save(intersolveRequest);
 
     return result;
@@ -178,12 +193,15 @@ export class IntersolveApiService {
       cardId,
       transactionId,
     });
-    intersolveRequest.created = intersolveRequest.created;
+    intersolveRequest.updated = new Date();
     intersolveRequest.isCancelled =
       result.resultCode == IntersolveResultCode.Ok;
     intersolveRequest.cancellationAttempts =
       intersolveRequest.cancellationAttempts + 1;
     intersolveRequest.cancelResultCode = result.resultCode;
+    intersolveRequest.toCancel = !(
+      result.resultCode in this.stopCancelByRefposCodes
+    );
     await this.intersolveRequestRepository.save(intersolveRequest);
 
     return result;

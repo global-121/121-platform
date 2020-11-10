@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, LessThan, Repository, In, Between } from 'typeorm';
+import { getRepository, LessThan, Repository, In, Between, Not } from 'typeorm';
 import { IntersolveBarcodeEntity } from '../programs/fsp/intersolve-barcode.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
-import { IntersolveRequestEntity } from 'src/programs/fsp/intersolve-request.entity';
-import { IntersolveResultCode } from 'src/programs/fsp/api/enum/intersolve-result-code.enum';
-import { IntersolveApiService } from 'src/programs/fsp/api/instersolve.api.service';
+import { IntersolveRequestEntity } from '../programs/fsp/intersolve-request.entity';
+import { IntersolveResultCode } from '../programs/fsp/api/enum/intersolve-result-code.enum';
+import { IntersolveApiService } from '../programs/fsp/api/instersolve.api.service';
 
 @Injectable()
 export class CronjobService {
@@ -15,7 +15,7 @@ export class CronjobService {
   private readonly intersolveBarcodeRepository: Repository<
     IntersolveBarcodeEntity
   >;
-
+  @InjectRepository(IntersolveRequestEntity)
   private readonly intersolveRequestRepository: Repository<
     IntersolveRequestEntity
   >;
@@ -65,13 +65,6 @@ export class CronjobService {
     // and tries to cancel the
     console.log('Execution Started: cancelByRefposIntersolve');
 
-    // If we get one of these codes back from a cancel by refpos, stop cancelling
-    const stopCancelByRefposCodes = [
-      IntersolveResultCode.Ok,
-      IntersolveResultCode.InvalidOrUnknownRetailer,
-      IntersolveResultCode.UnableToCancel,
-    ];
-
     const tenMinutes = 10 * 60 * 1000;
     const tenMinutesAgo = (d => new Date(d.setTime(d.getTime() - tenMinutes)))(
       new Date(),
@@ -81,22 +74,18 @@ export class CronjobService {
     const twoWeeksAgo = (d => new Date(d.setTime(d.getTime() - twoWeeks)))(
       new Date(),
     );
-
+    console.log('hello did we reach this point');
     const failedIntersolveRquests = await this.intersolveRequestRepository.find(
       {
         where: {
-          resultCodeIssueCard: !IntersolveResultCode.Ok,
           updated: Between(twoWeeksAgo, tenMinutesAgo),
-          cancelled: false,
-          cancelByRefposrResultCode: !In(stopCancelByRefposCodes),
+          toCancel: true,
         },
       },
     );
     for (let intersolveRequest of failedIntersolveRquests) {
       this.cancelRequestRefpos(intersolveRequest);
     }
-
-    console.log('Execution Complete: cancelByRefposIntersolve');
   }
   public async cancelRequestRefpos(
     intersolveRequest: IntersolveRequestEntity,
@@ -115,7 +104,7 @@ export class CronjobService {
     } catch (Error) {
       console.log('Error cancelling by refpos id', Error, intersolveRequest);
     }
-    intersolveRequest.updated = null;
+    intersolveRequest.updated = new Date();
     await this.intersolveRequestRepository.save(intersolveRequest);
   }
 }
