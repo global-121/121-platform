@@ -105,6 +105,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
     },
+    {
+      id: BulkActionId.notifyIncluded,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.notify-included',
+      ),
+      roles: [UserRole.ProjectOfficer],
+      phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+      showIfNoValidation: true,
+    },
   ];
 
   public submitWarning: any;
@@ -257,6 +267,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.reviewInclusion,
           ProgramPhase.payment,
         ],
+        width: columnDateTimeWidth,
+      },
+      {
+        prop: 'notifiedOfInclusion',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.notified-of-inclusion',
+        ),
+        ...columnDefaults,
+        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         width: columnDateTimeWidth,
       },
       {
@@ -435,6 +454,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         : null,
       rejected: person.rejectionDate
         ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
+        : null,
+      notifiedOfInclusion: person.inclusionNotificationDate
+        ? formatDate(
+            person.inclusionNotificationDate,
+            this.dateFormat,
+            this.locale,
+          )
         : null,
       name: person.name,
       phoneNumber: formatPhoneNumber(person.phoneNumber),

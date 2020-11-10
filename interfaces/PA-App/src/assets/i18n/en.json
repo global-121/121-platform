@@ -100,8 +100,8 @@
         "en": "Please select your language.",
         "ny_MW": "Chonde sankhani chiyankhulo chanu.",
         "om_ET": "Maaloo qooqa keessan filadhaa.",
-        "saq_KE": "[Samburu text]",
-        "tuv_KE": "[Turkana text]"
+        "saq_KE": "Enjere tegelu ng'ituk ino.",
+        "tuv_KE": "Akirimakinit, tetheu akituk kon."
       },
       "result": "Thank you, you have selected {{language}}.",
       "language": {
@@ -109,7 +109,7 @@
         "ny_MW": "Chichewa",
         "om_ET": "Afaan Oromoo",
         "saq_KE": "Samburu",
-        "tuv_KE": "Turkana"
+        "tuv_KE": "Ng'aturkana"
       }
     },
     "select-program": {

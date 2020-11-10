@@ -191,6 +191,21 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  notifySelectedIncluded(
+    programId: number | string,
+    dids: string[],
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        `/programs/notify-selected-included/${programId}`,
+        {
+          dids: JSON.stringify(dids),
+        },
+      )
+      .toPromise();
+  }
+
   notify(
     programId: number | string,
     notificationType: NotificationType,
