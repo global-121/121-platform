@@ -170,7 +170,7 @@ export class ProgramPayoutComponent implements OnInit {
                       { nrFailed: response.nrFailed },
                     )
                 : '',
-          )
+            )
             .concat(
               response.nrWaiting > 0
                 ? ' ' +
