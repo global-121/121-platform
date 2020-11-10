@@ -36,6 +36,11 @@ export class BulkActionsService {
           PaStatus[personData.status],
         );
         break;
+      case BulkActionId.notifyIncluded:
+        personData.checkboxVisible =
+          [PaStatus.included].includes(PaStatus[personData.status]) &&
+          !personData.notifiedOfInclusion;
+        break;
     }
     return personData;
   }
@@ -57,6 +62,11 @@ export class BulkActionsService {
         return await this.programsService.include(programId, selectedPeople);
       case BulkActionId.reject:
         return await this.programsService.reject(programId, selectedPeople);
+      case BulkActionId.notifyIncluded:
+        return await this.programsService.notifySelectedIncluded(
+          programId,
+          selectedPeople,
+        );
     }
   }
 }

@@ -534,6 +534,31 @@ export class ProgramService {
     }
   }
 
+  public async notifySelectedIncluded(
+    programId: number,
+    dids: object,
+  ): Promise<void> {
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    for (let did of JSON.parse(dids['dids'])) {
+      let connection = await this.connectionRepository.findOne({
+        where: { did: did.did },
+      });
+      if (!connection) {
+        continue;
+      }
+
+      connection.inclusionNotificationDate = new Date();
+      await this.connectionRepository.save(connection);
+
+      this.notifyInclusionStatus(connection, programId, true);
+    }
+  }
+
   public async notify(
     programId: number,
     notificationType: NotificationType,
@@ -831,6 +856,8 @@ export class ProgramService {
       connectionResponse['validationDate'] = connection.validationDate;
       connectionResponse['inclusionDate'] = connection.inclusionDate;
       connectionResponse['rejectionDate'] = connection.rejectionDate;
+      connectionResponse['inclusionNotificationDate'] =
+        connection.inclusionNotificationDate;
       connectionResponse['fsp'] = connection.fsp?.fsp;
       if (privacy) {
         connectionResponse['name'] = this.getName(connection.customData);
