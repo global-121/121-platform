@@ -30,6 +30,7 @@ import {
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { ProgramEntity } from '../program/program.entity';
+import { IntersolveRequestEntity } from './intersolve-request.entity';
 
 describe('Fsp service', (): void => {
   let service: FspService;
@@ -91,6 +92,10 @@ describe('Fsp service', (): void => {
           },
           {
             provide: getRepositoryToken(ConnectionEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(IntersolveRequestEntity),
             useFactory: repositoryMockFactory,
           },
         ],
