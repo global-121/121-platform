@@ -5,16 +5,24 @@ import { Injectable } from '@nestjs/common';
 import { IntersolveSoapElements } from './enum/intersolve-soap.enum';
 import { IntersolveCancelTransactionByRefPosResponse } from './dto/intersolve-cancel-transaction-by-ref-pos-response.dto';
 import { IntersolveCancelResponse } from './dto/intersolve-cancel-response.dto';
+import { IntersolveRequestEntity } from '../intersolve-request.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
 
 @Injectable()
 export class IntersolveApiService {
+  @InjectRepository(IntersolveRequestEntity)
+  private readonly intersolveRequestRepository: Repository<
+    IntersolveRequestEntity
+  >;
+
   public constructor(private readonly soapService: SoapService) {}
 
   public async issueCard(
     amount: number,
     refPos: number,
   ): Promise<IntersolveIssueCardResponse> {
-    console.log('issueCard soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.IssueCard,
     );
@@ -38,7 +46,6 @@ export class IntersolveApiService {
     );
 
     const responseBody = await this.soapService.post(payload);
-    console.log('responseBody: ', responseBody);
     const result = {
       resultCode: responseBody.IssueCardResponse.ResultCode._text,
       resultDescription: responseBody.IssueCardResponse.ResultDescription._text,
@@ -49,6 +56,18 @@ export class IntersolveApiService {
         responseBody.IssueCardResponse.TransactionId?._text,
       ),
     };
+
+    const intersolveRequest = new IntersolveRequestEntity();
+    intersolveRequest.refPos = refPos;
+    intersolveRequest.EAN = Number(process.env.INTERSOLVE_EAN);
+    intersolveRequest.value = amount;
+    intersolveRequest.resultCodeIssueCard = result.resultCode;
+    intersolveRequest.cardId = result.cardId;
+    intersolveRequest.PIN = result.pin;
+    intersolveRequest.balance = result.balance;
+    intersolveRequest.transactionId = result.transactionId;
+    await this.intersolveRequestRepository.save(intersolveRequest);
+
     return result;
   }
 
@@ -72,7 +91,6 @@ export class IntersolveApiService {
       String(pin),
     );
 
-    console.log('payload: ', payload);
     const responseBody = await this.soapService.post(payload);
     const result = {
       resultCode: responseBody.GetCardResponse.ResultCode._text,
@@ -84,10 +102,8 @@ export class IntersolveApiService {
   }
 
   public async cancelTransactionByRefPos(
-    cardId: string,
     refPos: number,
   ): Promise<IntersolveCancelTransactionByRefPosResponse> {
-    console.log('cancelTransactionByRefPos soapService', this.soapService);
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.CancelTransactionByRefPos,
     );
@@ -96,12 +112,6 @@ export class IntersolveApiService {
       IntersolveSoapElements.CancelTransactionByRefPos,
       ['EAN'],
       process.env.INTERSOLVE_EAN,
-    );
-    payload = this.soapService.changeSoapBody(
-      payload,
-      IntersolveSoapElements.CancelTransactionByRefPos,
-      ['CardId'],
-      cardId,
     );
     payload = this.soapService.changeSoapBody(
       payload,
@@ -117,6 +127,18 @@ export class IntersolveApiService {
       resultDescription:
         responseBody.CancelTransactionByRefPosResponse.ResultDescription._text,
     };
+
+    const intersolveRequest = await this.intersolveRequestRepository.findOne({
+      refPos,
+    });
+    intersolveRequest.created = intersolveRequest.created;
+    intersolveRequest.isCancelled =
+      result.resultCode == IntersolveResultCode.Ok;
+    intersolveRequest.cancellationAttempts =
+      intersolveRequest.cancellationAttempts + 1;
+    intersolveRequest.cancelByRefPosResultCode = result.resultCode;
+    await this.intersolveRequestRepository.save(intersolveRequest);
+
     return result;
   }
 
@@ -146,14 +168,24 @@ export class IntersolveApiService {
       String(transactionId),
     );
 
-    console.log('payload: ', payload);
     const responseBody = await this.soapService.post(payload);
-    console.log('responseBody intersolve: ', responseBody);
     const result = {
       resultCode: responseBody.CancelResponse.ResultCode._text,
       resultDescription: responseBody.CancelResponse.ResultDescription._text,
     };
-    console.log('result: ', result);
+
+    const intersolveRequest = await this.intersolveRequestRepository.findOne({
+      cardId,
+      transactionId,
+    });
+    intersolveRequest.created = intersolveRequest.created;
+    intersolveRequest.isCancelled =
+      result.resultCode == IntersolveResultCode.Ok;
+    intersolveRequest.cancellationAttempts =
+      intersolveRequest.cancellationAttempts + 1;
+    intersolveRequest.cancelResultCode = result.resultCode;
+    await this.intersolveRequestRepository.save(intersolveRequest);
+
     return result;
   }
 }
