@@ -21,12 +21,12 @@
   "descCashType": {
     "en": "Unconditional multi-purpose"
   },
-  "startDate": "2020-01-01T12:00:00Z",
+  "startDate": "2020-11-23T12:00:00Z",
   "endDate": "2020-12-31T12:00:00Z",
   "currency": "KES",
-  "distributionFrequency": "month",
-  "distributionDuration": 3,
-  "fixedTransferValue": 10,
+  "distributionFrequency": "week",
+  "distributionDuration": 2,
+  "fixedTransferValue": 4500,
   "financialServiceProviders": [
     {
       "id": 1
