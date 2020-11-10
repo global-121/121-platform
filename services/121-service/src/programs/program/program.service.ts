@@ -1096,6 +1096,7 @@ export class ProgramService {
       .andWhere('transaction.installment = :installmentId', {
         installmentId: installmentId,
       })
+      .andWhere('transaction.status = :status', { status: StatusEnum.success })
       .getRawMany();
   }
 
