@@ -38,13 +38,6 @@ export class NotificationComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.btnText = this.translate.instant(
-      'page.program.notification.' + this.notificationType + '.btn-text',
-    );
-    this.subHeader = this.translate.instant(
-      'page.program.notification.' + this.notificationType + '.confirm-message',
-    );
-
     this.actionType =
       this.notificationType === NotificationType.include
         ? ActionType.notifyIncluded
