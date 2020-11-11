@@ -180,10 +180,27 @@ export class IntersolveService {
   }
 
   public async getInstruction(): Promise<any> {
-    return this.intersolveInstructionsRepository.findOne(1);
+    const intersolveInstructionsEntity = await this.intersolveInstructionsRepository.findOne();
+
+    if (!intersolveInstructionsEntity) {
+      throw new HttpException(
+        'Image not found. Please upload an image using POST and try again.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return intersolveInstructionsEntity.image;
   }
 
   public async postInstruction(instructionsFileBlob): Promise<any> {
-    console.log(instructionsFileBlob);
+    let intersolveInstructionsEntity = await this.intersolveInstructionsRepository.findOne();
+
+    if (!intersolveInstructionsEntity) {
+      intersolveInstructionsEntity = new IntersolveInstructionsEntity();
+    }
+
+    intersolveInstructionsEntity.image = instructionsFileBlob.buffer;
+
+    this.intersolveInstructionsRepository.save(intersolveInstructionsEntity);
   }
 }
