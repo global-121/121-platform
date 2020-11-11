@@ -1,3 +1,4 @@
+import { IntersolveInstructionsEntity } from './../fsp/intersolve-instructions.entity';
 import { ImageCodeService } from './../../notifications/imagecode/image-code.service';
 import { AfricasTalkingService } from './../fsp/africas-talking.service';
 import { FundingService } from './../../funding/funding.service';
@@ -140,6 +141,10 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(IntersolveRequestEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(IntersolveInstructionsEntity),
             useFactory: repositoryMockFactory,
           },
         ],
