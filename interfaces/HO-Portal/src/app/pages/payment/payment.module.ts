@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { PaymentErrorPopupComponent } from 'src/app/program/payment-error-popup/payment-error-popup.component';
+import { PaymentStatusPopupComponent } from 'src/app/program/payment-status-popup/payment-status-popup.component';
 import { ProgramPayoutComponent } from 'src/app/program/program-payout/program-payout.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PaymentPage } from './payment.page';
@@ -23,11 +23,11 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  entryComponents: [PaymentErrorPopupComponent],
+  entryComponents: [PaymentStatusPopupComponent],
   declarations: [
     PaymentPage,
     ProgramPayoutComponent,
-    PaymentErrorPopupComponent,
+    PaymentStatusPopupComponent,
   ],
 })
 export class PaymentPageModule {}

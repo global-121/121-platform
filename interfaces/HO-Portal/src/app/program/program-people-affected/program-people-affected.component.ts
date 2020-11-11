@@ -10,7 +10,7 @@ import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
-import { PaymentErrorPopupComponent } from '../payment-error-popup/payment-error-popup.component';
+import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -497,7 +497,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public async errorPopup(row, column) {
     const modal: HTMLIonModalElement = await this.modalController.create({
-      component: PaymentErrorPopupComponent,
+      component: PaymentStatusPopupComponent,
       componentProps: {
         column: column.name,
         error: row[column.prop + '-error'],
@@ -512,7 +512,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const voucher = await this.programsService.exportVoucher(row.did, installment);
     console.log('voucher: ', voucher);
     const modal: HTMLIonModalElement = await this.modalController.create({
-      component: PaymentErrorPopupComponent,
+      component: PaymentStatusPopupComponent,
       componentProps: {
         column: column.name,
         voucher,

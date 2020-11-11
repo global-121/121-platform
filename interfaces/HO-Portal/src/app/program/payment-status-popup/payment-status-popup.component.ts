@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-payment-error-popup',
-  templateUrl: './payment-error-popup.component.html',
-  styleUrls: ['./payment-error-popup.component.scss'],
+  selector: 'app-payment-status-popup',
+  templateUrl: './payment-status-popup.component.html',
+  styleUrls: ['./payment-status-popup.component.scss'],
 })
-export class PaymentErrorPopupComponent implements OnInit {
+export class PaymentStatusPopupComponent implements OnInit {
   public error: string;
   public column: string;
   public voucher: any;
