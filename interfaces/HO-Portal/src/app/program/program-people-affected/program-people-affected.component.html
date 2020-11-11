@@ -102,6 +102,17 @@
   ></ngx-datatable-column>
 
   <ngx-datatable-column 
+    *ngIf="allPeopleAffected[0]?.vnumber && [phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && userRole === userEnum.ProgramManager"
+    prop="vnumber"
+    name="V-number"
+    minWidth="100"    
+    draggable="false"
+    resizeable="false"
+    sortable="true"
+  >
+  </ngx-datatable-column>
+
+  <ngx-datatable-column 
     *ngFor="let column of paymentColumns" 
     [prop]="column.prop"
     [name]="column.name"
