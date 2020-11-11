@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - 2020-10-29: `deploy.sh` can log to a file, when defined with `GLOBAL_121_DEPLOY_LOG_FILE`-variable in [tools/.env](tools/.env.example).
-- 2020-11-03: Added new dependency `jimp` to 121-service; To add/update manually: `docker-compose exec 121-service npm install --no-save`
+- 2020-11-03: Added new dependency `jimp` to 121-service; To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
+- 2020-11-11: Updated dependency `find-my-way` in 121-service; To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
+- 2020-11-11: Updated dependency `find-my-way` in PA-accounts-service; To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
 ---
 
