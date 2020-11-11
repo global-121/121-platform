@@ -1,3 +1,4 @@
+import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
 import { WhatsappModule } from './../../notifications/whatsapp/whatsapp.module';
 import { AfricasTalkingService } from './africas-talking.service';
@@ -32,6 +33,7 @@ import { FspAttributeEntity } from './fsp-attribute.entity';
       TransactionEntity,
       FspCallLogEntity,
       AfricasTalkingNotificationEntity,
+      IntersolveInstructionsEntity,
       IntersolveBarcodeEntity,
       IntersolveRequestEntity,
       ImageCodeExportVouchersEntity,

@@ -49,7 +49,11 @@ export class WhatsappService {
           to: 'whatsapp:' + recipientPhoneNr,
           mediaUrl: mediaUrl,
         })
-        .then(message => this.storeSendWhatsapp(message));
+        .then(message => {
+          this.storeSendWhatsapp(message);
+          this.sendVoucherInstructions(recipientPhoneNr);
+        })
+        .catch(err => console.log('Error twillio', err));
     } else {
       twilioClient.messages
         .create({
@@ -61,6 +65,19 @@ export class WhatsappService {
         })
         .then(message => this.storeSendWhatsapp(message));
     }
+  }
+
+  private sendVoucherInstructions(phoneNumber: string): void {
+    twilioClient.messages
+      .create({
+        body: '',
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+        from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+        statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
+        to: 'whatsapp:' + phoneNumber,
+        mediaUrl: EXTERNAL_API.voucherInstructionsUrl,
+      })
+      .catch(err => console.log('Error twillio', err));
   }
 
   public async getWhatsappText(

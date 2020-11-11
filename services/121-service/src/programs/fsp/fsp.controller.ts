@@ -1,11 +1,22 @@
 import { AfricasTalkingService } from './africas-talking.service';
-import { Post, Body, Controller, Get, Param, Res } from '@nestjs/common';
+import {
+  Post,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Res,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { FspService } from './fsp.service';
 import {
   ApiUseTags,
   ApiResponse,
   ApiOperation,
   ApiImplicitParam,
+  ApiImplicitFile,
 } from '@nestjs/swagger';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import {
@@ -98,6 +109,41 @@ export class FspController {
       'Content-Type': 'image/png',
     });
     bufferStream.pipe(response);
+  }
+
+  @ApiOperation({
+    title: 'Get intersolve instructions',
+  })
+  @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
+  @Get('intersolve/instruction')
+  public async intersolveInstructions(
+    @Res() response: Response,
+  ): Promise<void> {
+    const blob = await this.intersolveService.getInstruction();
+    var bufferStream = new stream.PassThrough();
+    bufferStream.end(Buffer.from(blob, 'binary'));
+    response.writeHead(200, {
+      'Content-Type': 'image/png',
+    });
+    bufferStream.pipe(response);
+  }
+
+  @Roles(UserRole.Admin)
+  @ApiOperation({
+    title: 'Post intersolve instructions',
+  })
+  @ApiImplicitFile({
+    name: 'image',
+    required: true,
+    description: 'Upload image with voucher instructions',
+  })
+  @ApiResponse({ status: 200, description: 'Post intersolve instructions' })
+  @Post('intersolve/instruction')
+  @UseInterceptors(FileInterceptor('image'))
+  public async postIntersolveInstructions(
+    @UploadedFile() instructionsFileBlob,
+  ): Promise<void> {
+    await this.intersolveService.postInstruction(instructionsFileBlob);
   }
 
   @Roles(UserRole.Admin)

@@ -11,6 +11,7 @@ import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
 import crypto from 'crypto';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
+import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
@@ -22,6 +23,10 @@ export class IntersolveService {
   @InjectRepository(IntersolveBarcodeEntity)
   private readonly intersolveBarcodeRepository: Repository<
     IntersolveBarcodeEntity
+  >;
+  @InjectRepository(IntersolveInstructionsEntity)
+  private readonly intersolveInstructionsRepository: Repository<
+    IntersolveInstructionsEntity
   >;
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
@@ -240,5 +245,30 @@ export class IntersolveService {
     }
 
     return image.image;
+  }
+
+  public async getInstruction(): Promise<any> {
+    const intersolveInstructionsEntity = await this.intersolveInstructionsRepository.findOne();
+
+    if (!intersolveInstructionsEntity) {
+      throw new HttpException(
+        'Image not found. Please upload an image using POST and try again.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return intersolveInstructionsEntity.image;
+  }
+
+  public async postInstruction(instructionsFileBlob): Promise<any> {
+    let intersolveInstructionsEntity = await this.intersolveInstructionsRepository.findOne();
+
+    if (!intersolveInstructionsEntity) {
+      intersolveInstructionsEntity = new IntersolveInstructionsEntity();
+    }
+
+    intersolveInstructionsEntity.image = instructionsFileBlob.buffer;
+
+    this.intersolveInstructionsRepository.save(intersolveInstructionsEntity);
   }
 }
