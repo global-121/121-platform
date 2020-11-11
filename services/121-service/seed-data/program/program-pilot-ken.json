@@ -34,7 +34,7 @@
   ],
   "inclusionCalculationType": "highestScoresX",
   "minimumScore": 0,
-  "highestScoresX": 250,
+  "highestScoresX": "350",
   "meetingDocuments": {
     "en": ""
   },
