@@ -85,7 +85,8 @@ export class IntersolveService {
         amount,
         installment,
       );
-      if (transferResult) {
+      console.log('transferResult: ', transferResult);
+      if (transferResult.status === StatusEnum.success) {
         result.status = transferResult.status;
         result.message = transferResult.message;
       } else {
@@ -106,9 +107,11 @@ export class IntersolveService {
       }
       result.message =
         'Creating intersolve voucher failed. Status code: ' +
-        voucherInfo.resultCode +
+        (voucherInfo.resultCode ? voucherInfo.resultCode : 'unknown') +
         ' message: ' +
-        voucherInfo.resultDescription;
+        (voucherInfo.resultDescription
+          ? voucherInfo.resultDescription
+          : 'unknown');
       result.status = StatusEnum.error;
     }
     return result;
@@ -168,7 +171,6 @@ export class IntersolveService {
         program.notifications[this.language]['whatsappPayment'];
       this.whatsappService.sendWhatsapp(whatsappPayment, phoneNumber, null);
       result.status = StatusEnum.success;
-      return;
     } catch (e) {
       result.message = (e as Error).message;
       result.status = StatusEnum.error;
