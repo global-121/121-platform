@@ -30,18 +30,16 @@ export class WhatsappService {
   ): Promise<void> {
     if (recipientPhoneNr) {
       const whatsappText = await this.getWhatsappText(language, key, programId);
-      await this.sendWhatsapp(whatsappText, recipientPhoneNr, 'mybarcode');
+      await this.sendWhatsapp(whatsappText, recipientPhoneNr, null);
     }
   }
 
   public async sendWhatsapp(
     message: string,
     recipientPhoneNr: string,
-    barcodeString: string,
+    mediaUrl: null | string,
   ): Promise<void> {
-    let mediaUrl = '';
-    if (barcodeString) {
-      mediaUrl = await this.imageCodeService.createBarcode(barcodeString);
+    if (mediaUrl) {
       twilioClient.messages
         .create({
           body: message,
@@ -65,8 +63,7 @@ export class WhatsappService {
           statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
           to: 'whatsapp:' + recipientPhoneNr,
         })
-        .then(message => this.storeSendWhatsapp(message))
-        .catch(err => console.log('Error twillio', err));
+        .then(message => this.storeSendWhatsapp(message));
     }
   }
 
@@ -128,10 +125,13 @@ export class WhatsappService {
       where: { whatsappPhoneNumber: fromNumber, send: false },
     });
     if (intersolveBarcode) {
+      const mediaUrl = await this.imageCodeService.createVoucherUrl(
+        intersolveBarcode,
+      );
       await this.sendWhatsapp(
         program.notifications[this.language]['whatsappVoucher'],
         intersolveBarcode.whatsappPhoneNumber,
-        intersolveBarcode.barcode,
+        mediaUrl,
       );
       intersolveBarcode.send = true;
       await this.intersolveBarcodeRepository.save(intersolveBarcode);

@@ -4,7 +4,6 @@
       <CancelTransactionByRefPos xmlns="http://www.loyaltyinabox.com/giftcard_6_8/">
         <RefPosToCancel>0</RefPosToCancel>
         <EAN>0</EAN>
-        <CardId>0</CardId>
       </CancelTransactionByRefPos>
    </soap:Body>
 </soap:Envelope>

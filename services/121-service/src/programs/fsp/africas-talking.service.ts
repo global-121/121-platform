@@ -1,4 +1,3 @@
-import { StatusMessageDto } from './../../shared/dto/status-message.dto';
 import { Injectable } from '@nestjs/common';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
@@ -6,6 +5,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 import { Repository } from 'typeorm';
 import { AfricasTalkingApiService } from './api/africas-talking.api.service';
+import { fspName } from './financial-service-provider.entity';
+import { StatusEnum } from '../../shared/enum/status.enum';
+import {
+  FspTransactionResultDto,
+  PaTransactionResultDto,
+} from './dto/payment-transaction-result.dto';
+import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 
 @Injectable()
 export class AfricasTalkingService {
@@ -18,22 +24,34 @@ export class AfricasTalkingService {
   ) {}
 
   public async sendPayment(
-    paymentList: any[],
-    programId,
-    installment,
-  ): Promise<StatusMessageDto> {
-    const payload = this.createAfricasTalkingDetails(
+    paymentList: PaPaymentDataDto[],
+    programId: number,
+    installment: number,
+    amount: number,
+  ): Promise<FspTransactionResultDto> {
+    const payload = this.createPayload(
       paymentList,
       programId,
       installment,
+      amount,
     );
-    return await this.africasTalkingApiService.sendPaymentMpesa(payload);
+    const paymentRequestResult = await this.africasTalkingApiService.sendPayment(
+      payload,
+    );
+
+    const fspTransactionResult = await this.getFsptransactionResult(
+      paymentRequestResult,
+      paymentList,
+    );
+
+    return fspTransactionResult;
   }
 
-  public createAfricasTalkingDetails(
-    paymentList: any[],
+  public createPayload(
+    paymentList: PaPaymentDataDto[],
     programId: number,
     installment: number,
+    amount: number,
   ): object {
     const payload = {
       username: process.env.AFRICASTALKING_USERNAME,
@@ -43,12 +61,14 @@ export class AfricasTalkingService {
 
     for (let item of paymentList) {
       const recipient = {
-        phoneNumber: item.phoneNumber,
+        phoneNumber: item.paymentAddress,
         currencyCode: process.env.AFRICASTALKING_CURRENCY_CODE,
-        amount: item.amount,
+        amount: amount,
         metadata: {
           programId: String(programId),
           installment: String(installment),
+          did: String(item.did),
+          amount: String(amount),
         },
       };
       payload.recipients.push(recipient);
@@ -57,19 +77,77 @@ export class AfricasTalkingService {
     return payload;
   }
 
-  public async africasTalkingValidation(
+  private async getFsptransactionResult(
+    paymentRequestResult: FspTransactionResultDto,
+    paymentList: PaPaymentDataDto[],
+  ): Promise<FspTransactionResultDto> {
+    let fspTransactionResult = new FspTransactionResultDto();
+    fspTransactionResult.fspName = fspName.africasTalking;
+    fspTransactionResult.paList = [];
+
+    if (paymentRequestResult.status === StatusEnum.success) {
+      fspTransactionResult.status = StatusEnum.success;
+
+      for (let transaction of paymentRequestResult.message.entries) {
+        const paTransactionResult = new PaTransactionResultDto();
+
+        const pa = paymentList.find(
+          i => i.paymentAddress === transaction.phoneNumber.replace(/\D/g, ''),
+        );
+        paTransactionResult.did = pa.did;
+
+        paTransactionResult.status = transaction.errorMessage
+          ? StatusEnum.error
+          : StatusEnum.waiting;
+
+        paTransactionResult.message = transaction.errorMessage
+          ? transaction.errorMessage
+          : 'No notification of payment status received yet.';
+
+        fspTransactionResult.paList.push(paTransactionResult);
+      }
+    } else if (paymentRequestResult.status === StatusEnum.error) {
+      fspTransactionResult.status = StatusEnum.error;
+      for (let pa of paymentList) {
+        const paTransactionResult = new PaTransactionResultDto();
+        paTransactionResult.did = pa.did;
+        paTransactionResult.status = StatusEnum.error;
+        paTransactionResult.message =
+          'Whole payment request failed: ' + paymentRequestResult.message.error;
+        fspTransactionResult.paList.push(paTransactionResult);
+      }
+    }
+    return fspTransactionResult;
+  }
+
+  public async checkValidation(
     africasTalkingValidationData: AfricasTalkingValidationDto,
   ): Promise<any> {
+    africasTalkingValidationData;
     return {
       status: 'Validated', // 'Validated' or 'Failed'
     };
   }
 
-  public async africasTalkingNotification(
+  public async processNotification(
     africasTalkingNotificationData: AfricasTalkingNotificationDto,
-  ): Promise<void> {
-    await this.africasTalkingNotificationRepository.save(
+  ): Promise<any> {
+    const notification = await this.africasTalkingNotificationRepository.save(
       africasTalkingNotificationData,
     );
+
+    const paTransactionResult = new PaTransactionResultDto();
+    paTransactionResult.did = notification.requestMetadata['did'];
+    paTransactionResult.status =
+      notification.status === 'Failed' ? StatusEnum.error : StatusEnum.success;
+    paTransactionResult.message =
+      notification.status === 'Failed' ? notification.description : '';
+
+    return {
+      paTransactionResult,
+      programId: notification.requestMetadata['programId'],
+      installment: notification.requestMetadata['installment'],
+      amount: Number(notification.requestMetadata['amount']),
+    };
   }
 }

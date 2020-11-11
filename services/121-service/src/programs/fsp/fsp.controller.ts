@@ -19,7 +19,10 @@ import {
   ApiImplicitFile,
 } from '@nestjs/swagger';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
+import {
+  FinancialServiceProviderEntity,
+  fspName,
+} from './financial-service-provider.entity';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { IntersolveService } from './intersolve.service';
 import { ExportVoucherDto } from './dto/export-voucher.dto';
@@ -66,7 +69,8 @@ export class FspController {
   public async validationCallback(
     @Body() africasTalkingValidationData: AfricasTalkingValidationDto,
   ): Promise<void> {
-    return await this.africasTalkingService.africasTalkingValidation(
+    return await this.fspService.checkPaymentValidation(
+      fspName.africasTalking,
       africasTalkingValidationData,
     );
   }
@@ -80,7 +84,8 @@ export class FspController {
   public async notificationCallback(
     @Body() africasTalkingNotificationData: AfricasTalkingNotificationDto,
   ): Promise<void> {
-    await this.africasTalkingService.africasTalkingNotification(
+    await this.fspService.processPaymentNotification(
+      fspName.africasTalking,
       africasTalkingNotificationData,
     );
   }

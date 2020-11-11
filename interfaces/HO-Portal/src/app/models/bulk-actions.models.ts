@@ -7,6 +7,7 @@ export enum BulkActionId {
   includeProjectOfficer = 'include-project-officer',
   includeProgramManager = 'include-program-manager',
   reject = 'reject',
+  notifyIncluded = 'notify-included',
 }
 
 export class BulkAction {

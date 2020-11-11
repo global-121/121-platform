@@ -11,7 +11,7 @@ import fspMobileMoney from '../../seed-data/fsp/fsp-mobile-money.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
-import fspMpesa from '../../seed-data/fsp/fsp-mpesa.json';
+import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 
 import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
 
@@ -52,7 +52,7 @@ export class SeedMultiProgram implements InterfaceScript {
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
-    await this.seedHelper.addFsp(fspMpesa);
+    await this.seedHelper.addFsp(fspAfricasTalking);
     await this.seedHelper.addFsp(fspBank);
     await this.seedHelper.addFsp(fspMobileMoney);
     await this.seedHelper.addFsp(fspMixedAttributes);

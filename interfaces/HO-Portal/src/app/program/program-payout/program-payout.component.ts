@@ -170,6 +170,15 @@ export class ProgramPayoutComponent implements OnInit {
                       { nrFailed: response.nrFailed },
                     )
                 : '',
+            )
+            .concat(
+              response.nrWaiting > 0
+                ? ' ' +
+                    this.translate.instant(
+                      'page.program.program-payout.result-waiting',
+                      { nrWaiting: response.nrWaiting },
+                    )
+                : '',
             );
           this.actionResult(message, true);
           this.createInstallments();
