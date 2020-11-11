@@ -91,7 +91,8 @@
           "latest-value": "Latest value"
         },
         "units": {
-          "month": "month"
+          "month": "month",
+          "week": "week"
         },
         "last-updated": "Last updated: {{date}}"
       },
