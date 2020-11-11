@@ -135,7 +135,7 @@ export class FspController {
   @ApiImplicitFile({
     name: 'image',
     required: true,
-    description: 'Upload image with voucher instructions',
+    description: 'Upload image with voucher instructions (PNG format only',
   })
   @ApiResponse({ status: 200, description: 'Post intersolve instructions' })
   @Post('intersolve/instruction')
