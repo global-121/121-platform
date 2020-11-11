@@ -68,4 +68,6 @@ export const EXTERNAL_API = {
     process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/imageCode/',
   africasTalkingValidationUrl:
     process.env.EXTERNAL_121_SERVICE_URL + 'api/fsp/africastalking/validation/',
+  voucherInstructionsUrl:
+    process.env.EXTERNAL_121_SERVICE_URL + 'api/fsp/intersolve/instruction/',
 };
