@@ -58,6 +58,7 @@ export class ApiService {
     path: string,
     body: object,
     anonymous: boolean = false,
+    responseAsBlob: boolean = false,
   ): Observable<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService POST: ${security} ${endpoint}${path}`, body);
@@ -65,6 +66,7 @@ export class ApiService {
     return this.http
       .post(endpoint + path, body, {
         headers: this.createHeaders(anonymous),
+        responseType: responseAsBlob ? 'blob' : null,
       })
       .pipe(
         tap((response) =>

@@ -71,6 +71,7 @@
         {{ 'page.program.program-people-affected.column.select'|translate }}
       </label>
     </ng-template>
+
     <ng-template
       ngx-datatable-cell-template
       let-row="row"
@@ -86,6 +87,7 @@
       />
     </ng-template>
   </ngx-datatable-column>
+
   <ngx-datatable-column
     *ngFor="let column of columns;"
     [prop]="column.prop"
@@ -101,19 +103,19 @@
     [cellClass]="column.cellClass"
   ></ngx-datatable-column>
 
-  <ngx-datatable-column 
+  <ngx-datatable-column
     *ngIf="allPeopleAffected[0]?.vnumber && [phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && userRole === userEnum.ProgramManager"
     prop="vnumber"
     [name]="'page.program.program-people-affected.column.vnumber'|translate"
-    minWidth="100"    
+    minWidth="100"
     draggable="false"
     resizeable="false"
     sortable="true"
   >
   </ngx-datatable-column>
 
-  <ngx-datatable-column 
-    *ngFor="let column of paymentColumns" 
+  <ngx-datatable-column
+    *ngFor="let column of paymentColumns"
     [prop]="column.prop"
     [name]="column.name"
     [width]="column.width"
@@ -126,21 +128,39 @@
     [headerClass]="column.headerClass"
     [cellClass]="column.cellClass"
   >
-    <ng-template ngx-datatable-cell-template let-value="value" let-row="row">
-      <span 
-        *ngIf="value==='Failed'" 
-        (click)="errorPopup(row,column)"
-        class="failedCell"
+    <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
+      <ng-container
+        *ngIf="value && !hasVoucherSupport(row.fsp) && !hasError(row, column.installmentIndex)"
       >
-        {{value}} <ion-icon name="open"></ion-icon>
-      </span>
-      <span 
-        *ngIf="value && value!=='Failed'" 
-        (click)="voucherPopup(row,column)"
-        class="failedCell"
+        {{ value }}
+      </ng-container>
+      <ng-container
+        *ngIf="value && (hasVoucherSupport(row.fsp) || hasError(row, column.installmentIndex))"
       >
-        {{value}} <ion-icon name="open"></ion-icon>
-      </span>
+        <button
+          type="button"
+          (click)="statusPopup(row, column, value)"
+          [ngClass]="{
+            'is-error': hasError(row, column.installmentIndex),
+            'ion-no-padding': true,
+            'status-pop-up': true
+           }"
+          [attr.title]="'page.program.program-people-affected.transaction.show-status'|translate"
+          [attr.aria-label]="'page.program.program-people-affected.transaction.show-status'|translate"
+        >
+          {{ value }}
+          <ion-icon
+            name="open"
+            size="small"
+            aria-hidden="true"
+            style="vertical-align: middle;"
+          ></ion-icon>
+        </button>
+      </ng-container>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>

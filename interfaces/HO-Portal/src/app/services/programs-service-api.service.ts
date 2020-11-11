@@ -145,15 +145,18 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  exportVoucher(
-    did: string,
-    installment: number,
-  ): Promise<any> {
+  exportVoucher(did: string, installment: number): Promise<Blob> {
     return this.apiService
-      .post(environment.url_121_service_api, `/fsp/intersolve/export-voucher`, {
-        did,
-        installment,
-      })
+      .post(
+        environment.url_121_service_api,
+        `/fsp/intersolve/export-voucher`,
+        {
+          did,
+          installment,
+        },
+        false,
+        true,
+      )
       .toPromise();
   }
 

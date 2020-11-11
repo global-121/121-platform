@@ -1,20 +1,26 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title *ngIf="error">{{column}} {{'page.program.program-people-affected.failed' | translate}}</ion-title>
-    <ion-title *ngIf="voucher">{{column}}</ion-title>
+    <ion-title>{{ title }}</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="closeModal()" [attr.title]="'common.cancel'|translate">
-        <ion-icon name="close" slot="icon-only"></ion-icon>
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel'|translate"
+        [attr.aria-label]="'common.cancel'|translate"
+      >
+        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="light">
-  <ion-item *ngIf="error">
-    {{error}}
-  </ion-item>
-  <ion-item *ngIf="voucher">
-    {{voucher}}
-  </ion-item>
+<ion-content
+  color="light"
+  class="ion-padding"
+>
+  <div *ngIf="content">
+    {{ content }}
+  </div>
+  <div *ngIf="imageUrl">
+    <img [src]="imageUrl" alt="" style="width: 100%; height: auto;">
+  </div>
 </ion-content>

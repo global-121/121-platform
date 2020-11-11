@@ -156,6 +156,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const columnDateWidth = 100;
     const columnScoreWidth = 90;
     const columnPhoneNumberWidth = 130;
+
     this.columnsAvailable = [
       {
         prop: 'pa',
@@ -287,7 +288,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        width: columnDateTimeWidth,
+        width: 150,
       },
     ];
     this.paymentColumnTemplate = {
@@ -295,6 +296,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       name: this.translate.instant(
         'page.program.program-people-affected.column.payment',
       ),
+      installmentIndex: 0,
       ...columnDefaults,
       phases: [ProgramPhase.payment],
       width: columnDateTimeWidth,
@@ -309,10 +311,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.loadColumns();
     if (this.thisPhase === ProgramPhase.payment) {
-      this.addPaymentColumns();
       this.pastTransactions = await this.programsService.getTransactions(
         this.programId,
       );
+      this.addPaymentColumns();
     }
 
     await this.loadData();
@@ -340,13 +342,19 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     );
   }
 
+  private createPaymentColumn(index: number) {
+    const column = JSON.parse(JSON.stringify(this.paymentColumnTemplate)); // Hack to clone without reference;
+    column.name += index;
+    column.prop += index;
+    column.installmentIndex = index;
+    return column;
+  }
+
   private addPaymentColumns() {
     const nrOfInstallments = this.program.distributionDuration;
 
-    for (let p = 0; p < nrOfInstallments; p++) {
-      const column = JSON.parse(JSON.stringify(this.paymentColumnTemplate)); // Hack to clone without reference
-      column.prop += p + 1;
-      column.name += p + 1;
+    for (let index = 1; index <= nrOfInstallments; index++) {
+      const column = this.createPaymentColumn(index);
       this.paymentColumns.push(column);
     }
   }
@@ -466,59 +474,90 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return personRow;
   }
 
+  private getTransactionOfInstallmentForDid(
+    installmentIndex: number,
+    did: string,
+  ) {
+    return this.pastTransactions.find(
+      (transaction) =>
+        transaction.installment === installmentIndex && transaction.did === did,
+    );
+  }
+
   private fillPaymentColumns(personRow: PersonRow): PersonRow {
-    this.paymentColumns.map((_, index) => {
-      const transactionsThisInstallment = this.pastTransactions.filter(
-        (i) => i.installment === index + 1 && i.did === personRow.did,
+    this.paymentColumns.forEach((paymentColumn) => {
+      const transaction = this.getTransactionOfInstallmentForDid(
+        paymentColumn.installmentIndex,
+        personRow.did,
       );
 
-      if (transactionsThisInstallment.length) {
-        const transaction = transactionsThisInstallment[0];
-        if (transaction.status === 'success') {
-          personRow['payment' + (index + 1)] = formatDate(
-            transaction.installmentdate,
-            this.dateFormat,
-            this.locale,
-          );
-        } else if (transaction.status === 'waiting') {
-          personRow['payment' + (index + 1)] = this.translate.instant(
-            'page.program.program-people-affected.waiting',
-          );
-        } else {
-          (personRow['payment' + (index + 1)] = this.translate.instant(
-            'page.program.program-people-affected.failed',
-          )),
-            (personRow['payment' + (index + 1) + '-error'] = transaction.error);
-        }
+      if (!transaction) {
+        return;
       }
+
+      let paymentColumnValue;
+
+      if (transaction.status === 'success') {
+        paymentColumnValue = formatDate(
+          transaction.installmentdate,
+          this.dateFormat,
+          this.locale,
+        );
+      } else if (transaction.status === 'waiting') {
+        paymentColumnValue = this.translate.instant(
+          'page.program.program-people-affected.transaction.waiting',
+        );
+      } else {
+        personRow['payment' + paymentColumn.installmentIndex + '-error'] =
+          transaction.error;
+        paymentColumnValue = this.translate.instant(
+          'page.program.program-people-affected.transaction.failed',
+        );
+      }
+
+      personRow[
+        'payment' + paymentColumn.installmentIndex
+      ] = paymentColumnValue;
     });
     return personRow;
   }
 
-  public async errorPopup(row, column) {
-    const modal: HTMLIonModalElement = await this.modalController.create({
-      component: PaymentStatusPopupComponent,
-      componentProps: {
-        column: column.name,
-        error: row[column.prop + '-error'],
-      },
-    });
-
-    await modal.present();
+  public hasVoucherSupport(fsp: string) {
+    const voucherFsps = ['Intersolve-no-whatsapp', 'Intersolve-whatsapp'];
+    return voucherFsps.includes(fsp);
   }
 
-  public async voucherPopup(row, column) {
-    const installment = Number(column.name.substring(column.name.length - 1));
-    const voucher = await this.programsService.exportVoucher(row.did, installment);
-    console.log('voucher: ', voucher);
+  public hasError(row: PersonRow, installmentIndex: number) {
+    return !!row['payment' + installmentIndex + '-error'];
+  }
+
+  public async statusPopup(row: PersonRow, column, value: string) {
+    const hasError = this.hasError(row, column.installmentIndex);
+    const content = hasError ? row[column.prop + '-error'] : null;
+    let voucherUrl = null;
+
+    if (this.hasVoucherSupport(row.fsp) && !hasError && !!value) {
+      const voucherBlob = await this.programsService.exportVoucher(
+        row.did,
+        column.installmentIndex,
+      );
+      voucherUrl = window.URL.createObjectURL(voucherBlob);
+    }
+
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentStatusPopupComponent,
       componentProps: {
-        column: column.name,
-        voucher,
+        title: `${column.name}: ${value}`,
+        content,
+        imageUrl: voucherUrl,
       },
     });
-
+    modal.onDidDismiss().then(() => {
+      // Remove the image from browser memory
+      if (voucherUrl) {
+        window.URL.revokeObjectURL(voucherUrl);
+      }
+    });
     await modal.present();
   }
 

@@ -1,4 +1,13 @@
-.failedCell:hover {
-  cursor: pointer;
-  color: #3880ff;
+.status-pop-up {
+  background: transparent;
+  border: 0;
+
+  &:hover,
+  &:focus {
+    color: var(--ion-color-primary);
+  }
+
+  &.is-error {
+    color: var(--ion-color-danger);
+  }
 }

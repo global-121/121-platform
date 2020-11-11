@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ModalController } from '@ionic/angular';
 
 @Component({
@@ -7,13 +8,22 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./payment-status-popup.component.scss'],
 })
 export class PaymentStatusPopupComponent implements OnInit {
-  public error: string;
-  public column: string;
-  public voucher: any;
+  public title: string;
+  public content: any;
+  public imageUrl: string;
 
-  constructor(private modalController: ModalController) {}
+  constructor(
+    private modalController: ModalController,
+    private sanitizer: DomSanitizer,
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.imageUrl) {
+      this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+        this.imageUrl,
+      ) as string;
+    }
+  }
 
   public closeModal() {
     this.modalController.dismiss();
