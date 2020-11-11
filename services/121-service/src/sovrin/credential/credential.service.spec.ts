@@ -37,6 +37,7 @@ import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.e
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 import { IntersolveRequestEntity } from '../../programs/fsp/intersolve-request.entity';
+import { IntersolveInstructionsEntity } from '../../programs/fsp/intersolve-instructions.entity';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -145,6 +146,10 @@ describe('CredentialService', (): void => {
             provide: getRepositoryToken(IntersolveRequestEntity),
             useFactory: repositoryMockFactory,
           },
+          {
+            provide: getRepositoryToken(IntersolveInstructionsEntity),
+            useFactory: repositoryMockFactory,
+          },
         ],
       }).compile();
 
@@ -152,7 +157,7 @@ describe('CredentialService', (): void => {
     },
   );
 
-  it('should be defined', (): void => {
+  it('should be defined ', (): void => {
     expect(service).toBeDefined();
   });
 });

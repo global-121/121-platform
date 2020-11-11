@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.11.0...master)
+- - 2020-11-11 Added functionality to send self-scan instructions. For this to work an image with self checkout instructions needs to be uploaded to /api/fsp/intersolve/instruction on the NLD production VM.
 
 ---
 
