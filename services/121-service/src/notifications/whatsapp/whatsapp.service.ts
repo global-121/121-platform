@@ -51,7 +51,6 @@ export class WhatsappService {
         })
         .then(message => {
           this.storeSendWhatsapp(message);
-          this.sendVoucherInstructions(recipientPhoneNr);
         })
         .catch(err => console.log('Error twillio', err));
     } else {
@@ -65,19 +64,6 @@ export class WhatsappService {
         })
         .then(message => this.storeSendWhatsapp(message));
     }
-  }
-
-  private sendVoucherInstructions(phoneNumber: string): void {
-    twilioClient.messages
-      .create({
-        body: '',
-        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-        from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
-        statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
-        to: 'whatsapp:' + phoneNumber,
-        mediaUrl: EXTERNAL_API.voucherInstructionsUrl,
-      })
-      .catch(err => console.log('Error twillio', err));
   }
 
   public async getWhatsappText(
@@ -133,6 +119,12 @@ export class WhatsappService {
         intersolveBarcode.whatsappPhoneNumber,
         mediaUrl,
       );
+      await this.sendWhatsapp(
+        '',
+        intersolveBarcode.whatsappPhoneNumber,
+        EXTERNAL_API.voucherInstructionsUrl,
+      );
+
       intersolveBarcode.send = true;
       await this.intersolveBarcodeRepository.save(intersolveBarcode);
     } else {
