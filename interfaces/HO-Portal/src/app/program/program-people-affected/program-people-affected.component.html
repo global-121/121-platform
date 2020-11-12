@@ -104,7 +104,7 @@
   <ngx-datatable-column 
     *ngIf="allPeopleAffected[0]?.vnumber && [phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && userRole === userEnum.ProgramManager"
     prop="vnumber"
-    name="V-number"
+    [name]="'page.program.program-people-affected.column.vnumber'|translate"
     minWidth="100"    
     draggable="false"
     resizeable="false"
