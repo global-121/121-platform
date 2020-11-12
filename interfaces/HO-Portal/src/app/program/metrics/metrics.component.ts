@@ -136,7 +136,9 @@ export class MetricsComponent implements OnChanges {
       value: this.getValueOrEmpty(
         this.program.distributionFrequency,
         (value) => {
-          return this.translate.instant('page.program.metrics.units.' + value);
+          return this.translate.instant(
+            'page.program.metrics.units.frequency.' + value,
+          );
         },
       ),
     });
@@ -148,7 +150,8 @@ export class MetricsComponent implements OnChanges {
         this.program.distributionDuration,
         (value) => {
           return `${value} ${this.translate.instant(
-            'page.program.metrics.units.' + this.program.distributionFrequency,
+            'page.program.metrics.units.duration.' +
+              this.program.distributionFrequency,
           )}`;
         },
       ),
