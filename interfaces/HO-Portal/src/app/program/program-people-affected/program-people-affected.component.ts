@@ -27,6 +27,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  public phaseEnum = ProgramPhase;
+  public userEnum = UserRole;
+
   public program: Program;
   public activePhase: ProgramPhase;
 
@@ -175,16 +178,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         prop: 'phoneNumber',
         name: this.translate.instant(
           'page.program.program-people-affected.column.phone-number',
-        ),
-        ...columnDefaults,
-        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        roles: [UserRole.ProgramManager],
-        minWidth: columnPhoneNumberWidth,
-      },
-      {
-        prop: 'vnumber',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.vnumber',
         ),
         ...columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
