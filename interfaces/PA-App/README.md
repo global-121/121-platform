@@ -38,7 +38,7 @@ Audio-file creation/processing:
   - `translation.string.key` is the path used in the text-translation file, see [`en.json`](./src/assets/i18n/en.json)
 
 - If source-audio is only available in `*.m4a`-files, convert to `*.mp3` first, by running the script:  
-  `npm run generate-assets-audio -- <locale> --convert`
+  `npm run generate-assets-audio -- <locale> --convertFrom m4a`
 
 - Convert the audio files to the specified format(s) by running the script:  
   `npm run generate-assets-audio -- <locale>`  

@@ -58,11 +58,12 @@ function checkSourceExists(locale) {
 }
 
 /**
- * Convert audio assets from *.m4a to *.mp3
+ * Convert audio assets from `sourceType` to *.mp3
  * @param {String} locale
+ * @param {String} sourceType
  */
-function convertM4aToMp3(locale) {
-  const sourceFileType = '.m4a';
+function convertToMp3(locale, sourceType) {
+  const sourceFileType = `.${sourceType}`;
   const outputFileType = '.mp3';
 
   checkSourceExists(locale);
@@ -124,9 +125,9 @@ function generateAssetsAudio(locale) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-// When the `--convert` flag is used, convert the source-files to mp3 first
-if (process.argv[3] === '--convert') {
-  return convertM4aToMp3(process.argv[2]);
+// When the `--convertFrom` flag is used, convert the source-files to mp3 first
+if (process.argv[3] === '--convertFrom') {
+  return convertToMp3(process.argv[2], process.argv[4]);
 }
 
 // When a locale is provided via the command-line, use that:
