@@ -1,3 +1,4 @@
+const dotenv = require('dotenv');
 const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
@@ -5,6 +6,9 @@ const rl = readline.createInterface({
 });
 const fs = require('fs');
 const { execSync } = require('child_process');
+
+// Load environment-variables from .env file (if available)
+dotenv.config();
 
 // Documentation: https://www.ffmpeg.org/ffmpeg.html
 // Also: https://trac.ffmpeg.org/wiki/Encode/MP3
@@ -27,11 +31,12 @@ function logOutput(error, stdOut, stdErr) {
 }
 
 /**
+ * @param {String} path
  * @param {String} type
  * @returns {Array}
  */
-function getSourceFiles(type) {
-  const files = fs.readdirSync('./').filter((file) => file.match(`${type}$`));
+function getSourceFiles(path, type) {
+  const files = fs.readdirSync(path).filter((file) => file.match(`${type}$`));
 
   if (!files || !files.length) {
     console.warn(`No files found of type: ${type}`);
@@ -44,17 +49,17 @@ function getSourceFiles(type) {
 /**
  * Perform check(s) on source paths/files before proceeding...
  * @param {String} locale
+ * @returns {String} Path to existing source-files
  */
 function checkSourceExists(locale) {
-  const sourcePath = `src/assets/i18n/${locale}/`;
+  const path = `src/assets/i18n/${locale}/`;
 
-  if (!locale || !fs.existsSync(sourcePath)) {
+  if (!locale || !fs.existsSync(path)) {
     console.warn(`No folder available for locale: ${locale}`);
     return process.exit(1);
   }
 
-  // Change to requested folder:
-  process.chdir(sourcePath);
+  return path;
 }
 
 /**
@@ -66,9 +71,8 @@ function convertToMp3(locale, sourceType) {
   const sourceFileType = `.${sourceType}`;
   const outputFileType = '.mp3';
 
-  checkSourceExists(locale);
-
-  const sourceFiles = getSourceFiles(sourceFileType);
+  const path = checkSourceExists(locale);
+  const sourceFiles = getSourceFiles(path, sourceFileType);
 
   if (!sourceFiles) {
     return;
@@ -77,10 +81,10 @@ function convertToMp3(locale, sourceType) {
   sourceFiles.forEach((file) => {
     const outputFile = file.replace(sourceFileType, outputFileType);
 
-    console.log(`Converting to: ${outputFile}`);
+    console.log(`Converting to: ${path}${outputFile}`);
 
     execSync(
-      `${ffmpegPath} -loglevel warning -y -i ${file} -map_metadata -1 -codec:a libmp3lame -q:a 8 ${outputFile}`,
+      `${ffmpegPath} -loglevel warning -y -i ${path}${file} -map_metadata -1 -codec:a libmp3lame -q:a 8 ${path}${outputFile}`,
       logOutput,
     );
   });
@@ -99,8 +103,8 @@ function generateAssetsAudio(locale) {
   const sourceFileType = '.mp3';
   const outputFileType = '.webm';
 
-  checkSourceExists(locale);
-  const sourceFiles = getSourceFiles(sourceFileType);
+  const path = checkSourceExists(locale);
+  const sourceFiles = getSourceFiles(path, sourceFileType);
 
   if (!sourceFiles) {
     return;
@@ -109,10 +113,10 @@ function generateAssetsAudio(locale) {
   sourceFiles.forEach((file) => {
     const outputFile = file.replace(sourceFileType, outputFileType);
 
-    console.log(`Generating: ${outputFile}`);
+    console.log(`Generating: ${path}${outputFile}`);
 
     execSync(
-      `${ffmpegPath} -loglevel warning -y -i ${file} -map_metadata -1  -b:a 64K  -dash 1 ${outputFile}`,
+      `${ffmpegPath} -loglevel warning -y -i ${path}${file} -map_metadata -1  -b:a 64K  -dash 1 ${path}${outputFile}`,
       logOutput,
     );
   });
@@ -121,6 +125,12 @@ function generateAssetsAudio(locale) {
   setTimeout(() => {
     process.exit();
   }, 3000);
+}
+
+function getEnabledLocales(env) {
+  if (!env) return [];
+
+  return env.trim().split(/\s*,\s*/);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -134,6 +144,18 @@ if (process.argv[3] === '--convertFrom') {
 if (process.argv[2]) {
   return generateAssetsAudio(process.argv[2]);
 }
+
+// If locales are defined via ENV-variables, use that:
+if (typeof process.env.NG_LOCALES !== 'undefined') {
+  console.log(`Using locales from ENV: ${process.env.NG_LOCALES}`);
+
+  const audioLocales = getEnabledLocales(process.env.NG_LOCALES);
+
+  return audioLocales.forEach((locale) => {
+    return generateAssetsAudio(locale);
+  });
+}
+
 // Otherwise, ask for it:
 rl.question(
   'For which locale do you want to generate audio assets? : ',
