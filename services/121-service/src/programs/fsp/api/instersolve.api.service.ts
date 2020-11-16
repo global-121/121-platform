@@ -54,7 +54,7 @@ export class IntersolveApiService {
 
     const intersolveRequest = new IntersolveRequestEntity();
     intersolveRequest.refPos = refPos;
-    intersolveRequest.EAN = Number(process.env.INTERSOLVE_EAN);
+    intersolveRequest.EAN = process.env.INTERSOLVE_EAN;
     intersolveRequest.value = amount;
 
     let result = new IntersolveIssueCardResponse();

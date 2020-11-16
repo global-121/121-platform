@@ -15,8 +15,8 @@ export class IntersolveRequestEntity {
   @Column({ type: 'bigint' })
   public refPos: number;
 
-  @Column()
-  public EAN: number;
+  @Column({ nullable: true })
+  public EAN: string;
 
   @Column()
   public value: number;
