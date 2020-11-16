@@ -12,7 +12,7 @@ const fs = require("fs");
  * @param {string} target (optional)
  */
 function deploy(target) {
-  const command = `cd ${process.env.GLOBAL_121_REPO} && sudo ./tools/deploy.sh`;
+  let command = `cd ${process.env.GLOBAL_121_REPO} && sudo ./tools/deploy.sh`;
 
   if (target) {
     command += ` "${target}"`;
