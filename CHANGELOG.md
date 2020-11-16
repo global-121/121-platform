@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.12.1](https://github.com/global-121/121-platform/compare/v0.12.0...v0.12.1) - 2020-11-16
+
+### Changed
+- 2020-11-12: Updated/fixed dependencies of 121-service;  
+  To update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
+
+---
+
 ## [0.12.0](https://github.com/global-121/121-platform/compare/v0.11.0...v0.12.0) - 2020-11-12
 
 ### Added
