@@ -907,14 +907,30 @@ export class ProgramService {
       order: { inclusionScore: 'DESC' },
     });
     const enrolledConnections = [];
-    for (let connection of connections)
+    for (let connection of connections) {
       if (
         connection.programsApplied.includes(+programId) || // Get connections applied to your program ..
         connection.programsApplied.length === 0 // .. and connections applied to no program (so excluding connections applied to other program)
       ) {
         enrolledConnections.push(connection);
       }
+    }
     return enrolledConnections;
+  }
+
+  public async getMonitoringData(programId: number): Promise<any[]> {
+    const connections = await this.getAllConnections(+programId);
+
+    return connections.map(connection => {
+      const appliedDate = new Date(connection.appliedDate).getTime();
+      const startDate = new Date(connection.created).getTime();
+      const durationSeconds = (appliedDate - startDate) / 1000;
+      return {
+        monitoringAnswer: connection.customData['monitoringAnswer'],
+        registrationDuration: durationSeconds,
+        status: this.getPaStatus(connection, programId),
+      };
+    });
   }
 
   public async getInstallments(programId: number): Promise<any> {
