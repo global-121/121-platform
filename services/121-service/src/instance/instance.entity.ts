@@ -19,4 +19,7 @@ export class InstanceEntity {
 
   @Column('json', { default: null })
   public contactDetails: JSON;
+
+  @Column('json', { default: null })
+  public monitoringQuestion: JSON;
 }
