@@ -8,13 +8,6 @@ import { TranslatableStringService } from 'src/app/services/translatable-string.
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
-export enum monitoringChoices {
-  option1 = 'option1',
-  option2 = 'option2',
-  option3 = 'option3',
-  option4 = 'option4',
-}
-
 @Component({
   selector: 'app-monitoring-question',
   templateUrl: './monitoring-question.component.html',
@@ -24,9 +17,8 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   public isCanceled = false;
   public monitoringQuestion = new MonitoringInfo();
 
-  public monitoringChoices = monitoringChoices;
   public monitoringChoice: string;
-  public monitoringChosen: boolean;
+  public monitoringSubmitted: boolean;
 
   constructor(
     public conversationService: ConversationService,
@@ -54,7 +46,7 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   async initHistory() {
     this.isDisabled = this.data.isDisabled;
     this.monitoringChoice = this.data.monitoringChoice;
-    this.monitoringChosen = this.data.monitoringChosen;
+    this.monitoringSubmitted = this.data.monitoringSubmitted;
 
     await this.getMonitoringQuestion();
 
@@ -76,26 +68,25 @@ export class MonitoringQuestionComponent extends PersonalComponent {
     this.monitoringQuestion.intro = this.translatableString.get(
       monitoringQuestion.intro,
     );
-    this.monitoringQuestion.option1 = this.translatableString.get(
-      monitoringQuestion.option1,
-    );
-    this.monitoringQuestion.option2 = this.translatableString.get(
-      monitoringQuestion.option2,
-    );
-    this.monitoringQuestion.option3 = this.translatableString.get(
-      monitoringQuestion.option3,
-    );
-    this.monitoringQuestion.option4 = this.translatableString.get(
-      monitoringQuestion.option4,
-    );
     this.monitoringQuestion.conclusion = this.translatableString.get(
       monitoringQuestion.conclusion,
     );
+    this.monitoringQuestion.options = [];
+    for (let option of monitoringQuestion.options) {
+      const newOption = {
+        option: option.option,
+        label: this.translatableString.get(option.label),
+      };
+      this.monitoringQuestion.options.push(newOption);
+    }
   }
 
   public changeMonitoringChoice(value: string) {
     this.monitoringChoice = value;
   }
+
+  public async submitMonitoringAnswer() {
+    this.monitoringSubmitted = true;
 
   public submitMonitoringAnswer() {
     this.monitoringChosen = true;
@@ -122,7 +113,7 @@ export class MonitoringQuestionComponent extends PersonalComponent {
       name: PersonalComponents.monitoringQuestion,
       data: {
         monitoringChoice: this.monitoringChoice,
-        monitoringChosen: this.monitoringChosen,
+        monitoringSubmitted: this.monitoringSubmitted,
       },
       next: this.getNextSection(),
     });

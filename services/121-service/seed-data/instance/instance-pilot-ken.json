@@ -21,26 +21,40 @@
       "tuv_KE": "",
       "en": "We would like to know what it was like to register using the 121 app. Please select one answer based on your experience:"
     },
-    "option1": {
-      "saq_KE": "",
-      "tuv_KE": "",
-      "en": "Able to use it without help"
-    },
-    "option2": {
-      "saq_KE": "",
-      "tuv_KE": "",
-      "en": "Able to use it with some help"
-    },
-    "option3": {
-      "saq_KE": "",
-      "tuv_KE": "",
-      "en": "Able to use it with a lot of help"
-    },
-    "option4": {
-      "saq_KE": "",
-      "tuv_KE": "",
-      "en": "Not not able to use it at all"
-    },
+    "options": [
+      {
+        "option": "no-help",
+        "label": {
+          "saq_KE": "",
+          "tuv_KE": "",
+          "en": "Able to use it without help"
+        }
+      },
+      {
+        "option": "some-help",
+        "label": {
+          "saq_KE": "",
+          "tuv_KE": "",
+          "en": "Able to use it with some help"
+        }
+      },
+      {
+        "option": "lot-of-help",
+        "label": {
+          "saq_KE": "",
+          "tuv_KE": "",
+          "en": "Able to use it with a lot of help"
+        }
+      },
+      {
+        "option": "unusable",
+        "label": {
+          "saq_KE": "",
+          "tuv_KE": "",
+          "en": "Not able to use it at all"
+        }
+      }
+    ],
     "conclusion": {
       "saq_KE": "",
       "tuv_KE": "",

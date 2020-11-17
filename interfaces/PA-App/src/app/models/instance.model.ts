@@ -21,18 +21,12 @@ export class InstanceInformation {
 
 export class MonitoringData {
   intro: TranslatableString;
-  option1: TranslatableString;
-  option2: TranslatableString;
-  option3: TranslatableString;
-  option4: TranslatableString;
+  options: string;
   conclusion: TranslatableString;
 }
 
 export class MonitoringInfo {
   intro: string;
-  option1: string;
-  option2: string;
-  option3: string;
-  option4: string;
+  options: any[];
   conclusion: string;
 }
