@@ -4,6 +4,7 @@ import { MonitoringInfo } from 'src/app/models/instance.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -25,6 +26,7 @@ export class MonitoringQuestionComponent extends PersonalComponent {
     private instanceService: InstanceService,
     private translatableString: TranslatableStringService,
     private paData: PaDataService,
+    private programsService: ProgramsServiceApiService,
   ) {
     super();
   }
@@ -88,8 +90,12 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   public async submitMonitoringAnswer() {
     this.monitoringSubmitted = true;
 
-  public submitMonitoringAnswer() {
-    this.monitoringChosen = true;
+    const did = await this.paData.retrieve(this.paData.type.did);
+    this.programsService.postConnectionCustomAttribute(
+      did,
+      'monitoringAnswer',
+      this.monitoringChoice,
+    );
 
     this.complete();
   }
