@@ -170,6 +170,15 @@ export class ProgramController {
     return await this.programService.getConnections(param.programId, true);
   }
 
+  @Roles(UserRole.Admin)
+  @ApiOperation({ title: 'Get monitoring data' })
+  @ApiResponse({ status: 200, description: 'Got monitoring data' })
+  @ApiImplicitParam({ name: 'programId', required: true })
+  @Get('/monitoring/:programId')
+  public async getMonitoringData(@Param() params): Promise<any[]> {
+    return await this.programService.getMonitoringData(params.programId);
+  }
+
   @Roles(UserRole.ProjectOfficer)
   @ApiOperation({ title: 'Select set of PAs for validation' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })

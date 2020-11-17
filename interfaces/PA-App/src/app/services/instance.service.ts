@@ -27,6 +27,7 @@ export class InstanceService {
       dataPolicy: this.translatableString.get(instanceData.dataPolicy),
       contactDetails: this.translatableString.get(instanceData.contactDetails),
       aboutProgram: this.translatableString.get(instanceData.aboutProgram),
+      monitoringQuestion: instanceData.monitoringQuestion,
     });
   }
 }

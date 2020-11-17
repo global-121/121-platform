@@ -273,11 +273,6 @@ export class CreateConnectionService {
     return connection;
   }
 
-  public async getConnections(): Promise<ConnectionEntity[]> {
-    let connections = await this.connectionRepository.find();
-    return connections;
-  }
-
   public async getFspAnswersAttributes(
     did: string,
   ): Promise<FspAnswersAttrInterface> {

@@ -120,7 +120,7 @@ export class RegistrationSummaryComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.storeCredential;
+    return PersonalComponents.monitoringQuestion;
   }
 
   complete() {

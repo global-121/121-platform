@@ -7,6 +7,7 @@ export class InstanceData {
   dataPolicy: TranslatableString;
   contactDetails: TranslatableString;
   aboutProgram: TranslatableString;
+  monitoringQuestion: string;
 }
 
 export class InstanceInformation {
@@ -15,4 +16,17 @@ export class InstanceInformation {
   dataPolicy: string;
   contactDetails: string;
   aboutProgram: string;
+  monitoringQuestion: string;
+}
+
+export class MonitoringData {
+  intro: TranslatableString;
+  options: string;
+  conclusion: TranslatableString;
+}
+
+export class MonitoringInfo {
+  intro: string;
+  options: any[];
+  conclusion: string;
 }
