@@ -14,6 +14,7 @@ import { ContactDetailsComponent } from '../personal-components/contact-details/
 import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
 import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
+import { MonitoringQuestionComponent } from '../personal-components/monitoring-question/monitoring-question.component';
 import { PersonalComponent } from '../personal-components/personal-component.class';
 import { PersonalComponents } from '../personal-components/personal-components.enum';
 import { PreprintedQrcodeComponent } from '../personal-components/preprinted-qrcode/preprinted-qrcode.component';
@@ -55,6 +56,7 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
     [PersonalComponents.handleProof]: HandleProofComponent,
     [PersonalComponents.loginIdentity]: LoginIdentityComponent,
+    [PersonalComponents.monitoringQuestion]: MonitoringQuestionComponent,
     [PersonalComponents.registrationSummary]: RegistrationSummaryComponent,
     [PersonalComponents.preprintedQrcode]: PreprintedQrcodeComponent,
     [PersonalComponents.selectFsp]: SelectFspComponent,

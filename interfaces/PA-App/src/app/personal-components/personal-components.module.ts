@@ -12,6 +12,7 @@ import { CreateIdentityComponent } from './create-identity/create-identity.compo
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
 import { HandleProofComponent } from './handle-proof/handle-proof.component';
 import { LoginIdentityComponent } from './login-identity/login-identity.component';
+import { MonitoringQuestionComponent } from './monitoring-question/monitoring-question.component';
 import { PreprintedQrcodeComponent } from './preprinted-qrcode/preprinted-qrcode.component';
 import { RegistrationSummaryComponent } from './registration-summary/registration-summary.component';
 import { SelectFspComponent } from './select-fsp/select-fsp.component';
@@ -29,6 +30,7 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     EnrollInProgramComponent,
     HandleProofComponent,
     LoginIdentityComponent,
+    MonitoringQuestionComponent,
     PreprintedQrcodeComponent,
     RegistrationSummaryComponent,
     SelectFspComponent,
@@ -47,6 +49,7 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     EnrollInProgramComponent,
     HandleProofComponent,
     LoginIdentityComponent,
+    MonitoringQuestionComponent,
     PreprintedQrcodeComponent,
     RegistrationSummaryComponent,
     SelectFspComponent,
@@ -65,6 +68,7 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     EnrollInProgramComponent,
     HandleProofComponent,
     LoginIdentityComponent,
+    MonitoringQuestionComponent,
     PreprintedQrcodeComponent,
     RegistrationSummaryComponent,
     SelectFspComponent,

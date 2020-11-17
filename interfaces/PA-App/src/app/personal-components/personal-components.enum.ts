@@ -5,6 +5,7 @@ export enum PersonalComponents {
   enrollInProgram = 'enroll-in-program',
   handleProof = 'handle-proof',
   loginIdentity = 'login-identity',
+  monitoringQuestion = 'monitoring-question',
   preprintedQrcode = 'preprinted-qrcode',
   registrationSummary = 'registration-summary',
   selectFsp = 'select-fsp',

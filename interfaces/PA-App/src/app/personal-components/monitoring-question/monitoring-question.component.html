@@ -1,0 +1,96 @@
+<section *ngIf="isCanceled === false">
+  <dialogue-turn>
+    <p
+      [innerHTML]="monitoringQuestion?.intro"
+    ></p>
+  </dialogue-turn>
+  <dialogue-turn actor="self">
+      <ion-radio-group (ionChange)="changeMonitoringChoice($event.detail.value)">
+        <ion-item
+          color="light"
+          lines="full"
+          class="ion-no-padding"
+        >
+          <ion-label 
+            [innerHTML]="monitoringQuestion?.option1"
+            class="ion-text-wrap ion-padding-end"
+          ></ion-label>
+          <ion-radio
+            [value]="monitoringChoices.option1"
+            [checked]="monitoringChoice === monitoringChoices.option1"
+            [disabled]="monitoringChosen"
+          ></ion-radio>
+        </ion-item>
+        <ion-item
+          color="light"
+          lines="full"
+          class="ion-no-padding"
+        >
+          <ion-label 
+            [innerHTML]="monitoringQuestion?.option2"
+            class="ion-text-wrap ion-padding-end"
+          ></ion-label>
+          <ion-radio
+            [value]="monitoringChoices.option2"
+            [checked]="monitoringChoice === monitoringChoices.option2"
+            [disabled]="monitoringChosen"
+          ></ion-radio>
+        </ion-item>
+        <ion-item
+          color="light"
+          lines="full"
+          class="ion-no-padding"
+        >
+          <ion-label 
+            [innerHTML]="monitoringQuestion?.option3"
+            class="ion-text-wrap ion-padding-end"
+          ></ion-label>
+          <ion-radio
+            [value]="monitoringChoices.option3"
+            [checked]="monitoringChoice === monitoringChoices.option3"
+            [disabled]="monitoringChosen"
+          ></ion-radio>
+        </ion-item>
+        <ion-item
+          color="light"
+          lines="full"
+          class="ion-no-padding"
+        >
+          <ion-label 
+            [innerHTML]="monitoringQuestion?.option4"
+            class="ion-text-wrap ion-padding-end"
+          ></ion-label>
+          <ion-radio
+            [value]="monitoringChoices.option4"
+            [checked]="monitoringChoice === monitoringChoices.option4"
+            [disabled]="monitoringChosen"
+          ></ion-radio>
+        </ion-item>
+      </ion-radio-group>
+      <ion-row
+        *ngIf="monitoringChoice && !monitoringChosen"
+        class="ion-nowrap ion-align-items-center ion-margin-top"
+      >
+        <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
+        <ion-button
+          type="submit"
+          (click)="submitMonitoringAnswer()"
+          [disabled]="monitoringChosen"
+          expand="block"
+          style="flex-basis:100%"
+        >{{ 'shared.submit-button'|translate }}</ion-button>
+      </ion-row>
+  </dialogue-turn>
+  <dialogue-turn *ngIf="monitoringChosen"
+                 [isSpoken]="monitoringChosen"
+  >
+    <p [innerHTML]="monitoringQuestion?.conclusion">
+    </p>
+    <ion-button
+          type="submit"
+          (click)="logout()"
+          expand="block"
+          style="flex-basis:100%"
+        >{{ 'account.logout'|translate }}</ion-button>
+  </dialogue-turn>
+</section>
