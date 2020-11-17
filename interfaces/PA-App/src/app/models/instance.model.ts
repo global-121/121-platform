@@ -7,7 +7,7 @@ export class InstanceData {
   dataPolicy: TranslatableString;
   contactDetails: TranslatableString;
   aboutProgram: TranslatableString;
-  monitoringQuestion: MonitoringData;
+  monitoringQuestion: string;
 }
 
 export class InstanceInformation {
