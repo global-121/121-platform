@@ -65,18 +65,22 @@ To set up a local development-environment:
         sudo docker run hello-world
 
   - Now install docker-compose  
-    Can be done by following the steps at: <https://docs.docker.com/compose/install/>
+    Can be done by following the steps:
 
         sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         sudo chmod +x /usr/local/bin/docker-compose
+
+    Reference: https://docs.docker.com/compose/install/
 
   - Test the docker compose installation
 
         docker-compose --version
 
-  - Additionally, we need to install `docker-machine` as well, see: <https://docs.docker.com/machine/install-machine/>
-  
+  - Additionally, we need to install `docker-machine` as well.
+
         base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo mv /tmp/docker-machine /usr/local/bin/docker-machine &&   chmod +x /usr/local/bin/docker-machine
+
+       Reference: https://docs.docker.com/machine/install-machine/
 
   - You are set!
 
@@ -105,15 +109,19 @@ Download/Clone the Git repository.
 
 
 ## Setup Interfaces
-Install dependencies for the interfaces, from the root of this repository, run:
+Install dependencies for the interfaces, from the individual interface directories (`interfaces/*`) run:
 
-    npm run install:interfaces
+    npm install
 
 Or to install 1 specific interface's dependencies, run: (where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`)
 
     npm run install:<interface-name>
 
 ## Setup Services
+Install dependencies for the interfaces, from the individual interface directories (`services/*`) run:
+
+    npm install
+
 
 Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
 
@@ -131,6 +139,113 @@ To start either of the interfaces in development mode:
   - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
   - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
 
+## Common problems with Local Environment set-up
+If the swagger UI is not accessible after installing docker and setting up services, we can take following steps to debug:
+1. `docker ps` to list running containers and their statuses
+2. `docker logs -f <container-name>` to check their statuses
+
+If the errors are related to not being able to access/connect to 'database' then resetting the database by using `dropSchema: true` in `ormconfig.ts`.
+
+In order to access docker container itself, execute command `sudo docker exec -it <container-name> sh` and verify installation of npm modules.
+
+
+## Unit Tests
+There are a few reasons why we write unit tests cases:
+- Unit tests are written to ensure the integrity the functional level aspect of the code written. It helps us identify mistakes, unnecessary code and also when there is room for improvement to make the code more intuitive and efficient.
+- We also write unit test cases to clearly state what the method is supposed to do, so it is smoother for new joiners to be onboarded
+- It helps us achieve recommended devOps protocols for maintaining code base while working within teams.
+
+How are Unit Tests affected when we make changes within the code in future?
+- We should aim to write and update unit tests along side the current development, so that our tests are up to date and also reflect the changes done. Helps us stay in track
+- Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test-scenario or spec-file should be committed together with the feature change.
+
+
+We are using `jasmine` framework for executing unit tests withing `interfaces` and `jest` within services. However, while writing the unit test cases, the writing style and testing paradigm do not differ since `jest` is based on `jasmine` to begin with.
+
+Keep the following points in mind while writing test cases:
+- We should follow a practice to write to tests for all methods except the ones which are private.
+- Every method which contains an async call, can be tested by returning a promise that can be spied and stubbed to verify the UI behavior.
+- We should aim to write a complementary test for each method written on the file
+- Verify class declarations and modifications through methods, boolean variables, string variables, etc.
+- Monitor changes within the HTML template(values of attributes, content of buttons) and verify through test cases
+- Create "`it ("should....`" scenarios for conditional code as well (e.g. if/else blocks)
+- NOTE: It isn't necessary to test all the variables and all method calls, however a highlight of what the method is supposed to accomplish should be reflected within the test cases.
+- Use the "`fit`" and "`fdescribe`" to execute only the unit test cases that you are currently working on. Make sure **not** to commit these commands.
+
+- Testing class variables and objects, when they are being defined or constructed
+- There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
+
+```ts
+it('ngOnInit: should set up variables', () => {
+  expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
+  expect(component.someValye).toBeTruthy();  // check for a variable to be TRUE
+  expect(component.someValye).toBeFalsy();  // check for a variable to be FALSE
+});
+```
+
+The methods written as `toBeTruthy` are called matchers, they help us compare the expected values, their types, whether a method was called, the arguments of the methods and also their existence. There are various methods provided by the testing module. We can find a detailed list of those methods and their usage here: <https://jasmine.github.io/api/3.5/matchers.html>
+
+A short introduction tutorial, to start off writing test cases can be found at: <https://jasmine.github.io/tutorials/your_first_suite>
+
+
+#### Testing method callbacks and changes
+- In order to test for methods to have been called, or been called with certain arguments use `spy` and `toHaveBeenCalled`/ `toHaveBeenCalledWith` matchers.
+
+```ts
+// Code
+public doLogin(event: Event) {
+  event.preventDefault();
+  // ...rest of the actual method.
+}
+
+// Test
+it('some_method: should call another fn', () => {
+  spyOn(event, "preventDefault"); // Monitor the said method
+  component.doLogin(event); // call some_method
+  expect(event.preventDefault).toHaveBeenCalled(); // check for the monitored method to have been called
+});
+```
+
+#### Testing conditional statements
+- Make separate `it` blocks for different conditions.
+
+```ts
+it("Test when xyz === 'some-value'", () => {})
+it("Test when xyz !== 'some-value'", () => {})
+```
+
+#### Testing Async methods (i.e. methods which make an API call)
+- Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
+
+```ts
+let spy = spyOn(component.programsService, "changePassword").and.returnValue(Promise.resolve(true));
+```
+
+- Based on the changes / executions upon the completion of the async request, we should aim to test the changes and modifications.
+
+```ts
+// block to test what happens after the async calls:
+spy.calls.mostRecent().returnValue.then(() => {
+  // Here goes expectations and changes
+});
+```
+
+- Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
+
+```ts
+it('XYZ', (done) => {
+  // spies and stubs
+
+  spy.calls.mostRecent().returnValue.then(() => {
+    // tests
+    done(); // to complete the tests
+  });
+});
+```
+
+#### Testing HTML elements
+- By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
+- HTML elements are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
 
 ## Releases
 See notable changes and the currently release version in the [CHANGELOG](CHANGELOG.md).

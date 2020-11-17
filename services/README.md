@@ -20,13 +20,13 @@ Copy the centralized .env file
 
 Environment variables are explained in the comments of the .env.example, they should be set up prior to development
 
-## Run in Production
+### Run in Production
 
 Run (from `/services` folder):
 
     docker-compose up -d --build
 
-## Run in Development
+### Run in Development
 
 Run (from `/services` folder):
 
