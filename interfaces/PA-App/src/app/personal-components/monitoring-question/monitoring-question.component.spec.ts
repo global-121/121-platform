@@ -13,10 +13,7 @@ describe('MonitoringQuestionComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MonitoringQuestionComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        HttpClientTestingModule,
-      ],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
