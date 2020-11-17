@@ -8,31 +8,6 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ---
 
-## Export supermarket voucher for PA
-
-There are 2 reasons why a voucher would need to be exported.
-
-- Because the PA has selected not to have whatsApp.
-- If PA has lost phone, and has for some reason no access to old vouchers anymore.
-
-Steps to follow:
-
-1. **Pilot-team** provides to **121-dev-team**:
-   - Name: can be any of the first/second/third/last name attributes
-   - Phone number: can be SMS and/or WhatsApp phone number. If lost phone, than this should be old number(s)
-   - Payment/installment number for which they want the voucher (e.g. 1st payment = 1, etc.). If multiple payments, provide all numbers, or a range (1-5).
-2. **121-dev-team**:
-   1. Find the `connection` of the PA that we want to update, using `Find DID of PA in database based on name and/or phone number` scenario below.
-   2. Use the found connection `did` to export the voucher
-      - Use: [`/fsp/intersolve/export-voucher`](https://test-vm.121.global/121-service/docs/#/fsp/post_fsp_intersolve_export_voucher) to export the voucher.
-        Fill in the `did` and the `installment` number (e.g. 1).
-      - Repeat this exercise if multiple installments.
-      - Send the images back to the **Pilot-team** and make sure it's clear what PA (name/phone number) and payment/installment they're about.
-   3. If the use case is a lost phone, continue with the `Change SMS and/or WhatsApp phone-number for PA` manual below
-3. **Pilot-team** will either e-mail or physically hand voucher(s) to PA.
-
----
-
 ## Change SMS and/or WhatsApp phone-numbers for PA
 
 1. PA gets in contact with **Pilot-team** if phone is lost
