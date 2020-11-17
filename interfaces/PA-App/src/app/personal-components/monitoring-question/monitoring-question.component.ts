@@ -74,7 +74,7 @@ export class MonitoringQuestionComponent extends PersonalComponent {
       monitoringQuestion.conclusion,
     );
     this.monitoringQuestion.options = [];
-    for (let option of monitoringQuestion.options) {
+    for (const option of monitoringQuestion.options) {
       const newOption = {
         option: option.option,
         label: this.translatableString.get(option.label),
