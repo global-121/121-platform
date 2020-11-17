@@ -1,3 +1,4 @@
+import { IntersolveInstructionsEntity } from './../fsp/intersolve-instructions.entity';
 import { ImageCodeService } from './../../notifications/imagecode/image-code.service';
 import { AfricasTalkingService } from './../fsp/africas-talking.service';
 import { FundingService } from './../../funding/funding.service';
@@ -36,6 +37,7 @@ import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity
 import { IntersolveBarcodeEntity } from '../fsp/intersolve-barcode.entity';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
+import { IntersolveRequestEntity } from '../fsp/intersolve-request.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -135,6 +137,14 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(FspAttributeEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(IntersolveRequestEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(IntersolveInstructionsEntity),
             useFactory: repositoryMockFactory,
           },
         ],

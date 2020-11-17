@@ -12,8 +12,10 @@ export class Person {
   validationDate?: string;
   inclusionDate?: string;
   rejectionDate?: string;
+  inclusionNotificationDate?: string;
   status: PaStatus;
   fsp?: string;
+  vnumber?: string;
 }
 
 // Model for display (in table)
@@ -31,9 +33,11 @@ export class PersonRow {
   finalScore?: number;
   included?: string | null;
   rejected?: string | null;
+  notifiedOfInclusion?: string | null;
   name?: string | null;
   phoneNumber?: string | null;
   fsp?: string | null;
+  vnumber?: string | null;
 }
 
 export enum PaStatus {

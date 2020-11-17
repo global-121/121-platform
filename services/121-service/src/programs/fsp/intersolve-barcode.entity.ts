@@ -22,6 +22,9 @@ export class IntersolveBarcodeEntity {
   public barcode: string;
 
   @Column({ nullable: true })
+  public amount: number;
+
+  @Column({ nullable: true })
   public send: boolean;
 
   @OneToMany(

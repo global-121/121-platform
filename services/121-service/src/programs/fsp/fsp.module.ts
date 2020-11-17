@@ -1,3 +1,5 @@
+import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
+import { IntersolveRequestEntity } from './intersolve-request.entity';
 import { WhatsappModule } from './../../notifications/whatsapp/whatsapp.module';
 import { AfricasTalkingService } from './africas-talking.service';
 import { Module, HttpModule } from '@nestjs/common';
@@ -18,6 +20,7 @@ import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
 import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
+import { FspAttributeEntity } from './fsp-attribute.entity';
 
 @Module({
   imports: [
@@ -30,9 +33,12 @@ import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity
       TransactionEntity,
       FspCallLogEntity,
       AfricasTalkingNotificationEntity,
+      IntersolveInstructionsEntity,
       IntersolveBarcodeEntity,
+      IntersolveRequestEntity,
       ImageCodeExportVouchersEntity,
       ImageCodeEntity,
+      FspAttributeEntity,
     ]),
   ],
   providers: [

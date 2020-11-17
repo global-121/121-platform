@@ -1,19 +1,37 @@
 import { AfricasTalkingService } from './africas-talking.service';
-import { Post, Body, Controller, Get, Param, Res } from '@nestjs/common';
+import {
+  Post,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Res,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { FspService } from './fsp.service';
 import {
   ApiUseTags,
   ApiResponse,
   ApiOperation,
   ApiImplicitParam,
+  ApiImplicitFile,
 } from '@nestjs/swagger';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
-import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
+import {
+  FinancialServiceProviderEntity,
+  fspName,
+} from './financial-service-provider.entity';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { IntersolveService } from './intersolve.service';
 import { ExportVoucherDto } from './dto/export-voucher.dto';
 import { Response } from 'express-serve-static-core';
 import stream from 'stream';
+import { UserRole } from '../../user-role.enum';
+import { Roles } from '../../roles.decorator';
+import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
+import { FspAttributeEntity } from './fsp-attribute.entity';
 
 @ApiUseTags('fsp')
 @Controller('fsp')
@@ -51,7 +69,8 @@ export class FspController {
   public async validationCallback(
     @Body() africasTalkingValidationData: AfricasTalkingValidationDto,
   ): Promise<void> {
-    return await this.africasTalkingService.africasTalkingValidation(
+    return await this.fspService.checkPaymentValidation(
+      fspName.africasTalking,
       africasTalkingValidationData,
     );
   }
@@ -65,7 +84,8 @@ export class FspController {
   public async notificationCallback(
     @Body() africasTalkingNotificationData: AfricasTalkingNotificationDto,
   ): Promise<void> {
-    await this.africasTalkingService.africasTalkingNotification(
+    await this.fspService.processPaymentNotification(
+      fspName.africasTalking,
       africasTalkingNotificationData,
     );
   }
@@ -89,5 +109,58 @@ export class FspController {
       'Content-Type': 'image/png',
     });
     bufferStream.pipe(response);
+  }
+
+  @ApiOperation({
+    title: 'Get intersolve instructions',
+  })
+  @ApiResponse({ status: 200, description: 'Get intersolve instructions' })
+  @Get('intersolve/instruction')
+  public async intersolveInstructions(
+    @Res() response: Response,
+  ): Promise<void> {
+    const blob = await this.intersolveService.getInstruction();
+    var bufferStream = new stream.PassThrough();
+    bufferStream.end(Buffer.from(blob, 'binary'));
+    response.writeHead(200, {
+      'Content-Type': 'image/png',
+    });
+    bufferStream.pipe(response);
+  }
+
+  @Roles(UserRole.Admin)
+  @ApiOperation({
+    title: 'Post intersolve instructions',
+  })
+  @ApiImplicitFile({
+    name: 'image',
+    required: true,
+    description: 'Upload image with voucher instructions (PNG format only',
+  })
+  @ApiResponse({ status: 200, description: 'Post intersolve instructions' })
+  @Post('intersolve/instruction')
+  @UseInterceptors(FileInterceptor('image'))
+  public async postIntersolveInstructions(
+    @UploadedFile() instructionsFileBlob,
+  ): Promise<void> {
+    await this.intersolveService.postInstruction(instructionsFileBlob);
+  }
+
+  @Roles(UserRole.Admin)
+  @ApiOperation({ title: 'Update FSP' })
+  @Post('update/fsp')
+  public async updateFsp(
+    @Body() updateFspDto: UpdateFspDto,
+  ): Promise<FinancialServiceProviderEntity> {
+    return await this.fspService.updateFsp(updateFspDto);
+  }
+
+  @Roles(UserRole.Admin)
+  @ApiOperation({ title: 'Update FSP attribute' })
+  @Post('update/fsp-attribute')
+  public async updateFspAttribute(
+    @Body() updateFspAttributeDto: UpdateFspAttributeDto,
+  ): Promise<FspAttributeEntity> {
+    return await this.fspService.updateFspAttribute(updateFspAttributeDto);
   }
 }

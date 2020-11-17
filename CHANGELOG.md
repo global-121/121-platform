@@ -7,10 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.10.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.12.2...master)
+
+---
+
+## [0.12.2](https://github.com/global-121/121-platform/compare/v0.12.1...v0.12.2) - 2020-11-17
+
+Hotfix to fix Intersolve integration for NL-pilot.
+
+---
+
+## [0.12.1](https://github.com/global-121/121-platform/compare/v0.12.0...v0.12.1) - 2020-11-16
+
+### Changed
+- 2020-11-12: Updated/fixed dependencies of 121-service;  
+  To update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
+
+---
+
+## [0.12.0](https://github.com/global-121/121-platform/compare/v0.11.0...v0.12.0) - 2020-11-12
+
+### Added
+- 2020-11-11: Functionality to send self-scan instructions. For this to work an image-file needs to be uploaded to `/api/fsp/intersolve/instruction` on environment with the FSP "Intersolve" enabled.
+
+---
+
+## [0.11.0](https://github.com/global-121/121-platform/compare/v0.10.0...v0.11.0) - 2020-11-11
 
 ### Added
 - 2020-10-29: `deploy.sh` can log to a file, when defined with `GLOBAL_121_DEPLOY_LOG_FILE`-variable in [tools/.env](tools/.env.example).
+- 2020-11-03: Added new dependency `jimp` to 121-service;  
+  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
+
+### Changed
+- 2020-11-11: Updated dependency `find-my-way` in 121-service;  
+  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
+- 2020-11-11: Updated dependency `find-my-way` in PA-accounts-service;  
+  To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
+- 2020-11-11: Updated dependency `bl` in PA-accounts-service;  
+  To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
 ---
 
@@ -25,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 2020-10-21: Added `TWILIO_SID`, `TWILIO_PROGRAM_TOKEN_SID`, `TWILIO_PROGRAM_TOKEN_SECRET` `TWILIO_WHATSAPP_NUMBER` `TWILIO_MESSAGING_SID` to `.env` to `services/.env`
 - 2020-10-21: Removed `TWILIO_TEST_TO_NUMBER`, `TWILIO_TEST_FROM_NUMBER_VOICE` ,`TWILIO_TEST_FROM_NUMBER_SMS` from `services/.env`
-- 2020-10-21: Added package to 121-service `docker-compose exec 121-service npm install bwip-js@^2.0.10`
+- 2020-10-21: Added package to 121-service; To add manually: `docker-compose exec 121-service npm install bwip-js@^2.0.10 --no-save`
 
 ---
 

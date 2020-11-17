@@ -153,28 +153,6 @@ describe('ProgramController', (): void => {
     });
   });
 
-  describe('update', (): void => {
-    it('should update a program and then return that program', async (): Promise<
-      void
-    > => {
-      const programRO = {
-        program: new ProgramEntity(),
-      };
-      const spy = jest
-        .spyOn(programService, 'update')
-        .mockImplementation(
-          (): Promise<ProgramRO> => Promise.resolve(programRO),
-        );
-
-      const controllerResult = await programController.update(
-        0,
-        0,
-        newProgramParameters,
-      );
-      expect(spy).toHaveBeenCalled();
-      expect(controllerResult).toStrictEqual(programRO);
-    });
-  });
   describe('publish', (): void => {
     it('should publish a program', async (): Promise<void> => {
       const spy = jest

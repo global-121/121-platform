@@ -1,5 +1,5 @@
+import { IntersolveIssueCardResponse } from './api/dto/intersolve-issue-card-response.dto';
 import { WhatsappService } from './../../notifications/whatsapp/whatsapp.service';
-import { StatusMessageDto } from './../../shared/dto/status-message.dto';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from '../../shared/enum/status.enum';
@@ -11,12 +11,22 @@ import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
 import crypto from 'crypto';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
+import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
+import {
+  FspTransactionResultDto,
+  PaTransactionResultDto,
+} from './dto/payment-transaction-result.dto';
+import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 
 @Injectable()
 export class IntersolveService {
   @InjectRepository(IntersolveBarcodeEntity)
   private readonly intersolveBarcodeRepository: Repository<
     IntersolveBarcodeEntity
+  >;
+  @InjectRepository(IntersolveInstructionsEntity)
+  private readonly intersolveInstructionsRepository: Repository<
+    IntersolveInstructionsEntity
   >;
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
@@ -31,51 +41,63 @@ export class IntersolveService {
   ) {}
 
   public async sendPayment(
-    payload: any,
-    whatsapp: boolean,
-  ): Promise<StatusMessageDto> {
-    try {
-      for (let paymentInfo of payload) {
-        await this.sendIndividualPayment(paymentInfo, whatsapp);
-      }
-      return { status: StatusEnum.success, message: ' ' };
-    } catch (e) {
-      console.log('e: ', e);
-      return { status: StatusEnum.error, message: e.message };
+    paPaymentList: PaPaymentDataDto[],
+    useWhatsapp: boolean,
+    amount: number,
+    installment: number,
+  ): Promise<FspTransactionResultDto> {
+    const result = new FspTransactionResultDto();
+    result.paList = [];
+    for (let paymentInfo of paPaymentList) {
+      const isolatedResult = await this.sendIndividualPayment(
+        paymentInfo,
+        useWhatsapp,
+        amount,
+        installment,
+      );
+      result.paList.push(isolatedResult);
     }
+    // Is always succes because no reason whole fsp fails
+    result.status = StatusEnum.success;
+    result.fspName = paPaymentList[0].fspName;
+    return result;
   }
 
   public async sendIndividualPayment(
-    paymentInfo: any,
-    whatsapp: boolean,
-  ): Promise<any> {
+    paymentInfo: PaPaymentDataDto,
+    useWhatsapp: boolean,
+    amount: number,
+    installment: number,
+  ): Promise<PaTransactionResultDto> {
+    const result = new PaTransactionResultDto();
+    result.did = paymentInfo.did;
+
     const intersolveRefPos = parseInt(
       crypto.randomBytes(5).toString('hex'),
       16,
     );
 
-    const amountInCents = paymentInfo.amount * 100;
+    const amountInCents = amount * 100;
     const voucherInfo = await this.intersolveApiService.issueCard(
       amountInCents,
       intersolveRefPos,
     );
     if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
-      if (whatsapp) {
-        await this.sendVoucherWhatsapp(
-          voucherInfo.cardId,
-          voucherInfo.pin,
-          paymentInfo.whatsappPhoneNumber,
-          paymentInfo.did,
-          paymentInfo.installment,
-        );
+      const transferResult = await this.transferVoucher(
+        voucherInfo,
+        paymentInfo,
+        useWhatsapp,
+        amount,
+        installment,
+      );
+      console.log('transferResult: ', transferResult);
+      if (transferResult.status === StatusEnum.success) {
+        result.status = transferResult.status;
+        result.message = transferResult.message;
       } else {
-        await this.storeVoucherNoWhatsapp(
-          voucherInfo.cardId,
-          voucherInfo.pin,
-          paymentInfo.whatsappPhoneNumber,
-          paymentInfo.did,
-          paymentInfo.installment,
-        );
+        result.status = StatusEnum.error;
+        result.message =
+          'Voucher created, but something went wrong in sending voucher.';
       }
     } else {
       if (voucherInfo.transactionId) {
@@ -85,12 +107,46 @@ export class IntersolveService {
         );
       } else {
         await this.intersolveApiService.cancelTransactionByRefPos(
-          voucherInfo.cardId,
           intersolveRefPos,
         );
       }
-      const error = 'Intersolve error: ' + voucherInfo.resultDescription;
-      throw new HttpException(error, HttpStatus.NOT_FOUND);
+      result.message =
+        'Creating intersolve voucher failed. Status code: ' +
+        (voucherInfo.resultCode ? voucherInfo.resultCode : 'unknown') +
+        ' message: ' +
+        (voucherInfo.resultDescription
+          ? voucherInfo.resultDescription
+          : 'unknown');
+      result.status = StatusEnum.error;
+    }
+    return result;
+  }
+
+  public async transferVoucher(
+    voucherInfo: IntersolveIssueCardResponse,
+    paymentInfo: PaPaymentDataDto,
+    useWhatsapp: boolean,
+    amount: number,
+    installment: number,
+  ): Promise<PaTransactionResultDto> {
+    if (useWhatsapp) {
+      return await this.sendVoucherWhatsapp(
+        voucherInfo.cardId,
+        voucherInfo.pin,
+        paymentInfo.paymentAddress,
+        paymentInfo.did,
+        installment,
+        amount,
+      );
+    } else {
+      return await this.storeVoucherNoWhatsapp(
+        voucherInfo.cardId,
+        voucherInfo.pin,
+        null,
+        paymentInfo.did,
+        installment,
+        amount,
+      );
     }
   }
 
@@ -100,21 +156,31 @@ export class IntersolveService {
     phoneNumber: string,
     did: string,
     installment: number,
-  ): Promise<any> {
+    amount: number,
+  ): Promise<PaTransactionResultDto> {
+    const result = new PaTransactionResultDto();
     const program = await getRepository(ProgramEntity).findOne(this.programId);
-    const whatsappPayment =
-      program.notifications[this.language]['whatsappPayment'];
-    this.whatsappService.sendWhatsapp(whatsappPayment, phoneNumber, null);
-
     const barcodeData = await this.storeBarcodeData(
       cardNumber,
       pin,
       phoneNumber,
       installment,
+      amount,
     );
 
     // Also store in 2nd table in case of whatsApp (for exporting voucher in case of lost phone)
     await this.imageCodeService.createBarcodeExportVouchers(barcodeData, did);
+
+    try {
+      const whatsappPayment =
+        program.notifications[this.language]['whatsappPayment'];
+      this.whatsappService.sendWhatsapp(whatsappPayment, phoneNumber, null);
+      result.status = StatusEnum.success;
+    } catch (e) {
+      result.message = (e as Error).message;
+      result.status = StatusEnum.error;
+    }
+    return result;
   }
 
   public async storeVoucherNoWhatsapp(
@@ -123,15 +189,20 @@ export class IntersolveService {
     phoneNumber: string,
     did: string,
     installment: number,
-  ): Promise<any> {
+    amount: number,
+  ): Promise<PaTransactionResultDto> {
+    const result = new PaTransactionResultDto();
     const barcodeData = await this.storeBarcodeData(
       cardNumber,
       pin,
       phoneNumber,
       installment,
+      amount,
     );
 
     await this.imageCodeService.createBarcodeExportVouchers(barcodeData, did);
+    result.status = StatusEnum.success;
+    return result;
   }
 
   private async storeBarcodeData(
@@ -139,6 +210,7 @@ export class IntersolveService {
     pin: number,
     phoneNumber: string,
     installment: number,
+    amount: number,
   ): Promise<IntersolveBarcodeEntity> {
     const barcodeData = new IntersolveBarcodeEntity();
     barcodeData.barcode = cardNumber;
@@ -146,6 +218,7 @@ export class IntersolveService {
     barcodeData.whatsappPhoneNumber = phoneNumber;
     barcodeData.send = false;
     barcodeData.installment = installment;
+    barcodeData.amount = amount;
     return this.intersolveBarcodeRepository.save(barcodeData);
   }
 
@@ -172,5 +245,30 @@ export class IntersolveService {
     }
 
     return image.image;
+  }
+
+  public async getInstruction(): Promise<any> {
+    const intersolveInstructionsEntity = await this.intersolveInstructionsRepository.findOne();
+
+    if (!intersolveInstructionsEntity) {
+      throw new HttpException(
+        'Image not found. Please upload an image using POST and try again.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return intersolveInstructionsEntity.image;
+  }
+
+  public async postInstruction(instructionsFileBlob): Promise<any> {
+    let intersolveInstructionsEntity = await this.intersolveInstructionsRepository.findOne();
+
+    if (!intersolveInstructionsEntity) {
+      intersolveInstructionsEntity = new IntersolveInstructionsEntity();
+    }
+
+    intersolveInstructionsEntity.image = instructionsFileBlob.buffer;
+
+    this.intersolveInstructionsRepository.save(intersolveInstructionsEntity);
   }
 }

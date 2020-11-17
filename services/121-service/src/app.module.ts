@@ -20,6 +20,7 @@ import { ScriptsModule } from './scripts/scripts.module';
 import { ActionModule } from './actions/action.module';
 import { FspModule } from './programs/fsp/fsp.module';
 import { InstanceModule } from './instance/instance.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
@@ -42,6 +43,9 @@ import { InstanceModule } from './instance/instance.module';
     InstanceModule,
     WhatsappModule,
     ScheduleModule.forRoot(),
+    MulterModule.register({
+      dest: './files',
+    }),
   ],
   controllers: [AppController],
   providers: [],

@@ -91,7 +91,14 @@
           "latest-value": "Latest value"
         },
         "units": {
-          "month": "month"
+          "frequency": {
+            "month": "monthly",
+            "week": "weekly"
+          },
+          "duration": {
+            "month": "month(s)",
+            "week": "week(s)"
+          }
         },
         "last-updated": "Last updated: {{date}}"
       },
@@ -137,8 +144,9 @@
         "start-payout": "Start payout now",
         "total-included": "Number of PA included",
         "total-amount": "Total amount to payout:",
-        "result-success": "Successfully sent instructions to FSP's for {{nrSuccessfull}} PA's.",
-        "result-failure": "Payment request failed for {{nrFailed}} PA's. Inspect the table below for details.",
+        "result-success": "Successfully sent instructions to FSP's for {{nrSuccessfull}} PA(s).",
+        "result-failure": "Payment request failed for {{nrFailed}} PA(s). Inspect the PA-table below for details.",
+        "result-waiting": "Payment status not yet received for {{nrWaiting}} PA(s). Inspect the PA-table below for the up-to-date status of the payment(s).",
         "none-included": "No included people yet."
       },
       "program-people-affected": {
@@ -158,10 +166,12 @@
           "temp-score": "Temporary inclusion score",
           "included": "Included",
           "rejected": "Rejected",
+          "notified-of-inclusion": "Notified of inclusion",
           "name": "Name",
           "dob": "Date of birth",
           "phone-number": "Phonenumber",
           "payment": "Payment #",
+          "vnumber": "V-number",
           "fsp": "Financial Service Provider"
         },
         "status": {
@@ -176,22 +186,22 @@
         "actions": {
           "select-for-validation": "Select for validation",
           "include": "Include in program",
-          "reject": "Reject from program"
+          "reject": "Reject from program",
+          "notify-included": "Notify included People Affected"
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
         "submit-warning-people-affected": "People Affected",
-        "transaction-failed": "Transaction failed",
-        "failed": "Failed"
+        "transaction": {
+          "failed": "Failed",
+          "waiting": "Waiting",
+          "show-status": "Show status"
+        }
       },
       "program-modal": {
         "pageTitle": "Program JSON"
       },
       "notification": {
-        "include": {
-          "btn-text": "Notify included people affected",
-          "confirm-message": "This will send an SMS and a voice call to all currently included people affected. Please make sure you are finished with the review process, to avoid possible confusion for people affected."
-        },
         "timestamp": "Done on:"
       },
       "export-list": {

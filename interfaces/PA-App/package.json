@@ -14,7 +14,7 @@
     "generate-assets-audio": "node ./_generate-assets-audio.js",
     "check-assets-translations": "node ./_check-assets-translations.js",
     "set-env-variables": "node ./_set-env-variabes.js",
-    "prebuild": "npm run set-env-variables && npm run check-assets-translations && npm run generate-assets-audio -- en",
+    "prebuild": "npm run set-env-variables && npm run check-assets-translations && npm run generate-assets-audio",
     "build": "ng build",
     "prebuild:native": "npm run prebuild",
     "build:native": "npm run ionic -- cordova build android ",

@@ -68,9 +68,10 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - API Documentation: <https://v7.angular.io/api>
   - Used by Angular, RxJS: <https://rxjs-dev.firebaseapp.com/api>
 
-- [`ngx-translate`](http://www.ngx-translate.com/)  
+- [`ngx-translate` v11](https://www.npmjs.com/package/@ngx-translate/core/v/11.0.1)  
   An Angular-service to handle internationalization(i18n) or translations.
-  - API Documentation: <https://github.com/ngx-translate/core#api>
+  - Website: <http://www.ngx-translate.com/>
+  - API Documentation: <https://github.com/ngx-translate/core/tree/v11.0.1#api>
 
   - [`ngx-translate-lint` v1.4](https://www.npmjs.com/package/ngx-translate-lint/v/1.4.0)  
     A lint-tool to check for missing or unused translations or typos in keys.

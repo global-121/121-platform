@@ -145,6 +145,21 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  exportVoucher(did: string, installment: number): Promise<Blob> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        `/fsp/intersolve/export-voucher`,
+        {
+          did,
+          installment,
+        },
+        false,
+        true,
+      )
+      .toPromise();
+  }
+
   getPeopleAffected(programId: number | string): Promise<Person[]> {
     return this.apiService
       .get(environment.url_121_service_api, `/programs/enrolled/${programId}`)
@@ -188,6 +203,21 @@ export class ProgramsServiceApiService {
       .post(environment.url_121_service_api, `/programs/reject/${programId}`, {
         dids: JSON.stringify(dids),
       })
+      .toPromise();
+  }
+
+  notifySelectedIncluded(
+    programId: number | string,
+    dids: string[],
+  ): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        `/programs/notify-selected-included/${programId}`,
+        {
+          dids: JSON.stringify(dids),
+        },
+      )
       .toPromise();
   }
 
