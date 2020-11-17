@@ -60,8 +60,8 @@
     {
       "criterium": "firstName",
       "label": {
-        "saq_KE": "Ka ng'arna ino ekwe",
-        "tuv_KE": "Ali ekurkon lo e king'aren",
+        "saq_KE": "Ka ng'arna ino ekwe?",
+        "tuv_KE": "Ali ekirokon lo e king'aren?",
         "en": "What is your first name?"
       },
       "answerType": "text",
@@ -73,8 +73,8 @@
     {
       "criterium": "secondName",
       "label": {
-        "saq_KE": "Ka ng'arna ino na are. <br> Tanaa miyata ng'ero NA",
-        "tuv_KE": "Ali ekirokon la ng'arei. <br> Ali kemam kigirak NA",
+        "saq_KE": "Ka ng'arna ino na are? <br> Tanaa miyata ng'ero \"NA\".",
+        "tuv_KE": "Ali ekirokon la ng'arei? <br> Ali kemam kigirak \"NA\".",
         "en": "What is your second name? <br> If you do not have a second name type: NA​"
       },
       "answerType": "text",
@@ -86,8 +86,8 @@
     {
       "criterium": "thirdName",
       "label": {
-        "saq_KE": "Ka ng'arna ino ne uni. <br> Tanaa miyata ng'ero NA",
-        "tuv_KE": "Ali ekirokon la ng'auni. <br> Kigirak NA",
+        "saq_KE": "Ka ng'arna ino ne uni? <br> Tanaa miyata ng'ero \"NA\".",
+        "tuv_KE": "Ali ekirokon la ng'auni?  <br> Ali kemam kigirak \"NA\".",
         "en": "What is your third name? <br> If you do not have a third name type: NA​"
       },
       "answerType": "text",
@@ -99,8 +99,8 @@
     {
       "criterium": "age",
       "label": {
-        "saq_KE": "Larini aja iyata",
-        "tuv_KE": "Nkaru nyiai iting'it",
+        "saq_KE": "Larini aja iyata?",
+        "tuv_KE": "Nkaru nyiai iting'it?",
         "en": "What is your age?"
       },
       "answerType": "dropdown",
@@ -191,8 +191,8 @@
     {
       "criterium": "livelihood_strategy",
       "label": {
-        "saq_KE": "Nyoo shake lkasi linji pi itumeme ndaa ta leapaa loisha",
-        "tuv_KE": "Nyo ithubete taanyut akimuj elap alobeen",
+        "saq_KE": "Nyoo shake lkasi linji pi itumeme ndaa ta leapaa loisha?",
+        "tuv_KE": "Nyo ithubete taanyut akimuj elap alobeen?",
         "en": "What is your household’s current livelihood strategy (as of last month)?"
       },
       "answerType": "dropdown",
@@ -235,7 +235,7 @@
           "label": {
             "saq_KE": "Biasharani kunini",
             "tuv_KE": "Ebesherea lo edit",
-            "en": "Petty trade [Hawking/Any Business in a small kiosk]"
+            "en": "Petty trade (Hawking/Any Business in a small kiosk)"
           }
         },
         {
@@ -258,14 +258,14 @@
           "option": "livelihood_sale_bush_products",
           "label": {
             "saq_KE": "Aamir ntokitin naingwa ntimi etuwana lom oo ng'iri e lowarak",
-            "tuv_KE": "Agelera ng'iboro la amoni. Ng'inyia, akiring' a moni ka ng'apiro",
-            "en": "Sale of Bush Products [Wild meat/Building poles/grass/reeds/building stones]"
+            "tuv_KE": "Agelera ng'iboro la amoni (Ng'inyia, akiring' a moni ka ng'apitoi)",
+            "en": "Sale of Bush Products (Wild meat/Building poles/grass/reeds/building stones)"
           }
         },
         {
           "option": "livelihood_begging",
           "label": {
-            "saq_KE": "Lasayak",
+            "saq_KE": "Lasaiyak",
             "tuv_KE": "Akilipa",
             "en": "Begging"
           }
@@ -275,23 +275,23 @@
           "label": {
             "saq_KE": "Biasharani nkutiti oo sapuki",
             "tuv_KE": "E biashara lo apolon",
-            "en": "Business [Medium or Large Scale]"
+            "en": "Business (Medium or Large Scale)"
           }
         },
         {
           "option": "livelihood_formal_salaried_jobs",
           "label": {
-            "saq_KE": "Lotii lkasin",
-            "tuv_KE": "Ekathi",
-            "en": "Formal/Salaried Jobs [Police Officer/Teacher/Nurse  etc.]"
+            "saq_KE": "Lotii lkasin (Lmalimoni, lpolisi)",
+            "tuv_KE": "Ekathi (Ng'ipolisi, ng'imalimui)",
+            "en": "Formal/Salaried Jobs (Police Officer/Teacher/Nurse etc.)"
           }
         },
         {
           "option": "livelihood_remmitance",
           "label": {
-            "saq_KE": "Ropiani nangwaa boo. Nkirewakita ng'era oshoreta",
+            "saq_KE": "Ropiani naingwaa boo. Nkirewakita ng'era oshoreta.",
             "tuv_KE": "Kitumanakinio iyong ng'aropia. Ng'ide kon ori ng'ipaai",
-            "en": "Remmitances [Money from Relatives/Friends abroad]"
+            "en": "Remmitances (Money from Relatives/Friends abroad)"
           }
         }
       ],
@@ -313,8 +313,8 @@
     {
       "criterium": "cash_assistance",
       "label": {
-        "saq_KE": "Amaa tata itomito reto e ropiani naingwa KRCS, serekali, HSNG group 1, tanaa lukule aretok",
-        "tuv_KE": "Tokona iye aking'arakinio a ng'aropiai iyanyunini a lo KRCS, ngithikalei, HSNP ori ng'iche karetok",
+        "saq_KE": "Amaa tata itomito reto e ropiani naingwa KRCS, serekali, HSNP group 1, tanaa lukule aretok?",
+        "tuv_KE": "Tokona iye aking'arakinio a ng'aropiai iyanyunini a lo KRCS, ngithikalei, HSNP group 1 ori ng'iche karetok?",
         "en": "As of TODAY are you receiving any form of cash assistance from Kenya Red Cross, Social Services, HSNP Group 1 or other humanitarian agencies?"
       },
       "answerType": "dropdown",
@@ -324,7 +324,7 @@
           "option": "cash_assistance_yes",
           "label": {
             "saq_KE": "Ee",
-            "tuv_KE": "Eee",
+            "tuv_KE": "Ee",
             "en": "Yes"
           }
         },
@@ -345,8 +345,8 @@
     {
       "criterium": "food_assistance",
       "label": {
-        "saq_KE": "Ama tata itumito reto e ndaa naingwa WFP tanaa serekali kini tanaa serekali sapuk",
-        "tuv_KE": "Tokona iye akimuj iyanyunini iyong alo WFP or nthirikalei Lua kaunti or Napolon",
+        "saq_KE": "Ama tata itumito reto e ndaa naingwa WFP tanaa serekali kini tanaa serekali sapuk?",
+        "tuv_KE": "Tokona iye akimuj iyanyunini iyong alo WFP ori nthirikalei Lua kaunti ori Napolon?",
         "en": "As of TODAY are you receiving any form of food assistance from WFP, County Government of National Government?"
       },
       "answerType": "dropdown",
@@ -356,7 +356,7 @@
           "option": "food_assistance_yes",
           "label": {
             "saq_KE": "Ee",
-            "tuv_KE": "Eee",
+            "tuv_KE": "Ee",
             "en": "Yes"
           }
         },
