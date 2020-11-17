@@ -6,7 +6,7 @@ describe('Login Page', () => {
 
   // Real API call
   it('default user can log in', function () {
-    cy.fixture('login').then((login) => {
+    cy.fixture('ho-login').then((login) => {
       cy.visit(login.portal);
       cy.get('input[name="email"]').type(login.email);
       cy.get('input[name="password"]').type(login.password);
@@ -21,7 +21,7 @@ describe('Login Page', () => {
 
   // Stubbing API calls
   it('default user can log in', function () {
-    cy.fixture('user').then((user) => {
+    cy.fixture('ho-user').then((user) => {
       cy.route({
         method: 'POST',
         url: '*/user/login*',
