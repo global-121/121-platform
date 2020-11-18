@@ -125,8 +125,11 @@ Install dependencies for the interfaces, from the individual interface directori
 
 Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
 
+After that, you can start in development mode by running from the root of this repository:
+- `npm run start:services`
+
 ## Start Interfaces
-To start all interfaces at once, execute `npm run start:interfaces` from the root of the project folder.
+To start all interfaces at once, execute `npm run start:interfaces` from the root of this repository.
 
 To start an individual interface in development mode:
 - Run `npm run start:<interface-name>`, where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`.
