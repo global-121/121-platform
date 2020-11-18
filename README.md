@@ -141,8 +141,8 @@ To start an individual interface in development mode:
 
 ## Common problems with Local Environment set-up
 If the swagger UI is not accessible after installing docker and setting up services, we can take following steps to debug:
-1. `docker ps` to list running containers and their statuses
-2. `docker logs -f <container-name>` to check their statuses
+1. `docker-compose ps` to list running containers and their statuses
+2. `docker-compose logs -f <container-name>` to check their statuses
 
 - If the errors are related to not being able to access/connect to 'database' then resetting the database by using `dropSchema: true` in `ormconfig.ts`.
 
