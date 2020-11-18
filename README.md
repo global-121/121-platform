@@ -44,8 +44,9 @@ To set up a local development-environment:
 - Install Git: `sudo apt install git-all`
 - Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
 - Install Node.js: To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
-  After installing NVM run: `nvm install-latest-npm`
-- `cd` to the directory of the cloned repository above and execute `nvm install`. In this way nvm "sees" which version of NodeJS needs to be installed.
+  After installing NVM run, from the root of this repository:  
+  `nvm install && nvm install-latest-npm`
+  So that the required version of Node.js and `npm` get installed.
 
 - Install Docker  
   On linux distributions we need to install `docker engine` and `docker-compose` respectively. On other platforms they are available through Docker Desktop. Read more at: <https://docs.docker.com/engine/install/>
