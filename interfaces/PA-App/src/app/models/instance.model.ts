@@ -5,9 +5,18 @@ export class InstanceData {
   name: Actor;
   displayName: TranslatableString;
   dataPolicy: TranslatableString;
-  contactDetails: TranslatableString;
+  contactDetails?: TranslatableString;
   aboutProgram: TranslatableString;
-  monitoringQuestion: string;
+  monitoringQuestion?: MonitoringData;
+}
+
+export class MonitoringData {
+  intro: TranslatableString;
+  options: {
+    option: string;
+    label: TranslatableString;
+  }[];
+  conclusion: TranslatableString;
 }
 
 export class InstanceInformation {
@@ -16,17 +25,14 @@ export class InstanceInformation {
   dataPolicy: string;
   contactDetails: string;
   aboutProgram: string;
-  monitoringQuestion: string;
-}
-
-export class MonitoringData {
-  intro: TranslatableString;
-  options: string;
-  conclusion: TranslatableString;
+  monitoringQuestion: MonitoringInfo | null;
 }
 
 export class MonitoringInfo {
   intro: string;
-  options: any[];
+  options: {
+    option: string;
+    label: string;
+  }[];
   conclusion: string;
 }

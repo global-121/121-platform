@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
-import { first } from 'rxjs/operators';
 import { MonitoringInfo } from 'src/app/models/instance.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -16,7 +14,7 @@ import { PersonalComponents } from '../personal-components.enum';
 })
 export class MonitoringQuestionComponent extends PersonalComponent {
   public isCanceled = false;
-  public monitoringQuestion = new MonitoringInfo();
+  public monitoringQuestion: MonitoringInfo;
 
   public monitoringChoice: string;
   public monitoringSubmitted: boolean;
@@ -24,7 +22,6 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   constructor(
     public conversationService: ConversationService,
     private instanceService: InstanceService,
-    private translatableString: TranslatableStringService,
     private paData: PaDataService,
     private programsService: ProgramsServiceApiService,
   ) {
@@ -56,31 +53,16 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   }
 
   private async getMonitoringQuestion() {
-    const instanceInformation = await this.instanceService.instanceInformation
-      .pipe(first())
-      .toPromise();
+    this.instanceService.instanceInformation.subscribe(
+      (instanceInformation) => {
+        if (!instanceInformation.monitoringQuestion) {
+          this.isCanceled = true;
+          return;
+        }
 
-    if (!instanceInformation.monitoringQuestion) {
-      this.isCanceled = true;
-      return;
-    }
-    const monitoringQuestion = JSON.parse(
-      JSON.stringify(instanceInformation.monitoringQuestion),
+        this.monitoringQuestion = instanceInformation.monitoringQuestion;
+      },
     );
-    this.monitoringQuestion.intro = this.translatableString.get(
-      monitoringQuestion.intro,
-    );
-    this.monitoringQuestion.conclusion = this.translatableString.get(
-      monitoringQuestion.conclusion,
-    );
-    this.monitoringQuestion.options = [];
-    for (const option of monitoringQuestion.options) {
-      const newOption = {
-        option: option.option,
-        label: this.translatableString.get(option.label),
-      };
-      this.monitoringQuestion.options.push(newOption);
-    }
   }
 
   public changeMonitoringChoice(value: string) {
