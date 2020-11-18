@@ -125,10 +125,10 @@ Install dependencies for the interfaces, from the individual interface directori
 
 Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
 
-After that, you can start in development mode by running from the root folder:
-- `npm run start:services`
+## Start Interfaces
+To start all interface just run `npm run start:interfaces` from the root of the project folder.
 
-To start either of the interfaces in development mode:
+To start an individual interface in development mode:
 - Run `npm run start:<interface-name>`, where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`.
 - Or explore the specific options(to run the native Android version, for example) as defined in each interface's own `package.json` or `README.md`.
 
@@ -144,9 +144,9 @@ If the swagger UI is not accessible after installing docker and setting up servi
 1. `docker ps` to list running containers and their statuses
 2. `docker logs -f <container-name>` to check their statuses
 
-If the errors are related to not being able to access/connect to 'database' then resetting the database by using `dropSchema: true` in `ormconfig.ts`.
+- If the errors are related to not being able to access/connect to 'database' then resetting the database by using `dropSchema: true` in `ormconfig.ts`.
 
-In order to access docker container itself, execute command `sudo docker exec -it <container-name> sh` and verify installation of npm modules.
+- In order to access docker container itself, execute command `sudo docker exec -it <container-name> sh` and verify installation of npm modules.
 
 
 ## Unit Tests
