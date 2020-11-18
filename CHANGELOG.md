@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.12.2...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.13.0...master)
+
+---
+
+## [0.13.0](https://github.com/global-121/121-platform/compare/v0.12.2...v0.13.0) - 2020-11-18
+
+Release for Acceptance test 2 Kenya Pilot
 
 ---
 
