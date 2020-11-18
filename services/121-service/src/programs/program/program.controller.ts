@@ -282,11 +282,15 @@ export class ProgramController {
     description: 'List of people exported',
   })
   @Post('export-list')
-  public async getExportList(@Body() data: ExportDetails): Promise<any> {
+  public async getExportList(
+    @Body() data: ExportDetails,
+    @User('id') userId: number,
+  ): Promise<any> {
     return await this.programService.getExportList(
       data.programId,
       data.type,
       data.installment,
+      userId,
     );
   }
 

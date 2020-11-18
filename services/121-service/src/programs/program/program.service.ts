@@ -1,3 +1,4 @@
+import { ActionService } from './../../actions/action.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
@@ -67,6 +68,7 @@ export class ProgramService {
   public actionRepository: Repository<ActionEntity>;
 
   public constructor(
+    private readonly actionService: ActionService,
     @Inject(forwardRef(() => CredentialService))
     private readonly credentialService: CredentialService,
     private readonly voiceService: VoiceService,
@@ -423,18 +425,8 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const notificationDone =
-      (
-        await this.actionRepository.find({
-          where: {
-            program: { id: programId },
-            actionType: ActionType.notifyIncluded,
-          },
-        })
-      ).length > 0;
-
     let inclusionStatus: InclusionStatus;
-    if (connection.programsIncluded.includes(+programId) && notificationDone) {
+    if (connection.programsIncluded.includes(+programId)) {
       inclusionStatus = { status: PaStatus.included };
     } else if (connection.programsRejected.includes(+programId)) {
       inclusionStatus = { status: PaStatus.rejected };
@@ -1012,15 +1004,23 @@ export class ProgramService {
     programId: number,
     type: ExportType,
     installment: number | null = null,
+    userId: number,
   ): Promise<any> {
     switch (type) {
       case ExportType.included: {
+        this.actionService.saveAction(userId, programId, ExportType.included);
         return this.getInclusionList(programId);
       }
       case ExportType.selectedForValidation: {
+        this.actionService.saveAction(
+          userId,
+          programId,
+          ExportType.selectedForValidation,
+        );
         return this.getSelectedForValidationList(programId);
       }
       case ExportType.payment: {
+        this.actionService.saveAction(userId, programId, ExportType.payment);
         return this.getPaymentDetails(programId, installment);
       }
     }

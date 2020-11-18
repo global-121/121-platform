@@ -36,6 +36,21 @@ export class ActionController {
     );
   }
 
+  @ApiOperation({ title: 'Get latest action of type ' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returned latest action for given program-id and action-type.',
+  })
+  @Post('retrieve-latest')
+  public async getLatestAction(
+    @Body() actionData: ActionDto,
+  ): Promise<ActionEntity> {
+    return await this.actionService.getLatestActions(
+      actionData.programId,
+      actionData.actionType,
+    );
+  }
+
   @ApiOperation({ title: 'Save action by id' })
   @ApiResponse({ status: 200, description: 'Action saved' })
   @Post('save')
