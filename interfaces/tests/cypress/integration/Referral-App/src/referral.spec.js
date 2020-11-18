@@ -5,10 +5,10 @@ describe('Referral Page', () => {
   });
 
   // Real API call
-  it('default user can observe key elements', function () {
+  it('shows the default landing page', function () {
     cy.fixture('referral').then((ref) => {
       cy.visit(ref.portal);
-      cy.url().should('include', '/home/referral');
+      cy.url().should('include', '/tabs/referral');
     });
   });
 });

@@ -5,10 +5,10 @@ describe('AW Account Page', () => {
   });
 
   // Real API call
-  it('default user can observe key elements', function () {
+  it('shows the default landing page', function () {
     cy.fixture('aw-app').then((aw) => {
       cy.visit(aw.portal);
-      cy.url().should('include', '/home/account');
+      cy.url().should('include', '/tabs/account');
     });
   });
 });

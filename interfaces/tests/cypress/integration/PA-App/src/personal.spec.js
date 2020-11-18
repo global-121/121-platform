@@ -5,10 +5,10 @@ describe('Personal Page', () => {
   });
 
   // Real API call
-  it('default user can observe key elements', function () {
+  it('shows the default landing page', function () {
     cy.fixture('pa-home').then((pa) => {
       cy.visit(pa.portal);
-      cy.url().should('include', '/home/personal');
+      cy.url().should('include', '/tabs/personal');
     });
   });
 });

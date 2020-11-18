@@ -5,14 +5,13 @@ describe('Login Page', () => {
   });
 
   // Real API call
-  it('default user can log in', function () {
+  it('lets the user log in', function () {
     cy.fixture('ho-login').then((login) => {
       cy.visit(login.portal);
       cy.get('input[name="email"]').type(login.email);
       cy.get('input[name="password"]').type(login.password);
 
       cy.get('*[type="submit"]').click();
-      cy.get('h2').should('contain', 'All Programs');
       cy.url().should('include', '/home');
       cy.get('ion-buttons').contains('Logged in as');
       cy.get('ion-buttons').contains(login.email);
@@ -20,7 +19,7 @@ describe('Login Page', () => {
   });
 
   // Stubbing API calls
-  it('default user can log in', function () {
+  it('lets the user log in with fake API call', function () {
     cy.fixture('ho-user').then((user) => {
       cy.route({
         method: 'POST',
@@ -39,6 +38,7 @@ describe('Login Page', () => {
       cy.get('input[name="password"]').type('xyz');
       cy.get('*[type="submit"]').click();
       cy.wait(['@post']);
+      cy.wait(['@programs']);
 
       cy.get('h2').should('contain', 'All Programs');
       cy.url().should('include', '/home');
