@@ -99,7 +99,7 @@ export class MonitoringQuestionComponent extends PersonalComponent {
 
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.contactDetails,
+      name: PersonalComponents.monitoringQuestion,
       data: {
         isCanceled: this.isCanceled,
       },
