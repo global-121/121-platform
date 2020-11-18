@@ -12,6 +12,6 @@ export class SetPhoneRequestDto {
   @ValidateIf(o => o.language)
   @ApiModelProperty({ example: 'en' })
   @IsString()
-  @Length(2, 5)
+  @Length(2, 8)
   public readonly language: string;
 }
