@@ -57,6 +57,7 @@ export class MonitoringQuestionComponent extends PersonalComponent {
       (instanceInformation) => {
         if (!instanceInformation.monitoringQuestion) {
           this.isCanceled = true;
+          this.cancel();
           return;
         }
 
@@ -89,6 +90,21 @@ export class MonitoringQuestionComponent extends PersonalComponent {
 
   getNextSection() {
     return PersonalComponents.storeCredential;
+  }
+
+  cancel() {
+    if (this.isDisabled) {
+      return;
+    }
+
+    this.isDisabled = true;
+    this.conversationService.onSectionCompleted({
+      name: PersonalComponents.contactDetails,
+      data: {
+        isCanceled: this.isCanceled,
+      },
+      next: this.getNextSection(),
+    });
   }
 
   complete() {
