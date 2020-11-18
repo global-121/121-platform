@@ -110,6 +110,10 @@ Or to install 1 specific interface's dependencies, run: (where `<interface-name>
 
 ## Setup Services
 Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
+In order to see the statuses of docker containers run: `docker-compose logs -f <container-name>`.
+In order to verify successful installtion and setup of services, access the swagger UI:
+- 121-service: http://localhost:3000/docs/
+- PA-accounts-service: http://localhost:3001/docs/
 
 ## Start Interfaces
 To start all interfaces at once, execute `npm run start:interfaces` from the root of the project folder.
@@ -117,6 +121,13 @@ To start all interfaces at once, execute `npm run start:interfaces` from the roo
 To start an individual interface in development mode:
 - Run `npm run start:<interface-name>`, where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`.
 - Or explore the specific options(to run the native Android version, for example) as defined in each interface's own `package.json` or `README.md`.
+
+These are four individual angular applications and can be accessed by visiting their corresponding localhost ports.
+   - PA App:http://localhost:8008
+   - AW App: http://localhost:8080
+   - HO-Portal http://localhost:8888
+   - Referral-App http://localhost:8800
+From hereon, you can start making changes to the UI and observe how the components are interconnected.
 
 ## Common problems with Local Environment set-up
 If the swagger UI is not accessible after installing docker and setting up services, we can take following steps to debug:
