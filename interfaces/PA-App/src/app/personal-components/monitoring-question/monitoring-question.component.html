@@ -1,8 +1,6 @@
 <section *ngIf="isCanceled === false">
   <dialogue-turn>
-    <p
-      [innerHTML]="monitoringQuestion?.intro"
-    ></p>
+    <p [innerHTML]="monitoringQuestion?.intro"></p>
   </dialogue-turn>
   <dialogue-turn actor="self">
       <ion-radio-group (ionChange)="changeMonitoringChoice($event.detail.value)">
@@ -12,7 +10,7 @@
           lines="full"
           class="ion-no-padding"
         >
-          <ion-label 
+          <ion-label
             [innerHTML]="option.label"
             class="ion-text-wrap ion-padding-end"
           ></ion-label>
@@ -29,7 +27,7 @@
       >
         <play-text-audio key="shared.submit-button" size="default"></play-text-audio>
         <ion-button
-          type="submit"
+          type="button"
           (click)="submitMonitoringAnswer()"
           [disabled]="monitoringSubmitted"
           expand="block"
@@ -37,16 +35,19 @@
         >{{ 'shared.submit-button'|translate }}</ion-button>
       </ion-row>
   </dialogue-turn>
-  <dialogue-turn *ngIf="monitoringSubmitted"
-                 [isSpoken]="monitoringSubmitted"
+  <dialogue-turn
+    *ngIf="monitoringSubmitted"
+    [isSpoken]="monitoringSubmitted"
   >
-    <p [innerHTML]="monitoringQuestion?.conclusion">
-    </p>
-    <ion-button
-          type="submit"
-          (click)="logout()"
-          expand="block"
-          style="flex-basis:100%"
-        >{{ 'account.logout'|translate }}</ion-button>
+    <p [innerHTML]="monitoringQuestion?.conclusion"></p>
+    <ion-row class="ion-nowrap ion-align-items-center ion-margin-top">
+      <play-text-audio key="account.logout" size="default"></play-text-audio>
+      <ion-button
+        type="button"
+        (click)="logout()"
+        expand="block"
+        style="flex-basis:100%"
+      >{{ 'account.logout'|translate }}</ion-button>
+    </ion-row>
   </dialogue-turn>
 </section>

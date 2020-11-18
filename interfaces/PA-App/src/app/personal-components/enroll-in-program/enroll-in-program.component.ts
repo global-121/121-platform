@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { first } from 'rxjs/operators';
 import { InstanceInformation } from 'src/app/models/instance.model';
 import {
   Program,
@@ -95,11 +94,11 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private async getInstanceInformation() {
-    this.instanceService.instanceInformation
-      .pipe(first())
-      .subscribe((instanceInformation) => {
+    this.instanceService.instanceInformation.subscribe(
+      (instanceInformation) => {
         this.instanceInformation = instanceInformation;
-      });
+      },
+    );
   }
 
   private async getProgramDetails() {

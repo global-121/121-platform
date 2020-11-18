@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { first } from 'rxjs/operators';
 import { InstanceService } from 'src/app/services/instance.service';
 import { Actor } from 'src/app/shared/actor.enum';
 import { environment } from 'src/environments/environment';
@@ -40,11 +39,11 @@ export class DialogueTurnComponent implements OnInit {
   }
 
   private async getInstanceInformation() {
-    this.instanceService.instanceInformation
-      .pipe(first())
-      .subscribe((instanceInformation) => {
+    this.instanceService.instanceInformation.subscribe(
+      (instanceInformation) => {
         this.updateActor(instanceInformation.name);
-      });
+      },
+    );
   }
 
   updateActor(newActor: Actor) {

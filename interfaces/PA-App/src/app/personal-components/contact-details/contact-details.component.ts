@@ -1,5 +1,4 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { first } from 'rxjs/operators';
 import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
@@ -31,7 +30,7 @@ export class ContactDetailsComponent extends PersonalComponent {
       this.initHistory();
     }
 
-    await this.getProgramDetails();
+    this.updateContactDetails();
     this.complete();
   }
 
@@ -40,17 +39,17 @@ export class ContactDetailsComponent extends PersonalComponent {
     this.isCanceled = this.data.isCanceled;
   }
 
-  private async getProgramDetails() {
-    const instanceInformation = await this.instanceService.instanceInformation
-      .pipe(first())
-      .toPromise();
+  private updateContactDetails() {
+    this.instanceService.instanceInformation.subscribe(
+      (instanceInformation) => {
+        if (!instanceInformation.contactDetails) {
+          this.isCanceled = true;
+          return;
+        }
 
-    if (!instanceInformation.contactDetails) {
-      this.isCanceled = true;
-      return;
-    }
-
-    this.contactDetails = instanceInformation.contactDetails;
+        this.contactDetails = instanceInformation.contactDetails;
+      },
+    );
   }
 
   getNextSection() {
