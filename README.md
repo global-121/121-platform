@@ -100,9 +100,9 @@ To set up a local development-environment:
   Once the dependencies are resolved depending on your OS, as above we can set-up the repositories and other environment variables
 
 ## Setup Interfaces
-Install dependencies for the interfaces, from the individual interface directories (`interfaces/*`) run:
+Install all dependencies for all interfaces. From the root of this repository, run:
 
-    npm install
+    npm run install:interfaces
 
 Or to install 1 specific interface's dependencies, run: (where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`)
 
@@ -111,8 +111,11 @@ Or to install 1 specific interface's dependencies, run: (where `<interface-name>
 
 Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
 
+After that, you can start in development mode by running from the root of this repository:
+- `npm run start:services`
+
 ## Start Interfaces
-To start all interfaces at once, execute `npm run start:interfaces` from the root of the project folder.
+To start all interfaces at once, execute `npm run start:interfaces` from the root of this repository.
 
 To start an individual interface in development mode:
 - Run `npm run start:<interface-name>`, where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`.
