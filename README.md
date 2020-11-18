@@ -150,18 +150,21 @@ If the swagger UI is not accessible after installing docker and setting up servi
 
 
 ## Unit Tests
+### Why?
 There are a few reasons why we write unit tests cases:
 - Unit tests are written to ensure the integrity the functional level aspect of the code written. It helps us identify mistakes, unnecessary code and also when there is room for improvement to make the code more intuitive and efficient.
 - We also write unit test cases to clearly state what the method is supposed to do, so it is smoother for new joiners to be onboarded
 - It helps us achieve recommended devOps protocols for maintaining code base while working within teams.
 
+### Maintenance with future changes
 How are Unit Tests affected when we make changes within the code in future?
 - We should aim to write and update unit tests along side the current development, so that our tests are up to date and also reflect the changes done. Helps us stay in track
 - Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test-scenario or spec-file should be committed together with the feature change.
 
-
+### Our testing framework
 We are using `jasmine` framework for executing unit tests withing `interfaces` and `jest` within services. However, while writing the unit test cases, the writing style and testing paradigm do not differ since `jest` is based on `jasmine` to begin with.
 
+### Key points for writing tests
 Keep the following points in mind while writing test cases:
 - We should follow a practice to write to tests for all methods except the ones which are private.
 - Every method which contains an async call, can be tested by returning a promise that can be spied and stubbed to verify the UI behavior.
