@@ -146,7 +146,7 @@ If the swagger UI is not accessible after installing docker and setting up servi
 
 - If the errors are related to not being able to access/connect to 'database' then resetting the database by using `dropSchema: true` in `ormconfig.ts`.
 
-- In order to access docker container itself, execute command `sudo docker exec -it <container-name> sh` and verify installation of npm modules.
+- In order to access an individual docker container, execute command `docker-compose exec -it <container-name> sh` and verify installation of npm modules.
 
 - If there are issues with Docker commands, it could be due to permissions. Prefix your commands with `sudo docker....`
 
