@@ -35,20 +35,17 @@ To set up a local development-environment:
   To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'Node version manager'.  
   Make sure to install the version specified in the [`.node-version`](.node-version)-file
 - Install Git (<https://git-scm.com/download/win>)
+- Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
 - Install Docker (<https://docs.docker.com/docker-for-windows/install/>)
 
 ### On Linux
 
 #### Install dependencies
-- Install Node.js  
-  To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
-  After installing NVM run:
-
-      nvm install && nvm install-latest-npm
-
-- Install Git
-
-      sudo apt install git-all
+- Install Git: `sudo apt install git-all`
+- Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
+- Install Node.js: To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
+  After installing NVM run: `nvm install-latest-npm`
+- `cd` to the directory of the cloned repository above and execute `nvm install`. In this way nvm "sees" which version of NodeJS needs to be installed.
 
 - Install Docker  
   On linux distributions we need to install `docker engine` and `docker-compose` respectively. On other platforms they are available through Docker Desktop. Read more at: <https://docs.docker.com/engine/install/>
@@ -87,26 +84,20 @@ To set up a local development-environment:
 ### On macOS
 
 #### Install dependencies
+- Install Git: <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git> > Installing on macOS (section)
+- Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
 - Install Node.js  
   To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
   After installing NVM run:
 
       nvm install && nvm install-latest-npm
-
-- Install Git  
-  <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git> > Installing on macOS (section)
+- `cd` to the directory of the cloned repository above and execute `nvm install`. In this way nvm "sees" which version of NodeJS needs to be installed.
 - Install Docker (<https://docs.docker.com/docker-for-mac/install/>)  
   Install docker-machine, see: <https://docs.docker.com/machine/install-machine/>
 
         base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
 
   Once the dependencies are resolved depending on your OS, as above we can set-up the repositories and other environment variables
-
-## Setup Repository
-Download/Clone the Git repository.
-
-    git clone https://github.com/global-121/121-platform.git
-
 
 ## Setup Interfaces
 Install dependencies for the interfaces, from the individual interface directories (`interfaces/*`) run:
@@ -117,11 +108,6 @@ Or to install 1 specific interface's dependencies, run: (where `<interface-name>
 
     npm run install:<interface-name>
 
-## Setup Services
-Install dependencies for the interfaces, from the individual interface directories (`services/*`) run:
-
-    npm install
-
 
 Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
 
@@ -131,13 +117,6 @@ To start all interfaces at once, execute `npm run start:interfaces` from the roo
 To start an individual interface in development mode:
 - Run `npm run start:<interface-name>`, where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`.
 - Or explore the specific options(to run the native Android version, for example) as defined in each interface's own `package.json` or `README.md`.
-
-
-## Testing
-- Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).
-- Each component has its own individual tests:
-  - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
-  - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
 
 ## Common problems with Local Environment set-up
 If the swagger UI is not accessible after installing docker and setting up services, we can take following steps to debug:
@@ -151,22 +130,29 @@ If the swagger UI is not accessible after installing docker and setting up servi
 - If there are issues with Docker commands, it could be due to permissions. Prefix your commands with `sudo docker....`
 
 
-## Unit Tests
-### Why?
+
+## Testing
+- Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).
+- Each component has its own individual tests:
+  - Unit-tests and UI-tests for all interfaces; Run with `npm test` in each `interfaces/*`-folder.
+  - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
+
+### Unit Tests
+#### Why?
 There are a few reasons why we write unit tests cases:
 - Unit tests are written to ensure the integrity the functional level aspect of the code written. It helps us identify mistakes, unnecessary code and also when there is room for improvement to make the code more intuitive and efficient.
 - We also write unit test cases to clearly state what the method is supposed to do, so it is smoother for new joiners to be onboarded
 - It helps us achieve recommended devOps protocols for maintaining code base while working within teams.
 
-### Maintenance with future changes
+#### Maintenance with future changes
 How are Unit Tests affected when we make changes within the code in future?
 - We should aim to write and update unit tests along side the current development, so that our tests are up to date and also reflect the changes done. Helps us stay in track
 - Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test-scenario or spec-file should be committed together with the feature change.
 
-### Our testing framework
+#### Our testing framework
 We are using `jasmine` framework for executing unit tests withing `interfaces` and `jest` within services. However, while writing the unit test cases, the writing style and testing paradigm do not differ since `jest` is based on `jasmine` to begin with.
 
-### Key points for writing tests
+#### Key points for writing tests
 Keep the following points in mind while writing test cases:
 - We should follow a practice to write to tests for all methods except the ones which are private.
 - Every method which contains an async call, can be tested by returning a promise that can be spied and stubbed to verify the UI behavior.
@@ -193,7 +179,7 @@ The methods written as `toBeTruthy` are called matchers, they help us compare th
 A short introduction tutorial, to start off writing test cases can be found at: <https://jasmine.github.io/tutorials/your_first_suite>
 
 
-#### Testing method callbacks and changes
+##### Testing method callbacks and changes
 - In order to test for methods to have been called, or been called with certain arguments use `spy` and `toHaveBeenCalled`/ `toHaveBeenCalledWith` matchers.
 
 ```ts
@@ -211,7 +197,7 @@ it('some_method: should call another fn', () => {
 });
 ```
 
-#### Testing conditional statements
+##### Testing conditional statements
 - Make separate `it` blocks for different conditions.
 
 ```ts
@@ -219,7 +205,7 @@ it("Test when xyz === 'some-value'", () => {})
 it("Test when xyz !== 'some-value'", () => {})
 ```
 
-#### Testing Async methods (i.e. methods which make an API call)
+##### Testing Async methods (i.e. methods which make an API call)
 - Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
 
 ```ts
@@ -248,7 +234,7 @@ it('XYZ', (done) => {
 });
 ```
 
-#### Testing HTML elements
+##### Testing HTML elements
 - By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
 - HTML elements are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
 
