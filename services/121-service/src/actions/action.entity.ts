@@ -27,13 +27,7 @@ export class ActionEntity {
   public program: ProgramEntity;
 }
 
-export type ActionType = ExportType | AdditionalActionType;
-
-export enum AdditionalActionType {
-  notifyIncluded = 'notify-included',
-}
+export type ActionType = ExportType;
 
 // Add both enum together to one array so it can be used as validator in the dto
-export const ActionArray = Object.values(ExportType)
-  .map(item => String(item))
-  .concat(Object.values(AdditionalActionType).map(item => String(item)));
+export const ActionArray = Object.values(ExportType).map(item => String(item));
