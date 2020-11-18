@@ -109,7 +109,7 @@ Download/Clone the Git repository.
 
 
 ## Setup Interfaces
-Install dependencies for the interfaces, from the individual interface directories (`interfaces/*`) run:
+Install all dependencies for all interfaces. From the root of this repository, run:
 
     npm run install:interfaces
 
