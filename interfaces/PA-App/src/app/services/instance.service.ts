@@ -27,6 +27,10 @@ export class InstanceService {
     this.getInstanceData();
 
     this.translate.onLangChange.subscribe(() => {
+      if (!this.instanceData) {
+        return;
+      }
+
       this.updateInstanceInformation();
     });
   }
