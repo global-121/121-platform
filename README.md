@@ -148,6 +148,8 @@ If the swagger UI is not accessible after installing docker and setting up servi
 
 - In order to access docker container itself, execute command `sudo docker exec -it <container-name> sh` and verify installation of npm modules.
 
+- If there are issues with Docker commands, it could be due to permissions. Prefix your commands with `sudo docker....`
+
 
 ## Unit Tests
 ### Why?
