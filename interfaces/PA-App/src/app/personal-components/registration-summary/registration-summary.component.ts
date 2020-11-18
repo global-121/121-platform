@@ -19,6 +19,8 @@ export class RegistrationSummaryComponent extends PersonalComponent {
 
   public validation: boolean;
 
+  public registrationStatus: boolean;
+
   private did: string;
 
   public dateFormat = 'EEE, dd-MM-yyyy';
@@ -51,16 +53,24 @@ export class RegistrationSummaryComponent extends PersonalComponent {
   }
 
   async initNew() {
+    this.conversationService.startLoading();
+
     this.validation = await this.checkValidation();
 
     await this.getDid();
     await this.getProgram();
-    await this.programsService.postConnectionApply(this.did, this.program.id);
+
+    this.registrationStatus = await this.programsService.postConnectionApply(
+      this.did,
+      this.program.id,
+    );
 
     if (this.validation) {
       await this.shouldShowQrCode();
       await this.generateContent();
     }
+
+    this.conversationService.stopLoading();
 
     this.complete();
   }
@@ -88,7 +98,6 @@ export class RegistrationSummaryComponent extends PersonalComponent {
   }
 
   private async getProgram() {
-    this.conversationService.startLoading();
     this.program = await this.paData.getCurrentProgram();
     this.getProgramProperties(this.program);
   }
@@ -112,11 +121,11 @@ export class RegistrationSummaryComponent extends PersonalComponent {
   }
 
   public async generateContent() {
-    this.conversationService.startLoading();
-
     this.generateQrCode(this.did, this.program.id);
+  }
 
-    this.conversationService.stopLoading();
+  public retry() {
+    window.location.reload();
   }
 
   getNextSection() {

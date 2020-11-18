@@ -187,7 +187,7 @@ export class ProgramsServiceApiService {
       .pipe(map((response) => response.status));
   }
 
-  postConnectionApply(did: string, programId: number): Promise<any> {
+  async postConnectionApply(did: string, programId: number): Promise<boolean> {
     return this.apiService
       .post(
         environment.url_121_service_api,
@@ -197,7 +197,9 @@ export class ProgramsServiceApiService {
         },
         true,
       )
-      .toPromise();
+      .toPromise()
+      .then(() => true)
+      .catch(() => false);
   }
 
   postConnectionCustomAttribute(

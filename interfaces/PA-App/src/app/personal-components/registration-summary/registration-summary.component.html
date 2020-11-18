@@ -1,4 +1,23 @@
-<section>
+<section *ngIf="registrationStatus === false">
+  <dialogue-turn
+    *ngIf="registrationStatus === false"
+    [isSpoken]="registrationStatus === false"
+  >
+    <p>
+      <play-text-audio key="connection.error-retry" class="ion-float-start ion-margin-end"></play-text-audio>
+      <span [innerHTML]="'connection.error-retry'|translate"></span>
+    </p>
+    <p>
+      <ion-button
+        type="button"
+        (click)="retry()"
+      >
+        {{ 'shared.retry'|translate }}
+      </ion-button>
+    </p>
+  </dialogue-turn>
+</section>
+<section *ngIf="registrationStatus">
   <dialogue-turn
     *ngIf="validation"
     [isSpoken]="validation"
