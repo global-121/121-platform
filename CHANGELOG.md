@@ -9,10 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.13.0...master)
 
+---
+
+## [0.13.1](https://github.com/global-121/121-platform/compare/v0.13.0...v0.13.1) - 2020-11-19
+
+### Changed
 - 2020-11-19: Updated/fixed dependencies of PA-accounts-service;  
   To update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
-
----
 
 ## [0.13.0](https://github.com/global-121/121-platform/compare/v0.12.2...v0.13.0) - 2020-11-18
 
@@ -24,15 +27,11 @@ Release for Acceptance test 2 Kenya Pilot
 
 Hotfix to fix Intersolve integration for NL-pilot.
 
----
-
 ## [0.12.1](https://github.com/global-121/121-platform/compare/v0.12.0...v0.12.1) - 2020-11-16
 
 ### Changed
 - 2020-11-12: Updated/fixed dependencies of 121-service;  
   To update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
-
----
 
 ## [0.12.0](https://github.com/global-121/121-platform/compare/v0.11.0...v0.12.0) - 2020-11-12
 
