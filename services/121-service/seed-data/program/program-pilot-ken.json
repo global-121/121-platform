@@ -161,9 +161,7 @@
     {
       "criterium": "location",
       "label": {
-        "saq_KE": "Aji nikimanya?",
-        "tuv_KE": "Alowai ilomit?",
-        "en": "Which village/area do you live?"
+        "en": "From where are you registering?"
       },
       "answerType": "dropdown",
       "criteriumType": "standard",
@@ -177,11 +175,27 @@
           }
         },
         {
-          "option": "location_oldonyiro",
+          "option": "location_oldonyiro_parkuruk",
           "label": {
-            "saq_KE": "Oldonyiro",
-            "tuv_KE": "Oldonyiro",
-            "en": "Oldonyiro"
+            "saq_KE": "Oldonyiro, Parkuruk Primary School",
+            "tuv_KE": "Oldonyiro, Parkuruk Primary School",
+            "en": "Oldonyiro, Parkuruk Primary School"
+          }
+        },
+        {
+          "option": "location_oldonyiro_market",
+          "label": {
+            "saq_KE": "Oldonyiro, Livestock Market",
+            "tuv_KE": "Oldonyiro, Livestock Market",
+            "en": "Oldonyiro, Livestock Market"
+          }
+        },
+        {
+          "option": "location_oldonyiro_ndugu_zangu",
+          "label": {
+            "saq_KE": "Oldonyiro, Ndugu Zangu Primary School",
+            "tuv_KE": "Oldonyiro, Ndugu Zangu Primary School",
+            "en": "Oldonyiro, Ndugu Zangu Primary School"
           }
         }
       ],
