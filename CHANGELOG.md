@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.13.0...master)
 
+- 2020-11-19: Updated/fixed dependencies of PA-accounts-service;  
+  To update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
+
 ---
 
 ## [0.13.0](https://github.com/global-121/121-platform/compare/v0.12.2...v0.13.0) - 2020-11-18
