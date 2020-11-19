@@ -21,9 +21,12 @@
 | PA-accounts-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/PA-accounts-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=19&branchName=master)   |
 | Tykn-SSI-Services   | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/Tykn%20SSI%20Services?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=20&branchName=master) |
 
-## Documentation
-The documentation of the 121 platform can be found on the Wiki of this repository on GitHub.
+---
 
+## Documentation
+The documentation of the 121 platform can be found on the Wiki of this repository on GitHub: <https://github.com/global-121/121-platform/wiki>
+
+---
 
 ## Getting Started
 To set up a local development-environment:
@@ -31,11 +34,11 @@ To set up a local development-environment:
 ### On Windows
 
 #### Install dependencies
-- Install Node.js (<https://nodejs.org/en/download/>)  
-  To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'Node version manager'.  
-  Make sure to install the version specified in the [`.node-version`](.node-version)-file
 - Install Git (<https://git-scm.com/download/win>)
 - Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
+- Install Node.js (<https://nodejs.org/en/download/>)
+  - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'Node version manager'.
+  - Install the version specified in the [`.node-version`](.node-version)-file.
 - Install Docker (<https://docs.docker.com/docker-for-windows/install/>)
 
 ### On Linux
@@ -43,10 +46,11 @@ To set up a local development-environment:
 #### Install dependencies
 - Install Git: `sudo apt install git-all`
 - Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
-- Install Node.js: To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
-  After installing NVM run, from the root of this repository:  
-  `nvm install && nvm install-latest-npm`
-  So that the required version of Node.js and `npm` get installed.
+- Install Node.js
+  - To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
+  - After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
+
+          nvm install && nvm install-latest-npm
 
 - Install Docker  
   On linux distributions we need to install `docker engine` and `docker-compose` respectively. On other platforms they are available through Docker Desktop. Read more at: <https://docs.docker.com/engine/install/>
@@ -62,13 +66,12 @@ To set up a local development-environment:
 
         sudo docker run hello-world
 
-  - Now install docker-compose  
-    Can be done by following the steps:
+  - Now install `docker-compose` by following the steps:
 
         sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         sudo chmod +x /usr/local/bin/docker-compose
 
-    Reference: https://docs.docker.com/compose/install/
+    Reference: <https://docs.docker.com/compose/install/>
 
   - Test the docker compose installation
 
@@ -78,7 +81,7 @@ To set up a local development-environment:
 
         base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo mv /tmp/docker-machine /usr/local/bin/docker-machine &&   chmod +x /usr/local/bin/docker-machine
 
-       Reference: https://docs.docker.com/machine/install-machine/
+       Reference: <https://docs.docker.com/machine/install-machine/>
 
   - You are set!
 
@@ -87,47 +90,70 @@ To set up a local development-environment:
 #### Install dependencies
 - Install Git: <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git> > Installing on macOS (section)
 - Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
-- Install Node.js  
-  To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
-  After installing NVM run:
+- Install Node.js
+  - To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).  
+  - After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
 
-      nvm install && nvm install-latest-npm
-- `cd` to the directory of the cloned repository above and execute `nvm install`. In this way nvm "sees" which version of NodeJS needs to be installed.
-- Install Docker (<https://docs.docker.com/docker-for-mac/install/>)  
-  Install docker-machine, see: <https://docs.docker.com/machine/install-machine/>
+          nvm install && nvm install-latest-npm
 
-        base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
+- Install Docker Desktop (<https://docs.docker.com/docker-for-mac/install/>)  
 
-  Once the dependencies are resolved depending on your OS, as above we can set-up the repositories and other environment variables
+---
+
+## Setup Services
+Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
+
+## Start Services
+To start all services, after setup, from the root of this repository, run:
+
+    npm run start:services
+
+To see the statuses of docker containers, run from the `services/`-folder:
+
+    docker-compose logs -f <container-name>
+
+To verify successful installation and setup of services, access their Swagger UI:
+|                     | URL                           | or run:                    |
+| ------------------- | ----------------------------- | -------------------------- |
+| 121-service         | <http://localhost:3000/docs/> | `npm rum open:121-service` |
+| PA-accounts-service | <http://localhost:3001/docs/> | `npm rum open:pa-accounts` |
+
 
 ## Setup Interfaces
-Install dependencies for the interfaces, from the individual interface directories (`interfaces/*`) run:
+Install dependencies for all the interfaces at once, run:
 
-    npm install
+    npm run install:interfaces
 
 Or to install 1 specific interface's dependencies, run: (where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`)
 
     npm run install:<interface-name>
 
-## Setup Services
-Follow the "[Getting started / installation](services/README.md#getting-started--installation)"-section in the [services/README](services/README.md)-file.
-In order to see the statuses of docker containers run: `docker-compose logs -f <container-name>`.
-In order to verify successful installtion and setup of services, access the swagger UI:
-- 121-service: http://localhost:3000/docs/
-- PA-accounts-service: http://localhost:3001/docs/
+Or from each of the individual interface directories(`interfaces/*`) run:
+
+    npm install
+
 
 ## Start Interfaces
-To start all interfaces at once, execute `npm run start:interfaces` from the root of the project folder.
+To start all interfaces at once, from the root of this repository, run:
+
+    npm run start:interfaces
 
 To start an individual interface in development mode:
-- Run `npm run start:<interface-name>`, where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`.
+- Run: (where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`)
+
+      npm run start:<interface-name>
+
 - Or explore the specific options(to run the native Android version, for example) as defined in each interface's own `package.json` or `README.md`.
 
-These are four individual angular applications and can be accessed by visiting their corresponding localhost ports.
-   - PA App:http://localhost:8008
-   - AW App: http://localhost:8080
-   - HO-Portal http://localhost:8888
-   - Referral-App http://localhost:8800
+The 4 individual Angular applications, when started will be available via:
+
+|              | URL                     | or run:                 |
+| ------------ | ----------------------- | ----------------------- |
+| PA-App       | <http://localhost:8008> | `npm run open:pa`       |
+| AW-App       | <http://localhost:8080> | `npm run open:aw`       |
+| HO-Portal    | <http://localhost:8888> | `npm run open:ho`       |
+| Referral-App | <http://localhost:8800> | `npm run open:referral` |
+
 From hereon, you can start making changes to the UI and observe how the components are interconnected.
 
 ## Common problems with Local Environment set-up
@@ -135,13 +161,17 @@ If the swagger UI is not accessible after installing docker and setting up servi
 1. `docker-compose ps` to list running containers and their statuses
 2. `docker-compose logs -f <container-name>` to check their statuses
 
-- If the errors are related to not being able to access/connect to 'database' then resetting the database by using `dropSchema: true` in `ormconfig.ts`.
+If the errors are related to not being able to access/connect to the database then reset/recreate the database by using `dropSchema: true` in `ormconfig.ts`.
 
-- In order to access an individual docker container, execute command `docker-compose exec -it <container-name> sh` and verify installation of npm modules.
+- In order to access an individual docker container, run:
+
+      docker-compose exec -it <container-name> sh
+
+  For example to verify installation of node-modules.
 
 - If there are issues with Docker commands, it could be due to permissions. Prefix your commands with `sudo docker....`
 
-
+---
 
 ## Testing
 - Scenarios of end-to-end/integration-tests for the whole platform are described in [`/features`](features/#readme).
@@ -150,6 +180,7 @@ If the swagger UI is not accessible after installing docker and setting up servi
   - Unit-tests and integration-tests for all services; Run with `npm test` in each `services/*`-folder.
 
 ### Unit Tests
+
 #### Why?
 There are a few reasons why we write unit tests cases:
 - Unit tests are written to ensure the integrity the functional level aspect of the code written. It helps us identify mistakes, unnecessary code and also when there is room for improvement to make the code more intuitive and efficient.
@@ -161,8 +192,8 @@ How are Unit Tests affected when we make changes within the code in future?
 - We should aim to write and update unit tests along side the current development, so that our tests are up to date and also reflect the changes done. Helps us stay in track
 - Unit tests in this case differ from manual or automated UI testing. While UI may not exhibit any changes on the surface it is possible code itself might be declaring new variables or making new method calls upon modifications, all of those need to be tested and the new test-scenario or spec-file should be committed together with the feature change.
 
-#### Our testing framework
-We are using `jasmine` framework for executing unit tests withing `interfaces` and `jest` within services. However, while writing the unit test cases, the writing style and testing paradigm do not differ since `jest` is based on `jasmine` to begin with.
+#### Our testing framework(s)
+We are using `jasmine` for executing unit tests within `interfaces` and `jest` within `services`. However, while writing the unit test cases, the writing style and testing paradigm do not differ since `jest` is based on `jasmine` to begin with.
 
 #### Key points for writing tests
 Keep the following points in mind while writing test cases:
@@ -250,6 +281,8 @@ it('XYZ', (done) => {
 - By using the `defaultEl` and the monitoring the changes within the HTML pages. However, the testing here does not bring a lot of productivity in terms of what we get out of it. So, we can choose to discard this aspect of testing.
 - HTML elements are tested by matching the `string` values, which is not very intuitive with `i18n` modules in use
 
+---
+
 ## Releases
 See notable changes and the currently release version in the [CHANGELOG](CHANGELOG.md).
 
@@ -299,6 +332,7 @@ This follows the same process as a regular release + deployment. With some small
   The publish-command will invoke the webhook(s), which trigger an automated deploy for environments on that same *minor* version.
 - After the hotfix-release, apply the fixes to the master-branch by merging the PR created.
 
+---
 
 ## Deployment
 
