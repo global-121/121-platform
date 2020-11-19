@@ -161,6 +161,8 @@
     {
       "criterium": "location",
       "label": {
+        "saq_KE": "Ta location ikingeroki?",
+        "tuv_KE": "Ka aluwai kigirere iyong?",
         "en": "From where are you registering?"
       },
       "answerType": "dropdown",
