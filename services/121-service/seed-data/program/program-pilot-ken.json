@@ -40,14 +40,14 @@
   },
   "notifications": {
     "saq_KE": {
-      "registered": "This is a message from Mlasaba enyekie e Kenya: Eta taa ingero ta reto.",
-      "included": "This is a message from Mlasaba enyekie e Kenya: Ikitipikaki ana reto.",
-      "rejected": "This is a message from Mlasaba enyekie e Kenya: Tapaliki iyoo amu mitum ana reto. Tanaa keyatae niyeu niparu tooshoki iyoo."
+      "registered": "Keigwa ele kilikwai Msalaba Enyekie Ee Kenya: Eta taa ingero ta reto.",
+      "included": "Keigwa ele kilikwai Msalaba Enyekie Ee Kenya: Ikitipikaki ana reto.",
+      "rejected": "Keigwa ele kilikwai Msalaba Enyekie Ee Kenya: Tapaliki iyoo amu mitum ana reto. Tanaa keyatae niyeu niparu tooshoki iyoo."
     },
     "tuv_KE": {
-      "registered": "This is a message from Emsalaba areng'an a Kenya: Kigirakin iyo niajokon tomaa",
-      "included": "This is a message from Emsalaba areng'an a Kenya: Kiwakin iyong tomaa na king'arakino na.",
-      "rejected": "This is a message from Emsalaba areng'an a Kenya: Terimakinae thua kutere kithaki alimokin iyong atamar nipedori anyuun aking'arakinio naga. Keyei ibere aking'it thoua taram a diit."
+      "registered": "Ebunit ekoi lo ania Emusalaba alo Areng'an a Kenya: Kigirakin iyo niajokon tomaa",
+      "included": "Ebunit ekoi lo ania Emusalaba alo Areng'an a Kenya: Kiwakin iyong tomaa na king'arakino na.",
+      "rejected": "Ebunit ekoi lo ania Emusalaba alo Areng'an a Kenya: Terimakinae thua kutere kithaki alimokin iyong atamar nipedori anyuun aking'arakinio naga. Keyei ibere aking'it thoua taram a diit."
     },
     "en": {
       "registered": "This is a message from Kenya Red Cross Society: You have been successfully registered for this program.",
