@@ -29,26 +29,29 @@ export class AfricasTalkingService {
     installment: number,
     amount: number,
   ): Promise<FspTransactionResultDto> {
-    const payload = this.createPayload(
-      paymentList,
-      programId,
-      installment,
-      amount,
-    );
-    const paymentRequestResult = await this.africasTalkingApiService.sendPayment(
-      payload,
-    );
+    const fspTransactionResult = new FspTransactionResultDto();
+    fspTransactionResult.paList = [];
+    fspTransactionResult.fspName = fspName.africasTalking;
 
-    const fspTransactionResult = await this.getFsptransactionResult(
-      paymentRequestResult,
-      paymentList,
-    );
+    for (let payment of paymentList) {
+      const payload = this.createPayloadPerPa(
+        payment,
+        programId,
+        installment,
+        amount,
+      );
+
+      const paymentRequestResultPerPa = await this.africasTalkingApiService.sendPaymentPerPa(
+        payload,
+      );
+      fspTransactionResult.paList.push(paymentRequestResultPerPa);
+    }
 
     return fspTransactionResult;
   }
 
-  public createPayload(
-    paymentList: PaPaymentDataDto[],
+  public createPayloadPerPa(
+    paymentData: PaPaymentDataDto,
     programId: number,
     installment: number,
     amount: number,
@@ -59,65 +62,20 @@ export class AfricasTalkingService {
       recipients: [],
     };
 
-    for (let item of paymentList) {
-      const recipient = {
-        phoneNumber: item.paymentAddress,
-        currencyCode: process.env.AFRICASTALKING_CURRENCY_CODE,
-        amount: amount,
-        metadata: {
-          programId: String(programId),
-          installment: String(installment),
-          did: String(item.did),
-          amount: String(amount),
-        },
-      };
-      payload.recipients.push(recipient);
-    }
+    const recipient = {
+      phoneNumber: paymentData.paymentAddress,
+      currencyCode: process.env.AFRICASTALKING_CURRENCY_CODE,
+      amount: amount,
+      metadata: {
+        programId: String(programId),
+        installment: String(installment),
+        did: String(paymentData.did),
+        amount: String(amount),
+      },
+    };
+    payload.recipients.push(recipient);
 
     return payload;
-  }
-
-  private async getFsptransactionResult(
-    paymentRequestResult: FspTransactionResultDto,
-    paymentList: PaPaymentDataDto[],
-  ): Promise<FspTransactionResultDto> {
-    let fspTransactionResult = new FspTransactionResultDto();
-    fspTransactionResult.fspName = fspName.africasTalking;
-    fspTransactionResult.paList = [];
-
-    if (paymentRequestResult.status === StatusEnum.success) {
-      fspTransactionResult.status = StatusEnum.success;
-
-      for (let transaction of paymentRequestResult.message.entries) {
-        const paTransactionResult = new PaTransactionResultDto();
-
-        const pa = paymentList.find(
-          i => i.paymentAddress === transaction.phoneNumber.replace(/\D/g, ''),
-        );
-        paTransactionResult.did = pa.did;
-
-        paTransactionResult.status = transaction.errorMessage
-          ? StatusEnum.error
-          : StatusEnum.waiting;
-
-        paTransactionResult.message = transaction.errorMessage
-          ? transaction.errorMessage
-          : 'No notification of payment status received yet.';
-
-        fspTransactionResult.paList.push(paTransactionResult);
-      }
-    } else if (paymentRequestResult.status === StatusEnum.error) {
-      fspTransactionResult.status = StatusEnum.error;
-      for (let pa of paymentList) {
-        const paTransactionResult = new PaTransactionResultDto();
-        paTransactionResult.did = pa.did;
-        paTransactionResult.status = StatusEnum.error;
-        paTransactionResult.message =
-          'Whole payment request failed: ' + paymentRequestResult.message.error;
-        fspTransactionResult.paList.push(paTransactionResult);
-      }
-    }
-    return fspTransactionResult;
   }
 
   public async checkValidation(

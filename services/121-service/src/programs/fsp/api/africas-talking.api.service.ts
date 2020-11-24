@@ -1,13 +1,12 @@
 import { StatusEnum } from '../../../shared/enum/status.enum';
 import { Injectable } from '@nestjs/common';
-import { FspTransactionResultDto } from '../dto/payment-transaction-result.dto';
-import { fspName } from '../financial-service-provider.entity';
+import { PaTransactionResultDto } from '../dto/payment-transaction-result.dto';
 
 @Injectable()
 export class AfricasTalkingApiService {
   public constructor() {}
 
-  public async sendPayment(payload): Promise<FspTransactionResultDto> {
+  public async sendPaymentPerPa(payload): Promise<PaTransactionResultDto> {
     const credentials = {
       apiKey: process.env.AFRICASTALKING_API_KEY,
       username: process.env.AFRICASTALKING_USERNAME,
@@ -23,26 +22,27 @@ export class AfricasTalkingApiService {
         result = { response: response };
       })
       .catch((error: any) => {
-        // This catch is not working, also errors end up in the above response // UPDATE: is this comment old or still valid?
         console.log('error: ', error);
         result = { error: error };
       });
 
-    const fspTransactionResult = new FspTransactionResultDto();
-    fspTransactionResult.fspName = fspName.africasTalking;
+    const paTransactionResult = new PaTransactionResultDto();
+    paTransactionResult.did = payload.recipients[0].metadata.did;
 
-    if (result.error) {
-      fspTransactionResult.status = StatusEnum.error;
-      fspTransactionResult.message = { error: result.error };
-    } else if (result.response.errorMessage) {
-      fspTransactionResult.status = StatusEnum.error;
-      fspTransactionResult.message = {
-        error: result.response.errorMessage,
-      };
+    if (result.response?.entries[0]?.errorMessage) {
+      paTransactionResult.status = StatusEnum.error;
+      paTransactionResult.message = result.response.entries[0].errorMessage;
+    } else if (result.response?.errorMessage) {
+      paTransactionResult.status = StatusEnum.error;
+      paTransactionResult.message = result.response.errorMessage;
+    } else if (result.error) {
+      paTransactionResult.status = StatusEnum.error;
+      paTransactionResult.message = result.error;
     } else {
-      fspTransactionResult.status = StatusEnum.success;
-      fspTransactionResult.message = result.response;
+      paTransactionResult.status = StatusEnum.waiting;
+      paTransactionResult.message =
+        'No notification of payment status received yet.';
     }
-    return fspTransactionResult;
+    return paTransactionResult;
   }
 }
