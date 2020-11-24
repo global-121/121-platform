@@ -24,8 +24,6 @@ export class ActionService {
   ): Promise<ActionEntity> {
     let action = new ActionEntity();
     action.actionType = actionType;
-    console.log('actionType: ', actionType);
-
     const user = await this.userRepository.findOne(userId);
     action.user = user;
 
