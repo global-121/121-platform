@@ -164,7 +164,7 @@ export class ProgramPayoutComponent implements OnInit {
             )
             .concat(
               response.nrFailed > 0
-                ? ' ' +
+                ? '<br><br>' +
                     this.translate.instant(
                       'page.program.program-payout.result-failure',
                       { nrFailed: response.nrFailed },
@@ -173,7 +173,7 @@ export class ProgramPayoutComponent implements OnInit {
             )
             .concat(
               response.nrWaiting > 0
-                ? ' ' +
+                ? '<br><br>' +
                     this.translate.instant(
                       'page.program.program-payout.result-waiting',
                       { nrWaiting: response.nrWaiting },
