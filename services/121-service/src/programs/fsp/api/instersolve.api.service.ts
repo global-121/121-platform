@@ -9,6 +9,7 @@ import { IntersolveRequestEntity } from '../intersolve-request.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
+import appInsights from 'applicationinsights';
 
 @Injectable()
 export class IntersolveApiService {
@@ -60,6 +61,7 @@ export class IntersolveApiService {
     let result = new IntersolveIssueCardResponse();
     try {
       const responseBody = await this.soapService.post(payload);
+
       result = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
         resultDescription:
@@ -77,6 +79,17 @@ export class IntersolveApiService {
       intersolveRequest.balance = result.balance;
       intersolveRequest.transactionId = result.transactionId;
       intersolveRequest.toCancel = result.resultCode != IntersolveResultCode.Ok;
+
+      if (appInsights.defaultClient) {
+        appInsights.defaultClient.trackEvent({
+          name: 'fsp-intersolve_issue-card',
+          properties: {
+            amount,
+            resultCode: result.resultCode,
+            cardBalance: result.balance,
+          },
+        });
+      }
     } catch (Error) {
       console.log('Error: ', Error);
       intersolveRequest.toCancel = true;
