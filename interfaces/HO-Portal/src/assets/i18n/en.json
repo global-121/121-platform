@@ -230,6 +230,9 @@
         "confirm": "Add aidworker",
         "create-password": "Enter a password of at least {{minimalLength}} characters:",
         "succes-create": "Succesfully created user with email: '<strong>{{email}}</strong>' and password '<strong>{{password}}</strong>'. Please inform them now of their new account by sending an e-mail."
+      },
+      "test-payment": {
+        "do-payment": "Test validity of M-PESA phonenumbers"
       }
     },
     "help": {

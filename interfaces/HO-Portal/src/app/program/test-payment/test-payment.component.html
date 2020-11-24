@@ -1,0 +1,10 @@
+<ng-container *ngIf="visible">
+  <confirm-prompt
+    [disabled]="userRole !== userRoleEnum.ProjectOfficer"
+    (confirm)="doTestPayment()"
+  >
+    <ion-icon name="cash" slot="start"></ion-icon>
+    {{ 'page.program.test-payment.do-payment'|translate }}
+  </confirm-prompt>
+  <br>
+</ng-container>
