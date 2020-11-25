@@ -57,8 +57,6 @@ export class IntersolveService {
       );
       result.paList.push(isolatedResult);
     }
-    // Is always succes because no reason whole fsp fails
-    result.status = StatusEnum.success;
     result.fspName = paPaymentList[0].fspName;
     return result;
   }
