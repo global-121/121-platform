@@ -49,6 +49,7 @@ export class ExportListComponent implements OnChanges {
     this.btnText = this.translate.instant(
       'page.program.export-list.' + this.exportType + '.btn-text',
     );
+    this.updateSubHeader();
   }
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -59,6 +60,9 @@ export class ExportListComponent implements OnChanges {
       await this.programPhaseService.getPhases(this.programId);
       this.disabled = !this.btnEnabled();
     }
+  }
+
+  async updateSubHeader() {
     await this.getLatestActionTime();
     this.subHeader = this.translate.instant(
       'page.program.export-list.' + this.exportType + '.confirm-message',
@@ -94,6 +98,7 @@ export class ExportListComponent implements OnChanges {
           }
           const blob = new Blob([res.data], { type: 'text/csv' });
           saveAs(blob, res.fileName);
+          this.updateSubHeader();
         },
         (err) => {
           console.log('err: ', err);
