@@ -67,7 +67,9 @@ export class ExportListComponent implements OnChanges {
     this.subHeader = this.translate.instant(
       'page.program.export-list.' + this.exportType + '.confirm-message',
     );
-    this.message = this.translate.instant('page.program.export-list.timestamp') + this.actionTimestamp;
+    this.message =
+      this.translate.instant('page.program.export-list.timestamp') +
+      this.actionTimestamp;
   }
 
   public btnEnabled() {
