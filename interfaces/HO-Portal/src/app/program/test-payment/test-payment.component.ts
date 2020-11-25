@@ -29,6 +29,8 @@ export class TestPaymentComponent implements OnInit {
   public actionTimestamp;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
+  public isInProgress = false;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
@@ -67,12 +69,14 @@ export class TestPaymentComponent implements OnInit {
   }
 
   public async doTestPayment() {
+    this.isInProgress = true;
     const installment = -1;
     const amount = 0;
     await this.programsService
       .submitPayout(+this.programId, installment, amount)
       .then(
         (response) => {
+          this.isInProgress = false;
           const message = this.translate.instant(
             'page.program.test-payment.result',
           );
