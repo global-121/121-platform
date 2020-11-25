@@ -58,7 +58,7 @@ describe('Action service', (): void => {
     it('should return an array of actions', async (): Promise<void> => {
       const actions = [new ActionEntity()];
 
-      const result = await service.getActions(
+      const result = await service.getLatestActions(
         testAction.programId,
         testAction.actionType,
       );

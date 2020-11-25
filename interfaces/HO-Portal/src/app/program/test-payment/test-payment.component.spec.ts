@@ -1,5 +1,7 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateModule } from '@ngx-translate/core';
 import { TestPaymentComponent } from './test-payment.component';
 
 describe('TestPaymentComponent', () => {
@@ -9,6 +11,7 @@ describe('TestPaymentComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TestPaymentComponent],
+      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
