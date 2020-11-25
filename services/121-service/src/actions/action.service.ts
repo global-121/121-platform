@@ -34,17 +34,6 @@ export class ActionService {
     return newAction;
   }
 
-  public async getActions(
-    programId: number,
-    actionType: ActionType,
-  ): Promise<ActionEntity[]> {
-    const actions = await this.actionRepository.find({
-      where: { program: { id: programId }, actionType: actionType },
-    });
-
-    return actions;
-  }
-
   public async getLatestActions(
     programId: number,
     actionType: ActionType,

@@ -8,7 +8,6 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { HeaderComponent } from '../components/header/header.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
 import { ExportListComponent } from '../program/export-list/export-list.component';
-import { NotificationComponent } from '../program/notification/notification.component';
 import { PhaseNavigationComponent } from '../program/phase-navigation/phase-navigation.component';
 import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
@@ -26,7 +25,6 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     PhaseNavigationComponent,
     ProgramPeopleAffectedComponent,
     ExportListComponent,
-    NotificationComponent,
     TestPaymentComponent,
   ],
   imports: [
@@ -46,7 +44,6 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     PhaseNavigationComponent,
     ProgramPeopleAffectedComponent,
     ExportListComponent,
-    NotificationComponent,
     TestPaymentComponent,
     RouterModule,
     TranslateModule,

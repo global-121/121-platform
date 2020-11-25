@@ -229,11 +229,15 @@ export class ProgramController {
     title: 'Send payout instruction to financial service provider',
   })
   @Post('payout')
-  public async payout(@Body() data: PayoutDto): Promise<any> {
+  public async payout(
+    @Body() data: PayoutDto,
+    @User('id') userId: number,
+  ): Promise<any> {
     return await this.programService.payout(
       data.programId,
       data.installment,
       data.amount,
+      userId,
     );
   }
 

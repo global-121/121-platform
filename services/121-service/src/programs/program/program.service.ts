@@ -35,7 +35,10 @@ import {
 } from '../fsp/financial-service-provider.entity';
 import { ExportType } from './dto/export-details';
 import { NotificationType } from './dto/notification';
-import { ActionEntity, ActionType } from '../../actions/action.entity';
+import {
+  ActionEntity,
+  AdditionalActionType,
+} from '../../actions/action.entity';
 import { FspService } from '../fsp/fsp.service';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
@@ -737,6 +740,7 @@ export class ProgramService {
     programId: number,
     installment: number,
     amount: number,
+    userId: number,
   ): Promise<PaymentTransactionResultDto> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
@@ -771,6 +775,15 @@ export class ProgramService {
       installment,
       amount,
     );
+
+    if (installment === -1) {
+      this.actionService.saveAction(
+        userId,
+        programId,
+        AdditionalActionType.testMpesaPayment,
+      );
+    }
+
     return paymentTransactionResult;
   }
 

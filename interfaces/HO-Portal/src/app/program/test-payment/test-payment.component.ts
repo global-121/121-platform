@@ -1,6 +1,9 @@
+import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { ActionType } from 'src/app/models/action-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 
 enum fspName {
   africasTalking = 'Africas-talking',
@@ -20,7 +23,13 @@ export class TestPaymentComponent implements OnInit {
   public visible = false;
   public userRoleEnum = UserRole;
 
-  constructor(private programsService: ProgramsServiceApiService) {}
+  private locale: string;
+  public actionTimestamp;
+  private dateFormat = 'yyyy-MM-dd, HH:mm';
+
+  constructor(private programsService: ProgramsServiceApiService) {
+    this.locale = environment.defaultLocale;
+  }
 
   async ngOnInit() {
     const financialServiceProviders = (
@@ -33,6 +42,8 @@ export class TestPaymentComponent implements OnInit {
     ) {
       this.visible = true;
     }
+
+    await this.getLatestActionTime();
   }
 
   public async doTestPayment() {
@@ -43,5 +54,19 @@ export class TestPaymentComponent implements OnInit {
       installment,
       amount,
     );
+  }
+
+  public async getLatestActionTime(): Promise<void> {
+    const latestAction = await this.programsService.retrieveLatestActions(
+      ActionType.testMpesaPayment,
+      Number(this.programId),
+    );
+    if (latestAction) {
+      this.actionTimestamp = formatDate(
+        new Date(latestAction.timestamp),
+        this.dateFormat,
+        this.locale,
+      );
+    }
   }
 }
