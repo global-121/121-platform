@@ -908,7 +908,7 @@ export class ProgramService {
       }
 
       if (financialServiceProviders.includes(fspName.africasTalking)) {
-        connectionResponse['validMpesaNumber'] = await this.getMpesaStatus(
+        connectionResponse['phonenumberTestResult'] = await this.getMpesaStatus(
           connection.id,
           +programId,
         );
@@ -939,9 +939,9 @@ export class ProgramService {
     } else if (
       transaction.errorMessage === 'Value is outside the allowed limits'
     ) {
-      return 'Success';
+      return 'Success: Valid M-PESA number';
     } else if (transaction.errorMessage === 'Missing recipient name') {
-      return 'Error: No M-Pesa account found for this number';
+      return 'Error: No M-PESA number';
     } else {
       return 'Other error: ' + transaction.errorMessage;
     }
@@ -1111,7 +1111,7 @@ export class ProgramService {
         validationDate: rawConnection.validationDate,
         inclusionDate: rawConnection.inclusionDate,
         financialServiceProvider: rawConnection.fsp,
-        validMpesaNumber: rawConnection.validMpesaNumber,
+        phonenumberTestResult: rawConnection.phonenumberTestResult,
       };
       inclusionDetails.push(row);
     });
