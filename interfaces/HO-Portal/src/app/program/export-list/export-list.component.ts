@@ -30,6 +30,7 @@ export class ExportListComponent implements OnChanges {
 
   public btnText: string;
   public subHeader: string;
+  public message: string;
 
   private locale: string;
   public actionTimestamp;
@@ -48,9 +49,6 @@ export class ExportListComponent implements OnChanges {
     this.btnText = this.translate.instant(
       'page.program.export-list.' + this.exportType + '.btn-text',
     );
-    this.subHeader = this.translate.instant(
-      'page.program.export-list.' + this.exportType + '.confirm-message',
-    );
   }
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -60,8 +58,12 @@ export class ExportListComponent implements OnChanges {
     ) {
       await this.programPhaseService.getPhases(this.programId);
       this.disabled = !this.btnEnabled();
-      await this.getLatestActionTime();
     }
+    await this.getLatestActionTime();
+    this.subHeader = this.translate.instant(
+      'page.program.export-list.' + this.exportType + '.confirm-message',
+    );
+    this.message = this.translate.instant('page.program.export-list.timestamp') + this.actionTimestamp;
   }
 
   public btnEnabled() {
