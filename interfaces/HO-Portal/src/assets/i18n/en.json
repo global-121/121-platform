@@ -232,7 +232,8 @@
         "succes-create": "Succesfully created user with email: '<strong>{{email}}</strong>' and password '<strong>{{password}}</strong>'. Please inform them now of their new account by sending an e-mail."
       },
       "test-payment": {
-        "do-payment": "Test validity of M-PESA phonenumbers"
+        "do-payment": "Test validity of M-PESA phonenumbers",
+        "confirm": "This will test for all provided phonenumbers if they have a valid M-PESA account. The result can be seen in the Inclusion List that can be exported (by the Program Manager)."
       }
     },
     "help": {

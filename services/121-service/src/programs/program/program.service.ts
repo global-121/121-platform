@@ -860,6 +860,10 @@ export class ProgramService {
   ): Promise<any[]> {
     const selectedConnections = await this.getAllConnections(programId);
 
+    const financialServiceProviders = (
+      await this.findOne(+programId)
+    ).financialServiceProviders.map(fsp => fsp.fsp);
+
     const connectionsResponse = [];
     for (let connection of selectedConnections) {
       const connectionResponse = {};
@@ -877,6 +881,8 @@ export class ProgramService {
       connectionResponse['inclusionNotificationDate'] =
         connection.inclusionNotificationDate;
       connectionResponse['fsp'] = connection.fsp?.fsp;
+      connectionResponse['status'] = this.getPaStatus(connection, +programId);
+
       if (privacy) {
         connectionResponse['name'] = this.getName(connection.customData);
         connectionResponse['phoneNumber'] =
@@ -887,10 +893,45 @@ export class ProgramService {
         connectionResponse['vnumber'] = connection.customData['vnumber'];
         connectionResponse['age'] = connection.customData['age'];
       }
-      connectionResponse['status'] = this.getPaStatus(connection, +programId);
+
+      if (financialServiceProviders.includes(fspName.africasTalking)) {
+        connectionResponse['validMpesaNumber'] = await this.getMpesaStatus(
+          connection.id,
+          +programId,
+        );
+      }
+
       connectionsResponse.push(connectionResponse);
     }
     return connectionsResponse;
+  }
+
+  private async getMpesaStatus(
+    connectionId: number,
+    programId: number,
+  ): Promise<string> {
+    const transaction = await this.transactionRepository.findOne({
+      where: {
+        connection: { id: connectionId },
+        program: { id: programId },
+        installment: -1,
+      },
+      order: {
+        created: 'DESC',
+      },
+    });
+
+    if (!transaction) {
+      return;
+    } else if (
+      transaction.errorMessage === 'Value is outside the allowed limits'
+    ) {
+      return 'Success';
+    } else if (transaction.errorMessage === 'Missing recipient name') {
+      return 'Error: No M-Pesa account found for this number';
+    } else {
+      return 'Other error: ' + transaction.errorMessage;
+    }
   }
 
   private async getAllConnections(programId): Promise<ConnectionEntity[]> {
@@ -1057,6 +1098,7 @@ export class ProgramService {
         validationDate: rawConnection.validationDate,
         inclusionDate: rawConnection.inclusionDate,
         financialServiceProvider: rawConnection.fsp,
+        validMpesaNumber: rawConnection.validMpesaNumber,
       };
       inclusionDetails.push(row);
     });

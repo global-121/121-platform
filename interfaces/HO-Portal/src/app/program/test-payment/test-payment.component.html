@@ -2,6 +2,7 @@
   <confirm-prompt
     [disabled]="userRole !== userRoleEnum.ProjectOfficer"
     (confirm)="doTestPayment()"
+    [subHeader]="'page.program.test-payment.confirm'|translate"
   >
     <ion-icon name="cash" slot="start"></ion-icon>
     {{ 'page.program.test-payment.do-payment'|translate }}
