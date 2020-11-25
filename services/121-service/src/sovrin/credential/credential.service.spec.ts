@@ -38,6 +38,7 @@ import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 import { IntersolveRequestEntity } from '../../programs/fsp/intersolve-request.entity';
 import { IntersolveInstructionsEntity } from '../../programs/fsp/intersolve-instructions.entity';
+import { ActionService } from '../../actions/action.service';
 
 describe('CredentialService', (): void => {
   let service: CredentialService;
@@ -47,6 +48,7 @@ describe('CredentialService', (): void => {
       const module: TestingModule = await Test.createTestingModule({
         imports: [HttpModule],
         providers: [
+          ActionService,
           CredentialService,
           ProgramService,
           SchemaService,

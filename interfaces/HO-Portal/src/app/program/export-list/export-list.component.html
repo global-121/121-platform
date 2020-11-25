@@ -1,8 +1,13 @@
-<confirm-prompt
-  [disabled]="disabled"
-  (confirm)="getExportList()"
-  [subHeader]="subHeader"
->
-  <ion-icon name="download" slot="start"></ion-icon>
-  {{ btnText }}
-</confirm-prompt>
+<span>
+  <confirm-prompt
+    [disabled]="disabled"
+    (confirm)="getExportList()"
+    [subHeader]="subHeader"
+  >
+    <ion-icon name="download" slot="start"></ion-icon>
+    {{ btnText }}
+  </confirm-prompt>
+  <ion-note *ngIf="actionTimestamp" style="display:block">
+    {{ 'page.program.notification.timestamp'|translate }} {{ actionTimestamp }}
+  </ion-note>
+</span>
