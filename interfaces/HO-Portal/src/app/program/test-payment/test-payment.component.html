@@ -1,11 +1,18 @@
 <ng-container *ngIf="visible">
-  <confirm-prompt
-    [disabled]="userRole !== userRoleEnum.ProgramManager"
-    (confirm)="doTestPayment()"
-    [subHeader]="'page.program.test-payment.confirm'|translate"
-  >
-    {{ 'page.program.test-payment.do-payment'|translate }}
-  </confirm-prompt>
+  <ion-row>
+    <confirm-prompt
+      [disabled]="userRole !== userRoleEnum.ProgramManager"
+      (confirm)="doTestPayment(); isInProgress = true"
+      [subHeader]="'page.program.test-payment.confirm'|translate"
+    >
+      {{ 'page.program.test-payment.do-payment'|translate }}
+    </confirm-prompt>
+    <ion-spinner
+      *ngIf="isInProgress"
+      color="primary"
+      class="ion-margin-start"
+    ></ion-spinner>
+  </ion-row>
   <ion-note *ngIf="actionTimestamp" style="display:block">
     {{ 'common.timestamp.done'|translate }} {{ actionTimestamp }}
   </ion-note>
