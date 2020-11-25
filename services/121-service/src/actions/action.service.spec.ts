@@ -18,7 +18,7 @@ const testAction: ActionDto = {
 
 const actionRepositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
   (): any => ({
-    find: jest.fn(entity => [new ActionEntity()]),
+    findOne: jest.fn(entity => new ActionEntity()),
     save: jest.fn(entity => testAction),
   }),
 );
@@ -55,7 +55,7 @@ describe('Action service', (): void => {
   });
 
   describe('getLatestActions', (): void => {
-    it.skip('should return an action', async (): Promise<void> => {
+    it('should return an action', async (): Promise<void> => {
       const action = new ActionEntity();
 
       const result = await service.getLatestActions(

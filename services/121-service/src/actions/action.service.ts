@@ -38,11 +38,10 @@ export class ActionService {
     programId: number,
     actionType: ActionType,
   ): Promise<ActionEntity> {
-    const action = await getRepository(ActionEntity)
-      .createQueryBuilder('action')
-      .where({ program: { id: programId }, actionType: actionType })
-      .orderBy('timestamp', 'DESC')
-      .getOne();
+    const action = await this.actionRepository.findOne({
+      where: { program: { id: programId }, actionType: actionType },
+      order: { timestamp: 'DESC' },
+    });
 
     return action;
   }
