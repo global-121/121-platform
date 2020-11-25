@@ -202,6 +202,7 @@
         "pageTitle": "Program JSON"
       },
       "export-list": {
+        "timestamp": "Latest export has been done on: ",
         "no-data": "There are currently no People Affected to download",
         "included": {
           "btn-text": "Export inclusion list",
