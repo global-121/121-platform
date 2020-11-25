@@ -228,6 +228,11 @@
         "confirm": "Add aidworker",
         "create-password": "Enter a password of at least {{minimalLength}} characters:",
         "succes-create": "Succesfully created user with email: '<strong>{{email}}</strong>' and password '<strong>{{password}}</strong>'. Please inform them now of their new account by sending an e-mail."
+      },
+      "test-payment": {
+        "do-payment": "Verify M-PESA phonenumbers",
+        "confirm": "This will test for all provided phonenumbers if they have a valid M-PESA account. Persons Affected will not notice this.",
+        "result": "M-PESA numbers are tested. The result can be inspected by Exporting the Inclusion List."
       }
     },
     "help": {
@@ -249,7 +254,10 @@
     "cancel": "Cancel",
     "ok": "OK",
     "export-error": "Something went wrong with the export.",
-    "unknown-error": "Something went wrong. Error is unknown."
+    "unknown-error": "Something went wrong. Error is unknown.",
+    "timestamp": {
+      "done": "Done on:"
+    }
   },
   "password-toggle": {
     "show": "Show password",

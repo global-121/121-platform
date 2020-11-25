@@ -34,26 +34,14 @@ export class ActionService {
     return newAction;
   }
 
-  public async getActions(
-    programId: number,
-    actionType: ActionType,
-  ): Promise<ActionEntity[]> {
-    const actions = await this.actionRepository.find({
-      where: { program: { id: programId }, actionType: actionType },
-    });
-
-    return actions;
-  }
-
   public async getLatestActions(
     programId: number,
     actionType: ActionType,
   ): Promise<ActionEntity> {
-    const action = await getRepository(ActionEntity)
-      .createQueryBuilder('action')
-      .where({ program: { id: programId }, actionType: actionType })
-      .orderBy('timestamp', 'DESC')
-      .getOne();
+    const action = await this.actionRepository.findOne({
+      where: { program: { id: programId }, actionType: actionType },
+      order: { timestamp: 'DESC' },
+    });
 
     return action;
   }

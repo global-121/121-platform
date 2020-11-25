@@ -2,26 +2,22 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { UserRole } from 'src/app/auth/user-role.enum';
-import { NotificationComponent } from './notification.component';
+import { TestPaymentComponent } from './test-payment.component';
 
-describe('NotificationComponent', () => {
-  let component: NotificationComponent;
-  let fixture: ComponentFixture<NotificationComponent>;
-
-  const mockProgramId = 1;
-  const mockUserRole = UserRole.ProjectOfficer;
+describe('TestPaymentComponent', () => {
+  let component: TestPaymentComponent;
+  let fixture: ComponentFixture<TestPaymentComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [NotificationComponent],
+      declarations: [TestPaymentComponent],
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NotificationComponent);
+    fixture = TestBed.createComponent(TestPaymentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
