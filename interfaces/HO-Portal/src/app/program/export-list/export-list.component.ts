@@ -61,7 +61,6 @@ export class ExportListComponent implements OnChanges {
       await this.programPhaseService.getPhases(this.programId);
       this.disabled = !this.btnEnabled();
       await this.getLatestActionTime();
-
     }
   }
 
@@ -110,9 +109,16 @@ export class ExportListComponent implements OnChanges {
   }
 
   public async getLatestActionTime(): Promise<void> {
-    const latestAction = await this.programsService.retrieveLatestActions(this.exportType, Number(this.programId));
+    const latestAction = await this.programsService.retrieveLatestActions(
+      this.exportType,
+      Number(this.programId),
+    );
     if (latestAction) {
-      this.actionTimestamp = formatDate(new Date(latestAction.timestamp),  this.dateFormat, this.locale);
+      this.actionTimestamp = formatDate(
+        new Date(latestAction.timestamp),
+        this.dateFormat,
+        this.locale,
+      );
     }
   }
 }
