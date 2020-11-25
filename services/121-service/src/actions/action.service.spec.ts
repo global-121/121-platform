@@ -4,7 +4,7 @@ import { UserEntity } from '../user/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 import { ActionService } from './action.service';
-import { ActionEntity, ActionType } from './action.entity';
+import { ActionEntity } from './action.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { ActionDto } from './dto/action.dto';
 import { MockType } from '../mock/mock.type';
@@ -54,16 +54,16 @@ describe('Action service', (): void => {
     expect(service).toBeDefined();
   });
 
-  describe('getActions', (): void => {
-    it('should return an array of actions', async (): Promise<void> => {
-      const actions = [new ActionEntity()];
+  describe('getLatestActions', (): void => {
+    it.skip('should return an action', async (): Promise<void> => {
+      const action = new ActionEntity();
 
-      const result = await service.getActions(
+      const result = await service.getLatestActions(
         testAction.programId,
         testAction.actionType,
       );
 
-      expect(result).toStrictEqual(actions);
+      expect(result).toStrictEqual(action);
     });
   });
 

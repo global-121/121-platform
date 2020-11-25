@@ -21,21 +21,6 @@ export class ActionController {
     this.actionService = actionService;
   }
 
-  @ApiOperation({ title: 'Get actions by program-id and action-type' })
-  @ApiResponse({
-    status: 200,
-    description: 'Returned actions for given program-id and action-type.',
-  })
-  @Post('retrieve')
-  public async getActions(
-    @Body() actionData: ActionDto,
-  ): Promise<ActionEntity[]> {
-    return await this.actionService.getActions(
-      actionData.programId,
-      actionData.actionType,
-    );
-  }
-
   @ApiOperation({ title: 'Get latest action of type ' })
   @ApiResponse({
     status: 200,

@@ -1,3 +1,3 @@
 export enum ActionType {
-  notifyIncluded = 'notify-included',
+  testMpesaPayment = 'test-mpesa-payment',
 }
