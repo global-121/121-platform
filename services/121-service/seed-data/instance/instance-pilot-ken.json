@@ -17,8 +17,8 @@
   },
   "monitoringQuestion": {
     "intro": {
-      "saq_KE": "Ikeyeiu nikiyeleu niguna te ninger kon aitumia 121 app. Jere jaguai nabo sipata te kuna na ati te abori.",
-      "tuv_KE": "Kithaki akiyen niekoni aking'iro kon itumiarit 121 app. Arimatoi tetheu apei kanu kwani iwolik iyong.",
+      "saq_KE": "Ikeyeiu nikiyeleu niguna te ninger kon aitumia 121 app. Jere jaguai nabo sipata te kuna na ati te abori:",
+      "tuv_KE": "Kithaki akiyen niekoni aking'iro kon itumiarit 121 app. Arimatoi tetheu apei kanu kwani iwolik iyong:",
       "en": "We would like to know what it was like to register using the 121 app. Please select one answer based on your experience:"
     },
     "options": [
@@ -56,8 +56,8 @@
       }
     ],
     "conclusion": {
-      "saq_KE": "Ashe telemun nishoo yoo. Enjere mpungo pi kitum ai ger lokule",
-      "tuv_KE": "Niajokon, a alimokin thua niakoni. Topudoo atanyuneta a kir luche",
+      "saq_KE": "Ashe telemun nishoo yoo. Enjere mpungo pi kitum ai ger lokule.",
+      "tuv_KE": "Niajokon, a alimokin thua niakoni. Topudoo atanyuneta a kir luche.",
       "en": "Thank you for the feedback. Please log out to prepare for the next registration."
     }
   }
