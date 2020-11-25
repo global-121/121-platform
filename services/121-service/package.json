@@ -18,7 +18,6 @@
     "seed:pilot": "ts-node src/scripts seed-pilot",
     "seed:ken": "ts-node src/scripts seed-program-pilot-ken",
     "test": "jest --config=jest.json",
-    "test:watch": "npm test -- --watch",
     "test:watchall": "npm test -- --watchAll",
     "test:coverage": "npm test -- --coverage --coverageDirectory=coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
