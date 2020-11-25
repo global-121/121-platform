@@ -54,16 +54,16 @@ describe('Action service', (): void => {
     expect(service).toBeDefined();
   });
 
-  describe('getActions', (): void => {
-    it('should return an array of actions', async (): Promise<void> => {
-      const actions = [new ActionEntity()];
+  describe('getLatestActions', (): void => {
+    it('should return an action', async (): Promise<void> => {
+      const action = new ActionEntity();
 
       const result = await service.getLatestActions(
         testAction.programId,
         testAction.actionType,
       );
 
-      expect(result).toStrictEqual(actions);
+      expect(result).toStrictEqual(action);
     });
   });
 
