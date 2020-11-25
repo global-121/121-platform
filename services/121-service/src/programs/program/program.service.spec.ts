@@ -38,6 +38,7 @@ import { IntersolveBarcodeEntity } from '../fsp/intersolve-barcode.entity';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 import { IntersolveRequestEntity } from '../fsp/intersolve-request.entity';
+import { ActionService } from '../../actions/action.service';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -63,6 +64,7 @@ describe('Program service', (): void => {
           IntersolveApiService,
           SoapService,
           WhatsappService,
+          ActionService,
           {
             provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,

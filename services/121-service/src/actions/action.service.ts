@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { UserEntity } from '../user/user.entity';
 
@@ -24,7 +24,6 @@ export class ActionService {
   ): Promise<ActionEntity> {
     let action = new ActionEntity();
     action.actionType = actionType;
-
     const user = await this.userRepository.findOne(userId);
     action.user = user;
 
@@ -44,5 +43,18 @@ export class ActionService {
     });
 
     return actions;
+  }
+
+  public async getLatestActions(
+    programId: number,
+    actionType: ActionType,
+  ): Promise<ActionEntity> {
+    const action = await getRepository(ActionEntity)
+      .createQueryBuilder('action')
+      .where({ program: { id: programId }, actionType: actionType })
+      .orderBy('timestamp', 'DESC')
+      .getOne();
+
+    return action;
   }
 }

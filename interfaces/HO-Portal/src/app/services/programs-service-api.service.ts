@@ -254,6 +254,18 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  retrieveLatestActions(
+    actionType: ExportType,
+    programId: number | string,
+  ): Promise<any> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/actions/retrieve-latest`, {
+        actionType,
+        programId,
+      })
+      .toPromise();
+  }
+
   addUser(
     email: string,
     password: string,

@@ -1,3 +1,4 @@
+import { ExportType } from './../programs/program/dto/export-details';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
@@ -26,6 +27,7 @@ export class ActionEntity {
   public program: ProgramEntity;
 }
 
-export enum ActionType {
-  notifyIncluded = 'notify-included',
-}
+export type ActionType = ExportType;
+
+// Add both enum together to one array so it can be used as validator in the dto
+export const ActionArray = Object.values(ExportType).map(item => String(item));

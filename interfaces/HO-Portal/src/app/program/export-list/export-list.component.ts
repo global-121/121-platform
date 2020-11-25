@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
@@ -6,6 +7,7 @@ import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramPhase } from 'src/app/models/program.model';
 import { ProgramPhaseService } from 'src/app/services/program-phase.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-export-list',
@@ -29,12 +31,18 @@ export class ExportListComponent implements OnChanges {
   public btnText: string;
   public subHeader: string;
 
+  private locale: string;
+  public actionTimestamp;
+  private dateFormat = 'yyyy-MM-dd, HH:mm';
+
   constructor(
     private programPhaseService: ProgramPhaseService,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
-  ) {}
+  ) {
+    this.locale = environment.defaultLocale;
+  }
 
   ngOnInit() {
     this.btnText = this.translate.instant(
@@ -52,6 +60,7 @@ export class ExportListComponent implements OnChanges {
     ) {
       await this.programPhaseService.getPhases(this.programId);
       this.disabled = !this.btnEnabled();
+      await this.getLatestActionTime();
     }
   }
 
@@ -96,7 +105,20 @@ export class ExportListComponent implements OnChanges {
       message: resultMessage,
       buttons: [this.translate.instant('common.ok')],
     });
-
     await alert.present();
+  }
+
+  public async getLatestActionTime(): Promise<void> {
+    const latestAction = await this.programsService.retrieveLatestActions(
+      this.exportType,
+      Number(this.programId),
+    );
+    if (latestAction) {
+      this.actionTimestamp = formatDate(
+        new Date(latestAction.timestamp),
+        this.dateFormat,
+        this.locale,
+      );
+    }
   }
 }

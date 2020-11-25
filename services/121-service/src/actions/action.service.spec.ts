@@ -1,3 +1,4 @@
+import { ExportType } from './../programs/program/dto/export-details';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from '../user/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -9,8 +10,9 @@ import { ActionDto } from './dto/action.dto';
 import { MockType } from '../mock/mock.type';
 import { Repository } from 'typeorm';
 
+// @ts-ignore
 const testAction: ActionDto = {
-  actionType: ActionType.notifyIncluded,
+  actionType: ExportType.included,
   programId: 1,
 };
 
