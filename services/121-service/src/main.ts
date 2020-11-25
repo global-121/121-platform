@@ -3,6 +3,8 @@ import { ApplicationModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { PORT, BASE_PATH, SCHEME } from './config';
+import * as bodyParser from 'body-parser';
+
 const appInsights = require('applicationinsights');
 
 async function bootstrap(): Promise<void> {
@@ -22,6 +24,8 @@ async function bootstrap(): Promise<void> {
 
   SwaggerModule.setup('/docs', app, document);
   app.useGlobalPipes(new ValidationPipe());
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
   await app.listen(PORT);
 }
 bootstrap();
