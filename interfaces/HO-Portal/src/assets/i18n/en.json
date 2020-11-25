@@ -230,7 +230,8 @@
       },
       "test-payment": {
         "do-payment": "Verify M-PESA phonenumbers",
-        "confirm": "This will test for all provided phonenumbers if they have a valid M-PESA account. The result can be seen in the exported Inclusion List."
+        "confirm": "This will test for all provided phonenumbers if they have a valid M-PESA account. Persons Affected will not notice this.",
+        "result": "M-PESA numbers are tested. The result can be inspected by Exporting the Inclusion List."
       }
     },
     "help": {
