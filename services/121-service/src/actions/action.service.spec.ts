@@ -1,20 +1,18 @@
+import { ExportType } from './../programs/program/dto/export-details';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from '../user/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 import { ActionService } from './action.service';
-import {
-  ActionEntity,
-  ActionType,
-  AdditionalActionType,
-} from './action.entity';
+import { ActionEntity, ActionType } from './action.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { ActionDto } from './dto/action.dto';
 import { MockType } from '../mock/mock.type';
 import { Repository } from 'typeorm';
 
+// @ts-ignore
 const testAction: ActionDto = {
-  actionType: AdditionalActionType.notifyIncluded,
+  actionType: ExportType.included,
   programId: 1,
 };
 
