@@ -1,6 +1,7 @@
 {
   "fsp": "Intersolve-whatsapp",
   "fspDisplayName": {
+    "ti": "ትሕስ እስ ዓ ተስት።",
     "en": "Send supermarket voucher to my WhatsApp"
   },
   "apiUrl": "https://trade-acc.intersolve.nl/rest/buyerapi/v1/orders",
@@ -8,9 +9,11 @@
     {
       "name": "whatsappPhoneNumber",
       "label": {
+        "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "If you are included, we send your Supermarket voucher via WhatsApp.   <br><br>   Please share the phone number you use for WhatsApp.   <br><br>   This can be the same number you use for SMS."
       },
       "placeholder": {
+        "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "+00 0 00 00 00 00"
       },
       "answerType": "tel",

@@ -98,6 +98,7 @@
     "select-language": {
       "introduction": {
         "en": "Please select your language.",
+        "ti": "ትሕስ እስ ዓ ተስት።",
         "ny_MW": "Chonde sankhani chiyankhulo chanu.",
         "om_ET": "Maaloo qooqa keessan filadhaa.",
         "saq_KE": "Enjere tegelu ng'ituk ino.",
@@ -106,6 +107,7 @@
       "result": "Thank you, you have selected {{language}}.",
       "language": {
         "en": "English",
+        "ti": "ትግርኛ",
         "ny_MW": "Chichewa",
         "om_ET": "Afaan Oromoo",
         "saq_KE": "Samburu",

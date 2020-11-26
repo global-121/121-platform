@@ -5,6 +5,7 @@
   "location": "Nederland",
   "ngo": "NLRC",
   "title": {
+    "ti": "ትሕስ እስ ዓ ተስት።",
     "en": "121 Digital Cash Aid Program"
   },
   "description": {
@@ -40,6 +41,14 @@
     "en": "Document 1; Document 2; Document 3"
   },
   "notifications": {
+    "ti": {
+      "registered": "ትሕስ እስ ዓ ተስት።",
+      "included": "ትሕስ እስ ዓ ተስት።",
+      "rejected": "ትሕስ እስ ዓ ተስት።",
+      "whatsappPayment": "ትሕስ እስ ዓ ተስት።",
+      "whatsappVoucher": "ትሕስ እስ ዓ ተስት።",
+      "whatsappReply": "ትሕስ እስ ዓ ተስት።"
+    },
     "en": {
       "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week.",
       "included": "This is a message from the Red Cross.\n\nYour application to the Red Cross program has been successful and confirmed.\n\nYou will receive another message about your first Albert Heijn supermarket voucher within 1 week.",
@@ -54,6 +63,7 @@
     {
       "criterium": "nameFirst",
       "label": {
+        "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "Please enter your first name:"
       },
       "answerType": "text",
@@ -65,6 +75,7 @@
     {
       "criterium": "nameLast",
       "label": {
+        "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "Please enter your last name:"
       },
       "answerType": "text",
@@ -76,9 +87,11 @@
     {
       "criterium": "vnumber",
       "label": {
+        "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "Your V-number consists of 10 numbers. You can find it on your (former) permit of stay or on a letter from the IND.   <br><br>   If you can’t find your V-Number, please contact the Rode Kruis helpdesk via WhatsApp on: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a>   <br><br>   Please enter your V-Number:"
       },
       "placeholder": {
+        "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "0000000000"
       },
       "answerType": "numeric",
@@ -91,9 +104,11 @@
     {
       "criterium": "phoneNumber",
       "label": {
+        "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>"
       },
       "placeholder": {
+        "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "+31 6 00 00 00 00"
       },
       "answerType": "tel",
