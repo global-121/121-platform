@@ -224,7 +224,7 @@ export class ProgramController {
     await this.programService.notify(data.programId, data.notificationType);
   }
 
-  @Roles(UserRole.ProjectOfficer)
+  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
   @ApiOperation({
     title: 'Send payout instruction to financial service provider',
   })
