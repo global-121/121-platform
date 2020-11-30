@@ -9,7 +9,7 @@ import { IntersolveRequestEntity } from '../intersolve-request.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
-import appInsights from 'applicationinsights';
+const appInsights = require('applicationinsights');
 
 @Injectable()
 export class IntersolveApiService {
@@ -18,7 +18,9 @@ export class IntersolveApiService {
     IntersolveRequestEntity
   >;
 
-  public constructor(private readonly soapService: SoapService) {}
+  public constructor(private readonly soapService: SoapService) {
+    appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
+  }
 
   // If we get one of these codes back from a cancel by refpos, stop cancelling
   private readonly stopCancelByRefposCodes = [
