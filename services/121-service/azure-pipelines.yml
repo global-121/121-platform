@@ -34,6 +34,7 @@ steps:
     workingDirectory: services/121-service/
     env:
       SECRETS_121_SERVICE_SECRET: test
+      APPLICATION_INSIGHT_IKEY: test
       TWILIO_SID: ACtest
       TWILIO_AUTHTOKEN: test
       TWILIO_TEST_TO_NUMBER: test
