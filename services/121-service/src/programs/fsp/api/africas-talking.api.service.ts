@@ -14,6 +14,10 @@ export class AfricasTalkingApiService {
     const AfricasTalking = require('africastalking')(credentials);
     const payments = AfricasTalking.PAYMENTS;
 
+    const paTransactionResult = new PaTransactionResultDto();
+    paTransactionResult.did = payload.recipients[0].metadata.did;
+    paTransactionResult.date = new Date();
+
     let result;
     await payments
       .mobileB2C(payload)
@@ -25,9 +29,6 @@ export class AfricasTalkingApiService {
         console.log('error: ', error);
         result = { error: error };
       });
-
-    const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.did = payload.recipients[0].metadata.did;
 
     if (result.response?.entries[0]?.errorMessage) {
       paTransactionResult.status = StatusEnum.error;

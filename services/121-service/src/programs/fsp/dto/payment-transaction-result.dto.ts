@@ -17,4 +17,5 @@ export class PaTransactionResultDto {
   public did: string;
   public status: StatusEnum;
   public message: string;
+  public date?: Date;
 }

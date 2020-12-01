@@ -205,7 +205,7 @@ export class FspService {
 
     const transaction = new TransactionEntity();
     transaction.amount = amount;
-    transaction.created = new Date();
+    transaction.created = transactionResponse.date || new Date();
     transaction.connection = connection;
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
