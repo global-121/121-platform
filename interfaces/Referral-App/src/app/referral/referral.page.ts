@@ -19,6 +19,7 @@ import { ReferralPageDataService } from 'src/app/services/referral-page-data.ser
 })
 export class ReferralPage implements OnInit {
   public region: string;
+  public supportedRegions: string[] = ['amsterdam', 'utrecht'];
 
   public offers: Offer[];
   public categories: Category[];
@@ -52,24 +53,43 @@ export class ReferralPage implements OnInit {
     return this.rootHref + this.region;
   }
 
+  public isSupportedRegion() {
+    return (
+      this.region &&
+      this.supportedRegions.includes(
+        this.region.replace(/\-/g, ' ').toLowerCase(),
+      )
+    );
+  }
+
+  public toSnakeCase = (string) => {
+    return string
+      .replace(/\W+/g, ' ')
+      .split(/ |\B(?=[A-Z])/)
+      .map((word) => word.toLowerCase())
+      .join('-');
+  };
+
   private loadReferralData() {
-    this.referralPageDataService
-      .getReferralPageData(this.region)
-      .then((referralPageData) => {
-        this.referralPageData = referralPageData;
-        this.offersService.getCategories(this.region).then((categories) => {
-          this.categories = categories;
-          this.offersService
-            .getSubCategories(this.region)
-            .then((subCategories) => {
-              this.subCategories = subCategories;
-              this.offersService.getOffers(this.region).then((offers) => {
-                this.offers = offers;
-                this.readQueryParams();
+    if (this.isSupportedRegion()) {
+      this.referralPageDataService
+        .getReferralPageData(this.region)
+        .then((referralPageData) => {
+          this.referralPageData = referralPageData;
+          this.offersService.getCategories(this.region).then((categories) => {
+            this.categories = categories;
+            this.offersService
+              .getSubCategories(this.region)
+              .then((subCategories) => {
+                this.subCategories = subCategories;
+                this.offersService.getOffers(this.region).then((offers) => {
+                  this.offers = offers;
+                  this.readQueryParams();
+                });
               });
-            });
+          });
         });
-      });
+    }
   }
 
   private readQueryParams() {

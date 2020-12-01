@@ -4,6 +4,11 @@ import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
   {
+    path: ':region',
+    component: TabsPage,
+    loadChildren: '../referral/referral.module#ReferralPageModule',
+  },
+  {
     path: '',
     component: TabsPage,
     loadChildren: '../referral/referral.module#ReferralPageModule',
