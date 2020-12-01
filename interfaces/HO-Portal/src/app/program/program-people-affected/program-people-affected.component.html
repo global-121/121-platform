@@ -17,9 +17,10 @@
   </select>
   <confirm-prompt
     [disabled]="applyBtnDisabled"
-    (confirm)="applyAction()"
+    (confirm)="applyAction($event)"
     [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
     [message]="submitWarning.message"
+    [inputFields]="inputFields"
     class="ion-float-end"
   >
     {{ 'page.program.program-people-affected.apply-action'|translate }}

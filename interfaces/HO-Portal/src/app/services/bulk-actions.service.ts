@@ -49,6 +49,7 @@ export class BulkActionsService {
     action: BulkActionId,
     programId: number,
     selectedPeople: any[],
+    alertInputData?: any,
   ): Promise<void> {
     switch (action) {
       case BulkActionId.selectForValidation:
@@ -61,7 +62,11 @@ export class BulkActionsService {
       case BulkActionId.includeProgramManager:
         return await this.programsService.include(programId, selectedPeople);
       case BulkActionId.reject:
-        return await this.programsService.reject(programId, selectedPeople);
+        return await this.programsService.reject(
+          programId,
+          selectedPeople,
+          alertInputData.rejectionMessage,
+        );
       case BulkActionId.notifyIncluded:
         return await this.programsService.notifySelectedIncluded(
           programId,

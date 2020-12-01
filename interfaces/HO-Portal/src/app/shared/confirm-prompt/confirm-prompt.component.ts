@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { AlertInputField } from 'src/app/models/alert-input-field';
 
 @Component({
   selector: 'confirm-prompt',
@@ -23,6 +24,9 @@ export class ConfirmPromptComponent {
   @Input()
   public fill: string;
 
+  @Input()
+  public inputFields: AlertInputField[];
+
   @Output()
   private confirm = new EventEmitter<void>();
 
@@ -41,6 +45,7 @@ export class ConfirmPromptComponent {
       header: this.translate.instant('common.confirm'),
       subHeader: this.subHeader,
       message: this.message,
+      inputs: this.inputFields || [],
       buttons: [
         {
           text: this.translate.instant('common.cancel'),
@@ -52,8 +57,8 @@ export class ConfirmPromptComponent {
         },
         {
           text: this.translate.instant('common.ok'),
-          handler: () => {
-            this.confirm.emit();
+          handler: (data) => {
+            this.confirm.emit(data);
             this.disabled = false;
           },
         },

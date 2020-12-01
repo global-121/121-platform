@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { AlertInputField } from 'src/app/models/alert-input-field';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
@@ -48,6 +49,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public headerChecked = false;
   public headerSelectAllVisible = false;
 
+  public inputFields: AlertInputField[];
   public applyBtnDisabled = true;
   public action = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
@@ -565,6 +567,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     if (this.action === BulkActionId.chooseAction) {
       this.resetBulkAction();
       return;
+    } else if (this.action === BulkActionId.reject) {
+      const inputField = new AlertInputField();
+      inputField.name = 'rejectionMessage';
+      inputField.type = 'bigtext';
+      inputField.placeholder =
+        'Fill in message here between 20 and 150 characters...';
+      inputField.minLength = 20;
+      inputField.maxLength = 160;
+      this.inputFields = [inputField];
     }
 
     this.applyBtnDisabled = false;
@@ -665,11 +676,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     `;
   }
 
-  public async applyAction() {
+  public async applyAction(alertInputData) {
+    console.log('alertInputData: ', alertInputData);
+
     await this.bulkActionService.applyAction(
       this.action,
       this.programId,
       this.selectedPeople,
+      alertInputData,
     );
 
     this.resetBulkAction();
