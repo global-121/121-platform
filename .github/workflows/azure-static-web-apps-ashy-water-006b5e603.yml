@@ -52,7 +52,8 @@ jobs:
           routes_location: "/interfaces/Referral-App/"
         env:
           GOOGLE_SHEETS_API_URL: ${{ secrets.REF_GOOGLE_SHEETS_API_URL }}
-          GOOGLE_SHEETS_SHEET_ID: ${{ secrets.REF_GOOGLE_SHEETS_SHEET_ID }}
+          GOOGLE_SHEETS_SHEET_ID_AMSTERDAM: ${{ secrets.REF_GOOGLE_SHEETS_SHEET_ID_AMSTERDAM }}
+          GOOGLE_SHEETS_SHEET_ID_UTRECHT: ${{ secrets.REF_GOOGLE_SHEETS_SHEET_ID_UTRECHT }}
           NG_AI_IKEY: ${{ secrets.NG_AI_IKEY }}
           NG_AI_ENDPOINT: ${{ secrets.NG_AI_ENDPOINT }}
 
