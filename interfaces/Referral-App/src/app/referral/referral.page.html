@@ -85,7 +85,7 @@
   <ion-toolbar>
     <ion-buttons slot="start" *ngIf="category">
       <ion-back-button
-        defaultHref="/tabs/referral"
+        defaultHref="{{defaultHref}}"
         (click)="goBack()"
       ></ion-back-button>
     </ion-buttons>

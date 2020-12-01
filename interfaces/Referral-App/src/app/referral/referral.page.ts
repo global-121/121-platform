@@ -28,6 +28,8 @@ export class ReferralPage {
 
   public referralPageData: ReferralPageData = mockReferralPageData;
 
+  public readonly defaultHref: string = '/tabs/referral';
+
   constructor(
     public offersService: OffersService,
     private route: ActivatedRoute,
@@ -86,7 +88,7 @@ export class ReferralPage {
       AnalyticsEventName.ReferralCategoryClick,
       this.getLogProperties(isBack),
     );
-    this.router.navigate(['/tabs/referral'], {
+    this.router.navigate([this.defaultHref], {
       queryParams: {
         categoryID: this.category.categoryID,
       },
@@ -100,7 +102,7 @@ export class ReferralPage {
       AnalyticsEventName.ReferralSubCategoryClick,
       this.getLogProperties(isBack),
     );
-    this.router.navigate(['/tabs/referral'], {
+    this.router.navigate([this.defaultHref], {
       queryParams: {
         categoryID: this.category.categoryID,
         subCategoryID: this.subCategory.subCategoryID,
@@ -114,7 +116,7 @@ export class ReferralPage {
       AnalyticsEventName.ReferralOfferClick,
       this.getLogProperties(isBack),
     );
-    this.router.navigate(['/tabs/referral'], {
+    this.router.navigate([this.defaultHref], {
       queryParams: {
         categoryID: this.category.categoryID,
         subCategoryID: this.subCategory.subCategoryID,
@@ -142,7 +144,7 @@ export class ReferralPage {
         this.getLogProperties(true),
       );
       this.category = null;
-      this.router.navigate(['/tabs/referral']);
+      this.router.navigate([this.defaultHref]);
     }
   }
 
