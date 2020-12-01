@@ -11,7 +11,8 @@ export const environment = {
 
   // Google Sheets:
   google_sheets_api_url: '',
-  google_sheets_sheet_id: '',
+  google_sheets_sheet_id_amsterdam: '',
+  google_sheets_sheet_id_utrecht: '',
 
   // Third-party tokens:
   ai_ikey: '',

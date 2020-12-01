@@ -10,15 +10,15 @@ import { SpreadsheetService } from './spreadsheet.service';
 export class OffersService {
   constructor(private spreadsheetService: SpreadsheetService) {}
 
-  getCategories(): Promise<Category[]> {
-    return this.spreadsheetService.getCategories();
+  getCategories(region): Promise<Category[]> {
+    return this.spreadsheetService.getCategories(region);
   }
 
-  getSubCategories(): Promise<SubCategory[]> {
-    return this.spreadsheetService.getSubCategories();
+  getSubCategories(region): Promise<SubCategory[]> {
+    return this.spreadsheetService.getSubCategories(region);
   }
 
-  getOffers(): Promise<Offer[]> {
-    return this.spreadsheetService.getOffers();
+  getOffers(region): Promise<Offer[]> {
+    return this.spreadsheetService.getOffers(region);
   }
 }

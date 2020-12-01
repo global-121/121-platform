@@ -4,29 +4,9 @@ import { TabsPage } from './tabs.page';
 
 const routes: Routes = [
   {
-    path: 'tabs',
-    component: TabsPage,
-    children: [
-      {
-        path: 'referral',
-        children: [
-          {
-            path: '',
-            loadChildren: '../referral/referral.module#ReferralPageModule',
-          },
-        ],
-      },
-      {
-        path: '',
-        redirectTo: '/tabs/referral',
-        pathMatch: 'full',
-      },
-    ],
-  },
-  {
     path: '',
-    redirectTo: '/tabs/referral',
-    pathMatch: 'full',
+    component: TabsPage,
+    loadChildren: '../referral/referral.module#ReferralPageModule',
   },
 ];
 

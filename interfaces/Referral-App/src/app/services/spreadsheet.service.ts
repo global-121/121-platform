@@ -15,7 +15,10 @@ import { environment } from 'src/environments/environment';
 })
 export class SpreadsheetService {
   private spreadsheetURL = environment.google_sheets_api_url;
-  private spreadsheetId = environment.google_sheets_sheet_id;
+  private spreadsheetId = {
+    amsterdam: environment.google_sheets_sheet_id_amsterdam,
+    utrecht: environment.google_sheets_sheet_id_utrecht,
+  };
   private categorySheetIndex = 2;
   private subCategorySheetIndex = 3;
   private offerSheetIndex = 1;
@@ -48,9 +51,9 @@ export class SpreadsheetService {
     };
   };
 
-  getCategories = (): Promise<Category[]> => {
+  getCategories = (region): Promise<Category[]> => {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.categorySheetIndex}` +
+      `${this.spreadsheetURL}/${this.spreadsheetId[region]}/${this.categorySheetIndex}` +
         '/public/values?alt=json',
     )
       .then((response) => response.json())
@@ -88,9 +91,9 @@ export class SpreadsheetService {
     };
   };
 
-  getSubCategories = (): Promise<SubCategory[]> => {
+  getSubCategories = (region): Promise<SubCategory[]> => {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.subCategorySheetIndex}` +
+      `${this.spreadsheetURL}/${this.spreadsheetId[region]}/${this.subCategorySheetIndex}` +
         '/public/values?alt=json',
     )
       .then((response) => response.json())
@@ -156,9 +159,9 @@ export class SpreadsheetService {
     };
   };
 
-  getOffers = (): Promise<Offer[]> => {
+  getOffers = (region): Promise<Offer[]> => {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.offerSheetIndex}` +
+      `${this.spreadsheetURL}/${this.spreadsheetId[region]}/${this.offerSheetIndex}` +
         '/public/values?alt=json',
     )
       .then((response) => response.json())
@@ -191,9 +194,9 @@ export class SpreadsheetService {
     };
   };
 
-  getHelp = (): Promise<Help> => {
+  getHelp = (region): Promise<Help> => {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.helpPageSheetIndex}` +
+      `${this.spreadsheetURL}/${this.spreadsheetId[region]}/${this.helpPageSheetIndex}` +
         '/public/values?alt=json',
     )
       .then((response) => response.json())
@@ -231,9 +234,9 @@ export class SpreadsheetService {
     };
   };
 
-  getReferralPageData = (): Promise<ReferralPageData> => {
+  getReferralPageData = (region): Promise<ReferralPageData> => {
     return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId}/${this.referralPageSheetIndex}` +
+      `${this.spreadsheetURL}/${this.spreadsheetId[region]}/${this.referralPageSheetIndex}` +
         '/public/values?alt=json',
     )
       .then((response) => response.json())

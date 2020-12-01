@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { HelpPage } from 'src/app/help/help.page';
@@ -17,7 +17,9 @@ import { ReferralPageDataService } from 'src/app/services/referral-page-data.ser
   templateUrl: 'referral.page.html',
   styleUrls: ['referral.page.scss'],
 })
-export class ReferralPage {
+export class ReferralPage implements OnInit {
+  public region: string;
+
   public offers: Offer[];
   public categories: Category[];
   public subCategories: SubCategory[];
@@ -28,7 +30,7 @@ export class ReferralPage {
 
   public referralPageData: ReferralPageData = mockReferralPageData;
 
-  public readonly defaultHref: string = '/tabs/referral';
+  public readonly rootHref: string = '/';
 
   constructor(
     public offersService: OffersService,
@@ -37,24 +39,35 @@ export class ReferralPage {
     public modalController: ModalController,
     private loggingService: LoggingService,
     private referralPageDataService: ReferralPageDataService,
-  ) {
-    this.loadReferralData();
+  ) {}
+
+  ngOnInit() {
+    this.route.params.subscribe((params) => {
+      this.region = params['region'];
+      this.loadReferralData();
+    });
+  }
+
+  public getRegionHref() {
+    return this.rootHref + this.region;
   }
 
   private loadReferralData() {
     this.referralPageDataService
-      .getReferralPageData()
+      .getReferralPageData(this.region)
       .then((referralPageData) => {
         this.referralPageData = referralPageData;
-        this.offersService.getCategories().then((categories) => {
+        this.offersService.getCategories(this.region).then((categories) => {
           this.categories = categories;
-          this.offersService.getSubCategories().then((subCategories) => {
-            this.subCategories = subCategories;
-            this.offersService.getOffers().then((offers) => {
-              this.offers = offers;
-              this.readQueryParams();
+          this.offersService
+            .getSubCategories(this.region)
+            .then((subCategories) => {
+              this.subCategories = subCategories;
+              this.offersService.getOffers(this.region).then((offers) => {
+                this.offers = offers;
+                this.readQueryParams();
+              });
             });
-          });
         });
       });
   }
@@ -88,7 +101,7 @@ export class ReferralPage {
       AnalyticsEventName.ReferralCategoryClick,
       this.getLogProperties(isBack),
     );
-    this.router.navigate([this.defaultHref], {
+    this.router.navigate([this.getRegionHref()], {
       queryParams: {
         categoryID: this.category.categoryID,
       },
@@ -102,7 +115,7 @@ export class ReferralPage {
       AnalyticsEventName.ReferralSubCategoryClick,
       this.getLogProperties(isBack),
     );
-    this.router.navigate([this.defaultHref], {
+    this.router.navigate([this.getRegionHref()], {
       queryParams: {
         categoryID: this.category.categoryID,
         subCategoryID: this.subCategory.subCategoryID,
@@ -116,7 +129,7 @@ export class ReferralPage {
       AnalyticsEventName.ReferralOfferClick,
       this.getLogProperties(isBack),
     );
-    this.router.navigate([this.defaultHref], {
+    this.router.navigate([this.getRegionHref()], {
       queryParams: {
         categoryID: this.category.categoryID,
         subCategoryID: this.subCategory.subCategoryID,
@@ -144,7 +157,7 @@ export class ReferralPage {
         this.getLogProperties(true),
       );
       this.category = null;
-      this.router.navigate([this.defaultHref]);
+      this.router.navigate([this.getRegionHref()]);
     }
   }
 
@@ -169,6 +182,7 @@ export class ReferralPage {
     );
     const helpModal = await this.modalController.create({
       component: HelpPage,
+      componentProps: { region: this.region },
     });
     return await helpModal.present();
   }
