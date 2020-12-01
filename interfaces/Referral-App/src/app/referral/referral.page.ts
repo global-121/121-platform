@@ -44,7 +44,6 @@ export class ReferralPage {
       .getReferralPageData()
       .then((referralPageData) => {
         this.referralPageData = referralPageData;
-        console.log(this.referralPageData);
         this.offersService.getCategories().then((categories) => {
           this.categories = categories;
           this.offersService.getSubCategories().then((subCategories) => {
