@@ -7,6 +7,8 @@ export class AfricasTalkingApiService {
   public constructor() {}
 
   public async sendPaymentPerPa(payload): Promise<PaTransactionResultDto> {
+    // A timeout of 123ms to not overload africa's talking server
+    await new Promise(r => setTimeout(r, 123));
     const credentials = {
       apiKey: process.env.AFRICASTALKING_API_KEY,
       username: process.env.AFRICASTALKING_USERNAME,
