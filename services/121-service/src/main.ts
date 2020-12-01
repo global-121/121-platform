@@ -24,8 +24,8 @@ async function bootstrap(): Promise<void> {
 
   SwaggerModule.setup('/docs', app, document);
   app.useGlobalPipes(new ValidationPipe());
-  app.use(bodyParser.json({ limit: '50mb' }));
-  app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+  app.use(bodyParser.json({ limit: '5mb' }));
+  app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
   await app.listen(PORT);
 }
 bootstrap();
