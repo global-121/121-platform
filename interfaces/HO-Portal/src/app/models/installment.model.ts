@@ -10,3 +10,10 @@ export class Installment extends InstallmentData {
   isExportAvailable?: boolean;
   isInProgress?: boolean;
 }
+
+export class RetryPayoutDetails {
+  programId: number;
+  installment: number;
+  amount: number;
+  did: string;
+}

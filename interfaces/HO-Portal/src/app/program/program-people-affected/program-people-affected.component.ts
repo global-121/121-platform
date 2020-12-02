@@ -4,6 +4,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
+import { RetryPayoutDetails } from 'src/app/models/installment.model';
 import { Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
@@ -510,6 +511,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       } else {
         personRow['payment' + paymentColumn.installmentIndex + '-error'] =
           transaction.error;
+        personRow['payment' + paymentColumn.installmentIndex + '-amount'] =
+          transaction.amount;
         paymentColumnValue = this.translate.instant(
           'page.program.program-people-affected.transaction.failed',
         );
@@ -533,7 +536,26 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public async statusPopup(row: PersonRow, column, value: string) {
     const hasError = this.hasError(row, column.installmentIndex);
-    const content = hasError ? row[column.prop + '-error'] : null;
+    const content = hasError
+      ? this.translate.instant(
+          'page.program.program-people-affected.payment-status-popup.error-message',
+        ) +
+        ': <strong>' +
+        row[column.prop + '-error'] +
+        '</strong><br><br>' +
+        this.translate.instant(
+          'page.program.program-people-affected.payment-status-popup.fix-error',
+        )
+      : null;
+    const retryButton = hasError ? true : false;
+    const payoutDetails: RetryPayoutDetails = hasError
+      ? {
+          programId: this.programId,
+          installment: column.installmentIndex,
+          amount: row[column.prop + '-amount'],
+          did: row.did,
+        }
+      : null;
     let voucherUrl = null;
 
     if (this.hasVoucherSupport(row.fsp) && !hasError && !!value) {
@@ -549,6 +571,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       componentProps: {
         title: `${column.name}: ${value}`,
         content,
+        retryButton,
+        payoutDetails,
         imageUrl: voucherUrl,
       },
     });
