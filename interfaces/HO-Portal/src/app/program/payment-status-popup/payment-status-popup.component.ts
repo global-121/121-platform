@@ -13,7 +13,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 export class PaymentStatusPopupComponent implements OnInit {
   public title: string;
   public content: any;
-  public button: boolean;
+  public retryButton: boolean;
   public payoutDetails: RetryPayoutDetails;
   public imageUrl: string;
 
