@@ -39,6 +39,9 @@ export class WhatsappService {
     recipientPhoneNr: string,
     mediaUrl: null | string,
   ): Promise<void> {
+    console.log('mediaUrl: ', mediaUrl);
+    console.log('recipientPhoneNr: ', recipientPhoneNr);
+    console.log('message: ', message);
     if (mediaUrl) {
       twilioClient.messages
         .create({
@@ -54,15 +57,15 @@ export class WhatsappService {
         })
         .catch(err => console.log('Error twillio', err));
     } else {
-      twilioClient.messages
-        .create({
-          body: message,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-          from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
-          statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
-          to: 'whatsapp:' + recipientPhoneNr,
-        })
-        .then(message => this.storeSendWhatsapp(message));
+      console.log('Send no media');
+      const result = await twilioClient.messages.create({
+        body: message,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+        from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+        statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
+        to: 'whatsapp:' + recipientPhoneNr,
+      });
+      await this.storeSendWhatsapp(result);
     }
   }
 

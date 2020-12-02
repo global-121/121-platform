@@ -59,6 +59,12 @@ export class ImageCodeService {
     return this.imageExportVouchersRepository.save(barcode);
   }
 
+  public async removeImageExportVoucher(
+    image: ImageCodeExportVouchersEntity,
+  ): Promise<void> {
+    await this.imageExportVouchersRepository.remove(image);
+  }
+
   private async generateBarCode(code: string): Promise<Buffer> {
     const bwipjs = require('bwip-js');
     return await bwipjs.toBuffer({
