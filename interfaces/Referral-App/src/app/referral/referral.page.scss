@@ -26,3 +26,20 @@ a {
     color: #3171e0;
   }
 }
+
+ion-footer {
+  ion-button {
+    &.main-screen-button {
+      white-space: pre-wrap;
+
+      ion-text {
+        margin-left: 4px;
+      }
+    }
+
+    ion-img.whatsapp-image {
+      height: 50px;
+      width: 50px;
+    }
+  }
+}

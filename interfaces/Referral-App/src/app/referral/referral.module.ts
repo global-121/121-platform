@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { HelpPage } from 'src/app/help/help.page';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { ReferralPage } from './referral.page';
 
@@ -16,8 +15,7 @@ import { ReferralPage } from './referral.page';
     RouterModule.forChild([{ path: '', component: ReferralPage }]),
     SharedModule,
   ],
-  declarations: [ReferralPage, HelpPage],
-  entryComponents: [HelpPage],
+  declarations: [ReferralPage],
   providers: [Title],
 })
 export class ReferralPageModule {}
