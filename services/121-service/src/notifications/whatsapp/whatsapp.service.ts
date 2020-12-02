@@ -39,9 +39,6 @@ export class WhatsappService {
     recipientPhoneNr: string,
     mediaUrl: null | string,
   ): Promise<void> {
-    console.log('mediaUrl: ', mediaUrl);
-    console.log('recipientPhoneNr: ', recipientPhoneNr);
-    console.log('message: ', message);
     if (mediaUrl) {
       twilioClient.messages
         .create({
@@ -57,7 +54,6 @@ export class WhatsappService {
         })
         .catch(err => console.log('Error twillio', err));
     } else {
-      console.log('Send no media');
       const result = await twilioClient.messages.create({
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
