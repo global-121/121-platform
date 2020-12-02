@@ -95,7 +95,12 @@ export class IntersolveService {
       } else {
         result.status = StatusEnum.error;
         result.message =
-          'Voucher created, but something went wrong in sending voucher.';
+          'Voucher created, but something went wrong in sending voucher.\n' +
+          transferResult.message;
+        await this.cancelAndDeleteVoucher(
+          voucherInfo.cardId,
+          voucherInfo.transactionId,
+        );
       }
     } else {
       if (voucherInfo.transactionId) {
@@ -172,11 +177,14 @@ export class IntersolveService {
     try {
       const whatsappPayment =
         program.notifications[this.language]['whatsappPayment'];
-      this.whatsappService.sendWhatsapp(whatsappPayment, phoneNumber, null);
+      await this.whatsappService.sendWhatsapp(
+        whatsappPayment,
+        phoneNumber,
+        null,
+      );
       result.status = StatusEnum.success;
     } catch (e) {
       result.message = (e as Error).message;
-      result.status = StatusEnum.error;
     }
     return result;
   }
@@ -268,5 +276,22 @@ export class IntersolveService {
     intersolveInstructionsEntity.image = instructionsFileBlob.buffer;
 
     this.intersolveInstructionsRepository.save(intersolveInstructionsEntity);
+  }
+
+  public async cancelAndDeleteVoucher(
+    cardId: string,
+    transactionId: number,
+  ): Promise<void> {
+    await this.intersolveApiService.cancel(cardId, transactionId);
+    const barcodeEntity = await this.intersolveBarcodeRepository.findOne({
+      where: { barcode: cardId },
+      relations: ['image'],
+    });
+    console.log('barcodeEntity: ', barcodeEntity);
+    for (const image of barcodeEntity.image) {
+      console.log('removing', image);
+      await this.imageCodeService.removeImageExportVoucher(image);
+    }
+    await this.intersolveBarcodeRepository.remove(barcodeEntity);
   }
 }

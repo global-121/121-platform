@@ -54,15 +54,14 @@ export class WhatsappService {
         })
         .catch(err => console.log('Error twillio', err));
     } else {
-      twilioClient.messages
-        .create({
-          body: message,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-          from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
-          statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
-          to: 'whatsapp:' + recipientPhoneNr,
-        })
-        .then(message => this.storeSendWhatsapp(message));
+      const result = await twilioClient.messages.create({
+        body: message,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+        from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+        statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
+        to: 'whatsapp:' + recipientPhoneNr,
+      });
+      await this.storeSendWhatsapp(result);
     }
   }
 
