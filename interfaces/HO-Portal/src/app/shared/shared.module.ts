@@ -13,19 +13,21 @@ import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
 import { TestPaymentComponent } from '../program/test-payment/test-payment.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
+import { InputPromptComponent } from './input-prompt/input-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
 
 @NgModule({
   declarations: [
     ConfirmPromptComponent,
-    PasswordToggleInputComponent,
-    HeaderComponent,
-    UserStateComponent,
-    PhaseNextComponent,
-    PhaseNavigationComponent,
-    ProgramPeopleAffectedComponent,
     ExportListComponent,
+    HeaderComponent,
+    InputPromptComponent,
+    PasswordToggleInputComponent,
+    PhaseNavigationComponent,
+    PhaseNextComponent,
+    ProgramPeopleAffectedComponent,
     TestPaymentComponent,
+    UserStateComponent,
   ],
   imports: [
     CommonModule,
@@ -37,17 +39,19 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
   ],
   exports: [
     ConfirmPromptComponent,
-    PasswordToggleInputComponent,
-    HeaderComponent,
-    UserStateComponent,
-    PhaseNextComponent,
-    PhaseNavigationComponent,
-    ProgramPeopleAffectedComponent,
     ExportListComponent,
+    HeaderComponent,
+    InputPromptComponent,
+    PasswordToggleInputComponent,
+    PhaseNavigationComponent,
+    PhaseNextComponent,
+    ProgramPeopleAffectedComponent,
     TestPaymentComponent,
+    UserStateComponent,
     RouterModule,
     TranslateModule,
     NgxDatatableModule,
   ],
+  entryComponents: [InputPromptComponent],
 })
 export class SharedModule {}

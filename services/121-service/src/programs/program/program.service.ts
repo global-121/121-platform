@@ -399,15 +399,17 @@ export class ProgramService {
   }
 
   private async notifyInclusionStatus(
-    connection,
-    programId,
-    inclusionResult,
+    connection: ConnectionEntity,
+    programId: number,
+    inclusionResult: boolean,
+    message?: string,
   ): Promise<void> {
     this.smsService.notifyBySms(
       connection.phoneNumber,
       connection.preferredLanguage,
       inclusionResult ? PaStatus.included : PaStatus.rejected,
       programId,
+      message,
     );
   }
 
@@ -498,7 +500,11 @@ export class ProgramService {
     }
   }
 
-  public async reject(programId: number, dids: object): Promise<void> {
+  public async reject(
+    programId: number,
+    dids: object,
+    message: string,
+  ): Promise<void> {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
@@ -519,7 +525,7 @@ export class ProgramService {
       );
       if (indexEx <= -1) {
         connection.programsRejected.push(programId);
-        this.notifyInclusionStatus(connection, programId, false);
+        this.notifyInclusionStatus(connection, programId, false, message);
       }
       // Remove from inclusion-array, if present
       const indexIn = connection.programsIncluded.indexOf(

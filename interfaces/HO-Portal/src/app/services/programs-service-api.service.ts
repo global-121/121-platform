@@ -200,10 +200,15 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  reject(programId: number | string, dids: string[]): Promise<any> {
+  reject(
+    programId: number | string,
+    dids: string[],
+    message: string,
+  ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/reject/${programId}`, {
         dids: JSON.stringify(dids),
+        message,
       })
       .toPromise();
   }

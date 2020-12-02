@@ -5,7 +5,6 @@ import {
   Get,
   Post,
   Body,
-  Put,
   Delete,
   Param,
   Controller,
@@ -13,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto';
-import { ProgramsRO, ProgramRO, SimpleProgramRO } from './program.interface';
+import { ProgramsRO, SimpleProgramRO } from './program.interface';
 import { User } from '../../user/user.decorator';
 
 import {
@@ -38,6 +37,7 @@ import { NotificationDto } from './dto/notification';
 import { CustomCriterium } from './custom-criterium.entity';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
+import { MessageDto } from './dto/message.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -202,8 +202,16 @@ export class ProgramController {
   @ApiOperation({ title: 'Reject set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('reject/:programId')
-  public async reject(@Param() params, @Body() data: DidsDto): Promise<void> {
-    await this.programService.reject(params.programId, data);
+  public async reject(
+    @Param() params,
+    @Body() didData: DidsDto,
+    @Body() messageData: MessageDto,
+  ): Promise<void> {
+    await this.programService.reject(
+      params.programId,
+      didData,
+      messageData.message,
+    );
   }
 
   @Roles(UserRole.ProjectOfficer)

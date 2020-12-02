@@ -18,9 +18,11 @@ export class SmsService {
     language: string,
     key: string,
     programId: number,
+    message?: string,
   ): Promise<void> {
     if (recipientPhoneNr) {
-      const smsText = await this.getSmsText(language, key, programId);
+      const smsText =
+        message || (await this.getSmsText(language, key, programId));
       this.sendSms(smsText, recipientPhoneNr);
     }
   }

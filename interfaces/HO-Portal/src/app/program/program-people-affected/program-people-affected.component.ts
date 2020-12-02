@@ -49,7 +49,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public headerChecked = false;
   public headerSelectAllVisible = false;
 
-  public applyBtnDisabled = true;
   public action = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
     {
@@ -108,6 +107,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       roles: [UserRole.ProgramManager],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
+      confirmConditions: {
+        inputRequired: true,
+        minLength: 20,
+        maxLength: 160,
+      },
     },
     {
       id: BulkActionId.notifyIncluded,
@@ -120,7 +124,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: true,
     },
   ];
-
+  public applyBtnDisabled = true;
   public submitWarning: any;
 
   constructor(
@@ -687,19 +691,23 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return rows.filter(this.isRowSelectable).length;
   }
 
+  public getCurrentBulkAction(): BulkAction {
+    return this.bulkActions.find((i: BulkAction) => i.id === this.action);
+  }
+
   private updateSubmitWarning(peopleCount: number) {
-    const actionLabel = this.bulkActions.find((i) => i.id === this.action)
-      .label;
+    const actionLabel = this.getCurrentBulkAction().label;
     this.submitWarning.message = `
       ${actionLabel}: ${peopleCount} ${this.submitWarning.people}
     `;
   }
 
-  public async applyAction() {
+  public async applyAction(confirmInput?: string) {
     await this.bulkActionService.applyAction(
       this.action,
       this.programId,
       this.selectedPeople,
+      confirmInput,
     );
 
     this.resetBulkAction();
