@@ -199,7 +199,7 @@
         },
         "payment-status-popup": {
           "error-message": "Error message",
-          "fix-error": "Please contact the 121 development team to fix this error. Then use the button below to retry payment for this person affected.",
+          "fix-error": "Please contact the 121 development team to fix this error. Then use the button below to retry payment for this Person Affected.",
           "retry": "Retry payment",
           "notes": "<br>Note: If the payment failed for all Persons Affected, you can also use the original 'Start payout now' button again to retry the payment for all Persons Affected at once."
         }
