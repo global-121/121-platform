@@ -15,3 +15,13 @@ export class SetPhoneRequestDto {
   @Length(2, 8)
   public readonly language: string;
 }
+
+export class UpdatePhoneRequestDto {
+  @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
+  @Length(29, 30)
+  public readonly did: string;
+  @ApiModelProperty({ example: '0031600000000' })
+  @ValidateIf(o => o.phonenumber)
+  @IsString()
+  public readonly phonenumber: string;
+}
