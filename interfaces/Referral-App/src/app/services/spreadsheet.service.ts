@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import helpMock from 'src/app/mocks/help.mock';
 import referralPageDataMock from 'src/app/mocks/referral-page-data.mock';
 import { Category } from 'src/app/models/category.model';
-import { Help } from 'src/app/models/help.model';
 import { Offer } from 'src/app/models/offer.model';
 import { ReferralPageData } from 'src/app/models/referral-page-data';
 import { SeverityLevel } from 'src/app/models/severity-level.model';
@@ -19,8 +17,7 @@ export class SpreadsheetService {
   private categorySheetIndex = 2;
   private subCategorySheetIndex = 3;
   private offerSheetIndex = 1;
-  private helpPageSheetIndex = 5;
-  private referralPageSheetIndex = 6;
+  private referralPageSheetIndex = 5;
 
   constructor(public loggingService: LoggingService) {
     this.loadSheetIds();
@@ -187,39 +184,6 @@ export class SpreadsheetService {
       });
   };
 
-  convertHelpRowToHelpObject = (helpRows): Help => {
-    return {
-      helpPageTitle: SpreadsheetService.readCellValue(helpRows[0], 'gsx$value'),
-      helpIcon: SpreadsheetService.readCellValue(helpRows[1], 'gsx$value'),
-      helpText: SpreadsheetService.readCellValue(helpRows[2], 'gsx$value'),
-      helpPhoneLabel: SpreadsheetService.readCellValue(
-        helpRows[3],
-        'gsx$value',
-      ),
-      helpPhone: SpreadsheetService.readCellValue(helpRows[4], 'gsx$value'),
-      helpWhatsApp: SpreadsheetService.readCellValue(helpRows[5], 'gsx$value'),
-      helpFacebook: SpreadsheetService.readCellValue(helpRows[6], 'gsx$value'),
-      helpTwitter: SpreadsheetService.readCellValue(helpRows[7], 'gsx$value'),
-    };
-  };
-
-  getHelp = (region): Promise<Help> => {
-    return fetch(
-      `${this.spreadsheetURL}/${this.spreadsheetId[region]}/${this.helpPageSheetIndex}` +
-        '/public/values?alt=json',
-    )
-      .then((response) => response.json())
-      .then((response) => {
-        return this.convertHelpRowToHelpObject(response.feed.entry);
-      })
-      .catch((error) => {
-        if (this.loggingService) {
-          this.loggingService.logException(error, SeverityLevel.Critical);
-        }
-        return helpMock;
-      });
-  };
-
   convertReferralPageDataRowToReferralPageDataObject = (
     referralPageDataRows,
   ): ReferralPageData => {
@@ -232,24 +196,28 @@ export class SpreadsheetService {
         referralPageDataRows[1],
         'gsx$value',
       ),
-      referralHelpButtonLabel: SpreadsheetService.readCellValue(
+      referralPageGreeting: SpreadsheetService.readCellValue(
         referralPageDataRows[2],
         'gsx$value',
       ),
-      referralPageGreeting: SpreadsheetService.readCellValue(
+      referralPageInstructions: SpreadsheetService.readCellValue(
         referralPageDataRows[3],
         'gsx$value',
       ),
-      referralPageInstructions: SpreadsheetService.readCellValue(
+      referralBackButtonLabel: SpreadsheetService.readCellValue(
         referralPageDataRows[4],
         'gsx$value',
       ),
-      referralBackButtonLabel: SpreadsheetService.readCellValue(
+      referralMainScreenButtonLabel: SpreadsheetService.readCellValue(
         referralPageDataRows[5],
         'gsx$value',
       ),
-      referralMainScreenButtonLabel: SpreadsheetService.readCellValue(
+      referralPhoneNumber: SpreadsheetService.readCellValue(
         referralPageDataRows[6],
+        'gsx$value',
+      ),
+      referralWhatsAppLink: SpreadsheetService.readCellValue(
+        referralPageDataRows[7],
         'gsx$value',
       ),
     };

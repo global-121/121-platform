@@ -107,8 +107,8 @@
         </ion-card-header>
 
         <ion-card-content>
-          Please reach out to us via
-          <a (click)="openHelpModal()">our help page</a>.
+          Please reach out to us at
+          <a href="https://www.rodekruis.nl/">https://www.rodekruis.nl/</a>.
         </ion-card-content>
       </ion-card>
     </div>
@@ -160,16 +160,25 @@
       </ion-button>
     </ion-buttons>
 
-    <ion-buttons slot="end">
-      <ion-button (click)="openHelpModal()">
-        <ion-text *ngIf="!loading">
-          {{referralPageData.referralHelpButtonLabel}}
-        </ion-text>
-        <ion-skeleton-text
-          *ngIf="loading"
-          animated
-          style="width: 100px"
-        ></ion-skeleton-text>
+    <ion-buttons slot="end" *ngIf="!loading">
+      <ion-button
+        href="tel:{{referralPageData.referralPhoneNumber}}"
+        *ngIf="referralPageData.referralPhoneNumber"
+        target="_blank"
+        rel="noopener"
+      >
+        <ion-icon slot="icon-only" name="call"></ion-icon>
+      </ion-button>
+      <ion-button
+        [href]="referralPageData.referralWhatsAppLink"
+        *ngIf="referralPageData.referralWhatsAppLink"
+        target="_blank"
+        rel="noopener"
+      >
+        <ion-img
+          class="whatsapp-image"
+          src="assets/icons/whatsapp.png"
+        ></ion-img>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

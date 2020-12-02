@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
-import { HelpPage } from 'src/app/help/help.page';
 import mockReferralPageData from 'src/app/mocks/referral-page-data.mock';
 import { Category } from 'src/app/models/category.model';
 import { AnalyticsEventName } from 'src/app/models/event-name.model';
@@ -42,7 +40,6 @@ export class ReferralPage implements OnInit {
     public offersService: OffersService,
     private route: ActivatedRoute,
     private router: Router,
-    public modalController: ModalController,
     private loggingService: LoggingService,
     private referralPageDataService: ReferralPageDataService,
     private titleService: Title,
@@ -210,18 +207,6 @@ export class ReferralPage implements OnInit {
       logParams.category = this.category.categoryName;
     }
     return logParams;
-  }
-
-  async openHelpModal() {
-    this.loggingService.logEvent(
-      AnalyticsEventName.ReferralHelpPageOpen,
-      this.getLogProperties(false),
-    );
-    const helpModal = await this.modalController.create({
-      component: HelpPage,
-      componentProps: { region: this.region },
-    });
-    return await helpModal.present();
   }
 
   showCategories() {
