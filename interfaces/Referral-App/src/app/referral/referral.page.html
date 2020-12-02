@@ -1,8 +1,15 @@
 <ion-header>
   <ion-toolbar>
     <ion-title class="ion-text-center">
-      {{ isSupportedRegion() ? referralPageData.referralPageTitle : "Helpful
-      Information" }}
+      <ion-text *ngIf="!loading">
+        {{ isSupportedRegion() ? referralPageData.referralPageTitle : "Helpful
+        Information" }}
+      </ion-text>
+      <ion-skeleton-text
+        *ngIf="loading"
+        animated
+        style="width: 50%; margin: auto"
+      ></ion-skeleton-text>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -11,75 +18,106 @@
   <ion-card *ngIf="!category">
     <ion-card-header>
       <ion-card-title>
-        {{ referralPageData.referralPageGreeting }}
+        <ion-text *ngIf="!loading">
+          {{ referralPageData.referralPageGreeting }}
+        </ion-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 20%"
+        ></ion-skeleton-text>
       </ion-card-title>
       <ion-card-subtitle>
-        {{ referralPageData.referralPageInstructions }}
+        <ion-text *ngIf="!loading">
+          {{ referralPageData.referralPageInstructions }}
+        </ion-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 0%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 80%"
+        ></ion-skeleton-text>
       </ion-card-subtitle>
     </ion-card-header>
   </ion-card>
-  <div>
-    <div *ngIf="!category">
-      <category
-        *ngFor="let _category of categories"
-        [category]="_category"
-        (click)="clickCategory(_category)"
-      ></category>
+  <div *ngIf="!loading">
+    <div>
+      <div *ngIf="!category">
+        <category
+          *ngFor="let _category of categories"
+          [category]="_category"
+          (click)="clickCategory(_category)"
+        ></category>
+      </div>
+      <div *ngIf="category && !subCategory">
+        <category
+          [category]="category"
+          [showDescription]="true"
+          (click)="goBack()"
+        ></category>
+      </div>
+      <div *ngIf="category && !subCategory">
+        <sub-category
+          *ngFor="let _subCategory of subCategories | categoryFilter: category"
+          [subCategory]="_subCategory"
+          [showRightDescription]="false"
+          [showBottomDescription]="true"
+          (click)="clickSubCategory(_subCategory)"
+        ></sub-category>
+      </div>
+      <div *ngIf="category && subCategory">
+        <sub-category
+          [subCategory]="subCategory"
+          [showRightDescription]="true && !offer"
+          [showBottomDescription]="false"
+          (click)="goBack()"
+        ></sub-category>
+      </div>
     </div>
-    <div *ngIf="category && !subCategory">
-      <category
-        [category]="category"
-        [showDescription]="true"
-        (click)="goBack()"
-      ></category>
+    <div *ngIf="category && subCategory && !offer">
+      <offer
+        *ngFor="let _offer of offers | categoryFilter: category | subCategoryFilter: subCategory"
+        [offer]="_offer"
+        (click)="clickOffer(_offer)"
+      ></offer>
     </div>
-    <div *ngIf="category && !subCategory">
-      <sub-category
-        *ngFor="let _subCategory of subCategories | categoryFilter: category"
-        [subCategory]="_subCategory"
-        [showRightDescription]="false"
-        [showBottomDescription]="true"
-        (click)="clickSubCategory(_subCategory)"
-      ></sub-category>
+    <div *ngIf="category && subCategory && offer">
+      <offer
+        [offer]="offer"
+        [showDetails]="true"
+        [goBack]="goBack.bind(this)"
+        (click)="clickOffer(offer)"
+      ></offer>
     </div>
-    <div *ngIf="category && subCategory">
-      <sub-category
-        [subCategory]="subCategory"
-        [showRightDescription]="true && !offer"
-        [showBottomDescription]="false"
-        (click)="goBack()"
-      ></sub-category>
-    </div>
-  </div>
-  <div *ngIf="category && subCategory && !offer">
-    <offer
-      *ngFor="let _offer of offers | categoryFilter: category | subCategoryFilter: subCategory"
-      [offer]="_offer"
-      (click)="clickOffer(_offer)"
-    ></offer>
-  </div>
-  <div *ngIf="category && subCategory && offer">
-    <offer
-      [offer]="offer"
-      [showDetails]="true"
-      [goBack]="goBack.bind(this)"
-      (click)="clickOffer(offer)"
-    ></offer>
-  </div>
-  <div
-    *ngIf="categories?.length === 0 || subCategories?.length === 0 || offers?.length === 0"
-  >
-    <ion-card class="referral-data-unavailable-card ion-text-center">
-      <ion-card-header>
-        <ion-card-subtitle>Data Unavailable</ion-card-subtitle>
-      </ion-card-header>
+    <div
+      *ngIf="categories?.length === 0 || subCategories?.length === 0 || offers?.length === 0"
+    >
+      <ion-card class="referral-data-unavailable-card ion-text-center">
+        <ion-card-header>
+          <ion-card-subtitle>Data Unavailable</ion-card-subtitle>
+        </ion-card-header>
 
-      <ion-card-content>
-        Please reach out to us via
-        <a (click)="openHelpModal()">our help page</a>.
-      </ion-card-content>
-    </ion-card>
+        <ion-card-content>
+          Please reach out to us via
+          <a (click)="openHelpModal()">our help page</a>.
+        </ion-card-content>
+      </ion-card>
+    </div>
   </div>
+  <ion-spinner
+    *ngIf="loading"
+    name="crescent"
+    class="ion-margin ion-padding"
+  ></ion-spinner>
 </ion-content>
 
 <ion-content *ngIf="!isSupportedRegion()">
@@ -112,7 +150,14 @@
     </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="openHelpModal()">
-        <ion-text>{{referralPageData.referralHelpButtonLabel}}</ion-text>
+        <ion-text *ngIf="!loading">
+          {{referralPageData.referralHelpButtonLabel}}
+        </ion-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100px"
+        ></ion-skeleton-text>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

@@ -33,6 +33,8 @@ export class ReferralPage implements OnInit {
 
   public readonly rootHref: string = '/';
 
+  public loading: boolean = false;
+
   constructor(
     public offersService: OffersService,
     private route: ActivatedRoute,
@@ -72,6 +74,7 @@ export class ReferralPage implements OnInit {
 
   private async loadReferralData() {
     if (this.isSupportedRegion()) {
+      this.loading = true;
       this.referralPageData = await this.referralPageDataService.getReferralPageData(
         this.region,
       );
@@ -81,6 +84,7 @@ export class ReferralPage implements OnInit {
       );
       this.offers = await this.offersService.getOffers(this.region);
       this.readQueryParams();
+      this.loading = false;
     }
   }
 

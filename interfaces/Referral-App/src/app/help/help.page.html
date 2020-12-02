@@ -1,6 +1,13 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title class="ion-text-center"> {{ help.helpPageTitle }} </ion-title>
+    <ion-title class="ion-text-center">
+      <ion-text *ngIf="!loading">{{ help.helpPageTitle }}</ion-text>
+      <ion-skeleton-text
+        *ngIf="loading"
+        animated
+        style="width: 50%; margin: auto"
+      ></ion-skeleton-text>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,8 +18,68 @@
         <ion-img class="help-image" [src]="help.helpIcon"></ion-img>
       </ion-col>
       <ion-col>
-        <p>{{ help.helpText }}</p>
-        <p>
+        <p *ngIf="!loading">{{ help.helpText }}</p>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 80%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 0%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 100%"
+        ></ion-skeleton-text>
+        <ion-skeleton-text
+          *ngIf="loading"
+          animated
+          style="width: 80%"
+        ></ion-skeleton-text>
+        <p *ngIf="!loading">
           <ion-icon class="help-call-icon" name="call"></ion-icon>
           {{ help.helpPhoneLabel }}:
           <a href="tel:{{ help.helpPhone }}" (click)="logClick('phone')">
