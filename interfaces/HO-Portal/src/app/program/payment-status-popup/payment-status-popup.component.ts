@@ -79,7 +79,6 @@ export class PaymentStatusPopupComponent implements OnInit {
                 : '',
             );
           this.actionResult(message, true);
-          // this.createInstallments();
         },
         (err) => {
           console.log('err: ', err);
