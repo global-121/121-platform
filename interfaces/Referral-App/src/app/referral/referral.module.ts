@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { HelpPage } from 'src/app/help/help.page';
@@ -17,5 +18,6 @@ import { ReferralPage } from './referral.page';
   ],
   declarations: [ReferralPage, HelpPage],
   entryComponents: [HelpPage],
+  providers: [Title],
 })
 export class ReferralPageModule {}

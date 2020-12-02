@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { HelpPage } from 'src/app/help/help.page';
@@ -43,6 +44,7 @@ export class ReferralPage implements OnInit {
     public modalController: ModalController,
     private loggingService: LoggingService,
     private referralPageDataService: ReferralPageDataService,
+    private titleService: Title,
   ) {}
 
   ngOnInit() {
@@ -77,6 +79,7 @@ export class ReferralPage implements OnInit {
       this.referralPageData = await this.referralPageDataService.getReferralPageData(
         this.region,
       );
+      this.titleService.setTitle(this.referralPageData.referralPageTitle);
       this.categories = await this.offersService.getCategories(this.region);
       this.subCategories = await this.offersService.getSubCategories(
         this.region,
