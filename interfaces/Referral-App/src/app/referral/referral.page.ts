@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { HelpPage } from 'src/app/help/help.page';
@@ -11,6 +12,7 @@ import { SubCategory } from 'src/app/models/sub-category.model';
 import { LoggingService } from 'src/app/services/logging.service';
 import { OffersService } from 'src/app/services/offers.service';
 import { ReferralPageDataService } from 'src/app/services/referral-page-data.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-referral',
@@ -19,7 +21,7 @@ import { ReferralPageDataService } from 'src/app/services/referral-page-data.ser
 })
 export class ReferralPage implements OnInit {
   public region: string;
-  public supportedRegions: string[] = ['amsterdam', 'utrecht'];
+  public regions: string[] = environment.regions.trim().split(/\s*,\s*/);
 
   public offers: Offer[];
   public categories: Category[];
@@ -42,6 +44,7 @@ export class ReferralPage implements OnInit {
     public modalController: ModalController,
     private loggingService: LoggingService,
     private referralPageDataService: ReferralPageDataService,
+    private titleService: Title,
   ) {}
 
   ngOnInit() {
@@ -58,9 +61,7 @@ export class ReferralPage implements OnInit {
   public isSupportedRegion() {
     return (
       this.region &&
-      this.supportedRegions.includes(
-        this.region.replace(/\-/g, ' ').toLowerCase(),
-      )
+      this.regions.includes(this.region.replace(/\-/g, ' ').toLowerCase())
     );
   }
 
@@ -78,6 +79,7 @@ export class ReferralPage implements OnInit {
       this.referralPageData = await this.referralPageDataService.getReferralPageData(
         this.region,
       );
+      this.titleService.setTitle(this.referralPageData.referralPageTitle);
       this.categories = await this.offersService.getCategories(this.region);
       this.subCategories = await this.offersService.getSubCategories(
         this.region,
@@ -109,9 +111,18 @@ export class ReferralPage implements OnInit {
     });
   }
 
+  private getNextSubCategory(category: Category) {
+    const subCategories: SubCategory[] = this.subCategories.filter(
+      (subCategory: SubCategory) => {
+        return subCategory.categoryID === category.categoryID;
+      },
+    );
+    return subCategories.length === 1 ? subCategories[0] : null;
+  }
+
   public clickCategory(category: Category, isBack: boolean = false) {
     this.category = category;
-    this.subCategory = null;
+    this.subCategory = isBack ? null : this.getNextSubCategory(category);
     this.offer = null;
     this.loggingService.logEvent(
       AnalyticsEventName.ReferralCategoryClick,
@@ -120,6 +131,7 @@ export class ReferralPage implements OnInit {
     this.router.navigate([this.getRegionHref()], {
       queryParams: {
         categoryID: this.category.categoryID,
+        subCategoryID: this.subCategory ? this.subCategory.subCategoryID : null,
       },
     });
   }
@@ -166,7 +178,13 @@ export class ReferralPage implements OnInit {
         AnalyticsEventName.ReferralBackFromSubCategory,
         this.getLogProperties(true),
       );
-      this.clickCategory(this.category);
+      if (this.getNextSubCategory(this.category)) {
+        this.category = null;
+        this.subCategory = null;
+        this.router.navigate([this.getRegionHref()]);
+      } else {
+        this.clickCategory(this.category);
+      }
     } else if (this.category) {
       this.loggingService.logEvent(
         AnalyticsEventName.ReferralBackFromCategory,

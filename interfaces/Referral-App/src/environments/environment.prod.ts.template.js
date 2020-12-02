@@ -8,14 +8,12 @@ export const environment = {
 
   // APIs:
 
+  // Regions:
+  regions: '${process.env.REGIONS}',
+
   // Google Sheets API:
   google_sheets_api_url: '${process.env.GOOGLE_SHEETS_API_URL}',
-  google_sheets_sheet_id_amsterdam: '${
-    process.env.GOOGLE_SHEETS_SHEET_ID_AMSTERDAM
-  }',
-  google_sheets_sheet_id_utrecht: '${
-    process.env.GOOGLE_SHEETS_SHEET_ID_UTRECHT
-  }',
+  google_sheets_sheet_ids: '${process.env.GOOGLE_SHEETS_SHEET_IDS}',
 
   // Third-party tokens:
   ai_ikey: '${process.env.NG_AI_IKEY}',
