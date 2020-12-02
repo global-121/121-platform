@@ -27,10 +27,8 @@ export class HelpPage implements OnInit {
     this.loadHelpDetails();
   }
 
-  loadHelpDetails() {
-    this.helpService.getHelp(this.region).then((help) => {
-      this.help = help;
-    });
+  async loadHelpDetails() {
+    this.help = await this.helpService.getHelp(this.region);
   }
 
   dismiss() {

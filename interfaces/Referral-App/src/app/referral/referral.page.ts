@@ -62,7 +62,7 @@ export class ReferralPage implements OnInit {
     );
   }
 
-  public toSnakeCase = (string) => {
+  public toKebabCase = (string) => {
     return string
       .replace(/\W+/g, ' ')
       .split(/ |\B(?=[A-Z])/)
@@ -70,25 +70,17 @@ export class ReferralPage implements OnInit {
       .join('-');
   };
 
-  private loadReferralData() {
+  private async loadReferralData() {
     if (this.isSupportedRegion()) {
-      this.referralPageDataService
-        .getReferralPageData(this.region)
-        .then((referralPageData) => {
-          this.referralPageData = referralPageData;
-          this.offersService.getCategories(this.region).then((categories) => {
-            this.categories = categories;
-            this.offersService
-              .getSubCategories(this.region)
-              .then((subCategories) => {
-                this.subCategories = subCategories;
-                this.offersService.getOffers(this.region).then((offers) => {
-                  this.offers = offers;
-                  this.readQueryParams();
-                });
-              });
-          });
-        });
+      this.referralPageData = await this.referralPageDataService.getReferralPageData(
+        this.region,
+      );
+      this.categories = await this.offersService.getCategories(this.region);
+      this.subCategories = await this.offersService.getSubCategories(
+        this.region,
+      );
+      this.offers = await this.offersService.getOffers(this.region);
+      this.readQueryParams();
     }
   }
 

@@ -90,7 +90,7 @@
         <span
           *ngFor="let supportedRegion of supportedRegions; first as isFirst; last as isLast"
           >{{ isFirst ? '' : (isLast ? ' and' : ',')}}
-          <a [routerLink]="['/', toSnakeCase(supportedRegion)]"
+          <a [routerLink]="['/', toKebabCase(supportedRegion)]"
             >{{ supportedRegion | titlecase }}</a
           >{{ isLast ? '.' : ''}}</span
         >
