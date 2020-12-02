@@ -30,6 +30,8 @@
       class="ion-margin-start"
     ></ion-spinner>
   </div>
+  <div *ngIf="contentNotes" [innerHTML]="contentNotes">
+  </div>
   <div *ngIf="imageUrl">
     <img [src]="imageUrl" alt="" style="width: 100%; height: auto;">
   </div>

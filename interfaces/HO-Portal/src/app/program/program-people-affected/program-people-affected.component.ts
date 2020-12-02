@@ -547,6 +547,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.payment-status-popup.fix-error',
         )
       : null;
+    const contentNotes = hasError
+      ? this.translate.instant(
+          'page.program.program-people-affected.payment-status-popup.notes',
+        )
+      : null;
     const retryButton = hasError ? true : false;
     const payoutDetails: RetryPayoutDetails = hasError
       ? {
@@ -571,6 +576,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       componentProps: {
         title: `${column.name}: ${value}`,
         content,
+        contentNotes,
         retryButton,
         payoutDetails,
         imageUrl: voucherUrl,
