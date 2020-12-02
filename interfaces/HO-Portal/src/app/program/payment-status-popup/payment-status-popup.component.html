@@ -17,8 +17,18 @@
   color="light"
   class="ion-padding"
 >
-  <div *ngIf="content">
-    {{ content }}
+  <div *ngIf="content" [innerHTML]="content">
+  </div>
+  <div *ngIf="retryButton">
+    <br>
+    <ion-button (click)="retryPayment()">
+      {{ 'page.program.program-people-affected.payment-status-popup.retry'|translate }}
+    </ion-button>
+    <ion-spinner
+      *ngIf="isInProgress"
+      color="primary"
+      class="ion-margin-start"
+    ></ion-spinner>
   </div>
   <div *ngIf="imageUrl">
     <img [src]="imageUrl" alt="" style="width: 100%; height: auto;">

@@ -196,6 +196,11 @@
           "failed": "Failed",
           "waiting": "Waiting",
           "show-status": "Show status"
+        },
+        "payment-status-popup": {
+          "error-message": "Error message",
+          "fix-error": "Please fix this error and then come back here to retry the payment (for this Person Affected only).<br><br>Note that if the payment failed for all Persons Affected, you can also use the original 'Start payout now' button again.",
+          "retry": "Retry payment"
         }
       },
       "program-modal": {

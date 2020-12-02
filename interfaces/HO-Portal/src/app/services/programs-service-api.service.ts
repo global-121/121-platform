@@ -112,12 +112,14 @@ export class ProgramsServiceApiService {
     programId: number,
     installment: number,
     amount: number,
+    did?: string,
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/payout`, {
         programId,
         installment,
         amount,
+        did,
       })
       .toPromise();
   }

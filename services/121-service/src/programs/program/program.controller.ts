@@ -234,10 +234,11 @@ export class ProgramController {
     @User('id') userId: number,
   ): Promise<any> {
     return await this.programService.payout(
+      userId,
       data.programId,
       data.installment,
       data.amount,
-      userId,
+      data.did,
     );
   }
 

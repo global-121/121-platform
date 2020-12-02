@@ -737,10 +737,11 @@ export class ProgramService {
   }
 
   public async payout(
+    userId: number,
     programId: number,
     installment: number,
     amount: number,
-    userId: number,
+    did?: string,
   ): Promise<PaymentTransactionResultDto> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
@@ -750,7 +751,13 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const includedConnections = await this.getIncludedConnections(programId);
+    // If 'did' is passed (only in retry-payment-per PA) use this PA only, otherwise get all included PA's
+    const includedConnections = did
+      ? await this.connectionRepository.find({
+          where: { did: did },
+          relations: ['fsp'],
+        })
+      : await this.getIncludedConnections(programId);
     if (includedConnections.length < 1) {
       const errors = 'There are no included PA for this program';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -999,6 +1006,7 @@ export class ProgramService {
         'installment',
         'did',
         'status',
+        'amount',
         'transaction.errorMessage as error',
       ])
       .leftJoin('transaction.connection', 'c')
