@@ -8,7 +8,7 @@ import { SpreadsheetService } from './spreadsheet.service';
 export class HelpService {
   constructor(private spreadsheetService: SpreadsheetService) {}
 
-  getHelp(): Promise<Help> {
-    return this.spreadsheetService.getHelp();
+  getHelp(region): Promise<Help> {
+    return this.spreadsheetService.getHelp(region);
   }
 }

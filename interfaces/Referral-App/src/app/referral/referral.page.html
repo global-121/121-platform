@@ -1,12 +1,13 @@
 <ion-header>
   <ion-toolbar>
     <ion-title class="ion-text-center">
-      {{ referralPageData.referralPageTitle }}
+      {{ isSupportedRegion() ? referralPageData.referralPageTitle : "Helpful
+      Information" }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="isSupportedRegion()">
   <ion-card *ngIf="!category">
     <ion-card-header>
       <ion-card-title>
@@ -81,11 +82,31 @@
   </div>
 </ion-content>
 
-<ion-footer>
+<ion-content *ngIf="!isSupportedRegion()">
+  <ion-card *ngIf="!category">
+    <ion-card-header>
+      <ion-card-title>
+        The Netherlands Red Cross provides helpful information for
+        <span
+          *ngFor="let supportedRegion of supportedRegions; first as isFirst; last as isLast"
+          >{{ isFirst ? '' : (isLast ? ' and' : ',')}}
+          <a [routerLink]="['/', toKebabCase(supportedRegion)]"
+            >{{ supportedRegion | titlecase }}</a
+          >{{ isLast ? '.' : ''}}</span
+        >
+      </ion-card-title>
+      <ion-card-subtitle>
+        Please choose a location to view the information.
+      </ion-card-subtitle>
+    </ion-card-header>
+  </ion-card>
+</ion-content>
+
+<ion-footer *ngIf="isSupportedRegion()">
   <ion-toolbar>
     <ion-buttons slot="start" *ngIf="category">
       <ion-back-button
-        defaultHref="/tabs/referral"
+        [defaultHref]="getRegionHref()"
         (click)="goBack()"
       ></ion-back-button>
     </ion-buttons>

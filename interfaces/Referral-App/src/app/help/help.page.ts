@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import helpMock from 'src/app/mocks/help.mock';
 import { AnalyticsEventName } from 'src/app/models/event-name.model';
@@ -11,21 +11,24 @@ import { LoggingService } from 'src/app/services/logging.service';
   templateUrl: './help.page.html',
   styleUrls: ['./help.page.scss'],
 })
-export class HelpPage {
+export class HelpPage implements OnInit {
+  @Input('region')
+  public region: string;
+
   public help: Help = helpMock;
 
   constructor(
     public modalController: ModalController,
     public helpService: HelpService,
     private loggingService: LoggingService,
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.loadHelpDetails();
   }
 
-  loadHelpDetails() {
-    this.helpService.getHelp().then((help) => {
-      this.help = help;
-    });
+  async loadHelpDetails() {
+    this.help = await this.helpService.getHelp(this.region);
   }
 
   dismiss() {

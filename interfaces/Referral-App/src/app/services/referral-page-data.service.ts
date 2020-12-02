@@ -8,7 +8,7 @@ import { SpreadsheetService } from './spreadsheet.service';
 export class ReferralPageDataService {
   constructor(private spreadsheetService: SpreadsheetService) {}
 
-  getReferralPageData(): Promise<ReferralPageData> {
-    return this.spreadsheetService.getReferralPageData();
+  getReferralPageData(region): Promise<ReferralPageData> {
+    return this.spreadsheetService.getReferralPageData(region);
   }
 }
