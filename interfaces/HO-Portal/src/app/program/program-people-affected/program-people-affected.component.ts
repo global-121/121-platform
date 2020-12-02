@@ -677,8 +677,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async applyAction(alertInputData) {
-    console.log('alertInputData: ', alertInputData);
-
     await this.bulkActionService.applyAction(
       this.action,
       this.programId,

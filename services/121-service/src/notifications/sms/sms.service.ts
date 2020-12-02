@@ -23,7 +23,6 @@ export class SmsService {
     if (recipientPhoneNr) {
       const smsText =
         message || (await this.getSmsText(language, key, programId));
-      console.log('smsText: ', smsText);
       this.sendSms(smsText, recipientPhoneNr);
     }
   }
