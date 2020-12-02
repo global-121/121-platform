@@ -88,7 +88,6 @@ export class IntersolveService {
         amount,
         installment,
       );
-      console.log('transferResult: ', transferResult);
       if (transferResult.status === StatusEnum.success) {
         result.status = transferResult.status;
         result.message = transferResult.message;
@@ -185,6 +184,7 @@ export class IntersolveService {
       result.status = StatusEnum.success;
     } catch (e) {
       result.message = (e as Error).message;
+      result.status = StatusEnum.error;
     }
     return result;
   }
