@@ -106,7 +106,7 @@
   <ion-toolbar>
     <ion-buttons slot="start" *ngIf="category">
       <ion-back-button
-        defaultHref="{{getRegionHref()}}"
+        [defaultHref]="getRegionHref()"
         (click)="goBack()"
       ></ion-back-button>
     </ion-buttons>
