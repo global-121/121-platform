@@ -224,20 +224,24 @@ export class SpreadsheetService {
     referralPageDataRows,
   ): ReferralPageData => {
     return {
-      referralPageTitle: SpreadsheetService.readCellValue(
+      referralPageLogo: SpreadsheetService.readCellValue(
         referralPageDataRows[0],
         'gsx$value',
       ),
-      referralHelpButtonLabel: SpreadsheetService.readCellValue(
+      referralPageTitle: SpreadsheetService.readCellValue(
         referralPageDataRows[1],
         'gsx$value',
       ),
-      referralPageGreeting: SpreadsheetService.readCellValue(
+      referralHelpButtonLabel: SpreadsheetService.readCellValue(
         referralPageDataRows[2],
         'gsx$value',
       ),
-      referralPageInstructions: SpreadsheetService.readCellValue(
+      referralPageGreeting: SpreadsheetService.readCellValue(
         referralPageDataRows[3],
+        'gsx$value',
+      ),
+      referralPageInstructions: SpreadsheetService.readCellValue(
+        referralPageDataRows[4],
         'gsx$value',
       ),
     };
