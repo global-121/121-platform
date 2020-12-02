@@ -9,10 +9,12 @@ export const environment = {
 
   // APIs:
 
+  // Regions:
+  regions: '',
+
   // Google Sheets:
   google_sheets_api_url: '',
-  google_sheets_sheet_id_amsterdam: '',
-  google_sheets_sheet_id_utrecht: '',
+  google_sheets_sheet_ids: '',
 
   // Third-party tokens:
   ai_ikey: '',

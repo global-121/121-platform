@@ -125,11 +125,10 @@
     <ion-card-header>
       <ion-card-title>
         The Netherlands Red Cross provides helpful information for
-        <span
-          *ngFor="let supportedRegion of supportedRegions; first as isFirst; last as isLast"
+        <span *ngFor="let region of regions; first as isFirst; last as isLast"
           >{{ isFirst ? '' : (isLast ? ' and' : ',')}}
-          <a [routerLink]="['/', toKebabCase(supportedRegion)]"
-            >{{ supportedRegion | titlecase }}</a
+          <a [routerLink]="['/', toKebabCase(region)]"
+            >{{ region | titlecase }}</a
           >{{ isLast ? '.' : ''}}</span
         >
       </ion-card-title>

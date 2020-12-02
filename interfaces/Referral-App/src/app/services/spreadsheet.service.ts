@@ -15,21 +15,30 @@ import { environment } from 'src/environments/environment';
 })
 export class SpreadsheetService {
   private spreadsheetURL = environment.google_sheets_api_url;
-  private spreadsheetId = {
-    amsterdam: environment.google_sheets_sheet_id_amsterdam,
-    utrecht: environment.google_sheets_sheet_id_utrecht,
-  };
+  private spreadsheetId = {};
   private categorySheetIndex = 2;
   private subCategorySheetIndex = 3;
   private offerSheetIndex = 1;
   private helpPageSheetIndex = 5;
   private referralPageSheetIndex = 6;
 
-  constructor(public loggingService: LoggingService) {}
+  constructor(public loggingService: LoggingService) {
+    this.loadSheetIds();
+  }
 
   static readCellValue(row, key): string {
     return row[key].$t;
   }
+
+  loadSheetIds = (): void => {
+    const regions: string[] = environment.regions.trim().split(/\s*,\s*/);
+    const spreadsheetIds: string[] = environment.google_sheets_sheet_ids
+      .trim()
+      .split(/\s*,\s*/);
+    for (let regionIndex in regions) {
+      this.spreadsheetId[regions[regionIndex]] = spreadsheetIds[regionIndex];
+    }
+  };
 
   convertCategoryRowToCategoryObject = (categoryRow): Category => {
     return {

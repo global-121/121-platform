@@ -11,6 +11,7 @@ import { SubCategory } from 'src/app/models/sub-category.model';
 import { LoggingService } from 'src/app/services/logging.service';
 import { OffersService } from 'src/app/services/offers.service';
 import { ReferralPageDataService } from 'src/app/services/referral-page-data.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-referral',
@@ -19,7 +20,7 @@ import { ReferralPageDataService } from 'src/app/services/referral-page-data.ser
 })
 export class ReferralPage implements OnInit {
   public region: string;
-  public supportedRegions: string[] = ['amsterdam', 'utrecht'];
+  public regions: string[] = environment.regions.trim().split(/\s*,\s*/);
 
   public offers: Offer[];
   public categories: Category[];
@@ -58,9 +59,7 @@ export class ReferralPage implements OnInit {
   public isSupportedRegion() {
     return (
       this.region &&
-      this.supportedRegions.includes(
-        this.region.replace(/\-/g, ' ').toLowerCase(),
-      )
+      this.regions.includes(this.region.replace(/\-/g, ' ').toLowerCase())
     );
   }
 
