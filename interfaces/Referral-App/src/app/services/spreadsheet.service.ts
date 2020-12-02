@@ -244,6 +244,14 @@ export class SpreadsheetService {
         referralPageDataRows[4],
         'gsx$value',
       ),
+      referralBackButtonLabel: SpreadsheetService.readCellValue(
+        referralPageDataRows[5],
+        'gsx$value',
+      ),
+      referralMainScreenButtonLabel: SpreadsheetService.readCellValue(
+        referralPageDataRows[6],
+        'gsx$value',
+      ),
     };
   };
 

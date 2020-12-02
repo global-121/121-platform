@@ -4,4 +4,6 @@ export class ReferralPageData {
   referralHelpButtonLabel: string;
   referralPageGreeting: string;
   referralPageInstructions: string;
+  referralBackButtonLabel: string;
+  referralMainScreenButtonLabel: string;
 }

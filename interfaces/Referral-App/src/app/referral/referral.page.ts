@@ -223,4 +223,15 @@ export class ReferralPage implements OnInit {
     });
     return await helpModal.present();
   }
+
+  showCategories() {
+    this.loggingService.logEvent(
+      AnalyticsEventName.ReferralMainScreenClick,
+      this.getLogProperties(true),
+    );
+    this.category = null;
+    this.subCategory = null;
+    this.offer = null;
+    this.router.navigate([this.getRegionHref()]);
+  }
 }

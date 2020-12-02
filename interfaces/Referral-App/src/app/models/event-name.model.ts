@@ -9,4 +9,5 @@ export enum AnalyticsEventName {
   ReferralBackFromOffer = 'referral-back-from-offer',
   ReferralBackFromSubCategory = 'referral-back-from-sub-category',
   ReferralBackFromCategory = 'referral-back-from-category',
+  ReferralMainScreenClick = 'referral-main-screen-button-click',
 }

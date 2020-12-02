@@ -145,8 +145,21 @@
       <ion-back-button
         [defaultHref]="getRegionHref()"
         (click)="goBack()"
+        [text]="referralPageData.referralBackButtonLabel"
+        *ngIf="!loading"
       ></ion-back-button>
     </ion-buttons>
+
+    <ion-buttons class="ion-justify-content-center" *ngIf="category">
+      <ion-button
+        (click)="showCategories()"
+        class="main-screen-button ion-text-start"
+      >
+        <ion-icon name="albums"></ion-icon>
+        <ion-text>{{referralPageData.referralMainScreenButtonLabel}}</ion-text>
+      </ion-button>
+    </ion-buttons>
+
     <ion-buttons slot="end">
       <ion-button (click)="openHelpModal()">
         <ion-text *ngIf="!loading">
