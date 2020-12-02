@@ -1,4 +1,5 @@
 import { UserRole } from '../auth/user-role.enum';
+import { InputProps } from '../shared/input-prompt/input-prompt.component';
 import { ProgramPhase } from './program.model';
 
 export enum BulkActionId {
@@ -17,4 +18,5 @@ export class BulkAction {
   roles: UserRole[];
   phases: ProgramPhase[];
   showIfNoValidation: boolean;
+  confirmConditions?: InputProps;
 }

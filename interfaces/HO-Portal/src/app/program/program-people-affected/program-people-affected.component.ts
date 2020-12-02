@@ -3,7 +3,6 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
-import { AlertInputField } from 'src/app/models/alert-input-field';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
@@ -49,8 +48,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public headerChecked = false;
   public headerSelectAllVisible = false;
 
-  public inputFields: AlertInputField[];
-  public applyBtnDisabled = true;
   public action = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
     {
@@ -109,6 +106,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       roles: [UserRole.ProgramManager],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
+      confirmConditions: {
+        inputRequired: true,
+        minLength: 20,
+        maxLength: 160,
+      },
     },
     {
       id: BulkActionId.notifyIncluded,
@@ -121,7 +123,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: true,
     },
   ];
-
+  public applyBtnDisabled = true;
   public submitWarning: any;
 
   constructor(
@@ -567,15 +569,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     if (this.action === BulkActionId.chooseAction) {
       this.resetBulkAction();
       return;
-    } else if (this.action === BulkActionId.reject) {
-      const inputField = new AlertInputField();
-      inputField.name = 'rejectionMessage';
-      inputField.type = 'bigtext';
-      inputField.placeholder =
-        'Fill in message here between 20 and 150 characters...';
-      inputField.minLength = 20;
-      inputField.maxLength = 160;
-      this.inputFields = [inputField];
     }
 
     this.applyBtnDisabled = false;
@@ -668,20 +661,23 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return rows.filter(this.isRowSelectable).length;
   }
 
+  public getCurrentBulkAction(): BulkAction {
+    return this.bulkActions.find((i: BulkAction) => i.id === this.action);
+  }
+
   private updateSubmitWarning(peopleCount: number) {
-    const actionLabel = this.bulkActions.find((i) => i.id === this.action)
-      .label;
+    const actionLabel = this.getCurrentBulkAction().label;
     this.submitWarning.message = `
       ${actionLabel}: ${peopleCount} ${this.submitWarning.people}
     `;
   }
 
-  public async applyAction(alertInputData) {
+  public async applyAction(confirmInput?: string) {
     await this.bulkActionService.applyAction(
       this.action,
       this.programId,
       this.selectedPeople,
-      alertInputData,
+      confirmInput,
     );
 
     this.resetBulkAction();

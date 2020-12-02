@@ -20,7 +20,7 @@
     (confirm)="applyAction($event)"
     [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
     [message]="submitWarning.message"
-    [inputFields]="inputFields"
+    [inputProps]="getCurrentBulkAction().confirmConditions"
     class="ion-float-end"
   >
     {{ 'page.program.program-people-affected.apply-action'|translate }}

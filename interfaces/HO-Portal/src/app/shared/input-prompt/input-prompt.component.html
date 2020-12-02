@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ 'common.confirm'|translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel'|translate"
+        [attr.aria-label]="'common.cancel'|translate"
+      >
+        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content
+  color="light"
+  class="ion-padding"
+>
+  <h2 *ngIf="subHeader">
+    {{ subHeader }}
+  </h2>
+  <p *ngIf="message">
+    {{ message }}
+  </p>
+  <div *ngIf="inputProps">
+    <ion-label>
+      {{ 'common.confirm-message-label'|translate:{
+          minLength: inputProps.minLength,
+          maxLength: inputProps.maxLength
+        }
+      }}
+    </ion-label>
+    <ion-textarea
+      name="message"
+      #input="ngModel"
+      [(ngModel)]="inputModel"
+      [ngModelOptions]="{ standalone: true }"
+      ngDefaultControl
+      [required]="inputProps.inputRequired"
+      rows="3"
+      autoGrow="true"
+      [minlength]="inputProps.minLength"
+      [maxlength]="inputProps.maxLength"
+      [value]="inputProps.defaultValue"
+      [placeholder]="inputProps.placeholder"
+      style="font-family: monospace; border: 1px solid currentColor;"
+    ></ion-textarea>
+    <ion-note>
+      {{ input?.value ? input?.value?.length : 0 }} / ({{ inputProps.minLength }} - {{ inputProps.maxLength }})
+    </ion-note>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="primary">
+      <ion-button
+        fill="clear"
+        color="danger"
+        (click)="closeModal()"
+      >
+        {{ 'common.cancel'|translate }}
+      </ion-button>
+      <ion-button
+        fill="solid"
+        color="primary"
+        (click)="submitConfirm()"
+        [disabled]="inputProps && inputProps?.inputRequired && input && input?.invalid"
+      >
+        {{ 'common.ok'|translate }}
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-footer>

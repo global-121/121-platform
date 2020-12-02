@@ -1,7 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { AlertInputField } from 'src/app/models/alert-input-field';
+import {
+  InputPromptComponent,
+  InputProps,
+} from '../input-prompt/input-prompt.component';
 
 @Component({
   selector: 'confirm-prompt',
@@ -25,46 +28,41 @@ export class ConfirmPromptComponent {
   public fill: string;
 
   @Input()
-  public inputFields: AlertInputField[];
+  public inputProps: InputProps;
 
   @Output()
-  private confirm = new EventEmitter<void>();
+  private confirm = new EventEmitter<string>();
 
   @Output()
   private cancel = new EventEmitter<void>();
 
   constructor(
     public translate: TranslateService,
-    private alertController: AlertController,
+    private modalController: ModalController,
   ) {}
 
   public async showPrompt() {
     this.disabled = true;
 
-    const alert = await this.alertController.create({
-      header: this.translate.instant('common.confirm'),
-      subHeader: this.subHeader,
-      message: this.message,
-      inputs: this.inputFields || [],
-      buttons: [
-        {
-          text: this.translate.instant('common.cancel'),
-          role: 'cancel',
-          handler: () => {
-            this.cancel.emit();
-            this.disabled = false;
-          },
-        },
-        {
-          text: this.translate.instant('common.ok'),
-          handler: (data) => {
-            this.confirm.emit(data);
-            this.disabled = false;
-          },
-        },
-      ],
+    const modal = await this.modalController.create({
+      component: InputPromptComponent,
+      componentProps: {
+        subHeader: this.subHeader,
+        message: this.message,
+        inputProps: this.inputProps,
+      },
+    });
+    modal.onDidDismiss().then((data) => {
+      this.disabled = false;
+
+      if (data.role) {
+        this.cancel.emit();
+        return;
+      }
+
+      this.confirm.emit(data.data);
     });
 
-    await alert.present();
+    await modal.present();
   }
 }

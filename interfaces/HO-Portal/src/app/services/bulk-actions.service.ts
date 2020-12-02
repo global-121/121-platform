@@ -13,7 +13,7 @@ export class BulkActionsService {
     switch (action) {
       case BulkActionId.selectForValidation:
         personData.checkboxVisible = [PaStatus.registered].includes(
-          PaStatus[personData.status],
+          personData.status,
         );
         break;
       case BulkActionId.includeProjectOfficer:
@@ -21,7 +21,7 @@ export class BulkActionsService {
           PaStatus.registered,
           PaStatus.selectedForValidation,
           PaStatus.validated,
-        ].includes(PaStatus[personData.status]);
+        ].includes(personData.status);
         break;
       case BulkActionId.includeProgramManager:
         personData.checkboxVisible = [
@@ -29,16 +29,16 @@ export class BulkActionsService {
           PaStatus.selectedForValidation,
           PaStatus.validated,
           PaStatus.rejected,
-        ].includes(PaStatus[personData.status]);
+        ].includes(personData.status);
         break;
       case BulkActionId.reject:
         personData.checkboxVisible = [PaStatus.included].includes(
-          PaStatus[personData.status],
+          personData.status,
         );
         break;
       case BulkActionId.notifyIncluded:
         personData.checkboxVisible =
-          [PaStatus.included].includes(PaStatus[personData.status]) &&
+          [PaStatus.included].includes(personData.status) &&
           !personData.notifiedOfInclusion;
         break;
     }
@@ -49,7 +49,7 @@ export class BulkActionsService {
     action: BulkActionId,
     programId: number,
     selectedPeople: any[],
-    alertInputData?: any,
+    message?: string,
   ): Promise<void> {
     switch (action) {
       case BulkActionId.selectForValidation:
@@ -65,7 +65,7 @@ export class BulkActionsService {
         return await this.programsService.reject(
           programId,
           selectedPeople,
-          alertInputData.rejectionMessage,
+          message,
         );
       case BulkActionId.notifyIncluded:
         return await this.programsService.notifySelectedIncluded(
