@@ -12,7 +12,10 @@ import {
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { ConnectionEntity } from './connection.entity';
-import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
+import {
+  SetPhoneRequestDto,
+  UpdatePhoneRequestDto,
+} from './dto/set-phone-request.dto';
 import { SetFspDto } from './dto/set-fsp.dto';
 import { CustomDataDto } from '../../programs/program/dto/custom-data.dto';
 import { RolesGuard } from '../../roles.guard';
@@ -133,7 +136,7 @@ export class CreateConnectionController {
   })
   @Post('/phone/overwrite')
   public async phoneNumberOverwrite(
-    @Body() setPhoneRequest: SetPhoneRequestDto,
+    @Body() setPhoneRequest: UpdatePhoneRequestDto,
   ): Promise<ConnectionEntity> {
     return await this.createConnectionService.phoneNumberOverwrite(
       setPhoneRequest.did,
