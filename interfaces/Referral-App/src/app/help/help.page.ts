@@ -17,6 +17,8 @@ export class HelpPage implements OnInit {
 
   public help: Help = helpMock;
 
+  public loading: boolean = false;
+
   constructor(
     public modalController: ModalController,
     public helpService: HelpService,
@@ -28,7 +30,9 @@ export class HelpPage implements OnInit {
   }
 
   async loadHelpDetails() {
+    this.loading = true;
     this.help = await this.helpService.getHelp(this.region);
+    this.loading = false;
   }
 
   dismiss() {
