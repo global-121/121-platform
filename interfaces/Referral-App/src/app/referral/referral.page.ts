@@ -111,9 +111,18 @@ export class ReferralPage implements OnInit {
     });
   }
 
+  private getNextSubCategory(category: Category) {
+    const subCategories: SubCategory[] = this.subCategories.filter(
+      (subCategory: SubCategory) => {
+        return subCategory.categoryID === category.categoryID;
+      },
+    );
+    return subCategories.length === 1 ? subCategories[0] : null;
+  }
+
   public clickCategory(category: Category, isBack: boolean = false) {
     this.category = category;
-    this.subCategory = null;
+    this.subCategory = isBack ? null : this.getNextSubCategory(category);
     this.offer = null;
     this.loggingService.logEvent(
       AnalyticsEventName.ReferralCategoryClick,
@@ -122,6 +131,7 @@ export class ReferralPage implements OnInit {
     this.router.navigate([this.getRegionHref()], {
       queryParams: {
         categoryID: this.category.categoryID,
+        subCategoryID: this.subCategory ? this.subCategory.subCategoryID : null,
       },
     });
   }
@@ -168,7 +178,13 @@ export class ReferralPage implements OnInit {
         AnalyticsEventName.ReferralBackFromSubCategory,
         this.getLogProperties(true),
       );
-      this.clickCategory(this.category);
+      if (this.getNextSubCategory(this.category)) {
+        this.category = null;
+        this.subCategory = null;
+        this.router.navigate([this.getRegionHref()]);
+      } else {
+        this.clickCategory(this.category);
+      }
     } else if (this.category) {
       this.loggingService.logEvent(
         AnalyticsEventName.ReferralBackFromCategory,
