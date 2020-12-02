@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LogoService } from 'src/app/services/logo.service';
 
 @Component({
   selector: 'app-tabs',
@@ -8,5 +9,11 @@ import { Component } from '@angular/core';
 export class TabsPage {
   public validationDisabled = true;
 
-  constructor() {}
+  constructor(private logoService: LogoService) {}
+
+  public getLogo = (): string => {
+    return this.logoService.logo
+      ? this.logoService.logo
+      : 'assets/icons/red_cross.png';
+  };
 }
