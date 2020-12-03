@@ -186,7 +186,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.phone-number',
         ),
         ...columnDefaults,
-        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+          ProgramPhase.payment,
+        ],
         roles: [UserRole.ProgramManager],
         minWidth: columnPhoneNumberWidth,
       },
