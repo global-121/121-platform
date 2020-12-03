@@ -172,6 +172,7 @@
           "phone-number": "Phonenumber",
           "payment": "Payment #",
           "vnumber": "V-number",
+          "whatsappPhoneNumber": "WhatsApp nr.",
           "fsp": "Financial Service Provider"
         },
         "status": {

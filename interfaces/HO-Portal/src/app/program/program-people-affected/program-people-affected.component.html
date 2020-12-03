@@ -105,15 +105,25 @@
   ></ngx-datatable-column>
 
   <ngx-datatable-column
+    *ngIf="hasVoucherSupport(allPeopleAffected[0]?.fsp) && [phaseEnum.registrationValidation, phaseEnum.inclusion, phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && userRole === userEnum.ProgramManager"
+    prop="whatsappPhoneNumber"
+    [name]="'page.program.program-people-affected.column.whatsappPhoneNumber'|translate"
+    minWidth="130"
+    [draggable]="columnDefaults.draggable"
+    [resizeable]="columnDefaults.resizeable"
+    [sortable]="columnDefaults.sortable"
+    [headerClass]="columnDefaults.headerClass"
+  ></ngx-datatable-column>
+  <ngx-datatable-column
     *ngIf="allPeopleAffected[0]?.vnumber && [phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && userRole === userEnum.ProgramManager"
     prop="vnumber"
     [name]="'page.program.program-people-affected.column.vnumber'|translate"
     minWidth="100"
-    draggable="false"
-    resizeable="false"
-    sortable="true"
-  >
-  </ngx-datatable-column>
+    [draggable]="columnDefaults.draggable"
+    [resizeable]="columnDefaults.resizeable"
+    [sortable]="columnDefaults.sortable"
+    [headerClass]="columnDefaults.headerClass"
+  ></ngx-datatable-column>
 
   <ngx-datatable-column
     *ngFor="let column of paymentColumns"
