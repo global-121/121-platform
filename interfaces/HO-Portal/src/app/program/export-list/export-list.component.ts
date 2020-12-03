@@ -33,7 +33,7 @@ export class ExportListComponent implements OnChanges {
   public message: string;
 
   private locale: string;
-  public actionTimestamp;
+  public actionTimestamp: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   constructor(
@@ -67,9 +67,11 @@ export class ExportListComponent implements OnChanges {
     this.subHeader = this.translate.instant(
       'page.program.export-list.' + this.exportType + '.confirm-message',
     );
-    this.message =
-      this.translate.instant('page.program.export-list.timestamp') +
-      this.actionTimestamp;
+    this.message = this.actionTimestamp
+      ? this.translate.instant('page.program.export-list.timestamp', {
+          dateTime: this.actionTimestamp,
+        })
+      : '';
   }
 
   public btnEnabled() {
