@@ -37,6 +37,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
+  public columnDefaults: any;
   public columns: any[] = [];
   private columnsAvailable: any[] = [];
   private paymentColumnTemplate: any = {};
@@ -143,7 +144,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       ),
     };
 
-    const columnDefaults = {
+    this.columnDefaults = {
       draggable: false,
       resizeable: false,
       sortable: true,
@@ -158,7 +159,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
     const columnDateTimeWidth = 142;
-    const columnDateWidth = 100;
     const columnScoreWidth = 90;
     const columnPhoneNumberWidth = 130;
 
@@ -168,7 +168,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.person',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         width: 85,
       },
       {
@@ -176,7 +176,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.name',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         roles: [UserRole.ProgramManager],
       },
@@ -185,8 +185,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.phone-number',
         ),
-        ...columnDefaults,
-        phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+        ...this.columnDefaults,
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+          ProgramPhase.payment,
+        ],
         roles: [UserRole.ProgramManager],
         minWidth: columnPhoneNumberWidth,
       },
@@ -195,7 +200,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.status',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         width: 90,
       },
       {
@@ -203,7 +208,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.digital-id-created',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
         width: columnDateTimeWidth,
       },
@@ -212,7 +217,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.vulnerability-assessment-completed',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
         width: columnDateTimeWidth,
       },
@@ -221,7 +226,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.temp-score',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
         showIfNoValidation: false,
         width: columnScoreWidth,
@@ -231,7 +236,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.selected-for-validation',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
         showIfNoValidation: false,
         width: columnDateTimeWidth,
@@ -241,7 +246,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.vulnerability-assessment-validated',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
         showIfNoValidation: false,
         width: columnDateTimeWidth,
@@ -251,7 +256,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.final-score',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
         width: columnScoreWidth,
       },
@@ -260,7 +265,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.included',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [
           ProgramPhase.inclusion,
           ProgramPhase.reviewInclusion,
@@ -273,7 +278,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.notified-of-inclusion',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         width: columnDateTimeWidth,
       },
@@ -282,7 +287,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.rejected',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         width: columnDateTimeWidth,
       },
@@ -291,7 +296,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         name: this.translate.instant(
           'page.program.program-people-affected.column.fsp',
         ),
-        ...columnDefaults,
+        ...this.columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         width: 150,
       },
@@ -302,7 +307,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         'page.program.program-people-affected.column.payment',
       ),
       installmentIndex: 0,
-      ...columnDefaults,
+      ...this.columnDefaults,
       phases: [ProgramPhase.payment],
       width: columnDateTimeWidth,
     };
@@ -470,6 +475,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         : null,
       name: person.name,
       phoneNumber: formatPhoneNumber(person.phoneNumber),
+      whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
       vnumber: person.vnumber,
       fsp: person.fsp,
     };
