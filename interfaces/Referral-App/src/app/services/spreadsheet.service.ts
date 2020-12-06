@@ -149,7 +149,10 @@ export class SpreadsheetService {
         'gsx$openinghoursweekends',
       ),
       offerForWhom: SpreadsheetService.readCellValue(offerRow, 'gsx$forwhom'),
-      offerCapacity: SpreadsheetService.readCellValue(offerRow, 'gsx$capacity'),
+      offerWhatWillYouNeed: SpreadsheetService.readCellValue(
+        offerRow,
+        'gsx$whatwillyouneed',
+      ),
       offerBasicRight: SpreadsheetService.readCellValue(
         offerRow,
         'gsx$basicright',
