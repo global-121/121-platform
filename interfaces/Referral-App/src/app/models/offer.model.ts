@@ -10,7 +10,7 @@ export class Offer {
   offerOpeningHoursWeekdays?: string;
   offerOpeningHoursWeekends?: string;
   offerForWhom?: string;
-  offerCapacity?: string;
+  offerWhatWillYouNeed?: string;
   offerBasicRight?: string;
   offerVisible: boolean;
   subCategoryID: number;

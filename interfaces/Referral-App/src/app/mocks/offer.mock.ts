@@ -10,7 +10,7 @@ export default {
   offerOpeningHoursWeekdays: 'Mock Offer Opening Hours Weekdays',
   offerOpeningHoursWeekends: 'Mock Offer Opening Hours Weekends',
   offerForWhom: 'Mock Offer For Whom',
-  offerCapacity: 'Mock Offer Capacity',
+  offerWhatWillYouNeed: 'Mock Offer What will you need',
   offerBasicRight: 'Mock Offer Basic Right',
   offerVisible: true,
   subCategoryID: 1,
