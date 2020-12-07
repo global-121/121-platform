@@ -66,6 +66,7 @@ export class AfricasTalkingService {
       phoneNumber: paymentData.paymentAddress,
       currencyCode: process.env.AFRICASTALKING_CURRENCY_CODE,
       amount: amount,
+      providerChannel: process.env.AFRICASTALKING_PROVIDER_CHANNEL,
       metadata: {
         programId: String(programId),
         installment: String(installment),

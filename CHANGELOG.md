@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.13.4...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.13.5...master)
 
 ---
+
+## [0.13.4](https://github.com/global-121/121-platform/compare/v0.13.4...v0.13.5) - 2020-12-07
+
+### Added
+- 2020-12-07: Added AFRICASTALKING_PROVIDER_CHANNEL to [services/.env](services/.env.example)
+
+---
+
 ## [0.13.4](https://github.com/global-121/121-platform/compare/v0.13.3...v0.13.4) - 2020-12-04
 
 ## [0.13.3](https://github.com/global-121/121-platform/compare/v0.13.2...v0.13.3) - 2020-11-27
