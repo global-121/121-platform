@@ -3,7 +3,7 @@
     <confirm-prompt
       [disabled]="userRole !== userRoleEnum.ProgramManager"
       (confirm)="doTestPayment(); isInProgress = true"
-      [subHeader]="'page.program.test-payment.confirm'|translate"
+      [message]="'page.program.test-payment.confirm'|translate"
     >
       {{ 'page.program.test-payment.do-payment'|translate }}
     </confirm-prompt>
