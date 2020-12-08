@@ -66,7 +66,6 @@ export class AfricasTalkingService {
       phoneNumber: paymentData.paymentAddress,
       currencyCode: process.env.AFRICASTALKING_CURRENCY_CODE,
       amount: amount,
-      providerChannel: process.env.AFRICASTALKING_PROVIDER_CHANNEL,
       metadata: {
         programId: String(programId),
         installment: String(installment),
@@ -74,6 +73,10 @@ export class AfricasTalkingService {
         amount: String(amount),
       },
     };
+    if (process.env.AFRICASTALKING_PROVIDER_CHANNEL) {
+      recipient['providerChannel'] =
+        process.env.AFRICASTALKING_PROVIDER_CHANNEL;
+    }
     payload.recipients.push(recipient);
 
     return payload;
