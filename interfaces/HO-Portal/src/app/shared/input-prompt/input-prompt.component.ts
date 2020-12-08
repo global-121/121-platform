@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 export interface InputProps {
   inputRequired: boolean;
+  explanation?: string;
   placeholder?: string;
   defaultValue?: string;
   minLength: number;

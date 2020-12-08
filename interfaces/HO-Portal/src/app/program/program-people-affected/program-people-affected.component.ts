@@ -110,6 +110,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: true,
       confirmConditions: {
         inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-explanations.reject',
+        ),
         minLength: 20,
         maxLength: 160,
       },
