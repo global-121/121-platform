@@ -5,7 +5,20 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
+/** Custom Fonts **/
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('../assets/fonts/Montserrat-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('../assets/fonts/OpenSans-Regular.ttf');
+}
+
 /** Ionic CSS Variables **/
+
 :root {
   --ion-font-family: 'Open Sans', sans-serif;
 
