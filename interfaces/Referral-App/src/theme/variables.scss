@@ -7,6 +7,8 @@
 
 /** Ionic CSS Variables **/
 :root {
+  --ion-font-family: 'Open Sans', sans-serif;
+
   /** primary **/
   --ion-color-primary: #2f4bfd;
   --ion-color-primary-rgb: 56, 128, 255;
@@ -78,4 +80,9 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+}
+
+ion-title,
+ion-card-title {
+  font-family: 'Montserrat', sans-serif;
 }
