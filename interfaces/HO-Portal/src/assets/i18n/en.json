@@ -190,6 +190,9 @@
           "reject": "Reject from program",
           "notify-included": "Notify included People Affected"
         },
+        "action-explanations": {
+          "reject": "Please add a message to explain the reason(s) for rejection, or the possible next actions by the PA."
+        },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
         "submit-warning-people-affected": "People Affected",
