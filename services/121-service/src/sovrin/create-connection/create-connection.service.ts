@@ -15,6 +15,7 @@ import { CredentialRequestEntity } from '../credential/credential-request.entity
 import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import { CredentialEntity } from '../credential/credential.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
+import { TransactionEntity } from '../../programs/program/transactions.entity';
 import { ProgramService } from '../../programs/program/program.service';
 import {
   FspAnswersAttrInterface,
@@ -45,6 +46,8 @@ export class CreateConnectionService {
   private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
   @InjectRepository(CustomCriterium)
   private readonly customCriteriumRepository: Repository<CustomCriterium>;
+  @InjectRepository(TransactionEntity)
+  private readonly transactionRepository: Repository<TransactionEntity>;
 
   public constructor(
     private readonly programService: ProgramService,
@@ -96,6 +99,13 @@ export class CreateConnectionService {
   }
 
   public async delete(didObject: DidDto): Promise<void> {
+    const connection = await this.connectionRepository.findOne({
+      where: { did: didObject.did },
+    });
+    await this.transactionRepository.delete({
+      connection: { id: connection.id },
+    });
+
     await this.connectionRepository.delete({
       did: didObject.did,
     });

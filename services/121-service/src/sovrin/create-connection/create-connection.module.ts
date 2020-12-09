@@ -12,6 +12,7 @@ import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-ser
 import { ProgramModule } from '../../programs/program/program.module';
 import { SmsModule } from '../../notifications/sms/sms.module';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
+import { TransactionEntity } from '../../programs/program/transactions.entity';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
       FinancialServiceProviderEntity,
       FspAttributeEntity,
       CustomCriterium,
+      TransactionEntity,
     ]),
     ProgramModule,
     UserModule,

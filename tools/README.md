@@ -19,11 +19,11 @@ Note that not all applications need to be exposed. E.g. UserIMS yes, as it is di
 
 First, get the right certificates (`SSLCertificateFile` and `SSLCACertificateFile`) and place them in `/tools/certificates/`.
 
-On Ubuntu server do:
+On Ubuntu server do: (NOTE the absolute path /home/121-platform, which might be different in your instance)
 
-    ln -s tools/121-platform.conf /etc/apache2/sites-enabled/121-platform.conf
-    ln -s tools/121-platform-https.conf /etc/apache2/sites-enabled/121-platform-https.conf
-    a2enmod ssl
+    ln -s /home/121-platform/tools/121-platform.conf /etc/apache2/sites-enabled/121-platform.conf
+    ln -s /home/121-platform/tools/121-platform-https.conf /etc/apache2/sites-enabled/121-platform-https.conf
+    a2enmod ssl proxy_http rewrite
     service apache2 restart
     service apache2 status
 
