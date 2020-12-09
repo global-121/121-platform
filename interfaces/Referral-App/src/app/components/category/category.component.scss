@@ -2,11 +2,14 @@
   display: inline-block;
 }
 
-ion-card {
+.category--button {
   width: 100px;
   height: 100px;
   display: inline-block;
-  background: #ffc001;
+
+  background: var(--ion-color-secondary);
+  color: var(--ion-color-secondary-contrast);
+
   cursor: pointer;
 
   ion-img {
@@ -15,22 +18,25 @@ ion-card {
     margin: auto;
     padding: 5%;
   }
-
-  ion-card-title {
-    font-weight: normal;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-  }
 }
 
-ion-card-content {
-  position: absolute;
-  top: 0;
-  left: 100px;
-  margin: 0 15px;
-  height: 150px;
-  overflow: auto;
+.category--title {
+  font-weight: normal;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+// Alternative view of "category-button-as-category-header"
+.category.category--as-header {
+  display: flex;
+}
+.category--icon {
+  flex: 0 0 auto;
+}
+.category--description {
+  flex: 1 1 auto;
 }
