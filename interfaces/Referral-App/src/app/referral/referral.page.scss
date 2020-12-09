@@ -1,20 +1,20 @@
-ion-header {
-  --ion-background-color: #ffc001;
+// Light
+.skeleton-text--light {
+  --background-rgb: var(--ion-color-dark-contrast-rgb);
 }
 
-ion-content {
-  --ion-background-color: #f6f0eb;
-}
-
+//
 ion-card {
   background: #ffffff;
   box-shadow: none;
-  white-space: pre-line;
 
   &.referral-data-unavailable-card {
     width: 300px;
     margin: 5% auto;
   }
+}
+.introduction--content {
+  white-space: pre-line;
 }
 
 a {

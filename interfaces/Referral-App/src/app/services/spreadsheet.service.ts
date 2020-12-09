@@ -32,9 +32,10 @@ export class SpreadsheetService {
     const spreadsheetIds: string[] = environment.google_sheets_sheet_ids
       .trim()
       .split(/\s*,\s*/);
-    for (let regionIndex in regions) {
-      this.spreadsheetId[regions[regionIndex]] = spreadsheetIds[regionIndex];
-    }
+
+    regions.forEach((_, index) => {
+      this.spreadsheetId[regions[index]] = spreadsheetIds[index];
+    });
   };
 
   convertCategoryRowToCategoryObject = (categoryRow): Category => {

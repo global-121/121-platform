@@ -10,10 +10,13 @@ ion-card {
   width: 150px;
   height: 150px;
   display: inline-block;
-  background: #ffc001;
+  vertical-align: top;
+
+  background: var(--ion-color-secondary);
+  color: var(--ion-color-secondary-contrast);
+
   cursor: pointer;
   overflow: visible;
-  vertical-align: top;
 
   ion-img {
     height: 85px;
@@ -45,6 +48,6 @@ ion-card-content {
   &.horizontal-text {
     visibility: visible;
     top: 0;
-    left: 150px;
+    left: 160px;
   }
 }
