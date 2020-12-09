@@ -125,6 +125,7 @@ export class WhatsappService {
       );
 
       intersolveBarcode.send = true;
+      intersolveBarcode.timestampVoucherSent = new Date();
       await this.intersolveBarcodeRepository.save(intersolveBarcode);
     } else {
       const whatsappReply =
