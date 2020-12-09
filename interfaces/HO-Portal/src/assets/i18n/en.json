@@ -191,7 +191,7 @@
           "notify-included": "Notify included People Affected"
         },
         "action-explanations": {
-          "reject": "Please add a message to explain the reason(s) for rejection, or the possible next actions by the PA."
+          "reject": "When you do this, an text message will be automatically sent to them. You need to compose this below. Please ensure to give a reason & if possible, what their next steps could be."
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
