@@ -98,6 +98,7 @@
     "select-language": {
       "introduction": {
         "en": "Please select your language.",
+        "ar": "الرجاء اختيار لغتك",
         "ti": "ትሕስ እስ ዓ ተስት።",
         "ny_MW": "Chonde sankhani chiyankhulo chanu.",
         "om_ET": "Maaloo qooqa keessan filadhaa.",
@@ -107,6 +108,7 @@
       "result": "Thank you, you have selected {{language}}.",
       "language": {
         "en": "English",
+        "ar": "عربى",
         "ti": "ትግርኛ",
         "ny_MW": "Chichewa",
         "om_ET": "Afaan Oromoo",

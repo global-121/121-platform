@@ -12,7 +12,7 @@ export const environment = {
   useAnimation: false, // Use animations and delays in the interface
   alwaysShowTextPlayer: true, // Also show text-player for missing audio-files
 
-  locales: 'en,ny_MW,om_ET,saq_KE,tuv_KE', // Commna-separated string of enabled locales, i.e: 'en,es,nl_BE'
+  locales: 'en,ny_MW,om_ET,saq_KE,tuv_KE,ar', // Commna-separated string of enabled locales, i.e: 'en,es,nl_BE'
 
   // APIs:
   url_121_service_api: 'http://localhost:3000/api',
