@@ -1,22 +1,29 @@
-<div class="sub-category" [class.position-relative]="showBottomDescription">
-  <ion-card>
+<div
+  class="sub-category"
+  [ngClass]="{
+    'as-header': !showBottomDescription || showRightDescription
+  }"
+>
+  <ion-card
+    class="sub-category--icon ion-no-margin"
+  >
     <ion-card-header>
       <ion-img
         [src]="subCategory.subCategoryIcon"
         [alt]="subCategory.subCategoryName"
+        class="sub-category--img"
       ></ion-img>
-      <ion-card-title class="ion-text-center">
+      <ion-card-title class="sub-category--label ion-text-center">
         {{ subCategory.subCategoryName }}
       </ion-card-title>
     </ion-card-header>
   </ion-card>
-  <ion-card-content
-    [class.vertical-text]="showBottomDescription"
-    [class.horizontal-text]="showRightDescription"
-    [class.ion-hide-sm-down]="showBottomDescription"
+  <div
+    *ngIf="showRightDescription || showBottomDescription"
+    class="sub-category--description ion-padding"
   >
     <ion-text>
       {{ subCategory.subCategoryDescription }}
     </ion-text>
-  </ion-card-content>
+  </div>
 </div>

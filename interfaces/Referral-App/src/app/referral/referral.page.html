@@ -41,18 +41,25 @@
   </div>
   <div *ngIf="!loading">
     <div>
-      <div *ngIf="!category">
+      <div
+        *ngIf="!category"
+        style="margin: 0 -10px;"
+      >
         <category
           *ngFor="let _category of categories"
           [category]="_category"
           (click)="clickCategory(_category)"
         ></category>
       </div>
-      <div *ngIf="category && !subCategory">
+      <div
+        *ngIf="category && !subCategory"
+        class="ion-margin-bottom"
+      >
         <category
           [category]="category"
           [showDescription]="true"
           (click)="goBack()"
+          class="ion-margin-bottom"
         ></category>
       </div>
       <div *ngIf="category && !subCategory">
@@ -62,9 +69,13 @@
           [showRightDescription]="false"
           [showBottomDescription]="true"
           (click)="clickSubCategory(_subCategory)"
+          class="ion-margin-end"
         ></sub-category>
       </div>
-      <div *ngIf="category && subCategory">
+      <div
+        *ngIf="category && subCategory"
+        class="ion-margin-bottom"
+      >
         <sub-category
           [subCategory]="subCategory"
           [showRightDescription]="true && !offer"
@@ -78,6 +89,7 @@
         *ngFor="let _offer of offers | categoryFilter: category | subCategoryFilter: subCategory"
         [offer]="_offer"
         (click)="clickOffer(_offer)"
+        class="ion-margin-bottom"
       ></offer>
     </div>
     <div *ngIf="category && subCategory && offer">
