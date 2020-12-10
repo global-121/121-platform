@@ -1,98 +1,117 @@
-<div class="offer">
-  <ion-card>
-    <ion-card-header>
+<div
+  [ngClass]="{
+    'offer': true,
+    'is-actionable': !showDetails
+  }"
+>
+  <div class="offer--head">
+    <ion-card class="offer--button ion-no-margin">
       <ion-img
         [src]="offer.offerIcon"
         [alt]="offer.offerName"
-        (click)="goBack()"
-        *ngIf="goBack"
+        class="offer--logo"
       ></ion-img>
-      <ion-img
-        [src]="offer.offerIcon"
-        [alt]="offer.offerName"
-        *ngIf="!goBack"
-      ></ion-img>
-      <ion-card-title class="ion-text-center">
+    </ion-card>
+    <div class="offer--summary ion-padding-start">
+      <ion-text class="offer--description">
+        <p>{{ offer.offerDescription }}</p>
+      </ion-text>
+      <ion-button
+        *ngIf="offer.offerName && !showDetails"
+        color="primary"
+        size="small"
+        class="ion-text-center"
+      >
         {{ offer.offerName }}
-      </ion-card-title>
-    </ion-card-header>
-  </ion-card>
-  <ion-card-content>
-    <ion-text>
-      <p>{{ offer.offerDescription }}</p>
-    </ion-text>
-  </ion-card-content>
-  <div class="ion-margin" *ngIf="showDetails">
-    <ion-item *ngIf="offer.offerLink">
-      <ion-icon name="globe" slot="start"></ion-icon>
-      <ion-label>
+      </ion-button>
+    </div>
+  </div>
+  <div
+    *ngIf="showDetails"
+    class="offer--details ion-margin-vertical"
+    color="dark"
+  >
+    <p *ngIf="offer.offerLink">
+      <strong>
         Website:
-        <a
-          href="{{ offer.offerLink }}"
-          (click)="logClick('website')"
-          target="_blank"
-          rel="noopener"
-          >{{ offer.offerLink }}</a
-        >
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="offer.offerOpeningHoursWeekdays">
-      <ion-icon name="clock" slot="start"></ion-icon>
-      <ion-label>
+      </strong>
+      &nbsp;
+      <a
+        [href]="offer.offerLink"
+        (click)="logClick('website')"
+        target="_blank"
+        rel="noopener"
+      >{{ offer.offerLink }}</a>
+    </p>
+    <div
+      *ngIf="offer.offerOpeningHoursWeekdays"
+      class="ion-margin-vertical"
+    >
+      <strong>
         Opening Hours
         <span *ngIf="offer.offerOpeningHoursWeekends"> - Weekdays</span>:
-        <pre class="ion-margin">{{ offer.offerOpeningHoursWeekdays }}</pre>
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="offer.offerOpeningHoursWeekends">
-      <ion-icon name="clock" slot="start"></ion-icon>
-      <ion-label>
+      </strong>
+      <pre class="ion-no-margin">{{ offer.offerOpeningHoursWeekdays }}</pre>
+    </div>
+    <div
+      *ngIf="offer.offerOpeningHoursWeekends"
+      class="ion-margin-vertical"
+    >
+      <strong>
         Opening Hours
         <span *ngIf="offer.offerOpeningHoursWeekends"> - Weekends</span>:
-        <pre class="ion-margin">{{ offer.offerOpeningHoursWeekends }}</pre>
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="offer.offerEmail">
-      <ion-icon name="mail" slot="start"></ion-icon>
-      <ion-label>
+      </strong>
+      <pre class="ion-no-margin">{{ offer.offerOpeningHoursWeekends }}</pre>
+    </div>
+    <p
+      *ngIf="offer.offerEmail"
+      class="ion-margin-vertical"
+    >
+      <strong>
         Email:
-        <a
-          href="mailto:{{ offer.offerEmail }}?subject=Sent via Referral App"
-          (click)="logClick('email')"
-        >
-          {{ offer.offerEmail }}
-        </a>
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="offer.offerNumber">
-      <ion-icon name="call" slot="start"></ion-icon>
-      <ion-label>
+      </strong>
+      &nbsp;
+      <a
+        href="mailto:{{ offer.offerEmail }}?subject=Sent via Referral App"
+        (click)="logClick('email')"
+      >{{ offer.offerEmail }}</a>
+    </p>
+    <p *ngIf="offer.offerNumber">
+      <strong>
         Phone:
-        <a href="tel:{{ offer.offerNumber }}" (click)="logClick('phone')">{{
-          offer.offerNumber
-        }}</a>
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="offer.offerAddress">
-      <ion-icon name="compass" slot="start"></ion-icon>
-      <ion-label>
+      </strong>
+      &nbsp;
+      <a
+        href="tel:{{ offer.offerNumber }}"
+        (click)="logClick('phone')"
+      >{{ offer.offerNumber }}</a>
+    </p>
+    <div
+      *ngIf="offer.offerAddress"
+      class="ion-margin-vertical"
+    >
+      <strong>
         Address:
-        <pre class="ion-margin">{{ offer.offerAddress }}</pre>
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="offer.offerWhatWillYouNeed">
-      <ion-icon name="contacts" slot="start"></ion-icon>
-      <ion-label>
+      </strong>
+      <pre class="ion-no-margin">{{ offer.offerAddress }}</pre>
+    </div>
+    <div
+      *ngIf="offer.offerWhatWillYouNeed"
+      class="ion-margin-vertical"
+    >
+      <strong>
         What will you need?
-        <pre class="ion-margin">{{ offer.offerWhatWillYouNeed }}</pre>
-      </ion-label>
-    </ion-item>
-    <ion-item *ngIf="offer.offerBasicRight">
-      <ion-icon name="hand" slot="start"></ion-icon>
-      <ion-label>
+      </strong>
+      <pre class="ion-no-margin">{{ offer.offerWhatWillYouNeed }}</pre>
+    </div>
+    <div
+      *ngIf="offer.offerBasicRight"
+      class="ion-margin-vertical"
+    >
+      <strong>
         Basic Rights:
-        <pre class="ion-margin">{{ offer.offerBasicRight }}</pre>
-      </ion-label>
-    </ion-item>
+      </strong>
+      <pre class="ion-no-margin">{{ offer.offerBasicRight }}</pre>
+    </div>
   </div>
 </div>
