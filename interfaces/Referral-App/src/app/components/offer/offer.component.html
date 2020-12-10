@@ -13,7 +13,12 @@
       ></ion-img>
     </ion-card>
     <div class="offer--summary ion-padding-start">
-      <ion-text class="offer--description">
+      <ion-text
+        [ngClass]="{
+          'offer--description': true,
+          'use-overflow-scroll': !showDetails
+        }"
+      >
         <p>{{ offer.offerDescription }}</p>
       </ion-text>
       <ion-button

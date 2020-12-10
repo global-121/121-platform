@@ -36,9 +36,12 @@
 }
 .offer--description {
   display: block;
-  max-height: 120px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+
+  &.use-overflow-scroll {
+    max-height: 120px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 a:link,
