@@ -64,13 +64,13 @@ export class ReferralPage implements OnInit {
     );
   }
 
-  public toKebabCase = (value: string) => {
+  public toKebabCase(value: string) {
     return value
       .replace(/\W+/g, ' ')
       .split(/ |\B(?=[A-Z])/)
       .map((word) => word.toLowerCase())
       .join('-');
-  };
+  }
 
   private async loadReferralData() {
     if (this.isSupportedRegion()) {

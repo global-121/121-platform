@@ -41,18 +41,25 @@
   </div>
   <div *ngIf="!loading">
     <div>
-      <div *ngIf="!category">
+      <div
+        *ngIf="!category"
+        style="margin: 0 -10px;"
+      >
         <category
           *ngFor="let _category of categories"
           [category]="_category"
           (click)="clickCategory(_category)"
         ></category>
       </div>
-      <div *ngIf="category && !subCategory">
+      <div
+        *ngIf="category && !subCategory"
+        class="ion-margin-bottom"
+      >
         <category
           [category]="category"
           [showDescription]="true"
           (click)="goBack()"
+          class="ion-margin-bottom"
         ></category>
       </div>
       <div *ngIf="category && !subCategory">
@@ -62,9 +69,13 @@
           [showRightDescription]="false"
           [showBottomDescription]="true"
           (click)="clickSubCategory(_subCategory)"
+          class="ion-margin-end"
         ></sub-category>
       </div>
-      <div *ngIf="category && subCategory">
+      <div
+        *ngIf="category && subCategory"
+        class="ion-margin-bottom"
+      >
         <sub-category
           [subCategory]="subCategory"
           [showRightDescription]="true && !offer"
@@ -78,6 +89,7 @@
         *ngFor="let _offer of offers | categoryFilter: category | subCategoryFilter: subCategory"
         [offer]="_offer"
         (click)="clickOffer(_offer)"
+        class="ion-margin-bottom"
       ></offer>
     </div>
     <div *ngIf="category && subCategory && offer">
@@ -137,12 +149,14 @@
       *ngIf="category"
       slot="start"
     >
-      <ion-back-button
-        *ngIf="!loading"
-        [defaultHref]="getRegionHref()"
+      <ion-button
         (click)="goBack()"
-        [text]="referralPageData.referralBackButtonLabel"
-      ></ion-back-button>
+        class="nested-button-with-label ion-text-start"
+      >
+        <ion-icon name="arrow-back" class="icon-as-button"></ion-icon>
+        <ion-text>{{ referralPageData.referralBackButtonLabel }}</ion-text>
+      </ion-button>
+
     </ion-buttons>
 
     <ion-buttons
@@ -151,9 +165,9 @@
     >
       <ion-button
         (click)="showCategories()"
-        class="main-screen-button ion-text-start"
+        class="nested-button-with-label ion-text-start"
       >
-        <ion-icon name="albums"></ion-icon>
+        <ion-icon name="radio-button-on" class="icon-as-button"></ion-icon>
         <ion-text>{{ referralPageData.referralMainScreenButtonLabel }}</ion-text>
       </ion-button>
     </ion-buttons>
@@ -177,7 +191,7 @@
         rel="noopener"
       >
         <ion-img
-          class="whatsapp-image"
+          class="button-icon--whatsapp-image"
           src="assets/icons/whatsapp.png"
         ></ion-img>
       </ion-button>
