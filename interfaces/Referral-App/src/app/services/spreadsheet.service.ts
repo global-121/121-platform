@@ -24,7 +24,7 @@ export class SpreadsheetService {
   }
 
   static readCellValue(row, key): string {
-    return row[key].$t;
+    return row[key].$t.toString().trim();
   }
 
   loadSheetIds(): void {
