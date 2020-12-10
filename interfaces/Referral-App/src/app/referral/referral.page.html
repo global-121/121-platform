@@ -149,12 +149,14 @@
       *ngIf="category"
       slot="start"
     >
-      <ion-back-button
-        *ngIf="!loading"
-        [defaultHref]="getRegionHref()"
+      <ion-button
         (click)="goBack()"
-        [text]="referralPageData.referralBackButtonLabel"
-      ></ion-back-button>
+        class="nested-button-with-label ion-text-start"
+      >
+        <ion-icon name="arrow-back" class="icon-as-button"></ion-icon>
+        <ion-text>{{ referralPageData.referralBackButtonLabel }}</ion-text>
+      </ion-button>
+
     </ion-buttons>
 
     <ion-buttons
@@ -163,9 +165,9 @@
     >
       <ion-button
         (click)="showCategories()"
-        class="main-screen-button ion-text-start"
+        class="nested-button-with-label ion-text-start"
       >
-        <ion-icon name="albums"></ion-icon>
+        <ion-icon name="radio-button-on" class="icon-as-button"></ion-icon>
         <ion-text>{{ referralPageData.referralMainScreenButtonLabel }}</ion-text>
       </ion-button>
     </ion-buttons>
@@ -189,7 +191,7 @@
         rel="noopener"
       >
         <ion-img
-          class="whatsapp-image"
+          class="button-icon--whatsapp-image"
           src="assets/icons/whatsapp.png"
         ></ion-img>
       </ion-button>
