@@ -28,13 +28,12 @@ jobs:
         with:
           node-version: "14.x"
 
-      - name: Run node ci, lint, build and test scripts
+      - name: Run node ci, lint and test scripts
         id: nodescripts
         working-directory: ./interfaces/Referral-App
         run: |
           npm ci
           npm run lint --if-present
-          npm run build --if-present
           npm run test --if-present
 
       - name: Build And Deploy
