@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { LoggingService } from './services/logging.service';
 
 @Component({
@@ -14,12 +15,19 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private loggingService: LoggingService,
+    private translate: TranslateService,
   ) {
     this.initializeApp();
 
     if (this.loggingService.appInsightsEnabled) {
       this.loggingService.logPageView();
     }
+
+    // Update language + text-direction for the full interface
+    this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      document.documentElement.lang = event.lang;
+      document.documentElement.dir = this.translate.instant('_dir');
+    });
   }
 
   initializeApp() {
