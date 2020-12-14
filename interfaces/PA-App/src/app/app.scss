@@ -70,6 +70,11 @@ ion-button.button-block.button-solid:not([disabled]) {
     background-size: 100% auto;
     background-image: url('/assets/icons/hand-tap-white.svg');
   }
+  [dir='rtl'] &::after {
+    left: 8px;
+    right: auto;
+    transform: translateY(-50%) rotateY(180deg);
+  }
 }
 
 // Override default styles to emphasize where to input
