@@ -9,3 +9,12 @@
 @import '~@ionic/angular/css/text-alignment.css';
 @import '~@ionic/angular/css/text-transformation.css';
 @import '~@ionic/angular/css/flex-utils.css';
+
+// Fix selector-bug from: '~@ionic/angular/css/float-elements.css'
+// See: https://github.com/ionic-team/ionic-framework/issues/17012#issuecomment-500127886
+[dir='rtl'] .ion-float-start {
+  float: right !important;
+}
+[dir='rtl'] .ion-float-end {
+  float: left !important;
+}
