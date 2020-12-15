@@ -1,12 +1,16 @@
+import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
+import { IntersolvePayoutStatus } from './../../programs/fsp/api/enum/intersolve-payout-status.enum';
 import { EXTERNAL_API } from '../../config';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, Like } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { ImageCodeService } from '../imagecode/image-code.service';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
+import { TransactionEntity } from '../../programs/program/transactions.entity';
+import { StatusEnum } from '../../shared/enum/status.enum';
 
 @Injectable()
 export class WhatsappService {
@@ -16,6 +20,13 @@ export class WhatsappService {
   >;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
+  @InjectRepository(TransactionEntity)
+  public transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(ConnectionEntity)
+  private readonly connectionRepository: Repository<ConnectionEntity>;
+
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
 
   private readonly programId = 1;
   private readonly language = 'en';
@@ -126,10 +137,33 @@ export class WhatsappService {
 
       intersolveBarcode.send = true;
       await this.intersolveBarcodeRepository.save(intersolveBarcode);
+      await this.insertTransactionIntersolve(intersolveBarcode);
     } else {
       const whatsappReply =
         program.notifications[this.language]['whatsappReply'];
       await this.sendWhatsapp(whatsappReply, fromNumber, null);
     }
+  }
+
+  public async insertTransactionIntersolve(
+    intersolveBarcode: IntersolveBarcodeEntity,
+  ): Promise<void> {
+    const transaction = new TransactionEntity();
+    transaction.status = StatusEnum.success;
+    transaction.installment = intersolveBarcode.installment;
+    transaction.amount = intersolveBarcode.amount;
+    transaction.customData = JSON.parse(
+      JSON.stringify({
+        IntersolvePayoutStatus: IntersolvePayoutStatus.VoucherSent,
+      }),
+    );
+    const whatsAppSearch = intersolveBarcode.whatsappPhoneNumber;
+    const connection = await this.connectionRepository.findOne({
+      where: `"customData" ILIKE '${whatsAppSearch}%'`,
+    });
+    transaction.connection = connection;
+    transaction.program = await this.programRepository.findOne(1);
+    transaction.financialServiceProvider = connection.fsp;
+    await this.transactionRepository.save(transaction);
   }
 }
