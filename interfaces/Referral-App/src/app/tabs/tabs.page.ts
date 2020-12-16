@@ -11,9 +11,9 @@ export class TabsPage {
 
   constructor(private logoService: LogoService) {}
 
-  public getLogo = (): string => {
+  public getLogo(): string {
     return this.logoService.logo
       ? this.logoService.logo
       : 'assets/icons/red_cross.png';
-  };
+  }
 }

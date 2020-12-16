@@ -1,20 +1,20 @@
-ion-header {
-  --ion-background-color: #ffc001;
+// Light
+.skeleton-text--light {
+  --background-rgb: var(--ion-color-dark-contrast-rgb);
 }
 
-ion-content {
-  --ion-background-color: #f6f0eb;
-}
-
+//
 ion-card {
   background: #ffffff;
   box-shadow: none;
-  white-space: pre-line;
 
   &.referral-data-unavailable-card {
     width: 300px;
     margin: 5% auto;
   }
+}
+.introduction--content {
+  white-space: pre-line;
 }
 
 a {
@@ -28,18 +28,23 @@ a {
 }
 
 ion-footer {
-  ion-button {
-    &.main-screen-button {
-      white-space: pre-wrap;
+  .nested-button-with-label {
+    white-space: pre-wrap;
 
-      ion-text {
-        margin-left: 4px;
-      }
+    ion-text {
+      margin-left: 4px;
     }
+  }
 
-    ion-img.whatsapp-image {
-      height: 50px;
-      width: 50px;
-    }
+  .icon-as-button {
+    background: var(--ion-color-primary);
+    fill: var(--ion-color-primary-contrast);
+    padding: 6px;
+    border-radius: 10px;
+  }
+
+  .button-icon--whatsapp-image {
+    height: 50px;
+    width: 50px;
   }
 }

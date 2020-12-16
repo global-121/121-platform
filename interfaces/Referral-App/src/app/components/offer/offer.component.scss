@@ -1,37 +1,56 @@
+:host,
 .offer {
-  position: relative;
+  display: block;
+
+  &.is-actionable {
+    cursor: pointer;
+  }
 }
 
-ion-card {
+.offer--head {
+  display: flex;
+  align-items: flex-start;
+}
+.offer--button {
+  flex: 0 0 auto;
+}
+.offer--summary {
+  flex: 1 1 auto;
+  font-size: 0.9em;
+}
+
+.offer--button {
+  display: flex;
   width: 150px;
   height: 150px;
-  background: white;
-  cursor: pointer;
 
-  ion-img {
-    height: 85px;
-    width: 85px;
-    margin: auto;
-    background-color: white;
-    padding: 5%;
-  }
+  background: var(--ion-color-secondary);
+  color: var(--ion-color-secondary-contrast);
+}
+.offer--logo {
+  width: 56%;
+  height: auto;
+  max-height: 56%;
+  margin: auto;
+  padding: 5%;
+}
+.offer--description {
+  display: block;
 
-  ion-card-title {
-    font-weight: normal;
-    overflow: hidden;
-    white-space: normal;
-    text-transform: uppercase;
-    font-size: 0.8rem;
+  &.use-overflow-scroll {
+    max-height: 120px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
-ion-card-content {
-  position: absolute;
-  top: 0;
-  left: 150px;
-  margin: 0 15px;
-  height: 150px;
-  overflow: auto;
+a:link,
+a {
+  color: var(--ion-color-secondary);
+
+  &:visited {
+    color: var(--ion-color-secondary-shade);
+  }
 }
 
 ion-label {

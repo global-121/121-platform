@@ -34,7 +34,7 @@ export class ReferralPage implements OnInit {
 
   public readonly rootHref: string = '/';
 
-  public loading: boolean = false;
+  public loading = false;
 
   constructor(
     public offersService: OffersService,
@@ -48,7 +48,7 @@ export class ReferralPage implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
-      this.region = params['region'];
+      this.region = params.region;
       this.loadReferralData();
     });
   }
@@ -64,13 +64,13 @@ export class ReferralPage implements OnInit {
     );
   }
 
-  public toKebabCase = (string) => {
-    return string
+  public toKebabCase(value: string) {
+    return value
       .replace(/\W+/g, ' ')
       .split(/ |\B(?=[A-Z])/)
       .map((word) => word.toLowerCase())
       .join('-');
-  };
+  }
 
   private async loadReferralData() {
     if (this.isSupportedRegion()) {

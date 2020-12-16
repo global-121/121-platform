@@ -1,68 +1,65 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="secondary">
     <ion-title class="ion-text-center">
       <ion-text *ngIf="!loading">
-        {{ isSupportedRegion() ? referralPageData.referralPageTitle : "Helpful
-        Information" }}
+        {{ isSupportedRegion() ? referralPageData.referralPageTitle : "Helpful Information" }}
       </ion-text>
       <ion-skeleton-text
         *ngIf="loading"
         animated
-        style="width: 50%; margin: auto"
+        style="width: 50%; line-height: 1; margin: auto;"
       ></ion-skeleton-text>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="isSupportedRegion()">
-  <ion-card *ngIf="!category">
-    <ion-card-header>
-      <ion-card-title>
-        <ion-text *ngIf="!loading">
-          {{ referralPageData.referralPageGreeting }}
-        </ion-text>
-        <ion-skeleton-text
-          *ngIf="loading"
-          animated
-          style="width: 20%"
-        ></ion-skeleton-text>
-      </ion-card-title>
-      <ion-card-subtitle>
-        <ion-text *ngIf="!loading">
+<ion-content
+  *ngIf="isSupportedRegion()"
+  color="dark"
+  class="ion-padding"
+>
+  <div
+    *ngIf="!category"
+  >
+    <div *ngIf="loading">
+      <h2><ion-skeleton-text animated class="skeleton-text--light" style="width: 25%; line-height: 1;"></ion-skeleton-text></h2>
+      <div class="introduction--content ion-margin-vertical">
+        <br>
+        <ion-skeleton-text animated class="skeleton-text--light" width="100%"></ion-skeleton-text>
+        <ion-skeleton-text animated class="skeleton-text--light" width="100%"></ion-skeleton-text>
+        <ion-skeleton-text animated class="skeleton-text--light" width="80%"></ion-skeleton-text>
+      </div>
+    </div>
+    <div *ngIf="!loading">
+      <h2>{{ referralPageData.referralPageGreeting }}</h2>
+      <div class="introduction--content ion-margin-vertical">
+        <ion-text>
           {{ referralPageData.referralPageInstructions }}
         </ion-text>
-        <ion-skeleton-text
-          *ngIf="loading"
-          animated
-          style="width: 0%"
-        ></ion-skeleton-text>
-        <ion-skeleton-text
-          *ngIf="loading"
-          animated
-          style="width: 100%"
-        ></ion-skeleton-text>
-        <ion-skeleton-text
-          *ngIf="loading"
-          animated
-          style="width: 80%"
-        ></ion-skeleton-text>
-      </ion-card-subtitle>
-    </ion-card-header>
-  </ion-card>
+      </div>
+    </div>
+  </div>
   <div *ngIf="!loading">
     <div>
-      <div *ngIf="!category">
+      <div
+        *ngIf="!category"
+        style="margin: 0 -10px;"
+      >
         <category
           *ngFor="let _category of categories"
           [category]="_category"
           (click)="clickCategory(_category)"
         ></category>
       </div>
-      <div *ngIf="category && !subCategory">
+      <div
+        *ngIf="category && !subCategory"
+        class="ion-margin-bottom"
+      >
         <category
           [category]="category"
           [showDescription]="true"
           (click)="goBack()"
+          class="ion-margin-bottom"
         ></category>
       </div>
       <div *ngIf="category && !subCategory">
@@ -72,9 +69,13 @@
           [showRightDescription]="false"
           [showBottomDescription]="true"
           (click)="clickSubCategory(_subCategory)"
+          class="ion-margin-end"
         ></sub-category>
       </div>
-      <div *ngIf="category && subCategory">
+      <div
+        *ngIf="category && subCategory"
+        class="ion-margin-bottom"
+      >
         <sub-category
           [subCategory]="subCategory"
           [showRightDescription]="true && !offer"
@@ -88,6 +89,7 @@
         *ngFor="let _offer of offers | categoryFilter: category | subCategoryFilter: subCategory"
         [offer]="_offer"
         (click)="clickOffer(_offer)"
+        class="ion-margin-bottom"
       ></offer>
     </div>
     <div *ngIf="category && subCategory && offer">
@@ -98,9 +100,7 @@
         (click)="clickOffer(offer)"
       ></offer>
     </div>
-    <div
-      *ngIf="categories?.length === 0 || subCategories?.length === 0 || offers?.length === 0"
-    >
+    <div *ngIf="categories?.length === 0 || subCategories?.length === 0 || offers?.length === 0">
       <ion-card class="referral-data-unavailable-card ion-text-center">
         <ion-card-header>
           <ion-card-subtitle>Data Unavailable</ion-card-subtitle>
@@ -116,21 +116,22 @@
   <ion-spinner
     *ngIf="loading"
     name="crescent"
+    color="light"
     class="ion-margin ion-padding"
   ></ion-spinner>
 </ion-content>
 
-<ion-content *ngIf="!isSupportedRegion()">
+<ion-content
+  *ngIf="!isSupportedRegion()"
+  color="dark"
+>
   <ion-card *ngIf="!category">
     <ion-card-header>
       <ion-card-title>
         The Netherlands Red Cross provides helpful information for
-        <span *ngFor="let region of regions; first as isFirst; last as isLast"
-          >{{ isFirst ? '' : (isLast ? ' and' : ',')}}
-          <a [routerLink]="['/', toKebabCase(region)]"
-            >{{ region | titlecase }}</a
-          >{{ isLast ? '.' : ''}}</span
-        >
+        <span
+          *ngFor="let region of regions; first as isFirst; last as isLast">{{ isFirst ? '' : (isLast ? ' and' : ',')}}
+          <a [routerLink]="['/', toKebabCase(region)]">{{ region | titlecase }}</a>{{ isLast ? '.' : ''}}</span>
       </ion-card-title>
       <ion-card-subtitle>
         Please choose a location to view the information.
@@ -139,44 +140,58 @@
   </ion-card>
 </ion-content>
 
-<ion-footer *ngIf="isSupportedRegion()">
+<ion-footer
+  *ngIf="isSupportedRegion()"
+  color="secondary"
+>
   <ion-toolbar>
-    <ion-buttons slot="start" *ngIf="category">
-      <ion-back-button
-        [defaultHref]="getRegionHref()"
+    <ion-buttons
+      *ngIf="category"
+      slot="start"
+    >
+      <ion-button
         (click)="goBack()"
-        [text]="referralPageData.referralBackButtonLabel"
-        *ngIf="!loading"
-      ></ion-back-button>
+        class="nested-button-with-label ion-text-start"
+      >
+        <ion-icon name="arrow-back" class="icon-as-button"></ion-icon>
+        <ion-text>{{ referralPageData.referralBackButtonLabel }}</ion-text>
+      </ion-button>
+
     </ion-buttons>
 
-    <ion-buttons class="ion-justify-content-center" *ngIf="category">
+    <ion-buttons
+      *ngIf="category"
+      class="ion-justify-content-center"
+    >
       <ion-button
         (click)="showCategories()"
-        class="main-screen-button ion-text-start"
+        class="nested-button-with-label ion-text-start"
       >
-        <ion-icon name="albums"></ion-icon>
-        <ion-text>{{referralPageData.referralMainScreenButtonLabel}}</ion-text>
+        <ion-icon name="radio-button-on" class="icon-as-button"></ion-icon>
+        <ion-text>{{ referralPageData.referralMainScreenButtonLabel }}</ion-text>
       </ion-button>
     </ion-buttons>
 
-    <ion-buttons slot="end" *ngIf="!loading">
+    <ion-buttons
+      *ngIf="!loading"
+      slot="end"
+    >
       <ion-button
-        href="tel:{{referralPageData.referralPhoneNumber}}"
         *ngIf="referralPageData.referralPhoneNumber"
+        [href]="'tel:' + referralPageData.referralPhoneNumber"
         target="_blank"
         rel="noopener"
       >
         <ion-icon slot="icon-only" name="call"></ion-icon>
       </ion-button>
       <ion-button
-        [href]="referralPageData.referralWhatsAppLink"
         *ngIf="referralPageData.referralWhatsAppLink"
+        [href]="referralPageData.referralWhatsAppLink"
         target="_blank"
         rel="noopener"
       >
         <ion-img
-          class="whatsapp-image"
+          class="button-icon--whatsapp-image"
           src="assets/icons/whatsapp.png"
         ></ion-img>
       </ion-button>

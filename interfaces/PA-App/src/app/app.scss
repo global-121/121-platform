@@ -69,6 +69,12 @@ ion-button.button-block.button-solid:not([disabled]) {
     background: transparent center center no-repeat;
     background-size: 100% auto;
     background-image: url('/assets/icons/hand-tap-white.svg');
+
+    [dir='rtl'] & {
+      left: 8px;
+      right: auto;
+      transform: translateY(-50%) rotateY(180deg);
+    }
   }
 }
 
