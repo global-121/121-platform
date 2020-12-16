@@ -219,4 +219,14 @@ export class ReferralPage implements OnInit {
     this.offer = null;
     this.router.navigate([this.getRegionHref()]);
   }
+
+  logContactClick(type: 'tel' | 'whatsapp') {
+    let event = AnalyticsEventName.ReferralFooterContactClick;
+
+    if (type === 'whatsapp') {
+      event = AnalyticsEventName.ReferralFooterWhatsAppClick;
+    }
+
+    this.loggingService.logEvent(event, this.getLogProperties(true));
+  }
 }
