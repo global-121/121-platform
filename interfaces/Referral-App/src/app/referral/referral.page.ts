@@ -227,6 +227,6 @@ export class ReferralPage implements OnInit {
       event = AnalyticsEventName.ReferralFooterWhatsAppClick;
     }
 
-    this.loggingService.logEvent(event);
+    this.loggingService.logEvent(event, this.getLogProperties(true));
   }
 }
