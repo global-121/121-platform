@@ -184,12 +184,12 @@ export class IntersolveService {
         null,
       );
       result.status = StatusEnum.success;
+      result.customData = {
+        IntersolvePayoutStatus: IntersolvePayoutStatus.InitialMessage,
+      };
     } catch (e) {
       result.message = (e as Error).message;
       result.status = StatusEnum.error;
-      result.customData = {
-        IntersolvePayoutStatus: IntersolvePayoutStatus.InintialMessage,
-      };
     }
     return result;
   }
@@ -292,7 +292,6 @@ export class IntersolveService {
       where: { barcode: cardId },
       relations: ['image'],
     });
-    console.log('barcodeEntity: ', barcodeEntity);
     for (const image of barcodeEntity.image) {
       console.log('removing', image);
       await this.imageCodeService.removeImageExportVoucher(image);

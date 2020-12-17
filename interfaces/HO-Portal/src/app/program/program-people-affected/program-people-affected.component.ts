@@ -510,7 +510,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
       if (transaction.status === 'success') {
         paymentColumnValue = formatDate(
-          transaction.installmentdate,
+          transaction.installmentDate,
           this.dateFormat,
           this.locale,
         );

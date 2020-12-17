@@ -3,7 +3,7 @@ import { IntersolvePayoutStatus } from './../../programs/fsp/api/enum/intersolve
 import { EXTERNAL_API } from '../../config';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, Like } from 'typeorm';
+import { Repository, getRepository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
 import { ProgramEntity } from '../../programs/program/program.entity';
@@ -86,7 +86,6 @@ export class WhatsappService {
   }
 
   public storeSendWhatsapp(message): void {
-    console.log('message: ', message);
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
     twilioMessage.body = message.body;
@@ -119,7 +118,7 @@ export class WhatsappService {
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     const intersolveBarcode = await this.intersolveBarcodeRepository.findOne({
       where: { whatsappPhoneNumber: fromNumber, send: false },
-    });
+    }); // NOTE: currently this takes the first non-sent installment (if multiple). Feels a bit dodgy, but works in practice
     if (intersolveBarcode) {
       const mediaUrl = await this.imageCodeService.createVoucherUrl(
         intersolveBarcode,
@@ -152,17 +151,20 @@ export class WhatsappService {
     transaction.status = StatusEnum.success;
     transaction.installment = intersolveBarcode.installment;
     transaction.amount = intersolveBarcode.amount;
+    transaction.created = new Date();
     transaction.customData = JSON.parse(
       JSON.stringify({
         IntersolvePayoutStatus: IntersolvePayoutStatus.VoucherSent,
       }),
     );
-    const whatsAppSearch = intersolveBarcode.whatsappPhoneNumber;
-    const connection = await this.connectionRepository.findOne({
-      where: `"customData" ILIKE '${whatsAppSearch}%'`,
-    });
+    const connection = (await this.connectionRepository.find()).filter(
+      c =>
+        c.customData['whatsappPhoneNumber'] ===
+        intersolveBarcode.whatsappPhoneNumber,
+    )[0];
     transaction.connection = connection;
-    transaction.program = await this.programRepository.findOne(1);
+    const programId = connection.programsApplied[0];
+    transaction.program = await this.programRepository.findOne(programId);
     transaction.financialServiceProvider = connection.fsp;
     await this.transactionRepository.save(transaction);
   }
