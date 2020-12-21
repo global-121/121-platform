@@ -181,6 +181,7 @@
         [href]="'tel:' + referralPageData.referralPhoneNumber"
         target="_blank"
         rel="noopener"
+        (click)="logContactClick('tel')"
       >
         <ion-icon slot="icon-only" name="call"></ion-icon>
       </ion-button>
@@ -189,6 +190,7 @@
         [href]="referralPageData.referralWhatsAppLink"
         target="_blank"
         rel="noopener"
+        (click)="logContactClick('whatsapp')"
       >
         <ion-img
           class="button-icon--whatsapp-image"
