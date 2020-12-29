@@ -79,7 +79,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     IonicStorageModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
+      enabled: environment.useServiceWorker && environment.production,
     }),
   ],
   exports: [TranslateModule],

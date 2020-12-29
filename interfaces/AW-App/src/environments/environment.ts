@@ -9,6 +9,7 @@ export const environment = {
   isDebug: true, // Controls debugging features
   showDebug: false, // Controls debugging features
   useAnimation: false, // Use animations and delays in the interface
+  useServiceWorker: false,
 
   // APIs:
   url_121_service_api: 'http://localhost:3000/api',

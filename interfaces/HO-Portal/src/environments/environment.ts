@@ -5,6 +5,8 @@
 export const environment = {
   production: false,
 
+  // Feature-switches:
+  useServiceWorker: false,
   defaultLocale: 'en',
 
   // APIs
