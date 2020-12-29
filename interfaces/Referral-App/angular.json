@@ -23,7 +23,7 @@
               {
                 "glob": "**/*",
                 "input": "src/assets",
-                "output": "assets"
+                "output": "./assets"
               },
               {
                 "glob": "**/*.svg",
@@ -116,7 +116,7 @@
               {
                 "glob": "**/*",
                 "input": "src/assets",
-                "output": "/assets"
+                "output": "./assets"
               },
               "src/manifest.json"
             ]

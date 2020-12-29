@@ -45,3 +45,11 @@
 ion-textarea {
   --background: #dfe5fe !important;
 }
+
+// Set header font-styles
+ion-title,
+ion-card-title,
+.use-font-header {
+  color: var(--ion-color-dark);
+  font-family: var(--ion-font-family-header);
+}
