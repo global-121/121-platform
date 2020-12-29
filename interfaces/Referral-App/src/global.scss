@@ -12,11 +12,32 @@
 
 // Custom Fonts
 @font-face {
-  font-family: 'Montserrat';
-  src: url('./assets/fonts/Montserrat-Regular.ttf');
+  font-family: 'Open Sans';
+  src: local('Open Sans'),
+    url('/assets/fonts/open-sans/OpenSans-Regular-webfont.woff2')
+      format('woff2'),
+    url('/assets/fonts/open-sans/OpenSans-Regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: optional;
+}
+@font-face {
+  font-family: 'Open Sans';
+  src: local('Open Sans Bold'),
+    url('/assets/fonts/open-sans/OpenSans-Bold-webfont.woff2') format('woff2'),
+    url('/assets/fonts/open-sans/OpenSans-Bold-webfont.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: optional;
 }
 
 @font-face {
-  font-family: 'Open Sans';
-  src: url('./assets/fonts/OpenSans-Regular.ttf');
+  font-family: 'montserrat_webfont';
+  src: local('Montserrat Bold'),
+    url('/assets/fonts/montserrat/montserrat-bold-webfont.woff2')
+      format('woff2'),
+    url('/assets/fonts/montserrat/montserrat-bold-webfont.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: optional;
 }
