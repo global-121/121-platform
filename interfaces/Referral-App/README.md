@@ -18,3 +18,9 @@ The front-end of the application _People Affected_ use to lookup useful organiza
 Some specific information need to be configured before use:
 
 - Set the API-endpoint(s) in the [`environment.ts`](./src/environments/environment.ts)-file.
+
+---
+
+## License
+
+Released under the Apache 2.0 License. See [LICENSE](LICENSE).

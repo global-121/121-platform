@@ -46,3 +46,7 @@ To run this file locally, do:
 - NOTE: for ease of development, if not logged in, it will take the default-user. So you do need to create this default user with email `test@example.org`, but the Authorize part is not necessary any more. Otherwise you would need to repeat the Authorize-setup after each refresh of the Swagger UI, i.e. after each code change.
 
 ---
+
+## License
+
+Released under the Apache 2.0 License. See [LICENSE](LICENSE).

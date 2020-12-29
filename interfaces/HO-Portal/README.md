@@ -15,3 +15,9 @@ Next to the 'generic' dependencies/libraries/components used by all interfaces, 
 - `ngx-datatable`
   A component to render rows and columns of generic data and add basic functionalities like sorting, selecting, filtering, etc.
   - API Documentation: <https://swimlane.gitbook.io/ngx-datatable/api>
+
+---
+
+## License
+
+Released under the Apache 2.0 License. See [LICENSE](LICENSE).

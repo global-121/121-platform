@@ -2,6 +2,12 @@
   "name": "pa-app",
   "author": "121.global",
   "homepage": "https://www.121.global/",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/global-121/121-platform.git",
+    "directory": "interfaces/PA-App"
+  },
   "scripts": {
     "ng": "ng",
     "ionic": "ionic",

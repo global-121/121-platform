@@ -5,6 +5,11 @@
 
 ---
 
+[![License](https://img.shields.io/github/license/global-121/121-platform?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/github/v/release/global-121/121-platform?style=flat-square)](https://github.com/global-121/121-platform/releases)
+
+---
+
 ## Status
 
 | Interfaces       | Build Status                                                                                                                                                                                                                              |
@@ -387,3 +392,9 @@ This follows the same process as a regular release + deployment. With some small
 | `release`     | A fixed 'state of the code-base', [published on GitHub](https://github.com/global-121/121-platform/releases) |
 | `deployment`  | An action performed to get (released) code running on an environment                                         |
 | `environment` | A machine that can run code (with specified settings); i.e. a server or VM, or your local machine            |
+
+---
+
+## License
+
+Released under the Apache 2.0 License. See [LICENSE](LICENSE).
