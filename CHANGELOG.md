@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - 2020-12-30: Use named-volumes for `node_modules` in `docker-compose.yml`
+- 2020-12-30: Updated dependency of 121-service;  
+  To update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 
 ---
 
