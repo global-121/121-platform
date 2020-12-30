@@ -25,5 +25,8 @@ async function bootstrap(): Promise<void> {
   await app.listen(process.env.PORT || PORT);
 }
 bootstrap();
-appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
-appInsights.start();
+
+if (!!process.env.APPLICATION_INSIGHT_IKEY) {
+  appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
+  appInsights.start();
+}

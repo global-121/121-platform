@@ -19,7 +19,9 @@ export class IntersolveApiService {
   >;
 
   public constructor(private readonly soapService: SoapService) {
-    appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
+    if (!!process.env.APPLICATION_INSIGHT_IKEY) {
+      appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
+    }
   }
 
   // If we get one of these codes back from a cancel by refpos, stop cancelling
