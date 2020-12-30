@@ -104,7 +104,7 @@ export class IntersolveApiService {
 
   public async getCard(
     cardId: string,
-    pin: number,
+    pin: string,
   ): Promise<IntersolveGetCardResponse> {
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.GetCard,
@@ -119,7 +119,7 @@ export class IntersolveApiService {
       payload,
       IntersolveSoapElements.GetCard,
       ['PIN'],
-      String(pin),
+      pin,
     );
 
     const responseBody = await this.soapService.post(payload);
