@@ -88,7 +88,7 @@ function deploy() {
     log "Cleaning up services..."
 
     cd "$repo_services" || return
-    docker image prune prune --filter "until=168h" --force
+    docker image prune --filter "until=168h" --force
   }
 
   function build_interface() {
