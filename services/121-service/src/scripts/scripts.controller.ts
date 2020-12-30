@@ -5,6 +5,7 @@ import { Connection } from 'typeorm';
 import { SeedSingleProgram } from './seed-program-single';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
+import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import { SeedPilotKenProgram } from './seed-program-pilot-ken';
 
 class ResetDto {
@@ -31,6 +32,8 @@ export class ScriptsController {
       seed = new SeedDemoProgram(this.connection);
     } else if (body.script == 'pilot-nl') {
       seed = new SeedPilotNLProgram(this.connection);
+    } else if (body.script == 'pilot-nl-2') {
+      seed = new SeedPilotNL2Program(this.connection);
     } else if (body.script == 'pilot-ken') {
       seed = new SeedPilotKenProgram(this.connection);
     } else {
