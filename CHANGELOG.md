@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - 2020-12-30: Add Docker cleanup/prune-step to deploy-script for images >1 week old
 
+### Changed
+- 2020-12-30: Use named-volumes for `node_modules` in `docker-compose.yml`
+
 ---
 
 ## [0.14.0](https://github.com/global-121/121-platform/compare/v0.13.6...v0.14.0) - 2020-12-09
