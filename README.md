@@ -108,11 +108,11 @@ To start all services, after setup, from the root of this repository, run:
 
     npm run start:services
 
-To see the statuses of docker containers, run from the `services/`-folder:
+To see the status/logs of all Docker-containers, run from the `services/`-folder:
 
     docker-compose logs -f <container-name>
 
-To verify successful installation and setup of services, access their Swagger UI:
+To verify the successful installation and setup of services, access their Swagger UI:
 |                     | URL                           | or run:                    |
 | ------------------- | ----------------------------- | -------------------------- |
 | 121-service         | <http://localhost:3000/docs/> | `npm rum open:121-service` |
@@ -157,19 +157,35 @@ The 4 individual Angular applications, when started will be available via:
 From hereon, you can start making changes to the UI and observe how the components are interconnected.
 
 ## Common problems with Local Environment set-up
-If the swagger UI is not accessible after installing docker and setting up services, we can take following steps to debug:
-1. `docker-compose ps` to list running containers and their statuses
-2. `docker-compose logs -f <container-name>` to check their statuses
 
-If the errors are related to not being able to access/connect to the database then reset/recreate the database by using `dropSchema: true` in `ormconfig.ts`.
+### Swagger-UI not accessible
+If the Swagger-UI is not accessible after installing Docker and setting up the services, you can take the following steps to debug:
+1. `docker-compose ps` to list running containers and their status
+2. `docker-compose logs -f <container-name>` to check their logs/console output (or leave out the `<container-name>` to get ALL output)
 
-- In order to access an individual docker container, run:
+### Docker related issues
+If there are issues with Docker commands, it could be due to permissions. Prefix your commands with `sudo docker....`
 
-      docker-compose exec -it <container-name> sh
+### Database related errors
+If the errors are related to not being able to access/connect to the database then reset/recreate the database by:
+- Setting `dropSchema: true` in `ormconfig.ts` of the specific service.
+- Restarting that service will reset/recreate its database(-schema)
 
-  For example to verify installation of node-modules.
+### Updating/adding Node.js dependencies
+When new Node.js dependencies are added to the services since it is last build on you local machine, you can:
 
-- If there are issues with Docker commands, it could be due to permissions. Prefix your commands with `sudo docker....`
+- Verify if everything is installed properly:
+
+      docker-compose exec <container-name> npm ls
+
+- If that produces errors or reports missing dependencies, try to build the service from a clean slate with:
+
+      npm run install:services -- --no-cache <container-name>
+
+  Or similarly:
+
+      npm run start:services -- --force-recreate <container-name>
+
 
 ---
 

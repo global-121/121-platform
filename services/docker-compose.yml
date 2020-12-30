@@ -118,6 +118,7 @@ services:
       - .env
     volumes:
       - "./121-service:/home/node/app"
+      - 121_service_node_modules:/home/node/app/node_modules
     ports:
       - "${PORT_121_SERVICE}:${PORT_121_SERVICE}"
     stdin_open: true
@@ -138,6 +139,7 @@ services:
       - .env
     volumes:
       - "./PA-accounts-service:/home/node/app"
+      - pa_accounts_node_modules:/home/node/app/node_modules
     ports:
       - "${PORT_PA_ACCOUNTS_SERVICE}:${PORT_PA_ACCOUNTS_SERVICE}"
     stdin_open: true
@@ -156,3 +158,8 @@ networks:
       driver: default
       config:
         - subnet: 11.0.0.0/24
+
+volumes:
+  121_service_node_modules:
+  pa_accounts_node_modules:
+

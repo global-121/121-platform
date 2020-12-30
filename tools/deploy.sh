@@ -32,7 +32,7 @@ function deploy() {
   function log() {
     printf "\n\n"
     echo "------------------------------------------------------------------------------"
-    echo " $@"
+    echo " " "$@"
     echo "------------------------------------------------------------------------------"
     printf "\n"
   }
@@ -80,8 +80,15 @@ function deploy() {
     log "Updating/building services..."
 
     cd "$repo_services" || return
+    docker-compose stop
     docker-compose up -d --build
-    docker-compose restart 121-service PA-accounts-service
+  }
+
+  function cleanup_services() {
+    log "Cleaning up services..."
+
+    cd "$repo_services" || return
+    docker image prune prune --filter "until=168h" --force
   }
 
   function build_interface() {
@@ -153,6 +160,7 @@ function deploy() {
   update_code "$target"
 
   build_services
+  cleanup_services
 
   build_interface "PA-App" "$repo_pa" "$pa_dir"
   deploy_interface "PA-App" "$repo_pa" "$pa_dir"
