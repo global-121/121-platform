@@ -46,7 +46,7 @@
     "pg": "^7.9.0",
     "rxjs": "^6.4.0",
     "soap": "^0.33.0",
-    "swagger-ui-express": "^4.1.4",
+    "swagger-ui-express": "^4.1.6",
     "ts-node": "^8.3.0",
     "tsconfig-paths": "^3.9.0",
     "twilio": "^3.36.0",
