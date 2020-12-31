@@ -19,7 +19,9 @@ export class IntersolveApiService {
   >;
 
   public constructor(private readonly soapService: SoapService) {
-    appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
+    if (!!process.env.APPLICATION_INSIGHT_IKEY) {
+      appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
+    }
   }
 
   // If we get one of these codes back from a cancel by refpos, stop cancelling
@@ -102,7 +104,7 @@ export class IntersolveApiService {
 
   public async getCard(
     cardId: string,
-    pin: number,
+    pin: string,
   ): Promise<IntersolveGetCardResponse> {
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.GetCard,
@@ -117,7 +119,7 @@ export class IntersolveApiService {
       payload,
       IntersolveSoapElements.GetCard,
       ['PIN'],
-      String(pin),
+      pin,
     );
 
     const responseBody = await this.soapService.post(payload);

@@ -2,7 +2,7 @@ import { IsOptional, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class GetDidByPhoneNameDto {
-  @ApiModelProperty({ example: '+31600000000' })
+  @ApiModelProperty({ example: '31600000000' })
   @IsString()
   @IsOptional()
   public readonly phoneNumber: string;

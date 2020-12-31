@@ -30,5 +30,7 @@ async function bootstrap(): Promise<void> {
 }
 bootstrap();
 
-appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
-appInsights.start();
+if (!!process.env.APPLICATION_INSIGHT_IKEY) {
+  appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
+  appInsights.start();
+}
