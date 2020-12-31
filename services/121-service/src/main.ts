@@ -13,9 +13,8 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api');
 
   const options = new DocumentBuilder()
-    .setTitle('121 - Programs-Service')
-    .setDescription('API description')
-    .setVersion('1.0')
+    .setTitle('121-Service')
+    .setVersion(process.env.GLOBAL_121_VERSION)
     .setBasePath(BASE_PATH)
     .setSchemes(SCHEME)
     .addBearerAuth()
