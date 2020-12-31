@@ -10,6 +10,7 @@ import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whats
 
 import programPilotNL2 from '../../seed-data/program/program-pilot-nl-2.json';
 import instancePilotNL2 from '../../seed-data/instance/instance-pilot-nl-2.json';
+import { UserRole } from 'src/user-role.enum';
 
 @Injectable()
 export class SeedPilotNL2Program implements InterfaceScript {
@@ -20,6 +21,19 @@ export class SeedPilotNL2Program implements InterfaceScript {
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.connection);
     await seedInit.run();
+
+    // ***** CREATE USERS *****
+    await this.seedHelper.addUser({
+      role: UserRole.ProjectOfficer,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROJECT_OFFICER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_OFFICER,
+    });
+
+    await this.seedHelper.addUser({
+      role: UserRole.ProgramManager,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_MANAGER,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_MANAGER,
+    });
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
