@@ -55,6 +55,13 @@ function deploy() {
     log "Version cleared during deployment"
   }
 
+  function set_version {
+    version="$(git describe --tags --dirty --broken)"
+    export GLOBAL_121_VERSION=$version
+
+    log "Deploying version: $version"
+  }
+
   function update_code() {
     log "Updating code..."
     local target=$1 || false
@@ -141,12 +148,11 @@ function deploy() {
     log "Webhook service restarted: "
   }
 
-  function update_version() {
+  function publish_version() {
     # Store version, accessible via web:
-    git describe --tags --dirty --broken | tee "$web_root/VERSION.txt"
+    echo "$GLOBAL_121_VERSION" | tee "$web_root/VERSION.txt"
 
-    log "Deployed: "
-    cat "$web_root/VERSION.txt"
+    log "Deployed: $GLOBAL_121_VERSION"
   }
 
 
@@ -158,6 +164,8 @@ function deploy() {
   clear_version
 
   update_code "$target"
+
+  set_version
 
   build_services
   cleanup_services
@@ -174,7 +182,7 @@ function deploy() {
   build_interface "Referral-App" "$repo_ref" "$ref_dir"
   deploy_interface "Referral-App" "$repo_ref" "$ref_dir"
 
-  update_version
+  publish_version
 
   restart_webhook_service
 
