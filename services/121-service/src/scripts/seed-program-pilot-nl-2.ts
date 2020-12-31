@@ -10,7 +10,7 @@ import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whats
 
 import programPilotNL2 from '../../seed-data/program/program-pilot-nl-2.json';
 import instancePilotNL2 from '../../seed-data/instance/instance-pilot-nl-2.json';
-import { UserRole } from 'src/user-role.enum';
+import { UserRole } from '../user-role.enum';
 
 @Injectable()
 export class SeedPilotNL2Program implements InterfaceScript {
