@@ -38,8 +38,7 @@
 
     <ion-label>
       {{ 'common.confirm-message-label'|translate:{
-          minLength: inputProps.minLength,
-          maxLength: inputProps.maxLength
+          minLength: inputProps.minLength
         }
       }}
     </ion-label>
@@ -53,13 +52,12 @@
       rows="3"
       autoGrow="true"
       [minlength]="inputProps.minLength"
-      [maxlength]="inputProps.maxLength"
       [value]="inputProps.defaultValue"
       [placeholder]="inputProps.placeholder"
       style="font-family: monospace; border: 1px solid currentColor;"
     ></ion-textarea>
     <ion-note>
-      {{ input?.value ? input?.value?.length : 0 }} / ({{ inputProps.minLength }} - {{ inputProps.maxLength }})
+      {{ input?.value ? input?.value?.length : 0 }} (≥ {{ inputProps.minLength }})
     </ion-note>
   </div>
 </ion-content>
