@@ -37,11 +37,11 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^7.9.0",
     "rxjs": "^6.4.0",
-    "swagger-ui-express": "^4.1.4",
+    "swagger-ui-express": "^4.1.6",
     "ts-node": "~8.3.0",
     "tsconfig-paths": "^3.9.0",
     "typeorm": "^0.2.25",
-    "typescript": "^3.3.1",
+    "typescript": "^3.9.7",
     "yargs": "^3.32.0"
   },
   "devDependencies": {
@@ -50,10 +50,10 @@
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-jest": "^22.21.0",
-    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-prettier": "^3.3.0",
     "jest": "^24.9.0",
     "prettier": "^1.18.2",
-    "tsc-watch": "^2.4.0",
-    "ts-jest": "^24.0.0"
+    "ts-jest": "^24.0.0",
+    "tsc-watch": "^2.4.0"
   }
 }

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import referralPageDataMock from 'src/app/mocks/referral-page-data.mock';
 import { Category } from 'src/app/models/category.model';
 import { Offer } from 'src/app/models/offer.model';
 import { ReferralPageData } from 'src/app/models/referral-page-data';
@@ -242,7 +241,7 @@ export class SpreadsheetService {
         if (this.loggingService) {
           this.loggingService.logException(error, SeverityLevel.Critical);
         }
-        return referralPageDataMock;
+        return new ReferralPageData();
       });
   }
 }

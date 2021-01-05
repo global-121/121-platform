@@ -1,0 +1,91 @@
+{
+  "published": false,
+  "validation": false,
+  "state": "design",
+  "location": "Nederland",
+  "ngo": "NLRC",
+  "title": {
+    "en": "121 Digital Cash Aid Program"
+  },
+  "description": {
+    "en": ""
+  },
+  "descLocation": {
+    "en": ""
+  },
+  "descHumanitarianObjective": {
+    "en": ""
+  },
+  "descCashType": {
+    "en": "Unconditional multi-purpose"
+  },
+  "startDate": "2021-01-11T12:00:00Z",
+  "endDate": "2021-05-31T12:00:00Z",
+  "currency": "EUR",
+  "distributionFrequency": "week",
+  "distributionDuration": 5,
+  "fixedTransferValue": 15,
+  "financialServiceProviders": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ],
+  "inclusionCalculationType": "highestScoresX",
+  "minimumScore": 0,
+  "highestScoresX": 250,
+  "meetingDocuments": {
+    "en": ""
+  },
+  "notifications": {
+    "en": {
+      "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week.",
+      "included": "This is a message from the Red Cross.\n\nYour application to the Red Cross program has been successful and confirmed.\n\nYou will receive another message about your first Albert Heijn supermarket voucher within 1 week.",
+      "rejected": "",
+      "whatsappPayment": "This is a message from the Red Cross.\n\nYour €15 Albert Heijn supermarket voucher is ready to be sent.\n\nPlease reply “yes” to this message in order to receive the voucher.",
+      "whatsappVoucher": "This is a message from the Red Cross.\n\nWith this message you received 2 pictures.\nOne is the Albert Heijn supermarket voucher (cadeaukaart) with the barcode.\nThe other is an explanation of how you can use the voucher to pay in Albert Heijn.\n\n The value of this voucher is €15.\nYou can spend the voucher at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep this voucher in your phone and re-use it until the amount is finished.\n\nYou will receive a €15 Albert Heijn voucher every week on Tuesday until 31 May 2021 the latest.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
+      "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781"
+    }
+  },
+  "phoneNumberPlaceholder": "+31 6 00 00 00 00",
+  "customCriteria": [
+    {
+      "criterium": "nameFirst",
+      "label": {
+        "en": "Please enter your first name:"
+      },
+      "answerType": "text",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    },
+    {
+      "criterium": "nameLast",
+      "label": {
+        "en": "Please enter your last name:"
+      },
+      "answerType": "text",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    },
+    {
+      "criterium": "phoneNumber",
+      "label": {
+        "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>"
+      },
+      "placeholder": {
+        "en": "+31 6 00 00 00 00"
+      },
+      "answerType": "tel",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "scoring": {}
+    }
+  ]
+}

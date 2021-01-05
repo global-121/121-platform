@@ -58,6 +58,6 @@ ion-label {
 }
 
 pre {
-  font-family: 'Open Sans', sans-serif;
+  font-family: var(--ion-font-family-body);
   white-space: pre-wrap;
 }

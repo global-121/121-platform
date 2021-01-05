@@ -32,7 +32,7 @@ function deploy() {
   function log() {
     printf "\n\n"
     echo "------------------------------------------------------------------------------"
-    echo " $@"
+    echo " " "$@"
     echo "------------------------------------------------------------------------------"
     printf "\n"
   }
@@ -53,6 +53,13 @@ function deploy() {
     echo 'Deployment in progress...' | tee "$web_root/VERSION.txt"
 
     log "Version cleared during deployment"
+  }
+
+  function set_version {
+    version="$(git describe --tags --dirty --broken)"
+    export GLOBAL_121_VERSION=$version
+
+    log "Deploying version: $version"
   }
 
   function update_code() {
@@ -80,8 +87,15 @@ function deploy() {
     log "Updating/building services..."
 
     cd "$repo_services" || return
+    docker-compose stop
     docker-compose up -d --build
-    docker-compose restart 121-service PA-accounts-service
+  }
+
+  function cleanup_services() {
+    log "Cleaning up services..."
+
+    cd "$repo_services" || return
+    docker image prune --filter "until=168h" --force
   }
 
   function build_interface() {
@@ -134,12 +148,11 @@ function deploy() {
     log "Webhook service restarted: "
   }
 
-  function update_version() {
+  function publish_version() {
     # Store version, accessible via web:
-    git describe --tags --dirty --broken | tee "$web_root/VERSION.txt"
+    echo "$GLOBAL_121_VERSION" | tee "$web_root/VERSION.txt"
 
-    log "Deployed: "
-    cat "$web_root/VERSION.txt"
+    log "Deployed: $GLOBAL_121_VERSION"
   }
 
 
@@ -152,7 +165,10 @@ function deploy() {
 
   update_code "$target"
 
+  set_version
+
   build_services
+  cleanup_services
 
   build_interface "PA-App" "$repo_pa" "$pa_dir"
   deploy_interface "PA-App" "$repo_pa" "$pa_dir"
@@ -166,7 +182,7 @@ function deploy() {
   build_interface "Referral-App" "$repo_ref" "$ref_dir"
   deploy_interface "Referral-App" "$repo_ref" "$ref_dir"
 
-  update_version
+  publish_version
 
   restart_webhook_service
 

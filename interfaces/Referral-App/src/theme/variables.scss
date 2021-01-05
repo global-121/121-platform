@@ -7,7 +7,11 @@
 
 /** Ionic CSS Variables **/
 :root {
-  --ion-font-family: 'Open Sans', sans-serif;
+  --ion-font-family-body: 'Open Sans', Arial, 'Helvetica Neue', sans-serif;
+  --ion-font-family-header: 'montserrat_webfont', Tahoma, 'Gill Sans',
+    sans-serif;
+
+  --ion-font-family: var(--ion-font-family-body);
 
   /** primary **/
   --ion-color-primary: #6200ee;
@@ -80,9 +84,4 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
-}
-
-ion-title,
-ion-card-title {
-  font-family: 'Montserrat', 'Open Sans', sans-serif;
 }

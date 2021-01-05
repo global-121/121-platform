@@ -10,6 +10,7 @@ import { SeedHelper } from './seed-helper';
 import { SeedMultiProgram } from './seed-program-multi';
 import { SeedSingleProgram } from './seed-program-single';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
+import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import { SeedPilotKenProgram } from './seed-program-pilot-ken';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedPublish } from './seed-publish';
@@ -30,6 +31,7 @@ import { SeedPublish } from './seed-publish';
     SeedSingleProgram,
     SeedMultiProgram,
     SeedPilotNLProgram,
+    SeedPilotNL2Program,
     SeedPilotKenProgram,
     SeedDemoProgram,
   ],

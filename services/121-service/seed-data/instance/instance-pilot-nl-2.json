@@ -1,0 +1,43 @@
+{
+  "name": "NLRC",
+  "displayName": {
+    "en": "The Netherlands Red Cross"
+  },
+  "dataPolicy": {
+    "en": "We, <strong>The Netherlands Red Cross (Rode Kruis)</strong> need to ask you the information below in order to provide cash aid. This will be done using supermarket vouchers.   <br><br>   We will ask you your: <ul> <li>First name, last name</li> <li>Password (4 numbers you will need to create)</li> <li>Phone number for SMS</li> <li>Phone number for WhatsApp</li> </ul>   <br><br>   This information will be stored securely on a Rode Kruis computer and shared only with the organization that gave us your phone number, to ensure a fair process.   <br>   This is, depending on your situation, one of the following organizations: <ul> <li> Stap Verder </li> <li> Filipino LGBT </li> </ul>   <br><br>   <em>Twilio</em> will receive your phone number to send: <ul> <li>SMS's to inform you on the aid program</li> <li>WhatsApp messages to send supermarket vouchers (if your application is successful)</li> </ul>   <br><br>   You can leave the aid program and delete your personal information at any time. <br> We will delete your personal information at the end of the project.   <br><br>   If you have any questions, please contact us via WhatsApp on: <a target='_blank' rel='noopener' href='https://wa.me/31614458781'>+31 6 14 45 87 81</a>"
+  },
+  "aboutProgram": {
+    "en": "This <strong>Red Cross aid program</strong> was created to help you: <ul class='ion-padding-start'><li> ... </li><li> Or until the <strong>Red Cross aid program</strong> ends on [---END-DATE---] </li></ul>   <br>   The <strong>Red Cross aid program</strong> will support you with the following:   <ul class='ion-padding-start'><li> Weekly €15 Albert Heijn supermarket voucher<br> WhatsApp will be used to send your supermarket voucher. If you’re unable to receive the supermarket voucher on WhatsApp, we will send you an SMS and you can  pick it up. </li><li> Information as Aid: This will give you access to information on Shelter, Healthcare, Covid-19 &amp; Legal services.<br> This information can be found on <a href='https://helpfulinformation.redcross.nl' target='_blank' rel='noopener'>https://helpfulinformation.redcross.nl</a>. </li></ul>"
+  },
+  "contactDetails": {
+    "en": "This app is from <strong>The Netherlands Red Cross (Rode Kruis)</strong>. If you have any questions whilst using this app you can, contact us via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/31614458781'>+31 6 14 45 87 81</a>.<br>Available between 12noon to 8pm. Monday to Friday."
+  },
+  "monitoringQuestion": {
+    "intro": {
+      "en": "To improve this digital registration process, please answer this last question:   <br><br>   I did this registration..."
+    },
+    "options": [
+      {
+        "option": "no-help",
+        "label": {
+          "en": "without help"
+        }
+      },
+      {
+        "option": "some-help",
+        "label": {
+          "en": "with a little bit of help"
+        }
+      },
+      {
+        "option": "lot-of-help",
+        "label": {
+          "en": "with a lot of help"
+        }
+      }
+    ],
+    "conclusion": {
+      "en": "Thank you for the feedback."
+    }
+  }
+}

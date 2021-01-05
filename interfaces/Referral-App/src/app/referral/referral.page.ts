@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
-import mockReferralPageData from 'src/app/mocks/referral-page-data.mock';
 import { Category } from 'src/app/models/category.model';
 import { AnalyticsEventName } from 'src/app/models/event-name.model';
 import { Offer } from 'src/app/models/offer.model';
@@ -30,7 +29,7 @@ export class ReferralPage implements OnInit {
   public subCategory: SubCategory;
   public offer: Offer;
 
-  public referralPageData: ReferralPageData = mockReferralPageData;
+  public referralPageData: ReferralPageData;
 
   public readonly rootHref: string = '/';
 

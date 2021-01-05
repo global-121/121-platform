@@ -13,7 +13,7 @@ dotenv.config();
 // Documentation: https://www.ffmpeg.org/ffmpeg.html
 // Also: https://trac.ffmpeg.org/wiki/Encode/MP3
 // Also: https://trac.ffmpeg.org/wiki/Encode/VP9
-const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpegPath = require('ffmpeg-cli').path;
 
 /**
  * Log the output of the `exec`-command
