@@ -13,7 +13,9 @@ class ResetDto {
   @IsNotEmpty()
   @IsString()
   public readonly secret: string;
-  @ApiModelProperty({ example: 'pilot-nl / pilot-ken / demo / single' })
+  @ApiModelProperty({
+    example: 'pilot-nl / pilot-nl-pv / pilot-ken / demo / single',
+  })
   public readonly script: string;
 }
 
@@ -32,7 +34,7 @@ export class ScriptsController {
       seed = new SeedDemoProgram(this.connection);
     } else if (body.script == 'pilot-nl') {
       seed = new SeedPilotNLProgram(this.connection);
-    } else if (body.script == 'pilot-nl-2') {
+    } else if (body.script == 'pilot-nl-pv') {
       seed = new SeedPilotNL2Program(this.connection);
     } else if (body.script == 'pilot-ken') {
       seed = new SeedPilotKenProgram(this.connection);
