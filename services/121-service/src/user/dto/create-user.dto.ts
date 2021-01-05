@@ -13,7 +13,9 @@ export class CreateUserDto {
   @MinLength(8)
   public readonly password: string;
 
-  @ApiModelProperty({ example: 'admin / aidworker / project-officer' })
+  @ApiModelProperty({
+    example: 'admin / aidworker / project-officer / program-manager',
+  })
   @IsEnum(UserRole)
   public readonly role: string;
 
