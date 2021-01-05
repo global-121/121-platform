@@ -27,9 +27,6 @@ export class IntersolveBarcodeEntity {
   @Column({ nullable: true })
   public send: boolean;
 
-  @Column({ nullable: true })
-  public timestampVoucherSent: Date;
-
   @OneToMany(
     type => ImageCodeExportVouchersEntity,
     image => image.barcode,
