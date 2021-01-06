@@ -86,12 +86,17 @@ This user **_HAS_** to be created first, but the 'Authorize'-part is not necessa
 
 See the Twilio API documentation: <https://www.twilio.com/docs>.
 
-- Make sure the `.env` file is up to date containing the pertinent access keys
-- Download `ngrok`: <https://ngrok.com/download>
-- Unzip `ngrok` `unzip /path/to/ngrok.zip`
-- Start `ngrok` to open your local port: `./ngrok http 3000` in the folder where you unzipped `ngrok`
-- Set the ENV-variable `EXTERNAL_121_SERVICE_URL` to your personal `ngrok`-url, i.e:  
-  `export EXTERNAL_121_SERVICE_URL=https://example.ngrok.io/` or via the root `.env`-file
+- Make sure the `.env` file contains the correct access keys
+- Use a tool to inspect the responses from the Twilio API, for example:
+  - `ngrok`: <https://ngrok.com>:
+    - See also: <https://www.twilio.com/blog/2015/09/6-awesome-reasons-to-use-ngrok-when-testing-webhooks.html>
+    - Make sure to use the correct port(`3000`) of the 121-service.
+  - `Smee`: <https://smee.io/>
+    - You can use the client with:  
+      `npx smee -u https://smee.io/<unique-url>`
+  - Or any other service that gives a public accessible URL to inspect and/or forward to you local instance of the 121-service.
+- Set the ENV-variable `EXTERNAL_121_SERVICE_URL` to your personal url in the [services/.env](../.env)-file.
+  - Make sure to run `npm run start:services` after the changes, so the new value(s) will be used.
 
 ### Upload voice mp3
 
