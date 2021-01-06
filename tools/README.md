@@ -53,9 +53,10 @@ This is currently set up. To reproduce, you would follow these steps:
    - Set `GLOBAL_121_WEB_ROOT` to the absolute path of the deployment location of the web-apps
    - Set `GITHUB_WEBHOOK_SECRET` to the value configured on [GitHub](https://github.com/global-121/121-platform/settings/hooks)
 
-2. Install Node if not yet available through /usr/bin/nodejs on your environment
-
-         sudo apt install nodejs
+2. Install Node.js:  
+   See: <https://github.com/nodesource/distributions#installation-instructions> for instructions for Ubuntu.  
+   Make sure to install a version higher then `v10`; Preferrably a LTS-release.  
+   Verify that the user set-up to run the webhook, has access to this correct version of Node/NPM.
 
 3. Enable the webhook service:
 
