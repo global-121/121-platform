@@ -2,11 +2,7 @@ version: '3.7'
 
 services:
   indypool:
-    build:
-      context: tykn-ssi-services
-      dockerfile: indy-pool.dockerfile
-      args:
-        pool_ip: '11.0.0.2'
+    image: rodekruis510/121-indypool
     init: true
     container_name: tykn_indy_pool
     healthcheck:
