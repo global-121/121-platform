@@ -53,13 +53,17 @@ This is currently set up. To reproduce, you would follow these steps:
    - Set `GLOBAL_121_WEB_ROOT` to the absolute path of the deployment location of the web-apps
    - Set `GITHUB_WEBHOOK_SECRET` to the value configured on [GitHub](https://github.com/global-121/121-platform/settings/hooks)
 
-2. Enable the webhook service:
+2. Install Node if not yet available through /usr/bin/nodejs on your environment
+
+         sudo apt install nodejs
+
+3. Enable the webhook service:
 
          cp tools/webhook.service /etc/systemd/system/webhook.service
          sudo service webhook start
          sudo service webhook status
 
-3. Expose service with Apache2.  
+4. Expose service with Apache2.  
    See above, [Hosting > Apache2](#apache2).
 
 ---
