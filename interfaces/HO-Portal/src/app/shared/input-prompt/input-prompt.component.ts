@@ -10,6 +10,7 @@ import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface InputProps {
+  checkbox: string;
   inputRequired: boolean;
   explanation?: string;
   placeholder?: string;
@@ -36,6 +37,8 @@ export class InputPromptComponent implements AfterViewInit {
   @ViewChild('input')
   public input: any;
 
+  public checked: boolean = true;
+
   constructor(
     public translate: TranslateService,
     private modalController: ModalController,
@@ -47,16 +50,49 @@ export class InputPromptComponent implements AfterViewInit {
     this.changeDetector.detectChanges();
   }
 
-  public submitConfirm() {
+  public checkboxChange(checked) {
+    this.checked = checked;
+  }
+
+  public checkOkDisabled() {
+    if (!this.inputProps) {
+      return false;
+    }
+
+    if (this.inputProps.checkbox && !this.checked) {
+      return false;
+    }
+
     if (
-      this.inputProps &&
+      this.inputProps.inputRequired &&
+      this.input &&
+      this.input.value &&
+      this.input.valid
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public submitConfirm() {
+    if (!this.inputProps) {
+      this.modalController.dismiss(null, null);
+      return;
+    }
+
+    if (this.inputProps.checkbox && !this.checked) {
+      this.modalController.dismiss(null, null);
+      return;
+    }
+
+    if (
       this.inputProps.inputRequired &&
       this.input &&
       this.input.value &&
       this.input.valid
     ) {
       this.modalController.dismiss(this.input.value, null);
-
       return;
     }
 
