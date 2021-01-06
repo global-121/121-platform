@@ -503,7 +503,7 @@ export class ProgramService {
   public async reject(
     programId: number,
     dids: object,
-    message: string,
+    message?: string,
   ): Promise<void> {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
@@ -525,7 +525,9 @@ export class ProgramService {
       );
       if (indexEx <= -1) {
         connection.programsRejected.push(programId);
-        this.notifyInclusionStatus(connection, programId, false, message);
+        if (message) {
+          this.notifyInclusionStatus(connection, programId, false, message);
+        }
       }
       // Remove from inclusion-array, if present
       const indexIn = connection.programsIncluded.indexOf(

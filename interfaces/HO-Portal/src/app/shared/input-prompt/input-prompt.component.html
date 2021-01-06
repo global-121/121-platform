@@ -30,35 +30,54 @@
     *ngIf="inputProps"
     class="ion-margin-vertical"
   >
-    <div
-      *ngIf="inputProps.explanation"
-      [innerHTML]="inputProps.explanation"
-      class="ion-margin-vertical"
-    ></div>
 
-    <ion-label>
-      {{ 'common.confirm-message-label'|translate:{
-          minLength: inputProps.minLength
-        }
-      }}
-    </ion-label>
-    <ion-textarea
-      name="message"
-      #input="ngModel"
-      [(ngModel)]="inputModel"
-      [ngModelOptions]="{ standalone: true }"
-      ngDefaultControl
-      [required]="inputProps.inputRequired"
-      rows="3"
-      autoGrow="true"
-      [minlength]="inputProps.minLength"
-      [value]="inputProps.defaultValue"
-      [placeholder]="inputProps.placeholder"
-      style="font-family: monospace; border: 1px solid currentColor;"
-    ></ion-textarea>
-    <ion-note>
-      {{ input?.value ? input?.value?.length : 0 }} (≥ {{ inputProps.minLength }})
-    </ion-note>
+    <ion-item
+      *ngIf="inputProps.checkbox"
+      lines="none"
+      style="--background:none"
+    >
+      <ion-label
+        [innerHTML]="inputProps.checkbox"
+      ></ion-label>
+      <ion-checkbox 
+        slot="start"
+        [checked]="checked"
+        (ionChange)="checkboxChange($event.detail.checked)"
+      ></ion-checkbox>
+    </ion-item>
+
+    <div *ngIf="!inputProps.checkbox || (inputProps.checkbox && checked)">
+      <div
+        *ngIf="inputProps.explanation"
+        [innerHTML]="inputProps.explanation"
+        class="ion-margin-vertical"
+      ></div>
+
+      <ion-label>
+        {{ 'common.confirm-message-label'|translate:{
+            minLength: inputProps.minLength
+          }
+        }}
+      </ion-label>
+      <ion-textarea
+        name="message"
+        #input="ngModel"
+        [(ngModel)]="inputModel"
+        [ngModelOptions]="{ standalone: true }"
+        ngDefaultControl
+        [required]="inputProps.inputRequired"
+        rows="3"
+        autoGrow="true"
+        [minlength]="inputProps.minLength"
+        [value]="inputProps.defaultValue"
+        [placeholder]="inputProps.placeholder"
+        style="font-family: monospace; border: 1px solid currentColor; height:66px"
+      ></ion-textarea>
+      <ion-note>
+        {{ input?.value ? input?.value?.length : 0 }} (≥ {{ inputProps.minLength }})
+      </ion-note>
+    </div>
+
   </div>
 </ion-content>
 
@@ -76,7 +95,7 @@
         fill="solid"
         color="primary"
         (click)="submitConfirm()"
-        [disabled]="inputProps && inputProps?.inputRequired && input && input?.invalid"
+        [disabled]="checkOkDisabled()"
       >
         {{ 'common.ok'|translate }}
       </ion-button>

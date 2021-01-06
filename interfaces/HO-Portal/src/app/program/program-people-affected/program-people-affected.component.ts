@@ -109,9 +109,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.reject-checkbox',
+        ),
         inputRequired: true,
         explanation: this.translate.instant(
-          'page.program.program-people-affected.action-explanations.reject',
+          'page.program.program-people-affected.action-inputs.reject-explanation',
         ),
         minLength: 20,
       },

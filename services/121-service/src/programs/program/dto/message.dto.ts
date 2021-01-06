@@ -1,10 +1,11 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 
-import { Length, IsString } from 'class-validator';
+import { IsString, IsOptional, MinLength } from 'class-validator';
 
 export class MessageDto {
   @ApiModelProperty({ example: 'Rejection message' })
-  @Length(20, 160)
+  @MinLength(20)
   @IsString()
+  @IsOptional()
   public readonly message: string;
 }

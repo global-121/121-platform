@@ -190,8 +190,9 @@
           "reject": "Reject from program",
           "notify-included": "Notify included People Affected"
         },
-        "action-explanations": {
-          "reject": "When you do this, an text message will be automatically sent to them. You need to compose this below. Please ensure to give a reason & if possible, what their next steps could be. Please note if you go over 160 characters the PA may receive multiple texts if they have a feature (non smart) phone."
+        "action-inputs": {
+          "reject-checkbox": "Send message to rejected Persons affected",
+          "reject-explanation": "Please compose here the message that will be sent. Please ensure to give a reason, and if possible, what their next steps could be. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone."
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",
