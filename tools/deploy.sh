@@ -138,8 +138,8 @@ function deploy() {
     log "Deploying interface $app..."
 
     cd "$repo_path" || return
-    rm -rfv "${web_root:?}/$web_app_dir"
-    cp -rv www/ "$web_root/$web_app_dir"
+    rm -rf "${web_root:?}/$web_app_dir"
+    cp -r www/ "$web_root/$web_app_dir"
   }
 
   function restart_webhook_service() {
