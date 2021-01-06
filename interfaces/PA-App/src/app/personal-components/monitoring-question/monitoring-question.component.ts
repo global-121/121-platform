@@ -45,14 +45,14 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   async initHistory() {
     this.isDisabled = this.data.isDisabled;
     this.monitoringChoice = this.data.monitoringChoice;
-    this.monitoringSubmitted = this.data.monitoringSubmitted;
+    this.monitoringSubmitted = !!this.data.monitoringChoice;
 
-    await this.getMonitoringQuestion();
+    this.getMonitoringQuestion();
 
     this.conversationService.stopLoading();
   }
 
-  private async getMonitoringQuestion() {
+  private getMonitoringQuestion() {
     this.instanceService.instanceInformation.subscribe(
       (instanceInformation) => {
         if (!instanceInformation.monitoringQuestion) {
@@ -81,11 +81,6 @@ export class MonitoringQuestionComponent extends PersonalComponent {
     );
 
     this.complete();
-  }
-
-  public logout() {
-    this.paData.logout();
-    window.location.reload();
   }
 
   getNextSection() {
@@ -117,7 +112,6 @@ export class MonitoringQuestionComponent extends PersonalComponent {
       name: PersonalComponents.monitoringQuestion,
       data: {
         monitoringChoice: this.monitoringChoice,
-        monitoringSubmitted: this.monitoringSubmitted,
       },
       next: this.getNextSection(),
     });
