@@ -114,7 +114,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.action-explanations.reject',
         ),
         minLength: 20,
-        maxLength: 160,
       },
     },
     {
