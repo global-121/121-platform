@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.14.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.15.0...master)
+
+---
+
+## [0.15.0](https://github.com/global-121/121-platform/compare/v0.14.0...v0.15.0) - 2021-01-06
 
 ### Added
 - 2020-12-30: Add Docker cleanup/prune-step to deploy-script for images >1 week old
