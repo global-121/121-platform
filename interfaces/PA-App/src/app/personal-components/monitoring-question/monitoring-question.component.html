@@ -40,14 +40,5 @@
     [isSpoken]="monitoringSubmitted"
   >
     <p [innerHTML]="monitoringQuestion?.conclusion"></p>
-    <ion-row class="ion-nowrap ion-align-items-center ion-margin-top">
-      <play-text-audio key="account.logout" size="default"></play-text-audio>
-      <ion-button
-        type="button"
-        (click)="logout()"
-        expand="block"
-        style="flex-basis:100%"
-      >{{ 'account.logout'|translate }}</ion-button>
-    </ion-row>
   </dialogue-turn>
 </section>
