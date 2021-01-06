@@ -37,7 +37,7 @@ export class InputPromptComponent implements AfterViewInit {
   @ViewChild('input')
   public input: any;
 
-  public checked: boolean = true;
+  public checked = true;
 
   constructor(
     public translate: TranslateService,
