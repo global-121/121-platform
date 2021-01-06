@@ -23,6 +23,7 @@ import {
 } from './dto/payment-transaction-result.dto';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
+import { UnusedVoucherDto } from './dto/unused-voucher.dto';
 
 @Injectable()
 export class FspService {
@@ -263,6 +264,10 @@ export class FspService {
         fspName.africasTalking,
       );
     }
+  }
+
+  public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
+    return this.intersolveService.getUnusedVouchers();
   }
 
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {
