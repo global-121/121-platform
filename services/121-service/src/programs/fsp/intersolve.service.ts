@@ -17,6 +17,7 @@ import {
   PaTransactionResultDto,
 } from './dto/payment-transaction-result.dto';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
+import { UnusedVoucherDto } from './dto/unused-voucher.dto';
 
 @Injectable()
 export class IntersolveService {
@@ -293,5 +294,27 @@ export class IntersolveService {
       await this.imageCodeService.removeImageExportVoucher(image);
     }
     await this.intersolveBarcodeRepository.remove(barcodeEntity);
+  }
+
+  public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
+    const vouchers = await this.intersolveBarcodeRepository.find();
+    const unusedVouchers = [];
+
+    for await (const v of vouchers) {
+      const balanceFactor = (
+        await this.intersolveApiService.getCard(v.barcode, v.pin)
+      ).balanceFactor;
+
+      if (balanceFactor === 100) {
+        let unusedVoucher = new UnusedVoucherDto();
+        unusedVoucher.installment = v.installment;
+        unusedVoucher.issueDate = v.timestamp;
+        unusedVoucher.whatsappPhoneNumber = v.whatsappPhoneNumber;
+
+        unusedVouchers.push(unusedVoucher);
+      }
+    }
+
+    return unusedVouchers;
   }
 }

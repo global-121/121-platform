@@ -126,8 +126,11 @@ export class IntersolveApiService {
     const result = {
       resultCode: responseBody.GetCardResponse.ResultCode._text,
       resultDescription: responseBody.GetCardResponse.ResultDescription._text,
-      status: responseBody.GetCardResponse.Card.Status._text,
-      balance: parseInt(responseBody.GetCardResponse.Card.Balance._text),
+      status: responseBody.GetCardResponse.Card?.Status?._text,
+      balance: parseInt(responseBody.GetCardResponse.Card?.Balance?._text),
+      balanceFactor: parseInt(
+        responseBody.GetCardResponse.Card?.BalanceFactor?._text,
+      ),
     };
     return result;
   }

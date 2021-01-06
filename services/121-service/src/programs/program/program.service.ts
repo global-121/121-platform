@@ -1070,6 +1070,17 @@ export class ProgramService {
     return response;
   }
 
+  public async getUnusedVouchers(): Promise<any> {
+    const unusedVouchers = await this.fspService.getUnusedVouchers();
+
+    const response = {
+      fileName: `unused-vouchers.csv`,
+      data: this.jsonToCsv(unusedVouchers),
+    };
+
+    return response;
+  }
+
   public getExportList(
     programId: number,
     type: ExportType,
@@ -1092,6 +1103,9 @@ export class ProgramService {
       case ExportType.payment: {
         this.actionService.saveAction(userId, programId, ExportType.payment);
         return this.getPaymentDetails(programId, installment);
+      }
+      case ExportType.unusedVouchers: {
+        return this.getUnusedVouchers();
       }
     }
   }
