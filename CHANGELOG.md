@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.15.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.15.1...master)
 
 ---
+
+## [0.15.1](https://github.com/global-121/121-platform/compare/v0.15.0...v0.15.1) - 2021-01-06
 
 ## [0.15.0](https://github.com/global-121/121-platform/compare/v0.14.0...v0.15.0) - 2021-01-06
 
@@ -32,14 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - 2020-12-08: Changed `AFRICASTALKING_PROVIDER_CHANNEL` in [services/.env](services/.env.example) to empty value in servers that use Africa's Talking sandbox account.
 
----
-
 ## [0.13.5](https://github.com/global-121/121-platform/compare/v0.13.4...v0.13.5) - 2020-12-07
 
 ### Added
 - 2020-12-07: Added `AFRICASTALKING_PROVIDER_CHANNEL` to [services/.env](services/.env.example)
-
----
 
 ## [0.13.4](https://github.com/global-121/121-platform/compare/v0.13.3...v0.13.4) - 2020-12-04
 
