@@ -26,18 +26,13 @@ export class PaymentPage implements OnInit {
     private programsService: ProgramsServiceApiService,
   ) {}
 
-  async ngOnInit() {
-    await this.isIntersolve();
-  }
+  ngOnInit() {}
 
   async isIntersolve() {
     const intersolveString = 'intersolve';
     this.program = await this.programsService.getProgramById(this.programId);
-    console.log('this.program init: ', this.program);
     for (const fsp of this.program.financialServiceProviders) {
-      console.log('fsp: ', fsp);
       if (fsp.fsp.toLowerCase().includes(intersolveString)) {
-        console.log('#### intersolve');
         return true;
       }
     }
