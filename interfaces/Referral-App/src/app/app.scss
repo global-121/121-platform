@@ -25,26 +25,6 @@
 }
 
 // ----------------------------------------------------------------------------
-// Additional elements:
-// ----------------------------------------------------------------------------
-
-.loading-indicator {
-  display: flex;
-  min-height: 100px;
-  justify-content: center;
-}
-.loading-indicator--spinner {
-  margin: auto;
-}
-
-// ----------------------------------------------------------------------------
-
-// Override default styles to emphasize where to input
-// Make an exception for 'native' inputs in 'items':
-*:not(ion-item) > ion-input,
-ion-textarea {
-  --background: #dfe5fe !important;
-}
 
 // Set header font-styles
 ion-title,
