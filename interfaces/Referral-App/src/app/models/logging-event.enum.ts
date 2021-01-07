@@ -1,5 +1,4 @@
-// Application Insights Event Name
-export enum AnalyticsEventName {
+export enum LoggingEvent {
   ReferralOfferClick = 'referral-offer-click',
   ReferralCategoryClick = 'referral-category-click',
   ReferralSubCategoryClick = 'referral-sub-category-click',

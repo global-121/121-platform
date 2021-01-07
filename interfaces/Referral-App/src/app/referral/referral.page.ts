@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from 'src/app/models/category.model';
-import { AnalyticsEventName } from 'src/app/models/event-name.model';
+import { LoggingEvent } from 'src/app/models/logging-event.enum';
 import { Offer } from 'src/app/models/offer.model';
 import { ReferralPageData } from 'src/app/models/referral-page-data';
 import { SubCategory } from 'src/app/models/sub-category.model';
@@ -124,7 +124,7 @@ export class ReferralPage implements OnInit {
     this.subCategory = isBack ? null : this.getNextSubCategory(category);
     this.offer = null;
     this.loggingService.logEvent(
-      AnalyticsEventName.ReferralCategoryClick,
+      LoggingEvent.ReferralCategoryClick,
       this.getLogProperties(isBack),
     );
     this.router.navigate([this.getRegionHref()], {
@@ -139,7 +139,7 @@ export class ReferralPage implements OnInit {
     this.subCategory = subCategory;
     this.offer = null;
     this.loggingService.logEvent(
-      AnalyticsEventName.ReferralSubCategoryClick,
+      LoggingEvent.ReferralSubCategoryClick,
       this.getLogProperties(isBack),
     );
     this.router.navigate([this.getRegionHref()], {
@@ -153,7 +153,7 @@ export class ReferralPage implements OnInit {
   public clickOffer(offer: Offer, isBack: boolean = false) {
     this.offer = offer;
     this.loggingService.logEvent(
-      AnalyticsEventName.ReferralOfferClick,
+      LoggingEvent.ReferralOfferClick,
       this.getLogProperties(isBack),
     );
     this.router.navigate([this.getRegionHref()], {
@@ -168,13 +168,13 @@ export class ReferralPage implements OnInit {
   goBack() {
     if (this.offer) {
       this.loggingService.logEvent(
-        AnalyticsEventName.ReferralBackFromOffer,
+        LoggingEvent.ReferralBackFromOffer,
         this.getLogProperties(true),
       );
       this.clickSubCategory(this.subCategory, true);
     } else if (this.subCategory) {
       this.loggingService.logEvent(
-        AnalyticsEventName.ReferralBackFromSubCategory,
+        LoggingEvent.ReferralBackFromSubCategory,
         this.getLogProperties(true),
       );
       if (this.getNextSubCategory(this.category)) {
@@ -186,7 +186,7 @@ export class ReferralPage implements OnInit {
       }
     } else if (this.category) {
       this.loggingService.logEvent(
-        AnalyticsEventName.ReferralBackFromCategory,
+        LoggingEvent.ReferralBackFromCategory,
         this.getLogProperties(true),
       );
       this.category = null;
@@ -210,7 +210,7 @@ export class ReferralPage implements OnInit {
 
   showCategories() {
     this.loggingService.logEvent(
-      AnalyticsEventName.ReferralMainScreenClick,
+      LoggingEvent.ReferralMainScreenClick,
       this.getLogProperties(true),
     );
     this.category = null;
@@ -220,10 +220,10 @@ export class ReferralPage implements OnInit {
   }
 
   logContactClick(type: 'tel' | 'whatsapp') {
-    let event = AnalyticsEventName.ReferralFooterContactClick;
+    let event = LoggingEvent.ReferralFooterContactClick;
 
     if (type === 'whatsapp') {
-      event = AnalyticsEventName.ReferralFooterWhatsAppClick;
+      event = LoggingEvent.ReferralFooterWhatsAppClick;
     }
 
     this.loggingService.logEvent(event, this.getLogProperties(true));

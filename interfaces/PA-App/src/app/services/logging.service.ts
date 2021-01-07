@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-import { SeverityLevel } from 'src/app/models/severity-level.model';
+import {
+  ApplicationInsights,
+  ITelemetryItem,
+} from '@microsoft/applicationinsights-web';
+import { SeverityLevel } from 'src/app/models/severity-level.enum';
 import { environment } from 'src/environments/environment';
+import { LoggingEvent } from '../models/logging-event.enum';
 
 @Injectable()
 export class LoggingService {
@@ -9,67 +13,93 @@ export class LoggingService {
   appInsightsEnabled: boolean;
 
   constructor() {
+    this.setupApplicationInsights();
+  }
+
+  private setupApplicationInsights() {
     if (!environment.ai_ikey || !environment.ai_endpoint) {
       return;
     }
-
     this.appInsights = new ApplicationInsights({
       config: {
         connectionString: `InstrumentationKey=${environment.ai_ikey};IngestionEndpoint=${environment.ai_endpoint}`,
         instrumentationKey: environment.ai_ikey,
         enableAutoRouteTracking: true,
+        isCookieUseDisabled: true,
+        isStorageUseDisabled: true,
+        enableSessionStorageBuffer: true,
       },
     });
 
-    this.appInsightsEnabled = true;
     this.appInsights.loadAppInsights();
     this.appInsights.addTelemetryInitializer(this.addTelemetryProcessor);
+    this.appInsightsEnabled = true;
   }
 
-  addTelemetryProcessor(envelope: any) {
-    const baseData = envelope.baseData;
-
-    // filter audio files
-    if (baseData.responseCode === 404 && baseData.name.match('/assets/i18n/')) {
+  private addTelemetryProcessor(envelope: ITelemetryItem): boolean {
+    // filter missing audio files
+    if (
+      envelope.baseData.responseCode === 404 &&
+      envelope.baseData.name.match('/assets/i18n/')
+    ) {
       return false;
     }
 
-    // filter/sample data
-    // if all criterias pass then log
+    // only if all criteria pass then log:
     return true;
   }
 
-  logPageView(name?: string) {
-    this.appInsights.trackPageView({ name });
+  public logPageView(name?: string): void {
+    if (this.appInsightsEnabled) {
+      this.appInsights.trackPageView({ name });
+    }
+    this.displayOnConsole(`logPageView: ${name}`, SeverityLevel.Information);
   }
 
-  logError(error: any, severityLevel?: SeverityLevel) {
+  public logError(error: any, severityLevel?: SeverityLevel): void {
     this.displayOnConsole(error, severityLevel);
   }
 
-  logEvent(name: string, properties?: { [key: string]: any }) {
-    this.appInsights.trackEvent({ name }, properties);
+  public logEvent(
+    name: LoggingEvent | string,
+    properties?: { [key: string]: any },
+  ): void {
+    if (this.appInsightsEnabled) {
+      this.appInsights.trackEvent({ name }, properties);
+    }
+    this.displayOnConsole(
+      `logEvent: ${name} - properties: ${JSON.stringify(properties)}`,
+      SeverityLevel.Information,
+    );
   }
 
-  logException(exception: Error, severityLevel?: SeverityLevel) {
+  public logException(exception: Error, severityLevel?: SeverityLevel): void {
     if (this.appInsightsEnabled) {
       this.appInsights.trackException({
         exception,
         severityLevel,
       });
-    } else {
-      this.displayOnConsole(exception, severityLevel);
     }
+    this.displayOnConsole(exception, severityLevel);
   }
 
-  logTrace(message: string, properties?: { [key: string]: any }) {
-    this.appInsights.trackTrace({ message }, properties);
+  public logTrace(message: string, properties?: { [key: string]: any }): void {
+    if (this.appInsightsEnabled) {
+      this.appInsights.trackTrace({ message }, properties);
+    }
+    this.displayOnConsole(
+      `logTrace: ${message} - properties: ${JSON.stringify(properties)}`,
+    );
   }
 
   private displayOnConsole(
     error: any,
     severityLevel: SeverityLevel = SeverityLevel.Error,
-  ) {
+  ): void {
+    if (environment.production) {
+      return;
+    }
+
     switch (severityLevel) {
       case SeverityLevel.Critical:
       case SeverityLevel.Error:

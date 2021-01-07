@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Category } from 'src/app/models/category.model';
 import { Offer } from 'src/app/models/offer.model';
 import { ReferralPageData } from 'src/app/models/referral-page-data';
-import { SeverityLevel } from 'src/app/models/severity-level.model';
+import { SeverityLevel } from 'src/app/models/severity-level.enum';
 import { SubCategory } from 'src/app/models/sub-category.model';
 import { LoggingService } from 'src/app/services/logging.service';
 import { environment } from 'src/environments/environment';
