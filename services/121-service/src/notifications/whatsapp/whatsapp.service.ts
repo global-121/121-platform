@@ -157,7 +157,9 @@ export class WhatsappService {
         IntersolvePayoutStatus: IntersolvePayoutStatus.VoucherSent,
       }),
     );
-    const connection = (await this.connectionRepository.find()).filter(
+    const connection = (
+      await this.connectionRepository.find({ relations: ['fsp'] })
+    ).filter(
       c =>
         c.customData['whatsappPhoneNumber'] ===
         intersolveBarcode.whatsappPhoneNumber,
