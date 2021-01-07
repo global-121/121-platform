@@ -63,7 +63,7 @@ To set up a local development-environment:
 
   - Choose an installation method from the provided list at <https://docs.docker.com/engine/install/ubuntu/#installation-methods> and install `docker-engine` 
   
-  - Do step 2-b instead of 2-a to install a specific version: `sudo  apt-get install docker-ce=5:19.03.14~3-0~ubuntu-<UBUNTU=NAME such as bionic or xenial> docker-ce-cli=5:19.03.14~3-0~ubuntu-<UBUNTU=NAME> containerd.io` you can see the available versions by running apt-cache madison docker-ce
+  - Do step 2-b instead of 2-a to install a specific version: `sudo  apt-get install docker-ce=5:19.03.14~3-0~ubuntu-<UBUNTU=NAME such as bionic or xenial> docker-ce-cli=5:19.03.14~3-0~ubuntu-<UBUNTU=NAME> containerd.io` you can see the available versions by running `apt-cache madison docker-ce`
   
   - Test your docker installation
 

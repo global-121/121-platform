@@ -305,11 +305,10 @@ export class IntersolveService {
     const unusedVouchers = [];
 
     for await (const v of vouchers) {
-      const balanceFactor = (
-        await this.intersolveApiService.getCard(v.barcode, v.pin)
-      ).balanceFactor;
+      const getCard = await this.intersolveApiService.getCard(v.barcode, v.pin);
+      const realBalance = getCard.balance / getCard.balanceFactor;
 
-      if (balanceFactor === 100) {
+      if (realBalance === v.amount) {
         let unusedVoucher = new UnusedVoucherDto();
         unusedVoucher.installment = v.installment;
         unusedVoucher.issueDate = v.timestamp;
