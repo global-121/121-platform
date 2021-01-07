@@ -84,7 +84,9 @@ export class ExportListComponent implements OnChanges {
           this.exportType === ExportType.selectedForValidation) ||
         (activePhase.name === ProgramPhase.payment &&
           this.exportType === ExportType.payment &&
-          this.paymentExportAvailable)) &&
+          this.paymentExportAvailable)) ||
+      (activePhase.name === ProgramPhase.payment &&
+        this.exportType === ExportType.unusedVouchers) &&
       this.userRole === UserRole.ProgramManager
     );
   }

@@ -12,12 +12,20 @@
     [phaseReady]="isReady"
   ></app-phase-next>
 
+  <ion-row *ngIf="!isIntersolve">
+    <app-export-list
+      [programId]="programId"
+      [userRole]="userRole"
+      [exportType]="enumExportType.unusedVouchers">
+    </app-export-list>
+  </ion-row>
+
   <app-program-payout
     [programId]="programId"
     (isCompleted)="onReady($event)"
   ></app-program-payout>
 
-  <app-program-people-affected 
+  <app-program-people-affected
     [programId]="programId"
     [userRole]="userRole"
     [thisPhase]="thisPhase"
