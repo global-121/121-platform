@@ -1,4 +1,4 @@
 export enum LoggingEvent {
-  registrationStart = 'registration-start',
-  registrationEnd = 'registration-end',
+  registrationStart = 'pa-registration-start',
+  registrationEnd = 'pa-registration-end',
 }

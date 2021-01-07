@@ -21,7 +21,7 @@ export class OfferComponent {
   constructor(private loggingService: LoggingService) {}
 
   public logClick(name) {
-    this.loggingService.logEvent(LoggingEvent.ReferralOfferClick, {
+    this.loggingService.logEvent(LoggingEvent.OfferClick, {
       name,
       offerName: this.offer.offerName,
     });

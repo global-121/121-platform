@@ -124,7 +124,7 @@ export class ReferralPage implements OnInit {
     this.subCategory = isBack ? null : this.getNextSubCategory(category);
     this.offer = null;
     this.loggingService.logEvent(
-      LoggingEvent.ReferralCategoryClick,
+      LoggingEvent.CategoryClick,
       this.getLogProperties(isBack),
     );
     this.router.navigate([this.getRegionHref()], {
@@ -139,7 +139,7 @@ export class ReferralPage implements OnInit {
     this.subCategory = subCategory;
     this.offer = null;
     this.loggingService.logEvent(
-      LoggingEvent.ReferralSubCategoryClick,
+      LoggingEvent.SubCategoryClick,
       this.getLogProperties(isBack),
     );
     this.router.navigate([this.getRegionHref()], {
@@ -153,7 +153,7 @@ export class ReferralPage implements OnInit {
   public clickOffer(offer: Offer, isBack: boolean = false) {
     this.offer = offer;
     this.loggingService.logEvent(
-      LoggingEvent.ReferralOfferClick,
+      LoggingEvent.OfferClick,
       this.getLogProperties(isBack),
     );
     this.router.navigate([this.getRegionHref()], {
@@ -168,13 +168,13 @@ export class ReferralPage implements OnInit {
   goBack() {
     if (this.offer) {
       this.loggingService.logEvent(
-        LoggingEvent.ReferralBackFromOffer,
+        LoggingEvent.BackFromOffer,
         this.getLogProperties(true),
       );
       this.clickSubCategory(this.subCategory, true);
     } else if (this.subCategory) {
       this.loggingService.logEvent(
-        LoggingEvent.ReferralBackFromSubCategory,
+        LoggingEvent.BackFromSubCategory,
         this.getLogProperties(true),
       );
       if (this.getNextSubCategory(this.category)) {
@@ -186,7 +186,7 @@ export class ReferralPage implements OnInit {
       }
     } else if (this.category) {
       this.loggingService.logEvent(
-        LoggingEvent.ReferralBackFromCategory,
+        LoggingEvent.BackFromCategory,
         this.getLogProperties(true),
       );
       this.category = null;
@@ -210,7 +210,7 @@ export class ReferralPage implements OnInit {
 
   showCategories() {
     this.loggingService.logEvent(
-      LoggingEvent.ReferralMainScreenClick,
+      LoggingEvent.MainScreenClick,
       this.getLogProperties(true),
     );
     this.category = null;
@@ -220,10 +220,10 @@ export class ReferralPage implements OnInit {
   }
 
   logContactClick(type: 'tel' | 'whatsapp') {
-    let event = LoggingEvent.ReferralFooterContactClick;
+    let event = LoggingEvent.FooterContactClick;
 
     if (type === 'whatsapp') {
-      event = LoggingEvent.ReferralFooterWhatsAppClick;
+      event = LoggingEvent.FooterWhatsAppClick;
     }
 
     this.loggingService.logEvent(event, this.getLogProperties(true));
