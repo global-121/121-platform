@@ -1,9 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest",
-  "name": "",
-  "short_name": "",
-  "theme_color": "#ffc001",
-  "background_color": "#f6f0eb",
+  "name": "Helpful Information",
+  "short_name": "Helpful Information",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "./",
