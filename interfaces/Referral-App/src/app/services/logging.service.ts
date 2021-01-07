@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ApplicationInsights } from '@microsoft/applicationinsights-web';
-import { SeverityLevel } from 'src/app/models/severity-level.model';
+import { SeverityLevel } from 'src/app/models/severity-level.enum';
 import { environment } from 'src/environments/environment';
+import { LoggingEvent } from '../models/logging-event.enum';
 
 @Injectable()
 export class LoggingService {
@@ -9,10 +10,13 @@ export class LoggingService {
   appInsightsEnabled: boolean;
 
   constructor() {
+    this.setupApplicationInsights();
+  }
+
+  private setupApplicationInsights() {
     if (!environment.ai_ikey || !environment.ai_endpoint) {
       return;
     }
-
     this.appInsights = new ApplicationInsights({
       config: {
         connectionString: `InstrumentationKey=${environment.ai_ikey};IngestionEndpoint=${environment.ai_endpoint}`,
@@ -24,68 +28,61 @@ export class LoggingService {
       },
     });
 
-    this.appInsightsEnabled = true;
     this.appInsights.loadAppInsights();
+    this.appInsightsEnabled = true;
   }
 
-  logPageView(name?: string) {
+  public logPageView(name?: string): void {
     if (this.appInsightsEnabled) {
       this.appInsights.trackPageView({ name });
-    } else {
-      this.displayOnConsole(
-        'trackPageView - name: ' + name,
-        SeverityLevel.Information,
-      );
     }
+    this.displayOnConsole(`logPageView: ${name}`, SeverityLevel.Information);
   }
 
-  logError(error: any, severityLevel?: SeverityLevel) {
+  public logError(error: any, severityLevel?: SeverityLevel): void {
     this.displayOnConsole(error, severityLevel);
   }
 
-  logEvent(name: string, properties?: { [key: string]: any }) {
+  public logEvent(
+    name: LoggingEvent | string,
+    properties?: { [key: string]: any },
+  ): void {
     if (this.appInsightsEnabled) {
       this.appInsights.trackEvent({ name }, properties);
-    } else {
-      this.displayOnConsole(
-        'logEvent - name: ' +
-          name +
-          ' properties: ' +
-          JSON.stringify(properties),
-        SeverityLevel.Information,
-      );
     }
+    this.displayOnConsole(
+      `logEvent: ${name} - properties: ${JSON.stringify(properties)}`,
+      SeverityLevel.Information,
+    );
   }
 
-  logException(exception: Error, severityLevel?: SeverityLevel) {
+  public logException(exception: Error, severityLevel?: SeverityLevel): void {
     if (this.appInsightsEnabled) {
       this.appInsights.trackException({
         exception,
         severityLevel,
       });
-    } else {
-      this.displayOnConsole(exception, severityLevel);
     }
+    this.displayOnConsole(exception, severityLevel);
   }
 
-  logTrace(message: string, properties?: { [key: string]: any }) {
+  public logTrace(message: string, properties?: { [key: string]: any }): void {
     if (this.appInsightsEnabled) {
       this.appInsights.trackTrace({ message }, properties);
-    } else {
-      this.displayOnConsole(
-        'logTrace - message: ' +
-          message +
-          ' properties: ' +
-          JSON.stringify(properties),
-        SeverityLevel.Information,
-      );
     }
+    this.displayOnConsole(
+      `logTrace: ${message} - properties: ${JSON.stringify(properties)}`,
+    );
   }
 
   private displayOnConsole(
     error: any,
     severityLevel: SeverityLevel = SeverityLevel.Error,
-  ) {
+  ): void {
+    if (environment.production) {
+      return;
+    }
+
     switch (severityLevel) {
       case SeverityLevel.Critical:
       case SeverityLevel.Error:

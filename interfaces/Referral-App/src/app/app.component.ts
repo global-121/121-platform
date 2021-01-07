@@ -13,9 +13,7 @@ export class AppComponent {
   ) {
     this.initializeApp();
 
-    if (this.loggingService.appInsightsEnabled) {
-      this.loggingService.logPageView();
-    }
+    this.loggingService.logPageView();
   }
 
   initializeApp() {

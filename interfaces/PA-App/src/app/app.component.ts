@@ -19,9 +19,7 @@ export class AppComponent {
   ) {
     this.initializeApp();
 
-    if (this.loggingService.appInsightsEnabled) {
-      this.loggingService.logPageView();
-    }
+    this.loggingService.logPageView();
 
     // Update language + text-direction for the full interface
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
