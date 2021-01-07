@@ -15,6 +15,20 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
   ): Promise<any> {
     // console.log('Twillio auth');
     const twilioSignature = req.headers['x-twilio-signature'];
+
+    const validWhatsapp = twilio.validateRequest(
+      process.env.TWILIO_AUTHTOKEN,
+      twilioSignature,
+      EXTERNAL_API.callbackUrlWhatsapp,
+      req.body,
+      {
+        accountSid: process.env.TWILIO_SID,
+      },
+    );
+    if (validWhatsapp) {
+      next();
+    }
+
     const validSms = twilio.validateRequest(
       process.env.TWILIO_AUTHTOKEN,
       twilioSignature,

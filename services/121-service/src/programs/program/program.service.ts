@@ -1010,12 +1010,13 @@ export class ProgramService {
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
-        'transaction.created AS installmentDate',
+        'transaction.created AS "installmentDate"',
         'installment',
         'did',
         'status',
         'amount',
         'transaction.errorMessage as error',
+        'transaction.customData as "customData"',
       ])
       .leftJoin('transaction.connection', 'c')
       .where('transaction.program.id = :programId', { programId: programId })

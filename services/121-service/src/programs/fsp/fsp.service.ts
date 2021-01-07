@@ -213,6 +213,7 @@ export class FspService {
     transaction.installment = installment;
     transaction.status = transactionResponse.status;
     transaction.errorMessage = transactionResponse.message;
+    transaction.customData = transactionResponse.customData;
 
     this.transactionRepository.save(transaction);
   }

@@ -1,3 +1,4 @@
+import { IntersolvePayoutStatus } from './api/enum/intersolve-payout-status.enum';
 import { IntersolveIssueCardResponse } from './api/dto/intersolve-issue-card-response.dto';
 import { WhatsappService } from './../../notifications/whatsapp/whatsapp.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -92,6 +93,7 @@ export class IntersolveService {
       if (transferResult.status === StatusEnum.success) {
         result.status = transferResult.status;
         result.message = transferResult.message;
+        result.customData = transferResult.customData;
       } else {
         result.status = StatusEnum.error;
         result.message =
@@ -183,6 +185,9 @@ export class IntersolveService {
         null,
       );
       result.status = StatusEnum.success;
+      result.customData = {
+        IntersolvePayoutStatus: IntersolvePayoutStatus.InitialMessage,
+      };
     } catch (e) {
       result.message = (e as Error).message;
       result.status = StatusEnum.error;
@@ -288,7 +293,6 @@ export class IntersolveService {
       where: { barcode: cardId },
       relations: ['image'],
     });
-    console.log('barcodeEntity: ', barcodeEntity);
     for (const image of barcodeEntity.image) {
       console.log('removing', image);
       await this.imageCodeService.removeImageExportVoucher(image);
