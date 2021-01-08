@@ -16,8 +16,10 @@ describe('PaymentPage', () => {
       declarations: [PaymentPage],
       imports: [TranslateModule.forRoot(), RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(AuthService),
-      provideMagicalMock(ProgramsServiceApiService)],
+      providers: [
+        provideMagicalMock(AuthService),
+        provideMagicalMock(ProgramsServiceApiService),
+      ],
     }).compileComponents();
   }));
 
