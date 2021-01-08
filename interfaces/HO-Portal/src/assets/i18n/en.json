@@ -226,6 +226,10 @@
         "payment": {
           "btn-text": "Export list",
           "confirm-message": "This will download a CSV-file with all People Affected included in this payment, to be shared with institutions requiring this data."
+        },
+        "unused-vouchers": {
+          "btn-text": "Export list of unused vouchers",
+          "confirm-message": "This will download a CSV-file with all unused voucher(s)."
         }
       },
       "manage-aidworkers": {
