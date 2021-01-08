@@ -12,7 +12,7 @@
     [phaseReady]="isReady"
   ></app-phase-next>
 
-  <ion-row *ngIf="!isIntersolve">
+  <ion-row *ngIf="isIntersolve">
     <app-export-list
       [programId]="programId"
       [userRole]="userRole"
