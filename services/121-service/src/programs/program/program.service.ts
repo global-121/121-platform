@@ -1029,11 +1029,9 @@ export class ProgramService {
   public async getTransaction(
     input: GetTransactionDto,
   ): Promise<TransactionEntity> {
-    console.log('input: ', input);
     const connection = await this.connectionRepository.findOne({
       where: { did: input.did },
     });
-    console.log('connection: ', connection);
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
@@ -1057,7 +1055,6 @@ export class ProgramService {
       })
       .orderBy('transaction.created', 'DESC')
       .getRawMany();
-    console.log('transactions: ', transactions);
     if (transactions.length === 0) {
       return null;
     }
