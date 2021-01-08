@@ -1,3 +1,4 @@
+import { GetTransactionDto } from './dto/get-transaction.dto';
 import { ActionService } from './../../actions/action.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
@@ -1023,6 +1024,54 @@ export class ProgramService {
       .orderBy('transaction.created', 'DESC')
       .getRawMany();
     return transactions;
+  }
+
+  public async getTransaction(
+    input: GetTransactionDto,
+  ): Promise<TransactionEntity> {
+    console.log('input: ', input);
+    const connection = await this.connectionRepository.findOne({
+      where: { did: input.did },
+    });
+    console.log('connection: ', connection);
+    const transactions = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select([
+        'transaction.created AS "installmentDate"',
+        'installment',
+        'did',
+        'status',
+        'amount',
+        'transaction.errorMessage as error',
+        'transaction.customData as "customData"',
+      ])
+      .leftJoin('transaction.connection', 'c')
+      .where('transaction.program.id = :programId', {
+        programId: input.programId,
+      })
+      .andWhere('transaction.installment = :installmentId', {
+        installmentId: input.installment,
+      })
+      .andWhere('transaction.connection.id = :connectionId', {
+        connectionId: connection.id,
+      })
+      .orderBy('transaction.created', 'DESC')
+      .getRawMany();
+    console.log('transactions: ', transactions);
+    if (transactions.length === 0) {
+      return null;
+    }
+    if (input.customDataKey) {
+      for (const transaction of transactions) {
+        if (
+          transaction.customData[input.customDataKey] === input.customDataValue
+        ) {
+          return transaction;
+        }
+      }
+      return null;
+    }
+    return transactions[0];
   }
 
   public async getFunds(programId: number): Promise<FundingOverview> {

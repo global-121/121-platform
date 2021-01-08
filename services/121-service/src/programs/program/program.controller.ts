@@ -1,3 +1,4 @@
+import { TransactionEntity } from './transactions.entity';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { DidDto, DidsDto } from './dto/did.dto';
@@ -38,6 +39,7 @@ import { CustomCriterium } from './custom-criterium.entity';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { MessageDto } from './dto/message.dto';
+import { GetTransactionDto } from './dto/get-transaction.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -272,6 +274,19 @@ export class ProgramController {
   @Get('transactions/:programId')
   public async getTransactions(@Param() param): Promise<any> {
     return await this.programService.getTransactions(param.programId);
+  }
+
+  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
+  @ApiOperation({ title: 'Get a single transaction' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get a single transaction',
+  })
+  @Post('get-transaction')
+  public async getTransaction(
+    @Body() data: GetTransactionDto,
+  ): Promise<TransactionEntity> {
+    return await this.programService.getTransaction(data);
   }
 
   @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager)
