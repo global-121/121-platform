@@ -1,9 +1,11 @@
+import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { RetryPayoutDetails } from 'src/app/models/installment.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-payment-status-popup',
@@ -11,6 +13,13 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   styleUrls: ['./payment-status-popup.component.scss'],
 })
 export class PaymentStatusPopupComponent implements OnInit {
+  public titleMessageIcon: string;
+  public titleMoneyIcon: string;
+  public titleError: string;
+
+  private locale: string;
+  private dateFormat = 'yyyy-MM-dd, HH:mm';
+
   public title: string;
   public content: any;
   public contentNotes: any;
@@ -26,9 +35,16 @@ export class PaymentStatusPopupComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
-  ) {}
+  ) {
+    this.locale = environment.defaultLocale;
+  }
 
-  ngOnInit() {
+  async ngOnInit() {
+    if (this.titleMessageIcon) {
+      const intersolveMessageTime = await this.getIntersolveMesageTime();
+      this.titleMessageIcon = this.titleMessageIcon + intersolveMessageTime;
+    }
+
     if (this.imageUrl) {
       this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         this.imageUrl,
@@ -38,6 +54,27 @@ export class PaymentStatusPopupComponent implements OnInit {
 
   public closeModal() {
     this.modalController.dismiss();
+  }
+
+  public async getIntersolveMesageTime() {
+    console.log(      this.payoutDetails.did,
+      this.payoutDetails.installment,
+      this.payoutDetails.programId,
+      'IntersolvePayoutStatus',
+      'InitialMessage')
+    const transaction = await this.programsService.getTransaction(
+      this.payoutDetails.did,
+      Number(this.payoutDetails.programId),
+      Number(this.payoutDetails.installment),
+      'IntersolvePayoutStatus',
+      'InitialMessage'
+    );
+    console.log('transaction: ', transaction);
+    return formatDate(
+      transaction.installmentDate,
+      this.dateFormat,
+      this.locale,
+    );
   }
 
   public async retryPayment() {
