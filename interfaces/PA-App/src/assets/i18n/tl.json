@@ -1,1 +1,155 @@
-{}
+{
+  "account": {
+    "change-password": "Palitan ang password",
+    "delete-account-header": "Ilagay ang iyong password kung sigurado kang gusto mong burahin ang iyong account",
+    "delete-account-message": "Ang pagbubura ng iyong account ay hindi na maiibalik, lahat ng iyong data ay mawawala!",
+    "delete-digital-id": "Burahin ang account",
+    "delete-fail": "May maling nangyari, ang iyong account ay hindi lubusang nabura.",
+    "delete-success": "Ang iyong account ay matagumpay na nabura. Ikaw ay log-out na",
+    "enter-password": "Ang Password mo"
+  },
+  "connection": {
+    "error-retry": "May maling nangyari, nais mo bang subukan muli?"
+  },
+  "notification": {
+    "credential": "Natanggap ang Digital ID",
+    "inclusion": "Natanggap ang inclusion status"
+  },
+  "password-toggle": {
+    "hide": "Itago ang password",
+    "show": "Ipakita ang password"
+  },
+  "personal": {
+    "consent-question": {
+      "agree": "Sumasang-ayon ako",
+      "answer": "Nabasa ko kung papaanong maingat na maitatago ang aking personal na impormasyon. Nauunawaan ko na kinakailangang ibigay ang aking personal na impormasyon upang makatanggap ng cash aid. <br><br> Nauunawaan ko kung sino ang nakakakita ng aking personal na impormasyon.<br><br>Sa pag-tap ng &quot,<b>Sumasang-ayon ako </b>&quot; pinipili kong sumali sa aid program. <br><br>Sa pag-tap ng &quot; <b>Hindi ako sumasang-ayon </b> &quot; Pinipiling kong hindi na sumali sa aid program.",
+      "disagree": "Hindi ako sumasang-ayon",
+      "more-info-personal-information": "Tungkol sa personal na impormasyon",
+      "question": "Upang makapag-apply ng aid program na ito, kailangan mong sumang-ayon sa <strong>paano namin i-secure ang iyong personal na impormasyon. </strong><br /><br /> Pakibasa kung paano namin i-secure ang iyong personal na impormasyon."
+    },
+    "create-identity": {
+      "conclusion": "Magaling! Mayroon ka ng account.",
+      "create-password-explanation": "Gumawa ng password na hindi lalagpas sa {{minimalLength}} na numero:",
+      "create-username": "Maglagay ng username:",
+      "introduction": "Upang makalikha ng account, kailangang kumpletuhin ang mga sumusunod:",
+      "local": {
+        "conclusion": "Magaling! Mayroon ka ng Digital ID.",
+        "create-password-only": "Gumawa ng password",
+        "info-message-password": "[tungkol sa passwords]",
+        "introduction": "Sa pag-gawa ng Digital ID, kailangan mong kumpletohin ang mga sumusunod:",
+        "more-info-password": "Tungkol sa password"
+      },
+      "password-too-short": "Mag-lagay ng hindi lalagpas sa {{minimalLength}} na characters.",
+      "unequal-passwords": "Ang password na iyong nilagay ay magka-iba. Subukan muli.",
+      "username-not-unique": "Ang username na napili mo ay hindi kakaiba / unique. Subukan muli.",
+      "username-password": "Ilagay ang username at gumawa ng password."
+    },
+    "enroll-in-program": {
+      "change": "Palitan ang aking impormasyon",
+      "introduction-information": "Upang masigurado ang pinakamainam na tulong at patas na proseso, kailangan namin ng ilang personal na impormasyon.",
+      "more-info-questions": "Tungkol sa personal na impormasyon",
+      "please-confirm": "Sa ibaba ay ang iyong mga impormasyon. Suriin at i-tap ang send."
+    },
+    "handle-proof": {
+      "creating": "Nakapagbigay ka ng sapat na personal na impormasyon upang makita namin kung maaari kang maging kabahagi ng programa.",
+      "inclusion-status-negative": "Ikinalulungkot naming ipagbigay-alam sa iyo na hindi ka na makakatanggap ng supermarket vouchers para sa programang ito. Kung may mga katanungan ka, i-contact- mo kami.",
+      "inclusion-status-positive": "Ikaw ay naisali na sa programa.",
+      "notify": "Ipagbibigay alam namin sayo kung ikaw ay nakasali."
+    },
+    "login-identity": {
+      "incorrect-credentials": "Ang kombinasyon ng iyong buong pangalan at password na ibinigay ay hindi tugma. Subukan muli.",
+      "introduction": "Upang magamit ang iyong account, kailangan mag log-in gamit ang iyong username at password.",
+      "supply-password": "Ang iyong password:",
+      "supply-username": "Ang iyong username:"
+    },
+    "preprinted-qrcode": {
+      "error": "Ang na-scan na QR-code ay hindi magamit, gumamit ng iba pa.",
+      "info-qr": "Marami pang nilalaman na padating.",
+      "introduction": "Ii-scan ng Aidworker/Volunteer ang QR-code upang i-ugnay ang iyong impormasyon at ibigay ito sayo. Maingat na itabi ang iyong physical QR-code.",
+      "more-info-qr": "Tungkol sa QR-codes",
+      "no": "Hindi",
+      "question": "Mayroon bang  pre-printed QR-code ang Aidworker/Volunteer na pwedeng i-scan?",
+      "result-ok": "Ang na-scan na QR-code ay nakaugnay na saiyong account at personal na impormasyon. Ingatan ng mabuti ang iyong physical QR-code.",
+      "start-scanner": "Umpisahan ang Scanner",
+      "try-again": "Subukan muli",
+      "yes": "Oo"
+    },
+    "registration-summary": {
+      "documents": "Siguraduhing  nakahanda ang mga sumusunod na dokumento:",
+      "info-message": "Upang ma-activate ang iyong account  <br><br>Kapag nakagawa ka ng iyong account makakatanggap ka ng print out ng iyong digital ID na ganito ang itsura.<br>Kailangan mo itong dalhin at ang mga sumusunod na physical na dokumento sa baba upang mapagana ang iyong account.<br><ul><li> Ang iyong National Identity Catd</li></ul><br> Paano kung wala akong card? Kung gayon ay may 2 kang pagpipilian: <ol><li> Magdala ng sulat galing sa hepe na nagpapatunay ng pagkakakilanlan </li><li> Magdala ng X number (kailangan ang pangalan ng numero gaya ng BSN number) galing sa National Bureau of Registration. Maaaring bayaran ito sa halagang X.</li></ol>",
+      "more-info-documents": "Tungkol sa mga dokumentong ito",
+      "no-validation-conclusion": "Salamat. Ang iyong registration ay kumpleto na.<br><br> Dapat ay may matanggap kang SMS sa phone number na iyong binigay maya-maya lamang na nagpapatunay ng iyong registration.<br><br>Ipagbibigay alam sayo kung ang iyong aplikasyon ay matagumpay sa loob ng 14 na araw. <br><br>Ito na ang huling mensahe sa ngayon.",
+      "qr-code": "Ipakita ang QR-code sa aidworker pag hinanap.",
+      "validation-conclusion": "Salamat. Ang iyong rehistrasyon ay tapos na. Dapat ay may matanggap kang SMS sa numerong iyong binigay maya-maya lamang na nagpapatunay ng iyong rehistrasyon.<br><br>Magtatalaga ng pagkikita ang aidworker ng NGO upang patunayan ang iyong impormasyon, maaaring sa pamamagitan ng pagbisita sa iyong tahanan."
+    },
+    "select-fsp": {
+      "attributes": {
+        "error": "May maling nangyari. Subukan muli.",
+        "introduction": "Para sa option na ito, kinakailangan din namin ang mga sumusunod:",
+        "success": "Salamat. Ang iyong impormasyon ay nai-save na."
+      },
+      "conclusion": "Salamat. Ang napili mo ay '{{name}}'.",
+      "introduction": "Pumili kung paano mo nais matanggap ang iyong tulong, kung ikaw ay kasali sa programa."
+    },
+    "select-language": {
+      "result": "Salamat, ang napili mo ay {{language}}."
+    },
+    "select-program": {
+      "introduction": "Maaari mong gamitin ang app para mag-apply ng aid program. Pumili sa baba.",
+      "more-info-programs": "Tungkol sa aid program",
+      "no-published-programs": "Sa kasalukuyan ay walang programang available. Bumalik na lang sa susunod."
+    },
+    "set-notification-number": {
+      "conclusion-skipped": "Wala kang ibinigay na phone number kung saan maari ka naming maabot. Mag-log-in palagi-an upang makita ang mga updates.",
+      "conclusion-submitted": "Salamat. Makakatanggap ka ng abiso sa iyong phone number: {{phone}}",
+      "input-label": "Ang iyong phone number kasama ang country-code. Ganito dapat ang itsura, halimbawa:{{phoneNumberExample}}",
+      "introduction1": "Opsyonal ang paglalagay ng iyong phone number.",
+      "introduction2": "Gagamitin namin ito upang padalahan ka ng abiso sa text kung ikaw ay kabilang at kung kailan ka makakatanggap ng tulong.",
+      "introduction3": "Kung hindi mo nais ilagay ang iyong phone number, kinakailangan mong mag-log-in sa app na ito para sa mga updates.",
+      "introduction4": "Sa pagtatapos ng programang ito, buburahin namin ang iyong phone number.",
+      "skip": "Laktawan",
+      "submit": "Ipadala ang phone number",
+      "validation": {
+        "phone-number": "Hindi namin ma-verify ang phone number mo. I-update at subukan muli."
+      }
+    },
+    "signup-signin": {
+      "create-id": "Gumawa ng account",
+      "introduction": "Upang makasali sa aid program na ito, kinakailangang may account. Gumawa ng account o gamitin ang account na mayroon ka.",
+      "login-id": "Gamitin ang aking account"
+    },
+    "store-credential": {
+      "done": "Ang iyong Digital ID ay na-activate ng {{ngo}}.",
+      "received": "Ang iyong Digital ID ay natanggap na ng iyong device.",
+      "stored": "Ang Digital ID  ay nakalagay sa iyong wallet."
+    }
+  },
+  "q-and-a-set": {
+    "validation": {
+      "date": "Ang pormat ng petsa na iyong inilagay ay hindi tama. Ang tamang pormat halimbawa ay: 31-12-1970 sa sunod-sunod ay araw-buwan-taon, DD-MM-YYYY",
+      "email": "Ang email ay kinakailangan nasa tamang pormat. Halimbawa:'full.name@example.com'. Baguhin at subukan muli.",
+      "generic-error": "Hindi namin maproseso ang ilan sa iyong mga sagot. Suriin at i-update ang iyong mga sagot.",
+      "number": "Ang sagot ay dapat valid na numero. Baguhin at subukan muli.",
+      "phone-number": "Hindi namin makilala ang phone number na ito. Baguhin at subukan muli.",
+      "required": "Kailangan ng sagot sa tanong na ito. Ayusin at subukan muli."
+    }
+  },
+  "qr-scanner": {
+    "close": "Isarado",
+    "error-generic": "May maling nangyari.",
+    "error-no-permissions": "Bigyan ng permiso na magamit ang camera o suriin kung ito ay kasalukuyang ginagamit at subukan muli.",
+    "error-not-compatible": "Ang iyong device ay hindi mag-scan",
+    "switch-camera": "Buksan ang camera",
+    "title": "I-scan ang QR-code",
+    "toggle-flash": "Buksan ang flash-light",
+    "try-again": "Subukan muli"
+  },
+  "shared": {
+    "more-info": "Magbasa pa...",
+    "retry": "Subukan muli"
+  },
+  "tabs": {
+    "community": "Komunidad",
+    "you": "Ikaw"
+  }
+}
