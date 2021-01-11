@@ -1,11 +1,18 @@
+export enum LoggingEventCategory {
+  ai = 'AI',
+  error = 'error',
+}
+
 export enum LoggingEvent {
-  BackFromCategory = 'referral-back-from-category',
-  BackFromOffer = 'referral-back-from-offer',
-  BackFromSubCategory = 'referral-back-from-sub-category',
-  CategoryClick = 'referral-category-click',
-  FooterContactClick = 'referral-footer-contact-click',
-  FooterWhatsAppClick = 'referral-footer-whatsapp-click',
-  MainScreenClick = 'referral-main-screen-button-click',
-  OfferClick = 'referral-offer-click',
-  SubCategoryClick = 'referral-sub-category-click',
+  error = 'error',
+  exception = 'exception',
+  BackFromCategory = 'back-from-category',
+  BackFromOffer = 'back-from-offer',
+  BackFromSubCategory = 'back-from-sub-category',
+  CategoryClick = 'category-click',
+  FooterContactClick = 'footer-contact-click',
+  FooterWhatsAppClick = 'footer-whatsapp-click',
+  MainScreenClick = 'main-screen-button-click',
+  OfferClick = 'offer-click',
+  SubCategoryClick = 'sub-category-click',
 }
