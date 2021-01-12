@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { MockConversationService } from 'src/app/mocks/conversation.service.mock';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { SignupSigninComponent } from './signup-signin.component';
 
@@ -9,8 +10,6 @@ describe('SignupSigninComponent', () => {
   let fixture: ComponentFixture<SignupSigninComponent>;
 
   beforeEach(async(() => {
-    const conversationService = jasmine.createSpy();
-
     TestBed.configureTestingModule({
       declarations: [SignupSigninComponent],
       imports: [TranslateModule.forRoot()],
@@ -18,7 +17,7 @@ describe('SignupSigninComponent', () => {
       providers: [
         {
           provide: ConversationService,
-          useValue: conversationService,
+          useValue: MockConversationService,
         },
       ],
     }).compileComponents();

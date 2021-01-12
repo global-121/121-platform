@@ -3,6 +3,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { QRCodeModule } from 'angularx-qrcode';
+import { MockConversationService } from 'src/app/mocks/conversation.service.mock';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
@@ -13,12 +14,6 @@ describe('RegistrationSummaryComponent', () => {
   let fixture: ComponentFixture<RegistrationSummaryComponent>;
 
   beforeEach(async(() => {
-    const conversationService = jasmine.createSpyObj('ConversationService', {
-      startLoading: jasmine.createSpy(),
-      stopLoading: jasmine.createSpy(),
-      onSectionCompleted: jasmine.createSpy(),
-    });
-
     TestBed.configureTestingModule({
       declarations: [RegistrationSummaryComponent],
       imports: [
@@ -30,7 +25,7 @@ describe('RegistrationSummaryComponent', () => {
       providers: [
         {
           provide: ConversationService,
-          useValue: conversationService,
+          useValue: MockConversationService,
         },
         {
           provide: PaDataService,

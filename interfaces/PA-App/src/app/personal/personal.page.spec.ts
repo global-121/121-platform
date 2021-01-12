@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
+import { MockConversationService } from '../mocks/conversation.service.mock';
 import { MockIonicStorage } from '../mocks/ionic.storage.mock';
 import { ConversationService } from '../services/conversation.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
@@ -16,9 +17,6 @@ describe('PersonalPage', () => {
     const programsServiceApiService = jasmine.createSpyObj(
       'ProgramsServiceApiService',
     );
-    const conversationService = jasmine.createSpyObj('ConversationService', {
-      getConversationUpToNow: [{}, {}],
-    });
 
     TestBed.configureTestingModule({
       declarations: [PersonalPage],
@@ -31,7 +29,7 @@ describe('PersonalPage', () => {
         },
         {
           provide: ConversationService,
-          useValue: conversationService,
+          useValue: MockConversationService,
         },
         {
           provide: Storage,
