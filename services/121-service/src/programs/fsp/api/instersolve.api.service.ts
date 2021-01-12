@@ -9,7 +9,6 @@ import { IntersolveRequestEntity } from '../intersolve-request.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
-const appInsights = require('applicationinsights');
 
 @Injectable()
 export class IntersolveApiService {
@@ -18,11 +17,7 @@ export class IntersolveApiService {
     IntersolveRequestEntity
   >;
 
-  public constructor(private readonly soapService: SoapService) {
-    if (!!process.env.APPLICATION_INSIGHT_IKEY) {
-      appInsights.setup(process.env.APPLICATION_INSIGHT_IKEY);
-    }
-  }
+  public constructor(private readonly soapService: SoapService) {}
 
   // If we get one of these codes back from a cancel by refpos, stop cancelling
   private readonly stopCancelByRefposCodes = [
@@ -83,17 +78,6 @@ export class IntersolveApiService {
       intersolveRequest.balance = result.balance;
       intersolveRequest.transactionId = result.transactionId;
       intersolveRequest.toCancel = result.resultCode != IntersolveResultCode.Ok;
-
-      if (appInsights.defaultClient) {
-        appInsights.defaultClient.trackEvent({
-          name: 'fsp-intersolve_issue-card',
-          properties: {
-            amount,
-            resultCode: result.resultCode,
-            cardBalance: result.balance,
-          },
-        });
-      }
     } catch (Error) {
       console.log('Error: ', Error);
       intersolveRequest.toCancel = true;
