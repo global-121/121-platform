@@ -5,7 +5,7 @@
   "location": "Nederland",
   "ngo": "NLRC",
   "title": {
-    "en": "121 Digital Cash Aid Program"
+    "en": "121 Digital Cash Aid Program (PV)"
   },
   "description": {
     "en": ""
@@ -85,7 +85,7 @@
     {
       "criterium": "phoneNumber",
       "label": {
-        "tl": "Pakibahagi ng iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00 </code>",
+        "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>",
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>"
       },
       "placeholder": {
