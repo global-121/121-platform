@@ -6,11 +6,15 @@ export enum LoggingEventCategory {
 }
 
 export enum LoggingEvent {
-  audioPlay = 'audio-play',
   audioPause = 'audio-pause',
+  audioPlay = 'audio-play',
   error = 'error',
   exception = 'exception',
   languageChosen = 'language-chosen',
+  passwordInputToggle = 'password-input-toggle',
+  passwordNotEqual = 'password-not-equal',
+  passwordNotValid = 'password-not-valid',
   popUpOpen = 'pop-up-open',
   sectionCompleted = 'section-completed',
+  usernameNotUnique = 'username-not-unique',
 }

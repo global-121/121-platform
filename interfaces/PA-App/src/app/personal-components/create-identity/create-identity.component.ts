@@ -1,8 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { createRandomString } from 'src/app/helpers/createRandomString';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from 'src/app/models/logging-event.enum';
 import { PersonalComponent } from 'src/app/personal-components/personal-component.class';
 import { PersonalComponents } from 'src/app/personal-components/personal-components.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SovrinService } from 'src/app/services/sovrin.service';
@@ -36,6 +41,7 @@ export class CreateIdentityComponent extends PersonalComponent {
     public sovrinService: SovrinService,
     public programsServiceApiService: ProgramsServiceApiService,
     public paData: PaDataService,
+    private logger: LoggingService,
   ) {
     super();
     this.useLocalStorage = environment.localStorage;
@@ -86,6 +92,12 @@ export class CreateIdentityComponent extends PersonalComponent {
       this.initialInput = false;
       this.isInProgress = false;
       console.log('Username ✅; First password = Validation error. ⛔️');
+
+      this.logger.logEvent(
+        LoggingEventCategory.input,
+        LoggingEvent.passwordNotValid,
+      );
+
       return;
     }
 
@@ -103,6 +115,12 @@ export class CreateIdentityComponent extends PersonalComponent {
       console.log(
         'Username ✅; First password ✅; 2nd password ✅; Passwords not equal. ⛔️',
       );
+
+      this.logger.logEvent(
+        LoggingEventCategory.input,
+        LoggingEvent.passwordNotEqual,
+      );
+
       return;
     }
 
@@ -132,7 +150,10 @@ export class CreateIdentityComponent extends PersonalComponent {
         if (error.status === 400) {
           this.usernameNotUnique = true;
           this.isInProgress = false;
-          console.warn('Username is not unique');
+          this.logger.logEvent(
+            LoggingEventCategory.input,
+            LoggingEvent.usernameNotUnique,
+          );
         }
         console.warn('CreateAccount Error: ', error);
       },

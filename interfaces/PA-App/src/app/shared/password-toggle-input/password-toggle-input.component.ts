@@ -5,6 +5,11 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from 'src/app/models/logging-event.enum';
+import { LoggingService } from 'src/app/services/logging.service';
 
 @Component({
   selector: 'password-toggle-input',
@@ -47,7 +52,7 @@ export class PasswordToggleInputComponent {
 
   public inputType: 'password' | 'text' = 'text';
 
-  constructor() {}
+  constructor(private logger: LoggingService) {}
 
   isPassword() {
     return this.inputType === 'password';
@@ -55,6 +60,13 @@ export class PasswordToggleInputComponent {
 
   toggleInputType() {
     this.inputType = this.isPassword() ? 'text' : 'password';
+    this.logger.logEvent(
+      LoggingEventCategory.ui,
+      LoggingEvent.passwordInputToggle,
+      {
+        name: this.inputType === 'password' ? 'hide' : 'show',
+      },
+    );
   }
 
   private setValidity(state: boolean, emit = true) {
