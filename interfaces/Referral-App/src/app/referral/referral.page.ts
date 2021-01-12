@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from 'src/app/models/category.model';
-import { LoggingEvent } from 'src/app/models/logging-event.enum';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from 'src/app/models/logging-event.enum';
 import { Offer } from 'src/app/models/offer.model';
 import { ReferralPageData } from 'src/app/models/referral-page-data';
 import { SubCategory } from 'src/app/models/sub-category.model';
@@ -124,6 +127,7 @@ export class ReferralPage implements OnInit {
     this.subCategory = isBack ? null : this.getNextSubCategory(category);
     this.offer = null;
     this.loggingService.logEvent(
+      LoggingEventCategory.ai,
       LoggingEvent.CategoryClick,
       this.getLogProperties(isBack),
     );
@@ -139,6 +143,7 @@ export class ReferralPage implements OnInit {
     this.subCategory = subCategory;
     this.offer = null;
     this.loggingService.logEvent(
+      LoggingEventCategory.ai,
       LoggingEvent.SubCategoryClick,
       this.getLogProperties(isBack),
     );
@@ -153,6 +158,7 @@ export class ReferralPage implements OnInit {
   public clickOffer(offer: Offer, isBack: boolean = false) {
     this.offer = offer;
     this.loggingService.logEvent(
+      LoggingEventCategory.ai,
       LoggingEvent.OfferClick,
       this.getLogProperties(isBack),
     );
@@ -168,12 +174,14 @@ export class ReferralPage implements OnInit {
   goBack() {
     if (this.offer) {
       this.loggingService.logEvent(
+        LoggingEventCategory.ai,
         LoggingEvent.BackFromOffer,
         this.getLogProperties(true),
       );
       this.clickSubCategory(this.subCategory, true);
     } else if (this.subCategory) {
       this.loggingService.logEvent(
+        LoggingEventCategory.ai,
         LoggingEvent.BackFromSubCategory,
         this.getLogProperties(true),
       );
@@ -186,6 +194,7 @@ export class ReferralPage implements OnInit {
       }
     } else if (this.category) {
       this.loggingService.logEvent(
+        LoggingEventCategory.ai,
         LoggingEvent.BackFromCategory,
         this.getLogProperties(true),
       );
@@ -210,6 +219,7 @@ export class ReferralPage implements OnInit {
 
   showCategories() {
     this.loggingService.logEvent(
+      LoggingEventCategory.ai,
       LoggingEvent.MainScreenClick,
       this.getLogProperties(true),
     );
@@ -226,6 +236,10 @@ export class ReferralPage implements OnInit {
       event = LoggingEvent.FooterWhatsAppClick;
     }
 
-    this.loggingService.logEvent(event, this.getLogProperties(true));
+    this.loggingService.logEvent(
+      LoggingEventCategory.ai,
+      event,
+      this.getLogProperties(true),
+    );
   }
 }

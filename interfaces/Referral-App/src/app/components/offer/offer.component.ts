@@ -1,5 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { LoggingEvent } from 'src/app/models/logging-event.enum';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from 'src/app/models/logging-event.enum';
 import { Offer } from 'src/app/models/offer.model';
 import { LoggingService } from 'src/app/services/logging.service';
 
@@ -21,9 +24,13 @@ export class OfferComponent {
   constructor(private loggingService: LoggingService) {}
 
   public logClick(name) {
-    this.loggingService.logEvent(LoggingEvent.OfferClick, {
-      name,
-      offerName: this.offer.offerName,
-    });
+    this.loggingService.logEvent(
+      LoggingEventCategory.ai,
+      LoggingEvent.OfferClick,
+      {
+        name,
+        offerName: this.offer.offerName,
+      },
+    );
   }
 }

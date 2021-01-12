@@ -1,4 +1,8 @@
+export enum LoggingEventCategory {
+  error = 'error',
+}
+
 export enum LoggingEvent {
-  registrationStart = 'pa-registration-start',
-  registrationEnd = 'pa-registration-end',
+  error = 'error',
+  exception = 'exception',
 }
