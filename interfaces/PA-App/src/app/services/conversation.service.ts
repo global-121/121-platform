@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from '../models/logging-event.enum';
 import { PersonalComponents } from '../personal-components/personal-components.enum';
+import { LoggingService } from './logging.service';
 import { PaDataService } from './padata.service';
 
 @Injectable({
@@ -17,16 +22,15 @@ export class ConversationService {
 
   private updateConversationSource = new Subject<string>();
   public updateConversation$ = this.updateConversationSource.asObservable();
-  public conversationActions = {
-    afterLogin: 'after-login',
-  };
+  public conversationActions = ConversationActions;
 
   private shouldScrollSource = new Subject<number>();
   public shouldScroll$ = this.shouldScrollSource.asObservable();
 
-  constructor(private paData: PaDataService) {
-    console.log('ConversationService()');
-  }
+  constructor(
+    private paData: PaDataService,
+    private loggingService: LoggingService,
+  ) {}
 
   public async getConversationUpToNow(): Promise<ConversationSection[]> {
     this.startLoading();
@@ -125,6 +129,15 @@ export class ConversationService {
     if (section.next) {
       this.updateConversationSource.next(section.next);
     }
+
+    // Log result
+    this.loggingService.logEvent(
+      LoggingEventCategory.progress,
+      LoggingEvent.sectionCompleted,
+      {
+        name: section.name,
+      },
+    );
   }
 
   public async restoreAfterLogin() {
@@ -156,4 +169,8 @@ export class ConversationSection {
   moment?: number;
   data?: any;
   next?: string;
+}
+
+export enum ConversationActions {
+  afterLogin = 'after-login',
 }

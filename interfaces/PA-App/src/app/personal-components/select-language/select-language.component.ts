@@ -20,9 +20,9 @@ export class SelectLanguageComponent extends PersonalComponent {
   public languageChoiceName: string;
 
   constructor(
+    public conversationService: ConversationService,
     public paData: PaDataService,
     public translate: TranslateService,
-    public conversationService: ConversationService,
   ) {
     super();
   }
