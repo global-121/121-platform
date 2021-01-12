@@ -94,22 +94,25 @@ export class LoggingService {
         severityLevel,
       });
     }
-
     this.displayOnConsole(error, severityLevel);
   }
 
   public logEvent(
     category: LoggingEventCategory | string,
     action: LoggingEvent | string,
-    properties?: { [key: string]: any },
+    properties?: {
+      name?: string;
+      value?: number;
+      [key: string]: any;
+    },
   ): void {
     if (this.matomoEnabled) {
       window._paq.push([
         'trackEvent',
         category,
         action,
-        properties.name ? properties.name : null,
-        properties.value ? properties.value : null,
+        properties && properties.name ? properties.name : undefined,
+        properties && properties.value ? properties.name : undefined,
       ]);
     }
     if (this.appInsightsEnabled) {
@@ -128,7 +131,7 @@ export class LoggingService {
   public logException(exception: Error, severityLevel?: SeverityLevel): void {
     if (this.matomoEnabled) {
       this.logEvent(LoggingEventCategory.error, LoggingEvent.exception, {
-        exception,
+        exception: exception.message,
         severityLevel,
       });
     }
