@@ -11,5 +11,6 @@ export enum LoggingEvent {
   error = 'error',
   exception = 'exception',
   languageChosen = 'language-chosen',
+  popUpOpen = 'pop-up-open',
   sectionCompleted = 'section-completed',
 }

@@ -1,5 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from 'src/app/models/logging-event.enum';
+import { LoggingService } from 'src/app/services/logging.service';
 import { InfoPopupComponent } from '../info-popup/info-popup.component';
 
 @Component({
@@ -23,7 +28,10 @@ export class MoreInfoButtonComponent implements OnInit {
   @Input()
   messageKey: string;
 
-  constructor(private modalController: ModalController) {}
+  constructor(
+    private modalController: ModalController,
+    private logger: LoggingService,
+  ) {}
 
   ngOnInit() {}
 
@@ -37,6 +45,10 @@ export class MoreInfoButtonComponent implements OnInit {
         messageKey: this.messageKey,
       },
       cssClass: 'more-info-popup',
+    });
+
+    this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.popUpOpen, {
+      name: this.buttonKey,
     });
 
     return await infoPopup.present();
