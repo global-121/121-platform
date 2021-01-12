@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.15.2](https://github.com/global-121/121-platform/compare/v0.15.1...v0.15.2) - 2021-01-06
 
+### Changed
+- 2021-01-06: Use pre-built image for `tykn_indy_pool`/`indypool`-service from Docker Hub: <https://hub.docker.com/r/rodekruis510/121-indypool> 
+
 ## [0.15.1](https://github.com/global-121/121-platform/compare/v0.15.0...v0.15.1) - 2021-01-06
 
 ## [0.15.0](https://github.com/global-121/121-platform/compare/v0.14.0...v0.15.0) - 2021-01-06
@@ -25,9 +28,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 2020-12-30: Add Docker cleanup/prune-step to deploy-script for images >1 week old
 
 ### Changed
-- 2020-12-30: Use named-volumes for `node_modules` in `docker-compose.yml`
-- 2020-12-30: Updated dependency of 121-service;  
-  To update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
+- 2020-12-30: Use named-volumes for `node_modules` in `docker-compose.yml`  
+  This fixes/enables automatic installation of new dependencies of the back-end services (when pulling newer code).  
+  It is recommended to fully remove the `node_modules`-folders in the `121-service` and the `PA-accounts-service` folders before deploying this version.  
+  They will be recreated/updated by the build-steps in their `Dockerfile`'s and/or the `docker-compose`-file when running `npm run start:services` from the root-folder.
 
 ---
 
