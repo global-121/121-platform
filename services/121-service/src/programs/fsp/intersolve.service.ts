@@ -34,7 +34,6 @@ export class IntersolveService {
   private readonly connectionRepository: Repository<ConnectionEntity>;
 
   private readonly programId = 1;
-  private readonly language = 'en';
 
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
@@ -176,9 +175,13 @@ export class IntersolveService {
     // Also store in 2nd table in case of whatsApp (for exporting voucher in case of lost phone)
     await this.imageCodeService.createBarcodeExportVouchers(barcodeData, did);
 
+    const language = (
+      await this.connectionRepository.findOne({ where: { did: did } })
+    ).preferredLanguage;
+
     try {
       const whatsappPayment =
-        program.notifications[this.language]['whatsappPayment'];
+        program.notifications[language]['whatsappPayment'];
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,
         phoneNumber,

@@ -5,8 +5,8 @@ import { Module } from '@nestjs/common';
 import { IntersolveBarcodeEntity } from '../programs/fsp/intersolve-barcode.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { WhatsappModule } from '../notifications/whatsapp/whatsapp.module';
-import { IntersolveApiService } from '../programs/fsp/api/instersolve.api.service';
 import { IntersolveRequestEntity } from '../programs/fsp/intersolve-request.entity';
+import { ConnectionEntity } from '../sovrin/create-connection/connection.entity';
 
 @Module({
   imports: [
@@ -14,6 +14,7 @@ import { IntersolveRequestEntity } from '../programs/fsp/intersolve-request.enti
       IntersolveBarcodeEntity,
       ProgramEntity,
       IntersolveRequestEntity,
+      ConnectionEntity,
     ]),
     WhatsappModule,
     FspModule,
