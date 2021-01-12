@@ -29,7 +29,6 @@ export class WhatsappService {
   private readonly programRepository: Repository<ProgramEntity>;
 
   private readonly programId = 1;
-  private readonly language = 'en';
 
   public constructor(private readonly imageCodeService: ImageCodeService) {}
 
@@ -115,6 +114,10 @@ export class WhatsappService {
   public async handleIncoming(callbackData): Promise<void> {
     const fromNumber = callbackData.From.replace('whatsapp:+', '');
 
+    const language = (await this.connectionRepository.find()).filter(
+      c => c.customData['whatsappPhoneNumber'] === fromNumber,
+    )[0].preferredLanguage;
+
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     const intersolveBarcode = await this.intersolveBarcodeRepository.findOne({
       where: { whatsappPhoneNumber: fromNumber, send: false },
@@ -124,7 +127,7 @@ export class WhatsappService {
         intersolveBarcode,
       );
       await this.sendWhatsapp(
-        program.notifications[this.language]['whatsappVoucher'],
+        program.notifications[language]['whatsappVoucher'],
         intersolveBarcode.whatsappPhoneNumber,
         mediaUrl,
       );
@@ -138,8 +141,7 @@ export class WhatsappService {
       await this.intersolveBarcodeRepository.save(intersolveBarcode);
       await this.insertTransactionIntersolve(intersolveBarcode);
     } else {
-      const whatsappReply =
-        program.notifications[this.language]['whatsappReply'];
+      const whatsappReply = program.notifications[language]['whatsappReply'];
       await this.sendWhatsapp(whatsappReply, fromNumber, null);
     }
   }

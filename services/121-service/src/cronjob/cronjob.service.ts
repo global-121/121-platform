@@ -7,6 +7,7 @@ import { ProgramEntity } from '../programs/program/program.entity';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolveRequestEntity } from '../programs/fsp/intersolve-request.entity';
 import { IntersolveApiService } from '../programs/fsp/api/instersolve.api.service';
+import { ConnectionEntity } from '../sovrin/create-connection/connection.entity';
 
 @Injectable()
 export class CronjobService {
@@ -18,6 +19,8 @@ export class CronjobService {
   private readonly intersolveRequestRepository: Repository<
     IntersolveRequestEntity
   >;
+  @InjectRepository(ConnectionEntity)
+  private readonly connectionRepository: Repository<ConnectionEntity>;
 
   public constructor(
     private whatsappService: WhatsappService,
@@ -29,7 +32,6 @@ export class CronjobService {
     console.log('Execution Started: cronSendWhatsappReminders');
 
     const programId = 1;
-    const language = 'en';
     const sixteenHours = 16 * 60 * 60 * 1000;
     const sixteenHoursAgo = (d =>
       new Date(d.setTime(d.getTime() - sixteenHours)))(new Date());
@@ -42,9 +44,13 @@ export class CronjobService {
     );
 
     unsentIntersolveBarcodes.forEach(async unsentIntersolveBarcode => {
+      const fromNumber = unsentIntersolveBarcode.whatsappPhoneNumber;
+      const language = (await this.connectionRepository.find()).filter(
+        c => c.customData['whatsappPhoneNumber'] === fromNumber,
+      )[0].preferredLanguage;
       const whatsappPayment =
         program.notifications[language]['whatsappPayment'];
-      const fromNumber = unsentIntersolveBarcode.whatsappPhoneNumber;
+
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,
         fromNumber,
