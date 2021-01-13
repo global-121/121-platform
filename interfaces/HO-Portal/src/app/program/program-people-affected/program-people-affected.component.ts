@@ -153,6 +153,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       draggable: false,
       resizeable: false,
       sortable: true,
+      frozenLeft: false,
       phases: [
         ProgramPhase.registrationValidation,
         ProgramPhase.inclusion,
@@ -175,6 +176,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...this.columnDefaults,
         width: 85,
+        frozenLeft: true,
       },
       {
         prop: 'name',
@@ -182,6 +184,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.name',
         ),
         ...this.columnDefaults,
+        frozenLeft: true,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         roles: [UserRole.ProgramManager],
       },
@@ -191,6 +194,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.phone-number',
         ),
         ...this.columnDefaults,
+        frozenLeft: true,
         phases: [
           ProgramPhase.registrationValidation,
           ProgramPhase.inclusion,
@@ -207,6 +211,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...this.columnDefaults,
         width: 90,
+        frozenLeft: true,
       },
       {
         prop: 'digitalIdCreated',

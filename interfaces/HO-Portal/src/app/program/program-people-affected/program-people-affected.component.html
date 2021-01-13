@@ -31,7 +31,6 @@
   #people
   class="bootstrap"
   limit="250"
-  columnMode="fixed"
   rowHeight="auto"
   scrollbarH="true"
   headerHeight="50"
@@ -42,8 +41,6 @@
   [columns]="columns"
   [rows]="allPeopleAffected"
   selectionType="checkbox"
-  checkboxable="true"
-  headerCheckboxable="true"
   [displayCheck]="isRowSelectable"
   [selected]="selectedPeople"
   (select)="onSelect($event.selected)"
@@ -53,6 +50,7 @@
     prop="selected"
     width="75"
     resizable="false"
+    frozenLeft="true"
     headerClass="ion-align-self-end"
   >
     <ng-template
@@ -102,6 +100,7 @@
     [canAutoResize]="column.canAutoResize"
     [headerClass]="column.headerClass"
     [cellClass]="column.cellClass"
+    [frozenLeft]="column.frozenLeft"
   ></ngx-datatable-column>
 
   <ngx-datatable-column
