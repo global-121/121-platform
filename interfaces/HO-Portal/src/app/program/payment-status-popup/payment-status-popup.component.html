@@ -1,6 +1,32 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ title }}</ion-title>
+    <ion-title>
+      <ng-container *ngIf="titleError">
+        {{ titleError }}
+      </ng-container>
+      <ng-container *ngIf="titleMessageIcon && !titleError">
+        <ion-icon
+          *ngIf="titleMessageIcon"
+          name="mail"
+          size="small"
+          aria-hidden="true"
+          style="vertical-align: middle;"
+        >
+        </ion-icon>
+        {{ titleMessageIcon }}
+        <br>
+      </ng-container>
+      <ng-container *ngIf="titleMoneyIcon && !titleError">
+        <ion-icon
+          name="cash"
+          size="small"
+          aria-hidden="true"
+          style="vertical-align: middle;"
+        >
+        </ion-icon>
+        {{ titleMoneyIcon }}
+      </ng-container>
+    </ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="closeModal()"

@@ -1,6 +1,8 @@
 .status-pop-up {
   background: transparent;
-  border: 0;
+  border: 1px solid currentColor;
+  font-family: var(--ion-font-family);
+  font-size: inherit;
 
   &:hover,
   &:focus {

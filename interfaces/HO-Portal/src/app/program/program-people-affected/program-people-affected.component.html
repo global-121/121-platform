@@ -147,7 +147,19 @@
       <ng-container
         *ngIf="value && !hasVoucherSupport(row.fsp) && !hasError(row, column.installmentIndex)"
       >
-        {{ value }}
+        {{ value.text }}
+        <br>
+        <ion-icon
+          *ngIf="value.hasMessageIcon"
+          name="mail" size="small"
+          aria-hidden="true">
+        </ion-icon>
+        <ion-icon
+          *ngIf="value.hasMoneyIconTable"
+          name="cash"
+          size="small"
+          aria-hidden="true">
+        </ion-icon>
       </ng-container>
       <ng-container
         *ngIf="value && (hasVoucherSupport(row.fsp) || hasError(row, column.installmentIndex))"
@@ -163,13 +175,21 @@
           [attr.title]="'page.program.program-people-affected.transaction.show-status'|translate"
           [attr.aria-label]="'page.program.program-people-affected.transaction.show-status'|translate"
         >
-          {{ value }}
+          {{ value.text }}
+          <br>
           <ion-icon
-            name="open"
+            *ngIf="value.hasMessageIcon"
+            name="mail" size="small"
+            aria-hidden="true"
+            style="vertical-align: left;">
+          </ion-icon>
+          <ion-icon
+            *ngIf="value.hasMoneyIconTable"
+            name="cash"
             size="small"
             aria-hidden="true"
-            style="vertical-align: middle;"
-          ></ion-icon>
+            style="vertical-align: left;">
+          </ion-icon>
         </button>
       </ng-container>
     </ng-template>

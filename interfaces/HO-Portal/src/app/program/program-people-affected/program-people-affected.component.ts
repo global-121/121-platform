@@ -7,6 +7,7 @@ import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { RetryPayoutDetails } from 'src/app/models/installment.model';
 import { Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { StatusEnum } from 'src/app/models/status.enum';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
@@ -511,16 +512,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         return;
       }
 
-      let paymentColumnValue;
+      let paymentColumnText;
 
-      if (transaction.status === 'success') {
-        paymentColumnValue = formatDate(
+      if (transaction.status === StatusEnum.success) {
+        paymentColumnText = formatDate(
           transaction.installmentDate,
           this.dateFormat,
           this.locale,
         );
-      } else if (transaction.status === 'waiting') {
-        paymentColumnValue = this.translate.instant(
+      } else if (transaction.status === StatusEnum.waiting) {
+        paymentColumnText = this.translate.instant(
           'page.program.program-people-affected.transaction.waiting',
         );
       } else {
@@ -528,16 +529,44 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           transaction.error;
         personRow['payment' + paymentColumn.installmentIndex + '-amount'] =
           transaction.amount;
-        paymentColumnValue = this.translate.instant(
+        paymentColumnText = this.translate.instant(
           'page.program.program-people-affected.transaction.failed',
         );
       }
 
+      const paymentColumnValue = {
+        text: paymentColumnText,
+        hasMessageIcon: this.enableMessageSentIcon(transaction),
+        hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
+      };
       personRow[
         'payment' + paymentColumn.installmentIndex
       ] = paymentColumnValue;
     });
     return personRow;
+  }
+
+  public enableMessageSentIcon(transaction: any) {
+    if (
+      transaction.customData &&
+      ['InitialMessage', 'VoucherSent'].includes(
+        transaction.customData.IntersolvePayoutStatus,
+      )
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  public enableMoneySentIconTable(transaction: any) {
+    if (
+      (!transaction.customData.IntersolvePayoutStatus ||
+        transaction.customData.IntersolvePayoutStatus === 'VoucherSent') &&
+      transaction.status === StatusEnum.success
+    ) {
+      return true;
+    }
+    return false;
   }
 
   public hasVoucherSupport(fsp: string) {
@@ -549,7 +578,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return !!row['payment' + installmentIndex + '-error'];
   }
 
-  public async statusPopup(row: PersonRow, column, value: string) {
+  public async statusPopup(row: PersonRow, column, value) {
+    console.log('value in status popup: ', value);
     const hasError = this.hasError(row, column.installmentIndex);
     const content = hasError
       ? this.translate.instant(
@@ -568,14 +598,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         )
       : null;
     const retryButton = hasError ? true : false;
-    const payoutDetails: RetryPayoutDetails = hasError
-      ? {
-          programId: this.programId,
-          installment: column.installmentIndex,
-          amount: row[column.prop + '-amount'],
-          did: row.did,
-        }
-      : null;
+    const payoutDetails: RetryPayoutDetails =
+      hasError || value.hasMessageIcon || value.hasMoneyIconTable
+        ? {
+            programId: this.programId,
+            installment: column.installmentIndex,
+            amount: row[column.prop + '-amount'],
+            did: row.did,
+          }
+        : null;
     let voucherUrl = null;
 
     if (this.hasVoucherSupport(row.fsp) && !hasError && !!value) {
@@ -586,10 +617,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       voucherUrl = window.URL.createObjectURL(voucherBlob);
     }
 
+    const titleError = hasError ? `${column.name}: ${value.text}` : null;
+    const titleMessageIcon = value.hasMessageIcon ? `${column.name}: ` : null;
+    const titleMoneyIcon = value.hasMoneyIconTable ? `${column.name}: ` : null;
+
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentStatusPopupComponent,
       componentProps: {
-        title: `${column.name}: ${value}`,
+        titleMessageIcon,
+        titleMoneyIcon,
+        titleError,
         content,
         contentNotes,
         retryButton,

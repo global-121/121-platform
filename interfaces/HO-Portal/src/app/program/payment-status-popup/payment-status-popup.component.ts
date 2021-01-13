@@ -1,9 +1,12 @@
+import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { RetryPayoutDetails } from 'src/app/models/installment.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
+import { StatusEnum } from './../../models/status.enum';
 
 @Component({
   selector: 'app-payment-status-popup',
@@ -11,6 +14,13 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   styleUrls: ['./payment-status-popup.component.scss'],
 })
 export class PaymentStatusPopupComponent implements OnInit {
+  public titleMessageIcon: string;
+  public titleMoneyIcon: string;
+  public titleError: string;
+
+  private locale: string;
+  private dateFormat = 'yyyy-MM-dd, HH:mm';
+
   public title: string;
   public content: any;
   public contentNotes: any;
@@ -26,9 +36,16 @@ export class PaymentStatusPopupComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
-  ) {}
+  ) {
+    this.locale = environment.defaultLocale;
+  }
 
-  ngOnInit() {
+  async ngOnInit() {
+    if (this.payoutDetails) {
+      this.titleMessageIcon = await this.getMessageTitle();
+      this.titleMoneyIcon = await this.getMoneyTitle();
+    }
+
     if (this.imageUrl) {
       this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         this.imageUrl,
@@ -38,6 +55,53 @@ export class PaymentStatusPopupComponent implements OnInit {
 
   public closeModal() {
     this.modalController.dismiss();
+  }
+
+  public async getMessageTitle() {
+    const intersolveMessageTime = await this.getTransactionTime(
+      'IntersolvePayoutStatus',
+      'InitialMessage',
+    );
+    console.log('intersolveMessageTime: ', intersolveMessageTime);
+    if (intersolveMessageTime) {
+      return `Payment #${this.payoutDetails.installment}: ${intersolveMessageTime}`;
+    }
+  }
+
+  public async getMoneyTitle() {
+    const intersolveMoneyTime = await this.getTransactionTime(
+      'IntersolvePayoutStatus',
+      'VoucherSent',
+    );
+    if (intersolveMoneyTime) {
+      return `Payment #${this.payoutDetails.installment}: ${intersolveMoneyTime}`;
+    }
+    const otherMoneyTime = await this.getTransactionTime('', '');
+    if (otherMoneyTime) {
+      return `Payment #${this.payoutDetails.installment}: ${otherMoneyTime}`;
+    }
+    if (this.titleMessageIcon) {
+      return `Payment #${this.payoutDetails.installment}: `;
+    }
+    return '';
+  }
+
+  public async getTransactionTime(customKey: string, customValue: string) {
+    const transaction = await this.programsService.getTransaction(
+      this.payoutDetails.did,
+      Number(this.payoutDetails.programId),
+      Number(this.payoutDetails.installment),
+      customKey,
+      customValue,
+    );
+    console.log('transaction: getTransactionTime ', transaction);
+    if (transaction && transaction.status === StatusEnum.success) {
+      return formatDate(
+        transaction.installmentDate,
+        this.dateFormat,
+        this.locale,
+      );
+    }
   }
 
   public async retryPayment() {
