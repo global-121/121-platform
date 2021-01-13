@@ -15,6 +15,8 @@ export enum LoggingEvent {
   passwordNotEqual = 'password-not-equal',
   passwordNotValid = 'password-not-valid',
   popUpOpen = 'pop-up-open',
+  qaAnswerNotValid = 'qa-answer-not-valid',
+  qaQuestionShown = 'qa-question-shown',
   sectionCompleted = 'section-completed',
   usernameNotUnique = 'username-not-unique',
 }
