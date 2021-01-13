@@ -4,21 +4,11 @@
   $body-color--even: #f2f2f2;
   $body-color--active: #1483ff;
 
-  .datatable-header {
-    .datatable-header-cell {
-      background-color: $body-color--odd;
-      border-bottom: 1px solid $border-color;
-    }
-  }
-
   /* Mark the 'end' of the fixed/pinned columns:  */
   .datatable-row-left {
     display: flex; // Allow to vertically stretch/align
-
-    .datatable-header-cell:last-of-type,
-    .datatable-body-cell:last-of-type {
-      border-right: 1px solid $border-color;
-    }
+    background-color: $body-color--odd;
+    border-right: 1px solid $border-color;
   }
 
   .datatable-body {
