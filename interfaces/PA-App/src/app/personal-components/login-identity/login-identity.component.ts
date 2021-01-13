@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { PersonalComponent } from '../personal-component.class';
+import { LoggingService } from 'src/app/services/logging.service';
+import { LoggingEventCategory, LoggingEvent } from 'src/app/models/logging-event.enum';
 
 @Component({
   selector: 'app-login-identity',
@@ -21,6 +23,7 @@ export class LoginIdentityComponent extends PersonalComponent {
   constructor(
     public conversationService: ConversationService,
     public paData: PaDataService,
+    private logger: LoggingService,
   ) {
     super();
 
@@ -33,11 +36,9 @@ export class LoginIdentityComponent extends PersonalComponent {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   public async submitLoginCredentials(username: string, password: string) {
-    console.log('submitCredentials()', username, password);
-
     this.conversationService.startLoading();
 
     await this.paData.login(username, password).then(
@@ -45,6 +46,10 @@ export class LoginIdentityComponent extends PersonalComponent {
         this.incorrectCredentials = false;
         this.isInProgress = true;
         this.complete();
+        this.logger.logEvent(
+          LoggingEventCategory.ui,
+          LoggingEvent.loginSucces,
+        );
       },
       (error) => {
         this.conversationService.stopLoading();
@@ -55,6 +60,13 @@ export class LoginIdentityComponent extends PersonalComponent {
         } else {
           console.log('Other error: ', error.status);
         }
+        this.logger.logEvent(
+          LoggingEventCategory.ui,
+          LoggingEvent.loginFail,
+          {
+            name: error.status,
+          },
+        );
       },
     );
   }

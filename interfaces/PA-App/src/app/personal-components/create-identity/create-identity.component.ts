@@ -144,6 +144,10 @@ export class CreateIdentityComponent extends PersonalComponent {
         await this.executeSovrinFlow();
         this.conversationService.stopLoading();
         this.complete();
+        this.logger.logEvent(
+          LoggingEventCategory.ui,
+          LoggingEvent.accountCreated,
+        );
       },
       (error) => {
         this.conversationService.stopLoading();

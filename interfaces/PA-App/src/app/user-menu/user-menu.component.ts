@@ -6,6 +6,9 @@ import {
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { PaDataService } from 'src/app/services/padata.service';
+import { LoggingService } from 'src/app/services/logging.service';
+import { LoggingEventCategory, LoggingEvent } from 'src/app/models/logging-event.enum';
+
 
 @Component({
   selector: 'app-user-menu',
@@ -24,7 +27,8 @@ export class UserMenuComponent implements OnInit {
     private translate: TranslateService,
     private alertController: AlertController,
     private loadingController: LoadingController,
-  ) {}
+    private logger: LoggingService,
+  ) { }
 
   async ngOnInit() {
     this.isLoggedIn = this.paData.hasAccount;
@@ -38,6 +42,10 @@ export class UserMenuComponent implements OnInit {
   logout() {
     this.paData.logout();
     this.close();
+    this.logger.logEvent(
+      LoggingEventCategory.ui,
+      LoggingEvent.logout,
+    );
     window.location.reload();
   }
 
@@ -101,6 +109,10 @@ export class UserMenuComponent implements OnInit {
           this.translate.instant('account.delete-success'),
           true,
         );
+        this.logger.logEvent(
+          LoggingEventCategory.ui,
+          LoggingEvent.acccountDeleteSucces,
+        );
       },
       (error) => {
         this.loadingDelete.dismiss();
@@ -120,6 +132,13 @@ export class UserMenuComponent implements OnInit {
           console.error(error);
           this.showDeleteResult(this.translate.instant('account.delete-fail'));
         }
+        this.logger.logEvent(
+          LoggingEventCategory.ui,
+          LoggingEvent.acccountDeleteFail,
+          {
+            name: error.status,
+          },
+        );
       },
     );
   }
