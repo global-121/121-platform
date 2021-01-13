@@ -114,9 +114,17 @@ export class WhatsappService {
   public async handleIncoming(callbackData): Promise<void> {
     const fromNumber = callbackData.From.replace('whatsapp:+', '');
 
-    const language = (await this.connectionRepository.find()).filter(
-      c => c.customData['whatsappPhoneNumber'] === fromNumber,
-    )[0].preferredLanguage;
+    let language = 'en';
+    try {
+      language = (await this.connectionRepository.find()).filter(
+        c => c.customData['whatsappPhoneNumber'] === fromNumber,
+      )[0].preferredLanguage;
+    } catch (Error) {
+      console.log(
+        'Incomming whatsapp from non registered user phone: ',
+        fromNumber,
+      );
+    }
 
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     const intersolveBarcode = await this.intersolveBarcodeRepository.findOne({
