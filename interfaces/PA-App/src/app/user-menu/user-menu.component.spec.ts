@@ -8,6 +8,8 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { PaDataService } from 'src/app/services/padata.service';
+import { LoggingService } from '../services/logging.service';
+import { MockLoggingService } from './../mocks/logging.service.mock';
 import { UserMenuComponent } from './user-menu.component';
 
 describe('UserMenuComponent', () => {
@@ -32,6 +34,10 @@ describe('UserMenuComponent', () => {
         },
         {
           provide: LoadingController,
+        },
+        {
+          provide: LoggingService,
+          useValue: MockLoggingService,
         },
       ],
     }).compileComponents();

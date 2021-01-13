@@ -5,7 +5,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MockConversationService } from 'src/app/mocks/conversation.service.mock';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
+import { MockLoggingService } from './../../mocks/logging.service.mock';
 import { LoginIdentityComponent } from './login-identity.component';
 
 describe('LoginIdentityComponent', () => {
@@ -25,6 +27,10 @@ describe('LoginIdentityComponent', () => {
         {
           provide: PaDataService,
           useValue: MockPaDataService,
+        },
+        {
+          provide: LoggingService,
+          useValue: MockLoggingService,
         },
       ],
     }).compileComponents();
