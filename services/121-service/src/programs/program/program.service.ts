@@ -1064,7 +1064,7 @@ export class ProgramService {
     });
 
     const response = {
-      fileName: `payment-details-${installmentTime}-installment-${programId}.csv`,
+      fileName: `payment-details-${installmentTime}-installment-${installmentId}.csv`,
       data: this.jsonToCsv(paymentDetails),
     };
 
@@ -1088,27 +1088,25 @@ export class ProgramService {
     installment: number | null = null,
     userId: number,
   ): Promise<any> {
+    this.actionService.saveAction(userId, programId, type);
     switch (type) {
+      case ExportType.allPeopleAffected: {
+        return this.getAllPeopleAffectedList(programId);
+      }
       case ExportType.included: {
-        this.actionService.saveAction(userId, programId, ExportType.included);
         return this.getInclusionList(programId);
       }
       case ExportType.selectedForValidation: {
-        this.actionService.saveAction(
-          userId,
-          programId,
-          ExportType.selectedForValidation,
-        );
         return this.getSelectedForValidationList(programId);
       }
       case ExportType.payment: {
-        this.actionService.saveAction(userId, programId, ExportType.payment);
         return this.getPaymentDetails(programId, installment);
       }
       case ExportType.unusedVouchers: {
         return this.getUnusedVouchers();
       }
     }
+    this.actionService.saveAction(userId, programId, type);
   }
 
   private async getConnectionsWithStatus(
@@ -1118,6 +1116,31 @@ export class ProgramService {
     return (await this.getConnections(programId, true)).filter(
       i => i.status === status,
     );
+  }
+
+  private async getAllPeopleAffectedList(programId: number): Promise<any> {
+    const connections = await this.getAllConnections(programId);
+
+    const connectionDetails = [];
+    connections.forEach(rawConnection => {
+      let row = {
+        name: this.getName(rawConnection.customData),
+        phoneNumber: rawConnection.customData['phoneNumber'],
+        whatsappPhoneNumber: rawConnection.customData['whatsappPhoneNumber'],
+        vnumber: rawConnection.customData['vnumber'],
+        status: this.getPaStatus(rawConnection, +programId),
+        createdDate: rawConnection.created,
+        registrationDate: rawConnection.appliedDate,
+      };
+      connectionDetails.push(row);
+    });
+    const filteredColumnDetails = this.filterUnusedColumn(connectionDetails);
+    const response = {
+      fileName: `people-affected-list.csv`,
+      data: this.jsonToCsv(filteredColumnDetails),
+    };
+
+    return response;
   }
 
   private async getInclusionList(programId: number): Promise<any> {
@@ -1148,7 +1171,7 @@ export class ProgramService {
     });
     const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
     const response = {
-      fileName: `inclusion-list-program-${programId}.csv`,
+      fileName: `inclusion-list.csv`,
       data: this.jsonToCsv(filteredColumnDetails),
     };
 
@@ -1179,7 +1202,7 @@ export class ProgramService {
     }
     const filteredColumnDetails = this.filterUnusedColumn(columnDetails);
     const response = {
-      fileName: `selected-for-validation-list-program-${programId}.csv`,
+      fileName: `selected-for-validation-list.csv`,
       data: this.jsonToCsv(filteredColumnDetails),
     };
 

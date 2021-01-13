@@ -13,6 +13,7 @@ export class ExportDetails {
 }
 
 export enum ExportType {
+  allPeopleAffected = 'all-people-affected',
   included = 'included',
   selectedForValidation = 'selected-for-validation',
   payment = 'payment',
