@@ -1,4 +1,3 @@
-import { MockLoggingService } from './../mocks/logging.service.mock';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import {
@@ -9,8 +8,9 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { PaDataService } from 'src/app/services/padata.service';
-import { UserMenuComponent } from './user-menu.component';
 import { LoggingService } from '../services/logging.service';
+import { MockLoggingService } from './../mocks/logging.service.mock';
+import { UserMenuComponent } from './user-menu.component';
 
 describe('UserMenuComponent', () => {
   let component: UserMenuComponent;
