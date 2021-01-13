@@ -1,15 +1,19 @@
 .status-pop-up {
-  background: transparent;
-  border: 1px solid currentColor;
+  padding: 0.2em 0.4em;
   font-family: var(--ion-font-family);
   font-size: inherit;
+  background: transparent;
+  border: 1px solid #bbb;
+  border-radius: 0.3em;
 
   &:hover,
   &:focus {
     color: var(--ion-color-primary);
+    border-color: currentColor;
   }
 
   &.is-error {
     color: var(--ion-color-danger);
+    border-color: currentColor;
   }
 }
