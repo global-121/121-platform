@@ -1,6 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from 'src/app/models/logging-event.enum';
 import { ConversationService } from 'src/app/services/conversation.service';
+import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { environment } from 'src/environments/environment';
 import { PersonalComponent } from '../personal-component.class';
@@ -23,6 +28,7 @@ export class SelectLanguageComponent extends PersonalComponent {
     public conversationService: ConversationService,
     public paData: PaDataService,
     public translate: TranslateService,
+    private logger: LoggingService,
   ) {
     super();
   }
@@ -80,6 +86,13 @@ export class SelectLanguageComponent extends PersonalComponent {
 
   public submitLanguage() {
     this.complete();
+    this.logger.logEvent(
+      LoggingEventCategory.input,
+      LoggingEvent.languageChosen,
+      {
+        name: this.languageChoice,
+      },
+    );
   }
 
   getNextSection() {

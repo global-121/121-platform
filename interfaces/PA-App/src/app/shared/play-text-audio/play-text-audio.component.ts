@@ -1,6 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Howl } from 'howler';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from 'src/app/models/logging-event.enum';
+import { LoggingService } from 'src/app/services/logging.service';
 import { environment } from 'src/environments/environment';
 
 const enum PlayerState {
@@ -39,7 +44,10 @@ export class PlayTextAudioComponent implements OnInit {
     pause: 'Pause';
   };
 
-  constructor(private translate: TranslateService) {
+  constructor(
+    private translate: TranslateService,
+    private logger: LoggingService,
+  ) {
     this.labels = {
       loading: this.translate.instant('speak-text.loading'),
       play: this.translate.instant('speak-text.play'),
@@ -90,10 +98,16 @@ export class PlayTextAudioComponent implements OnInit {
       case PlayerState.playing:
         this.player.pause();
         this.setState(PlayerState.paused);
+        this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.audioPause, {
+          name: this.key,
+        });
         break;
       default:
         this.player.play();
         this.setState(PlayerState.playing);
+        this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.audioPlay, {
+          name: this.key,
+        });
     }
   }
 

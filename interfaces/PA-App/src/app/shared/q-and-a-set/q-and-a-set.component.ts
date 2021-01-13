@@ -10,12 +10,17 @@ import {
 } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from 'src/app/models/logging-event.enum';
+import {
   Answer,
   AnswerSet,
   AnswerType,
   Question,
   QuestionOption,
 } from 'src/app/models/q-and-a.models';
+import { LoggingService } from 'src/app/services/logging.service';
 import { DialogueTurnComponent } from '../dialogue-turn/dialogue-turn.component';
 
 @Component({
@@ -59,7 +64,7 @@ export class QAndASetComponent implements OnChanges {
 
   public validationErrors: string[] = [];
 
-  constructor() {}
+  constructor(private logger: LoggingService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     // Wait for questions to finish loading, to only THEN parse the provided ansers:
@@ -148,6 +153,12 @@ export class QAndASetComponent implements OnChanges {
 
     if (questionTurn) {
       questionTurn.show();
+
+      this.logger.logEvent(
+        LoggingEventCategory.input,
+        LoggingEvent.qaQuestionShown,
+        { name: `index: ${index}` },
+      );
     }
   }
 
@@ -162,6 +173,15 @@ export class QAndASetComponent implements OnChanges {
   ) {
     if (validity !== true) {
       this.addValidationError(questionCode);
+
+      this.logger.logEvent(
+        LoggingEventCategory.input,
+        LoggingEvent.qaAnswerNotValid,
+        {
+          name: `type: ${this.getQuestionByCode(questionCode).answerType}`,
+          code: questionCode,
+        },
+      );
       return;
     }
 

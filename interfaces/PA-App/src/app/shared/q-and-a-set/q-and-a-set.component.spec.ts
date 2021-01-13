@@ -2,6 +2,8 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { MockLoggingService } from 'src/app/mocks/logging.service.mock';
+import { LoggingService } from 'src/app/services/logging.service';
 import { QAndASetComponent } from './q-and-a-set.component';
 
 describe('QAndASetComponent', () => {
@@ -13,6 +15,12 @@ describe('QAndASetComponent', () => {
       declarations: [QAndASetComponent],
       imports: [TranslateModule.forRoot(), FormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      providers: [
+        {
+          provide: LoggingService,
+          useValue: MockLoggingService,
+        },
+      ],
     }).compileComponents();
   }));
 

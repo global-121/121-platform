@@ -27,10 +27,7 @@ export class ConversationService {
   private shouldScrollSource = new Subject<number>();
   public shouldScroll$ = this.shouldScrollSource.asObservable();
 
-  constructor(
-    private paData: PaDataService,
-    private loggingService: LoggingService,
-  ) {}
+  constructor(private paData: PaDataService, private logger: LoggingService) {}
 
   public async getConversationUpToNow(): Promise<ConversationSection[]> {
     this.startLoading();
@@ -131,7 +128,7 @@ export class ConversationService {
     }
 
     // Log result
-    this.loggingService.logEvent(
+    this.logger.logEvent(
       LoggingEventCategory.progress,
       LoggingEvent.sectionCompleted,
       {
