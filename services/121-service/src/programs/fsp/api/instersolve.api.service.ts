@@ -79,9 +79,9 @@ export class IntersolveApiService {
       };
       intersolveRequest.resultCodeIssueCard = result.resultCode;
       intersolveRequest.cardId = result.cardId;
-      intersolveRequest.PIN = result.pin;
-      intersolveRequest.balance = result.balance;
-      intersolveRequest.transactionId = result.transactionId;
+      intersolveRequest.PIN = result.pin || null;
+      intersolveRequest.balance = result.balance || null;
+      intersolveRequest.transactionId = result.transactionId || null;
       intersolveRequest.toCancel = result.resultCode != IntersolveResultCode.Ok;
 
       if (appInsights.defaultClient) {
