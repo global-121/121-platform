@@ -108,18 +108,21 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getTransaction(did: string, programId: number, installment: number, customDataKey: string, customDataValue: string): Promise<any> {
+  getTransaction(
+    did: string,
+    programId: number,
+    installment: number,
+    customDataKey: string,
+    customDataValue: string,
+  ): Promise<any> {
     return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/programs/get-transaction`, {
-          did,
-          installment,
-          programId,
-          customDataKey,
-          customDataValue,
-        }
-      )
+      .post(environment.url_121_service_api, `/programs/get-transaction`, {
+        did,
+        installment,
+        programId,
+        customDataKey,
+        customDataValue,
+      })
       .toPromise();
   }
 

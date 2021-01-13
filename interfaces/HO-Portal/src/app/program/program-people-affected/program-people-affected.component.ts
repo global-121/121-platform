@@ -7,12 +7,12 @@ import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { RetryPayoutDetails } from 'src/app/models/installment.model';
 import { Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
+import { StatusEnum } from 'src/app/models/status.enum';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
-import { StatusEnum } from 'src/app/models/status.enum';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -539,7 +539,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         hasMessageIcon: this.enableMessageSentIcon(transaction),
         hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
       };
-      console.log('paymentColumnValue: ', paymentColumnValue);
       personRow[
         'payment' + paymentColumn.installmentIndex
       ] = paymentColumnValue;
@@ -562,8 +561,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public enableMoneySentIconTable(transaction: any) {
     if (
       (!transaction.customData.IntersolvePayoutStatus ||
-      transaction.customData.IntersolvePayoutStatus === 'VoucherSent')
-      && transaction.status === StatusEnum.success
+        transaction.customData.IntersolvePayoutStatus === 'VoucherSent') &&
+      transaction.status === StatusEnum.success
     ) {
       return true;
     }
@@ -599,14 +598,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         )
       : null;
     const retryButton = hasError ? true : false;
-    const payoutDetails: RetryPayoutDetails = (hasError || value.hasMessageIcon || value.hasMoneyIconTable)
-      ? {
-          programId: this.programId,
-          installment: column.installmentIndex,
-          amount: row[column.prop + '-amount'],
-          did: row.did,
-        }
-      : null;
+    const payoutDetails: RetryPayoutDetails =
+      hasError || value.hasMessageIcon || value.hasMoneyIconTable
+        ? {
+            programId: this.programId,
+            installment: column.installmentIndex,
+            amount: row[column.prop + '-amount'],
+            did: row.did,
+          }
+        : null;
     let voucherUrl = null;
 
     if (this.hasVoucherSupport(row.fsp) && !hasError && !!value) {

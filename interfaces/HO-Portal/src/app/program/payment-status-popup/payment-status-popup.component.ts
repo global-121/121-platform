@@ -1,4 +1,3 @@
-import { StatusEnum } from './../../models/status.enum';
 import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -7,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { RetryPayoutDetails } from 'src/app/models/installment.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { StatusEnum } from './../../models/status.enum';
 
 @Component({
   selector: 'app-payment-status-popup',
@@ -41,8 +41,10 @@ export class PaymentStatusPopupComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.titleMessageIcon =  await this.getMessageTitle();
-    this.titleMoneyIcon =  await this.getMoneyTitle();
+    if (this.payoutDetails) {
+      this.titleMessageIcon = await this.getMessageTitle();
+      this.titleMoneyIcon = await this.getMoneyTitle();
+    }
 
     if (this.imageUrl) {
       this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -56,7 +58,10 @@ export class PaymentStatusPopupComponent implements OnInit {
   }
 
   public async getMessageTitle() {
-    const intersolveMessageTime = await this.getTransactionTime('IntersolvePayoutStatus', 'InitialMessage');
+    const intersolveMessageTime = await this.getTransactionTime(
+      'IntersolvePayoutStatus',
+      'InitialMessage',
+    );
     console.log('intersolveMessageTime: ', intersolveMessageTime);
     if (intersolveMessageTime) {
       return `Payment #${this.payoutDetails.installment}: ${intersolveMessageTime}`;
@@ -64,7 +69,10 @@ export class PaymentStatusPopupComponent implements OnInit {
   }
 
   public async getMoneyTitle() {
-    const intersolveMoneyTime = await this.getTransactionTime('IntersolvePayoutStatus', 'VoucherSent');
+    const intersolveMoneyTime = await this.getTransactionTime(
+      'IntersolvePayoutStatus',
+      'VoucherSent',
+    );
     if (intersolveMoneyTime) {
       return `Payment #${this.payoutDetails.installment}: ${intersolveMoneyTime}`;
     }
@@ -84,7 +92,7 @@ export class PaymentStatusPopupComponent implements OnInit {
       Number(this.payoutDetails.programId),
       Number(this.payoutDetails.installment),
       customKey,
-      customValue
+      customValue,
     );
     console.log('transaction: getTransactionTime ', transaction);
     if (transaction && transaction.status === StatusEnum.success) {
