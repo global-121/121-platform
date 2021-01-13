@@ -1,3 +1,4 @@
+import { MockLoggingService } from './../../mocks/logging.service.mock';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -7,6 +8,7 @@ import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { LoginIdentityComponent } from './login-identity.component';
+import { LoggingService } from 'src/app/services/logging.service';
 
 describe('LoginIdentityComponent', () => {
   let component: LoginIdentityComponent;
@@ -25,6 +27,10 @@ describe('LoginIdentityComponent', () => {
         {
           provide: PaDataService,
           useValue: MockPaDataService,
+        },
+        {
+          provide: LoggingService,
+          useValue: MockLoggingService,
         },
       ],
     }).compileComponents();

@@ -5,10 +5,12 @@ import {
   ModalController,
 } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { PaDataService } from 'src/app/services/padata.service';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from 'src/app/models/logging-event.enum';
 import { LoggingService } from 'src/app/services/logging.service';
-import { LoggingEventCategory, LoggingEvent } from 'src/app/models/logging-event.enum';
-
+import { PaDataService } from 'src/app/services/padata.service';
 
 @Component({
   selector: 'app-user-menu',
@@ -28,7 +30,7 @@ export class UserMenuComponent implements OnInit {
     private alertController: AlertController,
     private loadingController: LoadingController,
     private logger: LoggingService,
-  ) { }
+  ) {}
 
   async ngOnInit() {
     this.isLoggedIn = this.paData.hasAccount;
@@ -42,10 +44,7 @@ export class UserMenuComponent implements OnInit {
   logout() {
     this.paData.logout();
     this.close();
-    this.logger.logEvent(
-      LoggingEventCategory.ui,
-      LoggingEvent.logout,
-    );
+    this.logger.logEvent(LoggingEventCategory.ui, LoggingEvent.logout);
     window.location.reload();
   }
 
