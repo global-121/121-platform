@@ -78,6 +78,7 @@ export class ExportListComponent implements OnChanges {
     const activePhase = this.programPhaseService.getActivePhase();
 
     return (
+      this.exportType === ExportType.allPeopleAffected ||
       (activePhase.name === ProgramPhase.reviewInclusion &&
         this.exportType === ExportType.included) ||
       (activePhase.name === ProgramPhase.registrationValidation &&

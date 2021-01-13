@@ -1,6 +1,7 @@
 export enum ExportType {
-  included = 'included',
+  allPeopleAffected = 'all-people-affected',
   selectedForValidation = 'selected-for-validation',
+  included = 'included',
   payment = 'payment',
   unusedVouchers = 'unused-vouchers',
 }

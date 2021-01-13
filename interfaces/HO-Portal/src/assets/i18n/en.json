@@ -215,6 +215,10 @@
       "export-list": {
         "timestamp": "Latest export has been done on: {{dateTime}}",
         "no-data": "There are currently no People Affected to download",
+        "all-people-affected": {
+          "btn-text": "Export People Affected",
+          "confirm-message": "This will download a CSV-file with all People Affected that have started registration."
+        },
         "included": {
           "btn-text": "Export inclusion list",
           "confirm-message": "This will download a CSV-file with all included People Affected, to be used for a Community Review."

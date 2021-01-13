@@ -13,6 +13,12 @@
   ></app-phase-next>
 
   <app-export-list
+    [programId]="programId"
+    [userRole]="userRole"
+    [exportType]="enumExportType.allPeopleAffected"
+  ></app-export-list>
+
+  <app-export-list
     *ngIf="program?.validation"
     [programId]="programId"
     [userRole]="userRole"
