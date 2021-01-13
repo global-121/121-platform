@@ -1,3 +1,4 @@
+import { StatusEnum } from './../../models/status.enum';
 import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -40,10 +41,8 @@ export class PaymentStatusPopupComponent implements OnInit {
   }
 
   async ngOnInit() {
-    if (this.titleMessageIcon) {
-      const intersolveMessageTime = await this.getIntersolveMesageTime();
-      this.titleMessageIcon = this.titleMessageIcon + intersolveMessageTime;
-    }
+    this.titleMessageIcon =  await this.getMessageTitle();
+    this.titleMoneyIcon =  await this.getMoneyTitle();
 
     if (this.imageUrl) {
       this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -56,25 +55,45 @@ export class PaymentStatusPopupComponent implements OnInit {
     this.modalController.dismiss();
   }
 
-  public async getIntersolveMesageTime() {
-    console.log(      this.payoutDetails.did,
-      this.payoutDetails.installment,
-      this.payoutDetails.programId,
-      'IntersolvePayoutStatus',
-      'InitialMessage')
+  public async getMessageTitle() {
+    const intersolveMessageTime = await this.getTransactionTime('IntersolvePayoutStatus', 'InitialMessage');
+    console.log('intersolveMessageTime: ', intersolveMessageTime);
+    if (intersolveMessageTime) {
+      return `Payment #${this.payoutDetails.installment}: ${intersolveMessageTime}`;
+    }
+  }
+
+  public async getMoneyTitle() {
+    const intersolveMoneyTime = await this.getTransactionTime('IntersolvePayoutStatus', 'VoucherSent');
+    if (intersolveMoneyTime) {
+      return `Payment #${this.payoutDetails.installment}: ${intersolveMoneyTime}`;
+    }
+    const otherMoneyTime = await this.getTransactionTime('', '');
+    if (otherMoneyTime) {
+      return `Payment #${this.payoutDetails.installment}: ${otherMoneyTime}`;
+    }
+    if (this.titleMessageIcon) {
+      return `Payment #${this.payoutDetails.installment}: `;
+    }
+    return '';
+  }
+
+  public async getTransactionTime(customKey: string, customValue: string) {
     const transaction = await this.programsService.getTransaction(
       this.payoutDetails.did,
       Number(this.payoutDetails.programId),
       Number(this.payoutDetails.installment),
-      'IntersolvePayoutStatus',
-      'InitialMessage'
+      customKey,
+      customValue
     );
-    console.log('transaction: ', transaction);
-    return formatDate(
-      transaction.installmentDate,
-      this.dateFormat,
-      this.locale,
-    );
+    console.log('transaction: getTransactionTime ', transaction);
+    if (transaction && transaction.status === StatusEnum.success) {
+      return formatDate(
+        transaction.installmentDate,
+        this.dateFormat,
+        this.locale,
+      );
+    }
   }
 
   public async retryPayment() {

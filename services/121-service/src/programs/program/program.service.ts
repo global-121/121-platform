@@ -1068,7 +1068,14 @@ export class ProgramService {
       }
       return null;
     }
-    return transactions[0];
+    for (const transaction of transactions) {
+      if (
+        !transaction.customData ||
+        Object.keys(transaction.customData).length === 0
+      ) {
+        return transaction;
+      }
+    }
   }
 
   public async getFunds(programId: number): Promise<FundingOverview> {

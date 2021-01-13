@@ -12,6 +12,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
+import { StatusEnum } from 'src/app/models/status.enum';
 
 @Component({
   selector: 'app-program-people-affected',
@@ -513,13 +514,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
       let paymentColumnText;
 
-      if (transaction.status === 'success') {
+      if (transaction.status === StatusEnum.success) {
         paymentColumnText = formatDate(
           transaction.installmentDate,
           this.dateFormat,
           this.locale,
         );
-      } else if (transaction.status === 'waiting') {
+      } else if (transaction.status === StatusEnum.waiting) {
         paymentColumnText = this.translate.instant(
           'page.program.program-people-affected.transaction.waiting',
         );
@@ -536,7 +537,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       const paymentColumnValue = {
         text: paymentColumnText,
         hasMessageIcon: this.enableMessageSentIcon(transaction),
-        hasMoneyIcon: this.enableMoneySentIcon(transaction),
+        hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
       };
       console.log('paymentColumnValue: ', paymentColumnValue);
       personRow[
@@ -558,10 +559,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return false;
   }
 
-  public enableMoneySentIcon(transaction: any) {
+  public enableMoneySentIconTable(transaction: any) {
     if (
-      !transaction.customData.IntersolvePayoutStatus ||
-      transaction.customData.IntersolvePayoutStatus === 'VoucherSent'
+      (!transaction.customData.IntersolvePayoutStatus ||
+      transaction.customData.IntersolvePayoutStatus === 'VoucherSent')
+      && transaction.status === StatusEnum.success
     ) {
       return true;
     }
@@ -597,7 +599,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         )
       : null;
     const retryButton = hasError ? true : false;
-    const payoutDetails: RetryPayoutDetails = (hasError || value.hasMessageIcon)
+    const payoutDetails: RetryPayoutDetails = (hasError || value.hasMessageIcon || value.hasMoneyIconTable)
       ? {
           programId: this.programId,
           installment: column.installmentIndex,
@@ -617,7 +619,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     const titleError = hasError ? `${column.name}: ${value.text}` : null;
     const titleMessageIcon = value.hasMessageIcon ? `${column.name}: ` : null;
-    const titleMoneyIcon = value.hasMoneyIcon ? `${column.name}: ${value.text}` : null;
+    const titleMoneyIcon = value.hasMoneyIconTable ? `${column.name}: ` : null;
 
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: PaymentStatusPopupComponent,
