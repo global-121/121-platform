@@ -26,6 +26,7 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { ActionEntity } from '../../actions/action.entity';
 import { TransactionEntity } from './transactions.entity';
 import { ActionModule } from '../../actions/action.module';
+import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ActionModule } from '../../actions/action.module';
       ProtectionServiceProviderEntity,
       ActionEntity,
       TransactionEntity,
+      FspAttributeEntity,
     ]),
     ActionModule,
     forwardRef(() => CredentialModule),

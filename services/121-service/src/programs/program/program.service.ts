@@ -8,7 +8,7 @@ import { VoiceService } from './../../notifications/voice/voice.service';
 import { SchemaService } from './../../sovrin/schema/schema.service';
 import { CredentialService } from './../../sovrin/credential/credential.service';
 import { ProofService } from './../../sovrin/proof/proof.service';
-import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
+import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import {
   Injectable,
@@ -57,6 +57,8 @@ export class ProgramService {
   private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(CustomCriterium)
   public customCriteriumRepository: Repository<CustomCriterium>;
+  @InjectRepository(FspAttributeEntity)
+  public fspAttributeRepository: Repository<FspAttributeEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   public financialServiceProviderRepository: Repository<
     FinancialServiceProviderEntity
@@ -948,9 +950,8 @@ export class ProgramService {
         created: 'DESC',
       },
     });
-
     if (!transaction) {
-      return;
+      return null;
     } else if (
       transaction.errorMessage === 'Value is outside the allowed limits'
     ) {
@@ -1048,11 +1049,13 @@ export class ProgramService {
       installmentId,
     );
 
-    let installmentTime = 'completed';
     if (rawPaymentDetails.length === 0) {
-      rawPaymentDetails = await this.getPaymentDetailsFuture(programId);
-      installmentTime = 'future';
+      return {
+        fileName: `payment-details-future-installment-${installmentId}.csv`,
+        data: (await this.getInclusionList(programId)).data,
+      };
     }
+
     const paymentDetails = [];
     rawPaymentDetails.forEach(rawTransaction => {
       let transaction = {
@@ -1064,7 +1067,7 @@ export class ProgramService {
     });
 
     const response = {
-      fileName: `payment-details-${installmentTime}-installment-${installmentId}.csv`,
+      fileName: `payment-details-completed-installment-${installmentId}.csv`,
       data: this.jsonToCsv(paymentDetails),
     };
 
@@ -1106,7 +1109,6 @@ export class ProgramService {
         return this.getUnusedVouchers();
       }
     }
-    this.actionService.saveAction(userId, programId, type);
   }
 
   private async getConnectionsWithStatus(
@@ -1118,20 +1120,78 @@ export class ProgramService {
     );
   }
 
+  private addGenericFieldsToExport(
+    row,
+    connection: ConnectionEntity,
+    programId: number,
+  ): any {
+    const dateFields = [
+      'created',
+      'appliedDate',
+      'selectedForValidationDate',
+      'validationDate',
+      'inclusionDate',
+      'rejectionDate',
+      'inclusionNotificationDate',
+    ];
+    dateFields.forEach(field => {
+      row[field] = connection[field];
+    });
+
+    row['status'] = this.getPaStatus(connection, programId);
+    row['financialServiceProvider'] = connection.fsp?.fsp;
+
+    return row;
+  }
+
+  private addCustomCriteriaToExport(
+    row,
+    criteria: any[],
+    connection: ConnectionEntity,
+    exportType: ExportType,
+  ): any {
+    criteria.forEach(criterium => {
+      if (criterium.export && criterium.export.includes(exportType)) {
+        row[criterium.name] = connection.customData[criterium.name];
+      }
+    });
+    return row;
+  }
+
+  private async getAllCriteriaForExport(): Promise<any> {
+    return (await this.customCriteriumRepository.find())
+      .map(c => {
+        return {
+          name: c.criterium,
+          export: JSON.parse(JSON.stringify(c.export)),
+        };
+      })
+      .concat(
+        (await this.fspAttributeRepository.find()).map(c => {
+          return {
+            name: c.name,
+            export: JSON.parse(JSON.stringify(c.export)),
+          };
+        }),
+      );
+  }
+
   private async getAllPeopleAffectedList(programId: number): Promise<any> {
-    const connections = await this.getAllConnections(programId);
+    const connections = await this.connectionRepository.find({
+      relations: ['fsp'],
+    });
+    const criteria = await this.getAllCriteriaForExport();
 
     const connectionDetails = [];
-    connections.forEach(rawConnection => {
-      let row = {
-        name: this.getName(rawConnection.customData),
-        phoneNumber: rawConnection.customData['phoneNumber'],
-        whatsappPhoneNumber: rawConnection.customData['whatsappPhoneNumber'],
-        vnumber: rawConnection.customData['vnumber'],
-        status: this.getPaStatus(rawConnection, +programId),
-        createdDate: rawConnection.created,
-        registrationDate: rawConnection.appliedDate,
-      };
+    connections.forEach(connection => {
+      let row = {};
+      row = this.addCustomCriteriaToExport(
+        row,
+        criteria,
+        connection,
+        ExportType.allPeopleAffected,
+      );
+      row = this.addGenericFieldsToExport(row, connection, programId);
       connectionDetails.push(row);
     });
     const filteredColumnDetails = this.filterUnusedColumn(connectionDetails);
@@ -1144,29 +1204,29 @@ export class ProgramService {
   }
 
   private async getInclusionList(programId: number): Promise<any> {
-    const includedConnections = await this.getConnectionsWithStatus(
-      programId,
-      PaStatus.included,
+    const includedConnections = (
+      await this.connectionRepository.find({ relations: ['fsp'] })
+    ).filter(
+      connection =>
+        this.getPaStatus(connection, programId) === PaStatus.included,
     );
 
+    const criteria = await this.getAllCriteriaForExport();
+
     const inclusionDetails = [];
-    includedConnections.forEach(rawConnection => {
-      let row = {
-        name: rawConnection.name,
-        whatsappPhoneNumber: rawConnection.whatsappPhoneNumber,
-        phoneNumber: rawConnection.phoneNumber,
-        vnumber: rawConnection.vnumber,
-        location: rawConnection.location,
-        age: rawConnection.age,
-        status: rawConnection.status,
-        createdDate: rawConnection.created,
-        registrationDate: rawConnection.appliedDate,
-        selectedForValidationDate: rawConnection.selectedForValidation,
-        validationDate: rawConnection.validationDate,
-        inclusionDate: rawConnection.inclusionDate,
-        financialServiceProvider: rawConnection.fsp,
-        phonenumberTestResult: rawConnection.phonenumberTestResult,
-      };
+    includedConnections.forEach(connection => {
+      let row = {};
+      row = this.addCustomCriteriaToExport(
+        row,
+        criteria,
+        connection,
+        ExportType.included,
+      );
+      row = this.addGenericFieldsToExport(row, connection, programId);
+      // row['phonenumberTestResult'] = this.getMpesaStatus(
+      //   connection.id,
+      //   programId,
+      // );
       inclusionDetails.push(row);
     });
     const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
@@ -1179,27 +1239,29 @@ export class ProgramService {
   }
 
   private async getSelectedForValidationList(programId: number): Promise<any> {
-    const selectedConnections = await this.getConnectionsWithStatus(
-      programId,
-      PaStatus.selectedForValidation,
+    const selectedConnections = (
+      await this.connectionRepository.find({ relations: ['fsp'] })
+    ).filter(
+      connection =>
+        this.getPaStatus(connection, programId) ===
+        PaStatus.selectedForValidation,
     );
+
+    const criteria = await this.getAllCriteriaForExport();
+
     const columnDetails = [];
-    for (const rawConnection of selectedConnections) {
-      let row = {
-        name: rawConnection.name,
-        whatsappPhoneNumber: rawConnection.whatsappPhoneNumber,
-        phoneNumber: rawConnection.phoneNumber,
-        vnumber: rawConnection.vnumber,
-        location: rawConnection.location,
-        age: rawConnection.age,
-        status: rawConnection.status,
-        createdDate: rawConnection.created,
-        registrationDate: rawConnection.appliedDate,
-        selectedForValidationDate: rawConnection.selectedForValidationDate,
-        financialServiceProvider: rawConnection.fsp,
-      };
+    selectedConnections.forEach(connection => {
+      let row = {};
+      row = this.addCustomCriteriaToExport(
+        row,
+        criteria,
+        connection,
+        ExportType.selectedForValidation,
+      );
+      row = this.addGenericFieldsToExport(row, connection, programId);
       columnDetails.push(row);
-    }
+    });
+
     const filteredColumnDetails = this.filterUnusedColumn(columnDetails);
     const response = {
       fileName: `selected-for-validation-list.csv`,
@@ -1251,27 +1313,6 @@ export class ProgramService {
       })
       .andWhere('transaction.status = :status', { status: StatusEnum.success })
       .getRawMany();
-  }
-
-  public async getPaymentDetailsFuture(programId: number): Promise<any> {
-    const connections = await this.connectionRepository
-      .createQueryBuilder('connection')
-      .select([
-        'connection.phoneNumber',
-        'connection.customData',
-        'connection.programsIncluded',
-        'fsp.fsp AS financialServiceProvider',
-      ])
-      .leftJoin('connection.fsp', 'fsp')
-      .getRawMany();
-    const rawPaymentDetails = [];
-    for (let connection of connections) {
-      if (connection.connection_programsIncluded.includes(+programId)) {
-        delete connection['connection_programsIncluded'];
-        rawPaymentDetails.push(connection);
-      }
-    }
-    return rawPaymentDetails;
   }
 
   public jsonToCsv(items: any): any {

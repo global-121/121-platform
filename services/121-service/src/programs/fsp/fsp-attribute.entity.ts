@@ -25,6 +25,9 @@ export class FspAttributeEntity {
   @Column('json', { nullable: true })
   public options: JSON;
 
+  @Column('json', { nullable: true })
+  public export: JSON;
+
   @Column()
   public answerType: string;
 

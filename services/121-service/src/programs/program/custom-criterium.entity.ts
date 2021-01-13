@@ -55,6 +55,9 @@ export class CustomCriterium {
   @Column({ default: false })
   public persistence: boolean;
 
+  @Column('json', { nullable: true })
+  public export: JSON;
+
   @Column({ nullable: true })
   public pattern: string;
 }
