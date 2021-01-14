@@ -76,6 +76,9 @@ export class ExportListComponent implements OnChanges {
 
   public btnEnabled() {
     const activePhase = this.programPhaseService.getActivePhase();
+    if (this.userRole === UserRole.ProgramManager) {
+      return false;
+    }
 
     return (
       this.exportType === ExportType.allPeopleAffected ||
@@ -88,8 +91,7 @@ export class ExportListComponent implements OnChanges {
         this.exportType === ExportType.payment &&
         this.paymentExportAvailable) ||
       (activePhase.name === ProgramPhase.payment &&
-        this.exportType === ExportType.unusedVouchers &&
-        this.userRole === UserRole.ProgramManager)
+        this.exportType === ExportType.unusedVouchers)
     );
   }
 
