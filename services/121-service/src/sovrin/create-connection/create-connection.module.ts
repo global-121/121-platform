@@ -1,3 +1,4 @@
+import { LookupModule } from './../../notifications/lookup/lookup.module';
 import { CustomCriterium } from './../../programs/program/custom-criterium.entity';
 import { HttpModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -30,6 +31,7 @@ import { TransactionEntity } from '../../programs/program/transactions.entity';
     UserModule,
     HttpModule,
     SmsModule,
+    LookupModule,
   ],
   providers: [CreateConnectionService],
   controllers: [CreateConnectionController],

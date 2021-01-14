@@ -1,3 +1,4 @@
+import { LookupService } from './../../notifications/lookup/lookup.service';
 import { SoapService } from './../../programs/fsp/api/soap.service';
 import { AfricasTalkingService } from './../../programs/fsp/africas-talking.service';
 import { FundingService } from './../../funding/funding.service';
@@ -64,6 +65,7 @@ describe('CredentialService', (): void => {
           IntersolveApiService,
           SoapService,
           WhatsappService,
+          LookupService,
           {
             provide: getRepositoryToken(CredentialAttributesEntity),
             useFactory: repositoryMockFactory,

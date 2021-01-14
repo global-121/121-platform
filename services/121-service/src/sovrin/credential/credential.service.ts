@@ -1,3 +1,4 @@
+import { LookupService } from './../../notifications/lookup/lookup.service';
 import { CredentialIssueDto } from './dto/credential-issue.dto';
 import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialRequestEntity } from './credential-request.entity';
@@ -50,6 +51,7 @@ export class CredentialService {
     @Inject(forwardRef(() => ProgramService))
     private readonly programService: ProgramService,
     private readonly httpService: HttpService,
+    private readonly lookupService: LookupService,
   ) {}
   // Use by HO is done automatically when a program is published
   public async createOffer(credDefId: string): Promise<object> {
@@ -159,7 +161,9 @@ export class CredentialService {
     const cleanedAnswers = [];
     for (let answer of answers) {
       if (phonenumberTypedAnswers.includes(answer.attribute)) {
-        answer.answer = answer.answer.replace(/\D/g, '');
+        answer.answer = await this.lookupService.lookupAndCorrect(
+          answer.answer,
+        );
         cleanedAnswers.push(answer);
       } else {
         cleanedAnswers.push(answer);

@@ -1,3 +1,4 @@
+import { LookupModule } from './../../notifications/lookup/lookup.module';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { CredentialEntity } from './credential.entity';
 import { UserModule } from '../../user/user.module';
@@ -24,6 +25,7 @@ import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
       FspAttributeEntity,
     ]),
     forwardRef(() => ProgramModule),
+    LookupModule,
     UserModule,
     HttpModule,
   ],
