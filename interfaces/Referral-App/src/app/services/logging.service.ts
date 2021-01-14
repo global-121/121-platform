@@ -116,9 +116,10 @@ export class LoggingService {
       ]);
     }
     if (this.appInsightsEnabled) {
-      properties.category = category;
-      properties.action = action;
-      this.appInsights.trackEvent({ name: `referral-${action}` }, properties);
+      this.appInsights.trackEvent(
+        { name: `referral-${action}` },
+        { category, action, ...properties },
+      );
     }
     this.displayOnConsole(
       `logEvent: ${category} - ${action} - properties: ${JSON.stringify(
@@ -131,7 +132,7 @@ export class LoggingService {
   public logException(exception: Error, severityLevel?: SeverityLevel): void {
     if (this.matomoEnabled) {
       this.logEvent(LoggingEventCategory.error, LoggingEvent.exception, {
-        exception: exception.message,
+        exception: exception.message || exception.name || exception,
         severityLevel,
       });
     }
