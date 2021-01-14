@@ -55,6 +55,11 @@ export class CustomCriterium {
   @Column({ default: false })
   public persistence: boolean;
 
+  @Column('json', {
+    default: ['all-people-affected', 'included', 'selected-for-validation'],
+  })
+  public export: JSON;
+
   @Column({ nullable: true })
   public pattern: string;
 }

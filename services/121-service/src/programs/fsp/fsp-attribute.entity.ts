@@ -25,6 +25,11 @@ export class FspAttributeEntity {
   @Column('json', { nullable: true })
   public options: JSON;
 
+  @Column('json', {
+    default: ['all-people-affected', 'included', 'selected-for-validation'],
+  })
+  public export: JSON;
+
   @Column()
   public answerType: string;
 
