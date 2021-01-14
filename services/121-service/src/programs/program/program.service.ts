@@ -46,6 +46,8 @@ import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
 import { PaymentTransactionResultDto } from '../fsp/dto/payment-transaction-result.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
+import { CriteriumForExport } from './dto/criterium-for-export.dto';
+import { FileDto } from './dto/file.dto';
 
 @Injectable()
 export class ProgramService {
@@ -1043,7 +1045,7 @@ export class ProgramService {
   public async getPaymentDetails(
     programId: number,
     installmentId: number,
-  ): Promise<any> {
+  ): Promise<FileDto> {
     let rawPaymentDetails = await this.getPaymentDetailsInstallment(
       programId,
       installmentId,
@@ -1074,7 +1076,7 @@ export class ProgramService {
     return response;
   }
 
-  public async getUnusedVouchers(): Promise<any> {
+  public async getUnusedVouchers(): Promise<FileDto> {
     const unusedVouchers = await this.fspService.getUnusedVouchers();
 
     const response = {
@@ -1090,7 +1092,7 @@ export class ProgramService {
     type: ExportType,
     installment: number | null = null,
     userId: number,
-  ): Promise<any> {
+  ): Promise<FileDto> {
     this.actionService.saveAction(userId, programId, type);
     switch (type) {
       case ExportType.allPeopleAffected: {
@@ -1121,10 +1123,10 @@ export class ProgramService {
   }
 
   private addGenericFieldsToExport(
-    row,
+    row: object,
     connection: ConnectionEntity,
     programId: number,
-  ): any {
+  ): object {
     const dateFields = [
       'created',
       'appliedDate',
@@ -1145,11 +1147,11 @@ export class ProgramService {
   }
 
   private addCustomCriteriaToExport(
-    row,
+    row: object,
     criteria: any[],
     connection: ConnectionEntity,
     exportType: ExportType,
-  ): any {
+  ): object {
     criteria.forEach(criterium => {
       if (criterium.export && criterium.export.includes(exportType)) {
         row[criterium.name] = connection.customData[criterium.name];
@@ -1158,7 +1160,7 @@ export class ProgramService {
     return row;
   }
 
-  private async getAllCriteriaForExport(): Promise<any> {
+  private async getAllCriteriaForExport(): Promise<CriteriumForExport[]> {
     return (await this.customCriteriumRepository.find())
       .map(c => {
         return {
@@ -1176,7 +1178,7 @@ export class ProgramService {
       );
   }
 
-  private async getAllPeopleAffectedList(programId: number): Promise<any> {
+  private async getAllPeopleAffectedList(programId: number): Promise<FileDto> {
     const connections = await this.connectionRepository.find({
       relations: ['fsp'],
     });
@@ -1203,7 +1205,7 @@ export class ProgramService {
     return response;
   }
 
-  private async getInclusionList(programId: number): Promise<any> {
+  private async getInclusionList(programId: number): Promise<FileDto> {
     const includedConnections = (
       await this.connectionRepository.find({ relations: ['fsp'] })
     ).filter(
@@ -1238,7 +1240,9 @@ export class ProgramService {
     return response;
   }
 
-  private async getSelectedForValidationList(programId: number): Promise<any> {
+  private async getSelectedForValidationList(
+    programId: number,
+  ): Promise<FileDto> {
     const selectedConnections = (
       await this.connectionRepository.find({ relations: ['fsp'] })
     ).filter(
