@@ -22,10 +22,10 @@ export class LookupService {
 
   public async lookupAndCorrect(phoneNumber: string): Promise<string> {
     try {
-      const lookupResonse = await twilioClient.lookups
+      const lookupResponse = await twilioClient.lookups
         .phoneNumbers(phoneNumber)
         .fetch({ type: ['carrier'] });
-      return lookupResonse.phoneNumber.replace(/\D/g, '');
+      return lookupResponse.phoneNumber.replace(/\D/g, '');
     } catch (e) {
       console.log('e: ', e);
       if (e.status === HttpStatus.NOT_FOUND) {

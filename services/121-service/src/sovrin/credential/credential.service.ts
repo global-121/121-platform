@@ -164,10 +164,8 @@ export class CredentialService {
         answer.answer = await this.lookupService.lookupAndCorrect(
           answer.answer,
         );
-        cleanedAnswers.push(answer);
-      } else {
-        cleanedAnswers.push(answer);
       }
+      cleanedAnswers.push(answer);
     }
     return cleanedAnswers;
   }
