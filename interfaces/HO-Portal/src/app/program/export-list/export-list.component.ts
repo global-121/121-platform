@@ -76,21 +76,9 @@ export class ExportListComponent implements OnChanges {
 
   public btnEnabled() {
     const activePhase = this.programPhaseService.getActivePhase();
-
-    return (
-      this.exportType === ExportType.allPeopleAffected ||
-      ((activePhase.name === ProgramPhase.reviewInclusion ||
-        activePhase.name === ProgramPhase.payment) &&
-        this.exportType === ExportType.included) ||
-      (activePhase.name === ProgramPhase.registrationValidation &&
-        this.exportType === ExportType.selectedForValidation) ||
-      (activePhase.name === ProgramPhase.payment &&
-        this.exportType === ExportType.payment &&
-        this.paymentExportAvailable) ||
-      (activePhase.name === ProgramPhase.payment &&
-        this.exportType === ExportType.unusedVouchers &&
-        this.userRole === UserRole.ProgramManager)
-    );
+    return this.userRole === UserRole.ProgramManager &&
+    (this.exportType !== ExportType.payment ||
+      this.paymentExportAvailable);
   }
 
   public getExportList() {
