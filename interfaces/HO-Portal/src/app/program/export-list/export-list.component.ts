@@ -4,7 +4,6 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
-import { ProgramPhase } from 'src/app/models/program.model';
 import { ProgramPhaseService } from 'src/app/services/program-phase.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
@@ -76,9 +75,10 @@ export class ExportListComponent implements OnChanges {
 
   public btnEnabled() {
     const activePhase = this.programPhaseService.getActivePhase();
-    return this.userRole === UserRole.ProgramManager &&
-    (this.exportType !== ExportType.payment ||
-      this.paymentExportAvailable);
+    return (
+      this.userRole === UserRole.ProgramManager &&
+      (this.exportType !== ExportType.payment || this.paymentExportAvailable)
+    );
   }
 
   public getExportList() {
