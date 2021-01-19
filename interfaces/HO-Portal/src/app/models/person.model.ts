@@ -1,5 +1,6 @@
 // Model for data from the API
 export class Person {
+  id: number;
   did: string;
   phoneNumber?: string;
   tempScore?: number;
