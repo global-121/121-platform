@@ -9,6 +9,7 @@
     display: flex; // Allow to vertically stretch/align
     background-color: $body-color--odd;
     border-right: 1px solid $border-color;
+    box-shadow: 0.3em 0 0.6em rgba(0, 0, 0, 0.2);
   }
 
   .datatable-body {
