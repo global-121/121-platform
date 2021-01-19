@@ -1,3 +1,4 @@
+import { LookupService } from './../../notifications/lookup/lookup.service';
 import { IntersolveInstructionsEntity } from './../fsp/intersolve-instructions.entity';
 import { ImageCodeService } from './../../notifications/imagecode/image-code.service';
 import { AfricasTalkingService } from './../fsp/africas-talking.service';
@@ -65,6 +66,7 @@ describe('Program service', (): void => {
           SoapService,
           WhatsappService,
           ActionService,
+          LookupService,
           {
             provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,

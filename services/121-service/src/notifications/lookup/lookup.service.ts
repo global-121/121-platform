@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { twilioClient } from '../twilio.client';
 
 @Injectable()
@@ -18,5 +18,20 @@ export class LookupService {
       }
     }
     return { result: numberCorrect };
+  }
+
+  public async lookupAndCorrect(phoneNumber: string): Promise<string> {
+    try {
+      const lookupResponse = await twilioClient.lookups
+        .phoneNumbers(phoneNumber)
+        .fetch({ type: ['carrier'] });
+      return lookupResponse.phoneNumber.replace(/\D/g, '');
+    } catch (e) {
+      console.log('e: ', e);
+      if (e.status === HttpStatus.NOT_FOUND) {
+        const errors = `Phone number incorrect`;
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    }
   }
 }

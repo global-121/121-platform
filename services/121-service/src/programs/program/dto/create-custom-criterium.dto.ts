@@ -21,7 +21,7 @@ export class CreateCustomCriteriumDto {
   @ApiModelProperty()
   @IsNotEmpty()
   @IsString()
-  @IsIn(['numeric', 'dropdown', 'text', 'date'])
+  @IsIn(['numeric', 'dropdown', 'text', 'date', 'tel'])
   public readonly answerType: string;
   @ApiModelProperty()
   @IsNotEmpty()

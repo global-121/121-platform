@@ -1,3 +1,4 @@
+import { LookupService } from './../../notifications/lookup/lookup.service';
 import { CustomCriterium } from './../../programs/program/custom-criterium.entity';
 import {
   Injectable,
@@ -53,6 +54,7 @@ export class CreateConnectionService {
     private readonly programService: ProgramService,
     private readonly httpService: HttpService,
     private readonly smsService: SmsService,
+    private readonly lookupService: LookupService,
   ) {}
 
   // This is for SSI-solution
@@ -127,7 +129,9 @@ export class CreateConnectionService {
   ): Promise<void> {
     const connection = await this.findOne(did);
     if (!connection.phoneNumber) {
-      connection.phoneNumber = phoneNumber.replace(/\D/g, '');
+      connection.phoneNumber = await this.lookupService.lookupAndCorrect(
+        phoneNumber,
+      );
     }
     connection.preferredLanguage = preferredLanguage;
     await this.connectionRepository.save(connection);
@@ -155,6 +159,7 @@ export class CreateConnectionService {
     }
     return await this.connectionRepository.save(connection);
   }
+
   public async cleanData(
     customDataKey: string,
     customDataValue: string,
@@ -174,7 +179,7 @@ export class CreateConnectionService {
       phonenumberTypedAnswers.push(criteriumAttr.criterium);
     }
     if (phonenumberTypedAnswers.includes(customDataKey)) {
-      return customDataValue.replace(/\D/g, '');
+      return await this.lookupService.lookupAndCorrect(customDataValue);
     } else {
       return customDataValue;
     }
@@ -234,15 +239,12 @@ export class CreateConnectionService {
       const errors = 'This PA is not known.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
+    phoneNumber = await this.lookupService.lookupAndCorrect(phoneNumber);
     // Save as notification first, in case it is not a known custom-data property, which would yield an HTTP-exception
     connection.phoneNumber = phoneNumber;
     await this.connectionRepository.save(connection);
 
-    return await this.addCustomDataOverwrite(
-      did,
-      'phoneNumber',
-      phoneNumber.replace(/\D/g, ''),
-    );
+    return await this.addCustomDataOverwrite(did, 'phoneNumber', phoneNumber);
   }
 
   public async addQrIdentifier(
