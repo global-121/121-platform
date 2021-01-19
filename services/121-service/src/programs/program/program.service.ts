@@ -900,6 +900,7 @@ export class ProgramService {
     const connectionsResponse = [];
     for (let connection of selectedConnections) {
       const connectionResponse = {};
+      connectionResponse['id'] = connection.id;
       connectionResponse['did'] = connection.did;
       connectionResponse['score'] = connection.inclusionScore;
       connectionResponse['tempScore'] = connection.temporaryInclusionScore;
