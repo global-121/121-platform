@@ -22,6 +22,8 @@ updates:
     versions: [">= 3.0.0"]
   - dependency-name: tslib
     versions: [">= 2.0.0"]
+  - dependency-name: karma
+    versions: [">= 6.0.0"]
   - dependency-name: "@ngx-translate/http-loader"
     versions: [">= 5.0.0"]
   - dependency-name: ngx-translate-lint
@@ -50,6 +52,8 @@ updates:
     versions: [">= 3.0.0"]
   - dependency-name: tslib
     versions: [">= 2.0.0"]
+  - dependency-name: karma
+    versions: [">= 6.0.0"]
   - dependency-name: "@ngx-translate/http-loader"
     versions: [">= 5.0.0"]
   - dependency-name: ngx-translate-lint
@@ -78,6 +82,8 @@ updates:
     versions: [">= 3.0.0"]
   - dependency-name: tslib
     versions: [">= 2.0.0"]
+  - dependency-name: karma
+    versions: [">= 6.0.0"]
   - dependency-name: "@ngx-translate/http-loader"
     versions: [">= 5.0.0"]
   - dependency-name: ngx-translate-lint
@@ -108,5 +114,7 @@ updates:
     versions: [">= 3.0.0"]
   - dependency-name: tslib
     versions: [">= 2.0.0"]
+  - dependency-name: karma
+    versions: [">= 6.0.0"]
   - dependency-name: "@ngx-translate/http-loader"
     versions: [">= 5.0.0"]
