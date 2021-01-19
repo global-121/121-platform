@@ -448,7 +448,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     let personRow: PersonRow = {
       did: person.did,
       checkboxVisible: false,
-      pa: `PA #${index}`,
+      pa: `PA #${String(person.id)}`,
       status: person.status,
       statusLabel: this.translate.instant(
         'page.program.program-people-affected.status.' + person.status,
