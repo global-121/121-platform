@@ -1132,6 +1132,10 @@ export class ProgramService {
 
   public async getUnusedVouchers(): Promise<FileDto> {
     const unusedVouchers = await this.fspService.getUnusedVouchers();
+    unusedVouchers.forEach(v => {
+      v.name = this.getName(v.customData);
+      delete v.customData;
+    });
 
     const response = {
       fileName: `unused-vouchers.csv`,
