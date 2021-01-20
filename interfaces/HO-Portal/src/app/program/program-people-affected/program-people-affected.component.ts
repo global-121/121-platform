@@ -5,7 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { RetryPayoutDetails } from 'src/app/models/installment.model';
-import { Person, PersonRow } from 'src/app/models/person.model';
+import { PaStatus, Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
@@ -474,9 +474,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       included: person.inclusionDate
         ? formatDate(person.inclusionDate, this.dateFormat, this.locale)
         : null,
-      rejected: person.rejectionDate
-        ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
-        : null,
+      rejected:
+        person.rejectionDate && person.status === PaStatus.rejected
+          ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
+          : null,
       notifiedOfInclusion: person.inclusionNotificationDate
         ? formatDate(
             person.inclusionNotificationDate,
