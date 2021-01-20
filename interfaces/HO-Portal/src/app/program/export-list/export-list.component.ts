@@ -26,6 +26,7 @@ export class ExportListComponent implements OnChanges {
   public paymentExportAvailable: boolean;
 
   public disabled: boolean;
+  public isInProgress = false;
 
   public btnText: string;
   public subHeader: string;
@@ -82,10 +83,12 @@ export class ExportListComponent implements OnChanges {
   }
 
   public getExportList() {
+    this.isInProgress = true;
     this.programsService
       .exportList(+this.programId, this.exportType, +this.paymentInstallment)
       .then(
         (res) => {
+          this.isInProgress = false;
           if (!res.data) {
             this.actionResult(
               this.translate.instant('page.program.export-list.no-data'),
@@ -97,6 +100,7 @@ export class ExportListComponent implements OnChanges {
           this.updateSubHeader();
         },
         (err) => {
+          this.isInProgress = false;
           console.log('err: ', err);
           this.actionResult(this.translate.instant('common.export-error'));
         },
