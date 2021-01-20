@@ -46,6 +46,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private pastTransactions: any[] = [];
 
   public allPeopleAffected: PersonRow[] = [];
+  public tempAllPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
 
   public headerChecked = false;
@@ -425,6 +426,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       );
     }
     this.allPeopleAffected = this.createTableData(allPeopleData);
+    this.tempAllPeopleAffected = [...this.allPeopleAffected];
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -774,5 +776,28 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     });
 
     await alert.present();
+  }
+
+  public updateFilter(event) {
+    const filterVal = event.target.value.toLowerCase();
+    const tempAllPeopleAffected = this.tempAllPeopleAffected.filter((row) => {
+      // Loop over all columns
+      for (const key of Object.keys(row)) {
+        try {
+          const includeRow =
+            row[key].toLowerCase().indexOf(filterVal) !== -1 || // check literal values
+            row[key].toLowerCase().replace(/\s/g, '').indexOf(filterVal) !==
+              -1 || // check also with spaces removed
+            !filterVal;
+          if (includeRow) {
+            return includeRow;
+          }
+        } catch {
+          // Do not filter on unfilterable column types
+        }
+      }
+    });
+
+    this.allPeopleAffected = tempAllPeopleAffected;
   }
 }
