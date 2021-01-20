@@ -1,4 +1,8 @@
-import { eventNames } from 'cluster';
+import dotenv from 'dotenv';
+
+if (!process.env.PORT_PA_ACCOUNTS_SERVICE) {
+  dotenv.config({ path: '.env' });
+}
 
 export const AUTH_DEBUG = false;
 export const PORT = process.env.PORT_PA_ACCOUNTS_SERVICE;

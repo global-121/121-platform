@@ -1,0 +1,16 @@
+version: '3.7'
+
+# The settings from this file will override the values from `docker-compose.yml`
+# When run via:
+#     docker-compose -f docker-compose.yml -f docker-compose.development.local.yml
+
+# This makes sure that the 121-service and PA-accounts service immidiately shutdown after being created
+
+services:
+  121-service:
+    command: "true"
+    entrypoint: "true"
+
+  PA-accounts-service:
+    command: "true"
+    entrypoint: "true"

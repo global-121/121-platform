@@ -6,11 +6,15 @@
     "demo": "npx npm-run-all --print-label --parallel start:all open:all",
     "start:all": "npx npm-run-all --print-label --parallel start:services start:interfaces",
     "start:services": "cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.yml up -d --build",
+    "start:services:local": "cd services/ && docker-compose -f docker-compose.yml -f docker-compose.development.local.yml up -d --build && npm run start:local",
     "start:interfaces": "npx npm-run-all --print-label --parallel start:pa start:aw start:ho start:ref",
     "start:pa": "npm start --prefix interfaces/PA-App/ -- --port 8008",
     "start:aw": "npm start --prefix interfaces/AW-App/ -- --port 8080",
     "start:ho": "npm start --prefix interfaces/HO-Portal/ -- --port 8888",
     "start:ref": "npm start --prefix interfaces/Referral-App/ -- --port 8800",
+    "start:local": "npx npm-run-all --print-label --parallel start:121:local start:pa-accounts:local",
+    "start:121:local": "LOCAL_DEVELOPMENT=1 cd services/121-service/ && npm run start:dev",
+    "start:pa-accounts:local": "LOCAL_DEVELOPMENT=1 cd services/PA-accounts-service/ && npm run start:dev",
     "install:all": "npx npm-run-all --print-label install:services install:interfaces",
     "install:services": "cd services/ && docker-compose build",
     "install:interfaces": "npx npm-run-all --print-label install:pa install:aw install:ho install:ref",
@@ -36,5 +40,8 @@
     "test:ho": "npm test --prefix interfaces/HO-Portal/",
     "test:ref": "npm test --prefix interfaces/Referral-App/",
     "install": "echo 'Nothing to install here. See README.md#getting-started \\n\\n' && exit 1"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0"
   }
 }

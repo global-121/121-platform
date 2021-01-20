@@ -1,7 +1,7 @@
 module.exports = {
   type: 'postgres',
-  host: '121db',
-  port: 5432,
+  host: process.env.LOCAL_DEVELOPMENT ? '121db' : 'localhost',
+  port: process.env.LOCAL_DEVELOPMENT ? 5432 : 5438,
   username: process.env.ORMCONFIG_121_SERVICE_USERNAME,
   password: process.env.ORMCONFIG_121_SERVICE_PASSWORD,
   database: 'global121',
