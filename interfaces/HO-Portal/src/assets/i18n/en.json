@@ -154,6 +154,7 @@
         "choose-action": "Choose action...",
         "no-actions": "No actions available",
         "apply-action": "Apply action",
+        "filter-placeholder": "Type to filter on any column...",
         "column": {
           "select": "Select",
           "person": "Person Affected",
