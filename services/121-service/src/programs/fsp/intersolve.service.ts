@@ -304,7 +304,9 @@ export class IntersolveService {
   }
 
   public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
-    const vouchers = await this.intersolveBarcodeRepository.find();
+    const vouchers = await this.intersolveBarcodeRepository.find({
+      relations: ['image', 'image.connection'],
+    });
     const unusedVouchers = [];
 
     for await (const v of vouchers) {
@@ -316,6 +318,8 @@ export class IntersolveService {
         unusedVoucher.installment = v.installment;
         unusedVoucher.issueDate = v.timestamp;
         unusedVoucher.whatsappPhoneNumber = v.whatsappPhoneNumber;
+        unusedVoucher.phoneNumber = v.image[0].connection.phoneNumber;
+        unusedVoucher.customData = v.image[0].connection.customData;
 
         unusedVouchers.push(unusedVoucher);
       }

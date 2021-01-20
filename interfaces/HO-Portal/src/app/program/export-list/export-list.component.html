@@ -7,4 +7,9 @@
   <ion-icon name="download" slot="start"></ion-icon>
   {{ btnText }}
 </confirm-prompt>
+<ion-spinner
+  *ngIf="isInProgress"
+  color="primary"
+  class="ion-margin-start"
+></ion-spinner>
 
