@@ -156,7 +156,7 @@ export class IntersolveService {
 
   public async sendVoucherWhatsapp(
     cardNumber: string,
-    pin: number,
+    pin: string,
     phoneNumber: string,
     did: string,
     installment: number,
@@ -200,7 +200,7 @@ export class IntersolveService {
 
   public async storeVoucherNoWhatsapp(
     cardNumber: string,
-    pin: number,
+    pin: string,
     phoneNumber: string,
     did: string,
     installment: number,
@@ -222,7 +222,7 @@ export class IntersolveService {
 
   private async storeBarcodeData(
     cardNumber: string,
-    pin: number,
+    pin: string,
     phoneNumber: string,
     installment: number,
     amount: number,
@@ -289,7 +289,7 @@ export class IntersolveService {
 
   public async cancelAndDeleteVoucher(
     cardId: string,
-    transactionId: number,
+    transactionId: string,
   ): Promise<void> {
     await this.intersolveApiService.cancel(cardId, transactionId);
     const barcodeEntity = await this.intersolveBarcodeRepository.findOne({
