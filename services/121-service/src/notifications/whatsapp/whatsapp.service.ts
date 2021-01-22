@@ -121,8 +121,8 @@ export class WhatsappService {
       )[0].preferredLanguage;
     } catch (Error) {
       console.log(
-        'Incomming whatsapp from non registered user phone: ',
-        fromNumber,
+        'Incomming whatsapp from non registered user phone last numbers: ',
+        fromNumber.substr(-5),
       );
     }
 
