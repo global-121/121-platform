@@ -12,7 +12,9 @@ export const SCHEME =
     ? 'https'
     : 'http';
 
-export const URL_121_SERVICE = process.env.URL_121_SERVICE_API;
+export const URL_121_SERVICE = process.env.LOCAL_DEVELOPMENT
+  ? 'localhost:' + process.env.PORT_121_SERVICE + '/api'
+  : process.env.URL_121_SERVICE_API;
 
 export const URL_USERIMS = 'http://11.0.0.5:50003/api';
 

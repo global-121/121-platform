@@ -8,8 +8,9 @@ const tyknIMS = 'http://11.0.0.3:50001/api/';
 const orgIMS = 'http://11.0.0.4:50002/api/';
 const userIMS = 'http://11.0.0.5:50003/api/';
 
-export const URL_PA_ACCOUNTS_SERVICE_API =
-  process.env.URL_PA_ACCOUNTS_SERVICE_API;
+export const URL_PA_ACCOUNTS_SERVICE_API = process.env.LOCAL_DEVELOPMENT
+  ? 'localhost:' + process.env.PORT_PA_ACCOUNTS_SERVICE + '/api'
+  : process.env.URL_PA_ACCOUNTS_SERVICE_API;
 
 export const API = {
   schema: tyknIMS + 'schema',
