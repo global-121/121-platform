@@ -113,3 +113,9 @@ See: [`src/notifications/voice/voice.service.ts`](`src/notifications/voice/voice
 ### Use Africa's Talking API during development
 
 If setting up a validation callback, use `ngrok` (see above) here as well during development.
+
+---
+
+## License
+
+Released under the Apache 2.0 License. See [LICENSE](LICENSE).

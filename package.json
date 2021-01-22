@@ -1,5 +1,9 @@
 {
   "name": "121-platform",
+  "author": "121.global",
+  "homepage": "https://www.121.global/",
+  "license": "Apache-2.0",
+  "repository": "github:global-121/121-platform",
   "private": true,
   "scripts": {
     "start": "echo 'See README.md#getting-started \\n\\n'",

@@ -2,6 +2,12 @@
   "name": "aw-app",
   "author": "121.global",
   "homepage": "https://www.121.global/",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/global-121/121-platform.git",
+    "directory": "interfaces/AW-App"
+  },
   "scripts": {
     "ionic": "ionic",
     "ng": "ng",
