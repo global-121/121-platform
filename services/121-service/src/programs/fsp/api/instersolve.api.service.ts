@@ -66,17 +66,15 @@ export class IntersolveApiService {
         resultDescription:
           responseBody.IssueCardResponse.ResultDescription._text,
         cardId: responseBody.IssueCardResponse.CardId?._text,
-        pin: parseInt(responseBody.IssueCardResponse.PIN?._text),
+        pin: responseBody.IssueCardResponse.PIN?._text,
         balance: parseInt(responseBody.IssueCardResponse.CardNewBalance?._text),
-        transactionId: parseInt(
-          responseBody.IssueCardResponse.TransactionId?._text,
-        ),
+        transactionId: responseBody.IssueCardResponse.TransactionId?._text,
       };
       intersolveRequest.resultCodeIssueCard = result.resultCode;
       intersolveRequest.cardId = result.cardId;
-      intersolveRequest.PIN = result.pin || null;
+      intersolveRequest.PIN = parseInt(result.pin) || null;
       intersolveRequest.balance = result.balance || null;
-      intersolveRequest.transactionId = result.transactionId || null;
+      intersolveRequest.transactionId = parseInt(result.transactionId) || null;
       intersolveRequest.toCancel = result.resultCode != IntersolveResultCode.Ok;
     } catch (Error) {
       console.log('Error: ', Error);
@@ -164,7 +162,7 @@ export class IntersolveApiService {
 
   public async cancel(
     cardId: string,
-    transactionId: number,
+    transactionIdString: string,
   ): Promise<IntersolveCancelResponse> {
     let payload = await this.soapService.readXmlAsJs(
       IntersolveSoapElements.Cancel,
@@ -185,7 +183,7 @@ export class IntersolveApiService {
       payload,
       IntersolveSoapElements.Cancel,
       ['TransactionId'],
-      String(transactionId),
+      transactionIdString,
     );
 
     const responseBody = await this.soapService.post(payload);
@@ -193,7 +191,7 @@ export class IntersolveApiService {
       resultCode: responseBody.CancelResponse.ResultCode._text,
       resultDescription: responseBody.CancelResponse.ResultDescription._text,
     };
-
+    const transactionId = Number(transactionIdString);
     const intersolveRequest = await this.intersolveRequestRepository.findOne({
       cardId,
       transactionId,

@@ -30,6 +30,9 @@ export class IntersolveRequestEntity {
   @Column({ nullable: true })
   public cardId: string;
 
+  // The values stored in this column should be 6 digits however some entries could be missing their first
+  // 0 because convert this value from string to number. Currently however the data stores in this
+  // column is never used. But when we do use this data we have to find a solution for this.
   @Column({ nullable: true })
   public PIN: number;
 
