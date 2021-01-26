@@ -17,3 +17,11 @@
     border-color: currentColor;
   }
 }
+
+.filter-input {
+  --placeholder-color: --ion-color-medium;
+
+  border: 1px solid var(--ion-color-medium);
+  min-width: 20em;
+  max-width: 30%;
+}

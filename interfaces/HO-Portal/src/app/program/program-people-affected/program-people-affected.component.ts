@@ -46,7 +46,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private pastTransactions: any[] = [];
 
   public allPeopleAffected: PersonRow[] = [];
-  public tempAllPeopleAffected: PersonRow[] = [];
+  private tempAllPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
 
   public headerChecked = false;
@@ -778,16 +778,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     await alert.present();
   }
 
-  public updateFilter(event) {
-    const filterVal = event.target.value.toLowerCase();
-    const tempAllPeopleAffected = this.tempAllPeopleAffected.filter((row) => {
+  public filterRowsVisible(value: string) {
+    const filterVal = value.toLowerCase();
+    const rowsVisible = this.tempAllPeopleAffected.filter((row: PersonRow) => {
       // Loop over all columns
       for (const key of Object.keys(row)) {
         try {
+          const columnValue = row[key].toLowerCase();
           const includeRow =
-            row[key].toLowerCase().indexOf(filterVal) !== -1 || // check literal values
-            row[key].toLowerCase().replace(/\s/g, '').indexOf(filterVal) !==
-              -1 || // check also with spaces removed
+            columnValue.indexOf(filterVal) !== -1 || // check literal values
+            columnValue.replace(/\s/g, '').indexOf(filterVal) !== -1 || // check also with spaces removed
             !filterVal;
           if (includeRow) {
             return includeRow;
@@ -798,6 +798,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       }
     });
 
-    this.allPeopleAffected = tempAllPeopleAffected;
+    this.allPeopleAffected = rowsVisible;
   }
 }
