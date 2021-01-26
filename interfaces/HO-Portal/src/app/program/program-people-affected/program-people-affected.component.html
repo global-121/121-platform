@@ -38,7 +38,6 @@
 <ngx-datatable
   #people
   class="bootstrap"
-  limit="250"
   rowHeight="auto"
   scrollbarH="true"
   headerHeight="50"
@@ -105,6 +104,7 @@
     [draggable]="column.draggable"
     [resizeable]="column.resizable"
     [sortable]="column.sortable"
+    [comparator]="column.comparator"
     [canAutoResize]="column.canAutoResize"
     [headerClass]="column.headerClass"
     [cellClass]="column.cellClass"

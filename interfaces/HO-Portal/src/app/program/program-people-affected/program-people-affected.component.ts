@@ -155,6 +155,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       draggable: false,
       resizeable: false,
       sortable: true,
+      comparator: undefined,
       frozenLeft: false,
       phases: [
         ProgramPhase.registrationValidation,
@@ -179,6 +180,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ...this.columnDefaults,
         width: 85,
         frozenLeft: true,
+        comparator: (a: string, b: string) => {
+          // Use numeric sorting for 'text'-values, so the order will be: "PA #1" < "PA #2" < "PA #10"
+          return a.localeCompare(b, undefined, {
+            numeric: true,
+            sensitivity: 'base',
+          });
+        },
       },
       {
         prop: 'name',
@@ -435,7 +443,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }
     return source
       .sort(this.sortPeopleByTempScore)
-      .map((person, index) => this.createPersonRow(person, index + 1));
+      .map((person) => this.createPersonRow(person));
   }
 
   private sortPeopleByTempScore(a: Person, b: Person) {
@@ -446,7 +454,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }
   }
 
-  private createPersonRow(person: Person, index: number): PersonRow {
+  private createPersonRow(person: Person): PersonRow {
     let personRow: PersonRow = {
       did: person.did,
       checkboxVisible: false,
