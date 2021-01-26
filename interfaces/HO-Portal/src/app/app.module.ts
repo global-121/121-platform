@@ -57,7 +57,9 @@ export function HttpLoaderFactory(http: HttpClient) {
   entryComponents: [],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(),
+    IonicModule.forRoot({
+      mode: 'md',
+    }),
     AppRoutingModule,
     HttpClientModule,
     TranslateModule.forRoot({
