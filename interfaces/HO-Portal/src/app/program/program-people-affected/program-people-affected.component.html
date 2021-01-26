@@ -26,12 +26,15 @@
     {{ 'page.program.program-people-affected.apply-action'|translate }}
   </confirm-prompt>
 </ion-row>
-<input
-  type="text"
-  style="padding:8px;margin:15px auto;width:30%;"
-  [placeholder]="'page.program.program-people-affected.filter-placeholder'|translate"
-  (keyup)="updateFilter($event)"
-/>
+<ion-row class="ion-margin-vertical">
+  <ion-input
+    [placeholder]="'page.program.program-people-affected.filter-placeholder'|translate"
+    [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
+    [attr.aria-label]="'page.program.program-people-affected.filter-placeholder'|translate"
+    (ionInput)="filterRowsVisible($event.target.value)"
+    class="filter-input"
+  ></ion-input>
+</ion-row>
 <ngx-datatable
   #people
   class="bootstrap"
