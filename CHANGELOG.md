@@ -7,13 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.17.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.17.1...master)
 
 ---
 
+## [0.17.1](https://github.com/global-121/121-platform/compare/v0.17.0...v0.17.1) - 2021-01-26
+
 ## [0.17.0](https://github.com/global-121/121-platform/compare/v0.16.0...v0.17.0) - 2021-01-19
 
+---
+
 ## [0.16.0](https://github.com/global-121/121-platform/compare/v0.15.4...v0.16.0) - 2021-01-13
+
+---
 
 ## [0.15.4](https://github.com/global-121/121-platform/compare/v0.15.3...v0.15.4) - 2021-01-12
 
