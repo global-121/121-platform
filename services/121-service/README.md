@@ -98,9 +98,10 @@ See the Twilio API documentation: <https://www.twilio.com/docs>.
 - Set the ENV-variable `EXTERNAL_121_SERVICE_URL` to your personal url in the [services/.env](../.env)-file.
   - Make sure to run `npm run start:services` after the changes, so the new value(s) will be used.
 
-To also test Whatsapp with Twilio:
-- Setup Twilio Whatsapp Sandbox <https://www.twilio.com/docs/whatsapp/sandbox>
-- Be sure to join the sandbox with the Whatsapp number you want to test <https://www.twilio.com/docs/whatsapp/sandbox#how-to-join-a-twilio-sandbox>
+To also test WhatsApp with Twilio:
+
+- Setup Twilio WhatsApp Sandbox <https://www.twilio.com/docs/whatsapp/sandbox>
+- Be sure to join the sandbox with the WhatsApp number you want to test <https://www.twilio.com/docs/whatsapp/sandbox#how-to-join-a-twilio-sandbox>
 - Set the callback url for `When a Message Comes in` to `<your-url>/api/notifications/whatsapp/incoming`
 
 ### Upload voice mp3

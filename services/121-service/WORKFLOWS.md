@@ -50,11 +50,11 @@ In this file we document "how to do X", manually. As not everything is possible 
 2. Use the endpoint: [`/programs/monitoring/{programId}`](https://test-vm.121.global/121-service/docs/#/programs/get_programs_monitoring__programId_)  
    Fill in the `programId` = 1.
 
-   This will return all connections, with attributes: 
-   - monitoring answer
-   - registration duration (in seconds)
-   - PA status
+   This will return all connections, with attributes:
 
+   - Monitoring-question answer
+   - Registration duration (in seconds)
+   - PA status
 
 ---
 
