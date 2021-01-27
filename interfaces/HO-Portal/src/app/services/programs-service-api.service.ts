@@ -180,6 +180,15 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  getBalance(did: string, installment: number): Promise<number> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/fsp/intersolve/balance`, {
+        did,
+        installment,
+      })
+      .toPromise();
+  }
+
   getPeopleAffected(programId: number | string): Promise<Person[]> {
     return this.apiService
       .get(environment.url_121_service_api, `/programs/enrolled/${programId}`)

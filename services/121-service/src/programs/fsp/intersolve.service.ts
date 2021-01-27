@@ -238,6 +238,12 @@ export class IntersolveService {
   }
 
   public async exportVouchers(did: string, installment: number): Promise<any> {
+    const voucher = await this.getVoucher(did, installment);
+
+    return voucher.image;
+  }
+
+  private async getVoucher(did: string, installment: number): Promise<any> {
     const connection = await this.connectionRepository.findOne({
       where: { did: did },
       relations: ['images', 'images.barcode'],
@@ -249,17 +255,16 @@ export class IntersolveService {
       );
     }
 
-    const image = connection.images.find(
+    const voucher = connection.images.find(
       image => image.barcode.installment === installment,
     );
-    if (!image) {
+    if (!voucher) {
       throw new HttpException(
-        'Image not found. Maybe this installment was not (yet) made to this PA.',
+        'Voucher not found. Maybe this installment was not (yet) made to this PA.',
         HttpStatus.NOT_FOUND,
       );
     }
-
-    return image.image;
+    return voucher;
   }
 
   public async getInstruction(): Promise<any> {
@@ -302,23 +307,33 @@ export class IntersolveService {
     await this.intersolveBarcodeRepository.remove(barcodeEntity);
   }
 
+  public async getVoucherBalance(did: string, installment: number): Promise<number> {
+    const voucher = await this.getVoucher(did, installment);
+    return await this.getBalance(voucher.barcode);
+  }
+
+  private async getBalance(intersolveBarcode: IntersolveBarcodeEntity): Promise<number> {
+    const getCard = await this.intersolveApiService.getCard(intersolveBarcode.barcode, intersolveBarcode.pin);
+    const realBalance = getCard.balance / getCard.balanceFactor;
+    return realBalance;
+  }
+
   public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
     const vouchers = await this.intersolveBarcodeRepository.find({
       relations: ['image', 'image.connection'],
     });
     const unusedVouchers = [];
 
-    for await (const v of vouchers) {
-      const getCard = await this.intersolveApiService.getCard(v.barcode, v.pin);
-      const realBalance = getCard.balance / getCard.balanceFactor;
+    for await (const voucher of vouchers) {
+      const balance = await this.getBalance(voucher);
 
-      if (realBalance === v.amount) {
+      if (balance === voucher.amount) {
         let unusedVoucher = new UnusedVoucherDto();
-        unusedVoucher.installment = v.installment;
-        unusedVoucher.issueDate = v.timestamp;
-        unusedVoucher.whatsappPhoneNumber = v.whatsappPhoneNumber;
-        unusedVoucher.phoneNumber = v.image[0].connection.phoneNumber;
-        unusedVoucher.customData = v.image[0].connection.customData;
+        unusedVoucher.installment = voucher.installment;
+        unusedVoucher.issueDate = voucher.timestamp;
+        unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
+        unusedVoucher.phoneNumber = voucher.image[0].connection.phoneNumber;
+        unusedVoucher.customData = voucher.image[0].connection.customData;
 
         unusedVouchers.push(unusedVoucher);
       }

@@ -204,10 +204,14 @@
           "show-status": "Show status"
         },
         "payment-status-popup": {
+          "message-title": "Message sent payment #{{installment}}: {{timestamp}}",
+          "money-title": "Voucher sent payment #{{installment}}: {{timestamp}}",
           "error-message": "Error message",
           "fix-error": "Please contact the 121 development team to fix this error. Then use the button below to retry payment for this Person Affected.",
           "retry": "Retry payment",
-          "notes": "<br>Note: If the payment failed for all Persons Affected, you can also use the original 'Start payout now' button again to retry the payment for all Persons Affected at once."
+          "notes": "<br>Note: If the payment failed for all Persons Affected, you can also use the original 'Start payout now' button again to retry the payment for all Persons Affected at once.",
+          "get-balance": "Get current balance of voucher",
+          "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}"
         }
       },
       "program-modal": {
