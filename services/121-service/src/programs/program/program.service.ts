@@ -1358,23 +1358,34 @@ export class ProgramService {
     programId: number,
     installmentId: number,
   ): Promise<any> {
-    return await this.transactionRepository
+    
+    const latestSuccessTransactionPerPa = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select([
-        'transaction.amount',
-        'transaction.installment',
-        'connection.phoneNumber',
-        'connection.customData',
-        'fsp.fsp AS financialServiceProvider',
-      ])
-      .leftJoin('transaction.connection', 'connection')
-      .leftJoin('connection.fsp', 'fsp')
+      .select('transaction.connectionId',"connectionId")
+      .addSelect('MAX(transaction.created)','maxCreated')
       .where('transaction.program.id = :programId', { programId: programId })
       .andWhere('transaction.installment = :installmentId', {
         installmentId: installmentId,
       })
       .andWhere('transaction.status = :status', { status: StatusEnum.success })
+      .groupBy('transaction.connectionId');
+
+    const transactions = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select([
+        'transaction.amount',
+        'transaction.installment',
+        'connection.phoneNumber',
+        'connection.customData', 
+        'fsp.fsp AS financialServiceProvider',
+      ])
+      .innerJoin('('+latestSuccessTransactionPerPa.getQuery()+')', 'subquery', 'transaction.connectionId = subquery."connectionId" AND transaction.created = subquery."maxCreated"')
+      .setParameters(latestSuccessTransactionPerPa.getParameters())
+      .leftJoin('transaction.connection', 'connection')
+      .leftJoin('connection.fsp', 'fsp')
       .getRawMany();
+    
+      return transactions;
   }
 
   public jsonToCsv(items: any): any {
