@@ -1,9 +1,9 @@
-import { formatDate } from '@angular/common';
+import { formatCurrency, formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { RetryPayoutDetails } from 'src/app/models/installment.model';
+import { PopupPayoutDetails } from 'src/app/models/installment.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
 import { StatusEnum } from './../../models/status.enum';
@@ -25,7 +25,8 @@ export class PaymentStatusPopupComponent implements OnInit {
   public content: any;
   public contentNotes: any;
   public retryButton: boolean;
-  public payoutDetails: RetryPayoutDetails;
+  public payoutDetails: PopupPayoutDetails;
+  public getBalanceButton: boolean;
   public imageUrl: string;
 
   public isInProgress = false;
@@ -153,6 +154,40 @@ export class PaymentStatusPopupComponent implements OnInit {
           this.isInProgress = false;
         },
       );
+  }
+
+  public async getBalance() {
+    this.isInProgress = true;
+    await this.programsService
+      .getBalance(this.payoutDetails.did, this.payoutDetails.installment)
+      .then(
+        (response) => {
+          console.log('response: ', response);
+          this.isInProgress = false;
+          const message = this.translate.instant(
+            'page.program.program-people-affected.payment-status-popup.current-balance',
+            { currentBalance: this.formatCurrency(response) },
+          );
+          this.actionResult(message);
+        },
+        (err) => {
+          console.log('err: ', err);
+          if (err.error.error) {
+            this.actionResult(err.error.error);
+          }
+          this.isInProgress = false;
+        },
+      );
+  }
+
+  private formatCurrency(balance) {
+    const symbol = `${this.payoutDetails.currency} `;
+    return formatCurrency(
+      balance,
+      environment.defaultLocale,
+      symbol,
+      this.payoutDetails.currency,
+    );
   }
 
   private async actionResult(resultMessage: string, refresh: boolean = false) {

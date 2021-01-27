@@ -4,7 +4,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
-import { RetryPayoutDetails } from 'src/app/models/installment.model';
+import { PopupPayoutDetails } from 'src/app/models/installment.model';
 import { PaStatus, Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
@@ -614,16 +614,18 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         )
       : null;
     const retryButton = hasError ? true : false;
-    const payoutDetails: RetryPayoutDetails =
+    const payoutDetails: PopupPayoutDetails =
       hasError || value.hasMessageIcon || value.hasMoneyIconTable
         ? {
             programId: this.programId,
             installment: column.installmentIndex,
             amount: row[column.prop + '-amount'],
             did: row.did,
+            currency: this.program.currency,
           }
         : null;
     let voucherUrl = null;
+    let getBalanceButton = null;
 
     if (this.hasVoucherSupport(row.fsp) && !hasError && !!value) {
       const voucherBlob = await this.programsService.exportVoucher(
@@ -631,6 +633,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         column.installmentIndex,
       );
       voucherUrl = window.URL.createObjectURL(voucherBlob);
+      getBalanceButton = true;
     }
 
     const titleError = hasError ? `${column.name}: ${value.text}` : null;
@@ -647,6 +650,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         contentNotes,
         retryButton,
         payoutDetails,
+        getBalanceButton,
         imageUrl: voucherUrl,
       },
     });

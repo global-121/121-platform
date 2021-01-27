@@ -58,6 +58,11 @@
   </div>
   <div *ngIf="contentNotes" [innerHTML]="contentNotes">
   </div>
+  <div *ngIf="getBalanceButton">
+    <ion-button (click)="getBalance()">
+      {{ 'page.program.program-people-affected.payment-status-popup.get-balance'|translate }}
+    </ion-button>
+  </div>
   <div *ngIf="imageUrl">
     <img [src]="imageUrl" alt="" style="width: 100%; height: auto;">
   </div>
