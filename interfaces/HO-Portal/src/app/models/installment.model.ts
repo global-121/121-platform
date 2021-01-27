@@ -11,7 +11,7 @@ export class Installment extends InstallmentData {
   isInProgress?: boolean;
 }
 
-export class RetryPayoutDetails {
+export class PopupPayoutDetails {
   programId: number;
   installment: number;
   amount: number;
