@@ -1111,9 +1111,20 @@ export class ProgramService {
         data: (await this.getInclusionList(programId)).data,
       };
     }
+    
+    pastPaymentDetails = this.filterAttributesToExport(pastPaymentDetails);    
 
+    const csvFile = {
+      fileName: `payment-details-completed-installment-${installmentId}.csv`,
+      data: this.jsonToCsv(pastPaymentDetails),
+    };
+
+    return csvFile;
+  }
+
+  private async filterAttributesToExport(pastPaymentDetails) {
     const criteria = (await this.getAllCriteriaForExport()).map(c => c.name);
-    pastPaymentDetails.forEach(transaction => {
+    return pastPaymentDetails.forEach(transaction => {
       Object.keys(transaction.connection_customData).forEach(key => {
         if (criteria.includes(key)) {
           transaction[key] = transaction.connection_customData[key];
@@ -1121,13 +1132,6 @@ export class ProgramService {
       })
       delete transaction.connection_customData;
     });
-
-    const response = {
-      fileName: `payment-details-completed-installment-${installmentId}.csv`,
-      data: this.jsonToCsv(pastPaymentDetails),
-    };
-
-    return response;
   }
 
   public async getUnusedVouchers(): Promise<FileDto> {
