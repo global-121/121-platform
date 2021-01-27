@@ -13,7 +13,6 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     res: Response,
     next: NextFunction,
   ): Promise<any> {
-    // console.log('Twillio auth');
     const twilioSignature = req.headers['x-twilio-signature'];
 
     const validWhatsapp = twilio.validateRequest(
