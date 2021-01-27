@@ -16,4 +16,5 @@ export class PopupPayoutDetails {
   installment: number;
   amount: number;
   did: string;
+  currency: string;
 }
