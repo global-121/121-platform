@@ -5,6 +5,7 @@
   "location": "Nederland",
   "ngo": "NLRC",
   "title": {
+    "ar": "121 برنامج المعونات النقدية الرقمي",
     "ti": "ትሕስ እስ ዓ ተስት።",
     "en": "121 Digital Cash Aid Program"
   },
@@ -12,10 +13,10 @@
     "en": ""
   },
   "descLocation": {
-    "en": "Location such and such."
+    "en": ""
   },
   "descHumanitarianObjective": {
-    "en": "Humanitarian objective of program is such and such."
+    "en": ""
   },
   "descCashType": {
     "en": "Unconditional multi-purpose"
@@ -38,9 +39,16 @@
   "minimumScore": 0,
   "highestScoresX": 250,
   "meetingDocuments": {
-    "en": "Document 1; Document 2; Document 3"
+    "en": ""
   },
   "notifications": {
+    "ar": {
+      "registered": "هذه رسالة من الصليب الأحمر\nلقد استلمنا طلبك للمساعدة.\nسوف تستلم رسالة نصية بمعلومات أخرى خلال اسبوع.",
+      "included": "هذه رسالة من الصليب الأحمر. \nلقد تمت الموافقة على طلبك للإنضمام لبرنامج الصليب الأحمر.\nسوف تستلم رسالة أخرى عن قسيمة سوبر ماركت البرت هاين خلال اسبوع.",
+      "whatsappPayment": "هذه رسالة من الصليب الأحمر. \nإن قسيمة الـ 35 يورو للسوبر ماركت ألبرت هاين جاهزة.\nالرجاء الرد ب \"yes\" على هذه الرسالة لكي نرسل القسيمة إليك.",
+      "whatsappVoucher": "هذه رسالة من الصليب الأحمر. \nهذه الرسالة تحتوي على صورتين.\nالأولى لقسيمة الشراء من البرت هاين (cadeaukaart) مع رمز مرئي.\nو الأخرى فيها شرح لكيفية استخدام القسيمة للشراء من البرت هاين.\nإن قيمة هذه القسيمة هي 35 يورو.\nيمكنك استخدام هذه القسيمة في اي سوبر ماركت البرت هاين في هولندا.\nلست مضطراً لصرف كامل المبلغ مرة واحدة. لذلك الرجاء المحافظة على صورة القسيمة لإعادة استخدامها حتى انتهاء الرصيد.\nسوف تستلم قسيمة جديدة بقيمة 35 يورو كل اسبوع يوم الثلاثاء حتى تاريخ 31 مايو\\أيار 2021.\nهل لديك اسئلة؟ قم بمراسلتنا على واتس آب https://wa.me/31614458781",
+      "whatsappReply": "هذا رسالة آلية، إذا كانت لديك اسئلة يمكنك مراسلة الصليب الأحمر على واتس آب: 0031614458781"
+    },
     "ti": {
       "registered": "ትሕስ እስ ዓ ተስት።",
       "included": "ትሕስ እስ ዓ ተስት።",
@@ -63,6 +71,7 @@
     {
       "criterium": "nameFirst",
       "label": {
+        "ar": "الرجاء إدخال اسمك الأول:",
         "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "Please enter your first name:"
       },
@@ -80,6 +89,7 @@
     {
       "criterium": "nameLast",
       "label": {
+        "ar": "الرجاء إدخال اسم العائلة:",
         "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "Please enter your last name:"
       },
@@ -97,6 +107,7 @@
     {
       "criterium": "vnumber",
       "label": {
+        "ar": "رقم الـ V-number مكون من 10 ارقام. يمكنك إيجاده على إقامتك المؤقتة أو على أي رسالة من IND. <br><br> إذا لم تستطيع إيجاده، الرجاء التواصل مع الصليب الأحمر على واتس آب: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>0031614458781</a> <br><br> الرجاء إدخال رقم الـ V-Number:",
         "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "Your V-number consists of 10 numbers. You can find it on your (former) permit of stay or on a letter from the IND.   <br><br>   If you can’t find your V-Number, please contact the Rode Kruis helpdesk via WhatsApp on: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a>   <br><br>   Please enter your V-Number:"
       },
@@ -119,6 +130,7 @@
     {
       "criterium": "phoneNumber",
       "label": {
+        "ar": "الرجاء مشاركة رقم هاتف يمكننا إرسال رسالة نصية إليه. سوف نستخدم هذا الرقم لإعلامك عن برنامج المعونات. <br><br> مثال على الرقم: <code>0031600000000</code>",
         "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>"
       },

@@ -5,6 +5,7 @@
   "location": "Nederland",
   "ngo": "NLRC",
   "title": {
+    "ar": "121 برنامج المعونات النقدية الرقمي",
     "en": "121 Digital Cash Aid Program (PV)"
   },
   "description": {
@@ -40,6 +41,13 @@
     "en": ""
   },
   "notifications": {
+    "ar": {
+      "registered": "هذه رسالة من الصليب الأحمر\nلقد استلمنا طلبك للمساعدة.\nسوف تستلم رسالة نصية بمعلومات أخرى خلال اسبوع.",
+      "included": "هذه رسالة من الصليب الأحمر. \nلقد تمت الموافقة على طلبك للإنضمام لبرنامج الصليب الأحمر.\nسوف تستلم رسالة أخرى عن قسيمة سوبر ماركت البرت هاين خلال اسبوع.",
+      "whatsappPayment": "هذه رسالة من الصليب الأحمر. \nإن قسيمة الـ 15 يورو للسوبر ماركت ألبرت هاين جاهزة.\nالرجاء الرد ب \"yes\" على هذه الرسالة لكي نرسل القسيمة إليك.",
+      "whatsappVoucher": "هذه رسالة من الصليب الأحمر.\n\nهذه الرسالة تحتوي على صورتين.\nالأولى لقسيمة الشراء من البرت هاين (cadeaukaart) مع رمز مرئي.\nو الأخرى فيها شرح لكيفية استخدام القسيمة للشراء من البرت هاين.\nإن قيمة هذه القسيمة هي 15 يورو.\nيمكنك استخدام هذه القسيمة في اي سوبر ماركت البرت هاين في هولندا.\n\nلست مضطراً لصرف كامل المبلغ مرة واحدة. لذلك الرجاء المحافظة على صورة القسيمة لإعادة استخدامها حتى انتهاء الرصيد.\nسوف تستلم قسيمة جديدة بقيمة 15 يورو كل اسبوع يوم الثلاثاء حتى تاريخ 31 مايو\\أيار 2021.\nهل لديك اسئلة؟ قم بمراسلتنا على واتس آب https://wa.me/31614458781",
+      "whatsappReply": "هذا رسالة آلية، إذا كانت لديك اسئلة يمكنك مراسلة الصليب الأحمر على واتس آب: 0031614458781"
+    },
     "tl": {
       "registered": "Ang mensaheng ito ay galing sa Red Cross.\n\nNatanggap na namin ang iyong application para sa suporta.\n\nMakakatanggap ka ng panibagong SMS na may panibagong impormasyon sa loob ng 1 linggo.",
       "included": "Ang mensaheng ito ay mula sa Red Cross.\n\nAng iyong application sa programa ng Red Cross ay matagumpay at na-confirm na.\n\nMakakatanggap ka ng panibagong mensahe tungkol sa unang Albert Heijn supermarket voucher sa loob ng 1 linggo.",
@@ -61,6 +69,7 @@
     {
       "criterium": "nameFirst",
       "label": {
+        "ar": "الرجاء إدخال اسمك الأول:",
         "tl": "Ilagay ang pangalan:",
         "en": "Please enter your first name:"
       },
@@ -78,6 +87,7 @@
     {
       "criterium": "nameLast",
       "label": {
+        "ar": "الرجاء إدخال اسم العائلة:",
         "tl": "Ilagay ang apelyido:",
         "en": "Please enter your last name:"
       },
@@ -95,6 +105,7 @@
     {
       "criterium": "phoneNumber",
       "label": {
+        "ar": "الرجاء مشاركة رقم هاتف يمكننا إرسال رسالة نصية إليه. سوف نستخدم هذا الرقم لإعلامك عن برنامج المعونات. <br><br> مثال على الرقم: <code>0031600000000</code>",
         "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>",
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>"
       },
