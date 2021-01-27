@@ -32,6 +32,7 @@
     [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
     [attr.aria-label]="'page.program.program-people-affected.filter-placeholder'|translate"
     (ionInput)="filterRowsVisible($event.target.value)"
+    [clearInput]="true"
     class="filter-input"
   ></ion-input>
 </ion-row>

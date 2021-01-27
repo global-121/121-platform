@@ -70,7 +70,6 @@ export class VoiceService {
     const re = new RegExp('REPLACE', 'g');
     const subpath = mp3Param.replace(re, '/');
     const filePath = './voice/' + subpath + '.mp3';
-    console.log('filePath: ', filePath);
     const stat = fs.statSync(filePath);
     const readStream = fs.createReadStream(filePath);
     return { stat: stat, readStream: readStream };

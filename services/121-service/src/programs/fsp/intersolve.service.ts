@@ -297,7 +297,6 @@ export class IntersolveService {
       relations: ['image'],
     });
     for (const image of barcodeEntity.image) {
-      console.log('removing', image);
       await this.imageCodeService.removeImageExportVoucher(image);
     }
     await this.intersolveBarcodeRepository.remove(barcodeEntity);

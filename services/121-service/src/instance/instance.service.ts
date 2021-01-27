@@ -18,7 +18,6 @@ export class InstanceService {
   public async updateInstance(
     updateInstanceDto: UpdateInstanceDto,
   ): Promise<InstanceEntity> {
-    console.log('updateInstanceDto: ', updateInstanceDto);
     const instance = await this.instanceRepository.findOne({
       where: { name: updateInstanceDto.name },
     });
