@@ -88,5 +88,16 @@ In this file we document "how to do X", manually. As not everything is possible 
    1. Go to "Resources" page: <https://www.transifex.com/redcrossnl/121-platform/content/>
    2. Select one of the "`Instance: *`", "`FSP: *`" or "`Program: *`" resources.
    3. Click the "**[ Update source file ]**"-button and use the edited, English only version.
+   
+### Add initial whatsApp message to Twilio approved messages
+1. Go to https://www.twilio.com/console/sms/whatsapp/templates
+2. Find 'voucher_double_new_line_dynamic' and click 'Add translations'.
+3. Select the new language.
+4. Copy-paste the notifications[languageCOde].whatsappPayment property from the appropriate program-<program>.json in services/121-service/seed-data/
+5. Change any coded newlines (\n) to actual new lines using Enter.
+6. Remove any escape characters, e.g. '..reply \“yes\” to..' becomes '..reply “yes” to..'
+7. Fix any other code-problems there might be.
+8. Save. It might take a few hours for the message to be approved.
+9. Test this by registering a PA on the test-vm in the new language. Then include and send a payment from the HO-portal. You should receive the whatsApp-message in the right language. 
 
 ---
