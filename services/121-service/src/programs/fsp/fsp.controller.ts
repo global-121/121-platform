@@ -25,7 +25,7 @@ import {
 } from './financial-service-provider.entity';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { IntersolveService } from './intersolve.service';
-import { ExportVoucherDto } from './dto/export-voucher.dto';
+import { IdentifyVoucherDto } from './dto/identify-voucher.dto';
 import { Response } from 'express-serve-static-core';
 import stream from 'stream';
 import { UserRole } from '../../user-role.enum';
@@ -37,14 +37,11 @@ import { FspAttributeEntity } from './fsp-attribute.entity';
 @Controller('fsp')
 export class FspController {
   private readonly fspService: FspService;
-  private readonly africasTalkingService: AfricasTalkingService;
   public constructor(
     fspService: FspService,
-    africasTalkingService: AfricasTalkingService,
     private intersolveService: IntersolveService,
   ) {
     this.fspService = fspService;
-    this.africasTalkingService = africasTalkingService;
   }
 
   @ApiOperation({ title: 'Get fsp' })
@@ -96,12 +93,12 @@ export class FspController {
   @ApiResponse({ status: 200, description: 'Vouchers exported' })
   @Post('intersolve/export-voucher')
   public async exportVouchers(
-    @Body() exportVoucherDto: ExportVoucherDto,
+    @Body() identifyVoucherDto: IdentifyVoucherDto,
     @Res() response: Response,
   ): Promise<void> {
     const blob = await this.intersolveService.exportVouchers(
-      exportVoucherDto.did,
-      exportVoucherDto.installment,
+      identifyVoucherDto.did,
+      identifyVoucherDto.installment,
     );
     var bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
@@ -109,6 +106,20 @@ export class FspController {
       'Content-Type': 'image/png',
     });
     bufferStream.pipe(response);
+  }
+
+  @ApiOperation({
+    title: 'Get Intersolve voucher balance',
+  })
+  @ApiResponse({ status: 200, description: 'Vouchers balance retrieved' })
+  @Post('intersolve/balance')
+  public async getBalance(
+    @Body() identifyVoucherDto: IdentifyVoucherDto,
+  ): Promise<number> {
+    return await this.intersolveService.getVoucherBalance(
+      identifyVoucherDto.did,
+      identifyVoucherDto.installment,
+    );
   }
 
   @ApiOperation({

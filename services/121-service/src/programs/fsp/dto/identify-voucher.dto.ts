@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 
 import { Length, IsNumber } from 'class-validator';
 
-export class ExportVoucherDto {
+export class IdentifyVoucherDto {
   @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
   @Length(29, 30)
   public readonly did: string;
