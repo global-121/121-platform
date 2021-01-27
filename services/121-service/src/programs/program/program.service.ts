@@ -1100,31 +1100,31 @@ export class ProgramService {
     programId: number,
     installmentId: number,
   ): Promise<FileDto> {
-    let rawPaymentDetails = await this.getPaymentDetailsInstallment(
+    let pastPaymentDetails = await this.getPaymentDetailsInstallment(
       programId,
       installmentId,
     );
 
-    if (rawPaymentDetails.length === 0) {
+    if (pastPaymentDetails.length === 0) {
       return {
         fileName: `payment-details-future-installment-${installmentId}.csv`,
         data: (await this.getInclusionList(programId)).data,
       };
     }
 
-    const paymentDetails = [];
-    rawPaymentDetails.forEach(rawTransaction => {
-      let transaction = {
-        ...rawTransaction,
-        ...rawTransaction.connection_customData,
-      };
-      delete transaction['connection_customData'];
-      paymentDetails.push(transaction);
+    const criteria = (await this.getAllCriteriaForExport()).map(c => c.name);
+    pastPaymentDetails.forEach(transaction => {
+      Object.keys(transaction.connection_customData).forEach(key => {
+        if (criteria.includes(key)) {
+          transaction[key] = transaction.connection_customData[key];
+        }
+      })
+      delete transaction.connection_customData;
     });
 
     const response = {
       fileName: `payment-details-completed-installment-${installmentId}.csv`,
-      data: this.jsonToCsv(paymentDetails),
+      data: this.jsonToCsv(pastPaymentDetails),
     };
 
     return response;
