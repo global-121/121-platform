@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, LessThan, Repository, In, Between, Not } from 'typeorm';
+import { getRepository, LessThan, Repository, Between } from 'typeorm';
 import { IntersolveBarcodeEntity } from '../programs/fsp/intersolve-barcode.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
@@ -27,16 +27,48 @@ export class CronjobService {
     private readonly intersolveApiService: IntersolveApiService,
   ) {}
 
+  private async getLanguageForWhatsAppPhoneNumber(
+    phoneNumber: string,
+  ): Promise<string> {
+    const fallbackLanguage = 'en';
+
+    const connection = (await this.connectionRepository.find()).filter(
+      (c: ConnectionEntity) =>
+        c.customData['whatsappPhoneNumber'] === phoneNumber,
+    )[0];
+
+    if (connection && connection.preferredLanguage) {
+      return connection.preferredLanguage;
+    }
+    return fallbackLanguage;
+  }
+
+  private getNotificationText(
+    program: ProgramEntity,
+    type: string,
+    language?: string,
+  ): string {
+    const fallbackLanguage = 'en';
+
+    if (
+      program.notifications[language] &&
+      program.notifications[language][type]
+    ) {
+      return program.notifications[language][type];
+    }
+    return program.notifications[fallbackLanguage][type];
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_NOON)
   private async cronSendWhatsappReminders(): Promise<void> {
-    console.log('Execution Started: cronSendWhatsappReminders');
+    console.log('CronjobService - Started: cronSendWhatsappReminders');
 
     const programId = 1;
-    const sixteenHours = 16 * 60 * 60 * 1000;
-    const sixteenHoursAgo = (d =>
-      new Date(d.setTime(d.getTime() - sixteenHours)))(new Date());
-
     const program = await getRepository(ProgramEntity).findOne(programId);
+
+    const sixteenHours = 16 * 60 * 60 * 1000;
+    const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
+
     const unsentIntersolveBarcodes = await this.intersolveBarcodeRepository.find(
       {
         where: { send: false, timestamp: LessThan(sixteenHoursAgo) },
@@ -45,11 +77,12 @@ export class CronjobService {
 
     unsentIntersolveBarcodes.forEach(async unsentIntersolveBarcode => {
       const fromNumber = unsentIntersolveBarcode.whatsappPhoneNumber;
-      const language = (await this.connectionRepository.find()).filter(
-        c => c.customData['whatsappPhoneNumber'] === fromNumber,
-      )[0].preferredLanguage;
-      const whatsappPayment =
-        program.notifications[language]['whatsappPayment'];
+      const language = await this.getLanguageForWhatsAppPhoneNumber(fromNumber);
+      const whatsappPayment = this.getNotificationText(
+        program,
+        'whatsappPayment',
+        language,
+      );
 
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,
@@ -61,24 +94,21 @@ export class CronjobService {
     console.log(
       `cronSendWhatsappReminders: ${unsentIntersolveBarcodes.length} unsent Intersolve barcodes`,
     );
-    console.log('Execution Complete: cronSendWhatsappReminders');
+    console.log('CronjobService - Complete: cronSendWhatsappReminders');
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES)
   private async cronCancelByRefposIntersolve(): Promise<void> {
     // This function periodically checks if some of the IssueCard calls failed.
     // and tries to cancel the
-    console.log('Execution Started: cancelByRefposIntersolve');
+    console.log('CronjobService - Started: cancelByRefposIntersolve');
 
     const tenMinutes = 10 * 60 * 1000;
-    const tenMinutesAgo = (d => new Date(d.setTime(d.getTime() - tenMinutes)))(
-      new Date(),
-    );
+    const tenMinutesAgo = new Date(Date.now() - tenMinutes);
 
     const twoWeeks = 14 * 24 * 60 * 60 * 1000;
-    const twoWeeksAgo = (d => new Date(d.setTime(d.getTime() - twoWeeks)))(
-      new Date(),
-    );
+    const twoWeeksAgo = new Date(Date.now() - twoWeeks);
+
     const failedIntersolveRquests = await this.intersolveRequestRepository.find(
       {
         where: {
