@@ -166,7 +166,10 @@ export class PaymentStatusPopupComponent implements OnInit {
           this.isInProgress = false;
           const message = this.translate.instant(
             'page.program.program-people-affected.payment-status-popup.current-balance',
-            { currentBalance: this.formatCurrency(response) },
+            {
+              currentBalance: this.formatCurrency(response),
+              timestamp: formatDate(new Date(), this.dateFormat, this.locale),
+            },
           );
           this.actionResult(message);
         },
