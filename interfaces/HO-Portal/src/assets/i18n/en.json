@@ -204,6 +204,8 @@
           "show-status": "Show status"
         },
         "payment-status-popup": {
+          "message-title": "Message sent payment #{{installment}}: {{timestamp}}",
+          "money-title": "Voucher sent payment #{{installment}}: {{timestamp}}",
           "error-message": "Error message",
           "fix-error": "Please contact the 121 development team to fix this error. Then use the button below to retry payment for this Person Affected.",
           "retry": "Retry payment",

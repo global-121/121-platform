@@ -4,6 +4,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { PopupPayoutDetails } from 'src/app/models/installment.model';
+import {
+  IntersolvePayoutStatus,
+  TransactionCustomData,
+} from 'src/app/models/transaction-custom-data';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
 import { StatusEnum } from './../../models/status.enum';
@@ -60,29 +64,49 @@ export class PaymentStatusPopupComponent implements OnInit {
 
   public async getMessageTitle() {
     const intersolveMessageTime = await this.getTransactionTime(
-      'IntersolvePayoutStatus',
-      'InitialMessage',
+      TransactionCustomData.intersolvePayoutStatus,
+      IntersolvePayoutStatus.initialMessage,
     );
-    console.log('intersolveMessageTime: ', intersolveMessageTime);
     if (intersolveMessageTime) {
-      return `Payment #${this.payoutDetails.installment}: ${intersolveMessageTime}`;
+      return this.translate.instant(
+        'page.program.program-people-affected.payment-status-popup.message-title',
+        {
+          installment: this.payoutDetails.installment,
+          timestamp: intersolveMessageTime,
+        },
+      );
     }
   }
 
   public async getMoneyTitle() {
     const intersolveMoneyTime = await this.getTransactionTime(
-      'IntersolvePayoutStatus',
-      'VoucherSent',
+      TransactionCustomData.intersolvePayoutStatus,
+      IntersolvePayoutStatus.voucherSent,
     );
     if (intersolveMoneyTime) {
-      return `Payment #${this.payoutDetails.installment}: ${intersolveMoneyTime}`;
+      return this.translate.instant(
+        'page.program.program-people-affected.payment-status-popup.money-title',
+        {
+          installment: this.payoutDetails.installment,
+          timestamp: intersolveMoneyTime,
+        },
+      );
     }
     const otherMoneyTime = await this.getTransactionTime('', '');
     if (otherMoneyTime) {
-      return `Payment #${this.payoutDetails.installment}: ${otherMoneyTime}`;
+      return this.translate.instant(
+        'page.program.program-people-affected.payment-status-popup.money-title',
+        {
+          installment: this.payoutDetails.installment,
+          timestamp: otherMoneyTime,
+        },
+      );
     }
     if (this.titleMessageIcon) {
-      return `Payment #${this.payoutDetails.installment}: `;
+      return this.translate.instant(
+        'page.program.program-people-affected.payment-status-popup.money-title',
+        { installment: this.payoutDetails.installment, timestamp: '' },
+      );
     }
     return '';
   }
@@ -95,7 +119,6 @@ export class PaymentStatusPopupComponent implements OnInit {
       customKey,
       customValue,
     );
-    console.log('transaction: getTransactionTime ', transaction);
     if (transaction && transaction.status === StatusEnum.success) {
       return formatDate(
         transaction.installmentDate,

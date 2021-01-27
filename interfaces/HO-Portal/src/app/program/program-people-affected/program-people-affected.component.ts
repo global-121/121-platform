@@ -8,6 +8,7 @@ import { PopupPayoutDetails } from 'src/app/models/installment.model';
 import { PaStatus, Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
+import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
@@ -565,9 +566,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public enableMessageSentIcon(transaction: any) {
     if (
       transaction.customData &&
-      ['InitialMessage', 'VoucherSent'].includes(
-        transaction.customData.IntersolvePayoutStatus,
-      )
+      [
+        IntersolvePayoutStatus.initialMessage,
+        IntersolvePayoutStatus.voucherSent,
+      ].includes(transaction.customData.IntersolvePayoutStatus)
     ) {
       return true;
     }
@@ -577,7 +579,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public enableMoneySentIconTable(transaction: any) {
     if (
       (!transaction.customData.IntersolvePayoutStatus ||
-        transaction.customData.IntersolvePayoutStatus === 'VoucherSent') &&
+        transaction.customData.IntersolvePayoutStatus ===
+          IntersolvePayoutStatus.voucherSent) &&
       transaction.status === StatusEnum.success
     ) {
       return true;
