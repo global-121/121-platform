@@ -1111,8 +1111,10 @@ export class ProgramService {
         data: (await this.getInclusionList(programId)).data,
       };
     }
-    
-    pastPaymentDetails = this.filterAttributesToExport(pastPaymentDetails);    
+
+    pastPaymentDetails = await this.filterAttributesToExport(
+      pastPaymentDetails,
+    );
 
     const csvFile = {
       fileName: `payment-details-completed-installment-${installmentId}.csv`,
@@ -1122,16 +1124,19 @@ export class ProgramService {
     return csvFile;
   }
 
-  private async filterAttributesToExport(pastPaymentDetails) {
+  private async filterAttributesToExport(pastPaymentDetails): Promise<any[]> {
     const criteria = (await this.getAllCriteriaForExport()).map(c => c.name);
-    return pastPaymentDetails.forEach(transaction => {
+    const outputPaymentDetails = [];
+    pastPaymentDetails.forEach(transaction => {
       Object.keys(transaction.connection_customData).forEach(key => {
         if (criteria.includes(key)) {
           transaction[key] = transaction.connection_customData[key];
         }
-      })
+      });
       delete transaction.connection_customData;
+      outputPaymentDetails.push(transaction);
     });
+    return outputPaymentDetails;
   }
 
   public async getUnusedVouchers(): Promise<FileDto> {
@@ -1362,11 +1367,10 @@ export class ProgramService {
     programId: number,
     installmentId: number,
   ): Promise<any> {
-    
     const latestSuccessTransactionPerPa = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('transaction.connectionId',"connectionId")
-      .addSelect('MAX(transaction.created)','maxCreated')
+      .select('transaction.connectionId', 'connectionId')
+      .addSelect('MAX(transaction.created)', 'maxCreated')
       .where('transaction.program.id = :programId', { programId: programId })
       .andWhere('transaction.installment = :installmentId', {
         installmentId: installmentId,
@@ -1380,16 +1384,20 @@ export class ProgramService {
         'transaction.amount',
         'transaction.installment',
         'connection.phoneNumber',
-        'connection.customData', 
+        'connection.customData',
         'fsp.fsp AS financialServiceProvider',
       ])
-      .innerJoin('('+latestSuccessTransactionPerPa.getQuery()+')', 'subquery', 'transaction.connectionId = subquery."connectionId" AND transaction.created = subquery."maxCreated"')
+      .innerJoin(
+        '(' + latestSuccessTransactionPerPa.getQuery() + ')',
+        'subquery',
+        'transaction.connectionId = subquery."connectionId" AND transaction.created = subquery."maxCreated"',
+      )
       .setParameters(latestSuccessTransactionPerPa.getParameters())
       .leftJoin('transaction.connection', 'connection')
       .leftJoin('connection.fsp', 'fsp')
       .getRawMany();
-    
-      return transactions;
+
+    return transactions;
   }
 
   public jsonToCsv(items: any): any {
