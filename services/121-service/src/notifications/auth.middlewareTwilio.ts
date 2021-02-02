@@ -25,7 +25,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
       },
     );
     if (validWhatsapp) {
-      next();
+      return next();
     }
 
     const validSms = twilio.validateRequest(
@@ -38,7 +38,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
       },
     );
     if (validSms) {
-      next();
+      return next();
     }
 
     const validVoice = twilio.validateRequest(
@@ -48,13 +48,12 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
       req.body,
     );
     if (validVoice) {
-      next();
+      return next();
     }
 
-    if (!validSms && !validVoice)
-      throw new HttpException(
-        'Could not validate Twillio request',
-        HttpStatus.UNAUTHORIZED,
-      );
+    throw new HttpException(
+      'Could not validate Twillio request',
+      HttpStatus.UNAUTHORIZED,
+    );
   }
 }
