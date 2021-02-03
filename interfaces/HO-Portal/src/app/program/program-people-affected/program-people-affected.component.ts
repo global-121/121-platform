@@ -794,7 +794,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public filterRowsVisible(value: string) {
-    const filterVal = value.toLowerCase();
+    const filterVal = value.toLowerCase().trim();
     const rowsVisible = this.tempAllPeopleAffected.filter((row: PersonRow) => {
       // Loop over all columns
       for (const key of Object.keys(row)) {

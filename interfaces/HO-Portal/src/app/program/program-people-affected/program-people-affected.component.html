@@ -31,7 +31,7 @@
     [placeholder]="'page.program.program-people-affected.filter-placeholder'|translate"
     [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
     [attr.aria-label]="'page.program.program-people-affected.filter-placeholder'|translate"
-    (ionInput)="filterRowsVisible($event.target.value)"
+    (ionChange)="filterRowsVisible($event.target.value)"
     [clearInput]="true"
     class="filter-input"
   ></ion-input>
