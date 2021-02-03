@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { UserRole } from '../auth/user-role.enum';
 import { Program } from '../models/program.model';
+import { User } from '../models/user.model';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
 
@@ -11,10 +13,7 @@ import { JwtService } from './jwt.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService, private jwtService: JwtService) {}
 
-  login(
-    email: string,
-    password: string,
-  ): Promise<{ user: { email: string; role: string; token: string } }> {
+  login(email: string, password: string): Promise<{ user: User }> {
     console.log('ProgramsService : login()');
 
     return this.apiService
@@ -26,6 +25,17 @@ export class ProgramsServiceApiService {
           password,
         },
         true,
+      )
+      .pipe(
+        map((response) => {
+          if (!response.user.roles && response.user.role) {
+            if (response.user.role === 'aidworker') {
+              response.user.role = UserRole.FieldValidation;
+            }
+            response.user.roles = [response.user.role];
+          }
+          return response;
+        }),
       )
       .toPromise();
   }

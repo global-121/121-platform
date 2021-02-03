@@ -11,7 +11,7 @@ import { UserRole } from './user-role.enum';
 })
 export class AuthService {
   private loggedIn = false;
-  private userRole: string;
+  private userRoles: UserRole[];
 
   // store the URL so we can redirect after logging in
   redirectUrl: string;
@@ -39,17 +39,17 @@ export class AuthService {
     return this.loggedIn;
   }
 
-  public getUserRole(): string {
-    if (!this.userRole) {
+  public getUserRoles(): UserRole[] {
+    if (!this.userRoles) {
       const user = this.getUserFromToken();
 
-      this.userRole = user ? user.role : '';
+      this.userRoles = user ? user.roles : [];
     }
 
-    return this.userRole;
+    return this.userRoles;
   }
 
-  private getUserFromToken() {
+  private getUserFromToken(): User | null {
     const rawToken = this.jwtService.getToken();
 
     if (!rawToken) {
@@ -57,15 +57,20 @@ export class AuthService {
     }
 
     const decodedToken = this.jwtService.decodeToken(rawToken);
-    const user: User = {
+
+    if (!decodedToken.email || !decodedToken.roles) {
+      return null;
+    }
+
+    return {
       token: rawToken,
       email: decodedToken.email,
-      role: decodedToken.role,
+      roles: decodedToken.roles,
     };
+  }
 
-    this.userRole = user.role;
-
-    return user;
+  private isAllowedUser(user: User) {
+    return user.roles && user.roles.includes(UserRole.FieldValidation);
   }
 
   public async login(email: string, password: string): Promise<any> {
@@ -80,13 +85,13 @@ export class AuthService {
             return;
           }
 
-          if (user.role !== UserRole.Aidworker) {
+          if (!this.isAllowedUser(user)) {
             return;
           }
 
           this.jwtService.saveToken(user.token);
           this.loggedIn = true;
-          this.userRole = user.role;
+          this.userRoles = user.roles;
 
           if (this.redirectUrl) {
             this.router.navigate([this.redirectUrl]);
