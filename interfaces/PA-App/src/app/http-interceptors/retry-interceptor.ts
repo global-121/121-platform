@@ -8,13 +8,21 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, of, throwError } from 'rxjs';
 import { concatMap, delay, retryWhen } from 'rxjs/operators';
+import {
+  LoggingEvent,
+  LoggingEventCategory,
+} from '../models/logging-event.enum';
+import { LoggingService } from '../services/logging.service';
 
 @Injectable()
 export class RetryInterceptor implements HttpInterceptor {
   private retryTimeOut = 2000;
   private retryConfirmLabel: string;
 
-  constructor(private translate: TranslateService) {}
+  constructor(
+    private translate: TranslateService,
+    private logger: LoggingService,
+  ) {}
 
   private canRetry(status: number) {
     return status === 0;
@@ -37,10 +45,19 @@ export class RetryInterceptor implements HttpInterceptor {
         return errors.pipe(
           concatMap((error) => {
             if (this.canRetry(error.status)) {
+              this.logger.logEvent(
+                LoggingEventCategory.error,
+                LoggingEvent.requestRetryQuestion,
+              );
 
               const attemptRetry = window.confirm(this.getConfirmLabel());
 
               if (attemptRetry) {
+                this.logger.logEvent(
+                  LoggingEventCategory.ui,
+                  LoggingEvent.requestRetryConfirm,
+                );
+
                 return of(error.status);
               }
             }
