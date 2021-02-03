@@ -110,7 +110,7 @@ export class UserMenuComponent implements OnInit {
         );
         this.logger.logEvent(
           LoggingEventCategory.ui,
-          LoggingEvent.acccountDeleteSucces,
+          LoggingEvent.accountDeleteSucces,
         );
       },
       (error) => {
@@ -133,7 +133,7 @@ export class UserMenuComponent implements OnInit {
         }
         this.logger.logEvent(
           LoggingEventCategory.ui,
-          LoggingEvent.acccountDeleteFail,
+          LoggingEvent.accountDeleteFail,
           {
             name: error.status,
           },

@@ -90,8 +90,8 @@ export class SelectProgramComponent extends PersonalComponent {
     this.programChoice = $event.detail.value;
   }
 
-  public submitProgram() {
-    this.paData.setCurrentProgramId(this.programChoice);
+  public async submitProgram() {
+    await this.paData.setCurrentProgramId(this.programChoice);
 
     this.complete();
   }

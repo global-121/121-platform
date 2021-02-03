@@ -84,9 +84,7 @@ export class StoreCredentialComponent extends PersonalComponent {
   }
 
   async checkValidationSkipped() {
-    const programId = Number(
-      await this.paData.retrieve(this.paData.type.programId),
-    );
+    const programId = await this.paData.getCurrentProgramId();
     const did = await this.paData.retrieve(this.paData.type.did);
     const inclusionStatus = await this.programsService
       .checkInclusionStatus(did, programId)

@@ -7,8 +7,8 @@ export enum LoggingEventCategory {
 
 export enum LoggingEvent {
   accountCreated = 'account-created',
-  acccountDeleteFail = 'account-delete-fail',
-  acccountDeleteSucces = 'account-delete-succes',
+  accountDeleteFail = 'account-delete-fail',
+  accountDeleteSucces = 'account-delete-succes',
   audioPause = 'audio-pause',
   audioPlay = 'audio-play',
   error = 'error',
@@ -23,6 +23,8 @@ export enum LoggingEvent {
   popUpOpen = 'pop-up-open',
   qaAnswerNotValid = 'qa-answer-not-valid',
   qaQuestionShown = 'qa-question-shown',
+  requestRetryConfirm = 'request-retry-confirm',
+  requestRetryQuestion = 'request-retry-question',
   sectionCompleted = 'section-completed',
   usernameNotUnique = 'username-not-unique',
 }

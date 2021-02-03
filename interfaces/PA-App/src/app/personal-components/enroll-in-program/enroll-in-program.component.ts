@@ -225,7 +225,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
     // 6. Store relevant data to PA-account
     this.paData.store(this.paData.type.credentialRequest, credentialRequest);
     this.paData.store(this.paData.type.credDefId, this.credDefId);
-    this.paData.store(this.paData.type.programId, this.programId);
   }
 
   private createAttributes(answers: Answer[]): ProgramAttribute[] {
