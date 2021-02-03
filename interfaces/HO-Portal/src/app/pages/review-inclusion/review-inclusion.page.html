@@ -15,7 +15,7 @@
   <ion-row>
     <app-test-payment
       [programId]="programId"
-      [userRole]="userRole"
+      [userRoles]="userRoles"
     ></app-test-payment>
   </ion-row>
 
@@ -23,7 +23,7 @@
   <ion-row>
     <app-export-list
       [programId]="programId"
-      [userRole]="userRole"
+      [userRoles]="userRoles"
       [exportType]="enumExportType.included"
     ></app-export-list>
   </ion-row>
@@ -32,7 +32,7 @@
 
   <app-program-people-affected 
     [programId]="programId" 
-    [userRole]="userRole" 
+    [userRoles]="userRoles" 
     [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"
   ></app-program-people-affected>

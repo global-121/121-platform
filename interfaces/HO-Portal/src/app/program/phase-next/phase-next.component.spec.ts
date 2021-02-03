@@ -16,7 +16,7 @@ describe('PhaseNextComponent', () => {
   let fixture: ComponentFixture<PhaseNextComponent>;
 
   const mockProgramId = 1;
-  const mockUserRole = UserRole.ProjectOfficer;
+  const mockUserRoles = [UserRole.RunProgram];
   const mockProgramPhase: Phase = {
     id: 1,
     name: ProgramPhase.design,
@@ -41,7 +41,7 @@ describe('PhaseNextComponent', () => {
   let mockProgramPhaseService: jasmine.SpyObj<ProgramPhaseService>;
   beforeEach(() => {
     mockAuthService = TestBed.get(AuthService);
-    mockAuthService.getUserRole.and.returnValue(mockUserRole);
+    mockAuthService.getUserRoles.and.returnValue(mockUserRoles);
 
     mockProgramPhaseService = TestBed.get(ProgramPhaseService);
     mockProgramPhaseService.getPhases.and.returnValue(

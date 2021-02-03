@@ -20,7 +20,7 @@ describe('ProgramPeopleAffectedComponent', () => {
   let fixture: ComponentFixture<ProgramPeopleAffectedComponent>;
 
   const mockProgramId = 1;
-  const mockUserRole = UserRole.ProgramManager;
+  const mockUserRoles = [UserRole.PersonalData];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -52,7 +52,7 @@ describe('ProgramPeopleAffectedComponent', () => {
     component = fixture.componentInstance;
 
     component.programId = mockProgramId;
-    component.userRole = mockUserRole;
+    component.userRoles = mockUserRoles;
 
     fixture.detectChanges();
   });

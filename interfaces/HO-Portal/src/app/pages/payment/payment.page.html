@@ -15,7 +15,7 @@
   <ion-row *ngIf="isIntersolve">
     <app-export-list
       [programId]="programId"
-      [userRole]="userRole"
+      [userRoles]="userRoles"
       [exportType]="enumExportType.unusedVouchers">
     </app-export-list>
   </ion-row>
@@ -27,7 +27,7 @@
 
   <app-program-people-affected
     [programId]="programId"
-    [userRole]="userRole"
+    [userRoles]="userRoles"
     [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"
   ></app-program-people-affected>

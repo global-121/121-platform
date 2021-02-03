@@ -13,7 +13,7 @@ export class InclusionPage implements OnInit {
   public thisPhase = ProgramPhase.inclusion;
   public isReady: boolean;
 
-  public userRole = this.authService.getUserRole();
+  public userRoles = this.authService.getUserRoles();
 
   constructor(
     private route: ActivatedRoute,

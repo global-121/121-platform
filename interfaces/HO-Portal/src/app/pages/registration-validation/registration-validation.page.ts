@@ -13,7 +13,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 export class RegistrationValidationPage implements OnInit {
   public programId = this.route.snapshot.params.id;
   public program: Program;
-  public userRole = this.authService.getUserRole();
+  public userRoles = this.authService.getUserRoles();
   public thisPhase = ProgramPhase.registrationValidation;
   public isReady: boolean;
 

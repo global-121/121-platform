@@ -11,7 +11,7 @@ import { UserRole } from './user-role.enum';
 })
 export class AuthService {
   private loggedIn = false;
-  private userRole: UserRole | string;
+  private userRoles: UserRole[] | string[];
 
   // store the URL so we can redirect after logging in
   redirectUrl: string;
@@ -39,14 +39,13 @@ export class AuthService {
     return this.loggedIn;
   }
 
-  public getUserRole(): UserRole | string {
-    if (!this.userRole) {
+  public getUserRoles(): UserRole[] | string[] {
+    if (!this.userRoles) {
       const user = this.getUserFromToken();
 
-      this.userRole = user ? user.role : '';
+      this.userRoles = user ? user.roles : [];
     }
-
-    return this.userRole;
+    return this.userRoles;
   }
 
   private getUserFromToken() {
@@ -60,10 +59,10 @@ export class AuthService {
     const user: User = {
       token: rawToken,
       email: decodedToken.email,
-      role: decodedToken.role,
+      roles: decodedToken.roles,
     };
 
-    this.userRole = user.role;
+    this.userRoles = user.roles.map((i) => i.role);
 
     return user;
   }
@@ -79,13 +78,13 @@ export class AuthService {
           return;
         }
 
-        if (user.role === UserRole.Aidworker) {
+        if (user.role === [UserRole.FieldValidation]) {
           return;
         }
 
         this.jwtService.saveToken(user.token);
         this.loggedIn = true;
-        this.userRole = user.role;
+        this.userRoles = user.roles;
 
         if (this.redirectUrl) {
           this.router.navigate([this.redirectUrl]);

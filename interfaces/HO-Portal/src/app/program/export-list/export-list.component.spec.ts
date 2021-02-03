@@ -16,7 +16,7 @@ describe('ExportListComponent', () => {
   let fixture: ComponentFixture<ExportListComponent>;
 
   const mockProgramId = 1;
-  const mockUserRole = UserRole.ProjectOfficer;
+  const mockUserRoles = [UserRole.RunProgram];
 
   const mockProgramPhase: Phase = {
     id: 1,
@@ -44,7 +44,7 @@ describe('ExportListComponent', () => {
     component = fixture.componentInstance;
 
     component.programId = mockProgramId;
-    component.userRole = mockUserRole;
+    component.userRoles = mockUserRoles;
 
     fixture.detectChanges();
   });

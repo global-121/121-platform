@@ -14,7 +14,7 @@ describe('HeaderComponent', () => {
   let fixture: ComponentFixture<HeaderComponent>;
 
   const mockProgramId = 1;
-  const mockUserRole = UserRole.ProjectOfficer;
+  const mockUserRoles = [UserRole.RunProgram];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,7 +33,7 @@ describe('HeaderComponent', () => {
 
   beforeEach(() => {
     mockAuthService = TestBed.get(AuthService);
-    mockAuthService.getUserRole.and.returnValue(mockUserRole);
+    mockAuthService.getUserRoles.and.returnValue(mockUserRoles);
 
     mockProgramsApi = TestBed.get(ProgramsServiceApiService);
     mockProgramsApi.getProgramById.and.returnValue(

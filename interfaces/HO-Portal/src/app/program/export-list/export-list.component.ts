@@ -17,7 +17,7 @@ export class ExportListComponent implements OnChanges {
   @Input()
   public programId: number;
   @Input()
-  public userRole: UserRole;
+  public userRoles: UserRole[] | string[];
   @Input()
   public exportType: ExportType;
   @Input()
@@ -77,7 +77,7 @@ export class ExportListComponent implements OnChanges {
   public btnEnabled() {
     const activePhase = this.programPhaseService.getActivePhase();
     return (
-      this.userRole === UserRole.ProgramManager &&
+      this.userRoles.includes(UserRole.PersonalData) &&
       (this.exportType !== ExportType.payment || this.paymentExportAvailable)
     );
   }

@@ -1,7 +1,7 @@
 <ng-container *ngIf="visible">
   <ion-row>
     <confirm-prompt
-      [disabled]="userRole !== userRoleEnum.ProgramManager"
+      [disabled]="!userRoles.includes(userRoleEnum.PersonalData)"
       (confirm)="doTestPayment(); isInProgress = true"
       [message]="'page.program.test-payment.confirm'|translate"
     >

@@ -25,7 +25,7 @@ export class UserService {
   public constructor() {}
 
   public async findAll(): Promise<UserEntity[]> {
-    return await this.userRepository.find();
+    return await this.userRepository.find({ relations: ['roles'] });
   }
 
   public async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
@@ -36,8 +36,9 @@ export class UserService {
         .digest('hex'),
     };
     const user = await getRepository(UserEntity)
-      .createQueryBuilder()
+      .createQueryBuilder('user')
       .addSelect('password')
+      .leftJoinAndSelect('user.roles', 'roles')
       .where(findOneOptions)
       .getOne();
     return user;

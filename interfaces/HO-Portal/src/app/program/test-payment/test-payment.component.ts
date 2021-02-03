@@ -20,7 +20,7 @@ export class TestPaymentComponent implements OnInit {
   @Input()
   public programId: number;
   @Input()
-  public userRole: UserRole;
+  public userRoles: UserRole[] | string[];
 
   public visible = false;
   public userRoleEnum = UserRole;

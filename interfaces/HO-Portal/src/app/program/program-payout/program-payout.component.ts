@@ -28,7 +28,7 @@ export class ProgramPayoutComponent implements OnInit {
   public isEnabled = true;
   public isInProgress = false;
   public userRoleEnum = UserRole;
-  public currentUserRole: string;
+  public currentUserRoles: UserRole[] | string[];
 
   private program: Program;
   public nrOfInstallments: number;
@@ -46,7 +46,7 @@ export class ProgramPayoutComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.currentUserRole = this.authService.getUserRole();
+    this.currentUserRoles = this.authService.getUserRoles();
     this.isCompleted.emit(false);
 
     this.program = await this.programsService.getProgramById(this.programId);
@@ -241,7 +241,7 @@ export class ProgramPayoutComponent implements OnInit {
       !this.isEnabled ||
       !installment.firstOpen ||
       this.totalIncluded === 0 ||
-      this.currentUserRole !== UserRole.ProjectOfficer ||
+      !this.currentUserRoles.includes(UserRole.RunProgram) ||
       this.activePhase !== ProgramPhase.payment
     );
   }

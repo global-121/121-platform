@@ -11,7 +11,7 @@ describe('ReviewInclusionPage', () => {
   let component: ReviewInclusionPage;
   let fixture: ComponentFixture<ReviewInclusionPage>;
 
-  const mockUserRole = UserRole.ProjectOfficer;
+  const mockUserRoles = [UserRole.RunProgram];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -26,7 +26,7 @@ describe('ReviewInclusionPage', () => {
 
   beforeEach(() => {
     mockAuthService = TestBed.get(AuthService);
-    mockAuthService.getUserRole.and.returnValue(mockUserRole);
+    mockAuthService.getUserRoles.and.returnValue(mockUserRoles);
 
     fixture = TestBed.createComponent(ReviewInclusionPage);
     component = fixture.componentInstance;

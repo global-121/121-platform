@@ -42,6 +42,7 @@ export class HeaderComponent implements OnInit {
   }
 
   private canManageAidWorkers(): boolean {
-    return this.authService.getUserRole() === UserRole.ProjectOfficer;
+    const userRoles = this.authService.getUserRoles();
+    return userRoles.includes(UserRole.RunProgram);
   }
 }

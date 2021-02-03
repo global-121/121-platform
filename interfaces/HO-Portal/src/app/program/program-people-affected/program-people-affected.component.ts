@@ -24,7 +24,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   @Input()
   public programId: number;
   @Input()
-  public userRole: UserRole;
+  public userRoles: UserRole[] | string[];
   @Input()
   public thisPhase: ProgramPhase;
   @Output()
@@ -61,7 +61,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.choose-action',
       ),
-      roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
       phases: [
         ProgramPhase.design,
         ProgramPhase.registrationValidation,
@@ -78,7 +78,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.select-for-validation',
       ),
-      roles: [UserRole.ProjectOfficer],
+      roles: [UserRole.RunProgram],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: false,
     },
@@ -88,7 +88,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
       ),
-      roles: [UserRole.ProjectOfficer],
+      roles: [UserRole.RunProgram],
       phases: [ProgramPhase.inclusion],
       showIfNoValidation: true,
     },
@@ -98,7 +98,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
       ),
-      roles: [UserRole.ProgramManager],
+      roles: [UserRole.PersonalData],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
     },
@@ -108,7 +108,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.reject',
       ),
-      roles: [UserRole.ProgramManager],
+      roles: [UserRole.PersonalData],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
@@ -128,7 +128,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.notify-included',
       ),
-      roles: [UserRole.ProjectOfficer],
+      roles: [UserRole.RunProgram],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
     },
@@ -164,7 +164,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ProgramPhase.reviewInclusion,
         ProgramPhase.payment,
       ],
-      roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
@@ -197,7 +197,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ...this.columnDefaults,
         frozenLeft: true,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        roles: [UserRole.ProgramManager],
+        roles: [UserRole.PersonalData],
       },
       {
         prop: 'phoneNumber',
@@ -212,7 +212,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.reviewInclusion,
           ProgramPhase.payment,
         ],
-        roles: [UserRole.ProgramManager],
+        roles: [UserRole.PersonalData],
         minWidth: columnPhoneNumberWidth,
       },
       {
@@ -358,7 +358,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     for (const column of this.columnsAvailable) {
       if (
         column.phases.includes(this.thisPhase) &&
-        column.roles.includes(this.userRole) &&
+        column.roles.filter((role) => this.userRoles.includes(role)).length >
+          0 &&
         this.checkValidationColumnOrAction(column)
       ) {
         this.columns.push(column);
@@ -393,7 +394,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private updateBulkActions() {
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
-        action.roles.includes(this.userRole) &&
+        action.roles.filter((role) => this.userRoles.includes(role)).length >
+          0 &&
         action.phases.includes(this.activePhase) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
@@ -425,7 +427,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private async loadData() {
     let allPeopleData: Person[];
-    if (this.userRole === UserRole.ProgramManager) {
+    if (this.userRoles.includes(UserRole.PersonalData)) {
       allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,
       );

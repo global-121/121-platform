@@ -16,7 +16,7 @@ export class PaymentPage implements OnInit {
   public thisPhase = ProgramPhase.payment;
   public isReady: boolean;
 
-  public userRole = this.authService.getUserRole();
+  public userRoles = this.authService.getUserRoles();
 
   public enumExportType = ExportType;
 

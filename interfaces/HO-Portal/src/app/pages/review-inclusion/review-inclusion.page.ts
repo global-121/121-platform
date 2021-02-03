@@ -15,7 +15,7 @@ export class ReviewInclusionPage implements OnInit {
   public thisPhase = ProgramPhase.reviewInclusion;
   public isReady: boolean;
 
-  public userRole = this.authService.getUserRole();
+  public userRoles = this.authService.getUserRoles();
 
   public enumExportType = ExportType;
   public enumNotificationType = NotificationType;

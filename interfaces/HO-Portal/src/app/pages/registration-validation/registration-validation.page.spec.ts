@@ -12,7 +12,7 @@ describe('RegistrationValidationPage', () => {
   let component: RegistrationValidationPage;
   let fixture: ComponentFixture<RegistrationValidationPage>;
 
-  const mockUserRole = UserRole.ProjectOfficer;
+  const mockUserRoles = [UserRole.RunProgram];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -31,7 +31,7 @@ describe('RegistrationValidationPage', () => {
 
   beforeEach(() => {
     mockAuthService = TestBed.get(AuthService);
-    mockAuthService.getUserRole.and.returnValue(mockUserRole);
+    mockAuthService.getUserRoles.and.returnValue(mockUserRoles);
 
     fixture = TestBed.createComponent(RegistrationValidationPage);
     component = fixture.componentInstance;
