@@ -10,16 +10,14 @@ const userRo = {
     id: undefined,
     email: 'test@example.org',
     token: undefined,
-    role: undefined,
-    status: undefined,
+    roles: undefined,
     assignedProgramId: undefined,
   },
 };
 
 const createUserDto = {
   email: 'test@example.org',
-  role: undefined,
-  status: undefined,
+  roles: undefined,
   password: 'string',
 };
 

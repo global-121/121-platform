@@ -48,11 +48,6 @@ export class UserController {
     const _user = await this.userService.findOne(loginUserDto);
     if (!_user) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    } else if (_user.status == 'inactive') {
-      throw new HttpException(
-        'Account deactivated. Contact organization administration.',
-        HttpStatus.UNAUTHORIZED,
-      );
     }
 
     const token = await this.userService.generateJWT(_user);
@@ -94,22 +89,6 @@ export class UserController {
   @Get('user')
   public async findMe(@User('email') email: string): Promise<UserRO> {
     return await this.userService.findByEmail(email);
-  }
-
-  @Roles(UserRole.ProjectOfficer)
-  @ApiOperation({ title: 'Deactivate Aidworker' })
-  @Put('user/:userId/deactivate')
-  @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
-  public async deactivate(@Param('userId') userId: number): Promise<UserRO> {
-    return await this.userService.deactivate(userId);
-  }
-
-  @Roles(UserRole.ProjectOfficer)
-  @ApiOperation({ title: 'Activate Aidworker' })
-  @Put('user/:userId/activate')
-  @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
-  public async activate(@Param('userId') userId: number): Promise<UserRO> {
-    return await this.userService.activate(userId);
   }
 
   @Roles(UserRole.ProjectOfficer)

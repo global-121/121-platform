@@ -16,9 +16,5 @@ export class CreateUserDto {
   @ApiModelProperty({
     example: 'admin / aidworker / project-officer / program-manager',
   })
-  @IsEnum(UserRole)
-  public readonly role: string;
-
-  @ApiModelProperty({ example: 'active' })
-  public readonly status: string;
+  
 }

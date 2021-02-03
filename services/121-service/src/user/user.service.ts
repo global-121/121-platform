@@ -81,40 +81,6 @@ export class UserService {
     return this.buildUserRO(updatedUser);
   }
 
-  public async deactivate(id: number): Promise<UserRO> {
-    let updated = await this.userRepository.findOne(id, {
-      relations: ['assignedProgram'],
-    });
-    if (updated.role == 'admin') {
-      const _errors = { email: 'Cannot change status of admin-user.' };
-      throw new HttpException(
-        { message: 'Input data validation failed', _errors },
-        HttpStatus.BAD_REQUEST,
-      );
-    } else {
-      updated.status = 'inactive';
-      const updatedUser = await this.userRepository.save(updated);
-      return this.buildUserRO(updatedUser);
-    }
-  }
-
-  public async activate(id: number): Promise<UserRO> {
-    let updated = await this.userRepository.findOne(id, {
-      relations: ['assignedProgram'],
-    });
-    if (updated.role == 'admin') {
-      const _errors = { email: 'Cannot change status of admin-user.' };
-      throw new HttpException(
-        { message: 'Input data validation failed', _errors },
-        HttpStatus.BAD_REQUEST,
-      );
-    } else {
-      updated.status = 'active';
-      const updatedUser = await this.userRepository.save(updated);
-      return this.buildUserRO(updatedUser);
-    }
-  }
-
   public async assignProgram(userId: number, programId: number): Promise<any> {
     let user = await this.userRepository.findOne(userId, {
       relations: ['assignedProgram'],
