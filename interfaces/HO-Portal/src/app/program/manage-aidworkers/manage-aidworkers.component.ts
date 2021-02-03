@@ -86,7 +86,7 @@ export class ManageAidworkersComponent implements OnInit {
       .addUser(
         this.emailAidworker,
         this.passwordAidworker,
-        UserRole.FieldValidation,
+        [UserRole.FieldValidation],
         status,
       )
       .then(

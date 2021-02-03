@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { UserRole } from '../auth/user-role.enum';
 import { ActionType } from '../models/action-type.model';
 import { ExportType } from '../models/export-type.model';
 import { InstallmentData } from '../models/installment.model';
@@ -291,14 +292,14 @@ export class ProgramsServiceApiService {
   addUser(
     email: string,
     password: string,
-    role: string,
+    roles: UserRole[] | string[],
     status: string,
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/user`, {
         email,
         password,
-        role,
+        roles,
         status,
       })
       .toPromise();

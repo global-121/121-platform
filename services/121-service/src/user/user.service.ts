@@ -112,8 +112,12 @@ export class UserService {
     deleterId: number,
     userId: number,
   ): Promise<DeleteResult> {
-    const deleter = await this.userRepository.findOne(deleterId);
-    const user = await this.userRepository.findOne(userId);
+    const deleter = await this.userRepository.findOne(deleterId, {
+      relations: ['roles'],
+    });
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['roles'],
+    });
 
     // If not project-officer (= admin, as other roles have no access to this endpoint), can delete any user
     if (
