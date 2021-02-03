@@ -58,9 +58,9 @@ export class PaDataService {
     });
   }
 
-  public setCurrentProgramId(programId: number) {
+  public async setCurrentProgramId(programId: number): Promise<any> {
     this.currentProgramId = programId;
-    this.store(this.type.programId, programId);
+    return await this.store(this.type.programId, programId);
   }
 
   private async getProgram(programId: number): Promise<Program> {
@@ -75,6 +75,10 @@ export class PaDataService {
   }
 
   public async getCurrentProgram(): Promise<Program> {
+    return await this.getProgram(await this.getCurrentProgramId());
+  }
+
+  public async getCurrentProgramId(): Promise<number> {
     if (!this.currentProgramId) {
       this.currentProgramId = Number(await this.retrieve(this.type.programId));
 
@@ -83,8 +87,7 @@ export class PaDataService {
         this.currentProgramId = 1;
       }
     }
-
-    return await this.getProgram(this.currentProgramId);
+    return this.currentProgramId;
   }
 
   public async saveAnswers(programId: number, answers: any): Promise<any> {

@@ -8,6 +8,7 @@ export const MockPaDataService = {
   authenticationState$: of(false),
   getUsername: () => Promise.resolve(''),
   setCurrentProgramId: () => {},
+  getCurrentProgramId: () => Promise.resolve(mockProgram.id),
   getCurrentProgram: () => Promise.resolve(mockProgram),
   saveAnswers: () => Promise.resolve(''),
   store: () => Promise.resolve(''),
