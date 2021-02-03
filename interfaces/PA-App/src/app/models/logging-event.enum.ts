@@ -23,6 +23,7 @@ export enum LoggingEvent {
   popUpOpen = 'pop-up-open',
   qaAnswerNotValid = 'qa-answer-not-valid',
   qaQuestionShown = 'qa-question-shown',
+  requestRetryCancel = 'request-retry-cancel',
   requestRetryConfirm = 'request-retry-confirm',
   requestRetryQuestion = 'request-retry-question',
   sectionCompleted = 'section-completed',

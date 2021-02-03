@@ -48,6 +48,7 @@ export class RetryInterceptor implements HttpInterceptor {
               this.logger.logEvent(
                 LoggingEventCategory.error,
                 LoggingEvent.requestRetryQuestion,
+                { name: request.url },
               );
 
               const attemptRetry = window.confirm(this.getConfirmLabel());
@@ -56,10 +57,17 @@ export class RetryInterceptor implements HttpInterceptor {
                 this.logger.logEvent(
                   LoggingEventCategory.ui,
                   LoggingEvent.requestRetryConfirm,
+                  { name: request.url },
                 );
 
                 return of(error.status);
               }
+
+              this.logger.logEvent(
+                LoggingEventCategory.ui,
+                LoggingEvent.requestRetryCancel,
+                { name: request.url },
+              );
             }
 
             return throwError(error);
