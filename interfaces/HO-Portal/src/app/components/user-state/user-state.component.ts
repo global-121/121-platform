@@ -9,13 +9,11 @@ import { User } from 'src/app/models/user.model';
 })
 export class UserStateComponent implements OnInit {
   public userName: string;
-  public userRole: string;
 
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
     this.authService.authenticationState$.subscribe((user: User | null) => {
-      this.userRole = user ? user.role : '';
       this.userName = user ? user.email : '';
     });
   }
