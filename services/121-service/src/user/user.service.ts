@@ -118,7 +118,7 @@ export class UserService {
     if (
       !deleter.roles.includes(
         await this.userRoleRepository.findOne({
-          where: { role: UserRole.ProjectOfficer },
+          where: { role: UserRole.RunProgram },
         }),
       )
     ) {
@@ -129,7 +129,7 @@ export class UserService {
     if (
       user.roles.includes(
         await this.userRoleRepository.findOne({
-          where: { role: UserRole.Aidworker },
+          where: { role: UserRole.FieldValidation },
         }),
       )
     ) {

@@ -1,4 +1,4 @@
-import { Connection } from 'typeorm';
+import { Connection, In } from 'typeorm';
 
 import { ProgramEntity } from '../programs/program/program.entity';
 import { FinancialServiceProviderEntity } from './../programs/fsp/financial-service-provider.entity';
@@ -7,18 +7,23 @@ import { CustomCriterium } from '../programs/program/custom-criterium.entity';
 import { FspAttributeEntity } from './../programs/fsp/fsp-attribute.entity';
 import { InstanceEntity } from '../instance/instance.entity';
 import crypto from 'crypto';
+import { UserRoleEntity } from '../user/user-role.entity';
 
 export class SeedHelper {
   public constructor(private connection: Connection) {}
 
   public async addUser(userInput: any): Promise<void> {
     const userRepository = this.connection.getRepository(UserEntity);
+    const userRoleRepository = this.connection.getRepository(UserRoleEntity);
     await userRepository.save([
       {
-        role: userInput.role,
+        roles: await userRoleRepository.find({
+          where: {
+            role: In(userInput.roles),
+          },
+        }),
         email: userInput.email,
         password: crypto.createHmac('sha256', userInput.password).digest('hex'),
-        status: 'active',
       },
     ]);
   }

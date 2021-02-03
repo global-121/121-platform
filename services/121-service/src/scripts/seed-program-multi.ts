@@ -33,19 +33,19 @@ export class SeedMultiProgram implements InterfaceScript {
 
     // ***** CREATE USERS *****
     await this.seedHelper.addUser({
-      role: UserRole.Aidworker,
+      roles: [UserRole.FieldValidation],
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_AID_WORKER,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_AID_WORKER,
     });
 
     await this.seedHelper.addUser({
-      role: UserRole.ProjectOfficer,
+      roles: [UserRole.RunProgram],
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROJECT_OFFICER,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_OFFICER,
     });
 
     await this.seedHelper.addUser({
-      role: UserRole.ProgramManager,
+      roles: [UserRole.PersonalData],
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_MANAGER,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_MANAGER,
     });

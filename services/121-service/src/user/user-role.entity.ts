@@ -10,6 +10,9 @@ export class UserRoleEntity {
   @Column()
   public role: UserRole;
 
+  @Column({ nullable: true })
+  public label: string;
+
   @ManyToMany(
     () => UserEntity,
     user => user.roles,

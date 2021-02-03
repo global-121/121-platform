@@ -18,15 +18,19 @@ export class SeedInit implements InterfaceScript {
     await userRoleRepository.save([
       {
         role: UserRole.Admin,
+        label: 'Admin',
       },
       {
-        role: UserRole.ProgramManager,
+        role: UserRole.PersonalData,
+        label: 'Handle Personally Identifiable Information',
       },
       {
-        role: UserRole.ProjectOfficer,
+        role: UserRole.RunProgram,
+        label: 'Run Program',
       },
       {
-        role: UserRole.Aidworker,
+        role: UserRole.FieldValidation,
+        label: 'Do Field Validation',
       },
     ]);
 
@@ -34,7 +38,6 @@ export class SeedInit implements InterfaceScript {
 
     const userRepository = this.connection.getRepository(UserEntity);
     await userRepository.save({
-      role: UserRole.Admin,
       roles: await userRoleRepository.find({
         where: { role: UserRole.Admin },
       }),
@@ -42,7 +45,6 @@ export class SeedInit implements InterfaceScript {
       password: crypto
         .createHmac('sha256', process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN)
         .digest('hex'),
-      status: 'active',
     });
   }
 }

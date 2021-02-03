@@ -105,7 +105,7 @@ export class CreateConnectionController {
     );
   }
 
-  @Roles(UserRole.Aidworker, UserRole.ProgramManager)
+  @Roles(UserRole.FieldValidation, UserRole.PersonalData)
   @ApiOperation({
     title:
       'Overwrite custom data for connection used by AW (app) or PM (Swagger)',
@@ -125,7 +125,7 @@ export class CreateConnectionController {
     );
   }
 
-  @Roles(UserRole.Aidworker, UserRole.ProgramManager)
+  @Roles(UserRole.FieldValidation, UserRole.PersonalData)
   @ApiOperation({
     title:
       'Overwrite phone number for connection used by AW (app) or PM (Swagger)',
@@ -144,7 +144,7 @@ export class CreateConnectionController {
     );
   }
 
-  @Roles(UserRole.ProgramManager)
+  @Roles(UserRole.PersonalData)
   @ApiOperation({
     title: 'Find DID by name and/or phone number for PM (Swagger)',
   })
@@ -177,7 +177,7 @@ export class CreateConnectionController {
     );
   }
 
-  @Roles(UserRole.Aidworker)
+  @Roles(UserRole.FieldValidation)
   @ApiOperation({ title: 'Find did using qr identifier' })
   @ApiResponse({
     status: 200,
@@ -192,7 +192,7 @@ export class CreateConnectionController {
     );
   }
 
-  @Roles(UserRole.Aidworker)
+  @Roles(UserRole.FieldValidation)
   @ApiOperation({ title: 'Find fsp and attributes' })
   @ApiResponse({
     status: 200,

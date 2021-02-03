@@ -35,7 +35,7 @@ export class UserController {
     this.userService = userService;
   }
 
-  @Roles(UserRole.ProjectOfficer)
+  @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Sign-up new user' })
   @Post('user')
   public async create(@Body() userData: CreateUserDto): Promise<UserRO> {
@@ -61,7 +61,7 @@ export class UserController {
     return { user };
   }
 
-  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager, UserRole.Aidworker)
+  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.FieldValidation)
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -71,7 +71,7 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @Roles(UserRole.ProjectOfficer)
+  @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'string' })
@@ -82,7 +82,7 @@ export class UserController {
     return await this.userService.delete(deleterId, params.userId);
   }
 
-  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager, UserRole.Aidworker)
+  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.FieldValidation)
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
@@ -90,7 +90,7 @@ export class UserController {
     return await this.userService.findByEmail(email);
   }
 
-  @Roles(UserRole.ProjectOfficer)
+  @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/:userId/:programId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
