@@ -1,8 +1,9 @@
+import { UserRoleEntity } from './user-role.entity';
+
 export interface UserData {
   email: string;
   token: string;
-  role: string;
-  status: string;
+  roles: UserRoleEntity[];
 }
 
 export interface UserRO {
