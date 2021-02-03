@@ -7,6 +7,7 @@ import { UserRO } from './user.interface';
 import { DeleteResult } from 'typeorm';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UserRoleEntity } from './user-role.entity';
+import { UserRole } from '../user-role.enum';
 
 const userRo = {
   user: {
@@ -108,7 +109,7 @@ describe('UserController', (): void => {
       const userValue = {
         email: 'test@example.org',
         password: 'string',
-        roles: [new UserRoleEntity()],
+        roles: [UserRole.FieldValidation],
       };
       const spy = jest
         .spyOn(userService, 'create')

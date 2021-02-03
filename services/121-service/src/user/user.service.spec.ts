@@ -4,6 +4,7 @@ import { UserEntity } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 import { ProgramEntity } from '../programs/program/program.entity';
+import { UserRoleEntity } from './user-role.entity';
 
 const userRo = {
   user: {
@@ -37,6 +38,10 @@ describe('User service', (): void => {
           UserService,
           {
             provide: getRepositoryToken(UserEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(UserRoleEntity),
             useFactory: repositoryMockFactory,
           },
           {
