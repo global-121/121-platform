@@ -62,7 +62,7 @@ export class AuthService {
       roles: decodedToken.roles,
     };
 
-    this.userRoles = user.roles.map((i) => i.role);
+    this.userRoles = user.roles.map((role) => role.role);
 
     return user;
   }

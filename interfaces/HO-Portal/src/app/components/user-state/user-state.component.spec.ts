@@ -13,7 +13,7 @@ describe('UserStateComponent', () => {
   const mockUser: User = {
     token: 'test',
     email: 'test@example.org',
-    role: 'test',
+    roles: ['test'],
   };
   const authServiceMock = {
     authenticationState$: of(mockUser),
