@@ -3,14 +3,20 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
+import { User } from 'src/app/models/user.model';
 import { UserStateComponent } from './user-state.component';
 
 describe('UserStateComponent', () => {
   let component: UserStateComponent;
   let fixture: ComponentFixture<UserStateComponent>;
 
+  const mockUser: User = {
+    token: 'test',
+    email: 'test@example.org',
+    role: 'test',
+  };
   const authServiceMock = {
-    authenticationState$: of(null),
+    authenticationState$: of(mockUser),
   };
 
   beforeEach(async(() => {
@@ -35,5 +41,9 @@ describe('UserStateComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show the e-mail address of a logged-in user', () => {
+    expect(fixture.nativeElement.innerHTML).toContain(mockUser.email);
   });
 });
