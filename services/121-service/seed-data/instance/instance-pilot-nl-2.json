@@ -1,7 +1,6 @@
 {
   "name": "NLRC",
   "displayName": {
-    "ar": "الصليب الأحمر الهولندي",
     "en": "The Netherlands Red Cross"
   },
   "dataPolicy": {
@@ -9,18 +8,15 @@
     "en": "Last updated on: 01-01-2021   <br><br>   We, <strong>The Netherlands Red Cross (Rode Kruis)</strong> need to ask you the information below in order to provide cash aid. This will be done using supermarket vouchers.   <br><br>   We will ask you your: <ul> <li> First name, last name </li> <li> Password (4 numbers you will need to create) </li> <li> Phone number for SMS </li> <li> Phone number for WhatsApp </li> </ul>   <br><br>   This information will be stored securely on a Rode Kruis computer and shared only with the organization that gave us your phone number, to ensure a fair process.   <br>   This is, depending on your situation, one of the following organizations: <ul> <li> Stap Verder </li> <li> Filipino LGBT Europe </li> </ul>   <br><br>   <a href='https://www.twilio.com/legal/privacy' target='_blank' rel='noopener'>Twilio</a> will receive your phone number to send: <ul> <li> SMS's to inform you on the aid program </li> <li> WhatsApp messages to send supermarket vouchers (if your application is successful) </li> </ul>   <br><br>   You can leave the aid program and delete your personal information at any time. <br> We will delete your personal information at the end of the project.   <br><br>   If you have any questions, please contact us via WhatsApp on: <a target='_blank' rel='noopener' href='https://wa.me/31614458781'>+31 6 14 45 87 81</a>"
   },
   "aboutProgram": {
-    "ar": "لقد تم إنشاء <strong>برنامج معونات الصليب الأحمر</strong> لمساعدة الناس المسجلين على قوائم الإنتظار التالية لتوفير مأوى: <ul class='ion-padding-start'><li> مركز الإيواء في امستردام </li><li>مركز إيواء أوترخت</li></ul> <br><br> إذا كنت في قائمة الإنتظار عندها <strong>برنامج معونات الصليب الأحمر</strong> سيقوم بمساعدتك: <ul class='ion-padding-start'><li> إلى حين حذف اسمك من قوائم الإنتظار</li><li>   أو إلى  حين انتهاء <strong>برنامج معونات الصليب الأحمر</strong> في 31 مايو\\أيار 2021 </li></ul> <br> إن <strong>برنامج معونات الصليب الأحمر</strong> سيقوم بدعمك بالآتي: <ul class='ion-padding-start'><li> قسيمة شراء بقيمة 15 يورو من سوبر ماركت البرت هاين<br> سيتم استخدام واتس آب لإرسال القسيمة. إذا لم تستطع استلام القسيمة على واتس آب، سنقوم بإرسال رسالة نصية و يمكنك الذهاب إلى المكتب للحصول عليها. </li><li> المساعدة بالمعلومات: هذا سوف يمنحك معلومات عن المسكن، الصحة، كوفيد-19 &amp; خدمات قانونية. <br> يمكنك إيجاد هذه المعلومات على <a href='https://helpfulinformation.redcross.nl' target='_blank' rel='noopener'>https://helpfulinformation.redcross.nl</a>. </li></ul>",
     "tl": "Ang <strong>Red Cross aid program</strong> na ito ay nilikha upang suportahan ang mga taong kasalukuyang iminungkahi sa amin ng mga sumusunod na organisasyon:   <ul class='ion-padding-start'> <li> Stap Verder </li> <li> Filipino LGBT Europe </li> </ul>   <br><br>   Hangad ng Red Cross aid program na tulungan ka:   <ul class='ion-padding-start'> <li> Hanggang sa hindi ka na suportado ng mga nabanggit na organisasyon. </li> <li> O hanggang sa matapos <strong>Red Cross aid program</strong> sa <strong>ika - 31 ng Mayo 2021</strong> </li> </ul>   <br><br>   Ang <strong>Red Cross aid program</strong> ay susuportahan ka ng mga sumusunod:   <ul class='ion-padding-start'> <li> €15 Albert Heijn supermarket voucher lingguhan <br> WhatsApp ang gagamitin upang mapadala ang iyong supermarket voucher. Kung hindi mo maaaring makuha ang supermarket voucher sa WhatsApp, magpapadala kam saiyo  ng SMS at  kung saan ito maaaring pick-up-in. </li> <li> Impormasyon sa Aid: ito ay magbibigay ng access saiyo sa impormasyon ukol sa Tirahan, Pangkalusugan, Covid-19 &amp; Legal services. <br> Ang impormasyon na ito ay maaring matagpuan sa<a href='https://helpfulinformation.redcross.nl' target='_blank' rel='noopener'> https://helpfulinformation.redcross.nl</a>. </li> </ul>",
     "en": "This <strong>Red Cross aid program</strong> was created to support people who are currently suggested to us by any of these organisations:   <ul class='ion-padding-start'> <li> Stap Verder </li> <li> Filipino LGBT Europe </li> </ul>   <br><br>   The Red Cross aid program aims to help you:   <ul class='ion-padding-start'> <li> Until you are no longer supported by any of the above organisations </li> <li> Or until the <strong>Red Cross aid program</strong> ends on <strong>31 May 2021</strong> </li> </ul>   <br><br>   The <strong>Red Cross aid program</strong> will support you with the following:   <ul class='ion-padding-start'> <li> Weekly €15 Albert Heijn supermarket voucher<br> WhatsApp will be used to send your supermarket voucher. If you’re unable to receive the supermarket voucher on WhatsApp, we will send you an SMS and you can  pick it up. </li> <li> Information as Aid: This will give you access to information on Shelter, Healthcare, Covid-19 &amp; Legal services. <br> This information can be found on <a href='https://helpfulinformation.redcross.nl' target='_blank' rel='noopener'>https://helpfulinformation.redcross.nl</a>. </li></ul>"
   },
   "contactDetails": {
-    "ar": "هذا التطبيق برعاية <strong>الصليب الأحمر الهولندي</strong>. إذا كانت لديك اسئلة عن استخدام التطبيق يمكنك التواصل معنا على واتس آب: <a target='_blank' rel='noopener' href='https://wa.me/31614458781'>+31614458781</a>. <br> يمكنك الإتصال من الساعة 12 ظهراً و حتى 8 مساءاً. من الإثنين إلى الجمعة.",
     "tl": "Ang app na ito ay galing sa <strong>The Netherlands Red Cross (Rode Kruis)</strong>. Kung mayroon kang katanungan habang ginagamit ang app ay maaari kang kumontak gamit ang WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/31614458781'>+31 6 14 45 87 81</a>. <br> Available mula ika-12 ng tanghali hanggang ika-8 ng gabi. Lunes hanggang Biyernes.",
     "en": "This app is from <strong>The Netherlands Red Cross (Rode Kruis)</strong>. If you have any questions whilst using this app you can, contact us via WhatsApp: <a target='_blank' rel='noopener' href='https://wa.me/31614458781'>+31 6 14 45 87 81</a>. <br> Available between 12noon to 8pm. Monday to Friday."
   },
   "monitoringQuestion": {
     "intro": {
-      "ar": "لتحسين عملية التسجيل الإلكترونية، الرجاء الإجابة عن السؤال التالي: <br><br> لقد قمت بهذا التسجيل...",
       "tl": "Upang mapagbuti pa ang proseso ng digital registration na ito, paki sagot ang huling tanong:   <br><br>   Nagawa ko ang registration ng...",
       "en": "To improve this digital registration process, please answer this last question:   <br><br>   I did this registration..."
     },
@@ -28,7 +24,6 @@
       {
         "option": "no-help",
         "label": {
-          "ar": "دون مساعدة",
           "tl": "walang tulong galing sa iba",
           "en": "without help"
         }
@@ -36,7 +31,6 @@
       {
         "option": "some-help",
         "label": {
-          "ar": "مع قليل من المساعدة",
           "tl": "may kaunting tulong galing sa iba",
           "en": "with a little bit of help"
         }
@@ -44,14 +38,12 @@
       {
         "option": "lot-of-help",
         "label": {
-          "ar": "احتجت الكثير من المساعدة",
           "tl": "may malaking tulong galing sa iba",
           "en": "with a lot of help"
         }
       }
     ],
     "conclusion": {
-      "ar": "شكراً على مشاركتنا برأيك.",
       "tl": "Salamat sa iyong feedback.",
       "en": "Thank you for the feedback."
     }
