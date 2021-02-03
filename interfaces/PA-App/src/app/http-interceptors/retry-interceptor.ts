@@ -20,10 +20,12 @@ export class RetryInterceptor implements HttpInterceptor {
     return status === 0;
   }
 
-  private loadConfirmLabel() {
+  private getConfirmLabel() {
     if (!this.retryConfirmLabel) {
       this.retryConfirmLabel = this.translate.instant('connection.error-retry');
     }
+
+    return this.retryConfirmLabel;
   }
 
   intercept(
@@ -35,9 +37,8 @@ export class RetryInterceptor implements HttpInterceptor {
         return errors.pipe(
           concatMap((error) => {
             if (this.canRetry(error.status)) {
-              this.loadConfirmLabel();
 
-              const attemptRetry = window.confirm(this.retryConfirmLabel);
+              const attemptRetry = window.confirm(this.getConfirmLabel());
 
               if (attemptRetry) {
                 return of(error.status);
