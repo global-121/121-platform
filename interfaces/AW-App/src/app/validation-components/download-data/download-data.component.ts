@@ -58,6 +58,14 @@ export class DownloadDataComponent implements ValidationComponent {
         this.complete();
       },
     );
+
+    // If no data is available, stop.
+    if (!this.validationData) {
+      this.downloadAborted = true;
+      this.complete();
+      return;
+    }
+
     await this.storage.set(
       this.ionicStorageTypes.validationProgramData,
       this.validationData,
