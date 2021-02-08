@@ -14,20 +14,17 @@
 
   <app-export-list
     [programId]="programId"
-    [userRoles]="userRoles"
     [exportType]="enumExportType.allPeopleAffected"
   ></app-export-list>
 
   <app-export-list
     *ngIf="program?.validation"
     [programId]="programId"
-    [userRoles]="userRoles"
     [exportType]="enumExportType.selectedForValidation"
   ></app-export-list>
 
   <app-program-people-affected
     [programId]="programId"
-    [userRoles]="userRoles"
     [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"
   ></app-program-people-affected>

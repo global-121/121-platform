@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/auth/auth.service';
 import { ExportType } from 'src/app/models/export-type.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -16,13 +15,10 @@ export class PaymentPage implements OnInit {
   public thisPhase = ProgramPhase.payment;
   public isReady: boolean;
 
-  public userRoles = this.authService.getUserRoles();
-
   public enumExportType = ExportType;
 
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService,
     private programsService: ProgramsServiceApiService,
   ) {}
 

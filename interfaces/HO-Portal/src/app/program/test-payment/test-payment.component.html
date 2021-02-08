@@ -1,7 +1,7 @@
 <ng-container *ngIf="visible">
   <ion-row>
     <confirm-prompt
-      [disabled]="!userRoles.includes(userRoleEnum.PersonalData)"
+      [disabled]="isDisabled"
       (confirm)="doTestPayment(); isInProgress = true"
       [message]="'page.program.test-payment.confirm'|translate"
     >

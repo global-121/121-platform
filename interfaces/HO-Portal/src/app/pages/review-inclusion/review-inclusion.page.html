@@ -11,11 +11,10 @@
     [thisPhaseName]="thisPhase"
     [phaseReady]="true"
   ></app-phase-next>
-  
+
   <ion-row>
     <app-test-payment
       [programId]="programId"
-      [userRoles]="userRoles"
     ></app-test-payment>
   </ion-row>
 
@@ -23,16 +22,14 @@
   <ion-row>
     <app-export-list
       [programId]="programId"
-      [userRoles]="userRoles"
       [exportType]="enumExportType.included"
     ></app-export-list>
   </ion-row>
 
   <br>
 
-  <app-program-people-affected 
-    [programId]="programId" 
-    [userRoles]="userRoles" 
+  <app-program-people-affected
+    [programId]="programId"
     [thisPhase]="thisPhase"
     (isCompleted)="onReady($event)"
   ></app-program-people-affected>

@@ -10,7 +10,6 @@ import { UserRole } from './user-role.enum';
   providedIn: 'root',
 })
 export class AuthService {
-  private userRoles: UserRole[] | string[];
   public redirectUrl: string;
 
   private authenticationState = new BehaviorSubject<User | null>(null);
@@ -34,13 +33,16 @@ export class AuthService {
     return this.getUserFromToken() !== null;
   }
 
-  public getUserRoles(): UserRole[] | string[] {
-    if (!this.userRoles) {
-      const user = this.getUserFromToken();
+  public hasUserRole(requiredRoles: UserRole[]): boolean {
+    const user = this.getUserFromToken();
 
-      this.userRoles = user ? user.roles : [];
+    if (!user || !user.roles) {
+      return false;
     }
-    return this.userRoles;
+
+    return requiredRoles.some((role) => {
+      return user.roles.includes(role);
+    });
   }
 
   private getUserFromToken(): User | null {
@@ -50,49 +52,83 @@ export class AuthService {
       return null;
     }
 
-    const decodedToken = this.jwtService.decodeToken(rawToken);
-    const user: User = {
-      token: rawToken,
-      email: decodedToken.email,
-      roles: decodedToken.roles,
+    let user: User;
+
+    try {
+      user = this.jwtService.decodeToken(rawToken);
+
+      // Upgrade existing user to new roles
+      if (user && user.role && !user.roles) {
+        if (user.role === 'aidworker') {
+          user.role = UserRole.FieldValidation;
+        }
+        if (user.role === 'project-officer') {
+          user.role = UserRole.RunProgram;
+        }
+        if (user.role === 'program-manager') {
+          user.role = UserRole.PersonalData;
+        }
+        if (user.role) {
+          user.roles = [user.role];
+        }
+
+        // 'Clean' roles-object into flat list of roles
+        if (user.roles && user.roles[0] && user.roles[0].role) {
+          user.roles = user.roles.map((role) => role.role);
+        }
+      }
+    } catch {
+      console.warn('AuthService: Invalid token');
+      return null;
+    }
+
+    if (
+      !user ||
+      !user.email ||
+      !user.roles ||
+      user.roles.includes(UserRole.FieldValidation)
+    ) {
+      console.warn('AuthService: No valid user');
+      return null;
+    }
+
+    return {
+      email: user.email,
+      roles: user.roles,
     };
-
-    this.userRoles = user.roles.map((role) => role.role);
-
-    return user;
   }
 
-  public async login(email: string, password: string) {
-    return this.programsService.login(email, password).subscribe(
-      (response) => {
-        const user = response.user;
+  public async login(email: string, password: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.programsService.login(email, password).then(
+        (response) => {
+          if (response && response.token) {
+            this.jwtService.saveToken(response.token);
+          }
 
-        this.authenticationState.next(user);
+          const user = this.getUserFromToken();
+          this.authenticationState.next(user);
 
-        if (!user || !user.token) {
-          return;
-        }
+          if (!user) {
+            return reject({ status: 401 });
+          }
 
-        if (user.role === [UserRole.FieldValidation]) {
-          return;
-        }
+          if (this.redirectUrl) {
+            this.router.navigate([this.redirectUrl]);
+            this.redirectUrl = null;
+            return resolve();
+          }
 
-        this.jwtService.saveToken(user.token);
-        this.loggedIn = true;
-        this.userRoles = user.roles;
+          this.router.navigate(['/home']);
 
-        if (this.redirectUrl) {
-          this.router.navigate([this.redirectUrl]);
-          this.redirectUrl = null;
-          return;
-        }
-
-        this.router.navigate(['/home']);
-      },
-      (error) => {
-        console.log('AuthService error: ', error);
-      },
-    );
+          return resolve();
+        },
+        (error) => {
+          console.error('AuthService: login error: ', error);
+          return reject(error);
+        },
+      );
+    });
   }
 
   public logout() {

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { UserRole } from '../auth/user-role.enum';
@@ -10,6 +9,7 @@ import { NotificationType } from '../models/notification-type.model';
 import { Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
+import { UserModel } from '../models/user.model';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -18,18 +18,30 @@ import { ApiService } from './api.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService) {}
 
-  login(email: string, password: string): Observable<any> {
+  public login(email: string, password: string): Promise<UserModel | null> {
     console.log('ProgramsService : login()');
 
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/user/login',
-      {
-        email,
-        password,
-      },
-      true,
-    );
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/user/login',
+        {
+          email,
+          password,
+        },
+        true,
+      )
+      .pipe(
+        map((response) => {
+          if (response && response.user) {
+            return {
+              token: response.user.token,
+            };
+          }
+          return null;
+        }),
+      )
+      .toPromise();
   }
 
   deleteUser(userId: string): Promise<any> {

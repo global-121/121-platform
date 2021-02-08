@@ -29,17 +29,8 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    // UserRole will only be a valid value, when login is valid
-    const currentUserRoles = this.authService.getUserRoles();
-    const routeRoles = route.data.roles;
-
-    if (routeRoles) {
-      const overlappingRoles = route.data.roles.filter((role) =>
-        currentUserRoles.includes(role),
-      );
-      if (overlappingRoles.length > 0) {
-        return true;
-      }
+    if (route.data.roles && this.authService.hasUserRole(route.data.roles)) {
+      return true;
     }
 
     // Store the attempted URL for redirecting

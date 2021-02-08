@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
-import { UserRole } from 'src/app/auth/user-role.enum';
+import { AuthService } from 'src/app/auth/auth.service';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -20,7 +20,6 @@ describe('ProgramPeopleAffectedComponent', () => {
   let fixture: ComponentFixture<ProgramPeopleAffectedComponent>;
 
   const mockProgramId = 1;
-  const mockUserRoles = [UserRole.PersonalData];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -28,6 +27,7 @@ describe('ProgramPeopleAffectedComponent', () => {
       imports: [TranslateModule.forRoot(), FormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
+        provideMagicalMock(AuthService),
         provideMagicalMock(ProgramsServiceApiService),
         {
           provide: ModalController,
@@ -52,7 +52,6 @@ describe('ProgramPeopleAffectedComponent', () => {
     component = fixture.componentInstance;
 
     component.programId = mockProgramId;
-    component.userRoles = mockUserRoles;
 
     fixture.detectChanges();
   });

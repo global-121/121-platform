@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { PopupPayoutDetails } from 'src/app/models/installment.model';
@@ -24,14 +25,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   @Input()
   public programId: number;
   @Input()
-  public userRoles: UserRole[] | string[];
-  @Input()
   public thisPhase: ProgramPhase;
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public phaseEnum = ProgramPhase;
-  public userEnum = UserRole;
 
   public program: Program;
   public activePhase: ProgramPhase;
@@ -139,6 +137,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public canViewPersonalData: boolean;
 
   constructor(
+    private authService: AuthService,
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService,
     private bulkActionService: BulkActionsService,
@@ -360,8 +359,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     for (const column of this.columnsAvailable) {
       if (
         column.phases.includes(this.thisPhase) &&
-        column.roles.filter((role) => this.userRoles.includes(role)).length >
-          0 &&
+        this.authService.hasUserRole(column.roles) &&
         this.checkValidationColumnOrAction(column)
       ) {
         this.columns.push(column);
@@ -396,8 +394,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private updateBulkActions() {
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
-        action.roles.filter((role) => this.userRoles.includes(role)).length >
-          0 &&
+        this.authService.hasUserRole(action.roles) &&
         action.phases.includes(this.activePhase) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
@@ -429,7 +426,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private async loadData() {
     let allPeopleData: Person[];
-    if (this.userRoles.includes(UserRole.PersonalData)) {
+    if (this.authService.hasUserRole([UserRole.PersonalData])) {
       this.canViewPersonalData = true;
       allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,

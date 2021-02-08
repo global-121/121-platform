@@ -3,7 +3,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -14,7 +13,6 @@ describe('HeaderComponent', () => {
   let fixture: ComponentFixture<HeaderComponent>;
 
   const mockProgramId = 1;
-  const mockUserRoles = [UserRole.RunProgram];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -33,7 +31,6 @@ describe('HeaderComponent', () => {
 
   beforeEach(() => {
     mockAuthService = TestBed.get(AuthService);
-    mockAuthService.getUserRoles.and.returnValue(mockUserRoles);
 
     mockProgramsApi = TestBed.get(ProgramsServiceApiService);
     mockProgramsApi.getProgramById.and.returnValue(

@@ -4,15 +4,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { RegistrationValidationPage } from './registration-validation.page';
 
 describe('RegistrationValidationPage', () => {
   let component: RegistrationValidationPage;
   let fixture: ComponentFixture<RegistrationValidationPage>;
-
-  const mockUserRoles = [UserRole.RunProgram];
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -23,7 +21,7 @@ describe('RegistrationValidationPage', () => {
         HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(AuthService)],
+      providers: [provideMagicalMock(ProgramsServiceApiService)],
     }).compileComponents();
   }));
 
@@ -31,7 +29,6 @@ describe('RegistrationValidationPage', () => {
 
   beforeEach(() => {
     mockAuthService = TestBed.get(AuthService);
-    mockAuthService.getUserRoles.and.returnValue(mockUserRoles);
 
     fixture = TestBed.createComponent(RegistrationValidationPage);
     component = fixture.componentInstance;

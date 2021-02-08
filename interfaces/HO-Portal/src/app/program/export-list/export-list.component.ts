@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { ProgramPhaseService } from 'src/app/services/program-phase.service';
@@ -16,8 +17,6 @@ import { environment } from 'src/environments/environment';
 export class ExportListComponent implements OnChanges {
   @Input()
   public programId: number;
-  @Input()
-  public userRoles: UserRole[] | string[];
   @Input()
   public exportType: ExportType;
   @Input()
@@ -37,6 +36,7 @@ export class ExportListComponent implements OnChanges {
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   constructor(
+    private authService: AuthService,
     private programPhaseService: ProgramPhaseService,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
@@ -77,7 +77,7 @@ export class ExportListComponent implements OnChanges {
   public btnEnabled() {
     const activePhase = this.programPhaseService.getActivePhase();
     return (
-      this.userRoles.includes(UserRole.PersonalData) &&
+      this.authService.hasUserRole([UserRole.PersonalData]) &&
       (this.exportType !== ExportType.payment || this.paymentExportAvailable)
     );
   }

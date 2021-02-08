@@ -2,7 +2,6 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthService } from 'src/app/auth/auth.service';
-import { UserRole } from 'src/app/auth/user-role.enum';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramPhase } from 'src/app/models/program.model';
 import {
@@ -16,7 +15,6 @@ describe('PhaseNextComponent', () => {
   let fixture: ComponentFixture<PhaseNextComponent>;
 
   const mockProgramId = 1;
-  const mockUserRoles = [UserRole.RunProgram];
   const mockProgramPhase: Phase = {
     id: 1,
     name: ProgramPhase.design,
@@ -41,7 +39,6 @@ describe('PhaseNextComponent', () => {
   let mockProgramPhaseService: jasmine.SpyObj<ProgramPhaseService>;
   beforeEach(() => {
     mockAuthService = TestBed.get(AuthService);
-    mockAuthService.getUserRoles.and.returnValue(mockUserRoles);
 
     mockProgramPhaseService = TestBed.get(ProgramPhaseService);
     mockProgramPhaseService.getPhases.and.returnValue(

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/auth/auth.service';
 import { ExportType } from 'src/app/models/export-type.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -13,7 +12,6 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 export class RegistrationValidationPage implements OnInit {
   public programId = this.route.snapshot.params.id;
   public program: Program;
-  public userRoles = this.authService.getUserRoles();
   public thisPhase = ProgramPhase.registrationValidation;
   public isReady: boolean;
 
@@ -21,7 +19,6 @@ export class RegistrationValidationPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private authService: AuthService,
     private programsService: ProgramsServiceApiService,
   ) {}
 
