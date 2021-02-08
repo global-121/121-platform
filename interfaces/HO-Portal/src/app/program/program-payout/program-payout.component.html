@@ -18,7 +18,7 @@
         </ion-note>
       </p>
       <ion-item
-        [disabled]="!installment.firstOpen || totalIncluded === 0 || !currentUserRoles.includes(userRoleEnum.RunProgram)"
+        [disabled]="payoutDisabled(installment)"
         class="ion-margin-end"
       >
         <ion-label position="stacked">

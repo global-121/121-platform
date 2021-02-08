@@ -136,6 +136,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public applyBtnDisabled = true;
   public submitWarning: any;
 
+  public canViewPersonalData: boolean;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService,
@@ -428,10 +430,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private async loadData() {
     let allPeopleData: Person[];
     if (this.userRoles.includes(UserRole.PersonalData)) {
+      this.canViewPersonalData = true;
       allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,
       );
     } else {
+      this.canViewPersonalData = false;
       allPeopleData = await this.programsService.getPeopleAffected(
         this.programId,
       );

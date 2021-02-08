@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
+import { UserRole } from 'src/app/auth/user-role.enum';
 import { User } from 'src/app/models/user.model';
 import { UserStateComponent } from './user-state.component';
 
@@ -13,7 +14,7 @@ describe('UserStateComponent', () => {
   const mockUser: User = {
     token: 'test',
     email: 'test@example.org',
-    roles: ['test'],
+    roles: [UserRole.Admin],
   };
   const authServiceMock = {
     authenticationState$: of(mockUser),

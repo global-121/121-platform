@@ -40,11 +40,15 @@ export class TestPaymentComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const financialServiceProviders = (
-      await this.programsService.getProgramById(this.programId)
-    ).financialServiceProviders;
+    const program = await this.programsService.getProgramById(this.programId);
+
+    if (!program || !program.financialServiceProviders) {
+      return;
+    }
+
     if (
-      financialServiceProviders
+      program.financialServiceProviders &&
+      program.financialServiceProviders
         .map((fsp) => fsp.fsp)
         .includes(fspName.africasTalking)
     ) {

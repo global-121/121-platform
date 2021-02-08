@@ -10,11 +10,8 @@ import { UserRole } from './user-role.enum';
   providedIn: 'root',
 })
 export class AuthService {
-  private loggedIn = false;
   private userRoles: UserRole[] | string[];
-
-  // store the URL so we can redirect after logging in
-  redirectUrl: string;
+  public redirectUrl: string;
 
   private authenticationState = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationState.asObservable();
@@ -24,19 +21,17 @@ export class AuthService {
     private jwtService: JwtService,
     private router: Router,
   ) {
-    this.checkLoggedInState();
+    this.checkAuthenticationState();
   }
 
-  checkLoggedInState() {
+  private checkAuthenticationState() {
     const user = this.getUserFromToken();
 
     this.authenticationState.next(user);
   }
 
   public isLoggedIn(): boolean {
-    this.loggedIn = this.getUserFromToken() !== null;
-
-    return this.loggedIn;
+    return this.getUserFromToken() !== null;
   }
 
   public getUserRoles(): UserRole[] | string[] {
@@ -48,7 +43,7 @@ export class AuthService {
     return this.userRoles;
   }
 
-  private getUserFromToken() {
+  private getUserFromToken(): User | null {
     const rawToken = this.jwtService.getToken();
 
     if (!rawToken) {
@@ -102,7 +97,6 @@ export class AuthService {
 
   public logout() {
     this.jwtService.destroyToken();
-    this.loggedIn = false;
     this.authenticationState.next(null);
     this.router.navigate(['/login']);
   }

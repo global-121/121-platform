@@ -293,14 +293,12 @@ export class ProgramsServiceApiService {
     email: string,
     password: string,
     roles: UserRole[] | string[],
-    status: string,
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/user`, {
         email,
         password,
         roles,
-        status,
       })
       .toPromise();
   }
