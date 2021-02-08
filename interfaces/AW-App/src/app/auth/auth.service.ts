@@ -40,10 +40,19 @@ export class AuthService {
       return null;
     }
 
-    let user: User;
+    let user: User | any;
 
     try {
       user = this.jwtService.decodeToken(rawToken);
+
+      // Upgrade existing user to new roles
+      if (!user.roles && user.role && user.role === 'aidworker') {
+        user.roles = [UserRole.FieldValidation];
+      }
+      // 'Clean' roles-object into flat list of roles
+      if (user.roles && user.roles[0] && user.roles[0].role) {
+        user.roles = user.roles.map((role) => role.role);
+      }
     } catch {
       console.warn('AuthService: Invalid token');
       return null;
@@ -60,14 +69,7 @@ export class AuthService {
     };
   }
 
-  private isAllowedUser(
-    user: User | any /* allow any for legacy users */,
-  ): boolean {
-    // Upgrade existing user to new roles
-    if (!user.roles && user.role && user.role === 'aidworker') {
-      user.roles = [UserRole.FieldValidation];
-    }
-
+  private isAllowedUser(user: User): boolean {
     return user.roles && user.roles.includes(UserRole.FieldValidation);
   }
 
