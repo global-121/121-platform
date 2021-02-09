@@ -81,7 +81,7 @@ export class AuthService {
       !user ||
       !user.email ||
       !user.roles ||
-      user.roles.includes(UserRole.FieldValidation)
+      (user.roles.length === 1 && user.roles.includes(UserRole.FieldValidation))
     ) {
       console.warn('AuthService: No valid user');
       return null;
