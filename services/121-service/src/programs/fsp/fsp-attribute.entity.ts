@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  Index,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
 @Entity('fsp_attribute')
@@ -13,7 +7,6 @@ export class FspAttributeEntity {
   public id: number;
 
   @Column()
-  @Index({ unique: true })
   public name: string;
 
   @Column('json')

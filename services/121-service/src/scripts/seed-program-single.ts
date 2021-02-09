@@ -32,21 +32,28 @@ export class SeedSingleProgram implements InterfaceScript {
 
     // ***** CREATE USERS *****
     await this.seedHelper.addUser({
-      roles: [UserRole.FieldValidation],
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_AID_WORKER,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_AID_WORKER,
+      roles: [UserRole.PersonalData, UserRole.RunProgram],
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
 
     await this.seedHelper.addUser({
       roles: [UserRole.RunProgram],
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROJECT_OFFICER,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROJECT_OFFICER,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
     });
 
     await this.seedHelper.addUser({
       roles: [UserRole.PersonalData],
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_PROGRAM_MANAGER,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_PROGRAM_MANAGER,
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
+    });
+
+    await this.seedHelper.addUser({
+      roles: [UserRole.FieldValidation],
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,
+      password:
+        process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FIELD_VALIDATION,
     });
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
