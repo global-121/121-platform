@@ -11,6 +11,9 @@ export class NotificationDto {
   @ApiModelProperty({ example: 1 })
   @IsNumber()
   public readonly programId: number;
-  @ApiModelProperty({ example: 'include' })
+  @ApiModelProperty({
+    enum: NotificationType,
+    example: NotificationType.include,
+  })
   public readonly notificationType: NotificationType;
 }

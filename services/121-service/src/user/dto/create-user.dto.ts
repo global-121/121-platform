@@ -14,12 +14,8 @@ export class CreateUserDto {
   public readonly password: string;
 
   @ApiModelProperty({
-    example: [
-      UserRole.Admin,
-      UserRole.FieldValidation,
-      UserRole.PersonalData,
-      UserRole.RunProgram,
-    ],
+    example: Object.values(UserRole),
+    enum: UserRole,
   })
   @IsArray()
   public readonly roles: UserRole[];

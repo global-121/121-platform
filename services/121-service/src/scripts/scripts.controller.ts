@@ -8,13 +8,22 @@ import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import { SeedPilotKenProgram } from './seed-program-pilot-ken';
 
+enum SeedScript {
+  pilotNL = 'pilot-nl',
+  pilotNLPV = 'pilot-nl-pv',
+  pilotKEN = 'pilot-ken',
+  demo = 'demo',
+  single = 'single',
+}
+
 class ResetDto {
   @ApiModelProperty({ example: 'fill_in_secret' })
   @IsNotEmpty()
   @IsString()
   public readonly secret: string;
   @ApiModelProperty({
-    example: 'pilot-nl / pilot-nl-pv / pilot-ken / demo / single',
+    enum: SeedScript,
+    example: Object.values(SeedScript).join(' | '),
   })
   public readonly script: string;
 }
@@ -30,13 +39,13 @@ export class ScriptsController {
       return res.status(HttpStatus.FORBIDDEN).send('Not allowed');
     }
     let seed;
-    if (body.script == 'demo') {
+    if (body.script == SeedScript.demo) {
       seed = new SeedDemoProgram(this.connection);
-    } else if (body.script == 'pilot-nl') {
+    } else if (body.script == SeedScript.pilotNL) {
       seed = new SeedPilotNLProgram(this.connection);
-    } else if (body.script == 'pilot-nl-pv') {
+    } else if (body.script == SeedScript.pilotNLPV) {
       seed = new SeedPilotNL2Program(this.connection);
-    } else if (body.script == 'pilot-ken') {
+    } else if (body.script == SeedScript.pilotKEN) {
       seed = new SeedPilotKenProgram(this.connection);
     } else {
       seed = new SeedSingleProgram(this.connection);
