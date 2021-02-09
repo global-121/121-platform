@@ -3,7 +3,10 @@ import { IsNotEmpty, IsNumber, IsIn } from 'class-validator';
 import { ActionType, ActionArray } from '../action.entity';
 
 export class ActionDto {
-  @ApiModelProperty({ example: ActionArray.toString() })
+  @ApiModelProperty({
+    enum: ActionArray,
+    example: ActionArray.join(' | '),
+  })
   @IsNotEmpty()
   @IsIn(ActionArray)
   public readonly actionType: ActionType;
