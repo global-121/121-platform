@@ -206,6 +206,7 @@ export class ReferralPage implements OnInit {
   getLogProperties(isBack: boolean) {
     const logParams: { [key: string]: any } = { isBack };
     if (this.offer) {
+      logParams.offerID = this.offer.offerID;
       logParams.offerName = this.offer.offerName;
     }
     if (this.subCategory) {
