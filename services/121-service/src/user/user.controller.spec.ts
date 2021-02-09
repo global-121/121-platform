@@ -6,14 +6,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserRO } from './user.interface';
 import { DeleteResult } from 'typeorm';
 import { LoginUserDto } from './dto/login-user.dto';
+import { UserRoleEntity } from './user-role.entity';
+import { UserRole } from '../user-role.enum';
 
 const userRo = {
   user: {
     email: 'test@example.org',
     token:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo',
-    role: 'aidworker',
-    status: 'active',
+    roles: [new UserRoleEntity()],
   },
 };
 
@@ -22,13 +23,14 @@ class UserServiceMock {
     return userRo;
   }
   public async create(userData: CreateUserDto): Promise<UserRO> {
+    const userRole = new UserRoleEntity();
+    userRole.role = userData.roles[0];
     const userRo = {
       user: {
         email: userData.email,
         token:
           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo',
-        role: userData.role,
-        status: userData.status,
+        roles: [userRole],
       },
     };
     return userRo;
@@ -42,8 +44,7 @@ class UserServiceMock {
     user.email = 'test@example.org';
     user.password =
       'c90f86e09c3461da52b3d8bc80ccd6a0d0cb893b1a41bd461e8ed31fa21c9b6e';
-    user.role = 'aidworker';
-    user.status = 'active';
+    user.roles = [new UserRoleEntity()];
     return user;
   }
   public generateJWT(user): any {
@@ -108,8 +109,7 @@ describe('UserController', (): void => {
       const userValue = {
         email: 'test@example.org',
         password: 'string',
-        role: 'aidworker',
-        status: 'active',
+        roles: [UserRole.FieldValidation],
       };
       const spy = jest
         .spyOn(userService, 'create')

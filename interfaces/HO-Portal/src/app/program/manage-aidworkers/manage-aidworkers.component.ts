@@ -80,15 +80,10 @@ export class ManageAidworkersComponent implements OnInit {
   }
 
   public async addAidworker() {
-    const status = 'active';
-
     this.programsService
-      .addUser(
-        this.emailAidworker,
-        this.passwordAidworker,
-        UserRole.Aidworker,
-        status,
-      )
+      .addUser(this.emailAidworker, this.passwordAidworker, [
+        UserRole.FieldValidation,
+      ])
       .then(
         (res) => {
           this.succesCreatedAidworker(res.user.id);

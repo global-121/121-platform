@@ -29,9 +29,7 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    // UserRole will only be a valid value, when login is valid
-    const currentUserRole = this.authService.getUserRole();
-    if (route.data.roles && route.data.roles.includes(currentUserRole)) {
+    if (route.data.roles && this.authService.hasUserRole(route.data.roles)) {
       return true;
     }
 

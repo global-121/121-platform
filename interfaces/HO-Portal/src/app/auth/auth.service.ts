@@ -10,11 +10,7 @@ import { UserRole } from './user-role.enum';
   providedIn: 'root',
 })
 export class AuthService {
-  private loggedIn = false;
-  private userRole: UserRole | string;
-
-  // store the URL so we can redirect after logging in
-  redirectUrl: string;
+  public redirectUrl: string;
 
   private authenticationState = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationState.asObservable();
@@ -24,86 +20,114 @@ export class AuthService {
     private jwtService: JwtService,
     private router: Router,
   ) {
-    this.checkLoggedInState();
+    this.checkAuthenticationState();
   }
 
-  checkLoggedInState() {
+  private checkAuthenticationState() {
     const user = this.getUserFromToken();
 
     this.authenticationState.next(user);
   }
 
   public isLoggedIn(): boolean {
-    this.loggedIn = this.getUserFromToken() !== null;
-
-    return this.loggedIn;
+    return this.getUserFromToken() !== null;
   }
 
-  public getUserRole(): UserRole | string {
-    if (!this.userRole) {
-      const user = this.getUserFromToken();
+  public hasUserRole(requiredRoles: UserRole[]): boolean {
+    const user = this.getUserFromToken();
 
-      this.userRole = user ? user.role : '';
+    if (!user || !user.roles) {
+      return false;
     }
 
-    return this.userRole;
+    return requiredRoles.some((role) => {
+      return user.roles.includes(role);
+    });
   }
 
-  private getUserFromToken() {
+  private getUserFromToken(): User | null {
     const rawToken = this.jwtService.getToken();
 
     if (!rawToken) {
       return null;
     }
 
-    const decodedToken = this.jwtService.decodeToken(rawToken);
-    const user: User = {
-      token: rawToken,
-      email: decodedToken.email,
-      role: decodedToken.role,
+    let user: User;
+
+    try {
+      user = this.jwtService.decodeToken(rawToken);
+
+      // Upgrade existing user to new roles
+      if (user && user.role && !user.roles) {
+        if (user.role === 'aidworker') {
+          user.role = UserRole.FieldValidation;
+        }
+        if (user.role === 'project-officer') {
+          user.role = UserRole.RunProgram;
+        }
+        if (user.role === 'program-manager') {
+          user.role = UserRole.PersonalData;
+        }
+        if (user.role) {
+          user.roles = [user.role];
+        }
+      }
+    } catch {
+      console.warn('AuthService: Invalid token');
+      return null;
+    }
+
+    if (
+      !user ||
+      !user.email ||
+      !user.roles ||
+      (user.roles.length === 1 && user.roles.includes(UserRole.FieldValidation))
+    ) {
+      console.warn('AuthService: No valid user');
+      return null;
+    }
+
+    return {
+      email: user.email,
+      roles: user.roles,
     };
-
-    this.userRole = user.role;
-
-    return user;
   }
 
-  public async login(email: string, password: string) {
-    return this.programsService.login(email, password).subscribe(
-      (response) => {
-        const user = response.user;
+  public async login(email: string, password: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.programsService.login(email, password).then(
+        (response) => {
+          if (response && response.token) {
+            this.jwtService.saveToken(response.token);
+          }
 
-        this.authenticationState.next(user);
+          const user = this.getUserFromToken();
+          this.authenticationState.next(user);
 
-        if (!user || !user.token) {
-          return;
-        }
+          if (!user) {
+            return reject({ status: 401 });
+          }
 
-        if (user.role === UserRole.Aidworker) {
-          return;
-        }
+          if (this.redirectUrl) {
+            this.router.navigate([this.redirectUrl]);
+            this.redirectUrl = null;
+            return resolve();
+          }
 
-        this.jwtService.saveToken(user.token);
-        this.loggedIn = true;
-        this.userRole = user.role;
+          this.router.navigate(['/home']);
 
-        if (this.redirectUrl) {
-          this.router.navigate([this.redirectUrl]);
-          this.redirectUrl = null;
-          return;
-        }
-
-        this.router.navigate(['/home']);
-      },
-      (error) => {
-        console.log('AuthService error: ', error);
-      },
-    );
+          return resolve();
+        },
+        (error) => {
+          console.error('AuthService: login error: ', error);
+          return reject(error);
+        },
+      );
+    });
   }
 
   public logout() {
     this.jwtService.destroyToken();
-    this.loggedIn = false;
     this.authenticationState.next(null);
     this.router.navigate(['/login']);
   }

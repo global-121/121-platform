@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { UserRole } from '../auth/user-role.enum';
 import { ActionType } from '../models/action-type.model';
 import { ExportType } from '../models/export-type.model';
 import { InstallmentData } from '../models/installment.model';
@@ -9,6 +9,7 @@ import { NotificationType } from '../models/notification-type.model';
 import { Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
+import { UserModel } from '../models/user.model';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -17,18 +18,30 @@ import { ApiService } from './api.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService) {}
 
-  login(email: string, password: string): Observable<any> {
+  public login(email: string, password: string): Promise<UserModel | null> {
     console.log('ProgramsService : login()');
 
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/user/login',
-      {
-        email,
-        password,
-      },
-      true,
-    );
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/user/login',
+        {
+          email,
+          password,
+        },
+        true,
+      )
+      .pipe(
+        map((response) => {
+          if (response && response.user) {
+            return {
+              token: response.user.token,
+            };
+          }
+          return null;
+        }),
+      )
+      .toPromise();
   }
 
   deleteUser(userId: string): Promise<any> {
@@ -291,15 +304,13 @@ export class ProgramsServiceApiService {
   addUser(
     email: string,
     password: string,
-    role: string,
-    status: string,
+    roles: UserRole[] | string[],
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/user`, {
         email,
         password,
-        role,
-        status,
+        roles,
       })
       .toPromise();
   }

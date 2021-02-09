@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/auth/auth.service';
 import { ExportType } from 'src/app/models/export-type.model';
 import { NotificationType } from 'src/app/models/notification-type.model';
 import { ProgramPhase } from 'src/app/models/program.model';
@@ -15,15 +14,10 @@ export class ReviewInclusionPage implements OnInit {
   public thisPhase = ProgramPhase.reviewInclusion;
   public isReady: boolean;
 
-  public userRole = this.authService.getUserRole();
-
   public enumExportType = ExportType;
   public enumNotificationType = NotificationType;
 
-  constructor(
-    private route: ActivatedRoute,
-    private authService: AuthService,
-  ) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {}
 

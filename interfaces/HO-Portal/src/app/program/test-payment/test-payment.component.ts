@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ActionType } from 'src/app/models/action-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -19,11 +20,9 @@ enum fspName {
 export class TestPaymentComponent implements OnInit {
   @Input()
   public programId: number;
-  @Input()
-  public userRole: UserRole;
 
+  public isDisabled: boolean;
   public visible = false;
-  public userRoleEnum = UserRole;
 
   private locale: string;
   public actionTimestamp;
@@ -32,19 +31,25 @@ export class TestPaymentComponent implements OnInit {
   public isInProgress = false;
 
   constructor(
+    private authService: AuthService,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
   ) {
     this.locale = environment.defaultLocale;
+    this.isDisabled = !this.authService.hasUserRole([UserRole.PersonalData]);
   }
 
   async ngOnInit() {
-    const financialServiceProviders = (
-      await this.programsService.getProgramById(this.programId)
-    ).financialServiceProviders;
+    const program = await this.programsService.getProgramById(this.programId);
+
+    if (!program || !program.financialServiceProviders) {
+      return;
+    }
+
     if (
-      financialServiceProviders
+      program.financialServiceProviders &&
+      program.financialServiceProviders
         .map((fsp) => fsp.fsp)
         .includes(fspName.africasTalking)
     ) {

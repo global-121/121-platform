@@ -18,7 +18,7 @@
         </ion-note>
       </p>
       <ion-item
-        [disabled]="!installment.firstOpen || totalIncluded === 0 || currentUserRole !== userRoleEnum.ProjectOfficer"
+        [disabled]="payoutDisabled(installment)"
         class="ion-margin-end"
       >
         <ion-label position="stacked">
@@ -46,7 +46,6 @@
       </confirm-prompt>
       <app-export-list
         [programId]="programId"
-        [userRole]="currentUserRole"
         [exportType]="enumExportType.payment"
         [paymentInstallment]="installment.id"
         [paymentExportAvailable]="installment.isExportAvailable"

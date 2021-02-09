@@ -29,15 +29,12 @@ export class PhaseNextComponent implements OnInit {
   public btnText: string;
   public isInProgress = false;
 
-  private currentUserRole: string;
-
   constructor(
     private authService: AuthService,
     private programPhaseService: ProgramPhaseService,
   ) {}
 
   async ngOnInit() {
-    this.currentUserRole = this.authService.getUserRole();
     this.programPhases = await this.programPhaseService.getPhases(
       this.programId,
     );
@@ -55,7 +52,7 @@ export class PhaseNextComponent implements OnInit {
       this.thisPhaseName !== this.activePhase.name ||
       this.isInProgress ||
       // !this.phaseReady ||
-      this.currentUserRole !== UserRole.ProjectOfficer
+      !this.authService.hasUserRole([UserRole.RunProgram])
     );
   }
 

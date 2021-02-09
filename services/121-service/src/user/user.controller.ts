@@ -35,7 +35,7 @@ export class UserController {
     this.userService = userService;
   }
 
-  @Roles(UserRole.ProjectOfficer)
+  @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Sign-up new user' })
   @Post('user')
   public async create(@Body() userData: CreateUserDto): Promise<UserRO> {
@@ -48,26 +48,20 @@ export class UserController {
     const _user = await this.userService.findOne(loginUserDto);
     if (!_user) {
       throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
-    } else if (_user.status == 'inactive') {
-      throw new HttpException(
-        'Account deactivated. Contact organization administration.',
-        HttpStatus.UNAUTHORIZED,
-      );
     }
 
     const token = await this.userService.generateJWT(_user);
-    const { email, role, status } = _user;
+    const { email, roles } = _user;
     const user = {
       email,
       token,
-      role,
-      status,
+      roles,
     };
 
     return { user };
   }
 
-  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager, UserRole.Aidworker)
+  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.FieldValidation)
   @ApiOperation({ title: 'Change password of logged in user' })
   @Post('user/change-password')
   public async update(
@@ -77,7 +71,7 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @Roles(UserRole.ProjectOfficer)
+  @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'string' })
@@ -88,7 +82,7 @@ export class UserController {
     return await this.userService.delete(deleterId, params.userId);
   }
 
-  @Roles(UserRole.ProjectOfficer, UserRole.ProgramManager, UserRole.Aidworker)
+  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.FieldValidation)
   @ApiBearerAuth()
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
@@ -96,23 +90,7 @@ export class UserController {
     return await this.userService.findByEmail(email);
   }
 
-  @Roles(UserRole.ProjectOfficer)
-  @ApiOperation({ title: 'Deactivate Aidworker' })
-  @Put('user/:userId/deactivate')
-  @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
-  public async deactivate(@Param('userId') userId: number): Promise<UserRO> {
-    return await this.userService.deactivate(userId);
-  }
-
-  @Roles(UserRole.ProjectOfficer)
-  @ApiOperation({ title: 'Activate Aidworker' })
-  @Put('user/:userId/activate')
-  @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
-  public async activate(@Param('userId') userId: number): Promise<UserRO> {
-    return await this.userService.activate(userId);
-  }
-
-  @Roles(UserRole.ProjectOfficer)
+  @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/:userId/:programId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })

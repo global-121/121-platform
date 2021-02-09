@@ -60,7 +60,7 @@ export class CredentialController {
     );
   }
 
-  @Roles(UserRole.Aidworker)
+  @Roles(UserRole.FieldValidation)
   @ApiOperation({ title: 'Get prefilled answers (for AW)' })
   @ApiResponse({ status: 200, description: 'Prefilled answers received' })
   @Post('/get-answers')
@@ -73,7 +73,7 @@ export class CredentialController {
     );
   }
 
-  @Roles(UserRole.Aidworker)
+  @Roles(UserRole.FieldValidation)
   @ApiOperation({ title: 'Get all prefilled answers (for pre-download)' })
   @ApiResponse({ status: 200, description: 'Prefilled answers downloaded' })
   @Get('/download-data')
@@ -92,7 +92,7 @@ export class CredentialController {
     return await this.credentialService.request(credRequest);
   }
 
-  @Roles(UserRole.Aidworker)
+  @Roles(UserRole.FieldValidation)
   @ApiOperation({ title: 'Issue credentials (For AW)' })
   @ApiResponse({ status: 200, description: 'Credentials issued' })
   @Post('/issue')

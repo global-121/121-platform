@@ -2,6 +2,7 @@ import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { BulkAction, BulkActionId } from 'src/app/models/bulk-actions.models';
 import { PopupPayoutDetails } from 'src/app/models/installment.model';
@@ -24,14 +25,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   @Input()
   public programId: number;
   @Input()
-  public userRole: UserRole;
-  @Input()
   public thisPhase: ProgramPhase;
   @Output()
   isCompleted: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public phaseEnum = ProgramPhase;
-  public userEnum = UserRole;
 
   public program: Program;
   public activePhase: ProgramPhase;
@@ -61,7 +59,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.choose-action',
       ),
-      roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
       phases: [
         ProgramPhase.design,
         ProgramPhase.registrationValidation,
@@ -78,7 +76,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.select-for-validation',
       ),
-      roles: [UserRole.ProjectOfficer],
+      roles: [UserRole.RunProgram],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: false,
     },
@@ -88,7 +86,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
       ),
-      roles: [UserRole.ProjectOfficer],
+      roles: [UserRole.RunProgram],
       phases: [ProgramPhase.inclusion],
       showIfNoValidation: true,
     },
@@ -98,7 +96,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
       ),
-      roles: [UserRole.ProgramManager],
+      roles: [UserRole.PersonalData],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
     },
@@ -108,7 +106,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.reject',
       ),
-      roles: [UserRole.ProgramManager],
+      roles: [UserRole.PersonalData],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
       confirmConditions: {
@@ -128,7 +126,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.notify-included',
       ),
-      roles: [UserRole.ProjectOfficer],
+      roles: [UserRole.RunProgram],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
     },
@@ -136,7 +134,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public applyBtnDisabled = true;
   public submitWarning: any;
 
+  public canViewPersonalData: boolean;
+
   constructor(
+    private authService: AuthService,
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService,
     private bulkActionService: BulkActionsService,
@@ -164,7 +165,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ProgramPhase.reviewInclusion,
         ProgramPhase.payment,
       ],
-      roles: [UserRole.ProjectOfficer, UserRole.ProgramManager],
+      roles: [UserRole.RunProgram, UserRole.PersonalData],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
@@ -197,7 +198,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ...this.columnDefaults,
         frozenLeft: true,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        roles: [UserRole.ProgramManager],
+        roles: [UserRole.PersonalData],
       },
       {
         prop: 'phoneNumber',
@@ -212,7 +213,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.reviewInclusion,
           ProgramPhase.payment,
         ],
-        roles: [UserRole.ProgramManager],
+        roles: [UserRole.PersonalData],
         minWidth: columnPhoneNumberWidth,
       },
       {
@@ -358,7 +359,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     for (const column of this.columnsAvailable) {
       if (
         column.phases.includes(this.thisPhase) &&
-        column.roles.includes(this.userRole) &&
+        this.authService.hasUserRole(column.roles) &&
         this.checkValidationColumnOrAction(column)
       ) {
         this.columns.push(column);
@@ -393,7 +394,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private updateBulkActions() {
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
-        action.roles.includes(this.userRole) &&
+        this.authService.hasUserRole(action.roles) &&
         action.phases.includes(this.activePhase) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
@@ -425,11 +426,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private async loadData() {
     let allPeopleData: Person[];
-    if (this.userRole === UserRole.ProgramManager) {
+    if (this.authService.hasUserRole([UserRole.PersonalData])) {
+      this.canViewPersonalData = true;
       allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,
       );
     } else {
+      this.canViewPersonalData = false;
       allPeopleData = await this.programsService.getPeopleAffected(
         this.programId,
       );

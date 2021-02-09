@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from 'src/app/auth/auth.service';
 import { ProgramPhase } from 'src/app/models/program.model';
 
 @Component({
@@ -13,12 +12,7 @@ export class InclusionPage implements OnInit {
   public thisPhase = ProgramPhase.inclusion;
   public isReady: boolean;
 
-  public userRole = this.authService.getUserRole();
-
-  constructor(
-    private route: ActivatedRoute,
-    private authService: AuthService,
-  ) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {}
 

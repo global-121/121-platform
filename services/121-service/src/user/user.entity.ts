@@ -5,11 +5,13 @@ import {
   BeforeInsert,
   OneToMany,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
-const crypto = require('crypto');
+import crypto from 'crypto';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { ActionEntity } from '../actions/action.entity';
+import { UserRoleEntity } from './user-role.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -23,11 +25,12 @@ export class UserEntity {
   @Column({ select: false })
   public password: string;
 
-  @Column()
-  public role: string;
-
-  @Column({ nullable: true })
-  public status: string;
+  @ManyToMany(
+    () => UserRoleEntity,
+    role => role.users,
+  )
+  @JoinTable()
+  public roles: UserRoleEntity[];
 
   @BeforeInsert()
   public hashPassword(): any {
@@ -38,19 +41,19 @@ export class UserEntity {
   public created: Date;
 
   @OneToMany(
-    type => ProgramEntity,
+    () => ProgramEntity,
     program => program.author,
   )
   public programs: ProgramEntity[];
 
   @OneToMany(
-    type => ActionEntity,
+    () => ActionEntity,
     program => program.user,
   )
   public actions: ActionEntity[];
 
   @ManyToMany(
-    type => ProgramEntity,
+    () => ProgramEntity,
     program => program.aidworkers,
   )
   public assignedProgram: ProgramEntity[];

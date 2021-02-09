@@ -24,14 +24,17 @@ export class RolesGuard implements CanActivate {
     if (DEBUG) {
       return true;
     }
-    const roles = this.reflector.get<string[]>('roles', context.getHandler());
+    const endpointRoles = this.reflector.get<UserRole[]>(
+      'roles',
+      context.getHandler(),
+    );
 
-    if (!roles) {
+    if (!endpointRoles) {
       return true;
     }
     // This line allows the Admin role to access every controller
-    if (!roles.includes(UserRole.Admin)) {
-      roles.push(UserRole.Admin);
+    if (!endpointRoles.includes(UserRole.Admin)) {
+      endpointRoles.push(UserRole.Admin);
     }
 
     const request = context.switchToHttp().getRequest();
@@ -44,7 +47,11 @@ export class RolesGuard implements CanActivate {
       );
       const user = await this.userService.findById(decoded.id);
 
-      hasAccess = roles.includes(user.user.role);
+      const userRoles = user.user.roles.map(role => role.role);
+      const overlappingRoles = endpointRoles.filter(role =>
+        userRoles.includes(role),
+      );
+      hasAccess = overlappingRoles.length > 0;
     } else {
       hasAccess = false;
     }

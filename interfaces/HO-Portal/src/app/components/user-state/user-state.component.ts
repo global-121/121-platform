@@ -14,7 +14,7 @@ export class UserStateComponent implements OnInit {
 
   ngOnInit() {
     this.authService.authenticationState$.subscribe((user: User | null) => {
-      this.userName = user ? user.email : '';
+      this.userName = user && user.email ? user.email : '';
     });
   }
 

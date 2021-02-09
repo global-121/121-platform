@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEnum, MinLength, IsEmail } from 'class-validator';
+import { IsNotEmpty, MinLength, IsEmail, IsArray } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { UserRole } from '../../user-role.enum';
 
@@ -8,17 +8,19 @@ export class CreateUserDto {
   @IsEmail()
   public readonly email: string;
 
-  @ApiModelProperty()
+  @ApiModelProperty({ example: 'password' })
   @IsNotEmpty()
   @MinLength(8)
   public readonly password: string;
 
   @ApiModelProperty({
-    example: 'admin / aidworker / project-officer / program-manager',
+    example: [
+      UserRole.Admin,
+      UserRole.FieldValidation,
+      UserRole.PersonalData,
+      UserRole.RunProgram,
+    ],
   })
-  @IsEnum(UserRole)
-  public readonly role: string;
-
-  @ApiModelProperty({ example: 'active' })
-  public readonly status: string;
+  @IsArray()
+  public readonly roles: UserRole[];
 }

@@ -54,14 +54,14 @@ export class ProgramEntity {
   public fixedTransferValue: number;
 
   @ManyToMany(
-    type => FinancialServiceProviderEntity,
+    () => FinancialServiceProviderEntity,
     financialServiceProviders => financialServiceProviders.program,
   )
   @JoinTable()
   public financialServiceProviders: FinancialServiceProviderEntity[];
 
   @ManyToMany(
-    type => ProtectionServiceProviderEntity,
+    () => ProtectionServiceProviderEntity,
     protectionServiceProviders => protectionServiceProviders.program,
   )
   @JoinTable()
@@ -127,44 +127,44 @@ export class ProgramEntity {
   }
 
   @ManyToOne(
-    type => UserEntity,
+    () => UserEntity,
     user => user.programs,
   )
   public author: UserEntity;
 
   @OneToMany(
-    type => ActionEntity,
+    () => ActionEntity,
     program => program.user,
   )
   public actions: ActionEntity[];
 
   @OneToMany(
-    type => CustomCriterium,
+    () => CustomCriterium,
     customCriteria => customCriteria.program,
   )
   public customCriteria: CustomCriterium[];
 
   @ManyToMany(
-    type => UserEntity,
+    () => UserEntity,
     aidworker => aidworker.assignedProgram,
   )
   @JoinTable()
   public aidworkers: UserEntity[];
 
   @OneToMany(
-    type => CredentialRequestEntity,
+    () => CredentialRequestEntity,
     credentialRequest => credentialRequest.program,
   )
   public credentialRequests: CredentialRequestEntity[];
 
   @OneToMany(
-    type => CredentialEntity,
+    () => CredentialEntity,
     credential => credential.program,
   )
   public credentials: CredentialEntity[];
 
   @OneToMany(
-    type => TransactionEntity,
+    () => TransactionEntity,
     transactions => transactions.program,
   )
   public transactions: TransactionEntity[];
