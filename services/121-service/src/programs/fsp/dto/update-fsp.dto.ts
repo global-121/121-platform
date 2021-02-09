@@ -53,8 +53,4 @@ export class UpdateFspDto {
   @ApiModelProperty({ example: { en: 'FSP display name' } })
   @IsOptional()
   public readonly fspDisplayName: JSON;
-
-  @ApiModelProperty({ example: '<api-url>' })
-  @IsOptional()
-  public readonly apiUrl: JSON;
 }

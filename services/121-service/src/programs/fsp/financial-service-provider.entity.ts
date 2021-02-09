@@ -22,9 +22,6 @@ export class FinancialServiceProviderEntity {
   @Column('json', { nullable: true })
   public fspDisplayName: JSON;
 
-  @Column({ nullable: true })
-  public apiUrl: string;
-
   @OneToMany(
     _type => FspAttributeEntity,
     attributes => attributes.fsp,

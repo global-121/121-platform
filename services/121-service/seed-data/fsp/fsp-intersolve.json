@@ -6,7 +6,6 @@
     "tl": "Ipadala ang supermarket voucher sa aking WhatsApp",
     "en": "Send supermarket voucher to my WhatsApp"
   },
-  "apiUrl": "https://trade-acc.intersolve.nl/rest/buyerapi/v1/orders",
   "attributes": [
     {
       "name": "whatsappPhoneNumber",
