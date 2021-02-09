@@ -166,7 +166,6 @@ export class UserService {
 
     const result = jwt.sign(
       {
-        id: user.id,
         email: user.email,
         roles: user.roles.map(role => role.role),
         exp: exp.getTime() / 1000,
