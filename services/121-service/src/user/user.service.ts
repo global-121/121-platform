@@ -24,10 +24,6 @@ export class UserService {
 
   public constructor() {}
 
-  public async findAll(): Promise<UserEntity[]> {
-    return await this.userRepository.find({ relations: ['roles'] });
-  }
-
   public async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const findOneOptions = {
       email: loginUserDto.email,
@@ -172,7 +168,7 @@ export class UserService {
       {
         id: user.id,
         email: user.email,
-        roles: user.roles,
+        roles: user.roles.map(role => role.role),
         exp: exp.getTime() / 1000,
       },
       process.env.SECRETS_121_SERVICE_SECRET,

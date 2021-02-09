@@ -71,11 +71,6 @@ export class AuthService {
         if (user.role) {
           user.roles = [user.role];
         }
-
-        // 'Clean' roles-object into flat list of roles
-        if (user.roles && user.roles[0] && user.roles[0].role) {
-          user.roles = user.roles.map((role) => role.role);
-        }
       }
     } catch {
       console.warn('AuthService: Invalid token');
