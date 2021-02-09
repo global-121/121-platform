@@ -68,23 +68,23 @@ export class UserService {
     newUser.programs = [];
     newUser.assignedProgram = [];
 
-    const savedUser = await this.userRepository.save(newUser);
-    return this.buildUserRO(savedUser);
+    await this.userRepository.save(newUser);
+    return this.buildUserRO(newUser);
   }
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
     let toUpdate = await this.userRepository.findOne(id, {
-      relations: ['assignedProgram'],
+      relations: ['assignedProgram', 'roles'],
     });
     let updated = toUpdate;
     updated.password = crypto.createHmac('sha256', dto.password).digest('hex');
-    const updatedUser = await this.userRepository.save(updated);
-    return this.buildUserRO(updatedUser);
+    await this.userRepository.save(updated);
+    return this.buildUserRO(updated);
   }
 
   public async assignProgram(userId: number, programId: number): Promise<any> {
     let user = await this.userRepository.findOne(userId, {
-      relations: ['assignedProgram'],
+      relations: ['assignedProgram', 'roles'],
     });
     if (!user) {
       const errors = { User: ' not found' };
@@ -100,8 +100,8 @@ export class UserService {
       user.assignedProgram = [];
     }
     user.assignedProgram.push(program);
-    const updatedUser = await this.userRepository.save(user);
-    return this.buildUserRO(updatedUser);
+    await this.userRepository.save(user);
+    return this.buildUserRO(user);
   }
 
   public async delete(
@@ -155,7 +155,10 @@ export class UserService {
   }
 
   public async findByEmail(email: string): Promise<UserRO> {
-    const user = await this.userRepository.findOne({ email: email });
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+      relations: ['roles'],
+    });
     return this.buildUserRO(user);
   }
 
