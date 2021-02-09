@@ -73,10 +73,10 @@ This user **_HAS_** to be created first, but the 'Authorize'-part is not necessa
 
 #### Admin vs other users
 
-- In USER /POST you can set `role: 'admin'`. Or one of: `aidworker`, `program-manager`, `project-officer`.
-- The `admin`-user has access to all API-endpoints
+- In USER /POST you can set `roles: ['admin']`. Or add one of the other available roles.
+- The `admin`-role has access to all API-endpoints
 - The other users have limited access to specific API-endpoints
-- NOTE: The user-role distinction is only in effect when using the Bearer-authentication described above. If not, then the default-user will be used, which will have `admin`-rights automatically (even if you haven't specified `role='admin'` for that user initially).
+- NOTE: The user-role distinction is only in effect when using the Bearer-authentication described above. If not, then the default-user will be used, which will have `admin`-rights automatically (regardless of its' `roles`-value(s)).
 
 ---
 

@@ -28,7 +28,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ## Find DID of PA in database based on name and/or phone number
 
-1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) as a "`program-manager`"-role user
+1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`personal-data`"-role
 2. Find the `connection` of the PA that we want to update.  
    Use the endpoint: [`/sovrin/create-connection/get-did/name-phone`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_get_did_name_phone)  
    Where you can optionally fill in `name` and/or old `phoneNumber` to search for.
@@ -46,7 +46,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ## Get monitoring data
 
-1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) as a "`admin`"-role user
+1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`admin`"-role
 2. Use the endpoint: [`/programs/monitoring/{programId}`](https://test-vm.121.global/121-service/docs/#/programs/get_programs_monitoring__programId_)  
    Fill in the `programId` = 1.
 
@@ -85,19 +85,21 @@ In this file we document "how to do X", manually. As not everything is possible 
 1. Take the preferred source-file (`instance`, `fsp` or `program`)
 2. Remove **_ALL OTHER_** language-texts except "`en`"
 3. Use this edited version of the file to upload in Transifex
+
    1. Go to "Resources" page: <https://www.transifex.com/redcrossnl/121-platform/content/>
    2. Select one of the "`Instance: *`", "`FSP: *`" or "`Program: *`" resources.
    3. Click the "**[ Update source file ]**"-button and use the edited, English only version.
-   
+
 ### Add initial whatsApp message to Twilio approved messages
-1. Go to https://www.twilio.com/console/sms/whatsapp/templates
+
+1. Go to <https://www.twilio.com/console/sms/whatsapp/templates>
 2. Find 'voucher_double_new_line_dynamic' and click 'Add translations'.
 3. Select the new language.
-4. Copy-paste the notifications[languageCOde].whatsappPayment property from the appropriate program-<program>.json in services/121-service/seed-data/
-5. Change any coded newlines (\n) to actual new lines using Enter.
-6. Remove any escape characters, e.g. '..reply \“yes\” to..' becomes '..reply “yes” to..'
+4. Copy-paste the `notifications[languageCOde].whatsappPayment` property from the appropriate `program-<program>.json` in `services/121-service/seed-data/`
+5. Change any coded newlines (`\n`) to actual new lines using Enter.
+6. Remove any escape characters, e.g. '`..reply \“yes\” to..`' becomes '`..reply “yes” to..`'
 7. Fix any other code-problems there might be.
 8. Save. It might take a few hours for the message to be approved.
-9. Test this by registering a PA on the test-vm in the new language. Then include and send a payment from the HO-portal. You should receive the whatsApp-message in the right language. 
+9. Test this by registering a PA on the test-vm in the new language. Then include and send a payment from the HO-portal. You should receive the whatsApp-message in the right language.
 
 ---
