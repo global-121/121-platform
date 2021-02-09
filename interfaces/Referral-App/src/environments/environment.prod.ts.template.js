@@ -21,8 +21,9 @@ export const environment = {
   ai_ikey: '${process.env.NG_AI_IKEY}',
   ai_endpoint: '${process.env.NG_AI_ENDPOINT}',
 
-  matomo_id: '${process.env.NG_MATOMO_ID || ''}',
-  matomo_endpoint_api: '${process.env.NG_MATOMO_ENDPOINT_API || ''}',
-  matomo_endpoint_js: '${process.env.NG_MATOMO_ENDPOINT_JS || ''}',
+  // Matomo
+  matomo_id: '${process.env.NG_MATOMO_ID}',
+  matomo_endpoint_api: '${process.env.NG_MATOMO_ENDPOINT_API}',
+  matomo_endpoint_js: '${process.env.NG_MATOMO_ENDPOINT_JS}',
 };
 `;
