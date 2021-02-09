@@ -53,6 +53,9 @@ jobs:
           REGIONS: ${{ secrets.REF_REGIONS }}
           GOOGLE_SHEETS_API_URL: ${{ secrets.REF_GOOGLE_SHEETS_API_URL }}
           GOOGLE_SHEETS_SHEET_IDS: ${{ secrets.REF_GOOGLE_SHEETS_SHEET_IDS }}
+          NG_MATOMO_ID: ${{ secrets.NG_MATOMO_ID }}
+          NG_MATOMO_ENDPOINT_API: ${{ secrets.NG_MATOMO_ENDPOINT_API }}
+          NG_MATOMO_ENDPOINT_JS: ${{ secrets.NG_MATOMO_ENDPOINT_JS }}
           NG_AI_IKEY: ${{ secrets.NG_AI_IKEY }}
           NG_AI_ENDPOINT: ${{ secrets.NG_AI_ENDPOINT }}
 
