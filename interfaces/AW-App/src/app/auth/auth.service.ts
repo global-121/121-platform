@@ -49,10 +49,6 @@ export class AuthService {
       if (!user.roles && user.role && user.role === 'aidworker') {
         user.roles = [UserRole.FieldValidation];
       }
-      // 'Clean' roles-object into flat list of roles
-      if (user.roles && user.roles[0] && user.roles[0].role) {
-        user.roles = user.roles.map((role) => role.role);
-      }
     } catch {
       console.warn('AuthService: Invalid token');
       return null;
