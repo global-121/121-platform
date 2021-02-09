@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.15.2](https://github.com/global-121/121-platform/compare/v0.15.1...v0.15.2) - 2021-01-06
 
 ### Changed
-- 2021-01-06: Use pre-built image for `tykn_indy_pool`/`indypool`-service from Docker Hub: <https://hub.docker.com/r/rodekruis510/121-indypool> 
+- 2021-01-06: Use pre-built image for `tykn_indy_pool`/`indypool`-service from Docker Hub: <https://hub.docker.com/r/rodekruis510/121-indypool>
 
 ## [0.15.1](https://github.com/global-121/121-platform/compare/v0.15.0...v0.15.1) - 2021-01-06
 
