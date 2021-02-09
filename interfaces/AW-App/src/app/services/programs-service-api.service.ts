@@ -2,21 +2,16 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { Program } from '../models/program.model';
+import { UserModel } from '../models/user.model';
 import { ApiService } from './api.service';
-import { JwtService } from './jwt.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(private apiService: ApiService, private jwtService: JwtService) {}
+  constructor(private apiService: ApiService) {}
 
-  login(
-    email: string,
-    password: string,
-  ): Promise<{ user: { email: string; role: string; token: string } }> {
-    console.log('ProgramsService : login()');
-
+  public login(email: string, password: string): Promise<UserModel> {
     return this.apiService
       .post(
         environment.url_121_service_api,
@@ -27,12 +22,14 @@ export class ProgramsServiceApiService {
         },
         true,
       )
+      .pipe(
+        map((response) => {
+          return {
+            token: response.user.token,
+          };
+        }),
+      )
       .toPromise();
-  }
-
-  logout() {
-    console.log('ProgramsService : logout()');
-    this.jwtService.destroyToken();
   }
 
   changePassword(password: string): Promise<any> {

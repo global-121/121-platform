@@ -29,12 +29,6 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    // UserRole will only be a valid value, when login is valid
-    const currentUserRole = this.authService.getUserRole();
-    if (route.data.roles && route.data.roles.includes(currentUserRole)) {
-      return true;
-    }
-
     // Store the attempted URL for redirecting
     this.authService.redirectUrl = url;
     this.router.navigate(['/tabs/account']);

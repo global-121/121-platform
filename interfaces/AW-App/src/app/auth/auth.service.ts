@@ -10,83 +10,79 @@ import { UserRole } from './user-role.enum';
   providedIn: 'root',
 })
 export class AuthService {
-  private loggedIn = false;
-  private userRole: string;
-
-  // store the URL so we can redirect after logging in
-  redirectUrl: string;
+  public redirectUrl: string;
 
   private authenticationState = new BehaviorSubject<User | null>(null);
   public authenticationState$ = this.authenticationState.asObservable();
 
   constructor(
-    public programsService: ProgramsServiceApiService,
+    private programsService: ProgramsServiceApiService,
     private jwtService: JwtService,
     private router: Router,
   ) {
-    this.checkLoggedInState();
+    this.checkAuthenticationState();
   }
 
-  checkLoggedInState() {
+  checkAuthenticationState() {
     const user = this.getUserFromToken();
 
     this.authenticationState.next(user);
   }
 
   public isLoggedIn(): boolean {
-    this.loggedIn = this.getUserFromToken() !== null;
-
-    return this.loggedIn;
+    return this.getUserFromToken() !== null;
   }
 
-  public getUserRole(): string {
-    if (!this.userRole) {
-      const user = this.getUserFromToken();
-
-      this.userRole = user ? user.role : '';
-    }
-
-    return this.userRole;
-  }
-
-  private getUserFromToken() {
+  private getUserFromToken(): User | null {
     const rawToken = this.jwtService.getToken();
 
     if (!rawToken) {
       return null;
     }
 
-    const decodedToken = this.jwtService.decodeToken(rawToken);
-    const user: User = {
-      token: rawToken,
-      email: decodedToken.email,
-      role: decodedToken.role,
+    let user: User | any;
+
+    try {
+      user = this.jwtService.decodeToken(rawToken);
+
+      // Upgrade existing user to new roles
+      if (!user.roles && user.role && user.role === 'aidworker') {
+        user.roles = [UserRole.FieldValidation];
+      }
+    } catch {
+      console.warn('AuthService: Invalid token');
+      return null;
+    }
+
+    if (!user || !this.isAllowedUser(user)) {
+      console.warn('AuthService: No valid user');
+      return null;
+    }
+
+    return {
+      email: user.email,
+      roles: user.roles,
     };
+  }
 
-    this.userRole = user.role;
-
-    return user;
+  private isAllowedUser(user: User): boolean {
+    return user.roles && user.roles.includes(UserRole.FieldValidation);
   }
 
   public async login(email: string, password: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.programsService.login(email, password).then(
         (response) => {
-          const user = response.user;
+          if (response && response.token) {
+            this.jwtService.saveToken(response.token);
+          }
 
+          const user = this.getUserFromToken();
           this.authenticationState.next(user);
 
-          if (!user || !user.token) {
-            return;
+          if (!user) {
+            return reject({ status: 401 });
           }
-
-          if (user.role !== UserRole.Aidworker) {
-            return;
-          }
-
-          this.jwtService.saveToken(user.token);
-          this.loggedIn = true;
-          this.userRole = user.role;
 
           if (this.redirectUrl) {
             this.router.navigate([this.redirectUrl]);
@@ -97,7 +93,7 @@ export class AuthService {
           return resolve();
         },
         (error) => {
-          console.log('AuthService error: ', error);
+          console.error('AuthService: login error: ', error);
           return reject(error);
         },
       );
@@ -106,8 +102,6 @@ export class AuthService {
 
   public logout() {
     this.jwtService.destroyToken();
-    this.loggedIn = false;
     this.authenticationState.next(null);
-    this.router.navigate(['/tabs/account']);
   }
 }

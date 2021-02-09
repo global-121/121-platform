@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Events, ToastController } from '@ionic/angular';
+import { ToastController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../auth/auth.service';
-import { ConversationService } from '../services/conversation.service';
 import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 
 @Component({
@@ -13,33 +12,22 @@ import { ProgramsServiceApiService } from '../services/programs-service-api.serv
 })
 export class AccountPage {
   public isLoggedIn: boolean;
-  public loggedIn: string;
-  public loggedOut: string;
-  public wrongCredentials: string;
-  public noConnection: string;
   public changePasswordForm = false;
-  public changedPassword: string;
-  public unequalPasswords: string;
+
+  private readonly urlValidationPage = '/tabs/validation';
 
   constructor(
     private authService: AuthService,
     public translate: TranslateService,
     public programsService: ProgramsServiceApiService,
-    public conversationService: ConversationService,
     private router: Router,
-    public events: Events,
     public toastController: ToastController,
   ) {}
 
   ngOnInit() {
-    this.changedPassword = this.translate.instant('account.changed-password');
-    this.unequalPasswords = this.translate.instant('account.unequal-passwords');
-    this.wrongCredentials = this.translate.instant('account.wrong-credentials');
-    this.noConnection = this.translate.instant('account.no-connection');
-    this.loggedIn = this.translate.instant('account.logged-in');
-    this.loggedOut = this.translate.instant('account.logged-out');
-
-    this.isLoggedIn = this.authService.isLoggedIn();
+    this.authService.authenticationState$.subscribe((state) => {
+      this.isLoggedIn = !!state;
+    });
   }
 
   public async doLogin(event) {
@@ -53,28 +41,26 @@ export class AccountPage {
         event.target.elements.password.value,
       )
       .then(
-        (response) => {
-          console.log('LoginPage login:', response);
-          this.isLoggedIn = true;
-          this.createToast(this.loggedIn);
-          this.router.navigate(['/tabs/validation']);
+        () => {
+          this.createToast(this.translate.instant('account.logged-in'));
+          this.router.navigate([this.urlValidationPage]);
         },
         (error) => {
-          console.log('LoginPage error: ', error.status);
-          if (error.status === 401) {
-            this.createToast(this.wrongCredentials);
-          } else {
-            this.createToast(this.noConnection);
+          if (error.status && error.status === 401) {
+            this.createToast(
+              this.translate.instant('account.wrong-credentials'),
+            );
+            return;
           }
+          this.createToast(this.translate.instant('account.no-connection'));
         },
       );
   }
 
   public async logout() {
-    this.programsService.logout();
-    this.isLoggedIn = false;
+    this.authService.logout();
     this.changePasswordForm = false;
-    this.createToast(this.loggedOut);
+    this.createToast(this.translate.instant('account.logged-out'));
   }
 
   public async openChangePassword() {
@@ -100,7 +86,7 @@ export class AccountPage {
             side: 'start',
             icon: 'share-alt',
             handler: () => {
-              this.router.navigate(['tabs/validation']);
+              this.router.navigate([this.urlValidationPage]);
             },
           },
         ],
@@ -117,10 +103,10 @@ export class AccountPage {
       this.programsService.changePassword(create).then((response) => {
         console.log('Password changed succesfully', response);
         this.changePasswordForm = false;
-        this.createToast(this.changedPassword);
+        this.createToast(this.translate.instant('account.changed-password'));
       });
     } else {
-      this.createToast(this.unequalPasswords);
+      this.createToast(this.translate.instant('account.unequal-passwords'));
     }
   }
 }
