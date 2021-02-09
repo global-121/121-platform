@@ -28,7 +28,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ## Find DID of PA in database based on name and/or phone number
 
-1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) as a "`program-manager`"-role user
+1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`personal-data`"-role
 2. Find the `connection` of the PA that we want to update.  
    Use the endpoint: [`/sovrin/create-connection/get-did/name-phone`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_get_did_name_phone)  
    Where you can optionally fill in `name` and/or old `phoneNumber` to search for.
@@ -46,7 +46,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ## Get monitoring data
 
-1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) as a "`admin`"-role user
+1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`admin`"-role
 2. Use the endpoint: [`/programs/monitoring/{programId}`](https://test-vm.121.global/121-service/docs/#/programs/get_programs_monitoring__programId_)  
    Fill in the `programId` = 1.
 
