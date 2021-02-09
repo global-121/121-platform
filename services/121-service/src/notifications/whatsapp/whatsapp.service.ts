@@ -114,11 +114,16 @@ export class WhatsappService {
   public async handleIncoming(callbackData): Promise<void> {
     const fromNumber = callbackData.From.replace('whatsapp:+', '');
 
+    const connection = (await this.connectionRepository.find()).filter(
+      c =>
+        c.customData['whatsappPhoneNumber'] === fromNumber &&
+        c.programsIncluded.length > 0 &&
+        c.programsRejected.length === 0,
+    )[0];
+
     let language = 'en';
     try {
-      language = (await this.connectionRepository.find()).filter(
-        c => c.customData['whatsappPhoneNumber'] === fromNumber,
-      )[0].preferredLanguage;
+      language = connection.preferredLanguage;
     } catch (Error) {
       console.log(
         'Incomming whatsapp from non registered user phone last numbers: ',
@@ -127,9 +132,14 @@ export class WhatsappService {
     }
 
     const program = await getRepository(ProgramEntity).findOne(this.programId);
-    const intersolveBarcode = await this.intersolveBarcodeRepository.findOne({
+    const intersolveBarcodes = await this.intersolveBarcodeRepository.find({
       where: { whatsappPhoneNumber: fromNumber, send: false },
-    }); // NOTE: currently this takes the first non-sent installment (if multiple). Feels a bit dodgy, but works in practice
+      relations: ['image', 'image.connection'],
+    });
+    const intersolveBarcode = intersolveBarcodes.filter(
+      barcode => barcode.image[0].connection.did === connection.did,
+    )[0]; // NOTE: currently this takes the first non-sent installment (if multiple). Feels a bit dodgy, but works in practice
+
     if (intersolveBarcode) {
       const mediaUrl = await this.imageCodeService.createVoucherUrl(
         intersolveBarcode,
@@ -172,7 +182,9 @@ export class WhatsappService {
     ).filter(
       c =>
         c.customData['whatsappPhoneNumber'] ===
-        intersolveBarcode.whatsappPhoneNumber,
+          intersolveBarcode.whatsappPhoneNumber &&
+        c.programsIncluded.length > 0 &&
+        c.programsRejected.length === 0,
     )[0];
     transaction.connection = connection;
     const programId = connection.programsApplied[0];
