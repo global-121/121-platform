@@ -89,6 +89,17 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       roles: [UserRole.RunProgram],
       phases: [ProgramPhase.inclusion],
       showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.include-checkbox',
+        ),
+        checkboxChecked: false,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.include-explanation',
+        ),
+        minLength: 20,
+      },
     },
     {
       id: BulkActionId.includePersonalDataRole,
@@ -99,6 +110,17 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       roles: [UserRole.PersonalData],
       phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
       showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.include-checkbox',
+        ),
+        checkboxChecked: false,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.include-explanation',
+        ),
+        minLength: 20,
+      },
     },
     {
       id: BulkActionId.reject,
@@ -113,22 +135,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.reject-checkbox',
         ),
+        checkboxChecked: true,
         inputRequired: true,
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.reject-explanation',
         ),
         minLength: 20,
       },
-    },
-    {
-      id: BulkActionId.notifyIncluded,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.notify-included',
-      ),
-      roles: [UserRole.RunProgram],
-      phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-      showIfNoValidation: true,
     },
   ];
   public applyBtnDisabled = true;

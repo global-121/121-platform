@@ -40,19 +40,13 @@
   },
   "notifications": {
     "saq_KE": {
-      "registered": "Keigwa ele kilikwai Msalaba Enyekie Ee Kenya: Eta taa ingero ta reto.",
-      "included": "Keigwa ele kilikwai Msalaba Enyekie Ee Kenya: Ikitipikaki ana reto.",
-      "rejected": "Keigwa ele kilikwai Msalaba Enyekie Ee Kenya: Tapaliki iyoo amu mitum ana reto. Tanaa keyatae niyeu niparu tooshoki iyoo."
+      "registered": "Keigwa ele kilikwai Msalaba Enyekie Ee Kenya: Eta taa ingero ta reto."
     },
     "tuv_KE": {
-      "registered": "Ebunit ekoi lo ania Emusalaba alo Areng'an a Kenya: Kigirakin iyo niajokon tomaa.",
-      "included": "Ebunit ekoi lo ania Emusalaba alo Areng'an a Kenya: Kiwakin iyong tomaa na king'arakino na.",
-      "rejected": "Ebunit ekoi lo ania Emusalaba alo Areng'an a Kenya: Terimakinae thua kutere kithaki alimokin iyong atamar nipedori anyuun aking'arakinio naga. Keyei ibere aking'it thoua taram a diit."
+      "registered": "Ebunit ekoi lo ania Emusalaba alo Areng'an a Kenya: Kigirakin iyo niajokon tomaa."
     },
     "en": {
-      "registered": "This is a message from Kenya Red Cross Society: You have been successfully registered for this program.",
-      "included": "This is a message from Kenya Red Cross Society: You have been included in this program.",
-      "rejected": "This is a message from Kenya Red Cross Society: Unfortunately we have to inform you that you will not receive any (more) payments for this program. If you have questions, please contact us."
+      "registered": "This is a message from Kenya Red Cross Society: You have been successfully registered for this program."
     }
   },
   "phoneNumberPlaceholder": "+254 000 000 000",
@@ -68,7 +62,11 @@
       "criteriumType": "standard",
       "options": null,
       "persistence": true,
-      "export": ["all-people-affected","included","selected-for-validation"],
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
       "scoring": {}
     },
     {

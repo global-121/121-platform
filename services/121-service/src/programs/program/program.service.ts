@@ -406,15 +406,14 @@ export class ProgramService {
   private async notifyInclusionStatus(
     connection: ConnectionEntity,
     programId: number,
-    inclusionResult: boolean,
     message?: string,
   ): Promise<void> {
     this.smsService.notifyBySms(
       connection.phoneNumber,
       connection.preferredLanguage,
-      inclusionResult ? PaStatus.included : PaStatus.rejected,
       programId,
       message,
+      null,
     );
   }
 
@@ -471,7 +470,11 @@ export class ProgramService {
     }
   }
 
-  public async include(programId: number, dids: object): Promise<void> {
+  public async include(
+    programId: number,
+    dids: object,
+    message?: string,
+  ): Promise<void> {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
@@ -492,6 +495,10 @@ export class ProgramService {
       );
       if (indexIn <= -1) {
         connection.programsIncluded.push(programId);
+        if (message) {
+          this.notifyInclusionStatus(connection, programId, message);
+          connection.inclusionNotificationDate = new Date();
+        }
       }
       // Remove from rejection-array, if present
       const indexEx = connection.programsRejected.indexOf(
@@ -531,7 +538,7 @@ export class ProgramService {
       if (indexEx <= -1) {
         connection.programsRejected.push(programId);
         if (message) {
-          this.notifyInclusionStatus(connection, programId, false, message);
+          this.notifyInclusionStatus(connection, programId, message);
         }
       }
       // Remove from inclusion-array, if present
@@ -543,55 +550,6 @@ export class ProgramService {
       }
       connection.rejectionDate = new Date();
       await this.connectionRepository.save(connection);
-    }
-  }
-
-  public async notifySelectedIncluded(
-    programId: number,
-    dids: object,
-  ): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.connectionRepository.findOne({
-        where: { did: did.did },
-      });
-      if (!connection) {
-        continue;
-      }
-
-      connection.inclusionNotificationDate = new Date();
-      await this.connectionRepository.save(connection);
-
-      this.notifyInclusionStatus(connection, programId, true);
-    }
-  }
-
-  public async notify(
-    programId: number,
-    notificationType: NotificationType,
-  ): Promise<void> {
-    let program = await this.programRepository.findOne(+programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    if (notificationType === NotificationType.include) {
-      const includedDids = (
-        await this.getConnectionsWithStatus(programId, PaStatus.included)
-      ).map(i => i.did);
-
-      for (let did of includedDids) {
-        let connection = await this.connectionRepository.findOne({
-          where: { did: did },
-        });
-        this.notifyInclusionStatus(connection, programId, true);
-      }
     }
   }
 

@@ -5,7 +5,6 @@ import { UserRole } from '../auth/user-role.enum';
 import { ActionType } from '../models/action-type.model';
 import { ExportType } from '../models/export-type.model';
 import { InstallmentData } from '../models/installment.model';
-import { NotificationType } from '../models/notification-type.model';
 import { Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
@@ -232,10 +231,15 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  include(programId: number | string, dids: string[]): Promise<any> {
+  include(
+    programId: number | string,
+    dids: string[],
+    message: string,
+  ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/include/${programId}`, {
         dids: JSON.stringify(dids),
+        message,
       })
       .toPromise();
   }
@@ -249,33 +253,6 @@ export class ProgramsServiceApiService {
       .post(environment.url_121_service_api, `/programs/reject/${programId}`, {
         dids: JSON.stringify(dids),
         message,
-      })
-      .toPromise();
-  }
-
-  notifySelectedIncluded(
-    programId: number | string,
-    dids: string[],
-  ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/programs/notify-selected-included/${programId}`,
-        {
-          dids: JSON.stringify(dids),
-        },
-      )
-      .toPromise();
-  }
-
-  notify(
-    programId: number | string,
-    notificationType: NotificationType,
-  ): Promise<any> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/programs/notify`, {
-        programId,
-        notificationType,
       })
       .toPromise();
   }

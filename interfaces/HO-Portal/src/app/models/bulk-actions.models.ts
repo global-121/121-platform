@@ -8,7 +8,6 @@ export enum BulkActionId {
   includeRunProgramRole = 'include-run-program-role',
   includePersonalDataRole = 'include-personal-data-role',
   reject = 'reject',
-  notifyIncluded = 'notify-included',
 }
 
 export class BulkAction {

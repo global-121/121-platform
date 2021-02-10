@@ -1,6 +1,6 @@
 import { ProgramEntity } from './../../programs/program/program.entity';
 import { EXTERNAL_API } from './../../config';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
@@ -16,11 +16,17 @@ export class SmsService {
   public async notifyBySms(
     recipientPhoneNr: string,
     language: string,
-    key: string,
     programId: number,
     message?: string,
+    key?: string,
   ): Promise<void> {
     if (recipientPhoneNr) {
+      if (!message && !key) {
+        throw new HttpException(
+          'A message or a key should be supplied.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       const smsText =
         message || (await this.getSmsText(language, key, programId));
       this.sendSms(smsText, recipientPhoneNr);

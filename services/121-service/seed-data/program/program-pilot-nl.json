@@ -44,23 +44,18 @@
   "notifications": {
     "ar": {
       "registered": "هذه رسالة من الصليب الأحمر\n\nلقد استلمنا طلبك للمساعدة.\n\nسوف تستلم رسالة نصية بمعلومات أخرى خلال اسبوع.",
-      "included": "هذه رسالة من الصليب الأحمر.\n\nلقد تمت الموافقة على طلبك للإنضمام لبرنامج الصليب الأحمر.\n\nسوف تستلم رسالة أخرى عن قسيمة سوبر ماركت البرت هاين خلال اسبوع.",
       "whatsappPayment": "هذه رسالة من الصليب الأحمر. \n\nإن قسيمة الـ 35 يورو للسوبر ماركت ألبرت هاين جاهزة.\n\nالرجاء الرد ب \"yes\" على هذه الرسالة لكي نرسل القسيمة إليك.",
       "whatsappVoucher": "هذه رسالة من الصليب الأحمر.\n\nهذه الرسالة تحتوي على صورتين.\nالأولى لقسيمة الشراء من البرت هاين (cadeaukaart) مع رمز مرئي.\nو الأخرى فيها شرح لكيفية استخدام القسيمة للشراء من البرت هاين.\n\nإن قيمة هذه القسيمة هي 35 يورو.\nيمكنك استخدام هذه القسيمة في اي سوبر ماركت البرت هاين في هولندا.\n\nلست مضطراً لصرف كامل المبلغ مرة واحدة. لذلك الرجاء المحافظة على صورة القسيمة لإعادة استخدامها حتى انتهاء الرصيد.\n\nسوف تستلم قسيمة جديدة بقيمة 35 يورو كل اسبوع يوم الثلاثاء حتى تاريخ 31 مايو\\أيار 2021.\n\nهل لديك اسئلة؟ قم بمراسلتنا على واتس آب https://wa.me/31614458781",
       "whatsappReply": "هذا رسالة آلية، إذا كانت لديك اسئلة يمكنك مراسلة الصليب الأحمر على واتس آب: +31614458781"
     },
     "ti": {
       "registered": "ትሕስ እስ ዓ ተስት።",
-      "included": "ትሕስ እስ ዓ ተስት።",
-      "rejected": "ትሕስ እስ ዓ ተስት።",
       "whatsappPayment": "ትሕስ እስ ዓ ተስት።",
       "whatsappVoucher": "ትሕስ እስ ዓ ተስት።",
       "whatsappReply": "ትሕስ እስ ዓ ተስት።"
     },
     "en": {
       "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week.",
-      "included": "This is a message from the Red Cross.\n\nYour application to the Red Cross program has been successful and confirmed.\n\nYou will receive another message about your first Albert Heijn supermarket voucher within 1 week.",
-      "rejected": "",
       "whatsappPayment": "This is a message from the Red Cross.\n\nYour €35 Albert Heijn supermarket voucher is ready to be sent.\n\nPlease reply “yes” to this message in order to receive the voucher.",
       "whatsappVoucher": "This is a message from the Red Cross.\n\nWith this message you received 2 pictures.\nOne is the Albert Heijn supermarket voucher (cadeaukaart) with the barcode.\nThe other is an explanation of how you can use the voucher to pay in Albert Heijn.\n\n The value of this voucher is €35.\nYou can spend the voucher at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep this voucher in your phone and re-use it until the amount is finished.\n\nYou will receive a €35 Albert Heijn voucher every week on Tuesday until 31 May 2021 the latest.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781"
