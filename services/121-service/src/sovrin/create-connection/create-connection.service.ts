@@ -94,8 +94,9 @@ export class CreateConnectionService {
       this.smsService.notifyBySms(
         connection.phoneNumber,
         connection.preferredLanguage,
-        PaStatus.registered,
         programId,
+        null,
+        PaStatus.registered,
       );
     }
   }

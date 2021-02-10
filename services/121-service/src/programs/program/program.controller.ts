@@ -224,24 +224,6 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.RunProgram)
-  @ApiOperation({ title: 'Notify of inclusion set of PAs' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
-  @Post('notify-selected-included/:programId')
-  public async notifySelectedIncluded(
-    @Param() params,
-    @Body() data: DidsDto,
-  ): Promise<void> {
-    await this.programService.notifySelectedIncluded(params.programId, data);
-  }
-
-  @Roles(UserRole.RunProgram)
-  @ApiOperation({ title: 'Send notification to set of PAs' })
-  @Post('notify')
-  public async notify(@Body() data: NotificationDto): Promise<void> {
-    await this.programService.notify(data.programId, data.notificationType);
-  }
-
   @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({
     title: 'Send payout instruction to financial service provider',

@@ -16,13 +16,13 @@ export class SmsService {
   public async notifyBySms(
     recipientPhoneNr: string,
     language: string,
-    key: string,
     programId: number,
     message?: string,
+    key?: string,
   ): Promise<void> {
     if (recipientPhoneNr) {
       const smsText =
-        message || (await this.getSmsText(language, key, programId));
+        message || (key ? await this.getSmsText(language, key, programId) : '');
       this.sendSms(smsText, recipientPhoneNr);
     }
   }

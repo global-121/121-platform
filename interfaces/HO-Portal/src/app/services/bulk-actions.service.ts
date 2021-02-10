@@ -36,11 +36,6 @@ export class BulkActionsService {
           personData.status,
         );
         break;
-      case BulkActionId.notifyIncluded:
-        personData.checkboxVisible =
-          [PaStatus.included].includes(personData.status) &&
-          !personData.notifiedOfInclusion;
-        break;
     }
     return personData;
   }
@@ -74,11 +69,6 @@ export class BulkActionsService {
           programId,
           selectedPeople,
           message,
-        );
-      case BulkActionId.notifyIncluded:
-        return await this.programsService.notifySelectedIncluded(
-          programId,
-          selectedPeople,
         );
     }
   }

@@ -143,16 +143,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         minLength: 20,
       },
     },
-    {
-      id: BulkActionId.notifyIncluded,
-      enabled: false,
-      label: this.translate.instant(
-        'page.program.program-people-affected.actions.notify-included',
-      ),
-      roles: [UserRole.RunProgram],
-      phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-      showIfNoValidation: true,
-    },
   ];
   public applyBtnDisabled = true;
   public submitWarning: any;
