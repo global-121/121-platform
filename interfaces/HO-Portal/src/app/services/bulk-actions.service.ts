@@ -16,14 +16,14 @@ export class BulkActionsService {
           personData.status,
         );
         break;
-      case BulkActionId.includeProjectOfficer:
+      case BulkActionId.includeRunProgramRole:
         personData.checkboxVisible = [
           PaStatus.registered,
           PaStatus.selectedForValidation,
           PaStatus.validated,
         ].includes(personData.status);
         break;
-      case BulkActionId.includeProgramManager:
+      case BulkActionId.includePersonalDataRole:
         personData.checkboxVisible = [
           PaStatus.registered,
           PaStatus.selectedForValidation,
@@ -57,9 +57,9 @@ export class BulkActionsService {
           programId,
           selectedPeople,
         );
-      case BulkActionId.includeProjectOfficer:
+      case BulkActionId.includeRunProgramRole:
         return await this.programsService.include(programId, selectedPeople);
-      case BulkActionId.includeProgramManager:
+      case BulkActionId.includePersonalDataRole:
         return await this.programsService.include(programId, selectedPeople);
       case BulkActionId.reject:
         return await this.programsService.reject(

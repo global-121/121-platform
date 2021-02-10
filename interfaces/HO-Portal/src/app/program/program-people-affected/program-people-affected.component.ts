@@ -81,7 +81,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: false,
     },
     {
-      id: BulkActionId.includeProjectOfficer,
+      id: BulkActionId.includeRunProgramRole,
       enabled: false,
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',
@@ -91,7 +91,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: true,
     },
     {
-      id: BulkActionId.includeProgramManager,
+      id: BulkActionId.includePersonalDataRole,
       enabled: false,
       label: this.translate.instant(
         'page.program.program-people-affected.actions.include',

@@ -115,7 +115,7 @@ export class UserService {
       relations: ['roles'],
     });
 
-    // If not project-officer (= admin, as other roles have no access to this endpoint), can delete any user
+    // If not run-program-role (= admin, as other roles have no access to this endpoint), can delete any user
     if (
       !deleter.roles.includes(
         await this.userRoleRepository.findOne({
@@ -126,7 +126,7 @@ export class UserService {
       return await this.userRepository.delete(userId);
     }
 
-    // project-officer can only delete aidworkers
+    // run-program-role can only delete aidworkers
     if (
       user.roles.includes(
         await this.userRoleRepository.findOne({
@@ -136,7 +136,7 @@ export class UserService {
     ) {
       return await this.userRepository.delete(userId);
     } else {
-      const errors = { Delete: 'project-officer can only delete aidworkers' };
+      const errors = { Delete: 'run-program role can only delete aidworkers' };
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
   }
