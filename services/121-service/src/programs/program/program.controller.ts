@@ -328,7 +328,7 @@ export class ProgramController {
   @ApiResponse({
     status: 200,
     description:
-      'Get metrics of a program used by the project-officer to gain an overview of the program ',
+      'Get metrics of a program used by the run-program role to gain an overview of the program ',
   })
   @Get('metrics/:id')
   public async getMetrics(@Param() params): Promise<ProgramMetrics> {
