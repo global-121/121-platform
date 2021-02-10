@@ -9,10 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.17.4...master)
 
-### Breaking Changes
+### Changed
 - 2021-02-09: Users in the `121-service` changed from single-role to multi-role.
 
   To retain the existing users' roles a manual migration-step is required.
+
+- 2021-02-09: Default user-accounts changed  
+  The values defined in `services/.env` need to be updated according to: [`services/.env.example`](services/.env.example).
 
 ---
 
