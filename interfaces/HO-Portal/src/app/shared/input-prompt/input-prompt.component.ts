@@ -11,6 +11,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 export interface InputProps {
   checkbox: string;
+  checkboxChecked?: boolean;
   inputRequired: boolean;
   explanation?: string;
   placeholder?: string;
@@ -37,7 +38,7 @@ export class InputPromptComponent implements AfterViewInit {
   @ViewChild('input')
   public input: any;
 
-  public checked = true;
+  public checked: boolean;
 
   constructor(
     public translate: TranslateService,
@@ -46,6 +47,7 @@ export class InputPromptComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
+    this.checked = this.inputProps.checkboxChecked;
     // Required to settle the value of a dynamic property in the template:
     this.changeDetector.detectChanges();
   }

@@ -93,6 +93,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.include-checkbox',
         ),
+        checkboxChecked: false,
         inputRequired: true,
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.include-explanation',
@@ -113,6 +114,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.include-checkbox',
         ),
+        checkboxChecked: false,
         inputRequired: true,
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.include-explanation',
@@ -133,6 +135,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         checkbox: this.translate.instant(
           'page.program.program-people-affected.action-inputs.reject-checkbox',
         ),
+        checkboxChecked: true,
         inputRequired: true,
         explanation: this.translate.instant(
           'page.program.program-people-affected.action-inputs.reject-explanation',
