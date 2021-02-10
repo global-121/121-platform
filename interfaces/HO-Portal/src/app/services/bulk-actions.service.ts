@@ -58,9 +58,17 @@ export class BulkActionsService {
           selectedPeople,
         );
       case BulkActionId.includeRunProgramRole:
-        return await this.programsService.include(programId, selectedPeople);
+        return await this.programsService.include(
+          programId,
+          selectedPeople,
+          message,
+        );
       case BulkActionId.includePersonalDataRole:
-        return await this.programsService.include(programId, selectedPeople);
+        return await this.programsService.include(
+          programId,
+          selectedPeople,
+          message,
+        );
       case BulkActionId.reject:
         return await this.programsService.reject(
           programId,

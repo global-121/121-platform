@@ -471,7 +471,11 @@ export class ProgramService {
     }
   }
 
-  public async include(programId: number, dids: object): Promise<void> {
+  public async include(
+    programId: number,
+    dids: object,
+    message?: string,
+  ): Promise<void> {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
@@ -492,6 +496,9 @@ export class ProgramService {
       );
       if (indexIn <= -1) {
         connection.programsIncluded.push(programId);
+        if (message) {
+          this.notifyInclusionStatus(connection, programId, true, message);
+        }
       }
       // Remove from rejection-array, if present
       const indexEx = connection.programsRejected.indexOf(

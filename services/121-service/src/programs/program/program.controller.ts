@@ -196,8 +196,16 @@ export class ProgramController {
   @ApiOperation({ title: 'Include set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('include/:programId')
-  public async include(@Param() params, @Body() data: DidsDto): Promise<void> {
-    await this.programService.include(params.programId, data);
+  public async include(
+    @Param() params,
+    @Body() didData: DidsDto,
+    @Body() messageData: MessageDto,
+  ): Promise<void> {
+    await this.programService.include(
+      params.programId,
+      didData,
+      messageData.message,
+    );
   }
 
   @Roles(UserRole.PersonalData)

@@ -232,10 +232,15 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  include(programId: number | string, dids: string[]): Promise<any> {
+  include(
+    programId: number | string,
+    dids: string[],
+    message: string,
+  ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/include/${programId}`, {
         dids: JSON.stringify(dids),
+        message,
       })
       .toPromise();
   }
