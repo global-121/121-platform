@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.17.4...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.18.0...master)
+
+---
+
+## [0.18.0](https://github.com/global-121/121-platform/compare/v0.17.4...v0.18.0) - 2021-02-10
 
 ### Changed
 - 2021-02-09: Users in the `121-service` changed from single-role to multi-role.
