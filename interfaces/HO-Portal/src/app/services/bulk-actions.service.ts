@@ -32,9 +32,12 @@ export class BulkActionsService {
         ].includes(personData.status);
         break;
       case BulkActionId.reject:
-        personData.checkboxVisible = [PaStatus.included].includes(
-          personData.status,
-        );
+        personData.checkboxVisible = [
+          PaStatus.registered,
+          PaStatus.selectedForValidation,
+          PaStatus.validated,
+          PaStatus.included,
+        ].includes(personData.status);
         break;
     }
     return personData;
