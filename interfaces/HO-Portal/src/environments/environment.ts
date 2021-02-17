@@ -5,9 +5,10 @@
 export const environment = {
   production: false,
 
-  // Feature-switches:
-  useServiceWorker: false,
+  // Configuration/Feature-switches:
+  useServiceWorker: false, // Enable 'offline' support
   defaultLocale: 'en',
+  envName: '', // To highlight the environment used
 
   // APIs
   url_121_service_api: 'http://localhost:3000/api',

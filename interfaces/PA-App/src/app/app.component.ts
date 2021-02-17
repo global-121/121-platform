@@ -3,6 +3,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Platform } from '@ionic/angular';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { environment } from 'src/environments/environment';
 import { LoggingService } from './services/logging.service';
 
 @Component({
@@ -20,6 +21,10 @@ export class AppComponent {
     this.initializeApp();
 
     this.loggingService.logPageView();
+
+    if (environment.envName) {
+      document.title += ` [ ${environment.envName} ]`;
+    }
 
     // Update language + text-direction for the full interface
     this.translate.onLangChange.subscribe((event: LangChangeEvent) => {
