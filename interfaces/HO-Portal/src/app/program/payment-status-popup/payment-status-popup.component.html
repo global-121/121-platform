@@ -58,12 +58,15 @@
   </div>
   <div *ngIf="contentNotes" [innerHTML]="contentNotes">
   </div>
-  <div *ngIf="getBalanceButton">
+  <div *ngIf="voucherButtons">
     <ion-button (click)="getBalance()">
       {{ 'page.program.program-people-affected.payment-status-popup.get-balance'|translate }}
     </ion-button>
+    <ion-button (click)="printVoucher()">
+      {{ 'page.program.program-people-affected.payment-status-popup.print-voucher'|translate }}
+    </ion-button>
   </div>
-  <div *ngIf="imageUrl">
-    <img [src]="imageUrl" alt="" style="width: 100%; height: auto;">
+  <div *ngIf="sanitizedIimageUrl">
+    <iframe id="voucherIframe" [src]="sanitizedIimageUrl" style="width: 100%; height: 450px; border:0;"></iframe>
   </div>
 </ion-content>
