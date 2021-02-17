@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 import { LoggingService } from './services/logging.service';
 
 @Component({
@@ -15,6 +16,10 @@ export class AppComponent {
 
     if (this.loggingService.appInsightsEnabled) {
       this.loggingService.logPageView();
+    }
+
+    if (environment.envName) {
+      document.title += ` [ ${environment.envName} ]`;
     }
   }
 

@@ -12,6 +12,7 @@ export const environment = {
   useAnimation: false, // Use animations and delays in the interface
   alwaysShowTextPlayer: true, // Also show text-player for missing audio-files
 
+  envName: '', // To highlight the environment used
   locales: 'en,saq_KE,tuv_KE,ar,ti,tl', // Comma-separated string of enabled locales, i.e: 'en,es,nl_BE'
 
   // APIs:

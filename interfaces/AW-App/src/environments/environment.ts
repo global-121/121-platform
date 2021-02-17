@@ -10,6 +10,7 @@ export const environment = {
   showDebug: false, // Controls debugging features
   useAnimation: false, // Use animations and delays in the interface
   useServiceWorker: false,
+  envName: '', // To highlight the environment used
 
   // APIs:
   url_121_service_api: 'http://localhost:3000/api',

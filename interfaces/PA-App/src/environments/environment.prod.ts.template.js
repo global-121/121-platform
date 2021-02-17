@@ -11,6 +11,7 @@ export const environment = {
   localStorage: ${process.env.NG_LOCAL_STORAGE || 'false'},
   alwaysShowTextPlayer: ${process.env.NG_ALWAYS_SHOW_TEXT_PLAYER || 'false'},
 
+  envName: '${process.env.NG_ENV_NAME}',
   locales: '${process.env.NG_LOCALES || 'en'}',
 
   // APIs:
