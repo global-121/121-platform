@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
 
-  // Feature-switches:
-  useServiceWorker: false,
+  // Configuration/Feature-switches:
+  useServiceWorker: false, // Enable 'offline' support
 
   // APIs:
 

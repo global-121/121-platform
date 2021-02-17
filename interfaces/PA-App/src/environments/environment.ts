@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
 
-  // Feature-switches:
+  // Configuration/Feature-switches:
   isDebug: true, // Controls debugging features
   showDebug: false, // Controls debugging features
   localStorage: false, // Use local or remote wallet/account
