@@ -12,12 +12,10 @@ import {
   SCHEME,
 } from './config';
 import * as bodyParser from 'body-parser';
-
-const appInsights = require('applicationinsights');
+import appInsights = require('applicationinsights');
 
 async function bootstrap(): Promise<void> {
-  const appOptions = { cors: true };
-  const app = await NestFactory.create(ApplicationModule, appOptions);
+  const app = await NestFactory.create(ApplicationModule, { cors: true });
   app.setGlobalPrefix('api');
 
   const options = new DocumentBuilder()
@@ -36,7 +34,12 @@ async function bootstrap(): Promise<void> {
   });
   app.useGlobalPipes(new ValidationPipe());
   app.use(bodyParser.json({ limit: '5mb' }));
-  app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
+  app.use(
+    bodyParser.urlencoded({
+      limit: '5mb',
+      extended: true,
+    }),
+  );
   await app.listen(PORT);
 }
 bootstrap();

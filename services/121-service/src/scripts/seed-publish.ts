@@ -5,8 +5,7 @@ import { ProgramPhase } from '../models/program-phase.model';
 
 @Injectable()
 export class SeedPublish implements InterfaceScript {
-  host = 'http://localhost';
-  address = this.host + ':' + PORT + '/api/';
+  private address = 'http://localhost:' + PORT + '/api/';
 
   private readonly httpService = new HttpService();
 

@@ -1,7 +1,6 @@
 import { ProgramEntity } from './../../programs/program/program.entity';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import { TransactionEntity } from './../../programs/program/transactions.entity';
-import { ProgramModule } from './../../programs/program/program.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import {

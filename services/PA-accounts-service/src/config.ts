@@ -1,5 +1,3 @@
-import { eventNames } from 'cluster';
-
 export const AUTH_DEBUG = false;
 export const PORT = process.env.PORT_PA_ACCOUNTS_SERVICE;
 export const SCHEME = process.env.SCHEME === 'http' ? 'http' : 'https';

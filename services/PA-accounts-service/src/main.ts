@@ -11,12 +11,10 @@ import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-const appInsights = require('applicationinsights');
-
+import appInsights = require('applicationinsights');
 
 async function bootstrap(): Promise<void> {
-  const appOptions = { cors: true };
-  const app = await NestFactory.create(ApplicationModule, appOptions);
+  const app = await NestFactory.create(ApplicationModule, { cors: true });
   app.setGlobalPrefix('api');
 
   const options = new DocumentBuilder()
