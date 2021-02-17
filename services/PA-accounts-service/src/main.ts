@@ -1,4 +1,12 @@
-import { PORT, BASE_PATH, SCHEME } from './config';
+import {
+  APP_TITLE,
+  APP_VERSION,
+  APP_FAVICON,
+  SWAGGER_CUSTOM_CSS,
+  PORT,
+  SCHEME,
+  BASE_PATH,
+} from './config';
 import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -12,14 +20,18 @@ async function bootstrap(): Promise<void> {
   app.setGlobalPrefix('api');
 
   const options = new DocumentBuilder()
-    .setTitle('PA-Accounts-Service')
-    .setVersion(process.env.GLOBAL_121_VERSION)
+    .setTitle(APP_TITLE)
+    .setVersion(APP_VERSION)
     .setBasePath(BASE_PATH)
     .setSchemes(SCHEME)
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('/docs', app, document);
+  SwaggerModule.setup('/docs', app, document, {
+    customSiteTitle: APP_TITLE,
+    customfavIcon: APP_FAVICON,
+    customCss: SWAGGER_CUSTOM_CSS,
+  });
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.PORT || PORT);
 }
