@@ -1,8 +1,35 @@
 export const DEBUG =
-  ['production', 'staging', 'test'].indexOf(process.env.NODE_ENV) === -1;
+  ['production', 'test'].indexOf(process.env.NODE_ENV) === -1;
 export const PORT = process.env.PORT_121_SERVICE;
 export const BASE_PATH = process.env.SUBDOMAIN_121_SERVICE + '/api';
-export const SCHEME = DEBUG ? 'http' : 'https';
+export const SCHEME = process.env.SCHEME === 'http' ? 'http' : 'https';
+
+// Configure Swagger UI appearance:
+// ---------------------------------------------------------------------------
+export const APP_VERSION = process.env.GLOBAL_121_VERSION;
+
+let appTitle = process.env.npm_package_name;
+if (process.env.ENV_NAME) {
+  appTitle += ` [${process.env.ENV_NAME}]`;
+}
+export const APP_TITLE = appTitle;
+
+let headerStyle = '#171e50';
+let favIconUrl = '../../favicon.ico';
+
+if (process.env.ENV_ICON) {
+  favIconUrl = process.env.ENV_ICON;
+  headerStyle = `url("${process.env.ENV_ICON}")`;
+}
+
+export const APP_FAVICON = favIconUrl;
+export const SWAGGER_CUSTOM_CSS = `
+  .swagger-ui .topbar { background: ${headerStyle}; }
+  .swagger-ui .topbar .link { visibility: hidden; }
+`;
+
+// Configure Tykn-SSI-Services:
+// ---------------------------------------------------------------------------
 
 const tyknIMS = 'http://11.0.0.3:50001/api/';
 const orgIMS = 'http://11.0.0.4:50002/api/';

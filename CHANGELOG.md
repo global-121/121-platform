@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.18.0...master)
 
+### Added
+- 2020-02-17: Option to define a human-readable name for the current environment.
+  - Set a value with `ENV_NAME` in [`services/.env`](services/.env.example) 
+  - Optional: Set the url to a specific icon/`favicon` with: `ENV_ICON`
+
+### Changed
+- 2020-02-17: Setting the URL-scheme of all back-end services, via `SCHEME` variable in [`services/.env`](services/.env.example)
+
+
 ---
 
 ## [0.18.0](https://github.com/global-121/121-platform/compare/v0.17.4...v0.18.0) - 2021-02-10
