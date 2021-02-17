@@ -240,7 +240,7 @@
         },
         "unused-vouchers": {
           "btn-text": "Export list of unused vouchers",
-          "confirm-message": "This will download a CSV-file with all unused voucher(s)."
+          "confirm-message": "This will download a CSV-file with all unused voucher(s).<br /><br />Note that this action can take a while to complete. Do not leave this page in the meantime."
         }
       },
       "manage-aidworkers": {

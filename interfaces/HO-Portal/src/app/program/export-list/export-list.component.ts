@@ -75,7 +75,6 @@ export class ExportListComponent implements OnChanges {
   }
 
   public btnEnabled() {
-    const activePhase = this.programPhaseService.getActivePhase();
     return (
       this.authService.hasUserRole([UserRole.PersonalData]) &&
       (this.exportType !== ExportType.payment || this.paymentExportAvailable)
