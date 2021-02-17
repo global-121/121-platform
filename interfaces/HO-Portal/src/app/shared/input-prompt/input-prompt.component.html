@@ -17,8 +17,9 @@
   color="light"
   class="ion-padding"
 >
-  <h2 *ngIf="subHeader">
-    {{ subHeader }}
+  <h2 
+    *ngIf="subHeader" 
+    [innerHTML]="subHeader">
   </h2>
   <div
     *ngIf="message"
