@@ -614,7 +614,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async statusPopup(row: PersonRow, column, value) {
-    console.log('value in status popup: ', value);
     const hasError = this.hasError(row, column.installmentIndex);
     const content = hasError
       ? this.translate.instant(
@@ -644,7 +643,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           }
         : null;
     let voucherUrl = null;
-    let getBalanceButton = null;
+    let voucherButtons = null;
 
     if (this.hasVoucherSupport(row.fsp) && !hasError && !!value) {
       const voucherBlob = await this.programsService.exportVoucher(
@@ -652,7 +651,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         column.installmentIndex,
       );
       voucherUrl = window.URL.createObjectURL(voucherBlob);
-      getBalanceButton = true;
+      voucherButtons = true;
     }
 
     const titleError = hasError ? `${column.name}: ${value.text}` : null;
@@ -669,7 +668,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         contentNotes,
         retryButton,
         payoutDetails,
-        getBalanceButton,
+        voucherButtons,
         imageUrl: voucherUrl,
       },
     });

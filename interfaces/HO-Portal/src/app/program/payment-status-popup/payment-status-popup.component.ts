@@ -30,8 +30,9 @@ export class PaymentStatusPopupComponent implements OnInit {
   public contentNotes: any;
   public retryButton: boolean;
   public payoutDetails: PopupPayoutDetails;
-  public getBalanceButton: boolean;
+  public voucherButtons: boolean;
   public imageUrl: string;
+  public sanitizedIimageUrl: string;
 
   public isInProgress = false;
 
@@ -52,7 +53,7 @@ export class PaymentStatusPopupComponent implements OnInit {
     }
 
     if (this.imageUrl) {
-      this.imageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+      this.sanitizedIimageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
         this.imageUrl,
       ) as string;
     }
@@ -204,6 +205,13 @@ export class PaymentStatusPopupComponent implements OnInit {
           this.isInProgress = false;
         },
       );
+  }
+
+  public async printVoucher() {
+    const oHideFrame: any = document.getElementById('voucherIframe');
+    const contentWindow = oHideFrame.contentWindow;
+    contentWindow.focus(); // Required for IE
+    contentWindow.print();
   }
 
   private formatCurrency(balance) {

@@ -25,3 +25,9 @@
   min-width: 20em;
   max-width: 30%;
 }
+
+// Don't show headers/footers in printed voucher
+@page {
+  size: auto;
+  margin: 0;
+}
