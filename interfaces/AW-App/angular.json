@@ -85,7 +85,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "app:build:production"
+              "browserTarget": "app:build:production",
+              "namedChunks": true,
+              "commonChunk": true,
+              "vendorChunk": true
             },
             "ci": {
               "progress": false
