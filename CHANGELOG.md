@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.18.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.19.0...master)
+
+---
+
+## [0.19.0](https://github.com/global-121/121-platform/compare/v0.18.0...v0.19.0) - 2021-02-23
 
 ### Added
 - 2020-02-17: Option to define a human-readable name for the current environment.
@@ -17,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - 2020-02-17: Setting the URL-scheme of all back-end services, via `SCHEME` variable in [`services/.env`](services/.env.example)
-
 
 ---
 
