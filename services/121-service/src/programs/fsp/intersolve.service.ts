@@ -307,13 +307,21 @@ export class IntersolveService {
     await this.intersolveBarcodeRepository.remove(barcodeEntity);
   }
 
-  public async getVoucherBalance(did: string, installment: number): Promise<number> {
+  public async getVoucherBalance(
+    did: string,
+    installment: number,
+  ): Promise<number> {
     const voucher = await this.getVoucher(did, installment);
     return await this.getBalance(voucher.barcode);
   }
 
-  private async getBalance(intersolveBarcode: IntersolveBarcodeEntity): Promise<number> {
-    const getCard = await this.intersolveApiService.getCard(intersolveBarcode.barcode, intersolveBarcode.pin);
+  private async getBalance(
+    intersolveBarcode: IntersolveBarcodeEntity,
+  ): Promise<number> {
+    const getCard = await this.intersolveApiService.getCard(
+      intersolveBarcode.barcode,
+      intersolveBarcode.pin,
+    );
     const realBalance = getCard.balance / getCard.balanceFactor;
     return realBalance;
   }

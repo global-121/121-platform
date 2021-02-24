@@ -2,7 +2,6 @@ import { formatCurrency } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { saveAs } from 'file-saver';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
@@ -186,21 +185,6 @@ export class ProgramPayoutComponent implements OnInit {
             this.actionResult(err.error.errors);
           }
           this.cancelPayout(installment);
-        },
-      );
-  }
-
-  public async exportList(installment: Installment) {
-    this.programsService
-      .exportPaymentList(+this.programId, installment.id)
-      .then(
-        (res) => {
-          const blob = new Blob([res.data], { type: 'text/csv' });
-          saveAs(blob, res.fileName);
-        },
-        (err) => {
-          console.log('err: ', err);
-          this.actionResult(this.translate.instant('common.export-error'));
         },
       );
   }
