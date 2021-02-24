@@ -154,15 +154,6 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  exportPaymentList(programId: number, installment: number): Promise<any> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/programs/payment-details`, {
-        programId,
-        installment,
-      })
-      .toPromise();
-  }
-
   exportList(
     programId: number,
     type: ExportType,

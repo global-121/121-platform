@@ -40,7 +40,8 @@ async function bootstrap(): Promise<void> {
       extended: true,
     }),
   );
-  await app.listen(PORT);
+  const server = await app.listen(PORT);
+  server.setTimeout(10 * 60 * 1000);
 }
 bootstrap();
 
