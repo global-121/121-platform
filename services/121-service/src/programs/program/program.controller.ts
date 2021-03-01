@@ -34,7 +34,6 @@ import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
 import { ChangeStateDto } from './dto/change-state.dto';
 import { ExportDetails } from './dto/export-details';
-import { NotificationDto } from './dto/notification';
 import { CustomCriterium } from './custom-criterium.entity';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';

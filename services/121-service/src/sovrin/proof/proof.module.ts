@@ -1,11 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-  forwardRef,
-  HttpModule,
-} from '@nestjs/common';
+import { Module, forwardRef, HttpModule } from '@nestjs/common';
 import { ProofController } from './proof.controller';
 import { ProofService } from './proof.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -15,7 +8,6 @@ import { UserEntity } from '../../user/user.entity';
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { UserModule } from '../../user/user.module';
 import { ProgramModule } from '../../programs/program/program.module';
-import { SchemaModule } from '../schema/schema.module';
 
 @Module({
   imports: [

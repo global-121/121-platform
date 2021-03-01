@@ -1,6 +1,5 @@
-import { ProgramService } from './../../programs/program/program.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, DeleteResult } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   Injectable,
   HttpException,
@@ -10,7 +9,6 @@ import {
 import { ConnectionEntity } from '../create-connection/connection.entity';
 import { CustomCriterium } from '../../programs/program/custom-criterium.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
-import proofExample from '../../../seed-data/proof.json';
 import { API } from '../../config';
 
 @Injectable()

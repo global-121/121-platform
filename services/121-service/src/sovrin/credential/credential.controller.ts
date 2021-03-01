@@ -19,7 +19,6 @@ import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
 import { DidProgramDto } from './dto/did-program.dto';
 import { User } from '../../user/user.decorator';
-import { CredentialAttributesEntity } from './credential-attributes.entity';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)

@@ -35,7 +35,6 @@ import {
   fspName,
 } from '../fsp/financial-service-provider.entity';
 import { ExportType } from './dto/export-details';
-import { NotificationType } from './dto/notification';
 import {
   ActionEntity,
   AdditionalActionType,

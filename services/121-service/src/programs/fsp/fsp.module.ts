@@ -1,4 +1,3 @@
-import { CreateConnectionService } from './../../sovrin/create-connection/create-connection.service';
 import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
 import { WhatsappModule } from './../../notifications/whatsapp/whatsapp.module';
