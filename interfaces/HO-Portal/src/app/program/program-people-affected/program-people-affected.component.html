@@ -39,7 +39,16 @@
     (ionChange)="filterRowsVisible($event.target.value)"
     [clearInput]="true"
     class="filter-input"
-  ></ion-input>
+  >
+    <ion-icon
+      name="funnel"
+      [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
+      aria-hidden="true"
+      size="small"
+      slot="start"
+      style="padding-inline-start: var(--padding-start)"
+    ></ion-icon>
+  </ion-input>
 </ion-row>
 <ngx-datatable
   #people
@@ -210,3 +219,5 @@
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>
+
+<br><br><br>
