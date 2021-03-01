@@ -5,9 +5,14 @@
     name="bulkActions"
     [title]="'page.program.program-people-affected.choose-action'|translate"
     (change)="selectAction()"
-    class="ion-margin-end"
+    class="bulk-action-select ion-margin-end"
     [(ngModel)]="action"
   >
+      <option value="">
+        <ng-container *ngIf="!hasEnabledActions()">{{ 'page.program.program-people-affected.no-actions'|translate }}</ng-container>
+        <ng-container *ngIf="hasEnabledActions()">{{ 'page.program.program-people-affected.choose-action'|translate }}</ng-container>
+      </option>
+
     <ng-container *ngFor="let action of bulkActions;">
       <option
         *ngIf="action.enabled"
@@ -20,7 +25,7 @@
     (confirm)="applyAction($event)"
     [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
     [message]="submitWarning.message"
-    [inputProps]="getCurrentBulkAction().confirmConditions"
+    [inputProps]="getCurrentBulkAction()?.confirmConditions"
     class="ion-float-end"
   >
     {{ 'page.program.program-people-affected.apply-action'|translate }}

@@ -18,6 +18,12 @@
   }
 }
 
+.bulk-action-select {
+  padding: 0.45em;
+  border: 1px solid var(--ion-color-medium);
+  border-radius: var(--ion-border-radius);
+}
+
 .filter-input {
   --placeholder-color: --ion-color-medium;
 

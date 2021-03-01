@@ -51,25 +51,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public headerChecked = false;
   public headerSelectAllVisible = false;
 
-  public action = BulkActionId.chooseAction;
+  public action: BulkActionId = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
-    {
-      id: BulkActionId.chooseAction,
-      enabled: true,
-      label: this.translate.instant(
-        'page.program.program-people-affected.choose-action',
-      ),
-      roles: [UserRole.RunProgram, UserRole.PersonalData],
-      phases: [
-        ProgramPhase.design,
-        ProgramPhase.registrationValidation,
-        ProgramPhase.inclusion,
-        ProgramPhase.reviewInclusion,
-        ProgramPhase.payment,
-        ProgramPhase.evaluation,
-      ],
-      showIfNoValidation: true,
-    },
     {
       id: BulkActionId.selectForValidation,
       enabled: false,
@@ -413,28 +396,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         this.checkValidationColumnOrAction(action);
       return action;
     });
-    this.toggleChooseActionNoActions(this.bulkActions);
   }
 
-  private toggleChooseActionNoActions(bulkActions: BulkAction[]) {
-    const defaultAction = bulkActions.find(
-      (a) => a.id === BulkActionId.chooseAction,
-    );
-
-    if (this.nrEnabledActions(bulkActions) === 1) {
-      defaultAction.label = this.translate.instant(
-        'page.program.program-people-affected.no-actions',
-      );
-    } else {
-      defaultAction.label = this.translate.instant(
-        'page.program.program-people-affected.choose-action',
-      );
-    }
-  }
-
-  private nrEnabledActions(bulkActions: BulkAction[]) {
-    const enabledActions = bulkActions.filter((a) => a.enabled);
-    return enabledActions.length;
+  public hasEnabledActions(): boolean {
+    const enabledActions = this.bulkActions.filter((a) => a.enabled);
+    return enabledActions.length > 0;
   }
 
   private async loadData() {
@@ -782,6 +748,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private updateSubmitWarning(peopleCount: number) {
+    if (!this.getCurrentBulkAction()) {
+      return;
+    }
     const actionLabel = this.getCurrentBulkAction().label;
     this.submitWarning.message = `
       ${actionLabel}: ${peopleCount} ${this.submitWarning.people}

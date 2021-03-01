@@ -3,7 +3,7 @@ import { InputProps } from '../shared/input-prompt/input-prompt.component';
 import { ProgramPhase } from './program.model';
 
 export enum BulkActionId {
-  chooseAction = 'choose-action',
+  chooseAction = '',
   selectForValidation = 'select-for-validation',
   includeRunProgramRole = 'include-run-program-role',
   includePersonalDataRole = 'include-personal-data-role',
