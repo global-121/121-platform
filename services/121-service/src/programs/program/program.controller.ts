@@ -146,10 +146,11 @@ export class ProgramController {
   }
 
   @Roles(UserRole.View, UserRole.RunProgram)
+  @ApiOperation({ title: 'Get all enrolled PA' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Total number of included per program',
+    description: 'All included PA per program',
   })
   @Get('enrolled/:programId')
   public async getEnrolled(@Param() param): Promise<any[]> {
@@ -158,12 +159,12 @@ export class ProgramController {
 
   @Roles(UserRole.View, UserRole.PersonalData)
   @ApiOperation({
-    title: 'Get all enrolled PAs INCLUDING name/dob in HO-portal',
+    title: 'Get all enrolled PA INCLUDING personal details',
   })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Total number of included per program',
+    description: 'All included PA per program (including personal details)',
   })
   @Get('enrolledPrivacy/:programId')
   public async getEnrolledWithNames(@Param() param): Promise<any[]> {
@@ -172,7 +173,7 @@ export class ProgramController {
 
   @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Get monitoring data' })
-  @ApiResponse({ status: 200, description: 'Got monitoring data' })
+  @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
   @ApiImplicitParam({ name: 'programId', required: true })
   @Get('/monitoring/:programId')
   public async getMonitoringData(@Param() params): Promise<any[]> {
@@ -257,7 +258,7 @@ export class ProgramController {
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Get Get transactions',
+    description: 'Get all transactions',
   })
   @Get('transactions/:programId')
   public async getTransactions(@Param() param): Promise<any> {
@@ -315,8 +316,7 @@ export class ProgramController {
   @ApiImplicitParam({ name: 'id', required: true })
   @ApiResponse({
     status: 200,
-    description:
-      'Get metrics of a program used by the run-program role to gain an overview of the program ',
+    description: 'Metrics of a program to gain an overview of the program ',
   })
   @Get('metrics/:id')
   public async getMetrics(@Param() params): Promise<ProgramMetrics> {
