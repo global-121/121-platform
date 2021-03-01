@@ -178,7 +178,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ProgramPhase.reviewInclusion,
         ProgramPhase.payment,
       ],
-      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      roles: [UserRole.View, UserRole.RunProgram, UserRole.PersonalData],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
@@ -211,7 +211,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ...this.columnDefaults,
         frozenLeft: true,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        roles: [UserRole.PersonalData],
+        roles: [UserRole.View, UserRole.PersonalData],
       },
       {
         prop: 'phoneNumber',
@@ -226,7 +226,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.reviewInclusion,
           ProgramPhase.payment,
         ],
-        roles: [UserRole.PersonalData],
+        roles: [UserRole.View, UserRole.PersonalData],
         minWidth: columnPhoneNumberWidth,
       },
       {
@@ -439,7 +439,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private async loadData() {
     let allPeopleData: Person[];
-    if (this.authService.hasUserRole([UserRole.PersonalData])) {
+    if (this.authService.hasUserRole([UserRole.View, UserRole.PersonalData])) {
       this.canViewPersonalData = true;
       allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,
