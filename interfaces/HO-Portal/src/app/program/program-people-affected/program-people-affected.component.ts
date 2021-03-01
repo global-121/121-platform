@@ -691,6 +691,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private toggleHeaderCheckbox() {
     if (this.countSelectable(this.allPeopleAffected) < 1) {
+      this.headerSelectAllVisible = false;
       return;
     }
     this.headerSelectAllVisible = !this.headerSelectAllVisible;
