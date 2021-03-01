@@ -21,6 +21,10 @@ export class SeedInit implements InterfaceScript {
         label: 'Admin',
       },
       {
+        role: UserRole.View,
+        label: 'Only view data, including Personally Identifiable Information',
+      },
+      {
         role: UserRole.PersonalData,
         label: 'Handle Personally Identifiable Information',
       },

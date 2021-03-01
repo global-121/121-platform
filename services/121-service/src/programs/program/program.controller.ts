@@ -146,8 +146,7 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.RunProgram)
-  @ApiOperation({ title: 'Get all enrolled PAs in HO-portal' })
+  @Roles(UserRole.View, UserRole.RunProgram)
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
@@ -158,7 +157,7 @@ export class ProgramController {
     return await this.programService.getConnections(param.programId, false);
   }
 
-  @Roles(UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.PersonalData)
   @ApiOperation({
     title: 'Get all enrolled PAs INCLUDING name/dob in HO-portal',
   })
@@ -242,7 +241,7 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get status of payout-installments' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -254,7 +253,7 @@ export class ProgramController {
     return await this.programService.getInstallments(param.programId);
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get transactions' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -266,7 +265,7 @@ export class ProgramController {
     return await this.programService.getTransactions(param.programId);
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get a single transaction' })
   @ApiResponse({
     status: 200,
@@ -279,7 +278,7 @@ export class ProgramController {
     return await this.programService.getTransaction(data);
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get total number of included per program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -312,7 +311,7 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get metrics by program-id' })
   @ApiImplicitParam({ name: 'id', required: true })
   @ApiResponse({
