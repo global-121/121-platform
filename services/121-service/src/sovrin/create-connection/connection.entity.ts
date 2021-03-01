@@ -8,7 +8,6 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
-import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 
 @Entity('connection')

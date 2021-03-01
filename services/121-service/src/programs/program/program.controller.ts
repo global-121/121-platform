@@ -34,7 +34,6 @@ import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
 import { ChangeStateDto } from './dto/change-state.dto';
 import { ExportDetails } from './dto/export-details';
-import { NotificationDto } from './dto/notification';
 import { CustomCriterium } from './custom-criterium.entity';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
@@ -146,26 +145,26 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.RunProgram)
-  @ApiOperation({ title: 'Get all enrolled PAs in HO-portal' })
+  @Roles(UserRole.View, UserRole.RunProgram)
+  @ApiOperation({ title: 'Get all enrolled PA' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Total number of included per program',
+    description: 'All included PA per program',
   })
   @Get('enrolled/:programId')
   public async getEnrolled(@Param() param): Promise<any[]> {
     return await this.programService.getConnections(param.programId, false);
   }
 
-  @Roles(UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.PersonalData)
   @ApiOperation({
-    title: 'Get all enrolled PAs INCLUDING name/dob in HO-portal',
+    title: 'Get all enrolled PA INCLUDING personal details',
   })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Total number of included per program',
+    description: 'All included PA per program (including personal details)',
   })
   @Get('enrolledPrivacy/:programId')
   public async getEnrolledWithNames(@Param() param): Promise<any[]> {
@@ -174,7 +173,7 @@ export class ProgramController {
 
   @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Get monitoring data' })
-  @ApiResponse({ status: 200, description: 'Got monitoring data' })
+  @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
   @ApiImplicitParam({ name: 'programId', required: true })
   @Get('/monitoring/:programId')
   public async getMonitoringData(@Param() params): Promise<any[]> {
@@ -242,7 +241,7 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get status of payout-installments' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -254,19 +253,19 @@ export class ProgramController {
     return await this.programService.getInstallments(param.programId);
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get transactions' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Get Get transactions',
+    description: 'Get all transactions',
   })
   @Get('transactions/:programId')
   public async getTransactions(@Param() param): Promise<any> {
     return await this.programService.getTransactions(param.programId);
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get a single transaction' })
   @ApiResponse({
     status: 200,
@@ -279,7 +278,7 @@ export class ProgramController {
     return await this.programService.getTransaction(data);
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get total number of included per program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
@@ -312,13 +311,12 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get metrics by program-id' })
   @ApiImplicitParam({ name: 'id', required: true })
   @ApiResponse({
     status: 200,
-    description:
-      'Get metrics of a program used by the run-program role to gain an overview of the program ',
+    description: 'Metrics of a program to gain an overview of the program ',
   })
   @Get('metrics/:id')
   public async getMetrics(@Param() params): Promise<ProgramMetrics> {

@@ -5,9 +5,14 @@
     name="bulkActions"
     [title]="'page.program.program-people-affected.choose-action'|translate"
     (change)="selectAction()"
-    class="ion-margin-end"
+    class="bulk-action-select ion-margin-end"
     [(ngModel)]="action"
   >
+      <option value="">
+        <ng-container *ngIf="!hasEnabledActions()">{{ 'page.program.program-people-affected.no-actions'|translate }}</ng-container>
+        <ng-container *ngIf="hasEnabledActions()">{{ 'page.program.program-people-affected.choose-action'|translate }}</ng-container>
+      </option>
+
     <ng-container *ngFor="let action of bulkActions;">
       <option
         *ngIf="action.enabled"
@@ -20,7 +25,7 @@
     (confirm)="applyAction($event)"
     [subHeader]="'page.program.program-people-affected.submit-warning'|translate"
     [message]="submitWarning.message"
-    [inputProps]="getCurrentBulkAction().confirmConditions"
+    [inputProps]="getCurrentBulkAction()?.confirmConditions"
     class="ion-float-end"
   >
     {{ 'page.program.program-people-affected.apply-action'|translate }}
@@ -34,7 +39,16 @@
     (ionChange)="filterRowsVisible($event.target.value)"
     [clearInput]="true"
     class="filter-input"
-  ></ion-input>
+  >
+    <ion-icon
+      name="funnel"
+      [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
+      aria-hidden="true"
+      size="small"
+      slot="start"
+      style="padding-inline-start: var(--padding-start)"
+    ></ion-icon>
+  </ion-input>
 </ion-row>
 <ngx-datatable
   #people
@@ -205,3 +219,5 @@
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>
+
+<br><br><br>

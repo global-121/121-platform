@@ -1,4 +1,3 @@
-import { AfricasTalkingService } from './africas-talking.service';
 import {
   Post,
   Body,

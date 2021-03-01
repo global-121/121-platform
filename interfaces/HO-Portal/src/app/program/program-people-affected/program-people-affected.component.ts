@@ -51,25 +51,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public headerChecked = false;
   public headerSelectAllVisible = false;
 
-  public action = BulkActionId.chooseAction;
+  public action: BulkActionId = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
-    {
-      id: BulkActionId.chooseAction,
-      enabled: true,
-      label: this.translate.instant(
-        'page.program.program-people-affected.choose-action',
-      ),
-      roles: [UserRole.RunProgram, UserRole.PersonalData],
-      phases: [
-        ProgramPhase.design,
-        ProgramPhase.registrationValidation,
-        ProgramPhase.inclusion,
-        ProgramPhase.reviewInclusion,
-        ProgramPhase.payment,
-        ProgramPhase.evaluation,
-      ],
-      showIfNoValidation: true,
-    },
     {
       id: BulkActionId.selectForValidation,
       enabled: false,
@@ -178,7 +161,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ProgramPhase.reviewInclusion,
         ProgramPhase.payment,
       ],
-      roles: [UserRole.RunProgram, UserRole.PersonalData],
+      roles: [UserRole.View, UserRole.RunProgram, UserRole.PersonalData],
       showIfNoValidation: true,
       headerClass: 'ion-text-wrap ion-align-self-end',
     };
@@ -211,7 +194,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ...this.columnDefaults,
         frozenLeft: true,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
-        roles: [UserRole.PersonalData],
+        roles: [UserRole.View, UserRole.PersonalData],
       },
       {
         prop: 'phoneNumber',
@@ -226,7 +209,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           ProgramPhase.reviewInclusion,
           ProgramPhase.payment,
         ],
-        roles: [UserRole.PersonalData],
+        roles: [UserRole.View, UserRole.PersonalData],
         minWidth: columnPhoneNumberWidth,
       },
       {
@@ -413,33 +396,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         this.checkValidationColumnOrAction(action);
       return action;
     });
-    this.toggleChooseActionNoActions(this.bulkActions);
   }
 
-  private toggleChooseActionNoActions(bulkActions: BulkAction[]) {
-    const defaultAction = bulkActions.find(
-      (a) => a.id === BulkActionId.chooseAction,
-    );
-
-    if (this.nrEnabledActions(bulkActions) === 1) {
-      defaultAction.label = this.translate.instant(
-        'page.program.program-people-affected.no-actions',
-      );
-    } else {
-      defaultAction.label = this.translate.instant(
-        'page.program.program-people-affected.choose-action',
-      );
-    }
-  }
-
-  private nrEnabledActions(bulkActions: BulkAction[]) {
-    const enabledActions = bulkActions.filter((a) => a.enabled);
-    return enabledActions.length;
+  public hasEnabledActions(): boolean {
+    const enabledActions = this.bulkActions.filter((a) => a.enabled);
+    return enabledActions.length > 0;
   }
 
   private async loadData() {
     let allPeopleData: Person[];
-    if (this.authService.hasUserRole([UserRole.PersonalData])) {
+    if (this.authService.hasUserRole([UserRole.View, UserRole.PersonalData])) {
       this.canViewPersonalData = true;
       allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,
@@ -725,6 +691,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private toggleHeaderCheckbox() {
     if (this.countSelectable(this.allPeopleAffected) < 1) {
+      this.headerSelectAllVisible = false;
       return;
     }
     this.headerSelectAllVisible = !this.headerSelectAllVisible;
@@ -782,6 +749,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private updateSubmitWarning(peopleCount: number) {
+    if (!this.getCurrentBulkAction()) {
+      return;
+    }
     const actionLabel = this.getCurrentBulkAction().label;
     this.submitWarning.message = `
       ${actionLabel}: ${peopleCount} ${this.submitWarning.people}

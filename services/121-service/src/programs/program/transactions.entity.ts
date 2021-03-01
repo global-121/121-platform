@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  ManyToMany,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
