@@ -62,9 +62,10 @@
   "phoneNumberPlaceholder": "+000 000 00 00",
   "customCriteria": [
     {
-      "criterium": "name",
+      "criterium": "nameFirst",
       "label": {
-        "en": "My full name:"
+        "tl": "Ilagay ang pangalan:",
+        "en": "Please enter your first name:"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -78,11 +79,12 @@
       "scoring": {}
     },
     {
-      "criterium": "dob",
+      "criterium": "nameLast",
       "label": {
-        "en": "My date of birth: Format is day-month-year example: 31-12-1970"
+        "tl": "Ilagay ang apelyido:",
+        "en": "Please enter your last name:"
       },
-      "answerType": "date",
+      "answerType": "text",
       "criteriumType": "standard",
       "options": null,
       "persistence": true,
@@ -94,82 +96,24 @@
       "scoring": {}
     },
     {
-      "criterium": "question1",
+      "criterium": "phoneNumber",
       "label": {
-        "en": "1. I am..."
+        "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>",
+        "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>"
       },
-      "answerType": "dropdown",
-      "criteriumType": "standard",
-      "options": [
-        {
-          "option": "optionA",
-          "label": {
-            "en": "Option A"
-          }
-        },
-        {
-          "option": "optionB",
-          "label": {
-            "en": "Option B"
-          }
-        },
-        {
-          "option": "optionC",
-          "label": {
-            "en": "Option C"
-          }
-        }
-      ],
-      "scoring": {
-        "optionA": 3,
-        "optionB": 6,
-        "optionC": 9
-      }
-    },
-    {
-      "criterium": "question2",
-      "label": {
-        "en": "2. I am.."
+      "placeholder": {
+        "en": "+31 6 00 00 00 00"
       },
-      "answerType": "dropdown",
-      "criteriumType": "standard",
-      "options": [
-        {
-          "option": "optionA",
-          "label": {
-            "en": "Option A"
-          }
-        },
-        {
-          "option": "optionB",
-          "label": {
-            "en": "Option B"
-          }
-        },
-        {
-          "option": "optionC",
-          "label": {
-            "en": "Option C"
-          }
-        }
-      ],
-      "scoring": {
-        "optionA": 3,
-        "optionB": 6,
-        "optionC": 9
-      }
-    },
-    {
-      "criterium": "question3",
-      "label": {
-        "en": "Question 3..."
-      },
-      "answerType": "numeric",
+      "answerType": "tel",
       "criteriumType": "standard",
       "options": null,
-      "scoring": {
-        "multiplier": 2
-      }
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
     }
   ]
 }
