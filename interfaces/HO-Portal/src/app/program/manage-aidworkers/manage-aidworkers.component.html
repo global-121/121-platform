@@ -3,14 +3,14 @@
 
 <ngx-datatable
   class="bootstrap"
-  limit="50"
+  [limit]="50"
   columnMode="force"
   rowHeight="auto"
-  headerHeight="50"
-  footerHeight="0"
-  reorderable="false"
+  [headerHeight]="50"
+  [footerHeight]="0"
+  [reorderable]="false"
   sortType="multi"
-  loadingIndicator="true"
+  [loadingIndicator]="true"
   [columns]="columns"
   [rows]="aidworkers"
 >
