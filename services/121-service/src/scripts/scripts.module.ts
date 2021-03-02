@@ -8,7 +8,7 @@ import { SeedDev } from './seed-dev';
 import { SeedProd } from './seed-prod';
 import { SeedHelper } from './seed-helper';
 import { SeedMultiProgram } from './seed-program-multi';
-import { SeedSingleProgram } from './seed-program-single';
+import { SeedProgramValidation } from './seed-program-validation';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import { SeedPilotKenProgram } from './seed-program-pilot-ken';
@@ -28,7 +28,7 @@ import { SeedPublish } from './seed-publish';
     SeedProd,
     SeedHelper,
     SeedPublish,
-    SeedSingleProgram,
+    SeedProgramValidation,
     SeedMultiProgram,
     SeedPilotNLProgram,
     SeedPilotNL2Program,

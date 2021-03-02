@@ -1,0 +1,175 @@
+{
+  "published": false,
+  "validation": true,
+  "state": "design",
+  "location": "Location A",
+  "ngo": "NGO A",
+  "title": {
+    "en": "Test Program - with validation"
+  },
+  "description": {
+    "en": ""
+  },
+  "descLocation": {
+    "en": ""
+  },
+  "descHumanitarianObjective": {
+    "en": ""
+  },
+  "descCashType": {
+    "en": "Unconditional multi-purpose"
+  },
+  "startDate": "2020-01-01T12:00:00Z",
+  "endDate": "2020-12-31T12:00:00Z",
+  "currency": "EUR",
+  "distributionFrequency": "month",
+  "distributionDuration": 3,
+  "fixedTransferValue": 10,
+  "financialServiceProviders": [
+    {
+      "id": 1
+    },
+    {
+      "id": 2
+    }
+  ],
+  "inclusionCalculationType": "highestScoresX",
+  "minimumScore": 0,
+  "highestScoresX": 250,
+  "meetingDocuments": {
+    "en": "Document 1; Document 2; Document 3"
+  },
+  "notifications": {
+    "ar": {
+      "registered": "هذه رسالة من الصليب الأحمر\n\nلقد استلمنا طلبك للمساعدة.\n\nسوف تستلم رسالة نصية بمعلومات أخرى خلال اسبوع.",
+      "whatsappPayment": "هذه رسالة من الصليب الأحمر. \n\nإن قسيمة الـ 35 يورو للسوبر ماركت ألبرت هاين جاهزة.\n\nالرجاء الرد ب \"yes\" على هذه الرسالة لكي نرسل القسيمة إليك.",
+      "whatsappVoucher": "هذه رسالة من الصليب الأحمر.\n\nهذه الرسالة تحتوي على صورتين.\nالأولى لقسيمة الشراء من البرت هاين (cadeaukaart) مع رمز مرئي.\nو الأخرى فيها شرح لكيفية استخدام القسيمة للشراء من البرت هاين.\n\nإن قيمة هذه القسيمة هي 35 يورو.\nيمكنك استخدام هذه القسيمة في اي سوبر ماركت البرت هاين في هولندا.\n\nلست مضطراً لصرف كامل المبلغ مرة واحدة. لذلك الرجاء المحافظة على صورة القسيمة لإعادة استخدامها حتى انتهاء الرصيد.\n\nسوف تستلم قسيمة جديدة بقيمة 35 يورو كل اسبوع يوم الثلاثاء حتى تاريخ 31 مايو\\أيار 2021.\n\nهل لديك اسئلة؟ قم بمراسلتنا على واتس آب https://wa.me/31614458781",
+      "whatsappReply": "هذا رسالة آلية، إذا كانت لديك اسئلة يمكنك مراسلة الصليب الأحمر على واتس آب: +31614458781"
+    },
+    "ti": {
+      "registered": "ትሕስ እስ ዓ ተስት።",
+      "whatsappPayment": "ትሕስ እስ ዓ ተስት።",
+      "whatsappVoucher": "ትሕስ እስ ዓ ተስት።",
+      "whatsappReply": "ትሕስ እስ ዓ ተስት።"
+    },
+    "en": {
+      "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week.",
+      "whatsappPayment": "This is a message from the Red Cross.\n\nYour €35 Albert Heijn supermarket voucher is ready to be sent.\n\nPlease reply “yes” to this message in order to receive the voucher.",
+      "whatsappVoucher": "This is a message from the Red Cross.\n\nWith this message you received 2 pictures.\nOne is the Albert Heijn supermarket voucher (cadeaukaart) with the barcode.\nThe other is an explanation of how you can use the voucher to pay in Albert Heijn.\n\n The value of this voucher is €35.\nYou can spend the voucher at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep this voucher in your phone and re-use it until the amount is finished.\n\nYou will receive a €35 Albert Heijn voucher every week on Tuesday until 31 May 2021 the latest.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
+      "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781"
+    }
+  },
+  "phoneNumberPlaceholder": "+000 000 00 00",
+  "customCriteria": [
+    {
+      "criterium": "name",
+      "label": {
+        "en": "My full name:"
+      },
+      "answerType": "text",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
+    },
+    {
+      "criterium": "dob",
+      "label": {
+        "en": "My date of birth: Format is day-month-year example: 31-12-1970"
+      },
+      "answerType": "date",
+      "criteriumType": "standard",
+      "options": null,
+      "persistence": true,
+      "export": [
+        "all-people-affected",
+        "included",
+        "selected-for-validation"
+      ],
+      "scoring": {}
+    },
+    {
+      "criterium": "question1",
+      "label": {
+        "en": "1. I am..."
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "optionA",
+          "label": {
+            "en": "Option A"
+          }
+        },
+        {
+          "option": "optionB",
+          "label": {
+            "en": "Option B"
+          }
+        },
+        {
+          "option": "optionC",
+          "label": {
+            "en": "Option C"
+          }
+        }
+      ],
+      "scoring": {
+        "optionA": 3,
+        "optionB": 6,
+        "optionC": 9
+      }
+    },
+    {
+      "criterium": "question2",
+      "label": {
+        "en": "2. I am.."
+      },
+      "answerType": "dropdown",
+      "criteriumType": "standard",
+      "options": [
+        {
+          "option": "optionA",
+          "label": {
+            "en": "Option A"
+          }
+        },
+        {
+          "option": "optionB",
+          "label": {
+            "en": "Option B"
+          }
+        },
+        {
+          "option": "optionC",
+          "label": {
+            "en": "Option C"
+          }
+        }
+      ],
+      "scoring": {
+        "optionA": 3,
+        "optionB": 6,
+        "optionC": 9
+      }
+    },
+    {
+      "criterium": "question3",
+      "label": {
+        "en": "Question 3..."
+      },
+      "answerType": "numeric",
+      "criteriumType": "standard",
+      "options": null,
+      "scoring": {
+        "multiplier": 2
+      }
+    }
+  ]
+}

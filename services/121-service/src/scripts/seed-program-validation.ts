@@ -1,26 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
+import { UserRole } from '../user-role.enum';
 
 import { SeedHelper } from './seed-helper';
 import { SeedPublish } from './seed-publish';
 import { SeedInit } from './seed-init';
 
-import fspBank from '../../seed-data/fsp/fsp-bank.json';
-import fspMobileMoney from '../../seed-data/fsp/fsp-mobile-money.json';
-import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
-import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
-import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
+import fspIntersolveNoWhatsapp from '../../seed-data/fsp/fsp-intersolve-no-whatsapp.json';
 
-import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
-
-import programAnonymousExample1 from '../../seed-data/program/program-anonymous1.json';
+import programValidation from '../../seed-data/program/program-validation.json';
 import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
-import { UserRole } from '../user-role.enum';
 
 @Injectable()
-export class SeedSingleProgram implements InterfaceScript {
+export class SeedProgramValidation implements InterfaceScript {
   public constructor(private connection: Connection) {}
 
   private readonly seedHelper = new SeedHelper(this.connection);
@@ -58,25 +52,10 @@ export class SeedSingleProgram implements InterfaceScript {
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
-    await this.seedHelper.addFsp(fspAfricasTalking);
-    await this.seedHelper.addFsp(fspBank);
-    await this.seedHelper.addFsp(fspMobileMoney);
-    await this.seedHelper.addFsp(fspMixedAttributes);
-    await this.seedHelper.addFsp(fspNoAttributes);
-
-    // ***** CREATE PROTECTION SERVICE PROVIDERS *****
-    const protectionServiceProviderRepository = this.connection.getRepository(
-      ProtectionServiceProviderEntity,
-    );
-    await protectionServiceProviderRepository.save([
-      { psp: 'Protection Service Provider A' },
-    ]);
-    await protectionServiceProviderRepository.save([
-      { psp: 'Protection Service Provider B' },
-    ]);
+    await this.seedHelper.addFsp(fspIntersolveNoWhatsapp);
 
     // ***** CREATE PROGRAM *****
-    const examplePrograms = [programAnonymousExample1];
+    const examplePrograms = [programValidation];
     await this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
@@ -87,4 +66,4 @@ export class SeedSingleProgram implements InterfaceScript {
   }
 }
 
-export default SeedSingleProgram;
+export default SeedProgramValidation;
