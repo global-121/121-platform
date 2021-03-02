@@ -186,7 +186,6 @@ export class PaymentStatusPopupComponent implements OnInit {
       .getBalance(this.payoutDetails.did, this.payoutDetails.installment)
       .then(
         (response) => {
-          console.log('response: ', response);
           this.isInProgress = false;
           const message = this.translate.instant(
             'page.program.program-people-affected.payment-status-popup.current-balance',
