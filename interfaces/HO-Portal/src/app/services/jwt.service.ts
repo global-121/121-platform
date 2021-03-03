@@ -21,6 +21,11 @@ export class JwtService {
   }
 
   public decodeToken(rawToken: string): any {
+    if (this.jwtHelper.isTokenExpired(rawToken)) {
+      console.log('JwtService: Token is expired.');
+      this.destroyToken();
+      return null;
+    }
     return this.jwtHelper.decodeToken(rawToken);
   }
 }
