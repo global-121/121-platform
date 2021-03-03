@@ -37,7 +37,7 @@
     "@angular/pwa": "^0.13.10",
     "@angular/router": "^7.2.16",
     "@angular/service-worker": "^7.2.16",
-    "@auth0/angular-jwt": "^4.1.2",
+    "@auth0/angular-jwt": "^4.2.0",
     "@ionic/angular": "^4.11.8",
     "@ionic/cli": "^6.11.8",
     "@microsoft/applicationinsights-web": "^2.5.9",
