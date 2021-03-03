@@ -157,7 +157,7 @@ export class UserService {
   public async findByEmail(email: string): Promise<UserRO> {
     const user = await this.userRepository.findOne({
       where: { email: email },
-      relations: ['roles'],
+      relations: ['assignedProgram', 'roles'],
     });
     return this.buildUserRO(user);
   }
@@ -169,6 +169,7 @@ export class UserService {
 
     const result = jwt.sign(
       {
+        id: user.id,
         email: user.email,
         roles: user.roles.map(role => role.role),
         exp: exp.getTime() / 1000,
