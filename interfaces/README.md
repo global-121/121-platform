@@ -29,6 +29,13 @@ See the [/features/](../features/)-directory in this repository.
 
 ## Development
 
+### Offline features
+For some 'offline' features in the AW-App and the HO-Portal it is required to run these interfaces in a specific way (i.e. to enable their service-worker).  
+See the related Angular-documentation: <https://v7.angular.io/guide/service-worker-getting-started#serving-with-http-server>
+
+To use it locally, run: `npm run debug:service-worker` instead of `npm start` (in each interfaces' specific folder).
+
+
 ### Native environments
 
 #### Android
