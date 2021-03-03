@@ -12,20 +12,18 @@ import { UserRoleEntity } from '../user/user-role.entity';
 export class SeedHelper {
   public constructor(private connection: Connection) {}
 
-  public async addUser(userInput: any): Promise<void> {
+  public async addUser(userInput: any): Promise<UserEntity> {
     const userRepository = this.connection.getRepository(UserEntity);
     const userRoleRepository = this.connection.getRepository(UserRoleEntity);
-    await userRepository.save([
-      {
-        roles: await userRoleRepository.find({
-          where: {
-            role: In(userInput.roles),
-          },
-        }),
-        email: userInput.email,
-        password: crypto.createHmac('sha256', userInput.password).digest('hex'),
-      },
-    ]);
+    return await userRepository.save({
+      roles: await userRoleRepository.find({
+        where: {
+          role: In(userInput.roles),
+        },
+      }),
+      email: userInput.email,
+      password: crypto.createHmac('sha256', userInput.password).digest('hex'),
+    });
   }
 
   public async addInstance(

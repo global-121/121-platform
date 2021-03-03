@@ -50,7 +50,7 @@ export class SeedMultiProgram implements InterfaceScript {
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
     });
 
-    await this.seedHelper.addUser({
+    const fieldValidationUser = await this.seedHelper.addUser({
       roles: [UserRole.FieldValidation],
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,
       password:
@@ -89,10 +89,10 @@ export class SeedMultiProgram implements InterfaceScript {
     await this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
-    await this.seedHelper.assignAidworker(2, 1);
-    await this.seedHelper.assignAidworker(2, 2);
-    await this.seedHelper.assignAidworker(2, 3);
-    await this.seedHelper.assignAidworker(2, 4);
+    await this.seedHelper.assignAidworker(fieldValidationUser.id, 1);
+    await this.seedHelper.assignAidworker(fieldValidationUser.id, 2);
+    await this.seedHelper.assignAidworker(fieldValidationUser.id, 3);
+    await this.seedHelper.assignAidworker(fieldValidationUser.id, 4);
 
     // ***** CREATE INSTANCE *****
     // NOTE: the multi-NGO setting of this seed-script does not comply with this single-NGO instance. We choose 'NGO A' here.

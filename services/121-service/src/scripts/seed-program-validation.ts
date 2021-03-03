@@ -43,7 +43,7 @@ export class SeedProgramValidation implements InterfaceScript {
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
     });
 
-    await this.seedHelper.addUser({
+    const fieldValidationUser = await this.seedHelper.addUser({
       roles: [UserRole.FieldValidation],
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,
       password:
@@ -59,7 +59,7 @@ export class SeedProgramValidation implements InterfaceScript {
     await this.seedHelper.addPrograms(examplePrograms, 1);
 
     // ***** ASSIGN AIDWORKER TO PROGRAM *****
-    await this.seedHelper.assignAidworker(2, 1);
+    await this.seedHelper.assignAidworker(fieldValidationUser.id, 1);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceAnonymous);
