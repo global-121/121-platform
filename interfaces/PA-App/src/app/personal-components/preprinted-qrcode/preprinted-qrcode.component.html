@@ -1,5 +1,5 @@
 <section *ngIf="isCanceled === false">
-  <dialogue-turn>
+  <dialogue-turn [isSpoken]="isCanceled === false">
     <p>
       <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
       {{ 'personal.preprinted-qrcode.introduction'|translate }}
@@ -10,7 +10,10 @@
       headingKey="personal.preprinted-qrcode.more-info-qr"
     ></more-info-button>
   </dialogue-turn>
-  <dialogue-turn isConnected="true">
+  <dialogue-turn 
+    isConnected="true"
+    [isSpoken]="isCanceled === false"
+  >
     <p>
       <play-text-audio key="personal.preprinted-qrcode.introduction" class="ion-float-start ion-margin-end">
       </play-text-audio>
@@ -18,7 +21,10 @@
     </p>
   </dialogue-turn>
 
-  <dialogue-turn actor="self">
+  <dialogue-turn 
+    actor="self"
+    [isSpoken]="isCanceled === false"  
+  >
     <ion-row *ngIf="!isDisabled || hasPreprinted"
              class="ion-nowrap ion-align-items-center"
     >
