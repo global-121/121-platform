@@ -46,6 +46,8 @@ export class CredentialService {
   private readonly connectionRepository: Repository<ConnectionEntity>;
   @InjectRepository(FspAttributeEntity)
   private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
+  @InjectRepository(UserEntity)
+  private readonly userRepository: Repository<UserEntity>;
 
   public constructor(
     @Inject(forwardRef(() => ProgramService))
@@ -211,12 +213,10 @@ export class CredentialService {
   }
 
   public async downloadData(userId: number): Promise<DownloadData> {
-    const user = await getRepository(UserEntity)
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.assignedProgram', 'program')
-      .where('"userId" = :userId', { userId: userId })
-      .getOne();
-    if (!user || !user.assignedProgram) {
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['assignedProgram'],
+    });
+    if (!user || !user.assignedProgram || user.assignedProgram.length === 0) {
       const errors = 'User not found or no assigned programs';
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }

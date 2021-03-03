@@ -80,7 +80,9 @@ export class StoreCredentialComponent extends PersonalComponent {
       !this.currentProgram.validation // Program contains no validation
     ) {
       this.cancel();
+      return;
     }
+    this.isCanceled = false;
   }
 
   async checkValidationSkipped() {

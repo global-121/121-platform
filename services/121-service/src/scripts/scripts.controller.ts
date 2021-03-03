@@ -2,7 +2,7 @@ import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 import { ApiOperation, ApiModelProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { Connection } from 'typeorm';
-import { SeedSingleProgram } from './seed-program-single';
+import { SeedProgramValidation } from './seed-program-validation';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
@@ -13,7 +13,7 @@ enum SeedScript {
   pilotNLPV = 'pilot-nl-pv',
   pilotKEN = 'pilot-ken',
   demo = 'demo',
-  single = 'single',
+  validation = 'validation',
 }
 
 class ResetDto {
@@ -48,7 +48,7 @@ export class ScriptsController {
     } else if (body.script == SeedScript.pilotKEN) {
       seed = new SeedPilotKenProgram(this.connection);
     } else {
-      seed = new SeedSingleProgram(this.connection);
+      seed = new SeedProgramValidation(this.connection);
     }
     await seed.run();
     return res
