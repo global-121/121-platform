@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Program } from '../models/program.model';
+import { User } from '../models/user.model';
 import { JwtService } from './jwt.service';
 import { PaAccountApiService } from './pa-account-api.service';
 import { PaDataTypes } from './padata-types.enum';
@@ -36,7 +37,7 @@ export class PaDataService {
   ) {
     this.useLocalStorage = environment.localStorage;
 
-    this.retrieveLoggedInState();
+    this.checkAuthenticationState();
   }
 
   private setUsername(username: string) {
@@ -155,12 +156,21 @@ export class PaDataService {
 
     return new Promise((resolve, reject) => {
       this.paAccountApi.login(username, password).then(
-        (response) => {
-          console.log('PaData: login successful', response);
+        () => {
+          console.log('PaData: login successful');
           this.ionStorage.clear();
+
+          const user = this.getUserFromToken();
+
+          if (!user) {
+            this.setLoggedOut();
+            return reject('No valid token.');
+          }
+
           this.setLoggedIn();
-          this.setUsername(response.username);
-          return resolve(response);
+          this.setUsername(user.username);
+
+          return resolve();
         },
         (error) => {
           console.log('PaData: login error', error);
@@ -172,25 +182,47 @@ export class PaDataService {
   }
 
   private setLoggedIn() {
-    console.log('PaData: setLoggedIn()');
     this.hasAccount = true;
     this.authenticationStateSource.next(true);
   }
 
   private setLoggedOut() {
-    console.log('PaData: setLoggedOut()');
     this.hasAccount = false;
     this.authenticationStateSource.next(false);
   }
 
-  private retrieveLoggedInState() {
-    const token = this.jwtService.getToken();
+  private checkAuthenticationState() {
+    const user = this.getUserFromToken();
 
-    if (!token) {
+    if (!user) {
       return;
     }
 
     this.setLoggedIn();
+  }
+
+  private getUserFromToken(): User | null {
+    const rawToken = this.jwtService.getToken();
+
+    if (!rawToken) {
+      return null;
+    }
+
+    let user: User | any;
+
+    try {
+      user = this.jwtService.decodeToken(rawToken);
+    } catch {
+      console.warn('PaData: Invalid token');
+      return null;
+    }
+
+    if (!user || !user.username) {
+      console.warn('PaData: No valid user');
+      return null;
+    }
+
+    return user;
   }
 
   public logout() {

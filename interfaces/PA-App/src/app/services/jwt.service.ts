@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root',
 })
 export class JwtService {
   private tokenKey = 'jwt-PA';
+  private jwtHelper = new JwtHelperService();
 
   public getToken(): string | undefined {
     return window.sessionStorage[this.tokenKey];
@@ -16,5 +18,14 @@ export class JwtService {
 
   public destroyToken(): void {
     window.sessionStorage.removeItem(this.tokenKey);
+  }
+
+  public decodeToken(rawToken: string): any {
+    if (this.jwtHelper.isTokenExpired(rawToken)) {
+      console.log('JwtService: Token is expired.');
+      this.destroyToken();
+      return null;
+    }
+    return this.jwtHelper.decodeToken(rawToken);
   }
 }
