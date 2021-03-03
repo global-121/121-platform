@@ -7,7 +7,7 @@ Interfaces on the 121-platform
   Primary target(s): Mobile/Smartphone (Android/Web)
 
 - [AW-App](./AW-App/)  
-  (Native-)app used by *AidWorkers* to validate/verify PA and issue credentials.
+  Web-app used by *AidWorkers* to validate/verify PA and issue credentials.
 
   Primary target(s): Mobile/Smartphone (Android)
 
@@ -17,7 +17,7 @@ Interfaces on the 121-platform
   Primary target(s): Laptop/desktop
 
 - [Referral-App](./Referral-App/)
-  (Native-)app used by *People Affected* to lookup useful organizations.
+  Web-app used by *People Affected* to lookup useful organizations.
 
   Primary target(s): Mobile/Smartphone (Android/Web)
 
