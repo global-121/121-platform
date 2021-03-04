@@ -1,9 +1,9 @@
 import { TranslatableString } from 'src/app/models/translatable-string.model';
-import { Actor } from 'src/app/shared/actor.enum';
 
 export class InstanceData {
-  name: Actor;
+  name: string;
   displayName: TranslatableString;
+  logoUrl?: TranslatableString;
   dataPolicy: TranslatableString;
   contactDetails?: TranslatableString;
   aboutProgram: TranslatableString;
@@ -20,8 +20,9 @@ export class MonitoringData {
 }
 
 export class InstanceInformation {
-  name: Actor;
+  name: string;
   displayName: string;
+  logoUrl: string;
   dataPolicy: string;
   contactDetails: string;
   aboutProgram: string;

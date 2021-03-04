@@ -26,6 +26,10 @@
 
   width: 80%;
   max-width: 80%;
+
+  [dir='rtl'] & {
+    transform-origin: top right;
+  }
 }
 
 .dialogue-turn--speech-arrow {
@@ -43,16 +47,15 @@
   .dialogue-turn--speech-arrow {
     left: var(--dialogue-turn--margin-around-card-horizontal);
     border-right-color: var(--ion-color-dark);
-  }
 
-  // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
-  .dialogue-turn--speech-arrow:dir(rtl) {
-    // Reset LTR-styles first:
-    left: auto;
-    border-right-color: transparent;
+    [dir='rtl'] & {
+      // Reset LTR-styles first:
+      left: auto;
+      border-right-color: transparent;
 
-    right: var(--dialogue-turn--margin-around-card-horizontal);
-    border-left-color: var(--ion-color-dark);
+      right: var(--dialogue-turn--margin-around-card-horizontal);
+      border-left-color: var(--ion-color-dark);
+    }
   }
 }
 
@@ -69,16 +72,15 @@
   .dialogue-turn--speech-arrow {
     right: var(--dialogue-turn--margin-around-card-horizontal);
     border-left-color: var(--ion-color-light);
-  }
 
-  // Adjust for RTL: (Limited support: https://developer.mozilla.org/en-US/docs/Web/CSS/:dir#Browser_compatibility)
-  .dialogue-turn--speech-arrow:dir(rtl) {
-    // Reset LTR-styles first:
-    right: auto;
-    border-left-color: transparent;
+    [dir='rtl'] & {
+      // Reset LTR-styles first:
+      right: auto;
+      border-left-color: transparent;
 
-    left: var(--dialogue-turn--margin-around-card-horizontal);
-    border-right-color: var(--ion-color-light);
+      left: var(--dialogue-turn--margin-around-card-horizontal);
+      border-right-color: var(--ion-color-light);
+    }
   }
 }
 
@@ -97,15 +99,12 @@
 }
 
 .dialogue-turn.is-pending {
-  opacity: 0;
-
-  .dialogue-turn--content {
-    opacity: 0;
-    transform: scale(0.2);
-  }
+  display: none;
 }
 
 .dialogue-turn.is-spoken {
+  display: flex;
+
   .dialogue-turn--content {
     animation-name: speak;
     animation-duration: 0.3s;
@@ -117,6 +116,7 @@
 @keyframes speak {
   0% {
     opacity: 0;
+    transform: scale(1);
   }
   50% {
     opacity: 0.2;

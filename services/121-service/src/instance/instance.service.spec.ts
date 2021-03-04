@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 
 const instanceRepositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
   (): any => ({
-    findOne: jest.fn(entity => new InstanceEntity()),
+    findOne: jest.fn(() => new InstanceEntity()),
   }),
 );
 
@@ -34,7 +34,7 @@ describe('Instance service', (): void => {
     expect(service).toBeDefined();
   });
 
-  describe.only('getInstance', (): void => {
+  describe('getInstance', (): void => {
     it('should return an instance', async (): Promise<void> => {
       const instance = new InstanceEntity();
 
