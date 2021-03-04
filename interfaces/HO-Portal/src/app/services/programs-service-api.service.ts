@@ -17,7 +17,7 @@ import { ApiService } from './api.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService) {}
 
-  public login(email: string, password: string): Promise<UserModel | null> {
+  login(email: string, password: string): Promise<UserModel | null> {
     console.log('ProgramsService : login()');
 
     return this.apiService
@@ -43,7 +43,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  public changePassword(newPassword: string): Promise<UserModel | null> {
+  changePassword(newPassword: string): Promise<UserModel | null> {
     return this.apiService
       .post(environment.url_121_service_api, '/user/change-password', {
         password: newPassword,

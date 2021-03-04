@@ -20,7 +20,7 @@ export class JwtService {
     window.sessionStorage.removeItem(this.tokenKey);
   }
 
-  public decodeToken(rawToken: string): any {
+  public decodeToken(rawToken: string): any | null {
     if (this.jwtHelper.isTokenExpired(rawToken)) {
       console.log('JwtService: Token is expired.');
       this.destroyToken();
