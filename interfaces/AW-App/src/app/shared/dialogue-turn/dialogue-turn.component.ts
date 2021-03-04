@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Optional } from '@angular/core';
+import { InstanceService } from 'src/app/services/instance.service';
 import { environment } from 'src/environments/environment';
 
 enum Actor {
@@ -16,7 +17,7 @@ export class DialogueTurnComponent implements OnInit {
   isSpoken = false;
 
   @Input()
-  actor = Actor.system;
+  actor: Actor | string = Actor.system;
 
   @Input()
   moment: Date;
@@ -31,15 +32,33 @@ export class DialogueTurnComponent implements OnInit {
 
   animate = environment.useAnimation;
 
-  constructor() {}
+  constructor(@Optional() private instanceService: InstanceService) {}
 
   ngOnInit() {
     this.isSelf = this.actor === Actor.self;
     this.isSystem = this.actor === Actor.system;
     this.moment = new Date();
+    this.getInstanceInformation();
   }
 
-  show() {
+  private getInstanceInformation(): void {
+    if (!this.instanceService) {
+      return;
+    }
+    this.instanceService.instanceInformation.subscribe((instanceInfo) => {
+      this.updateActor(instanceInfo.name);
+    });
+  }
+
+  private updateActor(newActor: Actor | string): void {
+    if (this.actor === Actor.system) {
+      this.actor = newActor;
+    }
+    this.isSelf = this.actor === Actor.self;
+    this.isSystem = this.actor === Actor.system;
+  }
+
+  public show(): void {
     this.isSpoken = true;
   }
 }

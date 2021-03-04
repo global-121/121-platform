@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  Optional,
+  ViewEncapsulation,
+} from '@angular/core';
 import { InstanceService } from 'src/app/services/instance.service';
 import { Actor } from 'src/app/shared/actor.enum';
 import { environment } from 'src/environments/environment';
@@ -30,7 +36,7 @@ export class DialogueTurnComponent implements OnInit {
 
   public allActors = Actor;
 
-  constructor(private instanceService: InstanceService) {}
+  constructor(@Optional() private instanceService: InstanceService) {}
 
   ngOnInit() {
     this.moment = new Date();
@@ -39,7 +45,10 @@ export class DialogueTurnComponent implements OnInit {
     this.getInstanceInformation();
   }
 
-  private async getInstanceInformation() {
+  private getInstanceInformation(): void {
+    if (!this.instanceService) {
+      return;
+    }
     this.instanceService.instanceInformation.subscribe(
       (instanceInformation) => {
         this.updateActor(instanceInformation.name);
@@ -47,7 +56,7 @@ export class DialogueTurnComponent implements OnInit {
     );
   }
 
-  updateActor(newActor: Actor) {
+  private updateActor(newActor: Actor): void {
     if (this.actor === Actor.system) {
       this.actor = newActor;
     }
@@ -55,7 +64,7 @@ export class DialogueTurnComponent implements OnInit {
     this.isSystem = this.actor === Actor.system;
   }
 
-  show() {
+  public show(): void {
     this.isSpoken = true;
   }
 }

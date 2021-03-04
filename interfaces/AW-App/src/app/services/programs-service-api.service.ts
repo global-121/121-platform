@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { InstanceData } from '../models/instance.model';
 import { Program } from '../models/program.model';
 import { UserModel } from '../models/user.model';
 import { ApiService } from './api.service';
@@ -11,7 +12,13 @@ import { ApiService } from './api.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService) {}
 
-  public login(email: string, password: string): Promise<UserModel> {
+  getInstanceInformation(): Promise<InstanceData> {
+    return this.apiService
+      .get(environment.url_121_service_api, '/instance')
+      .toPromise();
+  }
+
+  login(email: string, password: string): Promise<UserModel> {
     return this.apiService
       .post(
         environment.url_121_service_api,
