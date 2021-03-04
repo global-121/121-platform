@@ -1,4 +1,10 @@
-import { Component, Input, OnInit, Optional } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  Optional,
+  ViewEncapsulation,
+} from '@angular/core';
 import { InstanceService } from 'src/app/services/instance.service';
 import { environment } from 'src/environments/environment';
 
@@ -11,6 +17,7 @@ enum Actor {
   selector: 'dialogue-turn',
   templateUrl: './dialogue-turn.component.html',
   styleUrls: ['./dialogue-turn.component.scss'],
+  encapsulation: ViewEncapsulation.None, // Disabled to use the 'host-context'-level for `[dir='rtl']`-selector
 })
 export class DialogueTurnComponent implements OnInit {
   @Input()
