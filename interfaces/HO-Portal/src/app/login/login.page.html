@@ -1,6 +1,10 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>{{ 'page.login.pageTitle'|translate }}</ion-title>
+    <ion-title>
+      <h1 class="ion-no-margin">
+        {{ 'page.login.pageTitle'|translate }}
+      </h1>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -9,42 +13,46 @@
     <ion-row class="ion-align-items-center ion-justify-content-center">
       <ion-col size="4" class="">
 
-          <form method="POST"
-                #loginForm="ngForm"
-                (ngSubmit)="doLogin()"
-                (keyup.enter)="doLogin()"
+          <form
+            method="POST"
+            #loginForm="ngForm"
+            (ngSubmit)="doLogin()"
+            (keyup.enter)="doLogin()"
           >
             <ion-item>
               <ion-label position="stacked">{{ 'page.login.form.email.label'|translate }}</ion-label>
-              <ion-input type="email"
-                         inputmode="email"
-                         autocomplete="username email"
-                         autocapitalize="off"
-                         autofocus="true"
-                         clearInput="true"
-                         required
-                         name="email"
-                         [(ngModel)]="email"
-                         ngDefaultControl
+              <ion-input
+                type="email"
+                inputmode="email"
+                autocomplete="username email"
+                autocapitalize="off"
+                autofocus="true"
+                clearInput="true"
+                required
+                name="email"
+                [(ngModel)]="email"
+                ngDefaultControl
               ></ion-input>
             </ion-item>
             <ion-item>
               <ion-label position="stacked">{{ 'page.login.form.password.label'|translate }}</ion-label>
-              <ion-input type="password"
-                         autocomplete="current-password"
-                         autocapitalize="off"
-                         clearInput="false"
-                         clearOnEdit="false"
-                         required
-                         name="password"
-                         [(ngModel)]="password"
-                         ngDefaultControl
+              <ion-input
+                type="password"
+                autocomplete="current-password"
+                autocapitalize="off"
+                clearInput="false"
+                clearOnEdit="false"
+                required
+                name="password"
+                [(ngModel)]="password"
+                ngDefaultControl
               ></ion-input>
             </ion-item>
 
-            <ion-button type="submit"
-                        expand="block"
-                        [disabled]="!loginForm?.form?.valid"
+            <ion-button
+              type="submit"
+              expand="block"
+              [disabled]="!loginForm?.form?.valid"
             >
               {{ 'page.login.form.submit.label'|translate }}
             </ion-button>

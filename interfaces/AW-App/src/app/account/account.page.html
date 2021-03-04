@@ -79,6 +79,7 @@
         <ion-label position="stacked">{{ 'account.create-label'|translate }}</ion-label>
         <ion-input type="password"
                    name="create"
+                   #create
                    autocomplete="new-password"
                    autocapitalize="off"
                    clearInput="true"
@@ -90,6 +91,7 @@
           <ion-label position="stacked">{{ 'account.confirm-label'|translate }}</ion-label>
           <ion-input type="password"
                      name="confirm"
+                     #confirm
                      autocomplete="off"
                      autocapitalize="off"
                      clearInput="true"
@@ -100,6 +102,7 @@
 
       <ion-button type="submit"
                   expand="block"
+                  [disabled]="!create.value || !confirm.value || (create.value !== confirm.value)"
                   class="ion-margin-top"
       >
         {{ 'account.change-password'|translate }}

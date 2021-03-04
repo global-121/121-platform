@@ -53,7 +53,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  public getDidByQrIdentifier(qrIdentifier: string): Promise<string> {
+  getDidByQrIdentifier(qrIdentifier: string): Promise<string> {
     return this.apiService
       .post(
         environment.url_121_service_api,
