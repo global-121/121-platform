@@ -21,13 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.19.0](https://github.com/global-121/121-platform/compare/v0.18.0...v0.19.0) - 2021-02-23
 
 ### Added
-- 2020-02-17: Option to define a human-readable name for the current environment.
+- 2021-02-17: Option to define a human-readable name for the current environment.
   - Set a value with `ENV_NAME` in [`services/.env`](services/.env.example)
   - Optional: Set the url to a specific icon/`favicon` with: `ENV_ICON`
   - For each interface, define the name with `NG_ENV_NAME` in its own `.env`-file
 
 ### Changed
-- 2020-02-17: Setting the URL-scheme of all back-end services, via `SCHEME` variable in [`services/.env`](services/.env.example)
+- 2021-02-17: Setting the URL-scheme of all back-end services, via `SCHEME` variable in [`services/.env`](services/.env.example)
 
 ---
 
