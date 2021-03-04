@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
+import { NoConnectionService } from 'src/app/services/no-connection.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
@@ -19,11 +20,14 @@ export class MainMenuComponent implements ValidationComponent {
 
   private ionicStorageTypes = IonicStorageTypes;
 
+  public noConnection = this.noConnectionService.noConnection$;
+
   constructor(
     public translate: TranslateService,
     public conversationService: ConversationService,
     public router: Router,
     private storage: Storage,
+    private noConnectionService: NoConnectionService,
   ) {}
 
   async ngOnInit() {
@@ -33,22 +37,25 @@ export class MainMenuComponent implements ValidationComponent {
         id: ValidationComponents.downloadData,
         option: this.translate.instant('validation.main-menu.download-data'),
         disabled: false,
+        connectionRequired: true,
       },
       {
         id: ValidationComponents.scanQr,
         option: this.translate.instant('validation.main-menu.scan-qr'),
         disabled: false,
+        connectionRequired: false,
       },
       {
         id: ValidationComponents.uploadData,
         option: this.translate.instant('validation.main-menu.upload-data'),
         counter: pendingUploadCount,
         disabled: !pendingUploadCount,
+        connectionRequired: true,
       },
     ];
   }
 
-  private async getNrUploadWaiting() {
+  private async getNrUploadWaiting(): Promise<number> {
     const credentials = await this.storage.get(
       this.ionicStorageTypes.credentials,
     );

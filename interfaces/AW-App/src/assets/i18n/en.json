@@ -71,6 +71,10 @@
   "connection": {
     "error-retry": "Something went wrong, do you want to try again?"
   },
+  "connection-indicator": {
+    "not-available": "No connection available",
+    "offline": "Offline"
+  },
   "q-and-a-set": {
     "validation": {
       "date": "The date format you inputted is not valid. A valid date format example is 31-12-1970 which follows day-month-year, DD-MM-YYYY",
