@@ -20,6 +20,12 @@ export class DialogueTurnComponent implements OnInit {
   actor: Actor | string = Actor.system;
 
   @Input()
+  actorName: string;
+
+  @Input()
+  avatarUrl: string;
+
+  @Input()
   moment: Date;
 
   @Input()
@@ -46,16 +52,24 @@ export class DialogueTurnComponent implements OnInit {
       return;
     }
     this.instanceService.instanceInformation.subscribe((instanceInfo) => {
-      this.updateActor(instanceInfo.name);
+      this.updateActor(
+        instanceInfo.name,
+        instanceInfo.displayName,
+        instanceInfo.logoUrl,
+      );
     });
   }
 
-  private updateActor(newActor: Actor | string): void {
+  private updateActor(
+    newActor: Actor | string,
+    actorName?: string,
+    avatarUrl?: string,
+  ): void {
     if (this.actor === Actor.system) {
       this.actor = newActor;
+      this.actorName = actorName;
+      this.avatarUrl = avatarUrl;
     }
-    this.isSelf = this.actor === Actor.self;
-    this.isSystem = this.actor === Actor.system;
   }
 
   public show(): void {
