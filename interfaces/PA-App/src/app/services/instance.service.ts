@@ -69,6 +69,7 @@ export class InstanceService {
     return {
       name: instanceData.name,
       displayName: this.translatableString.get(instanceData.displayName),
+      logoUrl: this.translatableString.get(instanceData.logoUrl),
       dataPolicy: this.translatableString.get(instanceData.dataPolicy),
       contactDetails: this.translatableString.get(instanceData.contactDetails),
       aboutProgram: this.translatableString.get(instanceData.aboutProgram),

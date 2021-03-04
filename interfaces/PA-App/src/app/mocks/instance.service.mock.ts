@@ -1,6 +1,5 @@
 import { of } from 'rxjs';
 import { InstanceInformation, MonitoringInfo } from '../models/instance.model';
-import { Actor } from '../shared/actor.enum';
 
 const mockMonitoringInfo: MonitoringInfo = {
   intro: 'test',
@@ -14,8 +13,9 @@ const mockMonitoringInfo: MonitoringInfo = {
 };
 
 const mockInstanceInformation: InstanceInformation = {
-  name: Actor.system,
+  name: 'system',
   displayName: 'test',
+  logoUrl: 'test.svg',
   aboutProgram: 'test',
   dataPolicy: 'test',
   contactDetails: 'test',

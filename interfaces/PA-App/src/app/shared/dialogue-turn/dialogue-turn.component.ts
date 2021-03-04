@@ -6,8 +6,12 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { InstanceService } from 'src/app/services/instance.service';
-import { Actor } from 'src/app/shared/actor.enum';
 import { environment } from 'src/environments/environment';
+
+enum Actor {
+  system = 'system',
+  self = 'self',
+}
 
 @Component({
   selector: 'dialogue-turn',
@@ -20,7 +24,13 @@ export class DialogueTurnComponent implements OnInit {
   isSpoken = false;
 
   @Input()
-  actor = Actor.system;
+  actor: Actor | string = Actor.system;
+
+  @Input()
+  actorName: string;
+
+  @Input()
+  avatarUrl: string;
 
   @Input()
   moment: Date;
@@ -33,8 +43,6 @@ export class DialogueTurnComponent implements OnInit {
 
   isSelf: boolean;
   isSystem: boolean;
-
-  public allActors = Actor;
 
   constructor(@Optional() private instanceService: InstanceService) {}
 
@@ -49,19 +57,25 @@ export class DialogueTurnComponent implements OnInit {
     if (!this.instanceService) {
       return;
     }
-    this.instanceService.instanceInformation.subscribe(
-      (instanceInformation) => {
-        this.updateActor(instanceInformation.name);
-      },
-    );
+    this.instanceService.instanceInformation.subscribe((instanceInfo) => {
+      this.updateActor(
+        instanceInfo.name,
+        instanceInfo.displayName,
+        instanceInfo.logoUrl,
+      );
+    });
   }
 
-  private updateActor(newActor: Actor): void {
+  private updateActor(
+    newActor: Actor | string,
+    actorName?: string,
+    avatarUrl?: string,
+  ): void {
     if (this.actor === Actor.system) {
       this.actor = newActor;
+      this.actorName = actorName;
+      this.avatarUrl = avatarUrl;
     }
-    this.isSelf = this.actor === Actor.self;
-    this.isSystem = this.actor === Actor.system;
   }
 
   public show(): void {

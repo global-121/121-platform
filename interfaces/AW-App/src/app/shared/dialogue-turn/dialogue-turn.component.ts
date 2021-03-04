@@ -41,8 +41,6 @@ export class DialogueTurnComponent implements OnInit {
   isSelf: boolean;
   isSystem: boolean;
 
-  public allActors = Actor;
-
   animate = environment.useAnimation;
 
   constructor(@Optional() private instanceService: InstanceService) {}
