@@ -1,0 +1,9 @@
+<ion-button
+  *ngIf="noConnection|async"
+  color="warning"
+  fill="clear"
+  [title]="'connection-indicator.not-available'|translate"
+>
+  <ion-label>{{ 'connection-indicator.offline'|translate }}</ion-label>
+  <ion-icon name="warning" slot="end" aria-hidden="true"></ion-icon>
+</ion-button>
