@@ -9,7 +9,7 @@
       <ion-item *ngFor="let option of menuOptions"
                 color="light"
                 class="ion-no-padding"
-                [disabled]="option.disabled || optionSelected"
+                [disabled]="option.disabled || (option.connectionRequired && noConnection|async) || optionSelected"
       >
         <ion-label class="ion-text-wrap ion-padding-end">
           {{ option.option }}
