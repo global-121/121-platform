@@ -50,6 +50,12 @@ export class SeedMultiProgram implements InterfaceScript {
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
     });
 
+    await this.seedHelper.addUser({
+      roles: [UserRole.View],
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    });
+
     const fieldValidationUser = await this.seedHelper.addUser({
       roles: [UserRole.FieldValidation],
       email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,

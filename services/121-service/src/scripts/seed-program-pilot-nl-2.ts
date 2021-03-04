@@ -41,6 +41,12 @@ export class SeedPilotNL2Program implements InterfaceScript {
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
 
+    await this.seedHelper.addUser({
+      roles: [UserRole.View],
+      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    });
+
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
     await this.seedHelper.addFsp(fspIntersolve);
     await this.seedHelper.addFsp(fspIntersolveNoWhatsapp);
