@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.19.1...master)
 
+### Added
+- 2021-03-01: Add "read-only" user-role: `view`. See: [`services/.env`](services/.env.example)
+
+  To use this role in an existing environment, a manual migration-step is required.
+
 ---
 
 ## [0.19.1](https://github.com/global-121/121-platform/compare/v0.19.0...v0.19.1) - 2021-02-24
