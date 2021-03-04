@@ -31,7 +31,7 @@
     },
     "download-data": {
       "downloading": "Validation data is being downloaded. Wait a second.",
-      "download-result": "Validation data downloaded for {{nrDownloaded}} Persons Affected.",
+      "download-result": "Validation data downloaded for {{nrDownloaded}} PA.",
       "download-aborted": "No validation data could be downloaded at this time. Please try again later."
     },
     "scan-qr": {
@@ -43,7 +43,7 @@
       "main-menu": "Back to main menu"
     },
     "upload-data": {
-      "uploading": "Validation data is being uploaded for {{nrStored}} Persons Affected. Wait a second.",
+      "uploading": "Validation data is being uploaded for {{nrStored}} PA. Wait a second.",
       "upload-result": "Validation data uploaded succesfully.",
       "no-upload-data-stored": "There is no validation data to upload. Please validate someone first.",
       "upload-aborted": "No validation data could be uploaded at this time. Please try again later."
