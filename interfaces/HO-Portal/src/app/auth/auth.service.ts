@@ -126,6 +126,32 @@ export class AuthService {
     });
   }
 
+  public async setPassword(newPassword: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.programsService.changePassword(newPassword).then(
+        (response) => {
+          console.log('AuthService: Password changed!');
+          if (response && response.token) {
+            this.jwtService.saveToken(response.token);
+          }
+
+          const user = this.getUserFromToken();
+          this.authenticationState.next(user);
+
+          if (!user) {
+            return reject({ status: 401 });
+          }
+
+          return resolve();
+        },
+        (error) => {
+          console.error('AuthService: change-password error: ', error);
+          return reject(error);
+        },
+      );
+    });
+  }
+
   public logout() {
     this.jwtService.destroyToken();
     this.authenticationState.next(null);

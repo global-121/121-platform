@@ -266,6 +266,14 @@
       "pageTitle": "Help",
       "user-manual": "User manual",
       "user-manual-content": "Needs to be added."
+    },
+    "user": {
+      "pageTitle": "User",
+      "change-password": {
+        "title": "Change password",
+        "new-password": "New password",
+        "success": "Password changed"
+      }
     }
   },
   "common": {

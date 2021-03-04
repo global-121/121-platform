@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button
+        [title]="'page.home.pageTitle'|translate"
+        [attr.aria-label]="'page.home.pageTitle'|translate"
+        routerLink="/home"
+        fill="clear"
+        size="small"
+        color="medium"
+      >
+        <ion-icon name="home" slot="icon-only" aria-hidden="true"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      <h1 class="ion-no-margin">
+        {{ 'page.user.pageTitle'|translate }}
+      </h1>
+    </ion-title>
+    <ion-buttons slot="end">
+      <app-user-state></app-user-state>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row class="ion-align-items-center ion-justify-content-center">
+      <ion-col size="10" sizeSm="6" sizeMd="4" class="">
+
+          <h2>{{ 'page.user.change-password.title'|translate }}</h2>
+
+          <form
+            *ngIf="!passwordChanged"
+            method="POST"
+            #newPasswordForm="ngForm"
+            (ngSubmit)="updatePassword()"
+            (keyup.enter)="updatePassword()"
+          >
+            <ion-item>
+              <ion-label position="stacked">{{ 'page.user.change-password.new-password'|translate }}</ion-label>
+              <ion-input
+                type="password"
+                autocomplete="new-password"
+                autocapitalize="off"
+                clearInput="true"
+                clearOnEdit="false"
+                required
+                [minlength]="8"
+                name="new-password"
+                [(ngModel)]="newPassword"
+                ngDefaultControl
+              ></ion-input>
+            </ion-item>
+
+            <ion-button
+              type="submit"
+              expand="block"
+              [disabled]="!newPasswordForm?.form?.valid"
+            >
+              {{ 'common.update'|translate }}
+            </ion-button>
+
+          </form>
+          <div
+            *ngIf="passwordChanged"
+           class="ion-text-center"
+          >
+            <ion-icon name="checkmark-circle" color="success" size="large" aria-hidden="true"></ion-icon>
+            <br>
+            <strong>{{ 'page.user.change-password.success'|translate }}</strong>
+          </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

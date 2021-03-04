@@ -43,6 +43,24 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  public changePassword(newPassword: string): Promise<UserModel | null> {
+    return this.apiService
+      .post(environment.url_121_service_api, '/user/change-password', {
+        password: newPassword,
+      })
+      .pipe(
+        map((response) => {
+          if (response && response.user) {
+            return {
+              token: response.user.token,
+            };
+          }
+          return null;
+        }),
+      )
+      .toPromise();
+  }
+
   deleteUser(userId: string): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, '/user/delete/' + userId, {})
