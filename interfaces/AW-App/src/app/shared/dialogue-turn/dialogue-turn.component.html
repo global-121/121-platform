@@ -30,10 +30,13 @@
     <ion-card [color]="isSelf ? 'light' : 'dark'">
       <ion-card-content>
 
-        <ng-content></ng-content>
+        <div>
+          <ng-content></ng-content>
+        </div>
 
-        <ion-note class="ion-float-end ion-text-end"
-                  [color]="isSelf ? '' : 'light'"
+        <ion-note
+          class="ion-float-end ion-text-end"
+          [color]="isSelf ? '' : 'light'"
         >
           <small>{{ moment|date:"EEEE, d LLL" }} - <strong>{{ moment|date:"HH:mm" }}</strong></small>
         </ion-note>
