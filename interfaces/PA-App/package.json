@@ -31,6 +31,8 @@
     "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss}\"",
     "lint": "ng lint && npm run lint:syntax && npm run lint:translations",
     "fix:syntax": "npm run lint:syntax -- --write",
+    "install-dependencies-audio": "ffbinaries ffmpeg --output=node_modules/ffbinaries/",
+    "postinstall": "npm run install-dependencies-audio",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -86,7 +88,7 @@
     "cordova-plugin-whitelist": "^1.3.4",
     "cordova-res": "^0.15.1",
     "dotenv": "^8.2.0",
-    "ffmpeg-cli": "^2.7.1",
+    "ffbinaries": "^1.1.4",
     "jasmine-core": "^3.5.0",
     "jasmine-spec-reporter": "~5.0.2",
     "karma": "^5.1.1",
