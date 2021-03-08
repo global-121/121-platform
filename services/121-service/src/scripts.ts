@@ -50,7 +50,7 @@ function confirmRun(scriptName): any {
   prompt.emit(
     ':new',
     'confirm',
-    'Are you sure? This will delete existing data in the database. (y/n)',
+    'Are you sure? This might delete existing data in the database. (y/n)',
   );
 
   prompt.on('confirm', function(data) {
@@ -65,9 +65,9 @@ async function main(): Promise<void> {
     const name = names[0];
 
     if (name === 'seed-prod' || name === 'seed-publish') {
-      confirmRun(name);
-    } else {
       runScript(name);
+    } else {
+      confirmRun(name);
     }
   } catch (error) {
     throw error;
