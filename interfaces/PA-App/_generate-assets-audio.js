@@ -1,4 +1,5 @@
 const dotenv = require('dotenv');
+const ffbinaries = require('ffbinaries');
 const readline = require('readline');
 const rl = readline.createInterface({
   input: process.stdin,
@@ -13,7 +14,22 @@ dotenv.config();
 // Documentation: https://www.ffmpeg.org/ffmpeg.html
 // Also: https://trac.ffmpeg.org/wiki/Encode/MP3
 // Also: https://trac.ffmpeg.org/wiki/Encode/VP9
-const ffmpegPath = require('ffmpeg-cli').path;
+const ffmpegPath = getFfmpegPath();
+
+/**
+ * @returns {String} Path to `ffmpeg`
+ */
+function getFfmpegPath() {
+  const result = ffbinaries.locateBinariesSync(['ffmpeg'], {
+    paths: ['./node_modules/ffbinaries'], // See path set in npm-script: `postinstall`
+    ensureExecutable: true,
+  });
+  if (!result || !result.ffmpeg || !result.ffmpeg.found) {
+    console.warn(`ffmpeg not found.`);
+    return process.exit(1);
+  }
+  return result.ffmpeg.path;
+}
 
 /**
  * Log the output of the `exec`-command
