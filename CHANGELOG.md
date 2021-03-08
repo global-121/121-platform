@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - 2021-03-01: Add "read-only" user-role: `view`. See: [`services/.env`](services/.env.example)
 
-  To use this role in an existing environment, a manual migration-step is required.
+  To use/add this role in an existing environment, a manual migration-step is required:
+  Run `docker-compose exec 121-service npm run seed:dev` (See: [`seed-dev.ts`](services/121-service/src/scripts/seed-dev.ts) )
 
 ---
 
