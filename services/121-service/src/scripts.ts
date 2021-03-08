@@ -62,10 +62,9 @@ function confirmRun(scriptName): any {
 async function main(): Promise<void> {
   try {
     const names: string[] = yargs.argv._;
-    const name = [names];
-    const nameCheck = name[0][0];
+    const name = names[0];
 
-    if (nameCheck !== 'seed-prod' && nameCheck !== 'seed-publish') {
+    if (name === 'seed-prod' || name === 'seed-publish') {
       confirmRun(name);
     } else {
       runScript(name);
