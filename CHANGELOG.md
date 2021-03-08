@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.19.1...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v0.20.0...master)
+
+---
+
+## [0.20.0](https://github.com/global-121/121-platform/compare/v0.19.1...v0.20.0) - 2021-03-08
 
 ### Added
 - 2021-03-01: Add "read-only" user-role: `view`. See: [`services/.env`](services/.env.example)
