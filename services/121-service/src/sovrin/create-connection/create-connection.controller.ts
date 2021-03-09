@@ -66,19 +66,12 @@ export class CreateConnectionController {
 
   @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('importBulk/:programId')
   @ApiConsumes('multipart/form-data')
   @ApiImplicitFile({ name: 'file', required: true })
   @UseInterceptors(FileInterceptor('file'))
-  public async importBulk(
-    @Param() params,
-    @UploadedFile() csvFile,
-  ): Promise<string> {
-    return await this.createConnectionService.importBulk(
-      params.programId,
-      csvFile,
-    );
+  public async importBulk(@UploadedFile() csvFile): Promise<string> {
+    return await this.createConnectionService.importBulk(csvFile);
   }
 
   @ApiOperation({ title: 'Delete connection' })

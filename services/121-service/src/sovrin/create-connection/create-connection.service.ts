@@ -88,11 +88,11 @@ export class CreateConnectionService {
     return newConnection;
   }
 
-  public async importBulk(programId: number, csvFile): Promise<string> {
+  public async importBulk(csvFile): Promise<string> {
     const importRecords = await this.csvBufferToArray(csvFile.buffer);
     const validatedImportRecords = await this.validateArray(importRecords);
     let countImported = 0;
-    validatedImportRecords.forEach(async record => {
+    for await (const record of validatedImportRecords) {
       let connections = await this.connectionRepository.find({
         where: { phoneNumber: record.phoneNumber },
       });
@@ -100,11 +100,12 @@ export class CreateConnectionService {
         countImported += 1;
         let connection = new ConnectionEntity();
         connection.phoneNumber = record.phoneNumber;
+        connection.preferredLanguage = 'en';
         connection.namePartnerOrganization = record.namePartnerOrganization;
-        const newConnection = await this.connectionRepository.save(connection);
-        return newConnection;
+        connection.importedDate = new Date();
+        await this.connectionRepository.save(connection);
       }
-    });
+    }
     return `There are ${countImported} records imported. Note that records with existing phone-numbers are skipped.`;
   }
 

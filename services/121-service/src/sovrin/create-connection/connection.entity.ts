@@ -93,6 +93,12 @@ export class ConnectionEntity {
     default: () => null,
     nullable: true,
   })
+  public importedDate: Date;
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
   public appliedDate: Date;
 
   @Column({
