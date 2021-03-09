@@ -200,7 +200,7 @@ export class CreateConnectionService {
     const invitedConnection = await this.connectionRepository.findOne({
       where: {
         phoneNumber: sanitizedPhoneNr,
-        invitedDate: Not(IsNull()),
+        importedDate: Not(IsNull()),
         accountCreatedDate: IsNull(),
       },
       relations: ['fsp'],
