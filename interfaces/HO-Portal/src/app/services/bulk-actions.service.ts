@@ -56,10 +56,9 @@ export class BulkActionsService {
   ): Promise<void> {
     switch (action) {
       case BulkActionId.invite:
-        console.log('BulkActionId.invite: ', BulkActionId.invite);
         return await this.programsService.invite(
           programId,
-          selectedPeople,
+          selectedPeople.map((pa) => pa.phoneNumber),
           message,
         );
       case BulkActionId.selectForValidation:

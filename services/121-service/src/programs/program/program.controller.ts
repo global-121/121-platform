@@ -197,12 +197,12 @@ export class ProgramController {
   @Post('invite/:programId')
   public async invite(
     @Param() params,
-    @Body() records: any,
+    @Body() phoneNumbers: object,
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.programService.invite(
       params.programId,
-      records,
+      phoneNumbers,
       messageData.message,
     );
   }

@@ -224,12 +224,12 @@ export class ProgramsServiceApiService {
 
   invite(
     programId: number | string,
-    records: string[],
+    phoneNumbers: string[],
     message: string,
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/invite/${programId}`, {
-        records: JSON.stringify(records),
+        phoneNumbers: JSON.stringify(phoneNumbers),
         message,
       })
       .toPromise();

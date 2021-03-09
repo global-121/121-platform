@@ -471,7 +471,7 @@ export class ProgramService {
 
   public async invite(
     programId: number,
-    records: object,
+    phoneNumbers: object,
     message?: string,
   ): Promise<void> {
     let program = await this.programRepository.findOne(programId);
@@ -479,11 +479,8 @@ export class ProgramService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-
-    for (let record of JSON.parse(records['records'])) {
-      const sanitizedPhoneNr = record.phoneNumber
-        .replace(/\D/g, '')
-        .replace(' ', '');
+    for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
+      const sanitizedPhoneNr = phoneNumber.replace(/\D/g, '').replace(' ', '');
       let connection = await this.connectionRepository.findOne({
         where: { phoneNumber: sanitizedPhoneNr },
       });
