@@ -18,8 +18,6 @@ export class MainMenuComponent implements ValidationComponent {
   public optionChoice: string;
   public optionSelected: boolean;
 
-  private ionicStorageTypes = IonicStorageTypes;
-
   public noConnection = this.noConnectionService.noConnection$;
 
   constructor(
@@ -56,9 +54,7 @@ export class MainMenuComponent implements ValidationComponent {
   }
 
   private async getNrUploadWaiting(): Promise<number> {
-    const credentials = await this.storage.get(
-      this.ionicStorageTypes.credentials,
-    );
+    const credentials = await this.storage.get(IonicStorageTypes.credentials);
     return credentials ? credentials.length : 0;
   }
 

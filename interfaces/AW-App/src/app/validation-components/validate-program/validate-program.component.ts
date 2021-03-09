@@ -41,8 +41,6 @@ export class ValidateProgramComponent implements ValidationComponent {
   public hasAnswered: boolean;
   public hasChangedAnswers = true;
 
-  private ionicStorageTypes = IonicStorageTypes;
-
   constructor(
     public translatableString: TranslatableStringService,
     public programsService: ProgramsServiceApiService,
@@ -85,7 +83,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   private async getCurrentProgramOffline(programId: number): Promise<Program> {
-    const programs = await this.storage.get(this.ionicStorageTypes.myPrograms);
+    const programs = await this.storage.get(IonicStorageTypes.myPrograms);
     if (programs) {
       for (const program of programs) {
         if (program.id === programId) {
@@ -202,7 +200,7 @@ export class ValidateProgramComponent implements ValidationComponent {
       attributes,
     };
     let storedCredentials = await this.storage.get(
-      this.ionicStorageTypes.credentials,
+      IonicStorageTypes.credentials,
     );
     if (!storedCredentials) {
       storedCredentials = [];
@@ -214,10 +212,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     );
 
     storedCredentials.push(credential);
-    await this.storage.set(
-      this.ionicStorageTypes.credentials,
-      storedCredentials,
-    );
+    await this.storage.set(IonicStorageTypes.credentials, storedCredentials);
   }
 
   getNextSection() {
