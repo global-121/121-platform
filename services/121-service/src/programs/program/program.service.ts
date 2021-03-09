@@ -48,6 +48,7 @@ import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { CriteriumForExport } from './dto/criterium-for-export.dto';
 import { FileDto } from './dto/file.dto';
+import { LookupService } from '../../notifications/lookup/lookup.service';
 
 @Injectable()
 export class ProgramService {
@@ -78,13 +79,13 @@ export class ProgramService {
     private readonly actionService: ActionService,
     @Inject(forwardRef(() => CredentialService))
     private readonly credentialService: CredentialService,
-    private readonly voiceService: VoiceService,
     private readonly smsService: SmsService,
     private readonly schemaService: SchemaService,
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
     private readonly fspService: FspService,
+    private readonly lookupService: LookupService,
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
@@ -480,7 +481,9 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
-      const sanitizedPhoneNr = phoneNumber.replace(/\D/g, '').replace(' ', '');
+      const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
+        phoneNumber,
+      );
       let connection = await this.connectionRepository.findOne({
         where: { phoneNumber: sanitizedPhoneNr },
       });

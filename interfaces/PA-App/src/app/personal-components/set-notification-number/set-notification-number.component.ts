@@ -119,10 +119,13 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   private async storePhoneNumber(phoneNumber: string) {
     const did = await this.paData.retrieve(this.paData.type.did);
 
+    const useForInvitationMatching = true;
+
     return this.programService.postPhoneNumber(
       did,
       phoneNumber,
       this.languageCode,
+      useForInvitationMatching,
     );
   }
 

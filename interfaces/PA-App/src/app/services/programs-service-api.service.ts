@@ -238,6 +238,7 @@ export class ProgramsServiceApiService {
     did: string,
     phoneNumber: string,
     language: string,
+    useForInvitationMatching?: boolean,
   ): Promise<any> {
     return this.apiService
       .post(
@@ -247,6 +248,7 @@ export class ProgramsServiceApiService {
           did,
           phonenumber: phoneNumber,
           language,
+          useForInvitationMatching,
         },
         true,
       )

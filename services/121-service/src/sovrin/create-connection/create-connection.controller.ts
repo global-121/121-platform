@@ -105,6 +105,7 @@ export class CreateConnectionController {
       setPhoneRequest.did,
       setPhoneRequest.phonenumber,
       setPhoneRequest.language,
+      setPhoneRequest.useForInvitationMatching,
     );
   }
 

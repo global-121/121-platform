@@ -20,6 +20,7 @@ import { ActionEntity } from '../../actions/action.entity';
 import { TransactionEntity } from './transactions.entity';
 import { ActionModule } from '../../actions/action.module';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { LookupModule } from '../../notifications/lookup/lookup.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
     FundingModule,
     FspModule,
     HttpModule,
+    LookupModule,
   ],
   providers: [ProgramService],
   controllers: [ProgramController],

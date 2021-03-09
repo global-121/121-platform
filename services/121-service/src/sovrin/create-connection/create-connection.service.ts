@@ -9,7 +9,7 @@ import {
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, IsNull, Not } from 'typeorm';
 import { DidDto } from '../../programs/program/dto/did.dto';
 import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
@@ -99,7 +99,9 @@ export class CreateConnectionService {
       if (connections.length === 0) {
         countImported += 1;
         let connection = new ConnectionEntity();
-        connection.phoneNumber = record.phoneNumber;
+        connection.phoneNumber = await this.lookupService.lookupAndCorrect(
+          record.phoneNumber,
+        );
         connection.preferredLanguage = 'en';
         connection.namePartnerOrganization = record.namePartnerOrganization;
         connection.importedDate = new Date();
@@ -188,15 +190,59 @@ export class CreateConnectionService {
     did: string,
     phoneNumber: string,
     preferredLanguage: string,
+    useForInvitationMatching?: boolean,
   ): Promise<void> {
-    const connection = await this.findOne(did);
-    if (!connection.phoneNumber) {
-      connection.phoneNumber = await this.lookupService.lookupAndCorrect(
-        phoneNumber,
-      );
+    const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
+      phoneNumber,
+    );
+
+    // Find invitedConnection based on phone-number
+    const invitedConnection = await this.connectionRepository.findOne({
+      where: {
+        phoneNumber: sanitizedPhoneNr,
+        invitedDate: Not(IsNull()),
+        accountCreatedDate: IsNull(),
+      },
+      relations: ['fsp'],
+    });
+
+    if (!useForInvitationMatching || !invitedConnection) {
+      // If endpoint is used for other purpose OR no invite found  ..
+      // .. continue with earlier created connection
+      const connection = await this.findOne(did);
+      // .. give it an accountCreatedDate
+      connection.accountCreatedDate = new Date();
+      // .. and store phone number and language
+      if (!connection.phoneNumber) {
+        connection.phoneNumber = sanitizedPhoneNr;
+      }
+      connection.preferredLanguage = preferredLanguage;
+      await this.connectionRepository.save(connection);
+      return;
     }
-    connection.preferredLanguage = preferredLanguage;
-    await this.connectionRepository.save(connection);
+
+    // If invite found ..
+    // .. find temp connection created at create-identity step and save it
+    const tempConnection = await this.connectionRepository.findOne({
+      where: { did: did },
+      relations: ['fsp'],
+    });
+    // .. then delete the connection
+    await this.delete({ did: did });
+
+    // .. and transfer its relevant attributes to the invite-connection
+    invitedConnection.did = tempConnection.did;
+    invitedConnection.accountCreatedDate = tempConnection.created;
+    invitedConnection.customData = tempConnection.customData;
+    const fsp = await this.fspRepository.findOne({
+      where: { id: tempConnection.fsp.id },
+    });
+    invitedConnection.fsp = fsp;
+
+    // .. and store phone number and language
+    invitedConnection.phoneNumber = sanitizedPhoneNr;
+    invitedConnection.preferredLanguage = preferredLanguage;
+    await this.connectionRepository.save(invitedConnection);
   }
 
   public async addFsp(did: string, fspId: number): Promise<ConnectionEntity> {
