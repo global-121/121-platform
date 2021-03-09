@@ -21,11 +21,15 @@ import { ProgramService } from '../../programs/program/program.service';
 import {
   FspAnswersAttrInterface,
   AnswerSet,
-} from 'src/programs/fsp/fsp-interface';
+} from '../../programs/fsp/fsp-interface';
 import { API } from '../../config';
 import { SmsService } from '../../notifications/sms/sms.service';
 import { PaStatus } from '../../models/pa-status.model';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
+import { BulkImportDto } from './dto/bulk-import.dto';
+import { validate } from 'class-validator';
+import { Readable } from 'stream';
+import csv from 'csv-parser';
 
 @Injectable()
 export class CreateConnectionService {
@@ -82,6 +86,62 @@ export class CreateConnectionService {
     connection.did = connectionResponse.did;
     const newConnection = await this.connectionRepository.save(connection);
     return newConnection;
+  }
+
+  public async importBulk(programId: number, csvFile): Promise<string> {
+    const importRecords = await this.csvBufferToArray(csvFile.buffer);
+    const validatedImportRecords = await this.validateArray(importRecords);
+    let countImported = 0;
+    validatedImportRecords.forEach(async record => {
+      let connections = await this.connectionRepository.find({
+        where: { phoneNumber: record.phoneNumber },
+      });
+      if (connections.length === 0) {
+        countImported += 1;
+        let connection = new ConnectionEntity();
+        connection.phoneNumber = record.phoneNumber;
+        connection.namePartnerOrganization = record.namePartnerOrganization;
+        const newConnection = await this.connectionRepository.save(connection);
+        return newConnection;
+      }
+    });
+    return `There are ${countImported} records imported. Note that records with existing phone-numbers are skipped.`;
+  }
+
+  private async csvBufferToArray(buffer): Promise<object[]> {
+    const stream = new Readable();
+    stream.push(buffer.toString());
+    stream.push(null);
+    let parsedData = [];
+    return await new Promise(function(resolve, reject) {
+      stream
+        .pipe(csv())
+        .on('error', error => reject(error))
+        .on('data', row => parsedData.push(row))
+        .on('end', () => {
+          resolve(parsedData);
+        });
+    });
+  }
+
+  private async validateArray(csvArray): Promise<BulkImportDto[]> {
+    const errors = [];
+    const validatatedArray = [];
+    for (const [i, row] of csvArray.entries()) {
+      let importRecord = new BulkImportDto();
+      importRecord.phoneNumber = row.phoneNumber;
+      importRecord.namePartnerOrganization = row.namePartnerOrganization;
+      const result = await validate(importRecord);
+      if (result.length > 0) {
+        const errorObj = { lineNunber: i + 1, validationError: result };
+        errors.push(errorObj);
+      }
+      validatatedArray.push(importRecord);
+    }
+    if (errors.length > 0) {
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+    return validatatedArray;
   }
 
   public async applyProgram(did: string, programId: number): Promise<void> {

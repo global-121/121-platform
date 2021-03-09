@@ -1,13 +1,24 @@
 import { DidProgramDto } from './../credential/dto/did-program.dto';
 import { DidDto } from './dto/did.dto';
 import { CreateConnectionService } from './create-connection.service';
-import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiUseTags,
   ApiOperation,
   ApiResponse,
   ApiImplicitParam,
+  ApiConsumes,
+  ApiImplicitFile,
 } from '@nestjs/swagger';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
@@ -25,6 +36,8 @@ import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
 import { GetDidByPhoneNameDto } from './dto/get-did-by-name-phone';
+import { FileInterceptor } from '@nestjs/platform-express';
+
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('sovrin')
@@ -49,6 +62,23 @@ export class CreateConnectionController {
     @Body() didVerMeta: ConnectionReponseDto,
   ): Promise<ConnectionEntity> {
     return await this.createConnectionService.create(didVerMeta);
+  }
+
+  @Roles(UserRole.RunProgram)
+  @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @Post('importBulk/:programId')
+  @ApiConsumes('multipart/form-data')
+  @ApiImplicitFile({ name: 'file', required: true })
+  @UseInterceptors(FileInterceptor('file'))
+  public async importBulk(
+    @Param() params,
+    @UploadedFile() csvFile,
+  ): Promise<string> {
+    return await this.createConnectionService.importBulk(
+      params.programId,
+      csvFile,
+    );
   }
 
   @ApiOperation({ title: 'Delete connection' })

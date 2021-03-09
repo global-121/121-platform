@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v0.19.1...master)
 
+### Added
+- 2020-03-09: Added new dependency `csv-parser` to 121-service;  
+  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
+
 ---
 
 ## [0.19.1](https://github.com/global-121/121-platform/compare/v0.19.0...v0.19.1) - 2021-02-24

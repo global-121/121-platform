@@ -15,11 +15,14 @@ export class ConnectionEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column()
+  @Column({ nullable: true })
   public did: string;
 
   @Column({ nullable: true })
   public phoneNumber: string;
+
+  @Column({ nullable: true })
+  public namePartnerOrganization: string;
 
   @Column({ nullable: true })
   public preferredLanguage: string;
