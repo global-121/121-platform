@@ -906,6 +906,8 @@ export class ProgramService {
       connectionResponse['inclusionNotificationDate'] =
         connection.inclusionNotificationDate;
       connectionResponse['fsp'] = connection.fsp?.fsp;
+      connectionResponse['namePartnerOrganization'] =
+        connection.namePartnerOrganization;
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
 
       if (privacy) {

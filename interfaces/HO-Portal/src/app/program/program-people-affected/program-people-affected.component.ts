@@ -234,6 +234,17 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         minWidth: columnPhoneNumberWidth,
       },
       {
+        prop: 'namePartnerOrganization',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.name-partner-organizatoin',
+        ),
+        ...this.columnDefaults,
+        frozenLeft: true,
+        phases: [ProgramPhase.registrationValidation],
+        roles: [UserRole.View, UserRole.PersonalData, UserRole.RunProgram],
+        minWidth: columnPhoneNumberWidth,
+      },
+      {
         prop: 'statusLabel',
         name: this.translate.instant(
           'page.program.program-people-affected.column.status',
@@ -500,6 +511,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           )
         : null,
       name: person.name,
+      namePartnerOrganization: person.namePartnerOrganization,
       phoneNumber: formatPhoneNumber(person.phoneNumber),
       whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
       vnumber: person.vnumber,

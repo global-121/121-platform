@@ -18,6 +18,7 @@ export class Person {
   fsp?: string;
   vnumber?: string;
   whatsappPhoneNumber?: string;
+  namePartnerOrganization?: string;
 }
 
 // Model for display (in table)
@@ -41,6 +42,7 @@ export class PersonRow {
   fsp?: string | null;
   vnumber?: string | null;
   whatsappPhoneNumber?: string | null;
+  namePartnerOrganization?: string | null;
 }
 
 export enum PaStatus {
