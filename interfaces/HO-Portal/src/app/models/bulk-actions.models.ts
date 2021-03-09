@@ -4,6 +4,7 @@ import { ProgramPhase } from './program.model';
 
 export enum BulkActionId {
   chooseAction = '',
+  invite = 'invite',
   selectForValidation = 'select-for-validation',
   includeRunProgramRole = 'include-run-program-role',
   includePersonalDataRole = 'include-personal-data-role',

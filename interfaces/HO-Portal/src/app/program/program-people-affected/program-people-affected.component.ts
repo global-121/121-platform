@@ -54,6 +54,27 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public action: BulkActionId = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
     {
+      id: BulkActionId.invite,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.invite',
+      ),
+      roles: [UserRole.RunProgram],
+      phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.invite-checkbox',
+        ),
+        checkboxChecked: true,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.invite-explanation',
+        ),
+        minLength: 20,
+      },
+    },
+    {
       id: BulkActionId.selectForValidation,
       enabled: false,
       label: this.translate.instant(

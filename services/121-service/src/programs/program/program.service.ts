@@ -469,6 +469,36 @@ export class ProgramService {
     }
   }
 
+  public async invite(
+    programId: number,
+    records: object,
+    message?: string,
+  ): Promise<void> {
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    for (let record of JSON.parse(records['records'])) {
+      const sanitizedPhoneNr = record.phoneNumber
+        .replace(/\D/g, '')
+        .replace(' ', '');
+      let connection = await this.connectionRepository.findOne({
+        where: { phoneNumber: sanitizedPhoneNr },
+      });
+      if (!connection) {
+        continue;
+      }
+
+      connection.invitedDate = new Date();
+      if (message) {
+        this.notifyInclusionStatus(connection, programId, message);
+      }
+      await this.connectionRepository.save(connection);
+    }
+  }
+
   public async include(
     programId: number,
     dids: object,
@@ -819,8 +849,12 @@ export class ProgramService {
       paStatus = PaStatus.selectedForValidation;
     } else if (connection.appliedDate) {
       paStatus = PaStatus.registered;
-    } else if (connection.created) {
+    } else if (connection.accountCreatedDate) {
       paStatus = PaStatus.created;
+    } else if (connection.invitedDate) {
+      paStatus = PaStatus.invited;
+    } else if (connection.importedDate) {
+      paStatus = PaStatus.imported;
     }
     return paStatus;
   }

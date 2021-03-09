@@ -177,6 +177,8 @@
           "fsp": "Financial Service Provider"
         },
         "status": {
+          "imported": "Imported",
+          "invited": "Invited",
           "created": "Created",
           "registered": "Registered",
           "selectedForValidation": "Selected for Validation",
@@ -186,12 +188,15 @@
           "rejected": "Rejected"
         },
         "actions": {
+          "invite": "Invite for registration",
           "select-for-validation": "Select for validation",
           "include": "Include in program",
           "reject": "Reject from program",
           "notify-included": "Notify included People Affected"
         },
         "action-inputs": {
+          "invite-checkbox": "Send invitation message to Persons affected",
+          "invite-explanation": "Please compose here the invitation message. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
           "reject-checkbox": "Send message to rejected Persons affected",
           "reject-explanation": "Please compose here the message that will be sent. Please ensure to give a reason, and if possible, what their next steps could be. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
           "include-checkbox": "Send message to included Persons affected",

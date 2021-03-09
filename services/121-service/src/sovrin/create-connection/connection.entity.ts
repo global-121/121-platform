@@ -94,6 +94,21 @@ export class ConnectionEntity {
     nullable: true,
   })
   public importedDate: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
+  public invitedDate: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
+  public accountCreatedDate: Date;
+
   @Column({
     type: 'timestamp',
     default: () => null,
