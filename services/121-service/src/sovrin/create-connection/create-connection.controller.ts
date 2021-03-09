@@ -64,7 +64,7 @@ export class CreateConnectionController {
     return await this.createConnectionService.create(didVerMeta);
   }
 
-  @Roles(UserRole.RunProgram)
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
   @Post('importBulk/:programId')
   @ApiConsumes('multipart/form-data')
