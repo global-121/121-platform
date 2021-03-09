@@ -38,8 +38,6 @@ export class ValidateFspComponent implements ValidationComponent {
   public fspQuestionAvailable = true;
   public backToMainMenu = false;
 
-  public ionicStorageTypes = IonicStorageTypes;
-
   constructor(
     public translatableString: TranslatableStringService,
     public programsService: ProgramsServiceApiService,
@@ -89,7 +87,7 @@ export class ValidateFspComponent implements ValidationComponent {
   private async findFspAnswersOffline(did: string) {
     console.log('findFspAnswersOffline()');
     const offlineData = await this.storage.get(
-      this.ionicStorageTypes.validationFspData,
+      IonicStorageTypes.validationFspData,
     );
     if (!offlineData || !offlineData.length) {
       return offlineData;
@@ -193,7 +191,7 @@ export class ValidateFspComponent implements ValidationComponent {
 
   public async storeFspAnswersOffline(fspanswers: any) {
     let storedCredentials = await this.storage.get(
-      this.ionicStorageTypes.credentials,
+      IonicStorageTypes.credentials,
     );
     if (!storedCredentials) {
       storedCredentials = [];
@@ -212,10 +210,7 @@ export class ValidateFspComponent implements ValidationComponent {
       };
       storedCredentials.push(validatedFspData);
     }
-    await this.storage.set(
-      this.ionicStorageTypes.credentials,
-      storedCredentials,
-    );
+    await this.storage.set(IonicStorageTypes.credentials, storedCredentials);
   }
 
   public doReload(): void {

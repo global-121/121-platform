@@ -24,8 +24,6 @@ export class ScanQrComponent implements ValidationComponent {
   public unknownDidCombination = false;
   public returnMainMenu = false;
 
-  public ionicStorageTypes = IonicStorageTypes;
-
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
@@ -140,9 +138,7 @@ export class ScanQrComponent implements ValidationComponent {
 
   private async getPaIdentifierOffline(data: string): Promise<string> {
     console.log('getPaIdentifierOffline');
-    const qrDidMapping = await this.storage.get(
-      this.ionicStorageTypes.qrDidMapping,
-    );
+    const qrDidMapping = await this.storage.get(IonicStorageTypes.qrDidMapping);
     if (!qrDidMapping || !qrDidMapping.length) {
       return;
     }
@@ -201,7 +197,7 @@ export class ScanQrComponent implements ValidationComponent {
   ): Promise<any> {
     console.log('findPaDataOffline()');
     const offlineData = await this.storage.get(
-      this.ionicStorageTypes.validationProgramData,
+      IonicStorageTypes.validationProgramData,
     );
     if (!offlineData || !offlineData.length) {
       return;

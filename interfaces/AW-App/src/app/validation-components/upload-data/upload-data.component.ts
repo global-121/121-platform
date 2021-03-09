@@ -17,8 +17,6 @@ export class UploadDataComponent implements ValidationComponent {
   public uploadDataStored: boolean;
   public nrStored: number;
 
-  public ionicStorageTypes = IonicStorageTypes;
-
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
@@ -30,9 +28,7 @@ export class UploadDataComponent implements ValidationComponent {
   }
 
   public async uploadData(): Promise<void> {
-    const credentials = await this.storage.get(
-      this.ionicStorageTypes.credentials,
-    );
+    const credentials = await this.storage.get(IonicStorageTypes.credentials);
     if (credentials && credentials.length > 0) {
       this.uploadDataStored = true;
       this.nrStored = credentials.length;
