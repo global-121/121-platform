@@ -291,7 +291,10 @@ export class CreateConnectionService {
 
   public async addFsp(did: string, fspId: number): Promise<ConnectionEntity> {
     const connection = await this.findOne(did);
-    const fsp = await this.fspRepository.findOne(fspId);
+    const fsp = await this.fspRepository.findOne({
+      where: { id: fspId },
+      relations: ['attributes'],
+    });
     connection.fsp = fsp;
     return await this.connectionRepository.save(connection);
   }
@@ -455,6 +458,36 @@ export class CreateConnectionService {
       answers: fspAnswers,
       did: did,
     };
+  }
+
+  public async updateChosenFsp(did: string, newFspId: number): Promise<any> {
+    const connection = await this.connectionRepository.findOne({
+      where: { did: did },
+      relations: ['fsp', 'fsp.attributes'],
+    });
+
+    // Remove old attributes
+    const oldFsp = connection.fsp;
+    oldFsp.attributes.forEach(attribute => {
+      console.log('attribute: ', attribute.name);
+      Object.keys(connection.customData).forEach(key => {
+        if (attribute.name === key) {
+          delete connection.customData[key];
+          console.log('deleted..');
+        }
+      });
+    });
+
+    // Update FSP
+    const updatedConnection = await this.addFsp(did, newFspId);
+
+    // Add new attributes
+    updatedConnection.fsp.attributes.forEach(attribute => {
+      console.log('attribute: ', attribute.name);
+      connection.customData[attribute.name] = connection.phoneNumber; // TO DO > make generic!!!
+      console.log('added..');
+    });
+    await this.connectionRepository.save(connection);
   }
 
   public getFspAnswers(

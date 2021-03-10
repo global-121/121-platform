@@ -239,4 +239,20 @@ export class CreateConnectionController {
   ): Promise<FspAnswersAttrInterface> {
     return await this.createConnectionService.getFspAnswersAttributes(data.did);
   }
+
+  @Roles(UserRole.FieldValidation)
+  @ApiOperation({ title: 'Update chosen fsp and attributes' })
+  @ApiResponse({
+    status: 200,
+    description: 'Updated fsp and attributes',
+  })
+  @Post('/update-chosen-fsp')
+  public async updateChosenFsp(
+    @Body() data: SetFspDto,
+  ): Promise<FspAnswersAttrInterface> {
+    return await this.createConnectionService.updateChosenFsp(
+      data.did,
+      data.fspId,
+    );
+  }
 }
