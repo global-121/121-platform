@@ -254,6 +254,24 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         frozenLeft: true,
       },
       {
+        prop: 'imported',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.imported',
+        ),
+        ...this.columnDefaults,
+        phases: [ProgramPhase.registrationValidation],
+        width: columnDateTimeWidth,
+      },
+      {
+        prop: 'invited',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.invited',
+        ),
+        ...this.columnDefaults,
+        phases: [ProgramPhase.registrationValidation],
+        width: columnDateTimeWidth,
+      },
+      {
         prop: 'digitalIdCreated',
         name: this.translate.instant(
           'page.program.program-people-affected.column.digital-id-created',
@@ -478,6 +496,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       statusLabel: this.translate.instant(
         'page.program.program-people-affected.status.' + person.status,
       ),
+      imported: person.importedDate
+        ? formatDate(person.importedDate, this.dateFormat, this.locale)
+        : null,
+      invited: person.invitedDate
+        ? formatDate(person.invitedDate, this.dateFormat, this.locale)
+        : null,
       digitalIdCreated: person.created
         ? formatDate(person.created, this.dateFormat, this.locale)
         : null,
