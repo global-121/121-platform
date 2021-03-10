@@ -159,6 +159,8 @@
           "select": "Select",
           "person": "Person Affected",
           "status": "Status",
+          "imported": "Imported",
+          "invited": "Invited",
           "digital-id-created": "Created Digital ID",
           "vulnerability-assessment-completed": "Completed Vulnerability Assessment",
           "selected-for-validation": "Selected for validation",
