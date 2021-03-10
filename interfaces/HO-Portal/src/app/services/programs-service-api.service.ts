@@ -9,6 +9,7 @@ import { Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
 import { UserModel } from '../models/user.model';
+import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { ApiService } from './api.service';
 
 @Injectable({
@@ -154,7 +155,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  import(programId: number): Promise<any> {
+  import(programId: number): Promise<ImportResult> {
     return this.apiService
       .post(environment.url_121_service_api, `/create-connection/import-bulk`, {
         programId,

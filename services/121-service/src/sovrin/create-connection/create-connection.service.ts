@@ -27,7 +27,7 @@ import { API } from '../../config';
 import { SmsService } from '../../notifications/sms/sms.service';
 import { PaStatus } from '../../models/pa-status.model';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
-import { BulkImportDto } from './dto/bulk-import.dto';
+import { BulkImportDto, ImportResult } from './dto/bulk-import.dto';
 import { validate } from 'class-validator';
 import { Readable } from 'stream';
 import csv from 'csv-parser';
@@ -98,7 +98,7 @@ export class CreateConnectionService {
     csvFile,
     programId: number,
     userId: number,
-  ): Promise<string> {
+  ): Promise<ImportResult> {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
@@ -112,22 +112,34 @@ export class CreateConnectionService {
     const validatedImportRecords = await this.validateArray(importRecords);
 
     let countImported = 0;
+    let countInvalidPhoneNr = 0;
+    let countExistingPhoneNr = 0;
     for await (const record of validatedImportRecords) {
-      let connections = await this.connectionRepository.find({
+      let existingConnections = await this.connectionRepository.find({
         where: { phoneNumber: record.phoneNumber },
       });
-
-      if (connections.length === 0) {
-        countImported += 1;
-        let connection = new ConnectionEntity();
-        connection.phoneNumber = await this.lookupService.lookupAndCorrect(
-          record.phoneNumber,
-        );
-        connection.preferredLanguage = 'en';
-        connection.namePartnerOrganization = record.namePartnerOrganization;
-        connection.importedDate = new Date();
-        await this.connectionRepository.save(connection);
+      if (existingConnections.length > 0) {
+        countExistingPhoneNr += 1;
+        continue;
       }
+
+      const throwNoException = true;
+      const phoneNumberResult = await this.lookupService.lookupAndCorrect(
+        record.phoneNumber,
+        throwNoException,
+      );
+      if (!phoneNumberResult) {
+        countInvalidPhoneNr += 1;
+        continue;
+      }
+
+      countImported += 1;
+      const newConnection = new ConnectionEntity();
+      newConnection.phoneNumber = phoneNumberResult;
+      newConnection.preferredLanguage = 'en';
+      newConnection.namePartnerOrganization = record.namePartnerOrganization;
+      newConnection.importedDate = new Date();
+      await this.connectionRepository.save(newConnection);
     }
 
     this.actionService.saveAction(
@@ -136,7 +148,11 @@ export class CreateConnectionService {
       AdditionalActionType.importPeopleAffected,
     );
 
-    return `There are ${countImported} records imported. Note that records with existing phone-numbers are skipped.`;
+    return {
+      countImported,
+      countInvalidPhoneNr,
+      countExistingPhoneNr,
+    };
   }
 
   private async csvBufferToArray(buffer, separator): Promise<object[]> {

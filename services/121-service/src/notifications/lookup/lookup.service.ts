@@ -20,14 +20,32 @@ export class LookupService {
     return { result: numberCorrect };
   }
 
-  public async lookupAndCorrect(phoneNumber: string): Promise<string> {
+  public async lookupAndCorrect(
+    phoneNumber: string,
+    throwNoException?: boolean,
+  ): Promise<string> {
     try {
+      // Add additional sanitizing (incl NL-specific) because user is given no opportunity to correct here
+      const updatedPhone =
+        phoneNumber.substr(0, 2) == '00'
+          ? phoneNumber.substr(2, 20)
+          : phoneNumber.substr(0, 2) == '06'
+          ? '31' + phoneNumber
+          : phoneNumber.substr(0, 3) == '+00'
+          ? phoneNumber.substr(3, 20)
+          : phoneNumber.substr(0, 2) == '+0'
+          ? phoneNumber.substr(2, 20)
+          : phoneNumber;
+
       const lookupResponse = await twilioClient.lookups
-        .phoneNumbers(phoneNumber)
+        .phoneNumbers(updatedPhone)
         .fetch({ type: ['carrier'] });
       return lookupResponse.phoneNumber.replace(/\D/g, '');
     } catch (e) {
       console.log('e: ', e);
+      if (throwNoException) {
+        return;
+      }
       if (e.status === HttpStatus.NOT_FOUND) {
         const errors = `Phone number incorrect`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);

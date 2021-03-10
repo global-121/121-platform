@@ -38,6 +38,7 @@ import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
 import { GetDidByPhoneNameDto } from './dto/get-did-by-name-phone';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '../../user/user.decorator';
+import { ImportResult } from './dto/bulk-import.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -76,7 +77,7 @@ export class CreateConnectionController {
     @UploadedFile() csvFile,
     @Param() params,
     @User('id') userId: number,
-  ): Promise<string> {
+  ): Promise<ImportResult> {
     return await this.createConnectionService.importBulk(
       csvFile,
       params.programId,

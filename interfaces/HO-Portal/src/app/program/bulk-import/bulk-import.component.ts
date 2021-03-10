@@ -9,6 +9,12 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { FilePickerProps } from 'src/app/shared/file-picker-prompt/file-picker-prompt.component';
 import { environment } from 'src/environments/environment';
 
+export class ImportResult {
+  countImported: number;
+  countExistingPhoneNr: number;
+  countInvalidPhoneNr: number;
+}
+
 @Component({
   selector: 'app-bulk-import',
   templateUrl: './bulk-import.component.html',
@@ -77,9 +83,15 @@ export class BulkImportComponent implements OnInit {
   public importPeopleAffected() {
     this.isInProgress = true;
     this.programsService.import(+this.programId).then(
-      (res) => {
+      (response) => {
         this.isInProgress = false;
-        console.log('res: ', res);
+        this.actionResult(
+          this.translate.instant('page.program.bulk-import.import-result', {
+            countImported: response.countImported,
+            countExistingPhoneNr: response.countExistingPhoneNr,
+            countInvalidPhoneNr: response.countInvalidPhoneNr,
+          }),
+        );
       },
       (err) => {
         this.isInProgress = false;

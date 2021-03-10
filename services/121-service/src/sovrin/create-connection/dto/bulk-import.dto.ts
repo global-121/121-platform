@@ -13,3 +13,9 @@ export class BulkImportDto {
   @IsString()
   public namePartnerOrganization: string;
 }
+
+export class ImportResult {
+  public countImported: number;
+  public countExistingPhoneNr: number;
+  public countInvalidPhoneNr: number;
+}
