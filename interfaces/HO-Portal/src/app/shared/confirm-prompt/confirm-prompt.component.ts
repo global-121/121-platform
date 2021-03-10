@@ -2,6 +2,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  FilePickerPromptComponent,
+  FilePickerProps,
+} from '../file-picker-prompt/file-picker-prompt.component';
+import {
   InputPromptComponent,
   InputProps,
 } from '../input-prompt/input-prompt.component';
@@ -30,6 +34,9 @@ export class ConfirmPromptComponent {
   @Input()
   public inputProps: InputProps;
 
+  @Input()
+  public filePickerProps: FilePickerProps;
+
   @Output()
   private confirm = new EventEmitter<string>();
 
@@ -44,14 +51,27 @@ export class ConfirmPromptComponent {
   public async showPrompt() {
     this.disabled = true;
 
-    const modal = await this.modalController.create({
-      component: InputPromptComponent,
-      componentProps: {
-        subHeader: this.subHeader,
-        message: this.message,
-        inputProps: this.inputProps,
-      },
-    });
+    let modal: HTMLIonModalElement;
+    if (this.filePickerProps) {
+      modal = await this.modalController.create({
+        component: FilePickerPromptComponent,
+        componentProps: {
+          subHeader: this.subHeader,
+          message: this.message,
+          filePickerProps: this.filePickerProps,
+        },
+      });
+    } else {
+      modal = await this.modalController.create({
+        component: InputPromptComponent,
+        componentProps: {
+          subHeader: this.subHeader,
+          message: this.message,
+          inputProps: this.inputProps,
+        },
+      });
+    }
+
     modal.onDidDismiss().then((data) => {
       this.disabled = false;
 

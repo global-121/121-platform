@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ActionType } from 'src/app/models/action-type.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { FilePickerProps } from 'src/app/shared/file-picker-prompt/file-picker-prompt.component';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -23,6 +24,9 @@ export class BulkImportComponent implements OnInit {
   public btnText: string;
   public subHeader: string;
   public message: string;
+  public filePickerProps: FilePickerProps = {
+    importFile: true,
+  };
 
   private locale: string;
   public actionTimestamp: string;

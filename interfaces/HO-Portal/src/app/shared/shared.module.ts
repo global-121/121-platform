@@ -14,6 +14,7 @@ import { PhaseNextComponent } from '../program/phase-next/phase-next.component';
 import { ProgramPeopleAffectedComponent } from '../program/program-people-affected/program-people-affected.component';
 import { TestPaymentComponent } from '../program/test-payment/test-payment.component';
 import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.component';
+import { FilePickerPromptComponent } from './file-picker-prompt/file-picker-prompt.component';
 import { InputPromptComponent } from './input-prompt/input-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
 
@@ -22,6 +23,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     BulkImportComponent,
     ConfirmPromptComponent,
     ExportListComponent,
+    FilePickerPromptComponent,
     HeaderComponent,
     InputPromptComponent,
     PasswordToggleInputComponent,
@@ -43,6 +45,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     BulkImportComponent,
     ConfirmPromptComponent,
     ExportListComponent,
+    FilePickerPromptComponent,
     HeaderComponent,
     InputPromptComponent,
     PasswordToggleInputComponent,
@@ -55,6 +58,6 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     TranslateModule,
     NgxDatatableModule,
   ],
-  entryComponents: [InputPromptComponent],
+  entryComponents: [InputPromptComponent, FilePickerPromptComponent],
 })
 export class SharedModule {}
