@@ -1,0 +1,14 @@
+<confirm-prompt
+  [disabled]="disabled"
+  (confirm)="importPeopleAffected()"
+  [subHeader]="subHeader"
+  [message]="message"
+>
+  <ion-icon name="cloud-upload" slot="start"></ion-icon>
+  {{ btnText }}
+</confirm-prompt>
+<ion-spinner
+  *ngIf="isInProgress"
+  color="primary"
+  class="ion-margin-start"
+></ion-spinner>

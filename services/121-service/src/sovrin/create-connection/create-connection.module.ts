@@ -14,6 +14,9 @@ import { ProgramModule } from '../../programs/program/program.module';
 import { SmsModule } from '../../notifications/sms/sms.module';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 import { TransactionEntity } from '../../programs/program/transactions.entity';
+import { ProgramEntity } from '../../programs/program/program.entity';
+import { ActionModule } from '../../actions/action.module';
+import { ActionEntity } from '../../actions/action.entity';
 
 @Module({
   imports: [
@@ -26,12 +29,15 @@ import { TransactionEntity } from '../../programs/program/transactions.entity';
       FspAttributeEntity,
       CustomCriterium,
       TransactionEntity,
+      ProgramEntity,
+      ActionEntity,
     ]),
     ProgramModule,
     UserModule,
     HttpModule,
     SmsModule,
     LookupModule,
+    ActionModule,
   ],
   providers: [CreateConnectionService],
   controllers: [CreateConnectionController],

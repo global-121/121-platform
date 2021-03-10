@@ -154,6 +154,14 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  import(programId: number): Promise<any> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/create-connection/import-bulk`, {
+        programId,
+      })
+      .toPromise();
+  }
+
   exportList(
     programId: number,
     type: ExportType,

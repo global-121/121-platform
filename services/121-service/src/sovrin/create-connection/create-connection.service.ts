@@ -17,6 +17,7 @@ import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import { CredentialEntity } from '../credential/credential.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { TransactionEntity } from '../../programs/program/transactions.entity';
+import { ProgramEntity } from '../../programs/program/program.entity';
 import { ProgramService } from '../../programs/program/program.service';
 import {
   FspAnswersAttrInterface,
@@ -30,6 +31,8 @@ import { BulkImportDto } from './dto/bulk-import.dto';
 import { validate } from 'class-validator';
 import { Readable } from 'stream';
 import csv from 'csv-parser';
+import { ActionService } from '../../actions/action.service';
+import { AdditionalActionType } from '../../actions/action.entity';
 
 @Injectable()
 export class CreateConnectionService {
@@ -53,12 +56,15 @@ export class CreateConnectionService {
   private readonly customCriteriumRepository: Repository<CustomCriterium>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor(
     private readonly programService: ProgramService,
     private readonly httpService: HttpService,
     private readonly smsService: SmsService,
     private readonly lookupService: LookupService,
+    private readonly actionService: ActionService,
   ) {}
 
   // This is for SSI-solution
@@ -88,14 +94,29 @@ export class CreateConnectionService {
     return newConnection;
   }
 
-  public async importBulk(csvFile): Promise<string> {
-    const importRecords = await this.csvBufferToArray(csvFile.buffer);
+  public async importBulk(
+    csvFile,
+    programId: number,
+    userId: number,
+  ): Promise<string> {
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    let importRecords = await this.csvBufferToArray(csvFile.buffer, ',');
+    if (Object.keys(importRecords[0]).length === 1) {
+      importRecords = await this.csvBufferToArray(importRecords, ';');
+    }
     const validatedImportRecords = await this.validateArray(importRecords);
+
     let countImported = 0;
     for await (const record of validatedImportRecords) {
       let connections = await this.connectionRepository.find({
         where: { phoneNumber: record.phoneNumber },
       });
+
       if (connections.length === 0) {
         countImported += 1;
         let connection = new ConnectionEntity();
@@ -108,20 +129,27 @@ export class CreateConnectionService {
         await this.connectionRepository.save(connection);
       }
     }
+
+    this.actionService.saveAction(
+      userId,
+      programId,
+      AdditionalActionType.importPeopleAffected,
+    );
+
     return `There are ${countImported} records imported. Note that records with existing phone-numbers are skipped.`;
   }
 
-  private async csvBufferToArray(buffer): Promise<object[]> {
+  private async csvBufferToArray(buffer, separator): Promise<object[]> {
     const stream = new Readable();
     stream.push(buffer.toString());
     stream.push(null);
     let parsedData = [];
-    return await new Promise(function(resolve, reject) {
+    return await new Promise((resolve, reject): void => {
       stream
-        .pipe(csv())
-        .on('error', error => reject(error))
-        .on('data', row => parsedData.push(row))
-        .on('end', () => {
+        .pipe(csv({ separator: separator }))
+        .on('error', (error): void => reject(error))
+        .on('data', (row): number => parsedData.push(row))
+        .on('end', (): void => {
           resolve(parsedData);
         });
     });
@@ -136,7 +164,7 @@ export class CreateConnectionService {
       importRecord.namePartnerOrganization = row.namePartnerOrganization;
       const result = await validate(importRecord);
       if (result.length > 0) {
-        const errorObj = { lineNunber: i + 1, validationError: result };
+        const errorObj = { lineNumber: i + 1, validationError: result };
         errors.push(errorObj);
       }
       validatatedArray.push(importRecord);

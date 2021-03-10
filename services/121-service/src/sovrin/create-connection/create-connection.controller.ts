@@ -37,6 +37,7 @@ import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
 import { GetDidByPhoneNameDto } from './dto/get-did-by-name-phone';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { User } from '../../user/user.decorator';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -66,12 +67,21 @@ export class CreateConnectionController {
 
   @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
-  @Post('importBulk/:programId')
+  @ApiImplicitParam({ name: 'programId', required: true })
+  @Post('import-bulk/:programId')
   @ApiConsumes('multipart/form-data')
   @ApiImplicitFile({ name: 'file', required: true })
   @UseInterceptors(FileInterceptor('file'))
-  public async importBulk(@UploadedFile() csvFile): Promise<string> {
-    return await this.createConnectionService.importBulk(csvFile);
+  public async importBulk(
+    @UploadedFile() csvFile,
+    @Param() params,
+    @User('id') userId: number,
+  ): Promise<string> {
+    return await this.createConnectionService.importBulk(
+      csvFile,
+      params.programId,
+      userId,
+    );
   }
 
   @ApiOperation({ title: 'Delete connection' })
