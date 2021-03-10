@@ -192,6 +192,22 @@ export class ProgramController {
   }
 
   @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'Invite set of PAs for registration' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @Post('invite/:programId')
+  public async invite(
+    @Param() params,
+    @Body() phoneNumbers: object,
+    @Body() messageData: MessageDto,
+  ): Promise<void> {
+    await this.programService.invite(
+      params.programId,
+      phoneNumbers,
+      messageData.message,
+    );
+  }
+
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Include set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('include/:programId')

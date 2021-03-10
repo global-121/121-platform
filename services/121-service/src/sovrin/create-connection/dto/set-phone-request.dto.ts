@@ -1,4 +1,10 @@
-import { Length, IsString, ValidateIf } from 'class-validator';
+import {
+  Length,
+  IsString,
+  ValidateIf,
+  IsBoolean,
+  IsOptional,
+} from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class SetPhoneRequestDto {
@@ -14,6 +20,10 @@ export class SetPhoneRequestDto {
   @IsString()
   @Length(2, 8)
   public readonly language: string;
+  @ApiModelProperty({ example: true })
+  @IsBoolean()
+  @IsOptional()
+  public readonly useForInvitationMatching: boolean;
 }
 
 export class UpdatePhoneRequestDto {

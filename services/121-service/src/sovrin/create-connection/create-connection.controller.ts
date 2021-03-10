@@ -1,13 +1,24 @@
 import { DidProgramDto } from './../credential/dto/did-program.dto';
 import { DidDto } from './dto/did.dto';
 import { CreateConnectionService } from './create-connection.service';
-import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiUseTags,
   ApiOperation,
   ApiResponse,
   ApiImplicitParam,
+  ApiConsumes,
+  ApiImplicitFile,
 } from '@nestjs/swagger';
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
@@ -25,6 +36,10 @@ import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
 import { GetDidByPhoneNameDto } from './dto/get-did-by-name-phone';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { User } from '../../user/user.decorator';
+import { ImportResult } from './dto/bulk-import.dto';
+
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('sovrin')
@@ -49,6 +64,25 @@ export class CreateConnectionController {
     @Body() didVerMeta: ConnectionReponseDto,
   ): Promise<ConnectionEntity> {
     return await this.createConnectionService.create(didVerMeta);
+  }
+
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
+  @ApiImplicitParam({ name: 'programId', required: true })
+  @Post('import-bulk/:programId')
+  @ApiConsumes('multipart/form-data')
+  @ApiImplicitFile({ name: 'file', required: true })
+  @UseInterceptors(FileInterceptor('file'))
+  public async importBulk(
+    @UploadedFile() csvFile,
+    @Param() params,
+    @User('id') userId: number,
+  ): Promise<ImportResult> {
+    return await this.createConnectionService.importBulk(
+      csvFile,
+      params.programId,
+      userId,
+    );
   }
 
   @ApiOperation({ title: 'Delete connection' })
@@ -82,6 +116,7 @@ export class CreateConnectionController {
       setPhoneRequest.did,
       setPhoneRequest.phonenumber,
       setPhoneRequest.language,
+      setPhoneRequest.useForInvitationMatching,
     );
   }
 

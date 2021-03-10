@@ -15,11 +15,14 @@ export class ConnectionEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column()
+  @Column({ nullable: true })
   public did: string;
 
   @Column({ nullable: true })
   public phoneNumber: string;
+
+  @Column({ nullable: true })
+  public namePartnerOrganization: string;
 
   @Column({ nullable: true })
   public preferredLanguage: string;
@@ -84,6 +87,27 @@ export class ConnectionEntity {
     nullable: true,
   })
   public created: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
+  public importedDate: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
+  public invitedDate: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
+  public accountCreatedDate: Date;
 
   @Column({
     type: 'timestamp',

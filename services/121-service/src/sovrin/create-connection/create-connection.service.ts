@@ -9,7 +9,7 @@ import {
 import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, IsNull, Not } from 'typeorm';
 import { DidDto } from '../../programs/program/dto/did.dto';
 import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
@@ -17,15 +17,22 @@ import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import { CredentialEntity } from '../credential/credential.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { TransactionEntity } from '../../programs/program/transactions.entity';
+import { ProgramEntity } from '../../programs/program/program.entity';
 import { ProgramService } from '../../programs/program/program.service';
 import {
   FspAnswersAttrInterface,
   AnswerSet,
-} from 'src/programs/fsp/fsp-interface';
+} from '../../programs/fsp/fsp-interface';
 import { API } from '../../config';
 import { SmsService } from '../../notifications/sms/sms.service';
 import { PaStatus } from '../../models/pa-status.model';
 import { ConnectionRequestDto } from './dto/connection-request.dto';
+import { BulkImportDto, ImportResult } from './dto/bulk-import.dto';
+import { validate } from 'class-validator';
+import { Readable } from 'stream';
+import csv from 'csv-parser';
+import { ActionService } from '../../actions/action.service';
+import { AdditionalActionType } from '../../actions/action.entity';
 
 @Injectable()
 export class CreateConnectionService {
@@ -49,12 +56,15 @@ export class CreateConnectionService {
   private readonly customCriteriumRepository: Repository<CustomCriterium>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(ProgramEntity)
+  private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor(
     private readonly programService: ProgramService,
     private readonly httpService: HttpService,
     private readonly smsService: SmsService,
     private readonly lookupService: LookupService,
+    private readonly actionService: ActionService,
   ) {}
 
   // This is for SSI-solution
@@ -82,6 +92,103 @@ export class CreateConnectionService {
     connection.did = connectionResponse.did;
     const newConnection = await this.connectionRepository.save(connection);
     return newConnection;
+  }
+
+  public async importBulk(
+    csvFile,
+    programId: number,
+    userId: number,
+  ): Promise<ImportResult> {
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    let importRecords = await this.csvBufferToArray(csvFile.buffer, ',');
+    if (Object.keys(importRecords[0]).length === 1) {
+      importRecords = await this.csvBufferToArray(importRecords, ';');
+    }
+    const validatedImportRecords = await this.validateArray(importRecords);
+
+    let countImported = 0;
+    let countInvalidPhoneNr = 0;
+    let countExistingPhoneNr = 0;
+    for await (const record of validatedImportRecords) {
+      let existingConnections = await this.connectionRepository.find({
+        where: { phoneNumber: record.phoneNumber },
+      });
+      if (existingConnections.length > 0) {
+        countExistingPhoneNr += 1;
+        continue;
+      }
+
+      const throwNoException = true;
+      const phoneNumberResult = await this.lookupService.lookupAndCorrect(
+        record.phoneNumber,
+        throwNoException,
+      );
+      if (!phoneNumberResult) {
+        countInvalidPhoneNr += 1;
+        continue;
+      }
+
+      countImported += 1;
+      const newConnection = new ConnectionEntity();
+      newConnection.phoneNumber = phoneNumberResult;
+      newConnection.preferredLanguage = 'en';
+      newConnection.namePartnerOrganization = record.namePartnerOrganization;
+      newConnection.importedDate = new Date();
+      await this.connectionRepository.save(newConnection);
+    }
+
+    this.actionService.saveAction(
+      userId,
+      programId,
+      AdditionalActionType.importPeopleAffected,
+    );
+
+    return {
+      countImported,
+      countInvalidPhoneNr,
+      countExistingPhoneNr,
+    };
+  }
+
+  private async csvBufferToArray(buffer, separator): Promise<object[]> {
+    const stream = new Readable();
+    stream.push(buffer.toString());
+    stream.push(null);
+    let parsedData = [];
+    return await new Promise((resolve, reject): void => {
+      stream
+        .pipe(csv({ separator: separator }))
+        .on('error', (error): void => reject(error))
+        .on('data', (row): number => parsedData.push(row))
+        .on('end', (): void => {
+          resolve(parsedData);
+        });
+    });
+  }
+
+  private async validateArray(csvArray): Promise<BulkImportDto[]> {
+    const errors = [];
+    const validatatedArray = [];
+    for (const [i, row] of csvArray.entries()) {
+      let importRecord = new BulkImportDto();
+      importRecord.phoneNumber = row.phoneNumber;
+      importRecord.namePartnerOrganization = row.namePartnerOrganization;
+      const result = await validate(importRecord);
+      if (result.length > 0) {
+        const errorObj = { lineNumber: i + 1, validationError: result };
+        errors.push(errorObj);
+      }
+      validatatedArray.push(importRecord);
+    }
+    if (errors.length > 0) {
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+    return validatatedArray;
   }
 
   public async applyProgram(did: string, programId: number): Promise<void> {
@@ -127,15 +234,59 @@ export class CreateConnectionService {
     did: string,
     phoneNumber: string,
     preferredLanguage: string,
+    useForInvitationMatching?: boolean,
   ): Promise<void> {
-    const connection = await this.findOne(did);
-    if (!connection.phoneNumber) {
-      connection.phoneNumber = await this.lookupService.lookupAndCorrect(
-        phoneNumber,
-      );
+    const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
+      phoneNumber,
+    );
+
+    // Find invitedConnection based on phone-number
+    const invitedConnection = await this.connectionRepository.findOne({
+      where: {
+        phoneNumber: sanitizedPhoneNr,
+        importedDate: Not(IsNull()),
+        accountCreatedDate: IsNull(),
+      },
+      relations: ['fsp'],
+    });
+
+    if (!useForInvitationMatching || !invitedConnection) {
+      // If endpoint is used for other purpose OR no invite found  ..
+      // .. continue with earlier created connection
+      const connection = await this.findOne(did);
+      // .. give it an accountCreatedDate
+      connection.accountCreatedDate = new Date();
+      // .. and store phone number and language
+      if (!connection.phoneNumber) {
+        connection.phoneNumber = sanitizedPhoneNr;
+      }
+      connection.preferredLanguage = preferredLanguage;
+      await this.connectionRepository.save(connection);
+      return;
     }
-    connection.preferredLanguage = preferredLanguage;
-    await this.connectionRepository.save(connection);
+
+    // If invite found ..
+    // .. find temp connection created at create-identity step and save it
+    const tempConnection = await this.connectionRepository.findOne({
+      where: { did: did },
+      relations: ['fsp'],
+    });
+    // .. then delete the connection
+    await this.delete({ did: did });
+
+    // .. and transfer its relevant attributes to the invite-connection
+    invitedConnection.did = tempConnection.did;
+    invitedConnection.accountCreatedDate = tempConnection.created;
+    invitedConnection.customData = tempConnection.customData;
+    const fsp = await this.fspRepository.findOne({
+      where: { id: tempConnection.fsp.id },
+    });
+    invitedConnection.fsp = fsp;
+
+    // .. and store phone number and language
+    invitedConnection.phoneNumber = sanitizedPhoneNr;
+    invitedConnection.preferredLanguage = preferredLanguage;
+    await this.connectionRepository.save(invitedConnection);
   }
 
   public async addFsp(did: string, fspId: number): Promise<ConnectionEntity> {

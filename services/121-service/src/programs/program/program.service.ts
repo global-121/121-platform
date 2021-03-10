@@ -48,6 +48,7 @@ import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { CriteriumForExport } from './dto/criterium-for-export.dto';
 import { FileDto } from './dto/file.dto';
+import { LookupService } from '../../notifications/lookup/lookup.service';
 
 @Injectable()
 export class ProgramService {
@@ -78,13 +79,13 @@ export class ProgramService {
     private readonly actionService: ActionService,
     @Inject(forwardRef(() => CredentialService))
     private readonly credentialService: CredentialService,
-    private readonly voiceService: VoiceService,
     private readonly smsService: SmsService,
     private readonly schemaService: SchemaService,
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
     private readonly fundingService: FundingService,
     private readonly fspService: FspService,
+    private readonly lookupService: LookupService,
   ) {}
 
   public async findOne(where): Promise<ProgramEntity> {
@@ -469,6 +470,35 @@ export class ProgramService {
     }
   }
 
+  public async invite(
+    programId: number,
+    phoneNumbers: object,
+    message?: string,
+  ): Promise<void> {
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
+      const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
+        phoneNumber,
+      );
+      let connection = await this.connectionRepository.findOne({
+        where: { phoneNumber: sanitizedPhoneNr },
+      });
+      if (!connection) {
+        continue;
+      }
+
+      connection.invitedDate = new Date();
+      if (message) {
+        this.notifyInclusionStatus(connection, programId, message);
+      }
+      await this.connectionRepository.save(connection);
+    }
+  }
+
   public async include(
     programId: number,
     dids: object,
@@ -819,8 +849,12 @@ export class ProgramService {
       paStatus = PaStatus.selectedForValidation;
     } else if (connection.appliedDate) {
       paStatus = PaStatus.registered;
-    } else if (connection.created) {
+    } else if (connection.accountCreatedDate) {
       paStatus = PaStatus.created;
+    } else if (connection.invitedDate) {
+      paStatus = PaStatus.invited;
+    } else if (connection.importedDate) {
+      paStatus = PaStatus.imported;
     }
     return paStatus;
   }
@@ -872,6 +906,8 @@ export class ProgramService {
       connectionResponse['inclusionNotificationDate'] =
         connection.inclusionNotificationDate;
       connectionResponse['fsp'] = connection.fsp?.fsp;
+      connectionResponse['namePartnerOrganization'] =
+        connection.namePartnerOrganization;
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
 
       if (privacy) {

@@ -11,6 +11,11 @@ export class BulkActionsService {
 
   updateCheckbox(action: BulkActionId, personData: PersonRow) {
     switch (action) {
+      case BulkActionId.invite:
+        personData.checkboxVisible = [PaStatus.imported].includes(
+          personData.status,
+        );
+        break;
       case BulkActionId.selectForValidation:
         personData.checkboxVisible = [PaStatus.registered].includes(
           personData.status,
@@ -50,6 +55,12 @@ export class BulkActionsService {
     message?: string,
   ): Promise<void> {
     switch (action) {
+      case BulkActionId.invite:
+        return await this.programsService.invite(
+          programId,
+          selectedPeople.map((pa) => pa.phoneNumber),
+          message,
+        );
       case BulkActionId.selectForValidation:
         return await this.programsService.selectForValidation(
           programId,

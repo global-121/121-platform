@@ -174,9 +174,12 @@
           "payment": "Payment #",
           "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
+          "name-partner-organizatoin": "Partner organization",
           "fsp": "Financial Service Provider"
         },
         "status": {
+          "imported": "Imported",
+          "invited": "Invited",
           "created": "Created",
           "registered": "Registered",
           "selectedForValidation": "Selected for Validation",
@@ -186,12 +189,15 @@
           "rejected": "Rejected"
         },
         "actions": {
+          "invite": "Invite for registration",
           "select-for-validation": "Select for validation",
           "include": "Include in program",
           "reject": "Reject from program",
           "notify-included": "Notify included People Affected"
         },
         "action-inputs": {
+          "invite-checkbox": "Send invitation message to Persons affected",
+          "invite-explanation": "Please compose here the invitation message. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
           "reject-checkbox": "Send message to rejected Persons affected",
           "reject-explanation": "Please compose here the message that will be sent. Please ensure to give a reason, and if possible, what their next steps could be. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
           "include-checkbox": "Send message to included Persons affected",
@@ -219,6 +225,13 @@
       },
       "program-modal": {
         "pageTitle": "Program JSON"
+      },
+      "bulk-import": {
+        "import-error": "Something went wrong with the import",
+        "import-result": "Import ready. There are {{countImported}} new records imported. There were {{countExistingPhoneNr}} existing phone-numbers, which are skipped. There were {{countInvalidPhoneNr}} unrecognizable phone numbers. Try to correct them and import again.",
+        "timestamp": "Latest import has been done on: {{dateTime}}",
+        "btn-text": "Import People Affected",
+        "confirm-message": "This will ask you to select a CSV-file of the right format. The system will detect only new phone-numbers and import them as People Affected."
       },
       "export-list": {
         "timestamp": "Latest export has been done on: {{dateTime}}",

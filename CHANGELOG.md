@@ -23,6 +23,10 @@ Hotfix: To run initial start-up without manual intervention.
   To use/add this role in an existing environment, a manual migration-step is required:
   Run `docker-compose exec 121-service npm run seed:dev` (See: [`seed-dev.ts`](services/121-service/src/scripts/seed-dev.ts) )
 
+### Added
+- 2020-03-09: Added new dependency `csv-parser` to 121-service;  
+  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
+
 ---
 
 ## [0.19.1](https://github.com/global-121/121-platform/compare/v0.19.0...v0.19.1) - 2021-02-24
