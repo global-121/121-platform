@@ -1,11 +1,11 @@
 <confirm-prompt
-  [disabled]="disabled"
-  (confirm)="importPeopleAffected()"
+  [disabled]="disabled || isInProgress"
+  (confirm)="importPeopleAffected($event)"
   [subHeader]="subHeader"
   [message]="message"
   [filePickerProps]="filePickerProps"
 >
-  <ion-icon name="cloud-upload" slot="start"></ion-icon>
+  <ion-icon name="cloud-upload" slot="start" aria-hidden="true"></ion-icon>
   {{ btnText }}
 </confirm-prompt>
 <ion-spinner
