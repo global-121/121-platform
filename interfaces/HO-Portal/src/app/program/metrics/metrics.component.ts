@@ -106,7 +106,6 @@ export class MetricsComponent implements OnChanges {
   }
 
   private renderFinancialMetrics() {
-    const metrics = this.programMetrics.funding;
     const group = MetricGroup.financial;
     const currencyCode = this.program.currency;
     const symbol = `${currencyCode} `;
@@ -161,30 +160,6 @@ export class MetricsComponent implements OnChanges {
       icon: 'gift',
       label: 'page.program.program-details.fixedTransferValue',
       value: this.getValueOrUnknown(this.program.fixedTransferValue, (value) =>
-        formatCurrency(value, locale, symbol, currencyCode),
-      ),
-    });
-    this.metricsMap.set(`${group}.totalRaised`, {
-      group,
-      icon: 'cash',
-      label: 'page.program.metrics.funds.raised',
-      value: this.getValueOrUnknown(metrics.totalRaised, (value) =>
-        formatCurrency(value, locale, symbol, currencyCode),
-      ),
-    });
-    this.metricsMap.set(`${group}.totalTransferred`, {
-      group,
-      icon: 'cash',
-      label: 'page.program.metrics.funds.transferred',
-      value: this.getValueOrUnknown(metrics.totalTransferred, (value) =>
-        formatCurrency(value, locale, symbol, currencyCode),
-      ),
-    });
-    this.metricsMap.set(`${group}.totalAvailable`, {
-      group,
-      icon: 'cash',
-      label: 'page.program.metrics.funds.available',
-      value: this.getValueOrUnknown(metrics.totalAvailable, (value) =>
         formatCurrency(value, locale, symbol, currencyCode),
       ),
     });

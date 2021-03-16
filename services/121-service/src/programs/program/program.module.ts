@@ -1,5 +1,4 @@
 import { FspModule } from './../fsp/fsp.module';
-import { FundingModule } from './../../funding/funding.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
 import { ProofModule } from './../../sovrin/proof/proof.module';
 import { SchemaModule } from './../../sovrin/schema/schema.module';
@@ -42,7 +41,6 @@ import { LookupModule } from '../../notifications/lookup/lookup.module';
     forwardRef(() => SmsModule),
     VoiceModule,
     forwardRef(() => ProofModule),
-    FundingModule,
     FspModule,
     HttpModule,
     LookupModule,

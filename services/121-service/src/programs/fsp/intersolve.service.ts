@@ -327,12 +327,15 @@ export class IntersolveService {
   }
 
   public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
-    const vouchers = await this.intersolveBarcodeRepository.find({
-      relations: ['image', 'image.connection'],
-    });
+    const previouslyUnusedVouchers = await this.intersolveBarcodeRepository.find(
+      {
+        where: { balanceUsed: false },
+        relations: ['image', 'image.connection'],
+      },
+    );
     const unusedVouchers = [];
 
-    for await (const voucher of vouchers) {
+    for await (const voucher of previouslyUnusedVouchers) {
       const balance = await this.getBalance(voucher);
 
       if (balance === voucher.amount) {
@@ -344,6 +347,9 @@ export class IntersolveService {
         unusedVoucher.customData = voucher.image[0].connection.customData;
 
         unusedVouchers.push(unusedVoucher);
+      } else {
+        voucher.balanceUsed = true;
+        this.intersolveBarcodeRepository.save(voucher);
       }
     }
 

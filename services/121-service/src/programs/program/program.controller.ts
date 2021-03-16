@@ -1,6 +1,5 @@
 import { TransactionEntity } from './transactions.entity';
 import { ProgramMetrics } from './dto/program-metrics.dto';
-import { FundingOverview } from './../../funding/dto/funding-overview.dto';
 import { DidDto, DidsDto } from './dto/did.dto';
 import {
   Get,
@@ -56,15 +55,6 @@ export class ProgramController {
   @Get(':id')
   public async findOne(@Param() params): Promise<ProgramEntity> {
     return await this.programService.findOne(params.id);
-  }
-
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get funds by programId' })
-  @ApiImplicitParam({ name: 'id', required: true })
-  @ApiResponse({ status: 200, description: 'Return funds by program id.' })
-  @Get('funds/:id')
-  public async getFunds(@Param() params): Promise<FundingOverview> {
-    return await this.programService.getFunds(params.id);
   }
 
   @ApiOperation({ title: 'Get all programs' })

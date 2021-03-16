@@ -1,7 +1,6 @@
 import { LookupService } from './../../notifications/lookup/lookup.service';
 import { SoapService } from './../../programs/fsp/api/soap.service';
 import { AfricasTalkingService } from './../../programs/fsp/africas-talking.service';
-import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
 import { TwilioMessageEntity } from './../../notifications/twilio.entity';
@@ -56,7 +55,6 @@ describe('CredentialService', (): void => {
           ProofService,
           VoiceService,
           SmsService,
-          FundingService,
           FspService,
           AfricasTalkingApiService,
           AfricasTalkingService,
