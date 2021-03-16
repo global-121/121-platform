@@ -27,6 +27,9 @@ export class IntersolveBarcodeEntity {
   @Column({ nullable: true })
   public send: boolean;
 
+  @Column({ default: false })
+  public balanceUsed: boolean;
+
   @OneToMany(
     type => ImageCodeExportVouchersEntity,
     image => image.barcode,
