@@ -27,7 +27,7 @@ import {
   SetPhoneRequestDto,
   UpdatePhoneRequestDto,
 } from './dto/set-phone-request.dto';
-import { SetFspDto } from './dto/set-fsp.dto';
+import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { CustomDataDto } from '../../programs/program/dto/custom-data.dto';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
@@ -248,11 +248,12 @@ export class CreateConnectionController {
   })
   @Post('/update-chosen-fsp')
   public async updateChosenFsp(
-    @Body() data: SetFspDto,
+    @Body() data: UpdateChosenFspDto,
   ): Promise<FspAnswersAttrInterface> {
     return await this.createConnectionService.updateChosenFsp(
       data.did,
-      data.fspId,
+      data.newFspName,
+      data.newFspAttributes,
     );
   }
 }

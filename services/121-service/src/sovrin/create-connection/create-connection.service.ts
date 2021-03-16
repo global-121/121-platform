@@ -15,7 +15,10 @@ import { CredentialAttributesEntity } from '../credential/credential-attributes.
 import { CredentialRequestEntity } from '../credential/credential-request.entity';
 import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
 import { CredentialEntity } from '../credential/credential.entity';
-import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
+import {
+  FinancialServiceProviderEntity,
+  fspName,
+} from '../../programs/fsp/financial-service-provider.entity';
 import { TransactionEntity } from '../../programs/program/transactions.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { ProgramService } from '../../programs/program/program.service';
@@ -460,7 +463,33 @@ export class CreateConnectionService {
     };
   }
 
-  public async updateChosenFsp(did: string, newFspId: number): Promise<any> {
+  public async updateChosenFsp(
+    did: string,
+    newFspName: fspName,
+    newFspAttributes: object,
+  ): Promise<any> {
+    //Identify new FSP
+    const newFsp = await this.fspRepository.findOne({
+      where: { fsp: newFspName },
+      relations: ['attributes'],
+    });
+    if (!newFsp) {
+      const errors = `FSP with this name not found`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    // Check if required attributes are present
+    newFsp.attributes.forEach(requiredAttribute => {
+      if (
+        !newFspAttributes ||
+        !Object.keys(newFspAttributes).includes(requiredAttribute.name)
+      ) {
+        const errors = `Not all required FSP attributes provided correctly`;
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    });
+
+    // Get connection by did
     const connection = await this.connectionRepository.findOne({
       where: { did: did },
       relations: ['fsp', 'fsp.attributes'],
@@ -469,25 +498,24 @@ export class CreateConnectionService {
     // Remove old attributes
     const oldFsp = connection.fsp;
     oldFsp.attributes.forEach(attribute => {
-      console.log('attribute: ', attribute.name);
       Object.keys(connection.customData).forEach(key => {
         if (attribute.name === key) {
           delete connection.customData[key];
-          console.log('deleted..');
         }
       });
     });
+    await this.connectionRepository.save(connection);
 
     // Update FSP
-    const updatedConnection = await this.addFsp(did, newFspId);
+    const updatedConnection = await this.addFsp(did, newFsp.id);
 
     // Add new attributes
-    updatedConnection.fsp.attributes.forEach(attribute => {
-      console.log('attribute: ', attribute.name);
-      connection.customData[attribute.name] = connection.phoneNumber; // TO DO > make generic!!!
-      console.log('added..');
+    updatedConnection.fsp.attributes.forEach(async attribute => {
+      updatedConnection.customData[attribute.name] =
+        newFspAttributes[attribute.name];
     });
-    await this.connectionRepository.save(connection);
+
+    await this.connectionRepository.save(updatedConnection);
   }
 
   public getFspAnswers(
