@@ -8,7 +8,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 ---
 
-## Change SMS and/or WhatsApp phone-numbers for PA
+## Change SMS and/or WhatsApp phone-numbers for Person Affected
 
 1. PA gets in contact with **Pilot-team** if phone is lost
 2. **Pilot-team** provides to **121-dev-team**:
@@ -23,6 +23,25 @@ In this file we document "how to do X", manually. As not everything is possible 
         To store the new SMS phone-number. (Make sure to ONLY include the numbers, no whitespace or `+`)
       - Use: [`/sovrin/create-connection/custom-data/overwrite`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_custom_data_overwrite)  
         To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (Make sure to ONLY include the numbers, no whitespace or `+`)
+
+---
+
+## Change Financial Service Provider for Person Affected
+
+1. PA gets in contact with **Pilot-team** if Financial Service Provider needs to be updated
+2. **Pilot-team** provides to **121-dev-team**:
+   - Name: can be any of the first/second/third/last name attributes
+   - and/or Phone number(s): can be SMS and/or WhatsApp phone number
+   - New FSP: (Intersolve-whatsapp or Intersolve-no-whatsapp)
+   - New WhatsApp phonenumber (if switching to Intersolve-whatsapp)
+3. **121-dev-team**:
+   1. Find the `connection` of the PA that we want to update, using `Find DID of PA in database based on name and/or phone number` scenario below.
+   2. Update FSP: Use the found connection `did` to update the Financial Service Provider.
+      - Use: [`/sovrin/create-connection/update-chosen-fsp`](https://test-vm.121.global/121-service/docs/#//sovrin/post_sovrin_create_connection_update_chosen_fsp)  
+      - Fill in the found `did`
+      - Choose the right new FSP name. It must be one out of the provided list.
+      - Fill in the required attributes. If the new FSP requires more attributes than the example-provided `whatsappPhoneNumber`, you can manually change this.
+      - When you use the endpoint, it will tell you anyway if you are missing attributes and if so, which.
 
 ---
 
