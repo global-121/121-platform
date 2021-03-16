@@ -32,6 +32,7 @@ export class BulkImportComponent implements OnInit {
   public message: string;
   public filePickerProps: FilePickerProps = {
     type: 'csv',
+    explanation: this.translate.instant('page.program.bulk-import.explanation'),
   };
 
   private locale: string;
@@ -86,14 +87,30 @@ export class BulkImportComponent implements OnInit {
     this.programsService.import(+this.programId, event.file).then(
       (response) => {
         this.isInProgress = false;
-        this.actionResult(
-          this.translate.instant('page.program.bulk-import.import-result', {
-            countImported: response.countImported,
-            countExistingPhoneNr: response.countExistingPhoneNr,
-            countInvalidPhoneNr: response.countInvalidPhoneNr,
-          }),
-          true,
+        let resultMessage =
+          this.translate.instant(
+            'page.program.bulk-import.import-result.ready',
+          ) + '<br><br>';
+
+        resultMessage +=
+          this.translate.instant('page.program.bulk-import.import-result.new', {
+            countImported: `<strong>${response.countImported}</strong>`,
+          }) + '<br><br>';
+        resultMessage +=
+          this.translate.instant(
+            'page.program.bulk-import.import-result.existing',
+            {
+              countExistingPhoneNr: `<strong>${response.countExistingPhoneNr}</strong>`,
+            },
+          ) + '<br><br>';
+        resultMessage += this.translate.instant(
+          'page.program.bulk-import.import-result.invalid',
+          {
+            countInvalidPhoneNr: `<strong>${response.countInvalidPhoneNr}</strong>`,
+          },
         );
+
+        this.actionResult(resultMessage, true);
       },
       (err) => {
         this.isInProgress = false;

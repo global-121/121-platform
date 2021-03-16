@@ -10,7 +10,8 @@ import { IonInput, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface FilePickerProps {
-  type?: 'csv';
+  type: 'csv';
+  explanation?: string;
 }
 
 @Component({
