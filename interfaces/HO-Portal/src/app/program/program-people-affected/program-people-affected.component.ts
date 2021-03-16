@@ -440,7 +440,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.bulkActions = this.bulkActions.map((action) => {
       action.enabled =
         this.authService.hasUserRole(action.roles) &&
-        action.phases.includes(this.activePhase) &&
+        // action.phases.includes(this.activePhase) &&
         action.phases.includes(this.thisPhase) &&
         this.checkValidationColumnOrAction(action);
       return action;
