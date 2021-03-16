@@ -24,7 +24,7 @@ Hotfix: To run initial start-up without manual intervention.
   Run `docker-compose exec 121-service npm run seed:dev` (See: [`seed-dev.ts`](services/121-service/src/scripts/seed-dev.ts) )
 
 ### Added
-- 2020-03-09: Added new dependency `csv-parser` to 121-service;  
+- 2021-03-09: Added new dependency `csv-parser` to 121-service;  
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 
 ---

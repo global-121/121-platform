@@ -403,7 +403,7 @@ export class ProgramService {
     return inclusionRequestStatus;
   }
 
-  private async notifyInclusionStatus(
+  private async sendSmsMessage(
     connection: ConnectionEntity,
     programId: number,
     message?: string,
@@ -472,7 +472,7 @@ export class ProgramService {
 
   public async invite(
     programId: number,
-    phoneNumbers: object,
+    phoneNumbers: string,
     message?: string,
   ): Promise<void> {
     let program = await this.programRepository.findOne(programId);
@@ -492,10 +492,10 @@ export class ProgramService {
       }
 
       connection.invitedDate = new Date();
-      if (message) {
-        this.notifyInclusionStatus(connection, programId, message);
-      }
       await this.connectionRepository.save(connection);
+      if (message) {
+        this.sendSmsMessage(connection, programId, message);
+      }
     }
   }
 
@@ -525,7 +525,7 @@ export class ProgramService {
       if (indexIn <= -1) {
         connection.programsIncluded.push(programId);
         if (message) {
-          this.notifyInclusionStatus(connection, programId, message);
+          this.sendSmsMessage(connection, programId, message);
           connection.inclusionNotificationDate = new Date();
         }
       }
@@ -567,7 +567,7 @@ export class ProgramService {
       if (indexEx <= -1) {
         connection.programsRejected.push(programId);
         if (message) {
-          this.notifyInclusionStatus(connection, programId, message);
+          this.sendSmsMessage(connection, programId, message);
         }
       }
       // Remove from inclusion-array, if present
