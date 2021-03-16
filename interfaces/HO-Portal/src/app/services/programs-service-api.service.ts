@@ -173,11 +173,18 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  import(programId: number): Promise<ImportResult> {
+  import(programId: number, file: File): Promise<ImportResult> {
+    const formData = new FormData();
+    formData.append('file', file);
     return this.apiService
-      .post(environment.url_121_service_api, `/create-connection/import-bulk`, {
-        programId,
-      })
+      .post(
+        environment.url_121_service_api,
+        `/sovrin/create-connection/import-bulk/${programId}`,
+        formData,
+        false,
+        false,
+        true,
+      )
       .toPromise();
   }
 

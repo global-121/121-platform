@@ -1,0 +1,18 @@
+.file-picker-prompt--input {
+  padding: var(--ion-padding);
+  border: 5px solid var(--ion-color-medium-tint);
+
+  &.is-highlighted {
+    border-style: dashed;
+  }
+
+  &.is-dragover {
+    border-color: var(--ion-color-primary);
+    border-style: dotted;
+  }
+
+  &.is-file-selected {
+    border-color: var(--ion-color-primary);
+    border-style: solid;
+  }
+}

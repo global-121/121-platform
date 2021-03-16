@@ -14,14 +14,21 @@ export class ApiService {
     return anonymous ? '🌐' : '🔐';
   }
 
-  private createHeaders(anonymous: boolean = false): HttpHeaders {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
+  private createHeaders(
+    anonymous: boolean = false,
+    isUpload: boolean = false,
+  ): HttpHeaders {
+    let headers = new HttpHeaders({
       Accept: 'application/json',
+      'Content-Type': 'application/json',
     });
 
+    if (isUpload) {
+      headers = headers.delete('Content-Type');
+    }
+
     if (!anonymous) {
-      return headers.set(
+      headers = headers.set(
         'Authorization',
         `Token ${this.jwtService.getToken()}`,
       );
@@ -59,13 +66,14 @@ export class ApiService {
     body: object,
     anonymous: boolean = false,
     responseAsBlob: boolean = false,
+    isUpload: boolean = false,
   ): Observable<any> {
     const security = this.showSecurity(anonymous);
     console.log(`ApiService POST: ${security} ${endpoint}${path}`, body);
 
     return this.http
       .post(endpoint + path, body, {
-        headers: this.createHeaders(anonymous),
+        headers: this.createHeaders(anonymous, isUpload),
         responseType: responseAsBlob ? 'blob' : null,
       })
       .pipe(

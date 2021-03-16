@@ -3,13 +3,14 @@ import {
   ChangeDetectorRef,
   Component,
   Input,
+  OnInit,
+  ViewChild,
 } from '@angular/core';
-import { NgModel } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { IonInput, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 
 export interface FilePickerProps {
-  importFile: boolean;
+  type?: 'csv';
 }
 
 @Component({
@@ -17,7 +18,10 @@ export interface FilePickerProps {
   templateUrl: './file-picker-prompt.component.html',
   styleUrls: ['./file-picker-prompt.component.scss'],
 })
-export class FilePickerPromptComponent implements AfterViewInit {
+export class FilePickerPromptComponent implements OnInit, AfterViewInit {
+  @ViewChild('fileInput')
+  public fileInput: IonInput;
+
   @Input()
   public subHeader: string;
 
@@ -26,7 +30,10 @@ export class FilePickerPromptComponent implements AfterViewInit {
 
   @Input()
   public filePickerProps: FilePickerProps;
-  public filePickerModel: NgModel;
+
+  public acceptFileTypes: string;
+  public showDropZone: boolean;
+  public isDraggedOver: boolean;
 
   constructor(
     public translate: TranslateService,
@@ -34,26 +41,61 @@ export class FilePickerPromptComponent implements AfterViewInit {
     private changeDetector: ChangeDetectorRef,
   ) {}
 
+  ngOnInit() {
+    if (this.filePickerProps && this.filePickerProps.type) {
+      this.acceptFileTypes = this.getAcceptForType(this.filePickerProps.type);
+    }
+  }
+
   ngAfterViewInit() {
     // Required to settle the value of a dynamic property in the template:
     this.changeDetector.detectChanges();
+
+    window.addEventListener('dragover', this.onFileDrop, false);
+    window.addEventListener('drop', this.onFileDrop, false);
+    window.addEventListener('dragenter', () => (this.showDropZone = true));
+    window.addEventListener('dragleave', () => (this.showDropZone = false));
+  }
+
+  private getAcceptForType(type: FilePickerProps['type']): string {
+    if (type === 'csv') {
+      return '.csv,text/csv,text/comma-separated-values,application/csv';
+    }
+    return '';
+  }
+
+  private onFileDrop(event: DragEvent) {
+    const targetInput = event.target as HTMLInputElement;
+
+    // Only accept file drops on the input-element:
+    if (
+      targetInput &&
+      targetInput.type === 'file' &&
+      targetInput.parentElement.classList.contains('file-picker-prompt--input')
+    ) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    return false;
   }
 
   public checkOkDisabled() {
-    if (!this.filePickerProps) {
-      return false;
-    }
-
-    return true;
+    return !this.fileInput || !this.fileInput.value;
   }
 
-  public submitConfirm() {
-    if (!this.filePickerProps) {
-      this.modalController.dismiss(null, null);
+  public async submitConfirm() {
+    const nativeInput = await this.fileInput.getInputElement();
+
+    if (nativeInput && nativeInput.files && nativeInput.files.length) {
+      this.modalController.dismiss(
+        {
+          file: nativeInput.files[0],
+        },
+        null,
+      );
       return;
     }
-
-    this.modalController.dismiss(null, null);
   }
 
   public closeModal() {

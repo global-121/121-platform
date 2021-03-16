@@ -17,8 +17,8 @@
   color="light"
   class="ion-padding"
 >
-  <h2 
-    *ngIf="subHeader" 
+  <h2
+    *ngIf="subHeader"
     [innerHTML]="subHeader">
   </h2>
   <div
@@ -31,8 +31,20 @@
     *ngIf="filePickerProps"
     class="ion-margin-vertical"
   >
-    
-    <!-- Put in Filepicker content here  -->
+
+    <ion-input
+      #fileInput
+      type="file"
+      [accept]="acceptFileTypes"
+      [ngClass]="{
+        'is-dragover': isDraggedOver,
+        'is-highlighted': showDropZone,
+        'is-file-selected': !!fileInput?.value,
+        'file-picker-prompt--input': true
+      }"
+      (dragover)="isDraggedOver=true;"
+      (dragleave)="isDraggedOver=false;"
+    ></ion-input>
 
   </div>
 </ion-content>

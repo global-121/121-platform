@@ -31,7 +31,7 @@ export class BulkImportComponent implements OnInit {
   public subHeader: string;
   public message: string;
   public filePickerProps: FilePickerProps = {
-    importFile: true,
+    type: 'csv',
   };
 
   private locale: string;
@@ -80,9 +80,10 @@ export class BulkImportComponent implements OnInit {
     ]);
   }
 
-  public importPeopleAffected() {
+  public importPeopleAffected(event: { file: File }) {
     this.isInProgress = true;
-    this.programsService.import(+this.programId).then(
+
+    this.programsService.import(+this.programId, event.file).then(
       (response) => {
         this.isInProgress = false;
         this.actionResult(
@@ -91,6 +92,7 @@ export class BulkImportComponent implements OnInit {
             countExistingPhoneNr: response.countExistingPhoneNr,
             countInvalidPhoneNr: response.countInvalidPhoneNr,
           }),
+          true,
         );
       },
       (err) => {
@@ -103,10 +105,21 @@ export class BulkImportComponent implements OnInit {
     );
   }
 
-  private async actionResult(resultMessage: string) {
+  private async actionResult(resultMessage: string, refresh: boolean = false) {
     const alert = await this.alertController.create({
       message: resultMessage,
-      buttons: [this.translate.instant('common.ok')],
+      buttons: [
+        {
+          text: this.translate.instant('common.ok'),
+          handler: () => {
+            alert.dismiss(true);
+            if (refresh) {
+              window.location.reload();
+            }
+            return false;
+          },
+        },
+      ],
     });
     await alert.present();
   }
