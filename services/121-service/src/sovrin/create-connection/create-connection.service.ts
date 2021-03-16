@@ -108,24 +108,12 @@ export class CreateConnectionService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    let importRecords = await this.csvBufferToArray(csvFile.buffer, ',');
-    if (Object.keys(importRecords[0]).length === 1) {
-      importRecords = await this.csvBufferToArray(importRecords, ';');
-    }
-    const validatedImportRecords = await this.validateArray(importRecords);
+    const validatedImportRecords = await this.csvToValidatedArray(csvFile);
 
     let countImported = 0;
     let countInvalidPhoneNr = 0;
     let countExistingPhoneNr = 0;
     for await (const record of validatedImportRecords) {
-      let existingConnections = await this.connectionRepository.find({
-        where: { phoneNumber: record.phoneNumber },
-      });
-      if (existingConnections.length > 0) {
-        countExistingPhoneNr += 1;
-        continue;
-      }
-
       const throwNoException = true;
       const phoneNumberResult = await this.lookupService.lookupAndCorrect(
         record.phoneNumber,
@@ -133,6 +121,14 @@ export class CreateConnectionService {
       );
       if (!phoneNumberResult) {
         countInvalidPhoneNr += 1;
+        continue;
+      }
+
+      let existingConnections = await this.connectionRepository.find({
+        where: { phoneNumber: phoneNumberResult },
+      });
+      if (existingConnections.length > 0) {
+        countExistingPhoneNr += 1;
         continue;
       }
 
@@ -158,6 +154,14 @@ export class CreateConnectionService {
     };
   }
 
+  private async csvToValidatedArray(csvFile): Promise<BulkImportDto[]> {
+    let importRecords = await this.csvBufferToArray(csvFile.buffer, ',');
+    if (Object.keys(importRecords[0]).length === 1) {
+      importRecords = await this.csvBufferToArray(importRecords, ';');
+    }
+    return await this.validateImportCsvInput(importRecords);
+  }
+
   private async csvBufferToArray(buffer, separator): Promise<object[]> {
     const stream = new Readable();
     stream.push(buffer.toString());
@@ -174,7 +178,7 @@ export class CreateConnectionService {
     });
   }
 
-  private async validateArray(csvArray): Promise<BulkImportDto[]> {
+  private async validateImportCsvInput(csvArray): Promise<BulkImportDto[]> {
     const errors = [];
     const validatatedArray = [];
     for (const [i, row] of csvArray.entries()) {
@@ -243,17 +247,11 @@ export class CreateConnectionService {
       phoneNumber,
     );
 
-    // Find invitedConnection based on phone-number
-    const invitedConnection = await this.connectionRepository.findOne({
-      where: {
-        phoneNumber: sanitizedPhoneNr,
-        importedDate: Not(IsNull()),
-        accountCreatedDate: IsNull(),
-      },
-      relations: ['fsp'],
-    });
+    const importedConnection = await this.findImportedConnectionByPhoneNumber(
+      sanitizedPhoneNr,
+    );
 
-    if (!useForInvitationMatching || !invitedConnection) {
+    if (!useForInvitationMatching || !importedConnection) {
       // If endpoint is used for other purpose OR no invite found  ..
       // .. continue with earlier created connection
       const connection = await this.findOne(did);
@@ -278,18 +276,31 @@ export class CreateConnectionService {
     await this.delete({ did: did });
 
     // .. and transfer its relevant attributes to the invite-connection
-    invitedConnection.did = tempConnection.did;
-    invitedConnection.accountCreatedDate = tempConnection.created;
-    invitedConnection.customData = tempConnection.customData;
+    importedConnection.did = tempConnection.did;
+    importedConnection.accountCreatedDate = tempConnection.created;
+    importedConnection.customData = tempConnection.customData;
     const fsp = await this.fspRepository.findOne({
       where: { id: tempConnection.fsp.id },
     });
-    invitedConnection.fsp = fsp;
+    importedConnection.fsp = fsp;
 
     // .. and store phone number and language
-    invitedConnection.phoneNumber = sanitizedPhoneNr;
-    invitedConnection.preferredLanguage = preferredLanguage;
-    await this.connectionRepository.save(invitedConnection);
+    importedConnection.phoneNumber = sanitizedPhoneNr;
+    importedConnection.preferredLanguage = preferredLanguage;
+    await this.connectionRepository.save(importedConnection);
+  }
+
+  private async findImportedConnectionByPhoneNumber(
+    phoneNumber: string,
+  ): Promise<ConnectionEntity> {
+    return await this.connectionRepository.findOne({
+      where: {
+        phoneNumber: phoneNumber,
+        importedDate: Not(IsNull()),
+        accountCreatedDate: IsNull(),
+      },
+      relations: ['fsp'],
+    });
   }
 
   public async addFsp(did: string, fspId: number): Promise<ConnectionEntity> {
