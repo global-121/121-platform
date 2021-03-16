@@ -229,7 +229,7 @@
         "pageTitle": "Program JSON"
       },
       "bulk-import": {
-        "import-error": "Something went wrong with the import. Check the required format of the CSV-file.",
+        "import-error": "Something went wrong with the import. Check the required extension (.csv) and format of the CSV-file.",
         "import-result": {
           "ready": "Import ready.",
           "new": "There are {{countImported}} new records imported.",

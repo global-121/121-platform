@@ -107,7 +107,6 @@ export class CreateConnectionService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-
     const validatedImportRecords = await this.csvToValidatedArray(csvFile);
 
     let countImported = 0;
@@ -155,6 +154,16 @@ export class CreateConnectionService {
   }
 
   private async csvToValidatedArray(csvFile): Promise<BulkImportDto[]> {
+    const indexLastPoint = csvFile.originalname.lastIndexOf('.');
+    const extension = csvFile.originalname.substr(
+      indexLastPoint,
+      csvFile.originalname.length - indexLastPoint,
+    );
+    if (extension !== '.csv') {
+      const errors = `Wrong file extension. It should be .csv`;
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+
     let importRecords = await this.csvBufferToArray(csvFile.buffer, ',');
     if (Object.keys(importRecords[0]).length === 1) {
       importRecords = await this.csvBufferToArray(importRecords, ';');
