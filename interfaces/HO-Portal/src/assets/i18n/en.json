@@ -229,11 +229,17 @@
         "pageTitle": "Program JSON"
       },
       "bulk-import": {
-        "import-error": "Something went wrong with the import",
-        "import-result": "Import ready. There are {{countImported}} new records imported. There were {{countExistingPhoneNr}} existing phone-numbers, which are skipped. There were {{countInvalidPhoneNr}} unrecognizable phone numbers. Try to correct them and import again.",
+        "import-error": "Something went wrong with the import. Check the required format of the CSV-file.",
+        "import-result": {
+          "ready": "Import ready.",
+          "new": "There are {{countImported}} new records imported.",
+          "existing": "There were {{countExistingPhoneNr}} existing phone-numbers, which are skipped.",
+          "invalid": "There were {{countInvalidPhoneNr}} unrecognizable phone numbers. Try to correct them and import again."
+        },
         "timestamp": "Latest import has been done on: {{dateTime}}",
         "btn-text": "Import People Affected",
-        "confirm-message": "This will ask you to select a CSV-file of the right format. The system will detect only new phone-numbers and import them as People Affected."
+        "explanation": "The required format of the CSV-file is: <pre class='ion-color-primary'>phoneNumber,namePartnerOrganization\n+0000000000,Example-Name</pre>",
+        "confirm-message": "Select a CSV-file of the required format.<br> The system will detect only new phone-numbers and import them as People Affected."
       },
       "export-list": {
         "timestamp": "Latest export has been done on: {{dateTime}}",

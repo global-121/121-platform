@@ -32,6 +32,13 @@
     class="ion-margin-vertical"
   >
 
+    <div
+      *ngIf="filePickerProps.explanation"
+      [innerHTML]="filePickerProps.explanation"
+      class="ion-margin-vertical ion-padding-top"
+      style="border-top: 1px solid var(--ion-color-medium)"
+    ></div>
+
     <ion-input
       #fileInput
       type="file"
