@@ -242,7 +242,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         frozenLeft: true,
         phases: [ProgramPhase.registrationValidation],
         roles: [UserRole.View, UserRole.PersonalData, UserRole.RunProgram],
-        minWidth: columnPhoneNumberWidth,
       },
       {
         prop: 'statusLabel',
