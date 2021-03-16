@@ -64,7 +64,7 @@ export class ProgramsServiceApiService {
 
   deleteUser(userId: string): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, '/user/delete/' + userId, {})
+      .post(environment.url_121_service_api, `/user/delete/${userId}`, {})
       .toPromise();
   }
 
@@ -89,7 +89,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/programs/changeState/` + programId,
+        `/programs/changeState/${programId}`,
         {
           newState,
         },

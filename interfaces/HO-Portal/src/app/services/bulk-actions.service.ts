@@ -9,40 +9,44 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 export class BulkActionsService {
   constructor(private programsService: ProgramsServiceApiService) {}
 
+  private hasStatus(person: PersonRow, requiredStates: PaStatus[]): boolean {
+    return requiredStates.includes(person.status);
+  }
+
   updateCheckbox(action: BulkActionId, personData: PersonRow) {
     switch (action) {
       case BulkActionId.invite:
-        personData.checkboxVisible = [PaStatus.imported].includes(
-          personData.status,
-        );
+        personData.checkboxVisible = this.hasStatus(personData, [
+          PaStatus.imported,
+        ]);
         break;
       case BulkActionId.selectForValidation:
-        personData.checkboxVisible = [PaStatus.registered].includes(
-          personData.status,
-        );
+        personData.checkboxVisible = this.hasStatus(personData, [
+          PaStatus.registered,
+        ]);
         break;
       case BulkActionId.includeRunProgramRole:
-        personData.checkboxVisible = [
+        personData.checkboxVisible = this.hasStatus(personData, [
           PaStatus.registered,
           PaStatus.selectedForValidation,
           PaStatus.validated,
-        ].includes(personData.status);
+        ]);
         break;
       case BulkActionId.includePersonalDataRole:
-        personData.checkboxVisible = [
+        personData.checkboxVisible = this.hasStatus(personData, [
           PaStatus.registered,
           PaStatus.selectedForValidation,
           PaStatus.validated,
           PaStatus.rejected,
-        ].includes(personData.status);
+        ]);
         break;
       case BulkActionId.reject:
-        personData.checkboxVisible = [
+        personData.checkboxVisible = this.hasStatus(personData, [
           PaStatus.registered,
           PaStatus.selectedForValidation,
           PaStatus.validated,
           PaStatus.included,
-        ].includes(personData.status);
+        ]);
         break;
     }
     return personData;

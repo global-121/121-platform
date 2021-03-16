@@ -198,11 +198,11 @@
           "notify-included": "Notify included People Affected"
         },
         "action-inputs": {
-          "invite-checkbox": "Send invitation message to Persons affected",
+          "invite-checkbox": "Send invitation message to People Affected",
           "invite-explanation": "Please compose here the invitation message. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
-          "reject-checkbox": "Send message to rejected Persons affected",
+          "reject-checkbox": "Send message to rejected People Affected",
           "reject-explanation": "Please compose here the message that will be sent. Please ensure to give a reason, and if possible, what their next steps could be. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
-          "include-checkbox": "Send message to included Persons affected",
+          "include-checkbox": "Send message to included People Affected",
           "include-explanation": "Please compose here the message that will be sent. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone."
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
@@ -219,7 +219,7 @@
           "error-message": "Error message",
           "fix-error": "Please contact the 121 development team to fix this error. Then use the button below to retry payment for this Person Affected.",
           "retry": "Retry payment",
-          "notes": "<br>Note: If the payment failed for all Persons Affected, you can also use the original 'Start payout now' button again to retry the payment for all Persons Affected at once.",
+          "notes": "<br>Note: If the payment failed for all People Affected, you can also use the original 'Start payout now' button again to retry the payment for all People Affected at once.",
           "get-balance": "Get current balance of voucher",
           "print-voucher": "Print voucher",
           "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}"
