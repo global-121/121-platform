@@ -73,11 +73,6 @@
         }
       },
       "metrics": {
-        "funds": {
-          "raised": "Funds Raised",
-          "transferred": "Funds Transferred to FSPs",
-          "available": "Funds Available"
-        },
         "pa": {
           "targeted": "PA Targeted",
           "started-enlisting": "PA Started Registration",

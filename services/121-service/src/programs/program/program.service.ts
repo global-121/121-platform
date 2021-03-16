@@ -2,10 +2,7 @@ import { GetTransactionDto } from './dto/get-transaction.dto';
 import { ActionService } from './../../actions/action.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { ProgramMetrics } from './dto/program-metrics.dto';
-import { FundingOverview } from './../../funding/dto/funding-overview.dto';
-import { FundingService } from './../../funding/funding.service';
 import { TransactionEntity } from './transactions.entity';
-import { VoiceService } from './../../notifications/voice/voice.service';
 import { SchemaService } from './../../sovrin/schema/schema.service';
 import { CredentialService } from './../../sovrin/credential/credential.service';
 import { ProofService } from './../../sovrin/proof/proof.service';
@@ -83,7 +80,6 @@ export class ProgramService {
     private readonly schemaService: SchemaService,
     @Inject(forwardRef(() => ProofService))
     private readonly proofService: ProofService,
-    private readonly fundingService: FundingService,
     private readonly fspService: FspService,
     private readonly lookupService: LookupService,
   ) {}
@@ -763,15 +759,6 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const fundingOverview = await this.fundingService.getProgramFunds(
-      programId,
-    );
-    const fundsNeeded = amount * includedConnections.length;
-    if (fundsNeeded > fundingOverview.totalAvailable) {
-      const errors = 'Insufficient funds';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
     const paPaymentDataList = await this.createPaPaymentDataList(
       includedConnections,
     );
@@ -1075,20 +1062,6 @@ export class ProgramService {
         return transaction;
       }
     }
-  }
-
-  public async getFunds(programId: number): Promise<FundingOverview> {
-    // TO DO: call real API here, for now static data.
-    const program = await this.programRepository.findOne({
-      where: { id: programId },
-    });
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    const fundsDisberse = await this.fundingService.getProgramFunds(programId);
-    return fundsDisberse;
   }
 
   public async getPaymentDetails(
@@ -1413,7 +1386,6 @@ export class ProgramService {
 
   public async getMetrics(programId): Promise<ProgramMetrics> {
     const metrics = new ProgramMetrics();
-    metrics.funding = await this.getFunds(programId);
     metrics.pa = await this.getPaMetrics(programId);
     metrics.updated = new Date();
     return metrics;

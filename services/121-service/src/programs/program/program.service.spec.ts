@@ -2,7 +2,6 @@ import { LookupService } from './../../notifications/lookup/lookup.service';
 import { IntersolveInstructionsEntity } from './../fsp/intersolve-instructions.entity';
 import { ImageCodeService } from './../../notifications/imagecode/image-code.service';
 import { AfricasTalkingService } from './../fsp/africas-talking.service';
-import { FundingService } from './../../funding/funding.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
 import { CredentialEntity } from './../../sovrin/credential/credential.entity';
@@ -56,7 +55,6 @@ describe('Program service', (): void => {
           VoiceService,
           SmsService,
           ProofService,
-          FundingService,
           FspService,
           AfricasTalkingService,
           AfricasTalkingApiService,

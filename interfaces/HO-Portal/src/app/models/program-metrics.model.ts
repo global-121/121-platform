@@ -1,7 +1,6 @@
 export class ProgramMetrics {
   updated: string | Date;
   pa: PeopleMetrics;
-  funding: FundsMetrics;
 }
 
 export class PeopleMetrics {
@@ -10,12 +9,6 @@ export class PeopleMetrics {
   verified: number;
   included: number;
   excluded: number;
-}
-
-export class FundsMetrics {
-  totalRaised: number;
-  totalTransferred: number;
-  totalAvailable: number;
 }
 
 export class MetricRow {

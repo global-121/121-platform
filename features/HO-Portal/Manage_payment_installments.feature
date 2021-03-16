@@ -69,12 +69,3 @@ Feature: Manage payment installments
     Given the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
     Then the message "Failed for whole FSP. FSP not integrated (yet)." is shown
-
-  Scenario: Not enough funds available
-    Given available funds "X"
-    Given total amount needed "Y"
-    Given "Y" is smaller than "X"
-    Given the user clicks the button "start payout now"
-    Given the pop-up "Are you sure?" is shown
-    When the user clicks the button "OK"
-    Then the message "Payout unsuccessful. Are there enough funds?" is shown

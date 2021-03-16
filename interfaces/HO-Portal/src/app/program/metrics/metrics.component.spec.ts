@@ -32,11 +32,6 @@ describe('MetricsComponent', () => {
       finishedEnlisting: getRandomInt(0, 100),
       verified: getRandomInt(0, 100),
     },
-    funding: {
-      totalRaised: getRandomInt(0, 1000),
-      totalTransferred: getRandomInt(0, 1000),
-      totalAvailable: getRandomInt(0, 1000),
-    },
   };
 
   beforeEach(async(() => {

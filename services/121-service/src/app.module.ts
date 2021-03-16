@@ -14,7 +14,6 @@ import { ProofModule } from './sovrin/proof/proof.module';
 import { SchemaModule } from './sovrin/schema/schema.module';
 import { SmsModule } from './notifications/sms/sms.module';
 import { VoiceModule } from './notifications/voice/voice.module';
-import { FundingModule } from './funding/funding.module';
 import { LookupModule } from './notifications/lookup/lookup.module';
 import { ScriptsModule } from './scripts/scripts.module';
 import { ActionModule } from './actions/action.module';
@@ -35,7 +34,6 @@ import { MulterModule } from '@nestjs/platform-express';
     SchemaModule,
     SmsModule,
     VoiceModule,
-    FundingModule,
     LookupModule,
     ScriptsModule,
     ActionModule,
