@@ -484,7 +484,10 @@ export class CreateConnectionService {
         !newFspAttributes ||
         !Object.keys(newFspAttributes).includes(requiredAttribute.name)
       ) {
-        const errors = `Not all required FSP attributes provided correctly`;
+        const requiredAttributes = newFsp.attributes
+          .map(a => a.name)
+          .join(', ');
+        const errors = `Not all required FSP attributes provided correctly: ${requiredAttributes}`;
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
     });
