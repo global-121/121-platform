@@ -3,8 +3,5 @@ export function formatPhoneNumber(value: string): string {
     return '';
   }
 
-  return value.replace(
-    /(\+*)(\d{2})(\d{1})(\d{2})(\d{3})(\d+)/,
-    '+$2 $3 $4 $5 $6',
-  );
+  return value.replace(/(\+*)(\d{2})(\d{1})(\d{2})(\d{3})(\d+)/, '+$2$3$4$5$6');
 }
