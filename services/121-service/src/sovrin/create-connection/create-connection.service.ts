@@ -497,6 +497,10 @@ export class CreateConnectionService {
       where: { did: did },
       relations: ['fsp', 'fsp.attributes'],
     });
+    if (connection.fsp.id === newFsp.id) {
+      const errors = `New FSP is the same as existing FSP for this Person Affected.`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
 
     // Remove old attributes
     const oldFsp = connection.fsp;
