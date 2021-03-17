@@ -842,6 +842,8 @@ export class ProgramService {
       paStatus = PaStatus.invited;
     } else if (connection.importedDate) {
       paStatus = PaStatus.imported;
+    } else if (connection.created) {
+      paStatus = PaStatus.created;
     }
     return paStatus;
   }
