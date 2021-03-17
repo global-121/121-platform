@@ -488,7 +488,7 @@ export class CreateConnectionService {
     did: string,
     newFspName: fspName,
     newFspAttributes: object,
-  ): Promise<any> {
+  ): Promise<ConnectionEntity> {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
       where: { fsp: newFspName },
@@ -543,7 +543,7 @@ export class CreateConnectionService {
         newFspAttributes[attribute.name];
     });
 
-    await this.connectionRepository.save(updatedConnection);
+    return await this.connectionRepository.save(updatedConnection);
   }
 
   public getFspAnswers(

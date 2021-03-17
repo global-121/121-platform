@@ -249,7 +249,7 @@ export class CreateConnectionController {
   @Post('/update-chosen-fsp')
   public async updateChosenFsp(
     @Body() data: UpdateChosenFspDto,
-  ): Promise<FspAnswersAttrInterface> {
+  ): Promise<ConnectionEntity> {
     return await this.createConnectionService.updateChosenFsp(
       data.did,
       data.newFspName,
