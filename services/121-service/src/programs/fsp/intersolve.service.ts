@@ -16,8 +16,12 @@ import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
+  PaymentAddressTransactionResultDto,
 } from './dto/payment-transaction-result.dto';
-import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
+import {
+  PaPaymentDataAggregateDto,
+  PaPaymentDataDto,
+} from './dto/pa-payment-data.dto';
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
 
 @Injectable()
@@ -49,139 +53,176 @@ export class IntersolveService {
   ): Promise<FspTransactionResultDto> {
     const result = new FspTransactionResultDto();
     result.paList = [];
-    for (let paymentInfo of paPaymentList) {
-      const isolatedResult = await this.sendIndividualPayment(
+
+    const paPaymentDataAggregate = this.aggregatePaPaymentListToPhoneNumber(
+      paPaymentList,
+    );
+
+    for (let paymentInfo of paPaymentDataAggregate) {
+      const paymentAddressLevelResult = await this.sendIndividualPayment(
         paymentInfo,
         useWhatsapp,
         amount,
         installment,
       );
-      result.paList.push(isolatedResult);
+      paymentAddressLevelResult.paTransactionResultList.forEach(paResult => {
+        paResult.customData = paymentAddressLevelResult.customData;
+        result.paList.push(paResult);
+      });
     }
     result.fspName = paPaymentList[0].fspName;
     return result;
   }
 
+  private aggregatePaPaymentListToPhoneNumber(
+    paPaymentList: PaPaymentDataDto[],
+  ): PaPaymentDataAggregateDto[] {
+    const groupsByPaymentAddress: PaPaymentDataAggregateDto[] = [];
+    paPaymentList.forEach(paPaymentData => {
+      if (
+        groupsByPaymentAddress
+          .map(i => i.paymentAddress)
+          .includes(paPaymentData.paymentAddress)
+      ) {
+        groupsByPaymentAddress
+          .find(i => i.paymentAddress === paPaymentData.paymentAddress)
+          .paPaymentDataList.push(paPaymentData);
+      } else {
+        groupsByPaymentAddress.push({
+          paymentAddress: paPaymentData.paymentAddress,
+          paPaymentDataList: [paPaymentData],
+        });
+      }
+    });
+    return groupsByPaymentAddress;
+  }
+
   public async sendIndividualPayment(
-    paymentInfo: PaPaymentDataDto,
+    paymentInfo: PaPaymentDataAggregateDto,
     useWhatsapp: boolean,
     amount: number,
     installment: number,
-  ): Promise<PaTransactionResultDto> {
-    const result = new PaTransactionResultDto();
-    result.did = paymentInfo.did;
+  ): Promise<PaymentAddressTransactionResultDto> {
+    const result = new PaymentAddressTransactionResultDto();
+    result.paymentAddress = paymentInfo.paymentAddress;
+    result.paTransactionResultList = [];
 
-    const intersolveRefPos = parseInt(
-      crypto.randomBytes(5).toString('hex'),
-      16,
-    );
+    // First loop over all PA's with same phone number and do all voucher-level stuff
+    const voucherInfoArray = [];
+    for await (let paPaymentData of paymentInfo.paPaymentDataList) {
+      const voucherResult = new PaTransactionResultDto();
+      voucherResult.did = paPaymentData.did;
 
-    const amountInCents = amount * 100;
-    const voucherInfo = await this.intersolveApiService.issueCard(
-      amountInCents,
-      intersolveRefPos,
-    );
-    if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
-      const transferResult = await this.transferVoucher(
-        voucherInfo,
-        paymentInfo,
-        useWhatsapp,
-        amount,
-        installment,
+      const intersolveRefPos = parseInt(
+        crypto.randomBytes(5).toString('hex'),
+        16,
       );
-      if (transferResult.status === StatusEnum.success) {
-        result.status = transferResult.status;
-        result.message = transferResult.message;
-        result.customData = transferResult.customData;
-      } else {
-        result.status = StatusEnum.error;
-        result.message =
-          'Voucher created, but something went wrong in sending voucher.\n' +
-          transferResult.message;
-        await this.cancelAndDeleteVoucher(
+
+      const amountInCents = amount * 100;
+      const voucherInfo = await this.intersolveApiService.issueCard(
+        amountInCents,
+        intersolveRefPos,
+      );
+      voucherInfoArray.push(voucherInfo);
+
+      if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
+        const barcodeData = await this.storeBarcodeData(
           voucherInfo.cardId,
-          voucherInfo.transactionId,
+          voucherInfo.pin,
+          paymentInfo.paymentAddress,
+          installment,
+          amount,
         );
-      }
-    } else {
-      if (voucherInfo.transactionId) {
-        await this.intersolveApiService.cancel(
-          voucherInfo.cardId,
-          voucherInfo.transactionId,
+
+        await this.imageCodeService.createBarcodeExportVouchers(
+          barcodeData,
+          paPaymentData.did,
         );
+        voucherResult.status = StatusEnum.success;
       } else {
-        await this.intersolveApiService.cancelTransactionByRefPos(
-          intersolveRefPos,
-        );
+        if (voucherInfo.transactionId) {
+          await this.intersolveApiService.cancel(
+            voucherInfo.cardId,
+            voucherInfo.transactionId,
+          );
+        } else {
+          await this.intersolveApiService.cancelTransactionByRefPos(
+            intersolveRefPos,
+          );
+        }
+        voucherResult.message =
+          'Creating intersolve voucher failed. Status code: ' +
+          (voucherInfo.resultCode ? voucherInfo.resultCode : 'unknown') +
+          ' message: ' +
+          (voucherInfo.resultDescription
+            ? voucherInfo.resultDescription
+            : 'unknown');
+        voucherResult.status = StatusEnum.error;
       }
-      result.message =
-        'Creating intersolve voucher failed. Status code: ' +
-        (voucherInfo.resultCode ? voucherInfo.resultCode : 'unknown') +
-        ' message: ' +
-        (voucherInfo.resultDescription
-          ? voucherInfo.resultDescription
-          : 'unknown');
-      result.status = StatusEnum.error;
+      result.paTransactionResultList.push(voucherResult);
     }
+
+    // If no whatsapp, return early
+    if (!useWhatsapp) {
+      result.status = StatusEnum.success;
+      return result;
+    }
+
+    // Continue with whatsapp:
+    let transferResult;
+    if (voucherInfoArray.length === 1) {
+      // OLD situation of 1 PA on this phone-number
+      transferResult = await this.sendVoucherWhatsapp(
+        paymentInfo.paymentAddress,
+        paymentInfo.paPaymentDataList[0].did,
+        false,
+      );
+    } else if (voucherInfoArray.length > 1) {
+      //NEW situation of multiple PA's on this phone-number
+      transferResult = await this.sendVoucherWhatsapp(
+        paymentInfo.paymentAddress,
+        paymentInfo.paPaymentDataList[0].did,
+        true,
+      );
+    }
+    if (transferResult.status === StatusEnum.success) {
+      result.status = transferResult.status;
+      result.message = transferResult.message;
+      result.customData = transferResult.customData;
+    } else {
+      result.status = StatusEnum.error;
+      result.message =
+        'Voucher(s) created, but something went wrong in sending voucher.\n' +
+        transferResult.message;
+      voucherInfoArray.forEach(async voucher => {
+        await this.cancelAndDeleteVoucher(
+          voucher.cardId,
+          voucher.transactionId,
+        );
+      });
+    }
+
     return result;
   }
 
-  public async transferVoucher(
-    voucherInfo: IntersolveIssueCardResponse,
-    paymentInfo: PaPaymentDataDto,
-    useWhatsapp: boolean,
-    amount: number,
-    installment: number,
-  ): Promise<PaTransactionResultDto> {
-    if (useWhatsapp) {
-      return await this.sendVoucherWhatsapp(
-        voucherInfo.cardId,
-        voucherInfo.pin,
-        paymentInfo.paymentAddress,
-        paymentInfo.did,
-        installment,
-        amount,
-      );
-    } else {
-      return await this.storeVoucherNoWhatsapp(
-        voucherInfo.cardId,
-        voucherInfo.pin,
-        null,
-        paymentInfo.did,
-        installment,
-        amount,
-      );
-    }
-  }
-
   public async sendVoucherWhatsapp(
-    cardNumber: string,
-    pin: string,
     phoneNumber: string,
     did: string,
-    installment: number,
-    amount: number,
-  ): Promise<PaTransactionResultDto> {
-    const result = new PaTransactionResultDto();
+    multiplePeople: boolean,
+  ): Promise<PaymentAddressTransactionResultDto> {
+    const result = new PaymentAddressTransactionResultDto();
+    result.paymentAddress = phoneNumber;
     const program = await getRepository(ProgramEntity).findOne(this.programId);
-    const barcodeData = await this.storeBarcodeData(
-      cardNumber,
-      pin,
-      phoneNumber,
-      installment,
-      amount,
-    );
 
-    // Also store in 2nd table in case of whatsApp (for exporting voucher in case of lost phone)
-    await this.imageCodeService.createBarcodeExportVouchers(barcodeData, did);
-
+    // Also if multiple PA's get the language of one (the first) PA, as you have to choose one..
     const language = (
       await this.connectionRepository.findOne({ where: { did: did } })
     ).preferredLanguage;
 
     try {
-      const whatsappPayment =
-        program.notifications[language]['whatsappPayment'];
+      const whatsappPayment = multiplePeople
+        ? program.notifications[language]['whatsappPaymentMultipleVouchers']
+        : program.notifications[language]['whatsappPayment'];
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,
         phoneNumber,
@@ -195,28 +236,6 @@ export class IntersolveService {
       result.message = (e as Error).message;
       result.status = StatusEnum.error;
     }
-    return result;
-  }
-
-  public async storeVoucherNoWhatsapp(
-    cardNumber: string,
-    pin: string,
-    phoneNumber: string,
-    did: string,
-    installment: number,
-    amount: number,
-  ): Promise<PaTransactionResultDto> {
-    const result = new PaTransactionResultDto();
-    const barcodeData = await this.storeBarcodeData(
-      cardNumber,
-      pin,
-      phoneNumber,
-      installment,
-      amount,
-    );
-
-    await this.imageCodeService.createBarcodeExportVouchers(barcodeData, did);
-    result.status = StatusEnum.success;
     return result;
   }
 
