@@ -38,7 +38,7 @@ function deploy(target) {
  */
 function isPatchUpgrade(target) {
   const currentVersion = fs.readFileSync(`${process.env.GLOBAL_121_WEB_ROOT}/VERSION.txt`, { encoding: 'utf-8' });
-  const currentMinorVersion = currentVersion.replace(/v0\.([0-9]+)\.([\S\s]*)/, 'v0.$1.');
+  const currentMinorVersion = currentVersion.replace(/v(\d+)\.(\d+)\.([\S\s]*)/, 'v$1.$2.');
 
   return target.includes(currentMinorVersion);
 }
