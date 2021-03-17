@@ -7,7 +7,6 @@ export class Person {
   score?: number;
   name?: string;
   created?: string;
-  updated?: string;
   importedDate?: string;
   invitedDate?: string;
   appliedDate?: string;
