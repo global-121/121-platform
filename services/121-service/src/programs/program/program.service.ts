@@ -882,8 +882,7 @@ export class ProgramService {
       connectionResponse['did'] = connection.did;
       connectionResponse['score'] = connection.inclusionScore;
       connectionResponse['tempScore'] = connection.temporaryInclusionScore;
-      connectionResponse['created'] = connection.created;
-      connectionResponse['updated'] = connection.updated;
+      connectionResponse['created'] = connection.accountCreatedDate;
       connectionResponse['importedDate'] = connection.importedDate;
       connectionResponse['invitedDate'] = connection.invitedDate;
       connectionResponse['appliedDate'] = connection.appliedDate;

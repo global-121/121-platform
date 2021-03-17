@@ -93,6 +93,7 @@ export class CreateConnectionService {
 
     let connection = new ConnectionEntity();
     connection.did = connectionResponse.did;
+    connection.accountCreatedDate = new Date();
     const newConnection = await this.connectionRepository.save(connection);
     return newConnection;
   }
@@ -286,7 +287,7 @@ export class CreateConnectionService {
 
     // .. and transfer its relevant attributes to the invite-connection
     importedConnection.did = tempConnection.did;
-    importedConnection.accountCreatedDate = tempConnection.created;
+    importedConnection.accountCreatedDate = tempConnection.accountCreatedDate;
     importedConnection.customData = tempConnection.customData;
     const fsp = await this.fspRepository.findOne({
       where: { id: tempConnection.fsp.id },
