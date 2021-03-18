@@ -6,7 +6,6 @@ class SmsServiceMock {}
 
 describe('Sms Controller', () => {
   let smsController: SmsController;
-  let smsService: SmsService;
 
   beforeEach(
     async (): Promise<void> => {
@@ -19,7 +18,6 @@ describe('Sms Controller', () => {
           },
         ],
       }).compile();
-      smsService = module.get<SmsService>(SmsService);
       smsController = module.get<SmsController>(SmsController);
     },
   );

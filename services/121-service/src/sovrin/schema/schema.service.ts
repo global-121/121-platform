@@ -58,6 +58,7 @@ export class SchemaService {
     const schemaId = responseSchema.data.schema_id;
     const credDefPost = {
       name: 'test1',
+      /* eslint-disable-next-line @typescript-eslint/camelcase */
       schema_id: schemaId,
     };
     let responseCreddef = await this.httpService

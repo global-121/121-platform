@@ -11,13 +11,17 @@ module.exports = {
         sourceType: 'module', // Allows for the use of imports
   },
   rules: {
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-parameter-properties": "off",
+    "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/explicit-function-return-type": [
       "error",
       {
         "allowExpressions": true
       }
-    ]
+    ],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-parameter-properties": "off",
+    "@typescript-eslint/no-unused-vars": {
+      "argsIgnorePattern": "^_",
+    },
   }
 };

@@ -11,7 +11,7 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
-  async transform(value, metadata: ArgumentMetadata) {
+  public async transform(value, metadata: ArgumentMetadata): Promise<any> {
     if (!value) {
       throw new BadRequestException('No data submitted');
     }
@@ -34,7 +34,7 @@ export class ValidationPipe implements PipeTransform<any> {
     return value;
   }
 
-  private buildError(errors) {
+  private buildError(errors): any {
     const result = {};
     errors.forEach(el => {
       let prop = el.property;
