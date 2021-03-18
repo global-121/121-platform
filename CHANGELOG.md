@@ -7,21 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v0.21.2...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.0.0...master)
+
+---
+
+## v[1.0.0](https://github.com/global-121/121-platform/compare/v0.21.1...v1.0.0) - 2021-03-18
+
+This version contains a working version of the full system, including:
+
+- Self-registration by People Affected (PA) using a web-app
+- (Offline) validation by Aid-Workers (AW) using a web-app
+- Publishing of a (single) aid-program by a Humanitarian Organazation (HO)
+- Including/Rejecting PAs based on pre-set conditions of manually by HO
+- Initiating pay-outs using multiple financial service providers (FSP)
+- Publishing "Information as Aid" using a stand-alone web-app
 
 ---
 
 ## [0.21.2](https://github.com/global-121/121-platform/compare/v0.21.1...v0.21.2) - 2021-03-17
 
----
-
 ## [0.21.1](https://github.com/global-121/121-platform/compare/v0.21.0...v0.21.1) - 2021-03-17
 
----
-
 ## [0.21.0](https://github.com/global-121/121-platform/compare/v0.20.1...v0.21.0) - 2021-03-17
-
----
 
 ## [0.20.1](https://github.com/global-121/121-platform/compare/v0.20.0...v0.20.1) - 2021-03-08
 
@@ -39,8 +46,6 @@ Hotfix: To run initial start-up without manual intervention.
 - 2021-03-09: Added new dependency `csv-parser` to 121-service;  
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 
----
-
 ## [0.19.1](https://github.com/global-121/121-platform/compare/v0.19.0...v0.19.1) - 2021-02-24
 
 ## [0.19.0](https://github.com/global-121/121-platform/compare/v0.18.0...v0.19.0) - 2021-02-23
@@ -54,8 +59,6 @@ Hotfix: To run initial start-up without manual intervention.
 ### Changed
 - 2021-02-17: Setting the URL-scheme of all back-end services, via `SCHEME` variable in [`services/.env`](services/.env.example)
 
----
-
 ## [0.18.0](https://github.com/global-121/121-platform/compare/v0.17.4...v0.18.0) - 2021-02-10
 
 ### Changed
@@ -65,8 +68,6 @@ Hotfix: To run initial start-up without manual intervention.
 
 - 2021-02-09: Default user-accounts changed  
   The values defined in `services/.env` need to be updated according to: [`services/.env.example`](services/.env.example).
-
----
 
 ## [0.17.4](https://github.com/global-121/121-platform/compare/v0.17.3...v0.17.4) - 2021-02-03
 
@@ -78,11 +79,7 @@ Hotfix: To run initial start-up without manual intervention.
 
 ## [0.17.0](https://github.com/global-121/121-platform/compare/v0.16.0...v0.17.0) - 2021-01-19
 
----
-
 ## [0.16.0](https://github.com/global-121/121-platform/compare/v0.15.4...v0.16.0) - 2021-01-13
-
----
 
 ## [0.15.4](https://github.com/global-121/121-platform/compare/v0.15.3...v0.15.4) - 2021-01-12
 
@@ -106,11 +103,7 @@ Hotfix: To run initial start-up without manual intervention.
   It is recommended to fully remove the `node_modules`-folders in the `121-service` and the `PA-accounts-service` folders before deploying this version.  
   They will be recreated/updated by the build-steps in their `Dockerfile`'s and/or the `docker-compose`-file when running `npm run start:services` from the root-folder.
 
----
-
 ## [0.14.0](https://github.com/global-121/121-platform/compare/v0.13.6...v0.14.0) - 2020-12-09
-
----
 
 ## [0.13.6](https://github.com/global-121/121-platform/compare/v0.13.5...v0.13.6) - 2020-12-08
 
@@ -138,8 +131,6 @@ Hotfix: To run initial start-up without manual intervention.
 
 Release for Acceptance test 2 Kenya Pilot
 
----
-
 ## [0.12.2](https://github.com/global-121/121-platform/compare/v0.12.1...v0.12.2) - 2020-11-17
 
 Hotfix to fix Intersolve integration for NL-pilot.
@@ -154,8 +145,6 @@ Hotfix to fix Intersolve integration for NL-pilot.
 
 ### Added
 - 2020-11-11: Functionality to send self-scan instructions. For this to work an image-file needs to be uploaded to `/api/fsp/intersolve/instruction` on environment with the FSP "Intersolve" enabled.
-
----
 
 ## [0.11.0](https://github.com/global-121/121-platform/compare/v0.10.0...v0.11.0) - 2020-11-11
 
@@ -172,8 +161,6 @@ Hotfix to fix Intersolve integration for NL-pilot.
 - 2020-11-11: Updated dependency `bl` in PA-accounts-service;  
   To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
----
-
 ## [0.10.0](https://github.com/global-121/121-platform/compare/v0.9.0...v0.10.0) - 2020-10-28
 
 ### Notes
@@ -187,8 +174,6 @@ Hotfix to fix Intersolve integration for NL-pilot.
 - 2020-10-21: Removed `TWILIO_TEST_TO_NUMBER`, `TWILIO_TEST_FROM_NUMBER_VOICE` ,`TWILIO_TEST_FROM_NUMBER_SMS` from `services/.env`
 - 2020-10-21: Added package to 121-service; To add manually: `docker-compose exec 121-service npm install bwip-js@^2.0.10 --no-save`
 
----
-
 ## [0.9.0](https://github.com/global-121/121-platform/compare/v0.8.6...v0.9.0) - 2020-10-13
 
 ### Added
@@ -199,8 +184,6 @@ Hotfix to fix Intersolve integration for NL-pilot.
 - 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of HO-Portal
 - 2020-10-01: Added `NG_AI_IKEY` and `NG_AI_ENDPOINT` to `.env`-file of Referral-App
 - 2020-10-13: Added `APPLICATION_INSIGHT_IKEY` and `APPLICATION_INSIGHT_ENDPOINT` to `services/.env`-file
-
----
 
 ## [0.8.6](https://github.com/global-121/121-platform/compare/v0.8.5...v0.8.6) - 2020-09-30
 
@@ -265,8 +248,6 @@ Hotfix to fix Intersolve integration for NL-pilot.
 
 - 2020-09-01: Remove `VERSION`-env variable used by `webhook.service`; Needs update + restart.
 
----
-
 ## [0.7.2](https://github.com/global-121/121-platform/compare/v0.7.1...v0.7.2) - 2020-08-27
 
 ### Changed
@@ -287,8 +268,6 @@ Hotfix to fix Intersolve integration for NL-pilot.
 ### Changed
 
 - 2020-08-12: Changed languages `ny_MW`, `et_OM` by `sa_KE` and `la2_KE`
-
----
 
 ## [0.6.3](https://github.com/global-121/121-platform/compare/v0.6.2...v0.6.3) - 2020-08-05
 
@@ -313,8 +292,6 @@ Hotfix to fix Intersolve integration for NL-pilot.
 
 - 2020-07-21: Value of `NODE_ENV` on `Test-VM` is renamed from 'staging' to 'test', as there is now a separate `Staging-VM`, which uses the value 'staging'. This is both about `services/.env` and about the value in `webhook.service`.
 
----
-
 ## [0.5.0](https://github.com/global-121/121-platform/compare/v0.4.0...v0.5.0) - 2020-07-16
 
 ### Changed
@@ -326,16 +303,12 @@ Hotfix to fix Intersolve integration for NL-pilot.
 - 2020-07-07: Removed Android build of AW-App, including all Cordova dependencies
 - 2020-07-08: Removed everything appointment-related from PA-app, AW-app and 121-service. The latter requires dropping the database (e.g. through `dropSchema: true` in `ormconfig.json`) before it's (automatically) recreated by restarting 121-service.
 
----
-
 ## [0.4.0](https://github.com/global-121/121-platform/compare/v0.3.1...v0.4.0) - 2020-06-16
 
 ### Changed
 
 - 2020-06-09: Add `IPV4_121_SERVICE`, `PORT_121_SERVICE`, `SUBDOMAIN_121_SERVICE`, `EXTERNAL_121_SERVICE_URL`, `URL_PA_ACCOUNTS_SERVICE_API`, `IPV4_PA_ACCOUNTS_SERVICE` , `PORT_PA_ACCOUNTS_SERVICE`, `SUBDOMAIN_PA_ACCOUNTS_SERVICE` and `URL_121_SERVICE_API` to `services/.env` AB#1965
 - 2020-05-26 - Webhook in production-mode triggers deploy-script only once per published release
-
----
 
 ## [0.3.1](https://github.com/global-121/121-platform/compare/v0.3.0...v0.3.1) - 2020-05-26
 
@@ -356,8 +329,6 @@ Hotfix to add missing variable/parameter in AW-App validation-flow.
 
 - 2020-04-23: Remove `tools/secrets.json`, set `GITHUB_WEBHOOK_SECRET` in `webhook.service`
 
----
-
 ## [0.2.1](https://github.com/global-121/121-platform/compare/v0.2.0...v0.2.1) - 2020-04-22
 
 Test hotfix-release to test automatic deployment of patch-releases.
@@ -367,8 +338,6 @@ Test hotfix-release to test automatic deployment of patch-releases.
 ### Added
 
 - 2020-04-22: Add `tools/.env`-file for `tools/deploy.sh`-script AB#1640
-
----
 
 ## [0.1.1](https://github.com/global-121/121-platform/compare/v0.1.0...v0.1.1) - 2020-04-21
 
