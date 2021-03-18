@@ -6,7 +6,6 @@ class LookupServiceMock {}
 
 describe('Lookup Controller', () => {
   let lookupController: LookupController;
-  let lookupService: LookupService;
 
   beforeEach(
     async (): Promise<void> => {
@@ -19,7 +18,6 @@ describe('Lookup Controller', () => {
           },
         ],
       }).compile();
-      lookupService = module.get<LookupService>(LookupService);
       lookupController = module.get<LookupController>(LookupController);
     },
   );

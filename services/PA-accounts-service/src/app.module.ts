@@ -19,7 +19,7 @@ import { ServicesModule } from './services/services.module';
   ],
   controllers: [AppController],
   providers: [],
-  exports: []
+  exports: [],
 })
 export class ApplicationModule {
   public constructor(private readonly connection: Connection) {}

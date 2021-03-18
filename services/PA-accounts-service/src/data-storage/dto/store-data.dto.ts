@@ -5,10 +5,10 @@ export class StoreDataDto {
   @ApiModelProperty()
   @IsNotEmpty()
   @IsString()
-  readonly type: string;
+  public readonly type: string;
 
   @ApiModelProperty()
   @IsNotEmpty()
   @IsString()
-  readonly data: string;
+  public readonly data: string;
 }

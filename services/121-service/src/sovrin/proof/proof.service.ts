@@ -33,6 +33,7 @@ export class ProofService {
         name: criteriums[i].criterium,
         restrictions: [
           {
+            /* eslint-disable-next-line @typescript-eslint/camelcase */
             cred_def_id: credDefId,
           },
         ],
@@ -43,7 +44,9 @@ export class ProofService {
       nonce: '1432422343242122312411212',
       name: 'Inclusion-request',
       version: '0.1',
+      /* eslint-disable-next-line @typescript-eslint/camelcase */
       requested_attributes: requestedAttributes,
+      /* eslint-disable-next-line @typescript-eslint/camelcase */
       requested_predicates: {},
     };
     return proofRequest;

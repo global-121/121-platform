@@ -4,7 +4,6 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserRO } from './user.interface';
-import { DeleteResult } from 'typeorm';
 import { LoginUserDto } from './dto/login-user.dto';
 import { RolesGuard } from '../roles.guard';
 
@@ -30,7 +29,7 @@ class UserServiceMock {
     };
     return userRo;
   }
-  public async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
+  public async findOne(_loginUserDto: LoginUserDto): Promise<UserEntity> {
     const user = new UserEntity();
     user.id = 1;
     user.username = 'test-pa';
@@ -38,7 +37,7 @@ class UserServiceMock {
       'c90f86e09c3461da52b3d8bc80ccd6a0d0cb893b1a41bd461e8ed31fa21c9b6e';
     return user;
   }
-  public generateJWT(user) {
+  public generateJWT(_user): string {
     return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJzdHJpZG5nIiwiZW1haWwiOiJ0ZXNkZnN0QHRlc3QubmwiLCJleHAiOjE1NjYwMzE4MzEuMjk0LCJpYXQiOjE1NjA4NDc4MzF9.tAKGcABFXNd2dRsvf3lZ-4KzUvKGeUkmuhrzGKdfLpo';
   }
 }

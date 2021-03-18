@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { DataStorageEntity } from './data-storage.entity';
 import { StoreDataDto } from './dto';
 import { walletPasswordEncryptionKey } from '../config';
-const Cryptr = require('cryptr');
+import Cryptr = require('cryptr');
 
 @Injectable()
 export class DataStorageService {

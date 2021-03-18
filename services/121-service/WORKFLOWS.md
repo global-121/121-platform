@@ -37,7 +37,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 3. **121-dev-team**:
    1. Find the `connection` of the PA that we want to update, using `Find DID of PA in database based on name and/or phone number` scenario below.
    2. Update FSP: Use the found connection `did` to update the Financial Service Provider.
-      - Use: [`/sovrin/create-connection/update-chosen-fsp`](https://test-vm.121.global/121-service/docs/#//sovrin/post_sovrin_create_connection_update_chosen_fsp)  
+      - Use: [`/sovrin/create-connection/update-chosen-fsp`](https://test-vm.121.global/121-service/docs/#//sovrin/post_sovrin_create_connection_update_chosen_fsp)
       - Fill in the found `did`
       - Choose the right new FSP name. It must be one out of the provided list.
       - Fill in the required attributes. If the new FSP requires more attributes than the example-provided `whatsappPhoneNumber`, you can manually change this.

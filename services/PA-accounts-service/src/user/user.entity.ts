@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 @Entity('user')
 export class UserEntity {
@@ -13,10 +13,10 @@ export class UserEntity {
   public password: string;
 
   @BeforeInsert()
-  public hashPassword() {
+  public hashPassword(): void {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
 
   @Column({ default: null })
-  public did: string
+  public did: string;
 }
