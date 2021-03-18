@@ -10,7 +10,11 @@
   },
   "main": "index.js",
   "scripts": {
-    "lint": "eslint \"src/**/*.ts\"",
+    "lint": "npm run lint:code && npm run lint:syntax",
+    "lint:code": "eslint \"src/**/*.ts\"",
+    "fix:code": "npm run lint:code -- --fix",
+    "lint:syntax": "prettier --check \"**/*.{md,js,yml}\"",
+    "fix:syntax": "npm run lint:syntax -- --write",
     "prestart": "npm run migration:run",
     "start": "node index.js",
     "prestart:dev": "npm run prestart",
