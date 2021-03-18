@@ -4,5 +4,5 @@ import { ApiModelProperty } from '@nestjs/swagger';
 export class DeleteUserDto {
   @ApiModelProperty()
   @IsNotEmpty()
-  readonly password: string;
+  public readonly password: string;
 }

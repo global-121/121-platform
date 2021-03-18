@@ -21,6 +21,7 @@
     "start:dev": "tsc-watch --noClear --onSuccess \"  node index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json",
     "prestart:prod": "tsc",
     "start:prod": "node dist/main.js",
+    "pretest": "npm run lint",
     "test": "jest --config=jest.json",
     "test:watch": "npm test -- --watchAll",
     "test:coverage": "npm test -- --coverage --coverageDirectory=coverage",

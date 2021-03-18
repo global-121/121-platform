@@ -19,5 +19,8 @@ module.exports = {
         allowExpressions: true,
       },
     ],
+    '@typescript-eslint/no-unused-vars': {
+      argsIgnorePattern: '^_',
+    },
   },
 };

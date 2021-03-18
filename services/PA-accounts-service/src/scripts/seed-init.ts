@@ -19,7 +19,10 @@ export class SeedInit implements InterfaceScript {
       {
         username: process.env.USERCONFIG_PA_ACCOUNTS_SERVICE_USERNAME,
         password: crypto
-          .createHmac('sha256', process.env.USERCONFIG_PA_ACCOUNTS_SERVICE_PASSWORD)
+          .createHmac(
+            'sha256',
+            process.env.USERCONFIG_PA_ACCOUNTS_SERVICE_PASSWORD,
+          )
           .digest('hex'),
       },
     ]);
