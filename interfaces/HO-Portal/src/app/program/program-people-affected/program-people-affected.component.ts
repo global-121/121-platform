@@ -64,12 +64,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.invite-checkbox',
+          'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
         checkboxChecked: true,
         inputRequired: true,
         explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.invite-explanation',
+          'page.program.program-people-affected.action-inputs.message-explanation',
         ),
         minLength: 20,
       },
@@ -95,12 +95,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.include-checkbox',
+          'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
         checkboxChecked: false,
         inputRequired: true,
         explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.include-explanation',
+          'page.program.program-people-affected.action-inputs.message-explanation',
         ),
         minLength: 20,
       },
@@ -116,12 +116,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.include-checkbox',
+          'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
         checkboxChecked: false,
         inputRequired: true,
         explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.include-explanation',
+          'page.program.program-people-affected.action-inputs.message-explanation',
         ),
         minLength: 20,
       },
@@ -137,13 +137,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.reject-checkbox',
+          'page.program.program-people-affected.action-inputs.message-checkbox',
         ),
         checkboxChecked: true,
         inputRequired: true,
-        explanation: this.translate.instant(
-          'page.program.program-people-affected.action-inputs.reject-explanation',
-        ),
+        explanation: `${this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        )} <br> ${this.translate.instant(
+          'page.program.program-people-affected.action-inputs.reject.explanation',
+        )}`,
         minLength: 20,
       },
     },
