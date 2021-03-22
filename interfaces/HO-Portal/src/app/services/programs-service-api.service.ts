@@ -241,19 +241,29 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  selectForValidation(
+  private updatePaStatus(
+    action: string,
     programId: number | string,
     dids: string[],
+    message?: string,
   ): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/programs/select-validation/${programId}`,
+        `/programs/${action}/${programId}`,
         {
           dids: JSON.stringify(dids),
+          message,
         },
       )
       .toPromise();
+  }
+
+  selectForValidation(
+    programId: number | string,
+    dids: string[],
+  ): Promise<any> {
+    return this.updatePaStatus('select-validation', programId, dids);
   }
 
   invite(
@@ -274,12 +284,15 @@ export class ProgramsServiceApiService {
     dids: string[],
     message: string,
   ): Promise<any> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/programs/include/${programId}`, {
-        dids: JSON.stringify(dids),
-        message,
-      })
-      .toPromise();
+    return this.updatePaStatus('include', programId, dids, message);
+  }
+
+  end(
+    programId: number | string,
+    dids: string[],
+    message: string,
+  ): Promise<any> {
+    return this.updatePaStatus('end', programId, dids, message);
   }
 
   reject(
@@ -287,12 +300,7 @@ export class ProgramsServiceApiService {
     dids: string[],
     message: string,
   ): Promise<any> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/programs/reject/${programId}`, {
-        dids: JSON.stringify(dids),
-        message,
-      })
-      .toPromise();
+    return this.updatePaStatus('reject', programId, dids, message);
   }
 
   saveAction(actionType: ActionType, programId: number | string): Promise<any> {
