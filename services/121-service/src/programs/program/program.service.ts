@@ -441,6 +441,7 @@ export class ProgramService {
     await this.checkIfProgramExists(programId);
 
     let inclusionStatus: InclusionStatus;
+
     if (connection.programsIncluded.includes(+programId)) {
       inclusionStatus = { status: PaStatus.included };
     } else if (connection.programsRejected.includes(+programId)) {
@@ -448,6 +449,7 @@ export class ProgramService {
     } else {
       inclusionStatus = { status: 'unavailable' };
     }
+
     return inclusionStatus;
   }
 
@@ -455,14 +457,14 @@ export class ProgramService {
     programId: number,
     dids: object,
   ): Promise<void> {
-    const selectedForValidationDate = new Date();
     await this.checkIfProgramExists(programId);
 
     for (let did of JSON.parse(dids['dids'])) {
       let connection = await this.getConnectionByDid(did.did);
       if (!connection) continue;
 
-      connection.selectedForValidationDate = selectedForValidationDate;
+      connection.selectedForValidationDate = new Date();
+
       await this.connectionRepository.save(connection);
     }
   }
@@ -484,7 +486,9 @@ export class ProgramService {
       if (!connection) continue;
 
       connection.invitedDate = new Date();
+
       await this.connectionRepository.save(connection);
+
       if (message) {
         this.sendSmsMessage(connection, programId, message);
       }
@@ -520,7 +524,9 @@ export class ProgramService {
       if (indexEx > -1) {
         connection.programsRejected.splice(indexEx, 1);
       }
+
       connection.inclusionDate = new Date();
+
       await this.connectionRepository.save(connection);
     }
   }
@@ -588,7 +594,9 @@ export class ProgramService {
       if (indexIn > -1) {
         connection.programsIncluded.splice(indexIn, 1);
       }
+
       connection.rejectionDate = new Date();
+
       await this.connectionRepository.save(connection);
     }
   }
@@ -615,6 +623,7 @@ export class ProgramService {
     if (!program.validation) {
       connection.inclusionScore = score;
     }
+
     await this.connectionRepository.save(connection);
   }
 
