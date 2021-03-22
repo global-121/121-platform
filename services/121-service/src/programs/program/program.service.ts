@@ -318,6 +318,23 @@ export class ProgramService {
     return simpleProgramRO;
   }
 
+  private async getConnectionByDid(did: string): Promise<ConnectionEntity> {
+    return await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+  }
+
+  private async getConnectionByDidOrThrow(
+    did: string,
+  ): Promise<ConnectionEntity> {
+    let connection = await this.getConnectionByDid(did);
+    if (!connection) {
+      const errors = 'No connection found for PA.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return connection;
+  }
+
   public async includeMe(
     programId: number,
     did: string,
@@ -331,13 +348,7 @@ export class ProgramService {
     `;
     const proof = encryptedProof; // this should actually be decrypted in a future scenario
 
-    let connection = await this.connectionRepository.findOne({
-      where: { did: did },
-    });
-    if (!connection) {
-      const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    let connection = await this.getConnectionByDidOrThrow(did);
 
     if (connection.programsEnrolled.includes(+programId)) {
       const errors = 'Already enrolled for program';
@@ -417,13 +428,7 @@ export class ProgramService {
     programId: number,
     did: string,
   ): Promise<InclusionStatus> {
-    let connection = await this.connectionRepository.findOne({
-      where: { did: did },
-    });
-    if (!connection) {
-      const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    let connection = await this.getConnectionByDidOrThrow(did);
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
@@ -454,12 +459,8 @@ export class ProgramService {
     const selectedForValidationDate = new Date();
 
     for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.connectionRepository.findOne({
-        where: { did: did.did },
-      });
-      if (!connection) {
-        continue;
-      }
+      let connection = await this.getConnectionByDid(did.did);
+      if (!connection) continue;
 
       connection.selectedForValidationDate = selectedForValidationDate;
       await this.connectionRepository.save(connection);
@@ -483,9 +484,7 @@ export class ProgramService {
       let connection = await this.connectionRepository.findOne({
         where: { phoneNumber: sanitizedPhoneNr },
       });
-      if (!connection) {
-        continue;
-      }
+      if (!connection) continue;
 
       connection.invitedDate = new Date();
       await this.connectionRepository.save(connection);
@@ -507,12 +506,8 @@ export class ProgramService {
     }
 
     for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.connectionRepository.findOne({
-        where: { did: did.did },
-      });
-      if (!connection) {
-        continue;
-      }
+      let connection = await this.getConnectionByDid(did.did);
+      if (!connection) continue;
 
       // Add to inclusion-array, if not yet present
       const indexIn = connection.programsIncluded.indexOf(
@@ -549,12 +544,8 @@ export class ProgramService {
     }
 
     for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.connectionRepository.findOne({
-        where: { did: did.did },
-      });
-      if (!connection) {
-        continue;
-      }
+      let connection = await this.getConnectionByDid(did.did);
+      if (!connection) continue;
 
       // Add to rejection-array, if not yet present
       const indexEx = connection.programsRejected.indexOf(
@@ -592,12 +583,8 @@ export class ProgramService {
     }
 
     for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.connectionRepository.findOne({
-        where: { did: did.did },
-      });
-      if (!connection) {
-        continue;
-      }
+      let connection = await this.getConnectionByDid(did.did);
+      if (!connection) continue;
 
       // Add to rejection-array, if not yet present
       const indexEx = connection.programsRejected.indexOf(
@@ -637,9 +624,8 @@ export class ProgramService {
       program.customCriteria,
       scoreList,
     );
-    let connection = await this.connectionRepository.findOne({
-      where: { did: did },
-    });
+    let connection = await this.getConnectionByDid(did);
+
     connection.temporaryInclusionScore = score;
     if (!program.validation) {
       connection.inclusionScore = score;
@@ -1065,9 +1051,8 @@ export class ProgramService {
   public async getTransaction(
     input: GetTransactionDto,
   ): Promise<TransactionEntity> {
-    const connection = await this.connectionRepository.findOne({
-      where: { did: input.did },
-    });
+    const connection = await this.getConnectionByDid(input.did);
+
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
