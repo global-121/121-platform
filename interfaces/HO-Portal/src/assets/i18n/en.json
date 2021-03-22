@@ -182,6 +182,7 @@
           "selectedForValidation": "Selected for Validation",
           "validated": "Validated",
           "included": "Included",
+          "inclusionEnded": "Inclusion ended",
           "excluded": "Excluded",
           "rejected": "Rejected"
         },
@@ -190,6 +191,7 @@
           "select-for-validation": "Select for validation",
           "include": "Include in program",
           "reject": "Reject from program",
+          "end-inclusion": "End inclusion in program",
           "notify-included": "Notify included People Affected"
         },
         "action-inputs": {

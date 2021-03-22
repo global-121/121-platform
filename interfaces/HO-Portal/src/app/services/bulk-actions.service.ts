@@ -40,6 +40,11 @@ export class BulkActionsService {
           PaStatus.rejected,
         ]);
         break;
+      case BulkActionId.endInclusion:
+        personData.checkboxVisible = this.hasStatus(personData, [
+          PaStatus.included,
+        ]);
+        break;
       case BulkActionId.reject:
         personData.checkboxVisible = this.hasStatus(personData, [
           PaStatus.registered,
@@ -78,6 +83,12 @@ export class BulkActionsService {
         );
       case BulkActionId.includePersonalDataRole:
         return await this.programsService.include(
+          programId,
+          selectedPeople,
+          message,
+        );
+      case BulkActionId.endInclusion:
+        return await this.programsService.end(
           programId,
           selectedPeople,
           message,

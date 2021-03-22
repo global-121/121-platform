@@ -149,6 +149,27 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         minLength: 20,
       },
     },
+    {
+      id: BulkActionId.endInclusion,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.end-inclusion',
+      ),
+      roles: [UserRole.PersonalData],
+      phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
+      showIfNoValidation: true,
+      confirmConditions: {
+        checkbox: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-checkbox',
+        ),
+        checkboxChecked: true,
+        inputRequired: true,
+        explanation: this.translate.instant(
+          'page.program.program-people-affected.action-inputs.message-explanation',
+        ),
+        minLength: 20,
+      },
+    },
   ];
   public applyBtnDisabled = true;
   public submitWarning: any;

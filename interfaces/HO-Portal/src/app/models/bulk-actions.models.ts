@@ -8,6 +8,7 @@ export enum BulkActionId {
   selectForValidation = 'select-for-validation',
   includeRunProgramRole = 'include-run-program-role',
   includePersonalDataRole = 'include-personal-data-role',
+  endInclusion = 'end-inclusion',
   reject = 'reject',
 }
 
