@@ -201,6 +201,12 @@ export class MetricsComponent implements OnChanges {
       label: 'page.program.metrics.pa.included',
       value: this.getValueOrUnknown(metrics.included),
     });
+    this.metricsMap.set(`${group}.inclusionEnded`, {
+      group,
+      icon: 'checkmark-circle',
+      label: 'page.program.metrics.pa.inclusionEnded',
+      value: this.getValueOrUnknown(metrics.inclusionEnded),
+    });
     this.metricsMap.set(`${group}.excluded`, {
       group,
       icon: 'close-circle',

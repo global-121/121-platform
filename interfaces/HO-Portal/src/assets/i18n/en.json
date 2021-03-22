@@ -79,6 +79,7 @@
           "finished-enlisting": "PA Registered",
           "verified": "PA Verified",
           "included": "PA Included",
+          "inclusionEnded": "PA Inclusion Ended",
           "excluded": "PA Excluded"
         },
         "header": {

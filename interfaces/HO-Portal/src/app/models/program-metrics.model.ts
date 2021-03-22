@@ -8,6 +8,7 @@ export class PeopleMetrics {
   finishedEnlisting: number;
   verified: number;
   included: number;
+  inclusionEnded: number;
   excluded: number;
 }
 
