@@ -142,6 +142,13 @@ export class ConnectionEntity {
     default: () => null,
     nullable: true,
   })
+  public inclusionEndDate: Date;
+
+  @Column({
+    type: 'timestamp',
+    default: () => null,
+    nullable: true,
+  })
   public rejectionDate: Date;
 
   @Column({

@@ -3,5 +3,6 @@ export class PaMetrics {
   public finishedEnlisting: number;
   public verified: number;
   public included: number;
+  public inclusionEnded: number;
   public excluded: number;
 }

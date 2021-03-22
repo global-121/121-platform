@@ -537,6 +537,49 @@ export class ProgramService {
     }
   }
 
+  public async end(
+    programId: number,
+    dids: object,
+    message?: string,
+  ): Promise<void> {
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    for (let did of JSON.parse(dids['dids'])) {
+      let connection = await this.connectionRepository.findOne({
+        where: { did: did.did },
+      });
+      if (!connection) {
+        continue;
+      }
+
+      // Add to rejection-array, if not yet present
+      const indexEx = connection.programsRejected.indexOf(
+        parseInt(String(programId), 10),
+      );
+      if (indexEx <= -1) {
+        connection.programsRejected.push(programId);
+        if (message) {
+          this.sendSmsMessage(connection, programId, message);
+        }
+      }
+      // Remove from inclusion-array, if present
+      const indexIn = connection.programsIncluded.indexOf(
+        parseInt(String(programId), 10),
+      );
+      if (indexIn > -1) {
+        connection.programsIncluded.splice(indexIn, 1);
+      }
+
+      connection.inclusionEndDate = new Date();
+
+      await this.connectionRepository.save(connection);
+    }
+  }
+
   public async reject(
     programId: number,
     dids: object,
@@ -824,10 +867,15 @@ export class ProgramService {
     return null;
   }
 
-  private getPaStatus(connection, programId: number): PaStatus {
+  private getPaStatus(
+    connection: ConnectionEntity,
+    programId: number,
+  ): PaStatus {
     let paStatus: PaStatus;
     if (connection.programsIncluded.includes(+programId)) {
       paStatus = PaStatus.included;
+    } else if (connection.inclusionEndDate) {
+      paStatus = PaStatus.inclusionEnded;
     } else if (connection.programsRejected.includes(+programId)) {
       paStatus = PaStatus.rejected;
     } else if (connection.validationDate) {
@@ -892,6 +940,7 @@ export class ProgramService {
         connection.selectedForValidationDate;
       connectionResponse['validationDate'] = connection.validationDate;
       connectionResponse['inclusionDate'] = connection.inclusionDate;
+      connectionResponse['inclusionEndDate'] = connection.inclusionEndDate;
       connectionResponse['rejectionDate'] = connection.rejectionDate;
       connectionResponse['inclusionNotificationDate'] =
         connection.inclusionNotificationDate;
@@ -1169,6 +1218,7 @@ export class ProgramService {
       'selectedForValidationDate',
       'validationDate',
       'inclusionDate',
+      'inclusionEndDate',
       'rejectionDate',
       'inclusionNotificationDate',
     ];
@@ -1404,10 +1454,15 @@ export class ProgramService {
     const connections = await this.getConnections(programId, false);
 
     metrics.included = this.filteredLength(connections, PaStatus.included);
+    metrics.inclusionEnded = this.filteredLength(
+      connections,
+      PaStatus.inclusionEnded,
+    );
     metrics.excluded = this.filteredLength(connections, PaStatus.rejected);
     metrics.verified =
       this.filteredLength(connections, PaStatus.validated) +
       metrics.included +
+      metrics.inclusionEnded +
       metrics.excluded;
     metrics.finishedEnlisting =
       this.filteredLength(connections, PaStatus.registered) + metrics.verified;
