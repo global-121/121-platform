@@ -1177,15 +1177,6 @@ export class ProgramService {
     }
   }
 
-  private async getConnectionsWithStatus(
-    programId: number,
-    status: PaStatus,
-  ): Promise<any[]> {
-    return (await this.getConnections(programId, true)).filter(
-      i => i.status === status,
-    );
-  }
-
   private addGenericFieldsToExport(
     row: object,
     connection: ConnectionEntity,
@@ -1412,13 +1403,6 @@ export class ProgramService {
     csv.unshift(header.join(','));
     csv = csv.join('\r\n');
     return csv;
-  }
-
-  public async getMetrics(programId): Promise<ProgramMetrics> {
-    const metrics = new ProgramMetrics();
-    metrics.pa = await this.getPaMetrics(programId);
-    metrics.updated = new Date();
-    return metrics;
   }
 
   private filteredLength(connections, filterStatus: PaStatus): number {

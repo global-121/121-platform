@@ -342,7 +342,10 @@ export class ProgramController {
   })
   @Get('metrics/:id')
   public async getMetrics(@Param() params): Promise<ProgramMetrics> {
-    return await this.programService.getMetrics(params.id);
+    return {
+      pa: await this.programService.getPaMetrics(params.id),
+      updated: new Date(),
+    };
   }
 
   @Roles(UserRole.Admin)
