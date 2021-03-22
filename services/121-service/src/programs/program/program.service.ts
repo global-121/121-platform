@@ -84,6 +84,14 @@ export class ProgramService {
     private readonly lookupService: LookupService,
   ) {}
 
+  private async checkIfProgramExists(programId: number): Promise<void> {
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = `Program with ID "${programId}" not found.`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+  }
+
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
@@ -429,11 +437,8 @@ export class ProgramService {
     did: string,
   ): Promise<InclusionStatus> {
     let connection = await this.getConnectionByDidOrThrow(did);
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+
+    await this.checkIfProgramExists(programId);
 
     let inclusionStatus: InclusionStatus;
     if (connection.programsIncluded.includes(+programId)) {
@@ -450,13 +455,8 @@ export class ProgramService {
     programId: number,
     dids: object,
   ): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
     const selectedForValidationDate = new Date();
+    await this.checkIfProgramExists(programId);
 
     for (let did of JSON.parse(dids['dids'])) {
       let connection = await this.getConnectionByDid(did.did);
@@ -472,11 +472,8 @@ export class ProgramService {
     phoneNumbers: string,
     message?: string,
   ): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    await this.checkIfProgramExists(programId);
+
     for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
       const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
         phoneNumber,
@@ -499,11 +496,7 @@ export class ProgramService {
     dids: object,
     message?: string,
   ): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    await this.checkIfProgramExists(programId);
 
     for (let did of JSON.parse(dids['dids'])) {
       let connection = await this.getConnectionByDid(did.did);
@@ -537,11 +530,7 @@ export class ProgramService {
     dids: object,
     message?: string,
   ): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    await this.checkIfProgramExists(programId);
 
     for (let did of JSON.parse(dids['dids'])) {
       let connection = await this.getConnectionByDid(did.did);
@@ -576,11 +565,7 @@ export class ProgramService {
     dids: object,
     message?: string,
   ): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    await this.checkIfProgramExists(programId);
 
     for (let did of JSON.parse(dids['dids'])) {
       let connection = await this.getConnectionByDid(did.did);
