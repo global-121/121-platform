@@ -13,6 +13,14 @@ export class FspTransactionResultDto {
   public paList: PaTransactionResultDto[];
 }
 
+export class PaymentAddressTransactionResultDto {
+  public paymentAddress: string;
+  public paTransactionResultList: PaTransactionResultDto[];
+  public status: StatusEnum;
+  public message: string;
+  public customData?: any;
+}
+
 export class PaTransactionResultDto {
   public did: string;
   public status: StatusEnum;
