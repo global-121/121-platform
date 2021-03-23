@@ -84,6 +84,14 @@ export class ProgramService {
     private readonly lookupService: LookupService,
   ) {}
 
+  private async checkIfProgramExists(programId: number): Promise<void> {
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = `Program with ID "${programId}" not found.`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+  }
+
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
@@ -318,6 +326,23 @@ export class ProgramService {
     return simpleProgramRO;
   }
 
+  private async getConnectionByDid(did: string): Promise<ConnectionEntity> {
+    return await this.connectionRepository.findOne({
+      where: { did: did },
+    });
+  }
+
+  private async getConnectionByDidOrThrow(
+    did: string,
+  ): Promise<ConnectionEntity> {
+    let connection = await this.getConnectionByDid(did);
+    if (!connection) {
+      const errors = 'No connection found for PA.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return connection;
+  }
+
   public async includeMe(
     programId: number,
     did: string,
@@ -331,13 +356,7 @@ export class ProgramService {
     `;
     const proof = encryptedProof; // this should actually be decrypted in a future scenario
 
-    let connection = await this.connectionRepository.findOne({
-      where: { did: did },
-    });
-    if (!connection) {
-      const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    let connection = await this.getConnectionByDidOrThrow(did);
 
     if (connection.programsEnrolled.includes(+programId)) {
       const errors = 'Already enrolled for program';
@@ -417,20 +436,12 @@ export class ProgramService {
     programId: number,
     did: string,
   ): Promise<InclusionStatus> {
-    let connection = await this.connectionRepository.findOne({
-      where: { did: did },
-    });
-    if (!connection) {
-      const errors = 'No connection found for PA.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    let connection = await this.getConnectionByDidOrThrow(did);
+
+    await this.checkIfProgramExists(programId);
 
     let inclusionStatus: InclusionStatus;
+
     if (connection.programsIncluded.includes(+programId)) {
       inclusionStatus = { status: PaStatus.included };
     } else if (connection.programsRejected.includes(+programId)) {
@@ -438,6 +449,7 @@ export class ProgramService {
     } else {
       inclusionStatus = { status: 'unavailable' };
     }
+
     return inclusionStatus;
   }
 
@@ -445,23 +457,14 @@ export class ProgramService {
     programId: number,
     dids: object,
   ): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    const selectedForValidationDate = new Date();
+    await this.checkIfProgramExists(programId);
 
     for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.connectionRepository.findOne({
-        where: { did: did.did },
-      });
-      if (!connection) {
-        continue;
-      }
+      let connection = await this.getConnectionByDid(did.did);
+      if (!connection) continue;
 
-      connection.selectedForValidationDate = selectedForValidationDate;
+      connection.selectedForValidationDate = new Date();
+
       await this.connectionRepository.save(connection);
     }
   }
@@ -471,11 +474,8 @@ export class ProgramService {
     phoneNumbers: string,
     message?: string,
   ): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    await this.checkIfProgramExists(programId);
+
     for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
       const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
         phoneNumber,
@@ -483,12 +483,12 @@ export class ProgramService {
       let connection = await this.connectionRepository.findOne({
         where: { phoneNumber: sanitizedPhoneNr },
       });
-      if (!connection) {
-        continue;
-      }
+      if (!connection) continue;
 
       connection.invitedDate = new Date();
+
       await this.connectionRepository.save(connection);
+
       if (message) {
         this.sendSmsMessage(connection, programId, message);
       }
@@ -500,19 +500,11 @@ export class ProgramService {
     dids: object,
     message?: string,
   ): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    await this.checkIfProgramExists(programId);
 
     for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.connectionRepository.findOne({
-        where: { did: did.did },
-      });
-      if (!connection) {
-        continue;
-      }
+      let connection = await this.getConnectionByDid(did.did);
+      if (!connection) continue;
 
       // Add to inclusion-array, if not yet present
       const indexIn = connection.programsIncluded.indexOf(
@@ -532,29 +524,23 @@ export class ProgramService {
       if (indexEx > -1) {
         connection.programsRejected.splice(indexEx, 1);
       }
+
       connection.inclusionDate = new Date();
+
       await this.connectionRepository.save(connection);
     }
   }
 
-  public async reject(
+  public async end(
     programId: number,
     dids: object,
     message?: string,
   ): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
+    await this.checkIfProgramExists(programId);
 
     for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.connectionRepository.findOne({
-        where: { did: did.did },
-      });
-      if (!connection) {
-        continue;
-      }
+      let connection = await this.getConnectionByDid(did.did);
+      if (!connection) continue;
 
       // Add to rejection-array, if not yet present
       const indexEx = connection.programsRejected.indexOf(
@@ -573,7 +559,44 @@ export class ProgramService {
       if (indexIn > -1) {
         connection.programsIncluded.splice(indexIn, 1);
       }
+
+      connection.inclusionEndDate = new Date();
+
+      await this.connectionRepository.save(connection);
+    }
+  }
+
+  public async reject(
+    programId: number,
+    dids: object,
+    message?: string,
+  ): Promise<void> {
+    await this.checkIfProgramExists(programId);
+
+    for (let did of JSON.parse(dids['dids'])) {
+      let connection = await this.getConnectionByDid(did.did);
+      if (!connection) continue;
+
+      // Add to rejection-array, if not yet present
+      const indexEx = connection.programsRejected.indexOf(
+        parseInt(String(programId), 10),
+      );
+      if (indexEx <= -1) {
+        connection.programsRejected.push(programId);
+        if (message) {
+          this.sendSmsMessage(connection, programId, message);
+        }
+      }
+      // Remove from inclusion-array, if present
+      const indexIn = connection.programsIncluded.indexOf(
+        parseInt(String(programId), 10),
+      );
+      if (indexIn > -1) {
+        connection.programsIncluded.splice(indexIn, 1);
+      }
+
       connection.rejectionDate = new Date();
+
       await this.connectionRepository.save(connection);
     }
   }
@@ -594,13 +617,13 @@ export class ProgramService {
       program.customCriteria,
       scoreList,
     );
-    let connection = await this.connectionRepository.findOne({
-      where: { did: did },
-    });
+    let connection = await this.getConnectionByDid(did);
+
     connection.temporaryInclusionScore = score;
     if (!program.validation) {
       connection.inclusionScore = score;
     }
+
     await this.connectionRepository.save(connection);
   }
 
@@ -824,10 +847,15 @@ export class ProgramService {
     return null;
   }
 
-  private getPaStatus(connection, programId: number): PaStatus {
+  private getPaStatus(
+    connection: ConnectionEntity,
+    programId: number,
+  ): PaStatus {
     let paStatus: PaStatus;
     if (connection.programsIncluded.includes(+programId)) {
       paStatus = PaStatus.included;
+    } else if (connection.inclusionEndDate) {
+      paStatus = PaStatus.inclusionEnded;
     } else if (connection.programsRejected.includes(+programId)) {
       paStatus = PaStatus.rejected;
     } else if (connection.validationDate) {
@@ -892,6 +920,7 @@ export class ProgramService {
         connection.selectedForValidationDate;
       connectionResponse['validationDate'] = connection.validationDate;
       connectionResponse['inclusionDate'] = connection.inclusionDate;
+      connectionResponse['inclusionEndDate'] = connection.inclusionEndDate;
       connectionResponse['rejectionDate'] = connection.rejectionDate;
       connectionResponse['inclusionNotificationDate'] =
         connection.inclusionNotificationDate;
@@ -1016,9 +1045,8 @@ export class ProgramService {
   public async getTransaction(
     input: GetTransactionDto,
   ): Promise<TransactionEntity> {
-    const connection = await this.connectionRepository.findOne({
-      where: { did: input.did },
-    });
+    const connection = await this.getConnectionByDid(input.did);
+
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
@@ -1149,15 +1177,6 @@ export class ProgramService {
     }
   }
 
-  private async getConnectionsWithStatus(
-    programId: number,
-    status: PaStatus,
-  ): Promise<any[]> {
-    return (await this.getConnections(programId, true)).filter(
-      i => i.status === status,
-    );
-  }
-
   private addGenericFieldsToExport(
     row: object,
     connection: ConnectionEntity,
@@ -1169,6 +1188,7 @@ export class ProgramService {
       'selectedForValidationDate',
       'validationDate',
       'inclusionDate',
+      'inclusionEndDate',
       'rejectionDate',
       'inclusionNotificationDate',
     ];
@@ -1385,13 +1405,6 @@ export class ProgramService {
     return csv;
   }
 
-  public async getMetrics(programId): Promise<ProgramMetrics> {
-    const metrics = new ProgramMetrics();
-    metrics.pa = await this.getPaMetrics(programId);
-    metrics.updated = new Date();
-    return metrics;
-  }
-
   private filteredLength(connections, filterStatus: PaStatus): number {
     const filteredConnections = connections.filter(
       connection => connection.status === filterStatus,
@@ -1404,11 +1417,16 @@ export class ProgramService {
     const connections = await this.getConnections(programId, false);
 
     metrics.included = this.filteredLength(connections, PaStatus.included);
-    metrics.excluded = this.filteredLength(connections, PaStatus.rejected);
+    metrics.inclusionEnded = this.filteredLength(
+      connections,
+      PaStatus.inclusionEnded,
+    );
+    metrics.rejected = this.filteredLength(connections, PaStatus.rejected);
     metrics.verified =
       this.filteredLength(connections, PaStatus.validated) +
       metrics.included +
-      metrics.excluded;
+      metrics.inclusionEnded +
+      metrics.rejected;
     metrics.finishedEnlisting =
       this.filteredLength(connections, PaStatus.registered) + metrics.verified;
     metrics.startedEnlisting =

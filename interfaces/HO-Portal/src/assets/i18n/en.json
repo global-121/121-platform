@@ -79,7 +79,8 @@
           "finished-enlisting": "PA Registered",
           "verified": "PA Verified",
           "included": "PA Included",
-          "excluded": "PA Excluded"
+          "inclusionEnded": "PA Inclusion Ended",
+          "rejected": "PA Rejected"
         },
         "header": {
           "metric": "Metric",
@@ -182,7 +183,7 @@
           "selectedForValidation": "Selected for Validation",
           "validated": "Validated",
           "included": "Included",
-          "excluded": "Excluded",
+          "inclusionEnded": "Inclusion ended",
           "rejected": "Rejected"
         },
         "actions": {
@@ -190,15 +191,15 @@
           "select-for-validation": "Select for validation",
           "include": "Include in program",
           "reject": "Reject from program",
+          "end-inclusion": "End inclusion in program",
           "notify-included": "Notify included People Affected"
         },
         "action-inputs": {
-          "invite-checkbox": "Send invitation message to People Affected",
-          "invite-explanation": "Please compose here the invitation message. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
-          "reject-checkbox": "Send message to rejected People Affected",
-          "reject-explanation": "Please compose here the message that will be sent. Please ensure to give a reason, and if possible, what their next steps could be. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
-          "include-checkbox": "Send message to included People Affected",
-          "include-explanation": "Please compose here the message that will be sent. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone."
+          "message-checkbox": "Send a message to these People Affected",
+          "message-explanation": "Please provide the message that will be sent. Note that if you go over 160 characters the Person affected may receive the message as multiple texts, if they have a feature (non smart) phone.",
+          "reject": {
+            "explanation": "Please ensure to give a reason, and if possible, what their next steps could be."
+          }
         },
         "no-checkboxes": "There are currently no People Affected to which this action can be applied.",
         "submit-warning": "You are about to:",

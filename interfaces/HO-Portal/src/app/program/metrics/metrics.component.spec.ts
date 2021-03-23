@@ -27,7 +27,8 @@ describe('MetricsComponent', () => {
     updated: new Date().toISOString(),
     pa: {
       included: getRandomInt(0, 100),
-      excluded: getRandomInt(0, 100),
+      inclusionEnded: getRandomInt(0, 100),
+      rejected: getRandomInt(0, 100),
       startedEnlisting: getRandomInt(0, 100),
       finishedEnlisting: getRandomInt(0, 100),
       verified: getRandomInt(0, 100),

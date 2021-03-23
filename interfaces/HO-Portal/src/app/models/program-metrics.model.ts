@@ -8,7 +8,8 @@ export class PeopleMetrics {
   finishedEnlisting: number;
   verified: number;
   included: number;
-  excluded: number;
+  inclusionEnded: number;
+  rejected: number;
 }
 
 export class MetricRow {

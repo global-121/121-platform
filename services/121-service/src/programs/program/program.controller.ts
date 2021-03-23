@@ -213,6 +213,22 @@ export class ProgramController {
     );
   }
 
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'End inclusion of set of PAs' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @Post('end/:programId')
+  public async end(
+    @Param() params,
+    @Body() didData: DidsDto,
+    @Body() messageData: MessageDto,
+  ): Promise<void> {
+    await this.programService.end(
+      params.programId,
+      didData,
+      messageData.message,
+    );
+  }
+
   @Roles(UserRole.PersonalData)
   @ApiOperation({ title: 'Reject set of PAs' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
@@ -326,7 +342,10 @@ export class ProgramController {
   })
   @Get('metrics/:id')
   public async getMetrics(@Param() params): Promise<ProgramMetrics> {
-    return await this.programService.getMetrics(params.id);
+    return {
+      pa: await this.programService.getPaMetrics(params.id),
+      updated: new Date(),
+    };
   }
 
   @Roles(UserRole.Admin)
