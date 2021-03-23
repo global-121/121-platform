@@ -113,17 +113,13 @@ export class WhatsappService {
 
   public async handleIncoming(callbackData): Promise<void> {
     const fromNumber = callbackData.From.replace('whatsapp:+', '');
-
-    const connection = (await this.connectionRepository.find()).filter(
-      c =>
-        c.customData['whatsappPhoneNumber'] === fromNumber &&
-        c.programsIncluded.length > 0 &&
-        c.programsRejected.length === 0,
-    )[0];
+    const connections = (await this.connectionRepository.find()).filter(
+      c => c.customData['whatsappPhoneNumber'] === fromNumber,
+    );
 
     let language = 'en';
     try {
-      language = connection.preferredLanguage;
+      language = connections[0].preferredLanguage;
     } catch (Error) {
       console.log(
         'Incomming whatsapp from non registered user phone last numbers: ',
@@ -136,36 +132,67 @@ export class WhatsappService {
       where: { whatsappPhoneNumber: fromNumber, send: false },
       relations: ['image', 'image.connection'],
     });
-    const intersolveBarcode = intersolveBarcodes.filter(
-      barcode => barcode.image[0].connection.did === connection.did,
-    )[0]; // NOTE: currently this takes the first non-sent installment (if multiple). Feels a bit dodgy, but works in practice
 
-    if (intersolveBarcode) {
-      const mediaUrl = await this.imageCodeService.createVoucherUrl(
-        intersolveBarcode,
-      );
-      await this.sendWhatsapp(
-        program.notifications[language]['whatsappVoucher'],
-        intersolveBarcode.whatsappPhoneNumber,
-        mediaUrl,
-      );
-      await this.sendWhatsapp(
-        '',
-        intersolveBarcode.whatsappPhoneNumber,
-        EXTERNAL_API.voucherInstructionsUrl,
+    // Start loop over theoretically multiple PA's
+    let instructionsSent = false;
+    let defaultReplySent = false;
+    let firstVoucherSent = false;
+    for await (let connection of connections) {
+      const intersolveBarcodesPerPa = intersolveBarcodes.filter(
+        barcode => barcode.image[0].connection.did === connection.did,
       );
 
-      intersolveBarcode.send = true;
-      await this.intersolveBarcodeRepository.save(intersolveBarcode);
-      await this.insertTransactionIntersolve(intersolveBarcode);
-    } else {
-      const whatsappReply = program.notifications[language]['whatsappReply'];
-      await this.sendWhatsapp(whatsappReply, fromNumber, null);
+      // If no barcodes found: send auto-reply (but only once!)
+      if (!intersolveBarcodesPerPa && !defaultReplySent) {
+        const whatsappReply = program.notifications[language]['whatsappReply'];
+        await this.sendWhatsapp(whatsappReply, fromNumber, null);
+        defaultReplySent = true;
+      }
+
+      // Loop over last and old barcodes per PA
+      for await (let intersolveBarcode of intersolveBarcodesPerPa) {
+        const mediaUrl = await this.imageCodeService.createVoucherUrl(
+          intersolveBarcode,
+        );
+
+        // Only include message with first voucher (across PA's and installments)
+        // Send different message if multiple PA's on phone-number
+        const message = firstVoucherSent
+          ? ''
+          : connections.length > 1
+          ? program.notifications[language]['whatsappVoucherMultiple']
+          : program.notifications[language]['whatsappVoucher'];
+        await this.sendWhatsapp(
+          message,
+          intersolveBarcode.whatsappPhoneNumber,
+          mediaUrl,
+        );
+        firstVoucherSent = true;
+
+        // Send instruction message (but only once!)
+        if (!instructionsSent) {
+          await this.sendWhatsapp(
+            '',
+            intersolveBarcode.whatsappPhoneNumber,
+            EXTERNAL_API.voucherInstructionsUrl,
+          );
+          instructionsSent = true;
+        }
+
+        // Save results
+        intersolveBarcode.send = true;
+        await this.intersolveBarcodeRepository.save(intersolveBarcode);
+        await this.insertTransactionIntersolve(
+          intersolveBarcode,
+          connection.id,
+        );
+      }
     }
   }
 
   public async insertTransactionIntersolve(
     intersolveBarcode: IntersolveBarcodeEntity,
+    connectionId: number,
   ): Promise<void> {
     const transaction = new TransactionEntity();
     transaction.status = StatusEnum.success;
@@ -177,15 +204,10 @@ export class WhatsappService {
         IntersolvePayoutStatus: IntersolvePayoutStatus.VoucherSent,
       }),
     );
-    const connection = (
-      await this.connectionRepository.find({ relations: ['fsp'] })
-    ).filter(
-      c =>
-        c.customData['whatsappPhoneNumber'] ===
-          intersolveBarcode.whatsappPhoneNumber &&
-        c.programsIncluded.length > 0 &&
-        c.programsRejected.length === 0,
-    )[0];
+    const connection = await this.connectionRepository.findOne({
+      where: { id: connectionId },
+      relations: ['fsp'],
+    });
     transaction.connection = connection;
     const programId = connection.programsApplied[0];
     transaction.program = await this.programRepository.findOne(programId);

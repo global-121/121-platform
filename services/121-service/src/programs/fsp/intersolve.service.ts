@@ -241,7 +241,7 @@ export class IntersolveService {
 
     try {
       const whatsappPayment = multiplePeople
-        ? program.notifications[language]['whatsappPaymentMultipleVouchers']
+        ? program.notifications[language]['whatsappPaymentMultiple']
         : program.notifications[language]['whatsappPayment'];
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,
