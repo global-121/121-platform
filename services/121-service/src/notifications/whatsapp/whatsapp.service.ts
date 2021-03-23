@@ -113,9 +113,11 @@ export class WhatsappService {
 
   public async handleIncoming(callbackData): Promise<void> {
     const fromNumber = callbackData.From.replace('whatsapp:+', '');
-    const connections = (await this.connectionRepository.find()).filter(
-      c => c.customData['whatsappPhoneNumber'] === fromNumber,
-    );
+    let connections = (
+      await this.connectionRepository.find({
+        relations: ['images', 'images.barcode'],
+      })
+    ).filter(c => c.customData['whatsappPhoneNumber'] === fromNumber);
 
     let language = 'en';
     try {
@@ -127,16 +129,31 @@ export class WhatsappService {
       );
     }
 
+    // Trim connections down to only those with outstanding vouchers
+    connections.forEach(connection => {
+      connection.images = connection.images.filter(
+        image => !image.barcode.send,
+      );
+    });
+    connections = connections.filter(
+      connection => connection.images.length > 0,
+    );
+
+    // If no connections with outstanding barcodes: send auto-reply
     const program = await getRepository(ProgramEntity).findOne(this.programId);
+    if (!connections.length) {
+      const whatsappReply = program.notifications[language]['whatsappReply'];
+      await this.sendWhatsapp(whatsappReply, fromNumber, null);
+    }
+
+    // Start loop over (potentially) multiple PA's
+    let instructionsSent = false;
+    let defaultReplySent = false;
+    let firstVoucherSent = false;
     const intersolveBarcodes = await this.intersolveBarcodeRepository.find({
       where: { whatsappPhoneNumber: fromNumber, send: false },
       relations: ['image', 'image.connection'],
     });
-
-    // Start loop over theoretically multiple PA's
-    let instructionsSent = false;
-    let defaultReplySent = false;
-    let firstVoucherSent = false;
     for await (let connection of connections) {
       const intersolveBarcodesPerPa = intersolveBarcodes.filter(
         barcode => barcode.image[0].connection.did === connection.did,
