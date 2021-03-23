@@ -17,7 +17,7 @@ This version contains a working version of the full system, including:
 
 - Self-registration by People Affected (PA) using a web-app
 - (Offline) validation by Aid-Workers (AW) using a web-app
-- Publishing of a (single) aid-program by a Humanitarian Organazation (HO)
+- Publishing of a (single) aid-program by a Humanitarian Organization (HO)
 - Including/Rejecting PAs based on pre-set conditions of manually by HO
 - Initiating pay-outs using multiple financial service providers (FSP)
 - Publishing "Information as Aid" using a stand-alone web-app
