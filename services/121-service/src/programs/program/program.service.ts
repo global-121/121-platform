@@ -1421,12 +1421,12 @@ export class ProgramService {
       connections,
       PaStatus.inclusionEnded,
     );
-    metrics.excluded = this.filteredLength(connections, PaStatus.rejected);
+    metrics.rejected = this.filteredLength(connections, PaStatus.rejected);
     metrics.verified =
       this.filteredLength(connections, PaStatus.validated) +
       metrics.included +
       metrics.inclusionEnded +
-      metrics.excluded;
+      metrics.rejected;
     metrics.finishedEnlisting =
       this.filteredLength(connections, PaStatus.registered) + metrics.verified;
     metrics.startedEnlisting =

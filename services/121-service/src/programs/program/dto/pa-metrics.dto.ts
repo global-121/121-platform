@@ -4,5 +4,5 @@ export class PaMetrics {
   public verified: number;
   public included: number;
   public inclusionEnded: number;
-  public excluded: number;
+  public rejected: number;
 }

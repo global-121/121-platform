@@ -9,7 +9,7 @@ export class PeopleMetrics {
   verified: number;
   included: number;
   inclusionEnded: number;
-  excluded: number;
+  rejected: number;
 }
 
 export class MetricRow {

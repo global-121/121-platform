@@ -80,7 +80,7 @@
           "verified": "PA Verified",
           "included": "PA Included",
           "inclusionEnded": "PA Inclusion Ended",
-          "excluded": "PA Excluded"
+          "rejected": "PA Rejected"
         },
         "header": {
           "metric": "Metric",
@@ -184,7 +184,6 @@
           "validated": "Validated",
           "included": "Included",
           "inclusionEnded": "Inclusion ended",
-          "excluded": "Excluded",
           "rejected": "Rejected"
         },
         "actions": {
