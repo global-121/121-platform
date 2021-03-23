@@ -38,6 +38,7 @@ export class BulkActionsService {
           PaStatus.selectedForValidation,
           PaStatus.validated,
           PaStatus.rejected,
+          PaStatus.inclusionEnded,
         ]);
         break;
       case BulkActionId.endInclusion:
