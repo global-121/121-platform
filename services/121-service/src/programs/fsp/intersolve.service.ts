@@ -139,67 +139,84 @@ export class IntersolveService {
           paPaymentData.did,
         );
         voucherResult.status = StatusEnum.success;
+        result.paTransactionResultList.push(voucherResult);
       } else {
-        if (voucherInfo.transactionId) {
-          await this.intersolveApiService.cancel(
-            voucherInfo.cardId,
-            voucherInfo.transactionId,
-          );
-        } else {
-          await this.intersolveApiService.cancelTransactionByRefPos(
-            intersolveRefPos,
-          );
-        }
-        voucherResult.message =
-          'Creating intersolve voucher failed. Status code: ' +
-          (voucherInfo.resultCode ? voucherInfo.resultCode : 'unknown') +
-          ' message: ' +
-          (voucherInfo.resultDescription
-            ? voucherInfo.resultDescription
-            : 'unknown');
-        voucherResult.status = StatusEnum.error;
+        // If one fails, also cancel the previously created vouchers
+        voucherInfoArray.forEach(async voucherInfo => {
+          if (voucherInfo.transactionId) {
+            await this.intersolveApiService.cancel(
+              voucherInfo.cardId,
+              voucherInfo.transactionId,
+            );
+          } else {
+            await this.intersolveApiService.cancelTransactionByRefPos(
+              intersolveRefPos,
+            );
+          }
+        });
+        // .. and also update all previous (including this one) statuses to failed
+        result.paTransactionResultList.push(voucherResult);
+        result.paTransactionResultList.forEach(voucherResult => {
+          voucherResult.message =
+            'Creating intersolve voucher failed. Status code: ' +
+            (voucherInfo.resultCode ? voucherInfo.resultCode : 'unknown') +
+            ' message: ' +
+            (voucherInfo.resultDescription
+              ? voucherInfo.resultDescription
+              : 'unknown');
+          voucherResult.status = StatusEnum.error;
+        });
       }
-      result.paTransactionResultList.push(voucherResult);
     }
 
-    // If no whatsapp, return early
-    if (!useWhatsapp) {
-      result.status = StatusEnum.success;
+    if (
+      !voucherInfoArray.every(
+        voucherInfo => voucherInfo.resultCode == IntersolveResultCode.Ok,
+      )
+    ) {
+      // If at least one voucher vailed: return early
       return result;
-    }
-
-    // Continue with whatsapp:
-    let transferResult;
-    if (voucherInfoArray.length === 1) {
-      // OLD situation of 1 PA on this phone-number
-      transferResult = await this.sendVoucherWhatsapp(
-        paymentInfo.paymentAddress,
-        paymentInfo.paPaymentDataList[0].did,
-        false,
-      );
-    } else if (voucherInfoArray.length > 1) {
-      //NEW situation of multiple PA's on this phone-number
-      transferResult = await this.sendVoucherWhatsapp(
-        paymentInfo.paymentAddress,
-        paymentInfo.paPaymentDataList[0].did,
-        true,
-      );
-    }
-    if (transferResult.status === StatusEnum.success) {
-      result.status = transferResult.status;
-      result.message = transferResult.message;
-      result.customData = transferResult.customData;
     } else {
-      result.status = StatusEnum.error;
-      result.message =
-        'Voucher(s) created, but something went wrong in sending voucher.\n' +
-        transferResult.message;
-      voucherInfoArray.forEach(async voucher => {
-        await this.cancelAndDeleteVoucher(
-          voucher.cardId,
-          voucher.transactionId,
+      // Else, continue ..
+      // If no whatsapp, return early
+      if (!useWhatsapp) {
+        result.status = StatusEnum.success;
+        return result;
+      }
+
+      // Continue with whatsapp:
+      let transferResult;
+      if (voucherInfoArray.length === 1) {
+        // OLD situation of 1 PA on this phone-number
+        transferResult = await this.sendVoucherWhatsapp(
+          paymentInfo.paymentAddress,
+          paymentInfo.paPaymentDataList[0].did,
+          false,
         );
-      });
+      } else if (voucherInfoArray.length > 1) {
+        //NEW situation of multiple PA's on this phone-number
+        transferResult = await this.sendVoucherWhatsapp(
+          paymentInfo.paymentAddress,
+          paymentInfo.paPaymentDataList[0].did,
+          true,
+        );
+      }
+      if (transferResult.status === StatusEnum.success) {
+        result.status = transferResult.status;
+        result.message = transferResult.message;
+        result.customData = transferResult.customData;
+      } else {
+        result.status = StatusEnum.error;
+        result.message =
+          'Voucher(s) created, but something went wrong in sending voucher.\n' +
+          transferResult.message;
+        voucherInfoArray.forEach(async voucher => {
+          await this.cancelAndDeleteVoucher(
+            voucher.cardId,
+            voucher.transactionId,
+          );
+        });
+      }
     }
 
     return result;

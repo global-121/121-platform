@@ -155,7 +155,6 @@ export class IntersolveApiService {
     intersolveRequest.toCancel = intersolveRequest.toCancel = !this.stopCancelByRefposCodes.includes(
       Number(result.resultCode),
     );
-    console.log('intersolveRequest: ', intersolveRequest);
     await this.intersolveRequestRepository.save(intersolveRequest);
     return result;
   }
