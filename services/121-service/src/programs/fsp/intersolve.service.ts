@@ -59,12 +59,13 @@ export class IntersolveService {
     );
 
     for (let paymentInfo of paPaymentDataAggregate) {
-      const paymentAddressLevelResult = await this.sendIndividualPayment(
+      const paymentAddressLevelResult = await this.sendPaymentsPerPhoneNumber(
         paymentInfo,
         useWhatsapp,
         amount,
         installment,
       );
+      // Assign phoneNumber level transaction results back to each PA
       paymentAddressLevelResult.paTransactionResultList.forEach(paResult => {
         paResult.customData = paymentAddressLevelResult.customData;
         result.paList.push(paResult);
@@ -97,7 +98,7 @@ export class IntersolveService {
     return groupsByPaymentAddress;
   }
 
-  public async sendIndividualPayment(
+  public async sendPaymentsPerPhoneNumber(
     paymentInfo: PaPaymentDataAggregateDto,
     useWhatsapp: boolean,
     amount: number,
@@ -113,11 +114,11 @@ export class IntersolveService {
       const voucherResult = new PaTransactionResultDto();
       voucherResult.did = paPaymentData.did;
 
+      // Issue voucher
       const intersolveRefPos = parseInt(
         crypto.randomBytes(5).toString('hex'),
         16,
       );
-
       const amountInCents = amount * 100;
       const voucherInfo = await this.intersolveApiService.issueCard(
         amountInCents,
@@ -126,6 +127,7 @@ export class IntersolveService {
       voucherInfoArray.push(voucherInfo);
 
       if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
+        //Store voucher ..
         const barcodeData = await this.storeBarcodeData(
           voucherInfo.cardId,
           voucherInfo.pin,
@@ -138,6 +140,7 @@ export class IntersolveService {
           barcodeData,
           paPaymentData.did,
         );
+
         voucherResult.status = StatusEnum.success;
         result.paTransactionResultList.push(voucherResult);
       } else {
