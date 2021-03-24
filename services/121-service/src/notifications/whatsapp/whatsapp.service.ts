@@ -111,72 +111,66 @@ export class WhatsappService {
     );
   }
 
-  public async handleIncoming(callbackData): Promise<void> {
-    const fromNumber = callbackData.From.replace('whatsapp:+', '');
-    let connections = (
+  private async getConnectionsWithOpenVouchers(
+    phoneNumber,
+  ): Promise<ConnectionEntity[]> {
+    const connectionsWithPhoneNumber = (
       await this.connectionRepository.find({
         relations: ['images', 'images.barcode'],
       })
-    ).filter(c => c.customData['whatsappPhoneNumber'] === fromNumber);
+    ).filter(c => c.customData['whatsappPhoneNumber'] === phoneNumber);
 
-    let language = 'en';
-    try {
-      language = connections[0].preferredLanguage;
-    } catch (Error) {
+    if (!connectionsWithPhoneNumber.length) {
       console.log(
         'Incomming whatsapp from non registered user phone last numbers: ',
-        fromNumber.substr(-5),
+        phoneNumber.substr(-5),
       );
     }
 
     // Trim connections down to only those with outstanding vouchers
-    connections.forEach(connection => {
-      connection.images = connection.images.filter(
-        image => !image.barcode.send,
-      );
-    });
-    connections = connections.filter(
-      connection => connection.images.length > 0,
+    return connectionsWithPhoneNumber
+      .map(connection => {
+        connection.images = connection.images.filter(
+          image => !image.barcode.send,
+        );
+        return connection;
+      })
+      .filter(connection => connection.images.length > 0);
+  }
+
+  public async handleIncoming(callbackData): Promise<void> {
+    const fromNumber = callbackData.From.replace('whatsapp:+', '');
+    const connectionsWithOpenVouchers = await this.getConnectionsWithOpenVouchers(
+      fromNumber,
     );
 
     // If no connections with outstanding barcodes: send auto-reply
     const program = await getRepository(ProgramEntity).findOne(this.programId);
-    if (!connections.length) {
-      const whatsappReply = program.notifications[language]['whatsappReply'];
-      await this.sendWhatsapp(whatsappReply, fromNumber, null);
+    const language = connectionsWithOpenVouchers[0]?.preferredLanguage || 'en';
+    if (connectionsWithOpenVouchers.length === 0) {
+      const whatsappDefaultReply =
+        program.notifications[language]['whatsappReply'];
+      await this.sendWhatsapp(whatsappDefaultReply, fromNumber, null);
+      return;
     }
 
     // Start loop over (potentially) multiple PA's
-    let instructionsSent = false;
-    let defaultReplySent = false;
     let firstVoucherSent = false;
-    const intersolveBarcodes = await this.intersolveBarcodeRepository.find({
-      where: { whatsappPhoneNumber: fromNumber, send: false },
-      relations: ['image', 'image.connection'],
-    });
-    for await (let connection of connections) {
-      const intersolveBarcodesPerPa = intersolveBarcodes.filter(
-        barcode => barcode.image[0].connection.did === connection.did,
+    for await (let connection of connectionsWithOpenVouchers) {
+      const intersolveBarcodesPerPa = connection.images.map(
+        image => image.barcode,
       );
 
-      // If no barcodes found: send auto-reply (but only once!)
-      if (!intersolveBarcodesPerPa && !defaultReplySent) {
-        const whatsappReply = program.notifications[language]['whatsappReply'];
-        await this.sendWhatsapp(whatsappReply, fromNumber, null);
-        defaultReplySent = true;
-      }
-
-      // Loop over last and old barcodes per PA
+      // Loop over current and (potentially) old barcodes per PA
       for await (let intersolveBarcode of intersolveBarcodesPerPa) {
         const mediaUrl = await this.imageCodeService.createVoucherUrl(
           intersolveBarcode,
         );
 
-        // Only include message with first voucher (across PA's and installments)
-        // Send different message if multiple PA's on phone-number
+        // Only include text with first voucher (across PA's and installments)
         const message = firstVoucherSent
           ? ''
-          : connections.length > 1
+          : connectionsWithOpenVouchers.length > 1
           ? program.notifications[language]['whatsappVoucherMultiple']
           : program.notifications[language]['whatsappVoucher'];
         await this.sendWhatsapp(
@@ -186,16 +180,6 @@ export class WhatsappService {
         );
         firstVoucherSent = true;
 
-        // Send instruction message (but only once!)
-        if (!instructionsSent) {
-          await this.sendWhatsapp(
-            '',
-            intersolveBarcode.whatsappPhoneNumber,
-            EXTERNAL_API.voucherInstructionsUrl,
-          );
-          instructionsSent = true;
-        }
-
         // Save results
         intersolveBarcode.send = true;
         await this.intersolveBarcodeRepository.save(intersolveBarcode);
@@ -203,7 +187,18 @@ export class WhatsappService {
           intersolveBarcode,
           connection.id,
         );
+
+        // Add small delay/sleep to ensure the order in which messages are received
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
+    }
+    // Send instruction message only once (outside of loops)
+    if (connectionsWithOpenVouchers.length > 0) {
+      await this.sendWhatsapp(
+        '',
+        fromNumber,
+        EXTERNAL_API.voucherInstructionsUrl,
+      );
     }
   }
 
