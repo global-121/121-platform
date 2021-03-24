@@ -7,4 +7,5 @@ export class IntersolveIssueCardResponse {
   public readonly pin: string;
   public readonly balance: number;
   public readonly transactionId: string;
+  public refPos?: number;
 }
