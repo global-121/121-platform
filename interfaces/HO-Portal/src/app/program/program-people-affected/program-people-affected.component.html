@@ -37,6 +37,7 @@
     [attr.title]="'page.program.program-people-affected.filter-placeholder'|translate"
     [attr.aria-label]="'page.program.program-people-affected.filter-placeholder'|translate"
     (ionChange)="filterRowsVisible($event.target.value)"
+    [value]="filterRowsVisibleQuery"
     [clearInput]="true"
     class="filter-input"
   >
@@ -62,7 +63,7 @@
   [sorts]="[{prop: 'pa', dir: 'asc'}]"
   [loadingIndicator]="true"
   [columns]="columns"
-  [rows]="allPeopleAffected"
+  [rows]="visiblePeopleAffected"
   selectionType="checkbox"
   [displayCheck]="isRowSelectable"
   [selected]="selectedPeople"

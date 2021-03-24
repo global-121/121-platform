@@ -45,8 +45,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private pastTransactions: any[] = [];
 
   public allPeopleAffected: PersonRow[] = [];
-  private tempAllPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
+  public visiblePeopleAffected: PersonRow[] = [];
+  public filterRowsVisibleQuery: string;
 
   public headerChecked = false;
   public headerSelectAllVisible = false;
@@ -489,7 +490,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       );
     }
     this.allPeopleAffected = this.createTableData(allPeopleData);
-    this.tempAllPeopleAffected = [...this.allPeopleAffected];
+    this.visiblePeopleAffected = [...this.allPeopleAffected];
   }
 
   private createTableData(source: Person[]): PersonRow[] {
@@ -766,6 +767,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.toggleHeaderCheckbox();
     this.headerChecked = false;
     this.selectedPeople = [];
+    this.resetFilterRowsVisible();
   }
 
   private toggleHeaderCheckbox() {
@@ -857,9 +859,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     await alert.present();
   }
 
+  private resetFilterRowsVisible() {
+    this.filterRowsVisibleQuery = '';
+  }
+
   public filterRowsVisible(value: string) {
     const filterVal = value.toLowerCase().trim();
-    const rowsVisible = this.tempAllPeopleAffected.filter((row: PersonRow) => {
+    const rowsVisible = this.allPeopleAffected.filter((row: PersonRow) => {
       // Loop over all columns
       for (const key of Object.keys(row)) {
         try {
@@ -877,6 +883,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       }
     });
 
-    this.allPeopleAffected = rowsVisible;
+    this.visiblePeopleAffected = rowsVisible;
   }
 }
