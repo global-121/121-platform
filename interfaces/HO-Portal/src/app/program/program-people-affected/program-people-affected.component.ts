@@ -421,6 +421,49 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     await this.loadData();
 
     this.updateBulkActions();
+
+    // Timeout to make sure the datatable elements are rendered/generated:
+    window.setTimeout(() => {
+      this.setupProxyScrollbar();
+    }, 1000);
+  }
+
+  private setupProxyScrollbar() {
+    const proxyScrollbar: HTMLElement = document.querySelector(
+      '.proxy-scrollbar',
+    );
+    const proxyScrollbarContent: HTMLElement = proxyScrollbar.querySelector(
+      '.proxy-scrollbar--content',
+    );
+
+    if (
+      !proxyScrollbar.dataset.target ||
+      !proxyScrollbar.dataset.targetContent
+    ) {
+      return;
+    }
+
+    const targetScrollArea: HTMLElement = document.querySelector(
+      proxyScrollbar.dataset.target,
+    );
+    const targetScrollContent: HTMLElement = document.querySelector(
+      proxyScrollbar.dataset.targetContent,
+    );
+
+    if (!targetScrollArea || !targetScrollContent) {
+      return;
+    }
+
+    // Link scroll-events of proxy and target-elements:
+    proxyScrollbar.addEventListener('scroll', () => {
+      targetScrollArea.scrollLeft = proxyScrollbar.scrollLeft;
+    });
+    targetScrollArea.addEventListener('scroll', () => {
+      proxyScrollbar.scrollLeft = targetScrollArea.scrollLeft;
+    });
+
+    // Set size of proxy-content:
+    proxyScrollbarContent.style.width = targetScrollContent.style.width;
   }
 
   private loadColumns() {

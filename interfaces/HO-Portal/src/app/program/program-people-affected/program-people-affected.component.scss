@@ -32,6 +32,15 @@
   max-width: 30%;
 }
 
+.proxy-scrollbar {
+  width: 100%;
+  overflow: hidden;
+  overflow-x: auto;
+}
+.proxy-scrollbar--content {
+  height: 1px;
+}
+
 // Don't show headers/footers in printed voucher
 @page {
   size: auto;
