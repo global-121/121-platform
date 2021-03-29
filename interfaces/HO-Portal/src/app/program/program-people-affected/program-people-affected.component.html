@@ -61,11 +61,13 @@
 </div>
 <ngx-datatable
   #people
-  class="bootstrap"
-  rowHeight="auto"
+  class="bootstrap data-table--max-height"
+  [rowHeight]="65"
+  [scrollbarV]="true"
   [scrollbarH]="true"
-  [headerHeight]="50"
+  [headerHeight]="95"
   [footerHeight]="50"
+  [virtualization]="true"
   [reorderable]="false"
   sortType="single"
   [sorts]="[{prop: 'pa', dir: 'asc'}]"
@@ -80,9 +82,8 @@
 >
   <ngx-datatable-column
     prop="selected"
-    width="75"
-    resizable="false"
-    frozenLeft="true"
+    [width]="75"
+    [frozenLeft]="true"
     headerClass="ion-align-self-end"
   >
     <ng-template
@@ -228,5 +229,3 @@
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>
-
-<br><br><br>
