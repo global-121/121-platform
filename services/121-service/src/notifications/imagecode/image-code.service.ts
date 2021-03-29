@@ -87,7 +87,6 @@ export class ImageCodeService {
 
   private formatDate(date: Date): string {
     const monthNames = [
-      '',
       'januari',
       'februari',
       'maart',
