@@ -37,6 +37,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
+  public isLoading: boolean;
+
   public columnDefaults: any;
   public columns: any[] = [];
   private columnsAvailable: any[] = [];
@@ -402,15 +404,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       phases: [ProgramPhase.payment],
       width: columnDateTimeWidth,
     };
-
-    this.loadColumns();
   }
 
   async ngOnInit() {
+    this.isLoading = true;
+
     this.program = await this.programsService.getProgramById(this.programId);
     this.activePhase = this.program.state;
 
     this.loadColumns();
+
     if (this.thisPhase === ProgramPhase.payment) {
       this.pastTransactions = await this.programsService.getTransactions(
         this.programId,
@@ -419,6 +422,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     }
 
     await this.loadData();
+
+    this.isLoading = false;
 
     this.updateBulkActions();
 
@@ -499,6 +504,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     for (let index = 1; index <= nrOfInstallments; index++) {
       const column = this.createPaymentColumn(index);
+
       this.paymentColumns.push(column);
     }
   }
