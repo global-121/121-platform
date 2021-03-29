@@ -217,8 +217,9 @@
           "retry": "Retry payment",
           "notes": "<br>Note: If the payment failed for all People Affected, you can also use the original 'Start payout now' button again to retry the payment for all People Affected at once.",
           "get-balance": "Get current balance of voucher",
+          "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}",
           "print-voucher": "Print voucher",
-          "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}"
+          "download-voucher": "Download voucher"
         }
       },
       "program-modal": {
