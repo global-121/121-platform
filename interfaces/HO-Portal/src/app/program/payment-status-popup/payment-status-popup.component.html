@@ -62,7 +62,13 @@
     <ion-button (click)="getBalance()">
       {{ 'page.program.program-people-affected.payment-status-popup.get-balance'|translate }}
     </ion-button>
-    <ion-button (click)="printVoucher()">
+    <br>
+    <ion-button *ngIf="imageUrl" [href]="imageUrl" [download]="titleMoneyIcon">
+      <ion-icon name="download" slot="start" aria-hidden="true"></ion-icon>
+      {{ 'page.program.program-people-affected.payment-status-popup.download-voucher'|translate }}
+    </ion-button>
+    <ion-button *ngIf="sanitizedIimageUrl" (click)="printVoucher()">
+      <ion-icon name="print" slot="start" aria-hidden="true"></ion-icon>
       {{ 'page.program.program-people-affected.payment-status-popup.print-voucher'|translate }}
     </ion-button>
   </div>
