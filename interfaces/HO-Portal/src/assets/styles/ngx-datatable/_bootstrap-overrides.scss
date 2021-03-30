@@ -31,4 +31,42 @@
       }
     }
   }
+
+  /**
+   * Progress bar animations
+   */
+  @keyframes progress {
+    100% {
+      background-position-x: 100%;
+    }
+  }
+
+  .progress-linear {
+    display: block;
+    position: absolute;
+    position: sticky;
+    z-index: 1000;
+    width: 100%;
+    top: 0;
+
+    .bar {
+      display: block;
+      width: 100%;
+      height: 0.5em;
+      background-color: var(--ion-color-primary);
+      background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.15) 75%,
+        transparent 75%,
+        transparent
+      );
+      background-size: 100px 100px;
+      background-position-x: 0%;
+      animation: progress 3s infinite alternate ease-in-out;
+    }
+  }
 }
