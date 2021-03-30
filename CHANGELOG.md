@@ -7,7 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.0.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.1.0...master)
+
+---
+
+## [1.1.0](https://github.com/global-121/121-platform/compare/v1.0.0...v1.1.0) - 2021-03-30
+
+### Changed
+
+- 2021-03-30: Updated dependency `y18n` to 121-service and PA-accounts-service;  
+  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`  
+  To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`  
 
 ---
 
