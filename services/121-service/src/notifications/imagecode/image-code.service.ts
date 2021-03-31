@@ -102,8 +102,9 @@ export class ImageCodeService {
     ];
     const day = String(date.getDate()).padStart(2, '0');
     const month = monthNames[date.getMonth()];
+    const time = date.toTimeString().substring(0, 5);
 
-    return `${day} ${month} ${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
+    return `${day} ${month} ${date.getFullYear()} ${time}`;
   }
 
   public async generateVoucherImage(voucherData: {
