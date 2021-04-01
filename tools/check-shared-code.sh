@@ -21,7 +21,6 @@ function check_shared_code() {
   local repo_pa=$repo_interfaces/PA-App
   local repo_ho=$repo_interfaces/HO-Portal
   local repo_aw=$repo_interfaces/AW-App
-  local repo_ref=$repo_interfaces/Referral-App
 
   function log() {
     printf "\n\n"
@@ -60,13 +59,10 @@ function check_shared_code() {
 
   compare_code ".editorconfig" "$repo_pa" "$repo_aw"
   compare_code ".editorconfig" "$repo_pa" "$repo_ho"
-  compare_code ".editorconfig" "$repo_pa" "$repo_ref"
   compare_code ".prettierignore" "$repo_pa" "$repo_aw"
   compare_code ".prettierignore" "$repo_pa" "$repo_ho"
-  compare_code ".prettierignore" "$repo_pa" "$repo_ref"
   compare_code ".prettierrc.yml" "$repo_pa" "$repo_aw"
   compare_code ".prettierrc.yml" "$repo_pa" "$repo_ho"
-  compare_code ".prettierrc.yml" "$repo_pa" "$repo_ref"
 
   log "Done."
 }

@@ -18,7 +18,6 @@
 | PA-App (Android) | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App%20--%20Android?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=23&branchName=master) |
 | AW-App           | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master)                |
 | HO-Portal        | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master)             |
-| Referral-App        | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/Referral-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=24&branchName=master)             |
 
 | Services            | Build Status                                                                                                                                                                                                                            |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -132,7 +131,7 @@ Install dependencies for all the interfaces at once, run:
 
     npm run install:interfaces
 
-Or to install 1 specific interface's dependencies, run: (where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`)
+Or to install 1 specific interface's dependencies, run: (where `<interface-name>` is one of `pa`, `aw`, `ho`)
 
     npm run install:<interface-name>
 
@@ -147,7 +146,8 @@ To start all interfaces at once, from the root of this repository, run:
     npm run start:interfaces
 
 To start an individual interface in development mode:
-- Run: (where `<interface-name>` is one of `pa`, `aw`, `ho`, `referral`)
+
+- Run: (where `<interface-name>` is one of `pa`, `aw`, `ho`)
 
       npm run start:<interface-name>
 
@@ -160,7 +160,6 @@ The 4 individual Angular applications, when started will be available via:
 | PA-App       | <http://localhost:8008> | `npm run open:pa`  |
 | AW-App       | <http://localhost:8080> | `npm run open:aw`  |
 | HO-Portal    | <http://localhost:8888> | `npm run open:ho`  |
-| Referral-App | <http://localhost:8800> | `npm run open:ref` |
 
 From hereon, you can start making changes to the UI and observe how the components are interconnected.
 
