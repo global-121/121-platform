@@ -16,13 +16,11 @@ function deploy() {
   local repo_pa=$repo_interfaces/PA-App
   local repo_ho=$repo_interfaces/HO-Portal
   local repo_aw=$repo_interfaces/AW-App
-  local repo_ref=$repo_interfaces/Referral-App
 
   local web_root=$GLOBAL_121_WEB_ROOT
   local pa_dir=$GLOBAL_121_PA_DIR
   local ho_dir=$GLOBAL_121_HO_DIR
   local aw_dir=$GLOBAL_121_AW_DIR
-  local ref_dir=$GLOBAL_121_REF_DIR
 
   # Arguments
   local target=$1 || false
@@ -178,9 +176,6 @@ function deploy() {
 
   build_interface "HO-Portal" "$repo_ho" "$ho_dir"
   deploy_interface "HO-Portal" "$repo_ho" "$ho_dir"
-
-  build_interface "Referral-App" "$repo_ref" "$ref_dir"
-  deploy_interface "Referral-App" "$repo_ref" "$ref_dir"
 
   publish_version
 

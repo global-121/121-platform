@@ -16,11 +16,6 @@ Interfaces on the 121-platform
 
   Primary target(s): Laptop/desktop
 
-- [Referral-App](./Referral-App/)
-  Web-app used by *People Affected* to lookup useful organizations.
-
-  Primary target(s): Mobile/Smartphone (Android/Web)
-
 ## Documentation
 Every interface or app has their own set of features described in test-scenarios.
 

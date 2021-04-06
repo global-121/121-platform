@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.1.0...master)
 
+### Removed
+
+- 2021-04-01: Removed all code of Referral-app + related code/documentation
+
 ---
 
 ## [1.1.0](https://github.com/global-121/121-platform/compare/v1.0.0...v1.1.0) - 2021-03-30

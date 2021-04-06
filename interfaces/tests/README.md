@@ -20,7 +20,8 @@ Base URL is the default address that cypress uses and any additional sub-route s
 For example: is base-url is set as `http://example.net` then executing `cy.visit('/test')` will take us to `http://example.net/test`. For more information visit: <https://docs.cypress.io/guides/references/configuration.html#Options>
 
 #### Commands
-In each of the spec file within integration directories, one of the commands from 'setHoPortal', 'setAwApp', 'setPaApp' and 'setReferralApp'. These custom commands are used to set-up the base url for the corresponding interfaces, since they are all hosted on different URLs.
+
+In each of the spec file within integration directories, one of the commands from 'setHoPortal', 'setAwApp' and 'setPaApp'. These custom commands are used to set-up the base url for the corresponding interfaces, since they are all hosted on different URLs.
 
 example:
 ```ts

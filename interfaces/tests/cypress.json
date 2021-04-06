@@ -1,6 +1,5 @@
 {
   "baseUrl-PA": "http://localhost:8008",
   "baseUrl-AW": "http://localhost:8080",
-  "baseUrl-HO": "http://localhost:8888",
-  "baseUrl-Referral": "http://localhost:8800"
+  "baseUrl-HO": "http://localhost:8888"
 }
