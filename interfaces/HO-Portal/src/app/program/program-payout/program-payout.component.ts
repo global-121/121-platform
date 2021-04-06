@@ -27,7 +27,7 @@ export class ProgramPayoutComponent implements OnInit {
   public isEnabled = true;
   public isInProgress = false;
 
-  private program: Program;
+  public program: Program;
   public nrOfInstallments: number;
   public nrOfPastInstallments: number;
   public installments: Installment[];

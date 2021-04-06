@@ -143,7 +143,10 @@
         "result-success": "Successfully sent instructions to FSP's for {{nrSuccessfull}} PA(s).",
         "result-failure": "Payment request failed for {{nrFailed}} PA(s). Inspect the PA-table below for details.",
         "result-waiting": "Payment status not yet received for {{nrWaiting}} PA(s). Inspect the PA-table below for the up-to-date status of the payment(s).",
-        "none-included": "No included people yet."
+        "none-included": "No included people yet.",
+        "make-payment": {
+          "number-included": "PA included: {{number}}"
+        }
       },
       "program-people-affected": {
         "section-title": "Manage People Affected",
