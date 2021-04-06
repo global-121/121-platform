@@ -3,7 +3,7 @@ import { IntersolvePayoutStatus } from './../../programs/fsp/api/enum/intersolve
 import { EXTERNAL_API } from '../../config';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository } from 'typeorm';
+import { Repository, getRepository, In } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
 import { ProgramEntity } from '../../programs/program/program.entity';
@@ -116,7 +116,7 @@ export class WhatsappService {
   ): Promise<ConnectionEntity[]> {
     const connectionsWithPhoneNumber = (
       await this.connectionRepository.find({
-        relations: ['images', 'images.barcode'],
+        select: ['id', 'customData'],
       })
     ).filter(c => c.customData['whatsappPhoneNumber'] === phoneNumber);
 
@@ -128,7 +128,12 @@ export class WhatsappService {
     }
 
     // Trim connections down to only those with outstanding vouchers
-    return connectionsWithPhoneNumber
+    const connectionIds = connectionsWithPhoneNumber.map(c => c.id);
+    const connectionsWithVouchers = await this.connectionRepository.find({
+      where: { id: In(connectionIds) },
+      relations: ['images', 'images.barcode'],
+    });
+    return connectionsWithVouchers
       .map(connection => {
         connection.images = connection.images.filter(
           image => !image.barcode.send,
