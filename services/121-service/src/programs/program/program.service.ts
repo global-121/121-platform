@@ -514,7 +514,6 @@ export class ProgramService {
         connection.programsIncluded.push(programId);
         if (message) {
           this.sendSmsMessage(connection, programId, message);
-          connection.inclusionNotificationDate = new Date();
         }
       }
       // Remove from rejection-array, if present
@@ -922,8 +921,6 @@ export class ProgramService {
       connectionResponse['inclusionDate'] = connection.inclusionDate;
       connectionResponse['inclusionEndDate'] = connection.inclusionEndDate;
       connectionResponse['rejectionDate'] = connection.rejectionDate;
-      connectionResponse['inclusionNotificationDate'] =
-        connection.inclusionNotificationDate;
       connectionResponse['fsp'] = connection.fsp?.fsp;
       connectionResponse['namePartnerOrganization'] =
         connection.namePartnerOrganization;
@@ -1023,7 +1020,10 @@ export class ProgramService {
     return installments;
   }
 
-  public async getTransactions(programId: number): Promise<any> {
+  public async getTransactions(
+    programId: number,
+    minInstallment?: number,
+  ): Promise<any> {
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
@@ -1037,6 +1037,9 @@ export class ProgramService {
       ])
       .leftJoin('transaction.connection', 'c')
       .where('transaction.program.id = :programId', { programId: programId })
+      .andWhere('installment >= :minInstallment', {
+        minInstallment: minInstallment || 0,
+      })
       .orderBy('transaction.created', 'DESC')
       .getRawMany();
     return transactions;
@@ -1190,7 +1193,6 @@ export class ProgramService {
       'inclusionDate',
       'inclusionEndDate',
       'rejectionDate',
-      'inclusionNotificationDate',
     ];
     dateFields.forEach(field => {
       row[field] = connection[field];

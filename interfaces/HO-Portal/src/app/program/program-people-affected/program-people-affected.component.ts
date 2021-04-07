@@ -45,6 +45,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private paymentColumnTemplate: any = {};
   public paymentColumns: any[] = [];
   private pastTransactions: any[] = [];
+  private lastInstallment: number;
 
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
@@ -367,18 +368,18 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         width: columnDateTimeWidth,
       },
       {
-        prop: 'notifiedOfInclusion',
+        prop: 'rejected',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.notified-of-inclusion',
+          'page.program.program-people-affected.column.rejected',
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         width: columnDateTimeWidth,
       },
       {
-        prop: 'rejected',
+        prop: 'inclusionEnded',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.rejected',
+          'page.program.program-people-affected.column.inclusion-ended',
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
@@ -414,11 +415,17 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.loadColumns();
 
+    this.lastInstallment = (
+      await this.programsService.getPastInstallments(this.programId)
+    ).length;
+    const firstInstallmentToShow = Math.max(this.lastInstallment - 2, 0);
+
     if (this.thisPhase === ProgramPhase.payment) {
       this.pastTransactions = await this.programsService.getTransactions(
         this.programId,
+        firstInstallmentToShow,
       );
-      this.addPaymentColumns();
+      this.addPaymentColumns(firstInstallmentToShow);
     }
 
     await this.loadData();
@@ -499,10 +506,19 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return column;
   }
 
-  private addPaymentColumns() {
+  private async addPaymentColumns(firstInstallmentToShow) {
     const nrOfInstallments = this.program.distributionDuration;
 
-    for (let index = 1; index <= nrOfInstallments; index++) {
+    const lastInstallmentToShow = Math.min(
+      this.lastInstallment + 1,
+      nrOfInstallments,
+    );
+
+    for (
+      let index = firstInstallmentToShow;
+      index <= lastInstallmentToShow;
+      index++
+    ) {
       const column = this.createPaymentColumn(index);
 
       this.paymentColumns.push(column);
@@ -599,13 +615,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         person.rejectionDate && person.status === PaStatus.rejected
           ? formatDate(person.rejectionDate, this.dateFormat, this.locale)
           : null,
-      notifiedOfInclusion: person.inclusionNotificationDate
-        ? formatDate(
-            person.inclusionNotificationDate,
-            this.dateFormat,
-            this.locale,
-          )
-        : null,
+      inclusionEnded:
+        person.inclusionEndDate && person.status === PaStatus.inclusionEnded
+          ? formatDate(person.inclusionEndDate, this.dateFormat, this.locale)
+          : null,
       name: person.name,
       namePartnerOrganization: person.namePartnerOrganization,
       phoneNumber: formatPhoneNumber(person.phoneNumber),

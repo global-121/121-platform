@@ -130,11 +130,16 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getTransactions(programId: number | string): Promise<any[]> {
+  getTransactions(
+    programId: number | string,
+    minInstallment?: number | string,
+  ): Promise<any[]> {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/transactions/${programId}`,
+        `/programs/transactions/${programId}${
+          minInstallment ? '?minInstallment=' + minInstallment : ''
+        }`,
       )
       .toPromise();
   }

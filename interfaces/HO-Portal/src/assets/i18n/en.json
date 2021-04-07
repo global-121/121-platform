@@ -165,7 +165,7 @@
           "temp-score": "Temporary inclusion score",
           "included": "Included",
           "rejected": "Rejected",
-          "notified-of-inclusion": "Notified of inclusion",
+          "inclusion-ended": "Inclusion ended",
           "name": "Name",
           "dob": "Date of birth",
           "phone-number": "Phonenumber",

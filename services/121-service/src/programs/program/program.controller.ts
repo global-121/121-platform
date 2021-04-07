@@ -9,6 +9,7 @@ import {
   Param,
   Controller,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ProgramService } from './program.service';
 import { CreateProgramDto } from './dto';
@@ -21,6 +22,7 @@ import {
   ApiResponse,
   ApiOperation,
   ApiImplicitParam,
+  ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
 import { DeleteResult } from 'typeorm';
@@ -278,13 +280,21 @@ export class ProgramController {
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get transactions' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiImplicitQuery({
+    name: 'minInstallment',
+    required: false,
+    type: 'integer',
+  })
   @ApiResponse({
     status: 200,
     description: 'Get all transactions',
   })
   @Get('transactions/:programId')
-  public async getTransactions(@Param() param): Promise<any> {
-    return await this.programService.getTransactions(param.programId);
+  public async getTransactions(
+    @Param('programId') programId: number,
+    @Query('minInstallment') minInstallment: number,
+  ): Promise<any> {
+    return await this.programService.getTransactions(programId, minInstallment);
   }
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
