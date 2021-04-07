@@ -13,8 +13,8 @@ export class Person {
   selectedForValidationDate?: string;
   validationDate?: string;
   inclusionDate?: string;
+  inclusionEndDate?: string;
   rejectionDate?: string;
-  inclusionNotificationDate?: string;
   status: PaStatus;
   fsp?: string;
   vnumber?: string;
@@ -37,7 +37,7 @@ export class PersonRow {
   finalScore?: number;
   included?: string | null;
   rejected?: string | null;
-  notifiedOfInclusion?: string | null;
+  inclusionEnded?: string | null;
   imported?: string | null;
   invited?: string | null;
   name?: string | null;

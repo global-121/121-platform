@@ -514,7 +514,6 @@ export class ProgramService {
         connection.programsIncluded.push(programId);
         if (message) {
           this.sendSmsMessage(connection, programId, message);
-          connection.inclusionNotificationDate = new Date();
         }
       }
       // Remove from rejection-array, if present
@@ -922,8 +921,6 @@ export class ProgramService {
       connectionResponse['inclusionDate'] = connection.inclusionDate;
       connectionResponse['inclusionEndDate'] = connection.inclusionEndDate;
       connectionResponse['rejectionDate'] = connection.rejectionDate;
-      connectionResponse['inclusionNotificationDate'] =
-        connection.inclusionNotificationDate;
       connectionResponse['fsp'] = connection.fsp?.fsp;
       connectionResponse['namePartnerOrganization'] =
         connection.namePartnerOrganization;
@@ -1196,7 +1193,6 @@ export class ProgramService {
       'inclusionDate',
       'inclusionEndDate',
       'rejectionDate',
-      'inclusionNotificationDate',
     ];
     dateFields.forEach(field => {
       row[field] = connection[field];

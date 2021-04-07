@@ -153,13 +153,6 @@ export class ConnectionEntity {
 
   @Column({
     type: 'timestamp',
-    default: () => null,
-    nullable: true,
-  })
-  public inclusionNotificationDate: Date;
-
-  @Column({
-    type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
     nullable: true,
   })
