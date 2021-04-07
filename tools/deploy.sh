@@ -81,6 +81,18 @@ function deploy() {
     fi
   }
 
+  function enable_maintenance_mode() {
+    log "Enable Maintenance-mode..."
+
+    touch "$web_root/.maintenance"
+  }
+
+  function disable_maintenance_mode() {
+    log "Disable Maintenance-mode..."
+
+    rm "$web_root/.maintenance"
+  }
+
   function build_services() {
     log "Updating/building services..."
 
@@ -165,7 +177,9 @@ function deploy() {
 
   set_version
 
+  enable_maintenance_mode
   build_services
+  disable_maintenance_mode
   cleanup_services
 
   build_interface "PA-App" "$repo_pa" "$pa_dir"
