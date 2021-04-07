@@ -1023,7 +1023,10 @@ export class ProgramService {
     return installments;
   }
 
-  public async getTransactions(programId: number): Promise<any> {
+  public async getTransactions(
+    programId: number,
+    minInstallment?: number,
+  ): Promise<any> {
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
@@ -1037,6 +1040,9 @@ export class ProgramService {
       ])
       .leftJoin('transaction.connection', 'c')
       .where('transaction.program.id = :programId', { programId: programId })
+      .andWhere('installment >= :minInstallment', {
+        minInstallment: minInstallment || 0,
+      })
       .orderBy('transaction.created', 'DESC')
       .getRawMany();
     return transactions;
