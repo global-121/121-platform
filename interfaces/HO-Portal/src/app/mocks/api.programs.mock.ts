@@ -1,4 +1,5 @@
 import {
+  DistributionFrequency,
   InclusionCalculationType,
   Program,
   ProgramPhase,
@@ -13,7 +14,7 @@ const programsArray: Program[] = [
     location: 'Location',
     startDate: '1970-01-01T01:01:01Z',
     currency: 'EUR',
-    distributionFrequency: 'month',
+    distributionFrequency: DistributionFrequency.month,
     distributionDuration: getRandomInt(1, 12),
     fixedTransferValue: getRandomInt(10, 1000),
     inclusionCalculationType: InclusionCalculationType.highestScoresX,
