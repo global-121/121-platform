@@ -28,6 +28,10 @@ export class ProgramPayoutComponent implements OnInit {
   public installments: Installment[];
 
   public canMakePayment: boolean;
+  public canMakeExport: boolean;
+
+  public exportInstallmentId: number;
+  public exportInstallmentAvailable: boolean;
 
   private nrOfPastInstallments: number;
   private totalIncluded: number;
@@ -43,6 +47,7 @@ export class ProgramPayoutComponent implements OnInit {
     this.program = await this.programsService.getProgramById(this.programId);
 
     this.canMakePayment = this.checkCanMakePayment();
+    this.canMakeExport = this.checkCanMakeExport();
 
     this.totalIncluded = await this.programsService.getTotalIncluded(
       this.programId,
@@ -57,6 +62,10 @@ export class ProgramPayoutComponent implements OnInit {
       this.program.state === ProgramPhase.payment &&
       this.authService.hasUserRole([UserRole.RunProgram])
     );
+  }
+
+  private checkCanMakeExport(): boolean {
+    return this.authService.hasUserRole([UserRole.PersonalData]);
   }
 
   private createTemplateInstallments(
@@ -147,6 +156,13 @@ export class ProgramPayoutComponent implements OnInit {
     );
     this.installments[nextPaymentIndex].isExportAvailable =
       this.totalIncluded > 0;
+  }
+
+  public changeExportInstallment() {
+    const installment = this.getInstallmentById(
+      Number(this.exportInstallmentId),
+    );
+    this.exportInstallmentAvailable = installment.isExportAvailable;
   }
 
   private checkPhaseReady() {

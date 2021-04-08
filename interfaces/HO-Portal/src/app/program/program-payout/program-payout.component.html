@@ -1,42 +1,44 @@
-<h2>{{ 'page.program.program-payout.section-title'|translate }}</h2>
+<h2 *ngIf="canMakeExport || canMakePayment">{{ 'page.program.program-payout.section-title'|translate }}</h2>
 
+<div *ngIf="canMakeExport" class="ion-margin-vertical">
+  <h3>{{ 'page.program.program-payout.make-export'|translate }}</h3>
+  <ion-row class="ion-align-items-center">
+    <select
+      [(ngModel)]="exportInstallmentId"
+      (change)="changeExportInstallment()"
+      class="export-select ion-margin-end"
+    >
+      <option
+        *ngFor="let installment of installments"
+        [value]="installment.id"
+        [disabled]="!installment.isExportAvailable"
+        [attr.data-selected]="installment.statusOpen && installment.isExportAvailable"
+      >
+        {{ 'page.program.program-payout.installment-nr'|translate:{ number: installment.id } }}
+        -
+        <ng-container *ngIf="installment.statusOpen">
+          {{ 'page.program.program-payout.open'|translate }}
+        </ng-container>
+        <ng-container *ngIf="!installment.statusOpen">
+          {{ 'page.program.program-payout.closed'|translate }}
+        </ng-container>
+        -
+        {{ installment.installmentDate|date:"yyyy-MM-dd" }}
+      </option>
+    </select>
+    <app-export-list
+      [programId]="programId"
+      [exportType]="enumExportType.payment"
+      [paymentInstallment]="exportInstallmentId"
+      [paymentExportAvailable]="exportInstallmentAvailable"
+    ></app-export-list>
+  </ion-row>
+</div>
 
-<div *ngIf="canMakePayment">
+<div *ngIf="canMakePayment" class="ion-margin-vertical">
   <h3>{{ 'page.program.program-payout.make-payment.make-payment'|translate }}</h3>
   <app-make-payment
     [programId]="programId"
     [program]="program"
   ></app-make-payment>
 </div>
-
-<hr style="border-top: 1px dashed" />
-
-<ol>
-  <li
-    *ngFor="let installment of installments"
-    class="ion-align-items-center"
-    style="display: flex;"
-  >
-    <p class="ion-margin-end">
-      {{ 'page.program.program-payout.installment-nr'|translate }} {{installment.id}}
-      -
-      <ion-note *ngIf="installment.statusOpen" class="ion-color-dark">
-        {{ 'page.program.program-payout.open'|translate }}
-      </ion-note>
-      <ion-note *ngIf="!installment.statusOpen" class="ion-color-medium">
-        {{ 'page.program.program-payout.closed'|translate }}
-      </ion-note>
-      -
-      <ion-note>
-        {{ installment.installmentDate|date:"yyyy-MM-dd" }}
-      </ion-note>
-    </p>
-    <app-export-list
-      [programId]="programId"
-      [exportType]="enumExportType.payment"
-      [paymentInstallment]="installment.id"
-      [paymentExportAvailable]="installment.isExportAvailable"
-    ></app-export-list>
-
-  </li>
-</ol>
