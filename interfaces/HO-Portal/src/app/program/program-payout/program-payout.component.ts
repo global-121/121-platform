@@ -1,6 +1,4 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AlertController } from '@ionic/angular';
-import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
@@ -37,8 +35,6 @@ export class ProgramPayoutComponent implements OnInit {
 
   constructor(
     private programsService: ProgramsServiceApiService,
-    private translate: TranslateService,
-    private alertController: AlertController,
     private authService: AuthService,
   ) {}
 
