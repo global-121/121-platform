@@ -27,7 +27,7 @@ export class ProgramPayoutComponent implements OnInit {
   public nrOfInstallments: number;
   public nrOfPastInstallments: number;
   public installments: Installment[];
-  public totalIncluded: number;
+  private totalIncluded: number;
 
   private activePhase: ProgramPhase;
 
