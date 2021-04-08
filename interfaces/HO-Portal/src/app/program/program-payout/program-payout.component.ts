@@ -55,6 +55,21 @@ export class ProgramPayoutComponent implements OnInit {
     );
   }
 
+  private createTemplateInstallments(
+    count: number,
+    amount: number,
+  ): Installment[] {
+    return Array(count)
+      .fill(1)
+      .map((_, index) => ({
+        id: index + 1,
+        amount,
+        installmentDate: new Date(),
+        statusOpen: true,
+        firstOpen: false,
+      }));
+  }
+
   private async createInstallments() {
     this.totalIncluded = await this.programsService.getTotalIncluded(
       this.programId,
@@ -62,13 +77,10 @@ export class ProgramPayoutComponent implements OnInit {
     this.activePhase = ProgramPhase[this.program.state];
     this.nrOfInstallments = this.program.distributionDuration;
 
-    this.installments = Array(this.nrOfInstallments)
-      .fill(1)
-      .map((_, index) => ({
-        id: index + 1,
-        amount: 0,
-        installmentDate: new Date(),
-      }));
+    this.installments = this.createTemplateInstallments(
+      this.nrOfInstallments,
+      this.program.fixedTransferValue,
+    );
 
     const pastInstallments = await this.programsService.getPastInstallments(
       this.programId,
