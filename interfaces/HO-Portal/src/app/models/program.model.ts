@@ -18,7 +18,7 @@ export class Program {
   highestScoresX?: number;
   minimumScore?: number;
   distributionDuration: number;
-  distributionFrequency: string;
+  distributionFrequency: DistributionFrequency;
   meetingDocuments?: string | TranslatableString;
   financialServiceProviders?: any[];
   aidworkers?: any[];
@@ -31,6 +31,11 @@ export class Program {
 export enum InclusionCalculationType {
   highestScoresX = 'highestScoresX',
   minimumScore = 'minimumScore',
+}
+
+export enum DistributionFrequency {
+  week = 'week',
+  month = 'month',
 }
 
 export enum ProgramPhase {

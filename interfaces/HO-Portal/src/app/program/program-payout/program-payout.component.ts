@@ -3,7 +3,11 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
 import { Installment } from 'src/app/models/installment.model';
-import { Program, ProgramPhase } from 'src/app/models/program.model';
+import {
+  DistributionFrequency,
+  Program,
+  ProgramPhase,
+} from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
@@ -20,18 +24,13 @@ export class ProgramPayoutComponent implements OnInit {
 
   public enumExportType = ExportType;
 
-  public isEnabled = true;
-  public isInProgress = false;
-
   public program: Program;
-  public nrOfInstallments: number;
-  public nrOfPastInstallments: number;
   public installments: Installment[];
-  private totalIncluded: number;
-
-  private activePhase: ProgramPhase;
 
   public canMakePayment: boolean;
+
+  private nrOfPastInstallments: number;
+  private totalIncluded: number;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -45,7 +44,12 @@ export class ProgramPayoutComponent implements OnInit {
 
     this.canMakePayment = this.checkCanMakePayment();
 
-    this.createInstallments();
+    this.totalIncluded = await this.programsService.getTotalIncluded(
+      this.programId,
+    );
+
+    await this.createInstallments();
+    this.checkPhaseReady();
   }
 
   private checkCanMakePayment(): boolean {
@@ -66,19 +70,58 @@ export class ProgramPayoutComponent implements OnInit {
         amount,
         installmentDate: new Date(),
         statusOpen: true,
-        firstOpen: false,
+        isExportAvailable: false,
       }));
   }
 
-  private async createInstallments() {
-    this.totalIncluded = await this.programsService.getTotalIncluded(
-      this.programId,
-    );
-    this.activePhase = ProgramPhase[this.program.state];
-    this.nrOfInstallments = this.program.distributionDuration;
+  private getInstallmentById(id: number): Installment {
+    return this.installments.find((item) => item.id === id);
+  }
 
+  private fillInstallmentHistory(pastInstallments: Installment[]): void {
+    pastInstallments.forEach((pastInstallment) => {
+      const installment = this.getInstallmentById(pastInstallment.id);
+      installment.amount = pastInstallment.amount;
+      installment.installmentDate = pastInstallment.installmentDate;
+      installment.statusOpen = false;
+      installment.isExportAvailable = true;
+
+      // Save updated values:
+      this.installments[this.installments.indexOf(installment)] = installment;
+    });
+  }
+
+  private setFutureDates(
+    startDate: Date,
+    frequency: DistributionFrequency,
+  ): void {
+    const maxInstallmentDate = new Date(startDate);
+
+    this.installments = this.installments.map((installment) => {
+      // Skip past-installments
+      if (!installment.statusOpen) {
+        return installment;
+      }
+
+      switch (frequency) {
+        case DistributionFrequency.week:
+          maxInstallmentDate.setDate(maxInstallmentDate.getDate() + 7);
+          break;
+        case DistributionFrequency.month:
+        default:
+          maxInstallmentDate.setMonth(maxInstallmentDate.getMonth() + 1);
+          break;
+      }
+
+      installment.installmentDate = new Date(maxInstallmentDate);
+
+      return installment;
+    });
+  }
+
+  private async createInstallments() {
     this.installments = this.createTemplateInstallments(
-      this.nrOfInstallments,
+      this.program.distributionDuration,
       this.program.fixedTransferValue,
     );
 
@@ -86,64 +129,30 @@ export class ProgramPayoutComponent implements OnInit {
       this.programId,
     );
     this.nrOfPastInstallments = pastInstallments.length;
-    const pastInstallmentIds = pastInstallments.map((item) => item.id);
 
-    let maxInstallmentDate: Date;
-    this.installments.forEach((installment, index) => {
-      if (pastInstallmentIds.includes(installment.id)) {
-        const pastInstallment = pastInstallments.find(
-          (item) => item.id === installment.id,
-        );
-        installment.amount = pastInstallment.amount;
-        installment.installmentDate = pastInstallment.installmentDate;
-        installment.statusOpen = false;
-        installment.firstOpen = false;
+    this.fillInstallmentHistory(pastInstallments);
 
-        maxInstallmentDate = new Date(installment.installmentDate);
-      } else {
-        installment.amount = this.program.fixedTransferValue;
-        installment.statusOpen = true;
+    let startDate = new Date();
+    if (pastInstallments && pastInstallments.length > 1) {
+      startDate = pastInstallments[pastInstallments.length - 1].installmentDate;
+    }
+    this.setFutureDates(startDate, this.program.distributionFrequency);
 
-        // Set dates
-        if (index === 0) {
-          installment.installmentDate = new Date();
-        } else if (this.program.distributionFrequency === 'week') {
-          installment.installmentDate = new Date(
-            maxInstallmentDate.setDate(maxInstallmentDate.getDate() + 7),
-          );
-        } else {
-          // For now do the same in all other cases then 'month'
-          installment.installmentDate = new Date(
-            maxInstallmentDate.setMonth(maxInstallmentDate.getMonth() + 1),
-          );
-        }
-        maxInstallmentDate = new Date(installment.installmentDate);
-
-        installment.firstOpen = this.isFirstOpen(index);
-      }
-
-      installment.isExportAvailable = this.isExportAvailable(installment);
-    });
-
-    this.checkPhaseReady();
+    this.setupNextPayment();
   }
 
-  private isFirstOpen(index: number) {
-    const previousInstallment = this.installments[index - 1];
-    return index === 0 || !previousInstallment.statusOpen;
-  }
-
-  public isExportAvailable(installment: Installment) {
-    return (
-      (installment.firstOpen && this.totalIncluded > 0) ||
-      !installment.statusOpen
+  private setupNextPayment() {
+    const nextPaymentIndex = this.installments.findIndex(
+      (installment) => installment.statusOpen === true,
     );
+    this.installments[nextPaymentIndex].isExportAvailable =
+      this.totalIncluded > 0;
   }
 
   private checkPhaseReady() {
     const isReady =
-      this.activePhase !== ProgramPhase.payment ||
-      this.nrOfPastInstallments === this.nrOfInstallments;
+      this.program.state !== ProgramPhase.payment ||
+      this.nrOfPastInstallments === this.program.distributionDuration;
 
     this.isCompleted.emit(isReady);
   }
