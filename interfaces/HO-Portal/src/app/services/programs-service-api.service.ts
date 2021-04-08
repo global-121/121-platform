@@ -8,6 +8,7 @@ import { InstallmentData } from '../models/installment.model';
 import { Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
+import { Transaction } from '../models/transaction.model';
 import { UserModel } from '../models/user.model';
 import { ImportResult } from '../program/bulk-import/bulk-import.component';
 import { ApiService } from './api.service';
@@ -133,7 +134,7 @@ export class ProgramsServiceApiService {
   getTransactions(
     programId: number | string,
     minInstallment?: number | string,
-  ): Promise<any[]> {
+  ): Promise<Transaction[]> {
     return this.apiService
       .get(
         environment.url_121_service_api,

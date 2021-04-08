@@ -10,6 +10,7 @@ import { PaStatus, Person, PersonRow } from 'src/app/models/person.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
+import { Transaction } from 'src/app/models/transaction.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
@@ -44,7 +45,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private columnsAvailable: any[] = [];
   private paymentColumnTemplate: any = {};
   public paymentColumns: any[] = [];
-  private pastTransactions: any[] = [];
+  private pastTransactions: Transaction[] = [];
   private lastInstallment: number;
 
   public allPeopleAffected: PersonRow[] = [];
