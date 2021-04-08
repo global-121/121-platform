@@ -1,14 +1,12 @@
-import { formatCurrency } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
-import { Installment, InstallmentData } from 'src/app/models/installment.model';
+import { Installment } from 'src/app/models/installment.model';
 import { Program, ProgramPhase } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-program-payout',
@@ -35,6 +33,8 @@ export class ProgramPayoutComponent implements OnInit {
 
   private activePhase: ProgramPhase;
 
+  public canMakePayment: boolean;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
@@ -47,7 +47,16 @@ export class ProgramPayoutComponent implements OnInit {
 
     this.program = await this.programsService.getProgramById(this.programId);
 
+    this.canMakePayment = this.checkCanMakePayment();
+
     this.createInstallments();
+  }
+
+  private checkCanMakePayment(): boolean {
+    return (
+      this.program.state === ProgramPhase.payment &&
+      this.authService.hasUserRole([UserRole.RunProgram])
+    );
   }
 
   private async createInstallments() {
@@ -123,107 +132,11 @@ export class ProgramPayoutComponent implements OnInit {
     );
   }
 
-  public getTotalAmountMessage(installment: InstallmentData) {
-    const totalCost = this.totalIncluded * installment.amount;
-    const symbol = `${this.program.currency} `;
-    const totalCostFormatted = formatCurrency(
-      totalCost,
-      environment.defaultLocale,
-      symbol,
-      this.program.currency,
-    );
-
-    return `${this.totalIncluded} * ${installment.amount} = ${totalCostFormatted}`;
-  }
-
-  public cancelPayout(installment: Installment) {
-    this.isEnabled = true;
-    installment.isInProgress = false;
-  }
-
-  public async performPayout(installment: Installment) {
-    installment.isInProgress = true;
-    console.log('Paying out...', installment.amount);
-    this.programsService
-      .submitPayout(+this.programId, installment.id, installment.amount)
-      .then(
-        (response) => {
-          installment.isInProgress = false;
-          const message = ''
-            .concat(
-              response.nrSuccessfull > 0
-                ? this.translate.instant(
-                    'page.program.program-payout.result-success',
-                    { nrSuccessfull: response.nrSuccessfull },
-                  )
-                : '',
-            )
-            .concat(
-              response.nrFailed > 0
-                ? '<br><br>' +
-                    this.translate.instant(
-                      'page.program.program-payout.result-failure',
-                      { nrFailed: response.nrFailed },
-                    )
-                : '',
-            )
-            .concat(
-              response.nrWaiting > 0
-                ? '<br><br>' +
-                    this.translate.instant(
-                      'page.program.program-payout.result-waiting',
-                      { nrWaiting: response.nrWaiting },
-                    )
-                : '',
-            );
-          this.actionResult(message, true);
-          this.createInstallments();
-        },
-        (err) => {
-          console.log('err: ', err);
-          if (err.error.errors) {
-            this.actionResult(err.error.errors);
-          }
-          this.cancelPayout(installment);
-        },
-      );
-  }
-
-  private async actionResult(resultMessage: string, refresh: boolean = false) {
-    const alert = await this.alertController.create({
-      message: resultMessage,
-      buttons: [
-        {
-          text: this.translate.instant('common.ok'),
-          handler: () => {
-            alert.dismiss(true);
-            if (refresh) {
-              window.location.reload();
-            }
-            return false;
-          },
-        },
-      ],
-    });
-
-    await alert.present();
-  }
-
   private checkPhaseReady() {
     const isReady =
       this.activePhase !== ProgramPhase.payment ||
       this.nrOfPastInstallments === this.nrOfInstallments;
 
     this.isCompleted.emit(isReady);
-  }
-
-  public payoutDisabled(installment: Installment) {
-    return (
-      !this.isEnabled ||
-      !installment.firstOpen ||
-      this.totalIncluded === 0 ||
-      !this.authService.hasUserRole([UserRole.RunProgram]) ||
-      this.activePhase !== ProgramPhase.payment
-    );
   }
 }

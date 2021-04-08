@@ -143,8 +143,11 @@
         "result-success": "Successfully sent instructions to FSP's for {{nrSuccessfull}} PA(s).",
         "result-failure": "Payment request failed for {{nrFailed}} PA(s). Inspect the PA-table below for details.",
         "result-waiting": "Payment status not yet received for {{nrWaiting}} PA(s). Inspect the PA-table below for the up-to-date status of the payment(s).",
-        "none-included": "No included people yet.",
         "make-payment": {
+          "error": {
+            "generic": "Something went wrong with the payment. Maybe you can try again."
+          },
+          "make-payment": "New payment",
           "number-included": "PA included: {{number}}"
         }
       },

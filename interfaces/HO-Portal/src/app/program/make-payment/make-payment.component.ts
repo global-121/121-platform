@@ -90,7 +90,7 @@ export class MakePaymentComponent implements OnInit {
 
     if (response.nrSuccessfull > 0) {
       message += this.translate.instant(
-        'page.program.program-payout.make-payment.result.success',
+        'page.program.program-payout.result-success',
         {
           nrSuccessfull: response.nrSuccessfull,
         },
@@ -99,7 +99,7 @@ export class MakePaymentComponent implements OnInit {
     }
     if (response.nrFailed > 0) {
       message += this.translate.instant(
-        'page.program.program-payout.make-payment.result.failure',
+        'page.program.program-payout.result-failure',
         {
           nrFailed: response.nrFailed,
         },
@@ -108,7 +108,7 @@ export class MakePaymentComponent implements OnInit {
     }
     if (response.nrWaiting > 0) {
       message += this.translate.instant(
-        'page.program.program-payout.make-payment.result.waiting',
+        'page.program.program-payout.result-waiting',
         {
           nrWaiting: response.nrWaiting,
         },

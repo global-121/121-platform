@@ -1,68 +1,42 @@
 <h2>{{ 'page.program.program-payout.section-title'|translate }}</h2>
 
-<form>
-  <ion-item *ngFor="let installment of installments">
-    <ion-row class="ion-align-items-center">
-      <p>
-        {{ 'page.program.program-payout.installment-nr'|translate }} {{installment.id}}
-        <br>
-        <ion-note *ngIf="installment.statusOpen">
-          {{ 'page.program.program-payout.open'|translate }}
-        </ion-note>
-        <ion-note *ngIf="!installment.statusOpen">
-          {{ 'page.program.program-payout.closed'|translate }}
-        </ion-note>
-        <br>
-        <ion-note>
-          {{ installment.installmentDate|date:"yyyy-MM-dd" }}
-        </ion-note>
-      </p>
-      <ion-item
-        [disabled]="payoutDisabled(installment)"
-        class="ion-margin-end"
-      >
-        <ion-label position="stacked">
-          {{ 'page.program.program-details.fixedTransferValue'|translate }}
-        </ion-label>
-        <ion-input
-          type="number"
-          inputmode="decimal"
-          min="0"
-          required
-          [(ngModel)]="installment.amount"
-          [ngModelOptions]="{ standalone: true }"
-          ngDefaultControl
-        ></ion-input>
-      </ion-item>
 
-      <confirm-prompt
-        [disabled]="payoutDisabled(installment)"
-        (confirm)="performPayout(installment); installment.isInProgress = true"
-        (cancel)="cancelPayout(installment)"
-        [subHeader]="'page.program.program-payout.total-amount'|translate"
-        [message]="getTotalAmountMessage(installment)"
-      >
-        {{ 'page.program.program-payout.start-payout'|translate }}
-      </confirm-prompt>
-      <app-export-list
-        [programId]="programId"
-        [exportType]="enumExportType.payment"
-        [paymentInstallment]="installment.id"
-        [paymentExportAvailable]="installment.isExportAvailable"
-      ></app-export-list>
+<div *ngIf="canMakePayment">
+  <h3>{{ 'page.program.program-payout.make-payment.make-payment'|translate }}</h3>
+  <app-make-payment
+    [programId]="programId"
+    [program]="program"
+  ></app-make-payment>
+</div>
 
-      <ion-note
-        *ngIf="totalIncluded === 0 && installment.firstOpen"
-        class="ion-margin-start"
-      >
-        {{ 'page.program.program-payout.none-included'|translate }}
+<hr style="border-top: 1px dashed" />
+
+<ol>
+  <li
+    *ngFor="let installment of installments"
+    class="ion-align-items-center"
+    style="display: flex;"
+  >
+    <p class="ion-margin-end">
+      {{ 'page.program.program-payout.installment-nr'|translate }} {{installment.id}}
+      -
+      <ion-note *ngIf="installment.statusOpen" class="ion-color-dark">
+        {{ 'page.program.program-payout.open'|translate }}
       </ion-note>
+      <ion-note *ngIf="!installment.statusOpen" class="ion-color-medium">
+        {{ 'page.program.program-payout.closed'|translate }}
+      </ion-note>
+      -
+      <ion-note>
+        {{ installment.installmentDate|date:"yyyy-MM-dd" }}
+      </ion-note>
+    </p>
+    <app-export-list
+      [programId]="programId"
+      [exportType]="enumExportType.payment"
+      [paymentInstallment]="installment.id"
+      [paymentExportAvailable]="installment.isExportAvailable"
+    ></app-export-list>
 
-      <ion-spinner
-        *ngIf="installment.isInProgress"
-        color="primary"
-        class="ion-margin-start"
-      ></ion-spinner>
-    </ion-row>
-  </ion-item>
-</form>
+  </li>
+</ol>
