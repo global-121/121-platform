@@ -6,7 +6,7 @@ import { CredentialService } from './credential.service';
 import { RolesGuard } from '../../roles.guard';
 
 const did = {
-  did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
+  did: 'did:sov:exampleExampleExample',
 };
 
 const encryptedMessage = {
@@ -14,13 +14,13 @@ const encryptedMessage = {
 };
 
 const credRequest = {
-  did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
+  did: 'did:sov:exampleExampleExample',
   programId: 1,
   encryptedCredentialRequest: 'encrypted:example',
 };
 
 const cred = {
-  did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
+  did: 'did:sov:exampleExampleExample',
   programId: 1,
   attributes: [],
   credentialJson: JSON.parse('{ "encrypted" :"example" }'),
