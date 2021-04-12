@@ -19,7 +19,7 @@ export class RetryInterceptor implements HttpInterceptor {
   constructor(private translate: TranslateService) {}
 
   private canRetry(status: number) {
-    return status === 0;
+    return [0, 502, 503].includes(status);
   }
 
   private getConfirmLabel() {
