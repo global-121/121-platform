@@ -1,68 +1,44 @@
-<h2>{{ 'page.program.program-payout.section-title'|translate }}</h2>
+<h2 *ngIf="canMakeExport || canMakePayment">{{ 'page.program.program-payout.section-title'|translate }}</h2>
 
-<form>
-  <ion-item *ngFor="let installment of installments">
-    <ion-row class="ion-align-items-center">
-      <p>
-        {{ 'page.program.program-payout.installment-nr'|translate }} {{installment.id}}
-        <br>
-        <ion-note *ngIf="installment.statusOpen">
+<div *ngIf="canMakeExport" class="ion-margin-vertical">
+  <h3>{{ 'page.program.program-payout.make-export'|translate }}</h3>
+  <ion-row class="ion-align-items-center">
+    <select
+      [(ngModel)]="exportInstallmentId"
+      (change)="changeExportInstallment()"
+      class="export-select ion-margin-end"
+    >
+      <option
+        *ngFor="let installment of installments"
+        [value]="installment.id"
+        [disabled]="!installment.isExportAvailable"
+        [attr.data-selected]="installment.statusOpen && installment.isExportAvailable"
+      >
+        {{ 'page.program.program-payout.installment-nr'|translate:{ number: installment.id } }}
+        -
+        <ng-container *ngIf="installment.statusOpen">
           {{ 'page.program.program-payout.open'|translate }}
-        </ion-note>
-        <ion-note *ngIf="!installment.statusOpen">
+        </ng-container>
+        <ng-container *ngIf="!installment.statusOpen">
           {{ 'page.program.program-payout.closed'|translate }}
-        </ion-note>
-        <br>
-        <ion-note>
-          {{ installment.installmentDate|date:"yyyy-MM-dd" }}
-        </ion-note>
-      </p>
-      <ion-item
-        [disabled]="payoutDisabled(installment)"
-        class="ion-margin-end"
-      >
-        <ion-label position="stacked">
-          {{ 'page.program.program-details.fixedTransferValue'|translate }}
-        </ion-label>
-        <ion-input
-          type="number"
-          inputmode="decimal"
-          min="0"
-          required
-          [(ngModel)]="installment.amount"
-          [ngModelOptions]="{ standalone: true }"
-          ngDefaultControl
-        ></ion-input>
-      </ion-item>
+        </ng-container>
+        -
+        {{ installment.installmentDate|date:"yyyy-MM-dd" }}
+      </option>
+    </select>
+    <app-export-list
+      [programId]="programId"
+      [exportType]="enumExportType.payment"
+      [paymentInstallment]="exportInstallmentId"
+      [paymentExportAvailable]="exportInstallmentAvailable"
+    ></app-export-list>
+  </ion-row>
+</div>
 
-      <confirm-prompt
-        [disabled]="payoutDisabled(installment)"
-        (confirm)="performPayout(installment); installment.isInProgress = true"
-        (cancel)="cancelPayout(installment)"
-        [subHeader]="'page.program.program-payout.total-amount'|translate"
-        [message]="getTotalAmountMessage(installment)"
-      >
-        {{ 'page.program.program-payout.start-payout'|translate }}
-      </confirm-prompt>
-      <app-export-list
-        [programId]="programId"
-        [exportType]="enumExportType.payment"
-        [paymentInstallment]="installment.id"
-        [paymentExportAvailable]="installment.isExportAvailable"
-      ></app-export-list>
-
-      <ion-note
-        *ngIf="totalIncluded === 0 && installment.firstOpen"
-        class="ion-margin-start"
-      >
-        {{ 'page.program.program-payout.none-included'|translate }}
-      </ion-note>
-
-      <ion-spinner
-        *ngIf="installment.isInProgress"
-        color="primary"
-        class="ion-margin-start"
-      ></ion-spinner>
-    </ion-row>
-  </ion-item>
-</form>
+<div *ngIf="canMakePayment" class="ion-margin-vertical">
+  <h3>{{ 'page.program.program-payout.make-payment.make-payment'|translate }}</h3>
+  <app-make-payment
+    [programId]="programId"
+    [program]="program"
+  ></app-make-payment>
+</div>

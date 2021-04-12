@@ -44,6 +44,9 @@ describe('ProgramPeopleAffectedComponent', () => {
     mockProgramsApi.getProgramById.and.returnValue(
       new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
     );
+    mockProgramsApi.getPastInstallments.and.returnValue(
+      new Promise((r) => r([])),
+    );
     mockProgramsApi.getPeopleAffected.and.returnValue(
       new Promise((r) => r([])),
     );

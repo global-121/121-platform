@@ -6,7 +6,6 @@ import { saveAs } from 'file-saver';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
-import { ProgramPhaseService } from 'src/app/services/program-phase.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
 
@@ -33,12 +32,11 @@ export class ExportListComponent implements OnChanges {
   public message: string;
 
   private locale: string;
-  public actionTimestamp: string;
+  private actionTimestamp: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
 
   constructor(
     private authService: AuthService,
-    private programPhaseService: ProgramPhaseService,
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
     private alertController: AlertController,
@@ -55,15 +53,16 @@ export class ExportListComponent implements OnChanges {
 
   async ngOnChanges(changes: SimpleChanges) {
     if (
-      changes.programId &&
-      ['string', 'number'].includes(typeof changes.programId.currentValue)
+      (changes.programId &&
+        ['string', 'number'].includes(typeof changes.programId.currentValue)) ||
+      (changes.paymentExportAvailable &&
+        changes.paymentExportAvailable.currentValue)
     ) {
-      await this.programPhaseService.getPhases(this.programId);
       this.disabled = !this.btnEnabled();
     }
   }
 
-  async updateSubHeader() {
+  private async updateSubHeader() {
     await this.getLatestActionTime();
     this.subHeader = this.translate.instant(
       'page.program.export-list.' + this.exportType + '.confirm-message',
@@ -75,17 +74,21 @@ export class ExportListComponent implements OnChanges {
       : '';
   }
 
-  public btnEnabled() {
+  private btnEnabled() {
     return (
       this.authService.hasUserRole([UserRole.PersonalData]) &&
       (this.exportType !== ExportType.payment || this.paymentExportAvailable)
     );
   }
 
-  public getExportList() {
+  public async getExportList() {
     this.isInProgress = true;
     this.programsService
-      .exportList(+this.programId, this.exportType, +this.paymentInstallment)
+      .exportList(
+        Number(this.programId),
+        this.exportType,
+        Number(this.paymentInstallment),
+      )
       .then(
         (res) => {
           this.isInProgress = false;

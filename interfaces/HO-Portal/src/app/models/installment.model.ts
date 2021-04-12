@@ -5,10 +5,8 @@ export class InstallmentData {
 }
 
 export class Installment extends InstallmentData {
-  firstOpen?: boolean;
   statusOpen?: boolean;
   isExportAvailable?: boolean;
-  isInProgress?: boolean;
 }
 
 export class PopupPayoutDetails {

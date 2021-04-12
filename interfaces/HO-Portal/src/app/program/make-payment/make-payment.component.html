@@ -1,0 +1,42 @@
+<ion-row class="ion-align-items-center">
+
+  <ion-note class="ion-margin-end">
+    {{ 'page.program.program-payout.make-payment.number-included'|translate:{ number: totalIncluded ? totalIncluded : '?' } }}
+  </ion-note>
+
+  <ion-item
+    [disabled]="!isEnabled"
+    class="ion-margin-end"
+  >
+    <ion-label position="stacked">
+      {{ 'page.program.program-details.fixedTransferValue'|translate }}
+    </ion-label>
+    <ion-input
+      type="number"
+      inputmode="decimal"
+      min="0"
+      step="5"
+      required
+      [(ngModel)]="amountInput"
+      (ionChange)="updateTotalAmountMessage()"
+      ngDefaultControl
+    ></ion-input>
+  </ion-item>
+
+  <confirm-prompt
+    [disabled]="!isEnabled || isInProgress"
+    (confirm)="performPayment()"
+    (cancel)="resetProgress()"
+    [subHeader]="'page.program.program-payout.total-amount'|translate"
+    [message]="totalAmountMessage"
+  >
+    {{ 'page.program.program-payout.start-payout'|translate }}
+  </confirm-prompt>
+
+  <ion-spinner
+    *ngIf="isInProgress"
+    color="primary"
+    class="ion-margin-start"
+  ></ion-spinner>
+
+</ion-row>

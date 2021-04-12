@@ -5,10 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramPhase } from 'src/app/models/program.model';
-import {
-  Phase,
-  ProgramPhaseService,
-} from 'src/app/services/program-phase.service';
+import { Phase } from 'src/app/services/program-phase.service';
 import { ExportListComponent } from './export-list.component';
 
 describe('ExportListComponent', () => {
@@ -29,18 +26,11 @@ describe('ExportListComponent', () => {
       declarations: [ExportListComponent],
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMagicalMock(AuthService),
-        provideMagicalMock(ProgramPhaseService),
-      ],
+      providers: [provideMagicalMock(AuthService)],
     }).compileComponents();
   }));
 
-  let mockProgramPhaseService: jasmine.SpyObj<ProgramPhaseService>;
   beforeEach(() => {
-    mockProgramPhaseService = TestBed.get(ProgramPhaseService);
-    mockProgramPhaseService.getActivePhase.and.returnValue(mockProgramPhase);
-
     fixture = TestBed.createComponent(ExportListComponent);
     component = fixture.componentInstance;
 
