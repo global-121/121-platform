@@ -73,7 +73,7 @@ export class CreateConnectionService {
   // This is for SSI-solution
   public async get(): Promise<ConnectionRequestDto> {
     const connectionRequest = {
-      did: 'did:sov:2wJPyULfLLnYTEFYzByfUR',
+      did: 'did:sov:exampleExampleExample',
       nonce: '1234567890',
     };
 

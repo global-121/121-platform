@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - 2021-03-30: Updated dependency `y18n` to 121-service and PA-accounts-service;  
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`  
-  To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`  
+  To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
 ---
 
@@ -55,12 +55,14 @@ Hotfix: To run initial start-up without manual intervention.
 ## [0.20.0](https://github.com/global-121/121-platform/compare/v0.19.1...v0.20.0) - 2021-03-08
 
 ### Added
+
 - 2021-03-01: Add "read-only" user-role: `view`. See: [`services/.env`](services/.env.example)
 
   To use/add this role in an existing environment, a manual migration-step is required:
   Run `docker-compose exec 121-service npm run seed:dev` (See: [`seed-dev.ts`](services/121-service/src/scripts/seed-dev.ts) )
 
 ### Added
+
 - 2021-03-09: Added new dependency `csv-parser` to 121-service;  
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 
@@ -69,17 +71,20 @@ Hotfix: To run initial start-up without manual intervention.
 ## [0.19.0](https://github.com/global-121/121-platform/compare/v0.18.0...v0.19.0) - 2021-02-23
 
 ### Added
+
 - 2021-02-17: Option to define a human-readable name for the current environment.
   - Set a value with `ENV_NAME` in [`services/.env`](services/.env.example)
   - Optional: Set the url to a specific icon/`favicon` with: `ENV_ICON`
   - For each interface, define the name with `NG_ENV_NAME` in its own `.env`-file
 
 ### Changed
+
 - 2021-02-17: Setting the URL-scheme of all back-end services, via `SCHEME` variable in [`services/.env`](services/.env.example)
 
 ## [0.18.0](https://github.com/global-121/121-platform/compare/v0.17.4...v0.18.0) - 2021-02-10
 
 ### Changed
+
 - 2021-02-09: Users in the `121-service` changed from single-role to multi-role.
 
   To retain the existing users' roles a manual migration-step is required.
@@ -106,6 +111,7 @@ Hotfix: To run initial start-up without manual intervention.
 ## [0.15.2](https://github.com/global-121/121-platform/compare/v0.15.1...v0.15.2) - 2021-01-06
 
 ### Changed
+
 - 2021-01-06: Use pre-built image for `tykn_indy_pool`/`indypool`-service from Docker Hub: <https://hub.docker.com/r/rodekruis510/121-indypool>
 
 ## [0.15.1](https://github.com/global-121/121-platform/compare/v0.15.0...v0.15.1) - 2021-01-06
@@ -113,9 +119,11 @@ Hotfix: To run initial start-up without manual intervention.
 ## [0.15.0](https://github.com/global-121/121-platform/compare/v0.14.0...v0.15.0) - 2021-01-06
 
 ### Added
+
 - 2020-12-30: Add Docker cleanup/prune-step to deploy-script for images >1 week old
 
 ### Changed
+
 - 2020-12-30: Use named-volumes for `node_modules` in `docker-compose.yml`  
   This fixes/enables automatic installation of new dependencies of the back-end services (when pulling newer code).  
   It is recommended to fully remove the `node_modules`-folders in the `121-service` and the `PA-accounts-service` folders before deploying this version.  
@@ -126,11 +134,13 @@ Hotfix: To run initial start-up without manual intervention.
 ## [0.13.6](https://github.com/global-121/121-platform/compare/v0.13.5...v0.13.6) - 2020-12-08
 
 ### Changed
+
 - 2020-12-08: Changed `AFRICASTALKING_PROVIDER_CHANNEL` in [services/.env](services/.env.example) to empty value in servers that use Africa's Talking sandbox account.
 
 ## [0.13.5](https://github.com/global-121/121-platform/compare/v0.13.4...v0.13.5) - 2020-12-07
 
 ### Added
+
 - 2020-12-07: Added `AFRICASTALKING_PROVIDER_CHANNEL` to [services/.env](services/.env.example)
 
 ## [0.13.4](https://github.com/global-121/121-platform/compare/v0.13.3...v0.13.4) - 2020-12-04
@@ -142,6 +152,7 @@ Hotfix: To run initial start-up without manual intervention.
 ## [0.13.1](https://github.com/global-121/121-platform/compare/v0.13.0...v0.13.1) - 2020-11-19
 
 ### Changed
+
 - 2020-11-19: Updated/fixed dependencies of PA-accounts-service;  
   To update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
@@ -156,22 +167,26 @@ Hotfix to fix Intersolve integration for NL-pilot.
 ## [0.12.1](https://github.com/global-121/121-platform/compare/v0.12.0...v0.12.1) - 2020-11-16
 
 ### Changed
+
 - 2020-11-12: Updated/fixed dependencies of 121-service;  
   To update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 
 ## [0.12.0](https://github.com/global-121/121-platform/compare/v0.11.0...v0.12.0) - 2020-11-12
 
 ### Added
+
 - 2020-11-11: Functionality to send self-scan instructions. For this to work an image-file needs to be uploaded to `/api/fsp/intersolve/instruction` on environment with the FSP "Intersolve" enabled.
 
 ## [0.11.0](https://github.com/global-121/121-platform/compare/v0.10.0...v0.11.0) - 2020-11-11
 
 ### Added
+
 - 2020-10-29: `deploy.sh` can log to a file, when defined with `GLOBAL_121_DEPLOY_LOG_FILE`-variable in [tools/.env](tools/.env.example).
 - 2020-11-03: Added new dependency `jimp` to 121-service;  
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 
 ### Changed
+
 - 2020-11-11: Updated dependency `find-my-way` in 121-service;  
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 - 2020-11-11: Updated dependency `find-my-way` in PA-accounts-service;  

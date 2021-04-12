@@ -8,10 +8,10 @@ import {
 import { ApiModelProperty } from '@nestjs/swagger';
 
 export class SetPhoneRequestDto {
-  @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
+  @ApiModelProperty({ example: 'did:sov:exampleExampleExample' })
   @Length(29, 30)
   public readonly did: string;
-  @ApiModelProperty({ example: '0031600000000' })
+  @ApiModelProperty({ example: '31600000000' })
   @ValidateIf(o => o.phonenumber)
   @IsString()
   public readonly phonenumber: string;
@@ -27,10 +27,10 @@ export class SetPhoneRequestDto {
 }
 
 export class UpdatePhoneRequestDto {
-  @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
+  @ApiModelProperty({ example: 'did:sov:exampleExampleExample' })
   @Length(29, 30)
   public readonly did: string;
-  @ApiModelProperty({ example: '0031600000000' })
+  @ApiModelProperty({ example: '31600000000' })
   @ValidateIf(o => o.phonenumber)
   @IsString()
   public readonly phonenumber: string;

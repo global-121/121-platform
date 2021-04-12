@@ -3,14 +3,14 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { Length, IsString, IsNotEmpty } from 'class-validator';
 
 export class CustomDataDto {
-  @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
+  @ApiModelProperty({ example: 'did:sov:exampleExampleExample' })
   @Length(29, 30)
   public readonly did: string;
-  @ApiModelProperty({ example: 'phone' })
+  @ApiModelProperty({ example: 'whatsappPhoneNumber' })
   @IsNotEmpty()
   @IsString()
   public readonly key: string;
-  @ApiModelProperty({ example: 'BSN:244672027' })
+  @ApiModelProperty({ example: '31600000000' })
   @IsNotEmpty()
   @IsString()
   public readonly value: string;

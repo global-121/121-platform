@@ -12,7 +12,7 @@ export class PayoutDto {
   @ApiModelProperty({ example: 10 })
   @IsNumber()
   public readonly amount: number;
-  @ApiModelProperty({ example: 'did:sov:2wJPyULfLLnYTEFYzByfUR' })
+  @ApiModelProperty({ example: 'did:sov:exampleExampleExample' })
   @Length(29, 30)
   @IsString()
   @IsOptional()

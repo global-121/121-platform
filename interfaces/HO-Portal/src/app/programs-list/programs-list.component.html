@@ -2,12 +2,9 @@
   <h2>
     {{ 'page.programs-list.pageTitle'|translate }}
   </h2>
-  <div *ngIf="!items"
-       class="ion-text-center"
-  >
-    <ion-icon name="sad" size="large"></ion-icon><br>
+  <ion-note *ngIf="!items">
     {{ 'page.programs-list.not-available'|translate }}
-  </div>
+  </ion-note>
   <ion-list *ngIf="items">
     <ion-item
       *ngFor="let program of items"
