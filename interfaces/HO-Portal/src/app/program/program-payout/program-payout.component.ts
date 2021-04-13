@@ -30,7 +30,7 @@ export class ProgramPayoutComponent implements OnInit {
   public canMakePayment: boolean;
   public canMakeExport: boolean;
 
-  public exportInstallmentId: number = 0;
+  public exportInstallmentId = 0;
   public exportInstallmentAvailable: boolean;
 
   private nrOfPastInstallments: number;
