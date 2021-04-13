@@ -165,6 +165,16 @@ export class ProgramPayoutComponent implements OnInit {
     this.exportInstallmentAvailable = installment.isExportAvailable;
   }
 
+  async isIntersolve() {
+    this.program = await this.programsService.getProgramById(this.programId);
+    for (const fsp of this.program.financialServiceProviders) {
+      if (fsp.fsp.toLowerCase().includes('intersolve')) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private checkPhaseReady() {
     const isReady =
       this.program.state !== ProgramPhase.payment ||

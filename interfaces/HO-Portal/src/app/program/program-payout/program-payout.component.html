@@ -33,6 +33,12 @@
       [paymentExportAvailable]="exportInstallmentAvailable"
     ></app-export-list>
   </ion-row>
+  <ion-row *ngIf="isIntersolve" class="ion-margin-vertical">
+    <app-export-list
+      [programId]="programId"
+      [exportType]="enumExportType.unusedVouchers">
+    </app-export-list>
+  </ion-row>
 </div>
 
 <div *ngIf="canMakePayment" class="ion-margin-vertical">
