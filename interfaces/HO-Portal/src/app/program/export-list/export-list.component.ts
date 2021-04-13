@@ -55,8 +55,7 @@ export class ExportListComponent implements OnChanges {
     if (
       (changes.programId &&
         ['string', 'number'].includes(typeof changes.programId.currentValue)) ||
-      (changes.paymentExportAvailable &&
-        changes.paymentExportAvailable.currentValue)
+      changes.paymentExportAvailable
     ) {
       this.disabled = !this.btnEnabled();
     }
