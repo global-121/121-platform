@@ -135,6 +135,7 @@
       "program-payout": {
         "section-title": "Manage Payments",
         "installment-nr": "Payment #{{number}}",
+        "choose-payment": "Choose payment...",
         "closed": "Closed",
         "open": "Open",
         "start-payout": "Start payout now",

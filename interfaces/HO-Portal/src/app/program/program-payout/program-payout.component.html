@@ -4,15 +4,18 @@
   <h3>{{ 'page.program.program-payout.make-export'|translate }}</h3>
   <ion-row class="ion-align-items-center">
     <select
+      [title]="'page.program.program-payout.choose-payment'|translate"
       [(ngModel)]="exportInstallmentId"
       (change)="changeExportInstallment()"
       class="export-select ion-margin-end"
     >
+      <option [value]="0">
+        <ng-container>{{ 'page.program.program-payout.choose-payment'|translate }}</ng-container>
+      </option>
       <option
         *ngFor="let installment of installments"
         [value]="installment.id"
         [disabled]="!installment.isExportAvailable"
-        [attr.data-selected]="installment.statusOpen && installment.isExportAvailable"
       >
         {{ 'page.program.program-payout.installment-nr'|translate:{ number: installment.id } }}
         -
