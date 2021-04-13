@@ -30,7 +30,7 @@ export class ProgramPayoutComponent implements OnInit {
   public canMakePayment: boolean;
   public canMakeExport: boolean;
 
-  public exportInstallmentId: number;
+  public exportInstallmentId = 0;
   public exportInstallmentAvailable: boolean;
 
   private nrOfPastInstallments: number;
@@ -159,10 +159,24 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   public changeExportInstallment() {
+    if (Number(this.exportInstallmentId) === 0) {
+      this.exportInstallmentAvailable = false;
+      return;
+    }
     const installment = this.getInstallmentById(
       Number(this.exportInstallmentId),
     );
     this.exportInstallmentAvailable = installment.isExportAvailable;
+  }
+
+  async isIntersolve() {
+    this.program = await this.programsService.getProgramById(this.programId);
+    for (const fsp of this.program.financialServiceProviders) {
+      if (fsp.fsp.toLowerCase().includes('intersolve')) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private checkPhaseReady() {
