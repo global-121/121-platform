@@ -64,16 +64,22 @@ export class CronjobService {
     const sixteenHours = 16 * 60 * 60 * 1000;
     const sixteenHoursAgo = new Date(Date.now() - sixteenHours);
 
-    const unsentIntersolveBarcodes = await this.intersolveBarcodeRepository.find(
-      {
-        where: { send: false, timestamp: LessThan(sixteenHoursAgo) },
-        relations: ['image', 'image.connection'],
-      },
-    );
+    const unsentIntersolveBarcodes = await getRepository(
+      IntersolveBarcodeEntity,
+    )
+      .createQueryBuilder('barcode')
+      .select(['"whatsappPhoneNumber"', 'connection.did AS did'])
+      .leftJoin('barcode.image', 'image')
+      .leftJoin('image.connection', 'connection')
+      .where('send = false')
+      .andWhere('timestamp < :sixteenHoursAgo', {
+        sixteenHoursAgo: sixteenHoursAgo,
+      })
+      .getRawMany();
 
     unsentIntersolveBarcodes.forEach(async unsentIntersolveBarcode => {
       const fromNumber = unsentIntersolveBarcode.whatsappPhoneNumber;
-      const did = unsentIntersolveBarcode.image[0].connection.did;
+      const did = unsentIntersolveBarcode.did;
       const language = await this.getLanguageForDid(did);
       const whatsappPayment = this.getNotificationText(
         program,
