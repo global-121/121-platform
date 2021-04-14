@@ -53,7 +53,7 @@ describe('ValidationData Controller', (): void => {
   describe('issue', (): void => {
     it('should issue validationData', async (): Promise<void> => {
       const spy = jest
-        .spyOn(validationDataService, 'issue')
+        .spyOn(validationDataService, 'issueValidation')
         .mockImplementation((): Promise<void> => Promise.resolve());
 
       await validationDataController.issue(cred);
