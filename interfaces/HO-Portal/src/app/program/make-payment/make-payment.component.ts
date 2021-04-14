@@ -59,8 +59,7 @@ export class MakePaymentComponent implements OnInit {
 
   private async getNextInstallmentId(): Promise<number> {
     let previousId = 0;
-
-    if (this.pastPayments && this.pastPayments.length > 1) {
+    if (this.pastPayments && this.pastPayments.length > 0) {
       previousId = this.pastPayments[this.pastPayments.length - 1].id;
     }
 
