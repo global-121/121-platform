@@ -16,7 +16,10 @@ import { EnrollInProgramComponent } from '../personal-components/enroll-in-progr
 import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
 import { MonitoringQuestionComponent } from '../personal-components/monitoring-question/monitoring-question.component';
 import { PersonalComponent } from '../personal-components/personal-component.class';
-import { PersonalComponents } from '../personal-components/personal-components.enum';
+import {
+  PersonalComponents,
+  PersonalComponentsRemoved,
+} from '../personal-components/personal-components.enum';
 import { PreprintedQrcodeComponent } from '../personal-components/preprinted-qrcode/preprinted-qrcode.component';
 import { RegistrationSummaryComponent } from '../personal-components/registration-summary/registration-summary.component';
 import { SelectFspComponent } from '../personal-components/select-fsp/select-fsp.component';
@@ -48,7 +51,7 @@ export class PersonalPage implements OnInit {
 
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
-  public availableSections = {
+  private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
     [PersonalComponents.contactDetails]: ContactDetailsComponent,
     [PersonalComponents.createIdentity]: CreateIdentityComponent,
@@ -111,11 +114,23 @@ export class PersonalPage implements OnInit {
     this.scrollToLastWhenReady();
   }
 
+  private filterOutRemovedSections(
+    conversation: ConversationSection[],
+  ): ConversationSection[] {
+    return conversation.filter((section) => {
+      return (
+        this.availableSections.hasOwnProperty(section.name) &&
+        !PersonalComponentsRemoved.includes(section.name)
+      );
+    });
+  }
+
   private async loadComponents() {
     // Always start with a clean slate:
     this.container.clear();
 
-    const conversation = await this.conversationService.getConversationUpToNow();
+    let conversation = await this.conversationService.getConversationUpToNow();
+    conversation = this.filterOutRemovedSections(conversation);
 
     conversation.forEach((section: ConversationSection) => {
       this.insertSection(

@@ -14,3 +14,10 @@ export enum PersonalComponents {
   setNotificationNumber = 'set-notification-number',
   signupSignin = 'signup-signin',
 }
+
+// These sections are no longer available in the PA-app, but PA might have data for these in their ConversationHistory
+export const PersonalComponentsRemoved = [
+  'select-appointment',
+  'select-country',
+  'store-credential',
+];
