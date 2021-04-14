@@ -419,7 +419,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.lastInstallment = (
       await this.programsService.getPastInstallments(this.programId)
     ).length;
-    const firstInstallmentToShow = Math.max(this.lastInstallment - 2, 0);
+    const firstInstallmentToShow = 1;
 
     if (this.thisPhase === ProgramPhase.payment) {
       this.pastTransactions = await this.programsService.getTransactions(
