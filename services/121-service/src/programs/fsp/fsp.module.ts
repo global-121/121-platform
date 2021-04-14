@@ -8,7 +8,7 @@ import { FspController } from './fsp.controller';
 import { AfricasTalkingApiService } from './api/africas-talking.api.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProgramEntity } from '../program/program.entity';
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { ConnectionEntity } from '../../connection/connection.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { TransactionEntity } from '../program/transactions.entity';
 import { FspCallLogEntity } from './fsp-call-log.entity';

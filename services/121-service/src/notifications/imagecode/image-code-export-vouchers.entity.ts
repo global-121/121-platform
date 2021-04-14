@@ -1,4 +1,4 @@
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { ConnectionEntity } from '../../connection/connection.entity';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 

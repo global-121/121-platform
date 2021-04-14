@@ -1,5 +1,5 @@
-import { LookupService } from './../../notifications/lookup/lookup.service';
-import { CustomCriterium } from './../../programs/program/custom-criterium.entity';
+import { LookupService } from '../notifications/lookup/lookup.service';
+import { CustomCriterium } from '../programs/program/custom-criterium.entity';
 import {
   Injectable,
   HttpException,
@@ -9,32 +9,32 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
 import { Repository, getRepository, IsNull, Not } from 'typeorm';
-import { DidDto } from '../../programs/program/dto/did.dto';
-import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
-import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
+import { DidDto } from '../programs/program/dto/did.dto';
+import { CredentialAttributesEntity } from '../sovrin/credential/credential-attributes.entity';
+import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
 import {
   FinancialServiceProviderEntity,
   fspName,
-} from '../../programs/fsp/financial-service-provider.entity';
-import { TransactionEntity } from '../../programs/program/transactions.entity';
-import { ProgramEntity } from '../../programs/program/program.entity';
-import { ProgramService } from '../../programs/program/program.service';
+} from '../programs/fsp/financial-service-provider.entity';
+import { TransactionEntity } from '../programs/program/transactions.entity';
+import { ProgramEntity } from '../programs/program/program.entity';
+import { ProgramService } from '../programs/program/program.service';
 import {
   FspAnswersAttrInterface,
   AnswerSet,
-} from '../../programs/fsp/fsp-interface';
-import { API } from '../../config';
-import { SmsService } from '../../notifications/sms/sms.service';
-import { PaStatus } from '../../models/pa-status.model';
+} from '../programs/fsp/fsp-interface';
+import { API } from '../config';
+import { SmsService } from '../notifications/sms/sms.service';
+import { PaStatus } from '../models/pa-status.model';
 import { BulkImportDto, ImportResult } from './dto/bulk-import.dto';
 import { validate } from 'class-validator';
 import { Readable } from 'stream';
 import csv from 'csv-parser';
-import { ActionService } from '../../actions/action.service';
-import { AdditionalActionType } from '../../actions/action.entity';
+import { ActionService } from '../actions/action.service';
+import { AdditionalActionType } from '../actions/action.entity';
 
 @Injectable()
-export class CreateConnectionService {
+export class ConnectionService {
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
   @InjectRepository(CredentialAttributesEntity)

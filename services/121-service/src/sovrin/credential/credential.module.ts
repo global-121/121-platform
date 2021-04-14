@@ -1,5 +1,5 @@
-import { LookupModule } from './../../notifications/lookup/lookup.module';
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { LookupModule } from '../../notifications/lookup/lookup.module';
+import { ConnectionEntity } from '../../connection/connection.entity';
 import { UserModule } from '../../user/user.module';
 import { Module, forwardRef, HttpModule } from '@nestjs/common';
 import { CredentialService } from './credential.service';

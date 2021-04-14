@@ -1,6 +1,6 @@
-import { DidProgramDto } from './../credential/dto/did-program.dto';
+import { DidProgramDto } from '../sovrin/credential/dto/did-program.dto';
 import { DidDto } from './dto/did.dto';
-import { CreateConnectionService } from './create-connection.service';
+import { ConnectionService } from './connection.service';
 import {
   Controller,
   Post,
@@ -26,33 +26,33 @@ import {
   UpdatePhoneRequestDto,
 } from './dto/set-phone-request.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
-import { CustomDataDto } from '../../programs/program/dto/custom-data.dto';
-import { RolesGuard } from '../../roles.guard';
-import { Roles } from '../../roles.decorator';
-import { UserRole } from '../../user-role.enum';
+import { CustomDataDto } from '../programs/program/dto/custom-data.dto';
+import { RolesGuard } from '../roles.guard';
+import { Roles } from '../roles.decorator';
+import { UserRole } from '../user-role.enum';
 import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
 import { GetDidByPhoneNameDto } from './dto/get-did-by-name-phone';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { User } from '../../user/user.decorator';
+import { User } from '../user/user.decorator';
 import { ImportResult } from './dto/bulk-import.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
-@ApiUseTags('sovrin')
-@Controller('sovrin/create-connection')
-export class CreateConnectionController {
-  private readonly createConnectionService: CreateConnectionService;
-  public constructor(createConnectionService: CreateConnectionService) {
-    this.createConnectionService = createConnectionService;
+@ApiUseTags('connection')
+@Controller('connection')
+export class ConnectionController {
+  private readonly connectionService: ConnectionService;
+  public constructor(connectionService: ConnectionService) {
+    this.connectionService = connectionService;
   }
 
   @ApiOperation({ title: 'Create connection' })
   @ApiResponse({ status: 200, description: 'Created connection' })
   @Post()
   public async create(@Body() didObject: DidDto): Promise<ConnectionEntity> {
-    return await this.createConnectionService.create(didObject.did);
+    return await this.connectionService.create(didObject.did);
   }
 
   @Roles(UserRole.RunProgram, UserRole.PersonalData)
@@ -67,7 +67,7 @@ export class CreateConnectionController {
     @Param() params,
     @User('id') userId: number,
   ): Promise<ImportResult> {
-    return await this.createConnectionService.importBulk(
+    return await this.connectionService.importBulk(
       csvFile,
       params.programId,
       userId,
@@ -78,7 +78,7 @@ export class CreateConnectionController {
   @ApiResponse({ status: 200, description: 'Deleted connection' })
   @Post('/delete')
   public async delete(@Body() didObject: DidDto): Promise<void> {
-    return await this.createConnectionService.delete(didObject);
+    return await this.connectionService.delete(didObject);
   }
 
   @ApiOperation({ title: 'Connection applies for program' })
@@ -89,7 +89,7 @@ export class CreateConnectionController {
     @Body() didObject: DidDto,
     @Param() params,
   ): Promise<void> {
-    return await this.createConnectionService.applyProgram(
+    return await this.connectionService.applyProgram(
       didObject.did,
       params.programId,
     );
@@ -101,7 +101,7 @@ export class CreateConnectionController {
   public async addPhone(
     @Body() setPhoneRequest: SetPhoneRequestDto,
   ): Promise<void> {
-    return await this.createConnectionService.addPhone(
+    return await this.connectionService.addPhone(
       setPhoneRequest.did,
       setPhoneRequest.phonenumber,
       setPhoneRequest.language,
@@ -113,7 +113,7 @@ export class CreateConnectionController {
   @ApiResponse({ status: 200, description: 'FSP set for connection' })
   @Post('/fsp')
   public async addFsp(@Body() setFsp: SetFspDto): Promise<ConnectionEntity> {
-    return await this.createConnectionService.addFsp(setFsp.did, setFsp.fspId);
+    return await this.connectionService.addFsp(setFsp.did, setFsp.fspId);
   }
 
   @ApiOperation({ title: 'Set custom data for connection' })
@@ -122,7 +122,7 @@ export class CreateConnectionController {
   public async addCustomData(
     @Body() customData: CustomDataDto,
   ): Promise<ConnectionEntity> {
-    return await this.createConnectionService.addCustomData(
+    return await this.connectionService.addCustomData(
       customData.did,
       customData.key,
       customData.value,
@@ -142,7 +142,7 @@ export class CreateConnectionController {
   public async addCustomDataOverwrite(
     @Body() customData: CustomDataDto,
   ): Promise<ConnectionEntity> {
-    return await this.createConnectionService.addCustomDataOverwrite(
+    return await this.connectionService.addCustomDataOverwrite(
       customData.did,
       customData.key,
       customData.value,
@@ -162,7 +162,7 @@ export class CreateConnectionController {
   public async phoneNumberOverwrite(
     @Body() setPhoneRequest: UpdatePhoneRequestDto,
   ): Promise<ConnectionEntity> {
-    return await this.createConnectionService.phoneNumberOverwrite(
+    return await this.connectionService.phoneNumberOverwrite(
       setPhoneRequest.did,
       setPhoneRequest.phonenumber,
     );
@@ -180,7 +180,7 @@ export class CreateConnectionController {
   public async getDidByPhoneAndOrName(
     @Body() getDidByPhoneNameDto: GetDidByPhoneNameDto,
   ): Promise<ConnectionEntity[]> {
-    return await this.createConnectionService.getDidByPhoneAndOrName(
+    return await this.connectionService.getDidByPhoneAndOrName(
       getDidByPhoneNameDto.phoneNumber,
       getDidByPhoneNameDto.name,
     );
@@ -195,10 +195,7 @@ export class CreateConnectionController {
   public async addQrIdentifier(
     @Body() data: AddQrIdentifierDto,
   ): Promise<void> {
-    await this.createConnectionService.addQrIdentifier(
-      data.did,
-      data.qrIdentifier,
-    );
+    await this.connectionService.addQrIdentifier(data.did, data.qrIdentifier);
   }
 
   @Roles(UserRole.FieldValidation)
@@ -211,7 +208,7 @@ export class CreateConnectionController {
   public async findDidWithQrIdentifier(
     @Body() data: QrIdentifierDto,
   ): Promise<DidDto> {
-    return await this.createConnectionService.findDidWithQrIdentifier(
+    return await this.connectionService.findDidWithQrIdentifier(
       data.qrIdentifier,
     );
   }
@@ -226,7 +223,7 @@ export class CreateConnectionController {
   public async getFspAnswersAttributes(
     @Body() data: DidProgramDto,
   ): Promise<FspAnswersAttrInterface> {
-    return await this.createConnectionService.getFspAnswersAttributes(data.did);
+    return await this.connectionService.getFspAnswersAttributes(data.did);
   }
 
   @Roles(UserRole.FieldValidation)
@@ -239,7 +236,7 @@ export class CreateConnectionController {
   public async updateChosenFsp(
     @Body() data: UpdateChosenFspDto,
   ): Promise<ConnectionEntity> {
-    return await this.createConnectionService.updateChosenFsp(
+    return await this.connectionService.updateChosenFsp(
       data.did,
       data.newFspName,
       data.newFspAttributes,

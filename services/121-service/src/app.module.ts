@@ -8,7 +8,7 @@ import { AppController } from './app.controller';
 import { ProgramModule } from './programs/program/program.module';
 import { UserModule } from './user/user.module';
 import { HealthModule } from './health.module';
-import { CreateConnectionModule } from './sovrin/create-connection/create-connection.module';
+import { ConnectionModule } from './connection/connection.module';
 import { CredentialModule } from './sovrin/credential/credential.module';
 import { SmsModule } from './notifications/sms/sms.module';
 import { VoiceModule } from './notifications/voice/voice.module';
@@ -26,7 +26,7 @@ import { MulterModule } from '@nestjs/platform-express';
     UserModule,
     HealthModule,
     CronjobModule,
-    CreateConnectionModule,
+    ConnectionModule,
     CredentialModule,
     SmsModule,
     VoiceModule,

@@ -1,4 +1,4 @@
-import { LookupService } from './../../notifications/lookup/lookup.service';
+import { LookupService } from '../../notifications/lookup/lookup.service';
 import { CredentialIssueDto } from './dto/credential-issue.dto';
 import {
   Injectable,
@@ -14,7 +14,7 @@ import { Repository, DeleteResult, getRepository } from 'typeorm';
 import { ProgramService } from '../../programs/program/program.service';
 import { PrefilledAnswerDto } from './dto/prefilled-answers.dto';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
-import { ConnectionEntity } from '../create-connection/connection.entity';
+import { ConnectionEntity } from '../../connection/connection.entity';
 import { UserEntity } from '../../user/user.entity';
 import { DownloadData } from './interfaces/download-data.interface';
 import {

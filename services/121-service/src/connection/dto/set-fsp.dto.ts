@@ -1,6 +1,6 @@
 import { Length, IsNumber, IsIn, IsOptional } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { fspName } from '../../../programs/fsp/financial-service-provider.entity';
+import { fspName } from '../../programs/fsp/financial-service-provider.entity';
 
 export class SetFspDto {
   @ApiModelProperty({ example: 'did:sov:exampleExampleExample' })

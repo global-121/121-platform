@@ -1,4 +1,4 @@
-import { TransactionEntity } from '../../programs/program/transactions.entity';
+import { TransactionEntity } from '../programs/program/transactions.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,8 +7,8 @@ import {
   ManyToOne,
   BeforeUpdate,
 } from 'typeorm';
-import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
-import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
+import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
+import { ImageCodeExportVouchersEntity } from '../notifications/imagecode/image-code-export-vouchers.entity';
 
 @Entity('connection')
 export class ConnectionEntity {

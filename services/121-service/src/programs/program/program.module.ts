@@ -1,7 +1,7 @@
 import { FspModule } from './../fsp/fsp.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
-import { CredentialModule } from './../../sovrin/credential/credential.module';
-import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
+import { CredentialModule } from '../../sovrin/credential/credential.module';
+import { ConnectionEntity } from './../../connection/connection.entity';
 import { Module, forwardRef, HttpModule } from '@nestjs/common';
 import { ProgramController } from './program.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';

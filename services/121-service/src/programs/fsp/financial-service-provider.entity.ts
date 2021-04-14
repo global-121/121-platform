@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { ProgramEntity } from '../program/program.entity';
 import { TransactionEntity } from '../program/transactions.entity';
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { ConnectionEntity } from '../../connection/connection.entity';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { FspCallLogEntity } from './fsp-call-log.entity';
 

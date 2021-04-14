@@ -1,10 +1,9 @@
 import { GetTransactionDto } from './dto/get-transaction.dto';
 import { ActionService } from './../../actions/action.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
-import { ProgramMetrics } from './dto/program-metrics.dto';
 import { TransactionEntity } from './transactions.entity';
-import { CredentialService } from './../../sovrin/credential/credential.service';
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { CredentialService } from '../../sovrin/credential/credential.service';
+import { ConnectionEntity } from '../../connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import {
   Injectable,
@@ -22,7 +21,6 @@ import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
 import { InclusionStatus } from './dto/inclusion-status.dto';
-import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
 import {
