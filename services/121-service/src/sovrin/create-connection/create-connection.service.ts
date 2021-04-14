@@ -360,7 +360,6 @@ export class CreateConnectionService {
       customDataValueRaw,
     );
     const connection = await this.findOne(did);
-    console.log('connection: ', connection);
     if (!connection) {
       const errors = 'This PA is not known.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
