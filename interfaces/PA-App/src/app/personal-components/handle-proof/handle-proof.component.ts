@@ -7,7 +7,6 @@ import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { SovrinService } from 'src/app/services/sovrin.service';
 import { UpdateService } from 'src/app/services/update.service';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -24,7 +23,6 @@ export class HandleProofComponent extends PersonalComponent {
   public currentProgram: Program;
   private programId: number;
   private did: string;
-  private wallet: any;
 
   public hasNotificationNumberSet: boolean;
 
@@ -37,7 +35,6 @@ export class HandleProofComponent extends PersonalComponent {
     public paData: PaDataService,
     public updateService: UpdateService,
     public programService: ProgramsServiceApiService,
-    public sovrinService: SovrinService,
   ) {
     super();
 
@@ -64,7 +61,8 @@ export class HandleProofComponent extends PersonalComponent {
 
     return (
       inclusionStatus === PaInclusionStates.included ||
-      inclusionStatus === PaInclusionStates.rejected
+      inclusionStatus === PaInclusionStates.rejected ||
+      inclusionStatus === PaInclusionStates.inclusionEnded
     );
   }
 
@@ -93,21 +91,6 @@ export class HandleProofComponent extends PersonalComponent {
       }
       if (!statusRetrieved) {
         // .. IF NO, THEN:
-        // Create proof
-        const proofRequest = await this.programService.getProofRequest(
-          this.programId,
-        );
-        const proof = await this.sovrinService.getProofFromWallet(
-          proofRequest,
-          this.wallet,
-        );
-
-        // Use proof
-        status = await this.programService.includeMe(
-          this.did,
-          this.programId,
-          proof.proof,
-        );
         this.paData.store(this.paData.type.status, status);
       } else {
         // .. IF YES, THEN CONTINUE
@@ -139,7 +122,6 @@ export class HandleProofComponent extends PersonalComponent {
   private async gatherData() {
     this.programId = await this.paData.getCurrentProgramId();
     this.did = await this.paData.retrieve(this.paData.type.did);
-    this.wallet = await this.paData.retrieve(this.paData.type.wallet);
   }
 
   async handleInclusionStatus(did: string, programId: number) {

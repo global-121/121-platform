@@ -20,8 +20,6 @@ import {
   ApiConsumes,
   ApiImplicitFile,
 } from '@nestjs/swagger';
-import { ConnectionReponseDto } from './dto/connection-response.dto';
-import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { ConnectionEntity } from './connection.entity';
 import {
   SetPhoneRequestDto,
@@ -50,20 +48,11 @@ export class CreateConnectionController {
     this.createConnectionService = createConnectionService;
   }
 
-  @ApiOperation({ title: 'Get connection request' })
-  @ApiResponse({ status: 200, description: 'Sent connection request' })
-  @Get()
-  public async get(): Promise<ConnectionRequestDto> {
-    return await this.createConnectionService.get();
-  }
-
   @ApiOperation({ title: 'Create connection' })
   @ApiResponse({ status: 200, description: 'Created connection' })
   @Post()
-  public async create(
-    @Body() didVerMeta: ConnectionReponseDto,
-  ): Promise<ConnectionEntity> {
-    return await this.createConnectionService.create(didVerMeta);
+  public async create(@Body() didObject: DidDto): Promise<ConnectionEntity> {
+    return await this.createConnectionService.create(didObject.did);
   }
 
   @Roles(UserRole.RunProgram, UserRole.PersonalData)
@@ -153,6 +142,7 @@ export class CreateConnectionController {
   public async addCustomDataOverwrite(
     @Body() customData: CustomDataDto,
   ): Promise<ConnectionEntity> {
+    console.log('customData: ', customData);
     return await this.createConnectionService.addCustomDataOverwrite(
       customData.did,
       customData.key,

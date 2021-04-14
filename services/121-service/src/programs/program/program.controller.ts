@@ -112,18 +112,6 @@ export class ProgramController {
     return this.programService.changeState(params.id, changeStateData.newState);
   }
 
-  @ApiOperation({ title: 'Post proof (Used by PA)' })
-  @Post('includeMe')
-  public async includeMe(
-    @Body() inclusionData: IncludeMeDto,
-  ): Promise<InclusionRequestStatus> {
-    return await this.programService.includeMe(
-      inclusionData.programId,
-      inclusionData.did,
-      inclusionData.encryptedProof,
-    );
-  }
-
   @ApiOperation({ title: 'Get inclusion status (Used by PA)' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('inclusionStatus/:programId')

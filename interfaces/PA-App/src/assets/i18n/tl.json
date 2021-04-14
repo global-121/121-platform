@@ -118,11 +118,6 @@
       "create-id": "Gumawa ng account",
       "introduction": "Upang makasali sa aid program na ito, kinakailangang may account. Gumawa ng account o gamitin ang account na mayroon ka.",
       "login-id": "Gamitin ang aking account"
-    },
-    "store-credential": {
-      "done": "Ang iyong Digital ID ay na-activate ng {{ngo}}.",
-      "received": "Ang iyong Digital ID ay natanggap na ng iyong device.",
-      "stored": "Ang Digital ID  ay nakalagay sa iyong wallet."
     }
   },
   "q-and-a-set": {

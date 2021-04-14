@@ -6,15 +6,12 @@ import {
   HttpStatus,
   HttpService,
 } from '@nestjs/common';
-import { ConnectionReponseDto } from './dto/connection-response.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
 import { Repository, getRepository, IsNull, Not } from 'typeorm';
 import { DidDto } from '../../programs/program/dto/did.dto';
 import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
-import { CredentialRequestEntity } from '../credential/credential-request.entity';
 import { FspAttributeEntity } from './../../programs/fsp/fsp-attribute.entity';
-import { CredentialEntity } from '../credential/credential.entity';
 import {
   FinancialServiceProviderEntity,
   fspName,
@@ -29,7 +26,6 @@ import {
 import { API } from '../../config';
 import { SmsService } from '../../notifications/sms/sms.service';
 import { PaStatus } from '../../models/pa-status.model';
-import { ConnectionRequestDto } from './dto/connection-request.dto';
 import { BulkImportDto, ImportResult } from './dto/bulk-import.dto';
 import { validate } from 'class-validator';
 import { Readable } from 'stream';
@@ -45,12 +41,6 @@ export class CreateConnectionService {
   private readonly credentialAttributesRepository: Repository<
     CredentialAttributesEntity
   >;
-  @InjectRepository(CredentialRequestEntity)
-  private readonly credentialRequestRepository: Repository<
-    CredentialRequestEntity
-  >;
-  @InjectRepository(CredentialEntity)
-  private readonly credentialRepository: Repository<CredentialEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
   @InjectRepository(FspAttributeEntity)
@@ -70,29 +60,9 @@ export class CreateConnectionService {
     private readonly actionService: ActionService,
   ) {}
 
-  // This is for SSI-solution
-  public async get(): Promise<ConnectionRequestDto> {
-    const connectionRequest = {
-      did: 'did:sov:exampleExampleExample',
-      nonce: '1234567890',
-    };
-
-    return connectionRequest;
-  }
-
-  public async create(
-    connectionResponse: ConnectionReponseDto,
-  ): Promise<ConnectionEntity> {
-    let connections = await this.connectionRepository.find({
-      where: { did: connectionResponse['did'] },
-    });
-    if (connections.length > 0) {
-      const errors = 'There is already a secure connection with this PA.';
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-
+  public async create(did: string): Promise<ConnectionEntity> {
     let connection = new ConnectionEntity();
-    connection.did = connectionResponse.did;
+    connection.did = did;
     connection.accountCreatedDate = new Date();
     const newConnection = await this.connectionRepository.save(connection);
     return newConnection;
@@ -237,12 +207,6 @@ export class CreateConnectionService {
       did: didObject.did,
     });
     await this.credentialAttributesRepository.delete({
-      did: didObject.did,
-    });
-    await this.credentialRequestRepository.delete({
-      did: didObject.did,
-    });
-    await this.credentialRepository.delete({
       did: didObject.did,
     });
   }
@@ -396,6 +360,7 @@ export class CreateConnectionService {
       customDataValueRaw,
     );
     const connection = await this.findOne(did);
+    console.log('connection: ', connection);
     if (!connection) {
       const errors = 'This PA is not known.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -573,11 +538,6 @@ export class CreateConnectionService {
         did: did,
         apiKey: process.env.PA_API_KEY,
       })
-      .toPromise();
-
-    //2. Delete wallet
-    await this.httpService
-      .post(API.userIMS.deleteWallet, { wallet: JSON.parse(wallet.data) })
       .toPromise();
 
     //3. Delete data in 121-service

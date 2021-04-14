@@ -7,8 +7,6 @@ import { CreateConnectionController } from './create-connection.controller';
 import { ConnectionEntity } from './connection.entity';
 import { UserModule } from '../../user/user.module';
 import { CredentialAttributesEntity } from '../credential/credential-attributes.entity';
-import { CredentialRequestEntity } from '../credential/credential-request.entity';
-import { CredentialEntity } from '../credential/credential.entity';
 import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { ProgramModule } from '../../programs/program/program.module';
 import { SmsModule } from '../../notifications/sms/sms.module';
@@ -23,8 +21,6 @@ import { ActionEntity } from '../../actions/action.entity';
     TypeOrmModule.forFeature([
       ConnectionEntity,
       CredentialAttributesEntity,
-      CredentialRequestEntity,
-      CredentialEntity,
       FinancialServiceProviderEntity,
       FspAttributeEntity,
       CustomCriterium,

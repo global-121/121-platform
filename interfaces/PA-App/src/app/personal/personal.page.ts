@@ -24,7 +24,6 @@ import { SelectLanguageComponent } from '../personal-components/select-language/
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
 import { SetNotificationNumberComponent } from '../personal-components/set-notification-number/set-notification-number.component';
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
-import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
 import {
   ConversationSection,
   ConversationService,
@@ -64,7 +63,6 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.selectProgram]: SelectProgramComponent,
     [PersonalComponents.setNotificationNumber]: SetNotificationNumberComponent,
     [PersonalComponents.signupSignin]: SignupSigninComponent,
-    [PersonalComponents.storeCredential]: StoreCredentialComponent,
   };
   public debugSections = Object.keys(this.availableSections);
 

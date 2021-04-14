@@ -90,11 +90,6 @@
       "create-id": "Adda-baastuu Dijitaalaa tolchi",
       "introduction": "Maaloo adda-baastuu Dijitaalaa keessan filadhaa.",
       "login-id": "Adda-baastuu Dijitaalaa koo fayyadami"
-    },
-    "store-credential": {
-      "done": "Adda-baastuun Dijitaalaa keessan {{ngo}}'tiin kakaafameera.",
-      "received": "Adda-baastuun Dijitaalaa keessan mi'a/meeshaa keessanirratti sin qaqqabeera.",
-      "stored": "Adda-baastuun Dijitaalaa keessan qabee keessa kaa'ameera."
     }
   },
   "q-and-a-set": {

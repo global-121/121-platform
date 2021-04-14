@@ -39,58 +39,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getConnectionRequest(): Promise<any> {
-    console.log('getConnectionRequest');
-    return this.apiService
-      .get(environment.url_121_service_api, '/sovrin/create-connection')
-      .toPromise();
-  }
-
-  postConnectionResponse(
-    did: string,
-    verkey: string,
-    nonce: string,
-    meta: string,
-  ): Promise<any> {
+  createConnection(did): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         '/sovrin/create-connection',
         {
           did,
-          verkey,
-          nonce,
-          meta,
-        },
-        true,
-      )
-      .toPromise();
-  }
-
-  getCredentialOffer(programId: number): Promise<any> {
-    return this.apiService
-      .get(
-        environment.url_121_service_api,
-        '/sovrin/credential/offer/' + programId,
-      )
-      .toPromise();
-  }
-
-  postCredentialRequest(
-    did: string,
-    programId: number,
-    credentialRequest: string,
-  ): Promise<any> {
-    const encryptedCredentialRequest = JSON.stringify(credentialRequest);
-
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/sovrin/credential/request',
-        {
-          did,
-          programId,
-          encryptedCredentialRequest,
         },
         true,
       )
@@ -115,59 +70,6 @@ export class ProgramsServiceApiService {
         },
         true,
       )
-      .toPromise();
-  }
-
-  getCredential(did: string): Observable<any> {
-    return this.apiService.post(
-      environment.url_121_service_api,
-      '/sovrin/credential/get',
-      {
-        did,
-      },
-      true,
-    );
-  }
-
-  deleteCredential(did: string): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/sovrin/credential/delete',
-        {
-          did,
-        },
-        true,
-      )
-      .toPromise();
-  }
-
-  getProofRequest(programId: number): Promise<any> {
-    return this.apiService
-      .get(
-        environment.url_121_service_api,
-        '/sovrin/proof/proofRequest/' + programId,
-      )
-      .toPromise();
-  }
-
-  includeMe(
-    did: string,
-    programId: number,
-    encryptedProof: string,
-  ): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/programs/includeMe',
-        {
-          did,
-          programId,
-          encryptedProof,
-        },
-        true,
-      )
-      .pipe(map((response) => response.status))
       .toPromise();
   }
 

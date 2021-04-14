@@ -142,11 +142,6 @@
       "create-id": "Create account",
       "introduction": "To apply for this aid program, you need to have an account. Please create your account or use your existing account.",
       "login-id": "Use my account"
-    },
-    "store-credential": {
-      "done": "Your Digital ID has been activated by {{ngo}}.",
-      "received": "Your Digital ID is received on your device.",
-      "stored": "Your Digital ID is stored in your wallet."
     }
   },
   "q-and-a-set": {

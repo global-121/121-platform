@@ -91,11 +91,6 @@
       "create-id": "Pangani nambala",
       "introduction": "Chonde sankhani nambala yanu",
       "login-id": "Gwiritsani ntchito nambala yanga"
-    },
-    "store-credential": {
-      "done": "Nambala yanu yayatsidwa ndi {{ngo}}",
-      "received": "Nambala yanu yalandilidwa kuchokera ku foni yanu",
-      "stored": "Nambala yanu yasungidwa mu foni yanu"
     }
   },
   "q-and-a-set": {

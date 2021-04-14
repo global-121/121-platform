@@ -8,7 +8,6 @@ import { JwtService } from './jwt.service';
 import { PaAccountApiService } from './pa-account-api.service';
 import { PaDataTypes } from './padata-types.enum';
 import { ProgramsServiceApiService } from './programs-service-api.service';
-import { SovrinService } from './sovrin.service';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +31,6 @@ export class PaDataService {
     private ionStorage: Storage,
     private paAccountApi: PaAccountApiService,
     private programService: ProgramsServiceApiService,
-    private sovrinService: SovrinService,
     private jwtService: JwtService,
   ) {
     this.useLocalStorage = environment.localStorage;
@@ -250,7 +248,6 @@ export class PaDataService {
       return this.featureNotAvailable();
     }
 
-    const wallet = await this.retrieve(this.type.wallet);
     const did = await this.retrieve(this.type.did);
 
     // All requests are dependent on their predecessors!
@@ -263,20 +260,14 @@ export class PaDataService {
 
       await this.paAccountApi.deleteAccount(password).then(
         async () => {
-          let deleteWalletResult = false;
           let deleteConnectionResult = false;
-
-          await this.sovrinService.deleteWallet(wallet).then(
-            () => (deleteWalletResult = true),
-            (error) => reject(error),
-          );
 
           await this.programService.deleteConnection(did).then(
             () => (deleteConnectionResult = true),
             (error) => reject(error),
           );
 
-          if (deleteWalletResult && deleteConnectionResult) {
+          if (deleteConnectionResult) {
             this.setLoggedOut();
             return resolve(true);
           }

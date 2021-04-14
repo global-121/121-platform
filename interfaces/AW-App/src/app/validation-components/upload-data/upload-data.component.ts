@@ -87,6 +87,7 @@ export class UploadDataComponent implements ValidationComponent {
   public async updateFsp(credential: any): Promise<void> {
     if (credential.fspanswers) {
       for (const answer of credential.fspanswers) {
+        console.log('answer: ', answer);
         try {
           await this.programsService.postConnectionCustomAttribute(
             answer.did,

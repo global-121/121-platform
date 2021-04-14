@@ -13,5 +13,4 @@ export enum PersonalComponents {
   selectProgram = 'select-program',
   setNotificationNumber = 'set-notification-number',
   signupSignin = 'signup-signin',
-  storeCredential = 'store-credential',
 }

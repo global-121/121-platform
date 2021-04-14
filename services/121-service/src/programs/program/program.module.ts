@@ -1,7 +1,5 @@
 import { FspModule } from './../fsp/fsp.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
-import { ProofModule } from './../../sovrin/proof/proof.module';
-import { SchemaModule } from './../../sovrin/schema/schema.module';
 import { CredentialModule } from './../../sovrin/credential/credential.module';
 import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
 import { Module, forwardRef, HttpModule } from '@nestjs/common';
@@ -37,10 +35,8 @@ import { LookupModule } from '../../notifications/lookup/lookup.module';
     ActionModule,
     forwardRef(() => CredentialModule),
     UserModule,
-    SchemaModule,
     forwardRef(() => SmsModule),
     VoiceModule,
-    forwardRef(() => ProofModule),
     FspModule,
     HttpModule,
     LookupModule,

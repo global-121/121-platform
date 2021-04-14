@@ -5,8 +5,6 @@ export const BASE_PATH = process.env.SUBDOMAIN_PA_ACCOUNTS_SERVICE + '/api';
 
 export const URL_121_SERVICE = process.env.URL_121_SERVICE_API;
 
-export const URL_USERIMS = 'http://11.0.0.5:50003/api';
-
 // Configure Swagger UI appearance:
 // ---------------------------------------------------------------------------
 export const APP_VERSION = process.env.GLOBAL_121_VERSION;

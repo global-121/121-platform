@@ -8,12 +8,8 @@ import {
 } from '@nestjs/swagger';
 import { Controller, Get, Body, Post, Param, UseGuards } from '@nestjs/common';
 import { CredentialService } from './credential.service';
-import { EncryptedMessageDto } from '../encrypted-message-dto/encrypted-message.dto';
 import { PrefilledAnswersDto } from './dto/prefilled-answers.dto';
-import { CredentialRequestDto } from './dto/credential-request.dto';
 import { CredentialIssueDto } from './dto/credential-issue.dto';
-import { DidDto } from '../../programs/program/dto/did.dto';
-import { DeleteResult } from 'typeorm';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
@@ -28,14 +24,6 @@ export class CredentialController {
   private readonly credentialService: CredentialService;
   public constructor(credentialService: CredentialService) {
     this.credentialService = credentialService;
-  }
-
-  @ApiOperation({ title: 'Get credential offer' })
-  @ApiResponse({ status: 200, description: 'Credential offer is sent' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'string' })
-  @Get('/offer/:programId')
-  public async getOffer(@Param() params): Promise<object> {
-    return await this.credentialService.getOffer(params.programId);
   }
 
   @ApiOperation({ title: 'PA gets credential attributes' })
@@ -82,15 +70,6 @@ export class CredentialController {
     return await this.credentialService.downloadData(userId);
   }
 
-  @ApiOperation({ title: 'Post credential request (for PA)' })
-  @ApiResponse({ status: 200, description: 'Credential request received' })
-  @Post('/request')
-  public async request(
-    @Body() credRequest: CredentialRequestDto,
-  ): Promise<void> {
-    return await this.credentialService.request(credRequest);
-  }
-
   @Roles(UserRole.FieldValidation)
   @ApiOperation({ title: 'Issue credentials (For AW)' })
   @ApiResponse({ status: 200, description: 'Credentials issued' })
@@ -99,20 +78,5 @@ export class CredentialController {
     @Body() credentialIssue: CredentialIssueDto,
   ): Promise<void> {
     return await this.credentialService.issue(credentialIssue);
-  }
-
-  @ApiOperation({ title: 'Get credentials (For PA)' })
-  @ApiResponse({ status: 200, description: 'Credentials sent' })
-  @ApiImplicitParam({ name: 'did', required: true, type: 'string' })
-  @Post('/get')
-  public async get(@Body() did: DidDto): Promise<EncryptedMessageDto> {
-    return await this.credentialService.get(did.did);
-  }
-
-  @ApiOperation({ title: 'Delete credentials (For PA)' })
-  @ApiResponse({ status: 200, description: 'Credentials deleted' })
-  @Post('delete')
-  public async delete(@Body() did: DidDto): Promise<DeleteResult> {
-    return await this.credentialService.delete(did.did);
   }
 }

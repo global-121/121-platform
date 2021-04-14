@@ -1,6 +1,5 @@
 import { LookupModule } from './../../notifications/lookup/lookup.module';
 import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
-import { CredentialEntity } from './credential.entity';
 import { UserModule } from '../../user/user.module';
 import { Module, forwardRef, HttpModule } from '@nestjs/common';
 import { CredentialService } from './credential.service';
@@ -9,7 +8,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { CredentialAttributesEntity } from './credential-attributes.entity';
-import { CredentialRequestEntity } from './credential-request.entity';
 import { ProgramModule } from '../../programs/program/program.module';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 
@@ -20,8 +18,6 @@ import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
       ProgramEntity,
       ConnectionEntity,
       CredentialAttributesEntity,
-      CredentialRequestEntity,
-      CredentialEntity,
       FspAttributeEntity,
     ]),
     forwardRef(() => ProgramModule),

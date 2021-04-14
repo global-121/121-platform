@@ -31,56 +31,6 @@ export class UpdateService {
     public router: Router,
   ) {}
 
-  checkCredential(programId: number, did: string) {
-    return new Promise((resolve) => {
-      const subscription = this.listenForCredential(programId, did).subscribe(
-        (isCredAvailable) => {
-          console.log('isCredAvailable', isCredAvailable);
-          if (isCredAvailable.message !== '') {
-            subscription.unsubscribe();
-            this.createUpdateToast(
-              'notification.credential',
-              this.pagesNav.credential,
-            );
-            resolve();
-          }
-        },
-      );
-    });
-  }
-
-  listenForCredential(programId: number, did: string) {
-    console.log('listenForCredential()', programId, did);
-    return interval(this.updateSpeedMs).pipe(
-      switchMap(() => this.programsService.getCredential(did)),
-    );
-  }
-
-  checkReadyStatus(programId: number, did: string) {
-    return new Promise((resolve) => {
-      const subscription = this.listenForReadyStatus(programId, did).subscribe(
-        (isReadyStatusAvailable) => {
-          console.log('isReadyStatusAvailable', isReadyStatusAvailable);
-          if (isReadyStatusAvailable) {
-            subscription.unsubscribe();
-            this.createUpdateToast(
-              'notification.credential',
-              this.pagesNav.credential,
-            );
-            resolve();
-          }
-        },
-      );
-    });
-  }
-
-  listenForReadyStatus(programId: number, did: string) {
-    console.log('listenForReadyStatus()', programId, did);
-    return interval(this.updateSpeedMs).pipe(
-      switchMap(() => this.paData.retrieve(this.paData.type.status)),
-    );
-  }
-
   checkInclusionStatus(programId: number, did: string) {
     return new Promise((resolve) => {
       const subscription = this.listenForInclusionStatus(

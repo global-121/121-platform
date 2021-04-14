@@ -10,7 +10,6 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { SovrinService } from 'src/app/services/sovrin.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import {
   Answer,
@@ -38,7 +37,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   private programId: number;
   private currentProgram: Program;
-  private credDefId: string;
 
   public programDetails: any;
   public instanceInformation: InstanceInformation;
@@ -57,7 +55,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   constructor(
     public programsService: ProgramsServiceApiService,
-    public sovrinService: SovrinService,
     public paData: PaDataService,
     public translatableString: TranslatableStringService,
     public conversationService: ConversationService,
@@ -108,7 +105,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
   public prepareProgramDetails(program: Program) {
     this.programId = program.id;
-    this.credDefId = program.credDefId;
 
     this.programDetails = this.buildDetails(program);
     this.questions = this.buildQuestions(program.customCriteria);
@@ -182,49 +178,21 @@ export class EnrollInProgramComponent extends PersonalComponent {
   public async submitConfirm() {
     this.conversationService.startLoading();
     this.isDisabled = true;
-    await this.executeSovrinFlow();
+    await this.postAnswers();
     await this.storePhoneNumber();
     this.conversationService.stopLoading();
     this.complete();
   }
 
-  private async executeSovrinFlow() {
-    // 1. Get Credential Offer for programId
-    const credentialOffer = await this.programsService.getCredentialOffer(
-      this.programId,
-    );
-
-    // 2. Retrieve other necessary data from PA-account
-    const wallet = await this.paData.retrieve(this.paData.type.wallet);
-    const didShort = await this.paData.retrieve(this.paData.type.didShort);
+  private async postAnswers() {
     const did = await this.paData.retrieve(this.paData.type.did);
 
-    // 3. Post Credential Request to create credential request in PA-app
-    const credentialRequest = await this.sovrinService.createCredentialRequest(
-      wallet,
-      this.credDefId,
-      credentialOffer.credOfferJsonData,
-      didShort,
-    );
-
-    // 4. Post credential request to program-service
-    await this.programsService.postCredentialRequest(
-      did,
-      this.programId,
-      credentialRequest,
-    );
-
-    // 5. Form prefilled answers
     await this.programsService.postPrefilledAnswers(
       did,
       this.programId,
       'program',
       this.createAttributes(Object.values(this.answers)),
     );
-
-    // 6. Store relevant data to PA-account
-    this.paData.store(this.paData.type.credentialRequest, credentialRequest);
-    this.paData.store(this.paData.type.credDefId, this.credDefId);
   }
 
   private createAttributes(answers: Answer[]): ProgramAttribute[] {
@@ -265,7 +233,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
           title: this.currentProgram.title,
           description: this.currentProgram.description,
           customCriteria: this.currentProgram.customCriteria,
-          credDefId: this.currentProgram.credDefId,
         },
         answers: this.answers,
       },
