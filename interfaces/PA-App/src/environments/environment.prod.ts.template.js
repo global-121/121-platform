@@ -17,7 +17,6 @@ export const environment = {
   // APIs:
   url_121_service_api: '${process.env.NG_URL_121_SERVICE_API}',
   url_pa_account_service_api: '${process.env.NG_URL_PA_ACCOUNT_SERVICE_API}',
-  url_user_ims_api: '${process.env.NG_URL_USER_IMS_API}',
 
   // Third-party tokens:
   ai_ikey: '${process.env.NG_AI_IKEY}',
