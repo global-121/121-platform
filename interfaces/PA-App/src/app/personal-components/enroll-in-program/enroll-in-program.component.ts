@@ -190,7 +190,6 @@ export class EnrollInProgramComponent extends PersonalComponent {
     await this.programsService.postPrefilledAnswers(
       did,
       this.programId,
-      'program',
       this.createAttributes(Object.values(this.answers)),
     );
   }

@@ -55,7 +55,6 @@ export class ProgramsServiceApiService {
   postPrefilledAnswers(
     did: string,
     programId: number,
-    credentialType: string,
     attributes: any,
   ): Promise<any> {
     return this.apiService
@@ -65,7 +64,6 @@ export class ProgramsServiceApiService {
         {
           did,
           programId,
-          credentialType,
           attributes,
         },
         true,
