@@ -3,8 +3,7 @@ export class Person {
   id: number;
   did: string;
   phoneNumber?: string;
-  tempScore?: number;
-  score?: number;
+  inclusionScore?: number;
   name?: string;
   created?: string;
   importedDate?: string;
@@ -31,10 +30,9 @@ export class PersonRow {
   statusLabel: string;
   digitalIdCreated?: string;
   vulnerabilityAssessmentCompleted?: string | null;
-  tempScore?: number;
   selectedForValidation?: string | null;
   vulnerabilityAssessmentValidated?: string | null;
-  finalScore?: number;
+  inclusionScore?: number;
   included?: string | null;
   rejected?: string | null;
   inclusionEnded?: string | null;

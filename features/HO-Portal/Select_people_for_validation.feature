@@ -9,10 +9,9 @@ Feature: Select people affected for validation (extension of Manage_people_affec
     Given scenario "View people affected connected to a program" in Manage_people_affected.feature
     Then also for each person a "Created Digital ID" date+time is shown
     And for each person a "Completed Vulnerability Assessment" date+time is shown (if already available)
-    And for each person a "Temporary Inclusion Score" is shown (if already available)
+    And for each person an "Inclusion Score" is shown (if already available)
     And for each person a "Selected for validation" date+time is shown (if already available)
     And for each person a "Validated Vulnerability Assessment " date+time is shown (if already available)
-    And for each person a "Validated Inclusion Score" is shown (if already available)
 
   Scenario: Use bulk-action "select for validation"
     Given the generic "select bulk action" scenario

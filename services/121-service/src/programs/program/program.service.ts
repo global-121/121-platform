@@ -516,10 +516,7 @@ export class ProgramService {
     );
     let connection = await this.getConnectionByDid(did);
 
-    connection.temporaryInclusionScore = score;
-    if (!program.validation) {
-      connection.inclusionScore = score;
-    }
+    connection.inclusionScore = score;
 
     await this.connectionRepository.save(connection);
   }
@@ -785,8 +782,7 @@ export class ProgramService {
       const connectionResponse = {};
       connectionResponse['id'] = connection.id;
       connectionResponse['did'] = connection.did;
-      connectionResponse['score'] = connection.inclusionScore;
-      connectionResponse['tempScore'] = connection.temporaryInclusionScore;
+      connectionResponse['inclusionScore'] = connection.inclusionScore;
       connectionResponse['created'] = connection.accountCreatedDate;
       connectionResponse['importedDate'] = connection.importedDate;
       connectionResponse['invitedDate'] = connection.invitedDate;

@@ -37,9 +37,6 @@ export class ConnectionEntity {
   public qrIdentifier: string;
 
   @Column({ nullable: true, type: 'bigint' })
-  public temporaryInclusionScore: number;
-
-  @Column({ nullable: true, type: 'bigint' })
   public inclusionScore: number;
 
   @Column('numeric', {

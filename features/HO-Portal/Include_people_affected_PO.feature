@@ -7,8 +7,7 @@ Feature: Include people affected by Project-officer (extension of Manage_people_
 
   Scenario: View people affected connected to a program
     Given scenario "View people affected connected to a program" in Manage_people_affected.feature
-    Then also for each person a "Temporary Inclusion Score" is shown
-    And for each person a "Validated Inclusion Score" is shown (if already available)
+    Then also for each person an "Inclusion Score" is shown
     And for each person an "Included" date+time is shown (if already available)
 
   Scenario: Use bulk-action "include for program"
