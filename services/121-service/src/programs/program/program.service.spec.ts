@@ -4,9 +4,9 @@ import { ImageCodeService } from './../../notifications/imagecode/image-code.ser
 import { AfricasTalkingService } from './../fsp/africas-talking.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
-import { CredentialAttributesEntity } from './../../sovrin/credential/credential-attributes.entity';
-import { CredentialService } from './../../sovrin/credential/credential.service';
-import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
+import { ValidationDataAttributesEntity } from './../../connection/validation-data/validation-attributes.entity';
+import { ValidationDataService } from './../../connection/validation-data/validation-data.service';
+import { ConnectionEntity } from './../../connection/connection.entity';
 import { repositoryMockFactory } from './../../mock/repositoryMock.factory';
 import { CustomCriterium } from './custom-criterium.entity';
 import { ProgramService } from './program.service';
@@ -45,7 +45,7 @@ describe('Program service', (): void => {
         imports: [HttpModule],
         providers: [
           ProgramService,
-          CredentialService,
+          ValidationDataService,
           VoiceService,
           SmsService,
           FspService,
@@ -75,7 +75,7 @@ describe('Program service', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
-            provide: getRepositoryToken(CredentialAttributesEntity),
+            provide: getRepositoryToken(ValidationDataAttributesEntity),
             useFactory: repositoryMockFactory,
           },
           {

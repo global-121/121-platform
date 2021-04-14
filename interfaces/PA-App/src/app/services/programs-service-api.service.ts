@@ -43,7 +43,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/create-connection',
+        '/connection',
         {
           did,
         },
@@ -61,7 +61,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/credential/attributes',
+        '/connection/validation-data/attributes',
         {
           did,
           programId,
@@ -93,7 +93,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/create-connection/apply-program/' + programId,
+        '/connection/apply-program/' + programId,
         {
           did,
         },
@@ -112,7 +112,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/create-connection/custom-data',
+        '/connection/custom-data',
         {
           did,
           key,
@@ -145,7 +145,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/create-connection/phone',
+        '/connection/phone',
         {
           did,
           phonenumber: phoneNumber,
@@ -161,7 +161,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/create-connection/fsp',
+        '/connection/fsp',
         {
           did,
           fspId,
@@ -175,7 +175,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/create-connection/add-qr-identifier',
+        '/connection/add-qr-identifier',
         {
           did,
           qrIdentifier,
@@ -189,7 +189,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/create-connection/delete',
+        '/connection/delete',
         {
           did,
         },

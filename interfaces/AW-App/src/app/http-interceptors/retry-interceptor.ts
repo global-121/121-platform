@@ -34,9 +34,9 @@ export class RetryInterceptor implements HttpInterceptor {
     next: HttpHandler,
   ): Observable<HttpEvent<any>> {
     const res = [
-      '/sovrin/credential/get-answers',
-      '/sovrin/create-connection/qr-find-did',
-      '/sovrin/create-connection/get-fsp/',
+      '/connection/validation-data/get-answers',
+      '/connection/qr-find-did',
+      '/connection/get-fsp/',
     ];
     // Exclude interceptor for offline usage
     for (const re of res) {

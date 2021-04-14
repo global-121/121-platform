@@ -57,7 +57,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/create-connection/qr-find-did',
+        '/connection/qr-find-did',
         {
           qrIdentifier,
         },
@@ -71,7 +71,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/credential/get-answers/',
+        '/connection/validation-data/get-answers/',
         {
           did,
           programId,
@@ -82,14 +82,10 @@ export class ProgramsServiceApiService {
 
   getFspAttributesAsnwers(did: string, programId: number): Promise<any> {
     return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/sovrin/create-connection/get-fsp/',
-        {
-          did,
-          programId,
-        },
-      )
+      .post(environment.url_121_service_api, '/connection/get-fsp/', {
+        did,
+        programId,
+      })
       .toPromise();
   }
 
@@ -101,7 +97,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/sovrin/create-connection/custom-data',
+        '/connection/custom-data',
         {
           did,
           key,
@@ -127,7 +123,10 @@ export class ProgramsServiceApiService {
 
   downloadData(): Promise<any> {
     return this.apiService
-      .get(environment.url_121_service_api, '/sovrin/credential/download-data')
+      .get(
+        environment.url_121_service_api,
+        '/connection/validation-data/download-data',
+      )
       .toPromise();
   }
 
@@ -137,11 +136,15 @@ export class ProgramsServiceApiService {
     attributes: any,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, '/sovrin/credential/issue', {
-        did,
-        programId,
-        attributes,
-      })
+      .post(
+        environment.url_121_service_api,
+        '/connection/validation-data/issue',
+        {
+          did,
+          programId,
+          attributes,
+        },
+      )
       .toPromise();
   }
 }
