@@ -142,7 +142,6 @@ export class CreateConnectionController {
   public async addCustomDataOverwrite(
     @Body() customData: CustomDataDto,
   ): Promise<ConnectionEntity> {
-    console.log('customData: ', customData);
     return await this.createConnectionService.addCustomDataOverwrite(
       customData.did,
       customData.key,
