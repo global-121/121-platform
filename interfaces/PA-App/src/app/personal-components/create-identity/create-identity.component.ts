@@ -165,7 +165,6 @@ export class CreateIdentityComponent extends PersonalComponent {
   async createConnection() {
     // Temporatily still create random DID
     const did = 'did:sov:' + createRandomString(22);
-    console.log('did: ', did);
 
     this.programsServiceApiService.createConnection(did);
 
