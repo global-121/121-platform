@@ -11,7 +11,7 @@ const cred = {
   validationDataJson: JSON.parse('{ "encrypted" :"example" }'),
 };
 class ValidationDatanServiceMock {
-  public async issue(
+  public async issueValidation(
     validationDataValues: ValidationDataValuesDto,
   ): Promise<void> {
     validationDataValues;
@@ -50,8 +50,8 @@ describe('ValidationData Controller', (): void => {
     expect(validationDataController).toBeDefined();
   });
 
-  describe('issue', (): void => {
-    it('should issue validationData', async (): Promise<void> => {
+  describe('issueValidation', (): void => {
+    it('should issue validation data', async (): Promise<void> => {
       const spy = jest
         .spyOn(validationDataService, 'issueValidation')
         .mockImplementation((): Promise<void> => Promise.resolve());
