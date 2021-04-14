@@ -539,7 +539,7 @@ export class CreateConnectionService {
       })
       .toPromise();
 
-    //3. Delete data in 121-service
+    //2. Delete data in 121-service
     this.delete({ did });
 
     console.log(`Deleted PA: ${did}`);
