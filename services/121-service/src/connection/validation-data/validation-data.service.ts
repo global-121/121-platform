@@ -1,20 +1,19 @@
 import { LookupService } from '../../notifications/lookup/lookup.service';
-import { CredentialIssueDto } from './dto/credential-issue.dto';
+import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import {
   Injectable,
   HttpException,
   Inject,
   forwardRef,
   HttpStatus,
-  HttpService,
 } from '@nestjs/common';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DeleteResult, getRepository } from 'typeorm';
 import { ProgramService } from '../../programs/program/program.service';
 import { PrefilledAnswerDto } from './dto/prefilled-answers.dto';
-import { CredentialAttributesEntity } from './credential-attributes.entity';
-import { ConnectionEntity } from '../../connection/connection.entity';
+import { ValidationDataAttributesEntity } from './validation-attributes.entity';
+import { ConnectionEntity } from '../connection.entity';
 import { UserEntity } from '../../user/user.entity';
 import { DownloadData } from './interfaces/download-data.interface';
 import {
@@ -22,15 +21,14 @@ import {
   AnswerSet,
 } from '../../programs/fsp/fsp-interface';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
-import { API } from '../../config';
 
 @Injectable()
-export class CredentialService {
+export class ValidationDataService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(CredentialAttributesEntity)
-  private readonly credentialAttributesRepository: Repository<
-    CredentialAttributesEntity
+  @InjectRepository(ValidationDataAttributesEntity)
+  private readonly validationDataAttributesRepository: Repository<
+    ValidationDataAttributesEntity
   >;
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
@@ -42,7 +40,6 @@ export class CredentialService {
   public constructor(
     @Inject(forwardRef(() => ProgramService))
     private readonly programService: ProgramService,
-    private readonly httpService: HttpService,
     private readonly lookupService: LookupService,
   ) {}
 
@@ -72,24 +69,30 @@ export class CredentialService {
       prefilledAnswersRaw,
       programId,
     );
-    let credentials = [];
+    let validationDatas = [];
     for (let answer of prefilledAnswers) {
-      const oldAttribute = await this.credentialAttributesRepository.findOne({
-        where: { did: did, programId: programId, attribute: answer.attribute },
-      });
+      const oldAttribute = await this.validationDataAttributesRepository.findOne(
+        {
+          where: {
+            did: did,
+            programId: programId,
+            attribute: answer.attribute,
+          },
+        },
+      );
       if (!oldAttribute) {
-        let credential = new CredentialAttributesEntity();
-        credential.did = did;
-        credential.attributeId = answer.attributeId;
-        credential.attribute = answer.attribute;
-        credential.answer = answer.answer;
-        let newCredential;
-        credential.programId = programId;
+        let validationData = new ValidationDataAttributesEntity();
+        validationData.did = did;
+        validationData.attributeId = answer.attributeId;
+        validationData.attribute = answer.attribute;
+        validationData.answer = answer.answer;
+        let newValidationData;
+        validationData.programId = programId;
 
-        newCredential = await this.credentialAttributesRepository.save(
-          credential,
+        newValidationData = await this.validationDataAttributesRepository.save(
+          validationData,
         );
-        credentials.push(newCredential);
+        validationDatas.push(newValidationData);
       }
     }
 
@@ -102,7 +105,7 @@ export class CredentialService {
     ) {
       await this.storePersistentAnswers(prefilledAnswers, programId, did);
     }
-    return credentials;
+    return validationDatas;
   }
 
   public async cleanAnswers(
@@ -168,12 +171,12 @@ export class CredentialService {
   public async getPrefilledAnswers(
     did: string,
     programId: number,
-  ): Promise<CredentialAttributesEntity[]> {
-    let credentials;
-    credentials = await this.credentialAttributesRepository.find({
+  ): Promise<ValidationDataAttributesEntity[]> {
+    let validationData;
+    validationData = await this.validationDataAttributesRepository.find({
       where: { did: did, programId: programId },
     });
-    return credentials;
+    return validationData;
   }
 
   public async downloadData(userId: number): Promise<DownloadData> {
@@ -194,11 +197,11 @@ export class CredentialService {
 
   public async getAllPrefilledAnswers(
     user: UserEntity,
-  ): Promise<CredentialAttributesEntity[]> {
+  ): Promise<ValidationDataAttributesEntity[]> {
     const programIds = user.assignedProgram.map(program => {
       return { programId: program.id };
     });
-    const answers = await this.credentialAttributesRepository.find({
+    const answers = await this.validationDataAttributesRepository.find({
       where: programIds,
     });
     return answers;
@@ -257,19 +260,19 @@ export class CredentialService {
       .getMany();
   }
 
-  // AW: delete answers to attributes for a given PA after issuing credentials (identified first through did/QR)
+  // AW: delete answers to attributes for a given PA after issuing validationData (identified first through did/QR)
   public async deletePrefilledAnswers(
     did: string,
     programId: number,
   ): Promise<DeleteResult> {
-    return await this.credentialAttributesRepository.delete({
+    return await this.validationDataAttributesRepository.delete({
       did: did,
       programId: programId,
     });
   }
 
   // Used by Aidworker
-  public async issue(payload: CredentialIssueDto): Promise<void> {
+  public async issueValidation(payload: ValidationIssueDataDto): Promise<void> {
     await this.storePersistentAnswers(
       payload.attributes,
       payload.programId,

@@ -6,7 +6,7 @@ import { ConnectionService } from './connection.service';
 import { ConnectionController } from './connection.controller';
 import { ConnectionEntity } from './connection.entity';
 import { UserModule } from '../user/user.module';
-import { CredentialAttributesEntity } from '../sovrin/credential/credential-attributes.entity';
+import { ValidationDataAttributesEntity } from './validation-data/validation-attributes.entity';
 import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 import { ProgramModule } from '../programs/program/program.module';
 import { SmsModule } from '../notifications/sms/sms.module';
@@ -20,7 +20,7 @@ import { ActionEntity } from '../actions/action.entity';
   imports: [
     TypeOrmModule.forFeature([
       ConnectionEntity,
-      CredentialAttributesEntity,
+      ValidationDataAttributesEntity,
       FinancialServiceProviderEntity,
       FspAttributeEntity,
       CustomCriterium,

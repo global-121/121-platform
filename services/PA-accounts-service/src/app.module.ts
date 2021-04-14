@@ -5,7 +5,6 @@ import { AppController } from './app.controller';
 import { UserModule } from './user/user.module';
 import { DataStorageModule } from './data-storage/data-storage.module';
 import { HealthModule } from './health.module';
-import { ServicesModule } from './services/services.module';
 
 @Module({
   imports: [
@@ -13,7 +12,6 @@ import { ServicesModule } from './services/services.module';
     UserModule,
     DataStorageModule,
     HealthModule,
-    ServicesModule,
   ],
   controllers: [AppController],
   providers: [],

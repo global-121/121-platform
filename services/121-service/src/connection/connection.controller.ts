@@ -1,11 +1,10 @@
-import { DidProgramDto } from '../sovrin/credential/dto/did-program.dto';
+import { DidProgramDto } from './validation-data/dto/did-program.dto';
 import { DidDto } from './dto/did.dto';
 import { ConnectionService } from './connection.service';
 import {
   Controller,
   Post,
   Body,
-  Get,
   Param,
   UseGuards,
   UseInterceptors,

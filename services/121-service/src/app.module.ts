@@ -9,7 +9,7 @@ import { ProgramModule } from './programs/program/program.module';
 import { UserModule } from './user/user.module';
 import { HealthModule } from './health.module';
 import { ConnectionModule } from './connection/connection.module';
-import { CredentialModule } from './sovrin/credential/credential.module';
+import { ValidationDataModule } from './connection/validation-data/validation-data.module';
 import { SmsModule } from './notifications/sms/sms.module';
 import { VoiceModule } from './notifications/voice/voice.module';
 import { LookupModule } from './notifications/lookup/lookup.module';
@@ -27,7 +27,7 @@ import { MulterModule } from '@nestjs/platform-express';
     HealthModule,
     CronjobModule,
     ConnectionModule,
-    CredentialModule,
+    ValidationDataModule,
     SmsModule,
     VoiceModule,
     LookupModule,

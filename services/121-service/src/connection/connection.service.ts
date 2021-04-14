@@ -10,7 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
 import { Repository, getRepository, IsNull, Not } from 'typeorm';
 import { DidDto } from '../programs/program/dto/did.dto';
-import { CredentialAttributesEntity } from '../sovrin/credential/credential-attributes.entity';
+import { ValidationDataAttributesEntity } from './validation-data/validation-attributes.entity';
 import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
 import {
   FinancialServiceProviderEntity,
@@ -37,9 +37,9 @@ import { AdditionalActionType } from '../actions/action.entity';
 export class ConnectionService {
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
-  @InjectRepository(CredentialAttributesEntity)
-  private readonly credentialAttributesRepository: Repository<
-    CredentialAttributesEntity
+  @InjectRepository(ValidationDataAttributesEntity)
+  private readonly validationAttributesRepository: Repository<
+    ValidationDataAttributesEntity
   >;
   @InjectRepository(FinancialServiceProviderEntity)
   private readonly fspRepository: Repository<FinancialServiceProviderEntity>;
@@ -206,7 +206,7 @@ export class ConnectionService {
     await this.connectionRepository.delete({
       did: didObject.did,
     });
-    await this.credentialAttributesRepository.delete({
+    await this.validationAttributesRepository.delete({
       did: didObject.did,
     });
   }

@@ -22,7 +22,7 @@ export class AttributeDto {
   public readonly answer: string;
 }
 
-export class CredentialIssueDto {
+export class ValidationIssueDataDto {
   @ApiModelProperty({ example: 'did:sov:exampleExampleExample' })
   @Length(29, 30)
   public readonly did: string;

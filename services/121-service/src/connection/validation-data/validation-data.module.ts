@@ -1,13 +1,13 @@
 import { LookupModule } from '../../notifications/lookup/lookup.module';
-import { ConnectionEntity } from '../../connection/connection.entity';
+import { ConnectionEntity } from '../connection.entity';
 import { UserModule } from '../../user/user.module';
 import { Module, forwardRef, HttpModule } from '@nestjs/common';
-import { CredentialService } from './credential.service';
-import { CredentialController } from './credential.controller';
+import { ValidationDataService } from './validation-data.service';
+import { ValidationDataController } from './validation-data.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
-import { CredentialAttributesEntity } from './credential-attributes.entity';
+import { ValidationDataAttributesEntity } from './validation-attributes.entity';
 import { ProgramModule } from '../../programs/program/program.module';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 
@@ -17,7 +17,7 @@ import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
       UserEntity,
       ProgramEntity,
       ConnectionEntity,
-      CredentialAttributesEntity,
+      ValidationDataAttributesEntity,
       FspAttributeEntity,
     ]),
     forwardRef(() => ProgramModule),
@@ -25,8 +25,8 @@ import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
     UserModule,
     HttpModule,
   ],
-  providers: [CredentialService],
-  controllers: [CredentialController],
-  exports: [CredentialService],
+  providers: [ValidationDataService],
+  controllers: [ValidationDataController],
+  exports: [ValidationDataService],
 })
-export class CredentialModule {}
+export class ValidationDataModule {}

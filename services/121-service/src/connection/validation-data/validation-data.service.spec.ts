@@ -1,18 +1,18 @@
-import { LookupService } from './../../notifications/lookup/lookup.service';
-import { SoapService } from './../../programs/fsp/api/soap.service';
-import { AfricasTalkingService } from './../../programs/fsp/africas-talking.service';
-import { SmsService } from './../../notifications/sms/sms.service';
-import { VoiceService } from './../../notifications/voice/voice.service';
-import { TwilioMessageEntity } from './../../notifications/twilio.entity';
-import { UserEntity } from './../../user/user.entity';
-import { CustomCriterium } from './../../programs/program/custom-criterium.entity';
-import { ConnectionEntity } from './../create-connection/connection.entity';
-import { ProgramService } from './../../programs/program/program.service';
+import { LookupService } from '../../notifications/lookup/lookup.service';
+import { SoapService } from '../../programs/fsp/api/soap.service';
+import { AfricasTalkingService } from '../../programs/fsp/africas-talking.service';
+import { SmsService } from '../../notifications/sms/sms.service';
+import { VoiceService } from '../../notifications/voice/voice.service';
+import { TwilioMessageEntity } from '../../notifications/twilio.entity';
+import { UserEntity } from '../../user/user.entity';
+import { CustomCriterium } from '../../programs/program/custom-criterium.entity';
+import { ConnectionEntity } from '../connection.entity';
+import { ProgramService } from '../../programs/program/program.service';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CredentialService } from './credential.service';
+import { ValidationDataService } from './validation-data.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
-import { CredentialAttributesEntity } from './credential-attributes.entity';
+import { ValidationDataAttributesEntity } from './validation-attributes.entity';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { HttpModule } from '@nestjs/common';
 import { ProtectionServiceProviderEntity } from '../../programs/program/protection-service-provider.entity';
@@ -35,8 +35,8 @@ import { IntersolveRequestEntity } from '../../programs/fsp/intersolve-request.e
 import { IntersolveInstructionsEntity } from '../../programs/fsp/intersolve-instructions.entity';
 import { ActionService } from '../../actions/action.service';
 
-describe('CredentialService', (): void => {
-  let service: CredentialService;
+describe('ValidationDataService', (): void => {
+  let service: ValidationDataService;
 
   beforeEach(
     async (): Promise<void> => {
@@ -44,7 +44,7 @@ describe('CredentialService', (): void => {
         imports: [HttpModule],
         providers: [
           ActionService,
-          CredentialService,
+          ValidationDataService,
           ProgramService,
           VoiceService,
           SmsService,
@@ -58,7 +58,7 @@ describe('CredentialService', (): void => {
           WhatsappService,
           LookupService,
           {
-            provide: getRepositoryToken(CredentialAttributesEntity),
+            provide: getRepositoryToken(ValidationDataAttributesEntity),
             useFactory: repositoryMockFactory,
           },
           {
@@ -132,7 +132,7 @@ describe('CredentialService', (): void => {
         ],
       }).compile();
 
-      service = module.get<CredentialService>(CredentialService);
+      service = module.get<ValidationDataService>(ValidationDataService);
     },
   );
 

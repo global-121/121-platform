@@ -2,7 +2,7 @@ import { GetTransactionDto } from './dto/get-transaction.dto';
 import { ActionService } from './../../actions/action.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { TransactionEntity } from './transactions.entity';
-import { CredentialService } from '../../sovrin/credential/credential.service';
+import { ValidationDataService } from '../../connection/validation-data/validation-data.service';
 import { ConnectionEntity } from '../../connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import {
@@ -70,8 +70,8 @@ export class ProgramService {
 
   public constructor(
     private readonly actionService: ActionService,
-    @Inject(forwardRef(() => CredentialService))
-    private readonly credentialService: CredentialService,
+    @Inject(forwardRef(() => ValidationDataService))
+    private readonly validationDataService: ValidationDataService,
     private readonly smsService: SmsService,
     private readonly fspService: FspService,
     private readonly lookupService: LookupService,
@@ -528,7 +528,7 @@ export class ProgramService {
     did: string,
     programId: number,
   ): Promise<object> {
-    const prefilledAnswers = await this.credentialService.getPrefilledAnswers(
+    const prefilledAnswers = await this.validationDataService.getPrefilledAnswers(
       did,
       programId,
     );

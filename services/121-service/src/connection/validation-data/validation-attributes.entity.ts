@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('credential_attributes')
-export class CredentialAttributesEntity {
+@Entity('validation_data_attributes')
+export class ValidationDataAttributesEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 

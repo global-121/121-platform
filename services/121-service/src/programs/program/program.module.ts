@@ -1,6 +1,6 @@
 import { FspModule } from './../fsp/fsp.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
-import { CredentialModule } from '../../sovrin/credential/credential.module';
+import { ValidationDataModule } from '../../connection/validation-data/validation-data.module';
 import { ConnectionEntity } from './../../connection/connection.entity';
 import { Module, forwardRef, HttpModule } from '@nestjs/common';
 import { ProgramController } from './program.controller';
@@ -33,7 +33,7 @@ import { LookupModule } from '../../notifications/lookup/lookup.module';
       FspAttributeEntity,
     ]),
     ActionModule,
-    forwardRef(() => CredentialModule),
+    forwardRef(() => ValidationDataModule),
     UserModule,
     forwardRef(() => SmsModule),
     VoiceModule,
