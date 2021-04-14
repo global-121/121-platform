@@ -28,7 +28,6 @@
     "seed:program-pilot-nl": "ts-node src/scripts seed-program-pilot-nl",
     "seed:program-pilot-nl2": "ts-node src/scripts seed-program-pilot-nl2",
     "seed:program-pilot-ken": "ts-node src/scripts seed-program-pilot-ken",
-    "seed:publish": "ts-node src/scripts seed-publish",
     "pretest": "npm run lint",
     "test": "jest --config=jest.json",
     "test:watchall": "npm test -- --watchAll",

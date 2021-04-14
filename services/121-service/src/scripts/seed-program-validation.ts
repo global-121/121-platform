@@ -4,7 +4,6 @@ import { Connection } from 'typeorm';
 import { UserRole } from '../user-role.enum';
 
 import { SeedHelper } from './seed-helper';
-import { SeedPublish } from './seed-publish';
 import { SeedInit } from './seed-init';
 
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
@@ -18,7 +17,6 @@ export class SeedProgramValidation implements InterfaceScript {
   public constructor(private connection: Connection) {}
 
   private readonly seedHelper = new SeedHelper(this.connection);
-  private readonly seedPublish = new SeedPublish();
 
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.connection);

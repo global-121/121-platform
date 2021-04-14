@@ -64,7 +64,7 @@ async function main(): Promise<void> {
     const names: string[] = yargs.argv._;
     const name = names[0];
 
-    if (name === 'seed-prod' || name === 'seed-publish') {
+    if (name === 'seed-prod') {
       runScript(name);
     } else {
       confirmRun(name);

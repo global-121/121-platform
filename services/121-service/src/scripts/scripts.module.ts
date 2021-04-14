@@ -13,7 +13,6 @@ import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import { SeedPilotKenProgram } from './seed-program-pilot-ken';
 import { SeedDemoProgram } from './seed-program-demo';
-import { SeedPublish } from './seed-publish';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { SeedPublish } from './seed-publish';
     SeedInit,
     SeedProd,
     SeedHelper,
-    SeedPublish,
     SeedProgramValidation,
     SeedMultiProgram,
     SeedPilotNLProgram,

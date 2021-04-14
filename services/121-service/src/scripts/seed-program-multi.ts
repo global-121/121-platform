@@ -3,7 +3,6 @@ import { InterfaceScript } from './scripts.module';
 import { Connection } from 'typeorm';
 
 import { SeedHelper } from './seed-helper';
-import { SeedPublish } from './seed-publish';
 import { SeedInit } from './seed-init';
 
 import fspBank from '../../seed-data/fsp/fsp-bank.json';
@@ -25,7 +24,6 @@ export class SeedMultiProgram implements InterfaceScript {
   public constructor(private connection: Connection) {}
 
   private readonly seedHelper = new SeedHelper(this.connection);
-  private readonly seedPublish = new SeedPublish();
 
   public async run(): Promise<void> {
     const seedInit = await new SeedInit(this.connection);
