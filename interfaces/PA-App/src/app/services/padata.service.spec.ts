@@ -6,7 +6,6 @@ import { JwtService } from './jwt.service';
 import { PaAccountApiService } from './pa-account-api.service';
 import { PaDataService } from './padata.service';
 import { ProgramsServiceApiService } from './programs-service-api.service';
-import { SovrinService } from './sovrin.service';
 
 describe('PaDataService', () => {
   const mockJwtService = jasmine.createSpyObj('JwtService', {
@@ -26,9 +25,6 @@ describe('PaDataService', () => {
         },
         {
           provide: ProgramsServiceApiService,
-        },
-        {
-          provide: SovrinService,
         },
         {
           provide: JwtService,
