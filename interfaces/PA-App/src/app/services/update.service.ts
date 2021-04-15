@@ -18,7 +18,6 @@ export class UpdateService {
 
   public pagesNav = {
     inclusion: 'tabs/personal',
-    credential: 'tabs/personal',
   };
 
   constructor(
@@ -49,7 +48,7 @@ export class UpdateService {
   }
 
   listenForInclusionStatus(programId: number, did: string) {
-    console.log('listenForInclusionStatus()', programId, did);
+    console.log('UpdateService: listenForInclusionStatus()', programId, did);
     return interval(this.updateSpeedMs).pipe(
       switchMap(() =>
         this.programsService.checkInclusionStatus(did, programId),

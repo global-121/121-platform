@@ -15,7 +15,6 @@
   },
   "notification": {
     "close": "اغلاق",
-    "credential": "تم استلام الهوية الإلكترونية",
     "inclusion": "تم استلام حالة طلب الإنضمام"
   },
   "password-toggle": {

@@ -15,7 +15,6 @@
   },
   "notification": {
     "close": "close",
-    "credential": "Digital ID received",
     "inclusion": "Inclusion status received"
   },
   "password-toggle": {

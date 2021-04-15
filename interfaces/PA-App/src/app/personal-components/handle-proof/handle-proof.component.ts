@@ -67,8 +67,6 @@ export class HandleProofComponent extends PersonalComponent {
   }
 
   async handleProof() {
-    console.log('handleProof');
-
     await this.gatherData();
 
     if (!this.currentProgram) {
@@ -77,7 +75,6 @@ export class HandleProofComponent extends PersonalComponent {
 
     let status: string;
     const validationSkipped = await this.checkValidationSkipped();
-    console.log('validationSkipped: ', validationSkipped);
 
     if (validationSkipped || !this.currentProgram.validation) {
       status = PaCredentialStatus.noValidation;
