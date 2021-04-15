@@ -8,7 +8,6 @@ export const environment = {
   isDebug: ${process.env.NG_IS_DEBUG || 'false'},
   showDebug: ${process.env.NG_SHOW_DEBUG || 'false'},
   useAnimation: ${process.env.NG_USE_ANIMATION || 'true'},
-  localStorage: ${process.env.NG_LOCAL_STORAGE || 'false'},
   alwaysShowTextPlayer: ${process.env.NG_ALWAYS_SHOW_TEXT_PLAYER || 'false'},
 
   envName: '${process.env.NG_ENV_NAME || ''}',

@@ -14,7 +14,6 @@
   },
   "notification": {
     "close": "Nkeno",
-    "credential": "Namba e akaunt",
     "inclusion": "Etumoki nikipikeki"
   },
   "password-toggle": {
@@ -35,11 +34,6 @@
       "create-password-explanation": "Ntibira password naata nambai ongwan",
       "create-username": "Tipika ng'arn inono pookin",
       "introduction": "Pii intibir akaunt ino Keishakino pii idip Kuna oito",
-      "local": {
-        "conclusion": "Aiiya, intibira Digital ID ino.",
-        "create-password-only": "Password ino",
-        "introduction": "Pii intibir Digital ID ino Keishakino pii idip Kuna oito"
-      },
       "password-too-short": "Tipika nambai nemegoru {{minimalLength}} ongwan.",
       "unequal-passwords": "Password nintibira menyunyuk. Ngila",
       "username-not-unique": "Ngarna nitipika megol. Ngila",

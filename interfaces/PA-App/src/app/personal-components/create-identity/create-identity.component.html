@@ -1,42 +1,10 @@
-<dialogue-turn
-  *ngIf="useLocalStorage"
-  [isSpoken]="useLocalStorage"
->
-  <p>
-    <play-text-audio key="personal.create-identity.local.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-identity.local.introduction'|translate }}
-  </p>
-</dialogue-turn>
-<dialogue-turn
-  *ngIf="useLocalStorage"
-  [isSpoken]="useLocalStorage"
-  isConnected="true"
->
-  <p>
-    <play-text-audio key="personal.create-identity.local.create-password-only" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-identity.local.create-password-only'|translate }}
-  </p>
-
-  <more-info-button
-    buttonKey="personal.create-identity.local.more-info-password"
-    messageKey="personal.create-identity.local.info-message-password"
-    headingKey="personal.create-identity.local.more-info-password"
-  ></more-info-button>
-</dialogue-turn>
-<dialogue-turn
-  *ngIf="!useLocalStorage"
-  [isSpoken]="!useLocalStorage"
->
+<dialogue-turn>
   <p>
     <play-text-audio key="personal.create-identity.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
     {{ 'personal.create-identity.introduction'|translate }}
   </p>
 </dialogue-turn>
-<dialogue-turn
-  *ngIf="!useLocalStorage"
-  [isSpoken]="!useLocalStorage"
-  isConnected="true"
->
+<dialogue-turn isConnected="true">
   <p>
     <play-text-audio key="personal.create-identity.username-password" class="ion-float-start ion-margin-end"></play-text-audio>
     {{ 'personal.create-identity.username-password'|translate }}
@@ -46,7 +14,7 @@
   <form (ngSubmit)="submitCredentials(username,create,confirm)">
     <input type="submit" hidden /><!-- Include hidden submit-button to enable "enter"-key to trigger ngSubmit -->
 
-    <div *ngIf="!useLocalStorage">
+    <div>
       <p>
         <play-text-audio key="personal.create-identity.create-username" class="ion-margin-end"></play-text-audio>
         <ion-label>{{ 'personal.create-identity.create-username'|translate }}</ion-label>
@@ -72,7 +40,7 @@
       </ion-row>
     </div>
     <div
-      *ngIf="usernameSubmitted || useLocalStorage"
+      *ngIf="usernameSubmitted"
       class="ion-margin-vertical"
     >
       <p>
@@ -165,11 +133,7 @@
   *ngIf="isDisabled"
   [isSpoken]="isDisabled"
 >
-  <p *ngIf="useLocalStorage">
-    <play-text-audio key="personal.create-identity.local.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-identity.local.conclusion'|translate }}
-  </p>
-  <p *ngIf="!useLocalStorage">
+  <p>
     <play-text-audio key="personal.create-identity.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
     {{ 'personal.create-identity.conclusion'|translate }}
   </p>

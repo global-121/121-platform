@@ -14,7 +14,6 @@
   },
   "notification": {
     "close": "Cufi",
-    "credential": "Adda-baastuun Dijitaalaa qaqqabeera",
     "inclusion": "Sadarkaan itti-makamuu qaqqabeera"
   },
   "password-toggle": {
@@ -27,10 +26,6 @@
       "confirm-password": "Paaswoordii koo mirkaneessi:",
       "create-username": "Maqaa-fayyadamaa koo tolchi:",
       "introduction": "Adda-baastuu Dijitaalaa tolfachuudhaaf sadarkaawwan itti-aanan kanneen xumuruun sin barbaachisa.",
-      "more-info-password": "Waa'ee paaswoordiiwwanii",
-      "password-only": "Create my password",
-      "submit-password": "Create my password",
-      "submit-username": "Maqaa-fayyadamaa koo tolchi",
       "unequal-passwords": "Paaswoordiiwwan isin tolfattan tokko miti. Maaloo irra deebi'aa yaalaa.",
       "username-not-unique": "Maqaan fayyadamaa isin tolfattan adda miti. Maaloo irra deebi'aa yaalaa.",
       "username-password": "Maqaa-fayyadamaafi paaswoordii keessan tolfadhaa."

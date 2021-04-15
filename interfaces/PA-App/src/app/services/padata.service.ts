@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { BehaviorSubject } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { Program } from '../models/program.model';
 import { User } from '../models/user.model';
 import { JwtService } from './jwt.service';
@@ -13,8 +11,6 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
   providedIn: 'root',
 })
 export class PaDataService {
-  private useLocalStorage: boolean;
-
   public type = PaDataTypes;
 
   public hasAccount = false;
@@ -28,13 +24,10 @@ export class PaDataService {
   public authenticationState$ = this.authenticationStateSource.asObservable();
 
   constructor(
-    private ionStorage: Storage,
     private paAccountApi: PaAccountApiService,
     private programService: ProgramsServiceApiService,
     private jwtService: JwtService,
   ) {
-    this.useLocalStorage = environment.localStorage;
-
     this.checkAuthenticationState();
   }
 
@@ -98,44 +91,23 @@ export class PaDataService {
   // ALL types of storage:
   /////////////////////////////////////////////////////////////////////////////
 
-  async store(type: string, data: any, forceLocalOnly = false): Promise<any> {
-    if (!this.useLocalStorage && !this.hasAccount) {
+  async store(type: string, data: any): Promise<any> {
+    if (!this.hasAccount) {
       return;
-    }
-
-    if (this.useLocalStorage || forceLocalOnly) {
-      return this.ionStorage.set(type, data);
     }
 
     return this.paAccountApi.store(type, JSON.stringify(data));
   }
 
-  async retrieve(type: string, forceLocalOnly = false): Promise<any> {
-    if (!this.useLocalStorage && !this.hasAccount) {
+  async retrieve(type: string): Promise<any> {
+    if (!this.hasAccount) {
       return;
-    }
-
-    if (this.useLocalStorage || forceLocalOnly) {
-      return this.ionStorage.get(type);
     }
 
     return await this.paAccountApi.retrieve(type);
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // ONLY for WEB users:
-  /////////////////////////////////////////////////////////////////////////////
-  private featureNotAvailable(): Promise<any> {
-    return new Promise((resolve) => {
-      return resolve('Not available with local storage');
-    });
-  }
-
   async createAccount(username: string, password: string): Promise<any> {
-    if (this.useLocalStorage) {
-      return this.featureNotAvailable();
-    }
-
     // 'Sanitize' username:
     username = username.trim();
 
@@ -148,16 +120,10 @@ export class PaDataService {
   }
 
   async login(username: string, password: string): Promise<any> {
-    if (this.useLocalStorage) {
-      return this.featureNotAvailable();
-    }
-
     return new Promise((resolve, reject) => {
       this.paAccountApi.login(username, password).then(
         () => {
           console.log('PaData: login successful');
-          this.ionStorage.clear();
-
           const user = this.getUserFromToken();
 
           if (!user) {
@@ -224,30 +190,17 @@ export class PaDataService {
   }
 
   public logout() {
-    if (this.useLocalStorage) {
-      return this.featureNotAvailable();
-    }
-
     console.log('PaData: logout()');
     this.jwtService.destroyToken();
     window.sessionStorage.removeItem(this.type.username);
-    this.ionStorage.clear();
     this.setLoggedOut();
   }
 
   public setDid(did: string) {
-    if (this.useLocalStorage) {
-      return this.featureNotAvailable();
-    }
-
     return this.paAccountApi.setDid(did);
   }
 
   public async deleteIdentity(password: string): Promise<any> {
-    if (this.useLocalStorage) {
-      return this.featureNotAvailable();
-    }
-
     const did = await this.retrieve(this.type.did);
 
     // All requests are dependent on their predecessors!

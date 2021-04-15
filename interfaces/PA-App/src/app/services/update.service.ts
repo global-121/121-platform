@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -19,7 +18,6 @@ export class UpdateService {
 
   public pagesNav = {
     inclusion: 'tabs/personal',
-    credential: 'tabs/personal',
   };
 
   constructor(
@@ -27,7 +25,6 @@ export class UpdateService {
     public paData: PaDataService,
     public toastController: ToastController,
     public translate: TranslateService,
-    public storage: Storage,
     public router: Router,
   ) {}
 
@@ -51,7 +48,7 @@ export class UpdateService {
   }
 
   listenForInclusionStatus(programId: number, did: string) {
-    console.log('listenForInclusionStatus()', programId, did);
+    console.log('UpdateService: listenForInclusionStatus()', programId, did);
     return interval(this.updateSpeedMs).pipe(
       switchMap(() =>
         this.programsService.checkInclusionStatus(did, programId),

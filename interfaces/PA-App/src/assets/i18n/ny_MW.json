@@ -14,7 +14,6 @@
   },
   "notification": {
     "close": "Tsekani",
-    "credential": "Tsekani",
     "inclusion": "Mwalandira kuti mwalowetsedwa"
   },
   "password-toggle": {
@@ -27,7 +26,6 @@
       "confirm-password": "Tsimikizani nambala yanga ya chinsinsi",
       "create-username": "Pangani dzina langa",
       "introduction": "Kuti mupange nambala mufunika kumaliza izi",
-      "more-info-password": "Nambala yanu yachinsinsi",
       "unequal-passwords": "Nambala yachinsinsi yomwe munapanga yasiyana. Chonde yesaniso",
       "username-not-unique": "Dzina lanu lomwe munalemba ndi la wamba. Chonde yesaniso",
       "username-password": "Pangani dzina lanu ndi nambala yachinsinsi"

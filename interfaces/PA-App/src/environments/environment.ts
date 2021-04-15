@@ -8,7 +8,6 @@ export const environment = {
   // Configuration/Feature-switches:
   isDebug: true, // Controls debugging features
   showDebug: false, // Controls debugging features
-  localStorage: false, // Use local or remote wallet/account
   useAnimation: false, // Use animations and delays in the interface
   alwaysShowTextPlayer: true, // Also show text-player for missing audio-files
 

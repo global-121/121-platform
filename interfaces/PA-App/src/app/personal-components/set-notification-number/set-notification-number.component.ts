@@ -5,7 +5,6 @@ import { PersonalComponents } from 'src/app/personal-components/personal-compone
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-set-notification-number',
@@ -15,8 +14,6 @@ import { environment } from 'src/environments/environment';
 export class SetNotificationNumberComponent extends PersonalComponent {
   @Input()
   public data: any;
-
-  public useLocalStorage: boolean;
 
   public languageCode: string;
 
@@ -37,7 +34,6 @@ export class SetNotificationNumberComponent extends PersonalComponent {
     public programService: ProgramsServiceApiService,
   ) {
     super();
-    this.useLocalStorage = environment.localStorage;
     this.languageCode = this.translate.currentLang;
   }
 

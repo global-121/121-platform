@@ -1,16 +1,11 @@
 export enum PaDataTypes {
   conversationHistory = 'conversationHistory',
-  credDefId = 'credDefId',
-  credentialRequest = 'credentialRequest',
   did = 'did',
-  didShort = 'didShort',
   fsp = 'fsp',
-  language = 'languageCode',
   myAnswers = 'myAnswers',
   programId = 'programId',
   phoneNumber = 'phoneNumber',
   status = 'status',
   usePreprintedQrCode = 'usePreprintedQrCode',
   username = 'username',
-  wallet = 'wallet',
 }

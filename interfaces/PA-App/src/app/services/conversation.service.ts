@@ -143,7 +143,6 @@ export class ConversationService {
 
   public debugUndoLastStep() {
     this.history.pop();
-    this.paData.store(this.paData.type.conversationHistory, this.history, true);
   }
 
   public debugFillHistory() {
