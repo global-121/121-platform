@@ -11,19 +11,12 @@
   "scripts": {
     "ng": "ng",
     "ionic": "ionic",
-    "cordova": "cordova",
     "start": "ng serve --port 0",
-    "dev:on-device": "npm run ionic -- cordova run android --device --consolelogs --livereload",
-    "dev:local-android": "npm run ionic -- cordova run android --emulator --consolelogs --livereload",
-    "dev:local-ios": "npm run ionic -- cordova run ios --consolelogs --livereload",
-    "dev:local": "npm run ionic -- cordova run browser --consolelogs --livereload",
     "generate-assets-audio": "node ./_generate-assets-audio.js",
     "check-assets-translations": "node ./_check-assets-translations.js",
     "set-env-variables": "node ./_set-env-variabes.js",
     "prebuild": "npm run set-env-variables && npm run check-assets-translations && npm run generate-assets-audio",
     "build": "ng build",
-    "prebuild:native": "npm run prebuild",
-    "build:native": "npm run ionic -- cordova build android ",
     "test": "ng test --no-watch --browsers=ChromeHeadless",
     "test:dev": "ng test",
     "test:all": "npm run lint && npm test",
@@ -104,20 +97,5 @@
     "ts-node": "~9.1.0",
     "tslint": "~5.20.1",
     "typescript": "~3.2.4"
-  },
-  "cordova": {
-    "plugins": {
-      "cordova-plugin-whitelist": {},
-      "cordova-plugin-statusbar": {},
-      "cordova-plugin-splashscreen": {},
-      "cordova-plugin-ionic-webview": {},
-      "cordova-plugin-ionic-keyboard": {},
-      "cordova-plugin-device": {}
-    },
-    "platforms": [
-      "browser",
-      "android",
-      "ios"
-    ]
   }
 }

@@ -13,15 +13,6 @@ node_modules/
 # Ionic related files
 .ionic/
 www/
-platforms/
-plugins/
-plugins/android.json
-plugins/ios.json
-*/resources/ios/
-*/resources/android/
-*.keystore
-*.apk
-
 
 ## Temporary/Generated code/files:
 *.js.map

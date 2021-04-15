@@ -158,7 +158,7 @@ To start an individual interface in development mode:
 
       npm run start:<interface-name>
 
-- Or explore the specific options(to run the native Android version, for example) as defined in each interface's own `package.json` or `README.md`.
+- Or explore the specific options as defined in each interface's own `package.json` or `README.md`.
 
 The 4 individual Angular applications, when started will be available via:
 
