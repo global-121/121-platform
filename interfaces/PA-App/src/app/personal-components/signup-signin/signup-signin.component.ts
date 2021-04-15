@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { ConversationService } from 'src/app/services/conversation.service';
-import { environment } from 'src/environments/environment';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
 
@@ -18,14 +17,12 @@ export class SignupSigninComponent extends PersonalComponent {
   @Input()
   public data: any;
 
-  public useLocalStorage: boolean;
   public idChoices = idChoices;
   public signupSigninChoice: string;
   public typeChosen: boolean;
 
   constructor(public conversationService: ConversationService) {
     super();
-    this.useLocalStorage = environment.localStorage;
   }
 
   ngOnInit() {

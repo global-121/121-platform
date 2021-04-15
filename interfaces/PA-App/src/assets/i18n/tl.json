@@ -32,13 +32,6 @@
       "create-password-explanation": "Gumawa ng password na hindi lalagpas sa {{minimalLength}} na numero:",
       "create-username": "Maglagay ng username:",
       "introduction": "Upang makalikha ng account, kailangang kumpletuhin ang mga sumusunod:",
-      "local": {
-        "conclusion": "Magaling! Mayroon ka ng Digital ID.",
-        "create-password-only": "Gumawa ng password",
-        "info-message-password": "[tungkol sa passwords]",
-        "introduction": "Sa pag-gawa ng Digital ID, kailangan mong kumpletohin ang mga sumusunod:",
-        "more-info-password": "Tungkol sa password"
-      },
       "password-too-short": "Mag-lagay ng hindi lalagpas sa {{minimalLength}} na characters.",
       "unequal-passwords": "Ang password na iyong nilagay ay magka-iba. Subukan muli.",
       "username-not-unique": "Ang username na napili mo ay hindi kakaiba / unique. Subukan muli.",
