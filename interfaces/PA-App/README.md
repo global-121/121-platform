@@ -44,27 +44,6 @@ Audio-file creation/processing:
   `npm run generate-assets-audio -- <locale>`  
    Or provide the locale/language-code at the prompt.
 
-### NGO logo's
-
-Use of NGO-logo's is currently hard-coded. When either of the following changes:
-
-- A new NGO is participating in the 121-system
-- The logo (name) of an NGO changes
-- The NGO name (used in the 121-service program-object) changes
-
-... then this should be reflected in code-changes in:
-
-- `./src/app/shared/dialogue-turn/dialogue-turn.component.html`
-- and `./src/app/shared/dialogue-turn/dialogue-turn.component.ts`
-
-## Deployment / Building
-
-To deploy a native build of this app, see the generic instructions in [/interfaces/README](../README.md#Deployment).
-
-After that, run: (with `<type>` as `--prod` or `--debug`)
-
-    npm run build:native -- <type>
-
 ---
 
 ## License
