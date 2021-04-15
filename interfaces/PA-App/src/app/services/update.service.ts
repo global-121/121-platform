@@ -14,8 +14,6 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 export class UpdateService {
   public updateSpeedMs = 3000;
 
-  public credential: any;
-
   public pagesNav = {
     inclusion: 'tabs/personal',
   };
