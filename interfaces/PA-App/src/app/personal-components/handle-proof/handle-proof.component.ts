@@ -26,7 +26,7 @@ export class HandleProofComponent extends PersonalComponent {
 
   public hasNotificationNumberSet: boolean;
 
-  public inclusionStatus: string;
+  private inclusionStatus: string;
   public inclusionStatusPositive = false;
   public inclusionStatusNegative = false;
 
@@ -44,7 +44,17 @@ export class HandleProofComponent extends PersonalComponent {
   async ngOnInit() {
     this.currentProgram = await this.paData.getCurrentProgram();
 
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+
     await this.initNew();
+  }
+
+  initHistory() {
+    this.hasNotificationNumberSet = this.data.hasNotificationNumberSet;
+    this.processStatus(this.data.inclusionStatus);
   }
 
   async initNew() {
@@ -54,19 +64,19 @@ export class HandleProofComponent extends PersonalComponent {
     this.handleProof();
   }
 
-  async checkValidationSkipped() {
+  private async checkValidationSkipped() {
     const inclusionStatus = await this.programService
       .checkInclusionStatus(this.did, this.programId)
       .toPromise();
 
-    return (
-      inclusionStatus === PaInclusionStates.included ||
-      inclusionStatus === PaInclusionStates.rejected ||
-      inclusionStatus === PaInclusionStates.inclusionEnded
-    );
+    return [
+      PaInclusionStates.included,
+      PaInclusionStates.rejected,
+      PaInclusionStates.inclusionEnded,
+    ].includes(inclusionStatus);
   }
 
-  async handleProof() {
+  private async handleProof() {
     await this.gatherData();
 
     if (!this.currentProgram) {
@@ -111,7 +121,10 @@ export class HandleProofComponent extends PersonalComponent {
   private async processStatus(inclusionStatus: string) {
     if (inclusionStatus === PaInclusionStates.included) {
       this.inclusionStatusPositive = true;
-    } else if (inclusionStatus === PaInclusionStates.rejected) {
+    } else if (
+      inclusionStatus === PaInclusionStates.rejected ||
+      inclusionStatus === PaInclusionStates.inclusionEnded
+    ) {
       this.inclusionStatusNegative = true;
     }
   }
