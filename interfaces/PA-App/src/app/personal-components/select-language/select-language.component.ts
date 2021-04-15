@@ -80,8 +80,6 @@ export class SelectLanguageComponent extends PersonalComponent {
 
     this.translate.use(this.languageChoice);
     this.languageChoiceName = this.getLanguageName(this.languageChoice);
-
-    this.paData.store(this.paData.type.language, this.languageChoice, true);
   }
 
   public submitLanguage() {

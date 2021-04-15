@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
 import { BehaviorSubject } from 'rxjs';
 import { Program } from '../models/program.model';
 import { User } from '../models/user.model';
@@ -25,7 +24,6 @@ export class PaDataService {
   public authenticationState$ = this.authenticationStateSource.asObservable();
 
   constructor(
-    private ionStorage: Storage,
     private paAccountApi: PaAccountApiService,
     private programService: ProgramsServiceApiService,
     private jwtService: JwtService,
@@ -93,25 +91,17 @@ export class PaDataService {
   // ALL types of storage:
   /////////////////////////////////////////////////////////////////////////////
 
-  async store(type: string, data: any, forceLocalOnly = false): Promise<any> {
+  async store(type: string, data: any): Promise<any> {
     if (!this.hasAccount) {
       return;
-    }
-
-    if (forceLocalOnly) {
-      return this.ionStorage.set(type, data);
     }
 
     return this.paAccountApi.store(type, JSON.stringify(data));
   }
 
-  async retrieve(type: string, forceLocalOnly = false): Promise<any> {
+  async retrieve(type: string): Promise<any> {
     if (!this.hasAccount) {
       return;
-    }
-
-    if (forceLocalOnly) {
-      return this.ionStorage.get(type);
     }
 
     return await this.paAccountApi.retrieve(type);
@@ -134,8 +124,6 @@ export class PaDataService {
       this.paAccountApi.login(username, password).then(
         () => {
           console.log('PaData: login successful');
-          this.ionStorage.clear();
-
           const user = this.getUserFromToken();
 
           if (!user) {
@@ -205,7 +193,6 @@ export class PaDataService {
     console.log('PaData: logout()');
     this.jwtService.destroyToken();
     window.sessionStorage.removeItem(this.type.username);
-    this.ionStorage.clear();
     this.setLoggedOut();
   }
 

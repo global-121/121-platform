@@ -9,7 +9,6 @@ import {
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { IonicStorageModule } from '@ionic/storage';
 import {
   TranslateLoader,
   TranslateModule,
@@ -70,7 +69,6 @@ export function HttpLoaderFactory(http: HttpClient) {
         deps: [HttpClient],
       },
     }),
-    IonicStorageModule.forRoot(),
   ],
   exports: [TranslateModule],
   providers: [

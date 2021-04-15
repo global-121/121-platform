@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -27,7 +26,6 @@ export class UpdateService {
     public paData: PaDataService,
     public toastController: ToastController,
     public translate: TranslateService,
-    public storage: Storage,
     public router: Router,
   ) {}
 

@@ -6,7 +6,6 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { IonContent } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import { ConsentQuestionComponent } from '../personal-components/consent-question/consent-question.component';
@@ -31,7 +30,6 @@ import {
   ConversationSection,
   ConversationService,
 } from '../services/conversation.service';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
 
 @Component({
@@ -70,10 +68,8 @@ export class PersonalPage implements OnInit {
   public debugSections = Object.keys(this.availableSections);
 
   constructor(
-    public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
-    private storage: Storage,
     public translate: TranslateService,
   ) {
     // Listen for completed sections, to continue with next steps
@@ -192,8 +188,6 @@ export class PersonalPage implements OnInit {
   }
 
   public debugClearAllStorage() {
-    this.storage.clear();
-    window.localStorage.clear();
     window.sessionStorage.clear();
   }
 
