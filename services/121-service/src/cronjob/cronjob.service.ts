@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, LessThan, Repository, Between } from 'typeorm';
+import { getRepository, Repository, Between } from 'typeorm';
 import { IntersolveBarcodeEntity } from '../programs/fsp/intersolve-barcode.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolveRequestEntity } from '../programs/fsp/intersolve-request.entity';
 import { IntersolveApiService } from '../programs/fsp/api/instersolve.api.service';
-import { ConnectionEntity } from '../sovrin/create-connection/connection.entity';
+import { ConnectionEntity } from '../connection/connection.entity';
 
 @Injectable()
 export class CronjobService {

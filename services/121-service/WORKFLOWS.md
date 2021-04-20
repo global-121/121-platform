@@ -19,9 +19,9 @@ In this file we document "how to do X", manually. As not everything is possible 
 3. **121-dev-team**:
    1. Find the `connection` of the PA that we want to update, using `Find DID of PA in database based on name and/or phone number` scenario below.
    2. Use the found connection `did` to update the phone-numbers.
-      - Use: [`/sovrin/create-connection/phone/overwrite`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_phone_overwrite)  
+      - Use: [`/connection/phone/overwrite`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_phone_overwrite)  
         To store the new SMS phone-number. (Make sure to ONLY include the numbers, no whitespace or `+`)
-      - Use: [`/sovrin/create-connection/custom-data/overwrite`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_custom_data_overwrite)  
+      - Use: [`/connection/custom-data/overwrite`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_custom_data_overwrite)  
         To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (Make sure to ONLY include the numbers, no whitespace or `+`)
 
 ---
@@ -37,7 +37,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 3. **121-dev-team**:
    1. Find the `connection` of the PA that we want to update, using `Find DID of PA in database based on name and/or phone number` scenario below.
    2. Update FSP: Use the found connection `did` to update the Financial Service Provider.
-      - Use: [`/sovrin/create-connection/update-chosen-fsp`](https://test-vm.121.global/121-service/docs/#//sovrin/post_sovrin_create_connection_update_chosen_fsp)
+      - Use: [`/connection/update-chosen-fsp`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_update_chosen_fsp)
       - Fill in the found `did`
       - Choose the right new FSP name. It must be one out of the provided list.
       - Fill in the required attributes. If the new FSP requires more attributes than the example-provided `whatsappPhoneNumber`, you can manually change this.
@@ -49,7 +49,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 
 1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`personal-data`"-role
 2. Find the `connection` of the PA that we want to update.  
-   Use the endpoint: [`/sovrin/create-connection/get-did/name-phone`](https://test-vm.121.global/121-service/docs/#/sovrin/post_sovrin_create_connection_get_did_name_phone)  
+   Use the endpoint: [`/connection/get-did/name-phone`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_get_did_name_phone)  
    Where you can optionally fill in `name` and/or old `phoneNumber` to search for.
 
    This will return all connections that match _at least one_ of the parameters.

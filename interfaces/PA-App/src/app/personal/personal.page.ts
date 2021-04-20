@@ -6,7 +6,6 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { IonContent } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import { ConsentQuestionComponent } from '../personal-components/consent-question/consent-question.component';
@@ -16,7 +15,10 @@ import { EnrollInProgramComponent } from '../personal-components/enroll-in-progr
 import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
 import { MonitoringQuestionComponent } from '../personal-components/monitoring-question/monitoring-question.component';
 import { PersonalComponent } from '../personal-components/personal-component.class';
-import { PersonalComponents } from '../personal-components/personal-components.enum';
+import {
+  PersonalComponents,
+  PersonalComponentsRemoved,
+} from '../personal-components/personal-components.enum';
 import { PreprintedQrcodeComponent } from '../personal-components/preprinted-qrcode/preprinted-qrcode.component';
 import { RegistrationSummaryComponent } from '../personal-components/registration-summary/registration-summary.component';
 import { SelectFspComponent } from '../personal-components/select-fsp/select-fsp.component';
@@ -24,12 +26,10 @@ import { SelectLanguageComponent } from '../personal-components/select-language/
 import { SelectProgramComponent } from '../personal-components/select-program/select-program.component';
 import { SetNotificationNumberComponent } from '../personal-components/set-notification-number/set-notification-number.component';
 import { SignupSigninComponent } from '../personal-components/signup-signin/signup-signin.component';
-import { StoreCredentialComponent } from '../personal-components/store-credential/store-credential.component';
 import {
   ConversationSection,
   ConversationService,
 } from '../services/conversation.service';
-import { ProgramsServiceApiService } from '../services/programs-service-api.service';
 import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
 
 @Component({
@@ -49,7 +49,7 @@ export class PersonalPage implements OnInit {
 
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
-  public availableSections = {
+  private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
     [PersonalComponents.contactDetails]: ContactDetailsComponent,
     [PersonalComponents.createIdentity]: CreateIdentityComponent,
@@ -64,15 +64,12 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.selectProgram]: SelectProgramComponent,
     [PersonalComponents.setNotificationNumber]: SetNotificationNumberComponent,
     [PersonalComponents.signupSignin]: SignupSigninComponent,
-    [PersonalComponents.storeCredential]: StoreCredentialComponent,
   };
   public debugSections = Object.keys(this.availableSections);
 
   constructor(
-    public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
     private resolver: ComponentFactoryResolver,
-    private storage: Storage,
     public translate: TranslateService,
   ) {
     // Listen for completed sections, to continue with next steps
@@ -113,11 +110,23 @@ export class PersonalPage implements OnInit {
     this.scrollToLastWhenReady();
   }
 
+  private filterOutRemovedSections(
+    conversation: ConversationSection[],
+  ): ConversationSection[] {
+    return conversation.filter((section) => {
+      return (
+        this.availableSections.hasOwnProperty(section.name) &&
+        !PersonalComponentsRemoved.includes(section.name)
+      );
+    });
+  }
+
   private async loadComponents() {
     // Always start with a clean slate:
     this.container.clear();
 
-    const conversation = await this.conversationService.getConversationUpToNow();
+    let conversation = await this.conversationService.getConversationUpToNow();
+    conversation = this.filterOutRemovedSections(conversation);
 
     conversation.forEach((section: ConversationSection) => {
       this.insertSection(
@@ -179,8 +188,6 @@ export class PersonalPage implements OnInit {
   }
 
   public debugClearAllStorage() {
-    this.storage.clear();
-    window.localStorage.clear();
     window.sessionStorage.clear();
   }
 

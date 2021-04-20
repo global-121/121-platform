@@ -185,7 +185,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/sovrin/create-connection/import-bulk/${programId}`,
+        `/connection/import-bulk/${programId}`,
         formData,
         false,
         false,

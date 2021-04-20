@@ -1,12 +1,9 @@
 import { GetTransactionDto } from './dto/get-transaction.dto';
 import { ActionService } from './../../actions/action.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
-import { ProgramMetrics } from './dto/program-metrics.dto';
 import { TransactionEntity } from './transactions.entity';
-import { SchemaService } from './../../sovrin/schema/schema.service';
-import { CredentialService } from './../../sovrin/credential/credential.service';
-import { ProofService } from './../../sovrin/proof/proof.service';
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { ValidationDataService } from '../../connection/validation-data/validation-data.service';
+import { ConnectionEntity } from '../../connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import {
   Injectable,
@@ -24,7 +21,6 @@ import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
 import { InclusionStatus } from './dto/inclusion-status.dto';
-import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsService } from '../../notifications/sms/sms.service';
 import {
@@ -74,12 +70,9 @@ export class ProgramService {
 
   public constructor(
     private readonly actionService: ActionService,
-    @Inject(forwardRef(() => CredentialService))
-    private readonly credentialService: CredentialService,
+    @Inject(forwardRef(() => ValidationDataService))
+    private readonly validationDataService: ValidationDataService,
     private readonly smsService: SmsService,
-    private readonly schemaService: SchemaService,
-    @Inject(forwardRef(() => ProofService))
-    private readonly proofService: ProofService,
     private readonly fspService: FspService,
     private readonly lookupService: LookupService,
   ) {}
@@ -268,26 +261,6 @@ export class ProgramService {
       const errors = { Program: ' already published' };
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-
-    const result = await this.schemaService.create(selectedProgram);
-
-    const credentialOffer = await this.credentialService.createOffer(
-      result.credDefId,
-    );
-
-    const proofRequest = await this.proofService.createProofRequest(
-      selectedProgram,
-      result.credDefId,
-    );
-
-    await this.changeProgramValue(programId, {
-      credOffer: credentialOffer,
-    });
-    await this.changeProgramValue(programId, { schemaId: result.schemaId });
-    await this.changeProgramValue(programId, { credDefId: result.credDefId });
-    await this.changeProgramValue(programId, {
-      proofRequest: proofRequest,
-    });
     await this.changeProgramValue(programId, { published: true });
 
     const changedProgram = await this.findOne(programId);
@@ -341,81 +314,6 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return connection;
-  }
-
-  public async includeMe(
-    programId: number,
-    did: string,
-    encryptedProof: string,
-  ): Promise<InclusionRequestStatus> {
-    `
-    Verifier/HO gets schema_id/cred_def_id from ledger and validates proof.
-    Inclusion algorithm is run. (Allocation algorithm as well?)
-    Inclusion result is added to db (connectionRepository)?
-    When done (time-loop): run getInclusionStatus from PA.
-    `;
-    const proof = encryptedProof; // this should actually be decrypted in a future scenario
-
-    let connection = await this.getConnectionByDidOrThrow(did);
-
-    if (connection.programsEnrolled.includes(+programId)) {
-      const errors = 'Already enrolled for program';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    let program = await this.programRepository.findOne(programId, {
-      relations: ['customCriteria'],
-    });
-    if (!program) {
-      const errors = 'Program not found.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    await this.proofService.validateProof(program.proofRequest, proof, did);
-
-    const questionAnswerList = this.createQuestionAnswerListProof(
-      program,
-      proof,
-    );
-    connection.customData = this.getPersitentDataFromProof(
-      connection.customData,
-      questionAnswerList,
-      program.customCriteria,
-    );
-
-    // Calculates the score based on the ctritria of a program and the aggregrated score list
-    const totalScore = this.calculateScoreAllCriteria(
-      program.customCriteria,
-      questionAnswerList,
-    );
-    connection.inclusionScore = totalScore;
-
-    // Add to enrolled-array, if not yet present
-    const index = connection.programsEnrolled.indexOf(
-      parseInt(String(programId), 10),
-    );
-    if (index <= -1) {
-      connection.programsEnrolled.push(programId);
-    }
-
-    // Depending on method: immediately determine inclusionStatus (minimumScore) or later (highestScoresX)
-    let inclusionRequestStatus: InclusionRequestStatus;
-    if (program.inclusionCalculationType === 'minimumScore') {
-      // Checks if PA is elegible based on the minimum score of the program
-      let inclusionResult = totalScore >= program.minimumScore;
-
-      if (inclusionResult) {
-        connection.programsIncluded.push(programId);
-      }
-      inclusionRequestStatus = { status: 'done' };
-    } else if (program.inclusionCalculationType === 'highestScoresX') {
-      // In this case an inclusion-status can only be given later.
-      inclusionRequestStatus = { status: 'pending' };
-    }
-
-    await this.connectionRepository.save(connection);
-
-    return inclusionRequestStatus;
   }
 
   private async sendSmsMessage(
@@ -618,10 +516,7 @@ export class ProgramService {
     );
     let connection = await this.getConnectionByDid(did);
 
-    connection.temporaryInclusionScore = score;
-    if (!program.validation) {
-      connection.inclusionScore = score;
-    }
+    connection.inclusionScore = score;
 
     await this.connectionRepository.save(connection);
   }
@@ -630,7 +525,7 @@ export class ProgramService {
     did: string,
     programId: number,
   ): Promise<object> {
-    const prefilledAnswers = await this.credentialService.getPrefilledAnswers(
+    const prefilledAnswers = await this.validationDataService.getPrefilledAnswers(
       did,
       programId,
     );
@@ -641,28 +536,6 @@ export class ProgramService {
       scoreList[newKeyName] = attrValue;
     }
     return scoreList;
-  }
-
-  private createQuestionAnswerListProof(
-    program: ProgramEntity,
-    proof: string,
-  ): object {
-    // Convert the proof in an array, for some unknown reason it has to be JSON parse multiple times
-    const proofJson = JSON.parse(proof);
-    const proofObject = JSON.parse(proofJson['proof']);
-    const revealedAttrProof = proofObject['requested_proof']['revealed_attrs'];
-
-    // Uses the proof request to relate the revealed_attr from the proof to the corresponding ctriteria'
-    const proofRequest = JSON.parse(program.proofRequest);
-    const attrRequest = proofRequest['requested_attributes'];
-
-    const inclusionCriteriaAnswers = {};
-    for (let attrKey in revealedAttrProof) {
-      let attrValue = revealedAttrProof[attrKey];
-      let newKeyName = attrRequest[attrKey]['name'];
-      inclusionCriteriaAnswers[newKeyName] = attrValue['raw'];
-    }
-    return inclusionCriteriaAnswers;
   }
 
   private calculateScoreAllCriteria(
@@ -909,8 +782,7 @@ export class ProgramService {
       const connectionResponse = {};
       connectionResponse['id'] = connection.id;
       connectionResponse['did'] = connection.did;
-      connectionResponse['score'] = connection.inclusionScore;
-      connectionResponse['tempScore'] = connection.temporaryInclusionScore;
+      connectionResponse['inclusionScore'] = connection.inclusionScore;
       connectionResponse['created'] = connection.accountCreatedDate;
       connectionResponse['importedDate'] = connection.importedDate;
       connectionResponse['invitedDate'] = connection.invitedDate;

@@ -10,8 +10,6 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { CustomCriterium } from './custom-criterium.entity';
-import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
-import { CredentialEntity } from '../../sovrin/credential/credential.entity';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
@@ -103,18 +101,6 @@ export class ProgramEntity {
   @Column({ default: true })
   public validation: boolean;
 
-  @Column({ default: null })
-  public schemaId: string;
-
-  @Column({ default: null })
-  public credDefId: string;
-
-  @Column('json', { default: null })
-  public credOffer: JSON;
-
-  @Column({ default: null })
-  public proofRequest: string;
-
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public created: Date;
 
@@ -150,18 +136,6 @@ export class ProgramEntity {
   )
   @JoinTable()
   public aidworkers: UserEntity[];
-
-  @OneToMany(
-    () => CredentialRequestEntity,
-    credentialRequest => credentialRequest.program,
-  )
-  public credentialRequests: CredentialRequestEntity[];
-
-  @OneToMany(
-    () => CredentialEntity,
-    credential => credential.program,
-  )
-  public credentials: CredentialEntity[];
 
   @OneToMany(
     () => TransactionEntity,

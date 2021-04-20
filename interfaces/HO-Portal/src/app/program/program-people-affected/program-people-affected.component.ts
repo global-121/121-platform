@@ -317,9 +317,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         width: columnDateTimeWidth,
       },
       {
-        prop: 'tempScore',
+        prop: 'inclusionScore',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.temp-score',
+          'page.program.program-people-affected.column.inclusion-score',
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
@@ -345,15 +345,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         phases: [ProgramPhase.registrationValidation],
         showIfNoValidation: false,
         width: columnDateTimeWidth,
-      },
-      {
-        prop: 'finalScore',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.final-score',
-        ),
-        ...this.columnDefaults,
-        phases: [ProgramPhase.registrationValidation, ProgramPhase.inclusion],
-        width: columnScoreWidth,
       },
       {
         prop: 'included',
@@ -564,15 +555,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       return [];
     }
     return source
-      .sort(this.sortPeopleByTempScore)
+      .sort(this.sortPeopleByInclusionScore)
       .map((person) => this.createPersonRow(person));
   }
 
-  private sortPeopleByTempScore(a: Person, b: Person) {
-    if (a.tempScore === b.tempScore) {
+  private sortPeopleByInclusionScore(a: Person, b: Person) {
+    if (a.inclusionScore === b.inclusionScore) {
       return a.created > b.created ? -1 : 1;
     } else {
-      return a.tempScore > b.tempScore ? -1 : 1;
+      return a.inclusionScore > b.inclusionScore ? -1 : 1;
     }
   }
 
@@ -597,7 +588,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       vulnerabilityAssessmentCompleted: person.appliedDate
         ? formatDate(person.appliedDate, this.dateFormat, this.locale)
         : null,
-      tempScore: person.tempScore,
+      inclusionScore: person.inclusionScore,
       selectedForValidation: person.selectedForValidationDate
         ? formatDate(
             person.selectedForValidationDate,
@@ -608,7 +599,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       vulnerabilityAssessmentValidated: person.validationDate
         ? formatDate(person.validationDate, this.dateFormat, this.locale)
         : null,
-      finalScore: person.score,
       included: person.inclusionDate
         ? formatDate(person.inclusionDate, this.dateFormat, this.locale)
         : null,

@@ -15,7 +15,6 @@
   },
   "notification": {
     "close": "close",
-    "credential": "Digital ID received",
     "inclusion": "Inclusion status received"
   },
   "password-toggle": {
@@ -36,13 +35,6 @@
       "create-password-explanation": "Create a password of at least {{minimalLength}} numbers:",
       "create-username": "Enter your full name:",
       "introduction": "To create an account you need to complete the following steps.",
-      "local": {
-        "conclusion": "Great! You have created a Digital ID.",
-        "create-password-only": "Create a password",
-        "info-message-password": "[about passwords]",
-        "introduction": "To create a Digital ID you need to complete the following steps.",
-        "more-info-password": "About passwords"
-      },
       "password-too-short": "Please enter at least {{minimalLength}} characters.",
       "unequal-passwords": "The passwords you created are not the same. Please try again.",
       "username-not-unique": "The name you entered is not unique. Please try again.",
@@ -142,11 +134,6 @@
       "create-id": "Create account",
       "introduction": "To apply for this aid program, you need to have an account. Please create your account or use your existing account.",
       "login-id": "Use my account"
-    },
-    "store-credential": {
-      "done": "Your Digital ID has been activated by {{ngo}}.",
-      "received": "Your Digital ID is received on your device.",
-      "stored": "Your Digital ID is stored in your wallet."
     }
   },
   "q-and-a-set": {

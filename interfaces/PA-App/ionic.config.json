@@ -1,7 +1,5 @@
 {
   "name": "PA-App",
-  "integrations": {
-    "cordova": {}
-  },
+  "integrations": {},
   "type": "angular"
 }

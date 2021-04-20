@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { IonicStorageModule } from '@ionic/storage';
 import { PersonalComponentsModule } from '../personal-components/personal-components.module';
 import { SharedModule } from '../shared/shared.module';
 import { PersonalPage } from './personal.page';
@@ -14,7 +13,6 @@ import { PersonalPage } from './personal.page';
     CommonModule,
     FormsModule,
     RouterModule.forChild([{ path: '', component: PersonalPage }]),
-    IonicStorageModule.forRoot(),
     SharedModule,
     PersonalComponentsModule,
   ],

@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ImageCodeEntity } from './image-code.entity';
 import { ImageCodeController } from './image-code.controller';
 import { ImageCodeExportVouchersEntity } from './image-code-export-vouchers.entity';
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { ConnectionEntity } from '../../connection/connection.entity';
 
 @Module({
   imports: [

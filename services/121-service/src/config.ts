@@ -31,52 +31,12 @@ export const SWAGGER_CUSTOM_CSS = `
 // Configure Tykn-SSI-Services:
 // ---------------------------------------------------------------------------
 
-const tyknIMS = 'http://11.0.0.3:50001/api/';
-const orgIMS = 'http://11.0.0.4:50002/api/';
-const userIMS = 'http://11.0.0.5:50003/api/';
-
 export const URL_PA_ACCOUNTS_SERVICE_API =
   process.env.URL_PA_ACCOUNTS_SERVICE_API;
 
 export const API = {
-  schema: tyknIMS + 'schema',
-  credential: {
-    definition: orgIMS + 'credential/definition',
-    credoffer: orgIMS + 'credential/credoffer',
-    issue: orgIMS + 'credential/issue',
-  },
-  proof: {
-    verify: orgIMS + 'proof/verify',
-  },
-  fsp: [
-    {
-      payout: 'https://example.com/post',
-      name: 'Bank A',
-      id: 1,
-    },
-    {
-      payout: 'https://example.com/post',
-      name: 'Mobile Money Provider B',
-      id: 2,
-    },
-    {
-      payout: 'https://example.com/post',
-      name: 'FSP C - mixed attributes',
-      id: 3,
-    },
-    {
-      payout: 'https://example.com/post',
-      name: 'FSP D - no attributes',
-      id: 4,
-    },
-  ],
   paAccounts: {
-    getCredentialHandleProof:
-      URL_PA_ACCOUNTS_SERVICE_API + '/get-credential-handle-proof',
     deleteAccount: URL_PA_ACCOUNTS_SERVICE_API + '/user/get-wallet-and-delete',
-  },
-  userIMS: {
-    deleteWallet: userIMS + 'wallet/delete',
   },
 };
 

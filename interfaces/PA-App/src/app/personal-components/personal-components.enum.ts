@@ -13,5 +13,11 @@ export enum PersonalComponents {
   selectProgram = 'select-program',
   setNotificationNumber = 'set-notification-number',
   signupSignin = 'signup-signin',
-  storeCredential = 'store-credential',
 }
+
+// These sections are no longer available in the PA-app, but PA might have data for these in their ConversationHistory
+export const PersonalComponentsRemoved = [
+  'select-appointment',
+  'select-country',
+  'store-credential',
+];

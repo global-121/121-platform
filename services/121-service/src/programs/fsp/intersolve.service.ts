@@ -10,7 +10,7 @@ import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 import { ProgramEntity } from '../program/program.entity';
 import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
 import crypto from 'crypto';
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { ConnectionEntity } from '../../connection/connection.entity';
 import { ImageCodeService } from '../../notifications/imagecode/image-code.service';
 import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
 import {

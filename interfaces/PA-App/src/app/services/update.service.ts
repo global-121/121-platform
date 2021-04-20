@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import { interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -15,11 +14,8 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 export class UpdateService {
   public updateSpeedMs = 3000;
 
-  public credential: any;
-
   public pagesNav = {
     inclusion: 'tabs/personal',
-    credential: 'tabs/personal',
   };
 
   constructor(
@@ -27,59 +23,8 @@ export class UpdateService {
     public paData: PaDataService,
     public toastController: ToastController,
     public translate: TranslateService,
-    public storage: Storage,
     public router: Router,
   ) {}
-
-  checkCredential(programId: number, did: string) {
-    return new Promise((resolve) => {
-      const subscription = this.listenForCredential(programId, did).subscribe(
-        (isCredAvailable) => {
-          console.log('isCredAvailable', isCredAvailable);
-          if (isCredAvailable.message !== '') {
-            subscription.unsubscribe();
-            this.createUpdateToast(
-              'notification.credential',
-              this.pagesNav.credential,
-            );
-            resolve();
-          }
-        },
-      );
-    });
-  }
-
-  listenForCredential(programId: number, did: string) {
-    console.log('listenForCredential()', programId, did);
-    return interval(this.updateSpeedMs).pipe(
-      switchMap(() => this.programsService.getCredential(did)),
-    );
-  }
-
-  checkReadyStatus(programId: number, did: string) {
-    return new Promise((resolve) => {
-      const subscription = this.listenForReadyStatus(programId, did).subscribe(
-        (isReadyStatusAvailable) => {
-          console.log('isReadyStatusAvailable', isReadyStatusAvailable);
-          if (isReadyStatusAvailable) {
-            subscription.unsubscribe();
-            this.createUpdateToast(
-              'notification.credential',
-              this.pagesNav.credential,
-            );
-            resolve();
-          }
-        },
-      );
-    });
-  }
-
-  listenForReadyStatus(programId: number, did: string) {
-    console.log('listenForReadyStatus()', programId, did);
-    return interval(this.updateSpeedMs).pipe(
-      switchMap(() => this.paData.retrieve(this.paData.type.status)),
-    );
-  }
 
   checkInclusionStatus(programId: number, did: string) {
     return new Promise((resolve) => {
@@ -101,7 +46,7 @@ export class UpdateService {
   }
 
   listenForInclusionStatus(programId: number, did: string) {
-    console.log('listenForInclusionStatus()', programId, did);
+    console.log('UpdateService: listenForInclusionStatus()', programId, did);
     return interval(this.updateSpeedMs).pipe(
       switchMap(() =>
         this.programsService.checkInclusionStatus(did, programId),

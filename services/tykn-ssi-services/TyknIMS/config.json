@@ -1,9 +1,0 @@
-{
-    "address": "11.0.0.3",
-    "port": 50001,
-    "wallet_name": "tykn-wallet",
-    "wallet_passphrase": "test-passphrase",
-    "wallet_path": "/tmp/.indy_client/wallet",
-    "steward_did": "",
-    "genesis_tx_path": "/docker_pool_transactions_genesis"
-}

@@ -30,21 +30,6 @@ See the related Angular-documentation: <https://v7.angular.io/guide/service-work
 
 To use it locally, run: `npm run debug:service-worker` instead of `npm start` (in each interfaces' specific folder).
 
-### Native environments
-
-#### Android
-
-When testing/debugging on Android and using the '`livereload`' functionality, it is required to add the following security exception in the app's `config.xml`, by adding the `<edit-config>`-block into the `<platform>`-block:
-
-```xml
-<platform name="android">
-  <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
-    <application android:usesCleartextTraffic="true" />
-  </edit-config>
-  <!-- ... -->
-</platform>
-```
-
 ### Specific requirements
 
 Every interface or app has their own requirements defined in their README file.
@@ -94,9 +79,7 @@ See their status on the [main README](../README.md#status).
 
 The appropriate tests will run automatically when relevant files are changed in a PR.
 
-To explicitly trigger a _native_ build of the code (for Android), make sure to name your PR branch with the prefix `native` or `android`.
-
-## Integration tests with cypress
+## Integration tests with Cypress
 
 First, it has to be made sure that latest packages (including cypress) is installed within the `node_modules` by running the `npm install` within each of interfaces folders.
 
@@ -123,46 +106,3 @@ Possible variables are available in `.env.example` files for each interface. Mak
     cp .env.example .env
 
 When creating a production build, they are automatically used and inserted into the build.
-
-### Building native apps
-
-To create 'native' versions of some of the interfaces, the following steps are required:  
-Run these commands from every app's own 'root'-folder.  
-(`<platform>` is `ios` or `android` or `browser`)  
-(`<type>` as `--prod` or `--debug`)
-
-- Confirm all requirements are met for the platform of choice:
-
-      npm run ionic -- cordova requirements <platform>
-
-- Generate assets for the platform of choice:
-
-      npm run ionic -- cordova resources <platform>
-
-- Create a build:
-
-      npm run ionic -- cordova build <platform> <type>
-
-### Sign a production build
-
-- Install `zipalign`
-  For Ubuntu:
-
-      sudo apt install zipalign
-
-- Get the unsigned `apk` from the Artifacts of the Azure-pipeline or by building it locally by:
-
-      npm run build:native -- --prod -- --release
-
-- Get the `my-release-key.keystore` from someone who has access to it and put it in the same folder as the `apk`
-
-- Sign the APK
-
-      jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.keystore app-release-unsigned.apk alias_name
-
-- Optimize the APK
-
-      zipalign -v 4 app-release-unsigned.apk  <insert-app-name>.apk
-
-- Submit the app to the Google Play Store.  
-  See: <https://ionicframework.com/docs/publishing/play-store#submitting-an-app-to-the-google-play-store>

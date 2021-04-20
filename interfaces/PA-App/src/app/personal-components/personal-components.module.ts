@@ -20,7 +20,6 @@ import { SelectLanguageComponent } from './select-language/select-language.compo
 import { SelectProgramComponent } from './select-program/select-program.component';
 import { SetNotificationNumberComponent } from './set-notification-number/set-notification-number.component';
 import { SignupSigninComponent } from './signup-signin/signup-signin.component';
-import { StoreCredentialComponent } from './store-credential/store-credential.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +37,6 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     SelectProgramComponent,
     SetNotificationNumberComponent,
     SignupSigninComponent,
-    StoreCredentialComponent,
     InfoPopupComponent,
   ],
   imports: [CommonModule, SharedModule, FormsModule, QRCodeModule],
@@ -57,7 +55,6 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     SelectProgramComponent,
     SetNotificationNumberComponent,
     SignupSigninComponent,
-    StoreCredentialComponent,
     InfoPopupComponent,
     QrScannerComponent,
   ],
@@ -76,7 +73,6 @@ import { StoreCredentialComponent } from './store-credential/store-credential.co
     SelectProgramComponent,
     SetNotificationNumberComponent,
     SignupSigninComponent,
-    StoreCredentialComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [ConversationService],

@@ -12,7 +12,7 @@ import { TransactionEntity } from '../program/transactions.entity';
 import { FspCallLogEntity } from './fsp-call-log.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { HttpModule } from '@nestjs/common/http';
-import { ConnectionEntity } from '../../sovrin/create-connection/connection.entity';
+import { ConnectionEntity } from '../../connection/connection.entity';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
 import { AfricasTalkingApiService } from './api/africas-talking.api.service';
 import { AfricasTalkingService } from './africas-talking.service';

@@ -1,4 +1,4 @@
-import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
+import { ConnectionEntity } from './../../connection/connection.entity';
 import { IntersolvePayoutStatus } from './../../programs/fsp/api/enum/intersolve-payout-status.enum';
 import { EXTERNAL_API } from '../../config';
 import { Injectable } from '@nestjs/common';

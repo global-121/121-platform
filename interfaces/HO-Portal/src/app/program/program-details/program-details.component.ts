@@ -18,8 +18,6 @@ export class ProgramDetailsComponent implements OnInit {
   public program: Program;
   public programProperties: { key: string; value: string }[];
 
-  private techFeatures = ['schemaId', 'credDefId', 'credOffer', 'proofRequest'];
-
   constructor(
     public modalController: ModalController,
     public translate: TranslateService,
@@ -39,14 +37,12 @@ export class ProgramDetailsComponent implements OnInit {
   private generateProgramProperties(
     program: Program,
   ): { key: string; value: string }[] {
-    return Object.keys(program)
-      .filter((key) => this.techFeatures.indexOf(key) === -1)
-      .map((key) => {
-        return {
-          key: this.translate.instant('page.program.program-details.' + key),
-          value: this.translatableString.get(program[key]),
-        };
-      });
+    return Object.keys(program).map((key) => {
+      return {
+        key: this.translate.instant('page.program.program-details.' + key),
+        value: this.translatableString.get(program[key]),
+      };
+    });
   }
 
   async openProgramJson() {

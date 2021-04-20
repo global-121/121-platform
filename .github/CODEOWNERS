@@ -13,7 +13,6 @@
 # --------
 /services/121-service/ @global-121/510/back-end
 /services/PA-account-service/ @global-121/510/back-end
-/services/tykn-ssi-services/ @global-121/tykn
 
 
 # Tools

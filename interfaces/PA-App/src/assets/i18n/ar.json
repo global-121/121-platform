@@ -15,7 +15,6 @@
   },
   "notification": {
     "close": "اغلاق",
-    "credential": "تم استلام الهوية الإلكترونية",
     "inclusion": "تم استلام حالة طلب الإنضمام"
   },
   "password-toggle": {
@@ -36,13 +35,6 @@
       "create-password-explanation": "اكتب كلمة مرور مكونة من  {{minimalLength}} ارقام على الأقل",
       "create-username": "ادخل اسمك الكامل:",
       "introduction": "لإنشاء حساب عليك استكمال الخطوات التالية.",
-      "local": {
-        "conclusion": "رائع! لقد قمت بإنشاء هوية إلكترونية.",
-        "create-password-only": "إنشاء كلمة مرور",
-        "info-message-password": "[حول كلمات المرور]",
-        "introduction": "لإنشاء هوية إلكترونية، عليك استكمال الخطوات التالية.",
-        "more-info-password": "حول كلمات المرور"
-      },
       "password-too-short": "نرجو ادخال  {{minimalLength}}  أحرف على الأقل",
       "unequal-passwords": "كلمات المرور المدخلة غير متطابقة، الرجاء إعادة المحاولة",
       "username-not-unique": "الإسم المدخل موجود مسبقاً، الرجاء إعادة المحاولة.",

@@ -7,7 +7,6 @@ import { Program } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { SovrinService } from 'src/app/services/sovrin.service';
 import { UpdateService } from 'src/app/services/update.service';
 import { PersonalComponent } from '../personal-component.class';
 import { PersonalComponents } from '../personal-components.enum';
@@ -24,11 +23,10 @@ export class HandleProofComponent extends PersonalComponent {
   public currentProgram: Program;
   private programId: number;
   private did: string;
-  private wallet: any;
 
   public hasNotificationNumberSet: boolean;
 
-  public inclusionStatus: string;
+  private inclusionStatus: string;
   public inclusionStatusPositive = false;
   public inclusionStatusNegative = false;
 
@@ -37,7 +35,6 @@ export class HandleProofComponent extends PersonalComponent {
     public paData: PaDataService,
     public updateService: UpdateService,
     public programService: ProgramsServiceApiService,
-    public sovrinService: SovrinService,
   ) {
     super();
 
@@ -47,7 +44,17 @@ export class HandleProofComponent extends PersonalComponent {
   async ngOnInit() {
     this.currentProgram = await this.paData.getCurrentProgram();
 
+    if (this.data) {
+      this.initHistory();
+      return;
+    }
+
     await this.initNew();
+  }
+
+  initHistory() {
+    this.hasNotificationNumberSet = this.data.hasNotificationNumberSet;
+    this.processStatus(this.data.inclusionStatus);
   }
 
   async initNew() {
@@ -57,20 +64,19 @@ export class HandleProofComponent extends PersonalComponent {
     this.handleProof();
   }
 
-  async checkValidationSkipped() {
+  private async checkValidationSkipped() {
     const inclusionStatus = await this.programService
       .checkInclusionStatus(this.did, this.programId)
       .toPromise();
 
-    return (
-      inclusionStatus === PaInclusionStates.included ||
-      inclusionStatus === PaInclusionStates.rejected
-    );
+    return [
+      PaInclusionStates.included,
+      PaInclusionStates.rejected,
+      PaInclusionStates.inclusionEnded,
+    ].includes(inclusionStatus);
   }
 
-  async handleProof() {
-    console.log('handleProof');
-
+  private async handleProof() {
     await this.gatherData();
 
     if (!this.currentProgram) {
@@ -79,7 +85,6 @@ export class HandleProofComponent extends PersonalComponent {
 
     let status: string;
     const validationSkipped = await this.checkValidationSkipped();
-    console.log('validationSkipped: ', validationSkipped);
 
     if (validationSkipped || !this.currentProgram.validation) {
       status = PaCredentialStatus.noValidation;
@@ -93,21 +98,6 @@ export class HandleProofComponent extends PersonalComponent {
       }
       if (!statusRetrieved) {
         // .. IF NO, THEN:
-        // Create proof
-        const proofRequest = await this.programService.getProofRequest(
-          this.programId,
-        );
-        const proof = await this.sovrinService.getProofFromWallet(
-          proofRequest,
-          this.wallet,
-        );
-
-        // Use proof
-        status = await this.programService.includeMe(
-          this.did,
-          this.programId,
-          proof.proof,
-        );
         this.paData.store(this.paData.type.status, status);
       } else {
         // .. IF YES, THEN CONTINUE
@@ -131,7 +121,10 @@ export class HandleProofComponent extends PersonalComponent {
   private async processStatus(inclusionStatus: string) {
     if (inclusionStatus === PaInclusionStates.included) {
       this.inclusionStatusPositive = true;
-    } else if (inclusionStatus === PaInclusionStates.rejected) {
+    } else if (
+      inclusionStatus === PaInclusionStates.rejected ||
+      inclusionStatus === PaInclusionStates.inclusionEnded
+    ) {
       this.inclusionStatusNegative = true;
     }
   }
@@ -139,7 +132,6 @@ export class HandleProofComponent extends PersonalComponent {
   private async gatherData() {
     this.programId = await this.paData.getCurrentProgramId();
     this.did = await this.paData.retrieve(this.paData.type.did);
-    this.wallet = await this.paData.retrieve(this.paData.type.wallet);
   }
 
   async handleInclusionStatus(did: string, programId: number) {

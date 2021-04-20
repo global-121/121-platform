@@ -84,7 +84,7 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   }
 
   getNextSection() {
-    return PersonalComponents.storeCredential;
+    return PersonalComponents.handleProof;
   }
 
   cancel() {

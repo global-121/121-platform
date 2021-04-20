@@ -4,12 +4,9 @@ import { ImageCodeService } from './../../notifications/imagecode/image-code.ser
 import { AfricasTalkingService } from './../fsp/africas-talking.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
-import { CredentialEntity } from './../../sovrin/credential/credential.entity';
-import { CredentialAttributesEntity } from './../../sovrin/credential/credential-attributes.entity';
-import { ProofService } from './../../sovrin/proof/proof.service';
-import { CredentialService } from './../../sovrin/credential/credential.service';
-import { SchemaService } from './../../sovrin/schema/schema.service';
-import { ConnectionEntity } from './../../sovrin/create-connection/connection.entity';
+import { ValidationDataAttributesEntity } from './../../connection/validation-data/validation-attributes.entity';
+import { ValidationDataService } from './../../connection/validation-data/validation-data.service';
+import { ConnectionEntity } from './../../connection/connection.entity';
 import { repositoryMockFactory } from './../../mock/repositoryMock.factory';
 import { CustomCriterium } from './custom-criterium.entity';
 import { ProgramService } from './program.service';
@@ -17,8 +14,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProgramEntity } from './program.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
-import { SchemaEntity } from '../../sovrin/schema/schema.entity';
-import { CredentialRequestEntity } from '../../sovrin/credential/credential-request.entity';
 import { HttpModule } from '@nestjs/common';
 import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
@@ -50,11 +45,9 @@ describe('Program service', (): void => {
         imports: [HttpModule],
         providers: [
           ProgramService,
-          SchemaService,
-          CredentialService,
+          ValidationDataService,
           VoiceService,
           SmsService,
-          ProofService,
           FspService,
           AfricasTalkingService,
           AfricasTalkingApiService,
@@ -82,19 +75,7 @@ describe('Program service', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
-            provide: getRepositoryToken(SchemaEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(CredentialAttributesEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(CredentialRequestEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(CredentialEntity),
+            provide: getRepositoryToken(ValidationDataAttributesEntity),
             useFactory: repositoryMockFactory,
           },
           {

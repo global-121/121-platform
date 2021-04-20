@@ -6,7 +6,7 @@ import { IntersolveBarcodeEntity } from '../programs/fsp/intersolve-barcode.enti
 import { ProgramEntity } from '../programs/program/program.entity';
 import { WhatsappModule } from '../notifications/whatsapp/whatsapp.module';
 import { IntersolveRequestEntity } from '../programs/fsp/intersolve-request.entity';
-import { ConnectionEntity } from '../sovrin/create-connection/connection.entity';
+import { ConnectionEntity } from '../connection/connection.entity';
 
 @Module({
   imports: [
