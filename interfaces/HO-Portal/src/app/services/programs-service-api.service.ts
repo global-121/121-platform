@@ -121,11 +121,16 @@ export class ProgramsServiceApiService {
       )
       .pipe(
         map((response) => {
-          return response.map((element) => {
-            // Remap `installment`-property to `id`:
-            element.id = element.installment;
-            return element;
-          });
+          return response
+            .map((element) => {
+              // Remap `installment`-property to `id`:
+              element.id = element.installment;
+              return element;
+            })
+            .sort((a: InstallmentData, b: InstallmentData) => {
+              // Sort by installment-id (as the back-end doesn't do that)
+              return a.id - b.id;
+            });
         }),
       )
       .toPromise();
