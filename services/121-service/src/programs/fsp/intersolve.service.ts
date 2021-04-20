@@ -375,7 +375,7 @@ export class IntersolveService {
       );
     }
 
-    const voucher = connection.images.find(
+    const voucher = connection.images.reverse().find(
       image => image.barcode.installment === installment,
     );
     if (!voucher) {
