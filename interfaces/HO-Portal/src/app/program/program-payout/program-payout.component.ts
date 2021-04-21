@@ -161,8 +161,10 @@ export class ProgramPayoutComponent implements OnInit {
     const nextPaymentIndex = this.installments.findIndex(
       (installment) => installment.statusOpen === true,
     );
-    this.installments[nextPaymentIndex].isExportAvailable =
-      this.totalIncluded > 0;
+    if (nextPaymentIndex > -1) {
+      this.installments[nextPaymentIndex].isExportAvailable =
+        this.totalIncluded > 0;
+    }
   }
 
   public changeExportInstallment() {
