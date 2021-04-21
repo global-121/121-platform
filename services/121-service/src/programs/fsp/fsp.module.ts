@@ -21,10 +21,12 @@ import { ImageCodeService } from '../../notifications/imagecode/image-code.servi
 import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
 import { FspAttributeEntity } from './fsp-attribute.entity';
+import { UserModule } from '../../user/user.module';
 
 @Module({
   imports: [
     HttpModule,
+    UserModule,
     WhatsappModule,
     TypeOrmModule.forFeature([
       ProgramEntity,
