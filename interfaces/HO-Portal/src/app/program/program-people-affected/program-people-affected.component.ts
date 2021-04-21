@@ -46,7 +46,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private paymentColumnTemplate: any = {};
   public paymentColumns: any[] = [];
   private pastTransactions: Transaction[] = [];
-  private lastInstallment: number;
+  private lastInstallmentId: number;
 
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
@@ -407,7 +407,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.loadColumns();
 
-    this.lastInstallment = await this.programsService.getLastInstallmentId(
+    this.lastInstallmentId = await this.programsService.getLastInstallmentId(
       this.programId,
     );
     const firstInstallmentToShow = 1;
@@ -502,7 +502,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const nrOfInstallments = this.program.distributionDuration;
 
     const lastInstallmentToShow = Math.min(
-      this.lastInstallment + 1,
+      this.lastInstallmentId + 1,
       nrOfInstallments,
     );
 
