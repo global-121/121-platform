@@ -7,6 +7,7 @@ import {
   Res,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FspService } from './fsp.service';
@@ -31,7 +32,9 @@ import { UserRole } from '../../user-role.enum';
 import { Roles } from '../../roles.decorator';
 import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
 import { FspAttributeEntity } from './fsp-attribute.entity';
+import { RolesGuard } from '../../roles.guard';
 
+@UseGuards(RolesGuard)
 @ApiUseTags('fsp')
 @Controller('fsp')
 export class FspController {
@@ -86,6 +89,7 @@ export class FspController {
     );
   }
 
+  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.View)
   @ApiOperation({
     title: 'Export Intersolve vouchers',
   })
@@ -107,6 +111,7 @@ export class FspController {
     bufferStream.pipe(response);
   }
 
+  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.View)
   @ApiOperation({
     title: 'Get Intersolve voucher balance',
   })

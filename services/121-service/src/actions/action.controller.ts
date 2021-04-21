@@ -10,6 +10,8 @@ import {
 import { RolesGuard } from '../roles.guard';
 import { ActionDto } from './dto/action.dto';
 import { ActionEntity } from './action.entity';
+import { UserRole } from '../user-role.enum';
+import { Roles } from '../roles.decorator';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -21,6 +23,7 @@ export class ActionController {
     this.actionService = actionService;
   }
 
+  @Roles(UserRole.RunProgram, UserRole.PersonalData, UserRole.View)
   @ApiOperation({ title: 'Get latest action of type ' })
   @ApiResponse({
     status: 200,
@@ -36,6 +39,7 @@ export class ActionController {
     );
   }
 
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Save action by id' })
   @ApiResponse({ status: 200, description: 'Action saved' })
   @Post('save')
