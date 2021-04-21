@@ -33,7 +33,8 @@ export class ProgramPayoutComponent implements OnInit {
   public exportInstallmentId = 0;
   public exportInstallmentAvailable: boolean;
 
-  private nrOfPastInstallments: number;
+  private lastInstallmentId: number;
+  public nextInstallmentIdLabel: string;
   private totalIncluded: number;
 
   constructor(
@@ -137,7 +138,13 @@ export class ProgramPayoutComponent implements OnInit {
     const pastInstallments = await this.programsService.getPastInstallments(
       this.programId,
     );
-    this.nrOfPastInstallments = pastInstallments.length;
+    this.lastInstallmentId = await this.programsService.getLastInstallmentId(
+      this.programId,
+    );
+    this.nextInstallmentIdLabel =
+      this.lastInstallmentId < this.program.distributionDuration
+        ? '#' + (this.lastInstallmentId + 1)
+        : '-';
 
     this.fillInstallmentHistory(pastInstallments);
 
@@ -154,8 +161,10 @@ export class ProgramPayoutComponent implements OnInit {
     const nextPaymentIndex = this.installments.findIndex(
       (installment) => installment.statusOpen === true,
     );
-    this.installments[nextPaymentIndex].isExportAvailable =
-      this.totalIncluded > 0;
+    if (nextPaymentIndex > -1) {
+      this.installments[nextPaymentIndex].isExportAvailable =
+        this.totalIncluded > 0;
+    }
   }
 
   public changeExportInstallment() {
@@ -182,7 +191,7 @@ export class ProgramPayoutComponent implements OnInit {
   private checkPhaseReady() {
     const isReady =
       this.program.state !== ProgramPhase.payment ||
-      this.nrOfPastInstallments === this.program.distributionDuration;
+      this.lastInstallmentId === this.program.distributionDuration;
 
     this.isCompleted.emit(isReady);
   }

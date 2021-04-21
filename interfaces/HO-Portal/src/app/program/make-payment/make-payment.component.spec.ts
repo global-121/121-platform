@@ -28,6 +28,7 @@ describe('MakePaymentComponent', () => {
       id: 2,
     },
   ];
+  const mockLastInstallmentId = 2;
 
   let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
 
@@ -46,6 +47,9 @@ describe('MakePaymentComponent', () => {
     mockProgramsApi.getTotalIncluded.and.returnValue(new Promise((r) => r(2)));
     mockProgramsApi.getPastInstallments.and.returnValue(
       new Promise((r) => r(mockPastInstallments)),
+    );
+    mockProgramsApi.getLastInstallmentId.and.returnValue(
+      new Promise((r) => r(mockLastInstallmentId)),
     );
 
     fixture = TestBed.createComponent(MakePaymentComponent);
@@ -82,7 +86,7 @@ describe('MakePaymentComponent', () => {
 
     await fixture.detectChanges();
 
-    await expect(mockProgramsApi.getPastInstallments).toHaveBeenCalledTimes(1);
+    await expect(mockProgramsApi.getLastInstallmentId).toHaveBeenCalledTimes(1);
     expect(component.isEnabled).toBeFalse();
   });
 });

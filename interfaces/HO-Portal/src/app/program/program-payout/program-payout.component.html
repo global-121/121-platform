@@ -45,7 +45,7 @@
 </div>
 
 <div *ngIf="canMakePayment" class="ion-margin-vertical">
-  <h3>{{ 'page.program.program-payout.make-payment.make-payment'|translate }}</h3>
+  <h3>{{ 'page.program.program-payout.make-payment.make-payment'|translate }}: {{nextInstallmentIdLabel}}</h3>
   <app-make-payment
     [programId]="programId"
     [program]="program"

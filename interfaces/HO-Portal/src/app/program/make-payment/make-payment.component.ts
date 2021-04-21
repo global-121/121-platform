@@ -2,7 +2,6 @@ import { formatCurrency } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { InstallmentData } from 'src/app/models/installment.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
@@ -23,7 +22,7 @@ export class MakePaymentComponent implements OnInit {
   public isInProgress: boolean;
 
   public totalIncluded: number;
-  public pastPayments: InstallmentData[];
+  public lastInstallmentId: number;
 
   public amountInput: number;
   public totalAmountMessage: string;
@@ -42,7 +41,7 @@ export class MakePaymentComponent implements OnInit {
     this.totalIncluded = await this.programsService.getTotalIncluded(
       this.programId,
     );
-    this.pastPayments = await this.programsService.getPastInstallments(
+    this.lastInstallmentId = await this.programsService.getLastInstallmentId(
       this.programId,
     );
 
@@ -53,14 +52,15 @@ export class MakePaymentComponent implements OnInit {
   private checkIsEnabled(): boolean {
     this.isEnabled =
       this.totalIncluded > 0 &&
-      this.pastPayments.length < this.program.distributionDuration;
+      this.lastInstallmentId < this.program.distributionDuration;
     return this.isEnabled;
   }
 
   private async getNextInstallmentId(): Promise<number> {
     let previousId = 0;
-    if (this.pastPayments && this.pastPayments.length > 0) {
-      previousId = this.pastPayments[this.pastPayments.length - 1].id;
+
+    if (this.lastInstallmentId > 0) {
+      previousId = this.lastInstallmentId;
     }
 
     return previousId + 1;
