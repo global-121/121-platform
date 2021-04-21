@@ -33,7 +33,7 @@ export class ProgramPayoutComponent implements OnInit {
   public exportInstallmentId = 0;
   public exportInstallmentAvailable: boolean;
 
-  private nrOfPastInstallments: number;
+  private lastInstallmentId: number;
   private totalIncluded: number;
 
   constructor(
@@ -137,7 +137,9 @@ export class ProgramPayoutComponent implements OnInit {
     const pastInstallments = await this.programsService.getPastInstallments(
       this.programId,
     );
-    this.nrOfPastInstallments = pastInstallments.length;
+    this.lastInstallmentId = await this.programsService.getLastInstallmentId(
+      this.programId,
+    );
 
     this.fillInstallmentHistory(pastInstallments);
 
@@ -182,7 +184,7 @@ export class ProgramPayoutComponent implements OnInit {
   private checkPhaseReady() {
     const isReady =
       this.program.state !== ProgramPhase.payment ||
-      this.nrOfPastInstallments === this.program.distributionDuration;
+      this.lastInstallmentId === this.program.distributionDuration;
 
     this.isCompleted.emit(isReady);
   }

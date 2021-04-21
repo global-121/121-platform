@@ -407,9 +407,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.loadColumns();
 
-    this.lastInstallment = (
-      await this.programsService.getPastInstallments(this.programId)
-    ).length;
+    this.lastInstallment = await this.programsService.getLastInstallmentId(
+      this.programId,
+    );
     const firstInstallmentToShow = 1;
 
     if (this.thisPhase === ProgramPhase.payment) {
