@@ -124,6 +124,7 @@ export class BulkImportComponent implements OnInit {
 
   private async actionResult(resultMessage: string, refresh: boolean = false) {
     const alert = await this.alertController.create({
+      backdropDismiss: false,
       message: resultMessage,
       buttons: [
         {
