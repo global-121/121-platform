@@ -277,7 +277,8 @@ export class IntersolveService {
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     try {
       const whatsappPayment = multiplePeople
-        ? program.notifications[language]['whatsappPaymentMultiple']
+        ? program.notifications[language]['whatsappPaymentMultiple'] ||
+          program.notifications[language]['whatsappPayment']
         : program.notifications[language]['whatsappPayment'];
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,

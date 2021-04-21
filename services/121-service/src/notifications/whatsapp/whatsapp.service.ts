@@ -122,7 +122,7 @@ export class WhatsappService {
 
     if (!connectionsWithPhoneNumber.length) {
       console.log(
-        'Incomming whatsapp from non registered user phone last numbers: ',
+        'Incoming whatsapp from non registered user phone last numbers: ',
         phoneNumber.substr(-5),
       );
     }
@@ -176,7 +176,8 @@ export class WhatsappService {
         const message = firstVoucherSent
           ? ''
           : connectionsWithOpenVouchers.length > 1
-          ? program.notifications[language]['whatsappVoucherMultiple']
+          ? program.notifications[language]['whatsappVoucherMultiple'] ||
+            program.notifications[language]['whatsappVoucher']
           : program.notifications[language]['whatsappVoucher'];
         await this.sendWhatsapp(
           message,
