@@ -5,7 +5,7 @@
 ---
 
 [![License](https://img.shields.io/github/license/global-121/121-platform?style=flat-square)](LICENSE)
-[![License](https://img.shields.io/github/v/release/global-121/121-platform?style=flat-square)](https://github.com/global-121/121-platform/releases)
+[![Releases](https://img.shields.io/github/v/release/global-121/121-platform?style=flat-square)](https://github.com/global-121/121-platform/releases)
 
 ---
 
@@ -161,11 +161,11 @@ To start an individual interface in development mode:
 
 The 4 individual Angular applications, when started will be available via:
 
-|              | URL                     | or run:            |
-| ------------ | ----------------------- | ------------------ |
-| PA-App       | <http://localhost:8008> | `npm run open:pa`  |
-| AW-App       | <http://localhost:8080> | `npm run open:aw`  |
-| HO-Portal    | <http://localhost:8888> | `npm run open:ho`  |
+|           | URL                     | or run:           |
+| --------- | ----------------------- | ----------------- |
+| PA-App    | <http://localhost:8008> | `npm run open:pa` |
+| AW-App    | <http://localhost:8080> | `npm run open:aw` |
+| HO-Portal | <http://localhost:8888> | `npm run open:ho` |
 
 From hereon, you can start making changes to the UI and observe how the components are interconnected.
 

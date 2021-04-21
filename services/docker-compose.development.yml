@@ -12,11 +12,13 @@ version: '3.7'
 
 services:
   121-service:
+    # See: https://www.docker.com/blog/user-guided-caching-in-docker-for-mac/
     # For use on macOS: to speed up the start-up process, uncomment:
     # volumes: ["./121-service:/home/node/app:cached"]
     command: "npm run start:dev"
 
   PA-accounts-service:
+    # See: https://www.docker.com/blog/user-guided-caching-in-docker-for-mac/
     # For use on macOS: to speed up the start-up process, uncomment:
     # volumes: ["./PA-accounts-service:/home/node/app:cached"]
     command: "npm run start:dev"
