@@ -17,8 +17,8 @@ In this file we document "how to do X", manually. As not everything is possible 
    - New WhatsApp phone(s)-number (if need to replace)
    - New SMS phone-number (if need to replace)
 3. **121-dev-team**:
-   1. Find the `connection` of the PA that we want to update, using `Find DID of PA in database based on name and/or phone number` scenario below.
-   2. Use the found connection `did` to update the phone-numbers.
+   1. Find the `connection` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
+   2. Use the found connection `referenceId` to update the phone-numbers.
       - Use: [`/connection/phone/overwrite`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_phone_overwrite)  
         To store the new SMS phone-number. (Make sure to ONLY include the numbers, no whitespace or `+`)
       - Use: [`/connection/custom-data/overwrite`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_custom_data_overwrite)  
@@ -35,21 +35,21 @@ In this file we document "how to do X", manually. As not everything is possible 
    - New FSP: (`Intersolve-whatsapp` or `Intersolve-no-whatsapp`)
    - New WhatsApp phonenumber (if switching to `Intersolve-whatsapp`)
 3. **121-dev-team**:
-   1. Find the `connection` of the PA that we want to update, using `Find DID of PA in database based on name and/or phone number` scenario below.
-   2. Update FSP: Use the found connection `did` to update the Financial Service Provider.
+   1. Find the `connection` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
+   2. Update FSP: Use the found connection `referenceId` to update the Financial Service Provider.
       - Use: [`/connection/update-chosen-fsp`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_update_chosen_fsp)
-      - Fill in the found `did`
+      - Fill in the found `referenceId`
       - Choose the right new FSP name. It must be one out of the provided list.
       - Fill in the required attributes. If the new FSP requires more attributes than the example-provided `whatsappPhoneNumber`, you can manually change this.
       - When you use the endpoint, it will tell you anyway if you are missing attributes and if so, which.
 
 ---
 
-## Find DID of PA in database based on name and/or phone number
+## Find Reference ID of PA in database based on name and/or phone number
 
 1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`personal-data`"-role
 2. Find the `connection` of the PA that we want to update.  
-   Use the endpoint: [`/connection/get-did/name-phone`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_get_did_name_phone)  
+   Use the endpoint: [`/connection/get-connection/name-phone`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_get_connection_name_phone)  
    Where you can optionally fill in `name` and/or old `phoneNumber` to search for.
 
    This will return all connections that match _at least one_ of the parameters.

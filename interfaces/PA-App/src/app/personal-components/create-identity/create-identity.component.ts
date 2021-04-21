@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { createRandomString } from 'src/app/helpers/createRandomString';
 import {
   LoggingEvent,
   LoggingEventCategory,
@@ -10,6 +9,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import * as uuid from 'uuid';
 
 @Component({
   selector: 'app-create-identity',
@@ -155,13 +155,12 @@ export class CreateIdentityComponent extends PersonalComponent {
   }
 
   async createConnection() {
-    // Temporatily still create random DID
-    const did = 'did:sov:' + createRandomString(22);
+    const referenceId = uuid.v4();
 
-    this.programsServiceApiService.createConnection(did);
+    this.programsServiceApiService.createConnection(referenceId);
 
-    this.paData.store(this.paData.type.did, did);
-    this.paData.setDid(did);
+    this.paData.store(this.paData.type.referenceId, referenceId);
+    this.paData.setReferenceId(referenceId);
   }
 
   getNextSection() {

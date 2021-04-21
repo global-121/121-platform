@@ -22,10 +22,10 @@
     {{ 'validation.scan-qr.error'|translate }}
   </dialogue-turn>
 
-  <dialogue-turn *ngIf="unknownDidCombination"
-                 [isSpoken]="unknownDidCombination"
+  <dialogue-turn *ngIf="unknownReferenceIdCombination"
+                 [isSpoken]="unknownReferenceIdCombination"
   >
-      {{ 'validation.scan-qr.unknownDidCombination'|translate }}
+      {{ 'validation.scan-qr.unknownReferenceIdCombination'|translate }}
   </dialogue-turn>
   <dialogue-turn *ngIf="paDataResult"
                  [isSpoken]="paDataResult"

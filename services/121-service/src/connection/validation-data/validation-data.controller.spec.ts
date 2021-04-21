@@ -5,7 +5,7 @@ import { ValidationDataService } from './validation-data.service';
 import { RolesGuard } from '../../roles.guard';
 
 const cred = {
-  did: 'did:sov:exampleExampleExample',
+  referenceId: '910c50be-f131-4b53-b06b-6506a40a2734',
   programId: 1,
   attributes: [],
   validationDataJson: JSON.parse('{ "encrypted" :"example" }'),

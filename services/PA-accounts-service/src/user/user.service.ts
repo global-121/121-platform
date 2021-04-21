@@ -1,4 +1,4 @@
-import { DidDto } from './dto/did.dto';
+import { ReferenceIdDto } from './dto/reference-id.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository } from 'typeorm';
@@ -74,9 +74,12 @@ export class UserService {
     }
   }
 
-  public async setDid(id: number, didDto: DidDto): Promise<void> {
+  public async setReferenceId(
+    id: number,
+    referenceIdDto: ReferenceIdDto,
+  ): Promise<void> {
     let user = await this.userRepository.findOne(id);
-    user.did = didDto.did;
+    user.referenceId = referenceIdDto.referenceId;
     await this.userRepository.save(user);
   }
 
@@ -115,8 +118,10 @@ export class UserService {
     await this.userRepository.delete(user.id);
   }
 
-  public async getWalletAndDeleteAccount(did: string): Promise<any> {
-    const user = await this.userRepository.findOne({ where: { did: did } });
+  public async getWalletAndDeleteAccount(referenceId: string): Promise<any> {
+    const user = await this.userRepository.findOne({
+      where: { referenceId: referenceId },
+    });
     if (!user) {
       const errors = 'User not found or already deleted';
       throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);

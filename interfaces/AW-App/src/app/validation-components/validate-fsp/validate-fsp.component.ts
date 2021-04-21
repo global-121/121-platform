@@ -25,7 +25,7 @@ import { ValidationComponent } from '../validation-components.interface';
   styleUrls: ['./validate-fsp.component.scss'],
 })
 export class ValidateFspComponent implements ValidationComponent {
-  public did: string;
+  public referenceId: string;
   public programId: number;
 
   public questions: Question[];
@@ -50,7 +50,7 @@ export class ValidateFspComponent implements ValidationComponent {
 
   async ngOnInit() {
     const paData = await this.getPaData();
-    this.did = paData[0].did;
+    this.referenceId = paData[0].referenceId;
     this.programId = paData[0].programId;
 
     const attributesAnswers = await this.findFspAnswers();
@@ -76,15 +76,18 @@ export class ValidateFspComponent implements ValidationComponent {
   }
 
   private async findFspAnswers(): Promise<any> {
-    let fspAnswers = await this.findFspAnswersOffline(this.did);
+    let fspAnswers = await this.findFspAnswersOffline(this.referenceId);
     if (!fspAnswers) {
-      fspAnswers = await this.findFspAnswersOnline(this.did, this.programId);
+      fspAnswers = await this.findFspAnswersOnline(
+        this.referenceId,
+        this.programId,
+      );
     }
     console.log('fspAnswers: ', fspAnswers);
     return fspAnswers;
   }
 
-  private async findFspAnswersOffline(did: string) {
+  private async findFspAnswersOffline(referenceId: string) {
     console.log('findFspAnswersOffline()');
     const offlineData = await this.storage.get(
       IonicStorageTypes.validationFspData,
@@ -93,16 +96,16 @@ export class ValidateFspComponent implements ValidationComponent {
       return offlineData;
     }
     for (const fspPaData of offlineData) {
-      if (fspPaData.did === did) {
+      if (fspPaData.referenceId === referenceId) {
         return fspPaData;
       }
     }
   }
 
-  private async findFspAnswersOnline(did: string, programId: number) {
+  private async findFspAnswersOnline(referenceId: string, programId: number) {
     try {
       const response = await this.programsService.getFspAttributesAsnwers(
-        did,
+        referenceId,
         programId,
       );
       if (response.length === 0) {
@@ -161,7 +164,7 @@ export class ValidateFspComponent implements ValidationComponent {
       Object.values(this.customAttributeAnswers),
       (answer: Answer) =>
         fspAnswers.push({
-          did: this.did,
+          referenceId: this.referenceId,
           code: answer.code,
           value: answer.value,
         }),
@@ -198,13 +201,13 @@ export class ValidateFspComponent implements ValidationComponent {
     }
     // If credential was already stored update object else create new object
     const currentCredentialIndex = storedCredentials.findIndex(
-      (obj) => obj.did === this.did,
+      (obj) => obj.referenceId === this.referenceId,
     );
     if (currentCredentialIndex || currentCredentialIndex === 0) {
       storedCredentials[currentCredentialIndex].fspanswers = fspanswers;
     } else {
       const validatedFspData = {
-        did: this.did,
+        referenceId: this.referenceId,
         programId: this.programId,
         fspanswers,
       };

@@ -73,9 +73,11 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   public async submitMonitoringAnswer() {
     this.monitoringSubmitted = true;
 
-    const did = await this.paData.retrieve(this.paData.type.did);
+    const referenceId = await this.paData.retrieve(
+      this.paData.type.referenceId,
+    );
     this.programsService.postConnectionCustomAttribute(
-      did,
+      referenceId,
       'monitoringAnswer',
       this.monitoringChoice,
     );

@@ -111,7 +111,7 @@ export class IntersolveService {
     const voucherInfoArray = [];
     for await (let paPaymentData of paymentInfo.paPaymentDataList) {
       const voucherResult = new PaTransactionResultDto();
-      voucherResult.did = paPaymentData.did;
+      voucherResult.referenceId = paPaymentData.referenceId;
 
       const intersolveRefPos = this.getIntersolveRefPos();
       const voucherInfo = await this.issueVoucher(amount, intersolveRefPos);
@@ -199,7 +199,7 @@ export class IntersolveService {
 
     await this.imageCodeService.createBarcodeExportVouchers(
       barcodeData,
-      paPaymentData.did,
+      paPaymentData.referenceId,
     );
   }
 
@@ -272,7 +272,7 @@ export class IntersolveService {
 
     // Get language of one (first) PA, as you need one language
     const language = await this.getLanguage(
-      paymentInfo.paPaymentDataList[0].did,
+      paymentInfo.paPaymentDataList[0].referenceId,
     );
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     try {
@@ -296,12 +296,12 @@ export class IntersolveService {
     return result;
   }
 
-  private async getLanguage(did): Promise<string> {
+  private async getLanguage(referenceId: string): Promise<string> {
     // Also if multiple PA's get the language of one (the first) PA, as you have to choose one..
     return (
       (
         await this.connectionRepository.findOne({
-          where: { did: did, preferredLanguage: Not(IsNull()) },
+          where: { referenceId: referenceId, preferredLanguage: Not(IsNull()) },
         })
       )?.preferredLanguage || 'en'
     );
@@ -358,20 +358,26 @@ export class IntersolveService {
     return this.intersolveBarcodeRepository.save(barcodeData);
   }
 
-  public async exportVouchers(did: string, installment: number): Promise<any> {
-    const voucher = await this.getVoucher(did, installment);
+  public async exportVouchers(
+    referenceId: string,
+    installment: number,
+  ): Promise<any> {
+    const voucher = await this.getVoucher(referenceId, installment);
 
     return voucher.image;
   }
 
-  private async getVoucher(did: string, installment: number): Promise<any> {
+  private async getVoucher(
+    referenceId: string,
+    installment: number,
+  ): Promise<any> {
     const connection = await this.connectionRepository.findOne({
-      where: { did: did },
+      where: { referenceId: referenceId },
       relations: ['images', 'images.barcode'],
     });
     if (!connection) {
       throw new HttpException(
-        'PA with this DID not found',
+        'PA with this referenceId not found',
         HttpStatus.NOT_FOUND,
       );
     }
@@ -429,10 +435,10 @@ export class IntersolveService {
   }
 
   public async getVoucherBalance(
-    did: string,
+    referenceId: string,
     installment: number,
   ): Promise<number> {
-    const voucher = await this.getVoucher(did, installment);
+    const voucher = await this.getVoucher(referenceId, installment);
     return await this.getBalance(voucher.barcode);
   }
 

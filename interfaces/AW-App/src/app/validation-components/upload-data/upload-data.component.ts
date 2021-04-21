@@ -42,20 +42,20 @@ export class UploadDataComponent implements ValidationComponent {
           break;
         }
         await this.removeLocalStorageData(
-          credential.did,
+          credential.referenceId,
           IonicStorageTypes.credentials,
         );
         await this.removeLocalStorageData(
-          credential.did,
+          credential.referenceId,
           IonicStorageTypes.validationProgramData,
         );
         await this.removeLocalStorageData(
-          credential.did,
+          credential.referenceId,
           IonicStorageTypes.validationFspData,
         );
         await this.removeLocalStorageData(
-          credential.did,
-          IonicStorageTypes.qrDidMapping,
+          credential.referenceId,
+          IonicStorageTypes.qrConnectionMapping,
         );
       }
       this.uploadReady = true;
@@ -69,13 +69,15 @@ export class UploadDataComponent implements ValidationComponent {
     if (credential.attributes) {
       await this.programsService
         .issueCredential(
-          credential.did,
+          credential.referenceId,
           credential.programId,
           credential.attributes,
         )
         .then(
           async () => {
-            console.log('Upload credential succes for : ' + credential.did);
+            console.log(
+              'Upload credential succes for : ' + credential.referenceId,
+            );
           },
           () => {
             this.uploadAborted = true;
@@ -89,12 +91,15 @@ export class UploadDataComponent implements ValidationComponent {
       for (const answer of credential.fspanswers) {
         try {
           await this.programsService.postConnectionCustomAttribute(
-            answer.did,
+            answer.referenceId,
             answer.code,
             answer.value,
           );
           console.log(
-            'Upload fsp succes for : ' + credential.did + ' for ' + answer.code,
+            'Upload fsp succes for : ' +
+              credential.referenceId +
+              ' for ' +
+              answer.code,
           );
         } catch (error) {
           this.uploadAborted = true;
@@ -105,12 +110,12 @@ export class UploadDataComponent implements ValidationComponent {
   }
 
   public async removeLocalStorageData(
-    did: string,
+    referenceId: string,
     type: IonicStorageTypes,
   ): Promise<void> {
     let data = await this.storage.get(type);
     if (data) {
-      data = data.filter((item) => item.did !== did);
+      data = data.filter((item) => item.referenceId !== referenceId);
       await this.storage.set(type, data);
     }
   }

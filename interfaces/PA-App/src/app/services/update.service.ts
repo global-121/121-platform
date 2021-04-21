@@ -26,11 +26,11 @@ export class UpdateService {
     public router: Router,
   ) {}
 
-  checkInclusionStatus(programId: number, did: string) {
+  checkInclusionStatus(programId: number, referenceId: string) {
     return new Promise((resolve) => {
       const subscription = this.listenForInclusionStatus(
         programId,
-        did,
+        referenceId,
       ).subscribe((isStatusAvailable) => {
         if (isStatusAvailable === PaInclusionStates.unavailable) {
           return;
@@ -45,11 +45,15 @@ export class UpdateService {
     });
   }
 
-  listenForInclusionStatus(programId: number, did: string) {
-    console.log('UpdateService: listenForInclusionStatus()', programId, did);
+  listenForInclusionStatus(programId: number, referenceId: string) {
+    console.log(
+      'UpdateService: listenForInclusionStatus()',
+      programId,
+      referenceId,
+    );
     return interval(this.updateSpeedMs).pipe(
       switchMap(() =>
-        this.programsService.checkInclusionStatus(did, programId),
+        this.programsService.checkInclusionStatus(referenceId, programId),
       ),
     );
   }

@@ -1,13 +1,13 @@
 @aw-app
-Feature: Create program credential
+Feature: Upload validation data
 
   Background:
     Given a logged-in "aidworker" user
-    Given validation data of a PA is available
 
-  Scenario: Create program credential
-    Given the user validates the data of the PA
-    When the user presses "Store program credential"
-    Then the did is stored
+  Scenario: Upload validation data
+    Given there is internet connection
+    Given validate data for at least one PA is available
+    When the user presses "Upload validation data"
+    Then the validation data is uploaded
     And a positive feedback message is shown
-    And the "main menu" is shown
+    And a button "back to main menu" is shown

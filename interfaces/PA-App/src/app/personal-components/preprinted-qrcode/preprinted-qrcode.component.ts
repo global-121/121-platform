@@ -20,7 +20,7 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
 
   private QR_DATA_MINIMUM_LENGTH = 10;
 
-  private did: string;
+  private referenceId: string;
   public program: Program;
 
   public hasPreprinted: boolean;
@@ -56,7 +56,7 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
     }
 
     this.conversationService.startLoading();
-    this.did = await this.paData.retrieve(this.paData.type.did);
+    this.referenceId = await this.paData.retrieve(this.paData.type.referenceId);
     this.conversationService.stopLoading();
   }
 
@@ -130,19 +130,21 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
       return;
     }
 
-    await this.programsService.addQrIdentifier(this.did, this.scanResult).then(
-      async () => {
-        this.scanResultError = false;
-        await this.paData.store(
-          this.paData.type.usePreprintedQrCode,
-          this.hasPreprinted,
-        );
-        this.complete();
-      },
-      () => {
-        this.scanResultError = true;
-      },
-    );
+    await this.programsService
+      .addQrIdentifier(this.referenceId, this.scanResult)
+      .then(
+        async () => {
+          this.scanResultError = false;
+          await this.paData.store(
+            this.paData.type.usePreprintedQrCode,
+            this.hasPreprinted,
+          );
+          this.complete();
+        },
+        () => {
+          this.scanResultError = true;
+        },
+      );
 
     this.conversationService.stopLoading();
   }

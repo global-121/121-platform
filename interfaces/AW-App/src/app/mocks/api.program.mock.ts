@@ -42,5 +42,5 @@ export const fspData = {
       value: 'vb',
     },
   },
-  did: 'did:sov:WGXNmAH5WtmyBN685MqxHD',
+  referenceId: '910c50be-f131-4b53-b06b-6506a40a2734',
 };

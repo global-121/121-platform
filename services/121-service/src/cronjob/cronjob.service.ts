@@ -27,10 +27,12 @@ export class CronjobService {
     private readonly intersolveApiService: IntersolveApiService,
   ) {}
 
-  private async getLanguageForDid(did: string): Promise<string> {
+  private async getLanguageForConnection(referenceId: string): Promise<string> {
     const fallbackLanguage = 'en';
 
-    const connection = await this.connectionRepository.findOne({ did: did });
+    const connection = await this.connectionRepository.findOne({
+      referenceId: referenceId,
+    });
 
     if (connection && connection.preferredLanguage) {
       return connection.preferredLanguage;
@@ -68,7 +70,10 @@ export class CronjobService {
       IntersolveBarcodeEntity,
     )
       .createQueryBuilder('barcode')
-      .select(['"whatsappPhoneNumber"', 'connection.did AS did'])
+      .select([
+        '"whatsappPhoneNumber"',
+        'connection."referenceId" AS "referenceId"',
+      ])
       .leftJoin('barcode.image', 'image')
       .leftJoin('image.connection', 'connection')
       .where('send = false')
@@ -79,8 +84,8 @@ export class CronjobService {
 
     unsentIntersolveBarcodes.forEach(async unsentIntersolveBarcode => {
       const fromNumber = unsentIntersolveBarcode.whatsappPhoneNumber;
-      const did = unsentIntersolveBarcode.did;
-      const language = await this.getLanguageForDid(did);
+      const referenceId = unsentIntersolveBarcode.referenceId;
+      const language = await this.getLanguageForConnection(referenceId);
       const whatsappPayment = this.getNotificationText(
         program,
         'whatsappPayment',

@@ -1,7 +1,7 @@
 // Model for data from the API
 export class Person {
   id: number;
-  did: string;
+  referenceId: string;
   phoneNumber?: string;
   inclusionScore?: number;
   name?: string;
@@ -23,7 +23,7 @@ export class Person {
 
 // Model for display (in table)
 export class PersonRow {
-  did: string;
+  referenceId: string;
   checkboxVisible: boolean;
   pa: string; // Display label
   status: PaStatus; // Not displayed in table, but needed e.g. for updateCheckboxes

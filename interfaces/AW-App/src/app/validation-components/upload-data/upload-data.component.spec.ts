@@ -5,7 +5,7 @@ import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
 import { UploadDataComponent } from './upload-data.component';
 
-const mockCredentials = [{ did: '', programId: 1, attributes: [] }];
+const mockCredentials = [{ referenceId: '', programId: 1, attributes: [] }];
 const storageIonicMock: any = {
   get: () => new Promise<any>((resolve) => resolve(mockCredentials)),
 };

@@ -22,7 +22,7 @@ export class HandleProofComponent extends PersonalComponent {
 
   public currentProgram: Program;
   private programId: number;
-  private did: string;
+  private referenceId: string;
 
   public hasNotificationNumberSet: boolean;
 
@@ -66,8 +66,9 @@ export class HandleProofComponent extends PersonalComponent {
 
   private async checkValidationSkipped() {
     const inclusionStatus = await this.programService
-      .checkInclusionStatus(this.did, this.programId)
+      .checkInclusionStatus(this.referenceId, this.programId)
       .toPromise();
+    console.log('inclusionStatus: ', inclusionStatus);
 
     return [
       PaInclusionStates.included,
@@ -106,14 +107,14 @@ export class HandleProofComponent extends PersonalComponent {
     }
 
     if (status === PaCredentialStatus.done) {
-      await this.handleInclusionStatus(this.did, this.programId);
+      await this.handleInclusionStatus(this.referenceId, this.programId);
       this.complete();
     } else {
       this.conversationService.stopLoading();
       this.updateService
-        .checkInclusionStatus(this.programId, this.did)
+        .checkInclusionStatus(this.programId, this.referenceId)
         .then(() => {
-          this.handleInclusionStatus(this.did, this.programId);
+          this.handleInclusionStatus(this.referenceId, this.programId);
         });
     }
   }
@@ -131,12 +132,12 @@ export class HandleProofComponent extends PersonalComponent {
 
   private async gatherData() {
     this.programId = await this.paData.getCurrentProgramId();
-    this.did = await this.paData.retrieve(this.paData.type.did);
+    this.referenceId = await this.paData.retrieve(this.paData.type.referenceId);
   }
 
-  async handleInclusionStatus(did: string, programId: number) {
+  async handleInclusionStatus(referenceId: string, programId: number) {
     this.inclusionStatus = await this.programService
-      .checkInclusionStatus(did, programId)
+      .checkInclusionStatus(referenceId, programId)
       .toPromise();
     this.processStatus(this.inclusionStatus);
     this.conversationService.stopLoading();

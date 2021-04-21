@@ -22,7 +22,7 @@ export class PaymentAddressTransactionResultDto {
 }
 
 export class PaTransactionResultDto {
-  public did: string;
+  public referenceId: string;
   public status: StatusEnum;
   public message: string;
   public date?: Date;

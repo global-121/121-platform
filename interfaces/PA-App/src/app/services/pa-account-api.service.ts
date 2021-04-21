@@ -120,15 +120,15 @@ export class PaAccountApiService {
       .toPromise();
   }
 
-  setDid(did: string): Promise<any> {
-    console.log('PaAccountApiService : setDid()');
+  setReferenceId(referenceId: string): Promise<any> {
+    console.log('PaAccountApiService : setReferenceId()');
 
     return this.apiService
       .post(
         environment.url_pa_account_service_api,
-        '/user/set-did',
+        '/user/set-reference-id',
         {
-          did,
+          referenceId,
         },
         false,
       )

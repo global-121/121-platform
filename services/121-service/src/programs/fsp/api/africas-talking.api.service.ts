@@ -17,7 +17,8 @@ export class AfricasTalkingApiService {
     const payments = AfricasTalking.PAYMENTS;
 
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.did = payload.recipients[0].metadata.did;
+    paTransactionResult.referenceId =
+      payload.recipients[0].metadata.referenceId;
     paTransactionResult.date = new Date();
 
     let result;

@@ -8,15 +8,15 @@ import { ValidationComponent } from '../validation-components.interface';
 
 class ValidationAnswer {
   id: number;
-  did: string;
+  referenceId: string;
   programId: number;
   attributeId: number;
   attribute: string;
   answer: string | number;
 }
 
-class QrDidMap {
-  did: string;
+class QrConnectionMap {
+  referenceId: string;
   qrIdentifier: string;
 }
 
@@ -31,7 +31,7 @@ export class DownloadDataComponent implements ValidationComponent {
   public nrDownloaded: number;
 
   public validationData: ValidationAnswer[];
-  public qrDidMapping: QrDidMap[];
+  public qrConnectionMapping: QrConnectionMap[];
   public fspData: any;
 
   constructor(
@@ -48,7 +48,7 @@ export class DownloadDataComponent implements ValidationComponent {
     await this.programsService.downloadData().then(
       (response) => {
         this.validationData = response.answers;
-        this.qrDidMapping = response.didQrMapping;
+        this.qrReferenceIdMapping = response.qrConnectionMapping;
         this.fspData = response.fspData;
       },
       () => {
@@ -68,13 +68,16 @@ export class DownloadDataComponent implements ValidationComponent {
       IonicStorageTypes.validationProgramData,
       this.validationData,
     );
-    await this.storage.set(IonicStorageTypes.qrDidMapping, this.qrDidMapping);
+    await this.storage.set(
+      IonicStorageTypes.qrConnectionMapping,
+      this.qrConnectionMapping,
+    );
     await this.storage.set(IonicStorageTypes.validationFspData, this.fspData);
 
     const myPrograms = await this.getProgramData(this.validationData);
     await this.storage.set(IonicStorageTypes.myPrograms, myPrograms);
 
-    this.nrDownloaded = this.countUniqueDids(this.validationData);
+    this.nrDownloaded = this.countUniqueConnections(this.validationData);
     this.downloadReady = true;
     this.complete();
   }
@@ -107,14 +110,14 @@ export class DownloadDataComponent implements ValidationComponent {
     return programIds;
   }
 
-  public countUniqueDids(validationData: ValidationAnswer[]): number {
-    const dids = [];
+  public countUniqueConnections(validationData: ValidationAnswer[]): number {
+    const referenceIds = [];
     validationData.forEach((item) => {
-      if (!dids.includes(item.did)) {
-        dids.push(item.did);
+      if (!referenceIds.includes(item.referenceId)) {
+        referenceIds.push(item.referenceId);
       }
     });
-    return dids.length;
+    return referenceIds.length;
   }
 
   getNextSection() {

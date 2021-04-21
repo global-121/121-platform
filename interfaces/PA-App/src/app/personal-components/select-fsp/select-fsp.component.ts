@@ -27,7 +27,7 @@ export class SelectFspComponent extends PersonalComponent {
   @Input()
   public data: any;
 
-  private did: string;
+  private referenceId: string;
   public program: Program;
   public fsps: Fsp[];
 
@@ -69,7 +69,7 @@ export class SelectFspComponent extends PersonalComponent {
       (fsp) =>
         (fsp.fspDisplayName = this.translatableString.get(fsp.fspDisplayName)),
     );
-    this.did = await this.paData.retrieve(this.paData.type.did);
+    this.referenceId = await this.paData.retrieve(this.paData.type.referenceId);
     this.conversationService.stopLoading();
   }
 
@@ -103,7 +103,7 @@ export class SelectFspComponent extends PersonalComponent {
   public async submitFsp() {
     this.fspSubmitted = true;
 
-    this.programsService.postFsp(this.did, this.fspChoice);
+    this.programsService.postFsp(this.referenceId, this.fspChoice);
 
     // Update FSPs with more details:
     this.chosenFsp = await this.programsService.getFspById(this.fspChoice);
@@ -166,7 +166,7 @@ export class SelectFspComponent extends PersonalComponent {
       Object.values(this.customAttributeAnswers),
       (answer: Answer) =>
         this.programsService.postConnectionCustomAttribute(
-          this.did,
+          this.referenceId,
           answer.code,
           answer.value,
         ),
