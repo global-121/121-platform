@@ -34,6 +34,7 @@ export class ProgramPayoutComponent implements OnInit {
   public exportInstallmentAvailable: boolean;
 
   private lastInstallmentId: number;
+  public nextInstallmentIdLabel: string;
   private totalIncluded: number;
 
   constructor(
@@ -140,6 +141,10 @@ export class ProgramPayoutComponent implements OnInit {
     this.lastInstallmentId = await this.programsService.getLastInstallmentId(
       this.programId,
     );
+    this.nextInstallmentIdLabel =
+      this.lastInstallmentId < this.program.distributionDuration
+        ? '#' + (this.lastInstallmentId + 1)
+        : '-';
 
     this.fillInstallmentHistory(pastInstallments);
 
