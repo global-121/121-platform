@@ -90,11 +90,16 @@ export class ManageAidworkersComponent implements OnInit {
         },
         (err) => {
           let message;
-          if (err.error.message[0] && err.error.message[0].constraints) {
+          if (
+            err &&
+            err.error &&
+            err.error.message[0] &&
+            err.error.message[0].constraints
+          ) {
             message = String(
               Object.values(err.error.message[0].constraints)[0],
             );
-          } else if (err.error.errors) {
+          } else if (err && err.error && err.error.errors) {
             message = String(Object.values(err.error.errors));
           } else {
             message = this.translate.instant('common.unknown-error');
@@ -121,6 +126,7 @@ export class ManageAidworkersComponent implements OnInit {
 
   private async actionResult(resultMessage: string) {
     const alert = await this.alertController.create({
+      backdropDismiss: false,
       message: resultMessage,
       buttons: [this.translate.instant('common.ok')],
     });

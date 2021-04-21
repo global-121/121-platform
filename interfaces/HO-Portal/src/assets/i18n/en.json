@@ -147,7 +147,7 @@
         "make-export": "Export payment data",
         "make-payment": {
           "error": {
-            "generic": "Something went wrong with the payment. Maybe you can try again."
+            "generic": "Something went wrong with the payment. Please contact the 121 development team."
           },
           "make-payment": "New payment",
           "number-included": "PA included: {{number}}"

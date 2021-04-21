@@ -172,7 +172,7 @@ export class PaymentStatusPopupComponent implements OnInit {
         },
         (err) => {
           console.log('err: ', err);
-          if (err.error.errors) {
+          if (err && err.error && err.error.error) {
             this.actionResult(err.error.errors);
           }
           this.isInProgress = false;
@@ -198,7 +198,7 @@ export class PaymentStatusPopupComponent implements OnInit {
         },
         (err) => {
           console.log('err: ', err);
-          if (err.error.error) {
+          if (err && err.error && err.error.error) {
             this.actionResult(err.error.error);
           }
           this.isInProgress = false;
@@ -225,6 +225,7 @@ export class PaymentStatusPopupComponent implements OnInit {
 
   private async actionResult(resultMessage: string, refresh: boolean = false) {
     const alert = await this.alertController.create({
+      backdropDismiss: false,
       message: resultMessage,
       buttons: [
         {

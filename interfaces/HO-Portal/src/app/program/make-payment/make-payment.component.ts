@@ -117,7 +117,7 @@ export class MakePaymentComponent implements OnInit {
   }
 
   private onPaymentError(error) {
-    if (error.error.errors) {
+    if (error && error.error && error.error.errors) {
       this.actionResult(error.error.errors);
     } else {
       this.actionResult(
@@ -131,6 +131,7 @@ export class MakePaymentComponent implements OnInit {
 
   private async actionResult(resultMessage: string, refresh: boolean = false) {
     const alert = await this.alertController.create({
+      backdropDismiss: false,
       message: resultMessage,
       buttons: [
         {

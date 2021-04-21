@@ -89,7 +89,7 @@ export class TestPaymentComponent implements OnInit {
         },
         (err) => {
           console.log('err: ', err);
-          if (err.error.errors) {
+          if (err && err.error && err.error.errors) {
             this.actionResult(err.error.errors);
           }
         },
@@ -98,6 +98,7 @@ export class TestPaymentComponent implements OnInit {
 
   private async actionResult(resultMessage: string, refresh: boolean = false) {
     const alert = await this.alertController.create({
+      backdropDismiss: false,
       message: resultMessage,
       buttons: [
         {

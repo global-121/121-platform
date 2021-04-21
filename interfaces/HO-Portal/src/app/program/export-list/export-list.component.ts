@@ -111,6 +111,7 @@ export class ExportListComponent implements OnChanges {
 
   private async actionResult(resultMessage: string) {
     const alert = await this.alertController.create({
+      backdropDismiss: false,
       message: resultMessage,
       buttons: [this.translate.instant('common.ok')],
     });
