@@ -46,7 +46,7 @@
       "please-confirm": "Kop ne eyeia ng'akiro kon. Kitheme tatap temea.",
       "submit-confirm": "Temea ng'akiro kang"
     },
-    "handle-proof": {
+    "inclusion-status": {
       "creating": "Kiinak iyong sua ng'akiro niitemokino akiolikin kitheunio iyong anaking'arakinio kana.",
       "inclusion-status-negative": "Terimakinae thua kotere kithaki alimokin iyong atamar nipedori anyuun aking'arakinio naga. Keya ni nithaki akingita kingitae thua.",
       "inclusion-status-positive": "Kipiakin iyong Naking'arakino na.",

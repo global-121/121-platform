@@ -7,15 +7,15 @@ import { MockConversationService } from 'src/app/mocks/conversation.service.mock
 import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { HandleProofComponent } from './handle-proof.component';
+import { InclusionStatusComponent } from './inclusion-status.component';
 
-describe('HandleProofComponent', () => {
-  let component: HandleProofComponent;
-  let fixture: ComponentFixture<HandleProofComponent>;
+describe('InclusionStatusComponent', () => {
+  let component: InclusionStatusComponent;
+  let fixture: ComponentFixture<InclusionStatusComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HandleProofComponent],
+      declarations: [InclusionStatusComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         TranslateModule.forRoot(),
@@ -36,7 +36,7 @@ describe('HandleProofComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(HandleProofComponent);
+    fixture = TestBed.createComponent(InclusionStatusComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

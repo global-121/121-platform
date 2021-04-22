@@ -43,11 +43,17 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   }
 
   async initHistory() {
-    this.isDisabled = this.data.isDisabled;
+    this.isCanceled = this.data.isCanceled;
+    if (this.isCanceled) {
+      this.cancel();
+      return;
+    }
+
     this.monitoringChoice = this.data.monitoringChoice;
     this.monitoringSubmitted = !!this.data.monitoringChoice;
 
     this.getMonitoringQuestion();
+    this.complete();
 
     this.conversationService.stopLoading();
   }
@@ -82,19 +88,15 @@ export class MonitoringQuestionComponent extends PersonalComponent {
       this.monitoringChoice,
     );
 
+    this.conversationService.stopLoading();
     this.complete();
   }
 
   getNextSection() {
-    return PersonalComponents.handleProof;
+    return PersonalComponents.inclusionStatus;
   }
 
   cancel() {
-    if (this.isDisabled) {
-      return;
-    }
-
-    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.monitoringQuestion,
       data: {
@@ -105,11 +107,6 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   }
 
   complete() {
-    if (this.isDisabled) {
-      return;
-    }
-
-    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.monitoringQuestion,
       data: {

@@ -30,7 +30,7 @@ import {
   ConversationSection,
   ConversationService,
 } from '../services/conversation.service';
-import { HandleProofComponent } from './../personal-components/handle-proof/handle-proof.component';
+import { InclusionStatusComponent } from './../personal-components/inclusion-status/inclusion-status.component';
 
 @Component({
   selector: 'app-personal',
@@ -54,7 +54,7 @@ export class PersonalPage implements OnInit {
     [PersonalComponents.contactDetails]: ContactDetailsComponent,
     [PersonalComponents.createIdentity]: CreateIdentityComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
-    [PersonalComponents.handleProof]: HandleProofComponent,
+    [PersonalComponents.inclusionStatus]: InclusionStatusComponent,
     [PersonalComponents.loginIdentity]: LoginIdentityComponent,
     [PersonalComponents.monitoringQuestion]: MonitoringQuestionComponent,
     [PersonalComponents.registrationSummary]: RegistrationSummaryComponent,

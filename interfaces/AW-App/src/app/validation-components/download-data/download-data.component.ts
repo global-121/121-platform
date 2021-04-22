@@ -48,7 +48,7 @@ export class DownloadDataComponent implements ValidationComponent {
     await this.programsService.downloadData().then(
       (response) => {
         this.validationData = response.answers;
-        this.qrReferenceIdMapping = response.qrConnectionMapping;
+        this.qrConnectionMapping = response.qrConnectionMapping;
         this.fspData = response.fspData;
       },
       () => {
