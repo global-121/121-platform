@@ -4,7 +4,7 @@ import { IonContent } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { TimeoutError } from 'rxjs';
 import { FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
-import { PaDataAttribute } from 'src/app/models/pa-data.model';
+import { FspAnswer, PaDataAttribute } from 'src/app/models/pa-data.model';
 import {
   Answer,
   AnswerSet,
@@ -156,7 +156,7 @@ export class ValidateFspComponent implements ValidationComponent {
     this.conversationService.startLoading();
     this.customAttributeAnswers = $event;
 
-    const fspAnswers = [];
+    const fspAnswers: FspAnswer[] = [];
 
     this.showResultSuccess = null;
     this.showResultError = null;
