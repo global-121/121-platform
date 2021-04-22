@@ -45,7 +45,6 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   async initHistory() {
     this.isCanceled = this.data.isCanceled;
     if (this.isCanceled) {
-      this.cancel();
       return;
     }
 
@@ -53,7 +52,6 @@ export class MonitoringQuestionComponent extends PersonalComponent {
     this.monitoringSubmitted = !!this.data.monitoringChoice;
 
     this.getMonitoringQuestion();
-    this.complete();
 
     this.conversationService.stopLoading();
   }
