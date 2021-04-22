@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - 2021-04-14: Removed native Android build from PA-App
-- 2021-04-14: Removed "local storage"-featues from PA-App  
+- 2021-04-14: Removed "local storage"-features from PA-App  
   Make sure to update any ENV-variables no longer in use from [interfaces/PA-App/.env](interfaces/PA-App/.env.example)
 - 2021-04-20: Removed all components related to Sovrin
 
