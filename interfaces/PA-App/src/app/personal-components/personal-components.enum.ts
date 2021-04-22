@@ -20,5 +20,5 @@ export const PersonalComponentsRemoved = [
   'select-appointment',
   'select-country',
   'store-credential',
-  'inclusion-status',
+  'handle-proof',
 ];

@@ -6,7 +6,7 @@
   Primary target(s): Mobile/Smartphone
 
 - [AW-App](./AW-App/)  
-  Web-app used by _AidWorkers_ to validate/verify PA and issue credentials.
+  Web-app used by _AidWorkers_ to validate PAs.
 
   Primary target(s): Mobile/Smartphone
 

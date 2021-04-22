@@ -58,6 +58,7 @@ export class InclusionStatusComponent extends PersonalComponent {
       return;
     }
 
+    this.conversationService.stopLoading();
     this.updateService
       .checkInclusionStatus(this.programId, this.referenceId)
       .then(() => {
