@@ -1,0 +1,25 @@
+<section>
+  <dialogue-turn
+    *ngIf="currentProgram?.validation"
+    [isSpoken]="currentProgram?.validation"
+  >
+    <p *ngIf="hasNotificationNumberSet">
+      <play-text-audio key="personal.inclusion-status.notify" class="ion-float-start ion-margin-end"></play-text-audio>
+      {{ 'personal.inclusion-status.notify'|translate }}
+    </p>
+  </dialogue-turn>
+
+  <dialogue-turn
+    *ngIf="inclusionStatusPositive || inclusionStatusNegative"
+    [isSpoken]="inclusionStatusPositive || inclusionStatusNegative"
+  >
+    <p *ngIf="inclusionStatusNegative">
+      <play-text-audio key="personal.inclusion-status.inclusion-status-negative" class="ion-float-start ion-margin-end"></play-text-audio>
+      <span [innerHTML]="'personal.inclusion-status.inclusion-status-negative'|translate"></span>
+    </p>
+    <p *ngIf="inclusionStatusPositive">
+      <play-text-audio key="personal.inclusion-status.inclusion-status-positive" class="ion-float-start ion-margin-end"></play-text-audio>
+      <span [innerHTML]="'personal.inclusion-status.inclusion-status-positive'|translate"></span>
+    </p>
+  </dialogue-turn>
+</section>

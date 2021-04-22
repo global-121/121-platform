@@ -1,6 +1,6 @@
 export enum PaDataTypes {
   conversationHistory = 'conversationHistory',
-  did = 'did',
+  referenceId = 'referenceId',
   fsp = 'fsp',
   myAnswers = 'myAnswers',
   programId = 'programId',

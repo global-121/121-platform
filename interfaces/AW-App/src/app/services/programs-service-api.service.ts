@@ -53,44 +53,47 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getDidByQrIdentifier(qrIdentifier: string): Promise<string> {
+  getConnectionByQrIdentifier(qrIdentifier: string): Promise<string> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection/qr-find-did',
+        '/connection/qr-find-connection',
         {
           qrIdentifier,
         },
         false,
       )
-      .pipe(map((response) => response.did))
+      .pipe(map((response) => response.referenceId))
       .toPromise();
   }
 
-  getPrefilledAnswers(did: string, programId: number): Promise<any> {
+  getPrefilledAnswers(referenceId: string, programId: number): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         '/connection/validation-data/get-answers/',
         {
-          did,
+          referenceId,
           programId,
         },
       )
       .toPromise();
   }
 
-  getFspAttributesAsnwers(did: string, programId: number): Promise<any> {
+  getFspAttributesAsnwers(
+    referenceId: string,
+    programId: number,
+  ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, '/connection/get-fsp/', {
-        did,
+        referenceId,
         programId,
       })
       .toPromise();
   }
 
   postConnectionCustomAttribute(
-    did: string,
+    referenceId: string,
     key: string,
     value: string,
   ): Promise<any> {
@@ -99,7 +102,7 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         '/connection/custom-data',
         {
-          did,
+          referenceId,
           key,
           value,
         },
@@ -131,7 +134,7 @@ export class ProgramsServiceApiService {
   }
 
   issueCredential(
-    did: string,
+    referenceId: string,
     programId: number,
     attributes: any,
   ): Promise<any> {
@@ -140,7 +143,7 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         '/connection/validation-data/issue',
         {
-          did,
+          referenceId,
           programId,
           attributes,
         },

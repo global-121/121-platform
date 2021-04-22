@@ -6,7 +6,7 @@ export class ValidationDataAttributesEntity {
   public id: number;
 
   @Column()
-  public did: string;
+  public referenceId: string;
 
   @Column()
   public programId: number;

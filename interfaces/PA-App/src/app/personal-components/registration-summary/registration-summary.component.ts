@@ -21,7 +21,7 @@ export class RegistrationSummaryComponent extends PersonalComponent {
 
   public registrationStatus: boolean;
 
-  private did: string;
+  private referenceId: string;
 
   public dateFormat = 'EEE, dd-MM-yyyy';
   public timeFormat = 'HH:mm';
@@ -57,11 +57,11 @@ export class RegistrationSummaryComponent extends PersonalComponent {
 
     this.validation = await this.checkValidation();
 
-    await this.getDid();
+    await this.getReferenceId();
     await this.getProgram();
 
     this.registrationStatus = await this.programsService.postConnectionApply(
-      this.did,
+      this.referenceId,
       this.program.id,
     );
 
@@ -93,8 +93,8 @@ export class RegistrationSummaryComponent extends PersonalComponent {
     ));
   }
 
-  private async getDid() {
-    this.did = await this.paData.retrieve(this.paData.type.did);
+  private async getReferenceId() {
+    this.referenceId = await this.paData.retrieve(this.paData.type.referenceId);
   }
 
   private async getProgram() {
@@ -111,9 +111,9 @@ export class RegistrationSummaryComponent extends PersonalComponent {
     return documents.split(';');
   }
 
-  private generateQrCode(did: string, programId: number) {
+  private generateQrCode(referenceId: string, programId: number) {
     const qrData = {
-      did,
+      referenceId,
       programId,
     };
 
@@ -121,7 +121,7 @@ export class RegistrationSummaryComponent extends PersonalComponent {
   }
 
   public async generateContent() {
-    this.generateQrCode(this.did, this.program.id);
+    this.generateQrCode(this.referenceId, this.program.id);
   }
 
   public retry() {

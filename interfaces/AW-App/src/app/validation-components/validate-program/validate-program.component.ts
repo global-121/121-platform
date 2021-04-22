@@ -29,7 +29,7 @@ import { ValidationComponent } from '../validation-components.interface';
   styleUrls: ['./validate-program.component.scss'],
 })
 export class ValidateProgramComponent implements ValidationComponent {
-  public did: string;
+  public referenceId: string;
   public programId: number;
   private currentProgram: Program;
   public programCredentialIssued = false;
@@ -53,7 +53,7 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   async ngOnInit() {
     const paData = await this.getPaData();
-    this.did = paData[0].did;
+    this.referenceId = paData[0].referenceId;
     this.programId = paData[0].programId;
 
     await this.getProgramQuestions();
@@ -195,7 +195,7 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   public async storeCredentialOffline(attributes: ProgramAttribute[]) {
     const credential = {
-      did: this.did,
+      referenceId: this.referenceId,
       programId: this.programId,
       attributes,
     };
@@ -206,9 +206,10 @@ export class ValidateProgramComponent implements ValidationComponent {
       storedCredentials = [];
     }
 
-    // If offline DID is already stored delete it from array first
+    // If offline referenceId is already stored delete it from array first
     storedCredentials = storedCredentials.filter(
-      (storedCredential) => !(storedCredential.did === this.did),
+      (storedCredential) =>
+        !(storedCredential.referenceId === this.referenceId),
     );
 
     storedCredentials.push(credential);

@@ -22,7 +22,7 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   public phoneNumber: string;
   public phone: any;
   public placeholder: string;
-  public did: string;
+  public referenceId: string;
 
   public hasValidationError: boolean;
   public phoneNumberIsValid: boolean;
@@ -113,12 +113,14 @@ export class SetNotificationNumberComponent extends PersonalComponent {
   }
 
   private async storePhoneNumber(phoneNumber: string) {
-    const did = await this.paData.retrieve(this.paData.type.did);
+    const referenceId = await this.paData.retrieve(
+      this.paData.type.referenceId,
+    );
 
     const useForInvitationMatching = true;
 
     return this.programService.postPhoneNumber(
-      did,
+      referenceId,
       phoneNumber,
       this.languageCode,
       useForInvitationMatching,

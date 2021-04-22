@@ -41,12 +41,12 @@ export class ImageCodeService {
 
   public async createBarcodeExportVouchers(
     barcodeData: IntersolveBarcodeEntity,
-    did: string,
+    referenceId: string,
   ): Promise<ImageCodeExportVouchersEntity> {
     let barcode = new ImageCodeExportVouchersEntity();
 
     barcode.connection = await this.connectionRepository.findOne({
-      where: { did: did },
+      where: { referenceId: referenceId },
     });
     barcode.image = await this.generateVoucherImage({
       dateTime: barcodeData.timestamp,

@@ -1,4 +1,4 @@
 export class PaQrCode {
-  did: string;
+  referenceId: string;
   programId: number;
 }

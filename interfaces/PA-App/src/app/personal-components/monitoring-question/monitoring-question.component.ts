@@ -43,11 +43,17 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   }
 
   async initHistory() {
-    this.isDisabled = this.data.isDisabled;
+    this.isCanceled = this.data.isCanceled;
+    if (this.isCanceled) {
+      this.cancel();
+      return;
+    }
+
     this.monitoringChoice = this.data.monitoringChoice;
     this.monitoringSubmitted = !!this.data.monitoringChoice;
 
     this.getMonitoringQuestion();
+    this.complete();
 
     this.conversationService.stopLoading();
   }
@@ -73,26 +79,24 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   public async submitMonitoringAnswer() {
     this.monitoringSubmitted = true;
 
-    const did = await this.paData.retrieve(this.paData.type.did);
+    const referenceId = await this.paData.retrieve(
+      this.paData.type.referenceId,
+    );
     this.programsService.postConnectionCustomAttribute(
-      did,
+      referenceId,
       'monitoringAnswer',
       this.monitoringChoice,
     );
 
+    this.conversationService.stopLoading();
     this.complete();
   }
 
   getNextSection() {
-    return PersonalComponents.handleProof;
+    return PersonalComponents.inclusionStatus;
   }
 
   cancel() {
-    if (this.isDisabled) {
-      return;
-    }
-
-    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.monitoringQuestion,
       data: {
@@ -103,11 +107,6 @@ export class MonitoringQuestionComponent extends PersonalComponent {
   }
 
   complete() {
-    if (this.isDisabled) {
-      return;
-    }
-
-    this.isDisabled = true;
     this.conversationService.onSectionCompleted({
       name: PersonalComponents.monitoringQuestion,
       data: {

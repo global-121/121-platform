@@ -1,4 +1,4 @@
-import { DidDto } from './dto/did.dto';
+import { ReferenceIdDto } from './dto/reference-id.dto';
 import {
   Get,
   Post,
@@ -55,13 +55,13 @@ export class UserController {
   }
 
   @UseGuards(RolesGuard)
-  @ApiOperation({ title: 'Set the did of logged in user' })
-  @Post('user/set-did')
-  public async setDid(
+  @ApiOperation({ title: 'Set the referenceId of logged in user' })
+  @Post('user/set-reference-id')
+  public async setReferenceId(
     @User('id') userId: number,
-    @Body() didDto: DidDto,
+    @Body() referenceIdDto: ReferenceIdDto,
   ): Promise<void> {
-    return this.userService.setDid(userId, didDto);
+    return this.userService.setReferenceId(userId, referenceIdDto);
   }
 
   @UseGuards(RolesGuard)
@@ -97,13 +97,15 @@ export class UserController {
   @Post('user/get-wallet-and-delete')
   public async getWalletAndDeleteAccount(@Body()
   payload: {
-    did: string;
+    referenceId: string;
     apiKey: string;
   }): Promise<any> {
     if (payload.apiKey !== process.env.PA_API_KEY) {
       throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);
     }
 
-    return await this.userService.getWalletAndDeleteAccount(payload.did);
+    return await this.userService.getWalletAndDeleteAccount(
+      payload.referenceId,
+    );
   }
 }

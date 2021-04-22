@@ -69,7 +69,7 @@ export class AfricasTalkingService {
       metadata: {
         programId: String(programId),
         installment: String(installment),
-        did: String(paymentData.did),
+        referenceId: String(paymentData.referenceId),
         amount: String(amount),
       },
     };
@@ -99,7 +99,8 @@ export class AfricasTalkingService {
     );
 
     const paTransactionResult = new PaTransactionResultDto();
-    paTransactionResult.did = notification.requestMetadata['did'];
+    paTransactionResult.referenceId =
+      notification.requestMetadata['referenceId'];
     paTransactionResult.status =
       notification.status === 'Failed' ? StatusEnum.error : StatusEnum.success;
     paTransactionResult.message =

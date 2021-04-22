@@ -108,13 +108,18 @@ export class ConversationService {
   }
 
   private storeSection(section: ConversationSection) {
-    this.history.push(section);
+    // If section already in history, remove the old entry first..
+    const index = this.history.map((s) => s.name).indexOf(section.name, 0);
+    if (index > -1) {
+      this.history.splice(index, 1);
+    }
 
+    this.history.push(section);
     this.paData.store(this.paData.type.conversationHistory, this.history);
   }
 
   public onSectionCompleted(section: ConversationSection) {
-    console.log('ConverstaionService  onSectionCompleted(): ', section);
+    console.log('ConversationService  onSectionCompleted(): ', section);
 
     // Record completion date/time:
     section.moment = Date.now();

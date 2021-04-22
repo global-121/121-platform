@@ -1,7 +1,7 @@
 import { IsOptional, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 
-export class GetDidByPhoneNameDto {
+export class GetConnectionByPhoneNameDto {
   @ApiModelProperty({ example: '31600000000' })
   @IsString()
   @IsOptional()

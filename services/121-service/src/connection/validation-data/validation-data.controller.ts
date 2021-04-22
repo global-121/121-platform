@@ -13,7 +13,7 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
-import { DidProgramDto } from './dto/did-program.dto';
+import { ReferenceIdProgramDto } from './dto/reference-id-program.dto';
 import { User } from '../../user/user.decorator';
 
 @ApiBearerAuth()
@@ -41,7 +41,7 @@ export class ValidationDataController {
     @Body() prefilledAnswers: PrefilledAnswersDto,
   ): Promise<any[]> {
     return await this.validationDataService.prefilledAnswers(
-      prefilledAnswers.did,
+      prefilledAnswers.referenceId,
       prefilledAnswers.programId,
       prefilledAnswers.attributes,
     );
@@ -52,10 +52,10 @@ export class ValidationDataController {
   @ApiResponse({ status: 200, description: 'Prefilled answers received' })
   @Post('/get-answers')
   public async getPrefilledAnswers(
-    @Body() getAnswers: DidProgramDto,
+    @Body() getAnswers: ReferenceIdProgramDto,
   ): Promise<any[]> {
     return await this.validationDataService.getPrefilledAnswers(
-      getAnswers.did,
+      getAnswers.referenceId,
       getAnswers.programId,
     );
   }

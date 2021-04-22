@@ -100,7 +100,7 @@ export class FspController {
     @Res() response: Response,
   ): Promise<void> {
     const blob = await this.intersolveService.exportVouchers(
-      identifyVoucherDto.did,
+      identifyVoucherDto.referenceId,
       identifyVoucherDto.installment,
     );
     var bufferStream = new stream.PassThrough();
@@ -121,7 +121,7 @@ export class FspController {
     @Body() identifyVoucherDto: IdentifyVoucherDto,
   ): Promise<number> {
     return await this.intersolveService.getVoucherBalance(
-      identifyVoucherDto.did,
+      identifyVoucherDto.referenceId,
       identifyVoucherDto.installment,
     );
   }

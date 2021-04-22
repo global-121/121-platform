@@ -3,7 +3,7 @@ import { FspAttributeEntity } from './fsp-attribute.entity';
 export interface FspAnswersAttrInterface {
   attributes: FspAttributeEntity[];
   answers: AnswerSet;
-  did: string;
+  referenceId: string;
 }
 
 export interface Answer {

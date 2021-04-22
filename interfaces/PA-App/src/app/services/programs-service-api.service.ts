@@ -39,13 +39,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  createConnection(did): Promise<any> {
+  createConnection(referenceId: string): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         '/connection',
         {
-          did,
+          referenceId,
         },
         true,
       )
@@ -53,7 +53,7 @@ export class ProgramsServiceApiService {
   }
 
   postPrefilledAnswers(
-    did: string,
+    referenceId: string,
     programId: number,
     attributes: any,
   ): Promise<any> {
@@ -62,7 +62,7 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         '/connection/validation-data/attributes',
         {
-          did,
+          referenceId,
           programId,
           attributes,
         },
@@ -72,7 +72,7 @@ export class ProgramsServiceApiService {
   }
 
   checkInclusionStatus(
-    did: string,
+    referenceId: string,
     programId: number,
   ): Observable<PaInclusionStates> {
     return this.apiService
@@ -80,20 +80,23 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         '/programs/inclusionStatus/' + programId,
         {
-          did,
+          referenceId,
         },
         true,
       )
       .pipe(map((response) => response.status));
   }
 
-  async postConnectionApply(did: string, programId: number): Promise<boolean> {
+  async postConnectionApply(
+    referenceId: string,
+    programId: number,
+  ): Promise<boolean> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         '/connection/apply-program/' + programId,
         {
-          did,
+          referenceId,
         },
         true,
       )
@@ -103,7 +106,7 @@ export class ProgramsServiceApiService {
   }
 
   postConnectionCustomAttribute(
-    did: string,
+    referenceId: string,
     key: string,
     value: string,
   ): Promise<any> {
@@ -112,7 +115,7 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         '/connection/custom-data',
         {
-          did,
+          referenceId,
           key,
           value,
         },
@@ -135,7 +138,7 @@ export class ProgramsServiceApiService {
   }
 
   postPhoneNumber(
-    did: string,
+    referenceId: string,
     phoneNumber: string,
     language: string,
     useForInvitationMatching?: boolean,
@@ -145,7 +148,7 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         '/connection/phone',
         {
-          did,
+          referenceId,
           phonenumber: phoneNumber,
           language,
           useForInvitationMatching,
@@ -155,13 +158,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  postFsp(did: string, fspId: number): Promise<any> {
+  postFsp(referenceId: string, fspId: number): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         '/connection/fsp',
         {
-          did,
+          referenceId,
           fspId,
         },
         true,
@@ -169,13 +172,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  addQrIdentifier(did: string, qrIdentifier: string): Promise<any> {
+  addQrIdentifier(referenceId: string, qrIdentifier: string): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         '/connection/add-qr-identifier',
         {
-          did,
+          referenceId,
           qrIdentifier,
         },
         true,
@@ -183,13 +186,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  deleteConnection(did: string): Promise<any> {
+  deleteConnection(referenceId: string): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         '/connection/delete',
         {
-          did,
+          referenceId,
         },
         true,
       )

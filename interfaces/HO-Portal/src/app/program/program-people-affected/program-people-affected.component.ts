@@ -569,7 +569,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private createPersonRow(person: Person): PersonRow {
     let personRow: PersonRow = {
-      did: person.did,
+      referenceId: person.referenceId,
       checkboxVisible: false,
       pa: `PA #${String(person.id)}`,
       status: person.status,
@@ -623,21 +623,22 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return personRow;
   }
 
-  private getTransactionOfInstallmentForDid(
+  private getTransactionOfInstallmentForConnection(
     installmentIndex: number,
-    did: string,
+    referenceId: string,
   ) {
     return this.pastTransactions.find(
       (transaction) =>
-        transaction.installment === installmentIndex && transaction.did === did,
+        transaction.installment === installmentIndex &&
+        transaction.referenceId === referenceId,
     );
   }
 
   private fillPaymentColumns(personRow: PersonRow): PersonRow {
     this.paymentColumns.forEach((paymentColumn) => {
-      const transaction = this.getTransactionOfInstallmentForDid(
+      const transaction = this.getTransactionOfInstallmentForConnection(
         paymentColumn.installmentIndex,
-        personRow.did,
+        personRow.referenceId,
       );
 
       if (!transaction) {
@@ -737,7 +738,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
             programId: this.programId,
             installment: column.installmentIndex,
             amount: row[column.prop + '-amount'],
-            did: row.did,
+            referenceId: row.referenceId,
             currency: this.program.currency,
           }
         : null;
@@ -746,7 +747,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     if (this.hasVoucherSupport(row.fsp) && !hasError && !!value) {
       const voucherBlob = await this.programsService.exportVoucher(
-        row.did,
+        row.referenceId,
         column.installmentIndex,
       );
       voucherUrl = window.URL.createObjectURL(voucherBlob);

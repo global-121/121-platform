@@ -37,7 +37,7 @@ describe('ValidateFspComponent', () => {
               return resolve(
                 JSON.stringify([
                   {
-                    did: 'did:sov:example',
+                    referenceId: '910c50be-f131-4b53-b06b-6506a40a2734',
                     programId: 1,
                     attributeId: 0,
                     attribute: 'question1',
@@ -61,7 +61,9 @@ describe('ValidateFspComponent', () => {
             case IonicStorageTypes.myPrograms:
               return resolve([mockProgram]);
             case IonicStorageTypes.credentials:
-              return resolve([{ did: '', programId: 1, attributes: [] }]);
+              return resolve([
+                { referenceId: '', programId: 1, attributes: [] },
+              ]);
             default:
               return resolve('1');
           }

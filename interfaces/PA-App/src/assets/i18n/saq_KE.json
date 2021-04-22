@@ -46,7 +46,7 @@
       "please-confirm": "Lokulo lomon linono tene te abori. Ngurai nisei meshomo.",
       "submit-confirm": "Terewa lomon lainen"
     },
-    "handle-proof": {
+    "inclusion-status": {
       "creating": "Ijoo iyo lomon linono laitosha pii kidol tanaa ikingeluni tijinga ana reto",
       "inclusion-status-negative": "Tapaliki iyoo amu mitum ana reto. Tanaa keyatae niyeu niparu tooshoki iyoo.",
       "inclusion-status-positive": "Ikitipikaki atua ana reto",

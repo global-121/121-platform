@@ -10,7 +10,7 @@ import { ConsentQuestionComponent } from './consent-question/consent-question.co
 import { ContactDetailsComponent } from './contact-details/contact-details.component';
 import { CreateIdentityComponent } from './create-identity/create-identity.component';
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
-import { HandleProofComponent } from './handle-proof/handle-proof.component';
+import { InclusionStatusComponent } from './inclusion-status/inclusion-status.component';
 import { LoginIdentityComponent } from './login-identity/login-identity.component';
 import { MonitoringQuestionComponent } from './monitoring-question/monitoring-question.component';
 import { PreprintedQrcodeComponent } from './preprinted-qrcode/preprinted-qrcode.component';
@@ -27,7 +27,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     ContactDetailsComponent,
     CreateIdentityComponent,
     EnrollInProgramComponent,
-    HandleProofComponent,
+    InclusionStatusComponent,
     LoginIdentityComponent,
     MonitoringQuestionComponent,
     PreprintedQrcodeComponent,
@@ -45,7 +45,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     ContactDetailsComponent,
     CreateIdentityComponent,
     EnrollInProgramComponent,
-    HandleProofComponent,
+    InclusionStatusComponent,
     LoginIdentityComponent,
     MonitoringQuestionComponent,
     PreprintedQrcodeComponent,
@@ -63,7 +63,7 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
     ContactDetailsComponent,
     CreateIdentityComponent,
     EnrollInProgramComponent,
-    HandleProofComponent,
+    InclusionStatusComponent,
     LoginIdentityComponent,
     MonitoringQuestionComponent,
     PreprintedQrcodeComponent,

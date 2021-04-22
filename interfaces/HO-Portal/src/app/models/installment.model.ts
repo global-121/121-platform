@@ -13,6 +13,6 @@ export class PopupPayoutDetails {
   programId: number;
   installment: number;
   amount: number;
-  did: string;
+  referenceId: string;
   currency: string;
 }

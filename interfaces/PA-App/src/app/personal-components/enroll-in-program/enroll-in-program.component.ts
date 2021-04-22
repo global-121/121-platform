@@ -185,10 +185,12 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private async postAnswers() {
-    const did = await this.paData.retrieve(this.paData.type.did);
+    const referenceId = await this.paData.retrieve(
+      this.paData.type.referenceId,
+    );
 
     await this.programsService.postPrefilledAnswers(
-      did,
+      referenceId,
       this.programId,
       this.createAttributes(Object.values(this.answers)),
     );

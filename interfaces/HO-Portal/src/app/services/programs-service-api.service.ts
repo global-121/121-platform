@@ -159,7 +159,7 @@ export class ProgramsServiceApiService {
   }
 
   getTransaction(
-    did: string,
+    referenceId: string,
     programId: number,
     installment: number,
     customDataKey: string,
@@ -167,7 +167,7 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/get-transaction`, {
-        did,
+        referenceId,
         installment,
         programId,
         customDataKey,
@@ -180,14 +180,14 @@ export class ProgramsServiceApiService {
     programId: number,
     installment: number,
     amount: number,
-    did?: string,
+    referenceId?: string,
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/payout`, {
         programId,
         installment,
         amount,
-        did,
+        referenceId,
       })
       .toPromise();
   }
@@ -221,13 +221,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  exportVoucher(did: string, installment: number): Promise<Blob> {
+  exportVoucher(referenceId: string, installment: number): Promise<Blob> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         `/fsp/intersolve/export-voucher`,
         {
-          did,
+          referenceId,
           installment,
         },
         false,
@@ -236,10 +236,10 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getBalance(did: string, installment: number): Promise<number> {
+  getBalance(referenceId: string, installment: number): Promise<number> {
     return this.apiService
       .post(environment.url_121_service_api, `/fsp/intersolve/balance`, {
-        did,
+        referenceId,
         installment,
       })
       .toPromise();
@@ -263,7 +263,7 @@ export class ProgramsServiceApiService {
   private updatePaStatus(
     action: string,
     programId: number | string,
-    dids: string[],
+    referenceIds: string[],
     message?: string,
   ): Promise<any> {
     return this.apiService
@@ -271,7 +271,7 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         `/programs/${action}/${programId}`,
         {
-          dids: JSON.stringify(dids),
+          referenceIds: JSON.stringify(referenceIds),
           message,
         },
       )
@@ -280,9 +280,9 @@ export class ProgramsServiceApiService {
 
   selectForValidation(
     programId: number | string,
-    dids: string[],
+    referenceIds: string[],
   ): Promise<any> {
-    return this.updatePaStatus('select-validation', programId, dids);
+    return this.updatePaStatus('select-validation', programId, referenceIds);
   }
 
   invite(
@@ -300,26 +300,26 @@ export class ProgramsServiceApiService {
 
   include(
     programId: number | string,
-    dids: string[],
+    referenceIds: string[],
     message: string,
   ): Promise<any> {
-    return this.updatePaStatus('include', programId, dids, message);
+    return this.updatePaStatus('include', programId, referenceIds, message);
   }
 
   end(
     programId: number | string,
-    dids: string[],
+    referenceIds: string[],
     message: string,
   ): Promise<any> {
-    return this.updatePaStatus('end', programId, dids, message);
+    return this.updatePaStatus('end', programId, referenceIds, message);
   }
 
   reject(
     programId: number | string,
-    dids: string[],
+    referenceIds: string[],
     message: string,
   ): Promise<any> {
-    return this.updatePaStatus('reject', programId, dids, message);
+    return this.updatePaStatus('reject', programId, referenceIds, message);
   }
 
   saveAction(actionType: ActionType, programId: number | string): Promise<any> {

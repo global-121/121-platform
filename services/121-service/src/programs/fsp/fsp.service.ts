@@ -65,7 +65,6 @@ export class FspService {
       installment,
       amount,
     );
-
     this.storeAllTransactions(
       transactionResults,
       programId,
@@ -201,7 +200,7 @@ export class FspService {
       where: { fsp: fspName },
     });
     const connection = await this.connectionRepository.findOne({
-      where: { did: transactionResponse.did },
+      where: { referenceId: transactionResponse.referenceId },
     });
 
     const transaction = new TransactionEntity();

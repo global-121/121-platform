@@ -299,16 +299,18 @@ export class ProgramService {
     return simpleProgramRO;
   }
 
-  private async getConnectionByDid(did: string): Promise<ConnectionEntity> {
+  private async getConnectionByReferenceId(
+    referenceId: string,
+  ): Promise<ConnectionEntity> {
     return await this.connectionRepository.findOne({
-      where: { did: did },
+      where: { referenceId: referenceId },
     });
   }
 
-  private async getConnectionByDidOrThrow(
-    did: string,
+  private async getConnectionByReferenceIdOrThrow(
+    referenceId: string,
   ): Promise<ConnectionEntity> {
-    let connection = await this.getConnectionByDid(did);
+    let connection = await this.getConnectionByReferenceId(referenceId);
     if (!connection) {
       const errors = 'No connection found for PA.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -332,9 +334,9 @@ export class ProgramService {
 
   public async getInclusionStatus(
     programId: number,
-    did: string,
+    referenceId: string,
   ): Promise<InclusionStatus> {
-    let connection = await this.getConnectionByDidOrThrow(did);
+    let connection = await this.getConnectionByReferenceIdOrThrow(referenceId);
 
     await this.checkIfProgramExists(programId);
 
@@ -353,12 +355,14 @@ export class ProgramService {
 
   public async selectForValidation(
     programId: number,
-    dids: object,
+    referenceIds: object,
   ): Promise<void> {
     await this.checkIfProgramExists(programId);
 
-    for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.getConnectionByDid(did.did);
+    for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
+      let connection = await this.getConnectionByReferenceId(
+        referenceId.referenceId,
+      );
       if (!connection) continue;
 
       connection.selectedForValidationDate = new Date();
@@ -395,13 +399,15 @@ export class ProgramService {
 
   public async include(
     programId: number,
-    dids: object,
+    referenceIds: object,
     message?: string,
   ): Promise<void> {
     await this.checkIfProgramExists(programId);
 
-    for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.getConnectionByDid(did.did);
+    for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
+      let connection = await this.getConnectionByReferenceId(
+        referenceId.referenceId,
+      );
       if (!connection) continue;
 
       // Add to inclusion-array, if not yet present
@@ -430,13 +436,15 @@ export class ProgramService {
 
   public async end(
     programId: number,
-    dids: object,
+    referenceIds: object,
     message?: string,
   ): Promise<void> {
     await this.checkIfProgramExists(programId);
 
-    for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.getConnectionByDid(did.did);
+    for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
+      let connection = await this.getConnectionByReferenceId(
+        referenceId.referenceId,
+      );
       if (!connection) continue;
 
       // Add to rejection-array, if not yet present
@@ -465,13 +473,15 @@ export class ProgramService {
 
   public async reject(
     programId: number,
-    dids: object,
+    referenceIds: object,
     message?: string,
   ): Promise<void> {
     await this.checkIfProgramExists(programId);
 
-    for (let did of JSON.parse(dids['dids'])) {
-      let connection = await this.getConnectionByDid(did.did);
+    for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
+      let connection = await this.getConnectionByReferenceId(
+        referenceId.referenceId,
+      );
       if (!connection) continue;
 
       // Add to rejection-array, if not yet present
@@ -499,11 +509,11 @@ export class ProgramService {
   }
 
   public async calculateInclusionPrefilledAnswers(
-    did: string,
+    referenceId: string,
     programId: number,
   ): Promise<void> {
     const scoreList = await this.createQuestionAnswerListPrefilled(
-      did,
+      referenceId,
       programId,
     );
 
@@ -514,7 +524,7 @@ export class ProgramService {
       program.customCriteria,
       scoreList,
     );
-    let connection = await this.getConnectionByDid(did);
+    let connection = await this.getConnectionByReferenceId(referenceId);
 
     connection.inclusionScore = score;
 
@@ -522,11 +532,11 @@ export class ProgramService {
   }
 
   private async createQuestionAnswerListPrefilled(
-    did: string,
+    referenceId: string,
     programId: number,
   ): Promise<object> {
     const prefilledAnswers = await this.validationDataService.getPrefilledAnswers(
-      did,
+      referenceId,
       programId,
     );
     const scoreList = {};
@@ -593,20 +603,6 @@ export class ProgramService {
     return score;
   }
 
-  private getPersitentDataFromProof(
-    customData: Record<string, any>,
-    questionAnswerList: Record<string, any>,
-    programCriteria: CustomCriterium[],
-  ): any {
-    for (let criterium of programCriteria) {
-      if (criterium.persistence) {
-        let criteriumName = criterium.criterium;
-        customData[criteriumName] = questionAnswerList[criteriumName];
-      }
-    }
-    return customData;
-  }
-
   private async getIncludedConnections(
     programId: number,
   ): Promise<ConnectionEntity[]> {
@@ -632,7 +628,7 @@ export class ProgramService {
     programId: number,
     installment: number,
     amount: number,
-    did?: string,
+    referenceId?: string,
   ): Promise<PaymentTransactionResultDto> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
@@ -642,10 +638,10 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // If 'did' is passed (only in retry-payment-per PA) use this PA only, otherwise get all included PA's
-    const includedConnections = did
+    // If 'referenceId' is passed (only in retry-payment-per PA) use this PA only, otherwise get all included PA's
+    const includedConnections = referenceId
       ? await this.connectionRepository.find({
-          where: { did: did },
+          where: { referenceId: referenceId },
           relations: ['fsp'],
         })
       : await this.getIncludedConnections(programId);
@@ -682,7 +678,7 @@ export class ProgramService {
     let paPaymentDataList = [];
     for (let includedConnection of includedConnections) {
       const paPaymentData = new PaPaymentDataDto();
-      paPaymentData.did = includedConnection.did;
+      paPaymentData.referenceId = includedConnection.referenceId;
       const fsp = await this.fspService.getFspById(includedConnection.fsp.id);
       // NOTE: this is ugly, but spent too much time already on how to automate this..
       if (fsp.fsp === fspName.intersolve) {
@@ -781,7 +777,7 @@ export class ProgramService {
     for (let connection of selectedConnections) {
       const connectionResponse = {};
       connectionResponse['id'] = connection.id;
-      connectionResponse['did'] = connection.did;
+      connectionResponse['referenceId'] = connection.referenceId;
       connectionResponse['inclusionScore'] = connection.inclusionScore;
       connectionResponse['created'] = connection.accountCreatedDate;
       connectionResponse['importedDate'] = connection.importedDate;
@@ -901,7 +897,7 @@ export class ProgramService {
       .select([
         'transaction.created AS "installmentDate"',
         'installment',
-        'did',
+        '"referenceId"',
         'status',
         'amount',
         'transaction.errorMessage as error',
@@ -920,14 +916,14 @@ export class ProgramService {
   public async getTransaction(
     input: GetTransactionDto,
   ): Promise<TransactionEntity> {
-    const connection = await this.getConnectionByDid(input.did);
+    const connection = await this.getConnectionByReferenceId(input.referenceId);
 
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.created AS "installmentDate"',
         'installment',
-        'did',
+        '"referenceId"',
         'status',
         'amount',
         'transaction.errorMessage as error',

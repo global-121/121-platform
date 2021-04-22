@@ -10,7 +10,7 @@ Feature: Get PA-data for validation
     Given there is internet-connectivity
     Given the PA-data is available online
     Given the PA-data is not available offline
-    Given a valid 121-QR-code (with a "programId" and "did") is scanned
+    Given a valid 121-QR-code (with a "programId" and "referenceId") is scanned
     When the scan is complete
     Then the correct PA-data is loaded
     And a positive feedback message is shown
@@ -23,8 +23,8 @@ Feature: Get PA-data for validation
     Given the generic QR-code is connected to an account
     Given a generic QR-code (with a minimum length value) is scanned
     When the scan is complete
-    Then the corresponding DID is requested from the server
-    And the PA-data is requested with that DID
+    Then the corresponding referenceId is requested from the server
+    And the PA-data is requested with that referenceId
     And the correct PA-data is loaded
     And a positive feedback message is shown
     And the "validate-program"-component is shown
@@ -42,7 +42,7 @@ Feature: Get PA-data for validation
     Given there is internet-connectivity
     Given the PA-data is not available online
     Given the PA-data is not available offline
-    Given a valid 121-QR-code (with a "programId" and "did") is scanned
+    Given a valid 121-QR-code (with a "programId" and "referenceId") is scanned
     When the scan is complete
     Then the message: "QR-code not found. You can try scanning another QR-code." is shown
 
@@ -50,7 +50,7 @@ Feature: Get PA-data for validation
   Scenario: Get PA-data when offline, with the PA-data available
     Given there is no internet-connectivity
     Given the PA-data is available offline
-    Given a valid 121-QR-code (with a "programId" and "did") is scanned
+    Given a valid 121-QR-code (with a "programId" and "referenceId") is scanned
     When the scan is complete
     Then the correct PA-data is loaded
     And a positive feedback message is shown
@@ -59,7 +59,7 @@ Feature: Get PA-data for validation
   Scenario: Get PA-data when offline, with the PA-data not available
     Given there is no internet-connectivity
     Given the PA-data is not available offline
-    Given a valid 121-QR-code (with a "programId" and "did") is scanned
+    Given a valid 121-QR-code (with a "programId" and "referenceId") is scanned
     When the scan is complete
     Then a negative feedback message is shown
     Then the message: "QR-code not found. You can try scanning another QR-code." is shown

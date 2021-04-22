@@ -9,7 +9,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
 import { Repository, getRepository, IsNull, Not } from 'typeorm';
-import { DidDto } from '../programs/program/dto/did.dto';
 import { ValidationDataAttributesEntity } from './validation-data/validation-attributes.entity';
 import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
 import {
@@ -32,6 +31,7 @@ import { Readable } from 'stream';
 import csv from 'csv-parser';
 import { ActionService } from '../actions/action.service';
 import { AdditionalActionType } from '../actions/action.entity';
+import { ReferenceIdDto } from './dto/reference-id.dto';
 
 @Injectable()
 export class ConnectionService {
@@ -60,9 +60,9 @@ export class ConnectionService {
     private readonly actionService: ActionService,
   ) {}
 
-  public async create(did: string): Promise<ConnectionEntity> {
+  public async create(referenceId: string): Promise<ConnectionEntity> {
     let connection = new ConnectionEntity();
-    connection.did = did;
+    connection.referenceId = referenceId;
     connection.accountCreatedDate = new Date();
     const newConnection = await this.connectionRepository.save(connection);
     return newConnection;
@@ -178,13 +178,19 @@ export class ConnectionService {
     return validatatedArray;
   }
 
-  public async applyProgram(did: string, programId: number): Promise<void> {
-    const connection = await this.findOne(did);
+  public async applyProgram(
+    referenceId: string,
+    programId: number,
+  ): Promise<void> {
+    const connection = await this.findOne(referenceId);
     if (!connection.appliedDate) {
       connection.appliedDate = new Date();
       connection.programsApplied.push(+programId);
       await this.connectionRepository.save(connection);
-      this.programService.calculateInclusionPrefilledAnswers(did, programId);
+      this.programService.calculateInclusionPrefilledAnswers(
+        referenceId,
+        programId,
+      );
       this.smsService.notifyBySms(
         connection.phoneNumber,
         connection.preferredLanguage,
@@ -195,24 +201,24 @@ export class ConnectionService {
     }
   }
 
-  public async delete(didObject: DidDto): Promise<void> {
+  public async delete(referenceId: string): Promise<void> {
     const connection = await this.connectionRepository.findOne({
-      where: { did: didObject.did },
+      where: { referenceId: referenceId },
     });
     await this.transactionRepository.delete({
       connection: { id: connection.id },
     });
 
     await this.connectionRepository.delete({
-      did: didObject.did,
+      referenceId: referenceId,
     });
     await this.validationAttributesRepository.delete({
-      did: didObject.did,
+      referenceId: referenceId,
     });
   }
 
   public async addPhone(
-    did: string,
+    referenceId: string,
     phoneNumber: string,
     preferredLanguage: string,
     useForInvitationMatching?: boolean,
@@ -228,7 +234,7 @@ export class ConnectionService {
     if (!useForInvitationMatching || !importedConnection) {
       // If endpoint is used for other purpose OR no invite found  ..
       // .. continue with earlier created connection
-      const connection = await this.findOne(did);
+      const connection = await this.findOne(referenceId);
       // .. give it an accountCreatedDate
       connection.accountCreatedDate = new Date();
       // .. and store phone number and language
@@ -243,14 +249,14 @@ export class ConnectionService {
     // If invite found ..
     // .. find temp connection created at create-identity step and save it
     const tempConnection = await this.connectionRepository.findOne({
-      where: { did: did },
+      where: { referenceId: referenceId },
       relations: ['fsp'],
     });
     // .. then delete the connection
-    await this.delete({ did: did });
+    await this.delete(referenceId);
 
     // .. and transfer its relevant attributes to the invite-connection
-    importedConnection.did = tempConnection.did;
+    importedConnection.referenceId = tempConnection.referenceId;
     importedConnection.accountCreatedDate = tempConnection.accountCreatedDate;
     importedConnection.customData = tempConnection.customData;
     const fsp = await this.fspRepository.findOne({
@@ -277,8 +283,11 @@ export class ConnectionService {
     });
   }
 
-  public async addFsp(did: string, fspId: number): Promise<ConnectionEntity> {
-    const connection = await this.findOne(did);
+  public async addFsp(
+    referenceId: string,
+    fspId: number,
+  ): Promise<ConnectionEntity> {
+    const connection = await this.findOne(referenceId);
     const fsp = await this.fspRepository.findOne({
       where: { id: fspId },
       relations: ['attributes'],
@@ -288,11 +297,11 @@ export class ConnectionService {
   }
 
   public async addCustomData(
-    did: string,
+    referenceId: string,
     customDataKey: string,
     customDataValueRaw: string,
   ): Promise<ConnectionEntity> {
-    const connection = await this.findOne(did);
+    const connection = await this.findOne(referenceId);
     const customDataValue = await this.cleanData(
       customDataKey,
       customDataValueRaw,
@@ -328,7 +337,7 @@ export class ConnectionService {
     }
   }
 
-  public async getDidByPhoneAndOrName(
+  public async getConnectionByPhoneAndOrName(
     phoneNumber?: string,
     name?: string,
   ): Promise<ConnectionEntity[]> {
@@ -351,7 +360,7 @@ export class ConnectionService {
   }
 
   public async addCustomDataOverwrite(
-    did: string,
+    referenceId: string,
     customDataKey: string,
     customDataValueRaw: string,
   ): Promise<ConnectionEntity> {
@@ -359,7 +368,7 @@ export class ConnectionService {
       customDataKey,
       customDataValueRaw,
     );
-    const connection = await this.findOne(did);
+    const connection = await this.findOne(referenceId);
     if (!connection) {
       const errors = 'This PA is not known.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -374,10 +383,10 @@ export class ConnectionService {
   }
 
   public async phoneNumberOverwrite(
-    did: string,
+    referenceId: string,
     phoneNumber: string,
   ): Promise<ConnectionEntity> {
-    const connection = await this.findOne(did);
+    const connection = await this.findOne(referenceId);
     if (!connection) {
       const errors = 'This PA is not known.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -387,14 +396,18 @@ export class ConnectionService {
     connection.phoneNumber = phoneNumber;
     await this.connectionRepository.save(connection);
 
-    return await this.addCustomDataOverwrite(did, 'phoneNumber', phoneNumber);
+    return await this.addCustomDataOverwrite(
+      referenceId,
+      'phoneNumber',
+      phoneNumber,
+    );
   }
 
   public async addQrIdentifier(
-    did: string,
+    referenceId: string,
     qrIdentifier: string,
   ): Promise<void> {
-    const connection = await this.findOne(did);
+    const connection = await this.findOne(referenceId);
     const duplicateConnection = await this.connectionRepository.findOne({
       where: { qrIdentifier: qrIdentifier },
     });
@@ -406,7 +419,9 @@ export class ConnectionService {
     await this.connectionRepository.save(connection);
   }
 
-  public async findDidWithQrIdentifier(qrIdentifier: string): Promise<DidDto> {
+  public async findConnectionWithQrIdentifier(
+    qrIdentifier: string,
+  ): Promise<ReferenceIdDto> {
     let connection = await this.connectionRepository.findOne({
       where: { qrIdentifier: qrIdentifier },
     });
@@ -414,12 +429,12 @@ export class ConnectionService {
       const errors = 'No connection found for QR';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    return { did: connection.did };
+    return { referenceId: connection.referenceId };
   }
 
-  public async findOne(did: string): Promise<ConnectionEntity> {
+  public async findOne(referenceId: string): Promise<ConnectionEntity> {
     let connection = await this.connectionRepository.findOne({
-      where: { did: did },
+      where: { referenceId: referenceId },
     });
     if (!connection) {
       const errors = 'No connection found for PA.';
@@ -429,13 +444,15 @@ export class ConnectionService {
   }
 
   public async getFspAnswersAttributes(
-    did: string,
+    referenceId: string,
   ): Promise<FspAnswersAttrInterface> {
     const qb = await getRepository(ConnectionEntity)
       .createQueryBuilder('connection')
       .leftJoinAndSelect('connection.fsp', 'fsp')
       .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
-      .where('connection.did = :did', { did: did });
+      .where('connection.referenceId = :referenceId', {
+        referenceId: referenceId,
+      });
     const connection = await qb.getOne();
     const fspAnswers = this.getFspAnswers(
       connection.fsp.attributes,
@@ -444,12 +461,12 @@ export class ConnectionService {
     return {
       attributes: connection.fsp.attributes,
       answers: fspAnswers,
-      did: did,
+      referenceId: referenceId,
     };
   }
 
   public async updateChosenFsp(
-    did: string,
+    referenceId: string,
     newFspName: fspName,
     newFspAttributes: object,
   ): Promise<ConnectionEntity> {
@@ -477,9 +494,9 @@ export class ConnectionService {
       }
     });
 
-    // Get connection by did
+    // Get connection by referenceId
     const connection = await this.connectionRepository.findOne({
-      where: { did: did },
+      where: { referenceId: referenceId },
       relations: ['fsp', 'fsp.attributes'],
     });
     if (connection.fsp.id === newFsp.id) {
@@ -499,7 +516,7 @@ export class ConnectionService {
     await this.connectionRepository.save(connection);
 
     // Update FSP
-    const updatedConnection = await this.addFsp(did, newFsp.id);
+    const updatedConnection = await this.addFsp(referenceId, newFsp.id);
 
     // Add new attributes
     updatedConnection.fsp.attributes.forEach(async attribute => {
@@ -530,18 +547,18 @@ export class ConnectionService {
     return fspCustomData;
   }
 
-  public async deleteRegistration(did: string): Promise<void> {
+  public async deleteRegistration(referenceId: string): Promise<void> {
     //1. Delete PA Account
     const wallet = await this.httpService
       .post(API.paAccounts.deleteAccount, {
-        did: did,
+        referenceId: referenceId,
         apiKey: process.env.PA_API_KEY,
       })
       .toPromise();
 
     //2. Delete data in 121-service
-    this.delete({ did });
+    this.delete(referenceId);
 
-    console.log(`Deleted PA: ${did}`);
+    console.log(`Deleted PA: ${referenceId}`);
   }
 }

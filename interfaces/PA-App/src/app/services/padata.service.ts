@@ -196,12 +196,12 @@ export class PaDataService {
     this.setLoggedOut();
   }
 
-  public setDid(did: string) {
-    return this.paAccountApi.setDid(did);
+  public setReferenceId(referenceId: string) {
+    return this.paAccountApi.setReferenceId(referenceId);
   }
 
   public async deleteIdentity(password: string): Promise<any> {
-    const did = await this.retrieve(this.type.did);
+    const referenceId = await this.retrieve(this.type.referenceId);
 
     // All requests are dependent on their predecessors!
     // A wallet should only be deleted if the account is already successfully deleted
@@ -215,7 +215,7 @@ export class PaDataService {
         async () => {
           let deleteConnectionResult = false;
 
-          await this.programService.deleteConnection(did).then(
+          await this.programService.deleteConnection(referenceId).then(
             () => (deleteConnectionResult = true),
             (error) => reject(error),
           );

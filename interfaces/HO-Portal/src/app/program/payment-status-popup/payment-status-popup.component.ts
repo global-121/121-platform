@@ -114,7 +114,7 @@ export class PaymentStatusPopupComponent implements OnInit {
 
   public async getTransactionTime(customKey: string, customValue: string) {
     const transaction = await this.programsService.getTransaction(
-      this.payoutDetails.did,
+      this.payoutDetails.referenceId,
       Number(this.payoutDetails.programId),
       Number(this.payoutDetails.installment),
       customKey,
@@ -136,7 +136,7 @@ export class PaymentStatusPopupComponent implements OnInit {
         +this.payoutDetails.programId,
         +this.payoutDetails.installment,
         +this.payoutDetails.amount,
-        this.payoutDetails.did,
+        this.payoutDetails.referenceId,
       )
       .then(
         (response) => {
@@ -183,7 +183,10 @@ export class PaymentStatusPopupComponent implements OnInit {
   public async getBalance() {
     this.isInProgress = true;
     await this.programsService
-      .getBalance(this.payoutDetails.did, this.payoutDetails.installment)
+      .getBalance(
+        this.payoutDetails.referenceId,
+        this.payoutDetails.installment,
+      )
       .then(
         (response) => {
           this.isInProgress = false;

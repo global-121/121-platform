@@ -60,7 +60,7 @@ export class ValidationDataService {
 
   // PA: post answers to attributes
   public async prefilledAnswers(
-    did: string,
+    referenceId: string,
     programId: number,
     prefilledAnswersRaw: PrefilledAnswerDto[],
   ): Promise<any[]> {
@@ -74,7 +74,7 @@ export class ValidationDataService {
       const oldAttribute = await this.validationDataAttributesRepository.findOne(
         {
           where: {
-            did: did,
+            referenceId: referenceId,
             programId: programId,
             attribute: answer.attribute,
           },
@@ -82,7 +82,7 @@ export class ValidationDataService {
       );
       if (!oldAttribute) {
         let validationData = new ValidationDataAttributesEntity();
-        validationData.did = did;
+        validationData.referenceId = referenceId;
         validationData.attributeId = answer.attributeId;
         validationData.attribute = answer.attribute;
         validationData.answer = answer.answer;
@@ -97,13 +97,17 @@ export class ValidationDataService {
     }
 
     const connection = await this.connectionRepository.findOne({
-      where: { did: did },
+      where: { referenceId: referenceId },
     });
     if (
       !connection.customData ||
       Object.keys(connection.customData).length === 0
     ) {
-      await this.storePersistentAnswers(prefilledAnswers, programId, did);
+      await this.storePersistentAnswers(
+        prefilledAnswers,
+        programId,
+        referenceId,
+      );
     }
     return validationDatas;
   }
@@ -142,7 +146,7 @@ export class ValidationDataService {
   public async storePersistentAnswers(
     answersRaw,
     programId,
-    did,
+    referenceId,
   ): Promise<void> {
     const answers = await this.cleanAnswers(answersRaw, programId);
     let program = await this.programRepository.findOne(programId, {
@@ -161,20 +165,20 @@ export class ValidationDataService {
       }
     }
     let connection = await this.connectionRepository.findOne({
-      where: { did: did },
+      where: { referenceId: referenceId },
     });
     connection.customData = JSON.parse(JSON.stringify(customDataToStore));
     await this.connectionRepository.save(connection);
   }
 
-  // AW: get answers to attributes for a given PA (identified first through did/QR)
+  // AW: get answers to attributes for a given PA (identified first through referenceId/QR)
   public async getPrefilledAnswers(
-    did: string,
+    referenceId: string,
     programId: number,
   ): Promise<ValidationDataAttributesEntity[]> {
     let validationData;
     validationData = await this.validationDataAttributesRepository.find({
-      where: { did: did, programId: programId },
+      where: { referenceId: referenceId, programId: programId },
     });
     return validationData;
   }
@@ -190,7 +194,7 @@ export class ValidationDataService {
     const data = {
       answers: await this.getAllPrefilledAnswers(user),
       fspData: await this.getAllFspAnswerData(),
-      didQrMapping: await this.getQrDidMapping(),
+      qrConnectionMapping: await this.getQrConnectionMapping(),
     };
     return data;
   }
@@ -225,7 +229,7 @@ export class ValidationDataService {
       const fspData = {
         attributes: connection.fsp.attributes,
         answers: answers,
-        did: connection.did,
+        referenceId: connection.referenceId,
       };
       fspDataPerConnection.push(fspData);
     }
@@ -252,21 +256,21 @@ export class ValidationDataService {
     return fspCustomData;
   }
 
-  public async getQrDidMapping(): Promise<ConnectionEntity[]> {
+  public async getQrConnectionMapping(): Promise<ConnectionEntity[]> {
     return await this.connectionRepository
       .createQueryBuilder('connection')
-      .select(['connection.qrIdentifier', 'connection.did'])
+      .select(['connection.qrIdentifier', 'connection."referenceId"'])
       .where('connection.validationDate IS NULL') // Filter to only download data for PA's not validated yet
       .getMany();
   }
 
-  // AW: delete answers to attributes for a given PA after issuing validationData (identified first through did/QR)
+  // AW: delete answers to attributes for a given PA after issuing validationData (identified first through referenceId/QR)
   public async deletePrefilledAnswers(
-    did: string,
+    referenceId: string,
     programId: number,
   ): Promise<DeleteResult> {
     return await this.validationDataAttributesRepository.delete({
-      did: did,
+      referenceId: referenceId,
       programId: programId,
     });
   }
@@ -276,15 +280,15 @@ export class ValidationDataService {
     await this.storePersistentAnswers(
       payload.attributes,
       payload.programId,
-      payload.did,
+      payload.referenceId,
     );
 
-    await this.updateConnectionStatus(payload.did);
+    await this.updateConnectionStatus(payload.referenceId);
   }
 
-  private async updateConnectionStatus(did): Promise<void> {
+  private async updateConnectionStatus(referenceId): Promise<void> {
     let connection = await this.connectionRepository.findOne({
-      where: { did: did },
+      where: { referenceId: referenceId },
     });
     connection.validationDate = new Date();
     await this.connectionRepository.save(connection);

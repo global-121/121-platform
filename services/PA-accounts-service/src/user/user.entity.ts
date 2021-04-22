@@ -18,5 +18,5 @@ export class UserEntity {
   }
 
   @Column({ default: null })
-  public did: string;
+  public referenceId: string;
 }

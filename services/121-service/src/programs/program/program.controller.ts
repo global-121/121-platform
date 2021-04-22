@@ -1,6 +1,6 @@
 import { TransactionEntity } from './transactions.entity';
 import { ProgramMetrics } from './dto/program-metrics.dto';
-import { DidDto, DidsDto } from './dto/did.dto';
+import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import {
   Get,
   Post,
@@ -26,9 +26,7 @@ import {
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
 import { DeleteResult } from 'typeorm';
-import { IncludeMeDto } from './dto/include-me.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
-import { InclusionRequestStatus } from './dto/inclusion-request-status.dto';
 import { PayoutDto } from './dto/payout.dto';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
@@ -117,11 +115,11 @@ export class ProgramController {
   @Post('inclusionStatus/:programId')
   public async inclusionStatus(
     @Param() params,
-    @Body() data: DidDto,
+    @Body() data: ReferenceIdDto,
   ): Promise<InclusionStatus> {
     return await this.programService.getInclusionStatus(
       params.programId,
-      data.did,
+      data.referenceId,
     );
   }
 
@@ -166,7 +164,7 @@ export class ProgramController {
   @Post('select-validation/:programId')
   public async selectForValidation(
     @Param() params,
-    @Body() data: DidsDto,
+    @Body() data: ReferenceIdsDto,
   ): Promise<void> {
     await this.programService.selectForValidation(params.programId, data);
   }
@@ -193,12 +191,12 @@ export class ProgramController {
   @Post('include/:programId')
   public async include(
     @Param() params,
-    @Body() didData: DidsDto,
+    @Body() referenceIdsData: ReferenceIdsDto,
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.programService.include(
       params.programId,
-      didData,
+      referenceIdsData,
       messageData.message,
     );
   }
@@ -209,12 +207,12 @@ export class ProgramController {
   @Post('end/:programId')
   public async end(
     @Param() params,
-    @Body() didData: DidsDto,
+    @Body() referenceIdsData: ReferenceIdsDto,
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.programService.end(
       params.programId,
-      didData,
+      referenceIdsData,
       messageData.message,
     );
   }
@@ -225,12 +223,12 @@ export class ProgramController {
   @Post('reject/:programId')
   public async reject(
     @Param() params,
-    @Body() didData: DidsDto,
+    @Body() referenceIdsData: ReferenceIdsDto,
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.programService.reject(
       params.programId,
-      didData,
+      referenceIdsData,
       messageData.message,
     );
   }
@@ -249,7 +247,7 @@ export class ProgramController {
       data.programId,
       data.installment,
       data.amount,
-      data.did,
+      data.referenceId,
     );
   }
 

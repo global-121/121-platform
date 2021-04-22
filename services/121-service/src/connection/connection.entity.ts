@@ -15,8 +15,8 @@ export class ConnectionEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({ nullable: true })
-  public did: string;
+  @Column({ unique: true })
+  public referenceId: string;
 
   @Column({ nullable: true })
   public phoneNumber: string;
