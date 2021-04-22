@@ -253,7 +253,9 @@ export class ConnectionService {
       relations: ['fsp'],
     });
     // .. then delete the connection
-    await this.delete(referenceId);
+    await this.connectionRepository.delete({
+      referenceId: referenceId,
+    });
 
     // .. and transfer its relevant attributes to the invite-connection
     importedConnection.referenceId = tempConnection.referenceId;
