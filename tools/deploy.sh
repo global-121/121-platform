@@ -123,13 +123,7 @@ function deploy() {
 
     cd "$repo_path" || return
 
-    # When a target is provided, create a clean environment
-    if [[ -n "$target" ]]
-    then
-      npm ci --unsafe-perm --no-audit --no-fund
-    else
-      npm install --unsafe-perm --no-audit --no-fund
-    fi
+    npm install --unsafe-perm --no-audit --no-fund --no-bin-links --production
 
     npm run build -- --prod --base-href="/$base_href/"
   }
