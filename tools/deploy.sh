@@ -123,7 +123,7 @@ function deploy() {
 
     cd "$repo_path" || return
 
-    npm install --unsafe-perm --no-audit --no-fund --no-bin-links --production
+    npm install --unsafe-perm --no-audit --no-fund --production
 
     npm run build -- --prod --base-href="/$base_href/"
   }
