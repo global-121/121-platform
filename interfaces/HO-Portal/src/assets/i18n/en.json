@@ -139,7 +139,6 @@
         "closed": "Closed",
         "open": "Open",
         "start-payout": "Start payout now",
-        "total-included": "Number of PA included",
         "total-amount": "Total amount to payout:",
         "result-success": "Successfully sent instructions to FSP's for {{nrSuccessfull}} PA(s).",
         "result-failure": "Payment request failed for {{nrFailed}} PA(s). Inspect the PA-table below for details.",
@@ -302,13 +301,6 @@
     }
   },
   "common": {
-    "table": {
-      "no-data": "No data to display",
-      "total": "total",
-      "selected": "selected"
-    },
-    "expand": "Expand",
-    "collapse": "Collapse",
     "update": "Update",
     "confirm": "Are you sure?",
     "confirm-message-label": "The message needs to be longer than {{minLength}} characters.",
