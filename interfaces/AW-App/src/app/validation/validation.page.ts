@@ -103,7 +103,6 @@ export class ValidationPage implements OnInit {
 
   public debugClearAllStorage() {
     this.storage.clear();
-    window.localStorage.clear();
     window.sessionStorage.clear();
   }
 }

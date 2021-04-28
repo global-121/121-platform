@@ -4,7 +4,7 @@ import { IonContent } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { TimeoutError } from 'rxjs';
 import { FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
-import { PaDataAttribute } from 'src/app/models/pa-data.model';
+import { FspAnswer, PaDataAttribute } from 'src/app/models/pa-data.model';
 import {
   Answer,
   AnswerSet,
@@ -14,7 +14,6 @@ import {
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { SessionStorageService } from 'src/app/services/session-storage.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
@@ -42,14 +41,18 @@ export class ValidateFspComponent implements ValidationComponent {
     public translatableString: TranslatableStringService,
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
-    public sessionStorageService: SessionStorageService,
     public router: Router,
     public ionContent: IonContent,
     private storage: Storage,
   ) {}
 
   async ngOnInit() {
-    const paData = await this.getPaData();
+    const paData = this.getPaData();
+
+    if (!paData) {
+      return;
+    }
+
     this.referenceId = paData[0].referenceId;
     this.programId = paData[0].programId;
 
@@ -64,15 +67,16 @@ export class ValidateFspComponent implements ValidationComponent {
     } else {
       this.fspQuestionAvailable = false;
       this.backToMainMenu = true;
-      console.log('this.fspQuestionAvailable : ', this.fspQuestionAvailable);
     }
   }
 
-  private async getPaData(): Promise<PaDataAttribute[]> {
-    const paDataRaw = await this.sessionStorageService.retrieve(
-      this.sessionStorageService.type.paData,
-    );
-    return JSON.parse(paDataRaw);
+  private getPaData(): PaDataAttribute[] | null {
+    const paDataRaw = window.sessionStorage.getItem('paData');
+    try {
+      return JSON.parse(paDataRaw);
+    } catch (error) {
+      return null;
+    }
   }
 
   private async findFspAnswers(): Promise<any> {
@@ -83,12 +87,10 @@ export class ValidateFspComponent implements ValidationComponent {
         this.programId,
       );
     }
-    console.log('fspAnswers: ', fspAnswers);
     return fspAnswers;
   }
 
   private async findFspAnswersOffline(referenceId: string) {
-    console.log('findFspAnswersOffline()');
     const offlineData = await this.storage.get(
       IonicStorageTypes.validationFspData,
     );
@@ -156,7 +158,7 @@ export class ValidateFspComponent implements ValidationComponent {
     this.conversationService.startLoading();
     this.customAttributeAnswers = $event;
 
-    const fspAnswers = [];
+    const fspAnswers: FspAnswer[] = [];
 
     this.showResultSuccess = null;
     this.showResultError = null;
@@ -193,27 +195,25 @@ export class ValidateFspComponent implements ValidationComponent {
   }
 
   public async storeFspAnswersOffline(fspanswers: any) {
-    let storedCredentials = await this.storage.get(
-      IonicStorageTypes.credentials,
-    );
-    if (!storedCredentials) {
-      storedCredentials = [];
+    let validatedData = await this.storage.get(IonicStorageTypes.validatedData);
+    if (!validatedData) {
+      validatedData = [];
     }
-    // If credential was already stored update object else create new object
-    const currentCredentialIndex = storedCredentials.findIndex(
+    // If data was already stored update object else create new object
+    const currentIndex = validatedData.findIndex(
       (obj) => obj.referenceId === this.referenceId,
     );
-    if (currentCredentialIndex || currentCredentialIndex === 0) {
-      storedCredentials[currentCredentialIndex].fspanswers = fspanswers;
+    if (currentIndex || currentIndex === 0) {
+      validatedData[currentIndex].fspanswers = fspanswers;
     } else {
       const validatedFspData = {
         referenceId: this.referenceId,
         programId: this.programId,
         fspanswers,
       };
-      storedCredentials.push(validatedFspData);
+      validatedData.push(validatedFspData);
     }
-    await this.storage.set(IonicStorageTypes.credentials, storedCredentials);
+    await this.storage.set(IonicStorageTypes.validatedData, validatedData);
   }
 
   public doReload(): void {

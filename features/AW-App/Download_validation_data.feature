@@ -2,12 +2,12 @@
 Feature: Download validation data
 
   Background:
-    Given a logged-in "aidworker" user
+    Given a logged-in "field-validation" user
     Given the user is on the "actions" page
 
   Scenario: Downloading validation data successfully
     Given the user sees the "main menu" options
-    Given "X" People Affected who have filled in program questions and are not validated yet for all programs the "aidworker" is assigned to
+    Given "X" PA who have filled in program questions and are not validated yet for all programs the "field-validation" user is assigned to
     When the user selects the "download validation data" option
     Then a message "data is being downloaded" is shown
     And when finished a message "data is downloaded for X People Affected" is shown

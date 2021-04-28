@@ -7,11 +7,8 @@ import { Storage } from '@ionic/storage';
 import { TranslateModule } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { mockProgram } from 'src/app/mocks/api.program.mock';
-import { PaDataAttribute } from 'src/app/models/pa-data.model';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { SessionStorageType } from 'src/app/services/session-storage-types.enum';
-import { SessionStorageService } from 'src/app/services/session-storage.service';
 import { ValidateProgramComponent } from './validate-program.component';
 
 describe('ValidateProgramComponent', () => {
@@ -26,28 +23,6 @@ describe('ValidateProgramComponent', () => {
         getPrefilledAnswers: () => of({}).toPromise(),
       },
     );
-
-    const sessionStorageServiceMock = {
-      type: SessionStorageType,
-      retrieve: (type: SessionStorageType) =>
-        new Promise<any>((resolve) => {
-          switch (type) {
-            case SessionStorageType.paData:
-              return resolve(
-                JSON.stringify([
-                  {
-                    referenceId: '910c50be-f131-4b53-b06b-6506a40a2734',
-                    programId: 1,
-                    attributeId: 0,
-                    attribute: 'question1',
-                    answer: 'answer',
-                  } as PaDataAttribute,
-                ]),
-              );
-          }
-        }),
-      destroyItem: () => of('').toPromise(),
-    };
 
     const ionContentMock = jasmine.createSpyObj('IonContent', [
       'scrollToBottom',
@@ -78,10 +53,6 @@ describe('ValidateProgramComponent', () => {
         {
           provide: ProgramsServiceApiService,
           useValue: programsServiceApiServiceMock,
-        },
-        {
-          provide: SessionStorageService,
-          useValue: sessionStorageServiceMock,
         },
         {
           provide: IonContent,

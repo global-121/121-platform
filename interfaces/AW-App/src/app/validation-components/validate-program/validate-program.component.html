@@ -13,8 +13,8 @@
                submitLabel="validation.validate-program.submit"
   ></q-and-a-set>
 
-  <dialogue-turn *ngIf="hasAnswered || programCredentialIssued"
-                 [isSpoken]="hasAnswered || programCredentialIssued"
+  <dialogue-turn *ngIf="hasAnswered || programAttributesValidated"
+                 [isSpoken]="hasAnswered || programAttributesValidated"
   >
     <p>
       {{ 'validation.validate-program.please-confirm'|translate }}
@@ -35,7 +35,7 @@
       <ion-button type="submit"
                   (click)="validateAttributes()"
                   expand="block"
-                  [disabled]="programCredentialIssued"
+                  [disabled]="programAttributesValidated"
       >
         {{ 'validation.validate-program.confirm-button'|translate }}
       </ion-button>
@@ -43,14 +43,14 @@
                   (click)="change()"
                   expand="block"
                   fill="outline"
-                  *ngIf="!programCredentialIssued"
+                  *ngIf="!programAttributesValidated"
       >
         {{ 'validation.validate-program.change'|translate }}
       </ion-button>
     </p>
   </dialogue-turn>
-  <dialogue-turn *ngIf="programCredentialIssued"
-                 [isSpoken]="programCredentialIssued"
+  <dialogue-turn *ngIf="programAttributesValidated"
+                 [isSpoken]="programAttributesValidated"
   >
     {{ 'validation.validate-program.conclusion'|translate }}
   </dialogue-turn>

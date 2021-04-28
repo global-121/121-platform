@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
+import { FspAnswer, ValidatedPaData } from 'src/app/models/pa-data.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ValidationComponents } from '../validation-components.enum';
@@ -28,33 +29,35 @@ export class UploadDataComponent implements ValidationComponent {
   }
 
   public async uploadData(): Promise<void> {
-    const credentials = await this.storage.get(IonicStorageTypes.credentials);
-    if (credentials && credentials.length > 0) {
+    const validatedData: ValidatedPaData[] = await this.storage.get(
+      IonicStorageTypes.validatedData,
+    );
+    if (validatedData && validatedData.length > 0) {
       this.uploadDataStored = true;
-      this.nrStored = credentials.length;
-      for (const credential of credentials) {
-        await this.issueCredential(credential);
+      this.nrStored = validatedData.length;
+      for (const paAnswers of validatedData) {
+        await this.validateProgramAnswers(paAnswers);
         if (this.uploadAborted) {
           break;
         }
-        await this.updateFsp(credential);
+        await this.validateFspAnswers(paAnswers.fspanswers);
         if (this.uploadAborted) {
           break;
         }
         await this.removeLocalStorageData(
-          credential.referenceId,
-          IonicStorageTypes.credentials,
+          paAnswers.referenceId,
+          IonicStorageTypes.validatedData,
         );
         await this.removeLocalStorageData(
-          credential.referenceId,
+          paAnswers.referenceId,
           IonicStorageTypes.validationProgramData,
         );
         await this.removeLocalStorageData(
-          credential.referenceId,
+          paAnswers.referenceId,
           IonicStorageTypes.validationFspData,
         );
         await this.removeLocalStorageData(
-          credential.referenceId,
+          paAnswers.referenceId,
           IonicStorageTypes.qrConnectionMapping,
         );
       }
@@ -65,46 +68,58 @@ export class UploadDataComponent implements ValidationComponent {
     this.complete();
   }
 
-  public async issueCredential(credential: any): Promise<void> {
-    if (credential.attributes) {
-      await this.programsService
-        .issueCredential(
-          credential.referenceId,
-          credential.programId,
-          credential.attributes,
-        )
-        .then(
-          async () => {
-            console.log(
-              'Upload credential succes for : ' + credential.referenceId,
-            );
-          },
-          () => {
-            this.uploadAborted = true;
-          },
-        );
+  public async validateProgramAnswers(
+    validatedAnswers: ValidatedPaData,
+  ): Promise<void> {
+    if (!validatedAnswers.attributes) {
+      console.log('UploadData: No attributes validated, nothing to upload.');
+      return;
     }
+    await this.programsService
+      .postValidationData(
+        validatedAnswers.referenceId,
+        validatedAnswers.programId,
+        validatedAnswers.attributes,
+      )
+      .then(
+        () => {
+          console.log(
+            `UploadData: Upload ${validatedAnswers.attributes.length} validated answers succesful for : ${validatedAnswers.referenceId}`,
+          );
+        },
+        () => {
+          console.warn(
+            `UploadData: Upload ${validatedAnswers.attributes.length} validated answers failed for : ${validatedAnswers.referenceId}`,
+          );
+          this.uploadAborted = true;
+        },
+      );
   }
 
-  public async updateFsp(credential: any): Promise<void> {
-    if (credential.fspanswers) {
-      for (const answer of credential.fspanswers) {
-        try {
-          await this.programsService.postConnectionCustomAttribute(
-            answer.referenceId,
-            answer.code,
-            answer.value,
-          );
-          console.log(
-            'Upload fsp succes for : ' +
-              credential.referenceId +
-              ' for ' +
-              answer.code,
-          );
-        } catch (error) {
-          this.uploadAborted = true;
-          return;
-        }
+  public async validateFspAnswers(
+    validatedFspAnswers: FspAnswer[],
+  ): Promise<void> {
+    if (!validatedFspAnswers) {
+      console.log('UploadData: No FSP-answers validated, nothing to upload.');
+      return;
+    }
+    for (const answer of validatedFspAnswers) {
+      try {
+        await this.programsService.postConnectionCustomAttribute(
+          answer.referenceId,
+          answer.code,
+          answer.value,
+        );
+        console.log(
+          `UploadData: Upload validated answer "${answer.code}" succesful for : ${answer.referenceId}`,
+        );
+      } catch (error) {
+        console.warn(
+          `UploadData: Upload validated answer "${answer.code}" failed for : ${answer.referenceId}`,
+          error,
+        );
+        this.uploadAborted = true;
+        return;
       }
     }
   }
