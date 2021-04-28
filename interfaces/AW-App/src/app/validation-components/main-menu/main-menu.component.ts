@@ -54,8 +54,10 @@ export class MainMenuComponent implements ValidationComponent {
   }
 
   private async getNrUploadWaiting(): Promise<number> {
-    const credentials = await this.storage.get(IonicStorageTypes.credentials);
-    return credentials ? credentials.length : 0;
+    const validatedData = await this.storage.get(
+      IonicStorageTypes.validatedData,
+    );
+    return validatedData ? validatedData.length : 0;
   }
 
   public changeOption($event) {

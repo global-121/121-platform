@@ -195,27 +195,25 @@ export class ValidateFspComponent implements ValidationComponent {
   }
 
   public async storeFspAnswersOffline(fspanswers: any) {
-    let storedCredentials = await this.storage.get(
-      IonicStorageTypes.credentials,
-    );
-    if (!storedCredentials) {
-      storedCredentials = [];
+    let validatedData = await this.storage.get(IonicStorageTypes.validatedData);
+    if (!validatedData) {
+      validatedData = [];
     }
-    // If credential was already stored update object else create new object
-    const currentCredentialIndex = storedCredentials.findIndex(
+    // If data was already stored update object else create new object
+    const currentIndex = validatedData.findIndex(
       (obj) => obj.referenceId === this.referenceId,
     );
-    if (currentCredentialIndex || currentCredentialIndex === 0) {
-      storedCredentials[currentCredentialIndex].fspanswers = fspanswers;
+    if (currentIndex || currentIndex === 0) {
+      validatedData[currentIndex].fspanswers = fspanswers;
     } else {
       const validatedFspData = {
         referenceId: this.referenceId,
         programId: this.programId,
         fspanswers,
       };
-      storedCredentials.push(validatedFspData);
+      validatedData.push(validatedFspData);
     }
-    await this.storage.set(IonicStorageTypes.credentials, storedCredentials);
+    await this.storage.set(IonicStorageTypes.validatedData, validatedData);
   }
 
   public doReload(): void {

@@ -30,7 +30,7 @@ export class UploadDataComponent implements ValidationComponent {
 
   public async uploadData(): Promise<void> {
     const validatedData: ValidatedPaData[] = await this.storage.get(
-      IonicStorageTypes.credentials,
+      IonicStorageTypes.validatedData,
     );
     if (validatedData && validatedData.length > 0) {
       this.uploadDataStored = true;
@@ -46,7 +46,7 @@ export class UploadDataComponent implements ValidationComponent {
         }
         await this.removeLocalStorageData(
           paAnswers.referenceId,
-          IonicStorageTypes.credentials,
+          IonicStorageTypes.validatedData,
         );
         await this.removeLocalStorageData(
           paAnswers.referenceId,

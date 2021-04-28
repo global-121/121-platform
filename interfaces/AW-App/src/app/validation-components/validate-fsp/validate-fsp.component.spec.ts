@@ -35,7 +35,7 @@ describe('ValidateFspComponent', () => {
           switch (type) {
             case IonicStorageTypes.myPrograms:
               return resolve([mockProgram]);
-            case IonicStorageTypes.credentials:
+            case IonicStorageTypes.validatedData:
               return resolve([
                 { referenceId: '', programId: 1, attributes: [] },
               ]);

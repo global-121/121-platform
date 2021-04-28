@@ -31,7 +31,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   public referenceId: string;
   public programId: number;
   private currentProgram: Program;
-  public programCredentialIssued = false;
+  public programAttributesValidated = false;
 
   public questions: Question[];
   public answerTypes = AnswerType;
@@ -193,32 +193,29 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   public async validateAttributes() {
     const attributes = this.createAttributes(Object.values(this.answers));
-    await this.storeCredentialOffline(attributes);
-    this.programCredentialIssued = true;
+    await this.storeValidatedAttributes(attributes);
+    this.programAttributesValidated = true;
     this.complete();
   }
 
-  public async storeCredentialOffline(attributes: ProgramAttribute[]) {
-    const credential = {
+  public async storeValidatedAttributes(attributes: ProgramAttribute[]) {
+    const validatedAttributes = {
       referenceId: this.referenceId,
       programId: this.programId,
       attributes,
     };
-    let storedCredentials = await this.storage.get(
-      IonicStorageTypes.credentials,
-    );
-    if (!storedCredentials) {
-      storedCredentials = [];
+    let validatedData = await this.storage.get(IonicStorageTypes.validatedData);
+    if (!validatedData) {
+      validatedData = [];
     }
 
     // If offline referenceId is already stored delete it from array first
-    storedCredentials = storedCredentials.filter(
-      (storedCredential) =>
-        !(storedCredential.referenceId === this.referenceId),
+    validatedData = validatedData.filter(
+      (item) => !(item.referenceId === this.referenceId),
     );
 
-    storedCredentials.push(credential);
-    await this.storage.set(IonicStorageTypes.credentials, storedCredentials);
+    validatedData.push(validatedAttributes);
+    await this.storage.set(IonicStorageTypes.validatedData, validatedData);
   }
 
   getNextSection() {
