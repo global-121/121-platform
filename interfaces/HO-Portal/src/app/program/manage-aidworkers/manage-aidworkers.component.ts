@@ -43,6 +43,7 @@ export class ManageAidworkersComponent implements OnInit {
     },
   ];
   public aidworkers: any[];
+  public isLoading: boolean;
 
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';
@@ -60,6 +61,7 @@ export class ManageAidworkersComponent implements OnInit {
   }
 
   public async loadData() {
+    this.isLoading = true;
     const program = await this.programsService.getProgramById(this.programId);
     this.aidworkers = program.aidworkers;
 
@@ -71,6 +73,7 @@ export class ManageAidworkersComponent implements OnInit {
         this.locale,
       );
     });
+    this.isLoading = false;
   }
 
   public async deleteAidworker(row) {
