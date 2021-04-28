@@ -23,8 +23,7 @@
     "test:dev": "ng test",
     "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss}\"",
     "lint": "ng lint && npm run lint:syntax",
-    "fix:syntax": "npm run lint:syntax -- --write",
-    "e2e": "ng e2e"
+    "fix:syntax": "npm run lint:syntax -- --write"
   },
   "private": true,
   "dependencies": {
@@ -62,7 +61,6 @@
     "@ionic/angular-toolkit": "^1.5.1",
     "@types/file-saver": "^2.0.1",
     "@types/jasmine": "^3.5.12",
-    "@types/jasminewd2": "^2.0.8",
     "@types/node": "10.x",
     "codelyzer": "^5.2.2",
     "dotenv": "^8.2.0",
@@ -75,8 +73,6 @@
     "karma-jasmine-html-reporter": "^1.5.4",
     "prettier": "2.2.0",
     "prettier-plugin-organize-imports": "^1.1.1",
-    "protractor": "^7.0.0",
-    "ts-node": "^9.0.0",
     "tslint": "^5.20.1",
     "typescript": "3.2.4"
   }
