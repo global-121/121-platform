@@ -6,6 +6,7 @@
   - [For Humanitarian Organization (HO-Portal)](#for-humanitarian-organization-ho-portal)
   - [For Person/People Affected (PA-App)](#for-personpeople-affected-pa-app)
   - [For Aid-Worker (AW-App)](#for-aid-worker-aw-app)
+  - [For Admin-user (Swagger UI)](#for-admin-user-swagger-ui)
 - [Reference](#reference)
 - [Tools](#tools)
 - [How to describe features / define scenarios](#how-to-describe-features--define-scenarios)
@@ -48,6 +49,11 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Upload validation data](AW-App/Upload_validation_data.feature)
 - [Download validation data](AW-App/Download_validation_data.feature)
 - [Get PA-data for validation](AW-App/Get_PA-data_for_validation.feature)
+
+### For Admin-user (Swagger UI)
+
+- [Update phone-numbers of Person Affected](Admin-user/Update_phone_numbers.feature)
+- [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provicder.feature)
 
 ---
 
