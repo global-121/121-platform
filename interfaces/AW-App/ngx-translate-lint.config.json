@@ -1,0 +1,9 @@
+{
+  "project": "./src/app/**/*.{html,ts}",
+  "languages": "./src/assets/i18n/*.json",
+  "ignore": "./dist/**/*",
+  "views": "warn",
+  "zombies": "warn",
+  "misprint": "warn",
+  "maxWarnings": 0
+}
