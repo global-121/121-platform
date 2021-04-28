@@ -28,15 +28,13 @@ export const SWAGGER_CUSTOM_CSS = `
   .swagger-ui .topbar .link { visibility: hidden; }
 `;
 
-// Configure Tykn-SSI-Services:
+// Configure Internal and External API URL's
 // ---------------------------------------------------------------------------
-
-export const URL_PA_ACCOUNTS_SERVICE_API =
-  process.env.URL_PA_ACCOUNTS_SERVICE_API;
 
 export const API = {
   paAccounts: {
-    deleteAccount: URL_PA_ACCOUNTS_SERVICE_API + '/user/get-wallet-and-delete',
+    deleteAccount:
+      process.env.URL_PA_ACCOUNTS_SERVICE_API + '/user/get-wallet-and-delete',
   },
 };
 
