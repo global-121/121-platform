@@ -42,6 +42,7 @@ import { StatusEnum } from '../../shared/enum/status.enum';
 import { CriteriumForExport } from './dto/criterium-for-export.dto';
 import { FileDto } from './dto/file.dto';
 import { LookupService } from '../../notifications/lookup/lookup.service';
+import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
 
 @Injectable()
 export class ProgramService {
@@ -610,8 +611,8 @@ export class ProgramService {
     for (let attribute of fspAttributes) {
       // NOTE: this is still not ideal, as it is hard-coded. No other quick solution was found.
       if (
-        attribute.name === 'phoneNumber' ||
-        attribute.name === 'whatsappPhoneNumber'
+        attribute.name === CustomDataAttributes.phoneNumber ||
+        attribute.name === CustomDataAttributes.whatsappPhoneNumber
       ) {
         const paymentAddressColumn = attribute.name;
         return includedConnection.customData[paymentAddressColumn];
@@ -650,18 +651,24 @@ export class ProgramService {
   }
 
   private getName(customData): string {
-    if (customData['name']) {
-      return customData['name'];
-    } else if (customData['firstName']) {
+    if (customData[CustomDataAttributes.name]) {
+      return customData[CustomDataAttributes.name];
+    } else if (customData[CustomDataAttributes.firstName]) {
       return (
-        customData['firstName'] +
-        (customData['secondName'] ? ' ' + customData['secondName'] : '') +
-        (customData['thirdName'] ? ' ' + customData['thirdName'] : '')
+        customData[CustomDataAttributes.firstName] +
+        (customData[CustomDataAttributes.secondName]
+          ? ' ' + customData[CustomDataAttributes.secondName]
+          : '') +
+        (customData[CustomDataAttributes.thirdName]
+          ? ' ' + customData[CustomDataAttributes.thirdName]
+          : '')
       );
-    } else if (customData['nameFirst']) {
+    } else if (customData[CustomDataAttributes.nameFirst]) {
       return (
-        customData['nameFirst'] +
-        (customData['nameLast'] ? ' ' + customData['nameLast'] : '')
+        customData[CustomDataAttributes.nameFirst] +
+        (customData[CustomDataAttributes.nameLast]
+          ? ' ' + customData[CustomDataAttributes.nameLast]
+          : '')
       );
     } else {
       return '';
@@ -702,9 +709,10 @@ export class ProgramService {
       if (privacy) {
         connectionResponse['name'] = this.getName(connection.customData);
         connectionResponse['phoneNumber'] =
-          connection.phoneNumber || connection.customData['phoneNumber'];
+          connection.phoneNumber ||
+          connection.customData[CustomDataAttributes.phoneNumber];
         connectionResponse['whatsappPhoneNumber'] =
-          connection.customData['whatsappPhoneNumber'];
+          connection.customData[CustomDataAttributes.whatsappPhoneNumber];
         connectionResponse['location'] = connection.customData['location'];
         connectionResponse['vnumber'] = connection.customData['vnumber'];
         connectionResponse['age'] = connection.customData['age'];

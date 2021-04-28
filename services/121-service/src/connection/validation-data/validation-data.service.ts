@@ -22,6 +22,7 @@ import {
 } from '../../programs/fsp/fsp-interface';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 import { CustomCriterium } from 'src/programs/program/custom-criterium.entity';
+import { CustomDataAttributes } from './dto/custom-data-attributes';
 
 @Injectable()
 export class ValidationDataService {
@@ -165,15 +166,20 @@ export class ValidationDataService {
         persistentCriteria.push(criterium.criterium);
       }
     }
+
+    let connection = await this.connectionRepository.findOne({
+      where: { referenceId: referenceId },
+    });
+
     const customDataToStore = {};
     for (let answer of answers) {
       if (persistentCriteria.includes(answer.attribute)) {
         customDataToStore[answer.attribute] = answer.answer;
       }
+      if (answer.attribute === CustomDataAttributes.phoneNumber) {
+        connection.phoneNumber = answer.answer;
+      }
     }
-    let connection = await this.connectionRepository.findOne({
-      where: { referenceId: referenceId },
-    });
     connection.customData = JSON.parse(JSON.stringify(customDataToStore));
     await this.connectionRepository.save(connection);
   }

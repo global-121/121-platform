@@ -33,6 +33,7 @@ import { ActionService } from '../actions/action.service';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { ValidationDataService } from './validation-data/validation-data.service';
+import { CustomDataAttributes } from './validation-data/dto/custom-data-attributes';
 
 @Injectable()
 export class ConnectionService {
@@ -348,15 +349,16 @@ export class ConnectionService {
     return connections.filter(c => {
       return (
         (name &&
-          (c.customData['name'] === name ||
-            c.customData['nameFirst'] === name ||
-            c.customData['nameLast'] === name ||
-            c.customData['firstName'] === name ||
-            c.customData['secondName'] === name ||
-            c.customData['thirdName'] === name)) ||
+          (c.customData[CustomDataAttributes.name] === name ||
+            c.customData[CustomDataAttributes.nameFirst] === name ||
+            c.customData[CustomDataAttributes.nameLast] === name ||
+            c.customData[CustomDataAttributes.firstName] === name ||
+            c.customData[CustomDataAttributes.secondName] === name ||
+            c.customData[CustomDataAttributes.thirdName] === name)) ||
         (phoneNumber &&
-          (c.customData['phoneNumber'] === phoneNumber ||
-            c.customData['whatsappPhoneNumber'] === phoneNumber ||
+          (c.customData[CustomDataAttributes.phoneNumber] === phoneNumber ||
+            c.customData[CustomDataAttributes.whatsappPhoneNumber] ===
+              phoneNumber ||
             c.phoneNumber === phoneNumber))
       );
     });
