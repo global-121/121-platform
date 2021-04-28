@@ -5,7 +5,6 @@
   },
   "account": {
     "introduction": "Welcome to 121. Please log in below.",
-    "login": "Log-in form",
     "email-label": "E-mail",
     "password-label": "Password",
     "create-label": "New password",
@@ -58,10 +57,7 @@
     },
     "validate-fsp": {
       "introduction": "Below you see the Person Affected's information for the chosen Financial Service Provider. Check it with the Person Affected, adapt where necessary, and confirm.",
-      "submit": "Submit answers",
-      "please-confirm": "Below is an overview of the Person Affected's information. Please confirm and submit.",
-      "change": "Change information",
-      "confirm-button": "Issue Program Credential",
+      "submit": "Save",
       "no-fsp": "There are no questions to validate for the chosen Financial Service Provider",
       "back-menu": "Back to main menu",
       "generic-error": "Something went wrong.",
