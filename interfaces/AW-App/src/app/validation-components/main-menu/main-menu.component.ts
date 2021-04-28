@@ -29,7 +29,7 @@ export class MainMenuComponent implements ValidationComponent {
   ) {}
 
   async ngOnInit() {
-    const pendingUploadCount = await this.getNrUploadWaiting();
+    const pendingUploadCount = await this.getPendingUploadCount();
     this.menuOptions = [
       {
         id: ValidationComponents.downloadData,
@@ -53,7 +53,7 @@ export class MainMenuComponent implements ValidationComponent {
     ];
   }
 
-  private async getNrUploadWaiting(): Promise<number> {
+  private async getPendingUploadCount(): Promise<number> {
     const validatedData = await this.storage.get(
       IonicStorageTypes.validatedData,
     );
