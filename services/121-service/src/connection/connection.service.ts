@@ -32,6 +32,7 @@ import csv from 'csv-parser';
 import { ActionService } from '../actions/action.service';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ReferenceIdDto } from './dto/reference-id.dto';
+import { ValidationDataService } from './validation-data/validation-data.service';
 
 @Injectable()
 export class ConnectionService {
@@ -53,7 +54,7 @@ export class ConnectionService {
   private readonly programRepository: Repository<ProgramEntity>;
 
   public constructor(
-    private readonly programService: ProgramService,
+    private readonly validationDataService: ValidationDataService,
     private readonly httpService: HttpService,
     private readonly smsService: SmsService,
     private readonly lookupService: LookupService,
@@ -187,7 +188,7 @@ export class ConnectionService {
       connection.appliedDate = new Date();
       connection.programsApplied.push(+programId);
       await this.connectionRepository.save(connection);
-      this.programService.calculateInclusionPrefilledAnswers(
+      this.validationDataService.calculateInclusionScore(
         referenceId,
         programId,
       );

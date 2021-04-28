@@ -21,6 +21,7 @@ import {
   AnswerSet,
 } from '../../programs/fsp/fsp-interface';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
+import { CustomCriterium } from 'src/programs/program/custom-criterium.entity';
 
 @Injectable()
 export class ValidationDataService {
@@ -59,7 +60,7 @@ export class ValidationDataService {
   }
 
   // PA: post answers to attributes
-  public async prefilledAnswers(
+  public async uploadPrefilledAnswers(
     referenceId: string,
     programId: number,
     prefilledAnswersRaw: PrefilledAnswerDto[],
@@ -80,7 +81,13 @@ export class ValidationDataService {
           },
         },
       );
-      if (!oldAttribute) {
+      if (oldAttribute) {
+        oldAttribute.answer = answer.answer;
+        const oldValidationData = await this.validationDataAttributesRepository.save(
+          oldAttribute,
+        );
+        validationDatas.push(oldValidationData);
+      } else {
         let validationData = new ValidationDataAttributesEntity();
         validationData.referenceId = referenceId;
         validationData.attributeId = answer.attributeId;
@@ -283,6 +290,16 @@ export class ValidationDataService {
       payload.referenceId,
     );
 
+    await this.uploadPrefilledAnswers(
+      payload.referenceId,
+      payload.programId,
+      payload.attributes,
+    );
+
+    await this.calculateInclusionScore(payload.referenceId, payload.programId);
+
+    await this.deletePrefilledAnswers(payload.referenceId, payload.programId);
+
     await this.updateConnectionStatus(payload.referenceId);
   }
 
@@ -292,5 +309,102 @@ export class ValidationDataService {
     });
     connection.validationDate = new Date();
     await this.connectionRepository.save(connection);
+  }
+
+  public async calculateInclusionScore(
+    referenceId: string,
+    programId: number,
+  ): Promise<void> {
+    const scoreList = await this.createQuestionAnswerListPrefilled(
+      referenceId,
+      programId,
+    );
+
+    let program = await this.programRepository.findOne(programId, {
+      relations: ['customCriteria'],
+    });
+    const score = this.calculateScoreAllCriteria(
+      program.customCriteria,
+      scoreList,
+    );
+    let connection = await this.connectionRepository.findOne({
+      where: { referenceId: referenceId },
+    });
+
+    connection.inclusionScore = score;
+
+    await this.connectionRepository.save(connection);
+  }
+
+  private async createQuestionAnswerListPrefilled(
+    referenceId: string,
+    programId: number,
+  ): Promise<object> {
+    const prefilledAnswers = await this.getPrefilledAnswers(
+      referenceId,
+      programId,
+    );
+    const scoreList = {};
+    for (let prefilledAnswer of prefilledAnswers) {
+      let attrValue = prefilledAnswer.answer;
+      let newKeyName = prefilledAnswer.attribute;
+      scoreList[newKeyName] = attrValue;
+    }
+    return scoreList;
+  }
+
+  private calculateScoreAllCriteria(
+    programCriteria: CustomCriterium[],
+    scoreList: object,
+  ): number {
+    let totalScore = 0;
+    for (let criterium of programCriteria) {
+      let criteriumName = criterium.criterium;
+      if (scoreList[criteriumName]) {
+        let answerPA = scoreList[criteriumName];
+        switch (criterium.answerType) {
+          case 'dropdown': {
+            totalScore =
+              totalScore + this.getScoreForDropDown(criterium, answerPA);
+          }
+          case 'numeric':
+            totalScore =
+              totalScore + this.getScoreForNumeric(criterium, answerPA);
+        }
+      }
+    }
+    return totalScore;
+  }
+
+  private getScoreForDropDown(
+    criterium: CustomCriterium,
+    answerPA: object,
+  ): number {
+    // If questions has no scoring system return 0;
+    if (Object.keys(criterium.scoring).length === 0) {
+      return 0;
+    }
+    let score = 0;
+    const options = JSON.parse(JSON.stringify(criterium.options));
+    for (let value of options) {
+      if (value.option == answerPA) {
+        score = criterium.scoring[value.option];
+      }
+    }
+    return score;
+  }
+
+  private getScoreForNumeric(
+    criterium: CustomCriterium,
+    answerPA: number,
+  ): number {
+    let score = 0;
+    if (criterium.scoring['multiplier']) {
+      if (isNaN(answerPA)) {
+        answerPA = 0;
+      }
+      score = criterium.scoring['multiplier'] * answerPA;
+    }
+    return score;
   }
 }
