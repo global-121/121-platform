@@ -10,7 +10,6 @@ import { QrScannerComponent } from 'src/app/shared/qr-scanner/qr-scanner.compone
 import { environment } from 'src/environments/environment';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
-import { SessionStorageService } from './../../services/session-storage.service';
 
 @Component({
   selector: 'app-scan-qr',
@@ -27,7 +26,6 @@ export class ScanQrComponent implements ValidationComponent {
   constructor(
     public conversationService: ConversationService,
     public programsService: ProgramsServiceApiService,
-    public sessionStorageService: SessionStorageService,
     private storage: Storage,
     private modalController: ModalController,
   ) {}
@@ -227,10 +225,7 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   private storePaData(paData: any) {
-    this.sessionStorageService.store(
-      this.sessionStorageService.type.paData,
-      JSON.stringify(paData),
-    );
+    window.sessionStorage.setItem('paData', JSON.stringify(paData));
   }
 
   private foundCorrectPaData() {

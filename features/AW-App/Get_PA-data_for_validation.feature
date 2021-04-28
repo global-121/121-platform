@@ -2,7 +2,7 @@
 Feature: Get PA-data for validation
 
   Background:
-    Given a logged-in "aidworker" user
+    Given a logged-in "field-validation" user
     Given the user is on the "actions" page
     Given the user selects "Scan PA's QR-code" from the main-menu
 

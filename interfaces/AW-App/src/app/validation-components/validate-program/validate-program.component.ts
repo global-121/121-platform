@@ -18,7 +18,6 @@ import {
 import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { SessionStorageService } from 'src/app/services/session-storage.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
@@ -32,7 +31,7 @@ export class ValidateProgramComponent implements ValidationComponent {
   public referenceId: string;
   public programId: number;
   private currentProgram: Program;
-  public programCredentialIssued = false;
+  public programAttributesValidated = false;
 
   public questions: Question[];
   public answerTypes = AnswerType;
@@ -45,14 +44,18 @@ export class ValidateProgramComponent implements ValidationComponent {
     public translatableString: TranslatableStringService,
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
-    public sessionStorageService: SessionStorageService,
     public router: Router,
     public ionContent: IonContent,
     private storage: Storage,
   ) {}
 
   async ngOnInit() {
-    const paData = await this.getPaData();
+    const paData = this.getPaData();
+
+    if (!paData) {
+      return;
+    }
+
     this.referenceId = paData[0].referenceId;
     this.programId = paData[0].programId;
 
@@ -62,11 +65,13 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.ionContent.scrollToBottom(300);
   }
 
-  private async getPaData(): Promise<PaDataAttribute[]> {
-    const paDataRaw = await this.sessionStorageService.retrieve(
-      this.sessionStorageService.type.paData,
-    );
-    return JSON.parse(paDataRaw);
+  private getPaData(): PaDataAttribute[] | null {
+    const paDataRaw = window.sessionStorage.getItem('paData');
+    try {
+      return JSON.parse(paDataRaw);
+    } catch (error) {
+      return null;
+    }
   }
 
   private async getProgramQuestions() {
@@ -188,32 +193,29 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   public async validateAttributes() {
     const attributes = this.createAttributes(Object.values(this.answers));
-    await this.storeCredentialOffline(attributes);
-    this.programCredentialIssued = true;
+    await this.storeValidatedAttributes(attributes);
+    this.programAttributesValidated = true;
     this.complete();
   }
 
-  public async storeCredentialOffline(attributes: ProgramAttribute[]) {
-    const credential = {
+  public async storeValidatedAttributes(attributes: ProgramAttribute[]) {
+    const validatedAttributes = {
       referenceId: this.referenceId,
       programId: this.programId,
       attributes,
     };
-    let storedCredentials = await this.storage.get(
-      IonicStorageTypes.credentials,
-    );
-    if (!storedCredentials) {
-      storedCredentials = [];
+    let validatedData = await this.storage.get(IonicStorageTypes.validatedData);
+    if (!validatedData) {
+      validatedData = [];
     }
 
     // If offline referenceId is already stored delete it from array first
-    storedCredentials = storedCredentials.filter(
-      (storedCredential) =>
-        !(storedCredential.referenceId === this.referenceId),
+    validatedData = validatedData.filter(
+      (item) => !(item.referenceId === this.referenceId),
     );
 
-    storedCredentials.push(credential);
-    await this.storage.set(IonicStorageTypes.credentials, storedCredentials);
+    validatedData.push(validatedAttributes);
+    await this.storage.set(IonicStorageTypes.validatedData, validatedData);
   }
 
   getNextSection() {

@@ -20,7 +20,6 @@ export const mockProgram: Program = {
     },
   ],
   financialServiceProviders: [],
-  credDefId: '',
 };
 
 export const fspData = {

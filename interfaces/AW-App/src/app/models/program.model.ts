@@ -10,7 +10,6 @@ export class Program {
   ngo: string;
   customCriteria: ProgramCriterium[];
   financialServiceProviders: any[];
-  credDefId: string;
 }
 
 export class ProgramCriterium {

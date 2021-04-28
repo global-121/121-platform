@@ -30,10 +30,6 @@ export class DownloadDataComponent implements ValidationComponent {
   public downloadAborted = false;
   public nrDownloaded: number;
 
-  public validationData: ValidationAnswer[];
-  public qrConnectionMapping: QrConnectionMap[];
-  public fspData: any;
-
   constructor(
     public programsService: ProgramsServiceApiService,
     public conversationService: ConversationService,
@@ -46,40 +42,41 @@ export class DownloadDataComponent implements ValidationComponent {
 
   public async downloadData() {
     await this.programsService.downloadData().then(
-      (response) => {
-        this.validationData = response.answers;
-        this.qrConnectionMapping = response.qrConnectionMapping;
-        this.fspData = response.fspData;
+      async (response) => {
+        const validationData: ValidationAnswer[] = response.answers;
+        const qrConnectionMapping: QrConnectionMap[] =
+          response.qrConnectionMapping;
+        const fspData = response.fspData;
+
+        // If no data is available, stop.
+        if (!validationData) {
+          this.downloadAborted = true;
+          this.complete();
+          return;
+        }
+
+        await this.storage.set(
+          IonicStorageTypes.validationProgramData,
+          validationData,
+        );
+        await this.storage.set(
+          IonicStorageTypes.qrConnectionMapping,
+          qrConnectionMapping,
+        );
+        await this.storage.set(IonicStorageTypes.validationFspData, fspData);
+
+        const myPrograms = await this.getProgramData(validationData);
+        await this.storage.set(IonicStorageTypes.myPrograms, myPrograms);
+
+        this.nrDownloaded = this.countUniqueConnections(validationData);
+        this.downloadReady = true;
+        this.complete();
       },
       () => {
         this.downloadAborted = true;
         this.complete();
       },
     );
-
-    // If no data is available, stop.
-    if (!this.validationData) {
-      this.downloadAborted = true;
-      this.complete();
-      return;
-    }
-
-    await this.storage.set(
-      IonicStorageTypes.validationProgramData,
-      this.validationData,
-    );
-    await this.storage.set(
-      IonicStorageTypes.qrConnectionMapping,
-      this.qrConnectionMapping,
-    );
-    await this.storage.set(IonicStorageTypes.validationFspData, this.fspData);
-
-    const myPrograms = await this.getProgramData(this.validationData);
-    await this.storage.set(IonicStorageTypes.myPrograms, myPrograms);
-
-    this.nrDownloaded = this.countUniqueConnections(this.validationData);
-    this.downloadReady = true;
-    this.complete();
   }
 
   private async getProgramData(validationData: ValidationAnswer[]) {

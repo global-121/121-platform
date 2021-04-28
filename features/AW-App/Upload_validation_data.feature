@@ -2,7 +2,7 @@
 Feature: Upload validation data
 
   Background:
-    Given a logged-in "aidworker" user
+    Given a logged-in "field-validation" user
 
   Scenario: Upload validation data
     Given there is internet connection

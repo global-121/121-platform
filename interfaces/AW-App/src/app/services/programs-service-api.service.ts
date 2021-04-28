@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { InstanceData } from '../models/instance.model';
+import { ProgramAnswer } from '../models/pa-data.model';
 import { Program } from '../models/program.model';
 import { UserModel } from '../models/user.model';
 import { ApiService } from './api.service';
@@ -133,10 +134,10 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  issueCredential(
+  postValidationData(
     referenceId: string,
     programId: number,
-    attributes: any,
+    attributes: ProgramAnswer[],
   ): Promise<any> {
     return this.apiService
       .post(
