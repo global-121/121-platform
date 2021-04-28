@@ -40,7 +40,7 @@ export class ValidationDataController {
   public async prefilledAnswers(
     @Body() prefilledAnswers: PrefilledAnswersDto,
   ): Promise<any[]> {
-    return await this.validationDataService.prefilledAnswers(
+    return await this.validationDataService.uploadPrefilledAnswers(
       prefilledAnswers.referenceId,
       prefilledAnswers.programId,
       prefilledAnswers.attributes,

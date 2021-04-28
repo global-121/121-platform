@@ -15,6 +15,7 @@ import { TransactionEntity } from '../programs/program/transactions.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { ActionModule } from '../actions/action.module';
 import { ActionEntity } from '../actions/action.entity';
+import { ValidationDataModule } from './validation-data/validation-data.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ActionEntity } from '../actions/action.entity';
     SmsModule,
     LookupModule,
     ActionModule,
+    ValidationDataModule,
   ],
   providers: [ConnectionService],
   controllers: [ConnectionController],
