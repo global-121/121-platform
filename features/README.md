@@ -34,14 +34,18 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 ### For Person/People Affected (PA-App)
 
-- [Listen to text in conversation-view](PA-App/Listen_to_text_in_conversation-view.feature)
-- [Create Identity](PA-App/Create_Identity.feature)
-- [Use existing Digital ID](PA-App/Use_existing_Digital_ID.feature)
-- [Verify password input](PA-App/Verify_password_input.feature)
+- [New registration](PA-App/New_registration.feature)
+- [Use existing Account](PA-App/Use_existing_Account.feature)
+- [Consent question](PA-App/Consent_question.feature)
 - [Answer program questions](PA-App/Answer_program_questions.feature)
 - [Fill payment details](PA-App/Fill_payment_details.feature)
-- [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 - [Link preprinted QR-code](PA-App/Link-preprinted-QR-code.feature)
+
+#### Generic/small PA-App components
+
+- [Listen to text in conversation-view](PA-App/Listen_to_text_in_conversation-view.feature)
+- [Verify password input](PA-App/Verify_password_input.feature)
+- [Verify phone number input](PA-App/Verify_phone_number_input.feature)
 
 ### For Aid-Worker (AW-App)
 
