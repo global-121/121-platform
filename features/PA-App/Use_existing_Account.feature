@@ -1,13 +1,13 @@
 @pa-app
-Feature: Use existing Digital ID
+Feature: Use existing Account
 
 
-  Scenario: Use existing Digital ID
+  Scenario: Use existing Account
     Given the PA accesses the PA-App in a web-browser
     Given the "select language"-step is shown
     Given the PA selects a language
     Given the "sign-up/sign-in"-step is shown
-    When the PA selects "Use existing Digital ID"
+    When the PA selects "Use existing Account"
     Then the "login identity"-step is shown
     When the PA completes the step
     Then the conversation is cleared
