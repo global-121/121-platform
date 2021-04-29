@@ -11,16 +11,16 @@
 
 ## Status
 
-| Interfaces | Build Status                                                                                                                                                                                                                  |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PA-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master)    |
-| AW-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master)    |
+| Interfaces | Build Status |
+| ---------- | ------------ |
+| PA-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master) |
+| AW-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master) |
 | HO-Portal  | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master) |
 
-| Services            | Build Status                                                                                                                                                                                                                            |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 121-service         | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master)           |
-| PA-accounts-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/PA-accounts-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=19&branchName=master)   |
+| Services            | Build Status |
+| ------------------- | ------------ |
+| 121-service         | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master) |
+| PA-accounts-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/PA-accounts-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=19&branchName=master) |
 
 ---
 
@@ -73,9 +73,9 @@ To see the status/logs of all Docker-containers, run from the `services/`-folder
     docker-compose logs -f <container-name>
 
 To verify the successful installation and setup of services, access their Swagger UI:
-| | URL | or run: |
+|                     | URL                           | or run:                    |
 | ------------------- | ----------------------------- | -------------------------- |
-| 121-service | <http://localhost:3000/docs/> | `npm rum open:121-service` |
+| 121-service         | <http://localhost:3000/docs/> | `npm rum open:121-service` |
 | PA-accounts-service | <http://localhost:3001/docs/> | `npm rum open:pa-accounts` |
 
 ---
@@ -108,15 +108,13 @@ To start an individual interface in development mode:
 
 - Or explore the specific options as defined in each interface's own `package.json` or `README.md`.
 
-The 4 individual Angular applications, when started will be available via:
+All individual Angular applications, when started will be available via:
 
 |           | URL                     | or run:           |
 | --------- | ----------------------- | ----------------- |
 | PA-App    | <http://localhost:8008> | `npm run open:pa` |
 | AW-App    | <http://localhost:8080> | `npm run open:aw` |
 | HO-Portal | <http://localhost:8888> | `npm run open:ho` |
-
-From hereon, you can start making changes to the UI and observe how the components are interconnected.
 
 ---
 
@@ -295,14 +293,12 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Define the `version`(-number) for the upcoming release.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
   - [ ] Commit changes to `master`-branch on GitHub.
-- [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch
-  - [ ] Push this branch to GitHub
+- [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch and push this branch to GitHub
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
   - [ ] Add the `version` to create a new tag
   - [ ] Select the new `release/<version>`-branch
-  - [ ] Set the title of the release to `version`
-  - [ ] Add a short description and/or link to relevant other documents (if applicable)
-  - [ ] Create/publish the release on GitHub
+  - [ ] Set the title of the release to `version`. Add a short description and/or link to relevant other documents (if applicable)
+  - [ ] Publish the release on GitHub
 
 ### Patch/Hotfix Checklist
 
@@ -323,11 +319,11 @@ This follows the same process as a regular release + deployment. With some small
 #### GitHub web-interface-only approach
 
 - Browse to the specific file that needs a fix on GitHub, click "edit" and make the changes  
-  The URL will look like: `https://github.com/global-121/121-platform/edit/release/v0.x.0/<path-to-file>`
+  The URL will look like: `https://github.com/global-121/121-platform/edit/release/v1.0.0/<path-to-file>`
 - Select "Create a new branch for this commit and start a pull request" from the "commit changes"-box
-- Use `release/v0.x.1` as the branch-name by clicking "Propose changes"  
+- Use `release/v1.0.1` as the branch-name by clicking "Propose changes"  
   This branch will now be created and is available to use for a new release
-- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md) and commit to the same `release/v0.x.1` branch.
+- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md) and commit to the same `release/v1.0.1` branch.
 - Create a new release (see above) and publish it.  
   The publish-command will invoke the webhook(s), which trigger an automated deploy for environments on that same _minor_ version.
 - After the hotfix-release, apply the fixes to the master-branch by merging the PR created.
@@ -350,7 +346,7 @@ This follows the same process as a regular release + deployment. With some small
   - [ ] Checkout code (of latest release)
   - [ ] Set secrets, configure ENV-variables (via all `.env`-files)
   - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):  
-         Run: `sudo ./tools/deploy.sh`
+         Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.0.0`
 - [ ] Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2)
 - [ ] (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database)
 
@@ -360,14 +356,14 @@ This follows the same process as a regular release + deployment. With some small
 - [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
 - [ ] Prepare the environment accordingly (in all `.env`-files)
   - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):  
-         Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v0.1.0`
+         Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.1.0`
 
 ## Glossary
 
 | Term          | Definition (_we_ use)                                                                                        |
 | ------------- | ------------------------------------------------------------------------------------------------------------ |
-| `version`     | A 'number' specified in the [`SemVer`](https://semver.org/spec/v2.0.0.html)-format: `0.1.0`                  |
-| `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v0.1.0`                 |
+| `version`     | A 'number' specified in the [`SemVer`](https://semver.org/spec/v2.0.0.html)-format: `1.1.0`                  |
+| `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v1.1.0`                 |
 | `release`     | A fixed 'state of the code-base', [published on GitHub](https://github.com/global-121/121-platform/releases) |
 | `deployment`  | An action performed to get (released) code running on an environment                                         |
 | `environment` | A machine that can run code (with specified settings); i.e. a server or VM, or your local machine            |
