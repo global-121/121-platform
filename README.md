@@ -34,80 +34,27 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 
 To set up a local development-environment:
 
-### On Windows
-
-#### Install dependencies
-
-- Install Git (<https://git-scm.com/download/win>)
-- Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
-- Install Node.js (<https://nodejs.org/en/download/>)
-  - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'Node version manager'.
+- Install Git: <https://git-scm.com/download/>
+- Install Node.js: <https://nodejs.org/en/download/>
   - Install the version specified in the [`.node-version`](.node-version)-file.
-- Install Docker (<https://docs.docker.com/docker-for-windows/install/>)
-
-### On Linux
-
-#### Install dependencies
-
-- Install Git: `sudo apt install git-all`
-- Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
-- Install Node.js
-
-  - To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).
-  - After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
+  - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
+    - [NVM - Node Version Manager](http://nvm.sh/) (for macOS/Linux).  
+      After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
 
           nvm install && nvm install-latest-npm
 
-- Install Docker  
-  On linux distributions we need to install `docker engine` and `docker-compose` respectively. On other platforms they are available through Docker Desktop. Read more at: <https://docs.docker.com/engine/install/>
+    - [fnm](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux)
 
-  `Docker compose` relies on `docker engine`, so in order to get started we must install `docker-engine` first. (Read more at: <https://docs.docker.com/engine/install/ubuntu/>). There are various ways of installing `docker engine` (repository, packages or automated scripts). The official recommended way doing that is through setting up a repository.
+- Install Docker
+  - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
+  - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
+  - On Linux:  
+    - Install Docker Engine: <https://docs.docker.com/engine/install/>
+    - Install Docker Compose: <https://docs.docker.com/compose/install/#install-compose-on-linux-systems>
 
-  - First off, uninstall any old version of docker-engine.
+With these tools in place you can checkout the code and start setting up:
 
-        sudo apt-get remove docker docker-engine docker.io containerd runc
-
-  - Choose an installation method from the provided list at <https://docs.docker.com/engine/install/ubuntu/#installation-methods> and install `docker-engine`
-
-  - Do step 2-b instead of 2-a to install a specific version: `sudo apt-get install docker-ce=5:19.03.14~3-0~ubuntu-<UBUNTU=NAME such as bionic or xenial> docker-ce-cli=5:19.03.14~3-0~ubuntu-<UBUNTU=NAME> containerd.io` you can see the available versions by running `apt-cache madison docker-ce`
-
-  - Test your docker installation
-
-        sudo docker run hello-world
-
-  - Now install `docker-compose` by following the steps:
-
-        sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
-
-    Reference: <https://docs.docker.com/compose/install/>
-
-  - Test the docker compose installation
-
-        docker-compose --version
-
-  - Additionally, we need to install `docker-machine` as well.
-
-        base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo mv /tmp/docker-machine /usr/local/bin/docker-machine &&   chmod +x /usr/local/bin/docker-machine
-
-    Reference: <https://docs.docker.com/machine/install-machine/>
-
-  - You are set!
-
-### On macOS
-
-#### Install dependencies
-
-- Install Git: <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git> > Installing on macOS (section)
-- Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
-- Install Node.js
-
-  - To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).
-  - After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
-
-          nvm install && nvm install-latest-npm
-
-- Install Docker Desktop (<https://docs.docker.com/docker-for-mac/install/>)
+    git clone https://github.com/global-121/121-platform.git
 
 ---
 
@@ -130,6 +77,8 @@ To verify the successful installation and setup of services, access their Swagge
 | ------------------- | ----------------------------- | -------------------------- |
 | 121-service | <http://localhost:3000/docs/> | `npm rum open:121-service` |
 | PA-accounts-service | <http://localhost:3001/docs/> | `npm rum open:pa-accounts` |
+
+---
 
 ## Setup Interfaces
 
@@ -168,6 +117,8 @@ The 4 individual Angular applications, when started will be available via:
 | HO-Portal | <http://localhost:8888> | `npm run open:ho` |
 
 From hereon, you can start making changes to the UI and observe how the components are interconnected.
+
+---
 
 ## Common problems with Local Environment set-up
 
