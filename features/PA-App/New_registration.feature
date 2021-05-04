@@ -13,30 +13,30 @@ Feature: New registration
     Then the "select language"-step is shown
     When the PA selects a "language" from the list
     Then interface text changes into the chosen language
-    And the "contact details"-step is shown
+    When the PA confirms the chosen "language"
+    Then the "contact details"-step is shown
     And the "select program"-step is shown
     When the PA selects a "program" from the list
     Then the "consent question"-step is shown
-    When the PA completes this step
+    When the PA gives "consent"
     Then the "sign-up/sign-in"-step is shown
     When the PA selects "create account" from the list
     Then the "create identity"-step is shown
     When the PA completes this step
-    Then an account is created in the "PA-Accounts-service"
-    And a unique "referenceId" is generated and stored in the "PA-Accounts-service"
+    Then a new row in the "PA-table" in the HO-portal is created with status "created"
     And the "enroll in a program"-step is shown
     When the PA completes this step (See "Answer_program_questions.feature")
-    Then the PA's answers are (temporarily) stored in the "121-service"
-    And the PA's status in the "121-service" is set to "created"
-    And the "select financial service provider"-step is shown
-    When the PA completes this step (See "Fill_payment_details.feature")
-    Then the PA's answers are stored in the "121-service"
-    And the "preprinted qr-code"-step is shown
+    Then the "select financial service provider"-step is shown
+    When the PA completes this step (See "Fill_payment_details.feature")   
+    Then the "preprinted qr-code"-step is shown
     When the PA completes this step (See "Link-preprinted-QR-code.feature")
-    Then the PA's provided QR-code is stored in the "121-service"
+    Then the PA receives an SMS confirming registration
+    And the PA's status in the PA-table in the HO-portal is updated to "registered"
+    And the PA's details are visible in the PA-table in the HO-portal
     And the "registration summary"-step is shown
     And the "monitoring question"-step is shown
     When the PA completes this step
     Then the "inclusion status"-step is shown
-    And the PA's status in the "121-service" is set to "registered"
+    When the PA is included in the HO-portal
+    Then an inclusion-message appears in the PA-app
 
