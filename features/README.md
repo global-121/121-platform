@@ -50,9 +50,10 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 ### For Aid-Worker (AW-App)
 
-- [Upload validation data](AW-App/Upload_validation_data.feature)
 - [Download validation data](AW-App/Download_validation_data.feature)
-- [Get PA-data for validation](AW-App/Get_PA-data_for_validation.feature)
+- [Get Person Affected validation data](AW-App/Get_Person_Affected_Validation_Data.feature)
+- [Validate Person Affected](AW-App/Validate_Person_Affected.feature)
+- [Upload validation data](AW-App/Upload_validation_data.feature)
 
 ### For Admin-user (Swagger UI)
 
