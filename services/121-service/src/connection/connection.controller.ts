@@ -111,7 +111,6 @@ export class ConnectionController {
     return await this.connectionService.applyProgram(
       referenceIdDto.referenceId,
       params.programId,
-      true,
     );
   }
 

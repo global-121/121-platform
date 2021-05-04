@@ -215,97 +215,6 @@ export class ConnectionService {
     await this.validationDataAttributesRepository.save(validationDataArray);
   }
 
-  // public async importTestRegistrationsNL(
-  //   csvFile,
-  //   programId: number,
-  // ): Promise<string> {
-  //   let program = await this.programRepository.findOne(programId);
-  //   if (!program) {
-  //     const errors = 'Program not found.';
-  //     throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-  //   }
-  //   const validatedImportRecords = await this.csvToValidatedTestRegistrationsNL(
-  //     csvFile,
-  //   );
-
-  //   let countImported = 0;
-  //   for await (const record of validatedImportRecords) {
-  //     const connection = new ConnectionEntity();
-
-  //     // Mimic 'create account' step
-  //     connection.referenceId = uuid();
-  //     connection.accountCreatedDate = new Date();
-  //     connection.namePartnerOrganization = record.namePartnerOrganization;
-  //     await this.connectionRepository.save(connection);
-
-  //     // Mimic 'enroll program' step
-  //     await this.uploadPrefilledAnswersTestRegistrationsNL(
-  //       connection.referenceId,
-  //       programId,
-  //       record.nameFirst,
-  //       record.nameLast,
-  //       record.phoneNumber,
-  //     );
-
-  //     // Mimic 'select fsp' step
-  //     const fsp = await this.fspRepository.findOne({
-  //       where: { fsp: record.fspName },
-  //     });
-  //     await this.addFsp(connection.referenceId, fsp.id);
-  //     await this.addCustomData(
-  //       connection.referenceId,
-  //       CustomDataAttributes.whatsappPhoneNumber,
-  //       record.whatsappPhoneNumber,
-  //     );
-
-  //     // Mimic 'set phone number' step
-  //     await this.addPhone(
-  //       connection.referenceId,
-  //       record.phoneNumber,
-  //       record.preferredLanguage,
-  //       false,
-  //     );
-
-  //     // Mimic 'finish registration' step
-  //     await this.applyProgram(connection.referenceId, programId, false);
-
-  //     countImported += 1;
-  //   }
-
-  //   return `Imported ${countImported} PA's`;
-  // }
-
-  // private async uploadPrefilledAnswersTestRegistrationsNL(
-  //   referenceId: string,
-  //   programId: number,
-  //   nameFirst: string,
-  //   nameLast: string,
-  //   phoneNumber: string,
-  // ): Promise<void> {
-  //   const prefilledAnswers: PrefilledAnswerDto[] = [
-  //     {
-  //       attributeId: 0,
-  //       attribute: CustomDataAttributes.nameFirst,
-  //       answer: nameFirst,
-  //     },
-  //     {
-  //       attributeId: 0,
-  //       attribute: CustomDataAttributes.nameLast,
-  //       answer: nameLast,
-  //     },
-  //     {
-  //       attributeId: 0,
-  //       attribute: CustomDataAttributes.phoneNumber,
-  //       answer: phoneNumber,
-  //     },
-  //   ];
-  //   await this.validationDataService.uploadPrefilledAnswers(
-  //     referenceId,
-  //     programId,
-  //     prefilledAnswers,
-  //   );
-  // }
-
   private async csvToValidatedBulkImport(csvFile): Promise<BulkImportDto[]> {
     const importRecords = await this.validateCsv(csvFile);
     return await this.validateBulkImportCsvInput(importRecords);
@@ -403,7 +312,6 @@ export class ConnectionService {
   public async applyProgram(
     referenceId: string,
     programId: number,
-    sendSms: boolean,
   ): Promise<void> {
     const connection = await this.findOne(referenceId);
     if (!connection.appliedDate) {
@@ -414,15 +322,13 @@ export class ConnectionService {
         referenceId,
         programId,
       );
-      if (sendSms) {
-        this.smsService.notifyBySms(
-          connection.phoneNumber,
-          connection.preferredLanguage,
-          programId,
-          null,
-          PaStatus.registered,
-        );
-      }
+      this.smsService.notifyBySms(
+        connection.phoneNumber,
+        connection.preferredLanguage,
+        programId,
+        null,
+        PaStatus.registered,
+      );
     }
   }
 
