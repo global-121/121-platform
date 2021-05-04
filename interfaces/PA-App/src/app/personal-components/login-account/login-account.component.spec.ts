@@ -7,16 +7,16 @@ import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { MockLoggingService } from './../../mocks/logging.service.mock';
-import { LoginIdentityComponent } from './login-identity.component';
+import { MockLoggingService } from '../../mocks/logging.service.mock';
+import { LoginAccountComponent } from './login-account.component';
 
-describe('LoginIdentityComponent', () => {
-  let component: LoginIdentityComponent;
-  let fixture: ComponentFixture<LoginIdentityComponent>;
+describe('LoginAccountComponent', () => {
+  let component: LoginAccountComponent;
+  let fixture: ComponentFixture<LoginAccountComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [LoginIdentityComponent],
+      declarations: [LoginAccountComponent],
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -37,7 +37,7 @@ describe('LoginIdentityComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoginIdentityComponent);
+    fixture = TestBed.createComponent(LoginAccountComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -21,7 +21,7 @@ Feature: New registration
     When the PA gives "consent"
     Then the "sign-up/sign-in"-step is shown
     When the PA selects "create account" from the list
-    Then the "create identity"-step is shown
+    Then the "create account"-step is shown
     When the PA completes this step
     Then a new row in the "PA-table" in the HO-portal is created with status "created"
     And the "enroll in a program"-step is shown

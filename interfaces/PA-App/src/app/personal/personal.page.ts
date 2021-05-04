@@ -10,9 +10,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { environment } from 'src/environments/environment';
 import { ConsentQuestionComponent } from '../personal-components/consent-question/consent-question.component';
 import { ContactDetailsComponent } from '../personal-components/contact-details/contact-details.component';
-import { CreateIdentityComponent } from '../personal-components/create-identity/create-identity.component';
+import { CreateAccountComponent } from '../personal-components/create-account/create-account.component';
 import { EnrollInProgramComponent } from '../personal-components/enroll-in-program/enroll-in-program.component';
-import { LoginIdentityComponent } from '../personal-components/login-identity/login-identity.component';
+import { LoginAccountComponent } from '../personal-components/login-account/login-account.component';
 import { MonitoringQuestionComponent } from '../personal-components/monitoring-question/monitoring-question.component';
 import { PersonalComponent } from '../personal-components/personal-component.class';
 import {
@@ -52,10 +52,10 @@ export class PersonalPage implements OnInit {
   private availableSections = {
     [PersonalComponents.consentQuestion]: ConsentQuestionComponent,
     [PersonalComponents.contactDetails]: ContactDetailsComponent,
-    [PersonalComponents.createIdentity]: CreateIdentityComponent,
+    [PersonalComponents.createAccount]: CreateAccountComponent,
     [PersonalComponents.enrollInProgram]: EnrollInProgramComponent,
     [PersonalComponents.inclusionStatus]: InclusionStatusComponent,
-    [PersonalComponents.loginIdentity]: LoginIdentityComponent,
+    [PersonalComponents.loginAccount]: LoginAccountComponent,
     [PersonalComponents.monitoringQuestion]: MonitoringQuestionComponent,
     [PersonalComponents.registrationSummary]: RegistrationSummaryComponent,
     [PersonalComponents.preprintedQrcode]: PreprintedQrcodeComponent,

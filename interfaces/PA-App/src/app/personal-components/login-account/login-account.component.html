@@ -1,16 +1,16 @@
 <section>
   <dialogue-turn>
     <p>
-      <play-text-audio key="personal.login-identity.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.login-identity.introduction'|translate }}
+      <play-text-audio key="personal.login-account.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
+      {{ 'personal.login-account.introduction'|translate }}
     </p>
   </dialogue-turn>
   <dialogue-turn actor="self">
     <form (ngSubmit)="submitLoginCredentials(username,password)">
       <div class="ion-margin-bottom">
         <p>
-          <play-text-audio key="personal.login-identity.supply-username" class="ion-margin-end"></play-text-audio>
-          <ion-label>{{ 'personal.login-identity.supply-username'|translate }}</ion-label>
+          <play-text-audio key="personal.login-account.supply-username" class="ion-margin-end"></play-text-audio>
+          <ion-label>{{ 'personal.login-account.supply-username'|translate }}</ion-label>
 
         </p>
         <ion-input
@@ -36,8 +36,8 @@
       </div>
       <div *ngIf="usernameSubmitted" class="ion-margin-vertical">
         <p>
-          <play-text-audio key="personal.login-identity.supply-password" class="ion-margin-end"></play-text-audio>
-          <ion-label>{{ 'personal.login-identity.supply-password'|translate }}</ion-label>
+          <play-text-audio key="personal.login-account.supply-password" class="ion-margin-end"></play-text-audio>
+          <ion-label>{{ 'personal.login-account.supply-password'|translate }}</ion-label>
         </p>
         <password-toggle-input
           name="password"
@@ -69,8 +69,8 @@
     [isSpoken]="incorrectCredentials"
   >
     <p>
-      <play-text-audio key="personal.login-identity.incorrect-credentials" class="ion-float-start ion-margin-end"></play-text-audio>
-      {{ 'personal.login-identity.incorrect-credentials'|translate }}
+      <play-text-audio key="personal.login-account.incorrect-credentials" class="ion-float-start ion-margin-end"></play-text-audio>
+      {{ 'personal.login-account.incorrect-credentials'|translate }}
     </p>
   </dialogue-turn>
 </section>

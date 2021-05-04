@@ -12,11 +12,11 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import * as uuid from 'uuid';
 
 @Component({
-  selector: 'app-create-identity',
-  templateUrl: './create-identity.component.html',
-  styleUrls: ['./create-identity.component.scss'],
+  selector: 'app-create-account',
+  templateUrl: './create-account.component.html',
+  styleUrls: ['./create-account.component.scss'],
 })
-export class CreateIdentityComponent extends PersonalComponent {
+export class CreateAccountComponent extends PersonalComponent {
   @Input()
   public data: any;
 
@@ -170,7 +170,7 @@ export class CreateIdentityComponent extends PersonalComponent {
   complete() {
     this.isDisabled = true;
     this.conversationService.onSectionCompleted({
-      name: PersonalComponents.createIdentity,
+      name: PersonalComponents.createAccount,
       data: {
         username: this.username,
         password: '****************',

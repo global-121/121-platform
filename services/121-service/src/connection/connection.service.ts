@@ -249,7 +249,7 @@ export class ConnectionService {
     }
 
     // If invite found ..
-    // .. find temp connection created at create-identity step and save it
+    // .. find temp connection created at create-account step and save it
     const tempConnection = await this.connectionRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['fsp'],

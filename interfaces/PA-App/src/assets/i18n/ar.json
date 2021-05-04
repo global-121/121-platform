@@ -29,7 +29,7 @@
       "more-info-personal-information": "حول المعلومات الشخصية",
       "question": "للتقدم إلى برنامج المعونات يجب أن توافق على <strong>الطريقة التي سوف نخزن فيها معلوماتك.</strong><br /><br /> نرجو القراءة او الإستماع إلى آلية تخزين معلوماتك الشخصية."
     },
-    "create-identity": {
+    "create-account": {
       "conclusion": "رائع! لقد قمت بإنشاء حساب",
       "confirm-password": "تأكيد كلمة المرور:",
       "create-password-explanation": "اكتب كلمة مرور مكونة من  {{minimalLength}} ارقام على الأقل",
@@ -53,7 +53,7 @@
       "inclusion-status-positive": "لقد قمت بالإنضمام إلى البرنامج.",
       "notify": "سوف نقوم بإعلامك إذا تم قبولك في البرنامج."
     },
-    "login-identity": {
+    "login-account": {
       "incorrect-credentials": "لم يتم التعرف على اسمك الكامل و كلمة مرورك، الرجاء إعادة المحاولة.",
       "introduction": "لإستخدام حساب موجود، عليك تسجيل الدخول باستخدام اسمك الكامل و كلمة المرور.",
       "supply-password": "كلمة المرور:",
