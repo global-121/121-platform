@@ -7,7 +7,7 @@ Feature: Select people affected for validation (extension of Manage_people_affec
 
   Scenario: View people affected connected to a program
     Given scenario "View people affected connected to a program" in Manage_people_affected.feature
-    Then also for each person a "Created Digital ID" date+time is shown
+    Then also for each person a "Created" date+time is shown
     And for each person a "Completed Vulnerability Assessment" date+time is shown (if already available)
     And for each person an "Inclusion Score" is shown (if already available)
     And for each person a "Selected for validation" date+time is shown (if already available)

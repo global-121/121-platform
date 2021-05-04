@@ -1,6 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
@@ -181,6 +181,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public canViewPersonalData: boolean;
 
+  private hasWideScreen(): boolean {
+    return (
+      !this.platform.is('mobile') &&
+      !this.platform.is('mobileweb') &&
+      !this.platform.is('phablet') &&
+      this.platform.width() >= 768
+    );
+  }
+
   constructor(
     private authService: AuthService,
     private programsService: ProgramsServiceApiService,
@@ -188,6 +197,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     private bulkActionService: BulkActionsService,
     private alertController: AlertController,
     public modalController: ModalController,
+    public platform: Platform,
   ) {
     this.locale = environment.defaultLocale;
 
@@ -241,7 +251,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.name',
         ),
         ...this.columnDefaults,
-        frozenLeft: true,
+        frozenLeft: this.hasWideScreen(),
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         roles: [UserRole.View, UserRole.PersonalData],
       },
@@ -251,7 +261,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.phone-number',
         ),
         ...this.columnDefaults,
-        frozenLeft: true,
+        frozenLeft: this.hasWideScreen(),
         phases: [
           ProgramPhase.registrationValidation,
           ProgramPhase.inclusion,
@@ -267,7 +277,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.name-partner-organizatoin',
         ),
         ...this.columnDefaults,
-        frozenLeft: true,
+        frozenLeft: this.hasWideScreen(),
         phases: [ProgramPhase.registrationValidation],
         roles: [UserRole.View, UserRole.PersonalData, UserRole.RunProgram],
       },
@@ -278,7 +288,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...this.columnDefaults,
         width: 90,
-        frozenLeft: true,
+        frozenLeft: this.hasWideScreen(),
       },
       {
         prop: 'imported',

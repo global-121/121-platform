@@ -21,6 +21,7 @@
     "debug:service-worker": "npm run build:debug && npm run copy:sw-debug && npm run serve:prod",
     "test": "ng test --no-watch --browsers=ChromeHeadless",
     "test:dev": "ng test",
+    "lint:translations": "npx ngx-translate-lint --config=ngx-translate-lint.config.json",
     "lint:syntax": "prettier --check \"**/*.{md,js,ts,scss}\"",
     "lint": "ng lint && npm run lint:syntax",
     "fix:syntax": "npm run lint:syntax -- --write"
