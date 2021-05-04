@@ -53,7 +53,8 @@ Features of the 121-platform are described in this folder in a standardizes way 
 ### For Admin-user (Swagger UI)
 
 - [Update phone-numbers of Person Affected](Admin-user/Update_phone_numbers.feature)
-- [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provicder.feature)
+- [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
+- [Import Test registrations NLRC](Admin-user/Import_test_registrations_NL.feature)
 
 ---
 
