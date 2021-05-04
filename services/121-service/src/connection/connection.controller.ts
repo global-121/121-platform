@@ -87,7 +87,7 @@ export class ConnectionController {
     @UploadedFile() csvFile,
     @Param() params,
   ): Promise<string> {
-    return await this.connectionService.importTestRegistrations(
+    return await this.connectionService.importTestRegistrationsNL(
       csvFile,
       params.programId,
     );
@@ -111,6 +111,7 @@ export class ConnectionController {
     return await this.connectionService.applyProgram(
       referenceIdDto.referenceId,
       params.programId,
+      true,
     );
   }
 

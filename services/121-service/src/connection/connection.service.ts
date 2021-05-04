@@ -17,7 +17,6 @@ import {
 } from '../programs/fsp/financial-service-provider.entity';
 import { TransactionEntity } from '../programs/program/transactions.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
-import { ProgramService } from '../programs/program/program.service';
 import {
   FspAnswersAttrInterface,
   AnswerSet,
@@ -58,6 +57,10 @@ export class ConnectionService {
   private readonly transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ValidationDataAttributesEntity)
+  private readonly validationDataAttributesRepository: Repository<
+    ValidationDataAttributesEntity
+  >;
 
   public constructor(
     private readonly validationDataService: ValidationDataService,
@@ -131,7 +134,7 @@ export class ConnectionService {
     };
   }
 
-  public async importTestRegistrations(
+  public async importTestRegistrationsNL(
     csvFile,
     programId: number,
   ): Promise<string> {
@@ -140,45 +143,179 @@ export class ConnectionService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const validatedImportRecords = await this.csvToValidatedTestRegistrations(
+    const validatedImportRecords = await this.csvToValidatedTestRegistrationsNL(
       csvFile,
     );
 
     let countImported = 0;
+    let connections: ConnectionEntity[] = [];
     for await (const record of validatedImportRecords) {
       const connection = new ConnectionEntity();
       connection.referenceId = uuid();
+      connection.accountCreatedDate = new Date();
+      connection.namePartnerOrganization = record.namePartnerOrganization;
       connection.phoneNumber = record.phoneNumber;
       connection.preferredLanguage = record.preferredLanguage;
-      connection.namePartnerOrganization = record.namePartnerOrganization;
-      connection.qrIdentifier = record.qrIdentifier;
+      connection.customData = JSON.parse(JSON.stringify({}));
       connection.customData[CustomDataAttributes.nameFirst] = record.nameFirst;
       connection.customData[CustomDataAttributes.nameLast] = record.nameLast;
       connection.customData[CustomDataAttributes.phoneNumber] =
         record.phoneNumber;
-      const fsp = await this.fspRepository.findOne({ where: { fsp: fspName } });
-      connection.fsp = fsp;
       connection.customData[CustomDataAttributes.whatsappPhoneNumber] =
         record.whatsappPhoneNumber;
-      connection.accountCreatedDate = new Date();
+      const fsp = await this.fspRepository.findOne({
+        where: { fsp: record.fspName },
+      });
+      connection.fsp = fsp;
       connection.appliedDate = new Date();
-      await this.connectionRepository.save(connection);
+      connection.programsApplied = [programId];
+      connections.push(connection);
+    }
+    await this.connectionRepository.save(connections);
+
+    for await (let connection of connections) {
+      await this.validationDataService.calculateInclusionScore(
+        connection.referenceId,
+        programId,
+      );
+
+      // Mimic 'enroll program' step
+      await this.storePrefilledAnswersTestRegistrationsNL(
+        connection.referenceId,
+        programId,
+        connection.customData,
+      );
+
       countImported += 1;
     }
 
     return `Imported ${countImported} PA's`;
   }
 
+  private async storePrefilledAnswersTestRegistrationsNL(
+    referenceId: string,
+    programId: number,
+    customData: any,
+  ): Promise<void> {
+    const attributesNL = [
+      CustomDataAttributes.nameFirst,
+      CustomDataAttributes.nameLast,
+      CustomDataAttributes.phoneNumber,
+    ];
+    let validationDataArray: ValidationDataAttributesEntity[] = [];
+    attributesNL.forEach(async attribute => {
+      let validationData = new ValidationDataAttributesEntity();
+      validationData.referenceId = referenceId;
+      validationData.programId = programId;
+      validationData.attributeId = 0;
+      validationData.attribute = attribute;
+      validationData.answer = customData[attribute];
+      validationDataArray.push(validationData);
+    });
+    await this.validationDataAttributesRepository.save(validationDataArray);
+  }
+
+  // public async importTestRegistrationsNL(
+  //   csvFile,
+  //   programId: number,
+  // ): Promise<string> {
+  //   let program = await this.programRepository.findOne(programId);
+  //   if (!program) {
+  //     const errors = 'Program not found.';
+  //     throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+  //   }
+  //   const validatedImportRecords = await this.csvToValidatedTestRegistrationsNL(
+  //     csvFile,
+  //   );
+
+  //   let countImported = 0;
+  //   for await (const record of validatedImportRecords) {
+  //     const connection = new ConnectionEntity();
+
+  //     // Mimic 'create account' step
+  //     connection.referenceId = uuid();
+  //     connection.accountCreatedDate = new Date();
+  //     connection.namePartnerOrganization = record.namePartnerOrganization;
+  //     await this.connectionRepository.save(connection);
+
+  //     // Mimic 'enroll program' step
+  //     await this.uploadPrefilledAnswersTestRegistrationsNL(
+  //       connection.referenceId,
+  //       programId,
+  //       record.nameFirst,
+  //       record.nameLast,
+  //       record.phoneNumber,
+  //     );
+
+  //     // Mimic 'select fsp' step
+  //     const fsp = await this.fspRepository.findOne({
+  //       where: { fsp: record.fspName },
+  //     });
+  //     await this.addFsp(connection.referenceId, fsp.id);
+  //     await this.addCustomData(
+  //       connection.referenceId,
+  //       CustomDataAttributes.whatsappPhoneNumber,
+  //       record.whatsappPhoneNumber,
+  //     );
+
+  //     // Mimic 'set phone number' step
+  //     await this.addPhone(
+  //       connection.referenceId,
+  //       record.phoneNumber,
+  //       record.preferredLanguage,
+  //       false,
+  //     );
+
+  //     // Mimic 'finish registration' step
+  //     await this.applyProgram(connection.referenceId, programId, false);
+
+  //     countImported += 1;
+  //   }
+
+  //   return `Imported ${countImported} PA's`;
+  // }
+
+  // private async uploadPrefilledAnswersTestRegistrationsNL(
+  //   referenceId: string,
+  //   programId: number,
+  //   nameFirst: string,
+  //   nameLast: string,
+  //   phoneNumber: string,
+  // ): Promise<void> {
+  //   const prefilledAnswers: PrefilledAnswerDto[] = [
+  //     {
+  //       attributeId: 0,
+  //       attribute: CustomDataAttributes.nameFirst,
+  //       answer: nameFirst,
+  //     },
+  //     {
+  //       attributeId: 0,
+  //       attribute: CustomDataAttributes.nameLast,
+  //       answer: nameLast,
+  //     },
+  //     {
+  //       attributeId: 0,
+  //       attribute: CustomDataAttributes.phoneNumber,
+  //       answer: phoneNumber,
+  //     },
+  //   ];
+  //   await this.validationDataService.uploadPrefilledAnswers(
+  //     referenceId,
+  //     programId,
+  //     prefilledAnswers,
+  //   );
+  // }
+
   private async csvToValidatedBulkImport(csvFile): Promise<BulkImportDto[]> {
     const importRecords = await this.validateCsv(csvFile);
     return await this.validateBulkImportCsvInput(importRecords);
   }
 
-  private async csvToValidatedTestRegistrations(
+  private async csvToValidatedTestRegistrationsNL(
     csvFile,
   ): Promise<ImportTestRegistrationsDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    return await this.validateTestRegistrationsCsvInput(importRecords);
+    return await this.validateTestRegistrationsCsvInputNL(importRecords);
   }
 
   private async validateCsv(csvFile): Promise<object[]> {
@@ -235,7 +372,7 @@ export class ConnectionService {
     return validatatedArray;
   }
 
-  private async validateTestRegistrationsCsvInput(
+  private async validateTestRegistrationsCsvInputNL(
     csvArray,
   ): Promise<ImportTestRegistrationsDto[]> {
     const errors = [];
@@ -266,6 +403,7 @@ export class ConnectionService {
   public async applyProgram(
     referenceId: string,
     programId: number,
+    sendSms: boolean,
   ): Promise<void> {
     const connection = await this.findOne(referenceId);
     if (!connection.appliedDate) {
@@ -276,13 +414,15 @@ export class ConnectionService {
         referenceId,
         programId,
       );
-      this.smsService.notifyBySms(
-        connection.phoneNumber,
-        connection.preferredLanguage,
-        programId,
-        null,
-        PaStatus.registered,
-      );
+      if (sendSms) {
+        this.smsService.notifyBySms(
+          connection.phoneNumber,
+          connection.preferredLanguage,
+          programId,
+          null,
+          PaStatus.registered,
+        );
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { fspName } from 'src/programs/fsp/financial-service-provider.entity';
+import { fspName } from '../../programs/fsp/financial-service-provider.entity';
 
 export class BulkImportDto {
   @ApiModelProperty()
@@ -26,6 +26,7 @@ export class ImportTestRegistrationsDto {
   @ApiModelProperty({ default: 'en' })
   @IsNotEmpty()
   @IsString()
+  @IsIn(['en', 'tl', 'ar'])
   public preferredLanguage: string;
 
   @ApiModelProperty()
@@ -57,8 +58,4 @@ export class ImportTestRegistrationsDto {
   @ApiModelProperty()
   @IsString()
   public whatsappPhoneNumber: string;
-
-  @ApiModelProperty()
-  @IsString()
-  public qrIdentifier: string;
 }
