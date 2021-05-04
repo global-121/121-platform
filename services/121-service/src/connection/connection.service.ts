@@ -25,7 +25,11 @@ import {
 import { API } from '../config';
 import { SmsService } from '../notifications/sms/sms.service';
 import { PaStatus } from '../models/pa-status.model';
-import { BulkImportDto, ImportResult } from './dto/bulk-import.dto';
+import {
+  BulkImportDto,
+  ImportResult,
+  ImportTestRegistrationsDto,
+} from './dto/bulk-import.dto';
 import { validate } from 'class-validator';
 import { Readable } from 'stream';
 import csv from 'csv-parser';
@@ -34,6 +38,7 @@ import { AdditionalActionType } from '../actions/action.entity';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { ValidationDataService } from './validation-data/validation-data.service';
 import { CustomDataAttributes } from './validation-data/dto/custom-data-attributes';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class ConnectionService {
@@ -80,7 +85,7 @@ export class ConnectionService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const validatedImportRecords = await this.csvToValidatedArray(csvFile);
+    const validatedImportRecords = await this.csvToValidatedBulkImport(csvFile);
 
     let countImported = 0;
     let countInvalidPhoneNr = 0;
@@ -126,7 +131,57 @@ export class ConnectionService {
     };
   }
 
-  private async csvToValidatedArray(csvFile): Promise<BulkImportDto[]> {
+  public async importTestRegistrations(
+    csvFile,
+    programId: number,
+  ): Promise<string> {
+    let program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    const validatedImportRecords = await this.csvToValidatedTestRegistrations(
+      csvFile,
+    );
+
+    let countImported = 0;
+    for await (const record of validatedImportRecords) {
+      const connection = new ConnectionEntity();
+      connection.referenceId = uuid();
+      connection.phoneNumber = record.phoneNumber;
+      connection.preferredLanguage = record.preferredLanguage;
+      connection.namePartnerOrganization = record.namePartnerOrganization;
+      connection.qrIdentifier = record.qrIdentifier;
+      connection.customData[CustomDataAttributes.nameFirst] = record.nameFirst;
+      connection.customData[CustomDataAttributes.nameLast] = record.nameLast;
+      connection.customData[CustomDataAttributes.phoneNumber] =
+        record.phoneNumber;
+      const fsp = await this.fspRepository.findOne({ where: { fsp: fspName } });
+      connection.fsp = fsp;
+      connection.customData[CustomDataAttributes.whatsappPhoneNumber] =
+        record.whatsappPhoneNumber;
+      connection.accountCreatedDate = new Date();
+      connection.appliedDate = new Date();
+      await this.connectionRepository.save(connection);
+      countImported += 1;
+    }
+
+    return `Imported ${countImported} PA's`;
+  }
+
+  private async csvToValidatedBulkImport(csvFile): Promise<BulkImportDto[]> {
+    const importRecords = await this.validateCsv(csvFile);
+    return await this.validateBulkImportCsvInput(importRecords);
+  }
+
+  private async csvToValidatedTestRegistrations(
+    csvFile,
+  ): Promise<ImportTestRegistrationsDto[]> {
+    const importRecords = await this.validateCsv(csvFile);
+    return await this.validateTestRegistrationsCsvInput(importRecords);
+  }
+
+  private async validateCsv(csvFile): Promise<object[]> {
     const indexLastPoint = csvFile.originalname.lastIndexOf('.');
     const extension = csvFile.originalname.substr(
       indexLastPoint,
@@ -141,7 +196,7 @@ export class ConnectionService {
     if (Object.keys(importRecords[0]).length === 1) {
       importRecords = await this.csvBufferToArray(importRecords, ';');
     }
-    return await this.validateImportCsvInput(importRecords);
+    return importRecords;
   }
 
   private async csvBufferToArray(buffer, separator): Promise<object[]> {
@@ -160,13 +215,41 @@ export class ConnectionService {
     });
   }
 
-  private async validateImportCsvInput(csvArray): Promise<BulkImportDto[]> {
+  private async validateBulkImportCsvInput(csvArray): Promise<BulkImportDto[]> {
     const errors = [];
     const validatatedArray = [];
     for (const [i, row] of csvArray.entries()) {
       let importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.namePartnerOrganization = row.namePartnerOrganization;
+      const result = await validate(importRecord);
+      if (result.length > 0) {
+        const errorObj = { lineNumber: i + 1, validationError: result };
+        errors.push(errorObj);
+      }
+      validatatedArray.push(importRecord);
+    }
+    if (errors.length > 0) {
+      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+    }
+    return validatatedArray;
+  }
+
+  private async validateTestRegistrationsCsvInput(
+    csvArray,
+  ): Promise<ImportTestRegistrationsDto[]> {
+    const errors = [];
+    const validatatedArray = [];
+    for (const [i, row] of csvArray.entries()) {
+      let importRecord = new ImportTestRegistrationsDto();
+      importRecord.preferredLanguage = row.preferredLanguage;
+      importRecord.namePartnerOrganization = row.namePartnerOrganization;
+      importRecord.nameFirst = row.nameFirst;
+      importRecord.nameLast = row.nameLast;
+      importRecord.phoneNumber = row.phoneNumber;
+      importRecord.fspName = row.fspName;
+      importRecord.whatsappPhoneNumber = row.whatsappPhoneNumber;
+
       const result = await validate(importRecord);
       if (result.length > 0) {
         const errorObj = { lineNumber: i + 1, validationError: result };
