@@ -24,11 +24,13 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [View metrics overview](HO-Portal/View_metrics_overview.feature)
 - [Manage aidworkers](HO-Portal/Manage_aidworkers.feature)
 - [Manage people affected](HO-Portal/Manage_people_affected.feature)
+- [Import people affected](HO-Portal/Import_people_affected.feature)
+- [Invite people affected](HO-Portal/Invite_people_affected.feature)
 - [Select people for validation](HO-Portal/Select_people_for_validation.feature)
 - [Export selected for validation list](HO-Portal/Export_selected_for_validation_list.feature)
-- [Include people affected (Project Officer)](HO-Portal/Include_people_affected_PO.feature)
-- [Include people affected (Program Manager)](HO-Portal/Include_people_affected_PM.feature)
-- [Reject people affected](HO-Portal/Reject_people_affected.feature)
+- [Include people affected (Run Program role)](HO-Portal/Include_people_affected_Run_Program_role.feature)
+- [Include people affected (Personal Data role)](HO-Portal/Include_people_affected_Personal_Data_role.feature)
+- [Reject or End Inclusion of people affected](HO-Portal/Reject_or_End_inclusion_people_affected.feature)
 - [Export inclusion list](HO-Portal/Export_Inclusion_List.feature)
 - [Make a new payment](HO-Portal/Make_new_payment.feature)
 - [Export payment details](HO-Portal/Export_Payment_Details.feature)
@@ -50,9 +52,10 @@ Features of the 121-platform are described in this folder in a standardizes way 
 
 ### For Aid-Worker (AW-App)
 
-- [Upload validation data](AW-App/Upload_validation_data.feature)
 - [Download validation data](AW-App/Download_validation_data.feature)
-- [Get PA-data for validation](AW-App/Get_PA-data_for_validation.feature)
+- [Get Person Affected validation data](AW-App/Get_Person_Affected_Validation_Data.feature)
+- [Validate Person Affected](AW-App/Validate_Person_Affected.feature)
+- [Upload validation data](AW-App/Upload_validation_data.feature)
 
 ### For Admin-user (Swagger UI)
 

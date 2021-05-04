@@ -8,15 +8,15 @@ import { MockPaDataService } from 'src/app/mocks/padata.service.mock';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
-import { CreateIdentityComponent } from './create-identity.component';
+import { CreateAccountComponent } from './create-account.component';
 
-describe('CreateIdentityComponent', () => {
-  let component: CreateIdentityComponent;
-  let fixture: ComponentFixture<CreateIdentityComponent>;
+describe('CreateAccountComponent', () => {
+  let component: CreateAccountComponent;
+  let fixture: ComponentFixture<CreateAccountComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [CreateIdentityComponent],
+      declarations: [CreateAccountComponent],
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
@@ -37,7 +37,7 @@ describe('CreateIdentityComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CreateIdentityComponent);
+    fixture = TestBed.createComponent(CreateAccountComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

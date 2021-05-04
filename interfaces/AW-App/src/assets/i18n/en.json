@@ -30,7 +30,7 @@
     },
     "download-data": {
       "downloading": "Validation data is being downloaded. Wait a second.",
-      "download-result": "Validation data downloaded for {{nrDownloaded}} PA.",
+      "download-result": "Validation data downloaded for {{nrDownloaded}} People Affected.",
       "download-aborted": "No validation data could be downloaded at this time. Please try again later."
     },
     "scan-qr": {

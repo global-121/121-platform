@@ -21,7 +21,7 @@
     "show": "Onetsani nambala yanga yachinsinsi"
   },
   "personal": {
-    "create-identity": {
+    "create-account": {
       "conclusion": "Zatheka! Mwapanga nambala yanu",
       "confirm-password": "Tsimikizani nambala yanga ya chinsinsi",
       "create-username": "Pangani dzina langa",
@@ -42,7 +42,7 @@
       "inclusion-status-positive": "Zikomo chifukwa chakudekha kwanu. Mwayikidwa mu pulogalamu",
       "notify": "Tikudziwitsani ngati mwayikidwa mu pulogalamu"
     },
-    "login-identity": {
+    "login-account": {
       "incorrect-credentials": "Dzina lanu ndi nambala yachinsinsi yomwe mwapanga yakanidwa. Chonde yesaniso",
       "introduction": "Kuti mugwiritse nambala yanu lowetsani dzina lanu ndi nambala yanu yachinsinsi",
       "supply-password": "Nambala yanu yachinsinsi",

@@ -29,7 +29,7 @@
       "more-info-personal-information": "About personal information",
       "question": "To apply for this aid program you need to agree to <strong>how we secure your personal information.</strong><br /><br /> Please read or listen to how we secure your personal information."
     },
-    "create-identity": {
+    "create-account": {
       "conclusion": "Great! You have created an account.",
       "confirm-password": "Confirm password:",
       "create-password-explanation": "Create a password of at least {{minimalLength}} numbers:",
@@ -52,7 +52,7 @@
       "inclusion-status-positive": "You have been included in the program.",
       "notify": "We will notify you if you are included."
     },
-    "login-identity": {
+    "login-account": {
       "incorrect-credentials": "The combination of your full name and password you provided is not recognized. Please try again.",
       "introduction": "To use an existing account you need to log in with your full name and password.",
       "supply-password": "Your password:",

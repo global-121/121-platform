@@ -1,6 +1,6 @@
 # 121 platform
 
-121 is an open source platform for Cash based Aid built with Digital Identity & Local/Global Financial service partners. -- Learn more about the platform: <https://www.121.global/>
+121 is an open source platform for Cash based Aid built with Digital Account & Local/Global Financial service partners. -- Learn more about the platform: <https://www.121.global/>
 
 ---
 

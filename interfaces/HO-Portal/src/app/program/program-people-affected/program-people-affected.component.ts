@@ -64,7 +64,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       label: this.translate.instant(
         'page.program.program-people-affected.actions.invite',
       ),
-      roles: [UserRole.RunProgram],
+      roles: [UserRole.PersonalData],
       phases: [ProgramPhase.registrationValidation],
       showIfNoValidation: true,
       confirmConditions: {

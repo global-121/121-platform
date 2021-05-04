@@ -1,10 +1,10 @@
 export enum PersonalComponents {
   consentQuestion = 'consent-question',
   contactDetails = 'contact-details',
-  createIdentity = 'create-identity',
+  createAccount = 'create-account',
   enrollInProgram = 'enroll-in-program',
   inclusionStatus = 'inclusion-status',
-  loginIdentity = 'login-identity',
+  loginAccount = 'login-account',
   monitoringQuestion = 'monitoring-question',
   preprintedQrcode = 'preprinted-qrcode',
   registrationSummary = 'registration-summary',
@@ -21,4 +21,6 @@ export const PersonalComponentsRemoved = [
   'select-country',
   'store-credential',
   'handle-proof',
+  'create-identity',
+  'login-identity',
 ];

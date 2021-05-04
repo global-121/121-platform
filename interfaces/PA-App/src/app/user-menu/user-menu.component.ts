@@ -77,7 +77,7 @@ export class UserMenuComponent implements OnInit {
             }
 
             this.presentLoadingDelete();
-            this.deleteIdentity(data.password);
+            this.deleteAccount(data.password);
 
             return false;
           },
@@ -93,14 +93,14 @@ export class UserMenuComponent implements OnInit {
           return false;
         }
         this.presentLoadingDelete();
-        this.deleteIdentity(passwordInput.value);
+        this.deleteAccount(passwordInput.value);
       });
       passwordInput.focus();
     });
   }
 
-  private deleteIdentity(password: string) {
-    return this.paData.deleteIdentity(password).then(
+  private deleteAccount(password: string) {
+    return this.paData.deleteAccount(password).then(
       () => {
         this.loadingDelete.dismiss();
         this.deletePasswordAlert.dismiss();
@@ -119,7 +119,7 @@ export class UserMenuComponent implements OnInit {
           console.error('Incorrect credentials: ', error);
           this.showDeleteResult(
             this.translate.instant(
-              'personal.login-identity.incorrect-credentials',
+              'personal.login-account.incorrect-credentials',
             ),
           );
         } else if (error.status === 400) {

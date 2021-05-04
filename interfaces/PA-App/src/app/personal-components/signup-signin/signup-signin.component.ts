@@ -49,9 +49,9 @@ export class SignupSigninComponent extends PersonalComponent {
 
   getNextSection() {
     if (this.signupSigninChoice === idChoices.create) {
-      return PersonalComponents.createIdentity;
+      return PersonalComponents.createAccount;
     } else if (this.signupSigninChoice === idChoices.login) {
-      return PersonalComponents.loginIdentity;
+      return PersonalComponents.loginAccount;
     }
   }
 

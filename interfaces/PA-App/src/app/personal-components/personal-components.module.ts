@@ -8,10 +8,10 @@ import { QrScannerComponent } from '../shared/qr-scanner/qr-scanner.component';
 import { SharedModule } from '../shared/shared.module';
 import { ConsentQuestionComponent } from './consent-question/consent-question.component';
 import { ContactDetailsComponent } from './contact-details/contact-details.component';
-import { CreateIdentityComponent } from './create-identity/create-identity.component';
+import { CreateAccountComponent } from './create-account/create-account.component';
 import { EnrollInProgramComponent } from './enroll-in-program/enroll-in-program.component';
 import { InclusionStatusComponent } from './inclusion-status/inclusion-status.component';
-import { LoginIdentityComponent } from './login-identity/login-identity.component';
+import { LoginAccountComponent } from './login-account/login-account.component';
 import { MonitoringQuestionComponent } from './monitoring-question/monitoring-question.component';
 import { PreprintedQrcodeComponent } from './preprinted-qrcode/preprinted-qrcode.component';
 import { RegistrationSummaryComponent } from './registration-summary/registration-summary.component';
@@ -25,10 +25,10 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
   declarations: [
     ConsentQuestionComponent,
     ContactDetailsComponent,
-    CreateIdentityComponent,
+    CreateAccountComponent,
     EnrollInProgramComponent,
     InclusionStatusComponent,
-    LoginIdentityComponent,
+    LoginAccountComponent,
     MonitoringQuestionComponent,
     PreprintedQrcodeComponent,
     RegistrationSummaryComponent,
@@ -43,10 +43,10 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
   entryComponents: [
     ConsentQuestionComponent,
     ContactDetailsComponent,
-    CreateIdentityComponent,
+    CreateAccountComponent,
     EnrollInProgramComponent,
     InclusionStatusComponent,
-    LoginIdentityComponent,
+    LoginAccountComponent,
     MonitoringQuestionComponent,
     PreprintedQrcodeComponent,
     RegistrationSummaryComponent,
@@ -61,10 +61,10 @@ import { SignupSigninComponent } from './signup-signin/signup-signin.component';
   exports: [
     ConsentQuestionComponent,
     ContactDetailsComponent,
-    CreateIdentityComponent,
+    CreateAccountComponent,
     EnrollInProgramComponent,
     InclusionStatusComponent,
-    LoginIdentityComponent,
+    LoginAccountComponent,
     MonitoringQuestionComponent,
     PreprintedQrcodeComponent,
     RegistrationSummaryComponent,

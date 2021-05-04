@@ -169,7 +169,7 @@ export class ProgramController {
     await this.programService.selectForValidation(params.programId, data);
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @Roles(UserRole.PersonalData)
   @ApiOperation({ title: 'Invite set of PAs for registration' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
   @Post('invite/:programId')

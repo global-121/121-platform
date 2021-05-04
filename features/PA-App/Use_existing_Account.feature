@@ -8,7 +8,7 @@ Feature: Use existing Account
     Given the PA selects a language
     Given the "sign-up/sign-in"-step is shown
     When the PA selects "Use existing Account"
-    Then the "login identity"-step is shown
+    Then the "login account"-step is shown
     When the PA completes the step
     Then the conversation is cleared
     And the previously completed steps are shown as disabled
