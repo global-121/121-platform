@@ -113,3 +113,10 @@ Feature: Manage people affected (generic features)
     And the "apply action" is "disabled" again
     And all "row checkboxes" and "header checkbox" disappear
     And - if the action has an SMS-action and it is used - an SMS is sent to the PA
+
+  Scenario: View and Filter PA-table with 2000 PAs
+    Given there are 2000 PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
+    When the user scrolls through the PA-table
+    Then this goes quickly and without problem
+    When the user uses the filter function
+    Then the PA-table updates to only filtered rows quickly and without problem 
