@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.2.2...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.3.0...master)
+
+---
+
+## [1.3.0](https://github.com/global-121/121-platform/compare/v1.2.3...v1.3.0) - 2021-05-05
 
 ### Removed
 
@@ -16,7 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Make sure to update any ENV-variables no longer in use from [interfaces/PA-App/.env](interfaces/PA-App/.env.example)
 - 2021-04-20: Removed all components related to Sovrin
 
----
+### Changed
+
+- 2021-05-05: Updated test scenarios in /features folder
+
+### Added
+
+- 2021-05-05: Added endpoint to upload registered PA's via CSV-file for testing purposes
 
 ## [1.2.3](https://github.com/global-121/121-platform/compare/v1.2.2...v1.2.3) - 2021-04-20
 
