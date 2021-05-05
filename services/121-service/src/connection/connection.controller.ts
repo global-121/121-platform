@@ -74,6 +74,25 @@ export class ConnectionController {
     );
   }
 
+  @Roles(UserRole.Admin)
+  @ApiOperation({
+    title: 'Import set of registered PAs to test with, based on CSV',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true })
+  @Post('import-test-registrations/:programId')
+  @ApiConsumes('multipart/form-data')
+  @ApiImplicitFile({ name: 'file', required: true })
+  @UseInterceptors(FileInterceptor('file'))
+  public async importTestRegistrations(
+    @UploadedFile() csvFile,
+    @Param() params,
+  ): Promise<string> {
+    return await this.connectionService.importTestRegistrationsNL(
+      csvFile,
+      params.programId,
+    );
+  }
+
   @ApiOperation({ title: 'Delete connection' })
   @ApiResponse({ status: 200, description: 'Deleted connection' })
   @Post('/delete')

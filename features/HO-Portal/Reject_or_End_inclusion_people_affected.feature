@@ -41,3 +41,9 @@ Feature: Reject or end inclusion of people affected (extension of Manage_people_
     And the "status" is updated to "Inclusion ended"
     And if the custom SMS option is used, an SMS is sent to the PA (see Manage_people_affected.feature)
     And in the PA-app - after return or refresh - a notification appears that the PA is "not included"
+
+  Scenario: Reject or End inclusion for 2000 PAs
+    Given there are 2000 PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
+    And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
+    When the user uses and confirms the "reject from program" or "end inclusion in program" action on all 2000 PAs
+    Then this is all processed as in the scenarios above, quickly and without problem 

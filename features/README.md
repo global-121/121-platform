@@ -60,7 +60,37 @@ Features of the 121-platform are described in this folder in a standardizes way 
 ### For Admin-user (Swagger UI)
 
 - [Update phone-numbers of Person Affected](Admin-user/Update_phone_numbers.feature)
-- [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provicder.feature)
+- [Update Financial Service Provider of Person Affected](Admin-user/Update_financial_service_provider.feature)
+- [Import Test registrations NLRC](Admin-user/Import_test_registrations_NL.feature)
+
+### Missing test scenarios at the moment
+
+- Timer-induced
+  - Send reminder on uncollected vouchers
+    - General
+    - With 2000 PAs
+- PA-induced
+  - Send incoming whatsapp message 
+    - Send 'yes' reply on whatsapp when asked / uncollected voucher available
+    - Send 'yes' (or something) on whatsapp when no uncollected voucher available
+    - With 2000 PAs in system
+- HO-portal
+  - Voucher popup details
+    - Retry payment
+    - Get voucher balance
+    - Print voucher
+    - Download voucher
+  - Export unused vouchers
+  - New payment
+    - different scenarios of single/multiple registrations one same phone number (see https://github.com/global-121/121-platform/wiki/Test-scenarios)
+      - There is maximum one registration per payment-address
+      - There is 1 rejected and 1 included registration on one payment-address
+      - There are 2 or more included registrations on one payment-address
+      - There are 2 (or more) included registrations on one payment address at moment of payout. But before "yes" reply, 1 (or more) are rejected
+- HO-portal + AW-app
+  - Login
+  - Logout
+  - Change password
 
 ---
 
