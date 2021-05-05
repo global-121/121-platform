@@ -1,8 +1,11 @@
 @ho-portal
 Feature: Export inclusion list
 
+  Background:
+    Given a logged-in user with "personal data" role
+    And the "selected phase" is the "review inclusion" phase
+
   Scenario: Viewing the export options as program-manager
-    Given a logged-in "program-manager" user
     When the user views the "review inclusion" page
     Then the user sees an "export inclusion list" button
     And this button is only enabled when the "review inclusion" phase is the "active" phase
@@ -11,7 +14,7 @@ Feature: Export inclusion list
     When the user clicks the "export inclusion list" and confirms the confirm prompt
     Then a CSV-file is downloaded
     And it shows a list of the connections that are "included"
-    And it shows the "name" and "dob" to be able to identify people
+    And it shows the "name" and other program-attributes to be able to identify people
     And it shows the dates at which the person reached each status, to be able to assess the trajectory towards inclusion
     And the "export inclusion list" button remains enabled, so the action can be repeated infinitely
     And if no "included" connections then an alert is shown that "no data can be downloaded"

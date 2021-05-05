@@ -2,8 +2,8 @@
 Feature: Make a new payment
 
   Background:
-    Given a logged-in "project-officer" user
-    Given the user views the "payment" page
+    Given a logged-in user with the "run program" role
+    And the user views the "payment" page
 
   Scenario: No PA included
     Given a new payment is possible on the program
@@ -12,36 +12,53 @@ Feature: Make a new payment
 
   Scenario: Show total amount
     Given a new payment is possible on the program
-    Given the number of "PA included" is more then "0"
-    Given the "Transfer Value" is filled in with the program's default value
+    And the number of "PA included" is more then "0"
+    And the "Transfer Value" is filled in with the program's default value
     When the user clicks the button "start payout now"
     Then the pop-up "Are you sure?" is shown
     And the pop-up shows the total amount to pay out
 
   Scenario: Send payment instructions with changed transfer value
     Given the user changes the Transfer value to "20"
-    Given the user clicks the button "start payout now"
-    Given the pop-up "Are you sure?" is shown
+    And the user clicks the button "start payout now"
+    And the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
     Then the payment instructions list is sent to the Financial Service Provider
     And the payment instructions contain the transfer value "20"
     And the message is shown according to the success of the transactions
 
   Scenario: Send payment instructions with at least 1 successful transaction
-    Given the user clicks the button "start payout now"
-    Given the pop-up "Are you sure?" is shown
+    Given this is not the last payment for the program
+    And the user clicks the button "start payout now"
+    And the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
     Then the payment instructions list is sent to the Financial Service Provider
     And the message "Payout successful for X PA's and failed for Y (if Y>0) PA's" is shown
+    And it shows an "OK" button
+    When the users presses "OK" 
+    Then the page refreshes
+    And the "new payment" component now shows the number of the next payment
+    And the "export payment data" component now shows that the payment is "closed"
+    And the "export payment data" component now has the next payment enabled
+    And the "PA-table" now has the payment column filled for every PA
+    And for successfull transactions it shows a datetime, which can be clickable depending on the program
+    And for failed transactions it shows 'Failed', which can be clickable depending on the program
+    And a new empty payment column for the next payment is visible 
+    And - for successfull transactions - the PA receives (notification about) voucher/cash depending on the FSP
 
   Scenario: Send payment instructions with 0 successful transactions
     Given payment instructions are sent to the Financial Service Provider
     Then the message "Payout failed for all PA's" is shown
     And the payment is not processed and/or "closed"
+    And the payment column contains 'Failed' for all PAs, which can be clickable depending on the program
 
-  Scenario: Financial Service Provider not available
-    Given the "financial-service-provider" is unavailable
-    Given the user clicks the button "start payout now"
-    Given the pop-up "Are you sure?" is shown
-    When the user clicks the button "OK"
-    Then a generic message "Something went wrong." is shown
+  Scenario: Send payment instructions for 2000 PAs
+    Given there are 2000 PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
+    And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
+    When the user clicks the "start payout now" button and confirms the confirm prompt
+    Then a loading spinner starts which can take a long time (very rough estimation of 0.5 seconds per PA)
+    When it is finished
+    Then the regular popup with "Payout successful for X PA's and failed for Y (if Y>0) PA's" is shown
+
+  Scenarios related to (potentially) multiple registrations on one phone-number
+    See for now: https://github.com/global-121/121-platform/wiki/Test-scenarios

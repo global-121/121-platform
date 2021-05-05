@@ -2,13 +2,13 @@
 Feature: Export payment details
 
   Scenario: Viewing the export options as program-manager
-    Given a logged-in "program-manager" user
+    Given a logged-in user with "personal data" role
     When the user views the "payment" page
     Then the user sees an "Export payment details" component
     And the dropdown contains a list of all payments, with number, "open" or "closed" and date
 
   Scenario: Export payment details before payment
-    Given a logged-in "program-manager" user
+    Given a logged-in user with "personal data" role
     Given the payment has not taken place
     When the user selects the first "open" payment from the dropdown-list
     Then the "export list" button is enabled
@@ -19,7 +19,7 @@ Feature: Export payment details
     And all "persistent data"
 
   Scenario: Export payment details after payment
-    Given a logged-in "program-manager" user
+    Given a logged-in user with "personal data" role
     Given the payment has taken place
     When the user selects an "closed" payment from the dropdown-list
     Then the "export list" button is enabled
@@ -32,12 +32,12 @@ Feature: Export payment details
     And all "connection.customData"
 
   Scenario: No "included" connections
-    Given a logged-in "program-manager" user
+    Given a logged-in user with "personal data" role
     Given the installment has taken place
     When the user selects a "closed" payment from the dropdown-list
     Then the "export list"-button is disabled
 
   Scenario: Viewing the export options as project-officer
-    Given a logged-in "project-officer" user
+    Given a logged-in user without "personal data" role
     When the user views the "payment" page
     Then the "Export payment details" component is not visible
