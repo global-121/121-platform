@@ -8,6 +8,7 @@ Feature: Import test registrations NL
   Scenario: Successfully import test registrations via CSV 
     Given a valid import CSV file is prepared with "X" rows 
     And it has columns "namePartnerOrganization", "preferredLanguage", "nameFirst", "nameLast", "phoneNumber", "fspName", "whatsappPhoneNumber"
+    And it has as delimiter ";" or ","
     When the user selects this file and fills in "programId" 1 and calls the /connection/import-test-registrations/ endpoint
     Then a loading spinner starts
     When finished

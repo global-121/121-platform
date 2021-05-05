@@ -15,7 +15,10 @@ Feature: Import people affected
     And it shows a "Cancel" button
 
   Scenario: Successfully Import People Affected
-    When the user selects a valid CSV-file, through 'choose file' or 'drag and drop' 
+    Given a valid import CSV file is prepared
+    And it has columns "phoneNumber" and "namePartnerOrganization"
+    And it has as delimiter ";" or "," 
+    When the user selects the CSV-file, through 'choose file' or 'drag and drop' 
     Then the "OK" button becomes enabled
     When the user presses "OK"
     Then a loading spinner appears
@@ -34,7 +37,7 @@ Feature: Import people affected
     And the name of the "partner organization" is filled in
 
   Scenario: Unsuccessfully import invalid CSV file
-    When the user selects an invalid CSV-file (wrong extension, wrong column names, etc.)
+    When the user selects an invalid CSV-file (wrong extension, wrong column names, wrong delimiter, etc.)
     Then the "OK" button becomes enabled
     When the user presses "OK"
     Then a feedback popup appears that "Something went wrong with the export."
