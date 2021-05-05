@@ -28,7 +28,7 @@
       "more-info-personal-information": "Na ng'akiro kang",
       "question": "Taanyuneia akilipa aking'arakinio nanga ethakitae tocham <strong>loger lowuiyere ng'akiro kon</strong>.   <br /><br />   Kelipit kisoma or topupok loger lokuwuikinere ng'akiro kon."
     },
-    "create-identity": {
+    "create-account": {
       "conclusion": "Niajon, ithubak akaunt kon.",
       "confirm-password": "Tobongok a password",
       "create-password-explanation": "Tosubak a password a ng'anambai ngoomwon.",
@@ -52,7 +52,7 @@
       "inclusion-status-positive": "Kipiakin iyong Naking'arakino na.",
       "notify": "Kitaanyuni iyong kiwankitae iyong naking'akino na."
     },
-    "login-identity": {
+    "login-account": {
       "incorrect-credentials": "Kiwaakini ng'irora kon daang ka password nikiyeno. Tobongok nabo.",
       "introduction": "Taanyuneia alomar nakaunt kon, ithaki kipiak ng'irora kon daang kaa password tolumarie tooma.",
       "supply-password": "A password kon",

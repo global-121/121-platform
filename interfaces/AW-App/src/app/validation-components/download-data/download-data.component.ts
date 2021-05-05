@@ -49,7 +49,7 @@ export class DownloadDataComponent implements ValidationComponent {
         const fspData = response.fspData;
 
         // If no data is available, stop.
-        if (!validationData) {
+        if (!validationData || validationData.length === 0) {
           this.downloadAborted = true;
           this.complete();
           return;

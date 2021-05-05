@@ -272,7 +272,7 @@ export class ValidationDataService {
   public async getQrConnectionMapping(): Promise<ConnectionEntity[]> {
     return await this.connectionRepository
       .createQueryBuilder('connection')
-      .select(['connection.qrIdentifier', 'connection."referenceId"'])
+      .select(['connection.qrIdentifier', 'connection.referenceId'])
       .where('connection.validationDate IS NULL') // Filter to only download data for PA's not validated yet
       .getMany();
   }

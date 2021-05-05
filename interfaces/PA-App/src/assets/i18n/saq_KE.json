@@ -28,7 +28,7 @@
       "more-info-personal-information": "Loipirta lomon lainen",
       "question": "Pi iyou ana reto lasima pii eshamaa <strong>ninkinko pii kisudoo lomon linono</strong>.   <br /><br />   Enjere soma tanaa nining'o nikinko tini kisudoo lomon linono"
     },
-    "create-identity": {
+    "create-account": {
       "conclusion": "Aiiya, intibira akaunt ino.",
       "confirm-password": "Ngila password",
       "create-password-explanation": "Ntibira password naata nambai ongwan",
@@ -52,7 +52,7 @@
       "inclusion-status-positive": "Ikitipikaki atua ana reto",
       "notify": "Ikiliki iye tanaa ikitipikaki atua ana reto"
     },
-    "login-identity": {
+    "login-account": {
       "incorrect-credentials": "Teneitushuli ng'arn ninono pookin oo password nishooie mikiyelouni. Ngila aitoki.",
       "introduction": "Pi intumia akaunt ino keyeinu nipik ng'arn inono pooki oo passsward pii injing atua.",
       "supply-password": "Password ino",

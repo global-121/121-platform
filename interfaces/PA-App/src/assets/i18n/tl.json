@@ -26,7 +26,7 @@
       "more-info-personal-information": "Tungkol sa personal na impormasyon",
       "question": "Upang makapag-apply ng aid program na ito, kailangan mong sumang-ayon sa <strong>paano namin i-secure ang iyong personal na impormasyon. </strong><br /><br /> Pakibasa kung paano namin i-secure ang iyong personal na impormasyon."
     },
-    "create-identity": {
+    "create-account": {
       "conclusion": "Magaling! Mayroon ka ng account.",
       "create-password-explanation": "Gumawa ng password na hindi lalagpas sa {{minimalLength}} na numero:",
       "create-username": "Maglagay ng username:",
@@ -49,7 +49,7 @@
       "inclusion-status-positive": "Ikaw ay naisali na sa programa.",
       "notify": "Ipagbibigay alam namin sayo kung ikaw ay nakasali."
     },
-    "login-identity": {
+    "login-account": {
       "incorrect-credentials": "Ang kombinasyon ng iyong buong pangalan at password na ibinigay ay hindi tugma. Subukan muli.",
       "introduction": "Upang magamit ang iyong account, kailangan mag log-in gamit ang iyong username at password.",
       "supply-password": "Ang iyong password:",

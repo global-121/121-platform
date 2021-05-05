@@ -2,8 +2,9 @@
 Feature: Select people affected for validation (extension of Manage_people_affected.feature)
 
   Background:
-    Given a logged-in "project-officer" user
-    Given the "active phase" is "registration & validation"
+    Given a logged-in user with "run program" role
+    And a program with "validation"
+    And the "active phase" is "registration & validation"
 
   Scenario: View people affected connected to a program
     Given scenario "View people affected connected to a program" in Manage_people_affected.feature
@@ -14,12 +15,12 @@ Feature: Select people affected for validation (extension of Manage_people_affec
     And for each person a "Validated Vulnerability Assessment " date+time is shown (if already available)
 
   Scenario: Use bulk-action "select for validation"
-    Given the generic "select bulk action" scenario
+    Given the generic "select bulk action" scenario (see Manage_people_affected.feature)
     When user selects the "select for validation" action
-    Then the eligible rows are those with status "registered"
+    Then the eligible rows are those with status "Registered"
 
   Scenario: Confirm "select for validation" action
-    Given the generic "confirm apply action" scenario
+    Given the generic "confirm apply action" scenario (see Manage_people_affected.feature)
     When the "bulk action" is "select for validation"
     Then the "changed data" is that the "selected for validation" timestamp is filled for the selected rows
-    And the "status" is updated
+    And the "status" is updated to "Selected for validation"

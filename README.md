@@ -1,6 +1,6 @@
 # 121 platform
 
-121 is an open source platform for Cash based Aid built with Digital Identity & Local/Global Financial service partners. -- Learn more about the platform: <https://www.121.global/>
+121 is an open source platform for Cash based Aid built with Digital Account & Local/Global Financial service partners. -- Learn more about the platform: <https://www.121.global/>
 
 ---
 
@@ -11,16 +11,16 @@
 
 ## Status
 
-| Interfaces | Build Status                                                                                                                                                                                                                  |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PA-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master)    |
-| AW-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master)    |
+| Interfaces | Build Status |
+| ---------- | ------------ |
+| PA-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master) |
+| AW-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master) |
 | HO-Portal  | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master) |
 
-| Services            | Build Status                                                                                                                                                                                                                            |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 121-service         | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master)           |
-| PA-accounts-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/PA-accounts-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=19&branchName=master)   |
+| Services            | Build Status |
+| ------------------- | ------------ |
+| 121-service         | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master) |
+| PA-accounts-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/PA-accounts-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=19&branchName=master) |
 
 ---
 
@@ -34,80 +34,27 @@ The documentation of the 121 platform can be found on the Wiki of this repositor
 
 To set up a local development-environment:
 
-### On Windows
-
-#### Install dependencies
-
-- Install Git (<https://git-scm.com/download/win>)
-- Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
-- Install Node.js (<https://nodejs.org/en/download/>)
-  - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'Node version manager'.
+- Install Git: <https://git-scm.com/download/>
+- Install Node.js: <https://nodejs.org/en/download/>
   - Install the version specified in the [`.node-version`](.node-version)-file.
-- Install Docker (<https://docs.docker.com/docker-for-windows/install/>)
-
-### On Linux
-
-#### Install dependencies
-
-- Install Git: `sudo apt install git-all`
-- Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
-- Install Node.js
-
-  - To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).
-  - After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
+  - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
+    - [NVM - Node Version Manager](http://nvm.sh/) (for macOS/Linux).  
+      After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
 
           nvm install && nvm install-latest-npm
 
-- Install Docker  
-  On linux distributions we need to install `docker engine` and `docker-compose` respectively. On other platforms they are available through Docker Desktop. Read more at: <https://docs.docker.com/engine/install/>
+    - [fnm](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux)
 
-  `Docker compose` relies on `docker engine`, so in order to get started we must install `docker-engine` first. (Read more at: <https://docs.docker.com/engine/install/ubuntu/>). There are various ways of installing `docker engine` (repository, packages or automated scripts). The official recommended way doing that is through setting up a repository.
+- Install Docker
+  - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
+  - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
+  - On Linux:  
+    - Install Docker Engine: <https://docs.docker.com/engine/install/>
+    - Install Docker Compose: <https://docs.docker.com/compose/install/#install-compose-on-linux-systems>
 
-  - First off, uninstall any old version of docker-engine.
+With these tools in place you can checkout the code and start setting up:
 
-        sudo apt-get remove docker docker-engine docker.io containerd runc
-
-  - Choose an installation method from the provided list at <https://docs.docker.com/engine/install/ubuntu/#installation-methods> and install `docker-engine`
-
-  - Do step 2-b instead of 2-a to install a specific version: `sudo apt-get install docker-ce=5:19.03.14~3-0~ubuntu-<UBUNTU=NAME such as bionic or xenial> docker-ce-cli=5:19.03.14~3-0~ubuntu-<UBUNTU=NAME> containerd.io` you can see the available versions by running `apt-cache madison docker-ce`
-
-  - Test your docker installation
-
-        sudo docker run hello-world
-
-  - Now install `docker-compose` by following the steps:
-
-        sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
-
-    Reference: <https://docs.docker.com/compose/install/>
-
-  - Test the docker compose installation
-
-        docker-compose --version
-
-  - Additionally, we need to install `docker-machine` as well.
-
-        base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo mv /tmp/docker-machine /usr/local/bin/docker-machine &&   chmod +x /usr/local/bin/docker-machine
-
-    Reference: <https://docs.docker.com/machine/install-machine/>
-
-  - You are set!
-
-### On macOS
-
-#### Install dependencies
-
-- Install Git: <https://git-scm.com/book/en/v2/Getting-Started-Installing-Git> > Installing on macOS (section)
-- Clone the Git repository: `git clone https://github.com/global-121/121-platform.git`
-- Install Node.js
-
-  - To install the required version of Node.js and to prevent conflicts between projects or components using other versions of Node.js, use [NVM - Node Version Manager](http://nvm.sh/).
-  - After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
-
-          nvm install && nvm install-latest-npm
-
-- Install Docker Desktop (<https://docs.docker.com/docker-for-mac/install/>)
+    git clone https://github.com/global-121/121-platform.git
 
 ---
 
@@ -126,10 +73,12 @@ To see the status/logs of all Docker-containers, run from the `services/`-folder
     docker-compose logs -f <container-name>
 
 To verify the successful installation and setup of services, access their Swagger UI:
-| | URL | or run: |
+|                     | URL                           | or run:                    |
 | ------------------- | ----------------------------- | -------------------------- |
-| 121-service | <http://localhost:3000/docs/> | `npm rum open:121-service` |
+| 121-service         | <http://localhost:3000/docs/> | `npm rum open:121-service` |
 | PA-accounts-service | <http://localhost:3001/docs/> | `npm rum open:pa-accounts` |
+
+---
 
 ## Setup Interfaces
 
@@ -159,7 +108,7 @@ To start an individual interface in development mode:
 
 - Or explore the specific options as defined in each interface's own `package.json` or `README.md`.
 
-The 4 individual Angular applications, when started will be available via:
+All individual Angular applications, when started will be available via:
 
 |           | URL                     | or run:           |
 | --------- | ----------------------- | ----------------- |
@@ -167,7 +116,7 @@ The 4 individual Angular applications, when started will be available via:
 | AW-App    | <http://localhost:8080> | `npm run open:aw` |
 | HO-Portal | <http://localhost:8888> | `npm run open:ho` |
 
-From hereon, you can start making changes to the UI and observe how the components are interconnected.
+---
 
 ## Common problems with Local Environment set-up
 
@@ -344,14 +293,12 @@ This is how we create and publish a new release of the 121-platform.
 - [ ] Define the `version`(-number) for the upcoming release.
 - [ ] Update the [CHANGELOG](CHANGELOG.md) with the date + version.
   - [ ] Commit changes to `master`-branch on GitHub.
-- [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch
-  - [ ] Push this branch to GitHub
+- [ ] Create a `release`-branch ("`release/<version>`") from current `master`-branch and push this branch to GitHub
 - [ ] "[Draft a release](https://github.com/global-121/121-platform/releases/new)" on GitHub
   - [ ] Add the `version` to create a new tag
   - [ ] Select the new `release/<version>`-branch
-  - [ ] Set the title of the release to `version`
-  - [ ] Add a short description and/or link to relevant other documents (if applicable)
-  - [ ] Create/publish the release on GitHub
+  - [ ] Set the title of the release to `version`. Add a short description and/or link to relevant other documents (if applicable)
+  - [ ] Publish the release on GitHub
 
 ### Patch/Hotfix Checklist
 
@@ -372,11 +319,11 @@ This follows the same process as a regular release + deployment. With some small
 #### GitHub web-interface-only approach
 
 - Browse to the specific file that needs a fix on GitHub, click "edit" and make the changes  
-  The URL will look like: `https://github.com/global-121/121-platform/edit/release/v0.x.0/<path-to-file>`
+  The URL will look like: `https://github.com/global-121/121-platform/edit/release/v1.0.0/<path-to-file>`
 - Select "Create a new branch for this commit and start a pull request" from the "commit changes"-box
-- Use `release/v0.x.1` as the branch-name by clicking "Propose changes"  
+- Use `release/v1.0.1` as the branch-name by clicking "Propose changes"  
   This branch will now be created and is available to use for a new release
-- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md) and commit to the same `release/v0.x.1` branch.
+- Add the hotfix-release to the [CHANGELOG](CHANGELOG.md) and commit to the same `release/v1.0.1` branch.
 - Create a new release (see above) and publish it.  
   The publish-command will invoke the webhook(s), which trigger an automated deploy for environments on that same _minor_ version.
 - After the hotfix-release, apply the fixes to the master-branch by merging the PR created.
@@ -399,7 +346,7 @@ This follows the same process as a regular release + deployment. With some small
   - [ ] Checkout code (of latest release)
   - [ ] Set secrets, configure ENV-variables (via all `.env`-files)
   - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):  
-         Run: `sudo ./tools/deploy.sh`
+         Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.0.0`
 - [ ] Setup the web-server as described in [/tools > Hosting > Apache2](tools/README.md#apache2)
 - [ ] (Optional) Add data to the database using the available [seed-script](services/121-service/README.md#Seed-the-database)
 
@@ -409,14 +356,14 @@ This follows the same process as a regular release + deployment. With some small
 - [ ] Check for any changes/additions/removals in the [CHANGELOG](CHANGELOG.md)
 - [ ] Prepare the environment accordingly (in all `.env`-files)
   - [ ] Build the platform (by running the [deploy script](./tools/deploy.sh)):  
-         Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v0.1.0`
+         Run: `sudo ./tools/deploy.sh <target-branch>`, where `<target-branch>` is for example: `release/v1.1.0`
 
 ## Glossary
 
 | Term          | Definition (_we_ use)                                                                                        |
 | ------------- | ------------------------------------------------------------------------------------------------------------ |
-| `version`     | A 'number' specified in the [`SemVer`](https://semver.org/spec/v2.0.0.html)-format: `0.1.0`                  |
-| `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v0.1.0`                 |
+| `version`     | A 'number' specified in the [`SemVer`](https://semver.org/spec/v2.0.0.html)-format: `1.1.0`                  |
+| `tag`         | A specific commit or point-in-time on the git-timeline; named after a version, i.e. `v1.1.0`                 |
 | `release`     | A fixed 'state of the code-base', [published on GitHub](https://github.com/global-121/121-platform/releases) |
 | `deployment`  | An action performed to get (released) code running on an environment                                         |
 | `environment` | A machine that can run code (with specified settings); i.e. a server or VM, or your local machine            |

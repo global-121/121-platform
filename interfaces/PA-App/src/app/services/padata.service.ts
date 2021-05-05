@@ -200,7 +200,7 @@ export class PaDataService {
     return this.paAccountApi.setReferenceId(referenceId);
   }
 
-  public async deleteIdentity(password: string): Promise<any> {
+  public async deleteAccount(password: string): Promise<any> {
     const referenceId = await this.retrieve(this.type.referenceId);
 
     // All requests are dependent on their predecessors!

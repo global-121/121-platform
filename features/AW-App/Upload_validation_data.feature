@@ -5,16 +5,37 @@ Feature: Upload validation data
     Given a logged-in "field-validation" user
     Given the user is on the "actions" page
 
-  Scenario: Show pending validation data
+  Scenario: Validated data to upload available
     Given validated data for at least "1" PA is available
     When the user sees the "main menu"
     Then a label with value "1" is shown in the "upload validation data"-option
+
+  Scenario: No validated data to upload available
+    Given no validated data is available
+    When the user sees the "main menu"
+    Then the "Upload validation data" option is disabled
+    And no label with value is shown in the the "upload validation data"-option
+  
+  Scenario: Validated data to upload available, but no internet connection
+    Given validated data for at least "1" PA is available
+    And there is no internet connectivity
+    When the user sees the "main menu"
+    Then a label with value "1" is shown in the "upload validation data"-option
+    And the "Upload validation data" option is disabled
+    And an "OFFLINE" marker is shown in the header
 
   Scenario: Upload validation data
     Given there is internet connectivity
     Given validated data for at least "1" PA is available
     Given the "main menu" is shown
     When the user presses "upload validation data"
-    Then the validation data is uploaded
-    And a positive feedback message is shown
-    And a button "back to main menu" is shown
+    Then a message is showing that "Validation data is being uploaded" 
+    When it finishes
+    Then a positive feedback message is shown
+    And the "main menu" component is shown
+    And the "upload validation data" component is now disabled
+    And it has no numbered label attached anymore
+    And the status of the PA in the HO-portal is updated to "Validated" 
+
+  Scenario: Upload validation data unsuccessfully
+    ...

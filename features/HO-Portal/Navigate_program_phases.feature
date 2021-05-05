@@ -2,7 +2,7 @@
 Feature: Navigate program phases
 
   Background:
-    Given a logged-in "project-officer" user
+    Given a logged-in user with the "run program" role
 
   Scenario: See current phase of the program
     When the user views a "program" page
@@ -11,7 +11,7 @@ Feature: Navigate program phases
     And sees that future phases are disabled
     And sees that past phases are enabled
     And sees the "move-to-next-phase"-button below the header, unless the "current program phase" is the last phase
-    And this button is "disabled" for the "program-manager"
+    And this button is "disabled" if the user does not have the "run program" role
     And this button is "disabled" if the "selected phase" is not the "active phase"
 
   Scenario: View past phase
@@ -21,7 +21,7 @@ Feature: Navigate program phases
     And the text-color of the previous phase remains different and reflects the "current program phase"
     And sees that the "move-to-next-phase"-button is disabled, reflecting the read-only mode of past phases.
     And sees that the text of the of the "move-to-next-phase"-button changes, reflecting the meaning of the phase-change.
-    And sees - depending on which state - that certain program-components in the page will (dis)appear.
+    And sees - depending on which state - that certain program-components in the page will (dis)appear or will be dis/enabled.
 
   Scenario: Advancing to next phase
     Given user views a "program" page
@@ -30,3 +30,11 @@ Feature: Navigate program phases
     Then highlighting in the "phase-navigation-bar" will move to the next phase, both background- and text-color, reflecting a change in both "current program phase" and "selected phase"
     And sees that the text of the of the "move-to-next-phase"-button changes, reflecting the meaning of the next phase-change.
     And sees - depending on which state - that certain program-components in the page will (dis)appear.
+  
+  Scenario: Opening a program for registration ("publishing")
+    Given user views a "program" page
+    Given the "current program phase" is "Design"
+    Given "selected phase" is "Design"
+    When user clicks the "Open for registration"-button
+    Then the program will advance to the next phase (see scenario: "Advancing to next phase")
+    And the program will now appear as a selectable program in the PA-app  

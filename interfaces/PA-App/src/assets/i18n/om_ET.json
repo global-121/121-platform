@@ -21,7 +21,7 @@
     "show": "Paaswoordii agarsiisi"
   },
   "personal": {
-    "create-identity": {
+    "create-account": {
       "conclusion": "Gaariidha! Adda-baastuu Dijitaalaa tolfattaniittu.",
       "confirm-password": "Paaswoordii koo mirkaneessi:",
       "create-username": "Maqaa-fayyadamaa koo tolchi:",
@@ -38,7 +38,7 @@
       "submit-confirm": "Odeeffannoo koo ol naaf kaa'i"
     },
     "inclusion-status": {},
-    "login-identity": {
+    "login-account": {
       "incorrect-credentials": "Walta'insi maqaa fayyadamaafi paaswoordiin isin tolfattan hin fudhatamne. Maaloo irra deebi'aa yaalaa.",
       "introduction": "Adda-baastuu Dijitaalaa duraan jiru fayyadamuuf maqaa-fayyadamtaniifi paaswoordiitiin seenuu sin barbaachisa.",
       "supply-password": "Paaswoordii keessan:",

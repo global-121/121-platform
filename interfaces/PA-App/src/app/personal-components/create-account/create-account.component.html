@@ -1,13 +1,13 @@
 <dialogue-turn>
   <p>
-    <play-text-audio key="personal.create-identity.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-identity.introduction'|translate }}
+    <play-text-audio key="personal.create-account.introduction" class="ion-float-start ion-margin-end"></play-text-audio>
+    {{ 'personal.create-account.introduction'|translate }}
   </p>
 </dialogue-turn>
 <dialogue-turn isConnected="true">
   <p>
-    <play-text-audio key="personal.create-identity.username-password" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-identity.username-password'|translate }}
+    <play-text-audio key="personal.create-account.username-password" class="ion-float-start ion-margin-end"></play-text-audio>
+    {{ 'personal.create-account.username-password'|translate }}
   </p>
 </dialogue-turn>
 <dialogue-turn actor="self">
@@ -16,8 +16,8 @@
 
     <div>
       <p>
-        <play-text-audio key="personal.create-identity.create-username" class="ion-margin-end"></play-text-audio>
-        <ion-label>{{ 'personal.create-identity.create-username'|translate }}</ion-label>
+        <play-text-audio key="personal.create-account.create-username" class="ion-margin-end"></play-text-audio>
+        <ion-label>{{ 'personal.create-account.create-username'|translate }}</ion-label>
       </p>
       <ion-input
         type="text"
@@ -44,8 +44,8 @@
       class="ion-margin-vertical"
     >
       <p>
-        <play-text-audio key="personal.create-identity.create-password-explanation" class="ion-float-start ion-margin-end"></play-text-audio>
-        {{ 'personal.create-identity.create-password-explanation'|translate:{ minimalLength: passwordMinLength } }}
+        <play-text-audio key="personal.create-account.create-password-explanation" class="ion-float-start ion-margin-end"></play-text-audio>
+        {{ 'personal.create-account.create-password-explanation'|translate:{ minimalLength: passwordMinLength } }}
       </p>
       <password-toggle-input
         name="create"
@@ -63,8 +63,8 @@
         class="ion-margin-vertical"
       >
         <p>
-          <play-text-audio key="personal.create-identity.password-too-short" class="ion-float-start ion-margin-end"></play-text-audio>
-          {{ 'personal.create-identity.password-too-short'|translate:{ minimalLength: passwordMinLength } }}
+          <play-text-audio key="personal.create-account.password-too-short" class="ion-float-start ion-margin-end"></play-text-audio>
+          {{ 'personal.create-account.password-too-short'|translate:{ minimalLength: passwordMinLength } }}
         </p>
       </div>
       <ion-row
@@ -83,8 +83,8 @@
 
     <div *ngIf="initialInput">
       <p>
-        <play-text-audio key="personal.create-identity.confirm-password" class="ion-margin-end"></play-text-audio>
-        <ion-label>{{ 'personal.create-identity.confirm-password'|translate }}</ion-label>
+        <play-text-audio key="personal.create-account.confirm-password" class="ion-margin-end"></play-text-audio>
+        <ion-label>{{ 'personal.create-account.confirm-password'|translate }}</ion-label>
       </p>
       <password-toggle-input
         name="confirm"
@@ -116,8 +116,8 @@
   [isSpoken]="unequalPasswords"
 >
   <p>
-    <play-text-audio key="personal.create-identity.unequal-passwords" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-identity.unequal-passwords'|translate }}
+    <play-text-audio key="personal.create-account.unequal-passwords" class="ion-float-start ion-margin-end"></play-text-audio>
+    {{ 'personal.create-account.unequal-passwords'|translate }}
   </p>
 </dialogue-turn>
 <dialogue-turn
@@ -125,8 +125,8 @@
   [isSpoken]="usernameNotUnique"
 >
   <p>
-    <play-text-audio key="personal.create-identity.username-not-unique" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-identity.username-not-unique'|translate }}
+    <play-text-audio key="personal.create-account.username-not-unique" class="ion-float-start ion-margin-end"></play-text-audio>
+    {{ 'personal.create-account.username-not-unique'|translate }}
   </p>
 </dialogue-turn>
 <dialogue-turn
@@ -134,7 +134,7 @@
   [isSpoken]="isDisabled"
 >
   <p>
-    <play-text-audio key="personal.create-identity.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
-    {{ 'personal.create-identity.conclusion'|translate }}
+    <play-text-audio key="personal.create-account.conclusion" class="ion-float-start ion-margin-end"></play-text-audio>
+    {{ 'personal.create-account.conclusion'|translate }}
   </p>
 </dialogue-turn>

@@ -9,11 +9,11 @@ import { PaDataService } from 'src/app/services/padata.service';
 import { PersonalComponent } from '../personal-component.class';
 
 @Component({
-  selector: 'app-login-identity',
-  templateUrl: './login-identity.component.html',
-  styleUrls: ['./login-identity.component.scss'],
+  selector: 'app-login-account',
+  templateUrl: './login-account.component.html',
+  styleUrls: ['./login-account.component.scss'],
 })
-export class LoginIdentityComponent extends PersonalComponent {
+export class LoginAccountComponent extends PersonalComponent {
   public usernameSubmitted = false;
   public username: string;
   public password: any;

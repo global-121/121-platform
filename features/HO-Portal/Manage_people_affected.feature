@@ -8,11 +8,19 @@ Feature: Manage people affected (generic features)
     When the user views a page with the "manage people affected" component
     Then a table with all "people connected to a program" is shown
     And for each person the "Select" column is empty
-    And for each person a "PA row identifier" is shown
+    And for each person a "PA identifier" is shown
     And for each person a "status" is shown
     And depending on which "page" other columns are shown
     And above the table a list of "bulk actions" is shown
     And next to it an "apply action" button is shown and it is "disabled"
+    And above the table a free text "filter field" is shown
+  
+  Scenario: Filter rows of PA-table
+    Given the table with all "people connected to a program" is shown
+    When the user enters any free text "abc" in the "filter field"
+    Then the table immediately updates to show only rows where at least one case of "abc" is found as substring in any of the columns 
+    When the user removes the text again or presses the "X" close option
+    Then the table shows all rows again
 
   Scenario: View available actions
     When the user opens up the "choose action" dropdown
@@ -75,12 +83,26 @@ Feature: Manage people affected (generic features)
     When user checks last eligible row through "row checkbox"
     Then "header checkbox" also automatically checks
 
-  Scenario: Apply action
+  Scenario: Apply action without SMS-option
     Given a "bulk action" is selected
     And 0 or more rows are selected
+    And there is no custom-SMS option for this action
     When "user" clicks "apply action"
     Then a popup appears which lists which "bulk action" will be applied to "how many" people affected
     And it has a "confirm" button and a "cancel" button
+
+  Scenario: Apply action with SMS-option
+    Given a "bulk action" is selected
+    And 0 or more rows are selected
+    And there is a custom-SMS option for this action 
+    When "user" clicks "apply action"
+    Then a popup appears which lists which "bulk action" will be applied to "how many" people affected
+    And it has a checkbox that allows to choose whether to send a Custom SMS with this action
+    And it is checked by default or not based on the action
+    And - if checked by default or manually- it shows a free text field to enter the message
+    And it shows a character counter
+    And it has a "confirm" button, which is disabled if checkbox is checked AND the entered text is below 20 characters
+    And it has a "cancel" button
 
   Scenario: Confirm apply action
     Given the confirm popup has appeared
@@ -90,3 +112,4 @@ Feature: Manage people affected (generic features)
     And the "action" dropdown is reset
     And the "apply action" is "disabled" again
     And all "row checkboxes" and "header checkbox" disappear
+    And - if the action has an SMS-action and it is used - an SMS is sent to the PA
