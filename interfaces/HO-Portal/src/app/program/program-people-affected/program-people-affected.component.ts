@@ -230,22 +230,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.columnsAvailable = [
       {
-        prop: 'pa',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.person',
-        ),
-        ...this.columnDefaults,
-        width: 85,
-        frozenLeft: true,
-        comparator: (a: string, b: string) => {
-          // Use numeric sorting for 'text'-values, so the order will be: "PA #1" < "PA #2" < "PA #10"
-          return a.localeCompare(b, undefined, {
-            numeric: true,
-            sensitivity: 'base',
-          });
-        },
-      },
-      {
         prop: 'name',
         name: this.translate.instant(
           'page.program.program-people-affected.column.name',
@@ -723,6 +707,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return !!row['payment' + installmentIndex + '-error'];
   }
 
+  public editPopup(row: PersonRow, column, value) {
+    console.log(row, column, value);
+  }
+
   public async statusPopup(row: PersonRow, column, value) {
     const hasError = this.hasError(row, column.installmentIndex);
     const content = hasError
@@ -949,4 +937,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.visiblePeopleAffected = rowsVisible;
   }
+
+  public paComparator = (a: string, b: string) => {
+    // Use numeric sorting for 'text'-values, so the order will be: "PA #1" < "PA #2" < "PA #10"
+    return a.localeCompare(b, undefined, {
+      numeric: true,
+      sensitivity: 'base',
+    });
+  };
 }

@@ -18,6 +18,18 @@
   }
 }
 
+.edit-pop-up {
+  padding: 0.2em 0.4em;
+  font-family: var(--ion-font-family);
+  font-size: inherit;
+  background: transparent;
+
+  &:hover {
+    color: var(--ion-color-primary);
+    border-color: currentColor;
+  }
+}
+
 .bulk-action-select {
   padding: 0.45em;
   border: 1px solid var(--ion-color-medium);

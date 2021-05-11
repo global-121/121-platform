@@ -121,6 +121,45 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
+    prop="pa"
+    [name]="'page.program.program-people-affected.column.person'|translate"
+    width="130"
+    frozenLeft="true"
+    [comparator]="paComparator"
+    [draggable]="columnDefaults.draggable"
+    [resizeable]="columnDefaults.resizeable"
+    [sortable]="columnDefaults.sortable"
+    [headerClass]="columnDefaults.headerClass"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
+      <ng-container>
+        {{ value }}
+        <button
+          type="button"
+          [ngClass]="{
+            'ion-no-padding': true,
+            'edit-pop-up': true
+           }"
+          (click)="editPopup(row, column, value)"
+          [attr.title]="'page.program.program-people-affected.edit-pa-popup.edit-icon-title'|translate"
+          [attr.aria-label]="'page.program.program-people-affected.edit-pa-popup.edit-icon-title'|translate"
+        >
+          <ion-icon
+            name="create" 
+            size="small"
+            aria-hidden="true"
+          >
+          </ion-icon>
+        </button>
+      </ng-container>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column
     *ngFor="let column of columns;"
     [prop]="column.prop"
     [name]="column.name"
