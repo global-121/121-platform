@@ -217,7 +217,12 @@
         },
         "edit-person-affected-popup": {
           "edit-icon-title": "Edit information of Person Affected",
-          "popup-title": "Edit information of Person Affected"
+          "popup-title": "Edit information of {{pa}}",
+          "note": {
+            "section-title": "Notes about Person Affected",
+            "introduction": "Add or edit notes about this Person Affecte in the text field below",
+            "placeholder": "Start a note about this Person Affected by typing here..."
+          }
         },
         "payment-status-popup": {
           "message-title": "Message sent payment #{{installment}}: {{timestamp}}",

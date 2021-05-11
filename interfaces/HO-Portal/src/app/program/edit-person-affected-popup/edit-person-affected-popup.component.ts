@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgModel } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -8,14 +10,28 @@ import { ModalController } from '@ionic/angular';
 })
 export class EditPersonAffectedPopupComponent implements OnInit {
   public title: string;
+  public notes: boolean;
   public content: any;
-  public contentNotes: any;
 
-  public isInProgress = false;
+  @ViewChild('input')
+  public input: any;
+  public inputModel: NgModel;
 
-  constructor(private modalController: ModalController) {}
+  constructor(
+    private modalController: ModalController,
+    private translate: TranslateService,
+  ) {}
 
   async ngOnInit() {}
+
+  public getTitle() {
+    return this.translate.instant(
+      'page.program.program-people-affected.edit-person-affected-popup.popup-title',
+      {
+        pa: this.content.pa,
+      },
+    );
+  }
 
   public closeModal() {
     this.modalController.dismiss();

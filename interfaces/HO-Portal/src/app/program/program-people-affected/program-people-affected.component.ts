@@ -709,11 +709,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async editPersonAffectedPopup(row: PersonRow) {
-    const content = row.pa;
+    const content = row;
+    const notes = true;
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: EditPersonAffectedPopupComponent,
       componentProps: {
         content,
+        notes,
       },
     });
 

@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-title>
       <ng-container>
-        {{ 'page.program.program-people-affected.edit-person-affected-popup.popup-title'|translate }}
+        <p [innerHTML]="getTitle()"></p>
       </ng-container>
     </ion-title>
     <ion-buttons slot="end">
@@ -21,6 +21,26 @@
   color="light"
   class="ion-padding"
 >
-  <div *ngIf="content" [innerHTML]="content">
-  </div>
+  <ng-container *ngIf="notes">
+    <h4>
+      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.section-title'|translate }}
+    </h4>
+    <p>
+      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.introduction'|translate }}
+    </p>
+    <ion-textarea
+      name="message"
+      #input="ngModel"
+      [(ngModel)]="inputModel"
+      [ngModelOptions]="{ standalone: true }"
+      ngDefaultControl
+      rows="3"
+      autoGrow="true"
+      [placeholder]="'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'|translate"
+      style="font-family: monospace; border: 1px solid currentColor; height:150px"
+    ></ion-textarea>
+    <ion-note>
+      {{ input?.value ? input?.value?.length : 0 }}
+    </ion-note>
+  </ng-container>
 </ion-content>
