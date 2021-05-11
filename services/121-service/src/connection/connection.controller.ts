@@ -35,6 +35,7 @@ import { GetConnectionByPhoneNameDto } from './dto/get-connection-by-name-phone'
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '../user/user.decorator';
 import { ImportResult } from './dto/bulk-import.dto';
+import { UpdateNoteDto } from '../programs/program/dto/update-note.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -148,6 +149,18 @@ export class ConnectionController {
       customData.referenceId,
       customData.key,
       customData.value,
+    );
+  }
+
+  @ApiOperation({ title: 'Update note for connection' })
+  @ApiResponse({ status: 200, description: 'Update note for connection' })
+  @Post('/note')
+  public async updateNote(
+    @Body() updateNote: UpdateNoteDto,
+  ): Promise<ConnectionEntity> {
+    return await this.connectionService.updateNote(
+      updateNote.referenceId,
+      updateNote.note,
     );
   }
 

@@ -611,6 +611,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
       vnumber: person.vnumber,
       fsp: person.fsp,
+      note: person.note,
+      noteUpdated: person.noteUpdated,
     };
 
     personRow = this.fillPaymentColumns(personRow);

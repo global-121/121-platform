@@ -29,8 +29,6 @@
       {{ 'page.program.program-people-affected.edit-person-affected-popup.note.introduction'|translate }}
     </p>
     <ion-textarea
-      name="message"
-      #input="ngModel"
       [(ngModel)]="inputModel"
       [ngModelOptions]="{ standalone: true }"
       ngDefaultControl
@@ -39,8 +37,8 @@
       [placeholder]="'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'|translate"
       style="font-family: monospace; border: 1px solid currentColor; height:150px"
     ></ion-textarea>
-    <ion-note>
-      {{ input?.value ? input?.value?.length : 0 }}
-    </ion-note>
+    <ion-button (click)="saveNote(inputModel)">
+      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
+    </ion-button>
   </ng-container>
 </ion-content>

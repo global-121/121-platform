@@ -221,7 +221,10 @@
           "note": {
             "section-title": "Notes about Person Affected",
             "introduction": "Add or edit notes about this Person Affecte in the text field below",
-            "placeholder": "Start a note about this Person Affected by typing here..."
+            "placeholder": "Start a note about this Person Affected by typing here...",
+            "save": "Save note",
+            "save-success": "Note successfully updated",
+            "save-error": "Something went wrong: {{error}}"
           }
         },
         "payment-status-popup": {

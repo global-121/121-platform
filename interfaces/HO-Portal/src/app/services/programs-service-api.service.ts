@@ -158,6 +158,15 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  updateNote(referenceId: string, note: string): Promise<any> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/connection/note`, {
+        referenceId,
+        note,
+      })
+      .toPromise();
+  }
+
   getTransaction(
     referenceId: string,
     programId: number,

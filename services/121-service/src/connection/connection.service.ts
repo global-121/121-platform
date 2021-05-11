@@ -445,6 +445,16 @@ export class ConnectionService {
     return await this.connectionRepository.save(connection);
   }
 
+  public async updateNote(
+    referenceId: string,
+    note: string,
+  ): Promise<ConnectionEntity> {
+    const connection = await this.findOne(referenceId);
+    connection.note = note;
+    connection.noteUpdated = new Date();
+    return await this.connectionRepository.save(connection);
+  }
+
   public async cleanData(
     customDataKey: string,
     customDataValue: string,
