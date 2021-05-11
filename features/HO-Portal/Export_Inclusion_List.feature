@@ -5,7 +5,7 @@ Feature: Export inclusion list
     Given a logged-in user with "personal data" role
     And the "selected phase" is the "review inclusion" phase
 
-  Scenario: Viewing the export options as program-manager
+  Scenario: Viewing the export options
     When the user views the "review inclusion" page
     Then the user sees an "export inclusion list" button
     And this button is only enabled when the "review inclusion" phase is the "active" phase
@@ -25,7 +25,7 @@ Feature: Export inclusion list
     When the user clicks the "export inclusion list" and confirms the confirm prompt
     Then a CSV-file is downloaded as in the scenario above quickly and without problem 
 
-  Scenario: Viewing the export options as project-officer
-    Given a logged-in "project-officer" user
+  Scenario: Viewing the export options without permission
+    Given a logged-in does not have the "personal data" role
     When the user views the "review inclusion" page
     Then the export list button is disabled
