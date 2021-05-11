@@ -139,6 +139,7 @@
       <ng-container>
         {{ value }}
         <button
+          *ngIf="canViewPersonalData"
           type="button"
           [ngClass]="{
             'ion-no-padding': true,
