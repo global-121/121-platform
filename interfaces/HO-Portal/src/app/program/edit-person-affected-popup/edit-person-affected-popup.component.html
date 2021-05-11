@@ -39,5 +39,7 @@
     <ion-button (click)="saveNote(inputModel)">
       {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
     </ion-button>
+    <br>
+    <ion-note [innerHTML]="latestUpdate"></ion-note>
   </ng-container>
 </ion-content>

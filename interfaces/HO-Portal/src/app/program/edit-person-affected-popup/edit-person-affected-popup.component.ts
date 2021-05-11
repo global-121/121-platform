@@ -1,8 +1,10 @@
+import { formatDate } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -17,15 +19,34 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public input: any;
   public inputModel: NgModel;
 
+  private locale: string;
+  private dateFormat = 'yyyy-MM-dd, HH:mm';
+  public latestUpdate: string;
+
   constructor(
     private modalController: ModalController,
     private translate: TranslateService,
     private programsService: ProgramsServiceApiService,
     private alertController: AlertController,
-  ) {}
+  ) {
+    this.locale = environment.defaultLocale;
+  }
 
   async ngOnInit() {
     this.inputModel = this.content.note;
+
+    this.latestUpdate = this.content.noteUpdated
+      ? this.translate.instant(
+          'page.program.program-people-affected.edit-person-affected-popup.note.latest-update',
+          {
+            timestamp: formatDate(
+              this.content.noteUpdated,
+              this.dateFormat,
+              this.locale,
+            ),
+          },
+        )
+      : null;
   }
 
   public getTitle() {

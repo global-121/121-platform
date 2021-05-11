@@ -220,11 +220,12 @@
           "popup-title": "Edit information of {{pa}}",
           "note": {
             "section-title": "Notes about Person Affected",
-            "introduction": "Add or edit notes about this Person Affecte in the text field below",
+            "introduction": "Add, edit or remove notes about this Person Affected in the text field below",
             "placeholder": "Start a note about this Person Affected by typing here...",
             "save": "Save note",
             "save-success": "Note successfully updated",
-            "save-error": "Something went wrong: {{error}}"
+            "save-error": "Something went wrong: {{error}}",
+            "latest-update": "Latest update on: {{timestamp}}"
           }
         },
         "payment-status-popup": {
