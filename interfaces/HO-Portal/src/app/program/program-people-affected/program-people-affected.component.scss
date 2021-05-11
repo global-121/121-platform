@@ -24,7 +24,8 @@
   font-size: inherit;
   background: transparent;
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: var(--ion-color-primary);
     border-color: currentColor;
   }
