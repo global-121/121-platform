@@ -15,6 +15,7 @@ import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
+import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 
 @Component({
@@ -707,8 +708,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return !!row['payment' + installmentIndex + '-error'];
   }
 
-  public editPopup(row: PersonRow, column, value) {
-    console.log(row, column, value);
+  public async editPersonAffectedPopup(row: PersonRow) {
+    const content = row.pa;
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      component: EditPersonAffectedPopupComponent,
+      componentProps: {
+        content,
+      },
+    });
+
+    await modal.present();
   }
 
   public async statusPopup(row: PersonRow, column, value) {

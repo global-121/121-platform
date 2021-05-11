@@ -215,8 +215,9 @@
           "waiting": "Waiting",
           "show-status": "Show status"
         },
-        "edit-pa-popup": {
-          "edit-icon-title": "Edit information of Person Affected"
+        "edit-person-affected-popup": {
+          "edit-icon-title": "Edit information of Person Affected",
+          "popup-title": "Edit information of Person Affected"
         },
         "payment-status-popup": {
           "message-title": "Message sent payment #{{installment}}: {{timestamp}}",
