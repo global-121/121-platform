@@ -32,7 +32,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     return this.translate.instant(
       'page.program.program-people-affected.edit-person-affected-popup.popup-title',
       {
-        pa: this.content.pa,
+        pa: this.content && this.content.pa ? this.content.pa : '',
       },
     );
   }
