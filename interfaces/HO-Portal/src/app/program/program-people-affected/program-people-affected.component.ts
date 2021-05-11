@@ -938,11 +938,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.visiblePeopleAffected = rowsVisible;
   }
 
-  public paComparator = (a: string, b: string) => {
+  public paComparator(a: string, b: string) {
     // Use numeric sorting for 'text'-values, so the order will be: "PA #1" < "PA #2" < "PA #10"
     return a.localeCompare(b, undefined, {
       numeric: true,
       sensitivity: 'base',
     });
-  };
+  }
 }
