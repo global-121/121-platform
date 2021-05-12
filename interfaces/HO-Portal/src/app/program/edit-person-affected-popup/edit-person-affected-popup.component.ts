@@ -1,10 +1,8 @@
-import { formatDate } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { PersonRow } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -12,65 +10,44 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./edit-person-affected-popup.component.scss'],
 })
 export class EditPersonAffectedPopupComponent implements OnInit {
-  public notes: boolean;
-  public personRow: PersonRow;
+  @Input()
+  public person: PersonRow;
 
-  @ViewChild('input')
-  public input: any;
-  public inputModel: string;
-
-  private locale: string;
-  private dateFormat = 'yyyy-MM-dd, HH:mm';
-  public latestUpdate: string;
+  public noteModel: string;
+  public noteLastUpdate: string;
 
   constructor(
     private modalController: ModalController,
     private translate: TranslateService,
     private programsService: ProgramsServiceApiService,
     private alertController: AlertController,
-  ) {
-    this.locale = environment.defaultLocale;
-  }
+  ) {}
 
   async ngOnInit() {
+    this.getNote();
+  }
+
+  public async getNote() {
     const note = await this.programsService.retrieveNote(
-      this.personRow.referenceId,
+      this.person.referenceId,
     );
 
-    this.inputModel = note.note;
-
-    this.latestUpdate = note.noteUpdated
-      ? this.translate.instant(
-          'page.program.program-people-affected.edit-person-affected-popup.note.latest-update',
-          {
-            timestamp: formatDate(
-              note.noteUpdated,
-              this.dateFormat,
-              this.locale,
-            ),
-          },
-        )
-      : null;
+    this.noteModel = note.note;
+    this.noteLastUpdate = note.noteUpdated;
   }
 
-  public getTitle() {
-    return this.translate.instant(
-      'page.program.program-people-affected.edit-person-affected-popup.popup-title',
-      {
-        pa: this.personRow && this.personRow.pa ? this.personRow.pa : '',
-      },
-    );
-  }
-
-  public async saveNote(note: string) {
+  public async saveNote() {
     await this.programsService
-      .updateNote(this.personRow.referenceId, note)
+      .updateNote(this.person.referenceId, this.noteModel)
       .then(
-        () => {
-          const message = this.translate.instant(
-            'page.program.program-people-affected.edit-person-affected-popup.note.save-success',
+        (note) => {
+          this.actionResult(
+            this.translate.instant(
+              'page.program.program-people-affected.edit-person-affected-popup.note.save-success',
+            ),
           );
-          this.actionResult(message, true);
+
+          this.noteLastUpdate = note.noteUpdated;
         },
         (err) => {
           console.log('err: ', err);
