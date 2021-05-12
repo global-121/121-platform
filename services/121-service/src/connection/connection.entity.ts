@@ -78,6 +78,9 @@ export class ConnectionEntity {
   @Column({ nullable: true })
   public noteUpdated: Date;
 
+  @Column({ nullable: true })
+  public paymentAmountMultiplier: number;
+
   @OneToMany(
     type => TransactionEntity,
     transactions => transactions.connection,

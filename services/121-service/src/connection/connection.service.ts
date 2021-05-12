@@ -119,6 +119,7 @@ export class ConnectionService {
       newConnection.phoneNumber = phoneNumberResult;
       newConnection.preferredLanguage = 'en';
       newConnection.namePartnerOrganization = record.namePartnerOrganization;
+      newConnection.paymentAmountMultiplier = record.paymentAmountMultiplier;
       newConnection.importedDate = new Date();
       await this.connectionRepository.save(newConnection);
     }
@@ -270,6 +271,7 @@ export class ConnectionService {
       let importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.namePartnerOrganization = row.namePartnerOrganization;
+      importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
       const result = await validate(importRecord);
       if (result.length > 0) {
         const errorObj = { lineNumber: i + 1, validationError: result };

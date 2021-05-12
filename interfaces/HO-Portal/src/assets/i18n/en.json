@@ -245,7 +245,7 @@
         "pageTitle": "Program JSON"
       },
       "bulk-import": {
-        "import-error": "Something went wrong with the import. Check the required extension (.csv) and format of the CSV-file.",
+        "import-error": "Something went wrong with the import. <ul><li>Check the required extension (.csv)</li><li>Check the format and column-names of the CSV-file</li><li>The 'paymentAmountMultiplier' column should contain only whole numbers >= 1</li></ul>",
         "import-result": {
           "ready": "Import ready.",
           "new": "There are {{countImported}} new records imported.",
@@ -254,7 +254,7 @@
         },
         "timestamp": "Latest import has been done on: {{dateTime}}",
         "btn-text": "Import People Affected",
-        "explanation": "The required format of the CSV-file is: <pre class='ion-color-primary'>phoneNumber,namePartnerOrganization\n+0000000000,Example-Name</pre>",
+        "explanation": "The required format of the CSV-file is: <pre class='ion-color-primary'>phoneNumber,namePartnerOrganization,paymentAmountMultiplier\n+0000000000,Example-Name,1</pre>",
         "confirm-message": "Select a CSV-file of the required format.<br> The system will detect only new phone-numbers and import them as People Affected."
       },
       "export-list": {
