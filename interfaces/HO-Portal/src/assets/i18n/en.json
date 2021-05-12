@@ -220,7 +220,7 @@
           "popup-title": "Edit information of {{pa}}",
           "note": {
             "section-title": "Notes about Person Affected",
-            "introduction": "Add, edit or remove notes about this Person Affected in the text field below. Make sure to minimize noting down any Personal Identifiable Information (PII) where not necessary. Additionally, make sure to remove any PII again, when not needed any longer.",
+            "introduction": "You can add, edit or remove notes about this particular Person Affected in the field below. Please keep Personal Identifiable Information (PII) to a minimum and delete any PII when no longer needed.",
             "placeholder": "Start a note about this Person Affected by typing here...",
             "save": "Save note",
             "save-success": "Note successfully updated",
