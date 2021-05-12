@@ -115,6 +115,7 @@ export class ConnectionService {
 
       countImported += 1;
       const newConnection = new ConnectionEntity();
+      newConnection.referenceId = uuid();
       newConnection.phoneNumber = phoneNumberResult;
       newConnection.preferredLanguage = 'en';
       newConnection.namePartnerOrganization = record.namePartnerOrganization;
@@ -364,7 +365,7 @@ export class ConnectionService {
     );
 
     if (!useForInvitationMatching || !importedConnection) {
-      // If endpoint is used for other purpose OR no invite found  ..
+      // If endpoint is used for other purpose OR no imported connection found  ..
       // .. continue with earlier created connection
       const connection = await this.findOne(referenceId);
       // .. give it an accountCreatedDate
@@ -378,7 +379,7 @@ export class ConnectionService {
       return;
     }
 
-    // If invite found ..
+    // If imported connection found ..
     // .. find temp connection created at create-account step and save it
     const tempConnection = await this.connectionRepository.findOne({
       where: { referenceId: referenceId },
