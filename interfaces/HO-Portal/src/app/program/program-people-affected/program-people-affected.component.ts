@@ -714,6 +714,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const content = row;
     const notes = true;
     const modal: HTMLIonModalElement = await this.modalController.create({
+      backdropDismiss: false,
       component: EditPersonAffectedPopupComponent,
       componentProps: {
         content,
