@@ -1,7 +1,7 @@
 @ho-portal
 Feature: Export payment details
 
-  Scenario: Viewing the export options as program-manager
+  Scenario: Viewing the export options
     Given a logged-in user with "personal data" role
     When the user views the "payment" page
     Then the user sees an "Export payment details" component
@@ -37,7 +37,7 @@ Feature: Export payment details
     When the user selects a "closed" payment from the dropdown-list
     Then the "export list"-button is disabled
 
-  Scenario: Viewing the export options as project-officer
+  Scenario: Viewing the export options without permission
     Given a logged-in user without "personal data" role
     When the user views the "payment" page
     Then the "Export payment details" component is not visible

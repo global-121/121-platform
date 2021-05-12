@@ -2,7 +2,7 @@
 Feature: Manage people affected (generic features)
 
   Background:
-    Given a logged-in "project-officer" or "program-manager" user
+    Given a logged-in user with "run program" role or "personal data" role
 
   Scenario: View people affected connected to a program
     When the user views a page with the "manage people affected" component

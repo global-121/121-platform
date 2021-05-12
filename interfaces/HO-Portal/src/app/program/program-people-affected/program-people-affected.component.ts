@@ -15,6 +15,7 @@ import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
+import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 
 @Component({
@@ -229,22 +230,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const columnPhoneNumberWidth = 130;
 
     this.columnsAvailable = [
-      {
-        prop: 'pa',
-        name: this.translate.instant(
-          'page.program.program-people-affected.column.person',
-        ),
-        ...this.columnDefaults,
-        width: 85,
-        frozenLeft: true,
-        comparator: (a: string, b: string) => {
-          // Use numeric sorting for 'text'-values, so the order will be: "PA #1" < "PA #2" < "PA #10"
-          return a.localeCompare(b, undefined, {
-            numeric: true,
-            sensitivity: 'base',
-          });
-        },
-      },
       {
         prop: 'name',
         name: this.translate.instant(
@@ -723,6 +708,21 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return !!row['payment' + installmentIndex + '-error'];
   }
 
+  public async editPersonAffectedPopup(row: PersonRow) {
+    const personRow = row;
+    const notes = true;
+    const modal: HTMLIonModalElement = await this.modalController.create({
+      backdropDismiss: false,
+      component: EditPersonAffectedPopupComponent,
+      componentProps: {
+        personRow,
+        notes,
+      },
+    });
+
+    await modal.present();
+  }
+
   public async statusPopup(row: PersonRow, column, value) {
     const hasError = this.hasError(row, column.installmentIndex);
     const content = hasError
@@ -948,5 +948,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     });
 
     this.visiblePeopleAffected = rowsVisible;
+  }
+
+  public paComparator(a: string, b: string) {
+    // Use numeric sorting for 'text'-values, so the order will be: "PA #1" < "PA #2" < "PA #10"
+    return a.localeCompare(b, undefined, {
+      numeric: true,
+      sensitivity: 'base',
+    });
   }
 }

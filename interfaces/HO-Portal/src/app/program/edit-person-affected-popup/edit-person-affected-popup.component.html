@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      <ng-container>
+        <p [innerHTML]="getTitle()"></p>
+      </ng-container>
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="closeModal()"
+        [attr.title]="'common.cancel'|translate"
+        [attr.aria-label]="'common.cancel'|translate"
+      >
+        <ion-icon name="close" slot="icon-only" aria-hidden="true"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content
+  color="light"
+  class="ion-padding"
+>
+  <ng-container *ngIf="notes">
+    <h4>
+      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.section-title'|translate }}
+    </h4>
+    <p>
+      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.introduction'|translate }}
+    </p>
+    <ion-textarea
+      [(ngModel)]="inputModel"
+      [ngModelOptions]="{ standalone: true }"
+      ngDefaultControl
+      rows="10"
+      [placeholder]="'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'|translate"
+      style="font-family: monospace; border: 1px solid currentColor; height:150px"
+    ></ion-textarea>
+    <ion-button (click)="saveNote(inputModel)">
+      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
+    </ion-button>
+    <br>
+    <ion-note [innerHTML]="latestUpdate"></ion-note>
+  </ng-container>
+</ion-content>

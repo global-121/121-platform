@@ -215,6 +215,19 @@
           "waiting": "Waiting",
           "show-status": "Show status"
         },
+        "edit-person-affected-popup": {
+          "edit-icon-title": "Edit information of Person Affected",
+          "popup-title": "Edit information of {{pa}}",
+          "note": {
+            "section-title": "Notes about Person Affected",
+            "introduction": "You can add, edit or remove notes about this particular Person Affected in the field below. Please keep Personal Identifiable Information (PII) to a minimum and delete any PII when no longer needed.",
+            "placeholder": "Start a note about this Person Affected by typing here...",
+            "save": "Save note",
+            "save-success": "Note successfully updated",
+            "save-error": "Something went wrong: {{error}}",
+            "latest-update": "Latest update on: {{timestamp}}"
+          }
+        },
         "payment-status-popup": {
           "message-title": "Message sent payment #{{installment}}: {{timestamp}}",
           "money-title": "Voucher sent payment #{{installment}}: {{timestamp}}",

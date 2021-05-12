@@ -72,6 +72,12 @@ export class ConnectionEntity {
   })
   public customData: JSON;
 
+  @Column({ nullable: true })
+  public note: string;
+
+  @Column({ nullable: true })
+  public noteUpdated: Date;
+
   @OneToMany(
     type => TransactionEntity,
     transactions => transactions.connection,

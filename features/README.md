@@ -24,6 +24,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [View metrics overview](HO-Portal/View_metrics_overview.feature)
 - [Manage aidworkers](HO-Portal/Manage_aidworkers.feature)
 - [Manage people affected](HO-Portal/Manage_people_affected.feature)
+- [Edit information Person Affected](HO-Portal/Edit_Info_Person_Affected.feature)
 - [Import people affected](HO-Portal/Import_people_affected.feature)
 - [Invite people affected](HO-Portal/Invite_people_affected.feature)
 - [Select people for validation](HO-Portal/Select_people_for_validation.feature)

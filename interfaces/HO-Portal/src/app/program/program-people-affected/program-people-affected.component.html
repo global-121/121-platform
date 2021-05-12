@@ -121,6 +121,44 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
+    prop="pa"
+    [name]="'page.program.program-people-affected.column.person'|translate"
+    width="130"
+    frozenLeft="true"
+    [comparator]="paComparator"
+    [draggable]="columnDefaults.draggable"
+    [resizeable]="columnDefaults.resizeable"
+    [sortable]="columnDefaults.sortable"
+    [headerClass]="columnDefaults.headerClass"
+  >
+    <ng-template
+      ngx-datatable-cell-template
+      let-value="value"
+      let-row="row"
+    >
+      <div class="ion-align-items-center" style="display: flex;">
+        <button
+          *ngIf="canViewPersonalData"
+          type="button"
+          class="ion-no-padding popup-button"
+          (click)="editPersonAffectedPopup(row)"
+          [attr.title]="'page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'|translate"
+          [attr.aria-label]="'page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'|translate"
+        >
+          <ion-icon
+            name="create"
+            size="small"
+            aria-hidden="true"
+          >
+          </ion-icon>
+        </button>
+        &nbsp;&nbsp;
+        <span>{{ value }}</span>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column
     *ngFor="let column of columns;"
     [prop]="column.prop"
     [name]="column.name"
@@ -185,13 +223,15 @@
         <ion-icon
           *ngIf="value.hasMessageIcon"
           name="mail" size="small"
-          aria-hidden="true">
+          aria-hidden="true"
+        >
         </ion-icon>
         <ion-icon
           *ngIf="value.hasMoneyIconTable"
           name="cash"
           size="small"
-          aria-hidden="true">
+          aria-hidden="true"
+        >
         </ion-icon>
       </ng-container>
       <ng-container
@@ -202,8 +242,7 @@
           (click)="statusPopup(row, column, value)"
           [ngClass]="{
             'is-error': hasError(row, column.installmentIndex),
-            'ion-no-padding': true,
-            'status-pop-up': true
+            'ion-no-padding popup-button status-pop-up': true
            }"
           [attr.title]="'page.program.program-people-affected.transaction.show-status'|translate"
           [attr.aria-label]="'page.program.program-people-affected.transaction.show-status'|translate"

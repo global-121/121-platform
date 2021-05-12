@@ -2,5 +2,5 @@
 Feature: Receive Voucher
 
   Scenario: Receive supermarket voucher via WhatsApp
-    When the "project-officer" sends a "payout"
+    When a "payout" is done from the "HO-portal"
     Then the "person-affected" receives the "payout voucher" on their "registered whatsapp number"

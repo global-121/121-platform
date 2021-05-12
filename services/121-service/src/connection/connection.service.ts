@@ -38,6 +38,7 @@ import { ReferenceIdDto } from './dto/reference-id.dto';
 import { ValidationDataService } from './validation-data/validation-data.service';
 import { CustomDataAttributes } from './validation-data/dto/custom-data-attributes';
 import { v4 as uuid } from 'uuid';
+import { NoteDto } from './dto/note.dto';
 
 @Injectable()
 export class ConnectionService {
@@ -443,6 +444,24 @@ export class ConnectionService {
       connection.customData[customDataKey] = customDataValue;
     }
     return await this.connectionRepository.save(connection);
+  }
+
+  public async updateNote(
+    referenceId: string,
+    note: string,
+  ): Promise<ConnectionEntity> {
+    const connection = await this.findOne(referenceId);
+    connection.note = note;
+    connection.noteUpdated = new Date();
+    return await this.connectionRepository.save(connection);
+  }
+
+  public async retrieveNote(referenceId: string): Promise<NoteDto> {
+    const connection = await this.findOne(referenceId);
+    const note = new NoteDto();
+    note.note = connection.note;
+    note.noteUpdated = connection.noteUpdated;
+    return note;
   }
 
   public async cleanData(

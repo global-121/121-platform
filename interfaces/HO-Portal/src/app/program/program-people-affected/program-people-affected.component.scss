@@ -1,4 +1,4 @@
-.status-pop-up {
+.popup-button {
   padding: 0.2em 0.4em;
   font-family: var(--ion-font-family);
   font-size: inherit;
@@ -11,7 +11,9 @@
     color: var(--ion-color-primary);
     border-color: currentColor;
   }
+}
 
+.status-pop-up {
   &.is-error {
     color: var(--ion-color-danger);
     border-color: currentColor;
