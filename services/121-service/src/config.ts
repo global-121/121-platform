@@ -1,3 +1,5 @@
+import packageJson = require('../package.json');
+
 export const DEBUG =
   ['production', 'test'].indexOf(process.env.NODE_ENV) === -1;
 export const PORT = process.env.PORT_121_SERVICE;
@@ -8,7 +10,7 @@ export const SCHEME = process.env.SCHEME === 'http' ? 'http' : 'https';
 // ---------------------------------------------------------------------------
 export const APP_VERSION = process.env.GLOBAL_121_VERSION;
 
-let appTitle = process.env.npm_package_name;
+let appTitle = packageJson.name;
 if (process.env.ENV_NAME) {
   appTitle += ` [${process.env.ENV_NAME}]`;
 }
