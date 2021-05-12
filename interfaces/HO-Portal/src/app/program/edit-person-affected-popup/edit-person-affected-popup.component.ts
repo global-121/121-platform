@@ -1,6 +1,5 @@
 import { formatDate } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgModel } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { PersonRow } from 'src/app/models/person.model';
@@ -18,7 +17,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   @ViewChild('input')
   public input: any;
-  public inputModel: NgModel;
+  public inputModel: string;
 
   private locale: string;
   private dateFormat = 'yyyy-MM-dd, HH:mm';

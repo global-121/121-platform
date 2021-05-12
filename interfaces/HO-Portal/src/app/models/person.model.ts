@@ -57,3 +57,8 @@ export enum PaStatus {
   inclusionEnded = 'inclusionEnded',
   rejected = 'rejected',
 }
+
+export class Note {
+  public note: string;
+  public noteUpdated: string;
+}

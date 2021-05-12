@@ -5,7 +5,7 @@ import { UserRole } from '../auth/user-role.enum';
 import { ActionType } from '../models/action-type.model';
 import { ExportType } from '../models/export-type.model';
 import { InstallmentData } from '../models/installment.model';
-import { Person } from '../models/person.model';
+import { Note, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
 import { Transaction } from '../models/transaction.model';
@@ -167,7 +167,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  retrieveNote(referenceId: string): Promise<any> {
+  retrieveNote(referenceId: string): Promise<Note> {
     return this.apiService
       .get(environment.url_121_service_api, `/connection/note/${referenceId}`)
       .toPromise();
