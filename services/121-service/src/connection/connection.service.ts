@@ -396,6 +396,7 @@ export class ConnectionService {
     importedConnection.referenceId = tempConnection.referenceId;
     importedConnection.accountCreatedDate = tempConnection.accountCreatedDate;
     importedConnection.customData = tempConnection.customData;
+    importedConnection.preferredLanguage = preferredLanguage;
     const fsp = await this.fspRepository.findOne({
       where: { id: tempConnection.fsp.id },
     });
