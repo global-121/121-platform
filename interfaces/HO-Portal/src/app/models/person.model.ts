@@ -19,8 +19,6 @@ export class Person {
   vnumber?: string;
   whatsappPhoneNumber?: string;
   namePartnerOrganization?: string;
-  note?: string;
-  noteUpdated?: string;
 }
 
 // Model for display (in table)
@@ -46,8 +44,6 @@ export class PersonRow {
   vnumber?: string | null;
   whatsappPhoneNumber?: string | null;
   namePartnerOrganization?: string | null;
-  note?: string | null;
-  noteUpdated?: string | null;
 }
 
 export enum PaStatus {

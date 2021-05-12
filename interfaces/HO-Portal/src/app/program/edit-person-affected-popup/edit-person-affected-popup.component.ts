@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgModel } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { PersonRow } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
 
@@ -13,7 +14,7 @@ import { environment } from 'src/environments/environment';
 })
 export class EditPersonAffectedPopupComponent implements OnInit {
   public notes: boolean;
-  public content: any;
+  public personRow: PersonRow;
 
   @ViewChild('input')
   public input: any;
@@ -33,14 +34,18 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.inputModel = this.content.note;
+    const note = await this.programsService.retrieveNote(
+      this.personRow.referenceId,
+    );
 
-    this.latestUpdate = this.content.noteUpdated
+    this.inputModel = note.note;
+
+    this.latestUpdate = note.noteUpdated
       ? this.translate.instant(
           'page.program.program-people-affected.edit-person-affected-popup.note.latest-update',
           {
             timestamp: formatDate(
-              this.content.noteUpdated,
+              note.noteUpdated,
               this.dateFormat,
               this.locale,
             ),
@@ -53,32 +58,34 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     return this.translate.instant(
       'page.program.program-people-affected.edit-person-affected-popup.popup-title',
       {
-        pa: this.content && this.content.pa ? this.content.pa : '',
+        pa: this.personRow && this.personRow.pa ? this.personRow.pa : '',
       },
     );
   }
 
   public async saveNote(note: string) {
-    await this.programsService.updateNote(this.content.referenceId, note).then(
-      () => {
-        const message = this.translate.instant(
-          'page.program.program-people-affected.edit-person-affected-popup.note.save-success',
-        );
-        this.actionResult(message, true);
-      },
-      (err) => {
-        console.log('err: ', err);
-        if (err && err.error && err.error.error) {
-          const errorMessage = this.translate.instant(
-            'page.program.program-people-affected.edit-person-affected-popup.note.save-error',
-            {
-              error: err.error.error,
-            },
+    await this.programsService
+      .updateNote(this.personRow.referenceId, note)
+      .then(
+        () => {
+          const message = this.translate.instant(
+            'page.program.program-people-affected.edit-person-affected-popup.note.save-success',
           );
-          this.actionResult(errorMessage);
-        }
-      },
-    );
+          this.actionResult(message, true);
+        },
+        (err) => {
+          console.log('err: ', err);
+          if (err && err.error && err.error.error) {
+            const errorMessage = this.translate.instant(
+              'page.program.program-people-affected.edit-person-affected-popup.note.save-error',
+              {
+                error: err.error.error,
+              },
+            );
+            this.actionResult(errorMessage);
+          }
+        },
+      );
   }
 
   private async actionResult(resultMessage: string, refresh: boolean = false) {

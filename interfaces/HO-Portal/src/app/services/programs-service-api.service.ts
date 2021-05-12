@@ -167,6 +167,12 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  retrieveNote(referenceId: string): Promise<any> {
+    return this.apiService
+      .get(environment.url_121_service_api, `/connection/note/${referenceId}`)
+      .toPromise();
+  }
+
   getTransaction(
     referenceId: string,
     programId: number,

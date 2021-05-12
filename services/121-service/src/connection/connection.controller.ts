@@ -8,6 +8,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  Get,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -35,7 +36,7 @@ import { GetConnectionByPhoneNameDto } from './dto/get-connection-by-name-phone'
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '../user/user.decorator';
 import { ImportResult } from './dto/bulk-import.dto';
-import { UpdateNoteDto } from '../programs/program/dto/update-note.dto';
+import { NoteDto, UpdateNoteDto } from './dto/note.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -162,6 +163,15 @@ export class ConnectionController {
       updateNote.referenceId,
       updateNote.note,
     );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({ title: 'Get note for connection' })
+  @ApiResponse({ status: 200, description: 'Get note for connection' })
+  @ApiImplicitParam({ name: 'referenceId', required: true })
+  @Get('/note/:referenceId')
+  public async retrieveNote(@Param() params): Promise<NoteDto> {
+    return await this.connectionService.retrieveNote(params.referenceId);
   }
 
   @Roles(UserRole.FieldValidation, UserRole.PersonalData)

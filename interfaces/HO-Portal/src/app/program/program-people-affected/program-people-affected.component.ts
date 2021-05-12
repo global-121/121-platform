@@ -611,8 +611,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
       vnumber: person.vnumber,
       fsp: person.fsp,
-      note: person.note,
-      noteUpdated: person.noteUpdated,
     };
 
     personRow = this.fillPaymentColumns(personRow);
@@ -711,13 +709,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async editPersonAffectedPopup(row: PersonRow) {
-    const content = row;
+    const personRow = row;
     const notes = true;
     const modal: HTMLIonModalElement = await this.modalController.create({
       backdropDismiss: false,
       component: EditPersonAffectedPopupComponent,
       componentProps: {
-        content,
+        personRow,
         notes,
       },
     });

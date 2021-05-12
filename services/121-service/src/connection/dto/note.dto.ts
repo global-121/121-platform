@@ -1,6 +1,6 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 
-import { Length, IsString, IsNotEmpty } from 'class-validator';
+import { Length, IsString } from 'class-validator';
 
 export class UpdateNoteDto {
   @ApiModelProperty({ example: '910c50be-f131-4b53-b06b-6506a40a2734' })
@@ -9,4 +9,9 @@ export class UpdateNoteDto {
   @ApiModelProperty({ example: 'note here' })
   @IsString()
   public readonly note: string;
+}
+
+export class NoteDto {
+  public note: string;
+  public noteUpdated: Date;
 }
