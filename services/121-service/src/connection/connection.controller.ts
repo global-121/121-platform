@@ -37,6 +37,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '../user/user.decorator';
 import { ImportResult } from './dto/bulk-import.dto';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
+import { UpdateAttributeDto } from './dto/update-attribute.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -172,6 +173,19 @@ export class ConnectionController {
   @Get('/note/:referenceId')
   public async retrieveNote(@Param() params): Promise<NoteDto> {
     return await this.connectionService.retrieveNote(params.referenceId);
+  }
+
+  @ApiOperation({ title: 'Update attribute for connection' })
+  @ApiResponse({ status: 200, description: 'Update attribute for connection' })
+  @Post('/attribute')
+  public async updateAttribute(
+    @Body() updateAttributeDto: UpdateAttributeDto,
+  ): Promise<ConnectionEntity> {
+    return await this.connectionService.updateAttribute(
+      updateAttributeDto.referenceId,
+      updateAttributeDto.attribute,
+      updateAttributeDto.value,
+    );
   }
 
   @Roles(UserRole.FieldValidation, UserRole.PersonalData)

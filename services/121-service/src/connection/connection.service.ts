@@ -39,6 +39,7 @@ import { ValidationDataService } from './validation-data/validation-data.service
 import { CustomDataAttributes } from './validation-data/dto/custom-data-attributes';
 import { v4 as uuid } from 'uuid';
 import { NoteDto } from './dto/note.dto';
+import { AttributesEnum } from './dto/update-attribute.dto';
 
 @Injectable()
 export class ConnectionService {
@@ -466,6 +467,36 @@ export class ConnectionService {
     note.note = connection.note;
     note.noteUpdated = connection.noteUpdated;
     return note;
+  }
+
+  public async updateAttribute(
+    referenceId: string,
+    attribute: AttributesEnum,
+    value: string,
+  ): Promise<ConnectionEntity> {
+    const connection = await this.findOne(referenceId);
+    console.log('typeof connection[attribute]: ', typeof connection[attribute]);
+    let newConnection;
+
+    if (typeof connection[attribute] === 'undefined') {
+      const errors = 'This attribute is not known.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    if (typeof connection[attribute] === 'number' && Number.isInteger(value)) {
+      newConnection = { ...connection, [attribute]: Number(value) };
+    } else if (typeof connection[attribute] === 'string') {
+      newConnection = { ...connection, [attribute]: value };
+    } else {
+      const errors =
+        'The provided value does not correspond with the type of the provided attribute.';
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+
+    if (!newConnection) {
+      return;
+    }
+    return await this.connectionRepository.save(newConnection);
   }
 
   public async cleanData(
