@@ -50,9 +50,9 @@ export class ProgramPayoutComponent implements OnInit {
     this.canMakePayment = this.checkCanMakePayment();
     this.canMakeExport = this.checkCanMakeExport();
 
-    this.totalIncluded = await this.programsService.getTotalIncluded(
-      this.programId,
-    );
+    this.totalIncluded = (
+      await this.programsService.getTotalIncluded(this.programId)
+    ).connections;
 
     await this.createInstallments();
     this.checkPhaseReady();

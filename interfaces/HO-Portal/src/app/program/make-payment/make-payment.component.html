@@ -27,8 +27,8 @@
     [disabled]="!isEnabled || isInProgress"
     (confirm)="performPayment()"
     (cancel)="resetProgress()"
-    [subHeader]="'page.program.program-payout.total-amount'|translate"
-    [message]="totalAmountMessage"
+    [subHeader]="totalAmountMessage"
+    [message]="'page.program.program-payout.amount-explanation'|translate"
   >
     {{ 'page.program.program-payout.start-payout'|translate }}
   </confirm-prompt>

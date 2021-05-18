@@ -43,6 +43,8 @@ import { CriteriumForExport } from './dto/criterium-for-export.dto';
 import { FileDto } from './dto/file.dto';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
+import { Attributes } from '../../connection/dto/update-attribute.dto';
+import { TotalIncluded } from './dto/payout.dto';
 
 @Injectable()
 export class ProgramService {
@@ -524,9 +526,22 @@ export class ProgramService {
     return includedConnections;
   }
 
-  public async getTotalIncluded(programId): Promise<number> {
+  public async getTotalIncluded(programId: number): Promise<TotalIncluded> {
     const includedConnections = await this.getIncludedConnections(programId);
-    return includedConnections.length;
+    const sum = this.sum(
+      includedConnections,
+      Attributes.paymentAmountMultiplier,
+    );
+    return {
+      connections: includedConnections.length,
+      transferAmounts: sum,
+    };
+  }
+
+  private sum(items, prop): number {
+    return items.reduce(function(a, b) {
+      return a + b[prop];
+    }, 0);
   }
 
   public async payout(

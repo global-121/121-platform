@@ -15,3 +15,8 @@ export class PopupPayoutDetails {
   referenceId: string;
   currency: string;
 }
+
+export class TotalIncluded {
+  public connections: number;
+  public transferAmounts: number;
+}

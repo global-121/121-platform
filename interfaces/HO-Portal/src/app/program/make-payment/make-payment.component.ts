@@ -22,6 +22,7 @@ export class MakePaymentComponent implements OnInit {
   public isInProgress: boolean;
 
   public totalIncluded: number;
+  public totalTransferAmounts: number;
   public lastInstallmentId: number;
 
   public amountInput: number;
@@ -38,9 +39,11 @@ export class MakePaymentComponent implements OnInit {
       return;
     }
     this.amountInput = this.program.fixedTransferValue;
-    this.totalIncluded = await this.programsService.getTotalIncluded(
+    const totalIncluded = await this.programsService.getTotalIncluded(
       this.programId,
     );
+    this.totalIncluded = totalIncluded.connections;
+    this.totalTransferAmounts = totalIncluded.transferAmounts;
     this.lastInstallmentId = await this.programsService.getLastInstallmentId(
       this.programId,
     );
@@ -155,14 +158,8 @@ export class MakePaymentComponent implements OnInit {
   }
 
   public updateTotalAmountMessage(): void {
-    const totalCost = this.totalIncluded * this.amountInput;
+    const totalCost = this.totalTransferAmounts * this.amountInput;
     const symbol = `${this.program.currency} `;
-    const paymentCostFormatted = formatCurrency(
-      this.amountInput,
-      environment.defaultLocale,
-      symbol,
-      this.program.currency,
-    );
     const totalCostFormatted = formatCurrency(
       totalCost,
       environment.defaultLocale,
@@ -170,6 +167,9 @@ export class MakePaymentComponent implements OnInit {
       this.program.currency,
     );
 
-    this.totalAmountMessage = `${this.totalIncluded} * ${paymentCostFormatted} = ${totalCostFormatted}`;
+    this.totalAmountMessage = this.translate.instant(
+      'page.program.program-payout.total-amount',
+      { totalIncluded: this.totalIncluded, totalCost: totalCostFormatted },
+    );
   }
 }

@@ -36,7 +36,9 @@ describe('ProgramPayoutComponent', () => {
     mockProgramsApi.getProgramById.and.returnValue(
       new Promise((r) => r(apiProgramsMock.programs[mockProgramId])),
     );
-    mockProgramsApi.getTotalIncluded.and.returnValue(new Promise((r) => r(0)));
+    mockProgramsApi.getTotalIncluded.and.returnValue(
+      new Promise((r) => r({ connections: 0, transferAmounts: 0 })),
+    );
     mockProgramsApi.getPastInstallments.and.returnValue(
       new Promise((r) => r([])),
     );
