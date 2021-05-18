@@ -716,6 +716,8 @@ export class ProgramService {
         connectionResponse['location'] = connection.customData['location'];
         connectionResponse['vnumber'] = connection.customData['vnumber'];
         connectionResponse['age'] = connection.customData['age'];
+        connectionResponse['paymentAmountMultiplier'] =
+          connection.paymentAmountMultiplier;
       }
 
       if (financialServiceProviders.includes(fspName.africasTalking)) {

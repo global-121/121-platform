@@ -610,6 +610,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       phoneNumber: formatPhoneNumber(person.phoneNumber),
       whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
       vnumber: person.vnumber,
+      paymentAmountMultiplier: person.paymentAmountMultiplier,
       fsp: person.fsp,
     };
 
