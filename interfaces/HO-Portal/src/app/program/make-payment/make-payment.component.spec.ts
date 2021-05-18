@@ -15,7 +15,6 @@ describe('MakePaymentComponent', () => {
   const mockProgramId = 1;
   const mockInstallmentData: InstallmentData = {
     id: 0,
-    amount: 1,
     installmentDate: new Date(),
   };
   const mockPastInstallments = [

@@ -796,11 +796,11 @@ export class ProgramService {
   public async getInstallments(programId: number): Promise<any> {
     const installments = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('transaction.amount, transaction.installment')
+      .select('installment')
       .addSelect('MIN(transaction.created)', 'installmentDate')
       .where('transaction.program.id = :programId', { programId: programId })
       .andWhere("transaction.status = 'success'")
-      .groupBy('transaction.amount, transaction.installment')
+      .groupBy('installment')
       .getRawMany();
     return installments;
   }

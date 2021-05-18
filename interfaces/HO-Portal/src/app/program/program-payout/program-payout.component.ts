@@ -69,15 +69,11 @@ export class ProgramPayoutComponent implements OnInit {
     return this.authService.hasUserRole([UserRole.PersonalData]);
   }
 
-  private createTemplateInstallments(
-    count: number,
-    amount: number,
-  ): Installment[] {
+  private createTemplateInstallments(count: number): Installment[] {
     return Array(count)
       .fill(1)
       .map((_, index) => ({
         id: index + 1,
-        amount,
         installmentDate: new Date(),
         statusOpen: true,
         isExportAvailable: false,
@@ -91,7 +87,6 @@ export class ProgramPayoutComponent implements OnInit {
   private fillInstallmentHistory(pastInstallments: Installment[]): void {
     pastInstallments.forEach((pastInstallment) => {
       const installment = this.getInstallmentById(pastInstallment.id);
-      installment.amount = pastInstallment.amount;
       installment.installmentDate = pastInstallment.installmentDate;
       installment.statusOpen = false;
       installment.isExportAvailable = true;
@@ -132,7 +127,6 @@ export class ProgramPayoutComponent implements OnInit {
   private async createInstallments() {
     this.installments = this.createTemplateInstallments(
       this.program.distributionDuration,
-      this.program.fixedTransferValue,
     );
 
     const pastInstallments = await this.programsService.getPastInstallments(

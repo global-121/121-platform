@@ -1,6 +1,5 @@
 export class InstallmentData {
   id: number;
-  amount: number;
   installmentDate: Date;
 }
 
