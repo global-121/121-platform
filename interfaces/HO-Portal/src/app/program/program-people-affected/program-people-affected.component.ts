@@ -710,14 +710,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async editPersonAffectedPopup(row: PersonRow) {
-    const personRow = row;
-    const notes = true;
     const modal: HTMLIonModalElement = await this.modalController.create({
-      backdropDismiss: false,
       component: EditPersonAffectedPopupComponent,
       componentProps: {
-        personRow,
-        notes,
+        person: row,
       },
     });
 

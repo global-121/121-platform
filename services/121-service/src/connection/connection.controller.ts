@@ -158,9 +158,7 @@ export class ConnectionController {
   @ApiOperation({ title: 'Update note for connection' })
   @ApiResponse({ status: 200, description: 'Update note for connection' })
   @Post('/note')
-  public async updateNote(
-    @Body() updateNote: UpdateNoteDto,
-  ): Promise<ConnectionEntity> {
+  public async updateNote(@Body() updateNote: UpdateNoteDto): Promise<NoteDto> {
     return await this.connectionService.updateNote(
       updateNote.referenceId,
       updateNote.note,

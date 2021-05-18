@@ -459,7 +459,11 @@ export class ConnectionService {
     const connection = await this.findConnectionOrThrow(referenceId);
     connection.note = note;
     connection.noteUpdated = new Date();
-    return await this.connectionRepository.save(connection);
+    await this.connectionRepository.save(connection);
+    const newNote = new NoteDto();
+    newNote.note = connection.note;
+    newNote.noteUpdated = connection.noteUpdated;
+    return newNote;
   }
 
   public async retrieveNote(referenceId: string): Promise<NoteDto> {
