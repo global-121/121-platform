@@ -447,14 +447,15 @@ export class ConnectionService {
     return await this.connectionRepository.save(connection);
   }
 
-  public async updateNote(
-    referenceId: string,
-    note: string,
-  ): Promise<ConnectionEntity> {
+  public async updateNote(referenceId: string, note: string): Promise<NoteDto> {
     const connection = await this.findOne(referenceId);
     connection.note = note;
     connection.noteUpdated = new Date();
-    return await this.connectionRepository.save(connection);
+    await this.connectionRepository.save(connection);
+    const newNote = new NoteDto();
+    newNote.note = connection.note;
+    newNote.noteUpdated = connection.noteUpdated;
+    return newNote;
   }
 
   public async retrieveNote(referenceId: string): Promise<NoteDto> {

@@ -158,7 +158,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  updateNote(referenceId: string, note: string): Promise<any> {
+  updateNote(referenceId: string, note: string): Promise<Note> {
     return this.apiService
       .post(environment.url_121_service_api, `/connection/note`, {
         referenceId,
