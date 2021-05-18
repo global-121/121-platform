@@ -34,7 +34,7 @@ export class ImageCodeService {
       code: barcodeData.barcode,
       pin: barcodeData.pin,
     });
-    this.imageRepository.save(barcode);
+    await this.imageRepository.save(barcode);
 
     return EXTERNAL_API.imageCodeUrl + barcode.secret;
   }
