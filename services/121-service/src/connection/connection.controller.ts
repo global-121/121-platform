@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Get,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -177,7 +178,7 @@ export class ConnectionController {
 
   @ApiOperation({ title: 'Update attribute for connection' })
   @ApiResponse({ status: 200, description: 'Update attribute for connection' })
-  @Post('/attribute')
+  @Put('/attribute')
   public async updateAttribute(
     @Body() updateAttributeDto: UpdateAttributeDto,
   ): Promise<ConnectionEntity> {
@@ -185,26 +186,6 @@ export class ConnectionController {
       updateAttributeDto.referenceId,
       updateAttributeDto.attribute,
       updateAttributeDto.value,
-    );
-  }
-
-  @Roles(UserRole.FieldValidation, UserRole.PersonalData)
-  @ApiOperation({
-    title:
-      'Overwrite custom data for connection used by AW (app) or PM (Swagger)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Custom data overwritten for connection',
-  })
-  @Post('/custom-data/overwrite')
-  public async addCustomDataOverwrite(
-    @Body() customData: CustomDataDto,
-  ): Promise<ConnectionEntity> {
-    return await this.connectionService.addCustomDataOverwrite(
-      customData.referenceId,
-      customData.key,
-      customData.value,
     );
   }
 

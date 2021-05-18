@@ -21,7 +21,7 @@ In this file we document "how to do X", manually. As not everything is possible 
    2. Use the found connection `referenceId` to update the phone-numbers.
       - Use: [`/connection/phone/overwrite`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_phone_overwrite)  
         To store the new SMS phone-number. (Make sure to ONLY include the numbers, no whitespace or `+`)
-      - Use: [`/connection/custom-data/overwrite`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_custom_data_overwrite)  
+      - Use: [`PUT /connection/attribute`](https://test-vm.121.global/121-service/docs/#/connection/put_connection_attribute)  
         To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (Make sure to ONLY include the numbers, no whitespace or `+`)
 
 ---
