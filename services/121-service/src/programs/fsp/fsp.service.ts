@@ -65,12 +65,7 @@ export class FspService {
       installment,
       amount,
     );
-    this.storeAllTransactions(
-      transactionResults,
-      programId,
-      installment,
-      amount,
-    );
+    this.storeAllTransactions(transactionResults, programId, installment);
 
     // Calculate aggregates
     const fspTransactionResults = [
@@ -154,7 +149,6 @@ export class FspService {
     transactionResults: any,
     programId: number,
     installment: number,
-    amount: number,
   ): Promise<void> {
     for (let transaction of transactionResults.intersolveTransactionResult
       .paList) {
@@ -162,7 +156,6 @@ export class FspService {
         transaction,
         programId,
         installment,
-        amount,
         fspName.intersolve,
       );
     }
@@ -172,7 +165,6 @@ export class FspService {
         transaction,
         programId,
         installment,
-        amount,
         fspName.intersolveNoWhatsapp,
       );
     }
@@ -182,7 +174,6 @@ export class FspService {
         transaction,
         programId,
         installment,
-        amount,
         fspName.africasTalking,
       );
     }
@@ -192,7 +183,6 @@ export class FspService {
     transactionResponse: PaTransactionResultDto,
     programId: number,
     installment: number,
-    amount: number,
     fspName: fspName,
   ): Promise<void> {
     const program = await this.programRepository.findOne(programId);
@@ -204,7 +194,7 @@ export class FspService {
     });
 
     const transaction = new TransactionEntity();
-    transaction.amount = amount;
+    transaction.amount = transactionResponse.calculatedAmount;
     transaction.created = transactionResponse.date || new Date();
     transaction.connection = connection;
     transaction.financialServiceProvider = fsp;
@@ -260,7 +250,6 @@ export class FspService {
         enrichedNotification.paTransactionResult,
         enrichedNotification.programId,
         enrichedNotification.installment,
-        enrichedNotification.amount,
         fspName.africasTalking,
       );
     }

@@ -114,7 +114,13 @@ export class IntersolveService {
       voucherResult.referenceId = paPaymentData.referenceId;
 
       const intersolveRefPos = this.getIntersolveRefPos();
-      const voucherInfo = await this.issueVoucher(amount, intersolveRefPos);
+      const calculatedAmount =
+        amount * (paPaymentData.paymentAmountMultiplier || 1);
+      voucherResult.calculatedAmount = calculatedAmount;
+      const voucherInfo = await this.issueVoucher(
+        calculatedAmount,
+        intersolveRefPos,
+      );
       voucherInfo.refPos = intersolveRefPos;
       voucherInfoArray.push(voucherInfo);
 
@@ -123,7 +129,7 @@ export class IntersolveService {
           voucherInfo,
           paPaymentData,
           installment,
-          amount,
+          calculatedAmount,
         );
         voucherResult.status = StatusEnum.success;
       } else {

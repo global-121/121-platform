@@ -34,11 +34,12 @@ export class AfricasTalkingService {
     fspTransactionResult.fspName = fspName.africasTalking;
 
     for (let payment of paymentList) {
+      const calculatedAmount = amount * (payment.paymentAmountMultiplier || 1);
       const payload = this.createPayloadPerPa(
         payment,
         programId,
         installment,
-        amount,
+        calculatedAmount,
       );
 
       const paymentRequestResultPerPa = await this.africasTalkingApiService.sendPaymentPerPa(
@@ -105,12 +106,14 @@ export class AfricasTalkingService {
       notification.status === 'Failed' ? StatusEnum.error : StatusEnum.success;
     paTransactionResult.message =
       notification.status === 'Failed' ? notification.description : '';
+    paTransactionResult.calculatedAmount = Number(
+      notification.requestMetadata['amount'],
+    );
 
     return {
       paTransactionResult,
       programId: notification.requestMetadata['programId'],
       installment: notification.requestMetadata['installment'],
-      amount: Number(notification.requestMetadata['amount']),
     };
   }
 }

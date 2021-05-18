@@ -598,6 +598,8 @@ export class ProgramService {
         includedConnection,
         fsp.attributes,
       );
+      paPaymentData.paymentAmountMultiplier =
+        includedConnection.paymentAmountMultiplier;
 
       paPaymentDataList.push(paPaymentData);
     }
