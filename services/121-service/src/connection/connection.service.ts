@@ -473,29 +473,27 @@ export class ConnectionService {
     referenceId: string,
     attribute: Attributes,
     value: string | number,
-  ): Promise<void> {
+  ): Promise<ConnectionEntity> {
     const connection = await this.findOne(referenceId);
-    const toSave = {
-      id: connection.id,
-    };
+
     if (typeof connection[attribute] !== 'undefined') {
-      toSave[attribute] = value;
+      connection[attribute] = value;
     } else if (
       !connection.customData ||
       typeof connection.customData[attribute] !== 'undefined'
     ) {
-      toSave['customData'] = connection.customData;
-      toSave['customData'][attribute] = value;
+      connection.customData = connection.customData;
+      connection.customData[attribute] = value;
     } else {
       const errors = 'This attribute is not known for this Person Affected.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    try {
-      await this.connectionRepository.save(toSave);
-    } catch (error) {
-      throw new HttpException({ error }, HttpStatus.BAD_REQUEST);
+    const errors = await validate(connection);
+    if (errors.length > 0) {
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
     }
+    return await this.connectionRepository.save(connection);
   }
 
   public async cleanData(

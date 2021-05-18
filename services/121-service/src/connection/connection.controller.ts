@@ -180,7 +180,7 @@ export class ConnectionController {
   @Post('/attribute')
   public async updateAttribute(
     @Body() updateAttributeDto: UpdateAttributeDto,
-  ): Promise<void> {
+  ): Promise<ConnectionEntity> {
     return await this.connectionService.updateAttribute(
       updateAttributeDto.referenceId,
       updateAttributeDto.attribute,
