@@ -1,9 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      <ng-container>
-        <p [innerHTML]="getTitle()"></p>
-      </ng-container>
+      {{ 'page.program.program-people-affected.edit-person-affected-popup.popup-title'|translate:{ pa: person?.pa } }}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
@@ -21,7 +19,7 @@
   color="light"
   class="ion-padding"
 >
-  <ng-container *ngIf="notes">
+  <section>
     <h4>
       {{ 'page.program.program-people-affected.edit-person-affected-popup.note.section-title'|translate }}
     </h4>
@@ -29,17 +27,28 @@
       {{ 'page.program.program-people-affected.edit-person-affected-popup.note.introduction'|translate }}
     </p>
     <ion-textarea
-      [(ngModel)]="inputModel"
+      [(ngModel)]="noteModel"
       [ngModelOptions]="{ standalone: true }"
       ngDefaultControl
       rows="10"
+      spellcheck="true"
+      wrap="soft"
+      [autoGrow]="true"
       [placeholder]="'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'|translate"
       style="font-family: monospace; border: 1px solid currentColor; height:150px"
     ></ion-textarea>
-    <ion-button (click)="saveNote(inputModel)">
-      {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
-    </ion-button>
-    <br>
-    <ion-note [innerHTML]="latestUpdate"></ion-note>
-  </ng-container>
+    <ion-row class="ion-align-items-center">
+      <ion-button
+        (click)="saveNote()"
+        class="ion-margin-end"
+      >
+        {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
+      </ion-button>
+      <ion-note *ngIf="noteLastUpdate">
+        {{ 'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'|translate:{
+            timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"
+          } }}
+      </ion-note>
+    </ion-row>
+  </section>
 </ion-content>
