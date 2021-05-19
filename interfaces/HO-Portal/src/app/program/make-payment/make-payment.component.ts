@@ -27,6 +27,7 @@ export class MakePaymentComponent implements OnInit {
 
   public amountInput: number;
   public totalAmountMessage: string;
+  public totalIncludedMessage: string;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -167,9 +168,14 @@ export class MakePaymentComponent implements OnInit {
       this.program.currency,
     );
 
+    this.totalIncludedMessage = this.translate.instant(
+      'page.program.program-payout.total-included',
+      { totalIncluded: this.totalIncluded },
+    );
+
     this.totalAmountMessage = this.translate.instant(
       'page.program.program-payout.total-amount',
-      { totalIncluded: this.totalIncluded, totalCost: totalCostFormatted },
+      { totalCost: totalCostFormatted },
     );
   }
 }
