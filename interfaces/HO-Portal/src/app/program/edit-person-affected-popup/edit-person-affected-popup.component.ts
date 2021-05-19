@@ -1,5 +1,5 @@
-import { Component,Input,OnInit } from '@angular/core';
-import { AlertController,ModalController } from '@ionic/angular';
+import { Component, Input, OnInit } from '@angular/core';
+import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
