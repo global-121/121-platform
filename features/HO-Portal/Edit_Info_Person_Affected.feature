@@ -32,7 +32,7 @@ Feature: Edit information on Person Affected
 
   Scenario: Successfully update note
     Given a logged-in user with "personal data" role
-    And the user has opened the popup to edit information
+    Given the user has opened the popup to edit information
     And whether the user has changed something or not in the "note" field
     When the user presses the "save" button
     Then the content of the "note" field is written to the database
@@ -41,19 +41,30 @@ Feature: Edit information on Person Affected
     When the user closes this feedback message
     When the user opens the popup for the same PA again
     Then the user sees the updated note
-    And the use sees the updated time of last update
+    And the user sees a new "last updated" time
 
   Scenario: Unsuccessfully update note
+    Given a logged-in user with "personal data" role
     Given something goes wrong for some reason (which cannot be simulated by the tester)
     When the user presses the "save" button
     Then a feedback message that something went wrong is given
     And it gives the basic error type if possible, e.g. "Bad Request"
 
-  Scenario: Update paymentAmountMultiplier
+  Scenario: Update paymentAmountMultiplier successfully
     Given a logged-in user with "personal data" role
-    And the user has opened the popup to edit information
-    And an input-field for the "paymentAmountMultiplier" is shown
+    Given the user has opened the popup to edit information
+    Given an input-field for the "paymentAmountMultiplier" is shown
     When the user changes the value and presses the  update-button
     Then the update-button changes into a progress indicator
     And the value of the input-field is written to the database
+    And the progress indicator changes into the update-button again
+    And the page refreshes
+
+  Scenario: Update paymentAmountMultiplier with invalid value
+    Given a logged-in user with "personal data" role
+    Given the user has opened the popup to edit information
+    Given an input-field for the "paymentAmountMultiplier" is shown
+    When the user changes the value to "" or a negative number and presses the  update-button
+    Then the update-button changes into a progress indicator
+    And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again

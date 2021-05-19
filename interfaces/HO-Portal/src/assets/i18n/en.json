@@ -222,7 +222,7 @@
           "popup-title": "Edit information of {{pa}}",
           "properties": {
             "paymentAmountMultiplier": {
-              "label": "Additional Transfer value(s)"
+              "label": "× Transfer value"
             }
           },
           "note": {
