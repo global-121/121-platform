@@ -4,45 +4,42 @@
 variables:
   workingDir: interfaces/HO-Portal/
 
-
 trigger:
   branches:
     include:
-    - master
-    - release/*
+      - master
+      - release/*
   paths:
     include:
-    - 'interfaces/HO-Portal/*'
+      - 'interfaces/HO-Portal/*'
 pr:
   branches:
     include:
-    - master
+      - master
   paths:
     include:
-    - 'interfaces/HO-Portal/*'
-
+      - 'interfaces/HO-Portal/*'
 
 pool:
-  vmImage: 'ubuntu-16.04'
-
+  vmImage: 'ubuntu-latest'
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '12.x'
 
-- script: npm ci
-  displayName: Install
-  workingDirectory: $(workingDir)
+  - script: npm ci
+    displayName: Install
+    workingDirectory: $(workingDir)
 
-- script: npm run lint
-  displayName: Linting
-  workingDirectory: $(workingDir)
+  - script: npm run lint
+    displayName: Linting
+    workingDirectory: $(workingDir)
 
-- script: npm test
-  displayName: Tests
-  workingDirectory: $(workingDir)
+  - script: npm test
+    displayName: Tests
+    workingDirectory: $(workingDir)
 
-- script: npm run build -- --prod
-  displayName: Build Production-mode
-  workingDirectory: $(workingDir)
+  - script: npm run build -- --prod
+    displayName: Build Production-mode
+    workingDirectory: $(workingDir)
