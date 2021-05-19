@@ -219,6 +219,11 @@
         "edit-person-affected-popup": {
           "edit-icon-title": "Edit information of Person Affected",
           "popup-title": "Edit information of {{pa}}",
+          "properties": {
+            "paymentAmountMultiplier": {
+              "label": "Additional Transfer value(s)"
+            }
+          },
           "note": {
             "section-title": "Notes about Person Affected",
             "introduction": "You can add, edit or remove notes about this particular Person Affected in the field below. Please keep Personal Identifiable Information (PII) to a minimum and delete any PII when no longer needed.",

@@ -13,6 +13,8 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
   public person: PersonRow;
 
+  public inProgress: any = {};
+
   public noteModel: string;
   public noteLastUpdate: string;
 
@@ -27,7 +29,45 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.getNote();
   }
 
-  public async getNote() {
+  public async updatePaAttribute(
+    attribute: string,
+    value: string,
+  ): Promise<void> {
+    this.inProgress[attribute] = true;
+    this.programsService
+      .updatePaAttribute(this.person.referenceId, attribute, value)
+      .then(
+        () => {
+          this.inProgress[attribute] = false;
+        },
+        (error) => {
+          this.inProgress[attribute] = false;
+          console.log('error: ', error);
+          if (error && error.error && error.error.errors) {
+            const errorMessage = this.translate.instant(
+              'page.program.program-people-affected.edit-person-affected-popup.note.save-error',
+              {
+                error: this.formatConstraintsErrors(
+                  error.error.errors,
+                  attribute,
+                ),
+              },
+            );
+            this.actionResult(errorMessage);
+          }
+        },
+      );
+  }
+
+  private formatConstraintsErrors(errors, attribute: string): string {
+    const attributeError = errors.find(
+      (message) => message.property === attribute,
+    );
+    const attributeConstraints = Object.values(attributeError.constraints);
+    return '<br><br>' + attributeConstraints.join('<br>');
+  }
+
+  private async getNote() {
     const note = await this.programsService.retrieveNote(
       this.person.referenceId,
     );
@@ -49,13 +89,13 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
           this.noteLastUpdate = note.noteUpdated;
         },
-        (err) => {
-          console.log('err: ', err);
-          if (err && err.error && err.error.error) {
+        (error) => {
+          console.log('error: ', error);
+          if (error && error.error && error.error.error) {
             const errorMessage = this.translate.instant(
               'page.program.program-people-affected.edit-person-affected-popup.note.save-error',
               {
-                error: err.error.error,
+                error: error.error.error,
               },
             );
             this.actionResult(errorMessage);

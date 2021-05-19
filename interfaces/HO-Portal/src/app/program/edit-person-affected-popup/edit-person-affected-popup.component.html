@@ -20,6 +20,20 @@
   class="ion-padding"
 >
   <section>
+    <ion-list lines="none">
+
+      <app-update-property-item
+        type="number"
+        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'|translate"
+        [value]="person?.paymentAmountMultiplier"
+        (updated)="updatePaAttribute('paymentAmountMultiplier', $event)"
+        [inProgress]="inProgress?.paymentAmountMultiplier || false"
+      ></app-update-property-item>
+
+    </ion-list>
+  </section>
+  <hr />
+  <section>
     <h4>
       {{ 'page.program.program-people-affected.edit-person-affected-popup.note.section-title'|translate }}
     </h4>
@@ -33,7 +47,6 @@
       rows="10"
       spellcheck="true"
       wrap="soft"
-      [autoGrow]="true"
       [placeholder]="'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'|translate"
       style="font-family: monospace; border: 1px solid currentColor; height:150px"
     ></ion-textarea>

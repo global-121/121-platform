@@ -9,7 +9,6 @@ import {
   UseInterceptors,
   UploadedFile,
   Get,
-  Put,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -176,7 +175,7 @@ export class ConnectionController {
 
   @ApiOperation({ title: 'Update attribute for connection' })
   @ApiResponse({ status: 200, description: 'Update attribute for connection' })
-  @Put('/attribute')
+  @Post('/attribute')
   public async updateAttribute(
     @Body() updateAttributeDto: UpdateAttributeDto,
   ): Promise<ConnectionEntity> {

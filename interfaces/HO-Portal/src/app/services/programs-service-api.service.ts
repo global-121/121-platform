@@ -158,6 +158,20 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  updatePaAttribute(
+    referenceId: string,
+    attribute: string,
+    value: string | number,
+  ): Promise<Person> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/connection/attribute`, {
+        referenceId,
+        attribute,
+        value,
+      })
+      .toPromise();
+  }
+
   updateNote(referenceId: string, note: string): Promise<Note> {
     return this.apiService
       .post(environment.url_121_service_api, `/connection/note`, {
