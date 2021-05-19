@@ -528,20 +528,13 @@ export class ProgramService {
 
   public async getTotalIncluded(programId: number): Promise<TotalIncluded> {
     const includedConnections = await this.getIncludedConnections(programId);
-    const sum = this.sum(
-      includedConnections,
-      Attributes.paymentAmountMultiplier,
-    );
+    const sum = includedConnections.reduce(function(a, b) {
+      return a + (b[Attributes.paymentAmountMultiplier] || 1);
+    }, 0);
     return {
       connections: includedConnections.length,
       transferAmounts: sum,
     };
-  }
-
-  private sum(items, prop): number {
-    return items.reduce(function(a, b) {
-      return a + b[prop];
-    }, 0);
   }
 
   public async payout(
