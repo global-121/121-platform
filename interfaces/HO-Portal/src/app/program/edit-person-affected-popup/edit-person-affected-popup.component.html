@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      {{ 'page.program.program-people-affected.edit-person-affected-popup.popup-title'|translate:{ pa: person?.pa } }}
+      {{ 'page.program.program-people-affected.edit-person-affected-popup.popup-title'|translate:{ pa: '#' + person?.id } }}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
@@ -43,6 +43,7 @@
     <ion-textarea
       [(ngModel)]="noteModel"
       [ngModelOptions]="{ standalone: true }"
+      [disabled]="inProgress?.note || false"
       ngDefaultControl
       rows="10"
       spellcheck="true"
@@ -53,10 +54,16 @@
     <ion-row class="ion-align-items-center">
       <ion-button
         (click)="saveNote()"
+        [disabled]="inProgress?.note || false"
         class="ion-margin-end"
       >
         {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
       </ion-button>
+      <ion-spinner
+        *ngIf="inProgress?.note"
+        color="primary"
+        size="small"
+      ></ion-spinner>
       <ion-note *ngIf="noteLastUpdate">
         {{ 'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'|translate:{
             timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"

@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { Component,Input,OnInit } from '@angular/core';
+import { AlertController,ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { PersonRow } from 'src/app/models/person.model';
+import { Person } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 })
 export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
-  public person: PersonRow;
+  public person: Person;
 
   public inProgress: any = {};
 
@@ -39,20 +39,21 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       .then(
         () => {
           this.inProgress[attribute] = false;
+          this.actionResult(
+            this.translate.instant('common.update-success'),
+            true,
+          );
         },
         (error) => {
           this.inProgress[attribute] = false;
           console.log('error: ', error);
           if (error && error.error && error.error.errors) {
-            const errorMessage = this.translate.instant(
-              'page.program.program-people-affected.edit-person-affected-popup.note.save-error',
-              {
-                error: this.formatConstraintsErrors(
-                  error.error.errors,
-                  attribute,
-                ),
-              },
-            );
+            const errorMessage = this.translate.instant('common.update-error', {
+              error: this.formatConstraintsErrors(
+                error.error.errors,
+                attribute,
+              ),
+            });
             this.actionResult(errorMessage);
           }
         },
@@ -77,27 +78,22 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   }
 
   public async saveNote() {
+    this.inProgress.note = true;
     await this.programsService
       .updateNote(this.person.referenceId, this.noteModel)
       .then(
         (note) => {
-          this.actionResult(
-            this.translate.instant(
-              'page.program.program-people-affected.edit-person-affected-popup.note.save-success',
-            ),
-          );
-
+          this.actionResult(this.translate.instant('common.update-success'));
           this.noteLastUpdate = note.noteUpdated;
+          this.inProgress.note = false;
         },
         (error) => {
+          this.inProgress.note = false;
           console.log('error: ', error);
           if (error && error.error && error.error.error) {
-            const errorMessage = this.translate.instant(
-              'page.program.program-people-affected.edit-person-affected-popup.note.save-error',
-              {
-                error: error.error.error,
-              },
-            );
+            const errorMessage = this.translate.instant('common.update-error', {
+              error: error.error.error,
+            });
             this.actionResult(errorMessage);
           }
         },
