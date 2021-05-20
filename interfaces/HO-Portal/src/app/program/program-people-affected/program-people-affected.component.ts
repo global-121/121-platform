@@ -49,6 +49,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   private pastTransactions: Transaction[] = [];
   private lastInstallmentId: number;
 
+  private allPeopleData: Person[];
   public allPeopleAffected: PersonRow[] = [];
   public selectedPeople: PersonRow[] = [];
   public visiblePeopleAffected: PersonRow[] = [];
@@ -373,6 +374,20 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         width: columnDateTimeWidth,
       },
       {
+        prop: 'paymentAmountMultiplier',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.paymentAmountMultiplier',
+        ),
+        ...this.columnDefaults,
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+          ProgramPhase.payment,
+        ],
+        width: columnScoreWidth,
+      },
+      {
         prop: 'fsp',
         name: this.translate.instant(
           'page.program.program-people-affected.column.fsp',
@@ -529,19 +544,18 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private async loadData() {
-    let allPeopleData: Person[];
     if (this.authService.hasUserRole([UserRole.View, UserRole.PersonalData])) {
       this.canViewPersonalData = true;
-      allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
+      this.allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,
       );
     } else {
       this.canViewPersonalData = false;
-      allPeopleData = await this.programsService.getPeopleAffected(
+      this.allPeopleData = await this.programsService.getPeopleAffected(
         this.programId,
       );
     }
-    this.allPeopleAffected = this.createTableData(allPeopleData);
+    this.allPeopleAffected = this.createTableData(this.allPeopleData);
     this.visiblePeopleAffected = [...this.allPeopleAffected];
   }
 
@@ -610,6 +624,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       phoneNumber: formatPhoneNumber(person.phoneNumber),
       whatsappPhoneNumber: formatPhoneNumber(person.whatsappPhoneNumber),
       vnumber: person.vnumber,
+      paymentAmountMultiplier: person.paymentAmountMultiplier
+        ? `${person.paymentAmountMultiplier}&times;`
+        : '',
       fsp: person.fsp,
     };
 
@@ -709,10 +726,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async editPersonAffectedPopup(row: PersonRow) {
+    const person = this.allPeopleData.find(
+      (pa) => pa.referenceId === row.referenceId,
+    );
     const modal: HTMLIonModalElement = await this.modalController.create({
       component: EditPersonAffectedPopupComponent,
       componentProps: {
-        person: row,
+        person,
       },
     });
 

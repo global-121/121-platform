@@ -27,4 +27,5 @@ export class PaTransactionResultDto {
   public message: string;
   public date?: Date;
   public customData?: any;
+  public calculatedAmount: number;
 }

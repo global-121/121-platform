@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment';
 import { UserRole } from '../auth/user-role.enum';
 import { ActionType } from '../models/action-type.model';
 import { ExportType } from '../models/export-type.model';
-import { InstallmentData } from '../models/installment.model';
+import { InstallmentData, TotalIncluded } from '../models/installment.model';
 import { Note, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
@@ -104,7 +104,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getTotalIncluded(programId: number | string): Promise<number> {
+  getTotalIncluded(programId: number | string): Promise<TotalIncluded> {
     return this.apiService
       .get(
         environment.url_121_service_api,
@@ -155,6 +155,20 @@ export class ProgramsServiceApiService {
           minInstallment ? '?minInstallment=' + minInstallment : ''
         }`,
       )
+      .toPromise();
+  }
+
+  updatePaAttribute(
+    referenceId: string,
+    attribute: string,
+    value: string | number,
+  ): Promise<Person> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/connection/attribute`, {
+        referenceId,
+        attribute,
+        value,
+      })
       .toPromise();
   }
 

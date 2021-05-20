@@ -27,7 +27,7 @@
     [disabled]="!isEnabled || isInProgress"
     (confirm)="performPayment()"
     (cancel)="resetProgress()"
-    [subHeader]="'page.program.program-payout.total-amount'|translate"
+    [subHeader]="totalIncludedMessage"
     [message]="totalAmountMessage"
   >
     {{ 'page.program.program-payout.start-payout'|translate }}

@@ -27,7 +27,7 @@ import {
 import { ProgramEntity } from './program.entity';
 import { DeleteResult } from 'typeorm';
 import { InclusionStatus } from './dto/inclusion-status.dto';
-import { PayoutDto } from './dto/payout.dto';
+import { PayoutDto, TotalIncluded } from './dto/payout.dto';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
@@ -304,7 +304,7 @@ export class ProgramController {
     description: 'Total number of included per program',
   })
   @Get('total-included/:programId')
-  public async getTotalIncluded(@Param() param): Promise<number> {
+  public async getTotalIncluded(@Param() param): Promise<TotalIncluded> {
     return await this.programService.getTotalIncluded(param.programId);
   }
 

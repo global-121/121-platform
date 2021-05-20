@@ -1,4 +1,11 @@
-import { IsIn, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsIn,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Min,
+} from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { fspName } from '../../programs/fsp/financial-service-provider.entity';
 
@@ -12,6 +19,12 @@ export class BulkImportDto {
   @IsNotEmpty()
   @IsString()
   public namePartnerOrganization: string;
+
+  @ApiModelProperty()
+  @IsNumber()
+  @IsInt()
+  @Min(1)
+  public paymentAmountMultiplier: number;
 }
 
 export class ImportResult {

@@ -12,9 +12,6 @@ import { ConnectionEntity } from '../connection/connection.entity';
 @Injectable()
 export class CronjobService {
   @InjectRepository(IntersolveBarcodeEntity)
-  private readonly intersolveBarcodeRepository: Repository<
-    IntersolveBarcodeEntity
-  >;
   @InjectRepository(IntersolveRequestEntity)
   private readonly intersolveRequestRepository: Repository<
     IntersolveRequestEntity
@@ -86,11 +83,14 @@ export class CronjobService {
       const fromNumber = unsentIntersolveBarcode.whatsappPhoneNumber;
       const referenceId = unsentIntersolveBarcode.referenceId;
       const language = await this.getLanguageForConnection(referenceId);
-      const whatsappPayment = this.getNotificationText(
+      let whatsappPayment = this.getNotificationText(
         program,
         'whatsappPayment',
         language,
       );
+      whatsappPayment = whatsappPayment
+        .split('{{1}}')
+        .join(unsentIntersolveBarcode.amount);
 
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,

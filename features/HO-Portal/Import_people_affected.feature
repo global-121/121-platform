@@ -6,9 +6,9 @@ Feature: Import people affected
     Given the "selected phase" is "Registration (& Validation)"
 
   Scenario: Open Import People Affected popup
-    When the user clicks the "Import People Afected" button
+    When the user clicks the "Import People Affected" button
     Then a popup opens to select a CSV file
-    And it describes the required format of the file with a "phoneNumber" column and a "namePartnerOrganization" column
+    And it describes the required format of the file with columns "phoneNumber", "namePartnerOrganization" and "paymentAmountMultiplier"
     And it shows a "choose file" button
     And it can also be used to drag and drop the file
     And it shows a disabled "OK" button
@@ -16,8 +16,9 @@ Feature: Import people affected
 
   Scenario: Successfully Import People Affected
     Given a valid import CSV file is prepared
-    And it has columns "phoneNumber" and "namePartnerOrganization"
+    And it has columns "phoneNumber", "namePartnerOrganization" and "paymentAmountMultiplier"
     And it has as delimiter ";" or "," 
+    And the "paymentAmountMultiplier" column has only positive integers as values
     When the user selects the CSV-file, through 'choose file' or 'drag and drop' 
     Then the "OK" button becomes enabled
     When the user presses "OK"
@@ -37,10 +38,10 @@ Feature: Import people affected
     And the name of the "partner organization" is filled in
 
   Scenario: Unsuccessfully import invalid CSV file
-    When the user selects an invalid CSV-file (wrong extension, wrong column names, wrong delimiter, etc.)
+    When the user selects an invalid CSV-file (wrong extension, wrong column names, wrong delimiter, wrong input values, etc.)
     Then the "OK" button becomes enabled
     When the user presses "OK"
-    Then a feedback popup appears that "Something went wrong with the export."
+    Then a feedback popup appears that "Something went wrong with the export" and it explains possible reasons
 
   Scenario: Person Affected registers with imported phone number
     Given a "phoneNumber" is successfully imported

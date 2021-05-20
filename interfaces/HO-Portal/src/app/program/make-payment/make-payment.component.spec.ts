@@ -15,7 +15,6 @@ describe('MakePaymentComponent', () => {
   const mockProgramId = 1;
   const mockInstallmentData: InstallmentData = {
     id: 0,
-    amount: 1,
     installmentDate: new Date(),
   };
   const mockPastInstallments = [
@@ -44,7 +43,9 @@ describe('MakePaymentComponent', () => {
   beforeEach(() => {
     mockProgramsApi = TestBed.get(ProgramsServiceApiService);
 
-    mockProgramsApi.getTotalIncluded.and.returnValue(new Promise((r) => r(2)));
+    mockProgramsApi.getTotalIncluded.and.returnValue(
+      new Promise((r) => r({ connections: 2, transferAmounts: 2 })),
+    );
     mockProgramsApi.getPastInstallments.and.returnValue(
       new Promise((r) => r(mockPastInstallments)),
     );
@@ -64,7 +65,9 @@ describe('MakePaymentComponent', () => {
   });
 
   it('should be disabled when 0 PA are included', async () => {
-    mockProgramsApi.getTotalIncluded.and.returnValue(new Promise((r) => r(0)));
+    mockProgramsApi.getTotalIncluded.and.returnValue(
+      new Promise((r) => r({ connections: 0, transferAmounts: 0 })),
+    );
 
     await fixture.detectChanges();
 
@@ -73,7 +76,9 @@ describe('MakePaymentComponent', () => {
   });
 
   it('should be enabled when 1(+) PA are included', async () => {
-    mockProgramsApi.getTotalIncluded.and.returnValue(new Promise((r) => r(1)));
+    mockProgramsApi.getTotalIncluded.and.returnValue(
+      new Promise((r) => r({ connections: 1, transferAmounts: 1 })),
+    );
 
     await fixture.detectChanges();
 

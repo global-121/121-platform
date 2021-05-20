@@ -1,6 +1,5 @@
 export class InstallmentData {
   id: number;
-  amount: number;
   installmentDate: Date;
 }
 
@@ -15,4 +14,9 @@ export class PopupPayoutDetails {
   amount: number;
   referenceId: string;
   currency: string;
+}
+
+export class TotalIncluded {
+  public connections: number;
+  public transferAmounts: number;
 }

@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 import { ImageCodeExportVouchersEntity } from '../notifications/imagecode/image-code-export-vouchers.entity';
+import { IsInt, IsPositive } from 'class-validator';
 
 @Entity('connection')
 export class ConnectionEntity {
@@ -77,6 +78,11 @@ export class ConnectionEntity {
 
   @Column({ nullable: true })
   public noteUpdated: Date;
+
+  @Column({ nullable: true })
+  @IsInt()
+  @IsPositive()
+  public paymentAmountMultiplier: number;
 
   @OneToMany(
     type => TransactionEntity,

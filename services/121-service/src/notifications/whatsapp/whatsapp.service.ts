@@ -173,12 +173,13 @@ export class WhatsappService {
         );
 
         // Only include text with first voucher (across PA's and installments)
-        const message = firstVoucherSent
+        let message = firstVoucherSent
           ? ''
           : connectionsWithOpenVouchers.length > 1
           ? program.notifications[language]['whatsappVoucherMultiple'] ||
             program.notifications[language]['whatsappVoucher']
           : program.notifications[language]['whatsappVoucher'];
+        message = message.split('{{1}}').join(intersolveBarcode.amount);
         await this.sendWhatsapp(
           message,
           intersolveBarcode.whatsappPhoneNumber,
