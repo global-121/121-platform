@@ -8,6 +8,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FspService } from './fsp.service';
@@ -105,7 +106,7 @@ export class FspController {
     );
     var bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
-    response.writeHead(200, {
+    response.writeHead(HttpStatus.OK, {
       'Content-Type': 'image/png',
     });
     bufferStream.pipe(response);
@@ -137,7 +138,7 @@ export class FspController {
     const blob = await this.intersolveService.getInstruction();
     var bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
-    response.writeHead(200, {
+    response.writeHead(HttpStatus.OK, {
       'Content-Type': 'image/png',
     });
     bufferStream.pipe(response);
