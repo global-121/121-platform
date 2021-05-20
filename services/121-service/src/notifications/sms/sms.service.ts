@@ -38,7 +38,6 @@ export class SmsService {
     recipientPhoneNr: string,
   ): Promise<void> {
     // Overwrite recipient phone number for testing phase
-    // recipientPhoneNr = TWILIO.testToNumber;
     twilioClient.messages
       .create({
         body: message,

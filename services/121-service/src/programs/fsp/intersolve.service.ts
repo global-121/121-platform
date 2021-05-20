@@ -97,6 +97,10 @@ export class IntersolveService {
     return groupsByPaymentAddress;
   }
 
+  private getMultipliedAmount(amount: number, multiplier: number): number {
+    return amount * (multiplier || 1);
+  }
+
   public async sendPaymentsPerPhoneNumber(
     paymentInfo: PaPaymentDataAggregateDto,
     useWhatsapp: boolean,
@@ -114,8 +118,10 @@ export class IntersolveService {
       voucherResult.referenceId = paPaymentData.referenceId;
 
       const intersolveRefPos = this.getIntersolveRefPos();
-      const calculatedAmount =
-        amount * (paPaymentData.paymentAmountMultiplier || 1);
+      const calculatedAmount = this.getMultipliedAmount(
+        amount,
+        paPaymentData.paymentAmountMultiplier,
+      );
       voucherResult.calculatedAmount = calculatedAmount;
       const voucherInfo = await this.issueVoucher(
         calculatedAmount,
@@ -290,9 +296,10 @@ export class IntersolveService {
       // .. but we have to choose something
       // .. and in practice it will never happen that there are multiple PAs with differing multipliers
       // .. and the old solution will soon be removed again from code
-      const calculatedAmount =
-        paymentInfo.paPaymentDataList[0].paymentAmountMultiplier *
-        program.fixedTransferValue;
+      const calculatedAmount = this.getMultipliedAmount(
+        program.fixedTransferValue,
+        paymentInfo.paPaymentDataList[0].paymentAmountMultiplier,
+      );
       whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,

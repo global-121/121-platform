@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Res } from '@nestjs/common';
+import { Controller, Get, Param, Res, HttpStatus } from '@nestjs/common';
 import { ApiResponse, ApiUseTags, ApiImplicitParam } from '@nestjs/swagger';
 import { ImageCodeService } from './image-code.service';
 import { Response } from 'express-serve-static-core';
@@ -14,7 +14,7 @@ export class ImageCodeController {
 
   @ApiResponse({
     status: 200,
-    description: 'Test controller to test sending imageCode',
+    description: 'Collect voucher image via WhatsApp',
   })
   @ApiImplicitParam({ name: 'secret' })
   @Get(':secret')
@@ -22,7 +22,7 @@ export class ImageCodeController {
     const blob = await this.imageCodeService.get(params.secret);
     var bufferStream = new stream.PassThrough();
     bufferStream.end(Buffer.from(blob, 'binary'));
-    response.writeHead(200, {
+    response.writeHead(HttpStatus.OK, {
       'Content-Type': 'image/png',
     });
     bufferStream.pipe(response);
