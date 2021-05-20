@@ -379,7 +379,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.paymentAmountMultiplier',
         ),
         ...this.columnDefaults,
-        phases: [ProgramPhase.payment],
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+          ProgramPhase.payment,
+        ],
         width: columnScoreWidth,
       },
       {
