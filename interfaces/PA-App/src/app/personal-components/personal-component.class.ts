@@ -10,7 +10,8 @@ import { environment } from 'src/environments/environment';
 import { DialogueTurnComponent } from '../shared/dialogue-turn/dialogue-turn.component';
 
 export abstract class PersonalComponent
-  implements OnInit, AfterViewInit, AfterContentInit {
+  implements OnInit, AfterViewInit, AfterContentInit
+{
   /**
    * The data required to 'reinstate' the component from history
    */

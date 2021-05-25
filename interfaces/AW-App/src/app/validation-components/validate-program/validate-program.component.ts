@@ -99,19 +99,17 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   private buildQuestions(customCriteria: ProgramCriterium[]) {
-    return customCriteria.map(
-      (criterium): Question => {
-        return {
-          code: criterium.criterium,
-          answerType: criterium.answerType,
-          label: this.translatableString.get(criterium.label),
-          placeholder: this.translatableString.get(criterium.placeholder),
-          options: !criterium.options
-            ? null
-            : this.buildOptions(criterium.options),
-        };
-      },
-    );
+    return customCriteria.map((criterium): Question => {
+      return {
+        code: criterium.criterium,
+        answerType: criterium.answerType,
+        label: this.translatableString.get(criterium.label),
+        placeholder: this.translatableString.get(criterium.placeholder),
+        options: !criterium.options
+          ? null
+          : this.buildOptions(criterium.options),
+      };
+    });
   }
 
   private buildOptions(optionSet: ProgramCriteriumOption[]): QuestionOption[] {

@@ -68,9 +68,8 @@ export class UserMenuComponent implements OnInit {
           text: this.translate.instant('shared.submit-button'),
           handler: (data) => {
             if (!data || !data.password) {
-              const passwordInput: HTMLInputElement = this.deletePasswordAlert.querySelector(
-                '[type=password]',
-              );
+              const passwordInput: HTMLInputElement =
+                this.deletePasswordAlert.querySelector('[type=password]');
               passwordInput.focus();
 
               return false;
@@ -85,9 +84,8 @@ export class UserMenuComponent implements OnInit {
       ],
     });
     await this.deletePasswordAlert.present().then(() => {
-      const passwordInput: HTMLInputElement = this.deletePasswordAlert.querySelector(
-        '[type=password]',
-      );
+      const passwordInput: HTMLInputElement =
+        this.deletePasswordAlert.querySelector('[type=password]');
       passwordInput.addEventListener('keypress', (event: KeyboardEvent) => {
         if (event.key !== 'Enter' || !passwordInput.value) {
           return false;

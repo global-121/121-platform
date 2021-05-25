@@ -28,8 +28,7 @@ export const fspData = {
       id: 1,
       name: 'personalId',
       label: {
-        en:
-          'What is your national ID, so we can transfer money to your bank account',
+        en: 'What is your national ID, so we can transfer money to your bank account',
       },
       options: null,
       answerType: 'text',

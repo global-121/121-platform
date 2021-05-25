@@ -123,29 +123,25 @@ export class ValidateFspComponent implements ValidationComponent {
   }
 
   private buildQuestions(fspAttributes: FspAttribute[]) {
-    return fspAttributes.map(
-      (attribute): Question => {
-        return {
-          code: attribute.name,
-          answerType: attribute.answerType,
-          label: this.translatableString.get(attribute.label),
-          options: !attribute.options
-            ? null
-            : this.buildOptions(attribute.options),
-        };
-      },
-    );
+    return fspAttributes.map((attribute): Question => {
+      return {
+        code: attribute.name,
+        answerType: attribute.answerType,
+        label: this.translatableString.get(attribute.label),
+        options: !attribute.options
+          ? null
+          : this.buildOptions(attribute.options),
+      };
+    });
   }
 
   private buildOptions(optionSet: FspAttributeOption[]): QuestionOption[] {
-    return optionSet.map(
-      (option): QuestionOption => {
-        return {
-          value: option.option,
-          label: this.translatableString.get(option.label),
-        };
-      },
-    );
+    return optionSet.map((option): QuestionOption => {
+      return {
+        value: option.option,
+        label: this.translatableString.get(option.label),
+      };
+    });
   }
   private processInOrder(array: any[], fn) {
     return array.reduce(
