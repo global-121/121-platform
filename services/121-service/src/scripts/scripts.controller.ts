@@ -6,12 +6,10 @@ import { SeedProgramValidation } from './seed-program-validation';
 import { SeedDemoProgram } from './seed-program-demo';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
-import { SeedPilotKenProgram } from './seed-program-pilot-ken';
 
 enum SeedScript {
   pilotNL = 'pilot-nl',
   pilotNLPV = 'pilot-nl-pv',
-  pilotKEN = 'pilot-ken',
   demo = 'demo',
   validation = 'validation',
 }
@@ -45,8 +43,6 @@ export class ScriptsController {
       seed = new SeedPilotNLProgram(this.connection);
     } else if (body.script == SeedScript.pilotNLPV) {
       seed = new SeedPilotNL2Program(this.connection);
-    } else if (body.script == SeedScript.pilotKEN) {
-      seed = new SeedPilotKenProgram(this.connection);
     } else {
       seed = new SeedProgramValidation(this.connection);
     }
