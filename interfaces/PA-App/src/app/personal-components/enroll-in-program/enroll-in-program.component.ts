@@ -125,20 +125,18 @@ export class EnrollInProgramComponent extends PersonalComponent {
   }
 
   private buildQuestions(customCriteria: ProgramCriterium[]) {
-    return customCriteria.map(
-      (criterium): Question => {
-        return {
-          code: criterium.criterium,
-          answerType: criterium.answerType,
-          label: this.translatableString.get(criterium.label),
-          placeholder: this.translatableString.get(criterium.placeholder),
-          pattern: criterium.pattern,
-          options: criterium.options
-            ? this.buildOptions(criterium.options)
-            : null,
-        };
-      },
-    );
+    return customCriteria.map((criterium): Question => {
+      return {
+        code: criterium.criterium,
+        answerType: criterium.answerType,
+        label: this.translatableString.get(criterium.label),
+        placeholder: this.translatableString.get(criterium.placeholder),
+        pattern: criterium.pattern,
+        options: criterium.options
+          ? this.buildOptions(criterium.options)
+          : null,
+      };
+    });
   }
 
   private buildOptions(optionSet: ProgramCriteriumOption[]): QuestionOption[] {

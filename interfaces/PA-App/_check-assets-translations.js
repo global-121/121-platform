@@ -50,10 +50,9 @@ enabledLocales.forEach((locale) => {
       `Check ${bold('NG_LOCALES')}: ${bold(process.env.NG_LOCALES)}`,
     );
     console.error(`Check files in ${bold(translationsPath)}:`);
-    getTranslationFiles(
-      translationsPath,
-      translationsFileType,
-    ).forEach((file) => console.log(`  - ${file}`));
+    getTranslationFiles(translationsPath, translationsFileType).forEach(
+      (file) => console.log(`  - ${file}`),
+    );
     console.log(' ');
 
     return process.exit(1);

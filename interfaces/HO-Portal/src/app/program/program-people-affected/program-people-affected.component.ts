@@ -443,9 +443,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private setupProxyScrollbar() {
-    const proxyScrollbar: HTMLElement = document.querySelector(
-      '.proxy-scrollbar',
-    );
+    const proxyScrollbar: HTMLElement =
+      document.querySelector('.proxy-scrollbar');
     const proxyScrollbarContent: HTMLElement = proxyScrollbar.querySelector(
       '.proxy-scrollbar--content',
     );
@@ -684,9 +683,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         hasMessageIcon: this.enableMessageSentIcon(transaction),
         hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
       };
-      personRow[
-        'payment' + paymentColumn.installmentIndex
-      ] = paymentColumnValue;
+      personRow['payment' + paymentColumn.installmentIndex] =
+        paymentColumnValue;
     });
     return personRow;
   }
