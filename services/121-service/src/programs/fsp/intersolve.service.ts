@@ -177,6 +177,7 @@ export class IntersolveService {
       paymentInfo,
       voucherInfoArray,
       transactionResult,
+      amount,
     );
   }
 
@@ -254,10 +255,12 @@ export class IntersolveService {
     paymentInfo: PaPaymentDataAggregateDto,
     voucherInfoArray: IntersolveIssueCardResponse[],
     transactionResult: PaymentAddressTransactionResultDto,
+    amount: number,
   ): Promise<PaymentAddressTransactionResultDto> {
     const transferResult = await this.sendVoucherWhatsapp(
       paymentInfo,
       voucherInfoArray.length > 1, // boolean which determines single/multiple vouchers
+      amount,
     );
 
     if (transferResult.status === StatusEnum.success) {
@@ -278,6 +281,7 @@ export class IntersolveService {
   public async sendVoucherWhatsapp(
     paymentInfo: PaPaymentDataAggregateDto,
     multiplePeople: boolean,
+    amount: number,
   ): Promise<PaymentAddressTransactionResultDto> {
     const result = new PaymentAddressTransactionResultDto();
     result.paymentAddress = paymentInfo.paymentAddress;
@@ -297,7 +301,7 @@ export class IntersolveService {
       // .. and in practice it will never happen that there are multiple PAs with differing multipliers
       // .. and the old solution will soon be removed again from code
       const calculatedAmount = this.getMultipliedAmount(
-        program.fixedTransferValue,
+        amount,
         paymentInfo.paPaymentDataList[0].paymentAmountMultiplier,
       );
       whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
