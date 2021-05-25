@@ -223,6 +223,7 @@ export class WhatsappService {
         IntersolvePayoutStatus: IntersolvePayoutStatus.VoucherSent,
       }),
     );
+    transaction.transactionStep = 2;
     const connection = await this.connectionRepository.findOne({
       where: { id: connectionId },
       relations: ['fsp'],

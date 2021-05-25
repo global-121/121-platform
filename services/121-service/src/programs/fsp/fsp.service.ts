@@ -203,6 +203,7 @@ export class FspService {
     transaction.status = transactionResponse.status;
     transaction.errorMessage = transactionResponse.message;
     transaction.customData = transactionResponse.customData;
+    transaction.transactionStep = 1;
 
     this.transactionRepository.save(transaction);
   }

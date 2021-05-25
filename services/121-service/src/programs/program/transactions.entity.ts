@@ -34,6 +34,9 @@ export class TransactionEntity {
   })
   public customData: JSON;
 
+  @Column({ default: 1 })
+  public transactionStep: number;
+
   @ManyToOne(
     _type => FinancialServiceProviderEntity,
     financialServiceProvider => financialServiceProvider.transactions,
