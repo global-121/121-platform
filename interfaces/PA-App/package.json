@@ -47,7 +47,7 @@
     "core-js": "2.6.8",
     "howler": "^2.1.3",
     "rxjs": "^6.6.2",
-    "tslib": "^2.0.0",
+    "tslib": "^1.10.0",
     "zone.js": "^0.8.29"
   },
   "devDependencies": {
@@ -61,7 +61,7 @@
     "@angular/language-service": "^7.2.16",
     "@ionic/angular-toolkit": "^1.5.1",
     "@types/jasmine": "^3.7.2",
-    "@types/node": "10.x",
+    "@types/node": "12.x",
     "codelyzer": "^5.2.2",
     "dotenv": "^10.0.0",
     "ffbinaries": "^1.1.4",
