@@ -833,7 +833,7 @@ export class ProgramService {
       .andWhere('installment >= :minInstallment', {
         minInstallment: minInstallment || 0,
       })
-      .orderBy('transaction.created', 'DESC')
+      .orderBy('transaction.transactionStep', 'DESC')
       .getRawMany();
     return transactions;
   }
