@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>
-      {{ 'page.program.program-people-affected.edit-person-affected-popup.popup-title'|translate:{ pa: person?.pa } }}
+      {{ 'page.program.program-people-affected.edit-person-affected-popup.popup-title'|translate:{ pa: 'PA #' + person?.id } }}
     </ion-title>
     <ion-buttons slot="end">
       <ion-button
@@ -20,6 +20,20 @@
   class="ion-padding"
 >
   <section>
+    <ion-list lines="none">
+
+      <app-update-property-item
+        type="number"
+        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.paymentAmountMultiplier.label'|translate"
+        [value]="person?.paymentAmountMultiplier"
+        (updated)="updatePaAttribute('paymentAmountMultiplier', $event)"
+        [inProgress]="inProgress?.paymentAmountMultiplier || false"
+      ></app-update-property-item>
+
+    </ion-list>
+  </section>
+  <hr />
+  <section>
     <h4>
       {{ 'page.program.program-people-affected.edit-person-affected-popup.note.section-title'|translate }}
     </h4>
@@ -29,21 +43,27 @@
     <ion-textarea
       [(ngModel)]="noteModel"
       [ngModelOptions]="{ standalone: true }"
+      [disabled]="inProgress?.note || false"
       ngDefaultControl
       rows="10"
       spellcheck="true"
       wrap="soft"
-      [autoGrow]="true"
       [placeholder]="'page.program.program-people-affected.edit-person-affected-popup.note.placeholder'|translate"
       style="font-family: monospace; border: 1px solid currentColor; height:150px"
     ></ion-textarea>
     <ion-row class="ion-align-items-center">
       <ion-button
         (click)="saveNote()"
+        [disabled]="inProgress?.note || false"
         class="ion-margin-end"
       >
         {{ 'page.program.program-people-affected.edit-person-affected-popup.note.save'|translate }}
       </ion-button>
+      <ion-spinner
+        *ngIf="inProgress?.note"
+        color="primary"
+        size="small"
+      ></ion-spinner>
       <ion-note *ngIf="noteLastUpdate">
         {{ 'page.program.program-people-affected.edit-person-affected-popup.note.latest-update'|translate:{
             timestamp: noteLastUpdate|date:"yyyy-MM-dd, HH:mm"

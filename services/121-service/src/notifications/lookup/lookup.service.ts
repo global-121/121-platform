@@ -5,7 +5,9 @@ import { twilioClient } from '../twilio.client';
 export class LookupService {
   public constructor() {}
 
-  public async lookupPhoneNr(phoneNumber: string): Promise<any> {
+  public async lookupPhoneNr(
+    phoneNumber: string,
+  ): Promise<{ result: boolean | undefined }> {
     let numberCorrect: boolean;
     try {
       await twilioClient.lookups

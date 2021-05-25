@@ -139,7 +139,8 @@
         "closed": "Closed",
         "open": "Open",
         "start-payout": "Start payout now",
-        "total-amount": "Total amount to payout:",
+        "total-included": "Payout to: {{totalIncluded}} PA(s)",
+        "total-amount": "Total amount: {{totalCost}}",
         "result-success": "Successfully sent instructions to FSP's for {{nrSuccessfull}} PA(s).",
         "result-failure": "Payment request failed for {{nrFailed}} PA(s). Inspect the PA-table below for details.",
         "result-waiting": "Payment status not yet received for {{nrWaiting}} PA(s). Inspect the PA-table below for the up-to-date status of the payment(s).",
@@ -179,6 +180,7 @@
           "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
           "name-partner-organizatoin": "Partner organization",
+          "paymentAmountMultiplier": "Transfer value(s)",
           "fsp": "Financial Service Provider"
         },
         "status": {
@@ -218,13 +220,16 @@
         "edit-person-affected-popup": {
           "edit-icon-title": "Edit information of Person Affected",
           "popup-title": "Edit information of {{pa}}",
+          "properties": {
+            "paymentAmountMultiplier": {
+              "label": "× Transfer value"
+            }
+          },
           "note": {
             "section-title": "Notes about Person Affected",
             "introduction": "You can add, edit or remove notes about this particular Person Affected in the field below. Please keep Personal Identifiable Information (PII) to a minimum and delete any PII when no longer needed.",
             "placeholder": "Start a note about this Person Affected by typing here...",
             "save": "Save note",
-            "save-success": "Note successfully updated",
-            "save-error": "Something went wrong: {{error}}",
             "latest-update": "Latest update on: {{timestamp}}"
           }
         },
@@ -321,6 +326,8 @@
     "ok": "OK",
     "export-error": "Something went wrong with the export.",
     "unknown-error": "Something went wrong. Error is unknown.",
+    "update-success": "Update successful",
+    "update-error": "Something went wrong: {{error}}",
     "timestamp": {
       "done": "Done on:"
     }

@@ -6,6 +6,7 @@ import {
   Post,
   Param,
   Body,
+  HttpStatus,
 } from '@nestjs/common';
 import {
   ApiUseTags,
@@ -56,7 +57,7 @@ export class VoiceController {
   @Header('resonse-type', 'audio/mpeg')
   public returnMp3(@Param() params, @Res() response: Response): void {
     const mp3Stream = this.voiceService.returnMp3Stream(params.mp3);
-    response.writeHead(200, {
+    response.writeHead(HttpStatus.OK, {
       'Content-Type': 'audio/mpeg',
       'Content-Length': mp3Stream.stat.size,
     });

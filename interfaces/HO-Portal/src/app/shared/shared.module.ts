@@ -6,6 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { HeaderComponent } from '../components/header/header.component';
+import { UpdatePropertyItemComponent } from '../components/update-property-item/update-property-item.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
 import { BulkImportComponent } from '../program/bulk-import/bulk-import.component';
 import { EditPersonAffectedPopupComponent } from '../program/edit-person-affected-popup/edit-person-affected-popup.component';
@@ -23,6 +24,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
   declarations: [
     BulkImportComponent,
     ConfirmPromptComponent,
+    EditPersonAffectedPopupComponent,
     ExportListComponent,
     FilePickerPromptComponent,
     HeaderComponent,
@@ -32,8 +34,8 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     PhaseNextComponent,
     ProgramPeopleAffectedComponent,
     TestPaymentComponent,
+    UpdatePropertyItemComponent,
     UserStateComponent,
-    EditPersonAffectedPopupComponent,
   ],
   imports: [
     CommonModule,
@@ -46,25 +48,27 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
   exports: [
     BulkImportComponent,
     ConfirmPromptComponent,
+    EditPersonAffectedPopupComponent,
     ExportListComponent,
     FilePickerPromptComponent,
     HeaderComponent,
     InputPromptComponent,
+    NgxDatatableModule,
     PasswordToggleInputComponent,
     PhaseNavigationComponent,
     PhaseNextComponent,
     ProgramPeopleAffectedComponent,
-    TestPaymentComponent,
-    UserStateComponent,
-    EditPersonAffectedPopupComponent,
     RouterModule,
+    TestPaymentComponent,
     TranslateModule,
-    NgxDatatableModule,
+    UpdatePropertyItemComponent,
+    UserStateComponent,
   ],
   entryComponents: [
-    InputPromptComponent,
     EditPersonAffectedPopupComponent,
     FilePickerPromptComponent,
+    InputPromptComponent,
+    UpdatePropertyItemComponent,
   ],
 })
 export class SharedModule {}

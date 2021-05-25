@@ -43,6 +43,8 @@ import { CriteriumForExport } from './dto/criterium-for-export.dto';
 import { FileDto } from './dto/file.dto';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
+import { Attributes } from '../../connection/dto/update-attribute.dto';
+import { TotalIncluded } from './dto/payout.dto';
 
 @Injectable()
 export class ProgramService {
@@ -524,9 +526,15 @@ export class ProgramService {
     return includedConnections;
   }
 
-  public async getTotalIncluded(programId): Promise<number> {
+  public async getTotalIncluded(programId: number): Promise<TotalIncluded> {
     const includedConnections = await this.getIncludedConnections(programId);
-    return includedConnections.length;
+    const sum = includedConnections.reduce(function(a, b) {
+      return a + (b[Attributes.paymentAmountMultiplier] || 1);
+    }, 0);
+    return {
+      connections: includedConnections.length,
+      transferAmounts: sum,
+    };
   }
 
   public async payout(
@@ -598,6 +606,8 @@ export class ProgramService {
         includedConnection,
         fsp.attributes,
       );
+      paPaymentData.paymentAmountMultiplier =
+        includedConnection.paymentAmountMultiplier;
 
       paPaymentDataList.push(paPaymentData);
     }
@@ -716,6 +726,8 @@ export class ProgramService {
         connectionResponse['location'] = connection.customData['location'];
         connectionResponse['vnumber'] = connection.customData['vnumber'];
         connectionResponse['age'] = connection.customData['age'];
+        connectionResponse['paymentAmountMultiplier'] =
+          connection.paymentAmountMultiplier;
       }
 
       if (financialServiceProviders.includes(fspName.africasTalking)) {
@@ -792,11 +804,11 @@ export class ProgramService {
   public async getInstallments(programId: number): Promise<any> {
     const installments = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('transaction.amount, transaction.installment')
+      .select('installment')
       .addSelect('MIN(transaction.created)', 'installmentDate')
       .where('transaction.program.id = :programId', { programId: programId })
       .andWhere("transaction.status = 'success'")
-      .groupBy('transaction.amount, transaction.installment')
+      .groupBy('installment')
       .getRawMany();
     return installments;
   }

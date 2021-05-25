@@ -19,6 +19,7 @@ export class Person {
   vnumber?: string;
   whatsappPhoneNumber?: string;
   namePartnerOrganization?: string;
+  paymentAmountMultiplier?: number;
 }
 
 // Model for display (in table)
@@ -44,6 +45,7 @@ export class PersonRow {
   vnumber?: string | null;
   whatsappPhoneNumber?: string | null;
   namePartnerOrganization?: string | null;
+  paymentAmountMultiplier?: string | null;
 }
 
 export enum PaStatus {

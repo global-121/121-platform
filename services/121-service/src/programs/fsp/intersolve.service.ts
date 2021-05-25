@@ -97,6 +97,10 @@ export class IntersolveService {
     return groupsByPaymentAddress;
   }
 
+  private getMultipliedAmount(amount: number, multiplier: number): number {
+    return amount * (multiplier || 1);
+  }
+
   public async sendPaymentsPerPhoneNumber(
     paymentInfo: PaPaymentDataAggregateDto,
     useWhatsapp: boolean,
@@ -114,7 +118,15 @@ export class IntersolveService {
       voucherResult.referenceId = paPaymentData.referenceId;
 
       const intersolveRefPos = this.getIntersolveRefPos();
-      const voucherInfo = await this.issueVoucher(amount, intersolveRefPos);
+      const calculatedAmount = this.getMultipliedAmount(
+        amount,
+        paPaymentData.paymentAmountMultiplier,
+      );
+      voucherResult.calculatedAmount = calculatedAmount;
+      const voucherInfo = await this.issueVoucher(
+        calculatedAmount,
+        intersolveRefPos,
+      );
       voucherInfo.refPos = intersolveRefPos;
       voucherInfoArray.push(voucherInfo);
 
@@ -123,7 +135,7 @@ export class IntersolveService {
           voucherInfo,
           paPaymentData,
           installment,
-          amount,
+          calculatedAmount,
         );
         voucherResult.status = StatusEnum.success;
       } else {
@@ -276,10 +288,19 @@ export class IntersolveService {
     );
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     try {
-      const whatsappPayment = multiplePeople
+      let whatsappPayment = multiplePeople
         ? program.notifications[language]['whatsappPaymentMultiple'] ||
           program.notifications[language]['whatsappPayment']
         : program.notifications[language]['whatsappPayment'];
+      // It is technically incorrect to take the multiplier of the 1st PA of potentially multiple with the same paymentAddress
+      // .. but we have to choose something
+      // .. and in practice it will never happen that there are multiple PAs with differing multipliers
+      // .. and the old solution will soon be removed again from code
+      const calculatedAmount = this.getMultipliedAmount(
+        program.fixedTransferValue,
+        paymentInfo.paPaymentDataList[0].paymentAmountMultiplier,
+      );
+      whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,
         paymentInfo.paymentAddress,

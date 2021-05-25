@@ -20,6 +20,8 @@ export class AfricasTalkingApiService {
     paTransactionResult.referenceId =
       payload.recipients[0].metadata.referenceId;
     paTransactionResult.date = new Date();
+    paTransactionResult.calculatedAmount =
+      payload.recipients[0].metadata.amount;
 
     let result;
     await payments

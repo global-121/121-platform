@@ -37,6 +37,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '../user/user.decorator';
 import { ImportResult } from './dto/bulk-import.dto';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
+import { UpdateAttributeDto } from './dto/update-attribute.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -172,23 +173,16 @@ export class ConnectionController {
     return await this.connectionService.retrieveNote(params.referenceId);
   }
 
-  @Roles(UserRole.FieldValidation, UserRole.PersonalData)
-  @ApiOperation({
-    title:
-      'Overwrite custom data for connection used by AW (app) or PM (Swagger)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Custom data overwritten for connection',
-  })
-  @Post('/custom-data/overwrite')
-  public async addCustomDataOverwrite(
-    @Body() customData: CustomDataDto,
+  @ApiOperation({ title: 'Update attribute for connection' })
+  @ApiResponse({ status: 200, description: 'Update attribute for connection' })
+  @Post('/attribute')
+  public async updateAttribute(
+    @Body() updateAttributeDto: UpdateAttributeDto,
   ): Promise<ConnectionEntity> {
-    return await this.connectionService.addCustomDataOverwrite(
-      customData.referenceId,
-      customData.key,
-      customData.value,
+    return await this.connectionService.updateAttribute(
+      updateAttributeDto.referenceId,
+      updateAttributeDto.attribute,
+      updateAttributeDto.value,
     );
   }
 

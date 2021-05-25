@@ -1,0 +1,60 @@
+<form
+  method="POST"
+  #updatePropertyForm="ngForm"
+  (ngSubmit)="doUpdate()"
+>
+  <ion-item
+    [disabled]="isDisabled"
+  >
+    <ion-label position="stacked">
+      {{ label }}
+    </ion-label>
+    <ng-container [ngSwitch]="type">
+      <ng-container *ngSwitchCase="'number'">
+        <ion-input
+          ngDefaultControl
+          name="propertyInput"
+          [(ngModel)]="propertyModel"
+          [value]="value"
+          [placeholder]="placeholder"
+          type="number"
+          inputmode="numeric"
+          min="1"
+        ></ion-input>
+      </ng-container>
+      <ng-container *ngSwitchDefault>
+        <ion-input
+          ngDefaultControl
+          name="propertyInput"
+          [(ngModel)]="propertyModel"
+          [value]="value"
+          [placeholder]="placeholder"
+          type="text"
+        ></ion-input>
+      </ng-container>
+    </ng-container>
+    <ion-note
+      *ngIf="explanation"
+      class="ion-margin-bottom"
+    >
+      {{ explanation }}
+    </ion-note>
+    <ion-row
+      slot="end"
+      class="ion-align-items-center ion-align-self-stretch"
+    >
+      <ion-button
+        *ngIf="!inProgress"
+        type="submit"
+        size="small"
+      >
+        {{ 'common.update'|translate }}
+      </ion-button>
+      <ion-spinner
+        *ngIf="inProgress"
+        color="primary"
+        size="small"
+      ></ion-spinner>
+    </ion-row>
+  </ion-item>
+</form>

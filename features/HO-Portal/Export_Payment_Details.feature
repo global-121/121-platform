@@ -14,9 +14,7 @@ Feature: Export payment details
     Then the "export list" button is enabled
     When the user clicks the "export list" button
     Then a CSV-file is downloaded
-    And it shows a list of the connections that are "included"
-    And the known "phonenumber"
-    And all "persistent data"
+    And it is equal to the "export inclusion list" (see: HO-Portal/Export_Inclusion_List.feature)
 
   Scenario: Export payment details after payment
     Given a logged-in user with "personal data" role
@@ -26,10 +24,10 @@ Feature: Export payment details
     When the user clicks the "export list" button
     Then a CSV-file is dowloaded
     And it shows a list of the connections that are "included"
-    And "transaction" information
+    And "transaction" information where the "amount" is the multiplication of the PA's "paymentAmountMultiplier" and the supplied "transfer value"
     And the "installment-number"
     And the known "phonenumber"
-    And all "connection.customData"
+    And all "persistent data"
 
   Scenario: No "included" connections
     Given a logged-in user with "personal data" role
