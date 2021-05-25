@@ -5,7 +5,7 @@ import { Connection } from 'typeorm';
 import { SeedHelper } from './seed-helper';
 import { SeedInit } from './seed-init';
 
-import fspBank from '../../seed-data/fsp/fsp-bravos.json';
+import fspBank from '../../seed-data/fsp/fsp-bank.json';
 import fspMixedAttributes from '../../seed-data/fsp/fsp-mixed-attributes.json';
 import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
