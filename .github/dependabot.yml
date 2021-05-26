@@ -28,6 +28,8 @@ updates:
         versions: ['>= 5.0.0']
       - dependency-name: ngx-translate-lint
         versions: ['>= 1.4.0', '>= 1.6.0']
+      - dependency-name: rxjs
+        versions: ['>= 7.0.0']
 
   - package-ecosystem: npm
     directory: '/interfaces/AW-App'
@@ -58,6 +60,8 @@ updates:
         versions: ['>= 5.0.0']
       - dependency-name: ngx-translate-lint
         versions: ['>= 1.4.0', '>= 1.6.0']
+      - dependency-name: rxjs
+        versions: ['>= 7.0.0']
 
   - package-ecosystem: npm
     directory: '/interfaces/PA-App'
@@ -88,11 +92,7 @@ updates:
         versions: ['>= 5.0.0']
       - dependency-name: ngx-translate-lint
         versions: ['>= 1.4.0', '>= 1.6.0']
-      - dependency-name: '@ionic-native/core'
-        versions: ['>= 5.31.0']
-      - dependency-name: '@ionic-native/splash-screen'
-        versions: ['>= 5.31.0']
-      - dependency-name: '@ionic-native/status-bar'
-        versions: ['>= 5.31.0']
+      - dependency-name: rxjs
+        versions: ['>= 7.0.0']
       - dependency-name: angularx-qrcode
         versions: ['>= 2.1.0']
