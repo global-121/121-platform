@@ -47,3 +47,11 @@ Feature: Reject or end inclusion of people affected (extension of Manage_people_
     And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
     When the user uses and confirms the "reject from program" or "end inclusion in program" action on all 2000 PAs
     Then this is all processed as in the scenarios above, quickly and without problem 
+  
+  Scenario: Identify People Affected to Reject based on "Registered while no longer eligible"
+    Given there are People Affected which are marked as no longer eligible
+    And some of these have completed a registration
+    When the user searches in the PA-table for status "Registered while no longer eligible" (either through filtering or sorting + scrolling)
+    Then these People Affected should have a filled "Completed Vulnerability Assessment" column
+    And a filled "No longer eligible" column
+    And these people can subsequently be selected for rejection (see scenarios: 'Use bulk-action "reject from program"' and 'Confirm "reject from program" action') 

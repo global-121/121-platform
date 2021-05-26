@@ -10,6 +10,7 @@ export enum BulkActionId {
   includePersonalDataRole = 'include-personal-data-role',
   endInclusion = 'end-inclusion',
   reject = 'reject',
+  markNoLongerEligible = 'mark-no-longer-eligible',
 }
 
 export class BulkAction {

@@ -20,6 +20,12 @@ export class BulkActionsService {
           PaStatus.imported,
         ]);
         break;
+      case BulkActionId.markNoLongerEligible:
+        personData.checkboxVisible = this.hasStatus(personData, [
+          PaStatus.imported,
+          PaStatus.invited,
+        ]);
+        break;
       case BulkActionId.selectForValidation:
         personData.checkboxVisible = this.hasStatus(personData, [
           PaStatus.registered,
@@ -70,6 +76,11 @@ export class BulkActionsService {
           programId,
           selectedPeople.map((pa) => pa.phoneNumber),
           message,
+        );
+      case BulkActionId.markNoLongerEligible:
+        return await this.programsService.markNoLongerEligible(
+          programId,
+          selectedPeople,
         );
       case BulkActionId.selectForValidation:
         return await this.programsService.selectForValidation(

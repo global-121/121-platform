@@ -314,6 +314,13 @@ export class ProgramsServiceApiService {
     return this.updatePaStatus('select-validation', programId, referenceIds);
   }
 
+  markNoLongerEligible(
+    programId: number | string,
+    referenceIds: string[],
+  ): Promise<any> {
+    return this.updatePaStatus('no-longer-eligible', programId, referenceIds);
+  }
+
   invite(
     programId: number | string,
     phoneNumbers: string[],

@@ -2,21 +2,14 @@ import { GetTransactionDto } from './dto/get-transaction.dto';
 import { ActionService } from './../../actions/action.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { TransactionEntity } from './transactions.entity';
-import { ValidationDataService } from '../../connection/validation-data/validation-data.service';
 import { ConnectionEntity } from '../../connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
-import {
-  Injectable,
-  HttpException,
-  Inject,
-  forwardRef,
-  HttpStatus,
-} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
-import { PaStatus } from '../../models/pa-status.model';
+import { PaStatus, PaStatusTimestampField } from '../../models/pa-status.model';
 import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
@@ -73,8 +66,6 @@ export class ProgramService {
 
   public constructor(
     private readonly actionService: ActionService,
-    @Inject(forwardRef(() => ValidationDataService))
-    private readonly validationDataService: ValidationDataService,
     private readonly smsService: SmsService,
     private readonly fspService: FspService,
     private readonly lookupService: LookupService,
@@ -356,9 +347,10 @@ export class ProgramService {
     return inclusionStatus;
   }
 
-  public async selectForValidation(
+  public async setPaStatusTimestampField(
     programId: number,
     referenceIds: object,
+    timestampField: PaStatusTimestampField,
   ): Promise<void> {
     await this.checkIfProgramExists(programId);
 
@@ -368,7 +360,7 @@ export class ProgramService {
       );
       if (!connection) continue;
 
-      connection.selectedForValidationDate = new Date();
+      connection[timestampField] = new Date();
 
       await this.connectionRepository.save(connection);
     }
@@ -642,6 +634,8 @@ export class ProgramService {
       paStatus = PaStatus.inclusionEnded;
     } else if (connection.programsRejected.includes(+programId)) {
       paStatus = PaStatus.rejected;
+    } else if (connection.appliedDate && connection.noLongerEligibleDate) {
+      paStatus = PaStatus.registeredWhileNoLongerEligible;
     } else if (connection.validationDate) {
       paStatus = PaStatus.validated;
     } else if (connection.selectedForValidationDate) {
@@ -650,6 +644,8 @@ export class ProgramService {
       paStatus = PaStatus.registered;
     } else if (connection.accountCreatedDate) {
       paStatus = PaStatus.created;
+    } else if (connection.noLongerEligibleDate) {
+      paStatus = PaStatus.noLongerEligible;
     } else if (connection.invitedDate) {
       paStatus = PaStatus.invited;
     } else if (connection.importedDate) {
@@ -704,6 +700,8 @@ export class ProgramService {
       connectionResponse['created'] = connection.accountCreatedDate;
       connectionResponse['importedDate'] = connection.importedDate;
       connectionResponse['invitedDate'] = connection.invitedDate;
+      connectionResponse['noLongerEligibleDate'] =
+        connection.noLongerEligibleDate;
       connectionResponse['appliedDate'] = connection.appliedDate;
       connectionResponse['selectedForValidationDate'] =
         connection.selectedForValidationDate;

@@ -82,6 +82,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       },
     },
     {
+      id: BulkActionId.markNoLongerEligible,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.no-longer-eligible',
+      ),
+      roles: [UserRole.PersonalData],
+      phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: true,
+    },
+    {
       id: BulkActionId.selectForValidation,
       enabled: false,
       label: this.translate.instant(
@@ -273,7 +283,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.status',
         ),
         ...this.columnDefaults,
-        width: 90,
+        width: 135,
         frozenLeft: this.hasWideScreen(),
       },
       {
@@ -289,6 +299,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         prop: 'invited',
         name: this.translate.instant(
           'page.program.program-people-affected.column.invited',
+        ),
+        ...this.columnDefaults,
+        phases: [ProgramPhase.registrationValidation],
+        width: columnDateTimeWidth,
+      },
+      {
+        prop: 'markedNoLongerEligible',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.no-longer-eligible',
         ),
         ...this.columnDefaults,
         phases: [ProgramPhase.registrationValidation],
@@ -589,6 +608,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         : null,
       invited: person.invitedDate
         ? formatDate(person.invitedDate, this.dateFormat, this.locale)
+        : null,
+      markedNoLongerEligible: person.noLongerEligibleDate
+        ? formatDate(person.noLongerEligibleDate, this.dateFormat, this.locale)
         : null,
       digitalIdCreated: person.created
         ? formatDate(person.created, this.dateFormat, this.locale)
