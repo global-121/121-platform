@@ -696,6 +696,8 @@ export class ProgramService {
       connectionResponse['created'] = connection.accountCreatedDate;
       connectionResponse['importedDate'] = connection.importedDate;
       connectionResponse['invitedDate'] = connection.invitedDate;
+      connectionResponse['noLongerEligibleDate'] =
+        connection.noLongerEligibleDate;
       connectionResponse['appliedDate'] = connection.appliedDate;
       connectionResponse['selectedForValidationDate'] =
         connection.selectedForValidationDate;

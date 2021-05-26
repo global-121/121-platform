@@ -8,6 +8,7 @@ export class Person {
   created?: string;
   importedDate?: string;
   invitedDate?: string;
+  noLongerEligibleDate?: string;
   appliedDate?: string;
   selectedForValidationDate?: string;
   validationDate?: string;
@@ -39,6 +40,7 @@ export class PersonRow {
   inclusionEnded?: string | null;
   imported?: string | null;
   invited?: string | null;
+  markedNoLongerEligible?: string | null;
   name?: string | null;
   phoneNumber?: string | null;
   fsp?: string | null;

@@ -165,6 +165,7 @@
           "status": "Status",
           "imported": "Imported",
           "invited": "Invited",
+          "no-longer-eligible": "No longer eligible",
           "digital-id-created": "Created Digital ID",
           "vulnerability-assessment-completed": "Completed Vulnerability Assessment",
           "selected-for-validation": "Selected for validation",

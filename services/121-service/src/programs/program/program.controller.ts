@@ -38,7 +38,7 @@ import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { MessageDto } from './dto/message.dto';
 import { GetTransactionDto } from './dto/get-transaction.dto';
-import { PaStatusTimestampField } from 'src/models/pa-status.model';
+import { PaStatusTimestampField } from '../../models/pa-status.model';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)

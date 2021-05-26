@@ -295,6 +295,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         width: columnDateTimeWidth,
       },
       {
+        prop: 'markedNoLongerEligible',
+        name: this.translate.instant(
+          'page.program.program-people-affected.column.no-longer-eligible',
+        ),
+        ...this.columnDefaults,
+        phases: [ProgramPhase.registrationValidation],
+        width: columnDateTimeWidth,
+      },
+      {
         prop: 'digitalIdCreated',
         name: this.translate.instant(
           'page.program.program-people-affected.column.digital-id-created',
@@ -443,8 +452,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private setupProxyScrollbar() {
-    const proxyScrollbar: HTMLElement =
-      document.querySelector('.proxy-scrollbar');
+    const proxyScrollbar: HTMLElement = document.querySelector(
+      '.proxy-scrollbar',
+    );
     const proxyScrollbarContent: HTMLElement = proxyScrollbar.querySelector(
       '.proxy-scrollbar--content',
     );
@@ -590,6 +600,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       invited: person.invitedDate
         ? formatDate(person.invitedDate, this.dateFormat, this.locale)
         : null,
+      markedNoLongerEligible: person.noLongerEligibleDate
+        ? formatDate(person.noLongerEligibleDate, this.dateFormat, this.locale)
+        : null,
       digitalIdCreated: person.created
         ? formatDate(person.created, this.dateFormat, this.locale)
         : null,
@@ -683,8 +696,9 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         hasMessageIcon: this.enableMessageSentIcon(transaction),
         hasMoneyIconTable: this.enableMoneySentIconTable(transaction),
       };
-      personRow['payment' + paymentColumn.installmentIndex] =
-        paymentColumnValue;
+      personRow[
+        'payment' + paymentColumn.installmentIndex
+      ] = paymentColumnValue;
     });
     return personRow;
   }
