@@ -283,7 +283,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.status',
         ),
         ...this.columnDefaults,
-        width: 90,
+        width: 135,
         frozenLeft: this.hasWideScreen(),
       },
       {

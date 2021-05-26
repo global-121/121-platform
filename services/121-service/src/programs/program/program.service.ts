@@ -634,6 +634,8 @@ export class ProgramService {
       paStatus = PaStatus.inclusionEnded;
     } else if (connection.programsRejected.includes(+programId)) {
       paStatus = PaStatus.rejected;
+    } else if (connection.appliedDate && connection.noLongerEligibleDate) {
+      paStatus = PaStatus.registeredWhileNoLongerEligible;
     } else if (connection.validationDate) {
       paStatus = PaStatus.validated;
     } else if (connection.selectedForValidationDate) {
@@ -642,6 +644,8 @@ export class ProgramService {
       paStatus = PaStatus.registered;
     } else if (connection.accountCreatedDate) {
       paStatus = PaStatus.created;
+    } else if (connection.noLongerEligibleDate) {
+      paStatus = PaStatus.noLongerEligible;
     } else if (connection.invitedDate) {
       paStatus = PaStatus.invited;
     } else if (connection.importedDate) {
