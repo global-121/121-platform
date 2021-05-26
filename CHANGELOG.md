@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.4.1...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.5.0...master)
+
+---
+
+## [1.5.0](https://github.com/global-121/121-platform/compare/v1.4.1...v1.5.0) - 2021-05-27
 
 ### Changed
 - 2021-05-25: Upgraded Node.js version to v12
@@ -15,15 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`  
   To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
----
-
 ## [1.4.1](https://github.com/global-121/121-platform/compare/v1.4.0...v1.4.1) - 2021-05-12
 
 ## [1.4.0](https://github.com/global-121/121-platform/compare/v1.3.0...v1.4.0) - 2021-05-12
 
 ### Added
 - 2021-05-12: Add custom note per PA in HO-Portal
-
 
 ## [1.3.0](https://github.com/global-121/121-platform/compare/v1.2.3...v1.3.0) - 2021-05-05
 
