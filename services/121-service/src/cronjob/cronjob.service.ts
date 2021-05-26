@@ -11,7 +11,6 @@ import { ConnectionEntity } from '../connection/connection.entity';
 
 @Injectable()
 export class CronjobService {
-  @InjectRepository(IntersolveBarcodeEntity)
   @InjectRepository(IntersolveRequestEntity)
   private readonly intersolveRequestRepository: Repository<
     IntersolveRequestEntity

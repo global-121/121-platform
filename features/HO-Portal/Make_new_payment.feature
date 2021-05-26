@@ -50,7 +50,7 @@ Feature: Make a new payment
     And - for successfull transactions - the PA receives (notification about) voucher/cash depending on the FSP
 
   Scenario: Send payment instructions with 0 successful transactions
-    Given payment instructions are sent to the Financial Service Provider
+    When payment instructions are sent to the Financial Service Provider
     Then the message "Payout failed for all PA's" is shown
     And the payment is not processed and/or "closed"
     And the payment column contains 'Failed' for all PAs, which can be clickable depending on the program
@@ -62,6 +62,45 @@ Feature: Make a new payment
     Then a loading spinner starts which can take a long time (very rough estimation: 0.5 seconds per PA)
     When it is finished
     Then the regular popup with "Payout successful for X PA's and failed for Y (if Y>0) PA's" is shown
+  
+  Scenario: Send payment instructions to a Person Affected with Financial Service Provider "Intersolve"
+    Given the Person Affected has chosen the option "receive voucher via whatsApp"
+    When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
+    Then the Person Affected receives a whatsApp message
+    And it mentions the amount of the voucher
+    And it explains the Person Affected to reply 'yes' to receive the voucher
+    When the Person Affected replies 'yes' (or anything else)
+    Then the Person Affected receives a voucher image
+    And it is accompanied by text that explains what is sent
+    And a separate "explanation" image is sent that explains how to use the voucher in the store
+    And a separate voucher image is sent for any old uncollected vouchers or for any other registrations on the same "whatsappPhoneNumber" 
 
-  Scenarios related to (potentially) multiple registrations on one phone-number
-    See for now: https://github.com/global-121/121-platform/wiki/Test-scenarios
+------------------------------------------------------------------------------------------------------------------------------------
+26/05/2021: Copied the below from Github wiki, as it has to be moved here. But not updating style yet, because the functionality will change soon. 
+
+One or multiple registrations with the same payment-address(phone-number)
+
+1. There is maximum one registration per payment-address.
+  - Payment succeeds for all People Affected
+  - Person Affected receives initial WhatsApp message about receiving one voucher (+ any older uncollected vouchers)
+  - If replied "_yes_", the Person Affected receives:
+    * a WhatsApp message about receiving one voucher (incl. the voucher image)
+    * ... + any older uncollected vouchers (without text)
+    * ... + one explanation image
+
+2. There is 1 rejected and 1 included registration on one payment-address. 
+  - Works exactly as (1)
+
+3. There are 2 or more _included_ registrations on one payment-address.
+  - Payment succeeds 
+  - Person Affected receives initial WhatsApp message about receiving multiple vouchers for this week + also any older uncollected vouchers
+  - If replied 'yes', Person Affected receives:
+    * a WhatsApp message about receiving multiple vouchers (incl. the first voucher image)
+    * ... + any additional vouchers for this week (without text)
+    * ... + any older uncollected vouchers (without text)
+    * ... + one explanation image
+
+4. There are 2 (or more) included registrations on one payment address at moment of payout. But before "_yes_" reply, 1 (or more) are rejected.
+  - Works exactly as (3)
+  - The status at moment of payout is relevant, not the status at the moment of the "_yes_" reply.
+  - This specifically enables to immediately end inclusion for People Affected after their last payout, without having to wait for their reply.
