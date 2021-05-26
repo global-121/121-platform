@@ -43,7 +43,7 @@
     "@microsoft/applicationinsights-web": "^2.5.9",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
-    "@swimlane/ngx-datatable": "^16.1.1",
+    "@swimlane/ngx-datatable": "^19.0.0",
     "core-js": "2.6.8",
     "file-saver": "^2.0.2",
     "rxjs": "^6.6.2",
