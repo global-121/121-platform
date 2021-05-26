@@ -82,6 +82,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       },
     },
     {
+      id: BulkActionId.markNoLongerEligible,
+      enabled: false,
+      label: this.translate.instant(
+        'page.program.program-people-affected.actions.no-longer-eligible',
+      ),
+      roles: [UserRole.PersonalData],
+      phases: [ProgramPhase.registrationValidation],
+      showIfNoValidation: true,
+    },
+    {
       id: BulkActionId.selectForValidation,
       enabled: false,
       label: this.translate.instant(

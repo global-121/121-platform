@@ -197,11 +197,11 @@
         },
         "actions": {
           "invite": "Invite for registration",
+          "no-longer-eligible": "Mark as no longer eligible",
           "select-for-validation": "Select for validation",
           "include": "Include in program",
           "reject": "Reject from program",
-          "end-inclusion": "End inclusion in program",
-          "notify-included": "Notify included People Affected"
+          "end-inclusion": "End inclusion in program"
         },
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",
