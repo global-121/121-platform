@@ -9,3 +9,8 @@ export enum PaStatus {
   inclusionEnded = 'inclusionEnded',
   rejected = 'rejected',
 }
+
+export enum PaStatusTimestampField {
+  selectedForValidationDate = 'selectedForValidationDate',
+  noLongerEligibleDate = 'noLongerEligibleDate',
+}

@@ -38,6 +38,7 @@ import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { MessageDto } from './dto/message.dto';
 import { GetTransactionDto } from './dto/get-transaction.dto';
+import { PaStatusTimestampField } from 'src/models/pa-status.model';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -166,7 +167,26 @@ export class ProgramController {
     @Param() params,
     @Body() data: ReferenceIdsDto,
   ): Promise<void> {
-    await this.programService.selectForValidation(params.programId, data);
+    await this.programService.setPaStatusTimestampField(
+      params.programId,
+      data,
+      PaStatusTimestampField.selectedForValidationDate,
+    );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({ title: 'Mark set of PAs as no longer eligible' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @Post('no-longer-eligible/:programId')
+  public async markNoLongerEligible(
+    @Param() params,
+    @Body() data: ReferenceIdsDto,
+  ): Promise<void> {
+    await this.programService.setPaStatusTimestampField(
+      params.programId,
+      data,
+      PaStatusTimestampField.noLongerEligibleDate,
+    );
   }
 
   @Roles(UserRole.PersonalData)
