@@ -37,7 +37,7 @@
     "@angular/platform-browser-dynamic": "^7.2.16",
     "@angular/router": "^7.2.16",
     "@auth0/angular-jwt": "^4.2.0",
-    "@ionic/angular": "^4.11.8",
+    "@ionic/angular": "^5.6.7",
     "@ionic/cli": "^6.11.8",
     "@microsoft/applicationinsights-web": "^2.5.8",
     "@ngx-translate/core": "^11.0.1",
