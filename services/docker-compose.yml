@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   121db:
-    image: "postgres:9.6"
+    image: 'postgres:9.6'
     init: true
     container_name: 121db
     environment:
@@ -10,10 +10,10 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=global121
     volumes:
-      - "./postgresql.conf:/etc/postgresql.conf"
-      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - './postgresql.conf:/etc/postgresql.conf'
+      - './init.sql:/docker-entrypoint-initdb.d/init.sql'
     ports:
-      - "5438:5432"
+      - '5438:5432'
     networks:
       pool_network:
         ipv4_address: 11.0.0.6
@@ -28,10 +28,9 @@ services:
     environment:
       - GLOBAL_121_VERSION
     volumes:
-      - "./121-service:/home/node/app"
-      - 121_service_node_modules:/home/node/app/node_modules
+      - './121-service:/home/node/app'
     ports:
-      - "${PORT_121_SERVICE}:${PORT_121_SERVICE}"
+      - '${PORT_121_SERVICE}:${PORT_121_SERVICE}'
     stdin_open: true
     tty: true
     networks:
@@ -51,10 +50,9 @@ services:
     environment:
       - GLOBAL_121_VERSION
     volumes:
-      - "./PA-accounts-service:/home/node/app"
-      - pa_accounts_node_modules:/home/node/app/node_modules
+      - './PA-accounts-service:/home/node/app'
     ports:
-      - "${PORT_PA_ACCOUNTS_SERVICE}:${PORT_PA_ACCOUNTS_SERVICE}"
+      - '${PORT_PA_ACCOUNTS_SERVICE}:${PORT_PA_ACCOUNTS_SERVICE}'
     stdin_open: true
     tty: true
     networks:
@@ -71,8 +69,3 @@ networks:
       driver: default
       config:
         - subnet: 11.0.0.0/24
-
-volumes:
-  121_service_node_modules:
-  pa_accounts_node_modules:
-
