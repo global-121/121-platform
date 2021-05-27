@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.5.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.5.1...master)
 
 ---
+
+## [1.5.1](https://github.com/global-121/121-platform/compare/v1.5.0...v1.5.1) - 2021-05-28
+
+### Fixed
+- 2021-05-28: Automatic installing of changed dependencies
+- 2021-05-28: `tsconfig` settings optimized for Node v12
 
 ## [1.5.0](https://github.com/global-121/121-platform/compare/v1.4.1...v1.5.0) - 2021-05-27
 
