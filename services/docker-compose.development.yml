@@ -6,7 +6,7 @@ version: '3.7'
 
 # For use on macOS:
 # See: https://www.docker.com/blog/user-guided-caching-in-docker-for-mac/
-# To speed up the start-up process, use: ':cached' or ':ro' flags on volume definitions
+# To speed up the start-up process, use: ':cached' flag on volume definitions
 
 # For debugging:
 #
@@ -17,14 +17,14 @@ version: '3.7'
 services:
   121-service:
     volumes:
-      - './121-service:/home/node/app'
       - '121_service_node_modules:/home/node/app/node_modules'
+      - './121-service:/home/node/app'
     command: 'npm run start:dev'
 
   PA-accounts-service:
     volumes:
-      - './PA-accounts-service:/home/node/app'
       - 'pa_accounts_node_modules:/home/node/app/node_modules'
+      - './PA-accounts-service:/home/node/app'
     command: 'npm run start:dev'
 
 volumes:

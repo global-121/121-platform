@@ -27,8 +27,6 @@ services:
       - .env
     environment:
       - GLOBAL_121_VERSION
-    volumes:
-      - './121-service:/home/node/app'
     ports:
       - '${PORT_121_SERVICE}:${PORT_121_SERVICE}'
     stdin_open: true
@@ -49,8 +47,6 @@ services:
       - .env
     environment:
       - GLOBAL_121_VERSION
-    volumes:
-      - './PA-accounts-service:/home/node/app'
     ports:
       - '${PORT_PA_ACCOUNTS_SERVICE}:${PORT_PA_ACCOUNTS_SERVICE}'
     stdin_open: true
