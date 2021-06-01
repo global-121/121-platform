@@ -23,7 +23,7 @@
   "endDate": "2021-05-31T12:00:00Z",
   "currency": "EUR",
   "distributionFrequency": "week",
-  "distributionDuration": 5,
+  "distributionDuration": 38,
   "fixedTransferValue": 15,
   "financialServiceProviders": [
     {
