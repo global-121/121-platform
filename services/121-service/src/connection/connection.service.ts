@@ -265,10 +265,20 @@ export class ConnectionService {
     });
   }
 
+  private checkForCompletelyEmptyRow(row): boolean {
+    if (Object.keys(row).every(key => !row[key])) {
+      return true;
+    }
+    return false;
+  }
+
   private async validateBulkImportCsvInput(csvArray): Promise<BulkImportDto[]> {
     const errors = [];
     const validatatedArray = [];
     for (const [i, row] of csvArray.entries()) {
+      if (this.checkForCompletelyEmptyRow(row)) {
+        continue;
+      }
       let importRecord = new BulkImportDto();
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.namePartnerOrganization = row.namePartnerOrganization;
@@ -292,6 +302,9 @@ export class ConnectionService {
     const errors = [];
     const validatatedArray = [];
     for (const [i, row] of csvArray.entries()) {
+      if (this.checkForCompletelyEmptyRow(row)) {
+        continue;
+      }
       let importRecord = new ImportTestRegistrationsDto();
       importRecord.preferredLanguage = row.preferredLanguage;
       importRecord.namePartnerOrganization = row.namePartnerOrganization;
