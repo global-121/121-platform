@@ -21,6 +21,7 @@ services:
   121-service:
     build:
       context: 121-service
+      target: production
     init: true
     container_name: 121-service
     env_file:
@@ -40,6 +41,7 @@ services:
   PA-accounts-service:
     build:
       context: PA-accounts-service
+      target: production
     image: services_pa-accounts-service
     init: true
     container_name: pa-accounts-service

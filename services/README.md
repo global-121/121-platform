@@ -38,6 +38,13 @@ To follow the logs of the respective services run:
 
 Or other relevant commands (see README's in their subfolders).
 
+### Re-use `node_modules` in your local IDE
+
+If you want your IDE to (re-)use the (dev-)dependencies and tools installed in the container, you can copy them via a command from the root: (where `<service>` is one of `all`, `121-service`, `PA-accounts-service`)
+
+    npm run sync-dev-dependencies:<service>
+
+This is a one-time copy, so when there are updates in the container, you have to run the command again.
 
 ## APIs
 

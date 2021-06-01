@@ -16,16 +16,20 @@ version: '3.7'
 
 services:
   121-service:
+    build:
+      target: development
     volumes:
       - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
-    command: 'npm run start:dev'
 
   PA-accounts-service:
+    build:
+      target: development
     volumes:
       - 'pa_accounts_node_modules:/home/node/app/node_modules'
       - './PA-accounts-service:/home/node/app'
-    command: 'npm run start:dev'
+    # When the file-watcher isn't necessary, you can override the start-command here:
+    # command: 'npm start'
 
 volumes:
   121_service_node_modules:

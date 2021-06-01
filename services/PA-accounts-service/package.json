@@ -17,7 +17,7 @@
     "fix:syntax": "npm run lint:syntax -- --write",
     "prestart": "npm run migration:run",
     "start": "node index.js",
-    "prestart:dev": "npm run prestart",
+    "prestart:dev": "npm install --no-fund --no-audit --no-save && npm run prestart",
     "start:dev": "tsc-watch --noClear --onSuccess \"  node index.js  \" --onFailure \"echo There was a problem with the build!\" -p tsconfig.json",
     "prestart:prod": "tsc",
     "start:prod": "node dist/main.js",
