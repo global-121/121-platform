@@ -31,7 +31,7 @@ updates:
       - dependency-name: tslint
         versions: ['>= 6.0.0']
       - dependency-name: typescript
-        versions: ['>= 3.4.0']
+        versions: ['>= 3.3.0']
       - dependency-name: karma
         versions: ['>= 6.0.0']
       - dependency-name: ngx-translate-lint
@@ -73,7 +73,7 @@ updates:
       - dependency-name: tslint
         versions: ['>= 6.0.0']
       - dependency-name: typescript
-        versions: ['>= 3.4.0']
+        versions: ['>= 3.3.0']
       - dependency-name: karma
         versions: ['>= 6.0.0']
       - dependency-name: ngx-translate-lint
@@ -113,7 +113,7 @@ updates:
       - dependency-name: tslint
         versions: ['>= 6.0.0']
       - dependency-name: typescript
-        versions: ['>= 3.4.0']
+        versions: ['>= 3.3.0']
       - dependency-name: karma
         versions: ['>= 6.0.0']
       - dependency-name: ngx-translate-lint
