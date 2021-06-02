@@ -1,7 +1,7 @@
 import { ConnectionEntity } from './../../connection/connection.entity';
 import { IntersolvePayoutStatus } from './../../programs/fsp/api/enum/intersolve-payout-status.enum';
 import { EXTERNAL_API } from '../../config';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, In } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
@@ -35,11 +35,19 @@ export class WhatsappService {
   public async notifyByWhatsapp(
     recipientPhoneNr: string,
     language: string,
-    key: string,
     programId: number,
+    message?: string,
+    key?: string,
   ): Promise<void> {
     if (recipientPhoneNr) {
-      const whatsappText = await this.getWhatsappText(language, key, programId);
+      if (!message && !key) {
+        throw new HttpException(
+          'A message or a key should be supplied.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const whatsappText =
+        message || (await this.getWhatsappText(language, key, programId));
       await this.sendWhatsapp(whatsappText, recipientPhoneNr, null);
     }
   }

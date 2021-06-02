@@ -3,6 +3,7 @@ import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { ApiResponse, ApiUseTags, ApiImplicitParam } from '@nestjs/swagger';
 import { UserRole } from '../../user-role.enum';
 import { Roles } from '../../roles.decorator';
+import { PaStatus } from '../../models/pa-status.model';
 
 @ApiUseTags('notifications')
 @Controller('notifications/whatsapp')
@@ -23,8 +24,9 @@ export class WhatsappController {
     return await this.whatsappService.notifyByWhatsapp(
       params.number,
       'en',
-      'included',
       1,
+      null,
+      PaStatus.registered,
     );
   }
 
