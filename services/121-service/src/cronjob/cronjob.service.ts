@@ -69,6 +69,7 @@ export class CronjobService {
       .select([
         '"whatsappPhoneNumber"',
         'connection."referenceId" AS "referenceId"',
+        'amount',
       ])
       .leftJoin('barcode.image', 'image')
       .leftJoin('image.connection', 'connection')
