@@ -968,6 +968,9 @@ export class ProgramService {
       case ExportType.unusedVouchers: {
         return this.getUnusedVouchers();
       }
+      case ExportType.duplicatePhoneNumbers: {
+        return this.getDuplicatePhoneNumbers(programId);
+      }
     }
   }
 

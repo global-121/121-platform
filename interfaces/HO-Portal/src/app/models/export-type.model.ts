@@ -1,7 +1,8 @@
 export enum ExportType {
   allPeopleAffected = 'all-people-affected',
-  selectedForValidation = 'selected-for-validation',
+  duplicatePhoneNumbers = 'duplicate-phone-numbers',
   included = 'included',
   payment = 'payment',
+  selectedForValidation = 'selected-for-validation',
   unusedVouchers = 'unused-vouchers',
 }
