@@ -97,7 +97,7 @@ function deploy() {
     log "Updating/building services..."
 
     cd "$repo_services" || return
-    docker-compose stop
+
     docker-compose up -d --build
   }
 
