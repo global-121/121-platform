@@ -53,9 +53,11 @@ export class PersonRow {
 export enum PaStatus {
   imported = 'imported',
   invited = 'invited',
+  noLongerEligible = 'noLongerEligible',
   created = 'created',
   registered = 'registered',
   selectedForValidation = 'selectedForValidation',
+  registeredWhileNoLongerEligible = 'registeredWhileNoLongerEligible',
   validated = 'validated',
   included = 'included',
   inclusionEnded = 'inclusionEnded',
