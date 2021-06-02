@@ -58,6 +58,8 @@ export class BulkActionsService {
           PaStatus.selectedForValidation,
           PaStatus.validated,
           PaStatus.included,
+          PaStatus.noLongerEligible,
+          PaStatus.registeredWhileNoLongerEligible,
         ]);
         break;
     }
