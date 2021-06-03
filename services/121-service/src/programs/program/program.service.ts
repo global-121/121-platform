@@ -691,7 +691,7 @@ export class ProgramService {
 
   public async getConnections(
     programId: number,
-    privacy: boolean,
+    includePersonalData: boolean,
   ): Promise<any[]> {
     const selectedConnections = await this.getAllConnections(programId);
 
@@ -722,7 +722,7 @@ export class ProgramService {
         connection.namePartnerOrganization;
       connectionResponse['status'] = this.getPaStatus(connection, +programId);
 
-      if (privacy) {
+      if (includePersonalData) {
         connectionResponse['name'] = this.getName(connection.customData);
         connectionResponse['phoneNumber'] =
           connection.phoneNumber ||
@@ -775,7 +775,9 @@ export class ProgramService {
     }
   }
 
-  private async getAllConnections(programId): Promise<ConnectionEntity[]> {
+  private async getAllConnections(
+    programId: number,
+  ): Promise<ConnectionEntity[]> {
     const connections = await this.connectionRepository.find({
       relations: ['fsp'],
       order: { inclusionScore: 'DESC' },
@@ -783,7 +785,7 @@ export class ProgramService {
     const enrolledConnections = [];
     for (let connection of connections) {
       if (
-        connection.programsApplied.includes(+programId) || // Get connections applied to your program ..
+        connection.programsApplied.includes(programId) || // Get connections applied to your program ..
         connection.programsApplied.length === 0 // .. and connections applied to no program (so excluding connections applied to other program)
       ) {
         enrolledConnections.push(connection);
@@ -793,7 +795,7 @@ export class ProgramService {
   }
 
   public async getMonitoringData(programId: number): Promise<any[]> {
-    const connections = await this.getAllConnections(+programId);
+    const connections = await this.getAllConnections(programId);
 
     return connections.map(connection => {
       const appliedDate = new Date(connection.appliedDate).getTime();
@@ -895,7 +897,7 @@ export class ProgramService {
     }
   }
 
-  public async getPaymentDetails(
+  private async getPaymentDetails(
     programId: number,
     installmentId: number,
   ): Promise<FileDto> {
@@ -938,7 +940,7 @@ export class ProgramService {
     return outputPaymentDetails;
   }
 
-  public async getUnusedVouchers(): Promise<FileDto> {
+  private async getUnusedVouchers(): Promise<FileDto> {
     const unusedVouchers = await this.fspService.getUnusedVouchers();
     unusedVouchers.forEach(v => {
       v.name = this.getName(v.customData);
@@ -1135,9 +1137,7 @@ export class ProgramService {
     return response;
   }
 
-  private async getDuplicatePhoneNumbers(
-    programId: number,
-  ): Promise<FileDto | any> {
+  private async getDuplicatePhoneNumbers(programId: number): Promise<FileDto> {
     const allConnections = await this.connectionRepository.find({
       select: ['id', 'customData', 'fsp'],
       relations: ['fsp'],
@@ -1204,7 +1204,7 @@ export class ProgramService {
     });
   }
 
-  public filterUnusedColumn(columnDetails): object[] {
+  private filterUnusedColumn(columnDetails): object[] {
     const emptyColumns = [];
     for (let row of columnDetails) {
       for (let key in row) {
@@ -1225,7 +1225,7 @@ export class ProgramService {
     return filteredColumns;
   }
 
-  public async getPaymentDetailsInstallment(
+  private async getPaymentDetailsInstallment(
     programId: number,
     installmentId: number,
   ): Promise<any> {
@@ -1262,7 +1262,7 @@ export class ProgramService {
     return transactions;
   }
 
-  public jsonToCsv(items: any[]): any[] | string {
+  private jsonToCsv(items: any[]): any[] | string {
     if (items.length === 0) {
       return '';
     }
