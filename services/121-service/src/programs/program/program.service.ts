@@ -6,7 +6,14 @@ import { ConnectionEntity } from '../../connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, DeleteResult } from 'typeorm';
+import {
+  Repository,
+  getRepository,
+  DeleteResult,
+  Not,
+  IsNull,
+  Equal,
+} from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
 import { PaStatus, PaStatusTimestampField } from '../../models/pa-status.model';
@@ -38,6 +45,7 @@ import { LookupService } from '../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
 import { Attributes } from '../../connection/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/payout.dto';
+import { without, compact, sortBy } from 'lodash';
 
 @Injectable()
 export class ProgramService {
@@ -1125,6 +1133,75 @@ export class ProgramService {
     };
 
     return response;
+  }
+
+  private async getDuplicatePhoneNumbers(
+    programId: number,
+  ): Promise<FileDto | any> {
+    const allConnections = await this.connectionRepository.find({
+      select: ['id', 'customData', 'fsp'],
+      relations: ['fsp'],
+      where: {
+        programsApplied: Equal([programId]), // This is NOT a robust filter for this program-id's PA. :(
+        customData: Not(IsNull()),
+      },
+    });
+
+    const duplicates = allConnections.filter(connection => {
+      const others = without(allConnections, connection);
+      const currentPaNumbers = compact([
+        connection.customData[CustomDataAttributes.phoneNumber],
+        connection.customData[CustomDataAttributes.whatsappPhoneNumber],
+      ]);
+
+      const hasDuplicateProgramNr = this.hasDuplicateCustomDataValues(
+        others,
+        CustomDataAttributes.phoneNumber,
+        currentPaNumbers,
+      );
+
+      if (hasDuplicateProgramNr) {
+        // No need to look for other matches
+        return true;
+      }
+
+      const hasDuplicateWhatsAppNr = this.hasDuplicateCustomDataValues(
+        others,
+        CustomDataAttributes.whatsappPhoneNumber,
+        currentPaNumbers,
+      );
+
+      return hasDuplicateWhatsAppNr;
+    });
+
+    const result = sortBy(duplicates, 'id').map(connection => {
+      return {
+        id: connection.id,
+        name: this.getName(connection.customData),
+        fsp: connection.fsp ? connection.fsp.fsp : null,
+        phoneNumber: connection.customData[CustomDataAttributes.phoneNumber],
+        whatsappPhoneNumber:
+          connection.customData[CustomDataAttributes.whatsappPhoneNumber],
+      };
+    });
+
+    return {
+      fileName: this.getExportFileName(ExportType.duplicatePhoneNumbers),
+      data: this.jsonToCsv(result),
+    };
+  }
+
+  private hasDuplicateCustomDataValues(
+    others: ConnectionEntity[],
+    type: CustomDataAttributes,
+    values: any[],
+  ): boolean {
+    return others.some(otherConnection => {
+      if (!otherConnection.customData[type]) {
+        return false;
+      }
+      return values.includes(otherConnection.customData[type]);
+    });
   }
 
   public filterUnusedColumn(columnDetails): object[] {
