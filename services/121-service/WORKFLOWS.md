@@ -85,24 +85,24 @@ In this file we document "how to do X", manually. As not everything is possible 
 2. Select one of the "`Instance: *`", "`FSP: *`" or "`Program: *`" resources.
 3. Select the language to get the latest translations for.
 4. Click "**Download for use**" from the pop-up.
-5. Open the file in an (code-)editor, to:
-   - Replace all instances of `"en"` with the selected language's code, i.e: `"saq_KE"` (for Samburu, Kenya)
-   - Save the file (temporarily), for example as "`instance-kenya.saq_KE.json`"
-6. Merge this file with the existing file in the repository
-   - This can be done in-code via JavaScript.  
-     See: <https://stackoverflow.com/a/21450110>
-   - With a command-line tool.
-     - `jq` <https://stedolan.github.io/jq/>
-     - `json` <http://trentm.com/json/#FEATURE-Merging>
-   - By-hand.
-     - Add each `"saq_KE"`-property next-to its `"en"`-sibling. (Take note of the last comma!)
-     - Make sure the output is valid JSON and properly formatted with [Prettier](https://prettier.io/).
-7. Commit this version of the file.
+5. Update the translations with:
+
+   ```sh
+   node ./seed-data/process-translation-files.js convert-to-locale --locale <translated-locale> --in <downloaded-file> --out <target-file> --merge
+   ```
+
+6. Review the (automatic) changes
+7. Commit the changes to the target-file.
 
 ### Update source-text for translations in Transifex
 
 1. Take the preferred source-file (`instance`, `fsp` or `program`)
-2. Remove **_ALL OTHER_** language-texts except "`en`"
+2. Remove **_ALL OTHER_** language-texts except "`en`" with:
+
+   ```sh
+   node ./seed-data/process-translation-files.js prepare-to-update-transifex --in <source-file> --out <destination-file>
+   ```
+
 3. Use this edited version of the file to upload in Transifex
 
    1. Go to "Resources" page: <https://www.transifex.com/redcrossnl/121-platform/content/>
