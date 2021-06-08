@@ -20,9 +20,9 @@ In this file we document "how to do X", manually. As not everything is possible 
    1. Find the `connection` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
    2. Use the found connection `referenceId` to update the phone-numbers.
       - Use: [`/connection/phone/overwrite`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_phone_overwrite)  
-        To store the new SMS phone-number. (Make sure to ONLY include the numbers, no whitespace or `+`)
+        To store the new SMS phone-number. (A phone number check is included, with automatic sanitization as far as possible.)
       - Use: [`/connection/attribute`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_attribute)  
-        To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (Make sure to ONLY include the numbers, no whitespace or `+`)
+        To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (A phone number check is included, with automatic sanitization as far as possible.)
 
 ---
 
