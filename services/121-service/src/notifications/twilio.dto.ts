@@ -29,28 +29,6 @@ export class TwilioMessagesCreateDto {
   public readonly mediaUrl: string;
 }
 
-export class TwilioCallsCreateDto {
-  @ApiModelProperty()
-  @IsString()
-  public readonly method: string;
-
-  @ApiModelProperty()
-  @IsString()
-  public readonly url: string;
-
-  @ApiModelProperty()
-  @IsString()
-  public readonly to: string;
-
-  @ApiModelProperty()
-  @IsString()
-  public readonly statusCallback: string;
-
-  @ApiModelProperty()
-  @IsString()
-  public readonly from: string;
-}
-
 export class TwilioValidateRequestDto {
   @ApiModelProperty()
   @IsString()
