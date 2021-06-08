@@ -245,7 +245,7 @@ export class ProgramsServiceApiService {
       .post(environment.url_121_service_api, `/programs/export-list`, {
         programId,
         type,
-        installment,
+        ...(installment && { installment }),
       })
       .toPromise();
   }
