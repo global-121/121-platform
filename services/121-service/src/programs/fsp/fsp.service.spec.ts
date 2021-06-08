@@ -32,6 +32,7 @@ import { AfricasTalkingNotificationDto } from './dto/africas-talking-notificatio
 import { ProgramEntity } from '../program/program.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
 import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
+import { IntersolveMockService } from './api/instersolve.mock';
 
 describe('Fsp service', (): void => {
   let service: FspService;
@@ -50,6 +51,7 @@ describe('Fsp service', (): void => {
           ImageCodeService,
           IntersolveService,
           IntersolveApiService,
+          IntersolveMockService,
           WhatsappService,
           {
             provide: getRepositoryToken(ProgramEntity),
