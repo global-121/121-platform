@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 import { ImageCodeExportVouchersEntity } from '../notifications/imagecode/image-code-export-vouchers.entity';
-import { IsInt, IsPositive } from 'class-validator';
+import { IsInt, IsOptional, IsPositive } from 'class-validator';
 
 @Entity('connection')
 export class ConnectionEntity {
@@ -82,6 +82,7 @@ export class ConnectionEntity {
   @Column({ nullable: true })
   @IsInt()
   @IsPositive()
+  @IsOptional()
   public paymentAmountMultiplier: number;
 
   @OneToMany(
