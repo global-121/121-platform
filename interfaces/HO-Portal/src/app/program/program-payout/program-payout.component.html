@@ -33,7 +33,7 @@
       [programId]="programId"
       [exportType]="enumExportType.payment"
       [paymentInstallment]="exportInstallmentId"
-      [paymentExportAvailable]="exportInstallmentAvailable"
+      [disabled]="!exportInstallmentAvailable"
     ></app-export-list>
   </ion-row>
   <ion-row *ngIf="isIntersolve" class="ion-margin-vertical">
