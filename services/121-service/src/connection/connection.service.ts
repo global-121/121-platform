@@ -507,11 +507,10 @@ export class ConnectionService {
     if (typeof connection[attribute] !== 'undefined') {
       connection[attribute] = value;
     } else if (
-      !connection.customData ||
+      connection.customData &&
       typeof connection.customData[attribute] !== 'undefined'
     ) {
-      connection.customData = connection.customData;
-      connection.customData[attribute] = this.cleanData(
+      connection.customData[attribute] = await this.cleanData(
         attribute,
         String(value),
       );
