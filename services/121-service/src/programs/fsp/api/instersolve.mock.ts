@@ -5,7 +5,6 @@ export class IntersolveMockService {
   public constructor() {}
 
   public post(payload: any): object {
-    console.log('payload: ', payload);
     const amount = payload.elements[0].elements
       .find(e => e.name === 'soap:Body')
       .elements[0].elements.find(e => e.name === 'Value').elements[0].text;
