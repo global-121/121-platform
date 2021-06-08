@@ -51,11 +51,11 @@ export class ProgramController {
   }
 
   @ApiOperation({ title: 'Get program by id' })
-  @ApiImplicitParam({ name: 'id', required: true })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({ status: 200, description: 'Return program by id.' })
-  @Get(':id')
+  @Get(':programId')
   public async findOne(@Param() params): Promise<ProgramEntity> {
-    return await this.programService.findOne(params.id);
+    return await this.programService.findOne(Number(params.programId));
   }
 
   @ApiOperation({ title: 'Get all programs' })
@@ -94,32 +94,35 @@ export class ProgramController {
     description: 'The program has been successfully deleted.',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'id', required: true, type: 'string' })
-  @Delete(':id')
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Delete(':programId')
   public async delete(@Param() params): Promise<DeleteResult> {
-    return this.programService.delete(params.id);
+    return this.programService.delete(Number(params.programId));
   }
 
   @Roles(UserRole.RunProgram)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'id', required: true, type: 'number' })
-  @Post('changeState/:id')
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('changeState/:programId')
   public async changeState(
     @Param() params,
     @Body() changeStateData: ChangeStateDto,
   ): Promise<SimpleProgramRO> {
-    return this.programService.changeState(params.id, changeStateData.newState);
+    return this.programService.changeState(
+      Number(params.programId),
+      changeStateData.newState,
+    );
   }
 
   @ApiOperation({ title: 'Get inclusion status (Used by PA)' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('inclusionStatus/:programId')
   public async inclusionStatus(
     @Param() params,
     @Body() data: ReferenceIdDto,
   ): Promise<InclusionStatus> {
     return await this.programService.getInclusionStatus(
-      params.programId,
+      Number(params.programId),
       data.referenceId,
     );
   }
@@ -132,8 +135,11 @@ export class ProgramController {
     description: 'All included PA per program',
   })
   @Get('enrolled/:programId')
-  public async getEnrolled(@Param() param): Promise<any[]> {
-    return await this.programService.getConnections(param.programId, false);
+  public async getEnrolled(@Param() params): Promise<any[]> {
+    return await this.programService.getConnections(
+      Number(params.programId),
+      false,
+    );
   }
 
   @Roles(UserRole.View, UserRole.PersonalData)
@@ -146,22 +152,27 @@ export class ProgramController {
     description: 'All included PA per program (including personal details)',
   })
   @Get('enrolledPrivacy/:programId')
-  public async getEnrolledWithNames(@Param() param): Promise<any[]> {
-    return await this.programService.getConnections(param.programId, true);
+  public async getEnrolledWithNames(@Param() params): Promise<any[]> {
+    return await this.programService.getConnections(
+      Number(params.programId),
+      true,
+    );
   }
 
   @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Get monitoring data' })
   @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
-  @ApiImplicitParam({ name: 'programId', required: true })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Get('/monitoring/:programId')
   public async getMonitoringData(@Param() params): Promise<any[]> {
-    return await this.programService.getMonitoringData(params.programId);
+    return await this.programService.getMonitoringData(
+      Number(params.programId),
+    );
   }
 
   @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Select set of PAs for validation' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('select-validation/:programId')
   public async selectForValidation(
     @Param() params,
@@ -176,14 +187,14 @@ export class ProgramController {
 
   @Roles(UserRole.PersonalData)
   @ApiOperation({ title: 'Mark set of PAs as no longer eligible' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('no-longer-eligible/:programId')
   public async markNoLongerEligible(
     @Param() params,
     @Body() data: ReferenceIdsDto,
   ): Promise<void> {
     await this.programService.setPaStatusTimestampField(
-      params.programId,
+      Number(params.programId),
       data,
       PaStatusTimestampField.noLongerEligibleDate,
     );
@@ -191,7 +202,7 @@ export class ProgramController {
 
   @Roles(UserRole.PersonalData)
   @ApiOperation({ title: 'Invite set of PAs for registration' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('invite/:programId')
   public async invite(
     @Param() params,
@@ -199,7 +210,7 @@ export class ProgramController {
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.programService.invite(
-      params.programId,
+      Number(params.programId),
       phoneNumbers,
       messageData.message,
     );
@@ -207,7 +218,7 @@ export class ProgramController {
 
   @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Include set of PAs' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('include/:programId')
   public async include(
     @Param() params,
@@ -215,7 +226,7 @@ export class ProgramController {
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.programService.include(
-      params.programId,
+      Number(params.programId),
       referenceIdsData,
       messageData.message,
     );
@@ -223,7 +234,7 @@ export class ProgramController {
 
   @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'End inclusion of set of PAs' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('end/:programId')
   public async end(
     @Param() params,
@@ -231,7 +242,7 @@ export class ProgramController {
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.programService.end(
-      params.programId,
+      Number(params.programId),
       referenceIdsData,
       messageData.message,
     );
@@ -239,7 +250,7 @@ export class ProgramController {
 
   @Roles(UserRole.PersonalData)
   @ApiOperation({ title: 'Reject set of PAs' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('reject/:programId')
   public async reject(
     @Param() params,
@@ -247,7 +258,7 @@ export class ProgramController {
     @Body() messageData: MessageDto,
   ): Promise<void> {
     await this.programService.reject(
-      params.programId,
+      Number(params.programId),
       referenceIdsData,
       messageData.message,
     );
@@ -279,8 +290,8 @@ export class ProgramController {
     description: 'Get past payout-installments for program',
   })
   @Get('installments/:programId')
-  public async getInstallments(@Param() param): Promise<any> {
-    return await this.programService.getInstallments(param.programId);
+  public async getInstallments(@Param() params): Promise<any> {
+    return await this.programService.getInstallments(Number(params.programId));
   }
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
@@ -300,7 +311,10 @@ export class ProgramController {
     @Param('programId') programId: number,
     @Query('minInstallment') minInstallment: number,
   ): Promise<any> {
-    return await this.programService.getTransactions(programId, minInstallment);
+    return await this.programService.getTransactions(
+      Number(programId),
+      minInstallment,
+    );
   }
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
@@ -324,8 +338,8 @@ export class ProgramController {
     description: 'Total number of included per program',
   })
   @Get('total-included/:programId')
-  public async getTotalIncluded(@Param() param): Promise<TotalIncluded> {
-    return await this.programService.getTotalIncluded(param.programId);
+  public async getTotalIncluded(@Param() params): Promise<TotalIncluded> {
+    return await this.programService.getTotalIncluded(Number(params.programId));
   }
 
   @Roles(UserRole.PersonalData)
@@ -351,29 +365,29 @@ export class ProgramController {
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get metrics by program-id' })
-  @ApiImplicitParam({ name: 'id', required: true })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
     description: 'Metrics of a program to gain an overview of the program ',
   })
-  @Get('metrics/:id')
+  @Get('metrics/:programId')
   public async getMetrics(@Param() params): Promise<ProgramMetrics> {
     return {
-      pa: await this.programService.getPaMetrics(params.id),
+      pa: await this.programService.getPaMetrics(Number(params.programId)),
       updated: new Date(),
     };
   }
 
   @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Update program' })
-  @ApiImplicitParam({ name: 'programId', required: true })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('update/program/:programId')
   public async updateProgram(
     @Param() params,
     @Body() updateProgramDto: UpdateProgramDto,
   ): Promise<ProgramEntity> {
     return await this.programService.updateProgram(
-      params.programId,
+      Number(params.programId),
       updateProgramDto,
     );
   }

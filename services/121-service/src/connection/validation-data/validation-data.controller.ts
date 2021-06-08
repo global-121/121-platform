@@ -28,10 +28,12 @@ export class ValidationDataController {
 
   @ApiOperation({ title: 'PA gets validationData attributes' })
   @ApiResponse({ status: 200, description: 'Attributes received' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'string' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Get('/attributes/:programId')
   public async getAttributes(@Param() params): Promise<any[]> {
-    return await this.validationDataService.getAttributes(params.programId);
+    return await this.validationDataService.getAttributes(
+      Number(params.programId),
+    );
   }
 
   @ApiOperation({ title: 'PA posts prefilled answers to attributes' })

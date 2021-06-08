@@ -60,7 +60,7 @@ export class ConnectionController {
 
   @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
-  @ApiImplicitParam({ name: 'programId', required: true })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('import-bulk/:programId')
   @ApiConsumes('multipart/form-data')
   @ApiImplicitFile({ name: 'file', required: true })
@@ -72,7 +72,7 @@ export class ConnectionController {
   ): Promise<ImportResult> {
     return await this.connectionService.importBulk(
       csvFile,
-      params.programId,
+      Number(params.programId),
       userId,
     );
   }
@@ -81,7 +81,7 @@ export class ConnectionController {
   @ApiOperation({
     title: 'Import set of registered PAs to test with, based on CSV',
   })
-  @ApiImplicitParam({ name: 'programId', required: true })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('import-test-registrations/:programId')
   @ApiConsumes('multipart/form-data')
   @ApiImplicitFile({ name: 'file', required: true })
@@ -105,7 +105,7 @@ export class ConnectionController {
 
   @ApiOperation({ title: 'Connection applies for program' })
   @ApiResponse({ status: 200, description: 'Connection applied for program' })
-  @ApiImplicitParam({ name: 'programId', required: true })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @Post('/apply-program/:programId')
   public async applyProgram(
     @Body() referenceIdDto: ReferenceIdDto,
@@ -113,7 +113,7 @@ export class ConnectionController {
   ): Promise<void> {
     return await this.connectionService.applyProgram(
       referenceIdDto.referenceId,
-      params.programId,
+      Number(params.programId),
     );
   }
 
