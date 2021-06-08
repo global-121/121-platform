@@ -78,12 +78,12 @@ export class UserController {
   @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
-  @ApiImplicitParam({ name: 'userId', required: true, type: 'string' })
+  @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
   public async delete(
     @User('id') deleterId: number,
     @Param() params,
   ): Promise<DeleteResult> {
-    return await this.userService.delete(deleterId, params.userId);
+    return await this.userService.delete(deleterId, Number(params.userId));
   }
 
   @Roles(
@@ -102,12 +102,15 @@ export class UserController {
   @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/:userId/:programId')
-  @ApiImplicitParam({ name: 'userId', required: true, type: 'number' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'number' })
+  @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   public async assignProgram(
     @Param('userId') userId: number,
     @Param('programId') programId: number,
   ): Promise<UserRO> {
-    return await this.userService.assignProgram(userId, programId);
+    return await this.userService.assignProgram(
+      Number(userId),
+      Number(programId),
+    );
   }
 }

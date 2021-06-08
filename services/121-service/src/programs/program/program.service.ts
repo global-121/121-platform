@@ -344,9 +344,9 @@ export class ProgramService {
 
     let inclusionStatus: InclusionStatus;
 
-    if (connection.programsIncluded.includes(+programId)) {
+    if (connection.programsIncluded.includes(programId)) {
       inclusionStatus = { status: PaStatus.included };
-    } else if (connection.programsRejected.includes(+programId)) {
+    } else if (connection.programsRejected.includes(programId)) {
       inclusionStatus = { status: PaStatus.rejected };
     } else {
       inclusionStatus = { status: 'unavailable' };
@@ -519,7 +519,7 @@ export class ProgramService {
     });
     const includedConnections = [];
     for (let connection of connections) {
-      if (connection.programsIncluded.includes(+programId)) {
+      if (connection.programsIncluded.includes(programId)) {
         includedConnections.push(connection);
       }
     }
@@ -636,11 +636,11 @@ export class ProgramService {
     programId: number,
   ): PaStatus {
     let paStatus: PaStatus;
-    if (connection.programsIncluded.includes(+programId)) {
+    if (connection.programsIncluded.includes(programId)) {
       paStatus = PaStatus.included;
     } else if (connection.inclusionEndDate) {
       paStatus = PaStatus.inclusionEnded;
-    } else if (connection.programsRejected.includes(+programId)) {
+    } else if (connection.programsRejected.includes(programId)) {
       paStatus = PaStatus.rejected;
     } else if (connection.appliedDate && connection.noLongerEligibleDate) {
       paStatus = PaStatus.registeredWhileNoLongerEligible;
@@ -696,7 +696,7 @@ export class ProgramService {
     const selectedConnections = await this.getAllConnections(programId);
 
     const financialServiceProviders = (
-      await this.findOne(+programId)
+      await this.findOne(programId)
     ).financialServiceProviders.map(fsp => fsp.fsp);
 
     const connectionsResponse = [];
@@ -720,7 +720,7 @@ export class ProgramService {
       connectionResponse['fsp'] = connection.fsp?.fsp;
       connectionResponse['namePartnerOrganization'] =
         connection.namePartnerOrganization;
-      connectionResponse['status'] = this.getPaStatus(connection, +programId);
+      connectionResponse['status'] = this.getPaStatus(connection, programId);
 
       if (includePersonalData) {
         connectionResponse['name'] = this.getName(connection.customData);
@@ -739,7 +739,7 @@ export class ProgramService {
       if (financialServiceProviders.includes(fspName.africasTalking)) {
         connectionResponse['phonenumberTestResult'] = await this.getMpesaStatus(
           connection.id,
-          +programId,
+          programId,
         );
       }
 
@@ -1292,7 +1292,7 @@ export class ProgramService {
     return filteredConnections.length;
   }
 
-  public async getPaMetrics(programId): Promise<PaMetrics> {
+  public async getPaMetrics(programId: number): Promise<PaMetrics> {
     const metrics = new PaMetrics();
     const connections = await this.getConnections(programId, false);
 
