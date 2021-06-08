@@ -9,6 +9,7 @@ import { IntersolveRequestEntity } from '../intersolve-request.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
+import { IntersolveMockService } from './instersolve.mock';
 
 @Injectable()
 export class IntersolveApiService {
@@ -17,7 +18,10 @@ export class IntersolveApiService {
     IntersolveRequestEntity
   >;
 
-  public constructor(private readonly soapService: SoapService) {}
+  public constructor(
+    private readonly soapService: SoapService,
+    private intersolveMock: IntersolveMockService,
+  ) {}
 
   // If we get one of these codes back from a cancel by refpos, stop cancelling
   private readonly stopCancelByRefposCodes = [
@@ -59,8 +63,10 @@ export class IntersolveApiService {
 
     let result = new IntersolveIssueCardResponse();
     try {
-      const responseBody = await this.soapService.post(payload);
-
+      const responseBody =
+        process.env.MOCK_INTERSOLVE === 'True'
+          ? this.intersolveMock.post(payload)
+          : await this.soapService.post(payload);
       result = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
         resultDescription:

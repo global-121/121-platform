@@ -22,6 +22,7 @@ import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/ima
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { UserModule } from '../../user/user.module';
+import { IntersolveMockService } from './api/instersolve.mock';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { UserModule } from '../../user/user.module';
     AfricasTalkingApiService,
     IntersolveService,
     IntersolveApiService,
+    IntersolveMockService,
     SoapService,
     ImageCodeService,
   ],
@@ -59,6 +61,7 @@ import { UserModule } from '../../user/user.module';
     AfricasTalkingApiService,
     IntersolveService,
     IntersolveApiService,
+    IntersolveMockService,
     SoapService,
     ImageCodeService,
   ],
