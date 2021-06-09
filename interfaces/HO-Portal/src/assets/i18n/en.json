@@ -180,7 +180,7 @@
           "payment": "Payment #",
           "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
-          "name-partner-organizatoin": "Partner organization",
+          "namePartnerOrganization": "Partner organization",
           "paymentAmountMultiplier": "Transfer value(s)",
           "fsp": "Financial Service Provider"
         },
@@ -226,6 +226,9 @@
           "properties": {
             "paymentAmountMultiplier": {
               "label": "× Transfer value"
+            },
+            "namePartnerOrganization": {
+              "label": "Name of Partner organisation"
             }
           },
           "note": {

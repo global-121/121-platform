@@ -270,7 +270,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       {
         prop: 'namePartnerOrganization',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.name-partner-organizatoin',
+          'page.program.program-people-affected.column.namePartnerOrganization',
         ),
         ...this.columnDefaults,
         frozenLeft: this.hasWideScreen(),
