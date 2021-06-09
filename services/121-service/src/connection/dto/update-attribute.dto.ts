@@ -3,6 +3,7 @@ import { Length, IsString, IsIn } from 'class-validator';
 import { CustomDataAttributes } from '../validation-data/dto/custom-data-attributes';
 
 export enum AdditionalAttributes {
+  namePartnerOrganization = 'namePartnerOrganization',
   paymentAmountMultiplier = 'paymentAmountMultiplier',
 }
 export const Attributes = { ...AdditionalAttributes, ...CustomDataAttributes };

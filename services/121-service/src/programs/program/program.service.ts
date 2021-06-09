@@ -989,7 +989,7 @@ export class ProgramService {
     connection: ConnectionEntity,
     programId: number,
   ): object {
-    const dateFields = [
+    const genericFields = [
       'created',
       'appliedDate',
       'selectedForValidationDate',
@@ -997,8 +997,9 @@ export class ProgramService {
       'inclusionDate',
       'inclusionEndDate',
       'rejectionDate',
+      'namePartnerOrganization',
     ];
-    dateFields.forEach(field => {
+    genericFields.forEach(field => {
       row[field] = connection[field];
     });
 
@@ -1179,6 +1180,7 @@ export class ProgramService {
         name: this.getName(connection.customData),
         status: this.getPaStatus(connection, programId),
         fsp: connection.fsp ? connection.fsp.fsp : null,
+        namePartnerOrganization: connection.namePartnerOrganization,
         phoneNumber: connection.customData[CustomDataAttributes.phoneNumber],
         whatsappPhoneNumber:
           connection.customData[CustomDataAttributes.whatsappPhoneNumber],
