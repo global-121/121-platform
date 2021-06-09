@@ -33,7 +33,7 @@ In this file we document "how to do X", manually. As not everything is possible 
    - Name: can be any of the first/second/third/last name attributes
    - and/or Phone number(s): can be SMS and/or WhatsApp phone number
    - New FSP: (`Intersolve-whatsapp` or `Intersolve-no-whatsapp`)
-   - New WhatsApp phonenumber (if switching to `Intersolve-whatsapp`)
+   - New WhatsApp phone number (if switching to `Intersolve-whatsapp`)
 3. **121-dev-team**:
    1. Find the `connection` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
    2. Update FSP: Use the found connection `referenceId` to update the Financial Service Provider.

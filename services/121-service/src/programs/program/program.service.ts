@@ -1139,7 +1139,6 @@ export class ProgramService {
 
   private async getDuplicatePhoneNumbers(programId: number): Promise<FileDto> {
     const allConnections = await this.connectionRepository.find({
-      select: ['id', 'customData', 'fsp'],
       relations: ['fsp'],
       where: {
         programsApplied: Equal([programId]), // This is NOT a robust filter for this program-id's PA. :(
@@ -1178,6 +1177,7 @@ export class ProgramService {
       return {
         id: connection.id,
         name: this.getName(connection.customData),
+        status: this.getPaStatus(connection, programId),
         fsp: connection.fsp ? connection.fsp.fsp : null,
         phoneNumber: connection.customData[CustomDataAttributes.phoneNumber],
         whatsappPhoneNumber:
