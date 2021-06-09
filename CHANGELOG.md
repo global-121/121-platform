@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.5.4...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.5.5...master)
 
 ---
+
+## [1.5.5](https://github.com/global-121/121-platform/compare/v1.5.4...v1.5.5) - 2021-06-09
+
+### Added
+- 2021-06-09: Portuguese translations
 
 ## [1.5.4](https://github.com/global-121/121-platform/compare/v1.5.3...v1.5.4) - 2021-06-02
 
