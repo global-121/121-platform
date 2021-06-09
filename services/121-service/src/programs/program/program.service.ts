@@ -559,19 +559,20 @@ export class ProgramService {
       includedConnections,
     );
 
-    const paymentTransactionResult = await this.fspService.payout(
-      paPaymentDataList,
-      programId,
-      installment,
-      amount,
-    );
-
     this.actionService.saveAction(
       userId,
       programId,
       installment === -1
         ? AdditionalActionType.testMpesaPayment
-        : AdditionalActionType.payment,
+        : AdditionalActionType.paymentStarted,
+    );
+
+    const paymentTransactionResult = await this.fspService.payout(
+      paPaymentDataList,
+      programId,
+      installment,
+      amount,
+      userId,
     );
 
     return paymentTransactionResult;

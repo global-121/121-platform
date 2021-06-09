@@ -32,8 +32,18 @@
   >
     {{ 'page.program.program-payout.start-payout'|translate }}
   </confirm-prompt>
-  <ion-label *ngIf="disabledBecauseOfRecency" position="stacked">
+  <ion-label *ngIf="paymentInProgress" position="stacked">
     {{ 'page.program.program-payout.in-progress'|translate }}
+    <ion-button size="small"
+                fill="clear"
+                color="medium"
+                [title]="'common.update'|translate"
+                [attr.aria-label]="'common.update'|translate"
+                class="ion-no-padding"
+                (click)="refresh()"
+    >
+      <ion-icon name="refresh" size="small" slot="icon-only"></ion-icon>
+    </ion-button>
   </ion-label>
 
   <ion-spinner

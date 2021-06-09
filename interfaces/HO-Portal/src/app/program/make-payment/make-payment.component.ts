@@ -30,7 +30,7 @@ export class MakePaymentComponent implements OnInit {
   public totalAmountMessage: string;
   public totalIncludedMessage: string;
 
-  public disabledBecauseOfRecency = false;
+  public paymentInProgress = false;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -52,7 +52,7 @@ export class MakePaymentComponent implements OnInit {
       this.programId,
     );
 
-    await this.getLatestActionTime();
+    await this.checkPaymentInProgress();
     this.updateTotalAmountMessage();
     this.checkIsEnabled();
   }
@@ -61,7 +61,7 @@ export class MakePaymentComponent implements OnInit {
     this.isEnabled =
       this.totalIncluded > 0 &&
       this.lastInstallmentId < this.program.distributionDuration &&
-      !this.disabledBecauseOfRecency;
+      !this.paymentInProgress;
     return this.isEnabled;
   }
 
@@ -163,23 +163,34 @@ export class MakePaymentComponent implements OnInit {
     );
   }
 
-  public async getLatestActionTime(): Promise<void> {
-    const latestAction = await this.programsService.retrieveLatestActions(
-      ActionType.payment,
-      Number(this.programId),
-    );
-    if (!latestAction) {
-      this.disabledBecauseOfRecency = false;
+  public async checkPaymentInProgress(): Promise<void> {
+    const latestPaymentStartedAction =
+      await this.programsService.retrieveLatestActions(
+        ActionType.paymentStarted,
+        Number(this.programId),
+      );
+    const latestPaymentFinishedAction =
+      await this.programsService.retrieveLatestActions(
+        ActionType.paymentFinished,
+        Number(this.programId),
+      );
+    // If never started, then not in progress
+    if (!latestPaymentStartedAction) {
+      this.paymentInProgress = false;
       return;
     }
-    const actionTimestamp = new Date(latestAction.timestamp);
-    const now = new Date();
-    const halfHourAgo = new Date(now.setTime(now.getTime() - 30 * 60 * 1000));
+    // If started, but never finished, then in progress
+    if (!latestPaymentFinishedAction) {
+      this.paymentInProgress = true;
+      return;
+    }
+    // If started and finished, then compare timestamps
+    const startTimestamp = new Date(latestPaymentStartedAction.timestamp);
+    const finishTimestamp = new Date(latestPaymentFinishedAction.timestamp);
+    this.paymentInProgress = finishTimestamp < startTimestamp;
+  }
 
-    if (!environment.production) {
-      this.disabledBecauseOfRecency = false;
-      return;
-    }
-    this.disabledBecauseOfRecency = actionTimestamp > halfHourAgo;
+  public refresh() {
+    window.location.reload();
   }
 }

@@ -23,6 +23,9 @@ import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { UserModule } from '../../user/user.module';
 import { IntersolveMockService } from './api/instersolve.mock';
+import { ActionService } from '../../actions/action.service';
+import { ActionEntity } from '../../actions/action.entity';
+import { UserEntity } from '../../user/user.entity';
 
 @Module({
   imports: [
@@ -42,6 +45,8 @@ import { IntersolveMockService } from './api/instersolve.mock';
       ImageCodeExportVouchersEntity,
       ImageCodeEntity,
       FspAttributeEntity,
+      ActionEntity,
+      UserEntity,
     ]),
   ],
   providers: [
@@ -53,6 +58,7 @@ import { IntersolveMockService } from './api/instersolve.mock';
     IntersolveMockService,
     SoapService,
     ImageCodeService,
+    ActionService,
   ],
   controllers: [FspController],
   exports: [
@@ -64,6 +70,7 @@ import { IntersolveMockService } from './api/instersolve.mock';
     IntersolveMockService,
     SoapService,
     ImageCodeService,
+    ActionService,
   ],
 })
 export class FspModule {}

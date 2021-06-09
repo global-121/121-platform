@@ -23,6 +23,8 @@ import {
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
+import { ActionService } from '../../actions/action.service';
+import { AdditionalActionType } from '../../actions/action.entity';
 
 @Injectable()
 export class FspService {
@@ -48,6 +50,7 @@ export class FspService {
   public constructor(
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly intersolveService: IntersolveService,
+    private readonly actionService: ActionService,
   ) {}
 
   public async payout(
@@ -55,12 +58,20 @@ export class FspService {
     programId: number,
     installment: number,
     amount: number,
+    userId: number,
   ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
     this.makePaymentRequest(paLists, programId, installment, amount).then(
       transactionResults => {
         this.storeAllTransactions(transactionResults, programId, installment);
+        if (installment > -1) {
+          this.actionService.saveAction(
+            userId,
+            programId,
+            AdditionalActionType.paymentFinished,
+          );
+        }
       },
     );
     return paPaymentDataList.length;

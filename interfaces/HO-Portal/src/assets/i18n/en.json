@@ -142,7 +142,7 @@
         "total-included": "Payout to: {{totalIncluded}} PA(s)",
         "total-amount": "Total amount: {{totalCost}}",
         "result": "Successfully sent payment request for <strong>{{ nrPa }}</strong> PA(s).<br><br>The payments can take some time to process. Inspect the PA-table below for the up-to-date status of the payment(s).<br><br>You can close this popup.",
-        "in-progress": "Payment done within last 30 minutes. It may still be in progress.",
+        "in-progress": "Payment in progress",
         "make-export": "Export payment data",
         "make-payment": {
           "error": {
