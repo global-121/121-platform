@@ -354,9 +354,7 @@ export class ProgramService {
     await this.checkIfProgramExists(programId);
 
     for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
-      let connection = await this.getConnectionByReferenceId(
-        referenceId.referenceId,
-      );
+      let connection = await this.getConnectionByReferenceId(referenceId);
       if (!connection) continue;
 
       connection[timestampField] = new Date();
@@ -399,9 +397,7 @@ export class ProgramService {
     await this.checkIfProgramExists(programId);
 
     for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
-      let connection = await this.getConnectionByReferenceId(
-        referenceId.referenceId,
-      );
+      let connection = await this.getConnectionByReferenceId(referenceId);
       if (!connection) continue;
 
       // Add to inclusion-array, if not yet present
@@ -436,9 +432,7 @@ export class ProgramService {
     await this.checkIfProgramExists(programId);
 
     for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
-      let connection = await this.getConnectionByReferenceId(
-        referenceId.referenceId,
-      );
+      let connection = await this.getConnectionByReferenceId(referenceId);
       if (!connection) continue;
 
       // Add to rejection-array, if not yet present
@@ -473,9 +467,7 @@ export class ProgramService {
     await this.checkIfProgramExists(programId);
 
     for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
-      let connection = await this.getConnectionByReferenceId(
-        referenceId.referenceId,
-      );
+      let connection = await this.getConnectionByReferenceId(referenceId);
       if (!connection) continue;
 
       // Add to rejection-array, if not yet present

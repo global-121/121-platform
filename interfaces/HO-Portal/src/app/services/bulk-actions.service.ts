@@ -82,35 +82,35 @@ export class BulkActionsService {
       case BulkActionId.markNoLongerEligible:
         return await this.programsService.markNoLongerEligible(
           programId,
-          selectedPeople,
+          selectedPeople.map((pa) => pa.referenceId),
         );
       case BulkActionId.selectForValidation:
         return await this.programsService.selectForValidation(
           programId,
-          selectedPeople,
+          selectedPeople.map((pa) => pa.referenceId),
         );
       case BulkActionId.includeRunProgramRole:
         return await this.programsService.include(
           programId,
-          selectedPeople,
+          selectedPeople.map((pa) => pa.referenceId),
           message,
         );
       case BulkActionId.includePersonalDataRole:
         return await this.programsService.include(
           programId,
-          selectedPeople,
+          selectedPeople.map((pa) => pa.referenceId),
           message,
         );
       case BulkActionId.endInclusion:
         return await this.programsService.end(
           programId,
-          selectedPeople,
+          selectedPeople.map((pa) => pa.referenceId),
           message,
         );
       case BulkActionId.reject:
         return await this.programsService.reject(
           programId,
-          selectedPeople,
+          selectedPeople.map((pa) => pa.referenceId),
           message,
         );
     }
