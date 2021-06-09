@@ -274,7 +274,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...this.columnDefaults,
         frozenLeft: this.hasWideScreen(),
-        phases: [ProgramPhase.registrationValidation],
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+          ProgramPhase.payment,
+        ],
         roles: [UserRole.View, UserRole.PersonalData, UserRole.RunProgram],
       },
       {
