@@ -58,6 +58,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public headerChecked = false;
   public headerSelectAllVisible = false;
 
+  public isInProgress = false;
+
   public action: BulkActionId = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
     {
@@ -940,12 +942,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async applyAction(confirmInput?: string) {
-    await this.bulkActionService.applyAction(
-      this.action,
-      this.programId,
-      this.selectedPeople,
-      confirmInput,
-    );
+    this.isInProgress = true;
+    await this.bulkActionService
+      .applyAction(
+        this.action,
+        this.programId,
+        this.selectedPeople,
+        confirmInput,
+      )
+      .then(() => (this.isInProgress = false));
 
     this.resetBulkAction();
   }
