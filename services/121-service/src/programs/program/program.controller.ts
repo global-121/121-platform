@@ -261,7 +261,7 @@ export class ProgramController {
   public async payout(
     @Body() data: PayoutDto,
     @User('id') userId: number,
-  ): Promise<any> {
+  ): Promise<number> {
     return await this.programService.payout(
       userId,
       data.programId,

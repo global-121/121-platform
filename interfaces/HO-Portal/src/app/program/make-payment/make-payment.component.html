@@ -32,6 +32,9 @@
   >
     {{ 'page.program.program-payout.start-payout'|translate }}
   </confirm-prompt>
+  <ion-label *ngIf="disabledBecauseOfRecency" position="stacked">
+    {{ 'page.program.program-payout.in-progress'|translate }}
+  </ion-label>
 
   <ion-spinner
     *ngIf="isInProgress"

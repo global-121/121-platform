@@ -19,7 +19,6 @@ import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-  PaymentTransactionResultDto,
 } from './dto/payment-transaction-result.dto';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
@@ -56,24 +55,15 @@ export class FspService {
     programId: number,
     installment: number,
     amount: number,
-  ): Promise<PaymentTransactionResultDto> {
+  ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    const transactionResults = await this.makePaymentRequest(
-      paLists,
-      programId,
-      installment,
-      amount,
+    this.makePaymentRequest(paLists, programId, installment, amount).then(
+      transactionResults => {
+        this.storeAllTransactions(transactionResults, programId, installment);
+      },
     );
-    this.storeAllTransactions(transactionResults, programId, installment);
-
-    // Calculate aggregates
-    const fspTransactionResults = [
-      ...transactionResults.intersolveTransactionResult.paList,
-      ...transactionResults.intersolveNoWhatsappTransactionResult.paList,
-      ...transactionResults.africasTalkingTransactionResult.paList,
-    ];
-    return this.calcAggregateStatus(fspTransactionResults);
+    return paPaymentDataList.length;
   }
 
   private splitPaListByFsp(paPaymentDataList: PaPaymentDataDto[]): any {
@@ -206,25 +196,6 @@ export class FspService {
     transaction.transactionStep = 1;
 
     this.transactionRepository.save(transaction);
-  }
-
-  private calcAggregateStatus(
-    fspTransactionResults: PaTransactionResultDto[],
-  ): PaymentTransactionResultDto {
-    const result = new PaymentTransactionResultDto();
-    result.nrSuccessfull = 0;
-    result.nrWaiting = 0;
-    result.nrFailed = 0;
-    for (let paTransactionResult of fspTransactionResults) {
-      if (paTransactionResult.status === StatusEnum.success) {
-        result.nrSuccessfull += 1;
-      } else if (paTransactionResult.status === StatusEnum.waiting) {
-        result.nrWaiting += 1;
-      } else if (paTransactionResult.status === StatusEnum.error) {
-        result.nrFailed += 1;
-      }
-    }
-    return result;
   }
 
   public async checkPaymentValidation(

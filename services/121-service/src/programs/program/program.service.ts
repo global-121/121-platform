@@ -29,7 +29,6 @@ import { FspService } from '../fsp/fsp.service';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
-import { PaymentTransactionResultDto } from '../fsp/dto/payment-transaction-result.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { CriteriumForExport } from './dto/criterium-for-export.dto';
@@ -535,7 +534,7 @@ export class ProgramService {
     installment: number,
     amount: number,
     referenceId?: string,
-  ): Promise<PaymentTransactionResultDto> {
+  ): Promise<number> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
@@ -567,13 +566,13 @@ export class ProgramService {
       amount,
     );
 
-    if (installment === -1) {
-      this.actionService.saveAction(
-        userId,
-        programId,
-        AdditionalActionType.testMpesaPayment,
-      );
-    }
+    this.actionService.saveAction(
+      userId,
+      programId,
+      installment === -1
+        ? AdditionalActionType.testMpesaPayment
+        : AdditionalActionType.payment,
+    );
 
     return paymentTransactionResult;
   }

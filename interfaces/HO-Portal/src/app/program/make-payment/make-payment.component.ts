@@ -2,6 +2,7 @@ import { formatCurrency } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionType } from 'src/app/models/action-type.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
@@ -29,6 +30,8 @@ export class MakePaymentComponent implements OnInit {
   public totalAmountMessage: string;
   public totalIncludedMessage: string;
 
+  public disabledBecauseOfRecency = false;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
@@ -49,6 +52,7 @@ export class MakePaymentComponent implements OnInit {
       this.programId,
     );
 
+    await this.getLatestActionTime();
     this.updateTotalAmountMessage();
     this.checkIsEnabled();
   }
@@ -56,7 +60,8 @@ export class MakePaymentComponent implements OnInit {
   private checkIsEnabled(): boolean {
     this.isEnabled =
       this.totalIncluded > 0 &&
-      this.lastInstallmentId < this.program.distributionDuration;
+      this.lastInstallmentId < this.program.distributionDuration &&
+      !this.disabledBecauseOfRecency;
     return this.isEnabled;
   }
 
@@ -91,31 +96,10 @@ export class MakePaymentComponent implements OnInit {
     this.resetProgress();
     let message = '';
 
-    if (response.nrSuccessfull > 0) {
-      message += this.translate.instant(
-        'page.program.program-payout.result-success',
-        {
-          nrSuccessfull: response.nrSuccessfull,
-        },
-      );
-      message += '<br><br>';
-    }
-    if (response.nrFailed > 0) {
-      message += this.translate.instant(
-        'page.program.program-payout.result-failure',
-        {
-          nrFailed: response.nrFailed,
-        },
-      );
-      message += '<br><br>';
-    }
-    if (response.nrWaiting > 0) {
-      message += this.translate.instant(
-        'page.program.program-payout.result-waiting',
-        {
-          nrWaiting: response.nrWaiting,
-        },
-      );
+    if (response) {
+      message += this.translate.instant('page.program.program-payout.result', {
+        nrPa: response,
+      });
     }
     this.actionResult(message, true);
   }
@@ -177,5 +161,25 @@ export class MakePaymentComponent implements OnInit {
       'page.program.program-payout.total-amount',
       { totalCost: totalCostFormatted },
     );
+  }
+
+  public async getLatestActionTime(): Promise<void> {
+    const latestAction = await this.programsService.retrieveLatestActions(
+      ActionType.payment,
+      Number(this.programId),
+    );
+    if (!latestAction) {
+      this.disabledBecauseOfRecency = false;
+      return;
+    }
+    const actionTimestamp = new Date(latestAction.timestamp);
+    const now = new Date();
+    const halfHourAgo = new Date(now.setTime(now.getTime() - 30 * 60 * 1000));
+
+    if (!environment.production) {
+      this.disabledBecauseOfRecency = false;
+      return;
+    }
+    this.disabledBecauseOfRecency = actionTimestamp > halfHourAgo;
   }
 }
