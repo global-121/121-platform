@@ -1,0 +1,154 @@
+{
+  "account": {
+    "change-password": "Alterar a senha",
+    "delete-account-header": "Digite sua senha se você tem certeza de que deseja apagar sua conta",
+    "delete-account-message": "Apagar sua conta é irreversível, todos os seus dados serão perdidos!",
+    "delete-digital-id": "Apagar conta",
+    "delete-fail": "Algo deu errado, sua conta não pôde ser totalmente apagada.",
+    "delete-success": "Sua conta foi apagada com sucesso. Agora você vai desconectar.",
+    "enter-password": "Sua senha",
+    "logout": "Desconectar"
+  },
+  "connection": {
+    "error-retry": "Algo deu errado, você quer tentar novamente?"
+  },
+  "notification": {
+    "close": "fechar",
+    "inclusion": "Estado de inclusão recebido"
+  },
+  "password-toggle": {
+    "hide": "Esconder a senha",
+    "show": "Mostrar a senha"
+  },
+  "personal": {
+    "consent-question": {
+      "agree": "Eu concordo",
+      "answer": "Eu li/ouvi como minhas informações pessoais serão armazenadas com segurança. Eu entendo que é necessário enviar minhas informações pessoais para receber ajuda em dinheiro. <br><br> Eu entendo quem vê minhas informações pessoais.  <br><br> Ao clicar em &quot;<b>Eu concordo</b>&quot;  eu decido participar do programa de ajuda. Ao clicar em &quot;<b>Eu discordo</b>&quot; eu decido não participar do programa de ajuda. ",
+      "disagree": "Eu discordo",
+      "more-info-personal-information": "Sobre informações pessoais",
+      "question": "Para se inscrever neste programa de ajuda, você precisa concordar com <strong>como nós asseguramos suas informações pessoais.</strong><br /><br /> Por favor, leia ou ouça como asseguramos suas informações pessoais."
+    },
+    "create-account": {
+      "conclusion": "Ótimo! Você criou uma conta.",
+      "confirm-password": "Confirme a senha:",
+      "create-password-explanation": "Crie uma senha de pelo menos {{minimalLength}} números:",
+      "create-username": "Digite seu nome completo:",
+      "introduction": "Para criar uma conta, você precisa completar as etapas seguintes.",
+      "password-too-short": "Por favor digite pelo menos {{minimalLength}} letras",
+      "unequal-passwords": "As senhas que você criou não são as mesmas. Por favor, tente novamente.",
+      "username-not-unique": "O nome que você digitiu não é único. Por favor, tente novamente",
+      "username-password": "Digite seu nome completo e criar uma senha. "
+    },
+    "enroll-in-program": {
+      "change": "Mudar minhas informações",
+      "introduction-information": "Para garantir que você obtenha a melhor ajuda possível e um processo justo, precisamos de algumas informações pessoais.",
+      "more-info-questions": "Sobre informações pessoais",
+      "please-confirm": "Abaixo está um resumo de suas informações. Por favor, verifique e depois clique em enviar.",
+      "submit-confirm": "Enviar minhas informações"
+    },
+    "inclusion-status": {
+      "inclusion-status-negative": "Infelizmente, temos que informá-lo que você não receberá não (mais) pagamento por este programa. Se você tiver dúvidas, entre em contato conosco.",
+      "inclusion-status-positive": "Você está incluído no programa.",
+      "notify": "Se você estiver incluído, nós o notificaremos."
+    },
+    "login-account": {
+      "incorrect-credentials": "A combinação de seu nome completo e senha que você deu não é reconhecida. Por favor, tente novamente.",
+      "introduction": "Para utilizar uma conta existente, você precisa fazer o login com seu nome completo e senha.",
+      "supply-password": "Sua senha:",
+      "supply-username": "Seu nome completo: "
+    },
+    "preprinted-qrcode": {
+      "error": "O código QR não pode ser usado, por favor, tente outro.",
+      "info-qr": "Mais textos a seguir",
+      "introduction": "O assistente/voluntário escaneará um código QR para vincular suas informações e dará para você. Por favor, mantenha seu código QR físico seguro.",
+      "more-info-qr": "Sobre códigos QR",
+      "no": "Não",
+      "question": "O assistente/voluntário tem um código QR pré-impresso para escanear?",
+      "result-ok": "O código QR está agora conectado à sua conta e informações pessoais. Por favor, mantenha seu código QR físico seguro.",
+      "start-scanner": "Iniciar o scanner",
+      "try-again": "Tente novamente",
+      "yes": "Sim"
+    },
+    "registration-summary": {
+      "documents": "Certifique-se de ter estes documentos prontos:",
+      "info-message": "Para ativar sua conta <br><br> Ao criar sua conta, você receberá uma impressão de sua identificação digital que se parece com isso.<br>  Você precisa levar isto e os seguintes documentos físicos para uma reunião com um assistente/voluntário para ativar sua conta.<br><ul><li> Sua carteira de identidade nacional</li></ul><br>Se eu não tiver um cartão? Você tenha 2 opções:<ol><li>Traga uma carta do chefe que confirme sua identidade</li><li>Traga seu número X (precisa do nome deste número como o número BSN) do Escritório Nacional de Registro. Você terá que pagar por um novo, o preço será X.</li></ol>",
+      "more-info-documents": "Sobre estes documentos ",
+      "no-validation-conclusion": "Obrigado. Agora, seu registro está completo. <br><br> Em breve, você receberá um SMS no número de telefone registrado que confirma seu registro. <br><br> Você será informado se sua solicitação tiver sido bem sucedida no prazo de 14 dias.  <br><br> Esta é a mensagem final, por enquanto.",
+      "qr-code": "Por favor, mostre este código QR ao trabalhador humanitário quando pedido.",
+      "validation-conclusion": "Obrigado. Agora seu registro está completo. Em breve, você receberá um SMS no número de telefone registrado que confirma seu cadastro. <br><br>Um trabalhador da ONG organizará uma reunião com você para validar suas informações, provavelmente visitando sua casa."
+    },
+    "select-fsp": {
+      "attributes": {
+        "error": "Algo deu errado, por favor, tente novamente.",
+        "introduction": "Para esta opção, precisamos também do seguinte:",
+        "success": "Obrigado. Suas informações são salvas."
+      },
+      "conclusion": "Obrigado. Você selecionou '{{name}}'.",
+      "introduction": "Por favor, selecione como você gostaria de receber sua ajuda, se você estiver incluído no programa."
+    },
+    "select-language": {
+      "result": "Obrigado. Você selecionou {{language}}."
+    },
+    "select-program": {
+      "introduction": "Você pode usar este app para se inscrever num programa de ajuda. Por favor, selecione abaixo.",
+      "more-info-programs": "Sobre o programa de ajuda",
+      "no-published-programs": "Atualmente não há programas disponíveis. Por favor, volte aqui mais tarde."
+    },
+    "set-notification-number": {
+      "conclusion-skipped": "Você não deixou um número de telefone para que possamos contatá-lo. Por favor, faça o login aqui regularmente, para saber as atualizações.",
+      "conclusion-submitted": "Obrigado. Agora você recebe notificações neste número de telefone: {{phone}}",
+      "input-label": "Seu número de telefone com código de país. Deveria ser assim: {{phoneNumberExample}} ",
+      "introduction1": "É opcional digitar seu número de telefone.",
+      "introduction2": "Usamos isto para enviar-lhe notificações de SMS se você estiver incluído e quando você pode receber ajuda.",
+      "introduction3": "Se você não quiser digitar seu número de telefone, você terá que fazer login neste app para saber de atualizações.",
+      "introduction4": "Ao final do programa, apagaremos seu número.",
+      "skip": "Pular",
+      "submit": "Enviar número de telefone",
+      "validation": {
+        "phone-number": "Não pudemos verificar esse número de telefone. Por favor, atualize-o e tente novamente."
+      }
+    },
+    "signup-signin": {
+      "create-id": "Criar conta",
+      "introduction": "Para se inscrever neste programa de ajuda, você precisa ter uma conta. Por favor, crie sua conta ou use sua conta existente.",
+      "login-id": "Usar a minha conta"
+    }
+  },
+  "q-and-a-set": {
+    "validation": {
+      "date": "O formato da data que você inseriu não é válido. Um exemplo de formato de data válido é 31-12-1970 que é dia-mês-ano, DD-MM-AAAA",
+      "email": "O e-mail precisa ter um formato válido. Por exemplo: 'full.name@example.com'. Por favor, ajuste e tente novamente.",
+      "generic-error": "Não podemos processar algumas de suas respostas. Por favor, verifique e atualize suas respostas.",
+      "number": "A resposta precisa ser um número válido. Por favor, ajuste e tente novamente.",
+      "phone-number": "Não pudemos verificar este número de telefone. Por favor, ajuste e tente novamente.",
+      "required": "Uma resposta é necessária para esta pergunta. Por favor, ajuste e tente novamente."
+    }
+  },
+  "qr-scanner": {
+    "close": "Fechar",
+    "error-generic": "Algo deu errado.",
+    "error-no-permissions": "Por favor, permita que a câmera seja usada ou verifique se já não está em uso e tente novamente.",
+    "error-not-compatible": "Seu celular não é capaz de escanear",
+    "switch-camera": "Alternar a câmera",
+    "title": "Escanear código QR",
+    "toggle-flash": "Alternar flash",
+    "try-again": "Tente novamente"
+  },
+  "shared": {
+    "cancel-button": "Cancelar",
+    "close-button": "Fechar",
+    "more-info": "Ler mais...",
+    "retry": "Tente novamente",
+    "submit-button": "Enviar"
+  },
+  "speak-text": {
+    "loading": "Carregando",
+    "pause": "Pausar",
+    "play": "Executar"
+  },
+  "tabs": {
+    "account": "Conta",
+    "community": "Comunidade",
+    "you": "Você"
+  }
+}

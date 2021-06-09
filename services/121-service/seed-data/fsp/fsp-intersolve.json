@@ -4,7 +4,8 @@
     "ar": "ارسل قسيمة السوبرماركت إلى رقمي على واتس آب",
     "ti": "ትሕስ እስ ዓ ተስት።",
     "tl": "Ipadala ang supermarket voucher sa aking WhatsApp",
-    "en": "Send supermarket voucher to my WhatsApp"
+    "en": "Send supermarket voucher to my WhatsApp",
+    "pt_BR": "Enviar vale de supermercado para meu WhatsApp"
   },
   "attributes": [
     {
@@ -13,7 +14,8 @@
         "ar": "إذا تم قبولك في البرنامج، سنقوم بإرسال قسيمة السوبر ماركت عبر واتس آب. <br><br> نرجو مشاركتنا رقمك على واتس آب. <br><br> يمكن أن يكون نفس رقم هاتفك الخاص بالرسائل النصية.",
         "ti": "ትሕስ እስ ዓ ተስት።",
         "tl": "Kung ikaw ay kasali, ipapadala namin ang iyong Supermarket voucher sa pamamagitan ng WhatsApp.   <br><br>   Paki bahagi ang iyong phone number sa WhatsApp.   <br><br>   Ito ay maaring pareho ng ginagamit mong phone number pang-SMS.",
-        "en": "If you are included, we send your Supermarket voucher via WhatsApp.   <br><br>   Please share the phone number you use for WhatsApp.   <br><br>   This can be the same number you use for SMS."
+        "en": "If you are included, we send your Supermarket voucher via WhatsApp.   <br><br>   Please share the phone number you use for WhatsApp.   <br><br>   This can be the same number you use for SMS.",
+        "pt_BR": "Se você estiver incluído, enviamos seu vale de supermercado via WhatsApp. <br><br> Por favor, digite o número de telefone que você usa para o WhatsApp. <br><br> Este pode ser o mesmo número que você usa para mensagens SMS."
       },
       "placeholder": {
         "ar": "00 00 00 00 0 00+",
