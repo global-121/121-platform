@@ -6,6 +6,7 @@ import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { InstallmentData } from 'src/app/models/installment.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ActionType } from '../../models/action-type.model';
 import { MakePaymentComponent } from './make-payment.component';
 
 describe('MakePaymentComponent', () => {
@@ -29,6 +30,17 @@ describe('MakePaymentComponent', () => {
   ];
   const mockLastInstallmentId = 2;
 
+  const mockLatestStartAction = {
+    id: 1,
+    actionType: ActionType.paymentStarted,
+    timestamp: new Date(),
+  };
+  const mockLatestFinishAction = {
+    id: 2,
+    actionType: ActionType.paymentFinished,
+    timestamp: new Date(),
+  };
+
   let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
 
   beforeEach(async(() => {
@@ -51,6 +63,10 @@ describe('MakePaymentComponent', () => {
     );
     mockProgramsApi.getLastInstallmentId.and.returnValue(
       new Promise((r) => r(mockLastInstallmentId)),
+    );
+    mockProgramsApi.retrieveLatestActions.and.returnValues(
+      new Promise((r) => r(mockLatestStartAction)),
+      new Promise((r) => r(mockLatestFinishAction)),
     );
 
     fixture = TestBed.createComponent(MakePaymentComponent);
