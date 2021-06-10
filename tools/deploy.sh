@@ -125,7 +125,7 @@ function deploy() {
 
     npm install --unsafe-perm --no-audit --no-fund
 
-    npm run build -- --prod --base-href="/$base_href/"
+    npm run build:prod -- --base-href="/$base_href/"
   }
 
   function deploy_interface() {
