@@ -52,7 +52,7 @@ export class MakePaymentComponent implements OnInit {
       this.programId,
     );
 
-    await this.checkPaymentInProgress();
+    this.paymentInProgress = await this.checkPaymentInProgress();
     this.updateTotalAmountMessage();
     this.checkIsEnabled();
   }
@@ -163,31 +163,29 @@ export class MakePaymentComponent implements OnInit {
     );
   }
 
-  public async checkPaymentInProgress(): Promise<void> {
+  public async checkPaymentInProgress(): Promise<boolean> {
     const latestPaymentStartedAction =
       await this.programsService.retrieveLatestActions(
         ActionType.paymentStarted,
         Number(this.programId),
       );
+    // If never started, then not in progress
+    if (!latestPaymentStartedAction) {
+      return false;
+    }
     const latestPaymentFinishedAction =
       await this.programsService.retrieveLatestActions(
         ActionType.paymentFinished,
         Number(this.programId),
       );
-    // If never started, then not in progress
-    if (!latestPaymentStartedAction) {
-      this.paymentInProgress = false;
-      return;
-    }
     // If started, but never finished, then in progress
     if (!latestPaymentFinishedAction) {
-      this.paymentInProgress = true;
-      return;
+      return true;
     }
     // If started and finished, then compare timestamps
     const startTimestamp = new Date(latestPaymentStartedAction.timestamp);
     const finishTimestamp = new Date(latestPaymentFinishedAction.timestamp);
-    this.paymentInProgress = finishTimestamp < startTimestamp;
+    return finishTimestamp < startTimestamp;
   }
 
   public refresh() {

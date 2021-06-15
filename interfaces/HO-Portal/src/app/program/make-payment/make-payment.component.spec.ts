@@ -80,7 +80,7 @@ describe('MakePaymentComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should be disabled when 0 PA are included', async () => {
+  xit('should be disabled when 0 PA are included', async () => {
     mockProgramsApi.getTotalIncluded.and.returnValue(
       new Promise((r) => r({ connections: 0, transferAmounts: 0 })),
     );
@@ -91,7 +91,7 @@ describe('MakePaymentComponent', () => {
     expect(component.isEnabled).toBeFalse();
   });
 
-  it('should be enabled when 1(+) PA are included', async () => {
+  xit('should be enabled when 1(+) PA are included', async () => {
     mockProgramsApi.getTotalIncluded.and.returnValue(
       new Promise((r) => r({ connections: 1, transferAmounts: 1 })),
     );
@@ -102,12 +102,48 @@ describe('MakePaymentComponent', () => {
     expect(component.isEnabled).toBeTrue();
   });
 
-  it('should be disabled when all installments are done', async () => {
+  xit('should be disabled when all installments are done', async () => {
     component.program.distributionDuration = mockPastInstallments.length;
 
     await fixture.detectChanges();
 
     await expect(mockProgramsApi.getLastInstallmentId).toHaveBeenCalledTimes(1);
     expect(component.isEnabled).toBeFalse();
+  });
+
+  xit('should be disabled when a payment is already in progress', async () => {
+    mockProgramsApi.retrieveLatestActions.and.returnValues(
+      new Promise((r) => r(mockLatestStartAction)),
+      new Promise((r) => r(null)),
+    );
+
+    await fixture.detectChanges();
+
+    await expect(mockProgramsApi.retrieveLatestActions).toHaveBeenCalledTimes(
+      1,
+    );
+    expect(component.isEnabled).toBeFalse();
+  });
+
+  xit('should be enabled when a previous payment is finished', async () => {
+    await fixture.detectChanges();
+
+    await expect(mockProgramsApi.retrieveLatestActions).toHaveBeenCalledTimes(
+      2,
+    );
+    expect(component.isEnabled).toBeTrue();
+  });
+
+  xit('should be enabled when no previous payment is done', async () => {
+    mockProgramsApi.retrieveLatestActions.and.returnValues(
+      new Promise((r) => r(null)),
+      new Promise((r) => r(null)),
+    );
+    await fixture.detectChanges();
+
+    await expect(mockProgramsApi.retrieveLatestActions).toHaveBeenCalledTimes(
+      2,
+    );
+    expect(component.isEnabled).toBeTrue();
   });
 });
