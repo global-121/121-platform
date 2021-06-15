@@ -374,7 +374,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(environment.url_121_service_api, `/actions/retrieve-latest`, {
         actionType,
-        programId,
+        programId: Number(programId),
       })
       .toPromise();
   }

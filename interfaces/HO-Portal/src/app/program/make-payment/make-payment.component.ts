@@ -167,7 +167,7 @@ export class MakePaymentComponent implements OnInit {
     const latestPaymentStartedAction =
       await this.programsService.retrieveLatestActions(
         ActionType.paymentStarted,
-        Number(this.programId),
+        this.programId,
       );
     // If never started, then not in progress
     if (!latestPaymentStartedAction) {
@@ -176,7 +176,7 @@ export class MakePaymentComponent implements OnInit {
     const latestPaymentFinishedAction =
       await this.programsService.retrieveLatestActions(
         ActionType.paymentFinished,
-        Number(this.programId),
+        this.programId,
       );
     // If started, but never finished, then in progress
     if (!latestPaymentFinishedAction) {
