@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Arguments } from 'yargs';
 import { ScriptsController } from './scripts.controller';
-
 import { SeedInit } from './seed-init';
 import { SeedDev } from './seed-dev';
 import { SeedProd } from './seed-prod';
@@ -36,5 +34,5 @@ import { SeedDemoProgram } from './seed-program-demo';
 export class ScriptsModule {}
 
 export interface InterfaceScript {
-  run(argv: Arguments): Promise<void>;
+  run(): Promise<void>;
 }

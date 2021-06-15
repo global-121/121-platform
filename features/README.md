@@ -34,6 +34,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Include people affected (`Personal Data` role)](HO-Portal/Include_people_affected_Personal_Data_role.feature)
 - [Reject or End Inclusion of people affected](HO-Portal/Reject_or_End_inclusion_people_affected.feature)
 - [Export inclusion list](HO-Portal/Export_Inclusion_List.feature)
+- [Export duplicate phone-numbers list](HO-Portal/Export_duplicate_phone-numbers_List.feature)
 - [Make a new payment](HO-Portal/Make_new_payment.feature)  
   Single/multiple registrations one same phone number  
    See: <https://github.com/global-121/121-platform/wiki/Test-scenarios>

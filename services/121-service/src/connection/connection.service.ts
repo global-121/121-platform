@@ -335,7 +335,7 @@ export class ConnectionService {
 
     if (!connection.appliedDate) {
       connection.appliedDate = new Date();
-      connection.programsApplied.push(+programId);
+      connection.programsApplied.push(programId);
       await this.connectionRepository.save(connection);
       this.validationDataService.calculateInclusionScore(
         referenceId,
@@ -507,11 +507,10 @@ export class ConnectionService {
     if (typeof connection[attribute] !== 'undefined') {
       connection[attribute] = value;
     } else if (
-      !connection.customData ||
+      connection.customData &&
       typeof connection.customData[attribute] !== 'undefined'
     ) {
-      connection.customData = connection.customData;
-      connection.customData[attribute] = this.cleanData(
+      connection.customData[attribute] = await this.cleanData(
         attribute,
         String(value),
       );

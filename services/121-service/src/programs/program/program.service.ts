@@ -6,7 +6,14 @@ import { ConnectionEntity } from '../../connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, DeleteResult } from 'typeorm';
+import {
+  Repository,
+  getRepository,
+  DeleteResult,
+  Not,
+  IsNull,
+  Equal,
+} from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
 import { PaStatus, PaStatusTimestampField } from '../../models/pa-status.model';
@@ -37,6 +44,7 @@ import { LookupService } from '../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
 import { Attributes } from '../../connection/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/payout.dto';
+import { without, compact, sortBy } from 'lodash';
 
 @Injectable()
 export class ProgramService {
@@ -335,9 +343,9 @@ export class ProgramService {
 
     let inclusionStatus: InclusionStatus;
 
-    if (connection.programsIncluded.includes(+programId)) {
+    if (connection.programsIncluded.includes(programId)) {
       inclusionStatus = { status: PaStatus.included };
-    } else if (connection.programsRejected.includes(+programId)) {
+    } else if (connection.programsRejected.includes(programId)) {
       inclusionStatus = { status: PaStatus.rejected };
     } else {
       inclusionStatus = { status: 'unavailable' };
@@ -502,7 +510,7 @@ export class ProgramService {
     });
     const includedConnections = [];
     for (let connection of connections) {
-      if (connection.programsIncluded.includes(+programId)) {
+      if (connection.programsIncluded.includes(programId)) {
         includedConnections.push(connection);
       }
     }
@@ -620,11 +628,11 @@ export class ProgramService {
     programId: number,
   ): PaStatus {
     let paStatus: PaStatus;
-    if (connection.programsIncluded.includes(+programId)) {
+    if (connection.programsIncluded.includes(programId)) {
       paStatus = PaStatus.included;
     } else if (connection.inclusionEndDate) {
       paStatus = PaStatus.inclusionEnded;
-    } else if (connection.programsRejected.includes(+programId)) {
+    } else if (connection.programsRejected.includes(programId)) {
       paStatus = PaStatus.rejected;
     } else if (connection.appliedDate && connection.noLongerEligibleDate) {
       paStatus = PaStatus.registeredWhileNoLongerEligible;
@@ -675,12 +683,12 @@ export class ProgramService {
 
   public async getConnections(
     programId: number,
-    privacy: boolean,
+    includePersonalData: boolean,
   ): Promise<any[]> {
     const selectedConnections = await this.getAllConnections(programId);
 
     const financialServiceProviders = (
-      await this.findOne(+programId)
+      await this.findOne(programId)
     ).financialServiceProviders.map(fsp => fsp.fsp);
 
     const connectionsResponse = [];
@@ -704,9 +712,9 @@ export class ProgramService {
       connectionResponse['fsp'] = connection.fsp?.fsp;
       connectionResponse['namePartnerOrganization'] =
         connection.namePartnerOrganization;
-      connectionResponse['status'] = this.getPaStatus(connection, +programId);
+      connectionResponse['status'] = this.getPaStatus(connection, programId);
 
-      if (privacy) {
+      if (includePersonalData) {
         connectionResponse['name'] = this.getName(connection.customData);
         connectionResponse['phoneNumber'] =
           connection.phoneNumber ||
@@ -723,7 +731,7 @@ export class ProgramService {
       if (financialServiceProviders.includes(fspName.africasTalking)) {
         connectionResponse['phonenumberTestResult'] = await this.getMpesaStatus(
           connection.id,
-          +programId,
+          programId,
         );
       }
 
@@ -759,7 +767,9 @@ export class ProgramService {
     }
   }
 
-  private async getAllConnections(programId): Promise<ConnectionEntity[]> {
+  private async getAllConnections(
+    programId: number,
+  ): Promise<ConnectionEntity[]> {
     const connections = await this.connectionRepository.find({
       relations: ['fsp'],
       order: { inclusionScore: 'DESC' },
@@ -767,7 +777,7 @@ export class ProgramService {
     const enrolledConnections = [];
     for (let connection of connections) {
       if (
-        connection.programsApplied.includes(+programId) || // Get connections applied to your program ..
+        connection.programsApplied.includes(programId) || // Get connections applied to your program ..
         connection.programsApplied.length === 0 // .. and connections applied to no program (so excluding connections applied to other program)
       ) {
         enrolledConnections.push(connection);
@@ -777,7 +787,7 @@ export class ProgramService {
   }
 
   public async getMonitoringData(programId: number): Promise<any[]> {
-    const connections = await this.getAllConnections(+programId);
+    const connections = await this.getAllConnections(programId);
 
     return connections.map(connection => {
       const appliedDate = new Date(connection.appliedDate).getTime();
@@ -879,7 +889,7 @@ export class ProgramService {
     }
   }
 
-  public async getPaymentDetails(
+  private async getPaymentDetails(
     programId: number,
     installmentId: number,
   ): Promise<FileDto> {
@@ -922,7 +932,7 @@ export class ProgramService {
     return outputPaymentDetails;
   }
 
-  public async getUnusedVouchers(): Promise<FileDto> {
+  private async getUnusedVouchers(): Promise<FileDto> {
     const unusedVouchers = await this.fspService.getUnusedVouchers();
     unusedVouchers.forEach(v => {
       v.name = this.getName(v.customData);
@@ -930,7 +940,7 @@ export class ProgramService {
     });
 
     const response = {
-      fileName: `unused-vouchers.csv`,
+      fileName: this.getExportFileName(ExportType.unusedVouchers),
       data: this.jsonToCsv(unusedVouchers),
     };
 
@@ -960,6 +970,9 @@ export class ProgramService {
       case ExportType.unusedVouchers: {
         return this.getUnusedVouchers();
       }
+      case ExportType.duplicatePhoneNumbers: {
+        return this.getDuplicatePhoneNumbers(programId);
+      }
     }
   }
 
@@ -968,7 +981,7 @@ export class ProgramService {
     connection: ConnectionEntity,
     programId: number,
   ): object {
-    const dateFields = [
+    const genericFields = [
       'created',
       'appliedDate',
       'selectedForValidationDate',
@@ -976,8 +989,9 @@ export class ProgramService {
       'inclusionDate',
       'inclusionEndDate',
       'rejectionDate',
+      'namePartnerOrganization',
     ];
-    dateFields.forEach(field => {
+    genericFields.forEach(field => {
       row[field] = connection[field];
     });
 
@@ -1039,7 +1053,7 @@ export class ProgramService {
     });
     const filteredColumnDetails = this.filterUnusedColumn(connectionDetails);
     const response = {
-      fileName: `people-affected-list.csv`,
+      fileName: this.getExportFileName(ExportType.allPeopleAffected),
       data: this.jsonToCsv(filteredColumnDetails),
     };
 
@@ -1074,7 +1088,7 @@ export class ProgramService {
     });
     const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
     const response = {
-      fileName: `inclusion-list.csv`,
+      fileName: this.getExportFileName('inclusion-list'),
       data: this.jsonToCsv(filteredColumnDetails),
     };
 
@@ -1109,14 +1123,82 @@ export class ProgramService {
 
     const filteredColumnDetails = this.filterUnusedColumn(columnDetails);
     const response = {
-      fileName: `selected-for-validation-list.csv`,
+      fileName: this.getExportFileName(ExportType.selectedForValidation),
       data: this.jsonToCsv(filteredColumnDetails),
     };
 
     return response;
   }
 
-  public filterUnusedColumn(columnDetails): object[] {
+  private async getDuplicatePhoneNumbers(programId: number): Promise<FileDto> {
+    const allConnections = await this.connectionRepository.find({
+      relations: ['fsp'],
+      where: {
+        programsApplied: Equal([programId]), // This is NOT a robust filter for this program-id's PA. :(
+        customData: Not(IsNull()),
+      },
+    });
+
+    const duplicates = allConnections.filter(connection => {
+      const others = without(allConnections, connection);
+      const currentPaNumbers = compact([
+        connection.customData[CustomDataAttributes.phoneNumber],
+        connection.customData[CustomDataAttributes.whatsappPhoneNumber],
+      ]);
+
+      const hasDuplicateProgramNr = this.hasDuplicateCustomDataValues(
+        others,
+        CustomDataAttributes.phoneNumber,
+        currentPaNumbers,
+      );
+
+      if (hasDuplicateProgramNr) {
+        // No need to look for other matches
+        return true;
+      }
+
+      const hasDuplicateWhatsAppNr = this.hasDuplicateCustomDataValues(
+        others,
+        CustomDataAttributes.whatsappPhoneNumber,
+        currentPaNumbers,
+      );
+
+      return hasDuplicateWhatsAppNr;
+    });
+
+    const result = sortBy(duplicates, 'id').map(connection => {
+      return {
+        id: connection.id,
+        name: this.getName(connection.customData),
+        status: this.getPaStatus(connection, programId),
+        fsp: connection.fsp ? connection.fsp.fsp : null,
+        namePartnerOrganization: connection.namePartnerOrganization,
+        phoneNumber: connection.customData[CustomDataAttributes.phoneNumber],
+        whatsappPhoneNumber:
+          connection.customData[CustomDataAttributes.whatsappPhoneNumber],
+      };
+    });
+
+    return {
+      fileName: this.getExportFileName(ExportType.duplicatePhoneNumbers),
+      data: this.jsonToCsv(result),
+    };
+  }
+
+  private hasDuplicateCustomDataValues(
+    others: ConnectionEntity[],
+    type: CustomDataAttributes,
+    values: any[],
+  ): boolean {
+    return others.some(otherConnection => {
+      if (!otherConnection.customData[type]) {
+        return false;
+      }
+      return values.includes(otherConnection.customData[type]);
+    });
+  }
+
+  private filterUnusedColumn(columnDetails): object[] {
     const emptyColumns = [];
     for (let row of columnDetails) {
       for (let key in row) {
@@ -1137,7 +1219,7 @@ export class ProgramService {
     return filteredColumns;
   }
 
-  public async getPaymentDetailsInstallment(
+  private async getPaymentDetailsInstallment(
     programId: number,
     installmentId: number,
   ): Promise<any> {
@@ -1174,20 +1256,27 @@ export class ProgramService {
     return transactions;
   }
 
-  public jsonToCsv(items: any): any {
+  private jsonToCsv(items: any[]): any[] | string {
     if (items.length === 0) {
       return '';
     }
-    const replacer = (key, value): any => (value === null ? '' : value); // specify how you want to handle null values here
-    const header = Object.keys(items[0]);
-    let csv = items.map(row =>
-      header
-        .map(fieldName => JSON.stringify(row[fieldName], replacer))
+    const cleanValues = (_key, value): any => (value === null ? '' : value);
+
+    const columns = Object.keys(items[0]);
+
+    let rows = items.map(row =>
+      columns
+        .map(fieldName => JSON.stringify(row[fieldName], cleanValues))
         .join(','),
     );
-    csv.unshift(header.join(','));
-    csv = csv.join('\r\n');
-    return csv;
+
+    rows.unshift(columns.join(',')); // Add header row
+
+    return rows.join('\r\n');
+  }
+
+  private getExportFileName(base: string): string {
+    return `${base}_${new Date().toISOString().substr(0, 10)}.csv`;
   }
 
   private filteredLength(connections, filterStatus: PaStatus): number {
@@ -1197,7 +1286,7 @@ export class ProgramService {
     return filteredConnections.length;
   }
 
-  public async getPaMetrics(programId): Promise<PaMetrics> {
+  public async getPaMetrics(programId: number): Promise<PaMetrics> {
     const metrics = new PaMetrics();
     const connections = await this.getConnections(programId, false);
 

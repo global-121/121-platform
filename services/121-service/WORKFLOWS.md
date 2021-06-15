@@ -20,9 +20,9 @@ In this file we document "how to do X", manually. As not everything is possible 
    1. Find the `connection` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
    2. Use the found connection `referenceId` to update the phone-numbers.
       - Use: [`/connection/phone/overwrite`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_phone_overwrite)  
-        To store the new SMS phone-number. (Make sure to ONLY include the numbers, no whitespace or `+`)
+        To store the new SMS phone-number. (A phone number check is included, with automatic sanitization as far as possible.)
       - Use: [`/connection/attribute`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_attribute)  
-        To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (Make sure to ONLY include the numbers, no whitespace or `+`)
+        To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (A phone number check is included, with automatic sanitization as far as possible.)
 
 ---
 
@@ -33,7 +33,7 @@ In this file we document "how to do X", manually. As not everything is possible 
    - Name: can be any of the first/second/third/last name attributes
    - and/or Phone number(s): can be SMS and/or WhatsApp phone number
    - New FSP: (`Intersolve-whatsapp` or `Intersolve-no-whatsapp`)
-   - New WhatsApp phonenumber (if switching to `Intersolve-whatsapp`)
+   - New WhatsApp phone number (if switching to `Intersolve-whatsapp`)
 3. **121-dev-team**:
    1. Find the `connection` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
    2. Update FSP: Use the found connection `referenceId` to update the Financial Service Provider.
@@ -85,24 +85,24 @@ In this file we document "how to do X", manually. As not everything is possible 
 2. Select one of the "`Instance: *`", "`FSP: *`" or "`Program: *`" resources.
 3. Select the language to get the latest translations for.
 4. Click "**Download for use**" from the pop-up.
-5. Open the file in an (code-)editor, to:
-   - Replace all instances of `"en"` with the selected language's code, i.e: `"saq_KE"` (for Samburu, Kenya)
-   - Save the file (temporarily), for example as "`instance-kenya.saq_KE.json`"
-6. Merge this file with the existing file in the repository
-   - This can be done in-code via JavaScript.  
-     See: <https://stackoverflow.com/a/21450110>
-   - With a command-line tool.
-     - `jq` <https://stedolan.github.io/jq/>
-     - `json` <http://trentm.com/json/#FEATURE-Merging>
-   - By-hand.
-     - Add each `"saq_KE"`-property next-to its `"en"`-sibling. (Take note of the last comma!)
-     - Make sure the output is valid JSON and properly formatted with [Prettier](https://prettier.io/).
-7. Commit this version of the file.
+5. Update the translations with:
+
+   ```sh
+   node ./seed-data/process-translation-files.js convert-to-locale --locale <translated-locale> --in <downloaded-file> --out <target-file> --merge
+   ```
+
+6. Review the (automatic) changes
+7. Commit the changes to the target-file.
 
 ### Update source-text for translations in Transifex
 
 1. Take the preferred source-file (`instance`, `fsp` or `program`)
-2. Remove **_ALL OTHER_** language-texts except "`en`"
+2. Remove **_ALL OTHER_** language-texts except "`en`" with:
+
+   ```sh
+   node ./seed-data/process-translation-files.js prepare-to-update-transifex --in <source-file> --out <destination-file>
+   ```
+
 3. Use this edited version of the file to upload in Transifex
 
    1. Go to "Resources" page: <https://www.transifex.com/redcrossnl/121-platform/content/>

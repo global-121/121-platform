@@ -272,11 +272,16 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       {
         prop: 'namePartnerOrganization',
         name: this.translate.instant(
-          'page.program.program-people-affected.column.name-partner-organizatoin',
+          'page.program.program-people-affected.column.namePartnerOrganization',
         ),
         ...this.columnDefaults,
         frozenLeft: this.hasWideScreen(),
-        phases: [ProgramPhase.registrationValidation],
+        phases: [
+          ProgramPhase.registrationValidation,
+          ProgramPhase.inclusion,
+          ProgramPhase.reviewInclusion,
+          ProgramPhase.payment,
+        ],
         roles: [UserRole.View, UserRole.PersonalData, UserRole.RunProgram],
       },
       {

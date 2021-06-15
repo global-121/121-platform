@@ -4,9 +4,10 @@ import { IsNumber } from 'class-validator';
 
 export enum ExportType {
   allPeopleAffected = 'all-people-affected',
+  duplicatePhoneNumbers = 'duplicate-phone-numbers',
   included = 'included',
-  selectedForValidation = 'selected-for-validation',
   payment = 'payment',
+  selectedForValidation = 'selected-for-validation',
   unusedVouchers = 'unused-vouchers',
 }
 
@@ -17,7 +18,7 @@ export class ExportDetails {
 
   @ApiModelProperty({
     enum: ExportType,
-    example: ExportType.included,
+    example: Object.values(ExportType).join(' | '),
   })
   public readonly type: ExportType;
 

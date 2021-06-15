@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { ScriptsModule, InterfaceScript } from './scripts/scripts.module';
-import yargs = require('yargs');
 import { EventEmitter } from 'events';
 
 async function runScript(scriptName): Promise<any> {
@@ -17,7 +16,7 @@ async function runScript(scriptName): Promise<any> {
   if (!script) {
     throw new TypeError(`Cannot create instance of ${Module.scriptName}`);
   }
-  await script.run(yargs.argv);
+  await script.run();
 }
 
 function confirmRun(scriptName): any {
@@ -59,10 +58,9 @@ function confirmRun(scriptName): any {
   });
 }
 
-async function main(): Promise<void> {
+function main(): void {
   try {
-    const names = yargs.argv._;
-    const name = names[0];
+    const name = process.argv[2];
 
     if (name === 'seed-prod') {
       runScript(name);

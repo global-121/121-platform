@@ -22,8 +22,6 @@ export class ExportListComponent implements OnChanges {
   @Input()
   public paymentInstallment: number;
   @Input()
-  public paymentExportAvailable: boolean;
-
   public disabled: boolean;
   public isInProgress = false;
 
@@ -53,9 +51,8 @@ export class ExportListComponent implements OnChanges {
 
   async ngOnChanges(changes: SimpleChanges) {
     if (
-      (changes.programId &&
-        ['string', 'number'].includes(typeof changes.programId.currentValue)) ||
-      changes.paymentExportAvailable
+      changes.programId &&
+      ['string', 'number'].includes(typeof changes.programId.currentValue)
     ) {
       this.disabled = !this.btnEnabled();
     }
@@ -76,7 +73,7 @@ export class ExportListComponent implements OnChanges {
   private btnEnabled() {
     return (
       this.authService.hasUserRole([UserRole.PersonalData]) &&
-      (this.exportType !== ExportType.payment || this.paymentExportAvailable)
+      this.exportType !== ExportType.payment
     );
   }
 

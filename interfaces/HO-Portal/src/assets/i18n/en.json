@@ -179,7 +179,7 @@
           "payment": "Payment #",
           "vnumber": "V-number",
           "whatsappPhoneNumber": "WhatsApp nr.",
-          "name-partner-organizatoin": "Partner organization",
+          "namePartnerOrganization": "Partner organization",
           "paymentAmountMultiplier": "Transfer value(s)",
           "fsp": "Financial Service Provider"
         },
@@ -225,6 +225,9 @@
           "properties": {
             "paymentAmountMultiplier": {
               "label": "× Transfer value"
+            },
+            "namePartnerOrganization": {
+              "label": "Name of Partner organisation"
             }
           },
           "note": {
@@ -286,6 +289,10 @@
         "unused-vouchers": {
           "btn-text": "Export list of unused vouchers",
           "confirm-message": "This will download a CSV-file with all unused voucher(s).<br /><br />Note that this action can take a while to complete. Do not leave this page in the meantime."
+        },
+        "duplicate-phone-numbers": {
+          "btn-text": "Export list of duplicate phone-numbers",
+          "confirm-message": "This will download a CSV-file with all PA that share any phone-number."
         }
       },
       "manage-aidworkers": {
