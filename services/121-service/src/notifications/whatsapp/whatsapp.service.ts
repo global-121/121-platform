@@ -1,7 +1,13 @@
 import { ConnectionEntity } from './../../connection/connection.entity';
 import { IntersolvePayoutStatus } from './../../programs/fsp/api/enum/intersolve-payout-status.enum';
 import { EXTERNAL_API } from '../../config';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, In } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
@@ -11,6 +17,8 @@ import { ImageCodeService } from '../imagecode/image-code.service';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 import { TransactionEntity } from '../../programs/program/transactions.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
+import { FspService } from '../../programs/fsp/fsp.service';
+import { fspName } from '../../programs/fsp/financial-service-provider.entity';
 
 @Injectable()
 export class WhatsappService {
@@ -30,7 +38,11 @@ export class WhatsappService {
 
   private readonly programId = 1;
 
-  public constructor(private readonly imageCodeService: ImageCodeService) {}
+  public constructor(
+    private readonly imageCodeService: ImageCodeService,
+    @Inject(forwardRef(() => FspService))
+    private readonly fspService: FspService,
+  ) {}
 
   public async notifyByWhatsapp(
     recipientPhoneNr: string,
@@ -56,31 +68,24 @@ export class WhatsappService {
     message: string,
     recipientPhoneNr: string,
     mediaUrl: null | string,
-  ): Promise<void> {
+  ): Promise<any> {
+    const payload = {
+      body: message,
+      messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
+      from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
+      statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
+      to: 'whatsapp:' + recipientPhoneNr,
+    };
     if (mediaUrl) {
-      twilioClient.messages
-        .create({
-          body: message,
-          messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-          from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
-          statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
-          to: 'whatsapp:' + recipientPhoneNr,
-          mediaUrl: mediaUrl,
-        })
-        .then(message => {
-          this.storeSendWhatsapp(message);
-        })
-        .catch(err => console.log('Error twillio', err));
-    } else {
-      const result = await twilioClient.messages.create({
-        body: message,
-        messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-        from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
-        statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
-        to: 'whatsapp:' + recipientPhoneNr,
-      });
-      await this.storeSendWhatsapp(result);
+      payload['mediaUrl'] = mediaUrl;
     }
+    return twilioClient.messages
+      .create(payload)
+      .then(message => {
+        this.storeSendWhatsapp(message);
+        return message.sid;
+      })
+      .catch(err => console.log('Error twillio', err));
   }
 
   public async getWhatsappText(
@@ -113,13 +118,20 @@ export class WhatsappService {
   }
 
   public async statusCallback(callbackData): Promise<void> {
+    // console.log('callbackData: ', callbackData);
+
+    await this.fspService.processPaymentStatus(
+      fspName.intersolve,
+      callbackData,
+    );
+
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
       { status: callbackData.MessageStatus },
     );
   }
 
-  private async getConnectionsWithOpenVouchers(
+  private async getConnectionsWithPhoneNumber(
     phoneNumber,
   ): Promise<ConnectionEntity[]> {
     const connectionsWithPhoneNumber = (
@@ -134,9 +146,14 @@ export class WhatsappService {
         phoneNumber.substr(-5),
       );
     }
+    return connectionsWithPhoneNumber;
+  }
 
+  private async getConnectionsWithOpenVouchers(
+    connections: ConnectionEntity[],
+  ): Promise<ConnectionEntity[]> {
     // Trim connections down to only those with outstanding vouchers
-    const connectionIds = connectionsWithPhoneNumber.map(c => c.id);
+    const connectionIds = connections.map(c => c.id);
     const connectionsWithVouchers = await this.connectionRepository.find({
       where: { id: In(connectionIds) },
       relations: ['images', 'images.barcode'],
@@ -151,10 +168,17 @@ export class WhatsappService {
       .filter(connection => connection.images.length > 0);
   }
 
+  private cleanCallbackWhatsappNr(callbackData): string {
+    return callbackData.From.replace('whatsapp:+', '');
+  }
+
   public async handleIncoming(callbackData): Promise<void> {
-    const fromNumber = callbackData.From.replace('whatsapp:+', '');
-    const connectionsWithOpenVouchers = await this.getConnectionsWithOpenVouchers(
+    const fromNumber = this.cleanCallbackWhatsappNr(callbackData);
+    const connectionsWithPhoneNumber = await this.getConnectionsWithPhoneNumber(
       fromNumber,
+    );
+    const connectionsWithOpenVouchers = await this.getConnectionsWithOpenVouchers(
+      connectionsWithPhoneNumber,
     );
 
     // If no connections with outstanding barcodes: send auto-reply
@@ -201,6 +225,8 @@ export class WhatsappService {
         await this.insertTransactionIntersolve(
           intersolveBarcode,
           connection.id,
+          2,
+          StatusEnum.success,
         );
 
         // Add small delay/sleep to ensure the order in which messages are received
@@ -220,18 +246,27 @@ export class WhatsappService {
   public async insertTransactionIntersolve(
     intersolveBarcode: IntersolveBarcodeEntity,
     connectionId: number,
+    transactionStep: number,
+    status: StatusEnum,
+    messageSid?: string,
   ): Promise<void> {
     const transaction = new TransactionEntity();
-    transaction.status = StatusEnum.success;
+    transaction.status = status;
     transaction.installment = intersolveBarcode.installment;
     transaction.amount = intersolveBarcode.amount;
     transaction.created = new Date();
     transaction.customData = JSON.parse(
       JSON.stringify({
-        IntersolvePayoutStatus: IntersolvePayoutStatus.VoucherSent,
+        IntersolvePayoutStatus:
+          transactionStep === 1
+            ? IntersolvePayoutStatus.InitialMessage
+            : IntersolvePayoutStatus.VoucherSent,
       }),
     );
-    transaction.transactionStep = 2;
+    if (messageSid) {
+      transaction.customData['messageSid'] = messageSid;
+    }
+    transaction.transactionStep = transactionStep;
     const connection = await this.connectionRepository.findOne({
       where: { id: connectionId },
       relations: ['fsp'],

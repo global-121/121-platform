@@ -217,6 +217,7 @@
         "transaction": {
           "failed": "Failed",
           "waiting": "Waiting",
+          "waiting-message": "Still waiting for status update on this transaction.",
           "show-status": "Show status"
         },
         "edit-person-affected-popup": {

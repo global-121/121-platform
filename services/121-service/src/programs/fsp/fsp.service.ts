@@ -64,7 +64,7 @@ export class FspService {
 
     this.makePaymentRequest(paLists, programId, installment, amount).then(
       transactionResults => {
-        this.storeAllTransactions(transactionResults, programId, installment);
+        // this.storeAllTransactions(transactionResults, programId, installment);
         if (installment > -1) {
           this.actionService.saveAction(
             userId,
@@ -220,11 +220,12 @@ export class FspService {
     }
   }
 
-  public async processPaymentNotification(
+  public async processPaymentStatus(
     fsp: fspName,
-    africasTalkingNotificationData?: AfricasTalkingNotificationDto,
+    statusCallbackData,
   ): Promise<void> {
     if (fsp === fspName.africasTalking) {
+      const africasTalkingNotificationData = statusCallbackData as AfricasTalkingNotificationDto;
       const enrichedNotification = await this.africasTalkingService.processNotification(
         africasTalkingNotificationData,
       );
@@ -235,6 +236,30 @@ export class FspService {
         enrichedNotification.installment,
         fspName.africasTalking,
       );
+    }
+    if (fsp === fspName.intersolve) {
+      const transaction = (
+        await this.transactionRepository.find({ relations: ['connection'] })
+      ).filter(
+        t => t.customData['messageSid'] === statusCallbackData.MessageSid,
+      )[0];
+      if (!transaction) {
+        console.log(
+          'statusCallbackData.MessageSid: ',
+          statusCallbackData.MessageSid,
+        );
+      }
+      const status = await this.intersolveService.processStatus(
+        statusCallbackData,
+        transaction,
+      );
+      console.log('status: ', status);
+      if (status) {
+        await this.transactionRepository.update(
+          { id: transaction.id },
+          { status: status },
+        );
+      }
     }
   }
 

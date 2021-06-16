@@ -2,7 +2,7 @@ import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
 import { WhatsappModule } from './../../notifications/whatsapp/whatsapp.module';
 import { AfricasTalkingService } from './africas-talking.service';
-import { Module, HttpModule } from '@nestjs/common';
+import { Module, HttpModule, forwardRef } from '@nestjs/common';
 import { FspService } from './fsp.service';
 import { FspController } from './fsp.controller';
 import { AfricasTalkingApiService } from './api/africas-talking.api.service';
@@ -31,7 +31,7 @@ import { UserEntity } from '../../user/user.entity';
   imports: [
     HttpModule,
     UserModule,
-    WhatsappModule,
+    forwardRef(() => WhatsappModule),
     TypeOrmModule.forFeature([
       ProgramEntity,
       ConnectionEntity,

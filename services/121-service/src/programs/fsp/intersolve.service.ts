@@ -1,7 +1,13 @@
 import { IntersolvePayoutStatus } from './api/enum/intersolve-payout-status.enum';
 import { IntersolveIssueCardResponse } from './api/dto/intersolve-issue-card-response.dto';
 import { WhatsappService } from './../../notifications/whatsapp/whatsapp.service';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,6 +29,8 @@ import {
   PaPaymentDataDto,
 } from './dto/pa-payment-data.dto';
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
+import { TransactionEntity } from '../program/transactions.entity';
+import { IntersolveRequestEntity } from './intersolve-request.entity';
 
 @Injectable()
 export class IntersolveService {
@@ -36,11 +44,16 @@ export class IntersolveService {
   >;
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
+  @InjectRepository(IntersolveRequestEntity)
+  private readonly intersolveRequestRepository: Repository<
+    IntersolveRequestEntity
+  >;
 
   private readonly programId = 1;
 
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
+    @Inject(forwardRef(() => WhatsappService))
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
   ) {}
@@ -79,20 +92,20 @@ export class IntersolveService {
   ): PaPaymentDataAggregateDto[] {
     const groupsByPaymentAddress: PaPaymentDataAggregateDto[] = [];
     paPaymentList.forEach(paPaymentData => {
-      if (
-        groupsByPaymentAddress
-          .map(i => i.paymentAddress)
-          .includes(paPaymentData.paymentAddress)
-      ) {
-        groupsByPaymentAddress
-          .find(i => i.paymentAddress === paPaymentData.paymentAddress)
-          .paPaymentDataList.push(paPaymentData);
-      } else {
-        groupsByPaymentAddress.push({
-          paymentAddress: paPaymentData.paymentAddress,
-          paPaymentDataList: [paPaymentData],
-        });
-      }
+      // if (
+      //   groupsByPaymentAddress
+      //     .map(i => i.paymentAddress)
+      //     .includes(paPaymentData.paymentAddress)
+      // ) {
+      //   groupsByPaymentAddress
+      //     .find(i => i.paymentAddress === paPaymentData.paymentAddress)
+      //     .paPaymentDataList.push(paPaymentData);
+      // } else {
+      groupsByPaymentAddress.push({
+        paymentAddress: paPaymentData.paymentAddress,
+        paPaymentDataList: [paPaymentData],
+      });
+      // }
     });
     return groupsByPaymentAddress;
   }
@@ -128,10 +141,9 @@ export class IntersolveService {
         intersolveRefPos,
       );
       voucherInfo.refPos = intersolveRefPos;
-      voucherInfoArray.push(voucherInfo);
 
       if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
-        await this.storeVoucher(
+        voucherInfo.voucher = await this.storeVoucher(
           voucherInfo,
           paPaymentData,
           installment,
@@ -148,6 +160,7 @@ export class IntersolveService {
             ? voucherInfo.resultDescription
             : 'unknown');
       }
+      voucherInfoArray.push(voucherInfo);
       transactionResult.paTransactionResultList.push(voucherResult);
     }
 
@@ -201,7 +214,7 @@ export class IntersolveService {
     paPaymentData: PaPaymentDataDto,
     installment: number,
     amount: number,
-  ): Promise<void> {
+  ): Promise<IntersolveBarcodeEntity> {
     const barcodeData = await this.storeBarcodeData(
       voucherInfo.cardId,
       voucherInfo.pin,
@@ -214,6 +227,8 @@ export class IntersolveService {
       barcodeData,
       paPaymentData.referenceId,
     );
+
+    return barcodeData;
   }
 
   private async cancelAllVouchersOnPhoneNumber(
@@ -259,11 +274,11 @@ export class IntersolveService {
   ): Promise<PaymentAddressTransactionResultDto> {
     const transferResult = await this.sendVoucherWhatsapp(
       paymentInfo,
-      voucherInfoArray.length > 1, // boolean which determines single/multiple vouchers
+      voucherInfoArray,
       amount,
     );
 
-    if (transferResult.status === StatusEnum.success) {
+    if (transferResult.status !== StatusEnum.error) {
       transactionResult = await this.processSucceededWhatsappResult(
         transactionResult,
         transferResult,
@@ -280,7 +295,7 @@ export class IntersolveService {
 
   public async sendVoucherWhatsapp(
     paymentInfo: PaPaymentDataAggregateDto,
-    multiplePeople: boolean,
+    voucherInfoArray: IntersolveIssueCardResponse[],
     amount: number,
   ): Promise<PaymentAddressTransactionResultDto> {
     const result = new PaymentAddressTransactionResultDto();
@@ -292,10 +307,11 @@ export class IntersolveService {
     );
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     try {
-      let whatsappPayment = multiplePeople
-        ? program.notifications[language]['whatsappPaymentMultiple'] ||
-          program.notifications[language]['whatsappPayment']
-        : program.notifications[language]['whatsappPayment'];
+      let whatsappPayment =
+        voucherInfoArray.length > 1
+          ? program.notifications[language]['whatsappPaymentMultiple'] ||
+            program.notifications[language]['whatsappPayment']
+          : program.notifications[language]['whatsappPayment'];
       // It is technically incorrect to take the multiplier of the 1st PA of potentially multiple with the same paymentAddress
       // .. but we have to choose something
       // .. and in practice it will never happen that there are multiple PAs with differing multipliers
@@ -305,13 +321,28 @@ export class IntersolveService {
         paymentInfo.paPaymentDataList[0].paymentAmountMultiplier,
       );
       whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
-      await this.whatsappService.sendWhatsapp(
+
+      const connection = await this.connectionRepository.findOne({
+        select: ['id'],
+        where: { referenceId: paymentInfo.paPaymentDataList[0].referenceId },
+      });
+
+      const messageSid = await this.whatsappService.sendWhatsapp(
         whatsappPayment,
         paymentInfo.paymentAddress,
         null,
       );
-      result.status = StatusEnum.success;
+      await this.whatsappService.insertTransactionIntersolve(
+        voucherInfoArray[0].voucher,
+        connection.id,
+        1,
+        StatusEnum.waiting,
+        messageSid,
+      );
+
+      result.status = StatusEnum.waiting;
       result.customData = {
+        messageSid: messageSid,
         IntersolvePayoutStatus: IntersolvePayoutStatus.InitialMessage,
       };
     } catch (e) {
@@ -339,6 +370,7 @@ export class IntersolveService {
     transactionResult.status = transferResult.status;
     transactionResult.customData = transferResult.customData;
     transactionResult.paTransactionResultList.forEach(pa => {
+      pa.status = transferResult.status;
       pa.customData = transactionResult.customData;
     });
     return transactionResult;
@@ -381,6 +413,32 @@ export class IntersolveService {
     barcodeData.installment = installment;
     barcodeData.amount = amount;
     return this.intersolveBarcodeRepository.save(barcodeData);
+  }
+
+  public async processStatus(
+    statusCallbackData,
+    transaction: TransactionEntity,
+  ): Promise<any> {
+    if (['DELIVERED', 'READ'].includes(statusCallbackData.EventType)) {
+      return StatusEnum.success;
+    } else if (['FAILED'].includes(statusCallbackData.EventType)) {
+      const voucher = await this.intersolveBarcodeRepository.findOne({
+        select: ['barcode'],
+        relations: ['image', 'image.connection'],
+        where: { image: { connection: { id: transaction.connection.id } } },
+      });
+      const intersolveRequest = await this.intersolveRequestRepository.findOne({
+        where: { cardId: voucher.barcode },
+      });
+
+      this.cancelAndDeleteVoucher(
+        voucher.barcode,
+        String(intersolveRequest.transactionId),
+      );
+      return StatusEnum.error;
+    } else {
+      return;
+    }
   }
 
   public async exportVouchers(

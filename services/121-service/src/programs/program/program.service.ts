@@ -834,6 +834,7 @@ export class ProgramService {
         minInstallment: minInstallment || 0,
       })
       .orderBy('transaction.transactionStep', 'DESC')
+      .addOrderBy('transaction.created', 'DESC')
       .getRawMany();
     return transactions;
   }
