@@ -85,9 +85,10 @@ describe('MakePaymentComponent', () => {
       new Promise((r) => r({ connections: 0, transferAmounts: 0 })),
     );
 
-    await fixture.detectChanges();
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
 
-    await expect(mockProgramsApi.getTotalIncluded).toHaveBeenCalledTimes(1);
+    expect(mockProgramsApi.getTotalIncluded).toHaveBeenCalledTimes(1);
     expect(component.isEnabled).toBeFalse();
   });
 
@@ -96,18 +97,53 @@ describe('MakePaymentComponent', () => {
       new Promise((r) => r({ connections: 1, transferAmounts: 1 })),
     );
 
-    await fixture.detectChanges();
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
 
-    await expect(mockProgramsApi.getTotalIncluded).toHaveBeenCalledTimes(1);
+    expect(mockProgramsApi.getTotalIncluded).toHaveBeenCalledTimes(1);
     expect(component.isEnabled).toBeTrue();
   });
 
   it('should be disabled when all installments are done', async () => {
     component.program.distributionDuration = mockPastInstallments.length;
 
-    await fixture.detectChanges();
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
 
-    await expect(mockProgramsApi.getLastInstallmentId).toHaveBeenCalledTimes(1);
+    expect(mockProgramsApi.getLastInstallmentId).toHaveBeenCalledTimes(1);
     expect(component.isEnabled).toBeFalse();
+  });
+
+  it('should be disabled when a payment is already in progress', async () => {
+    mockProgramsApi.retrieveLatestActions.and.returnValues(
+      new Promise((r) => r(mockLatestStartAction)),
+      new Promise((r) => r(null)),
+    );
+
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
+
+    expect(mockProgramsApi.retrieveLatestActions).toHaveBeenCalledTimes(2);
+    expect(component.isEnabled).toBeFalse();
+  });
+
+  it('should be enabled when a previous payment is finished', async () => {
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
+
+    expect(mockProgramsApi.retrieveLatestActions).toHaveBeenCalledTimes(2);
+    expect(component.isEnabled).toBeTrue();
+  });
+
+  it('should be enabled when no previous payment is done', async () => {
+    mockProgramsApi.retrieveLatestActions.and.returnValues(
+      new Promise((r) => r(null)),
+    );
+
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
+
+    expect(mockProgramsApi.retrieveLatestActions).toHaveBeenCalledTimes(1);
+    expect(component.isEnabled).toBeTrue();
   });
 });
