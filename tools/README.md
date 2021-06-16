@@ -25,7 +25,7 @@ On Ubuntu server do: (NOTE the absolute path /home/121-platform, which might be 
 
     ln -s /home/121-platform/tools/121-platform.conf /etc/apache2/sites-enabled/121-platform.conf
     ln -s /home/121-platform/tools/121-platform-https.conf /etc/apache2/sites-enabled/121-platform-https.conf
-    a2enmod ssl proxy proxy_http rewrite headers expires mime dir
+    a2enmod ssl proxy proxy_http http2 rewrite headers expires mime dir
     service apache2 restart
 
 To check if it started correctly:
