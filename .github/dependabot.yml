@@ -1,5 +1,6 @@
 # See: https://docs.github.com/en/github/administering-a-repository/configuration-options-for-dependency-updates#configuration-options-for-dependabotyml
 version: 2
+
 updates:
   - package-ecosystem: npm
     directory: '/interfaces/HO-Portal'
@@ -38,6 +39,8 @@ updates:
         versions: ['>= 1.4.0', '>= 1.6.0']
       - dependency-name: rxjs
         versions: ['>= 7.0.0']
+      - dependency-name: 'zone.js'
+        versions: ['>= 0.9.0']
       - dependency-name: '@swimlane/ngx-datatable'
         versions: ['>= 17.0.0']
 
@@ -80,6 +83,8 @@ updates:
         versions: ['>= 1.4.0', '>= 1.6.0']
       - dependency-name: rxjs
         versions: ['>= 7.0.0']
+      - dependency-name: 'zone.js'
+        versions: ['>= 0.9.0']
       - dependency-name: '@zxing/ngx-scanner'
         versions: ['>= 3.0.0']
 
@@ -120,6 +125,8 @@ updates:
         versions: ['>= 1.4.0', '>= 1.6.0']
       - dependency-name: rxjs
         versions: ['>= 7.0.0']
+      - dependency-name: 'zone.js'
+        versions: ['>= 0.9.0']
       - dependency-name: angularx-qrcode
         versions: ['>= 2.1.0']
       - dependency-name: '@zxing/ngx-scanner'

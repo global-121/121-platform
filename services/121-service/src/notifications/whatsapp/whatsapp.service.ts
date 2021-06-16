@@ -19,6 +19,7 @@ import { StatusEnum } from '../../shared/enum/status.enum';
 import { FspService } from '../../programs/fsp/fsp.service';
 import { fspName } from '../../programs/fsp/financial-service-provider.entity';
 import { IntersolveService } from '../../programs/fsp/intersolve.service';
+import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
 
 @Injectable()
 export class WhatsappService {
@@ -136,7 +137,10 @@ export class WhatsappService {
       await this.connectionRepository.find({
         select: ['id', 'customData'],
       })
-    ).filter(c => c.customData['whatsappPhoneNumber'] === phoneNumber);
+    ).filter(
+      c =>
+        c.customData[CustomDataAttributes.whatsappPhoneNumber] === phoneNumber,
+    );
 
     if (!connectionsWithPhoneNumber.length) {
       console.log(

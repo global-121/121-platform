@@ -503,10 +503,13 @@ export class ConnectionService {
     value: string | number,
   ): Promise<ConnectionEntity> {
     const connection = await this.findConnectionOrThrow(referenceId);
+    let attributeFound = false;
 
     if (typeof connection[attribute] !== 'undefined') {
       connection[attribute] = value;
-    } else if (
+      attributeFound = true;
+    }
+    if (
       connection.customData &&
       typeof connection.customData[attribute] !== 'undefined'
     ) {
@@ -514,7 +517,10 @@ export class ConnectionService {
         attribute,
         String(value),
       );
-    } else {
+      attributeFound = true;
+    }
+
+    if (!attributeFound) {
       const errors = 'This attribute is not known for this Person Affected.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
