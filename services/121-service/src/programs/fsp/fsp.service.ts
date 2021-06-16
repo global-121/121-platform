@@ -64,7 +64,7 @@ export class FspService {
 
     this.makePaymentRequest(paLists, programId, installment, amount).then(
       transactionResults => {
-        // this.storeAllTransactions(transactionResults, programId, installment);
+        this.storeAllTransactions(transactionResults, programId, installment);
         if (installment > -1) {
           this.actionService.saveAction(
             userId,
@@ -151,24 +151,8 @@ export class FspService {
     programId: number,
     installment: number,
   ): Promise<void> {
-    for (let transaction of transactionResults.intersolveTransactionResult
-      .paList) {
-      await this.storeTransaction(
-        transaction,
-        programId,
-        installment,
-        fspName.intersolve,
-      );
-    }
-    for (let transaction of transactionResults
-      .intersolveNoWhatsappTransactionResult.paList) {
-      await this.storeTransaction(
-        transaction,
-        programId,
-        installment,
-        fspName.intersolveNoWhatsapp,
-      );
-    }
+    // Intersolve transactions are now stored during PA-request-loop already
+    // Align across FSPs in future again
     for (let transaction of transactionResults.africasTalkingTransactionResult
       .paList) {
       await this.storeTransaction(
@@ -238,28 +222,7 @@ export class FspService {
       );
     }
     if (fsp === fspName.intersolve) {
-      const transaction = (
-        await this.transactionRepository.find({ relations: ['connection'] })
-      ).filter(
-        t => t.customData['messageSid'] === statusCallbackData.MessageSid,
-      )[0];
-      if (!transaction) {
-        console.log(
-          'statusCallbackData.MessageSid: ',
-          statusCallbackData.MessageSid,
-        );
-      }
-      const status = await this.intersolveService.processStatus(
-        statusCallbackData,
-        transaction,
-      );
-      console.log('status: ', status);
-      if (status) {
-        await this.transactionRepository.update(
-          { id: transaction.id },
-          { status: status },
-        );
-      }
+      await this.intersolveService.processStatus(statusCallbackData);
     }
   }
 

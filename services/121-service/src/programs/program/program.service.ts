@@ -13,6 +13,7 @@ import {
   Not,
   IsNull,
   Equal,
+  In,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
@@ -528,6 +529,39 @@ export class ProgramService {
     };
   }
 
+  private async getConnectionsForPayment(
+    programId: number,
+    installment: number,
+    referenceId?: string,
+  ): Promise<ConnectionEntity[]> {
+    const knownInstallment = await this.transactionRepository.findOne({
+      where: { installment: installment },
+    });
+    console.log('knownInstallment: ', knownInstallment);
+    let failedConnections;
+    if (knownInstallment) {
+      const failedReferenceIds = (
+        await this.getFailedTransactions(programId, installment)
+      ).map(t => t.referenceId);
+      failedConnections = await this.connectionRepository.find({
+        where: { referenceId: In(failedReferenceIds) },
+        relations: ['fsp'],
+      });
+    }
+
+    // If 'referenceId' is passed (only in retry-payment-per PA) use this PA only,
+    // If known installment, then only failed connections
+    // otherwise (new payment) get all included PA's
+    return referenceId
+      ? await this.connectionRepository.find({
+          where: { referenceId: referenceId },
+          relations: ['fsp'],
+        })
+      : knownInstallment
+      ? failedConnections
+      : await this.getIncludedConnections(programId);
+  }
+
   public async payout(
     userId: number,
     programId: number,
@@ -543,20 +577,19 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // If 'referenceId' is passed (only in retry-payment-per PA) use this PA only, otherwise get all included PA's
-    const includedConnections = referenceId
-      ? await this.connectionRepository.find({
-          where: { referenceId: referenceId },
-          relations: ['fsp'],
-        })
-      : await this.getIncludedConnections(programId);
-    if (includedConnections.length < 1) {
-      const errors = 'There are no included PA for this program';
+    const targetedConnections = await this.getConnectionsForPayment(
+      programId,
+      installment,
+      referenceId,
+    );
+
+    if (targetedConnections.length < 1) {
+      const errors = 'There are no targeted PAs for this payment';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     const paPaymentDataList = await this.createPaPaymentDataList(
-      includedConnections,
+      targetedConnections,
     );
 
     this.actionService.saveAction(
@@ -835,6 +868,25 @@ export class ProgramService {
       })
       .orderBy('transaction.transactionStep', 'DESC')
       .addOrderBy('transaction.created', 'DESC')
+      .getRawMany();
+    return transactions;
+  }
+
+  public async getFailedTransactions(
+    programId: number,
+    installment: number,
+  ): Promise<any> {
+    const transactions = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('c."referenceId"')
+      .addSelect('MAX(amount) as amount')
+      .leftJoin('transaction.connection', 'c')
+      .where('transaction.program.id = :programId', { programId: programId })
+      .andWhere('installment = :installment', {
+        installment: installment,
+      })
+      .andWhere('status = :status', { status: StatusEnum.error })
+      .groupBy('c."referenceId"')
       .getRawMany();
     return transactions;
   }

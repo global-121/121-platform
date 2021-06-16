@@ -15,10 +15,10 @@ import { twilioClient } from '../twilio.client';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { ImageCodeService } from '../imagecode/image-code.service';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
-import { TransactionEntity } from '../../programs/program/transactions.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { FspService } from '../../programs/fsp/fsp.service';
 import { fspName } from '../../programs/fsp/financial-service-provider.entity';
+import { IntersolveService } from '../../programs/fsp/intersolve.service';
 
 @Injectable()
 export class WhatsappService {
@@ -28,18 +28,15 @@ export class WhatsappService {
   >;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  @InjectRepository(TransactionEntity)
-  public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
-
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
 
   private readonly programId = 1;
 
   public constructor(
     private readonly imageCodeService: ImageCodeService,
+    @Inject(forwardRef(() => IntersolveService))
+    private readonly intersolveService: IntersolveService,
     @Inject(forwardRef(() => FspService))
     private readonly fspService: FspService,
   ) {}
@@ -118,17 +115,18 @@ export class WhatsappService {
   }
 
   public async statusCallback(callbackData): Promise<void> {
-    // console.log('callbackData: ', callbackData);
-
-    await this.fspService.processPaymentStatus(
-      fspName.intersolve,
-      callbackData,
-    );
-
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
       { status: callbackData.MessageStatus },
     );
+
+    const eventTypes = ['DELIVERED', 'READ', 'FAILED', 'UNDELIVERED'];
+    if (eventTypes.includes(callbackData.EventType)) {
+      await this.fspService.processPaymentStatus(
+        fspName.intersolve,
+        callbackData,
+      );
+    }
   }
 
   private async getConnectionsWithPhoneNumber(
@@ -222,7 +220,7 @@ export class WhatsappService {
         // Save results
         intersolveBarcode.send = true;
         await this.intersolveBarcodeRepository.save(intersolveBarcode);
-        await this.insertTransactionIntersolve(
+        await this.intersolveService.insertTransactionIntersolve(
           intersolveBarcode,
           connection.id,
           2,
@@ -241,40 +239,5 @@ export class WhatsappService {
         EXTERNAL_API.voucherInstructionsUrl,
       );
     }
-  }
-
-  public async insertTransactionIntersolve(
-    intersolveBarcode: IntersolveBarcodeEntity,
-    connectionId: number,
-    transactionStep: number,
-    status: StatusEnum,
-    messageSid?: string,
-  ): Promise<void> {
-    const transaction = new TransactionEntity();
-    transaction.status = status;
-    transaction.installment = intersolveBarcode.installment;
-    transaction.amount = intersolveBarcode.amount;
-    transaction.created = new Date();
-    transaction.customData = JSON.parse(
-      JSON.stringify({
-        IntersolvePayoutStatus:
-          transactionStep === 1
-            ? IntersolvePayoutStatus.InitialMessage
-            : IntersolvePayoutStatus.VoucherSent,
-      }),
-    );
-    if (messageSid) {
-      transaction.customData['messageSid'] = messageSid;
-    }
-    transaction.transactionStep = transactionStep;
-    const connection = await this.connectionRepository.findOne({
-      where: { id: connectionId },
-      relations: ['fsp'],
-    });
-    transaction.connection = connection;
-    const programId = connection.programsApplied[0];
-    transaction.program = await this.programRepository.findOne(programId);
-    transaction.financialServiceProvider = connection.fsp;
-    await this.transactionRepository.save(transaction);
   }
 }

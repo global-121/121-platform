@@ -47,8 +47,11 @@
   </div>
   <div *ngIf="retryButton">
     <br>
-    <ion-button (click)="retryPayment()">
+    <ion-button (click)="retryPayment(false)">
       {{ 'page.program.program-people-affected.payment-status-popup.retry'|translate }}
+    </ion-button>
+    <ion-button (click)="retryPayment(true)">
+      {{ 'page.program.program-people-affected.payment-status-popup.retry-all'|translate }}
     </ion-button>
     <ion-spinner
       *ngIf="isInProgress"

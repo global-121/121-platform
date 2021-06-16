@@ -780,7 +780,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     const hasError = this.hasError(row, column.installmentIndex);
     const hasWaiting = this.hasWaiting(row, column.installmentIndex);
     const content = hasWaiting
-      ? '<strong>' + row[column.prop + '-error'] + '</strong>'
+      ? row[column.prop + '-error']
       : hasError
       ? this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.error-message',

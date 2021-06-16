@@ -48,6 +48,10 @@ export class IntersolveService {
   private readonly intersolveRequestRepository: Repository<
     IntersolveRequestEntity
   >;
+  @InjectRepository(TransactionEntity)
+  public transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(ProgramEntity)
+  public programRepository: Repository<ProgramEntity>;
 
   private readonly programId = 1;
 
@@ -178,16 +182,27 @@ export class IntersolveService {
       // and return early
       return transactionResult;
     }
+    const connection = await this.connectionRepository.findOne({
+      select: ['id'],
+      where: { referenceId: paymentInfo.paPaymentDataList[0].referenceId },
+    });
 
     // If no whatsapp: return early
     if (!useWhatsapp) {
       transactionResult.status = StatusEnum.success;
+      await this.insertTransactionIntersolve(
+        voucherInfoArray[0].voucher,
+        connection.id,
+        1,
+        StatusEnum.success,
+      );
       return transactionResult;
     }
 
     // Continue with whatsapp:
     return await this.sendWhatsapp(
       paymentInfo,
+      connection.id,
       voucherInfoArray,
       transactionResult,
       amount,
@@ -268,11 +283,13 @@ export class IntersolveService {
 
   private async sendWhatsapp(
     paymentInfo: PaPaymentDataAggregateDto,
+    connectionId: number,
     voucherInfoArray: IntersolveIssueCardResponse[],
     transactionResult: PaymentAddressTransactionResultDto,
     amount: number,
   ): Promise<PaymentAddressTransactionResultDto> {
     const transferResult = await this.sendVoucherWhatsapp(
+      connectionId,
       paymentInfo,
       voucherInfoArray,
       amount,
@@ -294,6 +311,7 @@ export class IntersolveService {
   }
 
   public async sendVoucherWhatsapp(
+    connectionId: number,
     paymentInfo: PaPaymentDataAggregateDto,
     voucherInfoArray: IntersolveIssueCardResponse[],
     amount: number,
@@ -322,19 +340,14 @@ export class IntersolveService {
       );
       whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
 
-      const connection = await this.connectionRepository.findOne({
-        select: ['id'],
-        where: { referenceId: paymentInfo.paPaymentDataList[0].referenceId },
-      });
-
       const messageSid = await this.whatsappService.sendWhatsapp(
         whatsappPayment,
         paymentInfo.paymentAddress,
         null,
       );
-      await this.whatsappService.insertTransactionIntersolve(
+      await this.insertTransactionIntersolve(
         voucherInfoArray[0].voucher,
-        connection.id,
+        connectionId,
         1,
         StatusEnum.waiting,
         messageSid,
@@ -415,18 +428,31 @@ export class IntersolveService {
     return this.intersolveBarcodeRepository.save(barcodeData);
   }
 
-  public async processStatus(
-    statusCallbackData,
-    transaction: TransactionEntity,
-  ): Promise<any> {
-    if (['DELIVERED', 'READ'].includes(statusCallbackData.EventType)) {
-      return StatusEnum.success;
-    } else if (['FAILED'].includes(statusCallbackData.EventType)) {
-      const voucher = await this.intersolveBarcodeRepository.findOne({
-        select: ['barcode'],
-        relations: ['image', 'image.connection'],
-        where: { image: { connection: { id: transaction.connection.id } } },
+  public async processStatus(statusCallbackData): Promise<void> {
+    const transaction = (
+      await this.transactionRepository.find({ relations: ['connection'] })
+    ).filter(
+      t => t.customData['messageSid'] === statusCallbackData.MessageSid,
+    )[0];
+    if (!transaction) {
+      // If no transaction found, it cannot (and should not have to) be updated
+      return;
+    }
+
+    const succesStatuses = ['DELIVERED', 'READ'];
+    const failStatuses = ['UNDELIVERED', 'FAILED'];
+    let status: string;
+    if (succesStatuses.includes(statusCallbackData.EventType)) {
+      status = StatusEnum.success;
+    } else if (failStatuses.includes(statusCallbackData.EventType)) {
+      const connection = await this.connectionRepository.findOne({
+        where: { id: transaction.connection.id },
+        relations: ['images', 'images.barcode'],
       });
+      // NOTE: array.find yields 1st element, but this is line with 1 voucher per installment
+      const voucher = connection.images.find(
+        i => i.barcode.installment === transaction.installment,
+      ).barcode;
       const intersolveRequest = await this.intersolveRequestRepository.findOne({
         where: { cardId: voucher.barcode },
       });
@@ -435,10 +461,22 @@ export class IntersolveService {
         voucher.barcode,
         String(intersolveRequest.transactionId),
       );
-      return StatusEnum.error;
+      status = StatusEnum.error;
     } else {
+      // For other statuses, no update needed
       return;
     }
+
+    await this.transactionRepository.update(
+      { id: transaction.id },
+      {
+        status: status,
+        errorMessage:
+          status === StatusEnum.error
+            ? 'Twilio status callback message: ' + statusCallbackData.EventType
+            : null,
+      },
+    );
   }
 
   public async exportVouchers(
@@ -564,5 +602,40 @@ export class IntersolveService {
     }
 
     return unusedVouchers;
+  }
+
+  public async insertTransactionIntersolve(
+    intersolveBarcode: IntersolveBarcodeEntity,
+    connectionId: number,
+    transactionStep: number,
+    status: StatusEnum,
+    messageSid?: string,
+  ): Promise<void> {
+    const transaction = new TransactionEntity();
+    transaction.status = status;
+    transaction.installment = intersolveBarcode.installment;
+    transaction.amount = intersolveBarcode.amount;
+    transaction.created = new Date();
+    transaction.customData = JSON.parse(
+      JSON.stringify({
+        IntersolvePayoutStatus:
+          transactionStep === 1
+            ? IntersolvePayoutStatus.InitialMessage
+            : IntersolvePayoutStatus.VoucherSent,
+      }),
+    );
+    if (messageSid) {
+      transaction.customData['messageSid'] = messageSid;
+    }
+    transaction.transactionStep = transactionStep;
+    const connection = await this.connectionRepository.findOne({
+      where: { id: connectionId },
+      relations: ['fsp'],
+    });
+    transaction.connection = connection;
+    const programId = connection.programsApplied[0];
+    transaction.program = await this.programRepository.findOne(programId);
+    transaction.financialServiceProvider = connection.fsp;
+    await this.transactionRepository.save(transaction);
   }
 }

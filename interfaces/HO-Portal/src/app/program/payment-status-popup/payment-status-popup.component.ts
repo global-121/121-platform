@@ -129,45 +129,28 @@ export class PaymentStatusPopupComponent implements OnInit {
     }
   }
 
-  public async retryPayment() {
+  public async retryPayment(all: boolean) {
     this.isInProgress = true;
     await this.programsService
       .submitPayout(
         +this.payoutDetails.programId,
         +this.payoutDetails.installment,
         +this.payoutDetails.amount,
-        this.payoutDetails.referenceId,
+        all ? this.payoutDetails.referenceId : null,
       )
       .then(
         (response) => {
           this.isInProgress = false;
-          const message = ''
-            .concat(
-              response.nrSuccessfull > 0
-                ? this.translate.instant(
-                    'page.program.program-payout.result-success',
-                    { nrSuccessfull: response.nrSuccessfull },
-                  )
-                : '',
-            )
-            .concat(
-              response.nrFailed > 0
-                ? '<br><br>' +
-                    this.translate.instant(
-                      'page.program.program-payout.result-failure',
-                      { nrFailed: response.nrFailed },
-                    )
-                : '',
-            )
-            .concat(
-              response.nrWaiting > 0
-                ? '<br><br>' +
-                    this.translate.instant(
-                      'page.program.program-payout.result-waiting',
-                      { nrWaiting: response.nrWaiting },
-                    )
-                : '',
+          let message = '';
+
+          if (response) {
+            message += this.translate.instant(
+              'page.program.program-payout.result',
+              {
+                nrPa: response,
+              },
             );
+          }
           this.actionResult(message, true);
         },
         (err) => {
