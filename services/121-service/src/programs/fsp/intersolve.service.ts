@@ -71,8 +71,11 @@ export class IntersolveService {
     const result = new FspTransactionResultDto();
     result.paList = [];
 
+    // Set 'grouping = false' for twilio load testing purposes, using the same phone number for all PAs
+    const grouping = true;
     const paPaymentDataAggregate = this.aggregatePaPaymentListToPhoneNumber(
       paPaymentList,
+      grouping,
     );
 
     for (let paymentInfo of paPaymentDataAggregate) {
@@ -93,23 +96,25 @@ export class IntersolveService {
 
   private aggregatePaPaymentListToPhoneNumber(
     paPaymentList: PaPaymentDataDto[],
+    grouping: boolean,
   ): PaPaymentDataAggregateDto[] {
     const groupsByPaymentAddress: PaPaymentDataAggregateDto[] = [];
     paPaymentList.forEach(paPaymentData => {
-      // if (
-      //   groupsByPaymentAddress
-      //     .map(i => i.paymentAddress)
-      //     .includes(paPaymentData.paymentAddress)
-      // ) {
-      //   groupsByPaymentAddress
-      //     .find(i => i.paymentAddress === paPaymentData.paymentAddress)
-      //     .paPaymentDataList.push(paPaymentData);
-      // } else {
-      groupsByPaymentAddress.push({
-        paymentAddress: paPaymentData.paymentAddress,
-        paPaymentDataList: [paPaymentData],
-      });
-      // }
+      if (
+        grouping &&
+        groupsByPaymentAddress
+          .map(i => i.paymentAddress)
+          .includes(paPaymentData.paymentAddress)
+      ) {
+        groupsByPaymentAddress
+          .find(i => i.paymentAddress === paPaymentData.paymentAddress)
+          .paPaymentDataList.push(paPaymentData);
+      } else {
+        groupsByPaymentAddress.push({
+          paymentAddress: paPaymentData.paymentAddress,
+          paPaymentDataList: [paPaymentData],
+        });
+      }
     });
     return groupsByPaymentAddress;
   }
