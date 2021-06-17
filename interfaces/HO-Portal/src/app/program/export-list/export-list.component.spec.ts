@@ -4,8 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
-import { ProgramPhase } from 'src/app/models/program.model';
-import { Phase } from 'src/app/services/program-phase.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ExportListComponent } from './export-list.component';
 
 describe('ExportListComponent', () => {
@@ -13,24 +12,27 @@ describe('ExportListComponent', () => {
   let fixture: ComponentFixture<ExportListComponent>;
 
   const mockProgramId = 1;
-  const mockProgramPhase: Phase = {
-    id: 1,
-    name: ProgramPhase.design,
-    label: 'label',
-    btnText: 'btnText',
-    active: true,
-  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ExportListComponent],
       imports: [TranslateModule.forRoot(), HttpClientTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(AuthService)],
+      providers: [
+        provideMagicalMock(AuthService),
+        provideMagicalMock(ProgramsServiceApiService),
+      ],
     }).compileComponents();
   }));
 
+  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
+
   beforeEach(() => {
+    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi.retrieveLatestActions.and.returnValue(
+      new Promise((r) => r(null)),
+    );
+
     fixture = TestBed.createComponent(ExportListComponent);
     component = fixture.componentInstance;
 

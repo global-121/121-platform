@@ -21,7 +21,10 @@ describe('RegistrationValidationPage', () => {
         HttpClientTestingModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(ProgramsServiceApiService)],
+      providers: [
+        provideMagicalMock(AuthService),
+        provideMagicalMock(ProgramsServiceApiService),
+      ],
     }).compileComponents();
   }));
 
@@ -29,6 +32,7 @@ describe('RegistrationValidationPage', () => {
 
   beforeEach(() => {
     mockAuthService = TestBed.get(AuthService);
+    mockAuthService.hasUserRole.and.returnValue(false);
 
     fixture = TestBed.createComponent(RegistrationValidationPage);
     component = fixture.componentInstance;

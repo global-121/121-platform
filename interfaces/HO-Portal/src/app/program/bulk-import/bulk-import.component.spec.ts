@@ -1,9 +1,9 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { BulkImportComponent } from './bulk-import.component';
 
 describe('BulkImportComponent', () => {
@@ -13,9 +13,12 @@ describe('BulkImportComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BulkImportComponent],
-      imports: [TranslateModule.forRoot(), HttpClientTestingModule],
+      imports: [TranslateModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(AuthService)],
+      providers: [
+        provideMagicalMock(AuthService),
+        provideMagicalMock(ProgramsServiceApiService),
+      ],
     }).compileComponents();
   }));
 
