@@ -28,7 +28,7 @@ export class PaymentStatusPopupComponent implements OnInit {
   public title: string;
   public content: any;
   public contentNotes: any;
-  public retryButton: boolean;
+  public showRetryButton: boolean;
   public payoutDetails: PopupPayoutDetails;
   public voucherButtons: boolean;
   public imageUrl: string;

@@ -799,7 +799,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.payment-status-popup.notes',
         )
       : null;
-    const retryButton = hasWaiting ? false : hasError ? true : false;
+    const showRetryButton = hasWaiting ? false : hasError ? true : false;
     const payoutDetails: PopupPayoutDetails =
       hasError || value.hasMessageIcon || value.hasMoneyIconTable
         ? {
@@ -834,7 +834,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         titleError,
         content,
         contentNotes,
-        retryButton,
+        showRetryButton,
         payoutDetails,
         voucherButtons,
         imageUrl: voucherUrl,
