@@ -78,7 +78,7 @@ export class TestPaymentComponent implements OnInit {
     const installment = -1;
     const amount = 0;
     await this.programsService
-      .submitPayout(+this.programId, installment, amount)
+      .submitPayout(this.programId, installment, amount)
       .then(
         () => {
           this.isInProgress = false;

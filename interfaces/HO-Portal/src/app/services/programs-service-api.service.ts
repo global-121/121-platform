@@ -213,9 +213,9 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/payout`, {
-        programId,
-        installment,
-        amount,
+        programId: Number(programId),
+        installment: Number(installment),
+        amount: Number(amount),
         referenceId,
       })
       .toPromise();

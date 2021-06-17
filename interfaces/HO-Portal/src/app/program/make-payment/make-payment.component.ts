@@ -81,11 +81,7 @@ export class MakePaymentComponent implements OnInit {
     const nextInstallmentId = await this.getNextInstallmentId();
 
     await this.programsService
-      .submitPayout(
-        Number(this.programId),
-        nextInstallmentId,
-        Number(this.amountInput),
-      )
+      .submitPayout(this.programId, nextInstallmentId, this.amountInput)
       .then(
         (response) => this.onPaymentSuccess(response),
         (error) => this.onPaymentError(error),

@@ -133,9 +133,9 @@ export class PaymentStatusPopupComponent implements OnInit {
     this.isInProgress = true;
     await this.programsService
       .submitPayout(
-        +this.payoutDetails.programId,
-        +this.payoutDetails.installment,
-        +this.payoutDetails.amount,
+        this.payoutDetails.programId,
+        this.payoutDetails.installment,
+        this.payoutDetails.amount,
         all ? this.payoutDetails.referenceId : null,
       )
       .then(
