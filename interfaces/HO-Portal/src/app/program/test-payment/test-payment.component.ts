@@ -80,7 +80,7 @@ export class TestPaymentComponent implements OnInit {
     await this.programsService
       .submitPayout(+this.programId, installment, amount)
       .then(
-        (response) => {
+        () => {
           this.isInProgress = false;
           const message = this.translate.instant(
             'page.program.test-payment.result',

@@ -31,6 +31,7 @@ describe('HeaderComponent', () => {
 
   beforeEach(() => {
     mockAuthService = TestBed.get(AuthService);
+    mockAuthService.hasUserRole.and.returnValue(true);
 
     mockProgramsApi = TestBed.get(ProgramsServiceApiService);
     mockProgramsApi.getProgramById.and.returnValue(

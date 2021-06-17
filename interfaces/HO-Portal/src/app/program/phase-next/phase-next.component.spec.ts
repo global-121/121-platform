@@ -39,6 +39,7 @@ describe('PhaseNextComponent', () => {
   let mockProgramPhaseService: jasmine.SpyObj<ProgramPhaseService>;
   beforeEach(() => {
     mockAuthService = TestBed.get(AuthService);
+    mockAuthService.hasUserRole.and.returnValue(true);
 
     mockProgramPhaseService = TestBed.get(ProgramPhaseService);
     mockProgramPhaseService.getPhases.and.returnValue(
