@@ -9,11 +9,15 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
 export class BulkActionsService {
   constructor(private programsService: ProgramsServiceApiService) {}
 
+  private onlyIds(people: PersonRow[]): string[] {
+    return people.map((pa) => pa.referenceId);
+  }
+
   private hasStatus(person: PersonRow, requiredStates: PaStatus[]): boolean {
     return requiredStates.includes(person.status);
   }
 
-  updateCheckbox(action: BulkActionId, personData: PersonRow) {
+  public updateCheckbox(action: BulkActionId, personData: PersonRow) {
     switch (action) {
       case BulkActionId.invite:
         personData.checkboxVisible = this.hasStatus(personData, [
@@ -66,10 +70,10 @@ export class BulkActionsService {
     return personData;
   }
 
-  async applyAction(
+  public async applyAction(
     action: BulkActionId,
     programId: number,
-    selectedPeople: any[],
+    selectedPeople: PersonRow[],
     message?: string,
   ): Promise<void> {
     switch (action) {
@@ -82,35 +86,35 @@ export class BulkActionsService {
       case BulkActionId.markNoLongerEligible:
         return await this.programsService.markNoLongerEligible(
           programId,
-          selectedPeople.map((pa) => pa.referenceId),
+          this.onlyIds(selectedPeople),
         );
       case BulkActionId.selectForValidation:
         return await this.programsService.selectForValidation(
           programId,
-          selectedPeople.map((pa) => pa.referenceId),
+          this.onlyIds(selectedPeople),
         );
       case BulkActionId.includeRunProgramRole:
         return await this.programsService.include(
           programId,
-          selectedPeople.map((pa) => pa.referenceId),
+          this.onlyIds(selectedPeople),
           message,
         );
       case BulkActionId.includePersonalDataRole:
         return await this.programsService.include(
           programId,
-          selectedPeople.map((pa) => pa.referenceId),
+          this.onlyIds(selectedPeople),
           message,
         );
       case BulkActionId.endInclusion:
         return await this.programsService.end(
           programId,
-          selectedPeople.map((pa) => pa.referenceId),
+          this.onlyIds(selectedPeople),
           message,
         );
       case BulkActionId.reject:
         return await this.programsService.reject(
           programId,
-          selectedPeople.map((pa) => pa.referenceId),
+          this.onlyIds(selectedPeople),
           message,
         );
     }

@@ -963,14 +963,13 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public async applyAction(confirmInput?: string) {
     this.isInProgress = true;
-    await this.bulkActionService
-      .applyAction(
-        this.action,
-        this.programId,
-        this.selectedPeople,
-        confirmInput,
-      )
-      .then(() => (this.isInProgress = false));
+    await this.bulkActionService.applyAction(
+      this.action,
+      this.programId,
+      this.selectedPeople,
+      confirmInput,
+    );
+    this.isInProgress = false;
 
     this.resetBulkAction();
   }
