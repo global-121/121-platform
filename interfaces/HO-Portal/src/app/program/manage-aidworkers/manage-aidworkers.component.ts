@@ -3,6 +3,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { UserRole } from 'src/app/auth/user-role.enum';
+import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
 
@@ -62,17 +63,22 @@ export class ManageAidworkersComponent implements OnInit {
 
   public async loadData() {
     this.isLoading = true;
-    const program = await this.programsService.getProgramById(this.programId);
+    const program: Program = await this.programsService.getProgramById(
+      this.programId,
+    );
     this.aidworkers = program.aidworkers;
 
-    this.aidworkers.forEach((aidworker) => {
-      aidworker.email = aidworker.email;
-      aidworker.created = formatDate(
-        aidworker.created,
-        this.dateFormat,
-        this.locale,
-      );
-    });
+    if (this.aidworkers && this.aidworkers.length) {
+      this.aidworkers.forEach((aidworker) => {
+        aidworker.email = aidworker.email;
+        aidworker.created = formatDate(
+          aidworker.created,
+          this.dateFormat,
+          this.locale,
+        );
+      });
+    }
+
     this.isLoading = false;
   }
 

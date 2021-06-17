@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ModalController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { PaStatus } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { EditPersonAffectedPopupComponent } from './edit-person-affected-popup.component';
 
@@ -31,9 +32,28 @@ describe('EditPersonAffectedPopupComponent', () => {
     }).compileComponents();
   }));
 
+  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
+
   beforeEach(() => {
+    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi.retrieveNote.and.returnValue(
+      new Promise((r) =>
+        r({
+          note: 'test',
+          noteUpdated: new Date().toISOString(),
+        }),
+      ),
+    );
+
     fixture = TestBed.createComponent(EditPersonAffectedPopupComponent);
     component = fixture.componentInstance;
+
+    component.person = {
+      id: 1,
+      referenceId: 'test',
+      status: PaStatus.created,
+    };
+
     fixture.detectChanges();
   });
 

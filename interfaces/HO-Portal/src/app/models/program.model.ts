@@ -21,7 +21,7 @@ export class Program {
   distributionFrequency: DistributionFrequency;
   meetingDocuments?: string | TranslatableString;
   financialServiceProviders?: any[];
-  aidworkers?: any[];
+  aidworkers?: AidWorker[];
   created: string;
   updated: string;
   state: ProgramPhase;
@@ -45,4 +45,9 @@ export enum ProgramPhase {
   reviewInclusion = 'reviewInclusion',
   payment = 'payment',
   evaluation = 'evaluation',
+}
+
+export class AidWorker {
+  email: string;
+  created: string | Date;
 }

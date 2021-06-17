@@ -20,7 +20,6 @@ class TestHostComponent {
 describe('MetricsComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let testHost: TestHostComponent;
-  let componentElement: HTMLElement;
 
   const fixtureProgram = apiProgramsMock.programs[0];
   const mockProgramMetrics: ProgramMetrics = {
@@ -61,7 +60,6 @@ describe('MetricsComponent', () => {
 
     fixture = TestBed.createComponent(TestHostComponent);
     testHost = fixture.componentInstance;
-    componentElement = fixture.nativeElement.querySelector('app-metrics');
 
     fixture.detectChanges();
   });
