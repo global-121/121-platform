@@ -33,6 +33,7 @@ export class WhatsappService {
   private readonly connectionRepository: Repository<ConnectionEntity>;
 
   private readonly programId = 1;
+  private readonly fallbackLanguage = 'en';
 
   public constructor(
     private readonly imageCodeService: ImageCodeService,
@@ -49,17 +50,21 @@ export class WhatsappService {
     message?: string,
     key?: string,
   ): Promise<void> {
-    if (recipientPhoneNr) {
-      if (!message && !key) {
-        throw new HttpException(
-          'A message or a key should be supplied.',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      const whatsappText =
-        message || (await this.getWhatsappText(language, key, programId));
-      await this.sendWhatsapp(whatsappText, recipientPhoneNr, null);
+    if (!recipientPhoneNr) {
+      throw new HttpException(
+        'A recipientPhoneNr should be supplied.',
+        HttpStatus.BAD_REQUEST,
+      );
     }
+    if (!message && !key) {
+      throw new HttpException(
+        'A message or a key should be supplied.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const whatsappText =
+      message || (await this.getWhatsappText(language, key, programId));
+    await this.sendWhatsapp(whatsappText, recipientPhoneNr, null);
   }
 
   public async sendWhatsapp(
@@ -92,7 +97,16 @@ export class WhatsappService {
     programId: number,
   ): Promise<string> {
     const program = await getRepository(ProgramEntity).findOne(programId);
-    return program.notifications[language][key];
+    const fallbackNotifications = program.notifications[this.fallbackLanguage];
+    let notifications = fallbackNotifications;
+
+    if (program.notifications[language]) {
+      notifications = program.notifications[language];
+    }
+    if (notifications[key]) {
+      return notifications[key];
+    }
+    return fallbackNotifications[key] ? fallbackNotifications[key] : '';
   }
 
   public storeSendWhatsapp(message): void {
@@ -170,12 +184,18 @@ export class WhatsappService {
       .filter(connection => connection.images.length > 0);
   }
 
-  private cleanCallbackWhatsappNr(callbackData): string {
-    return callbackData.From.replace('whatsapp:+', '');
+  private cleanWhatsAppNr(value: string): string {
+    return value.replace('whatsapp:+', '');
   }
 
   public async handleIncoming(callbackData): Promise<void> {
-    const fromNumber = this.cleanCallbackWhatsappNr(callbackData);
+    if (!callbackData.From) {
+      throw new HttpException(
+        `No "From" address specified.`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const fromNumber = this.cleanWhatsAppNr(callbackData.From);
     const connectionsWithPhoneNumber = await this.getConnectionsWithPhoneNumber(
       fromNumber,
     );

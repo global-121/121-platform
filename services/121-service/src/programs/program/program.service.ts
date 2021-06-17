@@ -537,7 +537,6 @@ export class ProgramService {
     const knownInstallment = await this.transactionRepository.findOne({
       where: { installment: installment },
     });
-    console.log('knownInstallment: ', knownInstallment);
     let failedConnections;
     if (knownInstallment) {
       const failedReferenceIds = (
