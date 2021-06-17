@@ -4,7 +4,8 @@ import { Injectable } from '@nestjs/common';
 export class IntersolveMockService {
   public constructor() {}
 
-  public post(payload: any): object {
+  public post(payload: any): Promise<any> {
+    console.log('IntersolveMock: post(): ', payload);
     const amount = payload.elements[0].elements
       .find(e => e.name === 'soap:Body')
       .elements[0].elements.find(e => e.name === 'Value').elements[0].text;
@@ -14,8 +15,7 @@ export class IntersolveMockService {
     const transactionId = this.getRandomInt(100000000, 999999999);
     const pin = this.getRandomInt(100000, 999999);
     const expiryDate = '2099-01-01';
-
-    return {
+    const response = {
       IssueCardResponse: {
         _attributes: { xmlns: 'http://www.loyaltyinabox.com/giftcard_6_8/' },
         ResultCode: { _text: '0' },
@@ -31,6 +31,8 @@ export class IntersolveMockService {
         ExpiryDate: { _text: expiryDate },
       },
     };
+    console.log('IntersolveMock post(): response:', response);
+    return new Promise(resolve => resolve(response));
   }
 
   private getRandomInt(min: number, max: number): number {

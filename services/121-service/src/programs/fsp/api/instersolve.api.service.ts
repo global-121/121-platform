@@ -63,10 +63,9 @@ export class IntersolveApiService {
 
     let result = new IntersolveIssueCardResponse();
     try {
-      const responseBody =
-        process.env.MOCK_INTERSOLVE === 'True'
-          ? this.intersolveMock.post(payload)
-          : await this.soapService.post(payload);
+      const responseBody = !!process.env.MOCK_INTERSOLVE
+        ? await this.intersolveMock.post(payload)
+        : await this.soapService.post(payload);
       result = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
         resultDescription:

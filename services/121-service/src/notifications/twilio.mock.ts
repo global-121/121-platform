@@ -16,7 +16,8 @@ export class TwilioClientMock {
     public async create(
       twilioMessagesCreateDto: TwilioMessagesCreateDto,
     ): Promise<object> {
-      return {
+      console.log('TwilioClientMock: create():', twilioMessagesCreateDto);
+      const response = {
         body: twilioMessagesCreateDto.body,
         numSegments: twilioMessagesCreateDto.mediaUrl ? '1' : '0',
         direction: 'outbound-api',
@@ -40,6 +41,8 @@ export class TwilioClientMock {
           media: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.messagingServiceSid}/Media.json`,
         },
       };
+      console.log('TwilioiClientMock create(): response:', response);
+      return response;
     }
   };
 
