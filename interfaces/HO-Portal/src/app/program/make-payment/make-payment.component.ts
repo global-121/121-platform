@@ -94,7 +94,7 @@ export class MakePaymentComponent implements OnInit {
 
     if (response) {
       message += this.translate.instant('page.program.program-payout.result', {
-        nrPa: response,
+        nrPa: `<strong>${response}</strong>`,
       });
     }
     this.actionResult(message, true);

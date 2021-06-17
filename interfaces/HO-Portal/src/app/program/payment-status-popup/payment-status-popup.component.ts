@@ -147,7 +147,7 @@ export class PaymentStatusPopupComponent implements OnInit {
             message += this.translate.instant(
               'page.program.program-payout.result',
               {
-                nrPa: response,
+                nrPa: `<strong>${response}</strong>`,
               },
             );
           }

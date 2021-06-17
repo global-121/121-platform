@@ -141,14 +141,15 @@
         "start-payout": "Start payout now",
         "total-included": "Payout to: {{totalIncluded}} PA(s)",
         "total-amount": "Total amount: {{totalCost}}",
-        "result": "Successfully sent payment request for <strong>{{ nrPa }}</strong> PA(s).<br><br>The payments can take some time to process. Inspect the PA-table below for the up-to-date status of the payment(s).<br><br>You can close this popup.",
+        "result": "Successfully sent payment request for {{nrPa}} PA(s).<br><br>The payments can take some time to process. Inspect the PA-table below for the up-to-date status of the payment(s).<br><br>You can close this popup.",
         "in-progress": "Payment in progress",
         "make-export": "Export payment data",
+        "last-payment": "Last payment: {{nr}}",
         "make-payment": {
           "error": {
             "generic": "Something went wrong with the payment. Please contact the 121 development team."
           },
-          "make-payment": "New payment",
+          "make-payment": "New payment: {{nr}}",
           "number-included": "PA included: {{number}}"
         }
       },

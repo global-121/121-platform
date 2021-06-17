@@ -44,10 +44,15 @@
   </ion-row>
 </div>
 
-<div *ngIf="canMakePayment" class="ion-margin-vertical">
-  <h3>{{ 'page.program.program-payout.make-payment.make-payment'|translate }}: {{nextInstallmentIdLabel}}</h3>
-  <app-make-payment
-    [programId]="programId"
-    [program]="program"
-  ></app-make-payment>
-</div>
+<ion-row *ngIf="canMakePayment" class="ion-margin-vertical">
+  <ion-col size="4">
+    <h3>{{ 'page.program.program-payout.last-payment'|translate:{ nr: lastInstallmentId ? '#' + lastInstallmentId : '-' } }}</h3>
+  </ion-col>
+  <ion-col size="8">
+    <h3>{{ 'page.program.program-payout.make-payment.make-payment'|translate:{ nr: nextInstallmentId ? '#' + nextInstallmentId : '-' } }}</h3>
+    <app-make-payment
+      [programId]="programId"
+      [program]="program"
+    ></app-make-payment>
+  </ion-col>
+</ion-row>

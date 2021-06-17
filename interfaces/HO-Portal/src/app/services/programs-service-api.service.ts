@@ -136,8 +136,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  async getLastInstallmentId(programId: number | string): Promise<number> {
-    const pastPayments = await this.getPastInstallments(programId);
+  async getLastInstallmentId(
+    programId: number | string,
+    pastPayments?: InstallmentData[],
+  ): Promise<number> {
+    if (!pastPayments) {
+      pastPayments = await this.getPastInstallments(programId);
+    }
     if (pastPayments.length === 0) {
       return 0;
     }

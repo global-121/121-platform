@@ -33,8 +33,8 @@ export class ProgramPayoutComponent implements OnInit {
   public exportInstallmentId = 0;
   public exportInstallmentAvailable: boolean;
 
-  private lastInstallmentId: number;
-  public nextInstallmentIdLabel: string;
+  public lastInstallmentId: number;
+  public nextInstallmentId: number;
   private totalIncluded: number;
 
   constructor(
@@ -134,11 +134,12 @@ export class ProgramPayoutComponent implements OnInit {
     );
     this.lastInstallmentId = await this.programsService.getLastInstallmentId(
       this.programId,
+      pastInstallments,
     );
-    this.nextInstallmentIdLabel =
+    this.nextInstallmentId =
       this.lastInstallmentId < this.program.distributionDuration
-        ? '#' + (this.lastInstallmentId + 1)
-        : '-';
+        ? this.lastInstallmentId + 1
+        : 0;
 
     this.fillInstallmentHistory(pastInstallments);
 
