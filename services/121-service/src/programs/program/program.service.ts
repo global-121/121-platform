@@ -852,7 +852,6 @@ export class ProgramService {
       )
       .leftJoin('transaction.connection', 'c')
       .where('transaction.program.id = :programId', { programId: programId })
-      .andWhere("transaction.status = 'success'")
       .groupBy('installment')
       .getRawMany();
     return installments;
@@ -875,7 +874,7 @@ export class ProgramService {
       .createQueryBuilder('transaction')
       .select([
         'transaction.created AS "installmentDate"',
-        'transaction.installment',
+        'transaction.installment AS installment',
         '"referenceId"',
         'status',
         'amount',

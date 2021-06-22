@@ -99,19 +99,26 @@ export class ProgramPayoutComponent implements OnInit {
       this.lastInstallmentId,
     );
 
+    let installmentTransactions;
     if (transactions && transactions.length) {
-      transactions.filter(
-        (transaction) => transaction.id === this.lastInstallmentId,
+      installmentTransactions = transactions.filter(
+        (transaction) => transaction.installment === this.lastInstallmentId,
       );
     }
 
-    if (!transactions || !transactions.length) {
+    if (!installmentTransactions || !installmentTransactions.length) {
       return results;
     }
 
-    const taError = transactions.filter((t) => t.status === StatusEnum.error);
-    const taDone = transactions.filter((t) => t.status === StatusEnum.success);
-    const taWait = transactions.filter((t) => t.status === StatusEnum.waiting);
+    const taError = installmentTransactions.filter(
+      (t) => t.status === StatusEnum.error,
+    );
+    const taDone = installmentTransactions.filter(
+      (t) => t.status === StatusEnum.success,
+    );
+    const taWait = installmentTransactions.filter(
+      (t) => t.status === StatusEnum.waiting,
+    );
 
     return {
       amount: installment.amount,
