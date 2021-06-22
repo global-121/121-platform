@@ -45,10 +45,38 @@
 </div>
 
 <ion-row *ngIf="canMakePayment" class="ion-margin-vertical">
-  <ion-col size="4">
-    <h3>{{ 'page.program.program-payout.last-payment'|translate:{ nr: lastInstallmentId ? '#' + lastInstallmentId : '-' } }}</h3>
+  <ion-col
+    *ngIf="!!lastInstallmentId"
+    [sizeXs]="12"
+    [sizeMd]="4"
+  >
+    <h3>{{ 'page.program.program-payout.last-payment.last-payment'|translate:{ nr: lastInstallmentId ? '#' + lastInstallmentId : '-' } }}</h3>
+    <p *ngIf="lastPaymentResults">
+      {{ lastPaymentResults.amount }}<br>
+      {{ 'page.program.program-payout.last-payment.success'|translate }}: <strong>{{ lastPaymentResults.success }}</strong><br>
+      {{ 'page.program.program-payout.last-payment.waiting'|translate }}: <strong>{{ lastPaymentResults.waiting }}</strong><br>
+      {{ 'page.program.program-payout.last-payment.error'|translate }}: <strong>{{ lastPaymentResults.error }}</strong>
+    </p>
+    <confirm-prompt
+      *ngIf="lastPaymentResults?.error > 0"
+      (confirm)="retryLastPayment()"
+      [subHeader]="'page.program.program-payout.last-payment.confirm-prompt'|translate:{ number: lastPaymentResults?.error }"
+      fill="outline"
+      color="danger"
+    >
+      <ion-icon
+        name="refresh"
+        size="small"
+        slot="start"
+        aria-hidden="true"
+      ></ion-icon>
+      {{ 'page.program.program-payout.last-payment.retry-all'|translate:{ number: lastPaymentResults?.error } }}
+    </confirm-prompt>
   </ion-col>
-  <ion-col size="8">
+  <ion-col
+    [sizeXs]="12"
+    [sizeMd]="lastInstallmentId ? 8 : 12"
+  >
     <h3>{{ 'page.program.program-payout.make-payment.make-payment'|translate:{ nr: nextInstallmentId ? '#' + nextInstallmentId : '-' } }}</h3>
     <app-make-payment
       [programId]="programId"
