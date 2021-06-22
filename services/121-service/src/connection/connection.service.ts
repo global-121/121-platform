@@ -21,7 +21,6 @@ import {
   FspAnswersAttrInterface,
   AnswerSet,
 } from '../programs/fsp/fsp-interface';
-import { API } from '../config';
 import { SmsService } from '../notifications/sms/sms.service';
 import { PaStatus } from '../models/pa-status.model';
 import {
