@@ -858,24 +858,37 @@ export class ProgramService {
     programId: number,
     minInstallment?: number,
   ): Promise<any> {
+    const maxAttemptPerPaAndInstallment = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select(['installment', '"connectionId"'])
+      .addSelect(
+        `MAX(cast("transactionStep" as varchar) || '-' || cast(created as varchar)) AS max_attempt`,
+      )
+      .groupBy('installment')
+      .addGroupBy('"connectionId"');
+
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.created AS "installmentDate"',
-        'installment',
+        'transaction.installment',
         '"referenceId"',
         'status',
         'amount',
         'transaction.errorMessage as error',
         'transaction.customData as "customData"',
       ])
+      .leftJoin(
+        '(' + maxAttemptPerPaAndInstallment.getQuery() + ')',
+        'subquery',
+        `transaction.connectionId = subquery."connectionId" AND transaction.installment = subquery.installment AND cast("transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
+      )
       .leftJoin('transaction.connection', 'c')
       .where('transaction.program.id = :programId', { programId: programId })
-      .andWhere('installment >= :minInstallment', {
+      .andWhere('transaction.installment >= :minInstallment', {
         minInstallment: minInstallment || 0,
       })
-      .orderBy('transaction.transactionStep', 'DESC')
-      .addOrderBy('transaction.created', 'DESC')
+      .andWhere('subquery.max_attempt IS NOT NULL')
       .getRawMany();
     return transactions;
   }
