@@ -73,7 +73,7 @@ export class IntersolveService {
     result.paList = [];
 
     // Set 'grouping = false' for twilio load testing purposes, using the same phone number for all PAs
-    const grouping = false;
+    const grouping = true;
     const paPaymentDataAggregate = this.aggregatePaPaymentListToPhoneNumber(
       paPaymentList,
       grouping,
