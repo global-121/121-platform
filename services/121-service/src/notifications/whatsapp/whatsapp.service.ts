@@ -248,9 +248,11 @@ export class WhatsappService {
         intersolveBarcode.send = true;
         await this.intersolveBarcodeRepository.save(intersolveBarcode);
         await this.intersolveService.insertTransactionIntersolve(
-          intersolveBarcode,
+          intersolveBarcode.installment,
+          intersolveBarcode.amount,
           connection.id,
           2,
+          null,
           StatusEnum.success,
         );
 

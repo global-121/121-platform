@@ -3,7 +3,7 @@ import { IntersolveBarcodeEntity } from '../../intersolve-barcode.entity';
 
 export class IntersolveIssueCardResponse {
   public readonly resultCode: IntersolveResultCode;
-  public readonly resultDescription: string;
+  public resultDescription: string;
   public readonly cardId: string;
   public readonly pin: string;
   public readonly balance: number;

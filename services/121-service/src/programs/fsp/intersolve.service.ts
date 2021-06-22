@@ -73,7 +73,7 @@ export class IntersolveService {
     result.paList = [];
 
     // Set 'grouping = false' for twilio load testing purposes, using the same phone number for all PAs
-    const grouping = true;
+    const grouping = false;
     const paPaymentDataAggregate = this.aggregatePaPaymentListToPhoneNumber(
       paPaymentList,
       grouping,
@@ -174,33 +174,46 @@ export class IntersolveService {
       transactionResult.paTransactionResultList.push(voucherResult);
     }
 
-    // If at least one voucher vailed ..
-    if (
-      !voucherInfoArray.every(
-        voucherInfo => voucherInfo.resultCode == IntersolveResultCode.Ok,
-      )
-    ) {
-      // Cancel all vouchers
-      await this.cancelAllVouchersOnPhoneNumber(
-        voucherInfoArray,
-        transactionResult,
-      );
-      // and return early
-      return transactionResult;
-    }
+    // NOTE: Assumes 1st of theoretically multiple PA's on same phone-number
     const connection = await this.connectionRepository.findOne({
       select: ['id'],
       where: { referenceId: paymentInfo.paPaymentDataList[0].referenceId },
     });
 
+    // If at least one voucher failed ..
+    if (
+      !voucherInfoArray.every(
+        voucherInfo => voucherInfo.resultCode == IntersolveResultCode.Ok,
+      )
+    ) {
+      // .. 1. Cancel all vouchers
+      await this.cancelAllVouchersOnPhoneNumber(
+        voucherInfoArray,
+        transactionResult,
+      );
+      // .. 2. Store failed transaction (assumes 1st out of theoretically multiple PA's on same phone-number)
+      await this.insertTransactionIntersolve(
+        installment,
+        transactionResult.paTransactionResultList[0].calculatedAmount,
+        connection.id,
+        1,
+        StatusEnum.error,
+        transactionResult.paTransactionResultList[0].message,
+      );
+      // .. 3. and return early
+      return transactionResult;
+    }
+
     // If no whatsapp: return early
     if (!useWhatsapp) {
       transactionResult.status = StatusEnum.success;
       await this.insertTransactionIntersolve(
-        voucherInfoArray[0].voucher,
+        installment,
+        transactionResult.paTransactionResultList[0].calculatedAmount,
         connection.id,
         1,
         StatusEnum.success,
+        null,
       );
       return transactionResult;
     }
@@ -352,10 +365,12 @@ export class IntersolveService {
         null,
       );
       await this.insertTransactionIntersolve(
-        voucherInfoArray[0].voucher,
+        voucherInfoArray[0].voucher.installment,
+        voucherInfoArray[0].voucher.amount,
         connectionId,
         1,
         StatusEnum.waiting,
+        null,
         messageSid,
       );
 
@@ -614,17 +629,20 @@ export class IntersolveService {
   }
 
   public async insertTransactionIntersolve(
-    intersolveBarcode: IntersolveBarcodeEntity,
+    installment: number,
+    amount: number,
     connectionId: number,
     transactionStep: number,
     status: StatusEnum,
+    errorMessage: string,
     messageSid?: string,
   ): Promise<void> {
     const transaction = new TransactionEntity();
     transaction.status = status;
-    transaction.installment = intersolveBarcode.installment;
-    transaction.amount = intersolveBarcode.amount;
+    transaction.installment = installment;
+    transaction.amount = amount;
     transaction.created = new Date();
+    transaction.errorMessage = errorMessage;
     transaction.customData = JSON.parse(
       JSON.stringify({
         IntersolvePayoutStatus:

@@ -1,7 +1,7 @@
 import { IntersolveGetCardResponse } from './dto/intersolve-get-card-response.dto';
 import { SoapService } from './soap.service';
 import { IntersolveIssueCardResponse } from './dto/intersolve-issue-card-response.dto';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { IntersolveSoapElements } from './enum/intersolve-soap.enum';
 import { IntersolveCancelTransactionByRefPosResponse } from './dto/intersolve-cancel-transaction-by-ref-pos-response.dto';
 import { IntersolveCancelResponse } from './dto/intersolve-cancel-response.dto';
@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
 import { IntersolveMockService } from './instersolve.mock';
+import { StatusEnum } from '../../../shared/enum/status.enum';
 
 @Injectable()
 export class IntersolveApiService {
@@ -66,6 +67,7 @@ export class IntersolveApiService {
       const responseBody = !!process.env.MOCK_INTERSOLVE
         ? await this.intersolveMock.post(payload)
         : await this.soapService.post(payload);
+
       result = {
         resultCode: responseBody.IssueCardResponse.ResultCode._text,
         resultDescription:
@@ -75,6 +77,7 @@ export class IntersolveApiService {
         balance: parseInt(responseBody.IssueCardResponse.CardNewBalance?._text),
         transactionId: responseBody.IssueCardResponse.TransactionId?._text,
       };
+
       intersolveRequest.resultCodeIssueCard = result.resultCode;
       intersolveRequest.cardId = result.cardId;
       intersolveRequest.PIN = parseInt(result.pin) || null;
@@ -84,6 +87,7 @@ export class IntersolveApiService {
     } catch (Error) {
       console.log('Error: ', Error);
       intersolveRequest.toCancel = true;
+      result.resultDescription = Error;
     }
     await this.intersolveRequestRepository.save(intersolveRequest);
     return result;
