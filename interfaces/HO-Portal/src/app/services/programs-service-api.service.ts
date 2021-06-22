@@ -198,16 +198,18 @@ export class ProgramsServiceApiService {
     installment: number,
     customDataKey: string,
     customDataValue: string,
-  ): Promise<any> {
-    return this.apiService
-      .post(environment.url_121_service_api, `/programs/get-transaction`, {
-        referenceId,
-        installment,
-        programId,
-        customDataKey,
-        customDataValue,
-      })
-      .toPromise();
+  ): Promise<any | Transaction> {
+    return (
+      this.apiService
+        .post(environment.url_121_service_api, `/programs/get-transaction`, {
+          referenceId,
+          installment: Number(installment),
+          programId: Number(programId),
+          customDataKey,
+          customDataValue,
+        })
+        .toPromise()
+    );
   }
 
   submitPayout(

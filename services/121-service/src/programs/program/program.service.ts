@@ -833,14 +833,23 @@ export class ProgramService {
     });
   }
 
-  public async getInstallments(programId: number): Promise<any> {
+  public async getInstallments(
+    programId: number,
+  ): Promise<
+    {
+      installment: number;
+      installmentDate: Date | string;
+      amount: number;
+    }[]
+  > {
     const installments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('installment')
       .addSelect('MIN(transaction.created)', 'installmentDate')
+      .addSelect('transaction.amount', 'amount')
       .where('transaction.program.id = :programId', { programId: programId })
       .andWhere("transaction.status = 'success'")
-      .groupBy('installment')
+      .groupBy('installment,amount')
       .getRawMany();
     return installments;
   }

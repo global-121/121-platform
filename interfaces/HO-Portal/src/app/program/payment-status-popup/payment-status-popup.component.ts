@@ -115,8 +115,8 @@ export class PaymentStatusPopupComponent implements OnInit {
   public async getTransactionTime(customKey: string, customValue: string) {
     const transaction = await this.programsService.getTransaction(
       this.payoutDetails.referenceId,
-      Number(this.payoutDetails.programId),
-      Number(this.payoutDetails.installment),
+      this.payoutDetails.programId,
+      this.payoutDetails.installment,
       customKey,
       customValue,
     );
@@ -129,14 +129,14 @@ export class PaymentStatusPopupComponent implements OnInit {
     }
   }
 
-  public async retryPayment(all: boolean) {
+  public async retryPayment() {
     this.isInProgress = true;
     await this.programsService
       .submitPayout(
         this.payoutDetails.programId,
         this.payoutDetails.installment,
         this.payoutDetails.amount,
-        all ? null : this.payoutDetails.referenceId,
+        this.payoutDetails.referenceId,
       )
       .then(
         (response) => {

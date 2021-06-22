@@ -1,6 +1,7 @@
 export class InstallmentData {
   id: number;
   installmentDate: Date;
+  amount: number;
 }
 
 export class Installment extends InstallmentData {

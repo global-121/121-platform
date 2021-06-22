@@ -144,7 +144,14 @@
         "result": "Successfully sent payment request for {{nrPa}} PA(s).<br><br>The payments can take some time to process. Inspect the PA-table below for the up-to-date status of the payment(s).<br><br>You can close this popup.",
         "in-progress": "Payment in progress",
         "make-export": "Export payment data",
-        "last-payment": "Last payment: {{nr}}",
+        "last-payment": {
+          "last-payment": "Last payment: {{nr}}",
+          "error": "Failed",
+          "success": "Successful",
+          "waiting": "Waiting",
+          "retry-all": "Retry all {{number}} failed",
+          "confirm-prompt": "This will retry ONLY the {{number}} failed payment(s)."
+        },
         "make-payment": {
           "error": {
             "generic": "Something went wrong with the payment. Please contact the 121 development team."
@@ -246,7 +253,6 @@
           "error-message": "Error message",
           "fix-error": "Please contact the 121 development team to fix this error. Then use the button below to retry payment for this Person Affected.",
           "retry": "Retry payment for this PA",
-          "retry-all": "Retry payment for all failed PAs",
           "notes": "<br>Note: If the payment failed for all People Affected, you can also use the original 'Start payout now' button again to retry the payment for all People Affected at once.",
           "get-balance": "Get current balance of voucher",
           "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}",
