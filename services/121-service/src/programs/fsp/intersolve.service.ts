@@ -1,7 +1,13 @@
 import { IntersolvePayoutStatus } from './api/enum/intersolve-payout-status.enum';
 import { IntersolveIssueCardResponse } from './api/dto/intersolve-issue-card-response.dto';
 import { WhatsappService } from './../../notifications/whatsapp/whatsapp.service';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  Injectable,
+  HttpException,
+  HttpStatus,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,6 +29,9 @@ import {
   PaPaymentDataDto,
 } from './dto/pa-payment-data.dto';
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
+import { TransactionEntity } from '../program/transactions.entity';
+import { IntersolveRequestEntity } from './intersolve-request.entity';
+import { TwilioStatusCallbackDto } from '../../notifications/twilio.dto';
 
 @Injectable()
 export class IntersolveService {
@@ -36,11 +45,20 @@ export class IntersolveService {
   >;
   @InjectRepository(ConnectionEntity)
   private readonly connectionRepository: Repository<ConnectionEntity>;
+  @InjectRepository(IntersolveRequestEntity)
+  private readonly intersolveRequestRepository: Repository<
+    IntersolveRequestEntity
+  >;
+  @InjectRepository(TransactionEntity)
+  public transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(ProgramEntity)
+  public programRepository: Repository<ProgramEntity>;
 
   private readonly programId = 1;
 
   public constructor(
     private readonly intersolveApiService: IntersolveApiService,
+    @Inject(forwardRef(() => WhatsappService))
     private readonly whatsappService: WhatsappService,
     private readonly imageCodeService: ImageCodeService,
   ) {}
@@ -54,8 +72,11 @@ export class IntersolveService {
     const result = new FspTransactionResultDto();
     result.paList = [];
 
+    // Set 'grouping = false' for twilio load testing purposes, using the same phone number for all PAs
+    const grouping = true;
     const paPaymentDataAggregate = this.aggregatePaPaymentListToPhoneNumber(
       paPaymentList,
+      grouping,
     );
 
     for (let paymentInfo of paPaymentDataAggregate) {
@@ -76,10 +97,12 @@ export class IntersolveService {
 
   private aggregatePaPaymentListToPhoneNumber(
     paPaymentList: PaPaymentDataDto[],
+    grouping: boolean,
   ): PaPaymentDataAggregateDto[] {
     const groupsByPaymentAddress: PaPaymentDataAggregateDto[] = [];
     paPaymentList.forEach(paPaymentData => {
       if (
+        grouping &&
         groupsByPaymentAddress
           .map(i => i.paymentAddress)
           .includes(paPaymentData.paymentAddress)
@@ -128,10 +151,9 @@ export class IntersolveService {
         intersolveRefPos,
       );
       voucherInfo.refPos = intersolveRefPos;
-      voucherInfoArray.push(voucherInfo);
 
       if (voucherInfo.resultCode == IntersolveResultCode.Ok) {
-        await this.storeVoucher(
+        voucherInfo.voucher = await this.storeVoucher(
           voucherInfo,
           paPaymentData,
           installment,
@@ -148,33 +170,58 @@ export class IntersolveService {
             ? voucherInfo.resultDescription
             : 'unknown');
       }
+      voucherInfoArray.push(voucherInfo);
       transactionResult.paTransactionResultList.push(voucherResult);
     }
 
-    // If at least one voucher vailed ..
+    // NOTE: Assumes 1st of theoretically multiple PA's on same phone-number
+    const connection = await this.connectionRepository.findOne({
+      select: ['id'],
+      where: { referenceId: paymentInfo.paPaymentDataList[0].referenceId },
+    });
+
+    // If at least one voucher failed ..
     if (
       !voucherInfoArray.every(
         voucherInfo => voucherInfo.resultCode == IntersolveResultCode.Ok,
       )
     ) {
-      // Cancel all vouchers
+      // .. 1. Cancel all vouchers
       await this.cancelAllVouchersOnPhoneNumber(
         voucherInfoArray,
         transactionResult,
       );
-      // and return early
+      // .. 2. Store failed transaction (assumes 1st out of theoretically multiple PA's on same phone-number)
+      await this.insertTransactionIntersolve(
+        installment,
+        transactionResult.paTransactionResultList[0].calculatedAmount,
+        connection.id,
+        1,
+        StatusEnum.error,
+        transactionResult.paTransactionResultList[0].message,
+      );
+      // .. 3. and return early
       return transactionResult;
     }
 
     // If no whatsapp: return early
     if (!useWhatsapp) {
       transactionResult.status = StatusEnum.success;
+      await this.insertTransactionIntersolve(
+        installment,
+        transactionResult.paTransactionResultList[0].calculatedAmount,
+        connection.id,
+        1,
+        StatusEnum.success,
+        null,
+      );
       return transactionResult;
     }
 
     // Continue with whatsapp:
     return await this.sendWhatsapp(
       paymentInfo,
+      connection.id,
       voucherInfoArray,
       transactionResult,
       amount,
@@ -201,7 +248,7 @@ export class IntersolveService {
     paPaymentData: PaPaymentDataDto,
     installment: number,
     amount: number,
-  ): Promise<void> {
+  ): Promise<IntersolveBarcodeEntity> {
     const barcodeData = await this.storeBarcodeData(
       voucherInfo.cardId,
       voucherInfo.pin,
@@ -214,6 +261,8 @@ export class IntersolveService {
       barcodeData,
       paPaymentData.referenceId,
     );
+
+    return barcodeData;
   }
 
   private async cancelAllVouchersOnPhoneNumber(
@@ -253,17 +302,19 @@ export class IntersolveService {
 
   private async sendWhatsapp(
     paymentInfo: PaPaymentDataAggregateDto,
+    connectionId: number,
     voucherInfoArray: IntersolveIssueCardResponse[],
     transactionResult: PaymentAddressTransactionResultDto,
     amount: number,
   ): Promise<PaymentAddressTransactionResultDto> {
     const transferResult = await this.sendVoucherWhatsapp(
+      connectionId,
       paymentInfo,
-      voucherInfoArray.length > 1, // boolean which determines single/multiple vouchers
+      voucherInfoArray,
       amount,
     );
 
-    if (transferResult.status === StatusEnum.success) {
+    if (transferResult.status !== StatusEnum.error) {
       transactionResult = await this.processSucceededWhatsappResult(
         transactionResult,
         transferResult,
@@ -279,8 +330,9 @@ export class IntersolveService {
   }
 
   public async sendVoucherWhatsapp(
+    connectionId: number,
     paymentInfo: PaPaymentDataAggregateDto,
-    multiplePeople: boolean,
+    voucherInfoArray: IntersolveIssueCardResponse[],
     amount: number,
   ): Promise<PaymentAddressTransactionResultDto> {
     const result = new PaymentAddressTransactionResultDto();
@@ -292,10 +344,11 @@ export class IntersolveService {
     );
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     try {
-      let whatsappPayment = multiplePeople
-        ? program.notifications[language]['whatsappPaymentMultiple'] ||
-          program.notifications[language]['whatsappPayment']
-        : program.notifications[language]['whatsappPayment'];
+      let whatsappPayment =
+        voucherInfoArray.length > 1
+          ? program.notifications[language]['whatsappPaymentMultiple'] ||
+            program.notifications[language]['whatsappPayment']
+          : program.notifications[language]['whatsappPayment'];
       // It is technically incorrect to take the multiplier of the 1st PA of potentially multiple with the same paymentAddress
       // .. but we have to choose something
       // .. and in practice it will never happen that there are multiple PAs with differing multipliers
@@ -305,13 +358,25 @@ export class IntersolveService {
         paymentInfo.paPaymentDataList[0].paymentAmountMultiplier,
       );
       whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
-      await this.whatsappService.sendWhatsapp(
+
+      const messageSid = await this.whatsappService.sendWhatsapp(
         whatsappPayment,
         paymentInfo.paymentAddress,
         null,
       );
-      result.status = StatusEnum.success;
+      await this.insertTransactionIntersolve(
+        voucherInfoArray[0].voucher.installment,
+        voucherInfoArray[0].voucher.amount,
+        connectionId,
+        1,
+        StatusEnum.waiting,
+        null,
+        messageSid,
+      );
+
+      result.status = StatusEnum.waiting;
       result.customData = {
+        messageSid: messageSid,
         IntersolvePayoutStatus: IntersolvePayoutStatus.InitialMessage,
       };
     } catch (e) {
@@ -339,6 +404,7 @@ export class IntersolveService {
     transactionResult.status = transferResult.status;
     transactionResult.customData = transferResult.customData;
     transactionResult.paTransactionResultList.forEach(pa => {
+      pa.status = transferResult.status;
       pa.customData = transactionResult.customData;
     });
     return transactionResult;
@@ -381,6 +447,60 @@ export class IntersolveService {
     barcodeData.installment = installment;
     barcodeData.amount = amount;
     return this.intersolveBarcodeRepository.save(barcodeData);
+  }
+
+  public async processStatus(
+    statusCallbackData: TwilioStatusCallbackDto,
+  ): Promise<void> {
+    const transaction = (
+      await this.transactionRepository.find({ relations: ['connection'] })
+    ).filter(
+      t => t.customData['messageSid'] === statusCallbackData.MessageSid,
+    )[0];
+    if (!transaction) {
+      // If no transaction found, it cannot (and should not have to) be updated
+      return;
+    }
+
+    const succesStatuses = ['delivered', 'read'];
+    const failStatuses = ['undelivered', 'failed'];
+    let status: string;
+    if (succesStatuses.includes(statusCallbackData.MessageStatus)) {
+      status = StatusEnum.success;
+    } else if (failStatuses.includes(statusCallbackData.MessageStatus)) {
+      const connection = await this.connectionRepository.findOne({
+        where: { id: transaction.connection.id },
+        relations: ['images', 'images.barcode'],
+      });
+      // NOTE: array.find yields 1st element, but this is line with 1 voucher per installment
+      const voucher = connection.images.find(
+        i => i.barcode.installment === transaction.installment,
+      ).barcode;
+      const intersolveRequest = await this.intersolveRequestRepository.findOne({
+        where: { cardId: voucher.barcode },
+      });
+
+      this.cancelAndDeleteVoucher(
+        voucher.barcode,
+        String(intersolveRequest.transactionId),
+      );
+      status = StatusEnum.error;
+    } else {
+      // For other statuses, no update needed
+      return;
+    }
+
+    await this.transactionRepository.update(
+      { id: transaction.id },
+      {
+        status: status,
+        errorMessage:
+          status === StatusEnum.error
+            ? 'Twilio status callback message: ' +
+              statusCallbackData.MessageStatus
+            : null,
+      },
+    );
   }
 
   public async exportVouchers(
@@ -506,5 +626,43 @@ export class IntersolveService {
     }
 
     return unusedVouchers;
+  }
+
+  public async insertTransactionIntersolve(
+    installment: number,
+    amount: number,
+    connectionId: number,
+    transactionStep: number,
+    status: StatusEnum,
+    errorMessage: string,
+    messageSid?: string,
+  ): Promise<void> {
+    const transaction = new TransactionEntity();
+    transaction.status = status;
+    transaction.installment = installment;
+    transaction.amount = amount;
+    transaction.created = new Date();
+    transaction.errorMessage = errorMessage;
+    transaction.customData = JSON.parse(
+      JSON.stringify({
+        IntersolvePayoutStatus:
+          transactionStep === 1
+            ? IntersolvePayoutStatus.InitialMessage
+            : IntersolvePayoutStatus.VoucherSent,
+      }),
+    );
+    if (messageSid) {
+      transaction.customData['messageSid'] = messageSid;
+    }
+    transaction.transactionStep = transactionStep;
+    const connection = await this.connectionRepository.findOne({
+      where: { id: connectionId },
+      relations: ['fsp'],
+    });
+    transaction.connection = connection;
+    const programId = connection.programsApplied[0];
+    transaction.program = await this.programRepository.findOne(programId);
+    transaction.financialServiceProvider = connection.fsp;
+    await this.transactionRepository.save(transaction);
   }
 }

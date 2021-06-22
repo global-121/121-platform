@@ -34,6 +34,7 @@ import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/image-code-export-vouchers.entity';
 import { IntersolveRequestEntity } from '../fsp/intersolve-request.entity';
 import { ActionService } from '../../actions/action.service';
+import { IntersolveMockService } from '../fsp/api/instersolve.mock';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -54,6 +55,7 @@ describe('Program service', (): void => {
           ImageCodeService,
           IntersolveService,
           IntersolveApiService,
+          IntersolveMockService,
           SoapService,
           WhatsappService,
           ActionService,

@@ -13,6 +13,7 @@ import {
   Not,
   IsNull,
   Equal,
+  In,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
@@ -36,7 +37,6 @@ import { FspService } from '../fsp/fsp.service';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
-import { PaymentTransactionResultDto } from '../fsp/dto/payment-transaction-result.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { CriteriumForExport } from './dto/criterium-for-export.dto';
@@ -363,9 +363,7 @@ export class ProgramService {
     await this.checkIfProgramExists(programId);
 
     for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
-      let connection = await this.getConnectionByReferenceId(
-        referenceId.referenceId,
-      );
+      let connection = await this.getConnectionByReferenceId(referenceId);
       if (!connection) continue;
 
       connection[timestampField] = new Date();
@@ -408,9 +406,7 @@ export class ProgramService {
     await this.checkIfProgramExists(programId);
 
     for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
-      let connection = await this.getConnectionByReferenceId(
-        referenceId.referenceId,
-      );
+      let connection = await this.getConnectionByReferenceId(referenceId);
       if (!connection) continue;
 
       // Add to inclusion-array, if not yet present
@@ -445,9 +441,7 @@ export class ProgramService {
     await this.checkIfProgramExists(programId);
 
     for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
-      let connection = await this.getConnectionByReferenceId(
-        referenceId.referenceId,
-      );
+      let connection = await this.getConnectionByReferenceId(referenceId);
       if (!connection) continue;
 
       // Add to rejection-array, if not yet present
@@ -482,9 +476,7 @@ export class ProgramService {
     await this.checkIfProgramExists(programId);
 
     for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
-      let connection = await this.getConnectionByReferenceId(
-        referenceId.referenceId,
-      );
+      let connection = await this.getConnectionByReferenceId(referenceId);
       if (!connection) continue;
 
       // Add to rejection-array, if not yet present
@@ -537,13 +529,45 @@ export class ProgramService {
     };
   }
 
+  private async getConnectionsForPayment(
+    programId: number,
+    installment: number,
+    referenceId?: string,
+  ): Promise<ConnectionEntity[]> {
+    const knownInstallment = await this.transactionRepository.findOne({
+      where: { installment: installment },
+    });
+    let failedConnections;
+    if (knownInstallment) {
+      const failedReferenceIds = (
+        await this.getFailedTransactions(programId, installment)
+      ).map(t => t.referenceId);
+      failedConnections = await this.connectionRepository.find({
+        where: { referenceId: In(failedReferenceIds) },
+        relations: ['fsp'],
+      });
+    }
+
+    // If 'referenceId' is passed (only in retry-payment-per PA) use this PA only,
+    // If known installment, then only failed connections
+    // otherwise (new payment) get all included PA's
+    return referenceId
+      ? await this.connectionRepository.find({
+          where: { referenceId: referenceId },
+          relations: ['fsp'],
+        })
+      : knownInstallment
+      ? failedConnections
+      : await this.getIncludedConnections(programId);
+  }
+
   public async payout(
     userId: number,
     programId: number,
     installment: number,
     amount: number,
     referenceId?: string,
-  ): Promise<PaymentTransactionResultDto> {
+  ): Promise<number> {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
@@ -552,20 +576,27 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    // If 'referenceId' is passed (only in retry-payment-per PA) use this PA only, otherwise get all included PA's
-    const includedConnections = referenceId
-      ? await this.connectionRepository.find({
-          where: { referenceId: referenceId },
-          relations: ['fsp'],
-        })
-      : await this.getIncludedConnections(programId);
-    if (includedConnections.length < 1) {
-      const errors = 'There are no included PA for this program';
+    const targetedConnections = await this.getConnectionsForPayment(
+      programId,
+      installment,
+      referenceId,
+    );
+
+    if (targetedConnections.length < 1) {
+      const errors = 'There are no targeted PAs for this payment';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     const paPaymentDataList = await this.createPaPaymentDataList(
-      includedConnections,
+      targetedConnections,
+    );
+
+    this.actionService.saveAction(
+      userId,
+      programId,
+      installment === -1
+        ? AdditionalActionType.testMpesaPayment
+        : AdditionalActionType.paymentStarted,
     );
 
     const paymentTransactionResult = await this.fspService.payout(
@@ -573,15 +604,8 @@ export class ProgramService {
       programId,
       installment,
       amount,
+      userId,
     );
-
-    if (installment === -1) {
-      this.actionService.saveAction(
-        userId,
-        programId,
-        AdditionalActionType.testMpesaPayment,
-      );
-    }
 
     return paymentTransactionResult;
   }
@@ -809,13 +833,25 @@ export class ProgramService {
     });
   }
 
-  public async getInstallments(programId: number): Promise<any> {
+  public async getInstallments(
+    programId: number,
+  ): Promise<
+    {
+      installment: number;
+      installmentDate: Date | string;
+      amount: number;
+    }[]
+  > {
     const installments = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('installment')
       .addSelect('MIN(transaction.created)', 'installmentDate')
+      .addSelect(
+        'MIN(transaction.amount / coalesce(c.paymentAmountMultiplier, 1) )',
+        'amount',
+      )
+      .leftJoin('transaction.connection', 'c')
       .where('transaction.program.id = :programId', { programId: programId })
-      .andWhere("transaction.status = 'success'")
       .groupBy('installment')
       .getRawMany();
     return installments;
@@ -825,23 +861,56 @@ export class ProgramService {
     programId: number,
     minInstallment?: number,
   ): Promise<any> {
+    const maxAttemptPerPaAndInstallment = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select(['installment', '"connectionId"'])
+      .addSelect(
+        `MAX(cast("transactionStep" as varchar) || '-' || cast(created as varchar)) AS max_attempt`,
+      )
+      .groupBy('installment')
+      .addGroupBy('"connectionId"');
+
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
         'transaction.created AS "installmentDate"',
-        'installment',
+        'transaction.installment AS installment',
         '"referenceId"',
         'status',
         'amount',
         'transaction.errorMessage as error',
         'transaction.customData as "customData"',
       ])
+      .leftJoin(
+        '(' + maxAttemptPerPaAndInstallment.getQuery() + ')',
+        'subquery',
+        `transaction.connectionId = subquery."connectionId" AND transaction.installment = subquery.installment AND cast("transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
+      )
       .leftJoin('transaction.connection', 'c')
       .where('transaction.program.id = :programId', { programId: programId })
-      .andWhere('installment >= :minInstallment', {
+      .andWhere('transaction.installment >= :minInstallment', {
         minInstallment: minInstallment || 0,
       })
-      .orderBy('transaction.transactionStep', 'DESC')
+      .andWhere('subquery.max_attempt IS NOT NULL')
+      .getRawMany();
+    return transactions;
+  }
+
+  public async getFailedTransactions(
+    programId: number,
+    installment: number,
+  ): Promise<any> {
+    const transactions = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('c."referenceId"')
+      .addSelect('MAX(amount) as amount')
+      .leftJoin('transaction.connection', 'c')
+      .where('transaction.program.id = :programId', { programId: programId })
+      .andWhere('installment = :installment', {
+        installment: installment,
+      })
+      .andWhere('status = :status', { status: StatusEnum.error })
+      .groupBy('c."referenceId"')
       .getRawMany();
     return transactions;
   }

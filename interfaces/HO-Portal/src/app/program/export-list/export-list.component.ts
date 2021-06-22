@@ -118,7 +118,7 @@ export class ExportListComponent implements OnChanges {
   public async getLatestActionTime(): Promise<void> {
     const latestAction = await this.programsService.retrieveLatestActions(
       this.exportType,
-      Number(this.programId),
+      this.programId,
     );
     if (latestAction) {
       this.actionTimestamp = formatDate(

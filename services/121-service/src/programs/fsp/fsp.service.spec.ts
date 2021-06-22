@@ -32,6 +32,10 @@ import { AfricasTalkingNotificationDto } from './dto/africas-talking-notificatio
 import { ProgramEntity } from '../program/program.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
 import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
+import { IntersolveMockService } from './api/instersolve.mock';
+import { ActionService } from '../../actions/action.service';
+import { ActionEntity } from '../../actions/action.entity';
+import { UserEntity } from '../../user/user.entity';
 
 describe('Fsp service', (): void => {
   let service: FspService;
@@ -50,7 +54,9 @@ describe('Fsp service', (): void => {
           ImageCodeService,
           IntersolveService,
           IntersolveApiService,
+          IntersolveMockService,
           WhatsappService,
+          ActionService,
           {
             provide: getRepositoryToken(ProgramEntity),
             useFactory: repositoryMockFactory,
@@ -103,6 +109,14 @@ describe('Fsp service', (): void => {
             provide: getRepositoryToken(IntersolveInstructionsEntity),
             useFactory: repositoryMockFactory,
           },
+          {
+            provide: getRepositoryToken(ActionEntity),
+            useFactory: repositoryMockFactory,
+          },
+          {
+            provide: getRepositoryToken(UserEntity),
+            useFactory: repositoryMockFactory,
+          },
         ],
       }).compile();
 
@@ -127,6 +141,7 @@ describe('Fsp service', (): void => {
     const programId = 1;
     const installment = 1;
     const amount = 10;
+    const userId = 1;
 
     it.skip('should return default values', async (): Promise<void> => {
       const result = await service.payout(
@@ -134,17 +149,13 @@ describe('Fsp service', (): void => {
         programId,
         installment,
         amount,
+        userId,
       );
-      expect(result.nrSuccessfull).toBeDefined();
+      expect(result).toBeDefined();
       expect(service).toBeDefined();
     });
 
     it.skip('should return the right count of PAs', async (): Promise<void> => {
-      const paymentTransactionResultDto = {
-        nrSuccessfull: 0,
-        nrFailed: 0,
-        nrWaiting: 0,
-      };
       const intersolvePaPayment = [new PaPaymentDataDto()];
       intersolvePaPayment[0].fspName = fspName.intersolve;
       const intersolveNoWhatsappPaPayment = [new PaPaymentDataDto()];
@@ -171,18 +182,15 @@ describe('Fsp service', (): void => {
       spyOn<any>(service, 'storeAllTransactions').and.returnValue(
         Promise.resolve(),
       );
-      spyOn<any>(service, 'calcAggregateStatus').and.returnValue(
-        Promise.resolve(paymentTransactionResultDto),
-      );
 
       const result = await service.payout(
         paPaymentDataList,
         programId,
         installment,
         amount,
+        userId,
       );
-      const countResult =
-        result.nrSuccessfull + result.nrFailed + result.nrWaiting;
+      const countResult = result;
       const countInput =
         paLists.africasTalkingPaPayment.length +
         paLists.intersolveNoWhatsappPaPayment.length +

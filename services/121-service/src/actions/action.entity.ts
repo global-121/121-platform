@@ -29,6 +29,8 @@ export class ActionEntity {
 
 export enum AdditionalActionType {
   testMpesaPayment = 'test-mpesa-payment',
+  paymentStarted = 'payment-started',
+  paymentFinished = 'payment-finished',
   importPeopleAffected = 'import-people-affected',
 }
 export type ActionType = ExportType | AdditionalActionType;

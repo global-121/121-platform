@@ -2,7 +2,7 @@ import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
 import { WhatsappModule } from './../../notifications/whatsapp/whatsapp.module';
 import { AfricasTalkingService } from './africas-talking.service';
-import { Module, HttpModule } from '@nestjs/common';
+import { Module, HttpModule, forwardRef } from '@nestjs/common';
 import { FspService } from './fsp.service';
 import { FspController } from './fsp.controller';
 import { AfricasTalkingApiService } from './api/africas-talking.api.service';
@@ -22,12 +22,16 @@ import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/ima
 import { ImageCodeEntity } from '../../notifications/imagecode/image-code.entity';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { UserModule } from '../../user/user.module';
+import { IntersolveMockService } from './api/instersolve.mock';
+import { ActionService } from '../../actions/action.service';
+import { ActionEntity } from '../../actions/action.entity';
+import { UserEntity } from '../../user/user.entity';
 
 @Module({
   imports: [
     HttpModule,
     UserModule,
-    WhatsappModule,
+    forwardRef(() => WhatsappModule),
     TypeOrmModule.forFeature([
       ProgramEntity,
       ConnectionEntity,
@@ -41,6 +45,8 @@ import { UserModule } from '../../user/user.module';
       ImageCodeExportVouchersEntity,
       ImageCodeEntity,
       FspAttributeEntity,
+      ActionEntity,
+      UserEntity,
     ]),
   ],
   providers: [
@@ -49,8 +55,10 @@ import { UserModule } from '../../user/user.module';
     AfricasTalkingApiService,
     IntersolveService,
     IntersolveApiService,
+    IntersolveMockService,
     SoapService,
     ImageCodeService,
+    ActionService,
   ],
   controllers: [FspController],
   exports: [
@@ -59,8 +67,10 @@ import { UserModule } from '../../user/user.module';
     AfricasTalkingApiService,
     IntersolveService,
     IntersolveApiService,
+    IntersolveMockService,
     SoapService,
     ImageCodeService,
+    ActionService,
   ],
 })
 export class FspModule {}

@@ -19,11 +19,13 @@ import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import {
   FspTransactionResultDto,
   PaTransactionResultDto,
-  PaymentTransactionResultDto,
 } from './dto/payment-transaction-result.dto';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
+import { ActionService } from '../../actions/action.service';
+import { AdditionalActionType } from '../../actions/action.entity';
+import { TwilioStatusCallbackDto } from '../../notifications/twilio.dto';
 
 @Injectable()
 export class FspService {
@@ -49,6 +51,7 @@ export class FspService {
   public constructor(
     private readonly africasTalkingService: AfricasTalkingService,
     private readonly intersolveService: IntersolveService,
+    private readonly actionService: ActionService,
   ) {}
 
   public async payout(
@@ -56,24 +59,23 @@ export class FspService {
     programId: number,
     installment: number,
     amount: number,
-  ): Promise<PaymentTransactionResultDto> {
+    userId: number,
+  ): Promise<number> {
     const paLists = this.splitPaListByFsp(paPaymentDataList);
 
-    const transactionResults = await this.makePaymentRequest(
-      paLists,
-      programId,
-      installment,
-      amount,
+    this.makePaymentRequest(paLists, programId, installment, amount).then(
+      transactionResults => {
+        this.storeAllTransactions(transactionResults, programId, installment);
+        if (installment > -1) {
+          this.actionService.saveAction(
+            userId,
+            programId,
+            AdditionalActionType.paymentFinished,
+          );
+        }
+      },
     );
-    this.storeAllTransactions(transactionResults, programId, installment);
-
-    // Calculate aggregates
-    const fspTransactionResults = [
-      ...transactionResults.intersolveTransactionResult.paList,
-      ...transactionResults.intersolveNoWhatsappTransactionResult.paList,
-      ...transactionResults.africasTalkingTransactionResult.paList,
-    ];
-    return this.calcAggregateStatus(fspTransactionResults);
+    return paPaymentDataList.length;
   }
 
   private splitPaListByFsp(paPaymentDataList: PaPaymentDataDto[]): any {
@@ -150,24 +152,8 @@ export class FspService {
     programId: number,
     installment: number,
   ): Promise<void> {
-    for (let transaction of transactionResults.intersolveTransactionResult
-      .paList) {
-      await this.storeTransaction(
-        transaction,
-        programId,
-        installment,
-        fspName.intersolve,
-      );
-    }
-    for (let transaction of transactionResults
-      .intersolveNoWhatsappTransactionResult.paList) {
-      await this.storeTransaction(
-        transaction,
-        programId,
-        installment,
-        fspName.intersolveNoWhatsapp,
-      );
-    }
+    // Intersolve transactions are now stored during PA-request-loop already
+    // Align across FSPs in future again
     for (let transaction of transactionResults.africasTalkingTransactionResult
       .paList) {
       await this.storeTransaction(
@@ -208,25 +194,6 @@ export class FspService {
     this.transactionRepository.save(transaction);
   }
 
-  private calcAggregateStatus(
-    fspTransactionResults: PaTransactionResultDto[],
-  ): PaymentTransactionResultDto {
-    const result = new PaymentTransactionResultDto();
-    result.nrSuccessfull = 0;
-    result.nrWaiting = 0;
-    result.nrFailed = 0;
-    for (let paTransactionResult of fspTransactionResults) {
-      if (paTransactionResult.status === StatusEnum.success) {
-        result.nrSuccessfull += 1;
-      } else if (paTransactionResult.status === StatusEnum.waiting) {
-        result.nrWaiting += 1;
-      } else if (paTransactionResult.status === StatusEnum.error) {
-        result.nrFailed += 1;
-      }
-    }
-    return result;
-  }
-
   public async checkPaymentValidation(
     fsp: fspName,
     africasTalkingValidationData?: AfricasTalkingValidationDto,
@@ -238,11 +205,12 @@ export class FspService {
     }
   }
 
-  public async processPaymentNotification(
+  public async processPaymentStatus(
     fsp: fspName,
-    africasTalkingNotificationData?: AfricasTalkingNotificationDto,
+    statusCallbackData: object,
   ): Promise<void> {
     if (fsp === fspName.africasTalking) {
+      const africasTalkingNotificationData = statusCallbackData as AfricasTalkingNotificationDto;
       const enrichedNotification = await this.africasTalkingService.processNotification(
         africasTalkingNotificationData,
       );
@@ -253,6 +221,10 @@ export class FspService {
         enrichedNotification.installment,
         fspName.africasTalking,
       );
+    }
+    if (fsp === fspName.intersolve) {
+      const twilioStatusCallbackData = statusCallbackData as TwilioStatusCallbackDto;
+      await this.intersolveService.processStatus(twilioStatusCallbackData);
     }
   }
 

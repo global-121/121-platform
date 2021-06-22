@@ -29,40 +29,74 @@ Feature: Make a new payment
     And the payment instructions for each PA contain the transfer value "20" times the PA's "paymentAmountMultiplier"
     And the message is shown according to the success of the transactions
 
-  Scenario: Send payment instructions with at least 1 successful transaction
+  Scenario: Send payment instructions for small amount of PAs with at least 1 successful transaction
     Given this is not the last payment for the program
     And the user clicks the button "start payout now"
     And the pop-up "Are you sure?" is shown
     When the user clicks the button "OK"
     Then the payment instructions list is sent to the Financial Service Provider
-    And the payment instructions for each PA contain the transfer value "20" times the PA's "paymentAmountMultiplier"
-    And the message "Payout successful for X PA's and failed for Y (if Y>0) PA's" is shown
+    And the payment instructions for each PA contain the transfer value times the PA's "paymentAmountMultiplier"
+    And the message "Payout request successfully sent to X PAs" is shown
     And it shows an "OK" button
-    When the users presses "OK" 
+    When the users presses "OK"
     Then the page refreshes
+    And the "payout" button  is now disabled
+    And it mentions that a payout is in progress
+    And it shows a refresh icon
+    When the user clicks the refresh icon (and the payment has indeed finished)
+    Then the payout-in-progress message is gone
+    And the "payout" button for the next payment is enabled again
     And the "new payment" component now shows the number of the next payment
     And the "export payment data" component now shows that the payment is "closed"
     And the "export payment data" component now has the next payment enabled
     And the "PA-table" now has the payment column filled for every PA
-    And for successfull transactions it shows a datetime, which can be clickable depending on the program
+    And for successful transactions it shows a date+time, which can be clickable depending on the program
     And for failed transactions it shows 'Failed', which can be clickable depending on the program
-    And a new empty payment column for the next payment is visible 
-    And - for successfull transactions - the PA receives (notification about) voucher/cash depending on the FSP
+    And a new empty payment column for the next payment is visible
+    And - for successful transactions - the PA receives (notification about) voucher/cash depending on the FSP
 
-  Scenario: Send payment instructions with 0 successful transactions
-    When payment instructions are sent to the Financial Service Provider
-    Then the message "Payout failed for all PA's" is shown
-    And the payment is not processed and/or "closed"
-    And the payment column contains 'Failed' for all PAs, which can be clickable depending on the program
+  Scenario: Send payment instructions with small amount of PAs with 0 successful transactions
+    When payment instructions are sent to the Financial Service Provider and have finished processing
+    Then the payment is not "closed"
+    And the "export payment" dropdown does not update accordingly
+    And the "payment" column contains 'Failed' for all PAs, which can be clickable depending on the program
+    And the same payment can be retried for all included PAs using the "payout" button
 
-  Scenario: Send payment instructions for 1000 PAs
-    Given there are 1000 PAs in the system (to import: see Admin-user/Import_test_registrations_NL.feature)
+  Scenario: Send payment instructions for 5000 PAs
+    Given there are 5000 PAs in the system (to import: see Admin-user/Import_test_registrations_NL.feature)
     And they are included (see e.g. HO-Portal/Include_people_affected_Run_Program_role.feature)
     When the user clicks the "start payout now" button and confirms the confirm prompt
-    Then a loading spinner starts which can take a long time (very rough estimation: 0.5 seconds per PA)
-    When it is finished
-    Then the regular popup with "Payout successful for X PA's and failed for Y (if Y>0) PA's" is shown
-  
+    Then the message "Payout request successfully sent to X PAs" is shown
+    And it mentions that it can take some time (very rough estimation: 0.5 seconds per PA)
+    And it shows an "OK" button
+    When the users presses "OK"
+    Then the page refreshes
+    And the "payout" button  is now disabled
+    And it mentions that a payout is in progress
+    And it shows a refresh icon
+    When the user clicks the refresh icon
+    Then the payment-column will start showing more and more PA's with status waiting
+    When the user clicks the refresh icon again
+    Then the payment-column will upgrade more and more PA's from 'waiting' to 'success' or 'error'
+    When the user clicks the refresh icon again (given the payment has finished)
+    Then the payout-in-progress message is gone
+    And the "payout" button for the next payment is enabled again
+    And the payment-column may still contain PA's on 'waiting', as the status-callbacks go on longer then the request-loop
+    When the user refreshes the page again
+    Then eventually all 'waiting' PAs have upgraded to 'success' or 'error' (unless some status callback fails for some reason)
+
+  Scenario: retry payment for 1 PA
+    Given the payment has failed for a PA
+    When the user clicks the failed-popup for this PA
+    Then a popup appears with an error message
+    And it shows a retry-button for this PA
+    And it shows a retry-button for all PAs
+    When the user clicks the retry-button for 1 PA
+    Then a normal payment scenario is started for this 1 PA only (see other scenario)
+    When the user clicks the retry-button for all PAs
+    Then a normal payment scenario is started for all failed PAs of this payment only (see other scenario)
+    And it does not include 'waiting' transactions
+
   Scenario: Send payment instructions to a Person Affected with Financial Service Provider "Intersolve"
     Given the Person Affected has chosen the option "receive voucher via whatsApp"
     When payment instructions are successfully sent (see scenario: Send payment instructions with at least 1 successful transaction)
@@ -73,10 +107,10 @@ Feature: Make a new payment
     Then the Person Affected receives a voucher image
     And it is accompanied by text that explains what is sent
     And a separate "explanation" image is sent that explains how to use the voucher in the store
-    And a separate voucher image is sent for any old uncollected vouchers or for any other registrations on the same "whatsappPhoneNumber" 
+    And a separate voucher image is sent for any old uncollected vouchers or for any other registrations on the same "whatsappPhoneNumber"
 
 ------------------------------------------------------------------------------------------------------------------------------------
-26/05/2021: Copied the below from Github wiki, as it has to be moved here. But not updating style yet, because the functionality will change soon. 
+26/05/2021: Copied the below from Github wiki, as it has to be moved here. But not updating style yet, because the functionality will change soon.
 
 One or multiple registrations with the same payment-address(phone-number)
 
@@ -88,11 +122,11 @@ One or multiple registrations with the same payment-address(phone-number)
     * ... + any older uncollected vouchers (without text)
     * ... + one explanation image
 
-2. There is 1 rejected and 1 included registration on one payment-address. 
+2. There is 1 rejected and 1 included registration on one payment-address.
   - Works exactly as (1)
 
 3. There are 2 or more _included_ registrations on one payment-address.
-  - Payment succeeds 
+  - Payment succeeds
   - Person Affected receives initial WhatsApp message about receiving multiple vouchers for this week + also any older uncollected vouchers
   - If replied 'yes', Person Affected receives:
     * a WhatsApp message about receiving multiple vouchers (incl. the first voucher image)

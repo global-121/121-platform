@@ -11,7 +11,7 @@ export class ReferenceIdDto {
 export class ReferenceIdsDto {
   @ApiModelProperty({
     example:
-      '[{ "referenceId": "910c50be-f131-4b53-b06b-6506a40a2734"}, { "referenceId": "910c50be-f131-4b53-b06b-6506a40a2735"}]',
+      '["910c50be-f131-4b53-b06b-6506a40a2734", "910c50be-f131-4b53-b06b-6506a40a2735"]',
   })
   @IsString()
   public readonly referenceIds: string;

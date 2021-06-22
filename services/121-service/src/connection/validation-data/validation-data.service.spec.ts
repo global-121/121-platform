@@ -34,6 +34,7 @@ import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/ima
 import { IntersolveRequestEntity } from '../../programs/fsp/intersolve-request.entity';
 import { IntersolveInstructionsEntity } from '../../programs/fsp/intersolve-instructions.entity';
 import { ActionService } from '../../actions/action.service';
+import { IntersolveMockService } from '../../programs/fsp/api/instersolve.mock';
 
 describe('ValidationDataService', (): void => {
   let service: ValidationDataService;
@@ -54,6 +55,7 @@ describe('ValidationDataService', (): void => {
           ImageCodeService,
           IntersolveService,
           IntersolveApiService,
+          IntersolveMockService,
           SoapService,
           WhatsappService,
           LookupService,

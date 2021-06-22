@@ -141,15 +141,22 @@
         "start-payout": "Start payout now",
         "total-included": "Payout to: {{totalIncluded}} PA(s)",
         "total-amount": "Total amount: {{totalCost}}",
-        "result-success": "Successfully sent instructions to FSP's for {{nrSuccessfull}} PA(s).",
-        "result-failure": "Payment request failed for {{nrFailed}} PA(s). Inspect the PA-table below for details.",
-        "result-waiting": "Payment status not yet received for {{nrWaiting}} PA(s). Inspect the PA-table below for the up-to-date status of the payment(s).",
+        "result": "Successfully sent payment request for {{nrPa}} PA(s).<br><br>The payments can take some time to process. Inspect the PA-table below for the up-to-date status of the payment(s).<br><br>You can close this popup.",
+        "in-progress": "Payment in progress",
         "make-export": "Export payment data",
+        "last-payment": {
+          "last-payment": "Last payment: {{nr}}",
+          "error": "Failed",
+          "success": "Successful",
+          "waiting": "Waiting",
+          "retry-all": "Retry all {{number}} failed",
+          "confirm-prompt": "This will retry ONLY the {{number}} failed payment(s)."
+        },
         "make-payment": {
           "error": {
             "generic": "Something went wrong with the payment. Please contact the 121 development team."
           },
-          "make-payment": "New payment",
+          "make-payment": "New payment: {{nr}}",
           "number-included": "PA included: {{number}}"
         }
       },
@@ -218,6 +225,7 @@
         "transaction": {
           "failed": "Failed",
           "waiting": "Waiting",
+          "waiting-message": "Still waiting for status update on this transaction. Refresh the page for the latest status.",
           "show-status": "Show status"
         },
         "edit-person-affected-popup": {
@@ -244,7 +252,7 @@
           "money-title": "Voucher sent payment #{{installment}}: {{timestamp}}",
           "error-message": "Error message",
           "fix-error": "Please contact the 121 development team to fix this error. Then use the button below to retry payment for this Person Affected.",
-          "retry": "Retry payment",
+          "retry": "Retry payment for this PA",
           "notes": "<br>Note: If the payment failed for all People Affected, you can also use the original 'Start payout now' button again to retry the payment for all People Affected at once.",
           "get-balance": "Get current balance of voucher",
           "current-balance": "Current balance: {{currentBalance}}<br><br>at: {{timestamp}}",

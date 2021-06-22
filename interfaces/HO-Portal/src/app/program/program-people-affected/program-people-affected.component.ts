@@ -58,6 +58,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   public headerChecked = false;
   public headerSelectAllVisible = false;
 
+  public isInProgress = false;
+
   public action: BulkActionId = BulkActionId.chooseAction;
   public bulkActions: BulkAction[] = [
     {
@@ -692,6 +694,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           this.locale,
         );
       } else if (transaction.status === StatusEnum.waiting) {
+        personRow['payment' + paymentColumn.installmentIndex + '-error'] =
+          this.translate.instant(
+            'page.program.program-people-affected.transaction.waiting-message',
+          );
+        personRow['payment' + paymentColumn.installmentIndex + '-waiting'] =
+          true;
         paymentColumnText = this.translate.instant(
           'page.program.program-people-affected.transaction.waiting',
         );
@@ -750,6 +758,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return !!row['payment' + installmentIndex + '-error'];
   }
 
+  public hasWaiting(row: PersonRow, installmentIndex: number) {
+    return !!row['payment' + installmentIndex + '-waiting'];
+  }
+
   public async editPersonAffectedPopup(row: PersonRow) {
     const person = this.allPeopleData.find(
       (pa) => pa.referenceId === row.referenceId,
@@ -766,7 +778,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public async statusPopup(row: PersonRow, column, value) {
     const hasError = this.hasError(row, column.installmentIndex);
-    const content = hasError
+    const hasWaiting = this.hasWaiting(row, column.installmentIndex);
+    const content = hasWaiting
+      ? row[column.prop + '-error']
+      : hasError
       ? this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.error-message',
         ) +
@@ -777,12 +792,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.payment-status-popup.fix-error',
         )
       : null;
-    const contentNotes = hasError
+    const contentNotes = hasWaiting
+      ? null
+      : hasError
       ? this.translate.instant(
           'page.program.program-people-affected.payment-status-popup.notes',
         )
       : null;
-    const retryButton = hasError ? true : false;
+    const showRetryButton = hasWaiting ? false : hasError ? true : false;
     const payoutDetails: PopupPayoutDetails =
       hasError || value.hasMessageIcon || value.hasMoneyIconTable
         ? {
@@ -817,7 +834,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         titleError,
         content,
         contentNotes,
-        retryButton,
+        showRetryButton,
         payoutDetails,
         voucherButtons,
         imageUrl: voucherUrl,
@@ -945,12 +962,14 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   public async applyAction(confirmInput?: string) {
+    this.isInProgress = true;
     await this.bulkActionService.applyAction(
       this.action,
       this.programId,
       this.selectedPeople,
       confirmInput,
     );
+    this.isInProgress = false;
 
     this.resetBulkAction();
   }

@@ -1,14 +1,24 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
 import { ExportType } from 'src/app/models/export-type.model';
-import { Installment } from 'src/app/models/installment.model';
+import { Installment, InstallmentData } from 'src/app/models/installment.model';
 import {
   DistributionFrequency,
   Program,
   ProgramPhase,
 } from 'src/app/models/program.model';
+import { StatusEnum } from 'src/app/models/status.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+
+class LastPaymentResults {
+  amount: number;
+  error: number;
+  success: number;
+  waiting: number;
+}
 
 @Component({
   selector: 'app-program-payout',
@@ -33,13 +43,18 @@ export class ProgramPayoutComponent implements OnInit {
   public exportInstallmentId = 0;
   public exportInstallmentAvailable: boolean;
 
-  private lastInstallmentId: number;
-  public nextInstallmentIdLabel: string;
+  private pastInstallments: InstallmentData[];
+  public lastPaymentResults: LastPaymentResults;
+
+  public lastInstallmentId: number;
+  public nextInstallmentId: number;
   private totalIncluded: number;
 
   constructor(
     private programsService: ProgramsServiceApiService,
     private authService: AuthService,
+    private translate: TranslateService,
+    private alertController: AlertController,
   ) {}
 
   async ngOnInit() {
@@ -55,6 +70,7 @@ export class ProgramPayoutComponent implements OnInit {
     ).connections;
 
     await this.createInstallments();
+    this.lastPaymentResults = await this.getLastPaymentResults();
     this.checkPhaseReady();
   }
 
@@ -69,12 +85,56 @@ export class ProgramPayoutComponent implements OnInit {
     return this.authService.hasUserRole([UserRole.PersonalData]);
   }
 
+  private async getLastPaymentResults(): Promise<LastPaymentResults> {
+    const installment = this.getInstallmentById(this.lastInstallmentId);
+    const results = {
+      amount: installment ? installment.amount : 0,
+      error: 0,
+      success: 0,
+      waiting: 0,
+    };
+
+    const transactions = await this.programsService.getTransactions(
+      this.programId,
+      this.lastInstallmentId,
+    );
+
+    let installmentTransactions;
+    if (transactions && transactions.length) {
+      installmentTransactions = transactions.filter(
+        (transaction) => transaction.installment === this.lastInstallmentId,
+      );
+    }
+
+    if (!installmentTransactions || !installmentTransactions.length) {
+      return results;
+    }
+
+    const taError = installmentTransactions.filter(
+      (t) => t.status === StatusEnum.error,
+    );
+    const taDone = installmentTransactions.filter(
+      (t) => t.status === StatusEnum.success,
+    );
+    const taWait = installmentTransactions.filter(
+      (t) => t.status === StatusEnum.waiting,
+    );
+
+    return {
+      amount: installment.amount,
+      error: taError.length,
+      success: taDone.length,
+      waiting: taWait.length,
+    };
+  }
+
   private createTemplateInstallments(count: number): Installment[] {
     return Array(count)
       .fill(1)
       .map((_, index) => ({
         id: index + 1,
         installmentDate: new Date(),
+        amount: this.program.fixedTransferValue,
         statusOpen: true,
         isExportAvailable: false,
       }));
@@ -87,6 +147,7 @@ export class ProgramPayoutComponent implements OnInit {
   private fillInstallmentHistory(pastInstallments: Installment[]): void {
     pastInstallments.forEach((pastInstallment) => {
       const installment = this.getInstallmentById(pastInstallment.id);
+      installment.amount = pastInstallment.amount;
       installment.installmentDate = pastInstallment.installmentDate;
       installment.statusOpen = false;
       installment.isExportAvailable = true;
@@ -129,22 +190,24 @@ export class ProgramPayoutComponent implements OnInit {
       this.program.distributionDuration,
     );
 
-    const pastInstallments = await this.programsService.getPastInstallments(
+    this.pastInstallments = await this.programsService.getPastInstallments(
       this.programId,
     );
     this.lastInstallmentId = await this.programsService.getLastInstallmentId(
       this.programId,
+      this.pastInstallments,
     );
-    this.nextInstallmentIdLabel =
+    this.nextInstallmentId =
       this.lastInstallmentId < this.program.distributionDuration
-        ? '#' + (this.lastInstallmentId + 1)
-        : '-';
+        ? this.lastInstallmentId + 1
+        : 0;
 
-    this.fillInstallmentHistory(pastInstallments);
+    this.fillInstallmentHistory(this.pastInstallments);
 
     let startDate = new Date();
-    if (pastInstallments && pastInstallments.length > 1) {
-      startDate = pastInstallments[pastInstallments.length - 1].installmentDate;
+    if (this.pastInstallments && this.pastInstallments.length > 1) {
+      startDate =
+        this.pastInstallments[this.pastInstallments.length - 1].installmentDate;
     }
     this.setFutureDates(startDate, this.program.distributionFrequency);
 
@@ -180,6 +243,60 @@ export class ProgramPayoutComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  public async retryLastPayment() {
+    // this.isInProgress = true;
+    await this.programsService
+      .submitPayout(
+        this.programId,
+        this.lastInstallmentId,
+        this.lastPaymentResults.amount,
+        null,
+      )
+      .then(
+        (response) => {
+          // this.isInProgress = false;
+          let message = '';
+
+          if (response) {
+            message += this.translate.instant(
+              'page.program.program-payout.result',
+              {
+                nrPa: `<strong>${response}</strong>`,
+              },
+            );
+          }
+          this.actionResult(message, true);
+        },
+        (err) => {
+          console.log('err: ', err);
+          if (err && err.error && err.error.error) {
+            this.actionResult(err.error.errors);
+          }
+          // this.isInProgress = false;
+        },
+      );
+  }
+
+  private async actionResult(resultMessage: string, refresh: boolean = false) {
+    const alert = await this.alertController.create({
+      backdropDismiss: false,
+      message: resultMessage,
+      buttons: [
+        {
+          text: this.translate.instant('common.ok'),
+          handler: () => {
+            alert.dismiss(true);
+            if (refresh) {
+              window.location.reload();
+            }
+            return false;
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 
   private checkPhaseReady() {

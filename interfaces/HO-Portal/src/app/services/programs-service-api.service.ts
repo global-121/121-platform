@@ -136,8 +136,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  async getLastInstallmentId(programId: number | string): Promise<number> {
-    const pastPayments = await this.getPastInstallments(programId);
+  async getLastInstallmentId(
+    programId: number | string,
+    pastPayments?: InstallmentData[],
+  ): Promise<number> {
+    if (!pastPayments) {
+      pastPayments = await this.getPastInstallments(programId);
+    }
     if (pastPayments.length === 0) {
       return 0;
     }
@@ -193,12 +198,12 @@ export class ProgramsServiceApiService {
     installment: number,
     customDataKey: string,
     customDataValue: string,
-  ): Promise<any> {
+  ): Promise<any | Transaction> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/get-transaction`, {
         referenceId,
-        installment,
-        programId,
+        installment: Number(installment),
+        programId: Number(programId),
         customDataKey,
         customDataValue,
       })
@@ -213,9 +218,9 @@ export class ProgramsServiceApiService {
   ): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/programs/payout`, {
-        programId,
-        installment,
-        amount,
+        programId: Number(programId),
+        installment: Number(installment),
+        amount: Number(amount),
         referenceId,
       })
       .toPromise();
@@ -374,7 +379,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(environment.url_121_service_api, `/actions/retrieve-latest`, {
         actionType,
-        programId,
+        programId: Number(programId),
       })
       .toPromise();
   }

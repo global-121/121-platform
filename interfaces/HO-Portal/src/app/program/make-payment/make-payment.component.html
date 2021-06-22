@@ -16,6 +16,7 @@
       inputmode="decimal"
       min="0"
       step="5"
+      size="4"
       required
       [(ngModel)]="amountInput"
       (ionChange)="updateTotalAmountMessage()"
@@ -32,6 +33,25 @@
   >
     {{ 'page.program.program-payout.start-payout'|translate }}
   </confirm-prompt>
+  <div
+    *ngIf="paymentInProgress"
+    class="ion-margin-start ion-align-items-center"
+    style="display: flex;"
+  >
+    <ion-note>
+      {{ 'page.program.program-payout.in-progress'|translate }}
+    </ion-note>
+    <ion-button
+      size="small"
+      fill="clear"
+      color="medium"
+      [title]="'common.update'|translate"
+      [attr.aria-label]="'common.update'|translate"
+      (click)="refresh()"
+    >
+      <ion-icon name="refresh" size="small" slot="icon-only" aria-hidden="true"></ion-icon>
+    </ion-button>
+  </div>
 
   <ion-spinner
     *ngIf="isInProgress"

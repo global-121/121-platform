@@ -84,7 +84,7 @@ export class FspController {
   public async notificationCallback(
     @Body() africasTalkingNotificationData: AfricasTalkingNotificationDto,
   ): Promise<void> {
-    await this.fspService.processPaymentNotification(
+    await this.fspService.processPaymentStatus(
       fspName.africasTalking,
       africasTalkingNotificationData,
     );

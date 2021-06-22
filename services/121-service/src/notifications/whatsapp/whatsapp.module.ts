@@ -8,12 +8,14 @@ import {
   MiddlewareConsumer,
   RequestMethod,
   NestModule,
+  forwardRef,
 } from '@nestjs/common';
 import { WhatsappService } from './whatsapp.service';
 import { WhatsappController } from './whatsapp.controller';
 import { TwilioMessageEntity } from '../twilio.entity';
 import { ImageCodeModule } from '../imagecode/image-code.module';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
+import { FspModule } from '../../programs/fsp/fsp.module';
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.e
       ProgramEntity,
     ]),
     ImageCodeModule,
+    forwardRef(() => FspModule),
   ],
   providers: [WhatsappService],
   controllers: [WhatsappController],

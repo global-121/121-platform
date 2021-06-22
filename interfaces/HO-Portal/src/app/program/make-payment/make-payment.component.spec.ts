@@ -6,6 +6,7 @@ import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { InstallmentData } from 'src/app/models/installment.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { ActionType } from '../../models/action-type.model';
 import { MakePaymentComponent } from './make-payment.component';
 
 describe('MakePaymentComponent', () => {
@@ -16,6 +17,7 @@ describe('MakePaymentComponent', () => {
   const mockInstallmentData: InstallmentData = {
     id: 0,
     installmentDate: new Date(),
+    amount: 1,
   };
   const mockPastInstallments = [
     {
@@ -28,6 +30,17 @@ describe('MakePaymentComponent', () => {
     },
   ];
   const mockLastInstallmentId = 2;
+
+  const mockLatestStartAction = {
+    id: 1,
+    actionType: ActionType.paymentStarted,
+    timestamp: new Date(),
+  };
+  const mockLatestFinishAction = {
+    id: 2,
+    actionType: ActionType.paymentFinished,
+    timestamp: new Date(),
+  };
 
   let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
 
@@ -52,6 +65,10 @@ describe('MakePaymentComponent', () => {
     mockProgramsApi.getLastInstallmentId.and.returnValue(
       new Promise((r) => r(mockLastInstallmentId)),
     );
+    mockProgramsApi.retrieveLatestActions.and.returnValues(
+      new Promise((r) => r(mockLatestStartAction)),
+      new Promise((r) => r(mockLatestFinishAction)),
+    );
 
     fixture = TestBed.createComponent(MakePaymentComponent);
     component = fixture.componentInstance;
@@ -69,9 +86,10 @@ describe('MakePaymentComponent', () => {
       new Promise((r) => r({ connections: 0, transferAmounts: 0 })),
     );
 
-    await fixture.detectChanges();
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
 
-    await expect(mockProgramsApi.getTotalIncluded).toHaveBeenCalledTimes(1);
+    expect(mockProgramsApi.getTotalIncluded).toHaveBeenCalledTimes(1);
     expect(component.isEnabled).toBeFalse();
   });
 
@@ -80,18 +98,53 @@ describe('MakePaymentComponent', () => {
       new Promise((r) => r({ connections: 1, transferAmounts: 1 })),
     );
 
-    await fixture.detectChanges();
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
 
-    await expect(mockProgramsApi.getTotalIncluded).toHaveBeenCalledTimes(1);
+    expect(mockProgramsApi.getTotalIncluded).toHaveBeenCalledTimes(1);
     expect(component.isEnabled).toBeTrue();
   });
 
   it('should be disabled when all installments are done', async () => {
     component.program.distributionDuration = mockPastInstallments.length;
 
-    await fixture.detectChanges();
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
 
-    await expect(mockProgramsApi.getLastInstallmentId).toHaveBeenCalledTimes(1);
+    expect(mockProgramsApi.getLastInstallmentId).toHaveBeenCalledTimes(1);
     expect(component.isEnabled).toBeFalse();
+  });
+
+  it('should be disabled when a payment is already in progress', async () => {
+    mockProgramsApi.retrieveLatestActions.and.returnValues(
+      new Promise((r) => r(mockLatestStartAction)),
+      new Promise((r) => r(null)),
+    );
+
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
+
+    expect(mockProgramsApi.retrieveLatestActions).toHaveBeenCalledTimes(2);
+    expect(component.isEnabled).toBeFalse();
+  });
+
+  it('should be enabled when a previous payment is finished', async () => {
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
+
+    expect(mockProgramsApi.retrieveLatestActions).toHaveBeenCalledTimes(2);
+    expect(component.isEnabled).toBeTrue();
+  });
+
+  it('should be enabled when no previous payment is done', async () => {
+    mockProgramsApi.retrieveLatestActions.and.returnValues(
+      new Promise((r) => r(null)),
+    );
+
+    fixture.autoDetectChanges();
+    await fixture.whenStable();
+
+    expect(mockProgramsApi.retrieveLatestActions).toHaveBeenCalledTimes(1);
+    expect(component.isEnabled).toBeTrue();
   });
 });

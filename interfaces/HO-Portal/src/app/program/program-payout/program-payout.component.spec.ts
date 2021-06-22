@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { AlertController } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
@@ -22,6 +23,9 @@ describe('ProgramPayoutComponent', () => {
       providers: [
         provideMagicalMock(AuthService),
         provideMagicalMock(ProgramsServiceApiService),
+        {
+          provide: AlertController,
+        },
       ],
     }).compileComponents();
   }));

@@ -28,7 +28,7 @@ export class PaymentStatusPopupComponent implements OnInit {
   public title: string;
   public content: any;
   public contentNotes: any;
-  public retryButton: boolean;
+  public showRetryButton: boolean;
   public payoutDetails: PopupPayoutDetails;
   public voucherButtons: boolean;
   public imageUrl: string;
@@ -115,8 +115,8 @@ export class PaymentStatusPopupComponent implements OnInit {
   public async getTransactionTime(customKey: string, customValue: string) {
     const transaction = await this.programsService.getTransaction(
       this.payoutDetails.referenceId,
-      Number(this.payoutDetails.programId),
-      Number(this.payoutDetails.installment),
+      this.payoutDetails.programId,
+      this.payoutDetails.installment,
       customKey,
       customValue,
     );
@@ -133,41 +133,24 @@ export class PaymentStatusPopupComponent implements OnInit {
     this.isInProgress = true;
     await this.programsService
       .submitPayout(
-        +this.payoutDetails.programId,
-        +this.payoutDetails.installment,
-        +this.payoutDetails.amount,
+        this.payoutDetails.programId,
+        this.payoutDetails.installment,
+        this.payoutDetails.amount,
         this.payoutDetails.referenceId,
       )
       .then(
         (response) => {
           this.isInProgress = false;
-          const message = ''
-            .concat(
-              response.nrSuccessfull > 0
-                ? this.translate.instant(
-                    'page.program.program-payout.result-success',
-                    { nrSuccessfull: response.nrSuccessfull },
-                  )
-                : '',
-            )
-            .concat(
-              response.nrFailed > 0
-                ? '<br><br>' +
-                    this.translate.instant(
-                      'page.program.program-payout.result-failure',
-                      { nrFailed: response.nrFailed },
-                    )
-                : '',
-            )
-            .concat(
-              response.nrWaiting > 0
-                ? '<br><br>' +
-                    this.translate.instant(
-                      'page.program.program-payout.result-waiting',
-                      { nrWaiting: response.nrWaiting },
-                    )
-                : '',
+          let message = '';
+
+          if (response) {
+            message += this.translate.instant(
+              'page.program.program-payout.result',
+              {
+                nrPa: `<strong>${response}</strong>`,
+              },
             );
+          }
           this.actionResult(message, true);
         },
         (err) => {

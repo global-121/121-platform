@@ -2,6 +2,7 @@ import { formatCurrency } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { ActionType } from 'src/app/models/action-type.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
@@ -29,6 +30,8 @@ export class MakePaymentComponent implements OnInit {
   public totalAmountMessage: string;
   public totalIncludedMessage: string;
 
+  public paymentInProgress = false;
+
   constructor(
     private programsService: ProgramsServiceApiService,
     private translate: TranslateService,
@@ -49,6 +52,7 @@ export class MakePaymentComponent implements OnInit {
       this.programId,
     );
 
+    this.paymentInProgress = await this.checkPaymentInProgress();
     this.updateTotalAmountMessage();
     this.checkIsEnabled();
   }
@@ -56,7 +60,8 @@ export class MakePaymentComponent implements OnInit {
   private checkIsEnabled(): boolean {
     this.isEnabled =
       this.totalIncluded > 0 &&
-      this.lastInstallmentId < this.program.distributionDuration;
+      this.lastInstallmentId < this.program.distributionDuration &&
+      !this.paymentInProgress;
     return this.isEnabled;
   }
 
@@ -76,11 +81,7 @@ export class MakePaymentComponent implements OnInit {
     const nextInstallmentId = await this.getNextInstallmentId();
 
     await this.programsService
-      .submitPayout(
-        Number(this.programId),
-        nextInstallmentId,
-        Number(this.amountInput),
-      )
+      .submitPayout(this.programId, nextInstallmentId, this.amountInput)
       .then(
         (response) => this.onPaymentSuccess(response),
         (error) => this.onPaymentError(error),
@@ -91,31 +92,10 @@ export class MakePaymentComponent implements OnInit {
     this.resetProgress();
     let message = '';
 
-    if (response.nrSuccessfull > 0) {
-      message += this.translate.instant(
-        'page.program.program-payout.result-success',
-        {
-          nrSuccessfull: response.nrSuccessfull,
-        },
-      );
-      message += '<br><br>';
-    }
-    if (response.nrFailed > 0) {
-      message += this.translate.instant(
-        'page.program.program-payout.result-failure',
-        {
-          nrFailed: response.nrFailed,
-        },
-      );
-      message += '<br><br>';
-    }
-    if (response.nrWaiting > 0) {
-      message += this.translate.instant(
-        'page.program.program-payout.result-waiting',
-        {
-          nrWaiting: response.nrWaiting,
-        },
-      );
+    if (response) {
+      message += this.translate.instant('page.program.program-payout.result', {
+        nrPa: `<strong>${response}</strong>`,
+      });
     }
     this.actionResult(message, true);
   }
@@ -177,5 +157,34 @@ export class MakePaymentComponent implements OnInit {
       'page.program.program-payout.total-amount',
       { totalCost: totalCostFormatted },
     );
+  }
+
+  public async checkPaymentInProgress(): Promise<boolean> {
+    const latestPaymentStartedAction =
+      await this.programsService.retrieveLatestActions(
+        ActionType.paymentStarted,
+        this.programId,
+      );
+    // If never started, then not in progress
+    if (!latestPaymentStartedAction) {
+      return false;
+    }
+    const latestPaymentFinishedAction =
+      await this.programsService.retrieveLatestActions(
+        ActionType.paymentFinished,
+        this.programId,
+      );
+    // If started, but never finished, then in progress
+    if (!latestPaymentFinishedAction) {
+      return true;
+    }
+    // If started and finished, then compare timestamps
+    const startTimestamp = new Date(latestPaymentStartedAction.timestamp);
+    const finishTimestamp = new Date(latestPaymentFinishedAction.timestamp);
+    return finishTimestamp < startTimestamp;
+  }
+
+  public refresh() {
+    window.location.reload();
   }
 }

@@ -30,6 +30,12 @@
   >
     {{ 'page.program.program-people-affected.apply-action'|translate }}
   </confirm-prompt>
+
+  <ion-spinner
+    *ngIf="isInProgress"
+    color="primary"
+    class="ion-margin-start"
+  ></ion-spinner>
 </ion-row>
 <ion-row class="ion-margin-vertical">
   <ion-input

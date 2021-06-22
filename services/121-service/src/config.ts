@@ -33,13 +33,6 @@ export const SWAGGER_CUSTOM_CSS = `
 // Configure Internal and External API URL's
 // ---------------------------------------------------------------------------
 
-export const API = {
-  paAccounts: {
-    deleteAccount:
-      process.env.URL_PA_ACCOUNTS_SERVICE_API + '/user/get-wallet-and-delete',
-  },
-};
-
 export const EXTERNAL_API = {
   callbackUrlSms:
     process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/sms/status',

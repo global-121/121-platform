@@ -62,7 +62,7 @@ export class TestPaymentComponent implements OnInit {
   public async getLatestActionTime(): Promise<void> {
     const latestAction = await this.programsService.retrieveLatestActions(
       ActionType.testMpesaPayment,
-      Number(this.programId),
+      this.programId,
     );
     if (latestAction) {
       this.actionTimestamp = formatDate(
@@ -78,7 +78,7 @@ export class TestPaymentComponent implements OnInit {
     const installment = -1;
     const amount = 0;
     await this.programsService
-      .submitPayout(+this.programId, installment, amount)
+      .submitPayout(this.programId, installment, amount)
       .then(
         () => {
           this.isInProgress = false;
