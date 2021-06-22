@@ -52,7 +52,6 @@
   >
     <h3>{{ 'page.program.program-payout.last-payment.last-payment'|translate:{ nr: lastInstallmentId ? '#' + lastInstallmentId : '-' } }}</h3>
     <p *ngIf="lastPaymentResults">
-      {{ lastPaymentResults.amount }}<br>
       {{ 'page.program.program-payout.last-payment.success'|translate }}: <strong>{{ lastPaymentResults.success }}</strong><br>
       {{ 'page.program.program-payout.last-payment.waiting'|translate }}: <strong>{{ lastPaymentResults.waiting }}</strong><br>
       {{ 'page.program.program-payout.last-payment.error'|translate }}: <strong>{{ lastPaymentResults.error }}</strong>

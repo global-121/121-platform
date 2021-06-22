@@ -846,10 +846,14 @@ export class ProgramService {
       .createQueryBuilder('transaction')
       .select('installment')
       .addSelect('MIN(transaction.created)', 'installmentDate')
-      .addSelect('transaction.amount', 'amount')
+      .addSelect(
+        'MIN(transaction.amount / coalesce(c.paymentAmountMultiplier, 1) )',
+        'amount',
+      )
+      .leftJoin('transaction.connection', 'c')
       .where('transaction.program.id = :programId', { programId: programId })
       .andWhere("transaction.status = 'success'")
-      .groupBy('installment,amount')
+      .groupBy('installment')
       .getRawMany();
     return installments;
   }
