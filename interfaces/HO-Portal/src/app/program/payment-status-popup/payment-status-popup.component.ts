@@ -136,7 +136,7 @@ export class PaymentStatusPopupComponent implements OnInit {
         this.payoutDetails.programId,
         this.payoutDetails.installment,
         this.payoutDetails.amount,
-        all ? this.payoutDetails.referenceId : null,
+        all ? null : this.payoutDetails.referenceId,
       )
       .then(
         (response) => {
