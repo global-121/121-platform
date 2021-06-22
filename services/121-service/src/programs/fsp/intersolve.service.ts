@@ -31,6 +31,7 @@ import {
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
 import { TransactionEntity } from '../program/transactions.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
+import { TwilioStatusCallbackDto } from '../../notifications/twilio.dto';
 
 @Injectable()
 export class IntersolveService {
@@ -433,7 +434,9 @@ export class IntersolveService {
     return this.intersolveBarcodeRepository.save(barcodeData);
   }
 
-  public async processStatus(statusCallbackData): Promise<void> {
+  public async processStatus(
+    statusCallbackData: TwilioStatusCallbackDto,
+  ): Promise<void> {
     const transaction = (
       await this.transactionRepository.find({ relations: ['connection'] })
     ).filter(
@@ -444,12 +447,12 @@ export class IntersolveService {
       return;
     }
 
-    const succesStatuses = ['DELIVERED', 'READ'];
-    const failStatuses = ['UNDELIVERED', 'FAILED'];
+    const succesStatuses = ['delivered', 'read'];
+    const failStatuses = ['undelivered', 'failed'];
     let status: string;
-    if (succesStatuses.includes(statusCallbackData.EventType)) {
+    if (succesStatuses.includes(statusCallbackData.MessageStatus)) {
       status = StatusEnum.success;
-    } else if (failStatuses.includes(statusCallbackData.EventType)) {
+    } else if (failStatuses.includes(statusCallbackData.MessageStatus)) {
       const connection = await this.connectionRepository.findOne({
         where: { id: transaction.connection.id },
         relations: ['images', 'images.barcode'],
@@ -478,7 +481,8 @@ export class IntersolveService {
         status: status,
         errorMessage:
           status === StatusEnum.error
-            ? 'Twilio status callback message: ' + statusCallbackData.EventType
+            ? 'Twilio status callback message: ' +
+              statusCallbackData.MessageStatus
             : null,
       },
     );

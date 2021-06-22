@@ -29,6 +29,10 @@ export class TwilioMessagesCreateDto {
   public readonly mediaUrl: string;
 }
 
+class AccountSidObject {
+  public readonly accountSid: string;
+}
+
 export class TwilioValidateRequestDto {
   @ApiModelProperty()
   @IsString()
@@ -52,6 +56,11 @@ export class TwilioValidateRequestDto {
   public readonly accountSidObject: AccountSidObject;
 }
 
-class AccountSidObject {
-  public readonly accountSid: string;
+export class TwilioStatusCallbackDto {
+  @ApiModelProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
+  @IsString()
+  public readonly MessageSid: string;
+  @ApiModelProperty({ example: 'delivered' })
+  @IsString()
+  public readonly MessageStatus: string;
 }

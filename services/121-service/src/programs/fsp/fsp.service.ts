@@ -25,6 +25,7 @@ import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dt
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
 import { ActionService } from '../../actions/action.service';
 import { AdditionalActionType } from '../../actions/action.entity';
+import { TwilioStatusCallbackDto } from '../../notifications/twilio.dto';
 
 @Injectable()
 export class FspService {
@@ -206,7 +207,7 @@ export class FspService {
 
   public async processPaymentStatus(
     fsp: fspName,
-    statusCallbackData,
+    statusCallbackData: object,
   ): Promise<void> {
     if (fsp === fspName.africasTalking) {
       const africasTalkingNotificationData = statusCallbackData as AfricasTalkingNotificationDto;
@@ -222,7 +223,8 @@ export class FspService {
       );
     }
     if (fsp === fspName.intersolve) {
-      await this.intersolveService.processStatus(statusCallbackData);
+      const twilioStatusCallbackData = statusCallbackData as TwilioStatusCallbackDto;
+      await this.intersolveService.processStatus(twilioStatusCallbackData);
     }
   }
 

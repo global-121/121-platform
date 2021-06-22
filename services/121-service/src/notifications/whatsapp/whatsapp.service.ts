@@ -20,6 +20,7 @@ import { FspService } from '../../programs/fsp/fsp.service';
 import { fspName } from '../../programs/fsp/financial-service-provider.entity';
 import { IntersolveService } from '../../programs/fsp/intersolve.service';
 import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
+import { TwilioStatusCallbackDto } from '../twilio.dto';
 
 @Injectable()
 export class WhatsappService {
@@ -129,14 +130,16 @@ export class WhatsappService {
     return await this.twilioMessageRepository.findOne(findOneOptions);
   }
 
-  public async statusCallback(callbackData): Promise<void> {
+  public async statusCallback(
+    callbackData: TwilioStatusCallbackDto,
+  ): Promise<void> {
     await this.twilioMessageRepository.update(
       { sid: callbackData.MessageSid },
       { status: callbackData.MessageStatus },
     );
 
-    const eventTypes = ['DELIVERED', 'READ', 'FAILED', 'UNDELIVERED'];
-    if (eventTypes.includes(callbackData.EventType)) {
+    const statuses = ['delivered', 'read', 'failed', 'undelivered'];
+    if (statuses.includes(callbackData.MessageStatus)) {
       await this.fspService.processPaymentStatus(
         fspName.intersolve,
         callbackData,
