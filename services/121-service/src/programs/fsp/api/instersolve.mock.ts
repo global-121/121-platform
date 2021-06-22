@@ -1,14 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { IntersolveResultCode } from './enum/intersolve-result-code.enum';
 
 @Injectable()
 export class IntersolveMockService {
   public constructor() {}
 
   public post(payload: any): Promise<any> {
-    console.log('IntersolveMock: post(): ', payload);
-    const amount = payload.elements[0].elements
-      .find(e => e.name === 'soap:Body')
-      .elements[0].elements.find(e => e.name === 'Value').elements[0].text;
+    const soapBody = payload.elements[0].elements.find(
+      e => e.name === 'soap:Body',
+    );
+    const name = soapBody.elements[0].name;
+    const amount = soapBody.elements[0].elements.find(e => e.name === 'Value')
+      .elements[0].text;
+
+    console.log('IntersolveMock: post(): ', 'payload:', {
+      name,
+      amount,
+    });
 
     const cardId =
       7000000000000000000 + this.getRandomInt(1000000000000, 9999999999999);
@@ -18,7 +26,7 @@ export class IntersolveMockService {
     const response = {
       IssueCardResponse: {
         _attributes: { xmlns: 'http://www.loyaltyinabox.com/giftcard_6_8/' },
-        ResultCode: { _text: '0' },
+        ResultCode: { _text: String(IntersolveResultCode.Ok) },
         ResultDescription: { _text: 'Ok' },
         CardId: { _text: String(cardId) },
         PIN: { _text: String(pin) },
