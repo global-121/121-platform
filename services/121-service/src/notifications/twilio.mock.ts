@@ -16,7 +16,10 @@ export class TwilioClientMock {
     public async create(
       twilioMessagesCreateDto: TwilioMessagesCreateDto,
     ): Promise<object> {
-      console.log('TwilioClientMock: create():', twilioMessagesCreateDto);
+      // console.log('TwilioClientMock: create():', twilioMessagesCreateDto);
+
+      const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
+
       const response = {
         body: twilioMessagesCreateDto.body,
         numSegments: twilioMessagesCreateDto.mediaUrl ? '1' : '0',
@@ -31,7 +34,7 @@ export class TwilioClientMock {
         numMedia: twilioMessagesCreateDto.mediaUrl ? '1' : '0',
         status: 'accepted',
         messagingServiceSid: twilioMessagesCreateDto.messagingServiceSid,
-        sid: twilioMessagesCreateDto.messagingServiceSid,
+        sid: messageSid,
         dateSent: null,
         dateCreated: new Date(),
         errorCode: null,
@@ -41,8 +44,22 @@ export class TwilioClientMock {
           media: `/2010-04-01/Accounts/${process.env.TWILIO_SID}/Messages/${twilioMessagesCreateDto.messagingServiceSid}/Media.json`,
         },
       };
-      console.log('TwilioiClientMock create(): response:', response);
+      console.log('TwilioClientMock create(): response:', response);
       return response;
+    }
+
+    private createRandomHexaDecimalString(length: number): string {
+      let result = '';
+      const characters = 'abcdef0123456789';
+      const charactersLength = characters.length;
+
+      for (let i = 0; i < length; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * charactersLength),
+        );
+      }
+
+      return result;
     }
   };
 
