@@ -1059,7 +1059,11 @@ export class ProgramService {
     programId: number,
   ): object {
     const genericFields = [
+      'id',
       'phoneNumber',
+      'importedDate',
+      'invitedDate',
+      'noLongerEligibleDate',
       'created',
       'appliedDate',
       'selectedForValidationDate',
@@ -1068,6 +1072,7 @@ export class ProgramService {
       'inclusionEndDate',
       'rejectionDate',
       'namePartnerOrganization',
+      'paymentAmountMultiplier',
     ];
     genericFields.forEach(field => {
       row[field] = connection[field];
