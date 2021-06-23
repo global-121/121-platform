@@ -1059,6 +1059,7 @@ export class ProgramService {
     programId: number,
   ): object {
     const genericFields = [
+      'phoneNumber',
       'created',
       'appliedDate',
       'selectedForValidationDate',
