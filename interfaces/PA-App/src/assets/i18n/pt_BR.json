@@ -34,10 +34,10 @@
       "create-password-explanation": "Crie uma senha de pelo menos {{minimalLength}} números:",
       "create-username": "Digite seu nome completo:",
       "introduction": "Para criar uma conta, você precisa completar as etapas seguintes.",
-      "password-too-short": "Por favor digite pelo menos {{minimalLength}} letras",
+      "password-too-short": "Por favor digite pelo menos {{minimalLength}} letras.",
       "unequal-passwords": "As senhas que você criou não são as mesmas. Por favor, tente novamente.",
-      "username-not-unique": "O nome que você digitiu não é único. Por favor, tente novamente",
-      "username-password": "Digite seu nome completo e criar uma senha. "
+      "username-not-unique": "O nome que você digitou não é único. Por favor, tente novamente.",
+      "username-password": "Digite seu nome completo e crie uma senha. "
     },
     "enroll-in-program": {
       "change": "Mudar minhas informações",
@@ -47,8 +47,8 @@
       "submit-confirm": "Enviar minhas informações"
     },
     "inclusion-status": {
-      "inclusion-status-negative": "Infelizmente, temos que informá-lo que você não receberá não (mais) pagamento por este programa. Se você tiver dúvidas, entre em contato conosco.",
-      "inclusion-status-positive": "Você está incluído no programa.",
+      "inclusion-status-negative": "Infelizmente, temos que informá-lo que você não receberá mais (nenhum) pagamento para este programa. Se você tiver dúvidas, entre em contato conosco.",
+      "inclusion-status-positive": "Você foi incluído no programa.",
       "notify": "Se você estiver incluído, nós o notificaremos."
     },
     "login-account": {
@@ -58,9 +58,9 @@
       "supply-username": "Seu nome completo: "
     },
     "preprinted-qrcode": {
-      "error": "O código QR não pode ser usado, por favor, tente outro.",
+      "error": "O código QR escaneado não pode ser usado, por favor, tente outro.",
       "info-qr": "Mais textos a seguir",
-      "introduction": "O assistente/voluntário escaneará um código QR para vincular suas informações e dará para você. Por favor, mantenha seu código QR físico seguro.",
+      "introduction": "O assistente/voluntário escaneará um código QR para vincular suas informações e o entregará para você. Por favor, mantenha seu código QR físico seguro.",
       "more-info-qr": "Sobre códigos QR",
       "no": "Não",
       "question": "O assistente/voluntário tem um código QR pré-impresso para escanear?",
@@ -71,17 +71,17 @@
     },
     "registration-summary": {
       "documents": "Certifique-se de ter estes documentos prontos:",
-      "info-message": "Para ativar sua conta <br><br> Ao criar sua conta, você receberá uma impressão de sua identificação digital que se parece com isso.<br>  Você precisa levar isto e os seguintes documentos físicos para uma reunião com um assistente/voluntário para ativar sua conta.<br><ul><li> Sua carteira de identidade nacional</li></ul><br>Se eu não tiver um cartão? Você tenha 2 opções:<ol><li>Traga uma carta do chefe que confirme sua identidade</li><li>Traga seu número X (precisa do nome deste número como o número BSN) do Escritório Nacional de Registro. Você terá que pagar por um novo, o preço será X.</li></ol>",
+      "info-message": "Para ativar sua conta <br><br> Ao criar sua conta, você receberá uma impressão de sua identificação digital que se parece com isso.<br>  Você precisa levar isto e os seguintes documentos físicos para uma reunião com um assistente/voluntário para ativar sua conta.<br><ul><li> Sua carteira de identidade </ul><br>E se eu não tiver um cartão? Você tem 2 opções:<ol><li>Traga uma carta do/da chefe que confirme a identidade dele/dela</li><li>Traga seu número de CPF, da Receita Federal. Você terá que pagar por um novo, o preço será X.</li></ol>",
       "more-info-documents": "Sobre estes documentos ",
-      "no-validation-conclusion": "Obrigado. Agora, seu registro está completo. <br><br> Em breve, você receberá um SMS no número de telefone registrado que confirma seu registro. <br><br> Você será informado se sua solicitação tiver sido bem sucedida no prazo de 14 dias.  <br><br> Esta é a mensagem final, por enquanto.",
+      "no-validation-conclusion": "Obrigado. Agora, seu registro está completo. <br><br> Em breve, você receberá um SMS no número de telefone fornecido que confirma seu registro. <br><br> Você será informado se sua solicitação tiver sido bem sucedida no prazo de 14 dias.  <br><br> Esta é a mensagem final, por enquanto.",
       "qr-code": "Por favor, mostre este código QR ao trabalhador humanitário quando pedido.",
-      "validation-conclusion": "Obrigado. Agora seu registro está completo. Em breve, você receberá um SMS no número de telefone registrado que confirma seu cadastro. <br><br>Um trabalhador da ONG organizará uma reunião com você para validar suas informações, provavelmente visitando sua casa."
+      "validation-conclusion": "Obrigado. Agora seu registro está completo. Em breve, você receberá um SMS no número de telefone fornecido que confirma seu cadastro. <br><br>Um trabalhador da ONG organizará uma reunião com você para validar suas informações, provavelmente visitando sua casa."
     },
     "select-fsp": {
       "attributes": {
         "error": "Algo deu errado, por favor, tente novamente.",
         "introduction": "Para esta opção, precisamos também do seguinte:",
-        "success": "Obrigado. Suas informações são salvas."
+        "success": "Obrigado. Suas informações foram salvas."
       },
       "conclusion": "Obrigado. Você selecionou '{{name}}'.",
       "introduction": "Por favor, selecione como você gostaria de receber sua ajuda, se você estiver incluído no programa."
@@ -96,10 +96,10 @@
     },
     "set-notification-number": {
       "conclusion-skipped": "Você não deixou um número de telefone para que possamos contatá-lo. Por favor, faça o login aqui regularmente, para saber as atualizações.",
-      "conclusion-submitted": "Obrigado. Agora você recebe notificações neste número de telefone: {{phone}}",
-      "input-label": "Seu número de telefone com código de país. Deveria ser assim: {{phoneNumberExample}} ",
+      "conclusion-submitted": "Obrigado. Agora você receberá notificações neste número de telefone: {{phone}}",
+      "input-label": "Seu número de telefone com o código do país. Deverá se parecer com esse exemplo: {{phoneNumberExample}} ",
       "introduction1": "É opcional digitar seu número de telefone.",
-      "introduction2": "Usamos isto para enviar-lhe notificações de SMS se você estiver incluído e quando você pode receber ajuda.",
+      "introduction2": "Usamos isto para enviar-lhe notificações de SMS se você estiver incluído e quando você puder receber ajuda.",
       "introduction3": "Se você não quiser digitar seu número de telefone, você terá que fazer login neste app para saber de atualizações.",
       "introduction4": "Ao final do programa, apagaremos seu número.",
       "skip": "Pular",
