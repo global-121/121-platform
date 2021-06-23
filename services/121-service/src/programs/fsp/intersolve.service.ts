@@ -95,12 +95,12 @@ export class IntersolveService {
 
   private aggregatePaPaymentListToPhoneNumber(
     paPaymentList: PaPaymentDataDto[],
-    grouping: boolean,
+    groupingDisabled: boolean,
   ): PaPaymentDataAggregateDto[] {
     const groupsByPaymentAddress: PaPaymentDataAggregateDto[] = [];
     paPaymentList.forEach(paPaymentData => {
       if (
-        grouping &&
+        !groupingDisabled &&
         groupsByPaymentAddress
           .map(i => i.paymentAddress)
           .includes(paPaymentData.paymentAddress)
