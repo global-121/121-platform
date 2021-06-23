@@ -77,11 +77,7 @@
       "criteriumType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -95,11 +91,7 @@
       "criteriumType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
@@ -116,11 +108,7 @@
       "criteriumType": "standard",
       "options": null,
       "persistence": true,
-      "export": [
-        "all-people-affected",
-        "included",
-        "selected-for-validation"
-      ],
+      "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     }
   ]

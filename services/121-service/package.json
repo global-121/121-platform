@@ -10,9 +10,10 @@
   },
   "main": "index.js",
   "scripts": {
-    "lint": "npm run lint:code && npm run lint:syntax",
+    "lint": "npm run lint:seed-data && npm run lint:code && npm run lint:syntax",
     "lint:code": "eslint \"src/**/*.ts\"",
     "fix:code": "npm run lint:code -- --fix",
+    "lint:seed-data": "prettier --check \"seed-data/**/*.json\"",
     "lint:syntax": "prettier --check \"**/*.{md,js,yml}\"",
     "fix:syntax": "npm run lint:syntax -- --write",
     "prestart": "ts-node src/scripts seed-prod && npm run migration:run",
