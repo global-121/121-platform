@@ -72,11 +72,9 @@ export class IntersolveService {
     const result = new FspTransactionResultDto();
     result.paList = [];
 
-    // Set 'grouping = false' for twilio load testing purposes, using the same phone number for all PAs
-    const grouping = true;
     const paPaymentDataAggregate = this.aggregatePaPaymentListToPhoneNumber(
       paPaymentList,
-      grouping,
+      !!process.env.DISABLE_GROUPING_ON_PHONENUMBER,
     );
 
     for (let paymentInfo of paPaymentDataAggregate) {
