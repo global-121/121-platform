@@ -1135,10 +1135,9 @@ export class ProgramService {
       row = this.addGenericFieldsToExport(row, connection, programId);
       connectionDetails.push(row);
     });
-    const filteredColumnDetails = this.filterUnusedColumn(connectionDetails);
     const response = {
       fileName: this.getExportFileName(ExportType.allPeopleAffected),
-      data: this.jsonToCsv(filteredColumnDetails),
+      data: this.jsonToCsv(connectionDetails),
     };
 
     return response;
