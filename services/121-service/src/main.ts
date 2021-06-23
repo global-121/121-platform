@@ -18,6 +18,11 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(ApplicationModule, { cors: true });
   app.setGlobalPrefix('api');
 
+  app
+    .getHttpAdapter()
+    .getInstance()
+    .disable('x-powered-by');
+
   const options = new DocumentBuilder()
     .setTitle(APP_TITLE)
     .setVersion(APP_VERSION)
