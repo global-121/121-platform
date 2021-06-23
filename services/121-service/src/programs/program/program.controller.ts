@@ -37,7 +37,10 @@ import { CustomCriterium } from './custom-criterium.entity';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { MessageDto } from './dto/message.dto';
-import { GetTransactionDto } from './dto/get-transaction.dto';
+import {
+  GetTransactionDto,
+  GetTransactionOutputDto,
+} from './dto/get-transaction.dto';
 import { PaStatusTimestampField } from '../../models/pa-status.model';
 
 @ApiBearerAuth()
@@ -326,7 +329,7 @@ export class ProgramController {
   @Post('get-transaction')
   public async getTransaction(
     @Body() data: GetTransactionDto,
-  ): Promise<TransactionEntity> {
+  ): Promise<GetTransactionOutputDto> {
     return await this.programService.getTransaction(data);
   }
 
