@@ -1073,6 +1073,7 @@ export class ProgramService {
       'rejectionDate',
       'namePartnerOrganization',
       'paymentAmountMultiplier',
+      'note',
     ];
     genericFields.forEach(field => {
       row[field] = connection[field];
