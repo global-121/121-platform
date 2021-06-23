@@ -24,7 +24,6 @@ import { RolesGuard } from '../roles.guard';
 import { Roles } from '../roles.decorator';
 import { UserRole } from '../user-role.enum';
 
-@ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('user')
 @Controller()
@@ -34,6 +33,7 @@ export class UserController {
     this.userService = userService;
   }
 
+  @ApiBearerAuth()
   @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Sign-up new user' })
   @Post('user')
@@ -60,6 +60,7 @@ export class UserController {
     return { user };
   }
 
+  @ApiBearerAuth()
   @Roles(
     UserRole.View,
     UserRole.RunProgram,
@@ -75,6 +76,7 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
+  @ApiBearerAuth()
   @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
@@ -86,19 +88,20 @@ export class UserController {
     return await this.userService.delete(deleterId, Number(params.userId));
   }
 
+  @ApiBearerAuth()
   @Roles(
     UserRole.View,
     UserRole.RunProgram,
     UserRole.PersonalData,
     UserRole.FieldValidation,
   )
-  @ApiBearerAuth()
   @ApiOperation({ title: 'Get current user' })
   @Get('user')
   public async findMe(@User('email') email: string): Promise<UserRO> {
     return await this.userService.findByEmail(email);
   }
 
+  @ApiBearerAuth()
   @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Assign Aidworker to program' })
   @Post('user/:userId/:programId')

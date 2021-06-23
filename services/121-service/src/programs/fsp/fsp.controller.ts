@@ -18,6 +18,7 @@ import {
   ApiOperation,
   ApiImplicitParam,
   ApiImplicitFile,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
 import {
@@ -35,6 +36,7 @@ import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { RolesGuard } from '../../roles.guard';
 
+@ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('fsp')
 @Controller('fsp')
