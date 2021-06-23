@@ -3,7 +3,7 @@ Feature: Export selected for validation list
 
   Background:
     Given a program with "validation"
-    And the "active phase" is "registration & validation"
+    And the "selected phase" is "registration & validation"
 
   Scenario: Export selected for validation list
     Given a logged-in user with "personal data" role

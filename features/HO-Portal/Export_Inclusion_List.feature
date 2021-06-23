@@ -5,11 +5,6 @@ Feature: Export inclusion list
     Given a logged-in user with "personal data" role
     And the "selected phase" is the "review inclusion" phase
 
-  Scenario: Viewing the export options
-    When the user views the "review inclusion" page
-    Then the user sees an "export inclusion list" button
-    And this button is only enabled when the "review inclusion" phase is the "active" phase
-
   Scenario: Export inclusion list
     When the user clicks the "export inclusion list" and confirms the confirm prompt
     Then a CSV-file is downloaded

@@ -29,6 +29,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Invite people affected](HO-Portal/Invite_people_affected.feature)
 - [Mark as no longer eligible](HO-Portal/Mark_as_no_longer_eligible.feature)
 - [Select people for validation](HO-Portal/Select_people_for_validation.feature)
+- [Export People Affected list](HO-Portal/Export_PA_list.feature)
 - [Export selected for validation list](HO-Portal/Export_selected_for_validation_list.feature)
 - [Include people affected (`Run Program` role)](HO-Portal/Include_people_affected_Run_Program_role.feature)
 - [Include people affected (`Personal Data` role)](HO-Portal/Include_people_affected_Personal_Data_role.feature)
