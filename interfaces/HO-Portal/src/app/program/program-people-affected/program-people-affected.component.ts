@@ -441,6 +441,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.program = await this.programsService.getProgramById(this.programId);
     this.activePhase = this.program.state;
 
+    this.canViewPersonalData = this.authService.hasUserRole([
+      UserRole.View,
+      UserRole.PersonalData,
+    ]);
+
     this.loadColumns();
 
     this.lastInstallmentId = await this.programsService.getLastInstallmentId(
@@ -569,13 +574,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
   }
 
   private async loadData() {
-    if (this.authService.hasUserRole([UserRole.View, UserRole.PersonalData])) {
-      this.canViewPersonalData = true;
+    if (this.canViewPersonalData) {
       this.allPeopleData = await this.programsService.getPeopleAffectedPrivacy(
         this.programId,
       );
     } else {
-      this.canViewPersonalData = false;
       this.allPeopleData = await this.programsService.getPeopleAffected(
         this.programId,
       );
