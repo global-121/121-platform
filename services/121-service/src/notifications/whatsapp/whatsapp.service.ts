@@ -252,8 +252,8 @@ export class WhatsappService {
           intersolveBarcode.amount,
           connection.id,
           2,
-          null,
           StatusEnum.success,
+          null,
         );
 
         // Add small delay/sleep to ensure the order in which messages are received
