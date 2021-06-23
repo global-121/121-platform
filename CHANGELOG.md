@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.6.1...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.7.0...master)
 
 ---
+
+## [1.7.0](https://github.com/global-121/121-platform/compare/v1.6.1...v1.7.0) - 2021-06-23
+- 2021-06-23: Added MOCK_INTERSOLVE, MOCK_TWILIO, DISABLE_GROUPING_ON_PHONENUMBER to `services/.env`.
 
 ## [1.6.1](https://github.com/global-121/121-platform/compare/v1.6.0...v1.6.1) - 2021-06-09
 
