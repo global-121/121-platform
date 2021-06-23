@@ -7,7 +7,6 @@ import { UpdateInstanceDto } from './dto/update-instance.dto';
 import { UserRole } from '../user-role.enum';
 import { Roles } from '../roles.decorator';
 
-@ApiBearerAuth()
 @UseGuards(RolesGuard)
 @ApiUseTags('instance')
 @Controller('instance')
@@ -23,6 +22,7 @@ export class InstanceController {
     return await this.instanceService.getInstance();
   }
 
+  @ApiBearerAuth()
   @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Update instance' })
   @Post('update')
