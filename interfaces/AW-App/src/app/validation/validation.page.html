@@ -8,7 +8,7 @@
 
       <ion-button
         *ngIf="isDebug"
-        (click)="showDebug=!showDebug;"
+        (click)="debugToggleShowDebug()"
         [color]="showDebug ? 'warning' : ''"
         fill="clear"
         title="Toggle Debug-tools"
@@ -19,9 +19,11 @@
   </ion-toolbar>
 </ion-header>
 
-<div class="ion-padding"
-     *ngIf="isDebug"
-     [hidden]="!showDebug"
+<div
+  *ngIf="isDebug"
+  [hidden]="!showDebug"
+  class="ion-padding"
+  style="background: #fff;"
 >
   <ion-row class="ion-align-items-center ion-justify-content-between">
     <ion-button color="danger" size="small"
