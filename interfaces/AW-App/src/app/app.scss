@@ -5,25 +5,6 @@
 // file can hold Sass mixins, functions, and placeholder classes to be imported
 // and used throughout the application.
 
-// Limit the app-viewport to make it look like a 'mobile app'
-@media (min-width: 500px) and (min-height: 800px) {
-  body {
-    background: #333;
-  }
-  ion-app {
-    background: #fff;
-    margin: auto auto;
-    border-radius: 0.66em;
-
-    // Limit to a readable line-width
-    max-width: 500px;
-
-    // The width/height ratio should at least look 'portait'
-    min-height: 700px;
-    max-height: 80vh;
-  }
-}
-
 // ----------------------------------------------------------------------------
 // Additional elements:
 // ----------------------------------------------------------------------------

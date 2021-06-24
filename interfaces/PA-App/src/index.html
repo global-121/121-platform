@@ -7,16 +7,54 @@
 
   <base href="/" />
 
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0" />
   <meta name="format-detection" content="telephone=no" />
   <meta name="msapplication-tap-highlight" content="no" />
 
-  <!-- add to homescreen for ios -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="theme-color" content="001e60" />
 </head>
 
 <body>
+  <style>
+    html, body {
+      margin: 0; height: 100%;
+    }
+    #app-shell {
+      position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+      background: #ccc; pointer-events: none;
+    }
+    #app-shell div {
+      display: flex; height: 56px; background: #041F5C;
+    }
+    #app-shell div i {
+      flex: 1 1 100%;
+    }
+    @keyframes b { 50% { transform: scale(.4); } }
+    #app-shell b {
+      position: absolute; top: 33%; left: 50%;
+      width: 6px; height: 6px; border-radius: 50%; background: #333;
+      animation: b 1s 60;
+    }
+    @media (min-width: 500px) and (min-height: 800px) {
+      body { background: #333; }
+      ion-app, #app-shell {
+        margin: auto auto; border-radius: 0.66em; overflow: hidden;
+        max-width: 500px; min-height: 700px; max-height: 80vh;
+      }
+    }
+  </style>
+  <div id="app-shell" aria-hidden="true">
+    <div><i></i><i style="background:#FBE079;"></i><i style="background:#D5E2DB;"></i><i style="background:#fff;"></i></div>
+    <div></div>
+    <b style="margin-left: -9px;"></b><b style="animation-delay: .33s;"></b><b style="animation-delay: .66s; margin-left: 9px;"></b>
+  </div>
+  <script>
+    function hideAppShell(){ document.getElementById('app-shell').hidden=true; }
+    window.setTimeout(hideAppShell, 60 * 1000);
+  </script>
+
   <app-root></app-root>
 </body>
 
