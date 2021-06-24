@@ -4,10 +4,11 @@
       {{ 'tabs.you'|translate }}
     </ion-title>
     <ion-buttons slot="end" *ngIf="isDebug">
-      <ion-button (click)="showDebug=!showDebug;"
-                  [color]="showDebug ? 'warning' : ''"
-                  fill="clear"
-                  title="Toggle Debug-tools"
+      <ion-button
+        (click)="debugToggleShowDebug()"
+        [color]="showDebug ? 'warning' : ''"
+        fill="clear"
+        title="Toggle Debug-tools"
       >
         <ion-icon name="construct" slot="icon-only"></ion-icon>
       </ion-button>

@@ -31,7 +31,9 @@ export class ValidationPage implements OnInit {
   public container;
 
   public isDebug: boolean = environment.isDebug;
-  public showDebug: boolean = environment.showDebug;
+  public showDebug: boolean = environment.isDebug
+    ? this.debugCheckShowDebug()
+    : false;
 
   private scrollSpeed = environment.useAnimation ? 600 : 0;
 
@@ -104,5 +106,15 @@ export class ValidationPage implements OnInit {
   public debugClearAllStorage() {
     this.storage.clear();
     window.sessionStorage.clear();
+  }
+
+  private debugCheckShowDebug(): boolean {
+    return (
+      environment.showDebug || !!window.sessionStorage.getItem('showDebug')
+    );
+  }
+  public debugToggleShowDebug() {
+    this.showDebug = !this.showDebug;
+    window.sessionStorage.setItem('showDebug', this.showDebug ? '1' : '');
   }
 }
