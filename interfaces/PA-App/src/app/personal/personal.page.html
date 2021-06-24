@@ -16,10 +16,11 @@
   </ion-toolbar>
 </ion-header>
 
-<div class="ion-padding"
-     *ngIf="isDebug"
-     [hidden]="!showDebug"
-     style="background: #fff"
+<div
+  *ngIf="isDebug"
+  [hidden]="!showDebug"
+  class="ion-padding"
+  style="background: #fff"
 >
 <ion-row class="ion-align-items-center">
     <select name="debugSections"
