@@ -1,4 +1,7 @@
-import { GetTransactionDto } from './dto/get-transaction.dto';
+import {
+  GetTransactionDto,
+  GetTransactionOutputDto,
+} from './dto/get-transaction.dto';
 import { ActionService } from './../../actions/action.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { TransactionEntity } from './transactions.entity';
@@ -46,6 +49,7 @@ import { CustomDataAttributes } from '../../connection/validation-data/dto/custo
 import { Attributes } from '../../connection/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/payout.dto';
 import { without, compact, sortBy } from 'lodash';
+import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
 
 @Injectable()
 export class ProgramService {
@@ -917,7 +921,7 @@ export class ProgramService {
 
   public async getTransaction(
     input: GetTransactionDto,
-  ): Promise<TransactionEntity> {
+  ): Promise<GetTransactionOutputDto> {
     const connection = await this.getConnectionByReferenceId(input.referenceId);
 
     const transactions = await this.transactionRepository
@@ -1059,6 +1063,11 @@ export class ProgramService {
     programId: number,
   ): object {
     const genericFields = [
+      'id',
+      'phoneNumber',
+      'importedDate',
+      'invitedDate',
+      'noLongerEligibleDate',
       'created',
       'appliedDate',
       'selectedForValidationDate',
@@ -1067,6 +1076,8 @@ export class ProgramService {
       'inclusionEndDate',
       'rejectionDate',
       'namePartnerOrganization',
+      'paymentAmountMultiplier',
+      'note',
     ];
     genericFields.forEach(field => {
       row[field] = connection[field];
@@ -1110,14 +1121,56 @@ export class ProgramService {
       );
   }
 
+  private async addPaymentFieldsToExport(
+    row: object,
+    connection: ConnectionEntity,
+    programId: number,
+    installments: number[],
+  ): Promise<object> {
+    const voucherStatuses = [
+      IntersolvePayoutStatus.InitialMessage,
+      IntersolvePayoutStatus.VoucherSent,
+    ];
+    for await (let installment of installments) {
+      const transaction = {};
+      for await (let voucherStatus of voucherStatuses) {
+        const input = {
+          referenceId: connection.referenceId,
+          programId: programId,
+          installment: installment,
+          customDataKey: 'IntersolvePayoutStatus',
+          customDataValue: voucherStatus,
+        };
+        transaction[voucherStatus] = await this.getTransaction(input);
+      }
+      row[`payment${installment}_status`] =
+        transaction[IntersolvePayoutStatus.InitialMessage]?.status;
+      row[`payment${installment}_initialMessage_date`] =
+        transaction[IntersolvePayoutStatus.InitialMessage]?.status ===
+        StatusEnum.success
+          ? transaction[IntersolvePayoutStatus.InitialMessage]?.installmentDate
+          : null;
+      row[`payment${installment}_voucherSent_date`] =
+        transaction[IntersolvePayoutStatus.VoucherSent]?.status ===
+        StatusEnum.success
+          ? transaction[IntersolvePayoutStatus.VoucherSent]?.installmentDate
+          : null;
+    }
+    return row;
+  }
+
   private async getAllPeopleAffectedList(programId: number): Promise<FileDto> {
     const connections = await this.connectionRepository.find({
       relations: ['fsp'],
     });
     const criteria = await this.getAllCriteriaForExport();
+    const installments = (await this.getInstallments(programId)).map(
+      i => i.installment,
+    );
 
     const connectionDetails = [];
-    connections.forEach(connection => {
+
+    for await (let connection of connections) {
       let row = {};
       row = this.addCustomCriteriaToExport(
         row,
@@ -1126,12 +1179,17 @@ export class ProgramService {
         ExportType.allPeopleAffected,
       );
       row = this.addGenericFieldsToExport(row, connection, programId);
+      row = await this.addPaymentFieldsToExport(
+        row,
+        connection,
+        programId,
+        installments,
+      );
       connectionDetails.push(row);
-    });
-    const filteredColumnDetails = this.filterUnusedColumn(connectionDetails);
+    }
     const response = {
       fileName: this.getExportFileName(ExportType.allPeopleAffected),
-      data: this.jsonToCsv(filteredColumnDetails),
+      data: this.jsonToCsv(connectionDetails),
     };
 
     return response;
