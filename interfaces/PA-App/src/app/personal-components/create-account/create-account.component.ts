@@ -9,7 +9,6 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { LoggingService } from 'src/app/services/logging.service';
 import { PaDataService } from 'src/app/services/padata.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import * as uuid from 'uuid';
 
 @Component({
   selector: 'app-create-account',
@@ -155,12 +154,33 @@ export class CreateAccountComponent extends PersonalComponent {
   }
 
   async createConnection() {
-    const referenceId = uuid.v4();
+    const referenceId =
+      this.createRandomHexaDecimalString(8) +
+      '-' +
+      this.createRandomHexaDecimalString(4) +
+      '-' +
+      this.createRandomHexaDecimalString(4) +
+      '-' +
+      this.createRandomHexaDecimalString(4) +
+      '-' +
+      this.createRandomHexaDecimalString(12);
 
     this.programsServiceApiService.createConnection(referenceId);
 
     this.paData.store(this.paData.type.referenceId, referenceId);
     this.paData.setReferenceId(referenceId);
+  }
+
+  private createRandomHexaDecimalString(length: number): string {
+    let result = '';
+    const characters = 'abcdef0123456789';
+    const charactersLength = characters.length;
+
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
   }
 
   getNextSection() {
