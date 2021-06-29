@@ -182,7 +182,7 @@
   ></ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngIf="hasVoucherSupport(allPeopleAffected[0]?.fsp) && [phaseEnum.registrationValidation, phaseEnum.inclusion, phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && canViewPersonalData"
+    *ngIf="showWhatsappNumber() && [phaseEnum.registrationValidation, phaseEnum.inclusion, phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && canViewPersonalData"
     prop="whatsappPhoneNumber"
     [name]="'page.program.program-people-affected.column.whatsappPhoneNumber'|translate"
     minWidth="130"
@@ -192,7 +192,7 @@
     [headerClass]="columnDefaults.headerClass"
   ></ngx-datatable-column>
   <ngx-datatable-column
-    *ngIf="allPeopleAffected[0]?.vnumber && [phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && canViewPersonalData"
+    *ngIf="showVnumber() && [phaseEnum.reviewInclusion, phaseEnum.payment].includes(thisPhase) && canViewPersonalData"
     prop="vnumber"
     [name]="'page.program.program-people-affected.column.vnumber'|translate"
     minWidth="100"

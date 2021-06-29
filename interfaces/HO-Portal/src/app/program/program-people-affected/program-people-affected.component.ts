@@ -757,6 +757,28 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return voucherFsps.includes(fsp);
   }
 
+  public showWhatsappNumber() {
+    let show = false;
+    for (let pa of this.allPeopleAffected) {
+      show = this.hasVoucherSupport(pa.fsp);
+      if (show) {
+        break;
+      }
+    }
+    return show;
+  }
+
+  public showVnumber() {
+    let show = false;
+    for (let pa of this.allPeopleAffected) {
+      show = !!pa.vnumber;
+      if (show) {
+        break;
+      }
+    }
+    return show;
+  }
+
   public hasError(row: PersonRow, installmentIndex: number) {
     return !!row['payment' + installmentIndex + '-error'];
   }
