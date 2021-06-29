@@ -759,7 +759,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public showWhatsappNumber() {
     let show = false;
-    for (let pa of this.allPeopleAffected) {
+    for (const pa of this.allPeopleAffected) {
       show = this.hasVoucherSupport(pa.fsp);
       if (show) {
         break;
@@ -770,7 +770,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public showVnumber() {
     let show = false;
-    for (let pa of this.allPeopleAffected) {
+    for (const pa of this.allPeopleAffected) {
       show = !!pa.vnumber;
       if (show) {
         break;
