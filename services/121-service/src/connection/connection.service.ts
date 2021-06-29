@@ -31,7 +31,10 @@ import { ActionService } from '../actions/action.service';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { ValidationDataService } from './validation-data/validation-data.service';
-import { CustomDataAttributes } from './validation-data/dto/custom-data-attributes';
+import {
+  CustomDataAttributes,
+  GenericAttributes,
+} from './validation-data/dto/custom-data-attributes';
 import { v4 as uuid } from 'uuid';
 import { NoteDto } from './dto/note.dto';
 import { Attributes } from './dto/update-attribute.dto';
@@ -130,6 +133,16 @@ export class ConnectionService {
       countInvalidPhoneNr,
       countExistingPhoneNr,
     };
+  }
+
+  public async getImportRegistrationsTemplate(
+    programId: number,
+  ): Promise<string[]> {
+    const genericAttributes = Object.values(GenericAttributes).map(item =>
+      String(item),
+    );
+    const dynamicAttributes = await this.getDynamicAttributes(+programId, true);
+    return genericAttributes.concat(dynamicAttributes);
   }
 
   public async importRegistrations(

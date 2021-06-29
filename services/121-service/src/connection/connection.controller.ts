@@ -77,6 +77,20 @@ export class ConnectionController {
     );
   }
 
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({
+    title: 'Get a CSV template for importing registrations',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Get('import-template/:programId')
+  public async getImportRegistrationsTemplate(
+    @Param() params,
+  ): Promise<string[]> {
+    return await this.connectionService.getImportRegistrationsTemplate(
+      params.programId,
+    );
+  }
+
   @Roles(UserRole.PersonalData, UserRole.Admin)
   @ApiOperation({
     title: 'Import set of registered PAs, from CSV',

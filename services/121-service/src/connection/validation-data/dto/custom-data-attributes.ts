@@ -8,3 +8,10 @@ export enum CustomDataAttributes {
   secondName = 'secondName',
   thirdName = 'thirdName',
 }
+
+export enum GenericAttributes {
+  phoneNumber = 'phoneNumber',
+  preferredLanguage = 'preferredLanguage',
+  namePartnerOrganization = 'namePartnerOrganization',
+  fspName = 'fspName',
+}
