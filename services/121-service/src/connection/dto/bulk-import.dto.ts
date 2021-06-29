@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -35,7 +36,7 @@ export class ImportResult {
 
 const fspArray = Object.values(fspName).map(item => String(item));
 
-export class ImportTestRegistrationsDto {
+export class ImportRegistrationsDto {
   @ApiModelProperty({ default: 'en' })
   @IsNotEmpty()
   @IsString()
@@ -45,16 +46,6 @@ export class ImportTestRegistrationsDto {
   @ApiModelProperty()
   @IsString()
   public namePartnerOrganization: string;
-
-  @ApiModelProperty()
-  @IsNotEmpty()
-  @IsString()
-  public nameFirst: string;
-
-  @ApiModelProperty()
-  @IsNotEmpty()
-  @IsString()
-  public nameLast: string;
 
   @ApiModelProperty()
   @IsNotEmpty()
@@ -69,6 +60,11 @@ export class ImportTestRegistrationsDto {
   public fspName: fspName;
 
   @ApiModelProperty()
-  @IsString()
-  public whatsappPhoneNumber: string;
+  @IsArray()
+  public programAttributes: DynamicImportAttribute[];
+}
+
+export class DynamicImportAttribute {
+  public attribute: string;
+  public value: string;
 }

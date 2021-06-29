@@ -1,11 +1,6 @@
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { CustomCriterium } from '../programs/program/custom-criterium.entity';
-import {
-  Injectable,
-  HttpException,
-  HttpStatus,
-  HttpService,
-} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
 import { Repository, getRepository, IsNull, Not } from 'typeorm';
@@ -25,8 +20,9 @@ import { SmsService } from '../notifications/sms/sms.service';
 import { PaStatus } from '../models/pa-status.model';
 import {
   BulkImportDto,
+  DynamicImportAttribute,
+  ImportRegistrationsDto,
   ImportResult,
-  ImportTestRegistrationsDto,
 } from './dto/bulk-import.dto';
 import { validate } from 'class-validator';
 import { Readable } from 'stream';
@@ -35,7 +31,10 @@ import { ActionService } from '../actions/action.service';
 import { AdditionalActionType } from '../actions/action.entity';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { ValidationDataService } from './validation-data/validation-data.service';
-import { CustomDataAttributes } from './validation-data/dto/custom-data-attributes';
+import {
+  CustomDataAttributes,
+  GenericAttributes,
+} from './validation-data/dto/custom-data-attributes';
 import { v4 as uuid } from 'uuid';
 import { NoteDto } from './dto/note.dto';
 import { Attributes } from './dto/update-attribute.dto';
@@ -65,7 +64,6 @@ export class ConnectionService {
 
   public constructor(
     private readonly validationDataService: ValidationDataService,
-    private readonly httpService: HttpService,
     private readonly smsService: SmsService,
     private readonly lookupService: LookupService,
     private readonly actionService: ActionService,
@@ -137,7 +135,17 @@ export class ConnectionService {
     };
   }
 
-  public async importTestRegistrationsNL(
+  public async getImportRegistrationsTemplate(
+    programId: number,
+  ): Promise<string[]> {
+    const genericAttributes = Object.values(GenericAttributes).map(item =>
+      String(item),
+    );
+    const dynamicAttributes = await this.getDynamicAttributes(+programId, true);
+    return genericAttributes.concat(dynamicAttributes);
+  }
+
+  public async importRegistrations(
     csvFile,
     programId: number,
   ): Promise<string> {
@@ -146,12 +154,15 @@ export class ConnectionService {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    const validatedImportRecords = await this.csvToValidatedTestRegistrationsNL(
+    const validatedImportRecords = await this.csvToValidatedRegistrations(
       csvFile,
+      programId,
     );
 
     let countImported = 0;
     let connections: ConnectionEntity[] = [];
+
+    const dynamicAttributes = await this.getDynamicAttributes(programId, true);
     for await (const record of validatedImportRecords) {
       const connection = new ConnectionEntity();
       connection.referenceId = uuid();
@@ -159,19 +170,21 @@ export class ConnectionService {
       connection.namePartnerOrganization = record.namePartnerOrganization;
       connection.phoneNumber = record.phoneNumber;
       connection.preferredLanguage = record.preferredLanguage;
+
       connection.customData = JSON.parse(JSON.stringify({}));
-      connection.customData[CustomDataAttributes.nameFirst] = record.nameFirst;
-      connection.customData[CustomDataAttributes.nameLast] = record.nameLast;
-      connection.customData[CustomDataAttributes.phoneNumber] =
-        record.phoneNumber;
-      connection.customData[CustomDataAttributes.whatsappPhoneNumber] =
-        record.whatsappPhoneNumber;
+      dynamicAttributes.forEach(att => {
+        connection.customData[att] = record.programAttributes.find(
+          a => a.attribute === att,
+        ).value;
+      });
+
       const fsp = await this.fspRepository.findOne({
         where: { fsp: record.fspName },
       });
       connection.fsp = fsp;
       connection.appliedDate = new Date();
       connection.programsApplied = [programId];
+      console.log('connection: ', connection);
       connections.push(connection);
     }
     await this.connectionRepository.save(connections);
@@ -183,7 +196,7 @@ export class ConnectionService {
       );
 
       // Mimic 'enroll program' step
-      await this.storePrefilledAnswersTestRegistrationsNL(
+      await this.storePrefilledAnswersRegistrations(
         connection.referenceId,
         programId,
         connection.customData,
@@ -195,18 +208,14 @@ export class ConnectionService {
     return `Imported ${countImported} PA's`;
   }
 
-  private async storePrefilledAnswersTestRegistrationsNL(
+  private async storePrefilledAnswersRegistrations(
     referenceId: string,
     programId: number,
     customData: any,
   ): Promise<void> {
-    const attributesNL = [
-      CustomDataAttributes.nameFirst,
-      CustomDataAttributes.nameLast,
-      CustomDataAttributes.phoneNumber,
-    ];
+    const dynamicAttributes = await this.getDynamicAttributes(programId, false);
     let validationDataArray: ValidationDataAttributesEntity[] = [];
-    attributesNL.forEach(async attribute => {
+    dynamicAttributes.forEach(async attribute => {
       let validationData = new ValidationDataAttributesEntity();
       validationData.referenceId = referenceId;
       validationData.programId = programId;
@@ -223,11 +232,12 @@ export class ConnectionService {
     return await this.validateBulkImportCsvInput(importRecords);
   }
 
-  private async csvToValidatedTestRegistrationsNL(
+  private async csvToValidatedRegistrations(
     csvFile,
-  ): Promise<ImportTestRegistrationsDto[]> {
+    programId: number,
+  ): Promise<ImportRegistrationsDto[]> {
     const importRecords = await this.validateCsv(csvFile);
-    return await this.validateTestRegistrationsCsvInputNL(importRecords);
+    return await this.validateRegistrationsCsvInput(importRecords, programId);
   }
 
   private async validateCsv(csvFile): Promise<object[]> {
@@ -295,23 +305,52 @@ export class ConnectionService {
     return validatatedArray;
   }
 
-  private async validateTestRegistrationsCsvInputNL(
+  private async getDynamicAttributes(
+    programId: number,
+    alsoFsp: boolean,
+  ): Promise<string[]> {
+    const programAttributes = (
+      await this.customCriteriumRepository.find({
+        where: { program: { id: programId } },
+      })
+    ).map(c => c.criterium);
+    if (!alsoFsp) {
+      return programAttributes;
+    }
+
+    const fspAttributes = await this.fspAttributeRepository.find({
+      relations: ['fsp', 'fsp.program'],
+    });
+    const programFspAttributes = fspAttributes.filter(a =>
+      a.fsp.program.map(p => p.id).includes(+programId),
+    );
+    return programAttributes.concat(programFspAttributes.map(c => c.name));
+  }
+
+  private async validateRegistrationsCsvInput(
     csvArray,
-  ): Promise<ImportTestRegistrationsDto[]> {
+    programId: number,
+  ): Promise<ImportRegistrationsDto[]> {
     const errors = [];
     const validatatedArray = [];
+    const dynamicAttributes = await this.getDynamicAttributes(programId, true);
     for (const [i, row] of csvArray.entries()) {
       if (this.checkForCompletelyEmptyRow(row)) {
         continue;
       }
-      let importRecord = new ImportTestRegistrationsDto();
+      let importRecord = new ImportRegistrationsDto();
       importRecord.preferredLanguage = row.preferredLanguage;
       importRecord.namePartnerOrganization = row.namePartnerOrganization;
-      importRecord.nameFirst = row.nameFirst;
-      importRecord.nameLast = row.nameLast;
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
-      importRecord.whatsappPhoneNumber = row.whatsappPhoneNumber;
+      importRecord.programAttributes = [];
+      dynamicAttributes.forEach(att => {
+        const programAttribute = new DynamicImportAttribute();
+        programAttribute.attribute = att;
+        programAttribute.value = row[att];
+        importRecord.programAttributes.push(programAttribute);
+      });
+      console.log('importRecord: ', importRecord);
 
       const result = await validate(importRecord);
       if (result.length > 0) {

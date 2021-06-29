@@ -77,20 +77,34 @@ export class ConnectionController {
     );
   }
 
-  @Roles(UserRole.Admin)
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({
-    title: 'Import set of registered PAs to test with, based on CSV',
+    title: 'Get a CSV template for importing registrations',
   })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('import-test-registrations/:programId')
+  @Get('import-template/:programId')
+  public async getImportRegistrationsTemplate(
+    @Param() params,
+  ): Promise<string[]> {
+    return await this.connectionService.getImportRegistrationsTemplate(
+      params.programId,
+    );
+  }
+
+  @Roles(UserRole.PersonalData, UserRole.Admin)
+  @ApiOperation({
+    title: 'Import set of registered PAs, from CSV',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('import-registrations/:programId')
   @ApiConsumes('multipart/form-data')
   @ApiImplicitFile({ name: 'file', required: true })
   @UseInterceptors(FileInterceptor('file'))
-  public async importTestRegistrations(
+  public async importRegistrations(
     @UploadedFile() csvFile,
     @Param() params,
   ): Promise<string> {
-    return await this.connectionService.importTestRegistrationsNL(
+    return await this.connectionService.importRegistrations(
       csvFile,
       params.programId,
     );
