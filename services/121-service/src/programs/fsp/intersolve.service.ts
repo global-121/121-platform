@@ -32,6 +32,7 @@ import { UnusedVoucherDto } from './dto/unused-voucher.dto';
 import { TransactionEntity } from '../program/transactions.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
 import { TwilioStatusCallbackDto } from '../../notifications/twilio.dto';
+import { fspName } from './financial-service-provider.entity';
 
 @Injectable()
 export class IntersolveService {
@@ -100,8 +101,10 @@ export class IntersolveService {
     const groupsByPaymentAddress: PaPaymentDataAggregateDto[] = [];
     paPaymentList.forEach(paPaymentData => {
       if (
-        !groupingDisabled &&
-        groupsByPaymentAddress
+        // Join PA in existing group when ..
+        !groupingDisabled && // .. grouping is not disabled
+        paPaymentData.paymentAddress && // .. paymentAddress (whatsappPhoneNumber) is filled, so that no-whatsapp (paymentAddress = null) is not put in 1 group
+        groupsByPaymentAddress // .. there is an existing group to join to
           .map(i => i.paymentAddress)
           .includes(paPaymentData.paymentAddress)
       ) {
@@ -641,17 +644,6 @@ export class IntersolveService {
     transaction.amount = amount;
     transaction.created = new Date();
     transaction.errorMessage = errorMessage;
-    transaction.customData = JSON.parse(
-      JSON.stringify({
-        IntersolvePayoutStatus:
-          transactionStep === 1
-            ? IntersolvePayoutStatus.InitialMessage
-            : IntersolvePayoutStatus.VoucherSent,
-      }),
-    );
-    if (messageSid) {
-      transaction.customData['messageSid'] = messageSid;
-    }
     transaction.transactionStep = transactionStep;
     const connection = await this.connectionRepository.findOne({
       where: { id: connectionId },
@@ -661,6 +653,17 @@ export class IntersolveService {
     const programId = connection.programsApplied[0];
     transaction.program = await this.programRepository.findOne(programId);
     transaction.financialServiceProvider = connection.fsp;
+
+    transaction.customData = JSON.parse(JSON.stringify({}));
+    if (messageSid) {
+      transaction.customData['messageSid'] = messageSid;
+    }
+    if (connection.fsp.fsp === fspName.intersolve) {
+      transaction.customData['IntersolvePayoutStatus'] =
+        transactionStep === 1
+          ? IntersolvePayoutStatus.InitialMessage
+          : IntersolvePayoutStatus.VoucherSent;
+    }
     await this.transactionRepository.save(transaction);
   }
 }
