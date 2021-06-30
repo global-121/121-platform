@@ -89,7 +89,10 @@ export class WhatsappService {
         this.storeSendWhatsapp(message);
         return message.sid;
       })
-      .catch(err => console.log('Error twillio', err));
+      .catch(err => {
+        console.log('Error twillio', err);
+        throw err;
+      });
   }
 
   public async getWhatsappText(
