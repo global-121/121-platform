@@ -184,7 +184,6 @@ export class ConnectionService {
       connection.fsp = fsp;
       connection.appliedDate = new Date();
       connection.programsApplied = [programId];
-      console.log('connection: ', connection);
       connections.push(connection);
     }
     await this.connectionRepository.save(connections);
@@ -350,7 +349,6 @@ export class ConnectionService {
         programAttribute.value = row[att];
         importRecord.programAttributes.push(programAttribute);
       });
-      console.log('importRecord: ', importRecord);
 
       const result = await validate(importRecord);
       if (result.length > 0) {
