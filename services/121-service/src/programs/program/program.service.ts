@@ -904,19 +904,14 @@ export class ProgramService {
     programId: number,
     installment: number,
   ): Promise<any> {
-    const transactions = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('c."referenceId"')
-      .addSelect('MAX(amount) as amount')
-      .leftJoin('transaction.connection', 'c')
-      .where('transaction.program.id = :programId', { programId: programId })
-      .andWhere('installment = :installment', {
-        installment: installment,
-      })
-      .andWhere('status = :status', { status: StatusEnum.error })
-      .groupBy('c."referenceId"')
-      .getRawMany();
-    return transactions;
+    const allLatestTransactionAttemptsPerPa = await this.getTransactions(
+      programId,
+      installment,
+    );
+    const failedTransactions = allLatestTransactionAttemptsPerPa.filter(
+      t => t.installment === installment && t.status === StatusEnum.error,
+    );
+    return failedTransactions;
   }
 
   public async getTransaction(
