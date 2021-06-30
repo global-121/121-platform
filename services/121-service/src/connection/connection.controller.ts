@@ -87,7 +87,7 @@ export class ConnectionController {
     @Param() params,
   ): Promise<string[]> {
     return await this.connectionService.getImportRegistrationsTemplate(
-      params.programId,
+      Number(params.programId),
     );
   }
 
@@ -106,7 +106,7 @@ export class ConnectionController {
   ): Promise<string> {
     return await this.connectionService.importRegistrations(
       csvFile,
-      params.programId,
+      Number(params.programId),
     );
   }
 

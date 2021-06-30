@@ -141,7 +141,7 @@ export class ConnectionService {
     const genericAttributes = Object.values(GenericAttributes).map(item =>
       String(item),
     );
-    const dynamicAttributes = await this.getDynamicAttributes(+programId, true);
+    const dynamicAttributes = await this.getDynamicAttributes(programId, true);
     return genericAttributes.concat(dynamicAttributes);
   }
 
@@ -184,7 +184,6 @@ export class ConnectionService {
       connection.fsp = fsp;
       connection.appliedDate = new Date();
       connection.programsApplied = [programId];
-      console.log('connection: ', connection);
       connections.push(connection);
     }
     await this.connectionRepository.save(connections);
@@ -322,7 +321,7 @@ export class ConnectionService {
       relations: ['fsp', 'fsp.program'],
     });
     const programFspAttributes = fspAttributes.filter(a =>
-      a.fsp.program.map(p => p.id).includes(+programId),
+      a.fsp.program.map(p => p.id).includes(programId),
     );
     return programAttributes.concat(programFspAttributes.map(c => c.name));
   }
@@ -350,7 +349,6 @@ export class ConnectionService {
         programAttribute.value = row[att];
         importRecord.programAttributes.push(programAttribute);
       });
-      console.log('importRecord: ', importRecord);
 
       const result = await validate(importRecord);
       if (result.length > 0) {
