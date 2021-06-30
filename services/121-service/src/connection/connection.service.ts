@@ -141,7 +141,7 @@ export class ConnectionService {
     const genericAttributes = Object.values(GenericAttributes).map(item =>
       String(item),
     );
-    const dynamicAttributes = await this.getDynamicAttributes(+programId, true);
+    const dynamicAttributes = await this.getDynamicAttributes(programId, true);
     return genericAttributes.concat(dynamicAttributes);
   }
 
@@ -321,7 +321,7 @@ export class ConnectionService {
       relations: ['fsp', 'fsp.program'],
     });
     const programFspAttributes = fspAttributes.filter(a =>
-      a.fsp.program.map(p => p.id).includes(+programId),
+      a.fsp.program.map(p => p.id).includes(programId),
     );
     return programAttributes.concat(programFspAttributes.map(c => c.name));
   }
