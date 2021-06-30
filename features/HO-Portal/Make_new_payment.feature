@@ -110,6 +110,42 @@ Feature: Make a new payment
     And a separate voucher image is sent for any old uncollected vouchers or for any other registrations on the same "whatsappPhoneNumber"
 
 ------------------------------------------------------------------------------------------------------------------------------------
+Intersolve payout scenarios details
+- Not in right format, but this list should help to understand all different scenario's in Intersolve payout. 
+- Note that for a long time payments have only been oriented on Intersolve. It cannot be guaranteed that Africa's Talking, or any new FSP will work flawlessly. 
+- Nor are the below list and other scenarios mentioned here valid for Africa's Talking / other FSPs. 
+
+Scenarios (build up cumulatively: if one happens, then the whole process stops; if one doesn't happen, continue with the next one)
+- Intersolve voucher generation fails (if at least 1 of theoretically multiple on 1 phone-number)
+  - All vouchers are canceled for this phone-number (also if some were successful)
+  - Failed transactions are stored
+- PA has 'no whatsapp' as FSP (per definition not multiple PA's in one group)
+  - Voucher is stored
+  - Success transaction is stored (with no customData > means only cash-icon in HO-portal)
+- Sending Whatsapp fails
+  - Voucher is canceled
+  - Failed transaction is stored with relevant error message (e.g. not a valid phonenumber) in payment-status-popup
+- Sending Whatsapp succeeds
+  - Voucher is stored
+  - Waiting transaction is stored
+- Whatsapp status callback is 'undelivered' or 'failed'
+  - Voucher is canceled
+  - Failed transaction is stored with relevant error message
+  - Example for 'failed' is 'not a valid whatsapp phonenumber' (but this is also where we would expect any rate limit errors to go in the future)
+  - Example for 'undelivered' is 'untemplated message' 
+- Whatsapp status callback is 'delivered' or 'read'
+  - Waiting transaction is updated to Success, with 'InitialMessage' as customData, which translates to mail-icon in HO-portal
+  - If delivery status is unknown initially, then the 'read' event offers a 2nd chance for initiating this same update
+- Whatsapp status callback fails to reach us
+  - Transaction stays on 'waiting' 
+- PA replies to voucher-message
+  - Voucher is sent to PA (including instructions, old vouchers and vouchers for registrations on same phone-number)
+  - Vouchers are marked as sent
+  - Newer Success transaction is stored, with 'VoucherSent' as customData, which translates to cash-icon in HO-portal
+  - NOTE: there is currently no status-callback processed on this (set of) message(s)
+
+
+------------------------------------------------------------------------------------------------------------------------------------
 26/05/2021: Copied the below from Github wiki, as it has to be moved here. But not updating style yet, because the functionality will change soon.
 
 One or multiple registrations with the same payment-address(phone-number)
