@@ -7,12 +7,31 @@ Feature: Import people affected
 
   Scenario: Open Import People Affected popup
     When the user clicks the "Import People Affected" button
-    Then a popup opens to select a CSV file
-    And it describes the required format of the file with columns "phoneNumber", "namePartnerOrganization" and "paymentAmountMultiplier"
+    Then a popup opens with a radio-button with 2 options
+    And the 1st option is 'Import people affected'
+    And the 2nd option is 'Import registered people affected'
+    And it has a 'Download template' button
     And it shows a "choose file" button
     And it can also be used to drag and drop the file
     And it shows a disabled "OK" button
     And it shows a "Cancel" button
+  
+  Scenario: Import people Affected > See SECTION 1
+
+  Scenario: Import registered people Affected > See SECTION 2
+  
+----------------------------------------------------------------------------------------------------
+SECTION 1: Import People Affected (to invite)
+
+  Background:
+    Given the user has opened the "Import people affected" popup
+    And the user has selected the "import people affected" option
+
+  Scenario: Download template for import
+    When the user clicks 'Download template' 
+    Then a CSV-file is downloaded
+    And it contains only a row of column names
+    And it contains the columns "phoneNumber", "namePartnerOrganization" and "paymentAmountMultiplier"
 
   Scenario: Successfully Import People Affected
     Given a valid import CSV file is prepared
@@ -65,3 +84,38 @@ Feature: Import people affected
 
   Scenario: Person Affected registers with phone number that was not imported, but is already in the system
     Normal registration (see PA-app/New_registration.feature)
+
+----------------------------------------------------------------------------------------------------
+SECTION 2: Import registered People Affected
+
+  Background:
+    Given the user has opened the "Import people affected" popup
+    And the user has selected the "import registered people affected" option
+
+  Scenario: Download template for import registrations
+    When the user clicks 'Download template' 
+    Then a CSV-file is downloaded
+    And it contains only a row of column names
+    And it contains the generic column names "namePartnerOrganization", "preferredLanguage", "phoneNumber", "fspName"
+    And it has program-dependent columns (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber"
+
+  Scenario: Successfully import registrations via CSV 
+    Given a valid import CSV file is prepared based on the template
+    And it has generic columns "namePartnerOrganization", "preferredLanguage", "phoneNumber", "fspName"
+    And it has program-dependent columns (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber"
+    And it has as delimiter ";" or ","
+    And it has "X" rows 
+    And the input of each cell is valid 
+    When the user clicks 'import'
+    Then feedback "Imported X PAs with status registered" is given
+    And the PA-table in the HO-portal shows "X" new rows of PAs
+    And they have status "Registered" 
+    And all other columns are filled as if a real registration was done
+    And no SMS is sent to the PA unlike a real registration
+    And in the AW-app the validation data for these PAs can be downloaded
+
+  Scenario: Unsuccessfully import test registrations via CSV
+    Given an invalid import CSV file (wrong column names, unallowed values, etc.)
+    When the user selects this file and clicks 'import'
+    Then feedback is given that something went wrong and it gives details on where the error is, mainly if in a generic column
+    And there is no input validation on the dynamic columns 
