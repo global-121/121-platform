@@ -6,6 +6,8 @@ import {
   IsNumber,
   IsString,
   Min,
+  MinLength,
+  MaxLength,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { fspName } from '../../programs/fsp/financial-service-provider.entity';
@@ -40,7 +42,8 @@ export class ImportRegistrationsDto {
   @ApiModelProperty({ default: 'en' })
   @IsNotEmpty()
   @IsString()
-  @IsIn(['en', 'tl', 'ar'])
+  @MinLength(2)
+  @MaxLength(6)
   public preferredLanguage: string;
 
   @ApiModelProperty()
