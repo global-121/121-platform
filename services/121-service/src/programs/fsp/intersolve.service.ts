@@ -493,8 +493,10 @@ export class IntersolveService {
         status: status,
         errorMessage:
           status === StatusEnum.error
-            ? 'Twilio status callback message: ' +
-              statusCallbackData.MessageStatus
+            ? (statusCallbackData.ErrorMessage || '') +
+              ' (ErrorCode: ' +
+              statusCallbackData.ErrorCode +
+              ')'
             : null,
       },
     );

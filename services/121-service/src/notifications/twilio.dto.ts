@@ -63,4 +63,12 @@ export class TwilioStatusCallbackDto {
   @ApiModelProperty({ example: 'delivered' })
   @IsString()
   public readonly MessageStatus: string;
+  @ApiModelProperty({ example: 'Twilio Error: []' })
+  @IsString()
+  @IsOptional()
+  public readonly ErrorMessage: string;
+  @ApiModelProperty({ example: '63015' })
+  @IsString()
+  @IsOptional()
+  public readonly ErrorCode: string;
 }
