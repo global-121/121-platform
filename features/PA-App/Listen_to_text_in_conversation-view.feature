@@ -1,7 +1,6 @@
 @pa-app
 Feature: Listen to text in conversation-view
 
-
   Scenario: Show "Speak text"-button next to text in speech-bubble
     Given an audio-file is available for the given text-message
     When the text-message by 'the 121 system' is shown

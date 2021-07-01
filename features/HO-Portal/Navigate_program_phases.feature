@@ -30,11 +30,11 @@ Feature: Navigate program phases
     Then highlighting in the "phase-navigation-bar" will move to the next phase, both background- and text-color, reflecting a change in both "current program phase" and "selected phase"
     And sees that the text of the of the "move-to-next-phase"-button changes, reflecting the meaning of the next phase-change.
     And sees - depending on which state - that certain program-components in the page will (dis)appear.
-  
+
   Scenario: Opening a program for registration ("publishing")
     Given user views a "program" page
     Given the "current program phase" is "Design"
     Given "selected phase" is "Design"
     When user clicks the "Open for registration"-button
     Then the program will advance to the next phase (see scenario: "Advancing to next phase")
-    And the program will now appear as a selectable program in the PA-app  
+    And the program will now appear as a selectable program in the PA-app

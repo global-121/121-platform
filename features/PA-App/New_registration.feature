@@ -27,7 +27,7 @@ Feature: New registration
     And the "enroll in a program"-step is shown
     When the PA completes this step (See "Answer_program_questions.feature")
     Then the "select financial service provider"-step is shown
-    When the PA completes this step (See "Fill_payment_details.feature")   
+    When the PA completes this step (See "Fill_payment_details.feature")
     Then the "preprinted qr-code"-step is shown
     When the PA completes this step (See "Link-preprinted-QR-code.feature")
     Then the PA receives an SMS confirming registration
@@ -39,4 +39,3 @@ Feature: New registration
     Then the "inclusion status"-step is shown
     When the PA is included in the HO-portal
     Then an inclusion-message appears in the PA-app
-
