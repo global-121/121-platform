@@ -36,9 +36,15 @@ import { API_PATHS } from '../../config';
 })
 export class WhatsappModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AuthMiddlewareTwilio).forRoutes({
-      path: API_PATHS.whatsAppStatus,
-      method: RequestMethod.POST,
-    });
+    consumer.apply(AuthMiddlewareTwilio).forRoutes(
+      {
+        path: API_PATHS.whatsAppStatus,
+        method: RequestMethod.POST,
+      },
+      {
+        path: API_PATHS.whatsAppIncoming,
+        method: RequestMethod.POST,
+      },
+    );
   }
 }

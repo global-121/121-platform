@@ -20,7 +20,10 @@ import { FspService } from '../../programs/fsp/fsp.service';
 import { fspName } from '../../programs/fsp/financial-service-provider.entity';
 import { IntersolveService } from '../../programs/fsp/intersolve.service';
 import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
-import { TwilioStatusCallbackDto } from '../twilio.dto';
+import {
+  TwilioStatusCallbackDto,
+  TwilioIncomingCallbackDto,
+} from '../twilio.dto';
 
 @Injectable()
 export class WhatsappService {
@@ -164,8 +167,8 @@ export class WhatsappService {
 
     if (!connectionsWithPhoneNumber.length) {
       console.log(
-        'Incoming whatsapp from non registered user phone last numbers: ',
-        phoneNumber.substr(-5),
+        'Incoming WhatsApp-message from non-registered phone-number: ',
+        phoneNumber.substr(-5).padStart(phoneNumber.length, '*'),
       );
     }
     return connectionsWithPhoneNumber;
@@ -194,7 +197,9 @@ export class WhatsappService {
     return value.replace('whatsapp:+', '');
   }
 
-  public async handleIncoming(callbackData): Promise<void> {
+  public async handleIncoming(
+    callbackData: TwilioIncomingCallbackDto,
+  ): Promise<void> {
     if (!callbackData.From) {
       throw new HttpException(
         `No "From" address specified.`,

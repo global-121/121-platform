@@ -60,15 +60,46 @@ export class TwilioStatusCallbackDto {
   @ApiModelProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
   public readonly MessageSid: string;
+
   @ApiModelProperty({ example: 'delivered' })
   @IsString()
   public readonly MessageStatus: string;
+
   @ApiModelProperty({ example: 'Twilio Error: []' })
   @IsString()
   @IsOptional()
   public readonly ErrorMessage: string;
+
   @ApiModelProperty({ example: '63015' })
   @IsString()
   @IsOptional()
   public readonly ErrorCode: string;
+}
+
+export class TwilioIncomingCallbackDto {
+  @ApiModelProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
+  @IsString()
+  @IsOptional()
+  public readonly MessageSid: string;
+
+  @ApiModelProperty({ example: 'whatsapp:+31600000000' })
+  @IsString()
+  public readonly From: string;
+
+  @ApiModelProperty({ example: '31600000000' })
+  @IsString()
+  @IsOptional()
+  public readonly WaId: string;
+
+  @ApiModelProperty({
+    example: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
+  })
+  @IsString()
+  @IsOptional()
+  public readonly To: string;
+
+  @ApiModelProperty({ example: 'Yes' })
+  @IsString()
+  @IsOptional()
+  public readonly Body: string;
 }

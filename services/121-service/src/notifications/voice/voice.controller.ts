@@ -13,6 +13,7 @@ import {
   ApiResponse,
   ApiImplicitParam,
   ApiOperation,
+  ApiConsumes,
 } from '@nestjs/swagger';
 import { VoiceService } from './voice.service';
 import { Response } from 'express-serve-static-core';
@@ -64,6 +65,7 @@ export class VoiceController {
     mp3Stream.readStream.pipe(response);
   }
 
+  @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('status')
   public async statusCallback(@Body() callbackData: any): Promise<void> {
     return await this.voiceService.statusCallback(callbackData);

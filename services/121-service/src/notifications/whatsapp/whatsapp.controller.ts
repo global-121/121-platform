@@ -1,10 +1,18 @@
 import { WhatsappService } from './whatsapp.service';
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import { ApiResponse, ApiUseTags, ApiImplicitParam } from '@nestjs/swagger';
+import {
+  ApiResponse,
+  ApiUseTags,
+  ApiImplicitParam,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { UserRole } from '../../user-role.enum';
 import { Roles } from '../../roles.decorator';
 import { PaStatus } from '../../models/pa-status.model';
-import { TwilioStatusCallbackDto } from '../twilio.dto';
+import {
+  TwilioStatusCallbackDto,
+  TwilioIncomingCallbackDto,
+} from '../twilio.dto';
 
 @ApiUseTags('notifications')
 @Controller('notifications/whatsapp')
@@ -31,6 +39,7 @@ export class WhatsappController {
     );
   }
 
+  @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('status')
   public async statusCallback(
     @Body() callbackData: TwilioStatusCallbackDto,
@@ -38,8 +47,11 @@ export class WhatsappController {
     return await this.whatsappService.statusCallback(callbackData);
   }
 
+  @ApiConsumes('application/json', 'application/x-www-form-urlencoded')
   @Post('incoming')
-  public async incoming(@Body() callbackData: any): Promise<void> {
+  public async incoming(
+    @Body() callbackData: TwilioIncomingCallbackDto,
+  ): Promise<void> {
     return await this.whatsappService.handleIncoming(callbackData);
   }
 }
