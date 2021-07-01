@@ -2,7 +2,7 @@ import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { NestMiddleware, HttpStatus, Injectable } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { twilio } from './twilio.client';
-import { EXTERNAL_API } from '../config';
+import { EXTERNAL_API, DEBUG } from '../config';
 
 @Injectable()
 export class AuthMiddlewareTwilio implements NestMiddleware {
@@ -15,23 +15,44 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
   ): Promise<any> {
     const twilioSignature = req.headers['x-twilio-signature'];
 
-    const validWhatsapp = twilio.validateRequest(
+    if (DEBUG) {
+      console.info(
+        'AuthMiddlewareTwilio: Skipped request validation in DEBUG-mode for:',
+        req.path,
+      );
+      return next();
+    }
+
+    const validWhatsAppStatus = twilio.validateRequest(
       process.env.TWILIO_AUTHTOKEN,
       twilioSignature,
-      EXTERNAL_API.callbackUrlWhatsapp,
+      EXTERNAL_API.whatsAppStatus,
       req.body,
       {
         accountSid: process.env.TWILIO_SID,
       },
     );
-    if (validWhatsapp) {
+    if (validWhatsAppStatus) {
+      return next();
+    }
+
+    const validWhatsAppIncoming = twilio.validateRequest(
+      process.env.TWILIO_AUTHTOKEN,
+      twilioSignature,
+      EXTERNAL_API.whatsAppIncoming,
+      req.body,
+      {
+        accountSid: process.env.TWILIO_SID,
+      },
+    );
+    if (validWhatsAppIncoming) {
       return next();
     }
 
     const validSms = twilio.validateRequest(
       process.env.TWILIO_AUTHTOKEN,
       twilioSignature,
-      EXTERNAL_API.callbackUrlSms,
+      EXTERNAL_API.smsStatus,
       req.body,
       {
         accountSid: process.env.TWILIO_SID,
@@ -44,7 +65,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     const validVoice = twilio.validateRequest(
       process.env.TWILIO_AUTHTOKEN,
       twilioSignature,
-      EXTERNAL_API.callbackUrlVoice,
+      EXTERNAL_API.voiceStatus,
       req.body,
     );
     if (validVoice) {
@@ -52,7 +73,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     }
 
     throw new HttpException(
-      'Could not validate Twillio request',
+      'Could not validate Twilio request',
       HttpStatus.UNAUTHORIZED,
     );
   }

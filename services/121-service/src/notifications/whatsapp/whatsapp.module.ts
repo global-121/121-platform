@@ -16,6 +16,7 @@ import { TwilioMessageEntity } from '../twilio.entity';
 import { ImageCodeModule } from '../imagecode/image-code.module';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 import { FspModule } from '../../programs/fsp/fsp.module';
+import { API_PATHS } from '../../config';
 
 @Module({
   imports: [
@@ -35,9 +36,15 @@ import { FspModule } from '../../programs/fsp/fsp.module';
 })
 export class WhatsappModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AuthMiddlewareTwilio).forRoutes({
-      path: 'notifications/whatsapp/status',
-      method: RequestMethod.POST,
-    });
+    consumer.apply(AuthMiddlewareTwilio).forRoutes(
+      {
+        path: API_PATHS.whatsAppStatus,
+        method: RequestMethod.POST,
+      },
+      {
+        path: API_PATHS.whatsAppIncoming,
+        method: RequestMethod.POST,
+      },
+    );
   }
 }

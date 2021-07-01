@@ -33,19 +33,24 @@ export const SWAGGER_CUSTOM_CSS = `
 // Configure Internal and External API URL's
 // ---------------------------------------------------------------------------
 
+export const API_PATHS = {
+  smsStatus: 'notifications/sms/status',
+  voiceStatus: 'notifications/voice/status',
+  whatsAppStatus: 'notifications/whatsapp/status',
+  whatsAppIncoming: 'notifications/whatsapp/incoming',
+  voiceXml: 'notifications/voice/xml/',
+  voiceMp3: 'notifications/voice/mp3/',
+  imageCode: 'notifications/imageCode/',
+  voucherInstructions: 'fsp/intersolve/instruction/',
+};
+const baseApiUrl = process.env.EXTERNAL_121_SERVICE_URL + 'api/';
 export const EXTERNAL_API = {
-  callbackUrlSms:
-    process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/sms/status',
-  callbackUrlVoice:
-    process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/voice/status',
-  callbackUrlWhatsapp:
-    process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/whatsapp/status',
-  voiceXmlUrl:
-    process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/voice/xml/',
-  voiceMp3lUrl:
-    process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/voice/mp3/',
-  imageCodeUrl:
-    process.env.EXTERNAL_121_SERVICE_URL + 'api/notifications/imageCode/',
-  voucherInstructionsUrl:
-    process.env.EXTERNAL_121_SERVICE_URL + 'api/fsp/intersolve/instruction/',
+  smsStatus: baseApiUrl + API_PATHS.smsStatus,
+  voiceStatus: baseApiUrl + API_PATHS.voiceStatus,
+  whatsAppStatus: baseApiUrl + API_PATHS.whatsAppStatus,
+  whatsAppIncoming: baseApiUrl + API_PATHS.whatsAppIncoming,
+  voiceXmlUrl: baseApiUrl + API_PATHS.voiceXml,
+  voiceMp3Url: baseApiUrl + API_PATHS.voiceMp3,
+  imageCodeUrl: baseApiUrl + API_PATHS.imageCode,
+  voucherInstructionsUrl: baseApiUrl + API_PATHS.voucherInstructions,
 };

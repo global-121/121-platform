@@ -33,7 +33,7 @@ export class VoiceService {
         method: 'GET',
         url: EXTERNAL_API.voiceXmlUrl + mp3Param,
         to: recipientPhoneNr,
-        statusCallback: EXTERNAL_API.callbackUrlVoice,
+        statusCallback: EXTERNAL_API.voiceStatus,
         from: process.env.TWILIO_TEST_FROM_NUMBER_VOICE,
       })
       .then(call => this.storeCall(call, mp3Param))
@@ -61,7 +61,7 @@ export class VoiceService {
     const twiml = new VoiceResponse();
     const re = new RegExp('/', 'g');
     const mp3Escaped = mp3Param.replace(re, 'REPLACE');
-    const mp3Url = EXTERNAL_API.voiceMp3lUrl + mp3Escaped;
+    const mp3Url = EXTERNAL_API.voiceMp3Url + mp3Escaped;
     twiml.play(mp3Url);
     return twiml.toString();
   }

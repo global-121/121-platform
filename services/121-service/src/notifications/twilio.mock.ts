@@ -16,7 +16,7 @@ export class TwilioClientMock {
     public async create(
       twilioMessagesCreateDto: TwilioMessagesCreateDto,
     ): Promise<object> {
-      // console.log('TwilioClientMock: create():', twilioMessagesCreateDto);
+      console.log('TwilioClientMock: create():');
 
       const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
 
@@ -66,6 +66,10 @@ export class TwilioClientMock {
   public validateRequest(
     twilioValidateRequestDto: TwilioValidateRequestDto,
   ): boolean {
+    console.log(
+      'TwilioClientMock: validateRequest():',
+      twilioValidateRequestDto,
+    );
     return true;
   }
 }

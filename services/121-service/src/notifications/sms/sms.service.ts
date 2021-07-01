@@ -42,11 +42,11 @@ export class SmsService {
       .create({
         body: message,
         messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
-        statusCallback: EXTERNAL_API.callbackUrlSms,
+        statusCallback: EXTERNAL_API.smsStatus,
         to: recipientPhoneNr,
       })
       .then(message => this.storeSendSms(message))
-      .catch(err => console.log('Error twillio', err));
+      .catch(err => console.log('Error from Twilio:', err));
   }
 
   public async getSmsText(
