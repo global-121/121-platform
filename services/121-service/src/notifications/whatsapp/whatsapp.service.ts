@@ -93,7 +93,7 @@ export class WhatsappService {
         return message.sid;
       })
       .catch(err => {
-        console.log('Error twillio', err);
+        console.log('Error from Twilio:', err);
         throw err;
       });
   }

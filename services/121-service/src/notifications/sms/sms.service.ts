@@ -46,7 +46,7 @@ export class SmsService {
         to: recipientPhoneNr,
       })
       .then(message => this.storeSendSms(message))
-      .catch(err => console.log('Error twillio', err));
+      .catch(err => console.log('Error from Twilio:', err));
   }
 
   public async getSmsText(
