@@ -16,4 +16,3 @@ Feature: Consent question
     Given a button with "I disagree" is shown
     When the PA presses "I agree"
     Then the "sign-up/sign-in"-step is shown
-

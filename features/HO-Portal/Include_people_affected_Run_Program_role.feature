@@ -22,8 +22,8 @@ Feature: Include people affected by "run program" role (extension of Manage_peop
     And the "status" is updated to "Included"
     And if the custom SMS option is used, an SMS is sent to the PA (see Manage_people_affected.feature)
     And in the PA-app a notification appears that the PA is included
-  
+
   Scenario: Include 2000 PAs
     Given there are 2000 "registered" PAs in the system (see Admin-user/Import_test_registrations_NL.feature)
     When the user uses and confirms the "include for program" action on all 2000 PAs
-    Then this is all processed as in the scenario above, quickly and without problem 
+    Then this is all processed as in the scenario above, quickly and without problem

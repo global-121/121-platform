@@ -1,7 +1,6 @@
 @pa-app
 Feature: Use existing Account
 
-
   Scenario: Use existing Account
     Given the PA accesses the PA-App in a web-browser
     Given the "select language"-step is shown

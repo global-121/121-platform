@@ -19,4 +19,3 @@ Feature: Export selected for validation list
     Given a logged-in user without the "personal data" role
     When the user views the "registration & validation" page
     Then the "export list: selected for validation" button is disabled
-

@@ -1,7 +1,6 @@
 @pa-app
 Feature: Verify password input
 
-
   Scenario: Show "Toggle password" on password-input
     Given the PA is at the "create account"-step in the conversation
     When the PA fills in a username and submits
