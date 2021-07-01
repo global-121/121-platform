@@ -77,7 +77,7 @@ export class WhatsappService {
       body: message,
       messagingServiceSid: process.env.TWILIO_MESSAGING_SID,
       from: 'whatsapp:' + process.env.TWILIO_WHATSAPP_NUMBER,
-      statusCallback: EXTERNAL_API.callbackUrlWhatsapp,
+      statusCallback: EXTERNAL_API.whatsAppStatus,
       to: 'whatsapp:' + recipientPhoneNr,
     };
     if (mediaUrl) {

@@ -9,6 +9,7 @@ import {
 import { SmsService } from './sms.service';
 import { SmsController } from './sms.controller';
 import { TwilioMessageEntity } from '../twilio.entity';
+import { API_PATHS } from '../../config';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TwilioMessageEntity])],
@@ -19,7 +20,7 @@ import { TwilioMessageEntity } from '../twilio.entity';
 export class SmsModule implements NestModule {
   public configure(consumer: MiddlewareConsumer): void {
     consumer.apply(AuthMiddlewareTwilio).forRoutes({
-      path: 'notifications/sms/status',
+      path: API_PATHS.smsStatus,
       method: RequestMethod.POST,
     });
   }

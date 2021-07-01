@@ -18,7 +18,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     const validWhatsapp = twilio.validateRequest(
       process.env.TWILIO_AUTHTOKEN,
       twilioSignature,
-      EXTERNAL_API.callbackUrlWhatsapp,
+      EXTERNAL_API.whatsAppStatus,
       req.body,
       {
         accountSid: process.env.TWILIO_SID,
@@ -31,7 +31,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     const validSms = twilio.validateRequest(
       process.env.TWILIO_AUTHTOKEN,
       twilioSignature,
-      EXTERNAL_API.callbackUrlSms,
+      EXTERNAL_API.smsStatus,
       req.body,
       {
         accountSid: process.env.TWILIO_SID,
@@ -44,7 +44,7 @@ export class AuthMiddlewareTwilio implements NestMiddleware {
     const validVoice = twilio.validateRequest(
       process.env.TWILIO_AUTHTOKEN,
       twilioSignature,
-      EXTERNAL_API.callbackUrlVoice,
+      EXTERNAL_API.voiceStatus,
       req.body,
     );
     if (validVoice) {
