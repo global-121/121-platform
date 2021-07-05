@@ -7,9 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.7.3...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.8.0...master)
 
 ---
+
+## [1.8.0](https://github.com/global-121/121-platform/compare/v1.7.3...v1.8.0) - 2021-07-05
+
+### Added
+- Import data: "as registered"
+
+### Changed
+- Import data: "as imported"
+- Export data (more data added)
+- Incoming messages: improved error-handling/logging and status-management
 
 ## [1.7.3](https://github.com/global-121/121-platform/compare/v1.7.2...v1.7.3) - 2021-06-26
 - 2021-06-26: uuid lib PA-app suddenly failing in build prod-mode, replaced by random string function 
