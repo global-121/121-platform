@@ -14,7 +14,7 @@
     "start": "ng serve --port 0",
     "generate-assets-audio": "node ./_generate-assets-audio.js",
     "check-assets-translations": "node ./_check-assets-translations.js",
-    "set-env-variables": "node ./_set-env-variabes.js",
+    "set-env-variables": "node ./_set-env-variables.js",
     "prebuild": "npm run set-env-variables && npm run check-assets-translations && npm run generate-assets-audio",
     "build": "ng build",
     "build:prod": "npm run build -- --prod",

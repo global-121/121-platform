@@ -43,6 +43,12 @@ function check_shared_code() {
     diff --recursive --unified $from/$path $to/$path | diff-so-fancy
   }
 
+  compare_code "_set-env-variables.js" "$repo_pa" "$repo_aw"
+  compare_code "_set-env-variables.js" "$repo_pa" "$repo_ho"
+  compare_code "ngx-translate-lint.config.json" "$repo_pa" "$repo_aw"
+  compare_code "ngx-translate-lint.config.json" "$repo_pa" "$repo_ho"
+  compare_code "_convert-styles-to-async.js" "$repo_pa" "$repo_aw"
+
   compare_code "src/app/shared/dialogue-turn/" "$repo_pa" "$repo_aw"
   compare_code "src/app/shared/q-and-a-set/" "$repo_pa" "$repo_aw"
   compare_code "src/app/shared/qr-scanner/" "$repo_pa" "$repo_aw"
@@ -63,6 +69,10 @@ function check_shared_code() {
   compare_code ".prettierignore" "$repo_pa" "$repo_ho"
   compare_code ".prettierrc.yml" "$repo_pa" "$repo_aw"
   compare_code ".prettierrc.yml" "$repo_pa" "$repo_ho"
+  compare_code "tslint.json" "$repo_pa" "$repo_aw"
+  compare_code "tslint.json" "$repo_pa" "$repo_ho"
+  compare_code "tsconfig.json" "$repo_pa" "$repo_aw"
+  compare_code "tsconfig.json" "$repo_pa" "$repo_ho"
 
   log "Done."
 }
