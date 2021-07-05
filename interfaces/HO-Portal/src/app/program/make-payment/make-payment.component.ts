@@ -2,7 +2,7 @@ import { formatCurrency } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { ActionType } from 'src/app/models/action-type.model';
+import { ActionType } from 'src/app/models/actions.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';

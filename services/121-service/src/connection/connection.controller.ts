@@ -103,7 +103,7 @@ export class ConnectionController {
   public async importRegistrations(
     @UploadedFile() csvFile,
     @Param() params,
-  ): Promise<string> {
+  ): Promise<ImportResult> {
     return await this.connectionService.importRegistrations(
       csvFile,
       Number(params.programId),

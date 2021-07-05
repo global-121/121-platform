@@ -4,7 +4,7 @@ import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import { UserRole } from 'src/app/auth/user-role.enum';
-import { ActionType } from 'src/app/models/action-type.model';
+import { ActionType } from 'src/app/models/actions.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
 

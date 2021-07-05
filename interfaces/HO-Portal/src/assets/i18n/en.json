@@ -272,9 +272,16 @@
           "invalid": "There were {{countInvalidPhoneNr}} unrecognizable phone numbers. Try to correct them and import again."
         },
         "timestamp": "Latest import has been done on: {{dateTime}}",
-        "btn-text": "Import People Affected",
-        "explanation": "The required format of the CSV-file is: <pre class='ion-color-primary'>phoneNumber,namePartnerOrganization,paymentAmountMultiplier\n+0000000000,Example-Name,1</pre>",
-        "confirm-message": "Select a CSV-file of the required format.<br> The system will detect only new phone-numbers and import them as People Affected."
+        "imported": {
+          "btn-text": "Import People Affected",
+          "explanation": "Make sure to match the required format of the template CSV-file.",
+          "confirm-message": "The system will detect only new phone-numbers and import them as People Affected."
+        },
+        "registered": {
+          "btn-text": "Import registrations",
+          "explanation": "Make sure to match the required format of the template CSV-file.",
+          "confirm-message": "The system will create 'registered' People Affected."
+        }
       },
       "export-list": {
         "timestamp": "Latest export has been done on: {{dateTime}}",
@@ -349,6 +356,10 @@
     "timestamp": {
       "done": "Done on:"
     }
+  },
+  "file-picker": {
+    "label": "Select a file",
+    "download-template-button": "Download template CSV-file"
   },
   "password-toggle": {
     "show": "Show password",

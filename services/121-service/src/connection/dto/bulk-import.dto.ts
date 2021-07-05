@@ -32,8 +32,8 @@ export class BulkImportDto {
 
 export class ImportResult {
   public countImported: number;
-  public countExistingPhoneNr: number;
-  public countInvalidPhoneNr: number;
+  public countExistingPhoneNr?: number;
+  public countInvalidPhoneNr?: number;
 }
 
 const fspArray = Object.values(fspName).map(item => String(item));

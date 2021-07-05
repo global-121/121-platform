@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
+import { saveAs } from 'file-saver';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { UserRole } from '../auth/user-role.enum';
-import { ActionType } from '../models/action-type.model';
+import { ActionType, LatestAction } from '../models/actions.model';
 import { ExportType } from '../models/export-type.model';
+import { csvTemplateImported, ImportType } from '../models/import-type.enum';
 import { InstallmentData, TotalIncluded } from '../models/installment.model';
-import { Note, Person } from '../models/person.model';
+import { Note, PaStatus, Person } from '../models/person.model';
 import { ProgramMetrics } from '../models/program-metrics.model';
 import { Program } from '../models/program.model';
 import { Transaction } from '../models/transaction.model';
@@ -226,18 +228,50 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  import(programId: number, file: File): Promise<ImportResult> {
+  async downloadImportTemplate(
+    programId: number,
+    type: ImportType,
+  ): Promise<void> {
+    let downloadData: string[];
+
+    if (type === ImportType.imported) {
+      // Use a hard-coded value for the 'default' template:
+      downloadData = csvTemplateImported;
+    } else {
+      downloadData = await this.apiService
+        .get(
+          environment.url_121_service_api,
+          `/connection/import-template/${programId}`,
+          false,
+        )
+        .toPromise();
+    }
+
+    const csvContents = downloadData.join(';') + '\r\n';
+
+    saveAs(
+      new Blob([csvContents], { type: 'text/csv' }),
+      `program-${programId}_${type}_TEMPLATE.csv`,
+    );
+    return;
+  }
+
+  import(
+    programId: number,
+    file: File,
+    destination: PaStatus = PaStatus.imported,
+  ): Promise<ImportResult> {
     const formData = new FormData();
     formData.append('file', file);
+
+    let path = `/connection/import-bulk/${programId}`;
+
+    if (destination === PaStatus.registered) {
+      path = `/connection/import-registrations/${programId}`;
+    }
+
     return this.apiService
-      .post(
-        environment.url_121_service_api,
-        `/connection/import-bulk/${programId}`,
-        formData,
-        false,
-        false,
-        true,
-      )
+      .post(environment.url_121_service_api, path, formData, false, false, true)
       .toPromise();
   }
 
@@ -252,6 +286,17 @@ export class ProgramsServiceApiService {
         type,
         ...(installment && { installment }),
       })
+      .pipe(
+        map((response) => {
+          if (response.data) {
+            saveAs(
+              new Blob([response.data], { type: 'text/csv' }),
+              response.fileName,
+            );
+          }
+          return response;
+        }),
+      )
       .toPromise();
   }
 
@@ -375,7 +420,7 @@ export class ProgramsServiceApiService {
   retrieveLatestActions(
     actionType: ExportType | ActionType,
     programId: number | string,
-  ): Promise<any> {
+  ): Promise<LatestAction> {
     return this.apiService
       .post(environment.url_121_service_api, `/actions/retrieve-latest`, {
         actionType,

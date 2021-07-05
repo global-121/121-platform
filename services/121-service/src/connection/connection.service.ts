@@ -148,7 +148,7 @@ export class ConnectionService {
   public async importRegistrations(
     csvFile,
     programId: number,
-  ): Promise<string> {
+  ): Promise<ImportResult> {
     let program = await this.programRepository.findOne(programId);
     if (!program) {
       const errors = 'Program not found.';
@@ -204,7 +204,7 @@ export class ConnectionService {
       countImported += 1;
     }
 
-    return `Imported ${countImported} PA's`;
+    return { countImported };
   }
 
   private async storePrefilledAnswersRegistrations(
