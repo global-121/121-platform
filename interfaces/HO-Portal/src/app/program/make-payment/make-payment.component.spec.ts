@@ -6,7 +6,7 @@ import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { InstallmentData } from 'src/app/models/installment.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
-import { ActionType } from '../../models/action-type.model';
+import { ActionType } from '../../models/actions.model';
 import { MakePaymentComponent } from './make-payment.component';
 
 describe('MakePaymentComponent', () => {

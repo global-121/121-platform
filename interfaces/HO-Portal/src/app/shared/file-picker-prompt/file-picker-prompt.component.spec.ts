@@ -2,6 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { FilePickerPromptComponent } from './file-picker-prompt.component';
 
 describe('FilePickerPromptComponent', () => {
@@ -12,6 +14,7 @@ describe('FilePickerPromptComponent', () => {
     TestBed.configureTestingModule({
       declarations: [FilePickerPromptComponent],
       imports: [TranslateModule.forRoot(), IonicModule, FormsModule],
+      providers: [provideMagicalMock(ProgramsServiceApiService)],
     }).compileComponents();
   }));
 

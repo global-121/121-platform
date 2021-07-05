@@ -8,10 +8,14 @@ import {
 } from '@angular/core';
 import { IonInput, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { ImportType } from 'src/app/models/import-type.enum';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 
 export interface FilePickerProps {
   type: 'csv';
   explanation?: string;
+  programId?: number;
+  downloadTemplate?: ImportType;
 }
 
 @Component({
@@ -40,6 +44,7 @@ export class FilePickerPromptComponent implements OnInit, AfterViewInit {
     public translate: TranslateService,
     private modalController: ModalController,
     private changeDetector: ChangeDetectorRef,
+    private programsService: ProgramsServiceApiService,
   ) {}
 
   ngOnInit() {
@@ -56,6 +61,10 @@ export class FilePickerPromptComponent implements OnInit, AfterViewInit {
     window.addEventListener('drop', this.onFileDrop, false);
     window.addEventListener('dragenter', () => (this.showDropZone = true));
     window.addEventListener('dragleave', () => (this.showDropZone = false));
+  }
+
+  public async downloadTemplate(programId: number, type: ImportType) {
+    return await this.programsService.downloadImportTemplate(programId, type);
   }
 
   private getAcceptForType(type: FilePickerProps['type']): string {

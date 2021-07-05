@@ -39,6 +39,20 @@
       style="border-top: 1px solid var(--ion-color-medium)"
     ></div>
 
+    <div
+      *ngIf="filePickerProps.downloadTemplate && filePickerProps.explanation"
+      class="ion-margin-vertical"
+    >
+      <ion-button
+        (click)="downloadTemplate(filePickerProps.programId, filePickerProps.downloadTemplate)"
+        color="primary"
+        fill="outline"
+      >
+        <ion-icon name="download" slot="start" aria-hidden="true"></ion-icon>
+        {{ 'file-picker.download-template-button'|translate }}
+      </ion-button>
+    </div>
+
     <ion-input
       #fileInput
       type="file"
@@ -51,6 +65,8 @@
       }"
       (dragover)="isDraggedOver=true;"
       (dragleave)="isDraggedOver=false;"
+      [title]="'file-picker.label'|translate"
+      [attr.aria-label]="'file-picker.label'|translate"
     ></ion-input>
 
   </div>
