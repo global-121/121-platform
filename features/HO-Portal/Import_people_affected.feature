@@ -5,32 +5,11 @@ Feature: Import people affected
     Given a logged-in user with either the "run program" or the "personal data" role
     Given the "selected phase" is "Registration (& Validation)"
 
-  Scenario: Open Import People Affected popup
-    When the user clicks the "Import People Affected" button
-    Then a popup opens with a radio-button with 2 options
-    And the 1st option is 'Import people affected'
-    And the 2nd option is 'Import registered people affected'
-    And it has a 'Download template' button
-    And it shows a "choose file" button
-    And it can also be used to drag and drop the file
-    And it shows a disabled "OK" button
-    And it shows a "Cancel" button
-
-  Scenario: Import people Affected > See SECTION 1
-
-  Scenario: Import registered people Affected > See SECTION 2
-
-  ----------------------------------------------------------------------------------------------------
-  SECTION 1: Import People Affected (to invite)
-
-  Background:
-    Given the user has opened the "Import people affected" popup
-    And the user has selected the "import people affected" option
-
   Scenario: Download template for import
-    When the user clicks 'Download template'
+    Given the user clicks the "Import People Affected" button
+    When the user clicks the "Download template CSV-file" button
     Then a CSV-file is downloaded
-    And it contains only a row of column names
+    And it contains only 1 row of column names
     And it contains the columns "phoneNumber", "namePartnerOrganization" and "paymentAmountMultiplier"
 
   Scenario: Successfully Import People Affected
@@ -38,9 +17,10 @@ Feature: Import people affected
     And it has columns "phoneNumber", "namePartnerOrganization" and "paymentAmountMultiplier"
     And it has as delimiter ";" or ","
     And the "paymentAmountMultiplier" column has only positive integers as values
+    Given the user clicks the "Import People Affected" button
     When the user selects the CSV-file, through 'choose file' or 'drag and drop'
     Then the "OK" button becomes enabled
-    When the user presses "OK"
+    When the user clicks "OK" to confirm the import
     Then a loading spinner appears
     When it is finished
     Then a feedback popup appears
@@ -48,8 +28,8 @@ Feature: Import people affected
     And it shows the number of "phoneNumbers" that were already present in the system
     And it shows the number of invalid "phoneNumbers"
     And it shows an "OK" button
-    When the users presses "OK"
-    The popup disappears
+    When the users clicks "OK" to confirm the import
+    Then The popup disappears
     And the page refreshes
     And the PA-table now shows new rows equal to the number of successfully imported "phoneNumbers"
     And they have status "Imported"
@@ -57,9 +37,10 @@ Feature: Import people affected
     And the name of the "partner organization" is filled in
 
   Scenario: Unsuccessfully import invalid CSV file
+    Given the user clicks the "Import People Affected" button
     When the user selects an invalid CSV-file (wrong extension, wrong column names, wrong delimiter, wrong input values, etc.)
     Then the "OK" button becomes enabled
-    When the user presses "OK"
+    When the user clicks "OK" to confirm the import
     Then a feedback popup appears that "Something went wrong with the export" and it explains possible reasons
 
   Scenario: Person Affected registers with imported phone number
@@ -77,45 +58,55 @@ Feature: Import people affected
     And the "inclusion score" is visible
 
   Scenario: Person Affected registers with unknown phone number
-  Normal registration (see PA-app/New_registration.feature)
+      """
+      Normal registration (see PA-app/New_registration.feature)
+      """
 
   Scenario: Person Affected registers with phone number that was imported initially, but already has a connected registration
-  Normal registration (see PA-app/New_registration.feature)
+      """
+      Normal registration (see PA-app/New_registration.feature)
+      """
 
   Scenario: Person Affected registers with phone number that was not imported, but is already in the system
-  Normal registration (see PA-app/New_registration.feature)
+      """
+      Normal registration (see PA-app/New_registration.feature)
+      """
 
-  ----------------------------------------------------------------------------------------------------
-  SECTION 2: Import registered People Affected
+
+
+@ho-portal
+Feature: Import registrations
+
 
   Background:
-    Given the user has opened the "Import people affected" popup
-    And the user has selected the "import registered people affected" option
+    Given a logged-in user with either the "run program" or the "personal data" role
+    Given the "selected phase" is "Registration (& Validation)"
+    Given the user clicks the "Import registrations" button
 
   Scenario: Download template for import registrations
-    When the user clicks 'Download template'
+    When the user clicks the "Download template CSV-file" button
     Then a CSV-file is downloaded
-    And it contains only a row of column names
+    And it contains only 1 row of column names
     And it contains the generic column names "namePartnerOrganization", "preferredLanguage", "phoneNumber", "fspName"
-    And it has program-dependent columns (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber"
+    And it has program-dependent columns (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber")
 
   Scenario: Successfully import registrations via CSV
     Given a valid import CSV file is prepared based on the template
     And it has generic columns "namePartnerOrganization", "preferredLanguage", "phoneNumber", "fspName"
-    And it has program-dependent columns (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber"
+    And it has program-dependent columns (for NL-LVV: "whatsappPhoneNumber", "nameFirst", "nameLast", "vnumber")
     And it has as delimiter ";" or ","
     And it has "X" rows
     And the input of each cell is valid
-    When the user clicks 'import'
-    Then feedback "Imported X PAs with status registered" is given
+    When the user clicks "OK" to confirm the import
+    Then it shows the number "X" of successfully imported "phoneNumbers"
     And the PA-table in the HO-portal shows "X" new rows of PAs
     And they have status "Registered"
     And all other columns are filled as if a real registration was done
     And no SMS is sent to the PA unlike a real registration
     And in the AW-app the validation data for these PAs can be downloaded
 
-  Scenario: Unsuccessfully import test registrations via CSV
+  Scenario: Unsuccessfully import registrations via CSV
     Given an invalid import CSV file (wrong column names, disallowed values, etc.)
-    When the user selects this file and clicks 'import'
+    When the user selects this file and clicks "OK" to confirm the import
     Then feedback is given that something went wrong and it gives details on where the error is, mainly if in a generic column
     And there is no input validation on the dynamic columns
