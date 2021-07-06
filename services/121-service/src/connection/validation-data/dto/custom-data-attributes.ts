@@ -15,3 +15,22 @@ export enum GenericAttributes {
   namePartnerOrganization = 'namePartnerOrganization',
   fspName = 'fspName',
 }
+
+export enum Language {
+  en = 'en',
+  ar = 'ar',
+  ti = 'ti',
+  tl = 'tl',
+  ptBR = 'pt_BR',
+  tuvKE = 'tuv_KE',
+  saqKE = 'saq_KE',
+}
+
+export class Attribute {
+  public attribute: string;
+  public type: string;
+}
+
+export enum AnswerTypes {
+  tel = 'tel',
+}

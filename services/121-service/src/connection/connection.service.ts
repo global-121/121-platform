@@ -32,6 +32,8 @@ import { AdditionalActionType } from '../actions/action.entity';
 import { ReferenceIdDto } from './dto/reference-id.dto';
 import { ValidationDataService } from './validation-data/validation-data.service';
 import {
+  AnswerTypes,
+  Attribute,
   CustomDataAttributes,
   GenericAttributes,
 } from './validation-data/dto/custom-data-attributes';
@@ -142,7 +144,10 @@ export class ConnectionService {
       String(item),
     );
     const dynamicAttributes = await this.getDynamicAttributes(programId, true);
-    return genericAttributes.concat(dynamicAttributes);
+    const attributes = genericAttributes.concat(
+      dynamicAttributes.map(d => d.attribute),
+    );
+    return [...new Set(attributes)]; // Deduplicates attributes
   }
 
   public async importRegistrations(
@@ -173,8 +178,8 @@ export class ConnectionService {
 
       connection.customData = JSON.parse(JSON.stringify({}));
       dynamicAttributes.forEach(att => {
-        connection.customData[att] = record.programAttributes.find(
-          a => a.attribute === att,
+        connection.customData[att.attribute] = record.programAttributes.find(
+          a => a.attribute === att.attribute,
         ).value;
       });
 
@@ -219,8 +224,8 @@ export class ConnectionService {
       validationData.referenceId = referenceId;
       validationData.programId = programId;
       validationData.attributeId = 0;
-      validationData.attribute = attribute;
-      validationData.answer = customData[attribute];
+      validationData.attribute = attribute.attribute;
+      validationData.answer = customData[attribute.attribute];
       validationDataArray.push(validationData);
     });
     await this.validationDataAttributesRepository.save(validationDataArray);
@@ -293,13 +298,15 @@ export class ConnectionService {
       importRecord.paymentAmountMultiplier = +row.paymentAmountMultiplier;
       const result = await validate(importRecord);
       if (result.length > 0) {
-        const errorObj = { lineNumber: i + 1, validationError: result };
+        const errorObj = {
+          lineNumber: i + 1,
+          column: result[0].property,
+          value: result[0].value,
+        };
         errors.push(errorObj);
+        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
       validatatedArray.push(importRecord);
-    }
-    if (errors.length > 0) {
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
     return validatatedArray;
   }
@@ -307,12 +314,17 @@ export class ConnectionService {
   private async getDynamicAttributes(
     programId: number,
     alsoFsp: boolean,
-  ): Promise<string[]> {
+  ): Promise<Attribute[]> {
     const programAttributes = (
       await this.customCriteriumRepository.find({
         where: { program: { id: programId } },
       })
-    ).map(c => c.criterium);
+    ).map(c => {
+      return {
+        attribute: c.criterium,
+        type: c.answerType,
+      };
+    });
     if (!alsoFsp) {
       return programAttributes;
     }
@@ -320,10 +332,15 @@ export class ConnectionService {
     const fspAttributes = await this.fspAttributeRepository.find({
       relations: ['fsp', 'fsp.program'],
     });
-    const programFspAttributes = fspAttributes.filter(a =>
-      a.fsp.program.map(p => p.id).includes(programId),
-    );
-    return programAttributes.concat(programFspAttributes.map(c => c.name));
+    const programFspAttributes = fspAttributes
+      .filter(a => a.fsp.program.map(p => p.id).includes(programId))
+      .map(c => {
+        return {
+          attribute: c.name,
+          type: c.answerType,
+        };
+      });
+    return programAttributes.concat(programFspAttributes);
   }
 
   private async validateRegistrationsCsvInput(
@@ -343,22 +360,40 @@ export class ConnectionService {
       importRecord.phoneNumber = row.phoneNumber;
       importRecord.fspName = row.fspName;
       importRecord.programAttributes = [];
-      dynamicAttributes.forEach(att => {
+      for await (const att of dynamicAttributes) {
+        if (att.type === AnswerTypes.tel) {
+          const sanitized = await this.lookupService.lookupAndCorrect(
+            row[att.attribute],
+            true,
+          );
+          if (!sanitized) {
+            const errorObj = {
+              lineNumber: i + 1,
+              column: att.attribute,
+              value: row[att.attribute],
+            };
+            errors.push(errorObj);
+            throw new HttpException(errors, HttpStatus.BAD_REQUEST);
+          }
+          row[att.attribute] = sanitized;
+        }
         const programAttribute = new DynamicImportAttribute();
-        programAttribute.attribute = att;
-        programAttribute.value = row[att];
+        programAttribute.attribute = att.attribute;
+        programAttribute.value = row[att.attribute];
         importRecord.programAttributes.push(programAttribute);
-      });
+      }
 
       const result = await validate(importRecord);
       if (result.length > 0) {
-        const errorObj = { lineNumber: i + 1, validationError: result };
+        const errorObj = {
+          lineNumber: i + 1,
+          column: result[0].property,
+          value: result[0].value,
+        };
         errors.push(errorObj);
+        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
       validatatedArray.push(importRecord);
-    }
-    if (errors.length > 0) {
-      throw new HttpException(errors, HttpStatus.BAD_REQUEST);
     }
     return validatatedArray;
   }
@@ -572,16 +607,15 @@ export class ConnectionService {
     customDataKey: string,
     customDataValue: string,
   ): Promise<string> {
-    const answerTypeTel = 'tel';
     const phonenumberTypedAnswers = [];
     const fspTelAttributes = await this.fspAttributeRepository.find({
-      where: { answerType: answerTypeTel },
+      where: { answerType: AnswerTypes.tel },
     });
     for (let fspAttr of fspTelAttributes) {
       phonenumberTypedAnswers.push(fspAttr.name);
     }
     const customCriteriumAttrs = await this.customCriteriumRepository.find({
-      where: { answerType: answerTypeTel },
+      where: { answerType: AnswerTypes.tel },
     });
     for (let criteriumAttr of customCriteriumAttrs) {
       phonenumberTypedAnswers.push(criteriumAttr.criterium);

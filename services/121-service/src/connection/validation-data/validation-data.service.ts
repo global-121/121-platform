@@ -22,7 +22,10 @@ import {
 } from '../../programs/fsp/fsp-interface';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 import { CustomCriterium } from 'src/programs/program/custom-criterium.entity';
-import { CustomDataAttributes } from './dto/custom-data-attributes';
+import {
+  AnswerTypes,
+  CustomDataAttributes,
+} from './dto/custom-data-attributes';
 
 @Injectable()
 export class ValidationDataService {
@@ -124,16 +127,15 @@ export class ValidationDataService {
     answers: PrefilledAnswerDto[],
     programId: number,
   ): Promise<PrefilledAnswerDto[]> {
-    const answerTypeTel = 'tel';
     const program = await this.programService.findOne(programId);
     const phonenumberTypedAnswers = [];
     for (let criterium of program.customCriteria) {
-      if (criterium.answerType == answerTypeTel) {
+      if (criterium.answerType == AnswerTypes.tel) {
         phonenumberTypedAnswers.push(criterium.criterium);
       }
     }
     const fspTelAttributes = await this.fspAttributeRepository.find({
-      where: { answerType: answerTypeTel },
+      where: { answerType: AnswerTypes.tel },
     });
     for (let fspAttr of fspTelAttributes) {
       phonenumberTypedAnswers.push(fspAttr.name);
