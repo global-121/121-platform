@@ -142,7 +142,10 @@ export class ConnectionService {
       String(item),
     );
     const dynamicAttributes = await this.getDynamicAttributes(programId, true);
-    return genericAttributes.concat(dynamicAttributes);
+    const attributes = genericAttributes.concat(
+      dynamicAttributes.map(d => d.attribute),
+    );
+    return [...new Set(attributes)]; // Deduplicates attributes
   }
 
   public async importRegistrations(
