@@ -6,11 +6,10 @@ import {
   IsNumber,
   IsString,
   Min,
-  MinLength,
-  MaxLength,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { fspName } from '../../programs/fsp/financial-service-provider.entity';
+import { Language } from '../validation-data/dto/custom-data-attributes';
 
 export class BulkImportDto {
   @ApiModelProperty()
@@ -37,14 +36,15 @@ export class ImportResult {
 }
 
 const fspArray = Object.values(fspName).map(item => String(item));
+const languageArray = Object.values(Language).map(item => String(item));
 
 export class ImportRegistrationsDto {
-  @ApiModelProperty({ default: 'en' })
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(2)
-  @MaxLength(6)
-  public preferredLanguage: string;
+  @ApiModelProperty({
+    enum: languageArray,
+    example: languageArray.join(' | '),
+  })
+  @IsIn(languageArray)
+  public preferredLanguage: Language;
 
   @ApiModelProperty()
   @IsString()

@@ -264,7 +264,11 @@
         "pageTitle": "Program JSON"
       },
       "bulk-import": {
-        "import-error": "Something went wrong with the import. <ul><li>Check the required extension (.csv)</li><li>Check the format and column-names of the CSV-file</li><li>The 'paymentAmountMultiplier' column should contain only whole numbers >= 1</li></ul>",
+        "import-error": {
+          "generic": "Something went wrong with the import. <ul><li>Check the required extension (.csv)</li><li>Check the format and column-names of the CSV-file</li><li><strong>Error message:</strong>{{specific}}</li>{{imported}}{{registered}}</ul>",
+          "imported": "<li>E.g. the 'paymentAmountMultiplier' column should contain only whole numbers >= 1</li>",
+          "registered": "<li>E.g. the 'fspName' column only allows the exact right names (e.g. 'Intersolve-whatsapp' or 'Intersolve-no-whatsapp')</li>"
+        },
         "import-result": {
           "ready": "Import ready.",
           "new": "There are {{countImported}} new records imported.",

@@ -134,7 +134,24 @@ export class BulkImportComponent implements OnInit {
         this.isInProgress = false;
         console.log('err: ', err);
         this.actionResult(
-          this.translate.instant('page.program.bulk-import.import-error'),
+          this.translate.instant(
+            'page.program.bulk-import.import-error.generic',
+            {
+              specific: err.error[0] ? JSON.stringify(err.error[0]) : '-',
+              imported:
+                destination === PaStatus.imported
+                  ? this.translate.instant(
+                      'page.program.bulk-import.import-error.imported',
+                    )
+                  : '',
+              registered:
+                destination === PaStatus.registered
+                  ? this.translate.instant(
+                      'page.program.bulk-import.import-error.registered',
+                    )
+                  : '',
+            },
+          ),
         );
       },
     );
