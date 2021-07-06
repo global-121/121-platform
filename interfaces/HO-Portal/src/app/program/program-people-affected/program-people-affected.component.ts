@@ -195,15 +195,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   public canViewPersonalData: boolean;
 
-  private hasWideScreen(): boolean {
-    return (
-      !this.platform.is('mobile') &&
-      !this.platform.is('mobileweb') &&
-      !this.platform.is('phablet') &&
-      this.platform.width() >= 768
-    );
-  }
-
   constructor(
     private authService: AuthService,
     private programsService: ProgramsServiceApiService,
@@ -249,7 +240,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.name',
         ),
         ...this.columnDefaults,
-        frozenLeft: this.hasWideScreen(),
+        frozenLeft: this.platform.width() > 768,
         phases: [ProgramPhase.reviewInclusion, ProgramPhase.payment],
         roles: [UserRole.View, UserRole.PersonalData],
       },
@@ -259,7 +250,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.phone-number',
         ),
         ...this.columnDefaults,
-        frozenLeft: this.hasWideScreen(),
+        frozenLeft: this.platform.width() > 1280,
         phases: [
           ProgramPhase.registrationValidation,
           ProgramPhase.inclusion,
@@ -275,7 +266,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
           'page.program.program-people-affected.column.namePartnerOrganization',
         ),
         ...this.columnDefaults,
-        frozenLeft: this.hasWideScreen(),
+        frozenLeft: this.platform.width() > 1280,
         phases: [
           ProgramPhase.registrationValidation,
           ProgramPhase.inclusion,
@@ -291,7 +282,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ),
         ...this.columnDefaults,
         width: 135,
-        frozenLeft: this.hasWideScreen(),
+        frozenLeft: this.platform.width() > 1280,
       },
       {
         prop: 'imported',
