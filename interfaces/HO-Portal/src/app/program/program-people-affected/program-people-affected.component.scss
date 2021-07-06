@@ -1,3 +1,40 @@
+/*
+ * Tools - above the table
+ ***************************************************************************/
+.bulk-action-select {
+  padding: 0.45em;
+  border: 1px solid var(--ion-color-medium);
+  border-radius: var(--ion-border-radius);
+}
+
+.filter-input {
+  --placeholder-color: --ion-color-medium;
+
+  border: 1px solid var(--ion-color-medium);
+  min-width: 20em;
+  max-width: 30%;
+}
+
+/*
+ * ngx-datatable + related components
+ ***************************************************************************/
+
+.data-table--max-height {
+  height: 72vh;
+}
+
+.proxy-scrollbar {
+  width: 100%;
+  overflow: hidden;
+  overflow-x: auto;
+}
+.proxy-scrollbar--content {
+  height: 1px;
+}
+
+/*
+ * table-contents
+ ***************************************************************************/
 .popup-button {
   padding: 0.2em 0.4em;
   font-family: var(--ion-font-family);
@@ -18,37 +55,4 @@
     color: var(--ion-color-danger);
     border-color: currentColor;
   }
-}
-
-.bulk-action-select {
-  padding: 0.45em;
-  border: 1px solid var(--ion-color-medium);
-  border-radius: var(--ion-border-radius);
-}
-
-.filter-input {
-  --placeholder-color: --ion-color-medium;
-
-  border: 1px solid var(--ion-color-medium);
-  min-width: 20em;
-  max-width: 30%;
-}
-
-.data-table--max-height {
-  height: 72vh;
-}
-
-.proxy-scrollbar {
-  width: 100%;
-  overflow: hidden;
-  overflow-x: auto;
-}
-.proxy-scrollbar--content {
-  height: 1px;
-}
-
-// Don't show headers/footers in printed voucher
-@page {
-  size: auto;
-  margin: 0;
 }

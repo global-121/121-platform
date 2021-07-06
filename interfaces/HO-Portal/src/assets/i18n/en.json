@@ -230,6 +230,7 @@
         },
         "edit-person-affected-popup": {
           "edit-icon-title": "Edit information of Person Affected",
+          "has-notes-title": "Notes available",
           "popup-title": "Edit information of {{pa}}",
           "properties": {
             "paymentAmountMultiplier": {
