@@ -659,6 +659,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ? `${person.paymentAmountMultiplier}&times;`
         : '',
       fsp: person.fsp,
+      hasNote: !!person.hasNote,
     };
 
     personRow = this.fillPaymentColumns(personRow);

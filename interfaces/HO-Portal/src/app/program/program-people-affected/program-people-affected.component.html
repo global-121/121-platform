@@ -145,18 +145,25 @@
       <div class="ion-align-items-center" style="display: flex;">
         <button
           *ngIf="canViewPersonalData"
+          id="edit-button"
           type="button"
           class="ion-no-padding popup-button"
           (click)="editPersonAffectedPopup(row)"
-          [attr.title]="'page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'|translate"
-          [attr.aria-label]="'page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'|translate"
+          [attr.title]="('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'|translate) + (row.hasNote ? (' - ' + ('page.program.program-people-affected.edit-person-affected-popup.has-notes-title'|translate)) : '')"
+          [attr.aria-label]="('page.program.program-people-affected.edit-person-affected-popup.edit-icon-title'|translate) + (row.hasNote ? (' - ' + ('page.program.program-people-affected.edit-person-affected-popup.has-notes-title'|translate)) : '')"
         >
           <ion-icon
             name="create"
             size="small"
             aria-hidden="true"
-          >
-          </ion-icon>
+          ></ion-icon>
+          <ion-icon
+            *ngIf="row.hasNote"
+            name="document"
+            color="warning"
+            size="small"
+            aria-hidden="true"
+          ></ion-icon>
         </button>
         &nbsp;&nbsp;
         <span>{{ value }}</span>

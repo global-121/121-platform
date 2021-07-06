@@ -16,6 +16,7 @@ export class Person {
   inclusionEndDate?: string;
   rejectionDate?: string;
   status: PaStatus;
+  hasNote?: boolean;
   fsp?: string;
   vnumber?: string;
   whatsappPhoneNumber?: string;
@@ -30,6 +31,7 @@ export class PersonRow {
   pa: string; // Display label
   status: PaStatus; // Not displayed in table, but needed e.g. for updateCheckboxes
   statusLabel: string;
+  hasNote: boolean;
   digitalIdCreated?: string;
   vulnerabilityAssessmentCompleted?: string | null;
   selectedForValidation?: string | null;
