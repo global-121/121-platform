@@ -366,7 +366,7 @@ export class ConnectionService {
             row[att.attribute],
             true,
           );
-          if (!sanitized) {
+          if (!sanitized && !!row[att.attribute]) {
             const errorObj = {
               lineNumber: i + 1,
               column: att.attribute,
