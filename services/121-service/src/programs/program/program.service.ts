@@ -998,12 +998,12 @@ export class ProgramService {
     const criteria = (await this.getAllCriteriaForExport()).map(c => c.name);
     const outputPaymentDetails = [];
     pastPaymentDetails.forEach(transaction => {
-      Object.keys(transaction.connection_customData).forEach(key => {
+      Object.keys(transaction.customData).forEach(key => {
         if (criteria.includes(key)) {
-          transaction[key] = transaction.connection_customData[key];
+          transaction[key] = transaction.customData[key];
         }
       });
-      delete transaction.connection_customData;
+      delete transaction.customData;
       outputPaymentDetails.push(transaction);
     });
     return outputPaymentDetails;
@@ -1368,10 +1368,11 @@ export class ProgramService {
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
-        'transaction.amount',
-        'transaction.installment',
-        'connection.phoneNumber',
-        'connection.customData',
+        'transaction.amount as "amount"',
+        'transaction.installment as "installment"',
+        'connection.phoneNumber as "phoneNumber"',
+        'connection.customData as "customData"',
+        'connection.namePartnerOrganization as "partnerOrganization"',
         'fsp.fsp AS financialServiceProvider',
       ])
       .innerJoin(
