@@ -388,7 +388,7 @@ export class ProgramController {
     status: 200,
     description: 'Metrics of a program to gain an overview of the program ',
   })
-  @Get('metrics/:programId/:')
+  @Get('metrics/:programId')
   public async getMetrics(
     @Param() params,
     @Query() query,

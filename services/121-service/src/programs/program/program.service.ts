@@ -1512,36 +1512,30 @@ export class ProgramService {
       month,
       year,
     );
-    metrics.verified =
-      (await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        PaStatus.validated,
-        installment,
-        month,
-        year,
-      )) +
-      metrics.included +
-      metrics.inclusionEnded +
-      metrics.rejected;
-    metrics.finishedEnlisting =
-      (await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        PaStatus.registered,
-        installment,
-        month,
-        year,
-      )) + metrics.verified;
-    metrics.startedEnlisting =
-      (await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        PaStatus.created,
-        installment,
-        month,
-        year,
-      )) + metrics.finishedEnlisting;
+    metrics.verified = await this.getTimestampsPerStatusAndTimePeriod(
+      programId,
+      connections,
+      PaStatus.validated,
+      installment,
+      month,
+      year,
+    );
+    metrics.finishedEnlisting = await this.getTimestampsPerStatusAndTimePeriod(
+      programId,
+      connections,
+      PaStatus.registered,
+      installment,
+      month,
+      year,
+    );
+    metrics.startedEnlisting = await this.getTimestampsPerStatusAndTimePeriod(
+      programId,
+      connections,
+      PaStatus.created,
+      installment,
+      month,
+      year,
+    );
 
     return metrics;
   }
