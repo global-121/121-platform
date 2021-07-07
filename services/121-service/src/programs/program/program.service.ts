@@ -1411,33 +1411,137 @@ export class ProgramService {
     return `${base}_${new Date().toISOString().substr(0, 10)}.csv`;
   }
 
-  private filteredLength(connections, filterStatus: PaStatus): number {
-    const filteredConnections = connections.filter(
-      connection => connection.status === filterStatus,
+  private getDateColumPerStatus(
+    filterStatus: PaStatus,
+  ): PaStatusTimestampField {
+    switch (filterStatus) {
+      case PaStatus.created:
+        return PaStatusTimestampField.created;
+      case PaStatus.imported:
+        return PaStatusTimestampField.importedDate;
+      case PaStatus.invited:
+        return PaStatusTimestampField.invitedDate;
+      case PaStatus.noLongerEligible:
+        return PaStatusTimestampField.noLongerEligibleDate;
+      case PaStatus.registered:
+        return PaStatusTimestampField.appliedDate;
+      case PaStatus.selectedForValidation:
+        return PaStatusTimestampField.selectedForValidationDate;
+      case PaStatus.validated:
+        return PaStatusTimestampField.validationDate;
+      case PaStatus.included:
+        return PaStatusTimestampField.inclusionDate;
+      case PaStatus.inclusionEnded:
+        return PaStatusTimestampField.inclusionEndDate;
+      case PaStatus.rejected:
+        return PaStatusTimestampField.rejectionDate;
+    }
+  }
+
+  private async getTimestampsPerStatusAndTimePeriod(
+    programId: number,
+    connections,
+    filterStatus: PaStatus,
+    installment: number,
+    month: number,
+    year: number,
+  ): Promise<any> {
+    const dateColumn = this.getDateColumPerStatus(filterStatus);
+
+    let filteredConnections = connections.filter(
+      connection => connection[dateColumn],
     );
+
+    if (month) {
+      filteredConnections = filteredConnections.filter(connection => {
+        return (
+          connection[dateColumn].getMonth() + 1 === month &&
+          connection[dateColumn].getYear() + 1900 === year
+        );
+      });
+    }
+
+    if (installment) {
+      const installments = await this.getInstallments(programId);
+      const beginDate =
+        installment === 1
+          ? new Date(2000, 0, 1)
+          : installments.find(i => i.installment === installment - 1)
+              .installmentDate;
+      const endDate = installments.find(i => i.installment === installment)
+        .installmentDate;
+      filteredConnections = filteredConnections.filter(
+        connection =>
+          connection[dateColumn] > beginDate &&
+          connection[dateColumn] <= endDate,
+      );
+    }
     return filteredConnections.length;
   }
 
-  public async getPaMetrics(programId: number): Promise<PaMetrics> {
-    const metrics = new PaMetrics();
+  public async getPaMetrics(
+    programId: number,
+    installment: number,
+    month: number,
+    year: number,
+  ): Promise<PaMetrics> {
     const connections = await this.getConnections(programId, false);
 
-    metrics.included = this.filteredLength(connections, PaStatus.included);
-    metrics.inclusionEnded = this.filteredLength(
+    const metrics = new PaMetrics();
+    metrics.included = await this.getTimestampsPerStatusAndTimePeriod(
+      programId,
+      connections,
+      PaStatus.included,
+      installment,
+      month,
+      year,
+    );
+    metrics.inclusionEnded = await this.getTimestampsPerStatusAndTimePeriod(
+      programId,
       connections,
       PaStatus.inclusionEnded,
+      installment,
+      month,
+      year,
     );
-    metrics.rejected = this.filteredLength(connections, PaStatus.rejected);
+    metrics.rejected = await this.getTimestampsPerStatusAndTimePeriod(
+      programId,
+      connections,
+      PaStatus.rejected,
+      installment,
+      month,
+      year,
+    );
     metrics.verified =
-      this.filteredLength(connections, PaStatus.validated) +
+      (await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        connections,
+        PaStatus.validated,
+        installment,
+        month,
+        year,
+      )) +
       metrics.included +
       metrics.inclusionEnded +
       metrics.rejected;
     metrics.finishedEnlisting =
-      this.filteredLength(connections, PaStatus.registered) + metrics.verified;
+      (await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        connections,
+        PaStatus.registered,
+        installment,
+        month,
+        year,
+      )) + metrics.verified;
     metrics.startedEnlisting =
-      this.filteredLength(connections, PaStatus.created) +
-      metrics.finishedEnlisting;
+      (await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        connections,
+        PaStatus.created,
+        installment,
+        month,
+        year,
+      )) + metrics.finishedEnlisting;
 
     return metrics;
   }
