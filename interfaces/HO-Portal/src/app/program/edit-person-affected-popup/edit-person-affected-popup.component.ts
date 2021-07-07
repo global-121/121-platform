@@ -3,6 +3,7 @@ import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { Person } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 
 @Component({
   selector: 'app-edit-person-affected-popup',
@@ -23,6 +24,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     private translate: TranslateService,
     private programsService: ProgramsServiceApiService,
     private alertController: AlertController,
+    private pubSub: PubSubService,
   ) {}
 
   async ngOnInit() {
@@ -83,7 +85,10 @@ export class EditPersonAffectedPopupComponent implements OnInit {
       .updateNote(this.person.referenceId, this.noteModel)
       .then(
         (note) => {
-          this.actionResult(this.translate.instant('common.update-success'));
+          this.actionResult(
+            this.translate.instant('common.update-success'),
+            true,
+          );
           this.noteLastUpdate = note.noteUpdated;
           this.inProgress.note = false;
         },
@@ -110,7 +115,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
           handler: () => {
             alert.dismiss(true);
             if (refresh) {
-              window.location.reload();
+              this.pubSub.publish(PubSubEvent.dataRegistrationChanged);
             }
             return false;
           },

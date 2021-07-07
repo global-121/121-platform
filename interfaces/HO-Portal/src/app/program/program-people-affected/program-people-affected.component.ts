@@ -13,6 +13,7 @@ import { IntersolvePayoutStatus } from 'src/app/models/transaction-custom-data';
 import { Transaction } from 'src/app/models/transaction.model';
 import { BulkActionsService } from 'src/app/services/bulk-actions.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
@@ -203,6 +204,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     private alertController: AlertController,
     public modalController: ModalController,
     public platform: Platform,
+    private pubSub: PubSubService,
   ) {
     this.locale = environment.defaultLocale;
 
@@ -462,6 +464,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     window.setTimeout(() => {
       this.setupProxyScrollbar();
     }, 1000);
+
+    // Listen for external signals to refresh data shown in table:
+    this.pubSub.subscribe(PubSubEvent.dataRegistrationChanged, () => {
+      this.refreshData();
+    });
   }
 
   private setupProxyScrollbar() {
@@ -1033,5 +1040,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       numeric: true,
       sensitivity: 'base',
     });
+  }
+
+  public async refreshData() {
+    this.isLoading = true;
+    await this.loadData();
+    this.isLoading = false;
   }
 }
