@@ -75,8 +75,8 @@
       "metrics": {
         "pa": {
           "targeted": "PA Targeted",
-          "started-enlisting": "PA Started Registration",
-          "finished-enlisting": "PA Registered",
+          "started-registration": "PA Started Registration",
+          "finished-registration": "PA Registered",
           "verified": "PA Verified",
           "included": "PA Included",
           "inclusionEnded": "PA Inclusion Ended",

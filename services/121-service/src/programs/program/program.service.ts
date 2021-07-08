@@ -1520,7 +1520,7 @@ export class ProgramService {
       month,
       year,
     );
-    metrics.finishedEnlisting = await this.getTimestampsPerStatusAndTimePeriod(
+    metrics.finishedRegistration = await this.getTimestampsPerStatusAndTimePeriod(
       programId,
       connections,
       PaStatus.registered,
@@ -1528,7 +1528,7 @@ export class ProgramService {
       month,
       year,
     );
-    metrics.startedEnlisting = await this.getTimestampsPerStatusAndTimePeriod(
+    metrics.startedRegistration = await this.getTimestampsPerStatusAndTimePeriod(
       programId,
       connections,
       PaStatus.created,

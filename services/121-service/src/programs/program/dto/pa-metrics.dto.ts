@@ -1,6 +1,6 @@
 export class PaMetrics {
-  public startedEnlisting: number;
-  public finishedEnlisting: number;
+  public startedRegistration: number;
+  public finishedRegistration: number;
   public verified: number;
   public included: number;
   public inclusionEnded: number;
