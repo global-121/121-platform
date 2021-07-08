@@ -4,8 +4,8 @@ export class ProgramMetrics {
 }
 
 export class PeopleMetrics {
-  startedEnlisting: number;
-  finishedEnlisting: number;
+  startedRegistration: number;
+  finishedRegistration: number;
   verified: number;
   included: number;
   inclusionEnded: number;
