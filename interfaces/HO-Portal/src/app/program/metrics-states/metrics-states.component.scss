@@ -1,0 +1,26 @@
+.metrics-states--table {
+  td,
+  th {
+    padding: 0.5em;
+  }
+
+  .state-collumn {
+    border-left: 1px solid silver;
+  }
+
+  .col-header {
+    text-align: left;
+    vertical-align: bottom;
+    width: 7em;
+    border-bottom: 1px solid black;
+  }
+
+  .row-header {
+    text-align: right;
+  }
+
+  .cell-number {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+}
