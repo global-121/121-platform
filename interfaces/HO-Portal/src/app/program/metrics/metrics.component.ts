@@ -42,7 +42,7 @@ export class MetricsComponent implements OnChanges {
     this.locale = environment.defaultLocale;
   }
 
-  async ngOnChanges(changes: SimpleChanges) {
+  public async ngOnChanges(changes: SimpleChanges) {
     if (changes.program && typeof changes.program.currentValue === 'object') {
       this.update();
     }
