@@ -25,3 +25,10 @@
     user-select: auto;
   }
 }
+
+.styled-select {
+  // Default styles for a 'styled' select:
+  padding: 0.45em;
+  border: 1px solid var(--ion-color-medium);
+  border-radius: var(--ion-border-radius);
+}

@@ -43,11 +43,28 @@
         class="row-header"
       >
         {{ 'page.program.metrics.timeframe.payment'|translate }}
+        <select
+          name="time-payment"
+          [(ngModel)]="chosenPayment"
+          (change)="changeDataset(chosenPayment, 'forPayment')"
+          class="styled-select timeframe-select"
+          [title]="'page.program.metrics.timeframe.select-payment'|translate"
+        >
+          <option value="">
+            {{ 'page.program.metrics.timeframe.select-payment'|translate }}
+          </option>
+          <option
+            *ngFor="let item of pastPayments"
+            [value]="item.value"
+          >
+            {{ item.label }}
+          </option>
+        </select>
       </th>
       <td
-        *ngFor="let col of paStates"
+        *ngFor="let cell of paStates"
         class="cell-number"
-      ></td>
+      >{{ cell.forPayment }}</td>
     </tr>
     <tr>
       <th
@@ -55,11 +72,28 @@
         class="row-header"
       >
         {{ 'page.program.metrics.timeframe.calendar-month'|translate }}
+        <select
+          name="time-calendar-month"
+          [(ngModel)]="chosenMonth"
+          (change)="changeDataset(chosenMonth, 'forMonth')"
+          class="styled-select timeframe-select"
+          [title]="'page.program.metrics.timeframe.select-calendar-month'|translate"
+        >
+          <option value="">
+            {{ 'page.program.metrics.timeframe.select-calendar-month'|translate }}
+          </option>
+          <option
+            *ngFor="let item of pastMonths"
+            [value]="item.value"
+          >
+            {{ item.label }}
+          </option>
+        </select>
       </th>
       <td
-        *ngFor="let col of paStates"
+        *ngFor="let cell of paStates"
         class="cell-number"
-      ></td>
+      >{{ cell.forMonth }}</td>
     </tr>
     <tr>
       <th

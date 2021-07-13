@@ -17,10 +17,18 @@
 
   .row-header {
     text-align: right;
+    white-space: nowrap;
   }
 
   .cell-number {
     text-align: right;
     font-variant-numeric: tabular-nums;
   }
+}
+
+.timeframe-select {
+  display: block;
+  width: 100%;
+  min-width: 10em;
+  font-weight: normal;
 }

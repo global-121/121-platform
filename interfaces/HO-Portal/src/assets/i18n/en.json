@@ -105,7 +105,9 @@
         },
         "timeframe": {
           "payment": "Payment #:",
+          "select-payment": "Choose payment...",
           "calendar-month": "Calendar month:",
+          "select-calendar-month": "Choose month...",
           "to-date": "To date:"
         },
         "last-updated": "Last updated: {{date}}"
