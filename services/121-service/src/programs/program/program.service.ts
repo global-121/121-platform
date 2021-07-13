@@ -864,6 +864,19 @@ export class ProgramService {
     return installments;
   }
 
+  public async getInstallmentYearMonths(programId: number): Promise<string[]> {
+    const installments = await this.getInstallments(programId);
+    const yearMonths: string[] = [];
+    installments.forEach(installment => {
+      const date = new Date(installment.installmentDate);
+      const yearMonth = date.getFullYear() + '-' + (date.getMonth() + 1);
+      if (!yearMonths.includes(yearMonth)) {
+        yearMonths.push(yearMonth);
+      }
+    });
+    return yearMonths.sort((a, b) => (a < b ? 1 : -1));
+  }
+
   public async getTransactions(
     programId: number,
     minInstallment?: number,
