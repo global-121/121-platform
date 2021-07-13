@@ -368,7 +368,11 @@ export class ProgramController {
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get metrics by program-id' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiImplicitParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
   @ApiImplicitQuery({
     name: 'installment',
     required: false,
@@ -396,9 +400,9 @@ export class ProgramController {
     return {
       pa: await this.programService.getPaMetrics(
         Number(params.programId),
-        Number(query.installment),
-        Number(query.month),
-        Number(query.year),
+        query.installment ? Number(query.installment) : undefined,
+        query.month ? Number(query.month) : undefined,
+        query.year ? Number(query.year) : undefined,
       ),
       updated: new Date(),
     };

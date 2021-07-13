@@ -6,9 +6,13 @@ import {
   MetricRow,
   ProgramMetrics,
 } from 'src/app/models/program-metrics.model';
-import { Program } from 'src/app/models/program.model';
+import { DistributionFrequency, Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import {
+  getValueOrEmpty,
+  getValueOrUnknown,
+} from 'src/app/shared/get-value-helpers';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -62,9 +66,8 @@ export class MetricsComponent implements OnChanges {
   }
 
   private renderUpdated() {
-    this.lastUpdated = this.getValueOrUnknown(
-      this.programMetrics.updated,
-      (value) => formatDate(value, 'EEEE, dd-MM-yyyy - HH:mm', this.locale),
+    this.lastUpdated = getValueOrUnknown(this.programMetrics.updated, (value) =>
+      formatDate(value, 'EEEE, dd-MM-yyyy - HH:mm', this.locale),
     );
   }
 
@@ -75,7 +78,7 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'document',
       label: 'page.program.program-details.title',
-      value: this.getValueOrEmpty(this.program.title, (value) =>
+      value: getValueOrEmpty(this.program.title, (value) =>
         this.translatableString.get(value),
       ),
     });
@@ -83,7 +86,7 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'calendar',
       label: 'page.program.program-details.startDate',
-      value: this.getValueOrEmpty(this.program.startDate, (value) =>
+      value: getValueOrEmpty(this.program.startDate, (value) =>
         formatDate(value, 'dd-MM-yyyy', this.locale),
       ),
     });
@@ -91,7 +94,7 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'calendar',
       label: 'page.program.program-details.endDate',
-      value: this.getValueOrEmpty(this.program.endDate, (value) =>
+      value: getValueOrEmpty(this.program.endDate, (value) =>
         formatDate(value, 'dd-MM-yyyy', this.locale),
       ),
     });
@@ -99,7 +102,7 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'pin',
       label: 'page.program.program-details.location',
-      value: this.getValueOrEmpty(this.program.location, (value) =>
+      value: getValueOrEmpty(this.program.location, (value) =>
         this.translatableString.get(value),
       ),
     });
@@ -115,7 +118,7 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'card',
       label: 'page.program.program-details.financialServiceProviders',
-      value: this.getValueOrEmpty(
+      value: getValueOrEmpty(
         this.program.financialServiceProviders,
         (value) => value.length,
       ),
@@ -124,7 +127,7 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'card',
       label: 'page.program.program-details.descCashType',
-      value: this.getValueOrEmpty(this.program.descCashType, (value) =>
+      value: getValueOrEmpty(this.program.descCashType, (value) =>
         this.translatableString.get(value),
       ),
     });
@@ -132,34 +135,41 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'repeat',
       label: 'page.program.program-details.distributionFrequency',
-      value: this.getValueOrEmpty(
-        this.program.distributionFrequency,
-        (value) => {
+      value: getValueOrEmpty(this.program.distributionFrequency, (value) => {
+        if (value === DistributionFrequency.week) {
           return this.translate.instant(
-            'page.program.metrics.units.frequency.' + value,
+            'page.program.metrics.units.frequency.week',
           );
-        },
-      ),
+        }
+        if (value === DistributionFrequency.month) {
+          return this.translate.instant(
+            'page.program.metrics.units.frequency.month',
+          );
+        }
+      }),
     });
     this.metricsMap.set(`${group}.distributionDuration`, {
       group,
       icon: 'hourglass',
       label: 'page.program.program-details.distributionDuration',
-      value: this.getValueOrEmpty(
-        this.program.distributionDuration,
-        (value) => {
+      value: getValueOrEmpty(this.program.distributionDuration, (value) => {
+        if (value === DistributionFrequency.week) {
           return `${value} ${this.translate.instant(
-            'page.program.metrics.units.duration.' +
-              this.program.distributionFrequency,
+            'page.program.metrics.units.duration.week',
           )}`;
-        },
-      ),
+        }
+        if (value === DistributionFrequency.month) {
+          return `${value} ${this.translate.instant(
+            'page.program.metrics.units.duration.month',
+          )}`;
+        }
+      }),
     });
     this.metricsMap.set(`${group}.fixedTransferValue`, {
       group,
       icon: 'gift',
       label: 'page.program.program-details.fixedTransferValue',
-      value: this.getValueOrUnknown(this.program.fixedTransferValue, (value) =>
+      value: getValueOrUnknown(this.program.fixedTransferValue, (value) =>
         formatCurrency(value, locale, symbol, currencyCode),
       ),
     });
@@ -173,45 +183,45 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'locate',
       label: 'page.program.metrics.pa.targeted',
-      value: this.getValueOrEmpty(this.program.highestScoresX),
+      value: getValueOrEmpty(this.program.highestScoresX),
     });
     this.metricsMap.set(`${group}.startedProcess`, {
       group,
       icon: 'arrow-dropright-circle',
-      label: 'page.program.metrics.pa.started-enlisting',
-      value: this.getValueOrUnknown(metrics.startedEnlisting),
+      label: 'page.program.metrics.pa.created',
+      value: getValueOrUnknown(metrics.created),
     });
     this.metricsMap.set(`${group}.pendingVerification`, {
       group,
       icon: 'people',
-      label: 'page.program.metrics.pa.finished-enlisting',
-      value: this.getValueOrUnknown(metrics.finishedEnlisting),
+      label: 'page.program.metrics.pa.registered',
+      value: getValueOrUnknown(metrics.registered),
     });
     if (this.program.validation) {
-      this.metricsMap.set(`${group}.verifiedAwaitingDecision`, {
+      this.metricsMap.set(`${group}.validatedAwaitingDecision`, {
         group,
         icon: 'contact',
-        label: 'page.program.metrics.pa.verified',
-        value: this.getValueOrUnknown(metrics.verified),
+        label: 'page.program.metrics.pa.validated',
+        value: getValueOrUnknown(metrics.validated),
       });
     }
     this.metricsMap.set(`${group}.included`, {
       group,
       icon: 'checkmark-circle-outline',
       label: 'page.program.metrics.pa.included',
-      value: this.getValueOrUnknown(metrics.included),
+      value: getValueOrUnknown(metrics.included),
     });
     this.metricsMap.set(`${group}.inclusionEnded`, {
       group,
       icon: 'checkmark-circle',
       label: 'page.program.metrics.pa.inclusionEnded',
-      value: this.getValueOrUnknown(metrics.inclusionEnded),
+      value: getValueOrUnknown(metrics.inclusionEnded),
     });
     this.metricsMap.set(`${group}.rejected`, {
       group,
       icon: 'close-circle',
       label: 'page.program.metrics.pa.rejected',
-      value: this.getValueOrUnknown(metrics.rejected),
+      value: getValueOrUnknown(metrics.rejected),
     });
   }
 
@@ -222,55 +232,7 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'body',
       label: 'page.program.program-details.aidworkers',
-      value: this.getValueOrEmpty(
-        this.program.aidworkers,
-        (value) => value.length,
-      ),
+      value: getValueOrEmpty(this.program.aidworkers, (value) => value.length),
     });
-  }
-
-  /**
-   * Returns the output of `getValueToShow()` if `checkValue` is available or defined.
-   * Otherwise, returns fallback-value: '-'
-   */
-  private getValueOrEmpty(
-    checkValue,
-    getValueToShow?: (value?: any) => number | string,
-  ) {
-    return this.getValueOrFallback('-', checkValue, getValueToShow);
-  }
-
-  /**
-   * Returns the output of `getValueToShow()` if `checkValue` is available or defined.
-   * Otherwise, returns fallback-value: '?'
-   */
-  private getValueOrUnknown(
-    checkValue,
-    getValueToShow?: (value?: any) => number | string,
-  ) {
-    return this.getValueOrFallback('?', checkValue, getValueToShow);
-  }
-
-  /**
-   * Returns the output of `getValueToShow()` if `checkValue` is available or defined.
-   * Otherwise, returns fallback-value
-   */
-  private getValueOrFallback(
-    fallbackValue: string,
-    checkValue,
-    getValueToShow?: (value?: any) => number | string,
-  ) {
-    // If there is nothing sensible to display, show the fallback:
-    if (typeof checkValue === 'undefined') {
-      return fallbackValue;
-    }
-
-    // If available, use `getValueToShow()` to get 'something to display':
-    if (typeof getValueToShow === 'function') {
-      return getValueToShow(checkValue);
-    }
-
-    // If all else fails, just return checkValue to display:
-    return checkValue;
   }
 }

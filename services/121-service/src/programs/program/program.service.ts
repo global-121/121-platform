@@ -50,6 +50,7 @@ import { Attributes } from '../../connection/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/payout.dto';
 import { without, compact, sortBy } from 'lodash';
 import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
+import { ConnectionResponse } from '../../models/connection-response.model';
 
 @Injectable()
 export class ProgramService {
@@ -720,7 +721,7 @@ export class ProgramService {
   public async getConnections(
     programId: number,
     includePersonalData: boolean,
-  ): Promise<any[]> {
+  ): Promise<ConnectionResponse[]> {
     const selectedConnections = await this.getAllConnections(programId);
 
     const financialServiceProviders = (
@@ -729,10 +730,15 @@ export class ProgramService {
 
     const connectionsResponse = [];
     for (let connection of selectedConnections) {
-      const connectionResponse = {};
+      const connectionResponse = new ConnectionResponse();
       connectionResponse['id'] = connection.id;
       connectionResponse['referenceId'] = connection.referenceId;
+      connectionResponse['status'] = this.getPaStatus(connection, programId);
       connectionResponse['inclusionScore'] = connection.inclusionScore;
+      connectionResponse['fsp'] = connection.fsp?.fsp;
+      connectionResponse['namePartnerOrganization'] =
+        connection.namePartnerOrganization;
+
       connectionResponse['created'] = connection.accountCreatedDate;
       connectionResponse['importedDate'] = connection.importedDate;
       connectionResponse['invitedDate'] = connection.invitedDate;
@@ -745,10 +751,6 @@ export class ProgramService {
       connectionResponse['inclusionDate'] = connection.inclusionDate;
       connectionResponse['inclusionEndDate'] = connection.inclusionEndDate;
       connectionResponse['rejectionDate'] = connection.rejectionDate;
-      connectionResponse['fsp'] = connection.fsp?.fsp;
-      connectionResponse['namePartnerOrganization'] =
-        connection.namePartnerOrganization;
-      connectionResponse['status'] = this.getPaStatus(connection, programId);
 
       if (includePersonalData) {
         connectionResponse['name'] = this.getName(connection.customData);
@@ -1440,23 +1442,32 @@ export class ProgramService {
 
   private async getTimestampsPerStatusAndTimePeriod(
     programId: number,
-    connections,
+    connections: ConnectionResponse[],
     filterStatus: PaStatus,
-    installment: number,
-    month: number,
-    year: number,
-  ): Promise<any> {
+    installment?: number,
+    month?: number,
+    year?: number,
+  ): Promise<number> {
     const dateColumn = this.getDateColumPerStatus(filterStatus);
 
     let filteredConnections = connections.filter(
-      connection => connection[dateColumn],
+      connection => !!connection[dateColumn],
     );
 
-    if (month) {
+    if (
+      (typeof month !== 'undefined' && year === undefined) ||
+      (typeof year !== 'undefined' && month === undefined)
+    ) {
+      throw new HttpException(
+        'Please provide both month AND year',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (month >= 0 && year) {
       filteredConnections = filteredConnections.filter(connection => {
         return (
-          connection[dateColumn].getMonth() + 1 === month &&
-          connection[dateColumn].getYear() + 1900 === year
+          connection[dateColumn].getMonth() === month &&
+          connection[dateColumn].getFullYear() === year
         );
       });
     }
@@ -1481,61 +1492,62 @@ export class ProgramService {
 
   public async getPaMetrics(
     programId: number,
-    installment: number,
-    month: number,
-    year: number,
+    installment?: number,
+    month?: number,
+    year?: number,
   ): Promise<PaMetrics> {
     const connections = await this.getConnections(programId, false);
 
-    const metrics = new PaMetrics();
-    metrics.included = await this.getTimestampsPerStatusAndTimePeriod(
-      programId,
-      connections,
-      PaStatus.included,
-      installment,
-      month,
-      year,
-    );
-    metrics.inclusionEnded = await this.getTimestampsPerStatusAndTimePeriod(
-      programId,
-      connections,
-      PaStatus.inclusionEnded,
-      installment,
-      month,
-      year,
-    );
-    metrics.rejected = await this.getTimestampsPerStatusAndTimePeriod(
-      programId,
-      connections,
-      PaStatus.rejected,
-      installment,
-      month,
-      year,
-    );
-    metrics.verified = await this.getTimestampsPerStatusAndTimePeriod(
-      programId,
-      connections,
-      PaStatus.validated,
-      installment,
-      month,
-      year,
-    );
-    metrics.finishedEnlisting = await this.getTimestampsPerStatusAndTimePeriod(
-      programId,
-      connections,
-      PaStatus.registered,
-      installment,
-      month,
-      year,
-    );
-    metrics.startedEnlisting = await this.getTimestampsPerStatusAndTimePeriod(
-      programId,
-      connections,
-      PaStatus.created,
-      installment,
-      month,
-      year,
-    );
+    const metrics: PaMetrics = {
+      [PaStatus.included]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        connections,
+        PaStatus.included,
+        installment,
+        month,
+        year,
+      ),
+      [PaStatus.inclusionEnded]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        connections,
+        PaStatus.inclusionEnded,
+        installment,
+        month,
+        year,
+      ),
+      [PaStatus.rejected]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        connections,
+        PaStatus.rejected,
+        installment,
+        month,
+        year,
+      ),
+      [PaStatus.validated]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        connections,
+        PaStatus.validated,
+        installment,
+        month,
+        year,
+      ),
+      [PaStatus.registered]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        connections,
+        PaStatus.registered,
+        installment,
+        month,
+        year,
+      ),
+      [PaStatus.created]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        connections,
+        PaStatus.created,
+        installment,
+        month,
+        year,
+      ),
+    };
 
     return metrics;
   }

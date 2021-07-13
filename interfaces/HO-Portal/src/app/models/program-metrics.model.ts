@@ -1,15 +1,17 @@
+import { PaStatus } from './person.model';
+
 export class ProgramMetrics {
   updated: string | Date;
   pa: PeopleMetrics;
 }
 
 export class PeopleMetrics {
-  startedEnlisting: number;
-  finishedEnlisting: number;
-  verified: number;
-  included: number;
-  inclusionEnded: number;
-  rejected: number;
+  [PaStatus.created]: number;
+  [PaStatus.registered]: number;
+  [PaStatus.validated]: number;
+  [PaStatus.included]: number;
+  [PaStatus.inclusionEnded]: number;
+  [PaStatus.rejected]: number;
 }
 
 export class MetricRow {
