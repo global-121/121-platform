@@ -188,21 +188,21 @@ export class MetricsComponent implements OnChanges {
     this.metricsMap.set(`${group}.startedProcess`, {
       group,
       icon: 'arrow-dropright-circle',
-      label: 'page.program.metrics.pa.started-enlisting',
-      value: getValueOrUnknown(metrics.startedEnlisting),
+      label: 'page.program.metrics.pa.created',
+      value: getValueOrUnknown(metrics.created),
     });
     this.metricsMap.set(`${group}.pendingVerification`, {
       group,
       icon: 'people',
-      label: 'page.program.metrics.pa.finished-enlisting',
-      value: getValueOrUnknown(metrics.finishedEnlisting),
+      label: 'page.program.metrics.pa.registered',
+      value: getValueOrUnknown(metrics.registered),
     });
     if (this.program.validation) {
-      this.metricsMap.set(`${group}.verifiedAwaitingDecision`, {
+      this.metricsMap.set(`${group}.validatedAwaitingDecision`, {
         group,
         icon: 'contact',
-        label: 'page.program.metrics.pa.verified',
-        value: getValueOrUnknown(metrics.verified),
+        label: 'page.program.metrics.pa.validated',
+        value: getValueOrUnknown(metrics.validated),
       });
     }
     this.metricsMap.set(`${group}.included`, {

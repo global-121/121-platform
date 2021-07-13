@@ -4,6 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
+import { PaStatus } from 'src/app/models/person.model';
 import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -25,12 +26,12 @@ describe('MetricsComponent', () => {
   const mockProgramMetrics: ProgramMetrics = {
     updated: new Date().toISOString(),
     pa: {
-      included: getRandomInt(0, 100),
-      inclusionEnded: getRandomInt(0, 100),
-      rejected: getRandomInt(0, 100),
-      startedEnlisting: getRandomInt(0, 100),
-      finishedEnlisting: getRandomInt(0, 100),
-      verified: getRandomInt(0, 100),
+      [PaStatus.included]: getRandomInt(0, 100),
+      [PaStatus.inclusionEnded]: getRandomInt(0, 100),
+      [PaStatus.rejected]: getRandomInt(0, 100),
+      [PaStatus.created]: getRandomInt(0, 100),
+      [PaStatus.registered]: getRandomInt(0, 100),
+      [PaStatus.validated]: getRandomInt(0, 100),
     },
   };
 
