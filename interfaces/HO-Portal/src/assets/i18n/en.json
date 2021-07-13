@@ -75,9 +75,9 @@
       "metrics": {
         "pa": {
           "targeted": "PA Targeted",
-          "started-registration": "PA Started Registration",
-          "finished-registration": "PA Registered",
-          "verified": "PA Verified",
+          "created": "PA Started Registration",
+          "registered": "PA Registered",
+          "validated": "PA Validated",
           "included": "PA Included",
           "inclusionEnded": "PA Inclusion Ended",
           "rejected": "PA Rejected"

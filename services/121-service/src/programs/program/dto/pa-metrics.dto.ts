@@ -1,8 +1,10 @@
-export class PaMetrics {
-  public startedRegistration: number;
-  public finishedRegistration: number;
-  public verified: number;
-  public included: number;
-  public inclusionEnded: number;
-  public rejected: number;
+import { PaStatus } from '../../../models/pa-status.model';
+
+export interface PaMetrics {
+  [PaStatus.created]: number;
+  [PaStatus.registered]: number;
+  [PaStatus.validated]: number;
+  [PaStatus.included]: number;
+  [PaStatus.inclusionEnded]: number;
+  [PaStatus.rejected]: number;
 }
