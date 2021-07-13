@@ -6,6 +6,7 @@ import { ActionType } from 'src/app/models/actions.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { environment } from 'src/environments/environment';
+import { PastPaymentsService } from '../../services/past-payments.service';
 
 @Component({
   selector: 'app-make-payment',
@@ -34,6 +35,7 @@ export class MakePaymentComponent implements OnInit {
 
   constructor(
     private programsService: ProgramsServiceApiService,
+    private pastPaymentsService: PastPaymentsService,
     private translate: TranslateService,
     private alertController: AlertController,
   ) {}
@@ -48,9 +50,8 @@ export class MakePaymentComponent implements OnInit {
     );
     this.totalIncluded = totalIncluded.connections;
     this.totalTransferAmounts = totalIncluded.transferAmounts;
-    this.lastInstallmentId = await this.programsService.getLastInstallmentId(
-      this.programId,
-    );
+    this.lastInstallmentId =
+      await this.pastPaymentsService.getLastInstallmentId(this.programId);
 
     this.paymentInProgress = await this.checkPaymentInProgress();
     this.updateTotalAmountMessage();

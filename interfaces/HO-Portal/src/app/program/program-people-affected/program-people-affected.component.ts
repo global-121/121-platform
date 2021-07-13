@@ -16,6 +16,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
 import { formatPhoneNumber } from 'src/app/shared/format-phone-number';
 import { environment } from 'src/environments/environment';
+import { PastPaymentsService } from '../../services/past-payments.service';
 import { EditPersonAffectedPopupComponent } from '../edit-person-affected-popup/edit-person-affected-popup.component';
 import { PaymentStatusPopupComponent } from '../payment-status-popup/payment-status-popup.component';
 
@@ -201,6 +202,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     private programsService: ProgramsServiceApiService,
     public translate: TranslateService,
     private bulkActionService: BulkActionsService,
+    private pastPaymentsService: PastPaymentsService,
     private alertController: AlertController,
     public modalController: ModalController,
     public platform: Platform,
@@ -441,9 +443,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
     this.loadColumns();
 
-    this.lastInstallmentId = await this.programsService.getLastInstallmentId(
-      this.programId,
-    );
+    this.lastInstallmentId =
+      await this.pastPaymentsService.getLastInstallmentId(this.programId);
     const firstInstallmentToShow = 1;
 
     if (this.thisPhase === ProgramPhase.payment) {

@@ -298,20 +298,6 @@ export class ProgramController {
   }
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get past year-months with installments for program' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: 200,
-    description: 'Get past year-months with installments for program',
-  })
-  @Get('installments/year-month/:programId')
-  public async getInstallmentYearMonths(@Param() params): Promise<any> {
-    return await this.programService.getInstallmentYearMonths(
-      Number(params.programId),
-    );
-  }
-
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Get transactions' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiImplicitQuery({
