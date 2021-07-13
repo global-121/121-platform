@@ -50,6 +50,9 @@ describe('MetricsStatesComponent', () => {
     mockProgramsApi.getMetricsById.and.returnValue(
       new Promise((r) => r(mockProgramMetrics)),
     );
+    mockProgramsApi.getMetricsByIdWithCondition.and.returnValue(
+      new Promise((r) => r(mockProgramMetrics)),
+    );
 
     fixture = TestBed.createComponent(TestHostComponent);
     testHost = fixture.componentInstance;
