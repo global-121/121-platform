@@ -1,5 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
@@ -16,7 +17,7 @@ class TestHostComponent {
   program: Program | any;
 }
 
-fdescribe('MetricsStatesComponent', () => {
+describe('MetricsStatesComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let testHost: TestHostComponent;
 
@@ -36,7 +37,7 @@ fdescribe('MetricsStatesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MetricsStatesComponent, TestHostComponent],
-      imports: [TranslateModule.forRoot()],
+      imports: [TranslateModule.forRoot(), FormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [provideMagicalMock(ProgramsServiceApiService)],
     }).compileComponents();
@@ -47,6 +48,9 @@ fdescribe('MetricsStatesComponent', () => {
   beforeEach(() => {
     mockProgramsApi = TestBed.get(ProgramsServiceApiService);
     mockProgramsApi.getMetricsById.and.returnValue(
+      new Promise((r) => r(mockProgramMetrics)),
+    );
+    mockProgramsApi.getMetricsByIdWithCondition.and.returnValue(
       new Promise((r) => r(mockProgramMetrics)),
     );
 

@@ -25,7 +25,21 @@ export class MetricsStatesComponent implements OnChanges {
     label: string;
     explanation?: string;
     toDate: number;
+    forPayment?: number;
+    forMonth?: number;
   }[] = [];
+
+  public pastPayments: {
+    label: string;
+    value: string;
+  }[];
+  public chosenPayment: any;
+
+  public pastMonths: {
+    label: string;
+    value: string;
+  }[];
+  public chosenMonth: any;
 
   private programMetrics: ProgramMetrics;
 
@@ -51,6 +65,12 @@ export class MetricsStatesComponent implements OnChanges {
 
     this.renderUpdated();
     this.createPaStateColumns();
+
+    this.createPastPaymentsOptions();
+    this.loadDataByCondition(this.chosenPayment, 'forPayment');
+
+    this.createPastMonthsOptions();
+    this.loadDataByCondition(this.chosenMonth, 'forMonth');
   }
 
   private renderUpdated() {
@@ -129,5 +149,72 @@ export class MetricsStatesComponent implements OnChanges {
         toDate: this.programMetrics.pa[PaStatus.rejected],
       },
     ];
+  }
+
+  private createPastPaymentsOptions() {
+    this.pastPayments = [
+      {
+        label: 'Payment #1 - 0000-00-00',
+        value: 'installment=1',
+      },
+      {
+        label: 'Payment #2 - 0000-00-00',
+        value: 'installment=2',
+      },
+      {
+        label: 'Payment #3 - 0000-00-00',
+        value: 'installment=3',
+      },
+    ];
+    this.chosenPayment = this.pastPayments[0].value;
+  }
+
+  private createPastMonthsOptions() {
+    this.pastMonths = [
+      {
+        label: '2020-01',
+        value: 'year=2020&month=0',
+      },
+      {
+        label: '2020-02',
+        value: 'year=2020&month=1',
+      },
+      {
+        label: '2020-03',
+        value: 'year=2020&month=1',
+      },
+    ];
+    this.chosenMonth = this.pastMonths[0].value;
+  }
+
+  private async loadDataByCondition(condition: string, destination: string) {
+    const timeFrameMetrics =
+      await this.programService.getMetricsByIdWithCondition(
+        this.program.id,
+        condition,
+      );
+
+    this.paStates.map((item) => {
+      item[destination] = timeFrameMetrics.pa[item.name];
+      return item;
+    });
+  }
+
+  private resetData(destination: string) {
+    this.paStates.map((item) => {
+      item[destination] = null;
+      return item;
+    });
+  }
+
+  public changeDataset(
+    condition: string,
+    destination: 'forPayment' | 'forMonth',
+  ) {
+    if (condition === '') {
+      this.resetData(destination);
+      return;
+    }
+    this.loadDataByCondition(condition, destination);
   }
 }
