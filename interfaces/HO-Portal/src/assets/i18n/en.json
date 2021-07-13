@@ -86,6 +86,9 @@
           "noLongerEligible": "PA No longer eligible",
           "rejected": "PA Rejected"
         },
+        "state-explanation": {
+          "imported": "PA that are imported by phone-number only, so no complete registrations."
+        },
         "header": {
           "metric": "Metric",
           "latest-value": "Latest value"

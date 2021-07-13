@@ -65,6 +65,9 @@ export class MetricsStatesComponent implements OnChanges {
         name: PaStatus.imported,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.imported'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.imported',
+        ),
         toDate: this.programMetrics.pa[PaStatus.imported],
       },
       {
@@ -77,7 +80,6 @@ export class MetricsStatesComponent implements OnChanges {
         name: PaStatus.created,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.created'),
-        explanation: 'PA that...',
         toDate: this.programMetrics.pa[PaStatus.created],
       },
       {
