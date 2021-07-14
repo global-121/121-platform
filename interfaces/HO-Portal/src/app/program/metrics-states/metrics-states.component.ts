@@ -97,6 +97,9 @@ export class MetricsStatesComponent implements OnChanges {
         name: PaStatus.invited,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.invited'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.invited',
+        ),
         toDate: this.programMetrics.pa[PaStatus.invited],
       },
       {
@@ -105,18 +108,27 @@ export class MetricsStatesComponent implements OnChanges {
         label: this.translate.instant(
           'page.program.metrics.pa.noLongerEligible',
         ),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.noLongerEligible',
+        ),
         toDate: this.programMetrics.pa[PaStatus.noLongerEligible],
       },
       {
         name: PaStatus.created,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.created'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.created',
+        ),
         toDate: this.programMetrics.pa[PaStatus.created],
       },
       {
         name: PaStatus.registered,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.registered'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.registered',
+        ),
         toDate: this.programMetrics.pa[PaStatus.registered],
       },
       {
@@ -125,30 +137,45 @@ export class MetricsStatesComponent implements OnChanges {
         label: this.translate.instant(
           'page.program.metrics.pa.selectedForValidation',
         ),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.selectedForValidation',
+        ),
         toDate: this.programMetrics.pa[PaStatus.selectedForValidation],
       },
       {
         name: PaStatus.validated,
         enabled: this.program.validation,
         label: this.translate.instant('page.program.metrics.pa.validated'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.validated',
+        ),
         toDate: this.programMetrics.pa[PaStatus.validated],
       },
       {
         name: PaStatus.included,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.included'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.included',
+        ),
         toDate: this.programMetrics.pa[PaStatus.included],
       },
       {
         name: PaStatus.inclusionEnded,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.inclusionEnded'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.inclusionEnded',
+        ),
         toDate: this.programMetrics.pa[PaStatus.inclusionEnded],
       },
       {
         name: PaStatus.rejected,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.rejected'),
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.rejected',
+        ),
         toDate: this.programMetrics.pa[PaStatus.rejected],
       },
     ];

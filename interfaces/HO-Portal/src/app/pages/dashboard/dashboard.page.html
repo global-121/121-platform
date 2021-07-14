@@ -6,10 +6,39 @@
 
 <ion-content class="ion-padding">
 
+  <ion-grid>
+    <ion-row>
+      <ion-col
+        [sizeXs]="12"
+        [sizeLg]="3"
+      >
 
-  <app-metrics-states
-    [program]="program"
-  ></app-metrics-states>
+        <ion-card color="light">
+          <ion-card-content>
+            <p class="ion-margin-vertical">
+              {{ 'page.dashboard.introduction'|translate }}
+
+              <br><br>
+
+              {{ 'page.dashboard.help-explanation'|translate }}
+
+              <tooltip [value]="'page.dashboard.help-explanation-tooltip'|translate"></tooltip>
+            </p>
+          </ion-card-content>
+        </ion-card>
+
+      </ion-col>
+      <ion-col
+        [sizeXs]="12"
+        [sizeLg]="9"
+        class="horizontal-scroll-container"
+      >
+        <app-metrics-states
+          [program]="program"
+        ></app-metrics-states>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
   <br><br>
 

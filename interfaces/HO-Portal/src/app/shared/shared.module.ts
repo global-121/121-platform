@@ -19,6 +19,7 @@ import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.componen
 import { FilePickerPromptComponent } from './file-picker-prompt/file-picker-prompt.component';
 import { InputPromptComponent } from './input-prompt/input-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
+import { TooltipComponent } from './tooltip/tooltip.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     PhaseNextComponent,
     ProgramPeopleAffectedComponent,
     TestPaymentComponent,
+    TooltipComponent,
     UpdatePropertyItemComponent,
     UserStateComponent,
   ],
@@ -60,6 +62,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     ProgramPeopleAffectedComponent,
     RouterModule,
     TestPaymentComponent,
+    TooltipComponent,
     TranslateModule,
     UpdatePropertyItemComponent,
     UserStateComponent,
@@ -68,6 +71,7 @@ import { PasswordToggleInputComponent } from './password-toggle-input/password-t
     EditPersonAffectedPopupComponent,
     FilePickerPromptComponent,
     InputPromptComponent,
+    TooltipComponent,
     UpdatePropertyItemComponent,
   ],
 })

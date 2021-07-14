@@ -17,7 +17,10 @@
   },
   "page": {
     "dashboard": {
-      "pageTitle": "Dashboard"
+      "pageTitle": "Dashboard",
+      "introduction": "The information on this screen comes from data in the 121 Platform only.",
+      "help-explanation": "You can get a description of each label or header by clicking/focusing/hovering on these elements:",
+      "help-explanation-tooltip": "Like this!"
     },
     "aid-workers": {
       "pageTitle": "Aid-workers"
@@ -98,11 +101,6 @@
           "noLongerEligible": "PAs that were marked as 'no longer eligible'",
           "rejected": "PAs that were rejected"
         },
-        "table-row-explanation": {
-          "toDate": "All PAs that reached a certain status - e.g. included - at any moment between the start of the program and now.<br><br>This is not the number of included PAs at the moment, but the number of all PAs who were included at some point.",
-          "month": "All PAs that reached a certain status - e.g. included - at any moment in the chosen month.<br><br>This is not the number of included PAs at the end of that month, but the number of PAs who were included at any moment in that month.<br><br>Note that the PAs included in this month may not necessarily be the same PAs as those that registered in this month, as they may have registered e.g. in the previous month.",
-          "payment": "All PAs that reached a certain status - e.g. included - at any moment in between the previous payment and the chosen payment.<br><br>This is not the number of included PAs at the moment of that payment, but the number of PAs who were included in between the previous payment and the chosen payment.<br><br>Note that the PAs included in this time period may not necessarily be the same PAs as those that registered in this time period, as they may have registered e.g. in the previous time period."
-        },
         "header": {
           "metric": "Metric",
           "latest-value": "Latest value"
@@ -118,12 +116,21 @@
           }
         },
         "timeframe": {
-          "payment": "Payment #:",
-          "select-payment": "Choose payment...",
-          "payment-option": "Payment #{{number}} - {{date}}",
-          "calendar-month": "Calendar month:",
-          "select-calendar-month": "Choose month...",
-          "to-date": "To date:"
+          "payment": {
+            "label": "Payment #:",
+            "select-hint": "Choose payment...",
+            "option": "Payment #{{number}} - {{date}}",
+            "explanation": "All PA that reached a certain status - e.g. included - at any moment in between the previous payment and the chosen payment. <br><br> This is not the number of included PA at the moment of that payment, but the number of PA who were included in between the previous payment and the chosen payment. <br><br> Note that the PA included in this time period may not necessarily be the same PA as those that registered in this time period, as they may have registered e.g. in the previous time period."
+          },
+          "calendar-month": {
+            "label": "Calendar month:",
+            "select-hint": "Choose month...",
+            "explanation": "All PA that reached a certain status - e.g. included - at any moment in the chosen month. <br><br> This is not the number of included PA at the end of that month, but the number of PA who were included at any moment in that month. <br><br> Note that the PA included in this month may not necessarily be the same PA as those that registered in this month, as they may have registered e.g. in the previous month."
+          },
+          "to-date": {
+            "label": "To date:",
+            "explanation": "All PA that reached a certain status - e.g. included - at any moment between the start of the program and now. <br><br> This is not the number of included PA at the moment, but the number of all PA who were included at some point."
+          }
         },
         "last-updated": "Last updated: {{date}}"
       },

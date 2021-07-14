@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { DashboardPage } from './dashboard.page';
 
 describe('DashboardPage', () => {
@@ -13,7 +14,7 @@ describe('DashboardPage', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [DashboardPage],
-      imports: [TranslateModule.forRoot(), RouterTestingModule],
+      imports: [TranslateModule.forRoot(), RouterTestingModule, SharedModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [provideMagicalMock(ProgramsServiceApiService)],
     }).compileComponents();
