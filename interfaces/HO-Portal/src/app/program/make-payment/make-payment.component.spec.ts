@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { InstallmentData } from 'src/app/models/installment.model';
+import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ActionType } from '../../models/actions.model';
 import { MakePaymentComponent } from './make-payment.component';
@@ -43,13 +44,17 @@ describe('MakePaymentComponent', () => {
   };
 
   let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
+  let mockPastPaymentsService: jasmine.SpyObj<PastPaymentsService>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MakePaymentComponent],
       imports: [TranslateModule.forRoot(), FormsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(ProgramsServiceApiService)],
+      providers: [
+        provideMagicalMock(ProgramsServiceApiService),
+        provideMagicalMock(PastPaymentsService),
+      ],
     }).compileComponents();
   }));
 
@@ -62,12 +67,14 @@ describe('MakePaymentComponent', () => {
     mockProgramsApi.getPastInstallments.and.returnValue(
       new Promise((r) => r(mockPastInstallments)),
     );
-    mockProgramsApi.getLastInstallmentId.and.returnValue(
-      new Promise((r) => r(mockLastInstallmentId)),
-    );
     mockProgramsApi.retrieveLatestActions.and.returnValues(
       new Promise((r) => r(mockLatestStartAction)),
       new Promise((r) => r(mockLatestFinishAction)),
+    );
+
+    mockPastPaymentsService = TestBed.get(PastPaymentsService);
+    mockPastPaymentsService.getLastInstallmentId.and.returnValue(
+      new Promise((r) => r(mockLastInstallmentId)),
     );
 
     fixture = TestBed.createComponent(MakePaymentComponent);
@@ -111,7 +118,9 @@ describe('MakePaymentComponent', () => {
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
-    expect(mockProgramsApi.getLastInstallmentId).toHaveBeenCalledTimes(1);
+    expect(mockPastPaymentsService.getLastInstallmentId).toHaveBeenCalledTimes(
+      1,
+    );
     expect(component.isEnabled).toBeFalse();
   });
 
