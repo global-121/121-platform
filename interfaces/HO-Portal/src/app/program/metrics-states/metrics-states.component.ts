@@ -188,14 +188,13 @@ export class MetricsStatesComponent implements OnChanges {
   }
 
   private async loadDataByCondition(condition: string, destination: string) {
-    const timeFrameMetrics =
-      await this.programService.getMetricsByIdWithCondition(
-        this.program.id,
-        condition,
-      );
+    this.programMetrics = await this.programService.getMetricsByIdWithCondition(
+      this.program.id,
+      condition,
+    );
 
     this.paStates.map((item) => {
-      item[destination] = timeFrameMetrics.pa[item.name];
+      item[destination] = this.programMetrics.pa[item.name];
       return item;
     });
   }
@@ -216,5 +215,6 @@ export class MetricsStatesComponent implements OnChanges {
       return;
     }
     this.loadDataByCondition(condition, destination);
+    this.renderUpdated();
   }
 }
