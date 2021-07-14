@@ -7,6 +7,7 @@ import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { getValueOrUnknown } from 'src/app/shared/get-value-helpers';
 import { environment } from 'src/environments/environment';
+import { PastPaymentsService } from '../../services/past-payments.service';
 
 @Component({
   selector: 'app-metrics-states',
@@ -30,13 +31,14 @@ export class MetricsStatesComponent implements OnChanges {
   }[] = [];
 
   public pastPayments: {
-    label: string;
+    id: number;
+    date: Date | string;
     value: string;
   }[];
   public chosenPayment: any;
 
   public pastMonths: {
-    label: string;
+    date: Date | string;
     value: string;
   }[];
   public chosenMonth: any;
@@ -48,6 +50,7 @@ export class MetricsStatesComponent implements OnChanges {
   constructor(
     private translate: TranslateService,
     private programService: ProgramsServiceApiService,
+    private pastPaymentsService: PastPaymentsService,
   ) {
     this.locale = environment.defaultLocale;
   }
@@ -66,10 +69,10 @@ export class MetricsStatesComponent implements OnChanges {
     this.renderUpdated();
     this.createPaStateColumns();
 
-    this.createPastPaymentsOptions();
+    await this.createPastPaymentsOptions();
     this.loadDataByCondition(this.chosenPayment, 'forPayment');
 
-    this.createPastMonthsOptions();
+    await this.createPastMonthsOptions();
     this.loadDataByCondition(this.chosenMonth, 'forMonth');
   }
 
@@ -95,6 +98,14 @@ export class MetricsStatesComponent implements OnChanges {
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.invited'),
         toDate: this.programMetrics.pa[PaStatus.invited],
+      },
+      {
+        name: PaStatus.noLongerEligible,
+        enabled: true,
+        label: this.translate.instant(
+          'page.program.metrics.pa.noLongerEligible',
+        ),
+        toDate: this.programMetrics.pa[PaStatus.noLongerEligible],
       },
       {
         name: PaStatus.created,
@@ -135,14 +146,6 @@ export class MetricsStatesComponent implements OnChanges {
         toDate: this.programMetrics.pa[PaStatus.inclusionEnded],
       },
       {
-        name: PaStatus.noLongerEligible,
-        enabled: true,
-        label: this.translate.instant(
-          'page.program.metrics.pa.noLongerEligible',
-        ),
-        toDate: this.programMetrics.pa[PaStatus.noLongerEligible],
-      },
-      {
         name: PaStatus.rejected,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.rejected'),
@@ -151,51 +154,47 @@ export class MetricsStatesComponent implements OnChanges {
     ];
   }
 
-  private createPastPaymentsOptions() {
-    this.pastPayments = [
-      {
-        label: 'Payment #1 - 0000-00-00',
-        value: 'installment=1',
-      },
-      {
-        label: 'Payment #2 - 0000-00-00',
-        value: 'installment=2',
-      },
-      {
-        label: 'Payment #3 - 0000-00-00',
-        value: 'installment=3',
-      },
-    ];
-    this.chosenPayment = this.pastPayments[0].value;
+  private async createPastPaymentsOptions() {
+    const pastInstallments =
+      await this.pastPaymentsService.getInstallmentsWithDates(this.program.id);
+
+    this.pastPayments = pastInstallments.map((payment) => {
+      return {
+        id: payment.id,
+        date: payment.date,
+        value: 'installment=' + payment.id,
+      };
+    });
+
+    if (this.pastPayments.length) {
+      this.chosenPayment = this.pastPayments[0].value;
+    }
   }
 
-  private createPastMonthsOptions() {
-    this.pastMonths = [
-      {
-        label: '2020-01',
-        value: 'year=2020&month=0',
-      },
-      {
-        label: '2020-02',
-        value: 'year=2020&month=1',
-      },
-      {
-        label: '2020-03',
-        value: 'year=2020&month=1',
-      },
-    ];
-    this.chosenMonth = this.pastMonths[0].value;
+  private async createPastMonthsOptions() {
+    const pastYearMonths =
+      await this.pastPaymentsService.getInstallmentYearMonths(this.program.id);
+
+    this.pastMonths = pastYearMonths.map((item) => {
+      const date = new Date(item.date);
+      return {
+        date,
+        value: `year=${date.getFullYear()}&month=${date.getMonth()}`,
+      };
+    });
+    if (this.pastMonths.length) {
+      this.chosenMonth = this.pastMonths[0].value;
+    }
   }
 
   private async loadDataByCondition(condition: string, destination: string) {
-    const timeFrameMetrics =
-      await this.programService.getMetricsByIdWithCondition(
-        this.program.id,
-        condition,
-      );
+    this.programMetrics = await this.programService.getMetricsByIdWithCondition(
+      this.program.id,
+      condition,
+    );
 
     this.paStates.map((item) => {
-      item[destination] = timeFrameMetrics.pa[item.name];
+      item[destination] = this.programMetrics.pa[item.name];
       return item;
     });
   }
@@ -216,5 +215,6 @@ export class MetricsStatesComponent implements OnChanges {
       return;
     }
     this.loadDataByCondition(condition, destination);
+    this.renderUpdated();
   }
 }

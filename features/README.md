@@ -22,6 +22,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 #### Using HO-Portal
 
 - [View metrics overview](HO-Portal/View_metrics_overview.feature)
+- [View PA-status metrics](HO-Portal/View_PA-status_metrics.feature)
 - [Manage aidworkers](HO-Portal/Manage_aidworkers.feature)
 - [Manage people affected](HO-Portal/Manage_people_affected.feature)
 - [Edit information of Person Affected](HO-Portal/Edit_Info_Person_Affected.feature)
@@ -37,7 +38,7 @@ Features of the 121-platform are described in this folder in a standardizes way 
 - [Reject or End Inclusion of people affected](HO-Portal/Reject_or_End_inclusion_people_affected.feature)
 - [Export inclusion list](HO-Portal/Export_Inclusion_List.feature)
 - [Export duplicate phone-numbers list](HO-Portal/Export_duplicate_phone-numbers_List.feature)
-- [Make a new payment](HO-Portal/Make_new_payment.feature)  
+- [Make a new payment](HO-Portal/Make_new_payment.feature)
 - [Export payment details](HO-Portal/Export_Payment_Details.feature)
 - Export all unused vouchers
 - Retry individual/all payment(s)

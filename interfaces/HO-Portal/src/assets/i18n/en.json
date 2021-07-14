@@ -106,6 +106,7 @@
         "timeframe": {
           "payment": "Payment #:",
           "select-payment": "Choose payment...",
+          "payment-option": "Payment #{{number}} - {{date}}",
           "calendar-month": "Calendar month:",
           "select-calendar-month": "Choose month...",
           "to-date": "To date:"

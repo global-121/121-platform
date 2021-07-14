@@ -2,12 +2,16 @@ import { PaStatus } from './person.model';
 
 export class ProgramMetrics {
   updated: string | Date;
-  pa: PeopleMetrics;
+  pa?: PeopleMetrics;
 }
 
 export class PeopleMetrics {
+  [PaStatus.imported]: number;
+  [PaStatus.invited]: number;
+  [PaStatus.noLongerEligible]: number;
   [PaStatus.created]: number;
   [PaStatus.registered]: number;
+  [PaStatus.selectedForValidation]: number;
   [PaStatus.validated]: number;
   [PaStatus.included]: number;
   [PaStatus.inclusionEnded]: number;

@@ -3,8 +3,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
-import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
-import { PaStatus } from 'src/app/models/person.model';
+import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -25,14 +24,6 @@ describe('MetricsComponent', () => {
   const fixtureProgram = apiProgramsMock.programs[0];
   const mockProgramMetrics: ProgramMetrics = {
     updated: new Date().toISOString(),
-    pa: {
-      [PaStatus.included]: getRandomInt(0, 100),
-      [PaStatus.inclusionEnded]: getRandomInt(0, 100),
-      [PaStatus.rejected]: getRandomInt(0, 100),
-      [PaStatus.created]: getRandomInt(0, 100),
-      [PaStatus.registered]: getRandomInt(0, 100),
-      [PaStatus.validated]: getRandomInt(0, 100),
-    },
   };
 
   beforeEach(async(() => {

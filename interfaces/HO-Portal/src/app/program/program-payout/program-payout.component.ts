@@ -12,6 +12,7 @@ import {
 } from 'src/app/models/program.model';
 import { StatusEnum } from 'src/app/models/status.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { PastPaymentsService } from '../../services/past-payments.service';
 
 class LastPaymentResults {
   amount: number;
@@ -52,6 +53,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   constructor(
     private programsService: ProgramsServiceApiService,
+    private pastPaymentsService: PastPaymentsService,
     private authService: AuthService,
     private translate: TranslateService,
     private alertController: AlertController,
@@ -193,10 +195,11 @@ export class ProgramPayoutComponent implements OnInit {
     this.pastInstallments = await this.programsService.getPastInstallments(
       this.programId,
     );
-    this.lastInstallmentId = await this.programsService.getLastInstallmentId(
-      this.programId,
-      this.pastInstallments,
-    );
+    this.lastInstallmentId =
+      await this.pastPaymentsService.getLastInstallmentId(
+        this.programId,
+        this.pastInstallments,
+      );
     this.nextInstallmentId =
       this.lastInstallmentId < this.program.distributionDuration
         ? this.lastInstallmentId + 1

@@ -286,11 +286,11 @@ export class ProgramController {
   }
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get status of past payment' })
+  @ApiOperation({ title: 'Get past installments for program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
   @ApiResponse({
     status: 200,
-    description: 'Get past payment details for program',
+    description: 'Get past installments for program',
   })
   @Get('installments/:programId')
   public async getInstallments(@Param() params): Promise<any> {

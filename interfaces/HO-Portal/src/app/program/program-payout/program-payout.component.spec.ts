@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
+import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { ProgramPayoutComponent } from './program-payout.component';
 
@@ -23,6 +24,7 @@ describe('ProgramPayoutComponent', () => {
       providers: [
         provideMagicalMock(AuthService),
         provideMagicalMock(ProgramsServiceApiService),
+        provideMagicalMock(PastPaymentsService),
         {
           provide: AlertController,
         },

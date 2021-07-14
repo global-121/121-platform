@@ -30,6 +30,7 @@
         *ngFor="let col of paStates"
         scope="col"
         class="col-header"
+        [hidden]="!col.enabled"
         [attr.title]="col.explanation ? col.explanation : ''"
       >
         {{ col.label }}
@@ -57,12 +58,13 @@
             *ngFor="let item of pastPayments"
             [value]="item.value"
           >
-            {{ item.label }}
+            {{ 'page.program.metrics.timeframe.payment-option'|translate:{ number: item.id, date: item.date|date:'yyyy-MM-dd' } }}
           </option>
         </select>
       </th>
       <td
         *ngFor="let cell of paStates"
+        [hidden]="!cell.enabled"
         class="cell-number"
       >{{ cell.forPayment }}</td>
     </tr>
@@ -86,12 +88,13 @@
             *ngFor="let item of pastMonths"
             [value]="item.value"
           >
-            {{ item.label }}
+            {{ item.date|date:'yyyy-MM' }}
           </option>
         </select>
       </th>
       <td
         *ngFor="let cell of paStates"
+        [hidden]="!cell.enabled"
         class="cell-number"
       >{{ cell.forMonth }}</td>
     </tr>
@@ -103,9 +106,10 @@
         {{ 'page.program.metrics.timeframe.to-date'|translate }}
       </th>
       <td
-        *ngFor="let col of paStates"
+        *ngFor="let cell of paStates"
+        [hidden]="!cell.enabled"
         class="cell-number"
-      >{{ col.toDate }}</td>
+      >{{ cell.toDate }}</td>
     </tr>
   </tbody>
 </table>
