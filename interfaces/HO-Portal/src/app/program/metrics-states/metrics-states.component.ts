@@ -99,6 +99,14 @@ export class MetricsStatesComponent implements OnChanges {
         toDate: this.programMetrics.pa[PaStatus.invited],
       },
       {
+        name: PaStatus.noLongerEligible,
+        enabled: true,
+        label: this.translate.instant(
+          'page.program.metrics.pa.noLongerEligible',
+        ),
+        toDate: this.programMetrics.pa[PaStatus.noLongerEligible],
+      },
+      {
         name: PaStatus.created,
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.created'),
@@ -135,14 +143,6 @@ export class MetricsStatesComponent implements OnChanges {
         enabled: true,
         label: this.translate.instant('page.program.metrics.pa.inclusionEnded'),
         toDate: this.programMetrics.pa[PaStatus.inclusionEnded],
-      },
-      {
-        name: PaStatus.noLongerEligible,
-        enabled: true,
-        label: this.translate.instant(
-          'page.program.metrics.pa.noLongerEligible',
-        ),
-        toDate: this.programMetrics.pa[PaStatus.noLongerEligible],
       },
       {
         name: PaStatus.rejected,

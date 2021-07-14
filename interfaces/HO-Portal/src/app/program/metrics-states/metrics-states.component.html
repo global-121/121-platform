@@ -30,6 +30,7 @@
         *ngFor="let col of paStates"
         scope="col"
         class="col-header"
+        [hidden]="!col.enabled"
         [attr.title]="col.explanation ? col.explanation : ''"
       >
         {{ col.label }}
@@ -63,6 +64,7 @@
       </th>
       <td
         *ngFor="let cell of paStates"
+        [hidden]="!cell.enabled"
         class="cell-number"
       >{{ cell.forPayment }}</td>
     </tr>
@@ -92,6 +94,7 @@
       </th>
       <td
         *ngFor="let cell of paStates"
+        [hidden]="!cell.enabled"
         class="cell-number"
       >{{ cell.forMonth }}</td>
     </tr>
@@ -103,9 +106,10 @@
         {{ 'page.program.metrics.timeframe.to-date'|translate }}
       </th>
       <td
-        *ngFor="let col of paStates"
+        *ngFor="let cell of paStates"
+        [hidden]="!cell.enabled"
         class="cell-number"
-      >{{ col.toDate }}</td>
+      >{{ cell.toDate }}</td>
     </tr>
   </tbody>
 </table>
