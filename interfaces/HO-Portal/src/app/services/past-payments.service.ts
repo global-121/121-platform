@@ -1,4 +1,6 @@
+import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { InstallmentData } from '../models/installment.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -6,7 +8,10 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
   providedIn: 'root',
 })
 export class PastPaymentsService {
-  constructor(private programsService: ProgramsServiceApiService) {}
+  private locale: string;
+  constructor(private programsService: ProgramsServiceApiService) {
+    this.locale = environment.defaultLocale;
+  }
 
   public async getLastInstallmentId(
     programId: number | string,
@@ -22,26 +27,62 @@ export class PastPaymentsService {
   }
 
   // To be used for metrics installment dropdown
-  public async getInstallmentIds(programId: number): Promise<number[]> {
+  public async getInstallmentsForDropdown(programId: number): Promise<
+    {
+      label: string;
+      value: string;
+    }[]
+  > {
     const installments = await this.programsService.getPastInstallments(
       programId,
     );
-    return installments.map((i) => i.id).sort((a, b) => (a < b ? 1 : -1));
+    return installments
+      .sort((a, b) => (a.id < b.id ? 1 : -1))
+      .map((i) => {
+        return {
+          label:
+            'Payment #' +
+            i.id +
+            ' - ' +
+            formatDate(i.installmentDate, 'dd-MM-yyyy', this.locale),
+          value: 'installment=' + i.id,
+        };
+      });
   }
 
   // To be used for metrics year-month dropdown
-  public async getInstallmentYearMonths(programId: number): Promise<string[]> {
+  public async getInstallmentYearMonths(programId: number): Promise<
+    {
+      label: string;
+      value: string;
+    }[]
+  > {
     const installments = await this.programsService.getPastInstallments(
       programId,
     );
-    const yearMonths: string[] = [];
-    installments.forEach((installment) => {
+    const yearMonths: {
+      label: string;
+      value: string;
+    }[] = [];
+    installments.map((installment) => {
       const date = new Date(installment.installmentDate);
-      const yearMonth = date.getFullYear() + '-' + (date.getMonth() + 1);
-      if (!yearMonths.includes(yearMonth)) {
+      const monthOneDigit = String(date.getMonth()).length === 1;
+      const yearMonth = {
+        label:
+          date.getFullYear() +
+          '-' +
+          (monthOneDigit ? '0' : '') +
+          (date.getMonth() + 1),
+        value: 'year=' + date.getFullYear() + '&month=' + date.getMonth(),
+      };
+      if (
+        !yearMonths
+          .map((ym) => JSON.stringify(ym))
+          .includes(JSON.stringify(yearMonth))
+      ) {
         yearMonths.push(yearMonth);
       }
     });
-    return yearMonths.sort((a, b) => (a < b ? 1 : -1));
+    return yearMonths.sort((a, b) => (a.label < b.label ? 1 : -1));
   }
 }

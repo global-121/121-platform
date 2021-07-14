@@ -7,6 +7,7 @@ import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { getValueOrUnknown } from 'src/app/shared/get-value-helpers';
 import { environment } from 'src/environments/environment';
+import { PastPaymentsService } from '../../services/past-payments.service';
 
 @Component({
   selector: 'app-metrics-states',
@@ -48,6 +49,7 @@ export class MetricsStatesComponent implements OnChanges {
   constructor(
     private translate: TranslateService,
     private programService: ProgramsServiceApiService,
+    private pastPaymentsService: PastPaymentsService,
   ) {
     this.locale = environment.defaultLocale;
   }
@@ -66,10 +68,10 @@ export class MetricsStatesComponent implements OnChanges {
     this.renderUpdated();
     this.createPaStateColumns();
 
-    this.createPastPaymentsOptions();
+    await this.createPastPaymentsOptions();
     this.loadDataByCondition(this.chosenPayment, 'forPayment');
 
-    this.createPastMonthsOptions();
+    await this.createPastMonthsOptions();
     this.loadDataByCondition(this.chosenMonth, 'forMonth');
   }
 
@@ -151,39 +153,18 @@ export class MetricsStatesComponent implements OnChanges {
     ];
   }
 
-  private createPastPaymentsOptions() {
-    this.pastPayments = [
-      {
-        label: 'Payment #1 - 0000-00-00',
-        value: 'installment=1',
-      },
-      {
-        label: 'Payment #2 - 0000-00-00',
-        value: 'installment=2',
-      },
-      {
-        label: 'Payment #3 - 0000-00-00',
-        value: 'installment=3',
-      },
-    ];
+  private async createPastPaymentsOptions() {
+    this.pastPayments =
+      await this.pastPaymentsService.getInstallmentsForDropdown(
+        this.program.id,
+      );
     this.chosenPayment = this.pastPayments[0].value;
   }
 
-  private createPastMonthsOptions() {
-    this.pastMonths = [
-      {
-        label: '2020-01',
-        value: 'year=2020&month=0',
-      },
-      {
-        label: '2020-02',
-        value: 'year=2020&month=1',
-      },
-      {
-        label: '2020-03',
-        value: 'year=2020&month=1',
-      },
-    ];
+  private async createPastMonthsOptions() {
+    this.pastMonths = await this.pastPaymentsService.getInstallmentYearMonths(
+      this.program.id,
+    );
     this.chosenMonth = this.pastMonths[0].value;
   }
 
