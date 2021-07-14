@@ -25,12 +25,16 @@ describe('MetricsStatesComponent', () => {
   const mockProgramMetrics: ProgramMetrics = {
     updated: new Date().toISOString(),
     pa: {
+      [PaStatus.imported]: getRandomInt(0, 100),
+      [PaStatus.invited]: getRandomInt(0, 100),
+      [PaStatus.noLongerEligible]: getRandomInt(0, 100),
+      [PaStatus.created]: getRandomInt(0, 100),
+      [PaStatus.registered]: getRandomInt(0, 100),
+      [PaStatus.selectedForValidation]: getRandomInt(0, 100),
+      [PaStatus.validated]: getRandomInt(0, 100),
       [PaStatus.included]: getRandomInt(0, 100),
       [PaStatus.inclusionEnded]: getRandomInt(0, 100),
       [PaStatus.rejected]: getRandomInt(0, 100),
-      [PaStatus.created]: getRandomInt(0, 100),
-      [PaStatus.registered]: getRandomInt(0, 100),
-      [PaStatus.validated]: getRandomInt(0, 100),
     },
   };
 

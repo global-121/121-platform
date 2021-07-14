@@ -176,7 +176,6 @@ export class MetricsComponent implements OnChanges {
   }
 
   private renderPaMetrics() {
-    const metrics = this.programMetrics.pa;
     const group = MetricGroup.pa;
 
     this.metricsMap.set(`${group}.targeted`, {
@@ -184,44 +183,6 @@ export class MetricsComponent implements OnChanges {
       icon: 'locate',
       label: 'page.program.metrics.pa.targeted',
       value: getValueOrEmpty(this.program.highestScoresX),
-    });
-    this.metricsMap.set(`${group}.startedProcess`, {
-      group,
-      icon: 'arrow-dropright-circle',
-      label: 'page.program.metrics.pa.created',
-      value: getValueOrUnknown(metrics.created),
-    });
-    this.metricsMap.set(`${group}.pendingVerification`, {
-      group,
-      icon: 'people',
-      label: 'page.program.metrics.pa.registered',
-      value: getValueOrUnknown(metrics.registered),
-    });
-    if (this.program.validation) {
-      this.metricsMap.set(`${group}.validatedAwaitingDecision`, {
-        group,
-        icon: 'contact',
-        label: 'page.program.metrics.pa.validated',
-        value: getValueOrUnknown(metrics.validated),
-      });
-    }
-    this.metricsMap.set(`${group}.included`, {
-      group,
-      icon: 'checkmark-circle-outline',
-      label: 'page.program.metrics.pa.included',
-      value: getValueOrUnknown(metrics.included),
-    });
-    this.metricsMap.set(`${group}.inclusionEnded`, {
-      group,
-      icon: 'checkmark-circle',
-      label: 'page.program.metrics.pa.inclusionEnded',
-      value: getValueOrUnknown(metrics.inclusionEnded),
-    });
-    this.metricsMap.set(`${group}.rejected`, {
-      group,
-      icon: 'close-circle',
-      label: 'page.program.metrics.pa.rejected',
-      value: getValueOrUnknown(metrics.rejected),
     });
   }
 
