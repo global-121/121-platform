@@ -58,7 +58,7 @@
             *ngFor="let item of pastPayments"
             [value]="item.value"
           >
-            {{ item.label }}
+            {{ 'page.program.metrics.timeframe.payment-option'|translate:{ number: item.id, date: item.date|date:'yyyy-MM-dd' } }}
           </option>
         </select>
       </th>

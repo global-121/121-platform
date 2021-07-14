@@ -1,6 +1,4 @@
-import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
 import { InstallmentData } from '../models/installment.model';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -8,10 +6,7 @@ import { ProgramsServiceApiService } from './programs-service-api.service';
   providedIn: 'root',
 })
 export class PastPaymentsService {
-  private locale: string;
-  constructor(private programsService: ProgramsServiceApiService) {
-    this.locale = environment.defaultLocale;
-  }
+  constructor(private programsService: ProgramsServiceApiService) {}
 
   public async getLastInstallmentId(
     programId: number | string,
@@ -26,11 +21,10 @@ export class PastPaymentsService {
     return pastPayments[pastPayments.length - 1].id;
   }
 
-  // To be used for metrics installment dropdown
-  public async getInstallmentsForDropdown(programId: number): Promise<
+  public async getInstallmentsWithDates(programId: number): Promise<
     {
-      label: string;
-      value: string;
+      id: number;
+      date: Date | string;
     }[]
   > {
     const installments = await this.programsService.getPastInstallments(
@@ -38,14 +32,10 @@ export class PastPaymentsService {
     );
     return installments
       .sort((a, b) => (a.id < b.id ? 1 : -1))
-      .map((i) => {
+      .map((installment) => {
         return {
-          label:
-            'Payment #' +
-            i.id +
-            ' - ' +
-            formatDate(i.installmentDate, 'dd-MM-yyyy', this.locale),
-          value: 'installment=' + i.id,
+          id: installment.id,
+          date: installment.installmentDate,
         };
       });
   }

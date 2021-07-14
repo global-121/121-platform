@@ -31,7 +31,8 @@ export class MetricsStatesComponent implements OnChanges {
   }[] = [];
 
   public pastPayments: {
-    label: string;
+    id: number;
+    date: Date | string;
     value: string;
   }[];
   public chosenPayment: any;
@@ -154,11 +155,20 @@ export class MetricsStatesComponent implements OnChanges {
   }
 
   private async createPastPaymentsOptions() {
-    this.pastPayments =
-      await this.pastPaymentsService.getInstallmentsForDropdown(
-        this.program.id,
-      );
-    this.chosenPayment = this.pastPayments[0].value;
+    const pastInstallments =
+      await this.pastPaymentsService.getInstallmentsWithDates(this.program.id);
+
+    this.pastPayments = pastInstallments.map((payment) => {
+      return {
+        id: payment.id,
+        date: payment.date,
+        value: 'installment=' + payment.id,
+      };
+    });
+
+    if (this.pastPayments.length) {
+      this.chosenPayment = this.pastPayments[0].value;
+    }
   }
 
   private async createPastMonthsOptions() {
