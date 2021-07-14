@@ -9,6 +9,7 @@ import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { MetricsStatesComponent } from './metrics-states.component';
 
 @Component({
@@ -64,7 +65,7 @@ describe('MetricsStatesComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MetricsStatesComponent, TestHostComponent],
-      imports: [TranslateModule.forRoot(), FormsModule],
+      imports: [TranslateModule.forRoot(), FormsModule, SharedModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         provideMagicalMock(ProgramsServiceApiService),
