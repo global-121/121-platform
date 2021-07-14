@@ -38,7 +38,7 @@ export class MetricsStatesComponent implements OnChanges {
   public chosenPayment: any;
 
   public pastMonths: {
-    label: string;
+    date: Date | string;
     value: string;
   }[];
   public chosenMonth: any;
@@ -172,10 +172,19 @@ export class MetricsStatesComponent implements OnChanges {
   }
 
   private async createPastMonthsOptions() {
-    this.pastMonths = await this.pastPaymentsService.getInstallmentYearMonths(
-      this.program.id,
-    );
-    this.chosenMonth = this.pastMonths[0].value;
+    const pastYearMonths =
+      await this.pastPaymentsService.getInstallmentYearMonths(this.program.id);
+
+    this.pastMonths = pastYearMonths.map((item) => {
+      const date = new Date(item.date);
+      return {
+        date,
+        value: `year=${date.getFullYear()}&month=${date.getMonth()}`,
+      };
+    });
+    if (this.pastMonths.length) {
+      this.chosenMonth = this.pastMonths[0].value;
+    }
   }
 
   private async loadDataByCondition(condition: string, destination: string) {

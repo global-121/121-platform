@@ -40,39 +40,28 @@ export class PastPaymentsService {
       });
   }
 
-  // To be used for metrics year-month dropdown
   public async getInstallmentYearMonths(programId: number): Promise<
     {
-      label: string;
-      value: string;
+      date: Date | string;
     }[]
   > {
-    const installments = await this.programsService.getPastInstallments(
-      programId,
-    );
+    const installments = await this.getInstallmentsWithDates(programId);
     const yearMonths: {
       label: string;
-      value: string;
-    }[] = [];
-    installments.map((installment) => {
-      const date = new Date(installment.installmentDate);
-      const monthOneDigit = String(date.getMonth()).length === 1;
+      date: Date | string;
+    }[] = installments.map((installment) => {
+      const date = new Date(installment.date);
       const yearMonth = {
-        label:
-          date.getFullYear() +
-          '-' +
-          (monthOneDigit ? '0' : '') +
-          (date.getMonth() + 1),
-        value: 'year=' + date.getFullYear() + '&month=' + date.getMonth(),
+        label: `${date.getFullYear()}-${date.getMonth()}`,
+        date,
       };
-      if (
-        !yearMonths
-          .map((ym) => JSON.stringify(ym))
-          .includes(JSON.stringify(yearMonth))
-      ) {
-        yearMonths.push(yearMonth);
-      }
+      return yearMonth;
     });
-    return yearMonths.sort((a, b) => (a.label < b.label ? 1 : -1));
+    // Filter for only unique months
+    return yearMonths.filter((value, index, self) => {
+      return (
+        self.indexOf(self.find((item) => item.label === value.label)) === index
+      );
+    });
   }
 }

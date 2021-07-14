@@ -88,7 +88,7 @@
             *ngFor="let item of pastMonths"
             [value]="item.value"
           >
-            {{ item.label }}
+            {{ item.date|date:'yyyy-MM' }}
           </option>
         </select>
       </th>
