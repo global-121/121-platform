@@ -1,13 +1,8 @@
 import { formatCurrency, formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  MetricGroup,
-  MetricRow,
-  ProgramMetrics,
-} from 'src/app/models/program-metrics.model';
+import { MetricGroup, MetricRow } from 'src/app/models/program-metrics.model';
 import { DistributionFrequency, Program } from 'src/app/models/program.model';
-import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
 import {
   getValueOrEmpty,
@@ -28,7 +23,6 @@ export class MetricsComponent implements OnChanges {
   public isCollapsed: boolean;
 
   private locale: string;
-  private programMetrics: ProgramMetrics;
   private metricsMap: Map<string, MetricRow> = new Map();
 
   public metricList: MetricRow[];
@@ -37,7 +31,6 @@ export class MetricsComponent implements OnChanges {
   constructor(
     public translate: TranslateService,
     private translatableString: TranslatableStringService,
-    private programService: ProgramsServiceApiService,
   ) {
     this.locale = environment.defaultLocale;
   }
@@ -49,10 +42,6 @@ export class MetricsComponent implements OnChanges {
   }
 
   public async update() {
-    this.programMetrics = await this.programService.getMetricsById(
-      this.program.id,
-    );
-
     this.renderUpdated();
 
     // The order of these methods, define the order of the metricMap/List:
@@ -66,7 +55,7 @@ export class MetricsComponent implements OnChanges {
   }
 
   private renderUpdated() {
-    this.lastUpdated = getValueOrUnknown(this.programMetrics.updated, (value) =>
+    this.lastUpdated = getValueOrUnknown(new Date(), (value) =>
       formatDate(value, 'EEEE, dd-MM-yyyy - HH:mm', this.locale),
     );
   }

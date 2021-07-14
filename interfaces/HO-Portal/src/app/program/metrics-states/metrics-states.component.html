@@ -1,27 +1,29 @@
-<div
-  style="display: flex;"
-  class="ion-align-items-center ion-justify-content-end"
->
-  <ion-note>
-    {{ 'page.program.metrics.last-updated'|translate:{ date: lastUpdated } }}
-  </ion-note>
-  <ion-button
-    size="small"
-    fill="clear"
-    color="medium"
-    [title]="'common.update'|translate"
-    [attr.aria-label]="'common.update'|translate"
-    (click)="update()"
-    id="metrics-update"
-  >
-    <ion-icon name="refresh" size="small" slot="icon-only"></ion-icon>
-  </ion-button>
-</div>
 
 <table class="metrics-states--table">
+  <caption>
+    <div
+      style="display: flex;"
+      class="ion-align-items-center ion-justify-content-end"
+    >
+      <ion-note>
+        {{ 'page.program.metrics.last-updated'|translate:{ date: lastUpdated } }}
+      </ion-note>
+      <ion-button
+        size="small"
+        fill="clear"
+        color="medium"
+        [title]="'common.update'|translate"
+        [attr.aria-label]="'common.update'|translate"
+        (click)="update()"
+        id="metrics-update"
+      >
+        <ion-icon name="refresh" size="small" slot="icon-only" aria-hidden="true"></ion-icon>
+      </ion-button>
+    </div>
+  </caption>
   <colgroup>
     <col>
-    <col [span]="paStates.length" class="state-collumn">
+    <col [span]="paStates.length" class="state-col">
   </colgroup>
   <thead>
     <tr>
@@ -30,7 +32,6 @@
         *ngFor="let col of paStates"
         scope="col"
         class="col-header"
-        [hidden]="!col.enabled"
         [attr.title]="col.explanation ? col.explanation : ''"
       >
         {{ col.label }}
@@ -64,7 +65,6 @@
       </th>
       <td
         *ngFor="let cell of paStates"
-        [hidden]="!cell.enabled"
         class="cell-number"
       >{{ cell.forPayment }}</td>
     </tr>
@@ -94,11 +94,10 @@
       </th>
       <td
         *ngFor="let cell of paStates"
-        [hidden]="!cell.enabled"
         class="cell-number"
       >{{ cell.forMonth }}</td>
     </tr>
-    <tr>
+    <tr class="shaded">
       <th
         scope="row"
         class="row-header"
@@ -107,7 +106,6 @@
       </th>
       <td
         *ngFor="let cell of paStates"
-        [hidden]="!cell.enabled"
         class="cell-number"
       >{{ cell.toDate }}</td>
     </tr>

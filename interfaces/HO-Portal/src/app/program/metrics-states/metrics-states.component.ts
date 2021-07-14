@@ -152,6 +152,8 @@ export class MetricsStatesComponent implements OnChanges {
         toDate: this.programMetrics.pa[PaStatus.rejected],
       },
     ];
+    // Filter out disabled collumns:
+    this.paStates = this.paStates.filter((col) => col.enabled);
   }
 
   private async createPastPaymentsOptions() {

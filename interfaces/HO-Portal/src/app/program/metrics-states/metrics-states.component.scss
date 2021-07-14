@@ -1,11 +1,13 @@
 .metrics-states--table {
+  margin: 0 auto;
+
   td,
   th {
     padding: 0.5em;
   }
 
-  .state-collumn {
-    border-left: 1px solid silver;
+  .state-col {
+    border-left: 1px solid var(--ion-color-light-shade);
   }
 
   .col-header {
@@ -23,6 +25,10 @@
   .cell-number {
     text-align: right;
     font-variant-numeric: tabular-nums;
+  }
+
+  .shaded {
+    background-color: var(--ion-color-light-tint);
   }
 }
 
