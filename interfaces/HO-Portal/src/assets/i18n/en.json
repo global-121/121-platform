@@ -87,7 +87,21 @@
           "rejected": "PA Rejected"
         },
         "state-explanation": {
-          "imported": "PA that are imported by phone-number only, so no complete registrations."
+          "imported": "PAs that were imported in the HO-portal, based on phone-number.",
+          "invited": "PAs that were invited (after import)",
+          "created": "PAs that started registration in the PA-app",
+          "registered": "PAs that finished registration in the PA-app",
+          "selectedForValidation": "PAs that were selected for validation",
+          "validated": "PAs that were validated",
+          "included": "PAs that were included",
+          "inclusionEnded": "PAs for which inclusion was ended",
+          "noLongerEligible": "PAs that were marked as 'no longer eligible'",
+          "rejected": "PAs that were rejected"
+        },
+        "table-row-explanation": {
+          "toDate": "All PAs that reached a certain status - e.g. included - at any moment between the start of the program and now.<br><br>This is not the number of included PAs at the moment, but the number of all PAs who were included at some point.",
+          "month": "All PAs that reached a certain status - e.g. included - at any moment in the chosen month.<br><br>This is not the number of included PAs at the end of that month, but the number of PAs who were included at any moment in that month.<br><br>Note that the PAs included in this month may not necessarily be the same PAs as those that registered in this month, as they may have registered e.g. in the previous month.",
+          "payment": "All PAs that reached a certain status - e.g. included - at any moment in between the previous payment and the chosen payment.<br><br>This is not the number of included PAs at the moment of that payment, but the number of PAs who were included in between the previous payment and the chosen payment.<br><br>Note that the PAs included in this time period may not necessarily be the same PAs as those that registered in this time period, as they may have registered e.g. in the previous time period."
         },
         "header": {
           "metric": "Metric",
