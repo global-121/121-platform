@@ -106,6 +106,18 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
+  getMetricsByIdWithCondition(
+    programId: number | string,
+    condition: string,
+  ): Promise<ProgramMetrics> {
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        `/programs/metrics/${programId}?${condition}`,
+      )
+      .toPromise();
+  }
+
   getTotalIncluded(programId: number | string): Promise<TotalIncluded> {
     return this.apiService
       .get(

@@ -5,13 +5,13 @@
     name="bulkActions"
     [title]="'page.program.program-people-affected.choose-action'|translate"
     (change)="selectAction()"
-    class="bulk-action-select ion-margin-end"
+    class="styled-select ion-margin-end"
     [(ngModel)]="action"
   >
-      <option value="">
-        <ng-container *ngIf="!hasEnabledActions()">{{ 'page.program.program-people-affected.no-actions'|translate }}</ng-container>
-        <ng-container *ngIf="hasEnabledActions()">{{ 'page.program.program-people-affected.choose-action'|translate }}</ng-container>
-      </option>
+    <option value="">
+      <ng-container *ngIf="!hasEnabledActions()">{{ 'page.program.program-people-affected.no-actions'|translate }}</ng-container>
+      <ng-container *ngIf="hasEnabledActions()">{{ 'page.program.program-people-affected.choose-action'|translate }}</ng-container>
+    </option>
 
     <ng-container *ngFor="let action of bulkActions;">
       <option
@@ -37,6 +37,7 @@
     class="ion-margin-start"
   ></ion-spinner>
 </ion-row>
+
 <ion-row class="ion-margin-vertical">
   <ion-input
     [placeholder]="'page.program.program-people-affected.filter-placeholder'|translate"
@@ -58,6 +59,7 @@
     ></ion-icon>
   </ion-input>
 </ion-row>
+
 <div
   class="proxy-scrollbar"
   data-target="datatable-body"
@@ -103,7 +105,7 @@
           type="checkbox"
           [checked]="headerChecked"
           [disabled]="!headerSelectAllVisible"
-          [ngStyle]="headerSelectAllVisible ? {} : {'visibility':'hidden'}"
+          [ngStyle]="headerSelectAllVisible ? {} : { 'visibility': 'hidden' }"
           (change)="selectFn(!allRowsSelected)"
         />
         {{ 'page.program.program-people-affected.column.select'|translate }}
@@ -142,7 +144,10 @@
       let-value="value"
       let-row="row"
     >
-      <div class="ion-align-items-center" style="display: flex;">
+      <div
+        class="ion-align-items-center"
+        style="display: flex;"
+      >
         <button
           *ngIf="canViewPersonalData"
           id="edit-button"

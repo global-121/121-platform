@@ -75,12 +75,19 @@
       "metrics": {
         "pa": {
           "targeted": "PA Targeted",
+          "imported": "PA Imported",
+          "invited": "PA Invited",
           "created": "PA Started Registration",
           "registered": "PA Registered",
+          "selectedForValidation": "PA Selected for validation",
           "validated": "PA Validated",
           "included": "PA Included",
           "inclusionEnded": "PA Inclusion Ended",
+          "noLongerEligible": "PA No longer eligible",
           "rejected": "PA Rejected"
+        },
+        "state-explanation": {
+          "imported": "PA that are imported by phone-number only, so no complete registrations."
         },
         "header": {
           "metric": "Metric",
@@ -95,6 +102,13 @@
             "month": "month(s)",
             "week": "week(s)"
           }
+        },
+        "timeframe": {
+          "payment": "Payment #:",
+          "select-payment": "Choose payment...",
+          "calendar-month": "Calendar month:",
+          "select-calendar-month": "Choose month...",
+          "to-date": "To date:"
         },
         "last-updated": "Last updated: {{date}}"
       },
