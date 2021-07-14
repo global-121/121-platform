@@ -75,16 +75,16 @@
       "metrics": {
         "pa": {
           "targeted": "PA Targeted",
-          "imported": "PA Imported",
-          "invited": "PA Invited",
-          "created": "PA Started Registration",
-          "registered": "PA Registered",
-          "selectedForValidation": "PA Selected for validation",
-          "validated": "PA Validated",
-          "included": "PA Included",
-          "inclusionEnded": "PA Inclusion Ended",
-          "noLongerEligible": "PA No longer eligible",
-          "rejected": "PA Rejected"
+          "imported": "Imported",
+          "invited": "Invited",
+          "noLongerEligible": "No longer eligible",
+          "created": "Started Registration",
+          "registered": "Registered",
+          "selectedForValidation": "Selected for validation",
+          "validated": "Validated",
+          "included": "Included",
+          "inclusionEnded": "Inclusion Ended",
+          "rejected": "Rejected"
         },
         "state-explanation": {
           "imported": "PA that are imported by phone-number only, so no complete registrations."
