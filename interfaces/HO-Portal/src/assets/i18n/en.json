@@ -17,7 +17,10 @@
   },
   "page": {
     "dashboard": {
-      "pageTitle": "Dashboard"
+      "pageTitle": "Dashboard",
+      "introduction": "The information on this screen comes from data in the 121 Platform only.",
+      "help-explanation": "You can get a description of each label or header by clicking/focusing/hovering on these elements:",
+      "help-explanation-tooltip": "Like this!"
     },
     "aid-workers": {
       "pageTitle": "Aid-workers"
