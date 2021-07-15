@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { NgxPopperModule } from 'ngx-popper';
 import { TooltipComponent } from './tooltip.component';
 
 describe('TooltipComponent', () => {
@@ -9,6 +10,7 @@ describe('TooltipComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TooltipComponent],
+      imports: [NgxPopperModule.forRoot()],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
@@ -42,14 +44,25 @@ describe('TooltipComponent', () => {
   });
 
   it('should show the provided text when clicked', () => {
-    spyOn(window, 'alert');
-
+    jasmine.clock().install();
     const testContent = 'test content';
     component.value = testContent;
     fixture.detectChanges();
 
-    fixture.debugElement.nativeElement.querySelector('ion-button').click();
+    fixture.debugElement.nativeElement
+      .querySelector('.tooltip--button')
+      .click();
 
-    expect(window.alert).toHaveBeenCalledWith(testContent);
+    // Wait a second...
+    jasmine.clock().tick(1000);
+
+    const tooltipContent: HTMLElement = document.querySelector(
+      '.tooltip--container',
+    );
+
+    expect(tooltipContent).toBeTruthy();
+    expect(tooltipContent.innerHTML).toContain(testContent);
+    expect(tooltipContent.getAttribute('aria-hidden')).toBe('false');
+    jasmine.clock().uninstall();
   });
 });
