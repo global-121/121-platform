@@ -120,16 +120,16 @@
             "label": "Payment #:",
             "select-hint": "Choose payment...",
             "option": "Payment #{{number}} - {{date}}",
-            "explanation": "All PA that reached a certain status - e.g. included - at any moment in between the previous payment and the chosen payment. <br><br> This is not the number of included PA at the moment of that payment, but the number of PA who were included in between the previous payment and the chosen payment. <br><br> Note that the PA included in this time period may not necessarily be the same PA as those that registered in this time period, as they may have registered e.g. in the previous time period."
+            "explanation": "All PA that reached a certain status - e.g. included - at any moment in between the previous payment and the chosen payment. <br><br> This is not the number of included PA at the moment of that payment, but the number of PA that were included in between the previous payment and the chosen payment. <br><br> Note that the PA included in this time period may not necessarily be the same PA as those that registered in this time period, as they may have registered e.g. in the previous time period."
           },
           "calendar-month": {
             "label": "Calendar month:",
             "select-hint": "Choose month...",
-            "explanation": "All PA that reached a certain status - e.g. included - at any moment in the chosen month. <br><br> This is not the number of included PA at the end of that month, but the number of PA who were included at any moment in that month. <br><br> Note that the PA included in this month may not necessarily be the same PA as those that registered in this month, as they may have registered e.g. in the previous month."
+            "explanation": "All PA that reached a certain status - e.g. included - at any moment in the chosen month. <br><br> This is not the number of included PA at the end of that month, but the number of PA that were included at any moment in that month. <br><br> Note that the PA included in this month may not necessarily be the same PA as those that registered in this month, as they may have registered e.g. in the previous month."
           },
           "to-date": {
             "label": "To date:",
-            "explanation": "All PA that reached a certain status - e.g. included - at any moment between the start of the program and now. <br><br> This is not the number of included PA at the moment, but the number of all PA who were included at some point."
+            "explanation": "All PA that reached a certain status - e.g. included - at any moment between the start of the program and now. <br><br> This is not the number of included PA at the moment, but the number of all PA that were included at some point."
           }
         },
         "last-updated": "Last updated: {{date}}"
