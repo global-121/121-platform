@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgxPopperModule } from 'ngx-popper';
 import { HeaderComponent } from '../components/header/header.component';
@@ -46,6 +47,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     FormsModule,
     RouterModule,
     TranslateModule.forChild(),
+    NgxChartsModule,
     NgxDatatableModule,
     NgxPopperModule.forRoot(),
   ],
@@ -57,6 +59,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     FilePickerPromptComponent,
     HeaderComponent,
     InputPromptComponent,
+    NgxChartsModule,
     NgxDatatableModule,
     NgxPopperModule,
     PasswordToggleInputComponent,
