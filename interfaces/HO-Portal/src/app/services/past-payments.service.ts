@@ -64,4 +64,33 @@ export class PastPaymentsService {
       );
     });
   }
+
+  public async getInstallmentsWithStateSums(programId: number): Promise<
+    {
+      id: number;
+      values: {
+        [state: string]: number;
+      };
+    }[]
+  > {
+    const installments = await this.getInstallmentsWithDates(programId);
+
+    const data = installments.map((payment) => {
+      return {
+        id: payment.id,
+        values: {
+          'pre-existing': this.getRandomInt(0, 100),
+          new: this.getRandomInt(0, 100),
+        },
+      };
+    });
+    return data;
+  }
+
+  private getRandomInt(min: number, max: number): number {
+    return (
+      Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) +
+      Math.ceil(min)
+    );
+  }
 }
