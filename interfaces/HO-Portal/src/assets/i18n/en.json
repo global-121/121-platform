@@ -91,15 +91,15 @@
         },
         "state-explanation": {
           "imported": "PAs that were imported in the HO-portal, based on phone-number.",
-          "invited": "PAs that were invited (after import)",
-          "created": "PAs that started registration in the PA-app",
-          "registered": "PAs that finished registration in the PA-app",
-          "selectedForValidation": "PAs that were selected for validation",
-          "validated": "PAs that were validated",
-          "included": "PAs that were included",
-          "inclusionEnded": "PAs for which inclusion was ended",
-          "noLongerEligible": "PAs that were marked as 'no longer eligible'",
-          "rejected": "PAs that were rejected"
+          "invited": "PAs that were invited (after import).",
+          "created": "PAs that started registration in the PA-app.",
+          "registered": "PAs that finished registration in the PA-app.",
+          "selectedForValidation": "PAs that were selected for validation.",
+          "validated": "PAs that were validated.",
+          "included": "PAs that were included. <br> They will receive payments starting with the next payment/payout round.",
+          "inclusionEnded": "PAs for which inclusion was ended. <br> They will not receive any (more) payments for the next payment/payout round.",
+          "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> They will not receive any (more) payments for the next payment/payout round.'",
+          "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round."
         },
         "header": {
           "metric": "Metric",
