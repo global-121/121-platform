@@ -1,6 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
@@ -44,7 +45,12 @@ describe('MetricsStatesOverTimeComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [MetricsStatesOverTimeComponent, TestHostComponent],
-      imports: [TranslateModule.forRoot(), FormsModule, SharedModule],
+      imports: [
+        TranslateModule.forRoot(),
+        FormsModule,
+        SharedModule,
+        NoopAnimationsModule,
+      ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [provideMagicalMock(PastPaymentsService)],
     }).compileComponents();
