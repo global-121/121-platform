@@ -172,7 +172,7 @@ describe('MetricsStatesComponent', () => {
     expect(mockProgramsApi.getMetricsByIdWithCondition).toHaveBeenCalledTimes(
       2,
     );
-    document.getElementById('metrics-update').click();
+    document.getElementById('refresh').click();
 
     expect(mockProgramsApi.getMetricsById).toHaveBeenCalledTimes(2);
     expect(mockProgramsApi.getMetricsByIdWithCondition).toHaveBeenCalledTimes(

@@ -96,7 +96,7 @@ describe('MetricsStatesOverTimeComponent', () => {
     expect(
       mockPastPaymentsService.getInstallmentsWithStateSums,
     ).toHaveBeenCalledTimes(1);
-    document.getElementById('metrics-update').click();
+    document.getElementById('refresh').click();
 
     expect(
       mockPastPaymentsService.getInstallmentsWithStateSums,

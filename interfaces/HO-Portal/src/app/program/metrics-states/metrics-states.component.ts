@@ -1,4 +1,3 @@
-import { formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { PaStatus } from 'src/app/models/person.model';
@@ -6,7 +5,6 @@ import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { getValueOrUnknown } from 'src/app/shared/get-value-helpers';
-import { environment } from 'src/environments/environment';
 import { PastPaymentsService } from '../../services/past-payments.service';
 
 @Component({
@@ -18,7 +16,7 @@ export class MetricsStatesComponent implements OnChanges {
   @Input()
   private program: Program;
 
-  public lastUpdated: string;
+  public lastUpdated: Date | string;
 
   public paStates: {
     name: PaStatus;
@@ -45,15 +43,11 @@ export class MetricsStatesComponent implements OnChanges {
 
   private programMetrics: ProgramMetrics;
 
-  private locale: string;
-
   constructor(
     private translate: TranslateService,
     private programService: ProgramsServiceApiService,
     private pastPaymentsService: PastPaymentsService,
-  ) {
-    this.locale = environment.defaultLocale;
-  }
+  ) {}
 
   public async ngOnChanges(changes: SimpleChanges) {
     if (changes.program && typeof changes.program.currentValue === 'object') {
@@ -77,9 +71,7 @@ export class MetricsStatesComponent implements OnChanges {
   }
 
   private renderUpdated() {
-    this.lastUpdated = getValueOrUnknown(this.programMetrics.updated, (value) =>
-      formatDate(value, 'EEEE, dd-MM-yyyy - HH:mm', this.locale),
-    );
+    this.lastUpdated = getValueOrUnknown(this.programMetrics.updated);
   }
 
   private createPaStateColumns() {

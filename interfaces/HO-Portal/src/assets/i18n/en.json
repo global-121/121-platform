@@ -138,8 +138,7 @@
             "new": "New"
           },
           "payment-label": "Payment"
-        },
-        "last-updated": "Last updated: {{date}}"
+        }
       },
       "program-details": {
         "section-title": "Program Details",
@@ -404,6 +403,9 @@
     "timestamp": {
       "done": "Done on:"
     }
+  },
+  "refresh-data": {
+    "last-updated": "Last updated: {{date}}"
   },
   "file-picker": {
     "label": "Select a file",
