@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { MetricsStatesOverTimeComponent } from 'src/app/program/metrics-states-over-time/metrics-states-over-time.component';
 import { MetricsStatesComponent } from 'src/app/program/metrics-states/metrics-states.component';
 import { MetricsComponent } from 'src/app/program/metrics/metrics.component';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -23,6 +24,11 @@ const routes: Routes = [
     SharedModule,
     RouterModule.forChild(routes),
   ],
-  declarations: [DashboardPage, MetricsComponent, MetricsStatesComponent],
+  declarations: [
+    DashboardPage,
+    MetricsComponent,
+    MetricsStatesComponent,
+    MetricsStatesOverTimeComponent,
+  ],
 })
 export class DashboardPageModule {}
