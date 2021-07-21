@@ -1,10 +1,8 @@
-import { formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Program } from 'src/app/models/program.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { getValueOrUnknown } from 'src/app/shared/get-value-helpers';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-metrics-states-over-time',
@@ -15,18 +13,14 @@ export class MetricsStatesOverTimeComponent implements OnChanges {
   @Input()
   private program: Program;
 
-  public lastUpdated: string;
+  public lastUpdated: Date | string;
 
   public chartData: any;
-
-  private locale: string;
 
   constructor(
     private translate: TranslateService,
     private pastPaymentsService: PastPaymentsService,
-  ) {
-    this.locale = environment.defaultLocale;
-  }
+  ) {}
 
   public async ngOnChanges(changes: SimpleChanges) {
     if (changes.program && typeof changes.program.currentValue === 'object') {
@@ -36,14 +30,7 @@ export class MetricsStatesOverTimeComponent implements OnChanges {
 
   public async update() {
     this.chartData = await this.createChartData();
-
-    this.renderUpdated();
-  }
-
-  private renderUpdated() {
-    this.lastUpdated = getValueOrUnknown(this.program.updated, (value) =>
-      formatDate(value, 'EEEE, dd-MM-yyyy - HH:mm', this.locale),
-    );
+    this.lastUpdated = getValueOrUnknown(this.program.updated);
   }
 
   private async createChartData() {

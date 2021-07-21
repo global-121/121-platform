@@ -55,9 +55,7 @@ export class MetricsComponent implements OnChanges {
   }
 
   private renderUpdated() {
-    this.lastUpdated = getValueOrUnknown(this.program.updated, (value) =>
-      formatDate(value, 'EEEE, dd-MM-yyyy - HH:mm', this.locale),
-    );
+    this.lastUpdated = getValueOrUnknown(this.program.updated);
   }
 
   private renderProgramProperties() {
