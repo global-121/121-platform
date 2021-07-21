@@ -405,6 +405,9 @@
       "done": "Done on:"
     }
   },
+  "refresh-data": {
+    "last-updated": "Last updated: {{date}}"
+  },
   "file-picker": {
     "label": "Select a file",
     "download-template-button": "Download template CSV-file"

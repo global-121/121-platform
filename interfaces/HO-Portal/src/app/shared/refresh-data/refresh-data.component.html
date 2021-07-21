@@ -1,0 +1,19 @@
+<div
+  style="display: flex;"
+  class="ion-align-items-center ion-justify-content-end"
+>
+  <ion-note>
+    {{ 'refresh-data.last-updated'|translate:{ date:lastUpdated|date:'EEEE, dd-MM-yyyy - HH:mm' } }}
+  </ion-note>
+  <ion-button
+    size="small"
+    fill="clear"
+    color="medium"
+    [title]="'common.update'|translate"
+    [attr.aria-label]="'common.update'|translate"
+    (click)="doRefresh()"
+    id="refresh"
+  >
+    <ion-icon name="refresh" size="small" slot="icon-only" aria-hidden="true"></ion-icon>
+  </ion-button>
+</div>

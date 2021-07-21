@@ -21,6 +21,7 @@ import { ConfirmPromptComponent } from './confirm-prompt/confirm-prompt.componen
 import { FilePickerPromptComponent } from './file-picker-prompt/file-picker-prompt.component';
 import { InputPromptComponent } from './input-prompt/input-prompt.component';
 import { PasswordToggleInputComponent } from './password-toggle-input/password-toggle-input.component';
+import { RefreshDataComponent } from './refresh-data/refresh-data.component';
 import { TooltipComponent } from './tooltip/tooltip.component';
 
 @NgModule({
@@ -36,6 +37,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     PhaseNavigationComponent,
     PhaseNextComponent,
     ProgramPeopleAffectedComponent,
+    RefreshDataComponent,
     TestPaymentComponent,
     TooltipComponent,
     UpdatePropertyItemComponent,
@@ -66,6 +68,7 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     PhaseNavigationComponent,
     PhaseNextComponent,
     ProgramPeopleAffectedComponent,
+    RefreshDataComponent,
     RouterModule,
     TestPaymentComponent,
     TooltipComponent,
