@@ -3,20 +3,22 @@
   (refresh)="update()"
 ></app-refresh-data>
 
-<ngx-charts-bar-vertical-stacked
-  class="chart-container"
-  [view]="[700, 300]"
-  [scheme]="'ocean'"
-  [results]="chartData"
-  [animations]="false"
-  [xAxis]="true"
-  [yAxis]="true"
-  [legend]="true"
-  [legendTitle]="''"
-  [legendPosition]="'bottom'"
-  [showXAxisLabel]="true"
-  [xAxisLabel]="'page.program.metrics.over-time.payment-label'|translate"
-  [showYAxisLabel]="false"
-  [showGridLines]="true"
-  [showDataLabel]="false"
-></ngx-charts-bar-vertical-stacked>
+<div class="chart-container">
+
+  <ngx-charts-bar-vertical-stacked
+    [scheme]="'ocean'"
+    [results]="chartData"
+    [animations]="false"
+    [xAxis]="true"
+    [yAxis]="true"
+    [legend]="true"
+    [legendTitle]="''"
+    [legendPosition]="'bottom'"
+    [showXAxisLabel]="true"
+    [xAxisLabel]="'page.program.metrics.over-time.payment-label'|translate"
+    [showYAxisLabel]="false"
+    [showGridLines]="true"
+    [showDataLabel]="false"
+  ></ngx-charts-bar-vertical-stacked>
+
+</div>
