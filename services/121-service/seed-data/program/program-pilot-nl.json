@@ -6,8 +6,8 @@
   "ngo": "NLRC",
   "title": {
     "ar": "121 برنامج المعونات النقدية الرقمي",
-    "ti": "ትሕስ እስ ዓ ተስት።",
-    "en": "121 Digital Cash Aid Program"
+    "en": "121 Digital Cash Aid Program",
+    "nl": "121 Digitaal Cash Hulp Programma"
   },
   "description": {
     "en": ""
@@ -48,12 +48,6 @@
       "whatsappVoucher": "هذه رسالة من الصليب الأحمر.\n\nهذه الرسالة تحتوي على صورتين.\nالأولى لقسيمة الشراء من البرت هاين (cadeaukaart) مع رمز مرئي.\nو الأخرى فيها شرح لكيفية استخدام القسيمة للشراء من البرت هاين.\n\nإن قيمة هذه القسيمة هي {{1}} يورو.\nيمكنك استخدام هذه القسيمة في اي سوبر ماركت البرت هاين في هولندا.\n\nلست مضطراً لصرف كامل المبلغ مرة واحدة. لذلك الرجاء المحافظة على صورة القسيمة لإعادة استخدامها حتى انتهاء الرصيد.\n\nسوف تستلم قسيمة جديدة بقيمة {{1}} يورو كل اسبوع يوم الثلاثاء حتى تاريخ 30 أيلول\\سبتمبر 2021.\n\nهل لديك اسئلة؟ قم بمراسلتنا على واتس آب https://wa.me/31614458781",
       "whatsappReply": "هذا رسالة آلية، إذا كانت لديك اسئلة يمكنك مراسلة الصليب الأحمر على واتس آب: +31614458781"
     },
-    "ti": {
-      "registered": "ትሕስ እስ ዓ ተስት።",
-      "whatsappPayment": "ትሕስ እስ ዓ ተስት።",
-      "whatsappVoucher": "ትሕስ እስ ዓ ተስት።",
-      "whatsappReply": "ትሕስ እስ ዓ ተስት።"
-    },
     "en": {
       "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week.",
       "whatsappPayment": "This is a message from the Red Cross.\n\nYour €{{1}} Albert Heijn supermarket voucher is ready to be sent.\n\nPlease reply “yes” to this message in order to receive:\n1. This week's voucher.\n2. Any previous vouchers you haven't received yet.\n",
@@ -61,6 +55,14 @@
       "whatsappVoucher": "This is a message from the Red Cross.\n\nWith this message you will receive:\n1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.\n2. An explanation on how to use the voucher in Albert Heijn.\n\nIf you received more than one voucher this is because you had not yet received vouchers from previous weeks.\n\nThe value of each voucher is €{{1}}.\nYou can spend the vouchers at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep the vouchers and re-use them until the €{{1}} on each voucher is finished.\n\nYou will receive your €{{1}} Albert Heijn voucher every week on Tuesday until:\n1. You are no longer on the list of our partner organisations.\n2. The end of the project on 30 September 2021.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
       "whatsappVoucherMultiple": "This is a message from the Red Cross.\n\nWith this message you will receive:\n1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.\n2. An explanation on how to use the voucher in Albert Heijn.\n\nIf you received more than one voucher this is because:\n1. You had not yet received vouchers from previous weeks.\n2. A family member or friend is registered with the same phone number.\nThis happens only when he/she is also put on the list of the partner organisation to receive the voucher.\n\nThe value of each voucher is €{{1}}.\nYou can spend the vouchers at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep the vouchers and re-use them until the €{{1}} on each voucher is finished.\n\nYou will receive your €{{1}} Albert Heijn voucher every week on Tuesday until:\n1. You are no longer on the list of our partner organisations.\n2. The end of the project on 30 September 2021.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781"
+    },
+    "nl": {
+      "registered": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS met meer informatie.",
+      "whatsappPayment": "Dit is een bericht van het Rode Kruis.\n\nJe Albert Heijn supermarkt voucher van €{{1}} is klaar om verzonden te worden.\n\nAntwoord met \"ja\" op dit bericht om het volgende te ontvangen:\n1. De voucher van deze week.\n2. Vorige vouchers die je nog niet hebt ontvangen.\n",
+      "whatsappPaymentMultiple": "Dit is een bericht van het Rode Kruis.\n\nJe Albert Heijn supermarkt voucher van €{{1}} is klaar om verzonden te worden.\n\nAntwoord met \"ja\" op dit bericht om het volgende te ontvangen:\n1. De voucher van deze week.\n2. Vorige vouchers die je nog niet hebt ontvangen.\n3. De voucher voor een vriend of familielid die is geregistreerd met hetzelfde telefoonnummer.\nDit gebeurt alleen als hij/zij ook op de lijst staat van de partnerorganisatie om een voucher te ontvangen.\n",
+      "whatsappVoucher": "Dit is een bericht van het Rode Kruis.\n\nMet dit bericht ontvang je:\n1. Een Albert Heijn supermarkt voucher (cadeaukaart) - dit is de foto met de barcode.\n2. Een uitleg over hoe je de voucher moet gebruiken in de Albert Heijn.\n\nAls je meer dan één voucher ontvangt, komt dit doordat je nog geen vouchers hebt ontvangen van de voorgaande weken. \n\nDe waarde van elke voucher is €{{1}}.\nJe kan de voucher gebruiken in elke Albert Heijn in Nederland.\n\nJe hoeft niet alles in één keer te gebruiken. Bewaar de vouchers dus en gebruik ze opnieuw totdat de €{{1}} van elke voucher op is.\n\nJe zal jouw €{{1}} Albert Heijn voucher elke week ontvangen op dinsdag, totdat:\n1. Jij niet langer meer op de lijst staat van onze partnerorganisaties.\n2. Het einde van het project op 30 september 2021.\n\nHeb je vragen? Stuur ons een bericht op WhatsApp: https://wa.me/31614458781",
+      "whatsappVoucherMultiple": "Dit is een bericht van het Rode Kruis.\n\nMet dit bericht ontvang je:\n1. Een Albert Heijn supermarkt voucher (cadeaukaart) - dit is de foto met de barcode.\n2. Een uitleg over hoe je de voucher moet gebruiken in de Albert Heijn.\n\nAls je meer dan één voucher ontvangt, komt dit omdat:\n1. Je nog geen vouchers hebt ontvangen van de voorgaande weken. \n2. Een familielid of vriend is geregistreerd met hetzelfde telefoonnummer.\nDit gebeurt alleen als hij/zij ook op de lijst staat van de partnerorganisatie om een voucher te ontvangen.\n\nDe waarde van elke voucher is €{{1}}.\nJe kan de voucher gebruiken in elke Albert Heijn in Nederland.\n\nJe hoeft niet alles in één keer te gebruiken. Bewaar de vouchers dus en gebruik ze opnieuw totdat de €{{1}} van elke voucher op is.\n\nJe zal jouw €{{1}} Albert Heijn voucher elke week ontvangen op dinsdag, totdat:\n1. Jij niet langer meer op de lijst staat van onze partnerorganisaties.\n2. Het einde van het project op 30 september 2021.\n\nHeb je vragen? Stuur ons een bericht op WhatsApp: https://wa.me/31614458781",
+      "whatsappReply": "Dit is een geautomatiseerd bericht, voor vragen neem contact op met de helpdesk van het Rode Kruis via WhatsApp: +31614458781"
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
@@ -69,8 +71,8 @@
       "criterium": "nameFirst",
       "label": {
         "ar": "الرجاء إدخال اسمك الأول:",
-        "ti": "ትሕስ እስ ዓ ተስት።",
-        "en": "Please enter your first name:"
+        "en": "Please enter your first name:",
+        "nl": "Vul je voornaam in:"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -83,8 +85,8 @@
       "criterium": "nameLast",
       "label": {
         "ar": "الرجاء إدخال اسم العائلة:",
-        "ti": "ትሕስ እስ ዓ ተስት።",
-        "en": "Please enter your last name:"
+        "en": "Please enter your last name:",
+        "nl": "Vul je achternaam in:"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -97,11 +99,10 @@
       "criterium": "vnumber",
       "label": {
         "ar": "رقم الـ V-number مكون من 10 ارقام. يمكنك إيجاده على إقامتك المؤقتة أو على أي رسالة من IND. <br><br> إذا لم تستطيع إيجاده، الرجاء التواصل مع الصليب الأحمر على واتس آب: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>31614458781+</a> <br><br> الرجاء إدخال رقم الـ V-Number:",
-        "ti": "ትሕስ እስ ዓ ተስት።",
-        "en": "Your V-number consists of 10 numbers. You can find it on your (former) permit of stay or on a letter from the IND.   <br><br>   If you can’t find your V-Number, please contact the Rode Kruis helpdesk via WhatsApp on: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a>   <br><br>   Please enter your V-Number:"
+        "en": "Your V-number consists of 10 numbers. You can find it on your (former) permit of stay or on a letter from the IND.   <br><br>   If you can’t find your V-Number, please contact the Rode Kruis helpdesk via WhatsApp on: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a>   <br><br>   Please enter your V-Number:",
+        "nl": "Jouw V-nummer bestaat uit 10 cijfers. Deze kan je vinden op je (voormalige) verblijfsvergunning of in een brief van het IND. <br><br> Als je jouw V-nummer niet kan vinden, neem dan contact op met de Rode Kruis helpdesk via WhatsApp: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a> <br><br> Vul je V-nummer in:"
       },
       "placeholder": {
-        "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "0000000000"
       },
       "answerType": "numeric",
@@ -116,12 +117,11 @@
       "criterium": "phoneNumber",
       "label": {
         "ar": "الرجاء مشاركة رقم هاتف يمكننا إرسال رسالة نصية إليه. سوف نستخدم هذا الرقم لإعلامك عن برنامج المعونات. <br><br> مثال على الرقم: <code>+31600000000</code>",
-        "ti": "ትሕስ እስ ዓ ተስት።",
-        "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>"
+        "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
+        "nl": "Geef het telefoonnummer waarop je een SMS kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>"
       },
       "placeholder": {
         "ar": "31600000000+",
-        "ti": "ትሕስ እስ ዓ ተስት።",
         "en": "+31 6 00 00 00 00"
       },
       "answerType": "tel",

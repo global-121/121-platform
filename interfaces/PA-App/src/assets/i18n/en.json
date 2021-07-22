@@ -91,24 +91,28 @@
       "introduction": {
         "en": "Please select your language.",
         "ar": "الرجاء اختيار لغتك",
-        "ti": "ትሕስ እስ ዓ ተስት።",
-        "tl": "Pumili ng iyong wika.",
+        "fr": "Choisissez votre langue, s'il vous plaît.",
+        "nl": "Kies jouw taal.",
         "ny_MW": "Chonde sankhani chiyankhulo chanu.",
         "om_ET": "Maaloo qooqa keessan filadhaa.",
         "pt_BR": "Por favor, selecione seu idioma.",
         "saq_KE": "Enjere tegelu ng'ituk ino.",
+        "ti": "",
+        "tl": "Pumili ng iyong wika.",
         "tuv_KE": "Aarimatoi, tetheu akituk kon."
       },
       "result": "Thank you, you have selected {{language}}.",
       "language": {
         "en": "English",
         "ar": "عربى",
-        "ti": "ትግርኛ",
-        "tl": "Tagalog",
+        "fr": "Français",
+        "nl": "Nederlands",
         "ny_MW": "Chichewa",
         "om_ET": "Afaan Oromoo",
         "pt_BR": "Portuguese",
         "saq_KE": "Samburu",
+        "ti": "ትግርኛ",
+        "tl": "Tagalog",
         "tuv_KE": "Ng'aturkana"
       }
     },

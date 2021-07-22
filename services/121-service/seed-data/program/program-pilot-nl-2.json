@@ -41,12 +41,6 @@
     "en": ""
   },
   "notifications": {
-    "tl": {
-      "registered": "Ang mensaheng ito ay galing sa Red Cross.\n\nNatanggap na namin ang iyong application para sa suporta.\n\nMakakatanggap ka ng panibagong SMS na may panibagong impormasyon sa loob ng 1 linggo.",
-      "whatsappPayment": "Ang mensaheng ito ay galing sa Red Cross.\n\nAng iyong €{{1}} Albert Heijn supermarket voucher ay handa na para ipadala.\n\nMag-reply ng \"oo\" sa mensaheng ito upang makatanggap ng voucher.",
-      "whatsappVoucher": "Ang mensaheng ito ay galing sa Red Cross.\n\nKasama ng mensaheng ito, makakatanggap ka ng 2 litrato.\nAng una ay ang Albert Heijn supermarket voucher (cadeaukaart) na may barcode.\nAt ang isa pa ay ang paliwanag kung papaano gamitin ang voucher para pambayad sa Albert Heijn.\n\nAng halaga ng voucher na ito ay €{{1}}.\nMaaari mong gastusin ang voucher na ito sa kahit saang Albert Heijn supermarket sa Netherlands.\n\nHindi mo ito kailangang gastusin lahat sa isang bilihan. Kaya itago ang voucher sa iyong phone hanggang sa maubos ang laman nito.\n\nMakakatanggap ka ng €{{1}} voucher kada Martes hanggang ika-30 ng Setyembre 2021.\n\nMay mga katanungan ka ba? Magpadala ng mensahe sa amin sa WhatsApp: http://wa.me/31614458781",
-      "whatsappReply": "Ito ay automated na mensahe, para sa mga katanungan, maaring i-contact ang Red Cross Helpdesk sa WhatsApp: +31614458781"
-    },
     "en": {
       "registered": "This is a message from the Red Cross.\n\nWe have received your application for support.\n\nYou will receive another SMS message with more information within 1 week.",
       "whatsappPayment": "This is a message from the Red Cross.\n\nYour €{{1}} Albert Heijn supermarket voucher is ready to be sent.\n\nPlease reply “yes” to this message in order to receive:\n1. This week's voucher.\n2. Any previous vouchers you haven't received yet.\n",
@@ -55,6 +49,14 @@
       "whatsappVoucherMultiple": "This is a message from the Red Cross.\n\nWith this message you will receive:\n1. An Albert Heijn supermarket voucher (cadeaukaart) - this is the picture with the barcode.\n2. An explanation on how to use the voucher in Albert Heijn.\n\nIf you received more than one voucher this is because:\n1. You had not yet received vouchers from previous weeks.\n2. A family member or friend is registered with the same phone number.\nThis happens only when he/she is also put on the list of the partner organisation to receive the voucher.\n\nThe value of each voucher is €{{1}}.\nYou can spend the vouchers at any Albert Heijn supermarket in the Netherlands.\n\nYou don’t have to spend everything at once. So keep the vouchers and re-use them until the €{{1}} on each voucher is finished.\n\nYou will receive your €{{1}} Albert Heijn voucher every week on Tuesday until:\n1. You are no longer on the list of our partner organisations.\n2. The end of the project on 30 September 2021.\n\nDo you have questions? Send us a message on WhatsApp: https://wa.me/31614458781",
       "whatsappReply": "This is an automated message, for questions please contact the Red Cross Helpdesk on WhatsApp: +31614458781"
     },
+    "nl": {
+      "registered": "Dit is een bericht van het Rode Kruis.\n\nWe hebben je aanmelding voor hulp ontvangen.\n\nJe ontvangt binnen 1 week een volgende SMS met meer informatie.",
+      "whatsappPayment": "Dit is een bericht van het Rode Kruis.\n\nJe Albert Heijn supermarkt voucher van €{{1}} is klaar om te verzenden.\n\nAntwoord met “ja” op dit bericht om je voucher te ontvangen.",
+      "whatsappPaymentMultiple": "Dit is een bericht van het Rode Kruis,\n\nJe Albert Heijn supermarkt voucher van €{{1}} is klaar om verzonden te worden.\n\nAntwoord met “ja” op dit bericht om het volgende te ontvangen:\n1. De voucher van deze week.\n2. Vorige vouchers die je nog niet hebt ontvangen.\n3. De voucher voor een vriend of familielid die is geregistreerd met hetzelfde telefoonnummer.\nDit gebeurt alleen als hij/zij ook op de lijst staat van de partnerorganisatie om een voucher te ontvangen.\n",
+      "whatsappVoucher": "Dit is een bericht van het Rode Kruis.\n\nMet dit bericht ontvang je:\n1. Een Albert Heijn supermarkt voucher - dit is de foto met de barcode.\n2. Een uitleg van hoe je de voucher moet gebruiken in de Albert Heijn. \n\nAls je meer dan één voucher ontvangt, komt dit doordat je geen vouchers hebt ontvangen van de voorgaande weken. \n\nDe waarde van elke voucher is €{{1}}.\nJe kan de voucher gebruiken in elke Albert Heijn in Nederland.\n\nJe hoeft niet alles in één keer te gebruiken. Bewaar de vouchers dus en gebruik ze opnieuw totdat de €{{1}} van elke voucher op is.\n\nJe zal je €{{1}} Albert Heijn voucher elke week ontvangen op dinsdag, tot:\n1. Jij niet langer meer op de lijst staat van onze partnerorganisaties.\n2. Het einde van het project op 30 september 2021.\n\nHeb je vragen? Stuur ons een bericht op WhatsApp: https://wa.me/31614458781",
+      "whatsappVoucherMultiple": "Dit is een bericht van het Rode Kruis.\n\nMet dit bericht ontvang je:\n1. Een Albert Heijn supermarkt voucher (cadeaukaart) - dit is de foto met de barcode.\n2. Een uitleg over hoe je de voucher moet gebruiken in de Albert Heijn.\n\nAls je meer dan één voucher ontvangt, komt dit omdat:\n1. Je nog geen vouchers hebt ontvangen van de voorgaande weken. \n2. Een familielid of vriend is geregistreerd met hetzelfde telefoonnummer.\nDit gebeurt alleen als hij/zij ook op de lijst staat van een partnerorganisatie om een voucher te ontvangen.\n\nDe waarde van elke voucher is €{{1}}.\nJe kan de voucher gebruiken in elke Albert Heijn in Nederland.\n\nJe hoeft niet alles in één keer te gebruiken. Bewaar de vouchers dus en gebruik ze opnieuw totdat de €{{1}} van elke voucher op is.\n\nJe zal jouw €{{1}} Albert Heijn voucher elke week ontvangen op dinsdag, totdat:\n1. Jij niet langer meer op de lijst staat van onze partnerorganisaties.\n2. Het einde van het project op 30 september 2021.\n\nHeb je vragen? Stuur ons een bericht op WhatsApp: https://wa.me/31614458781",
+      "whatsappReply": "Dit is een geautomatiseerd bericht, voor vragen neem contact op met de Rode Kruis Helpdesk via WhatsApp: +31614458781"
+    },
     "pt_BR": {
       "registered": "Esta é uma mensagem da Cruz Vermelha.\n\nRecebemos seu pedido para receber ajuda.\n\nVocê receberá outra mensagem SMS com mais informações no prazo de 1 semana.",
       "whatsappPayment": "Esta é uma mensagem da Cruz Vermelha.\n\nSeu vale de €{{1}} do supermercado Albert Heijn está pronto para ser enviado.\n\nPor favor, responda \"sim\" a esta mensagem para receber:\n1. O vale desta semana.\n2. Qualquer vale anterior que você ainda não tenha recebido.\n",
@@ -62,6 +64,12 @@
       "whatsappVoucher": "Esta é uma mensagem da Cruz Vermelha.\n\nCom esta mensagem você receberá:\n1. Um vale de supermercado Albert Heijn (cadeaukaart) - esta é a foto com o código de barras.\n2. Uma explicação de como usar o vale no Albert Heijn.\n\nSe você recebeu mais de um vale, é porque ainda não tinha recebido os vales das semanas anteriores.\n\nO valor de cada vale é de €{{1}}.\nVocê pode gastar os vales em qualquer supermercado Albert Heijn na Holanda.\n\nVocê não precisa gastar tudo de uma vez. Portanto, guarde os vales e reutilize-os até que o valor de €{{1}} em cada vale esteja terminado.\n\nVocê receberá seus vales de €{{1}} do Albert Heijn todas as semanas na terça-feira até:\n1. Você não esteja mais na lista de nossas organizações parceiras.\n2. O final do projeto em 30 de setembro de 2021.\n\nVocê tem perguntas? Envie-nos uma mensagem no WhatsApp: https://wa.me/31614458781",
       "whatsappVoucherMultiple": "Esta é uma mensagem da Cruz Vermelha.\n\nCom esta mensagem você receberá:\n1. Um vale de supermercado Albert Heijn (cadeaukaart) - esta é a foto com o código de barras.\n2. Uma explicação de como usar o vale no Albert Heijn.\n\nSe você recebeu mais de um vale, é porque:\n1. Ainda não tinha recebido os vales das semanas anteriores.\n2. Um membro da família ou amigo é registrado com o mesmo número de telefone.\nIsto só acontece quando ele/ela também é inscrito na lista da organização parceira para receber o vale.\n\nO valor de cada vale é €{{1}}.\nVocê pode gastar os vales em qualquer supermercado Albert Heijn na Holanda.\n\nVocê não precisa gastar tudo de uma vez. Portanto, guarde os vales e reutilize-os até que o valor de €{{1}} em cada vale esteja terminado.\n\nVocê receberá seus vales de €{{1}} do Albert Heijn todas as semanas na terça-feira até:\n1. Você não esteja mais na lista de nossas organizações parceiras.\n2. O final do projeto em 30 de setembro de 2021.\n\nVocê tem perguntas? Envie-nos uma mensagem no WhatsApp: https://wa.me/31614458781",
       "whatsappReply": "Esta é uma mensagem automatizada, para perguntas, entre em contato com o Helpdesk da Cruz Vermelha no WhatsApp: +31614458781"
+    },
+    "tl": {
+      "registered": "Ang mensaheng ito ay galing sa Red Cross.\n\nNatanggap na namin ang iyong application para sa suporta.\n\nMakakatanggap ka ng panibagong SMS na may panibagong impormasyon sa loob ng 1 linggo.",
+      "whatsappPayment": "Ang mensaheng ito ay galing sa Red Cross.\n\nAng iyong €{{1}} Albert Heijn supermarket voucher ay handa na para ipadala.\n\nMag-reply ng \"oo\" sa mensaheng ito upang makatanggap ng voucher.",
+      "whatsappVoucher": "Ang mensaheng ito ay galing sa Red Cross.\n\nKasama ng mensaheng ito, makakatanggap ka ng 2 litrato.\nAng una ay ang Albert Heijn supermarket voucher (cadeaukaart) na may barcode.\nAt ang isa pa ay ang paliwanag kung papaano gamitin ang voucher para pambayad sa Albert Heijn.\n\nAng halaga ng voucher na ito ay €{{1}}.\nMaaari mong gastusin ang voucher na ito sa kahit saang Albert Heijn supermarket sa Netherlands.\n\nHindi mo ito kailangang gastusin lahat sa isang bilihan. Kaya itago ang voucher sa iyong phone hanggang sa maubos ang laman nito.\n\nMakakatanggap ka ng €{{1}} voucher kada Martes hanggang ika-30 ng Setyembre 2021.\n\nMay mga katanungan ka ba? Magpadala ng mensahe sa amin sa WhatsApp: http://wa.me/31614458781",
+      "whatsappReply": "Ito ay automated na mensahe, para sa mga katanungan, maaring i-contact ang Red Cross Helpdesk sa WhatsApp: +31614458781"
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
@@ -69,9 +77,10 @@
     {
       "criterium": "nameFirst",
       "label": {
-        "tl": "Ilagay ang pangalan:",
         "en": "Please enter your first name:",
-        "pt_BR": "Por favor, digite seu nome: "
+        "nl": "Vul je voornaam in:",
+        "pt_BR": "Por favor, digite seu nome: ",
+        "tl": "Ilagay ang pangalan:"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -83,9 +92,10 @@
     {
       "criterium": "nameLast",
       "label": {
-        "tl": "Ilagay ang apelyido:",
         "en": "Please enter your last name:",
-        "pt_BR": "Por favor, digite seu sobrenome:"
+        "nl": "Vul je achternaam in:",
+        "pt_BR": "Por favor, digite seu sobrenome:",
+        "tl": "Ilagay ang apelyido:"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -97,9 +107,10 @@
     {
       "criterium": "phoneNumber",
       "label": {
-        "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>",
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
-        "pt_BR": "Por favor digite o número de telefone em que você pode receber um mensagem de texto / SMS. Usaremos este número de telefone para informá-lo sobre o programa de ajuda. <br><br> Deve parecer: <code>+31 6 00 00 00 00</code>"
+        "nl": "Geef het telefoonnummer waar je een SMS op kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>",
+        "pt_BR": "Por favor digite o número de telefone em que você pode receber um mensagem de texto / SMS. Usaremos este número de telefone para informá-lo sobre o programa de ajuda. <br><br> Deve parecer: <code>+31 6 00 00 00 00</code>",
+        "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>"
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"

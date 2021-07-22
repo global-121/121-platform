@@ -1,0 +1,154 @@
+{
+  "account": {
+    "change-password": "Verander wachtwoord",
+    "delete-account-header": "Vul je wachtwoord in als je zeker bent dat je je account wilt verwijderen.",
+    "delete-account-message": "Verwijderen van je account is niet terug te draaien, al je data zal verloren gaan!",
+    "delete-digital-id": "Verwijder account",
+    "delete-fail": "Er ging iets mis, je account kon niet volledig worden verwijderd.",
+    "delete-success": "Je account is succesvol verwijderd. Je zal nu worden uitgelogd.",
+    "enter-password": "Jouw wachtwoord",
+    "logout": "Uitloggen"
+  },
+  "connection": {
+    "error-retry": "Er ging iets mis, wil je het opnieuw proberen?"
+  },
+  "notification": {
+    "close": "sluit",
+    "inclusion": "Registratie status is ontvangen"
+  },
+  "password-toggle": {
+    "hide": "Verberg wachtwoord",
+    "show": "Toon wachtwoord"
+  },
+  "personal": {
+    "consent-question": {
+      "agree": "Ik ga akkoord",
+      "answer": "Ik heb gelezen/geluisterd naar hoe mijn persoonlijke informatie veilig zal worden opgeslagen. Ik begrijp dat het nodig is om mijn persoonlijke informatie te verzenden om cash hulp te ontvangen.   <br><br>   Ik begrijp wie mijn persoonlijke informatie te zien krijgt.   <br><br>   Met het klikken op \"<b>Ik ga akkoord</b>\" kies ik ervoor deel te nemen aan het hulp programma.   <br><br>   Met het klikken op \"<b>Ik ga niet akkoord</b>\" kies ik ervoor niet deel te nemen aan het hulp programma.",
+      "disagree": "Ik ga niet akkoord",
+      "more-info-personal-information": "Over persoonlijke informatie",
+      "question": "Om je in te schrijven voor dit hulp programma moet je akkoord gaan met <strong>hoe we omgaan met jouw persoonlijke informatie</strong>.   <br /><br />   Lees of luister hoe we jouw persoonlijke informatie veilig stellen."
+    },
+    "create-account": {
+      "conclusion": "Geweldig! Je hebt een account aangemaakt.",
+      "confirm-password": "Bevestig wachtwoord:",
+      "create-password-explanation": "Maak een wachtwoord van minimaal {{minimalLength}} tekens:",
+      "create-username": "Vul je volledige naam in:",
+      "introduction": "Om een account aan te maken, moet je de volgende stappen voltooien.",
+      "password-too-short": "Vul minimaal {{minimalLength}} tekens in.",
+      "unequal-passwords": "De wachtwoorden die je ingevuld hebt zijn niet hetzelfde. Probeer het opnieuw.",
+      "username-not-unique": "De naam die je ingevuld hebt is niet uniek. Probeer het opnieuw.",
+      "username-password": "Vul je volledige naam in en maak een wachtwoord aan."
+    },
+    "enroll-in-program": {
+      "change": "Wijzig mijn informatie",
+      "introduction-information": "Om de best mogelijke hulp en een eerlijk proces te bieden, hebben we wat persoonlijke informatie nodig.",
+      "more-info-questions": "Over persoonlijke informatie",
+      "please-confirm": "Hieronder is een overzicht van jouw persoonlijke informatie. Controleer en klik op versturen.",
+      "submit-confirm": "Verstuur mijn informatie"
+    },
+    "inclusion-status": {
+      "inclusion-status-negative": "Helaas moeten we je mededelen dat je geen (verdere) betalingen zal ontvangen voor dit hulp programma. Neem gerust contact met ons op als je vragen hebt. ",
+      "inclusion-status-positive": "Je bent toegelaten tot het programma.",
+      "notify": "We laten je weten of je bent toegelaten."
+    },
+    "login-account": {
+      "incorrect-credentials": "De combinatie van je volledige naam en wachtwoord wordt niet herkend. Probeer het opnieuw.",
+      "introduction": "Om een bestaand account te gebruiken moet je inloggen met je volledige naam en wachtwoord.",
+      "supply-password": "Jouw wachtwoord:",
+      "supply-username": "Jouw volledige naam:"
+    },
+    "preprinted-qrcode": {
+      "error": "De gescande QR-code kon niet worden gebruikt, probeer een andere.",
+      "info-qr": "Meer tekst volgt",
+      "introduction": "De medewerker/vrijwilliger zal een QR-code scannen om jouw persoonlijke informatie te koppelen en zal deze aan jou geven. Bewaar jouw fysieke QR-code goed.",
+      "more-info-qr": "Over QR-codes",
+      "no": "Nee",
+      "question": "Heeft de mederwerker/vrijwilliger een voorgedrukte QR-code om te scannen?",
+      "result-ok": "De gescande QR-code is nu gekoppeld aan je account en je persoonlijke informatie. Bewaar je fysieke QR-code goed.",
+      "start-scanner": "Start scanner",
+      "try-again": "Probeer opnieuw",
+      "yes": "Ja"
+    },
+    "registration-summary": {
+      "documents": "Houd deze documenten gereed:",
+      "info-message": "Om jouw account te activeren <br><br> Zodra je jouw account aanmaakt, zal je een afdruk ontvangen van jouw digitale ID, die er zo uitziet. <br> Je moet deze, en de fysieke documenten hieronder, naar de afspraak met een medewerker brengen om je account te activeren. <br><ul><li> Jouw identiteitsbewijs </li></ul><br> Wat als je geen identiteitsbewijs hebt? Dan heb je 2 opties: <ol><li> Breng een brief van \"the chief\" die zijn/haar identiteit bevestigt </li><li> Haal jouw X nummer af bij het Nationaal Register. Je zal moeten betalen voor een nieuw X nummer. De prijs daarvoor is X. </li></ol>",
+      "more-info-documents": "Over deze documenten",
+      "no-validation-conclusion": "Bedankt. Je inschrijving is nu compleet.   <br><br>   Je ontvangt binnenkort een SMS op het door jou ingevulde nummer om je inschrijving te bevestigen.   <br><br>   Je wordt binnen 14 dagen geïnformeerd of je toelating succesvol is.   <br><br>   Dit is voor nu het laatste bericht. ",
+      "qr-code": "Toon de QR-code aan de medewerker wanneer deze daar om vraagt.",
+      "validation-conclusion": "Bedankt. Je registratie is nu compleet. Je ontvangt binnenkort een SMS op het door jou ingevulde nummer om je registratie te bevestigen. <br><br> Een medewerker van de NGO zal met jou een afspraak maken om je informatie te bevestigen, waarschijnlijk door je thuis te bezoeken. "
+    },
+    "select-fsp": {
+      "attributes": {
+        "error": "Er ging iets mis, probeer het opnieuw.",
+        "introduction": "Voor deze optie hebben we ook het volgende nodig:",
+        "success": "Dankjewel. Je persoonlijke informatie is opgeslagen."
+      },
+      "conclusion": "Dankjewel. Je hebt '{{name}}' geselecteerd.",
+      "introduction": "Selecteer hoe je jouw hulp wilt ontvangen, als je bent toegelaten tot het programma."
+    },
+    "select-language": {
+      "result": "Dankjewel, je hebt {{language}} geselecteerd."
+    },
+    "select-program": {
+      "introduction": "Je kan deze app gebruiken om je in te schrijven voor een hulp programma. Selecteer hieronder.",
+      "more-info-programs": "Over hulp programma",
+      "no-published-programs": "Er zijn momenteel geen hulp programma's beschikbaar. Kom later terug."
+    },
+    "set-notification-number": {
+      "conclusion-skipped": "Je hebt geen telefoonnummer ingevuld waarop we je kunnen bellen. Log regelmatig in om updates te checken.",
+      "conclusion-submitted": "Bedankt. Je zal nu notificaties ontvangen op dit telefoonnummer: {{phone}}",
+      "input-label": "Je telefoonnummer met landcode. Het moet eruitzien als dit voorbeeld: {{phoneNumberExample}}",
+      "introduction1": "Het is optioneel om je telefoonnummer in te vullen.",
+      "introduction2": "We gebruiken dit om je SMS notificaties te versturen als je bent toegelaten tot het programma en als je hulp zal ontvangen.",
+      "introduction3": "Als je jouw telefoonnummer niet wil geven, zal je moeten inloggen op deze app voor updates. ",
+      "introduction4": "Aan het eind van het programma zullen we jouw telefoonnummer verwijderen.",
+      "skip": "Sla over",
+      "submit": "Verzend telefoonnummer",
+      "validation": {
+        "phone-number": "We konden dit telefoonnummer niet verifiëren. Update en probeer opnieuw. "
+      }
+    },
+    "signup-signin": {
+      "create-id": "Maak account aan",
+      "introduction": "Om je in te schrijven voor dit hulp programma moet je een account hebben. Maak een account aan of gebruik een bestaand account.",
+      "login-id": "Gebruik mijn account"
+    }
+  },
+  "q-and-a-set": {
+    "validation": {
+      "date": "Het datum format dat je hebt ingevoerd is niet geldig. Een voorbeeld van een geldig datum format is 31-12-1970, met dag-maand-jaar, DD-MM-YYYY",
+      "email": "Het e-mailadres heeft een geldig format nodig. Bijvoorbeeld: 'volledige.naam@voorbeeld.nl'. Pas aan en probeer opnieuw.",
+      "generic-error": "We konden sommige antwoorden niet verwerken. Check en update je antwoorden.",
+      "number": "Het antwoord moet een geldig nummer zijn. Pas aan en probeer opnieuw.",
+      "phone-number": "We konden dit telefoonnummer niet verifiëren. Pas aan en probeer opnieuw.",
+      "required": "Een antwoord is nodig voor deze vraag. Pas aan en probeer opnieuw."
+    }
+  },
+  "qr-scanner": {
+    "close": "Sluiten",
+    "error-generic": "Er ging iets mis.",
+    "error-no-permissions": "Zorg dat het is toegestaan om de camera te gebruiken, of check of die niet al in gebruik is en probeer opnieuw.",
+    "error-not-compatible": "Jouw toestel kan niet scannen",
+    "switch-camera": "Wissel camera",
+    "title": "Scan QR-code",
+    "toggle-flash": "Schakel flitser aan/uit",
+    "try-again": "Probeer opnieuw"
+  },
+  "shared": {
+    "cancel-button": "Annuleren",
+    "close-button": "Sluiten",
+    "more-info": "Lees meer...",
+    "retry": "Probeer opnieuw",
+    "submit-button": "Versturen"
+  },
+  "speak-text": {
+    "loading": "Aan het laden",
+    "pause": "Pauze",
+    "play": "Afspelen"
+  },
+  "tabs": {
+    "account": "Account",
+    "community": "Gemeenschap",
+    "you": "Jij"
+  }
+}
