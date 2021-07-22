@@ -1,0 +1,122 @@
+{
+  "account": {
+    "change-password": "Changez le mot de passe ",
+    "delete-account-header": "Veuillez entrer votre mot de passe si vous êtes sûr vous voulez effacer votre compte",
+    "delete-account-message": "La suppression de votre compte est irréversible, toutes vos données seront perdues!",
+    "delete-digital-id": "Effacez le compte",
+    "delete-fail": "Quelque chose s'est passé, ce n'était pas possible de supprimer completement votre compte.",
+    "delete-success": "Votre compte était supprimé avec succès. Vous allez maintenant se déconnecter.",
+    "enter-password": "Votre mot de passe",
+    "logout": "Se déconnecter"
+  },
+  "connection": {
+    "error-retry": "Quelque chose s'est passé, voulez-vous ressayer?"
+  },
+  "notification": {
+    "close": "fermer",
+    "inclusion": "Statut d'inclusion reçu"
+  },
+  "password-toggle": {
+    "hide": "Cachez le mot de passe",
+    "show": "Montrez le mot de passe."
+  },
+  "personal": {
+    "consent-question": {
+      "agree": "Je suis d'accord",
+      "disagree": "Je ne suis pas d'accord ",
+      "more-info-personal-information": "À propos des informations personnelles"
+    },
+    "create-account": {
+      "conclusion": "Parfait! Vous avez créé votre compte.",
+      "confirm-password": "Confirmez le mot de passe:",
+      "create-password-explanation": "Créez un mot de passe d'au moins {{minimalLength}} chiffres:",
+      "create-username": "Entrez votre nom et prénom:",
+      "introduction": "Pour créer un compte il faut suivre ces pas.",
+      "password-too-short": "Veuillez saisir au moins {{minimalLength}} caractères.",
+      "unequal-passwords": "Les mots de passe que vous avez créé ne sont pas pareils. Réessayez, s'il vous plaît.",
+      "username-not-unique": "Le nom que vous avez entré n'est pas unique. Réessayez, s'il vous plaît.",
+      "username-password": "Entrez votre nom et prénom et créez un mot de passe."
+    },
+    "enroll-in-program": {
+      "change": "Changer mes informations.",
+      "introduction-information": "Pour vous assurer d'obtenir la meilleure aide possible et un processus équitable, nous avons besoin de certaines informations personnelles.",
+      "more-info-questions": "À propos des informations personnelles",
+      "please-confirm": "Vous trouverez ci-dessous un aperçu de vos informations. Veuillez vérifier, s'il vous plait, et puis appuyez sur envoyer.",
+      "submit-confirm": "Envoyez mes informations."
+    },
+    "inclusion-status": {
+      "inclusion-status-negative": "Malheuresement, nous vous informons que vous n'allez pas recevoir (plus) de paiements pour ce programme. Si vous avez de questions, contactez-nouz, s'il vous plaît.",
+      "inclusion-status-positive": "Vous êtes inclus au programme.",
+      "notify": "Nous allons vous notifier si vous êtes inclus au programme."
+    },
+    "login-account": {
+      "incorrect-credentials": "La combinaison de votre nom et prénom et mot de passe que vous avez fourni n'est pas reconnue. Réessayer s'il vous plaît.",
+      "introduction": "Pour utiliser un compte existant, vous devez vous connecter avec votre nom et prénom et mot de passe",
+      "supply-password": "Votre mot de passe:",
+      "supply-username": "Votre nom et prénom:"
+    },
+    "preprinted-qrcode": {
+      "error": "Le code QR scanné ne peut pas être utilisé, veuillez en essayer un autre.",
+      "info-qr": "Plus de texte bientôt",
+      "introduction": "Le/la travailleur humanitaire/bénévole scannera un code QR pour lier vos informations et vous les donner. Veuillez conserver votre code QR physique en lieu sûr.",
+      "more-info-qr": "À propos des codes QR",
+      "no": "Non",
+      "question": "Est-ce que le/la travailleur humanitaire/bénévole a un code QR pré-imprimé à scanner?",
+      "result-ok": "Le QR-code scanné est maintenant connecté à votre compte et à vos informations personnelles. Veuillez garder votre code QR physique en lieu sûr, s'il vous plaît.",
+      "start-scanner": "démarrer le scanneur.",
+      "try-again": "Essayez encore une fois",
+      "yes": "Oui"
+    },
+    "registration-summary": {
+      "documents": "Préparez-vous d'avoir ces documents prêts:",
+      "more-info-documents": "À propos de ces documents",
+      "qr-code": "Veuillez montrer ce code QR au travailleur humanitaire quand c'est demandé."
+    },
+    "select-fsp": {
+      "attributes": {
+        "error": "Quelque chose s'est passé, réessayez s'il vous plaît.",
+        "introduction": "Pour cette option, nous avons également besoin des choses suivants:",
+        "success": "Merci. Vos informations sont enregistrées."
+      },
+      "conclusion": "Merci. Vous avez choisi {{name}}'.",
+      "introduction": "Veuillez sélectionner la manière dont vous souhaitez recevoir votre aide, s'il vous plaît, si vous êtes inclus dans le programme."
+    },
+    "select-language": {
+      "result": "Merci, vous avez choisi {{language}}."
+    },
+    "select-program": {
+      "introduction": " Vous pouvez utiliser cet application pour demander un programme d'aide. Veuillez sélectionner ci-dessous, s'il vous plaît.",
+      "more-info-programs": "À propos du programme d'aide.",
+      "no-published-programs": "Il n'y a actuellement aucun programme disponible. Veuillez revisiter le site plus tard, s'il vous plaît."
+    },
+    "set-notification-number": {
+      "conclusion-skipped": "Vous n'avez pas laissé de numéro de téléphone pour que nous puissions vous joindre. Veuillez vous reconnecter ici régulièrement pour vérifier les mises à jour.",
+      "introduction1": "Il est optionnel d'entrer votre numéro de téléphone.",
+      "introduction4": "À la fin du programme,  nous allons effacer votre numéro.",
+      "submit": "Envoyez le numéro de téléphone"
+    },
+    "signup-signin": {
+      "create-id": "Créez un compte",
+      "login-id": "Utilisez mon compte"
+    }
+  },
+  "qr-scanner": {
+    "close": "Fermez",
+    "error-generic": "Quelque chose s'est passé.",
+    "try-again": "Réessayez "
+  },
+  "shared": {
+    "cancel-button": "Annulez",
+    "close-button": "Fermez",
+    "retry": "Essayez encore une fois",
+    "submit-button": "Envoyez"
+  },
+  "speak-text": {
+    "loading": "Téléchargement en cours"
+  },
+  "tabs": {
+    "account": "Compte",
+    "community": "communauté",
+    "you": "Vous"
+  }
+}

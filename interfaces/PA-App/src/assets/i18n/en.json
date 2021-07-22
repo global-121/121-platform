@@ -91,6 +91,7 @@
       "introduction": {
         "en": "Please select your language.",
         "ar": "الرجاء اختيار لغتك",
+        "fr": "Choisissez votre langue, s'il vous plaît.",
         "nl": "Kies jouw taal.",
         "ny_MW": "Chonde sankhani chiyankhulo chanu.",
         "om_ET": "Maaloo qooqa keessan filadhaa.",
@@ -104,6 +105,7 @@
       "language": {
         "en": "English",
         "ar": "عربى",
+        "fr": "Français",
         "nl": "Nederlands",
         "ny_MW": "Chichewa",
         "om_ET": "Afaan Oromoo",
