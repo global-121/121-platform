@@ -99,7 +99,8 @@
         "saq_KE": "Enjere tegelu ng'ituk ino.",
         "ti": "",
         "tl": "Pumili ng iyong wika.",
-        "tuv_KE": "Aarimatoi, tetheu akituk kon."
+        "tuv_KE": "Aarimatoi, tetheu akituk kon.",
+        "in": "Pilih bahasa anda."
       },
       "result": "Thank you, you have selected {{language}}.",
       "language": {
@@ -113,7 +114,8 @@
         "saq_KE": "Samburu",
         "ti": "ትግርኛ",
         "tl": "Tagalog",
-        "tuv_KE": "Ng'aturkana"
+        "tuv_KE": "Ng'aturkana",
+        "in": "Bahasa Indonesia"
       }
     },
     "select-program": {

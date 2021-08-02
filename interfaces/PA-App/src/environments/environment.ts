@@ -12,7 +12,7 @@ export const environment = {
   alwaysShowTextPlayer: true, // Also show text-player for missing audio-files
 
   envName: '', // To highlight the environment used
-  locales: 'ar,en,fr,nl,pt_BR,saq_KE,ti,tl,tuv_KE', // Comma-separated string of enabled locales, i.e: 'en,es,nl_BE'
+  locales: 'ar,en,fr,nl,pt_BR,saq_KE,ti,tl,tuv_KE,in', // Comma-separated string of enabled locales, i.e: 'en,es,nl_BE'
 
   // APIs:
   url_121_service_api: 'http://localhost:3000/api',

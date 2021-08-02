@@ -1,0 +1,183 @@
+{
+  "_dir": "ltr",
+  "account": {
+    "change-password": "Ganti password",
+    "delete-account-header": "Isi password anda apabila anda yakin bahwa anda ingin menghapus akun anda",
+    "delete-account-message": "Menghapus akun tidak bisa dirubah lagi, sehingga semua data anda akan hilang!",
+    "delete-digital-id": "Hapus akun",
+    "delete-fail": "Ada kesalahan yang terjadi, akun anda tidak bisa dihapus total.",
+    "delete-success": "Akun anda telah berhasil dihapus. Anda sekarang harus logout.",
+    "enter-password": "Password anda",
+    "logout": "Log out"
+  },
+  "connection": {
+    "error-retry": "Ada sesuatu yang tidak berjalan dengan baik, apakah anda ingin mencoba lagi?"
+  },
+  "notification": {
+    "close": "Tutup",
+    "inclusion": "Status penerimaan telah diterima"
+  },
+  "password-toggle": {
+    "hide": "Sembunyikan password",
+    "show": "Tunjukkan password"
+  },
+  "personal": {
+    "consent-question": {
+      "agree": "Saya setuju",
+      "answer": "Saya sudah baca/dengar bagaimana informasi pribadi saya akan disimpan secara aman. Saya paham bahwa saya perlu memberi informasi pribadi saya untuk menerima bantuan dana.<br><br>Saya paham siapa yang melihat informasi pribadi saya <br><br>Dengan mengklik <b>Saya setuju </b>Saya memilih untuk berpartisipasi dalam program bantuan ini <br><br>Dengan mengklik <b>Saya tidak setuju </b>Saya memilih untuk tidak berpartisipasi dalam program bantuan ini.",
+      "disagree": "Saya tidak setuju",
+      "more-info-personal-information": "Tentang informasi pribadi",
+      "question": "Untuk mendaftar ke program bantuan ini anda perlu menyetujui <strong><br /><br />Harap baca atau dengarkan bagaimana kami akan memperoleh informasi pribadi anda."
+    },
+    "create-account": {
+      "conclusion": "Hebat! Anda telah berhasil membuat akun anda.",
+      "confirm-password": "Konfirmasi password anda:",
+      "create-password-explanation": "Ciptakan sebuah password yang terdiri dari {{minimalLength}} angka:",
+      "create-username": "Isi nama lengkap anda:",
+      "introduction": "Untuk membuat sebuah akun, anda perlu melakukan beberapa langkah ini.",
+      "password-too-short": "Harap isi paling sedikit {{jumlah minimum}} karakter.",
+      "unequal-passwords": "Kedua password yang anda buat, tidak sama. Harap coba kembali,",
+      "username-not-unique": "Nama yang anda isi tidak unik. Harap coba kembali.",
+      "username-password": "Isi nama lengkap anda dan ciptakan sebuah password"
+    },
+    "enroll-in-program": {
+      "change": "Ubah informasi saya",
+      "introduction-information": "Untuk menjamin bahwa anda bisa dibantu sebaik mungkin, melalui proses yang aman, kami butuh beberapa informasi pribadi anda.",
+      "more-info-questions": "Tentang informasi pribadi",
+      "please-confirm": "Dibawah ini adalah rangkuman dari informasi anda. Harap diperiksa dan setelah itu klik 'send'.",
+      "submit-confirm": "Kirim informasi saya"
+    },
+    "inclusion-status": {
+      "inclusion-status-negative": "Amat disayangkan  kami harus memberitahu bahwa anda tidak akan menerima bantuan dana (lagi) dalam program ini. Apabila anda ada pertanyaan, harap hubungi kami.",
+      "inclusion-status-positive": "Anda telah diikutsertakan dalam program ini.",
+      "notify": "Kami akan beritahu anda apabila anda diikutsertakan dalam program ini."
+    },
+    "login-account": {
+      "incorrect-credentials": "Kombinasi antara nama lengkap anda dengan password yang anda berikan, tidak cocok. Harap coba kembali.",
+      "introduction": "Untuk menggunakan akun anda yang sudah berlaku, anda perlu log in dengan nama lengkap dan password anda.",
+      "supply-password": "Password anda: ",
+      "supply-username": "Nama lengkap:"
+    },
+    "preprinted-qrcode": {
+      "error": "Code-QR yang di-scan tak bisa dipakai, harap coba yang lain.",
+      "info-qr": "Teks selanjutnya",
+      "introduction": "Petugas atau Volunteer Bantuan ini akan men-scan suatu QR-code untuk membuat link informasi anda dan memberikannya pada anda. Harap simpan secara aman QR-code fisik anda. ",
+      "more-info-qr": "Tentang QR-code",
+      "no": "Tidak",
+      "question": "Apakah petugas/volunteer Bantuan memiliki QR-code yang sudah di print, untuk di-scan?",
+      "result-ok": "QR-code yang sudah di-scan sekarang terhubungkan dengan akun anda dan informasi pribadi anda. Harap simpan QR-code fisik anda dengan aman.",
+      "start-scanner": "Mulai scanner",
+      "try-again": "Coba lagi",
+      "yes": "Iya"
+    },
+    "registration-summary": {
+      "documents": "Harap siap dengan dokumen-dokumen ini:",
+      "info-message": "Untuk mengaktifkan akun anda <br><br>Apabila anda telah membuat akun anda, anda akan menerima sebuah print out dari ID digital anda yang tampaknya seperti ini <br>Anda akan perlu membawa ini dan dokumen-dokumen dibawah secara fisik ke sebuah pertemuan dengan petugas Bantuan  untuk mengaktifkan akun anda <br><ul><li>Kartu Identitas Nasional anda </li></ul><br>Bagaimana kalau saya tidak memiliki kartu itu? Berarti anda memiliki 2 pilihan <ol><li>Bawa surat dari ketua, yang mengkonfirmasi identitas anda </li><li>Bawa nomor X  (butuh nama dari nomor ini yang serupa dengan nomor BSN) dari Biro Registrasi Nasional. Anda harus membayar untuk yang baru yang harganya adalah X </li></ol>",
+      "more-info-documents": "Tentang dokumen-dokumen ini",
+      "no-validation-conclusion": "Terima kasih. Registrasi anda sekarang sudah lengkap. <br><br>Anda akan menerima SMS di nomor HP yang telah anda berikan yang mengkonfirmasikan registrasi anda. <br><br>Anda akan diberitahukan seandainya aplikasi anda telah berhasil, dalam waktu 14 hari. <br><br> Ini adalah berita terakhir.",
+      "qr-code": "Harap tunjukkan QR-code ini ke petugas Bantuan, bila diminta",
+      "validation-conclusion": "Terima kasih. Registrasi anda telah lengkap. Anda akan menerima SMS di nomor telpon yang anda berikan secepatnya, yang akan mengkonfirmasi registrasi anda. <br><br>\nSeorang petugas Bantuan dari NGO ini akan mengoranisir pertemuan dengan anda untuk memvalidasi informasi anda, mungkin dengan mampir ke alamat anda."
+    },
+    "select-fsp": {
+      "attributes": {
+        "error": "Ada yang tidak beres, harap coba kembali",
+        "introduction": "Untuk opsi ini, kami membutuhkan yang berikut:",
+        "success": "Terima kasih. Informasi anda telah disimpan."
+      },
+      "conclusion": "Terima kasih. Anda telah memilih '{{nama}}'.",
+      "introduction": "Harap pilih bagaimana anda ingin menerima Bantuan ini, apabila anda sudah dimasukkan dalam program."
+    },
+    "select-language": {
+      "introduction": {
+        "en": "Please select your language.",
+        "ar": "الرجاء اختيار لغتك",
+        "fr": "Choisissez votre langue, s'il vous plaît.",
+        "nl": "Kies jouw taal.",
+        "ny_MW": "Chonde sankhani chiyankhulo chanu.",
+        "om_ET": "Maaloo qooqa keessan filadhaa.",
+        "pt_BR": "Por favor, selecione seu idioma.",
+        "saq_KE": "Enjere tegelu ng'ituk ino.",
+        "ti": "",
+        "tl": "Pumili ng iyong wika.",
+        "tuv_KE": "Aarimatoi, tetheu akituk kon.",
+        "in": "Pilih bahasa anda."
+      },
+      "result": "Terima kasih, anda telah memilih  {{language}}.",
+      "language": {
+        "en": "English",
+        "ar": "عربى",
+        "fr": "Français",
+        "nl": "Nederlands",
+        "ny_MW": "Chichewa",
+        "om_ET": "Afaan Oromoo",
+        "pt_BR": "Portuguese",
+        "saq_KE": "Samburu",
+        "ti": "ትግርኛ",
+        "tl": "Tagalog",
+        "tuv_KE": "Ng'aturkana",
+        "in": "Bahasa Indonesia"
+      }
+    },
+    "select-program": {
+      "introduction": "Anda bisa menggunakan app ini untuk mendaftar ke program bantuan ini. Harap pilih dibawah.",
+      "more-info-programs": "Tentang program Bantuan.",
+      "no-published-programs": "Saat ini tidak ada program yang tersedia. Harap kembali kali berikutnya."
+    },
+    "set-notification-number": {
+      "conclusion-skipped": "Anda tidak memberi nomor HP anda ke  kami untuk mengontak anda. harap log in secara rutin untuk memeriksa update.",
+      "conclusion-submitted": "Terima kasih. Anda akan menerima notifikasi di nomor HP ini: {{phone}}",
+      "input-label": "Nomor anda dengan kode negara. Contohnya seperti ini: {{phoneNumberExample}}",
+      "introduction1": "Tidak wajib untuk memasukkan nomor HP anda",
+      "introduction2": "Kami menggunakan ini untuk mengirim anda teks pemberitahuan apabila anda dimasukkan dalam program bantuan dan kapan anda bisa menerima bantuan tersebut.",
+      "introduction3": "Apabila anda tidak mau memberikan nomor HP anda, anda harus log in ke app ini untuk di-update.",
+      "introduction4": "Pada akhir program bantuan ini, nomor anda akan kami hapus.",
+      "skip": "Skip",
+      "submit": "Kirim nomor HP.",
+      "validation": {
+        "phone-number": "Kami tidak bisa mem-verifikasi nomor HP itu. Tolong di update dan coba lagi."
+      }
+    },
+    "signup-signin": {
+      "create-id": "Ciptakan akun",
+      "introduction": "Untuk mendaftar ke program bantuan ini, anda harus memiliki sebuah akun. Harap buat akun, atau gunakan akun anda yang sudah ada.",
+      "login-id": "Pakai akun saya"
+    }
+  },
+  "q-and-a-set": {
+    "validation": {
+      "date": "Format tanggal yang anda masukkan tidak valid. Contoh format tanggal yang valid adalah 31-12-1970  yang mengikuti hari-bulan-tahun, DD-MM-YYYY",
+      "email": "Email anda butuh format yang sah. Sebagai contoh: 'full.name@example.com'.  Harap sesuaikan dan coba kembali. ",
+      "generic-error": "Kami tidak bisa memroses beberapa jawaban anda. Harap diperiksa dan update jawaban-jawaban anda.",
+      "number": "Jawabannya membutuhkan nomor yang valid. Harap sesuaikan dan coba kembali.",
+      "phone-number": "Kami tidak bisa mem-verifikasi nomor telpon ini. Harap sesuaikan dan coba kembali.",
+      "required": "Sebuah jawaban dibutuhkan untuk pertanyaan ini. Harap disesuaikan dan coba kembali."
+    }
+  },
+  "qr-scanner": {
+    "close": "Tutup",
+    "error-generic": "Ada yang tidak berjalan baik.",
+    "error-no-permissions": "Harap memungkinkan kamera untuk digunakan atau periksa apabila sedang tidak dipakai dan coba kembali.",
+    "error-not-compatible": "Alat atau device anda tidak bisa discan",
+    "switch-camera": "Alih kamera",
+    "title": "Scan kode-QR",
+    "toggle-flash": "Toggle lampu senter",
+    "try-again": "Coba lagi"
+  },
+  "shared": {
+    "cancel-button": "Cancel",
+    "close-button": "Tutup",
+    "more-info": "Baca seterusnya....",
+    "retry": "Coba lagi",
+    "submit-button": "Kirim"
+  },
+  "speak-text": {
+    "loading": "Sedang memuat..",
+    "pause": "Pause",
+    "play": "Play"
+  },
+  "tabs": {
+    "account": "Akun",
+    "community": "Komunitas",
+    "you": "Anda"
+  }
+}
