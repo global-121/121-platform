@@ -432,4 +432,23 @@ export class ProgramController {
       updateCustomCriteriumDto,
     );
   }
+
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'Get installments with state sums by program-id' })
+  @ApiImplicitParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Installment state sums to create bar charts to show the number of new vs existing PAs per installmet',
+  })
+  @Get('installment-state-sums/:programId')
+  public async getInstallmentsWithStateSums(@Param() params): Promise<any> {
+    return await this.programService.getInstallmentsWithStateSums(
+      Number(params.programId),
+    );
+  }
 }

@@ -39,7 +39,7 @@ export class MetricsStatesOverTimeComponent implements OnChanges {
         this.program.id,
       );
 
-    const chartData = pastPayments.reverse().map((payment) => {
+    const chartData = pastPayments.map((payment) => {
       return {
         name: `#${payment.id}`,
         series: [

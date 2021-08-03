@@ -450,4 +450,12 @@ export class ProgramsServiceApiService {
       .post(environment.url_121_service_api, `/user/${userId}/${programId}`, {})
       .toPromise();
   }
+
+  getInstallmentsWithStateSums(
+    programId: number | string,
+    ): Promise<any> {
+    return this.apiService
+      .get(environment.url_121_service_api, `/programs/installment-state-sums/${programId}`, {})
+      .toPromise();
+    }
 }
