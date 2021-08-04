@@ -84,7 +84,7 @@
         "introduction": "Untuk opsi ini, kami membutuhkan yang berikut:",
         "success": "Terima kasih. Informasi anda telah disimpan."
       },
-      "conclusion": "Terima kasih. Anda telah memilih '{{nama}}'.",
+      "conclusion": "Terima kasih. Anda telah memilih '{{name}}'.",
       "introduction": "Harap pilih bagaimana anda ingin menerima Bantuan ini, apabila anda sudah dimasukkan dalam program."
     },
     "select-language": {
