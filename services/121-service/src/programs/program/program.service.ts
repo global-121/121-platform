@@ -1619,25 +1619,30 @@ export class ProgramService {
     installment: number,
     transactionStepOfInterest: number,
   ): Promise<InstallmentStateSumDto> {
-    const currentInstallment = await this.transactionRepository.findAndCount({
-      where: {
-        program: { id: programId },
-        status: StatusEnum.success,
-        installment: installment,
-        transactionStep: transactionStepOfInterest,
+    const currentInstallmentConnectionsAndCount = await this.transactionRepository.findAndCount(
+      {
+        where: {
+          program: { id: programId },
+          status: StatusEnum.success,
+          installment: installment,
+          transactionStep: transactionStepOfInterest,
+        },
+        relations: ['connection'],
       },
-      relations: ['connection'],
-    });
-    const connectionsCurrentInstallment = currentInstallment[0].map(
+    );
+    const currentInstallmentConnections =
+      currentInstallmentConnectionsAndCount[0];
+    const currentInstallmentCount = currentInstallmentConnectionsAndCount[1];
+    const currentInstallmentConnectionsIds = currentInstallmentConnections.map(
       ({ connection }) => connection.id,
     );
     let preExistingPa: number;
-    if (connectionsCurrentInstallment.length > 0) {
+    if (currentInstallmentCount > 0) {
       preExistingPa = await this.transactionRepository
         .createQueryBuilder('transaction')
         .leftJoin('transaction.connection', 'connection')
         .where('transaction.connection.id IN (:...connectionids)', {
-          connectionids: connectionsCurrentInstallment,
+          connectionids: currentInstallmentConnectionsIds,
         })
         .andWhere('transaction.installment = :installment', {
           installment: installment - 1,
@@ -1648,6 +1653,9 @@ export class ProgramService {
         .andWhere('transaction.transactionStep = :transactionStep', {
           transactionStep: transactionStepOfInterest,
         })
+        .andWhere('transaction.programId = :programId', {
+          programId: programId,
+        })
         .getCount();
     } else {
       preExistingPa = 0;
@@ -1656,7 +1664,7 @@ export class ProgramService {
       id: installment,
       values: {
         'pre-existing': preExistingPa,
-        new: currentInstallment[1] - preExistingPa,
+        new: currentInstallmentCount - preExistingPa,
       },
     };
   }
