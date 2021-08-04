@@ -170,13 +170,13 @@ describe('MetricsStatesComponent', () => {
 
     expect(mockProgramsApi.getMetricsById).toHaveBeenCalledTimes(1);
     expect(mockProgramsApi.getMetricsByIdWithCondition).toHaveBeenCalledTimes(
-      2,
+      4,
     );
     document.getElementById('refresh').click();
 
     expect(mockProgramsApi.getMetricsById).toHaveBeenCalledTimes(2);
     expect(mockProgramsApi.getMetricsByIdWithCondition).toHaveBeenCalledTimes(
-      2,
+      4,
     );
   });
 });
