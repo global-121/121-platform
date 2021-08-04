@@ -70,6 +70,14 @@
       "whatsappPayment": "Ang mensaheng ito ay galing sa Red Cross.\n\nAng iyong €{{1}} Albert Heijn supermarket voucher ay handa na para ipadala.\n\nMag-reply ng \"oo\" sa mensaheng ito upang makatanggap ng voucher.",
       "whatsappVoucher": "Ang mensaheng ito ay galing sa Red Cross.\n\nKasama ng mensaheng ito, makakatanggap ka ng 2 litrato.\nAng una ay ang Albert Heijn supermarket voucher (cadeaukaart) na may barcode.\nAt ang isa pa ay ang paliwanag kung papaano gamitin ang voucher para pambayad sa Albert Heijn.\n\nAng halaga ng voucher na ito ay €{{1}}.\nMaaari mong gastusin ang voucher na ito sa kahit saang Albert Heijn supermarket sa Netherlands.\n\nHindi mo ito kailangang gastusin lahat sa isang bilihan. Kaya itago ang voucher sa iyong phone hanggang sa maubos ang laman nito.\n\nMakakatanggap ka ng €{{1}} voucher kada Martes hanggang ika-30 ng Setyembre 2021.\n\nMay mga katanungan ka ba? Magpadala ng mensahe sa amin sa WhatsApp: http://wa.me/31614458781",
       "whatsappReply": "Ito ay automated na mensahe, para sa mga katanungan, maaring i-contact ang Red Cross Helpdesk sa WhatsApp: +31614458781"
+    },
+    "in": {
+      "registered": "Ini adalah pesan dari Red Cross\n\nKami telah menerima aplikasi anda untuk bantuan ini\n\nAnda akan menerima pesan SMS dengan informasi berikutnya dalam waktu 1 minggu.",
+      "whatsappPayment": "Ini adalah pesan dari Red Cross\n\nVoucher supermarket Albert Heijn €{{1}} siap untuk dikirim\n\nHarap menjawab \"ya\" atas berita ini agar dapat menerima:\n1. Voucher minggu ini\n2. Voucher sebelumnya yang anda belum terima\n",
+      "whatsappPaymentMultiple": "Ini adalah pesan dari Red Cross\n\nVoucher supermarket Albert Heijn €{{1}} siap untuk dikirim\n\nHarap menjawab \"ya\" atas berita ini agar dapat menerima:\n1. Voucher minggu ini\n2. Voucher sebelumnya yang anda belum terima\n3. Voucher untuk teman atau anggota keluarga yang juga terdaftar dengan nomor telpon yang sama.\nIni berlaku hanya untuk mereka yang di daftar organisasi anda untuk menerima voucher ini.\n",
+      "whatsappVoucher": "Ini adalah pesan dari Red Cross.\n\nDengan pesan ini anda akan menerima:\n1. Sebuah voucher supermarket Albert Heijn  (cadeaukaart) - Ini adalah gambar dari barcode-nya.\n2. Penjelasan bagaimana menggunakan voucher ini di Albert Heijn.\n\nApabila anda menerima lebih dari satu voucher ini adalah karena anda belum menerima voucher minggu-minggu sebelumnya. \n\nNilai dari setiap voucher adalah €{{1}}.\nAnda bisa menggunakan voucher di supermarket Albert Heijn manapun di negeri Belanda.\n\nAnda tidak perlu menghabiskan sekaligus apa yang ada di voucher.  Jadi simpanlah voucher dan gunakan kembali sampai €{{1}} yang ada di setiap voucher sudah habis.\n\nAnda akan menerima  €{{1}}   voucher Albert Heijn anda setiap minggu pada hari Selasa sampai:\n1.  Anda tidak tercantum  lagi di daftar organisasi anda. \n2. Akhir proyek ini yang jatuh pada tanggal  30 September 2021.\n\nAdakah pertanyaan ? Kirim pesan di WhatsApp: \nhttps://wa.me/31614458781",
+      "whatsappVoucherMultiple": "Ini adalah pesan dari Red Cross.\n\nDengan pesan ini anda akan menerima:\n1. Sebuah voucher supermarket Albert Heijn  (cadeaukaart) - Ini adalah gambar dengan barcode.\n2. Penjelasan bagaimana menggunakan voucher di  Albert Heijn.\n\nApabila anda menerima lebih dari satu voucher, ini adalah karena: \n1. Anda belum menerima voucher minggu-minggu sebelumnya. \n2. Seorang anggota keluarga atau teman terdaftar dengan nomor telpon yang sama.\nIni hanya akan terjadi apabila seseorang terdaftar pula oleh organisasi anda untuk menerima voucher ini.\n\nNilai setiap voucher adalah €{{1}}.\nAnda bisa menggunakan voucher ini di supermarket Albert Heijn manapun di negeri Belanda. \n\nAnda tidak perlu membelanjakan semua sekaligus. Ini berarti anda harus menyimpan voucher dengan dana yang tersisa dan menggunakannya lagi sampai   €{{1}} di setiap voucher sudah habis.\n\nAnda akan menerima  €{{1}} voucher Albert Heijn setiap minggu pada hari Selasa sampai ::\n1. Anda tidak ada lagi dalam daftar organisasi anda. \n2. Akhir dari proyek ini yang jatuh pada tanggal  30 September 2021.\n\nApakah anda ada pertanyaan ? Kirim pesan di  WhatsApp: https://wa.me/31614458781",
+      "whatsappReply": "Ini adalah pesan otomatis. apabila ada pertanyaan harap kontak the Red Cross Helpdesk di WhatsApp +31614458781"
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
@@ -80,7 +88,8 @@
         "en": "Please enter your first name:",
         "nl": "Vul je voornaam in:",
         "pt_BR": "Por favor, digite seu nome: ",
-        "tl": "Ilagay ang pangalan:"
+        "tl": "Ilagay ang pangalan:",
+        "in": "Harap isi nama depan anda"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -95,7 +104,8 @@
         "en": "Please enter your last name:",
         "nl": "Vul je achternaam in:",
         "pt_BR": "Por favor, digite seu sobrenome:",
-        "tl": "Ilagay ang apelyido:"
+        "tl": "Ilagay ang apelyido:",
+        "in": "Harap isi nama akhir anda"
       },
       "answerType": "text",
       "criteriumType": "standard",
@@ -110,7 +120,8 @@
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
         "nl": "Geef het telefoonnummer waar je een SMS op kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>",
         "pt_BR": "Por favor digite o número de telefone em que você pode receber um mensagem de texto / SMS. Usaremos este número de telefone para informá-lo sobre o programa de ajuda. <br><br> Deve parecer: <code>+31 6 00 00 00 00</code>",
-        "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>"
+        "tl": "Pakibahagi ang iyong phone number upang makatanggap ng SMS. Gagamitin namin ang iyong phone number upang ipagbigay alam sayo ang aid program. <br><br> Dapat ito ay gaya ng: <code>+31 6 00 00 00 00</code>",
+        "in": "Harap bagi nomor HP anda di mana anda bisa menerima SMS. Kami akan menggunakan nomor ini untuk memberi informasi tentang bantuan dana ini <br><br>Nomor yang anda berikan harus mengikuti format <code>+31 6 00 00 00 00</code>"
       },
       "placeholder": {
         "en": "+31 6 00 00 00 00"
