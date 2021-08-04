@@ -122,10 +122,18 @@
             "option": "Payment #{{number}} - {{date}}",
             "explanation": "All PA that reached a certain status - e.g. included - at any moment in between the previous payment and the chosen payment. <br><br> This is not the number of included PA at the moment of that payment, but the number of PA that were included in between the previous payment and the chosen payment. <br><br> Note that the PA included in this time period may not necessarily be the same PA as those that registered in this time period, as they may have registered e.g. in the previous time period."
           },
+          "payment-from-start": {
+            "label": "Up to payment #:",
+            "explanation": "Check this box to get all data up to and including this payment, instead of only the data specific to this payment period."
+          },
           "calendar-month": {
             "label": "Calendar month:",
             "select-hint": "Choose month...",
             "explanation": "All PA that reached a certain status - e.g. included - at any moment in the chosen month. <br><br> This is not the number of included PA at the end of that month, but the number of PA that were included at any moment in that month. <br><br> Note that the PA included in this month may not necessarily be the same PA as those that registered in this month, as they may have registered e.g. in the previous month."
+          },
+          "month-from-start": {
+            "label": "Up to calendar month:",
+            "explanation": "Check this box to get all data up to and including this month, instead of only the data specific to this month."
           },
           "to-date": {
             "label": "To date:",
