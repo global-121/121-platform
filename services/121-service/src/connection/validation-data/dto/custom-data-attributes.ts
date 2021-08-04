@@ -24,6 +24,8 @@ export enum Language {
   ptBR = 'pt_BR',
   tuvKE = 'tuv_KE',
   saqKE = 'saq_KE',
+  in = 'in',
+  nl = 'nl',
 }
 
 export class Attribute {
