@@ -138,7 +138,7 @@
             "new": "New"
           },
           "payment-label": "Payment",
-          "tooltip": "This graph show the number of PA that were included in a previous payment in relation to new PA in the current payment. This graph only includes PA to which the payment has been succesfully send, so it does not show if the PA has actually spend the money."
+          "tooltip": "This chart shows the number of People Affected that were successfully paid out per payment.<br><br>This number is split by 'pre-existing' and 'new' PAs, based on whether the PA was also present in the previous payment or not.<br><br>'Successfully paid out' means that the payment (e.g. voucher) was successfully issued and the PA is informed about it, but does not imply the payment is collected and/or spent."
         }
       },
       "program-details": {
