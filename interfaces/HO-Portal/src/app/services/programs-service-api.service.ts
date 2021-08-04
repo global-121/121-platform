@@ -455,7 +455,7 @@ export class ProgramsServiceApiService {
     programId: number | string,
     ): Promise<any> {
     return this.apiService
-      .get(environment.url_121_service_api, `/programs/installment-state-sums/${programId}`, {})
+      .get(environment.url_121_service_api, `/programs/installment-state-sums/${programId}`)
       .toPromise();
     }
 }

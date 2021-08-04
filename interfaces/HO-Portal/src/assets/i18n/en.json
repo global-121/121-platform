@@ -137,7 +137,8 @@
             "pre-existing": "Pre-existing",
             "new": "New"
           },
-          "payment-label": "Payment"
+          "payment-label": "Payment",
+          "tooltip": "This graph show the number of PA that were included in a previous payment in relation to new PA in the current payment. This graph only includes PA to which the payment has been succesfully send, so it does not show if the PA has actually spend the money."
         }
       },
       "program-details": {
