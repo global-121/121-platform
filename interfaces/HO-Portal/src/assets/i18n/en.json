@@ -145,7 +145,8 @@
             "pre-existing": "Pre-existing",
             "new": "New"
           },
-          "payment-label": "Payment"
+          "payment-label": "Payment",
+          "tooltip": "This chart shows the number of People Affected that were successfully paid out per payment.<br><br>This number is split by 'pre-existing' and 'new' PAs, based on whether the PA was also present in the previous payment or not.<br><br>'Successfully paid out' means that the payment (e.g. voucher) was successfully issued and the PA is informed about it, but does not imply the payment is collected and/or spent."
         }
       },
       "program-details": {

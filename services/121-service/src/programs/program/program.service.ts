@@ -51,6 +51,7 @@ import { TotalIncluded } from './dto/payout.dto';
 import { without, compact, sortBy } from 'lodash';
 import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
 import { ConnectionResponse } from '../../models/connection-response.model';
+import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
 
 @Injectable()
 export class ProgramService {
@@ -1599,5 +1600,89 @@ export class ProgramService {
     };
 
     return metrics;
+  }
+
+  public async getInstallmentsWithStateSums(
+    programId: number,
+  ): Promise<InstallmentStateSumDto[]> {
+    const totalProcessedInstallments = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('MAX(transaction.installment)')
+      .getRawOne();
+    const program = await this.programRepository.findOne(programId);
+    const installmentNrSearch = Math.max(
+      ...[totalProcessedInstallments.max, program.distributionDuration],
+    );
+    const installmentsWithStats = [];
+    let i = 1;
+    const transactionStepMin = await await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('MIN(transaction.transactionStep)')
+      .getRawOne();
+    while (i < installmentNrSearch) {
+      const result = await this.getOneInstallmentWithStateSum(
+        programId,
+        i,
+        transactionStepMin.min,
+      );
+      installmentsWithStats.push(result);
+      i++;
+    }
+    return installmentsWithStats;
+  }
+
+  public async getOneInstallmentWithStateSum(
+    programId: number,
+    installment: number,
+    transactionStepOfInterest: number,
+  ): Promise<InstallmentStateSumDto> {
+    const currentInstallmentConnectionsAndCount = await this.transactionRepository.findAndCount(
+      {
+        where: {
+          program: { id: programId },
+          status: StatusEnum.success,
+          installment: installment,
+          transactionStep: transactionStepOfInterest,
+        },
+        relations: ['connection'],
+      },
+    );
+    const currentInstallmentConnections =
+      currentInstallmentConnectionsAndCount[0];
+    const currentInstallmentCount = currentInstallmentConnectionsAndCount[1];
+    const currentInstallmentConnectionsIds = currentInstallmentConnections.map(
+      ({ connection }) => connection.id,
+    );
+    let preExistingPa: number;
+    if (currentInstallmentCount > 0) {
+      preExistingPa = await this.transactionRepository
+        .createQueryBuilder('transaction')
+        .leftJoin('transaction.connection', 'connection')
+        .where('transaction.connection.id IN (:...connectionids)', {
+          connectionids: currentInstallmentConnectionsIds,
+        })
+        .andWhere('transaction.installment = :installment', {
+          installment: installment - 1,
+        })
+        .andWhere('transaction.status = :status', {
+          status: StatusEnum.success,
+        })
+        .andWhere('transaction.transactionStep = :transactionStep', {
+          transactionStep: transactionStepOfInterest,
+        })
+        .andWhere('transaction.programId = :programId', {
+          programId: programId,
+        })
+        .getCount();
+    } else {
+      preExistingPa = 0;
+    }
+    return {
+      id: installment,
+      values: {
+        'pre-existing': preExistingPa,
+        new: currentInstallmentCount - preExistingPa,
+      },
+    };
   }
 }
