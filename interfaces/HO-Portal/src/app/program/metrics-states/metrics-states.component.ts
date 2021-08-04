@@ -45,9 +45,6 @@ export class MetricsStatesComponent implements OnChanges {
 
   private programMetrics: ProgramMetrics;
 
-  public paymentChecked = false;
-  public monthChecked = false;
-
   constructor(
     private translate: TranslateService,
     private programService: ProgramsServiceApiService,
@@ -255,22 +252,5 @@ export class MetricsStatesComponent implements OnChanges {
       destination + 'FromStart',
     );
     this.renderUpdated();
-    console.log('this.paStates: ', this.paStates);
-  }
-
-  public checkboxChange(
-    checked: boolean,
-    destination: 'forPayment' | 'forMonth',
-  ) {
-    destination === 'forPayment'
-      ? (this.paymentChecked = checked)
-      : (this.monthChecked = checked);
-    const timeframe =
-      destination === 'forPayment' ? this.chosenPayment : this.chosenMonth;
-    if (checked) {
-      this.loadDataByCondition(timeframe + '&fromStart=1', destination);
-    } else {
-      this.loadDataByCondition(timeframe, destination);
-    }
   }
 }

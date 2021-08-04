@@ -35,14 +35,6 @@
       >
         {{ 'page.program.metrics.timeframe.payment.label'|translate }}
         <tooltip [value]="'page.program.metrics.timeframe.payment.explanation'|translate"></tooltip>
-        <br>
-        <ion-checkbox 
-          slot="start"
-          [checked]="paymentChecked"
-          (ionChange)="checkboxChange($event.detail.checked, 'forPayment')"
-        ></ion-checkbox>
-        {{ 'page.program.metrics.timeframe.payment-from-start.label'|translate }}
-        <tooltip [value]="'page.program.metrics.timeframe.payment-from-start.explanation'|translate"></tooltip>
         <select
           name="time-payment"
           [(ngModel)]="chosenPayment"
@@ -86,14 +78,6 @@
       >
         {{ 'page.program.metrics.timeframe.calendar-month.label'|translate }}
         <tooltip [value]="'page.program.metrics.timeframe.calendar-month.explanation'|translate"></tooltip>
-        <br>
-        <ion-checkbox 
-          slot="start"
-          [checked]="monthChecked"
-          (ionChange)="checkboxChange($event.detail.checked, 'forMonth')"
-        ></ion-checkbox>
-        {{ 'page.program.metrics.timeframe.month-from-start.label'|translate }}
-        <tooltip [value]="'page.program.metrics.timeframe.month-from-start.explanation'|translate"></tooltip>
         <select
           name="time-calendar-month"
           [(ngModel)]="chosenMonth"
