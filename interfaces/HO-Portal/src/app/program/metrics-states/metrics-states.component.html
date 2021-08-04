@@ -35,7 +35,6 @@
       >
         {{ 'page.program.metrics.timeframe.payment.label'|translate }}
         <tooltip [value]="'page.program.metrics.timeframe.payment.explanation'|translate"></tooltip>
-
         <select
           name="time-payment"
           [(ngModel)]="chosenPayment"
@@ -58,6 +57,22 @@
         *ngFor="let cell of paStates"
         class="cell-number"
       >{{ cell.forPayment }}</td>
+    </tr>
+    <tr>
+      <th
+        scope="row"
+        class="row-header"
+      >
+        {{ 'page.program.metrics.timeframe.payment-from-start.label'|translate }}
+        <tooltip [value]="'page.program.metrics.timeframe.payment-from-start.explanation'|translate"></tooltip>
+      </th>
+      <td
+        *ngFor="let cell of paStates"
+        class="cell-number"
+      >{{ cell.forPaymentFromStart }}</td>
+    </tr>
+    <tr style="border-bottom:1px solid black">
+      <td colspan="100%"></td>
     </tr>
     <tr>
       <th
@@ -88,6 +103,22 @@
         *ngFor="let cell of paStates"
         class="cell-number"
       >{{ cell.forMonth }}</td>
+    </tr>
+    <tr>
+      <th
+        scope="row"
+        class="row-header"
+      >
+        {{ 'page.program.metrics.timeframe.month-from-start.label'|translate }}
+        <tooltip [value]="'page.program.metrics.timeframe.month-from-start.explanation'|translate"></tooltip>
+      </th>
+      <td
+        *ngFor="let cell of paStates"
+        class="cell-number"
+      >{{ cell.forMonthFromStart }}</td>
+    </tr>
+    <tr style="border-bottom:1px solid black">
+      <td colspan="100%"></td>
     </tr>
     <tr class="shaded">
       <th

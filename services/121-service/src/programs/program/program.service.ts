@@ -1447,6 +1447,7 @@ export class ProgramService {
     installment?: number,
     month?: number,
     year?: number,
+    fromStart?: number,
   ): Promise<number> {
     const dateColumn = this.getDateColumPerStatus(filterStatus);
 
@@ -1465,17 +1466,24 @@ export class ProgramService {
     }
     if (month >= 0 && year) {
       filteredConnections = filteredConnections.filter(connection => {
-        return (
-          connection[dateColumn].getMonth() === month &&
-          connection[dateColumn].getFullYear() === year
+        const yearMonth = new Date(
+          connection[dateColumn].getFullYear(),
+          connection[dateColumn].getUTCMonth(),
+          1,
         );
+        const yearMonthCondition = new Date(year, month, 1);
+        if (fromStart && fromStart === 1) {
+          return yearMonth <= yearMonthCondition;
+        } else {
+          return yearMonth.getTime() === yearMonthCondition.getTime();
+        }
       });
     }
 
     if (installment) {
       const installments = await this.getInstallments(programId);
       const beginDate =
-        installment === 1
+        installment === 1 || (fromStart && fromStart === 1)
           ? new Date(2000, 0, 1)
           : installments.find(i => i.installment === installment - 1)
               .installmentDate;
@@ -1495,6 +1503,7 @@ export class ProgramService {
     installment?: number,
     month?: number,
     year?: number,
+    fromStart?: number,
   ): Promise<PaMetrics> {
     const connections = await this.getConnections(programId, false);
 
@@ -1506,6 +1515,7 @@ export class ProgramService {
         installment,
         month,
         year,
+        fromStart,
       ),
       [PaStatus.invited]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
@@ -1514,6 +1524,7 @@ export class ProgramService {
         installment,
         month,
         year,
+        fromStart,
       ),
       [PaStatus.created]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
@@ -1522,6 +1533,7 @@ export class ProgramService {
         installment,
         month,
         year,
+        fromStart,
       ),
       [PaStatus.registered]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
@@ -1530,6 +1542,7 @@ export class ProgramService {
         installment,
         month,
         year,
+        fromStart,
       ),
       [PaStatus.selectedForValidation]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
@@ -1538,6 +1551,7 @@ export class ProgramService {
         installment,
         month,
         year,
+        fromStart,
       ),
       [PaStatus.validated]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
@@ -1554,6 +1568,7 @@ export class ProgramService {
         installment,
         month,
         year,
+        fromStart,
       ),
       [PaStatus.inclusionEnded]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
@@ -1562,6 +1577,7 @@ export class ProgramService {
         installment,
         month,
         year,
+        fromStart,
       ),
       [PaStatus.noLongerEligible]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
@@ -1578,6 +1594,7 @@ export class ProgramService {
         installment,
         month,
         year,
+        fromStart,
       ),
     };
 

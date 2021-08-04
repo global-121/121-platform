@@ -388,6 +388,11 @@ export class ProgramController {
     required: false,
     type: 'integer',
   })
+  @ApiImplicitQuery({
+    name: 'fromStart',
+    required: false,
+    type: 'integer',
+  })
   @ApiResponse({
     status: 200,
     description: 'Metrics of a program to gain an overview of the program ',
@@ -403,6 +408,7 @@ export class ProgramController {
         query.installment ? Number(query.installment) : undefined,
         query.month ? Number(query.month) : undefined,
         query.year ? Number(query.year) : undefined,
+        query.fromStart ? Number(query.fromStart) : undefined,
       ),
       updated: new Date(),
     };

@@ -25,7 +25,9 @@ export class MetricsStatesComponent implements OnChanges {
     explanation?: string;
     toDate: number;
     forPayment?: number;
+    forPaymentFromStart?: number;
     forMonth?: number;
+    forMonthFromStart?: number;
   }[] = [];
 
   public pastPayments: {
@@ -65,9 +67,17 @@ export class MetricsStatesComponent implements OnChanges {
 
     await this.createPastPaymentsOptions();
     this.loadDataByCondition(this.chosenPayment, 'forPayment');
+    this.loadDataByCondition(
+      this.chosenPayment + '&fromStart=1',
+      'forPaymentFromStart',
+    );
 
     await this.createPastMonthsOptions();
     this.loadDataByCondition(this.chosenMonth, 'forMonth');
+    this.loadDataByCondition(
+      this.chosenMonth + '&fromStart=1',
+      'forMonthFromStart',
+    );
   }
 
   private renderUpdated() {
@@ -233,9 +243,14 @@ export class MetricsStatesComponent implements OnChanges {
   ) {
     if (condition === '') {
       this.resetData(destination);
+      this.resetData(destination + 'FromStart');
       return;
     }
     this.loadDataByCondition(condition, destination);
+    this.loadDataByCondition(
+      condition + '&fromStart=1',
+      destination + 'FromStart',
+    );
     this.renderUpdated();
   }
 }
