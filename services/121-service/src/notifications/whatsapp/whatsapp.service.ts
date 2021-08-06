@@ -245,11 +245,7 @@ export class WhatsappService {
             program.notifications[language]['whatsappVoucher']
           : program.notifications[language]['whatsappVoucher'];
         message = message.split('{{1}}').join(intersolveBarcode.amount);
-        await this.sendWhatsapp(
-          message,
-          intersolveBarcode.whatsappPhoneNumber,
-          mediaUrl,
-        );
+        await this.sendWhatsapp(message, fromNumber, mediaUrl);
         firstVoucherSent = true;
 
         // Save results
