@@ -1,3 +1,5 @@
+import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
+import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult } from 'typeorm';
@@ -7,11 +9,12 @@ import crypto from 'crypto';
 import jwt = require('jsonwebtoken');
 
 import { ProgramEntity } from '../programs/program/program.entity';
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
+import { LoginUserDto, UpdateUserDto } from './dto';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
 import { UserRole } from '../user-role.enum';
 import { UserRoleEntity } from './user-role.entity';
+import { UserType } from './user-type-enum';
 
 @Injectable()
 export class UserService {
@@ -40,17 +43,34 @@ export class UserService {
     return user;
   }
 
-  public async create(dto: CreateUserDto): Promise<UserRO> {
+  public async createPersonAffected(
+    dto: CreateUserPersonAffectedDto,
+  ): Promise<UserRO> {
+    return await this.create(
+      dto.username,
+      dto.password,
+      UserType.personAffected,
+    );
+  }
+
+  public async createAidWorker(dto: CreateUserAidWorkerDto): Promise<UserRO> {
+    return await this.create(dto.email, dto.password, UserType.aidWorker);
+  }
+
+  public async create(
+    username: string,
+    password: string,
+    userType: UserType,
+  ): Promise<UserRO> {
     // check uniqueness of email
-    const { email, password, roles } = dto;
     const qb = await getRepository(UserEntity)
       .createQueryBuilder('user')
-      .where('user.email = :email', { email });
+      .where('user.username = :username', { username });
 
     const user = await qb.getOne();
 
     if (user) {
-      const errors = { email: 'Email must be unique.' };
+      const errors = { username: 'Username must be unique.' };
       throw new HttpException(
         { message: 'Input data validation failed', errors },
         HttpStatus.BAD_REQUEST,
@@ -59,14 +79,12 @@ export class UserService {
 
     // create new user
     let newUser = new UserEntity();
-    newUser.email = email;
+    newUser.username = username;
     newUser.password = password;
-    newUser.roles = (await this.userRoleRepository.find()).filter(role =>
-      roles.includes(role.role),
-    );
-
+    newUser.userType = userType;
     newUser.programs = [];
     newUser.assignedProgram = [];
+    newUser.roles = [];
 
     await this.userRepository.save(newUser);
     return this.buildUserRO(newUser);
@@ -170,7 +188,7 @@ export class UserService {
     const result = jwt.sign(
       {
         id: user.id,
-        email: user.email,
+        email: user.username,
         roles: user.roles.map(role => role.role),
         exp: exp.getTime() / 1000,
       },
@@ -183,7 +201,7 @@ export class UserService {
   private buildUserRO(user: UserEntity): UserRO {
     const userRO = {
       id: user.id,
-      email: user.email,
+      username: user.username,
       token: this.generateJWT(user),
       roles: user.roles,
       assignedProgramId: user.assignedProgram,

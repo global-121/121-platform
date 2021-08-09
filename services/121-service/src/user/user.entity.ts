@@ -1,3 +1,5 @@
+import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
+import { UserType } from './user-type-enum';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -12,6 +14,7 @@ import crypto from 'crypto';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { ActionEntity } from '../actions/action.entity';
 import { UserRoleEntity } from './user-role.entity';
+import { RegistrationEntity } from '../registration/registration.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -19,8 +22,7 @@ export class UserEntity {
   public id: number;
 
   @Column()
-  @IsEmail()
-  public email: string;
+  public username: string;
 
   @Column({ select: false })
   public password: string;
@@ -57,4 +59,18 @@ export class UserEntity {
     program => program.aidworkers,
   )
   public assignedProgram: ProgramEntity[];
+
+  @OneToMany(
+    () => RegistrationEntity,
+    registration => registration.user,
+  )
+  public registrations: RegistrationEntity[];
+
+  @OneToMany(
+    () => PersonAffectedAppDataEntity,
+    personAffectedAppData => personAffectedAppData.user,
+  )
+  public personAffectedAppData: PersonAffectedAppDataEntity[];
+
+  public userType: UserType;
 }

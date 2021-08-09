@@ -168,7 +168,6 @@ export class CreateAccountComponent extends PersonalComponent {
     this.programsServiceApiService.createConnection(referenceId);
 
     this.paData.store(this.paData.type.referenceId, referenceId);
-    this.paData.setReferenceId(referenceId);
   }
 
   private createRandomHexaDecimalString(length: number): string {

@@ -40,7 +40,7 @@ Or other relevant commands (see README's in their subfolders).
 
 ### Re-use `node_modules` in your local IDE
 
-If you want your IDE to (re-)use the (dev-)dependencies and tools installed in the container, you can copy them via a command from the root: (where `<service>` is one of `all`, `121-service`, `PA-accounts-service`)
+If you want your IDE to (re-)use the (dev-)dependencies and tools installed in the container, you can copy them via a command from the root: (where `<service>` is one of `all` or `121-service`)
 
     npm run sync-dev-dependencies:<service>
 
@@ -51,7 +51,6 @@ This is a one-time copy, so when there are updates in the container, you have to
 We use the NestJS Swagger module for API documentation. [NestJS Swagger](https://github.com/nestjs/swagger).
 
 - Access the `121-service` Swagger-UI via: <http://localhost:3000/docs/>
-- Access the `PA-accounts-service` Swagger-UI via: <http://localhost:3001/docs/>
 
 ### Authentication
 

@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { Fsp } from 'src/app/models/fsp.model';
 import { InstanceData } from 'src/app/models/instance.model';
 import { PaInclusionStates } from 'src/app/models/pa-statuses.enum';
 import { Program } from 'src/app/models/program.model';
 import { ApiService } from 'src/app/services/api.service';
 import { environment } from 'src/environments/environment';
+import { JwtService } from './jwt.service';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private jwtService: JwtService) { }
 
   getInstanceInformation(): Promise<InstanceData> {
     return this.apiService
@@ -38,6 +40,121 @@ export class ProgramsServiceApiService {
       .get(environment.url_121_service_api, '/fsp/' + fspId)
       .toPromise();
   }
+
+  createAccountPA(username: string, password: string): Promise<User> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/user/personaffected',
+        {
+          username,
+          password,
+        },
+        true,
+      )
+      .pipe(
+        map((response) => {
+          const user = response.user;
+
+          if (user && user.token) {
+            this.jwtService.saveToken(user.token);
+          }
+
+          return user;
+        }),
+      )
+      .toPromise();
+  }
+
+  login(username: string, password: string): Promise<User> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/user/login',
+        {
+          username,
+          password,
+        },
+        true,
+      )
+      .pipe(
+        map((response) => {
+          const user = response.user;
+
+          if (user && user.token) {
+            this.jwtService.saveToken(user.token);
+          }
+
+          return user;
+        }),
+      )
+      .toPromise();
+  }
+
+  deleteAccount(password: string): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/user/delete',
+        {
+          password,
+        },
+        false,
+      )
+      .toPromise();
+  }
+
+
+  store(type: string, data: string): Promise<any> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/peopleaffected/datastorage',
+        {
+          type,
+          data,
+        },
+        false,
+      )
+      .toPromise();
+  }
+
+  retrieve(type: string): Promise<undefined | string | number | object> {
+    return this.apiService
+      .get(
+        environment.url_121_service_api,
+        '/peopleaffected/datastorage/' + type,
+        false,
+      )
+      .pipe(
+        map((value) => {
+          let data;
+          try {
+            data = JSON.parse(value);
+          } catch {
+            data = value;
+          }
+          return data;
+        }),
+        catchError((error) => {
+          if (error.error instanceof ErrorEvent) {
+            // Client-side error:
+            console.error(error);
+          } else {
+            // In case of server-side error (400/500):
+            // Only on a 404-error, act as if nothing happened...
+            if (error.status === 404) {
+              return of(undefined);
+            }
+            // Otherwise...
+            console.error(error);
+            return of(error);
+          }
+        }),
+      )
+      .toPromise();
+  }
+
 
   createConnection(referenceId: string): Promise<any> {
     return this.apiService

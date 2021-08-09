@@ -18,6 +18,7 @@ import { ActionModule } from './actions/action.module';
 import { FspModule } from './programs/fsp/fsp.module';
 import { InstanceModule } from './instance/instance.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { PeopleAffectedModule } from './people-affected/people-affected.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { MulterModule } from '@nestjs/platform-express';
     LookupModule,
     ScriptsModule,
     ActionModule,
+    PeopleAffectedModule,
     FspModule,
     InstanceModule,
     WhatsappModule,

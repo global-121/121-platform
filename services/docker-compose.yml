@@ -38,27 +38,6 @@ services:
     depends_on:
       - 121db
     restart: on-failure
-  PA-accounts-service:
-    build:
-      context: PA-accounts-service
-      target: production
-    image: services_pa-accounts-service
-    init: true
-    container_name: pa-accounts-service
-    env_file:
-      - .env
-    environment:
-      - GLOBAL_121_VERSION
-    ports:
-      - '${PORT_PA_ACCOUNTS_SERVICE}:${PORT_PA_ACCOUNTS_SERVICE}'
-    stdin_open: true
-    tty: true
-    networks:
-      pool_network:
-        ipv4_address: ${IPV4_PA_ACCOUNTS_SERVICE}
-    depends_on:
-      - 121db
-    restart: on-failure
 
 networks:
   pool_network:

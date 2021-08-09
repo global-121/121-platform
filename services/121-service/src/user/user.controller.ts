@@ -1,3 +1,5 @@
+import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
+import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import {
   Get,
   Post,
@@ -9,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserRO } from './user.interface';
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
+import { LoginUserDto, UpdateUserDto } from './dto';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { User } from './user.decorator';
 
@@ -35,10 +37,20 @@ export class UserController {
 
   @ApiBearerAuth()
   @Roles(UserRole.RunProgram)
-  @ApiOperation({ title: 'Sign-up new user' })
-  @Post('user')
-  public async create(@Body() userData: CreateUserDto): Promise<UserRO> {
-    return this.userService.create(userData);
+  @ApiOperation({ title: 'Sign-up new Aid Worker user' })
+  @Post('user/aidworker')
+  public async create(
+    @Body() userData: CreateUserAidWorkerDto,
+  ): Promise<UserRO> {
+    return this.userService.createAidWorker(userData);
+  }
+
+  @ApiOperation({ title: 'Sign-up new Person Affected user' })
+  @Post('user/personaffected')
+  public async createPA(
+    @Body() userData: CreateUserPersonAffectedDto,
+  ): Promise<UserRO> {
+    return this.userService.createPersonAffected(userData);
   }
 
   @ApiOperation({ title: 'Log in existing user' })
@@ -50,9 +62,9 @@ export class UserController {
     }
 
     const token = await this.userService.generateJWT(_user);
-    const { email, roles } = _user;
+    const { username, roles } = _user;
     const user = {
-      email,
+      username,
       token,
       roles,
     };
@@ -86,6 +98,16 @@ export class UserController {
     @Param() params,
   ): Promise<DeleteResult> {
     return await this.userService.delete(deleterId, Number(params.userId));
+  }
+
+  @ApiBearerAuth()
+  @Roles(UserRole.RunProgram)
+  @ApiOperation({ title: 'User deletes itself' })
+  @Post('user/delete')
+  public async deleteCurrentUser(
+    @User('id') deleterId: number,
+  ): Promise<DeleteResult> {
+    return await this.userService.delete(deleterId, deleterId);
   }
 
   @ApiBearerAuth()

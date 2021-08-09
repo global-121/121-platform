@@ -15,6 +15,7 @@ import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
 import { ActionEntity } from '../../actions/action.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
 
 @Entity('program')
 export class ProgramEntity {
@@ -142,4 +143,10 @@ export class ProgramEntity {
     transactions => transactions.program,
   )
   public transactions: TransactionEntity[];
+
+  @OneToMany(
+    () => RegistrationEntity,
+    registrations => registrations.program,
+  )
+  public registrations: RegistrationEntity[];
 }
