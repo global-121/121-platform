@@ -8,6 +8,7 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  Index,
 } from 'typeorm';
 import { IsEmail } from 'class-validator';
 import crypto from 'crypto';
@@ -21,7 +22,8 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column()
+  @Index({ unique: true })
+  @Column({ nullable: true })
   public username: string;
 
   @Column({ select: false })

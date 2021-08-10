@@ -31,7 +31,7 @@ import { PayoutDto, TotalIncluded } from './dto/payout.dto';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
-import { ChangeStateDto } from './dto/change-state.dto';
+import { ChangePhaseDto } from './dto/change-phase.dto';
 import { ExportDetails } from './dto/export-details';
 import { CustomCriterium } from './custom-criterium.entity';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
@@ -106,14 +106,14 @@ export class ProgramController {
   @Roles(UserRole.RunProgram)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('changeState/:programId')
-  public async changeState(
+  @Post('changePhase/:programId')
+  public async changePhase(
     @Param() params,
-    @Body() changeStateData: ChangeStateDto,
+    @Body() changePhaseData: ChangePhaseDto,
   ): Promise<SimpleProgramRO> {
-    return this.programService.changeState(
+    return this.programService.changePhase(
       Number(params.programId),
-      changeStateData.newState,
+      changePhaseData.newPhase,
     );
   }
 

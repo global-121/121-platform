@@ -11,24 +11,24 @@ export class Program {
   updated: string;
   meetingDocuments?: string | TranslatableString;
   ngo: string;
-  customCriteria: ProgramCriterium[];
+  programQuestions: ProgramQuestion[];
   financialServiceProviders: Fsp[];
   credDefId: string;
   validation: boolean;
   phoneNumberPlaceholder: string;
 }
 
-export class ProgramCriterium {
+export class ProgramQuestion {
   id: number;
-  criterium: string;
+  name: string;
   answerType: AnswerType;
   label: TranslatableString;
   placeholder?: TranslatableString;
   pattern?: string; // Remember to escape the special characters in the string!
-  options: null | ProgramCriteriumOption[];
+  options: null | ProgramQuestionOption[];
 }
 
-export class ProgramCriteriumOption {
+export class ProgramQuestionOption {
   option: string;
   label: TranslatableString;
 }

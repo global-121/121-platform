@@ -200,7 +200,7 @@ export class CreateProgramDto {
   @ValidateNested()
   @IsDefined()
   @Type(() => CreateCustomCriteriumDto)
-  public readonly customCriteria: CreateCustomCriteriumDto[];
+  public readonly programQuestions: CreateCustomCriteriumDto[];
 
   @ApiModelProperty({ example: { en: 'description' } })
   public readonly description: JSON;

@@ -156,13 +156,14 @@ export class ProgramsServiceApiService {
   }
 
 
-  createConnection(referenceId: string): Promise<any> {
+  createRegistration(referenceId: string, programId: number): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection',
+        '/registrations',
         {
           referenceId,
+          programId,
         },
         true,
       )

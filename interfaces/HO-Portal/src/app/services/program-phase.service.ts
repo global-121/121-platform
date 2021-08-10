@@ -35,7 +35,7 @@ export class ProgramPhaseService {
       this.phases = this.createInitialPhases();
     }
     await this.loadProgram(programId);
-    this.updatePhaseStates();
+    this.updatePhase();
 
     return this.phases;
   }
@@ -56,11 +56,11 @@ export class ProgramPhaseService {
   private async loadProgram(programId: number) {
     this.programId = programId;
     const program = await this.programsService.getProgramById(programId);
-    this.activePhaseName = program.state;
+    this.activePhaseName = program.phase;
     this.validation = program.validation;
   }
 
-  private updatePhaseStates() {
+  private updatePhase() {
     // Initially, `activePhase` will only contain `id` and `name` attributes from PROGRAM_PHASE_ORDER definition:
     const activePhase = this.getPhaseByName(this.activePhaseName);
 
@@ -106,13 +106,13 @@ export class ProgramPhaseService {
       .then(
         async (result) => {
           // When available, use the 'truth' from the back-end
-          if (result.state) {
-            this.activePhaseName = result.state;
+          if (result.phase) {
+            this.activePhaseName = result.phase;
           } else {
             // Else, fall back to previous knowledge
             this.activePhaseName = nextPhase.name;
           }
-          this.updatePhaseStates();
+          this.updatePhase();
           const newActivePhase = this.getActivePhase();
           this.router.navigate([
             'program',

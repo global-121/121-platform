@@ -129,8 +129,8 @@ export class CreateAccountComponent extends PersonalComponent {
     this.conversationService.startLoading();
     await this.paData.createAccount(username, create).then(
       async () => {
+        await this.createRegistration();
         this.usernameNotUnique = false;
-        await this.createConnection();
         this.conversationService.stopLoading();
         this.complete();
         this.logger.logEvent(
@@ -153,7 +153,9 @@ export class CreateAccountComponent extends PersonalComponent {
     );
   }
 
-  async createConnection() {
+
+
+  async createRegistration() {
     const referenceId =
       this.createRandomHexaDecimalString(8) +
       '-' +
@@ -165,9 +167,11 @@ export class CreateAccountComponent extends PersonalComponent {
       '-' +
       this.createRandomHexaDecimalString(12);
 
-    this.programsServiceApiService.createConnection(referenceId);
+    const currentProgram = await this.paData.getCurrentProgram();
 
-    this.paData.store(this.paData.type.referenceId, referenceId);
+    await this.programsServiceApiService.createRegistration(referenceId, currentProgram.id);
+
+    await this.paData.store(this.paData.type.referenceId, referenceId);
   }
 
   private createRandomHexaDecimalString(length: number): string {
@@ -181,6 +185,9 @@ export class CreateAccountComponent extends PersonalComponent {
 
     return result;
   }
+
+
+
 
   getNextSection() {
     return PersonalComponents.enrollInProgram;

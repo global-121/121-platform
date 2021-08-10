@@ -8,7 +8,7 @@ export const mockProgram: Program = {
   updated: new Date().toISOString(),
   meetingDocuments: 'document;document;',
   ngo: 'NGO',
-  customCriteria: [],
+  programQuestions: [],
   financialServiceProviders: [],
   credDefId: '',
   phoneNumberPlaceholder: '+000 000 00 00',

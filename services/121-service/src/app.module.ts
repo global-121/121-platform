@@ -1,3 +1,4 @@
+import { RegistrationsModule } from './registration/registrations.module';
 import { WhatsappModule } from './notifications/whatsapp/whatsapp.module';
 import { CronjobModule } from './cronjob/cronjob.module';
 import { Module } from '@nestjs/common';
@@ -37,6 +38,7 @@ import { PeopleAffectedModule } from './people-affected/people-affected.module';
     PeopleAffectedModule,
     FspModule,
     InstanceModule,
+    RegistrationsModule,
     WhatsappModule,
     ScheduleModule.forRoot(),
     MulterModule.register({

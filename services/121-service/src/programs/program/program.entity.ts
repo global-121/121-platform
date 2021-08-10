@@ -16,6 +16,7 @@ import { FinancialServiceProviderEntity } from '../fsp/financial-service-provide
 import { ProgramPhase } from '../../models/program-phase.model';
 import { ActionEntity } from '../../actions/action.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
+import { ProgramQuestionEntity } from './program-question.entity';
 
 @Entity('program')
 export class ProgramEntity {
@@ -23,7 +24,7 @@ export class ProgramEntity {
   public id: number;
 
   @Column({ default: ProgramPhase.design })
-  public state: ProgramPhase;
+  public phase: ProgramPhase;
 
   @Column()
   public location: string;
@@ -126,10 +127,10 @@ export class ProgramEntity {
   public actions: ActionEntity[];
 
   @OneToMany(
-    () => CustomCriterium,
-    customCriteria => customCriteria.program,
+    () => ProgramQuestionEntity,
+    programQuestions => programQuestions.program,
   )
-  public customCriteria: CustomCriterium[];
+  public programQuestions: ProgramQuestionEntity[];
 
   @ManyToMany(
     () => UserEntity,

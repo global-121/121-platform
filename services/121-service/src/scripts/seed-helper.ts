@@ -8,6 +8,7 @@ import { FspAttributeEntity } from './../programs/fsp/fsp-attribute.entity';
 import { InstanceEntity } from '../instance/instance.entity';
 import crypto from 'crypto';
 import { UserRoleEntity } from '../user/user-role.entity';
+import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
 
 export class SeedHelper {
   public constructor(private connection: Connection) {}
@@ -21,7 +22,7 @@ export class SeedHelper {
           role: In(userInput.roles),
         },
       }),
-      email: userInput.email,
+      username: userInput.username,
       password: crypto.createHmac('sha256', userInput.password).digest('hex'),
     });
   }
@@ -48,8 +49,8 @@ export class SeedHelper {
 
     const userRepository = this.connection.getRepository(UserEntity);
     const author = await userRepository.findOne(authorId);
-    const customCriteriumRepository = this.connection.getRepository(
-      CustomCriterium,
+    const programQuestionRepository = this.connection.getRepository(
+      ProgramQuestionEntity,
     );
 
     for (let programExample of examplePrograms) {
@@ -58,14 +59,12 @@ export class SeedHelper {
       program.author = author;
 
       // Remove original custom criteria and add it to a sepperate variable
-      const customCriteria = program.customCriteria;
-      program.customCriteria = [];
+      const programQuestions = program.programQuestions;
+      program.programQuestions = [];
 
-      for (let customCriterium of customCriteria) {
-        let customReturn = await customCriteriumRepository.save(
-          customCriterium,
-        );
-        program.customCriteria.push(customReturn);
+      for (let question of programQuestions) {
+        let questionReturn = await programQuestionRepository.save(question);
+        program.programQuestions.push(questionReturn);
       }
 
       // Remove original fsp criteria and add it to a sepperate variable

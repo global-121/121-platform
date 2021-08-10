@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsEnum } from 'class-validator';
 import { ProgramPhase } from '../../../models/program-phase.model';
 
-export class ChangeStateDto {
+export class ChangePhaseDto {
   @ApiModelProperty({
     enum: ProgramPhase,
     example: ProgramPhase.registrationValidation,
@@ -10,5 +10,5 @@ export class ChangeStateDto {
   @IsNotEmpty()
   @IsString()
   @IsEnum(ProgramPhase)
-  public readonly newState: ProgramPhase;
+  public readonly newPhase: ProgramPhase;
 }

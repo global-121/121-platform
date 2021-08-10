@@ -96,8 +96,8 @@ export class ProgramService {
   public async findOne(where): Promise<ProgramEntity> {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
-      .leftJoinAndSelect('program.customCriteria', 'customCriterium')
-      .addOrderBy('customCriterium.id', 'ASC')
+      .leftJoinAndSelect('program.programQuestions', 'programQuestion')
+      .addOrderBy('programQuestion.id', 'ASC')
       .leftJoinAndSelect('program.aidworkers', 'aidworker')
       .leftJoinAndSelect(
         'program.financialServiceProviders',
@@ -116,7 +116,7 @@ export class ProgramService {
   public async findAll(): Promise<ProgramsRO> {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
-      .leftJoinAndSelect('program.customCriteria', 'customCriterium')
+      .leftJoinAndSelect('program.programQuestions', 'programQuestion')
       .addOrderBy('customCriterium.id', 'ASC');
 
     qb.where('1 = 1');
@@ -160,19 +160,19 @@ export class ProgramService {
     program.descHumanitarianObjective = programData.descHumanitarianObjective;
     program.descCashType = programData.descCashType;
     program.validation = programData.validation;
-    program.customCriteria = [];
+    program.programQuestions = [];
     program.financialServiceProviders = [];
     program.protectionServiceProviders = [];
 
     const author = await this.userRepository.findOne(userId);
     program.author = author;
 
-    for (let customCriterium of programData.customCriteria) {
-      let customReturn = await this.customCriteriumRepository.save(
-        customCriterium,
-      );
-      program.customCriteria.push(customReturn);
-    }
+    // for (let customCriterium of programData.customCriteria) {
+    //   let customReturn = await this.customCriteriumRepository.save(
+    //     customCriterium,
+    //   );
+    //   program.programQuestions.push(customReturn);
+    // }
     for (let item of programData.financialServiceProviders) {
       let fsp = await this.financialServiceProviderRepository.findOne({
         relations: ['program'],
@@ -245,18 +245,18 @@ export class ProgramService {
     return await this.programRepository.delete(programId);
   }
 
-  public async changeState(
+  public async changePhase(
     programId: number,
-    newState: ProgramPhase,
+    newPhase: ProgramPhase,
   ): Promise<SimpleProgramRO> {
-    const oldState = (await this.programRepository.findOne(programId)).state;
+    const oldPhase = (await this.programRepository.findOne(programId)).phase;
     await this.changeProgramValue(programId, {
-      state: newState,
+      phase: newPhase,
     });
     const changedProgram = await this.findOne(programId);
     if (
-      oldState === ProgramPhase.design &&
-      newState === ProgramPhase.registrationValidation
+      oldPhase === ProgramPhase.design &&
+      newPhase === ProgramPhase.registrationValidation
     ) {
       await this.publish(programId);
     }
@@ -301,7 +301,7 @@ export class ProgramService {
     const simpleProgramRO = {
       id: program.id,
       title: program.title,
-      state: program.state,
+      phase: program.phase,
     };
 
     return simpleProgramRO;
@@ -577,7 +577,7 @@ export class ProgramService {
     let program = await this.programRepository.findOne(programId, {
       relations: ['financialServiceProviders'],
     });
-    if (!program || program.state === 'design') {
+    if (!program || program.phase === 'design') {
       const errors = 'Program not found.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }

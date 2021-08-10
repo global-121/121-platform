@@ -434,7 +434,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.isLoading = true;
 
     this.program = await this.programsService.getProgramById(this.programId);
-    this.activePhase = this.program.state;
+    this.activePhase = this.program.phase;
 
     this.canViewPersonalData = this.authService.hasUserRole([
       UserRole.View,

@@ -53,7 +53,7 @@ export class ValidationDataService {
     let selectedProgram = await this.programService.findOne(programId);
     let attributes = [];
     if (selectedProgram) {
-      for (let criterium of selectedProgram.customCriteria) {
+      for (let criterium of selectedProgram.programQuestions) {
         attributes.push(criterium);
       }
     } else {
@@ -129,9 +129,9 @@ export class ValidationDataService {
   ): Promise<PrefilledAnswerDto[]> {
     const program = await this.programService.findOne(programId);
     const phonenumberTypedAnswers = [];
-    for (let criterium of program.customCriteria) {
+    for (let criterium of program.programQuestions) {
       if (criterium.answerType == AnswerTypes.tel) {
-        phonenumberTypedAnswers.push(criterium.criterium);
+        phonenumberTypedAnswers.push(criterium.name);
       }
     }
     const fspTelAttributes = await this.fspAttributeRepository.find({
@@ -160,12 +160,12 @@ export class ValidationDataService {
   ): Promise<void> {
     const answers = await this.cleanAnswers(answersRaw, programId);
     let program = await this.programRepository.findOne(programId, {
-      relations: ['customCriteria'],
+      relations: ['programQuestions'],
     });
     const persistentCriteria = [];
-    for (let criterium of program.customCriteria) {
+    for (let criterium of program.programQuestions) {
       if (criterium.persistence) {
-        persistentCriteria.push(criterium.criterium);
+        persistentCriteria.push(criterium.name);
       }
     }
 
@@ -329,17 +329,17 @@ export class ValidationDataService {
     );
 
     let program = await this.programRepository.findOne(programId, {
-      relations: ['customCriteria'],
+      relations: ['programQuestions'],
     });
-    const score = this.calculateScoreAllCriteria(
-      program.customCriteria,
-      scoreList,
-    );
+    // const score = this.calculateScoreAllCriteria(
+    //   program.programQuestions,
+    //   scoreList,
+    // );
     let connection = await this.connectionRepository.findOne({
       where: { referenceId: referenceId },
     });
 
-    connection.inclusionScore = score;
+    // connection.inclusionScore = score;
 
     await this.connectionRepository.save(connection);
   }

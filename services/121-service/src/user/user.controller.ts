@@ -39,7 +39,7 @@ export class UserController {
   @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'Sign-up new Aid Worker user' })
   @Post('user/aidworker')
-  public async create(
+  public async createAw(
     @Body() userData: CreateUserAidWorkerDto,
   ): Promise<UserRO> {
     return this.userService.createAidWorker(userData);

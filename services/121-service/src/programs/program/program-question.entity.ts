@@ -5,17 +5,19 @@ import {
   ManyToOne,
   BeforeUpdate,
   Index,
+  OneToMany,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
+import { ProgramAnswersEntity } from '../../registration/program-answer.entity';
 
-@Entity()
-export class CustomCriterium {
+@Entity('program_question')
+export class ProgramQuestionEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Column()
   @Index({ unique: true })
-  public criterium: string;
+  public name: string;
 
   @Column('json')
   public label: JSON;
@@ -27,7 +29,7 @@ export class CustomCriterium {
   public placeholder: JSON;
 
   @Column()
-  public criteriumType: string;
+  public questionType: string;
 
   @Column('json', { nullable: true })
   public options: JSON;
@@ -46,11 +48,11 @@ export class CustomCriterium {
     this.updated = new Date();
   }
 
-  // @ManyToOne(
-  //   _type => ProgramEntity,
-  //   program => program.customCriteria,
-  // )
-  // public program: ProgramEntity;
+  @ManyToOne(
+    _type => ProgramEntity,
+    program => program.programQuestions,
+  )
+  public program: ProgramEntity;
 
   @Column({ default: false })
   public persistence: boolean;
@@ -62,4 +64,10 @@ export class CustomCriterium {
 
   @Column({ nullable: true })
   public pattern: string;
+
+  @OneToMany(
+    () => ProgramAnswersEntity,
+    programAnswer => programAnswer.programQuestion,
+  )
+  public programAnswers: ProgramAnswersEntity[];
 }

@@ -88,13 +88,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  advancePhase(programId: number, newState: string): Promise<any> {
+  advancePhase(programId: number, newPhase: string): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/programs/changeState/${programId}`,
+        `/programs/changePhase/${programId}`,
         {
-          newState,
+          newPhase,
         },
       )
       .toPromise();

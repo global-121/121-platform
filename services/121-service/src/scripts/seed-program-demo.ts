@@ -28,25 +28,25 @@ export class SeedDemoProgram implements InterfaceScript {
     // ***** CREATE USERS *****
     await this.seedHelper.addUser({
       roles: [UserRole.RunProgram],
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
     });
 
     await this.seedHelper.addUser({
       roles: [UserRole.PersonalData],
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
     });
 
     await this.seedHelper.addUser({
       roles: [UserRole.PersonalData, UserRole.RunProgram],
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
 
     await this.seedHelper.addUser({
       roles: [UserRole.View],
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
     });
 

@@ -78,7 +78,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   private checkCanMakePayment(): boolean {
     return (
-      this.program.state === ProgramPhase.payment &&
+      this.program.phase === ProgramPhase.payment &&
       this.authService.hasUserRole([UserRole.RunProgram])
     );
   }
@@ -304,7 +304,7 @@ export class ProgramPayoutComponent implements OnInit {
 
   private checkPhaseReady() {
     const isReady =
-      this.program.state !== ProgramPhase.payment ||
+      this.program.phase !== ProgramPhase.payment ||
       this.lastInstallmentId === this.program.distributionDuration;
 
     this.isCompleted.emit(isReady);

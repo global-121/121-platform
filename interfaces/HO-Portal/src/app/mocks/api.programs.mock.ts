@@ -20,7 +20,7 @@ const programsArray: Program[] = [
     inclusionCalculationType: InclusionCalculationType.highestScoresX,
     created: '1970-01-01T01:01:01Z',
     updated: '1970-01-01T01:01:01Z',
-    state: ProgramPhase.design,
+    phase: ProgramPhase.design,
     validation: false,
     author: {},
   },

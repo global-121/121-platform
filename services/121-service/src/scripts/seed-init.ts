@@ -45,7 +45,7 @@ export class SeedInit implements InterfaceScript {
       roles: await userRoleRepository.find({
         where: { role: UserRole.Admin },
       }),
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       password: crypto
         .createHmac('sha256', process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN)
         .digest('hex'),

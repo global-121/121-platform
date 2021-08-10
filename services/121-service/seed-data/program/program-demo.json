@@ -1,7 +1,7 @@
 {
   "published": false,
   "validation": true,
-  "state": "design",
+  "phase": "design",
   "location": "Westeros",
   "ngo": "Yellow Cross",
   "title": {
@@ -56,38 +56,38 @@
     }
   },
   "phoneNumberPlaceholder": "+000 000 00 00",
-  "customCriteria": [
+  "programQuestions": [
     {
-      "criterium": "name",
+      "name": "name",
       "label": {
         "en": "My full name:"
       },
       "answerType": "text",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
-      "criterium": "dob",
+      "name": "dob",
       "label": {
         "en": "My date of birth: Format is day-month-year example: 31-12-1970"
       },
       "answerType": "date",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
-      "criterium": "house",
+      "name": "house",
       "label": {
         "en": "1. I am a..?"
       },
       "answerType": "dropdown",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": [
         {
           "option": "lannister",
@@ -115,12 +115,12 @@
       }
     },
     {
-      "criterium": "dragon",
+      "name": "dragon",
       "label": {
         "en": "2. How many dragons do you own?"
       },
       "answerType": "numeric",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "scoring": {
         "multiplier": 2

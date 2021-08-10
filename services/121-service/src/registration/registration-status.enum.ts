@@ -1,10 +1,13 @@
 export enum RegistrationStatusEnum {
-  uploaded = 'uploaded',
+  imported = 'import',
   invited = 'invited',
-  started = 'started',
+  startedRegistation = 'startedRegistration',
   registered = 'registered',
   selectedForValidation = 'selectedForValidation',
   validated = 'validated',
   included = 'included',
-  removed = 'removed',
+  rejected = 'rejected',
+  noLongerEligible = 'noLongerEligible',
+  registeredWhileNoLongerEligible = 'registeredWhileNoLongerEligible',
+  inclusionEnded = 'inclusionEnded',
 }

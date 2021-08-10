@@ -3,7 +3,7 @@ import { ProgramEntity } from './program.entity';
 export interface SimpleProgramRO {
   id: number;
   title: JSON;
-  state: string;
+  phase: string;
 }
 
 export interface ProgramRO {

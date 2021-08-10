@@ -24,7 +24,7 @@ export class Program {
   aidworkers?: AidWorker[];
   created: string;
   updated: string;
-  state: ProgramPhase;
+  phase: ProgramPhase;
   validation: boolean;
 }
 

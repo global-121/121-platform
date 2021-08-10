@@ -5,9 +5,14 @@ import {
   ManyToOne,
   JoinColumn,
   Index,
+  Column,
+  OneToMany,
+  AfterUpdate,
+  AfterInsert,
 } from 'typeorm';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { RegistrationStatusEnum } from './registration-status.enum';
+import { ProgramAnswersEntity } from './program-answer.entity';
 
 @Entity('registration')
 export class RegistrationEntity {
@@ -21,14 +26,26 @@ export class RegistrationEntity {
   public program: ProgramEntity;
 
   @ManyToOne(() => UserEntity)
-  @JoinColumn()
   public user: UserEntity;
 
-  public name: string;
+  @AfterUpdate()
+  @AfterInsert()
+  public storeRegistrationStatusChange(): void {}
 
-  // @Index()
+  @Index()
+  @Column()
   public registrationStatus: RegistrationStatusEnum;
 
-  // @Index({ unique: true })
+  @Column({ nullable: true })
   public qrCode: string;
+
+  @Index({ unique: true })
+  @Column()
+  public referenceId: string;
+
+  @OneToMany(
+    () => ProgramAnswersEntity,
+    programAnswer => programAnswer.registration,
+  )
+  public programAnswers: ProgramAnswersEntity[];
 }

@@ -40,7 +40,7 @@ const newProgramParameters = {
 const newSimpleProgramRO = {
   id: 1,
   title: JSON.parse('{"en": "title"}'),
-  state: ProgramPhase.registrationValidation,
+  phase: ProgramPhase.registrationValidation,
 };
 
 export class ProgramServiceMock {
@@ -65,7 +65,7 @@ export class ProgramServiceMock {
     programData;
     return { program: new ProgramEntity() };
   }
-  public async changeState(id: number, newState: string): Promise<void> {
+  public async changePhase(id: number, newState: string): Promise<void> {
     id;
     newState;
   }
@@ -156,12 +156,12 @@ describe('ProgramController', (): void => {
   describe('publish', (): void => {
     it('should publish a program', async (): Promise<void> => {
       const spy = jest
-        .spyOn(programService, 'changeState')
+        .spyOn(programService, 'changePhase')
         .mockImplementation(
           (): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO),
         );
 
-      await programController.changeState(1, {
+      await programController.changePhase(1, {
         newState: ProgramPhase.registrationValidation,
       });
       expect(spy).toHaveBeenCalled();
@@ -170,12 +170,12 @@ describe('ProgramController', (): void => {
   describe('unpublish', (): void => {
     it('should publish a program', async (): Promise<void> => {
       const spy = jest
-        .spyOn(programService, 'changeState')
+        .spyOn(programService, 'changePhase')
         .mockImplementation(
           (): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO),
         );
 
-      await programController.changeState(1, { newState: ProgramPhase.design });
+      await programController.changePhase(1, { newState: ProgramPhase.design });
       expect(spy).toHaveBeenCalled();
     });
   });

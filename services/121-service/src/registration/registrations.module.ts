@@ -6,10 +6,16 @@ import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
 import { RegistrationsController } from './registrations.controller';
 import { RegistrationsService } from './registrations.service';
+import { RegistrationEntity } from './registration.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ProgramEntity, UserEntity, ActionEntity]),
+    TypeOrmModule.forFeature([
+      ProgramEntity,
+      UserEntity,
+      ActionEntity,
+      RegistrationEntity,
+    ]),
     UserModule,
     HttpModule,
   ],

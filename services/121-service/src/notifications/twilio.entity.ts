@@ -6,7 +6,7 @@ export enum NotificationType {
   Whatsapp = 'whatsapp',
 }
 
-@Entity('twilio-message')
+@Entity('twilio_message')
 export class TwilioMessageEntity {
   @PrimaryGeneratedColumn()
   public id: number;
