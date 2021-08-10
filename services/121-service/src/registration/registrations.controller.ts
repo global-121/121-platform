@@ -8,7 +8,6 @@ import {
 } from '@nestjs/swagger';
 import { RolesGuard } from '../roles.guard';
 import { RegistrationsService } from './registrations.service';
-import { ReferenceIdDto } from '../programs/program/dto/reference-id.dto';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { User } from '../user/user.decorator';
 
@@ -34,4 +33,17 @@ export class RegistrationsController {
       userId,
     );
   }
+
+  // @ApiOperation({ title: 'Update registration' })
+  // @ApiResponse({ status: 200, description: 'Updated registration' })
+  // @Post()
+  // public async update(
+  //   @Body() createRegistrationDto: CreateRegistrationDto,
+  //   @User('id') userId: number,
+  // ): Promise<RegistrationEntity> {
+  //   return await this.registrationsService.update(
+  //     createRegistrationDto,
+  //     userId,
+  //   );
+  // }
 }

@@ -9,10 +9,16 @@ import {
   OneToMany,
   AfterUpdate,
   AfterInsert,
+  Repository,
+  UpdateEvent,
+  getConnection,
+  BeforeInsert,
 } from 'typeorm';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { RegistrationStatusEnum } from './registration-status.enum';
 import { ProgramAnswersEntity } from './program-answer.entity';
+import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Entity('registration')
 export class RegistrationEntity {
@@ -28,9 +34,28 @@ export class RegistrationEntity {
   @ManyToOne(() => UserEntity)
   public user: UserEntity;
 
+  @OneToMany(
+    () => RegistrationStatusChangeEntity,
+    statusChange => statusChange.registration,
+  )
+  public statusChanges: RegistrationStatusChangeEntity[];
+
   @AfterUpdate()
-  @AfterInsert()
-  public storeRegistrationStatusChange(): void {}
+  @BeforeInsert()
+  public async storeRegistrationStatusChange(): Promise<void> {
+    const registrationStatusChange = new RegistrationStatusChangeEntity();
+
+    // const registration = await getConnection()
+    //   .getRepository(RegistrationEntity)
+    //   .findOne(this.id);
+
+    registrationStatusChange.registrationStatus = this.registrationStatus;
+    const savedRegistrationStatusChange = await getConnection()
+      .getRepository(RegistrationStatusChangeEntity)
+      .save(registrationStatusChange);
+
+    this.statusChanges = [savedRegistrationStatusChange];
+  }
 
   @Index()
   @Column()
