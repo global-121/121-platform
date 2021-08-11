@@ -2,7 +2,6 @@ import { RegistrationEntity } from './registration.entity';
 import {
   EventSubscriber,
   EntitySubscriberInterface,
-  InsertEvent,
   getConnection,
   UpdateEvent,
 } from 'typeorm';
@@ -18,6 +17,7 @@ export class RegistrationSubscriber
   public async afterUpdate(
     event: UpdateEvent<RegistrationEntity>,
   ): Promise<void> {
+    console.log('event: ', event.entity.id);
     const registrationStatusRepo = getConnection().getRepository(
       RegistrationStatusChangeEntity,
     );

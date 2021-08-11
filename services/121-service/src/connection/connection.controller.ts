@@ -131,43 +131,6 @@ export class ConnectionController {
     );
   }
 
-  @ApiOperation({ title: 'Set phone number' })
-  @ApiResponse({ status: 200, description: 'Phone set for connection' })
-  @Post('/phone')
-  public async addPhone(
-    @Body() setPhoneRequest: SetPhoneRequestDto,
-  ): Promise<void> {
-    return await this.connectionService.addPhone(
-      setPhoneRequest.referenceId,
-      setPhoneRequest.phonenumber,
-      setPhoneRequest.language,
-      setPhoneRequest.useForInvitationMatching,
-    );
-  }
-
-  @ApiOperation({ title: 'Set Financial Service Provider (FSP)' })
-  @ApiResponse({ status: 200, description: 'FSP set for connection' })
-  @Post('/fsp')
-  public async addFsp(@Body() setFsp: SetFspDto): Promise<ConnectionEntity> {
-    return await this.connectionService.addFsp(
-      setFsp.referenceId,
-      setFsp.fspId,
-    );
-  }
-
-  @ApiOperation({ title: 'Set custom data for connection' })
-  @ApiResponse({ status: 200, description: 'Custom data  set for connection' })
-  @Post('/custom-data')
-  public async addCustomData(
-    @Body() customData: CustomDataDto,
-  ): Promise<ConnectionEntity> {
-    return await this.connectionService.addCustomData(
-      customData.referenceId,
-      customData.key,
-      customData.value,
-    );
-  }
-
   @ApiOperation({ title: 'Update note for connection' })
   @ApiResponse({ status: 200, description: 'Update note for connection' })
   @Post('/note')

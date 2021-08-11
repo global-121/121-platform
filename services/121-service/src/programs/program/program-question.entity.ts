@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
-import { ProgramAnswersEntity } from '../../registration/program-answer.entity';
+import { ProgramAnswerEntity } from '../../registration/program-answer.entity';
 
 @Entity('program_question')
 export class ProgramQuestionEntity {
@@ -66,8 +66,8 @@ export class ProgramQuestionEntity {
   public pattern: string;
 
   @OneToMany(
-    () => ProgramAnswersEntity,
+    () => ProgramAnswerEntity,
     programAnswer => programAnswer.programQuestion,
   )
-  public programAnswers: ProgramAnswersEntity[];
+  public programAnswers: ProgramAnswerEntity[];
 }

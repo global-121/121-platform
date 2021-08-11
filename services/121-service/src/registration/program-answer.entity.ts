@@ -9,7 +9,7 @@ import {
 import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
 
 @Entity('program_answer')
-export class ProgramAnswersEntity {
+export class ProgramAnswerEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
@@ -23,8 +23,12 @@ export class ProgramAnswersEntity {
     _type => ProgramQuestionEntity,
     programQuestion => programQuestion.programAnswers,
   )
+  @JoinColumn({ name: 'programQuestionId' })
   public programQuestion: ProgramQuestionEntity;
 
   @Column()
-  public answer: string;
+  public programQuestionId: number;
+
+  @Column()
+  public programAnswer: string;
 }

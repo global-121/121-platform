@@ -93,7 +93,7 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  postConnectionCustomAttribute(
+  postRegistrationCustomAttribute(
     referenceId: string,
     key: string,
     value: string,

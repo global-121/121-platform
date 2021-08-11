@@ -80,7 +80,7 @@ export class MonitoringQuestionComponent extends PersonalComponent {
     const referenceId = await this.paData.retrieve(
       this.paData.type.referenceId,
     );
-    this.programsService.postConnectionCustomAttribute(
+    this.programsService.postRegistrationCustomAttribute(
       referenceId,
       'monitoringAnswer',
       this.monitoringChoice,

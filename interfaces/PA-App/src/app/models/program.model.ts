@@ -34,7 +34,6 @@ export class ProgramQuestionOption {
 }
 
 export class ProgramAttribute {
-  attributeId: number;
-  attribute: string;
-  answer: string;
+  programQuestionName: string;
+  programAnswer: string;
 }

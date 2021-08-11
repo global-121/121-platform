@@ -105,7 +105,7 @@ export class UploadDataComponent implements ValidationComponent {
     }
     for (const answer of validatedFspAnswers) {
       try {
-        await this.programsService.postConnectionCustomAttribute(
+        await this.programsService.postRegistrationCustomAttribute(
           answer.referenceId,
           answer.code,
           answer.value,

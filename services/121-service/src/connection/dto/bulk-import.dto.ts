@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { fspName } from '../../programs/fsp/financial-service-provider.entity';
-import { Language } from '../validation-data/dto/custom-data-attributes';
+import { LanguageEnum } from '../../registration/enum/language.enum';
 
 export class BulkImportDto {
   @ApiModelProperty()
@@ -36,7 +36,7 @@ export class ImportResult {
 }
 
 const fspArray = Object.values(fspName).map(item => String(item));
-const languageArray = Object.values(Language).map(item => String(item));
+const languageArray = Object.values(LanguageEnum).map(item => String(item));
 
 export class ImportRegistrationsDto {
   @ApiModelProperty({
@@ -44,7 +44,7 @@ export class ImportRegistrationsDto {
     example: languageArray.join(' | '),
   })
   @IsIn(languageArray)
-  public preferredLanguage: Language;
+  public preferredLanguage: LanguageEnum;
 
   @ApiModelProperty()
   @IsString()

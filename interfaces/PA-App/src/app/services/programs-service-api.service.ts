@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Fsp } from 'src/app/models/fsp.model';
 import { InstanceData } from 'src/app/models/instance.model';
 import { PaInclusionStates } from 'src/app/models/pa-statuses.enum';
 import { Program } from 'src/app/models/program.model';
 import { ApiService } from 'src/app/services/api.service';
 import { environment } from 'src/environments/environment';
-import { JwtService } from './jwt.service';
 import { User } from '../models/user.model';
+import { JwtService } from './jwt.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(private apiService: ApiService, private jwtService: JwtService) { }
+  constructor(private apiService: ApiService, private jwtService: JwtService) {}
 
   getInstanceInformation(): Promise<InstanceData> {
     return this.apiService
@@ -104,7 +104,6 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-
   store(type: string, data: string): Promise<any> {
     return this.apiService
       .post(
@@ -155,7 +154,6 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-
   createRegistration(referenceId: string, programId: number): Promise<any> {
     return this.apiService
       .post(
@@ -170,19 +168,14 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  postPrefilledAnswers(
-    referenceId: string,
-    programId: number,
-    attributes: any,
-  ): Promise<any> {
+  postProgramAnswers(referenceId: string, programAnswers: any): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection/validation-data/attributes',
+        '/registrations/program-answers',
         {
           referenceId,
-          programId,
-          attributes,
+          programAnswers,
         },
         true,
       )
@@ -205,14 +198,11 @@ export class ProgramsServiceApiService {
       .pipe(map((response) => response.status));
   }
 
-  async postConnectionApply(
-    referenceId: string,
-    programId: number,
-  ): Promise<boolean> {
+  async postRegistration(referenceId: string): Promise<boolean> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection/apply-program/' + programId,
+        '/registrations/register',
         {
           referenceId,
         },
@@ -223,7 +213,7 @@ export class ProgramsServiceApiService {
       .catch(() => false);
   }
 
-  postConnectionCustomAttribute(
+  postRegistrationCustomAttribute(
     referenceId: string,
     key: string,
     value: string,
@@ -231,7 +221,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection/custom-data',
+        '/registrations/custom-data',
         {
           referenceId,
           key,
@@ -264,7 +254,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection/phone',
+        '/registrations/phone',
         {
           referenceId,
           phonenumber: phoneNumber,
@@ -280,7 +270,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection/fsp',
+        '/registrations/fsp',
         {
           referenceId,
           fspId,

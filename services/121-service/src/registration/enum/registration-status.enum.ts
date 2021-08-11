@@ -1,5 +1,5 @@
 export enum RegistrationStatusEnum {
-  imported = 'import',
+  imported = 'imported',
   invited = 'invited',
   startedRegistation = 'startedRegistration',
   registered = 'registered',

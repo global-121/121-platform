@@ -15,10 +15,12 @@ import {
   BeforeInsert,
 } from 'typeorm';
 import { ProgramEntity } from '../programs/program/program.entity';
-import { RegistrationStatusEnum } from './registration-status.enum';
-import { ProgramAnswersEntity } from './program-answer.entity';
+import { RegistrationStatusEnum } from './enum/registration-status.enum';
+import { ProgramAnswerEntity } from './program-answer.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
+import { LanguageEnum } from './enum/language.enum';
 
 @Entity('registration')
 export class RegistrationEntity {
@@ -45,15 +47,29 @@ export class RegistrationEntity {
   public registrationStatus: RegistrationStatusEnum;
 
   @Column({ nullable: true })
-  public qrCode: string;
+  public qrIdentifier: string;
 
   @Index({ unique: true })
   @Column()
   public referenceId: string;
 
   @OneToMany(
-    () => ProgramAnswersEntity,
+    () => ProgramAnswerEntity,
     programAnswer => programAnswer.registration,
   )
-  public programAnswers: ProgramAnswersEntity[];
+  public programAnswers: ProgramAnswerEntity[];
+
+  @Column('json', {
+    default: {},
+  })
+  public customData: JSON;
+
+  @Column({ nullable: true })
+  public phoneNumber: string;
+
+  @Column({ nullable: true })
+  public preferredLanguage: LanguageEnum;
+
+  @ManyToOne(type => FinancialServiceProviderEntity)
+  public fsp: FinancialServiceProviderEntity;
 }

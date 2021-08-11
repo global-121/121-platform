@@ -60,9 +60,8 @@ export class RegistrationSummaryComponent extends PersonalComponent {
     await this.getReferenceId();
     await this.getProgram();
 
-    this.registrationStatus = await this.programsService.postConnectionApply(
+    this.registrationStatus = await this.programsService.postRegistration(
       this.referenceId,
-      this.program.id,
     );
 
     if (this.validation) {

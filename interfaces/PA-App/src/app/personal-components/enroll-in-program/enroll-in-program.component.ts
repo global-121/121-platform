@@ -186,9 +186,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const referenceId = await this.paData.retrieve(
       this.paData.type.referenceId,
     );
-    await this.programsService.postPrefilledAnswers(
+    await this.programsService.postProgramAnswers(
       referenceId,
-      this.programId,
       this.createAttributes(Object.values(this.answers)),
     );
   }
@@ -198,9 +197,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     answers.forEach((item: Answer) => {
       attributes.push({
-        attributeId: 0,
-        attribute: item.code,
-        answer: item.value,
+        programQuestionName: item.code,
+        programAnswer: item.value,
       });
     });
 
