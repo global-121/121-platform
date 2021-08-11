@@ -159,6 +159,10 @@ export class UserService {
     }
   }
 
+  public async deletePersonAffected(userId: number): Promise<DeleteResult> {
+    return await this.userRepository.delete(userId);
+  }
+
   public async findById(id: number): Promise<UserRO> {
     const user = await this.userRepository.findOne(id, {
       relations: ['roles'],

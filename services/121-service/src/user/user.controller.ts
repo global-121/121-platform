@@ -101,6 +101,16 @@ export class UserController {
   }
 
   @ApiBearerAuth()
+  @ApiOperation({ title: 'Person Affected deletes itself an related entities' })
+  @Post('user/delete-person-affected')
+  @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
+  public async deletePersonAffected(
+    @User('id') deleterId: number,
+  ): Promise<DeleteResult> {
+    return await this.userService.deletePersonAffected(deleterId);
+  }
+
+  @ApiBearerAuth()
   @Roles(UserRole.RunProgram)
   @ApiOperation({ title: 'User deletes itself' })
   @Post('user/delete')
