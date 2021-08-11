@@ -25,17 +25,25 @@ export class RegistrationsService {
     const user = await this.userRepository.findOne(userId);
     let registration = new RegistrationEntity();
     registration.referenceId = postData.referenceId;
-
     registration.user = user;
-
-    registration.registrationStatus = RegistrationStatusEnum.startedRegistation;
-
     registration.program = await this.programRepository.findOne(
       postData.programId,
     );
-    const newRegistration = await this.registrationRepository.save(
-      registration,
+    await this.registrationRepository.save(registration);
+    return this.setRegistrationStatus(
+      postData.referenceId,
+      RegistrationStatusEnum.included,
     );
-    return newRegistration;
+  }
+
+  public async setRegistrationStatus(
+    referenceId: string,
+    status: RegistrationStatusEnum,
+  ): Promise<RegistrationEntity> {
+    const registrationToUpdate = await this.registrationRepository.findOne({
+      where: { referenceId: referenceId },
+    });
+    registrationToUpdate.registrationStatus = status;
+    return await this.registrationRepository.save(registrationToUpdate);
   }
 }

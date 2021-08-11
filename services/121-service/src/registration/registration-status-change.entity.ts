@@ -14,8 +14,10 @@ export class RegistrationStatusChangeEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @ManyToOne(() => RegistrationEntity)
-  @JoinColumn()
+  @ManyToOne(
+    _type => RegistrationEntity,
+    registration => registration.statusChanges,
+  )
   public registration: RegistrationEntity;
 
   @Index()

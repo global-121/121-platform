@@ -40,25 +40,8 @@ export class RegistrationEntity {
   )
   public statusChanges: RegistrationStatusChangeEntity[];
 
-  @AfterUpdate()
-  @BeforeInsert()
-  public async storeRegistrationStatusChange(): Promise<void> {
-    const registrationStatusChange = new RegistrationStatusChangeEntity();
-
-    // const registration = await getConnection()
-    //   .getRepository(RegistrationEntity)
-    //   .findOne(this.id);
-
-    registrationStatusChange.registrationStatus = this.registrationStatus;
-    const savedRegistrationStatusChange = await getConnection()
-      .getRepository(RegistrationStatusChangeEntity)
-      .save(registrationStatusChange);
-
-    this.statusChanges = [savedRegistrationStatusChange];
-  }
-
   @Index()
-  @Column()
+  @Column({ nullable: true })
   public registrationStatus: RegistrationStatusEnum;
 
   @Column({ nullable: true })
