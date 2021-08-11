@@ -1,10 +1,11 @@
 import { RegistrationEntity } from './registration.entity';
-import { Post, Body, Controller, UseGuards } from '@nestjs/common';
+import { Post, Body, Controller, UseGuards, Param } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiUseTags,
   ApiOperation,
   ApiResponse,
+  ApiImplicitParam,
 } from '@nestjs/swagger';
 import { RolesGuard } from '../roles.guard';
 import { RegistrationsService } from './registrations.service';
@@ -16,6 +17,7 @@ import { ProgramAnswerEntity } from './program-answer.entity';
 import { SetFspDto } from '../connection/dto/set-fsp.dto';
 import { CustomDataDto } from '../programs/program/dto/custom-data.dto';
 import { SetPhoneRequestDto } from '../connection/dto/set-phone-request.dto';
+import { ReferenceIdDto } from '../programs/program/dto/reference-id.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -104,5 +106,19 @@ export class RegistrationsController {
       setPhoneRequest.language,
       setPhoneRequest.useForInvitationMatching,
     );
+  }
+
+  @ApiOperation({
+    title:
+      'Person Affected switches from started registration to registered for program',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Person Affected switched from started registration to registered for program',
+  })
+  @Post('/register')
+  public async register(@Body() referenceIdDto: ReferenceIdDto): Promise<void> {
+    return await this.registrationsService.register(referenceIdDto.referenceId);
   }
 }

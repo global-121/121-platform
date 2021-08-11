@@ -13,6 +13,7 @@ import { LookupModule } from '../notifications/lookup/lookup.module';
 import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { SmsModule } from '../notifications/sms/sms.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
     UserModule,
     HttpModule,
     LookupModule,
+    SmsModule,
   ],
   providers: [RegistrationsService],
   controllers: [RegistrationsController],

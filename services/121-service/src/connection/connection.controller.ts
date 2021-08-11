@@ -117,20 +117,6 @@ export class ConnectionController {
     return await this.connectionService.delete(referenceIdDto.referenceId);
   }
 
-  @ApiOperation({ title: 'Connection applies for program' })
-  @ApiResponse({ status: 200, description: 'Connection applied for program' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('/apply-program/:programId')
-  public async applyProgram(
-    @Body() referenceIdDto: ReferenceIdDto,
-    @Param() params,
-  ): Promise<void> {
-    return await this.connectionService.applyProgram(
-      referenceIdDto.referenceId,
-      Number(params.programId),
-    );
-  }
-
   @ApiOperation({ title: 'Update note for connection' })
   @ApiResponse({ status: 200, description: 'Update note for connection' })
   @Post('/note')

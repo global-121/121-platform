@@ -398,30 +398,6 @@ export class ConnectionService {
     return validatatedArray;
   }
 
-  public async applyProgram(
-    referenceId: string,
-    programId: number,
-  ): Promise<void> {
-    const connection = await this.findConnectionOrThrow(referenceId);
-
-    if (!connection.appliedDate) {
-      connection.appliedDate = new Date();
-      connection.programsApplied.push(programId);
-      await this.connectionRepository.save(connection);
-      this.validationDataService.calculateInclusionScore(
-        referenceId,
-        programId,
-      );
-      this.smsService.notifyBySms(
-        connection.phoneNumber,
-        connection.preferredLanguage,
-        programId,
-        null,
-        PaStatus.registered,
-      );
-    }
-  }
-
   public async delete(referenceId: string): Promise<void> {
     const connection = await this.connectionRepository.findOne({
       where: { referenceId: referenceId },

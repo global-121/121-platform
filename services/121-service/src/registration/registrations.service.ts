@@ -1,3 +1,4 @@
+import { SmsService } from './../notifications/sms/sms.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,7 +45,10 @@ export class RegistrationsService {
   @InjectRepository(FspAttributeEntity)
   private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
 
-  public constructor(private readonly lookupService: LookupService) {}
+  public constructor(
+    private readonly lookupService: LookupService,
+    private readonly smsService: SmsService,
+  ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne(userId);
@@ -334,5 +338,30 @@ export class RegistrationsService {
       },
       relations: ['fsp'],
     });
+  }
+
+  public async register(referenceId: string): Promise<void> {
+    const registration = await this.getRegistrationFromReferenceId(
+      referenceId,
+      ['program'],
+    );
+
+    if (
+      RegistrationStatusEnum.startedRegistation !==
+      registration.registrationStatus
+    ) {
+      const errors = `Registration status is not 'startedRegistration'`;
+      throw new HttpException(errors, HttpStatus.NOT_FOUND);
+    }
+
+    await this.registrationRepository.save(registration);
+    // this.calculateInclusionScore(referenceId, programId);
+    this.smsService.notifyBySms(
+      registration.phoneNumber,
+      registration.preferredLanguage,
+      registration.program.id,
+      null,
+      RegistrationStatusEnum.registered,
+    );
   }
 }
