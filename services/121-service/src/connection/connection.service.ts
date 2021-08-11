@@ -194,10 +194,10 @@ export class ConnectionService {
     await this.connectionRepository.save(connections);
 
     for await (let connection of connections) {
-      await this.validationDataService.calculateInclusionScore(
-        connection.referenceId,
-        programId,
-      );
+      // await this.validationDataService.calculateInclusionScore(
+      //   connection.referenceId,
+      //   programId,
+      // );
 
       // Mimic 'enroll program' step
       await this.storePrefilledAnswersRegistrations(

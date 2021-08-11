@@ -22,6 +22,9 @@ export class ProgramAnswerEntity {
   @ManyToOne(
     _type => ProgramQuestionEntity,
     programQuestion => programQuestion.programAnswers,
+    {
+      eager: true,
+    },
   )
   @JoinColumn({ name: 'programQuestionId' })
   public programQuestion: ProgramQuestionEntity;

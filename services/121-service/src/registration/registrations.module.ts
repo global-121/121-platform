@@ -14,6 +14,7 @@ import { FinancialServiceProviderEntity } from '../programs/fsp/financial-servic
 import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { SmsModule } from '../notifications/sms/sms.module';
+import { InlusionScoreService } from './services/inclusion-score.service';
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ import { SmsModule } from '../notifications/sms/sms.module';
     LookupModule,
     SmsModule,
   ],
-  providers: [RegistrationsService],
+  providers: [RegistrationsService, InlusionScoreService],
   controllers: [RegistrationsController],
   exports: [],
 })

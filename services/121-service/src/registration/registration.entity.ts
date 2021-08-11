@@ -70,6 +70,9 @@ export class RegistrationEntity {
   @Column({ nullable: true })
   public preferredLanguage: LanguageEnum;
 
+  @Column({ nullable: true })
+  public inclusionScore: number;
+
   @ManyToOne(type => FinancialServiceProviderEntity)
   public fsp: FinancialServiceProviderEntity;
 }

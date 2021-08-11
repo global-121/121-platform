@@ -23,6 +23,7 @@ import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
 import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
+import { InlusionScoreService } from './services/inclusion-score.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -48,6 +49,7 @@ export class RegistrationsService {
   public constructor(
     private readonly lookupService: LookupService,
     private readonly smsService: SmsService,
+    private readonly inclusionScoreService: InlusionScoreService,
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
@@ -355,7 +357,7 @@ export class RegistrationsService {
     }
 
     await this.registrationRepository.save(registration);
-    // this.calculateInclusionScore(referenceId, programId);
+    this.inclusionScoreService.calculateInclusionScore(referenceId);
     this.smsService.notifyBySms(
       registration.phoneNumber,
       registration.preferredLanguage,

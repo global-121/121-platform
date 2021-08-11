@@ -304,7 +304,7 @@ export class ValidationDataService {
       payload.attributes,
     );
 
-    await this.calculateInclusionScore(payload.referenceId, payload.programId);
+    // await this.calculateInclusionScore(payload.referenceId, payload.programId);
 
     await this.deletePrefilledAnswers(payload.referenceId, payload.programId);
 
@@ -319,100 +319,100 @@ export class ValidationDataService {
     await this.connectionRepository.save(connection);
   }
 
-  public async calculateInclusionScore(
-    referenceId: string,
-    programId: number,
-  ): Promise<void> {
-    const scoreList = await this.createQuestionAnswerListPrefilled(
-      referenceId,
-      programId,
-    );
+  // public async calculateInclusionScore(
+  //   referenceId: string,
+  //   programId: number,
+  // ): Promise<void> {
+  //   const scoreList = await this.createQuestionAnswerListPrefilled(
+  //     referenceId,
+  //     programId,
+  //   );
 
-    let program = await this.programRepository.findOne(programId, {
-      relations: ['programQuestions'],
-    });
-    // const score = this.calculateScoreAllCriteria(
-    //   program.programQuestions,
-    //   scoreList,
-    // );
-    let connection = await this.connectionRepository.findOne({
-      where: { referenceId: referenceId },
-    });
+  //   let program = await this.programRepository.findOne(programId, {
+  //     relations: ['programQuestions'],
+  //   });
+  //   // const score = this.calculateScoreAllCriteria(
+  //   //   program.programQuestions,
+  //   //   scoreList,
+  //   // );
+  //   let connection = await this.connectionRepository.findOne({
+  //     where: { referenceId: referenceId },
+  //   });
 
-    // connection.inclusionScore = score;
+  //   // connection.inclusionScore = score;
 
-    await this.connectionRepository.save(connection);
-  }
+  //   await this.connectionRepository.save(connection);
+  // }
 
-  private async createQuestionAnswerListPrefilled(
-    referenceId: string,
-    programId: number,
-  ): Promise<object> {
-    const prefilledAnswers = await this.getPrefilledAnswers(
-      referenceId,
-      programId,
-    );
-    const scoreList = {};
-    for (let prefilledAnswer of prefilledAnswers) {
-      let attrValue = prefilledAnswer.answer;
-      let newKeyName = prefilledAnswer.attribute;
-      scoreList[newKeyName] = attrValue;
-    }
-    return scoreList;
-  }
+  // private async createQuestionAnswerListPrefilled(
+  //   referenceId: string,
+  //   programId: number,
+  // ): Promise<object> {
+  //   const prefilledAnswers = await this.getPrefilledAnswers(
+  //     referenceId,
+  //     programId,
+  //   );
+  //   const scoreList = {};
+  //   for (let prefilledAnswer of prefilledAnswers) {
+  //     let attrValue = prefilledAnswer.answer;
+  //     let newKeyName = prefilledAnswer.attribute;
+  //     scoreList[newKeyName] = attrValue;
+  //   }
+  //   return scoreList;
+  // }
 
-  private calculateScoreAllCriteria(
-    programCriteria: CustomCriterium[],
-    scoreList: object,
-  ): number {
-    let totalScore = 0;
-    for (let criterium of programCriteria) {
-      let criteriumName = criterium.criterium;
-      if (scoreList[criteriumName]) {
-        let answerPA = scoreList[criteriumName];
-        switch (criterium.answerType) {
-          case 'dropdown': {
-            totalScore =
-              totalScore + this.getScoreForDropDown(criterium, answerPA);
-          }
-          case 'numeric':
-            totalScore =
-              totalScore + this.getScoreForNumeric(criterium, answerPA);
-        }
-      }
-    }
-    return totalScore;
-  }
+  // private calculateScoreAllCriteria(
+  //   programCriteria: CustomCriterium[],
+  //   scoreList: object,
+  // ): number {
+  //   let totalScore = 0;
+  //   for (let criterium of programCriteria) {
+  //     let criteriumName = criterium.criterium;
+  //     if (scoreList[criteriumName]) {
+  //       let answerPA = scoreList[criteriumName];
+  //       switch (criterium.answerType) {
+  //         case 'dropdown': {
+  //           totalScore =
+  //             totalScore + this.getScoreForDropDown(criterium, answerPA);
+  //         }
+  //         case 'numeric':
+  //           totalScore =
+  //             totalScore + this.getScoreForNumeric(criterium, answerPA);
+  //       }
+  //     }
+  //   }
+  //   return totalScore;
+  // }
 
-  private getScoreForDropDown(
-    criterium: CustomCriterium,
-    answerPA: object,
-  ): number {
-    // If questions has no scoring system return 0;
-    if (Object.keys(criterium.scoring).length === 0) {
-      return 0;
-    }
-    let score = 0;
-    const options = JSON.parse(JSON.stringify(criterium.options));
-    for (let value of options) {
-      if (value.option == answerPA) {
-        score = criterium.scoring[value.option];
-      }
-    }
-    return score;
-  }
+  // private getScoreForDropDown(
+  //   criterium: CustomCriterium,
+  //   answerPA: object,
+  // ): number {
+  //   // If questions has no scoring system return 0;
+  //   if (Object.keys(criterium.scoring).length === 0) {
+  //     return 0;
+  //   }
+  //   let score = 0;
+  //   const options = JSON.parse(JSON.stringify(criterium.options));
+  //   for (let value of options) {
+  //     if (value.option == answerPA) {
+  //       score = criterium.scoring[value.option];
+  //     }
+  //   }
+  //   return score;
+  // }
 
-  private getScoreForNumeric(
-    criterium: CustomCriterium,
-    answerPA: number,
-  ): number {
-    let score = 0;
-    if (criterium.scoring['multiplier']) {
-      if (isNaN(answerPA)) {
-        answerPA = 0;
-      }
-      score = criterium.scoring['multiplier'] * answerPA;
-    }
-    return score;
-  }
+  // private getScoreForNumeric(
+  //   criterium: CustomCriterium,
+  //   answerPA: number,
+  // ): number {
+  //   let score = 0;
+  //   if (criterium.scoring['multiplier']) {
+  //     if (isNaN(answerPA)) {
+  //       answerPA = 0;
+  //     }
+  //     score = criterium.scoring['multiplier'] * answerPA;
+  //   }
+  //   return score;
+  // }
 }
