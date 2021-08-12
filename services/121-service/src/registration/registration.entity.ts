@@ -21,6 +21,7 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
 import { InjectRepository } from '@nestjs/typeorm';
 import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
+import { IsInt, IsPositive, IsOptional } from 'class-validator';
 
 @Entity('registration')
 export class RegistrationEntity {
@@ -75,4 +76,13 @@ export class RegistrationEntity {
 
   @ManyToOne(type => FinancialServiceProviderEntity)
   public fsp: FinancialServiceProviderEntity;
+
+  @Column({ nullable: true })
+  public namePartnerOrganization: string;
+
+  @Column({ nullable: true })
+  @IsInt()
+  @IsPositive()
+  @IsOptional()
+  public paymentAmountMultiplier: number;
 }

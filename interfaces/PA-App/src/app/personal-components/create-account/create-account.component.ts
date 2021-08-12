@@ -128,7 +128,8 @@ export class CreateAccountComponent extends PersonalComponent {
     // Create PA-account using supplied password + username
     this.conversationService.startLoading();
     await this.paData.createAccount(username, create).then(
-      async () => {
+      async (response) => {
+        console.log('createAccount', response);
         await this.createRegistration();
         this.usernameNotUnique = false;
         this.conversationService.stopLoading();
@@ -153,8 +154,6 @@ export class CreateAccountComponent extends PersonalComponent {
     );
   }
 
-
-
   async createRegistration() {
     const referenceId =
       this.createRandomHexaDecimalString(8) +
@@ -169,7 +168,10 @@ export class CreateAccountComponent extends PersonalComponent {
 
     const currentProgram = await this.paData.getCurrentProgram();
 
-    await this.programsServiceApiService.createRegistration(referenceId, currentProgram.id);
+    await this.programsServiceApiService.createRegistration(
+      referenceId,
+      currentProgram.id,
+    );
 
     await this.paData.store(this.paData.type.referenceId, referenceId);
   }
@@ -185,9 +187,6 @@ export class CreateAccountComponent extends PersonalComponent {
 
     return result;
   }
-
-
-
 
   getNextSection() {
     return PersonalComponents.enrollInProgram;

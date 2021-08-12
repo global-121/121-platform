@@ -240,7 +240,7 @@ export class ProgramsServiceApiService {
       downloadData = await this.apiService
         .get(
           environment.url_121_service_api,
-          `/connection/import-template/${programId}`,
+          `/registrations/import-template/${programId}`,
           false,
         )
         .toPromise();
@@ -263,10 +263,10 @@ export class ProgramsServiceApiService {
     const formData = new FormData();
     formData.append('file', file);
 
-    let path = `/connection/import-bulk/${programId}`;
+    let path = `/registrations/import-bulk/${programId}`;
 
     if (destination === PaStatus.registered) {
-      path = `/connection/import-registrations/${programId}`;
+      path = `/registrations/import-registrations/${programId}`;
     }
 
     return this.apiService

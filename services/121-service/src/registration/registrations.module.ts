@@ -15,6 +15,8 @@ import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { SmsModule } from '../notifications/sms/sms.module';
 import { InlusionScoreService } from './services/inclusion-score.service';
+import { BulkImportService } from './services/bulk-import.service';
+import { ActionModule } from '../actions/action.module';
 
 @Module({
   imports: [
@@ -33,8 +35,9 @@ import { InlusionScoreService } from './services/inclusion-score.service';
     HttpModule,
     LookupModule,
     SmsModule,
+    ActionModule,
   ],
-  providers: [RegistrationsService, InlusionScoreService],
+  providers: [RegistrationsService, BulkImportService, InlusionScoreService],
   controllers: [RegistrationsController],
   exports: [],
 })

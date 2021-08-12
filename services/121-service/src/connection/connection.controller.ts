@@ -58,58 +58,6 @@ export class ConnectionController {
     return await this.connectionService.create(referenceIdDto.referenceId);
   }
 
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('import-bulk/:programId')
-  @ApiConsumes('multipart/form-data')
-  @ApiImplicitFile({ name: 'file', required: true })
-  @UseInterceptors(FileInterceptor('file'))
-  public async importBulk(
-    @UploadedFile() csvFile,
-    @Param() params,
-    @User('id') userId: number,
-  ): Promise<ImportResult> {
-    return await this.connectionService.importBulk(
-      csvFile,
-      Number(params.programId),
-      userId,
-    );
-  }
-
-  @Roles(UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({
-    title: 'Get a CSV template for importing registrations',
-  })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('import-template/:programId')
-  public async getImportRegistrationsTemplate(
-    @Param() params,
-  ): Promise<string[]> {
-    return await this.connectionService.getImportRegistrationsTemplate(
-      Number(params.programId),
-    );
-  }
-
-  @Roles(UserRole.PersonalData, UserRole.Admin)
-  @ApiOperation({
-    title: 'Import set of registered PAs, from CSV',
-  })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('import-registrations/:programId')
-  @ApiConsumes('multipart/form-data')
-  @ApiImplicitFile({ name: 'file', required: true })
-  @UseInterceptors(FileInterceptor('file'))
-  public async importRegistrations(
-    @UploadedFile() csvFile,
-    @Param() params,
-  ): Promise<ImportResult> {
-    return await this.connectionService.importRegistrations(
-      csvFile,
-      Number(params.programId),
-    );
-  }
-
   @ApiOperation({ title: 'Delete connection' })
   @ApiResponse({ status: 200, description: 'Deleted connection' })
   @Post('/delete')
@@ -183,21 +131,6 @@ export class ConnectionController {
     return await this.connectionService.getConnectionByPhoneAndOrName(
       getConnectionByPhoneNameDto.phoneNumber,
       getConnectionByPhoneNameDto.name,
-    );
-  }
-
-  @ApiOperation({ title: 'Set qr identifier for connection' })
-  @ApiResponse({
-    status: 201,
-    description: 'Qr identifier  set for connection',
-  })
-  @Post('/add-qr-identifier')
-  public async addQrIdentifier(
-    @Body() data: AddQrIdentifierDto,
-  ): Promise<void> {
-    await this.connectionService.addQrIdentifier(
-      data.referenceId,
-      data.qrIdentifier,
     );
   }
 

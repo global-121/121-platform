@@ -85,9 +85,8 @@ export class UserService {
     newUser.programs = [];
     newUser.assignedProgram = [];
     newUser.roles = [];
-
-    await this.userRepository.save(newUser);
-    return this.buildUserRO(newUser);
+    const savedUser = await this.userRepository.save(newUser);
+    return this.buildUserRO(savedUser);
   }
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
@@ -192,7 +191,7 @@ export class UserService {
     const result = jwt.sign(
       {
         id: user.id,
-        email: user.username,
+        username: user.username,
         roles: user.roles.map(role => role.role),
         exp: exp.getTime() / 1000,
       },

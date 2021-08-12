@@ -163,7 +163,7 @@ export class ProgramsServiceApiService {
           referenceId,
           programId,
         },
-        true,
+        false,
       )
       .toPromise();
   }
@@ -284,7 +284,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection/add-qr-identifier',
+        '/registrations/add-qr-identifier',
         {
           referenceId,
           qrIdentifier,

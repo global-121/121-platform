@@ -4,6 +4,7 @@ import {
   EntitySubscriberInterface,
   getConnection,
   UpdateEvent,
+  InsertEvent,
 } from 'typeorm';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 
@@ -17,13 +18,18 @@ export class RegistrationSubscriber
   public async afterUpdate(
     event: UpdateEvent<RegistrationEntity>,
   ): Promise<void> {
-    console.log('event: ', event.entity.id);
+    await this.storeRegistrationStatusChange(event.entity);
+  }
+
+  private async storeRegistrationStatusChange(
+    registration: RegistrationEntity,
+  ): Promise<void> {
     const registrationStatusRepo = getConnection().getRepository(
       RegistrationStatusChangeEntity,
     );
     const foundRegistration = await getConnection()
       .getRepository(RegistrationEntity)
-      .findOne(event.entity.id);
+      .findOne(registration.id);
 
     const oldRegistrationStatus = await registrationStatusRepo.findOne({
       where: {
@@ -32,16 +38,17 @@ export class RegistrationSubscriber
       order: { created: 'DESC' },
     });
 
-    // Only add a regisration status change value if registrationStatus value is different or new
+    // Only add a regisration status change value if registrationStatus value is: filled & (new || different)
     if (
-      !oldRegistrationStatus ||
-      oldRegistrationStatus.registrationStatus !==
-        event.entity.registrationStatus
+      registration.registrationStatus &&
+      (!oldRegistrationStatus ||
+        oldRegistrationStatus.registrationStatus !==
+          registration.registrationStatus)
     ) {
       const registrationStatusChange = new RegistrationStatusChangeEntity();
       registrationStatusChange.registrationStatus =
-        event.entity.registrationStatus;
-      registrationStatusChange.registration = event.entity;
+        registration.registrationStatus;
+      registrationStatusChange.registration = registration;
       await registrationStatusRepo.insert(registrationStatusChange);
     }
   }

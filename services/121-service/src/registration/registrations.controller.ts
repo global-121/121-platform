@@ -1,11 +1,22 @@
 import { RegistrationEntity } from './registration.entity';
-import { Post, Body, Controller, UseGuards, Param } from '@nestjs/common';
+import {
+  Post,
+  Body,
+  Controller,
+  UseGuards,
+  Param,
+  UploadedFile,
+  UseInterceptors,
+  Get,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiUseTags,
   ApiOperation,
   ApiResponse,
   ApiImplicitParam,
+  ApiConsumes,
+  ApiImplicitFile,
 } from '@nestjs/swagger';
 import { RolesGuard } from '../roles.guard';
 import { RegistrationsService } from './registrations.service';
@@ -18,6 +29,11 @@ import { SetFspDto } from '../connection/dto/set-fsp.dto';
 import { CustomDataDto } from '../programs/program/dto/custom-data.dto';
 import { SetPhoneRequestDto } from '../connection/dto/set-phone-request.dto';
 import { ReferenceIdDto } from '../programs/program/dto/reference-id.dto';
+import { AddQrIdentifierDto } from '../connection/dto/add-qr-identifier.dto';
+import { UserRole } from '../user-role.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ImportResult } from '../connection/dto/bulk-import.dto';
+import { Roles } from '../roles.decorator';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -108,6 +124,21 @@ export class RegistrationsController {
     );
   }
 
+  @ApiOperation({ title: 'Set QR identifier for registration' })
+  @ApiResponse({
+    status: 201,
+    description: 'QR identifier set for registration',
+  })
+  @Post('/add-qr-identifier')
+  public async addQrIdentifier(
+    @Body() data: AddQrIdentifierDto,
+  ): Promise<void> {
+    await this.registrationsService.addQrIdentifier(
+      data.referenceId,
+      data.qrIdentifier,
+    );
+  }
+
   @ApiOperation({
     title:
       'Person Affected switches from started registration to registered for program',
@@ -120,5 +151,57 @@ export class RegistrationsController {
   @Post('/register')
   public async register(@Body() referenceIdDto: ReferenceIdDto): Promise<void> {
     return await this.registrationsService.register(referenceIdDto.referenceId);
+  }
+
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'Import set of PAs to invite, based on CSV' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('import-bulk/:programId')
+  @ApiConsumes('multipart/form-data')
+  @ApiImplicitFile({ name: 'file', required: true })
+  @UseInterceptors(FileInterceptor('file'))
+  public async importBulk(
+    @UploadedFile() csvFile,
+    @Param() params,
+    @User('id') userId: number,
+  ): Promise<ImportResult> {
+    return await this.registrationsService.importBulk(
+      csvFile,
+      Number(params.programId),
+      userId,
+    );
+  }
+
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({
+    title: 'Get a CSV template for importing registrations',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Get('import-template/:programId')
+  public async getImportRegistrationsTemplate(
+    @Param() params,
+  ): Promise<string[]> {
+    return await this.registrationsService.getImportRegistrationsTemplate(
+      Number(params.programId),
+    );
+  }
+
+  @Roles(UserRole.PersonalData, UserRole.Admin)
+  @ApiOperation({
+    title: 'Import set of registered PAs, from CSV',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('import-registrations/:programId')
+  @ApiConsumes('multipart/form-data')
+  @ApiImplicitFile({ name: 'file', required: true })
+  @UseInterceptors(FileInterceptor('file'))
+  public async importRegistrations(
+    @UploadedFile() csvFile,
+    @Param() params,
+  ): Promise<ImportResult> {
+    return await this.registrationsService.importRegistrations(
+      csvFile,
+      Number(params.programId),
+    );
   }
 }

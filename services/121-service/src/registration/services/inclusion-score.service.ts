@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { Repository } from 'typeorm';
-import { CustomCriterium } from '../../programs/program/custom-criterium.entity';
 import { RegistrationEntity } from '../registration.entity';
 
 @Injectable()
@@ -19,6 +18,7 @@ export class InlusionScoreService {
       where: { referenceId: referenceId },
       relations: ['program'],
     });
+    console.log('registration: ', registration);
 
     const scoreList = await this.createQuestionAnswerListPrefilled(
       referenceId,

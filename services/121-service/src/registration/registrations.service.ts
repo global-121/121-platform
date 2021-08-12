@@ -2,12 +2,11 @@ import { SmsService } from './../notifications/sms/sms.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getRepository, In, IsNull, Not, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { UserEntity } from '../user/user.entity';
 import { RegistrationEntity } from './registration.entity';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import {
   ProgramAnswer,
   StoreProgramAnswersDto,
@@ -24,6 +23,8 @@ import { FinancialServiceProviderEntity } from '../programs/fsp/financial-servic
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { InlusionScoreService } from './services/inclusion-score.service';
+import { BulkImportService } from './services/bulk-import.service';
+import { ImportResult } from '../connection/dto/bulk-import.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -50,10 +51,11 @@ export class RegistrationsService {
     private readonly lookupService: LookupService,
     private readonly smsService: SmsService,
     private readonly inclusionScoreService: InlusionScoreService,
+    private readonly bulkImportService: BulkImportService,
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
-    const user = await this.userRepository.findOne(userId);
+    const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
       const errors = 'This user is not known.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -278,12 +280,10 @@ export class RegistrationsService {
     const importedRegistration = await this.findImportedRegistrationByPhoneNumber(
       sanitizedPhoneNr,
     );
-    console.log('importedRegistration: ', importedRegistration);
     const currentRegistration = await this.getRegistrationFromReferenceId(
       referenceId,
       ['fsp'],
     );
-    console.log('currentRegistration: ', currentRegistration);
 
     if (!useForInvitationMatching || !importedRegistration) {
       // If endpoint is used for other purpose OR no imported registration found  ..
@@ -298,31 +298,35 @@ export class RegistrationsService {
     }
 
     // If imported registration found ..
-    // .. then transfer relevant attributes from current registration to imported registration
-    importedRegistration.referenceId = currentRegistration.referenceId;
-    importedRegistration.customData = currentRegistration.customData;
-    const fsp = await this.fspRepository.findOne({
-      where: { id: currentRegistration.fsp.id },
-    });
-    console.log('fsp: ', fsp);
-    importedRegistration.fsp = fsp;
+    // .. then transfer relevant attributes from imported registration to current registration
+    currentRegistration.namePartnerOrganization =
+      importedRegistration.namePartnerOrganization;
+    currentRegistration.paymentAmountMultiplier =
+      importedRegistration.paymentAmountMultiplier;
 
     // .. and store phone number and language
-    importedRegistration.phoneNumber = sanitizedPhoneNr;
-    importedRegistration.preferredLanguage = preferredLanguage;
+    currentRegistration.phoneNumber = sanitizedPhoneNr;
+    currentRegistration.preferredLanguage = preferredLanguage;
 
-    // .. and set the registration status to 'startedRegistation'
-    importedRegistration.registrationStatus =
-      RegistrationStatusEnum.startedRegistation;
-
-    // .. then delete the current registration
-    await this.registrationStatusChangeRepository.delete({
-      registration: currentRegistration,
-    });
-    await this.registrationRepository.remove(currentRegistration);
+    // Update the 'imported' registration-changes to the current registration
+    const importedRegistrationChanges = await this.registrationStatusChangeRepository.find(
+      {
+        where: {
+          registration: importedRegistration,
+        },
+      },
+    );
+    importedRegistrationChanges.forEach(
+      i => (i.registration = currentRegistration),
+    );
+    await this.registrationStatusChangeRepository.save(
+      importedRegistrationChanges,
+    );
+    // .. then delete the imported registration
+    await this.registrationRepository.remove(importedRegistration);
 
     // .. and save the updated import-registration
-    await this.registrationRepository.save(importedRegistration);
+    await this.registrationRepository.save(currentRegistration);
   }
 
   private async findImportedRegistrationByPhoneNumber(
@@ -340,6 +344,23 @@ export class RegistrationsService {
       },
       relations: ['fsp'],
     });
+  }
+
+  public async addQrIdentifier(
+    referenceId: string,
+    qrIdentifier: string,
+  ): Promise<void> {
+    const registration = await this.getRegistrationFromReferenceId(referenceId);
+
+    const duplicateIdentifier = await this.registrationRepository.findOne({
+      where: { qrIdentifier: qrIdentifier },
+    });
+    if (duplicateIdentifier) {
+      const errors = 'This QR identifier already exists';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    registration.qrIdentifier = qrIdentifier;
+    await this.registrationRepository.save(registration);
   }
 
   public async register(referenceId: string): Promise<void> {
@@ -365,5 +386,39 @@ export class RegistrationsService {
       null,
       RegistrationStatusEnum.registered,
     );
+  }
+
+  public async importBulk(
+    csvFile,
+    programId: number,
+    userId: number,
+  ): Promise<ImportResult> {
+    const program = await this.findProgramOrThrow(programId);
+    return await this.bulkImportService.importBulk(csvFile, program, userId);
+  }
+
+  public async getImportRegistrationsTemplate(
+    programId: number,
+  ): Promise<string[]> {
+    return await this.bulkImportService.getImportRegistrationsTemplate(
+      programId,
+    );
+  }
+
+  public async importRegistrations(
+    csvFile,
+    programId: number,
+  ): Promise<ImportResult> {
+    const program = await this.findProgramOrThrow(programId);
+    return await this.bulkImportService.importRegistrations(csvFile, program);
+  }
+
+  private async findProgramOrThrow(programId: number): Promise<ProgramEntity> {
+    const program = await this.programRepository.findOne(programId);
+    if (!program) {
+      const errors = 'Program not found.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return program;
   }
 }
