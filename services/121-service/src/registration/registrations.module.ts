@@ -18,6 +18,8 @@ import { InlusionScoreService } from './services/inclusion-score.service';
 import { BulkImportService } from './services/bulk-import.service';
 import { ActionModule } from '../actions/action.module';
 import { ExportService } from './services/export.service';
+import { ProgramModule } from '../programs/program/program.module';
+import { FspModule } from '../programs/fsp/fsp.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { ExportService } from './services/export.service';
     LookupModule,
     SmsModule,
     ActionModule,
+    ProgramModule,
+    FspModule,
   ],
   providers: [
     RegistrationsService,

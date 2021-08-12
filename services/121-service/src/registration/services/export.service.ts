@@ -4,11 +4,9 @@ import { IsNull, Not, Repository } from 'typeorm';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { ProgramAnswerEntity } from '../program-answer.entity';
 import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
 import { ProgramQuestionEntity } from '../../programs/program/program-question.entity';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
-import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
 import { RegistrationStatusChangeEntity } from '../registration-status-change.entity';
 import { ActionService } from '../../actions/action.service';
 import { ExportType } from '../../programs/program/dto/export-details';
@@ -18,6 +16,8 @@ import { IntersolvePayoutStatus } from '../../programs/fsp/api/enum/intersolve-p
 import { without, compact, sortBy } from 'lodash';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { TransactionEntity } from '../../programs/program/transactions.entity';
+import { ProgramService } from '../../programs/program/program.service';
+import { FspService } from '../../programs/fsp/fsp.service';
 
 @Injectable()
 export class ExportService {
@@ -32,7 +32,11 @@ export class ExportService {
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
 
-  public constructor(private readonly actionService: ActionService) {}
+  public constructor(
+    private readonly actionService: ActionService,
+    private readonly programService: ProgramService,
+    private readonly fspService: FspService,
+  ) {}
 
   public getExportList(
     programId: number,
@@ -207,7 +211,9 @@ export class ExportService {
           customDataKey: 'IntersolvePayoutStatus',
           customDataValue: voucherStatus,
         };
-        transaction[voucherStatus] = await this.getTransaction(input);
+        transaction[voucherStatus] = await this.programService.getTransaction(
+          input,
+        );
       }
       row[`payment${installment}_status`] =
         transaction[IntersolvePayoutStatus.InitialMessage]?.status;
@@ -230,9 +236,9 @@ export class ExportService {
       relations: ['fsp'],
     });
     const criteria = await this.getAllCriteriaForExport();
-    const installments = (await this.getInstallments(programId)).map(
-      i => i.installment,
-    );
+    const installments = (
+      await this.programService.getInstallments(programId)
+    ).map(i => i.installment);
 
     const connectionDetails = [];
 
