@@ -25,6 +25,14 @@ import { RegistrationStatusChangeEntity } from './registration-status-change.ent
 import { InlusionScoreService } from './services/inclusion-score.service';
 import { BulkImportService } from './services/bulk-import.service';
 import { ImportResult } from '../connection/dto/bulk-import.dto';
+import { ConnectionResponse } from '../models/connection-response.model';
+import { RegistrationResponse } from '../models/registration-response.model';
+import { NoteDto } from '../connection/dto/note.dto';
+import { validate } from 'class-validator';
+import { Attributes } from '../connection/dto/update-attribute.dto';
+import { ExportType } from '../programs/program/dto/export-details';
+import { FileDto } from '../programs/program/dto/file.dto';
+import { ExportService } from './services/export.service';
 
 @Injectable()
 export class RegistrationsService {
@@ -52,6 +60,7 @@ export class RegistrationsService {
     private readonly smsService: SmsService,
     private readonly inclusionScoreService: InlusionScoreService,
     private readonly bulkImportService: BulkImportService,
+    private readonly exportService: ExportService,
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
@@ -420,5 +429,183 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return program;
+  }
+
+  public async getRegistrationsForProgram(
+    programId: number,
+    includePersonalData: boolean,
+  ): Promise<RegistrationResponse[]> {
+    const registrations = await this.getAllRegistrations(programId);
+
+    const registrationsResponse = [];
+    for (let registration of registrations) {
+      const registrationResponse = new RegistrationResponse();
+      registrationResponse['id'] = registration.id;
+      registrationResponse['referenceId'] = registration.referenceId;
+      registrationResponse['status'] = registration.registrationStatus;
+      registrationResponse['inclusionScore'] = registration.inclusionScore;
+      registrationResponse['fsp'] = registration.fsp?.fsp;
+      registrationResponse['namePartnerOrganization'] =
+        registration.namePartnerOrganization;
+      registrationResponse['paymentAmountMultiplier'] =
+        registration.paymentAmountMultiplier;
+
+      registrationResponse[
+        'created'
+      ] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum.startedRegistation,
+      );
+      registrationResponse[
+        'importedDate'
+      ] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum.imported,
+      );
+      registrationResponse[
+        'invitedDate'
+      ] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum.invited,
+      );
+      registrationResponse[
+        'noLongerEligibleDate'
+      ] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum.noLongerEligible,
+      );
+      registrationResponse[
+        'registeredDate'
+      ] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum.registered,
+      );
+      registrationResponse[
+        'selectedForValidationDate'
+      ] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum.selectedForValidation,
+      );
+      registrationResponse[
+        'validationDate'
+      ] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum.validated,
+      );
+      registrationResponse[
+        'inclusionDate'
+      ] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum.included,
+      );
+      registrationResponse[
+        'inclusionEndDate'
+      ] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum.inclusionEnded,
+      );
+      registrationResponse[
+        'rejectionDate'
+      ] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum.rejected,
+      );
+
+      if (includePersonalData) {
+        registrationResponse['name'] = this.exportService.getName(
+          registration.customData,
+        );
+        registrationResponse['phoneNumber'] =
+          registration.phoneNumber ||
+          registration.customData[CustomDataAttributes.phoneNumber];
+        registrationResponse['whatsappPhoneNumber'] =
+          registration.customData[CustomDataAttributes.whatsappPhoneNumber];
+        registrationResponse['vnumber'] = registration.customData['vnumber'];
+        registrationResponse['hasNote'] = !!registration.note;
+      }
+
+      registrationsResponse.push(registrationResponse);
+    }
+    return registrationsResponse;
+  }
+
+  private async getAllRegistrations(
+    programId: number,
+  ): Promise<RegistrationEntity[]> {
+    return await this.registrationRepository.find({
+      where: { program: { id: programId } },
+      relations: ['fsp'],
+      order: { inclusionScore: 'DESC' },
+    });
+  }
+
+  private async getLatestDateForRegistrationStatus(
+    registration: RegistrationEntity,
+    status: RegistrationStatusEnum,
+  ): Promise<Date> {
+    const registrationStatusChange = await this.registrationStatusChangeRepository.findOne(
+      {
+        where: {
+          registration: { id: registration.id },
+          registrationStatus: status,
+        },
+        order: { created: 'DESC' },
+      },
+    );
+    return registrationStatusChange ? registrationStatusChange.created : null;
+  }
+
+  public async updateAttribute(
+    referenceId: string,
+    attribute: Attributes,
+    value: string | number,
+  ): Promise<RegistrationEntity> {
+    const registration = await this.getRegistrationFromReferenceId(referenceId);
+    let attributeFound = false;
+
+    if (typeof registration[attribute] !== 'undefined') {
+      registration[attribute] = value;
+      attributeFound = true;
+    }
+    if (
+      registration.customData &&
+      typeof registration.customData[attribute] !== 'undefined'
+    ) {
+      registration.customData[attribute] = await this.cleanCustomDataIfPhoneNr(
+        attribute,
+        String(value),
+      );
+      attributeFound = true;
+    }
+
+    if (!attributeFound) {
+      const errors = 'This attribute is not known for this Person Affected.';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    const errors = await validate(registration);
+    if (errors.length > 0) {
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+    return await this.registrationRepository.save(registration);
+  }
+
+  public async updateNote(referenceId: string, note: string): Promise<NoteDto> {
+    const registration = await this.getRegistrationFromReferenceId(referenceId);
+    registration.note = note;
+    registration.noteUpdated = new Date();
+    await this.registrationRepository.save(registration);
+    const newNote = new NoteDto();
+    newNote.note = registration.note;
+    newNote.noteUpdated = registration.noteUpdated;
+    return newNote;
+  }
+
+  public async retrieveNote(referenceId: string): Promise<NoteDto> {
+    const registration = await this.getRegistrationFromReferenceId(referenceId);
+    const note = new NoteDto();
+    note.note = registration.note;
+    note.noteUpdated = registration.noteUpdated;
+    return note;
   }
 }

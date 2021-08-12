@@ -79,7 +79,7 @@ export class AuthService {
 
     if (
       !user ||
-      !user.email ||
+      !user.username ||
       !user.roles ||
       (user.roles.length === 1 && user.roles.includes(UserRole.FieldValidation))
     ) {

@@ -246,7 +246,7 @@
           "imported": "Imported",
           "invited": "Invited",
           "noLongerEligible": "No longer eligible",
-          "created": "Created",
+          "startedRegistration": "Created",
           "registered": "Registered",
           "registeredWhileNoLongerEligible": "Registered while no longer eligible",
           "selectedForValidation": "Selected for Validation",

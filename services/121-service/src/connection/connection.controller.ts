@@ -65,38 +65,6 @@ export class ConnectionController {
     return await this.connectionService.delete(referenceIdDto.referenceId);
   }
 
-  @ApiOperation({ title: 'Update note for connection' })
-  @ApiResponse({ status: 200, description: 'Update note for connection' })
-  @Post('/note')
-  public async updateNote(@Body() updateNote: UpdateNoteDto): Promise<NoteDto> {
-    return await this.connectionService.updateNote(
-      updateNote.referenceId,
-      updateNote.note,
-    );
-  }
-
-  @Roles(UserRole.PersonalData)
-  @ApiOperation({ title: 'Get note for connection' })
-  @ApiResponse({ status: 200, description: 'Get note for connection' })
-  @ApiImplicitParam({ name: 'referenceId', required: true })
-  @Get('/note/:referenceId')
-  public async retrieveNote(@Param() params): Promise<NoteDto> {
-    return await this.connectionService.retrieveNote(params.referenceId);
-  }
-
-  @ApiOperation({ title: 'Update attribute for connection' })
-  @ApiResponse({ status: 200, description: 'Update attribute for connection' })
-  @Post('/attribute')
-  public async updateAttribute(
-    @Body() updateAttributeDto: UpdateAttributeDto,
-  ): Promise<ConnectionEntity> {
-    return await this.connectionService.updateAttribute(
-      updateAttributeDto.referenceId,
-      updateAttributeDto.attribute,
-      updateAttributeDto.value,
-    );
-  }
-
   @Roles(UserRole.FieldValidation, UserRole.PersonalData)
   @ApiOperation({
     title:

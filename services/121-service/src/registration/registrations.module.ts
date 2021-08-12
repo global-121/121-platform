@@ -17,6 +17,7 @@ import { SmsModule } from '../notifications/sms/sms.module';
 import { InlusionScoreService } from './services/inclusion-score.service';
 import { BulkImportService } from './services/bulk-import.service';
 import { ActionModule } from '../actions/action.module';
+import { ExportService } from './services/export.service';
 
 @Module({
   imports: [
@@ -37,7 +38,12 @@ import { ActionModule } from '../actions/action.module';
     SmsModule,
     ActionModule,
   ],
-  providers: [RegistrationsService, BulkImportService, InlusionScoreService],
+  providers: [
+    RegistrationsService,
+    BulkImportService,
+    InlusionScoreService,
+    ExportService,
+  ],
   controllers: [RegistrationsController],
   exports: [],
 })

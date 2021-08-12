@@ -85,4 +85,10 @@ export class RegistrationEntity {
   @IsPositive()
   @IsOptional()
   public paymentAmountMultiplier: number;
+
+  @Column({ nullable: true })
+  public note: string;
+
+  @Column({ nullable: true })
+  public noteUpdated: Date;
 }

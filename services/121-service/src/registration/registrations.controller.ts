@@ -34,6 +34,9 @@ import { UserRole } from '../user-role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImportResult } from '../connection/dto/bulk-import.dto';
 import { Roles } from '../roles.decorator';
+import { NoteDto, UpdateNoteDto } from '../connection/dto/note.dto';
+import { UpdateAttributeDto } from '../connection/dto/update-attribute.dto';
+import { ExportDetails } from '../programs/program/dto/export-details';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -203,5 +206,97 @@ export class RegistrationsController {
       csvFile,
       Number(params.programId),
     );
+  }
+
+  @Roles(UserRole.View, UserRole.RunProgram)
+  @ApiOperation({
+    title: 'Get all People Affected for program EXCLUDING personal data',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Got all People Affected for program EXCLUDING personal data',
+  })
+  @Get(':programId')
+  public async getPeopleAffected(@Param() params): Promise<any[]> {
+    return await this.registrationsService.getRegistrationsForProgram(
+      Number(params.programId),
+      false,
+    );
+  }
+
+  @Roles(UserRole.View, UserRole.PersonalData)
+  @ApiOperation({
+    title: 'Get all People Affected for program INCLUDING personal data',
+  })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all People Affected for program INCLUDING personal data',
+  })
+  @Get('personal-data/:programId')
+  public async getPeopleAffectedWithPersonalData(
+    @Param() params,
+  ): Promise<any[]> {
+    return await this.registrationsService.getRegistrationsForProgram(
+      Number(params.programId),
+      true,
+    );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({
+    title: 'Get an exported list of people',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of people exported',
+  })
+  @Post('export-list')
+  public async getExportList(
+    @Body() data: ExportDetails,
+    @User('id') userId: number,
+  ): Promise<any> {
+    return await this.registrationsService.getExportList(
+      data.programId,
+      data.type,
+      data.installment,
+      userId,
+    );
+  }
+
+  @ApiOperation({ title: 'Update attribute for registration' })
+  @ApiResponse({
+    status: 200,
+    description: 'Updated attribute for registration',
+  })
+  @Post('/attribute')
+  public async updateAttribute(
+    @Body() updateAttributeDto: UpdateAttributeDto,
+  ): Promise<RegistrationEntity> {
+    return await this.registrationsService.updateAttribute(
+      updateAttributeDto.referenceId,
+      updateAttributeDto.attribute,
+      updateAttributeDto.value,
+    );
+  }
+
+  @ApiOperation({ title: 'Update note for registration' })
+  @ApiResponse({ status: 200, description: 'Update note for registration' })
+  @Post('/note')
+  public async updateNote(@Body() updateNote: UpdateNoteDto): Promise<NoteDto> {
+    return await this.registrationsService.updateNote(
+      updateNote.referenceId,
+      updateNote.note,
+    );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({ title: 'Get note for registration' })
+  @ApiResponse({ status: 200, description: 'Get note for registration' })
+  @ApiImplicitParam({ name: 'referenceId', required: true })
+  @Get('/note/:referenceId')
+  public async retrieveNote(@Param() params): Promise<NoteDto> {
+    return await this.registrationsService.retrieveNote(params.referenceId);
   }
 }

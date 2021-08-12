@@ -193,25 +193,6 @@ export class ConnectionService {
     return await this.connectionRepository.save(connection);
   }
 
-  public async updateNote(referenceId: string, note: string): Promise<NoteDto> {
-    const connection = await this.findConnectionOrThrow(referenceId);
-    connection.note = note;
-    connection.noteUpdated = new Date();
-    await this.connectionRepository.save(connection);
-    const newNote = new NoteDto();
-    newNote.note = connection.note;
-    newNote.noteUpdated = connection.noteUpdated;
-    return newNote;
-  }
-
-  public async retrieveNote(referenceId: string): Promise<NoteDto> {
-    const connection = await this.findConnectionOrThrow(referenceId);
-    const note = new NoteDto();
-    note.note = connection.note;
-    note.noteUpdated = connection.noteUpdated;
-    return note;
-  }
-
   private async findConnectionOrThrow(
     referenceId: string,
   ): Promise<ConnectionEntity> {

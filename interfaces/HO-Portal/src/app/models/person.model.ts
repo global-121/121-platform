@@ -9,7 +9,7 @@ export class Person {
   importedDate?: string;
   invitedDate?: string;
   noLongerEligibleDate?: string;
-  appliedDate?: string;
+  registeredDate?: string;
   selectedForValidationDate?: string;
   validationDate?: string;
   inclusionDate?: string;

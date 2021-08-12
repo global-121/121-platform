@@ -1,4 +1,4 @@
-export class CriteriumForExport {
-  public name: string;
+export class ProgramQuestionForExport {
+  public programQuestion: string;
   public export: string[];
 }

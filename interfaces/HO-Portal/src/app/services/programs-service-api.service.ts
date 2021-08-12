@@ -170,7 +170,7 @@ export class ProgramsServiceApiService {
     value: string | number,
   ): Promise<Person> {
     return this.apiService
-      .post(environment.url_121_service_api, `/connection/attribute`, {
+      .post(environment.url_121_service_api, `/registrations/attribute`, {
         referenceId,
         attribute,
         value,
@@ -180,7 +180,7 @@ export class ProgramsServiceApiService {
 
   updateNote(referenceId: string, note: string): Promise<Note> {
     return this.apiService
-      .post(environment.url_121_service_api, `/connection/note`, {
+      .post(environment.url_121_service_api, `/registrations/note`, {
         referenceId,
         note,
       })
@@ -189,7 +189,10 @@ export class ProgramsServiceApiService {
 
   retrieveNote(referenceId: string): Promise<Note> {
     return this.apiService
-      .get(environment.url_121_service_api, `/connection/note/${referenceId}`)
+      .get(
+        environment.url_121_service_api,
+        `/registrations/note/${referenceId}`,
+      )
       .toPromise();
   }
 
@@ -325,7 +328,7 @@ export class ProgramsServiceApiService {
 
   getPeopleAffected(programId: number | string): Promise<Person[]> {
     return this.apiService
-      .get(environment.url_121_service_api, `/programs/enrolled/${programId}`)
+      .get(environment.url_121_service_api, `/registrations/${programId}`)
       .toPromise();
   }
 
@@ -333,7 +336,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/enrolledPrivacy/${programId}`,
+        `/registrations/personal-data/${programId}`,
       )
       .toPromise();
   }

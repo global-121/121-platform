@@ -130,38 +130,6 @@ export class ProgramController {
     );
   }
 
-  @Roles(UserRole.View, UserRole.RunProgram)
-  @ApiOperation({ title: 'Get all enrolled PA' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: 200,
-    description: 'All included PA per program',
-  })
-  @Get('enrolled/:programId')
-  public async getEnrolled(@Param() params): Promise<any[]> {
-    return await this.programService.getConnections(
-      Number(params.programId),
-      false,
-    );
-  }
-
-  @Roles(UserRole.View, UserRole.PersonalData)
-  @ApiOperation({
-    title: 'Get all enrolled PA INCLUDING personal details',
-  })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: 200,
-    description: 'All included PA per program (including personal details)',
-  })
-  @Get('enrolledPrivacy/:programId')
-  public async getEnrolledWithNames(@Param() params): Promise<any[]> {
-    return await this.programService.getConnections(
-      Number(params.programId),
-      true,
-    );
-  }
-
   @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Get monitoring data' })
   @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
@@ -343,27 +311,6 @@ export class ProgramController {
   @Get('total-included/:programId')
   public async getTotalIncluded(@Param() params): Promise<TotalIncluded> {
     return await this.programService.getTotalIncluded(Number(params.programId));
-  }
-
-  @Roles(UserRole.PersonalData)
-  @ApiOperation({
-    title: 'Get an exported list of people',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of people exported',
-  })
-  @Post('export-list')
-  public async getExportList(
-    @Body() data: ExportDetails,
-    @User('id') userId: number,
-  ): Promise<any> {
-    return await this.programService.getExportList(
-      data.programId,
-      data.type,
-      data.installment,
-      userId,
-    );
   }
 
   @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
