@@ -20,6 +20,7 @@ import { ActionModule } from '../actions/action.module';
 import { ExportService } from './services/export.service';
 import { ProgramModule } from '../programs/program/program.module';
 import { FspModule } from '../programs/fsp/fsp.module';
+import { TransactionEntity } from '../programs/program/transactions.entity';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { FspModule } from '../programs/fsp/fsp.module';
       FinancialServiceProviderEntity,
       FspAttributeEntity,
       RegistrationStatusChangeEntity,
+      TransactionEntity,
     ]),
     UserModule,
     HttpModule,

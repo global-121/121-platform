@@ -18,7 +18,7 @@ export enum PaStatusTimestampField {
   invitedDate = 'invitedDate',
   noLongerEligibleDate = 'noLongerEligibleDate',
   accountCreatedDate = 'accountCreatedDate',
-  appliedDate = 'appliedDate',
+  registeredDate = 'registeredDate',
   selectedForValidationDate = 'selectedForValidationDate',
   validationDate = 'validationDate',
   inclusionDate = 'inclusionDate',

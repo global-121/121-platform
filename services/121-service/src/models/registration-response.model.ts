@@ -10,7 +10,7 @@ export class RegistrationResponse {
   public importedDate: Date | null;
   public invitedDate: Date | null;
   public noLongerEligibleDate: Date | null;
-  public appliedDate: Date | null;
+  public registeredDate: Date | null;
   public selectedForValidationDate: Date | null;
   public validationDate: Date | null;
   public inclusionDate: Date | null;

@@ -14,6 +14,7 @@ export enum GenericAttributes {
   preferredLanguage = 'preferredLanguage',
   namePartnerOrganization = 'namePartnerOrganization',
   fspName = 'fspName',
+  paymentAmountMultiplier = 'paymentAmountMultiplier',
 }
 
 export class Attribute {

@@ -283,7 +283,7 @@ export class ProgramsServiceApiService {
     installment?: number,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, `/programs/export-list`, {
+      .post(environment.url_121_service_api, `/registrations/export-list`, {
         programId,
         type,
         ...(installment && { installment }),

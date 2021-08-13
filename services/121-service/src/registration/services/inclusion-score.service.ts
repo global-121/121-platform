@@ -18,7 +18,6 @@ export class InlusionScoreService {
       where: { referenceId: referenceId },
       relations: ['program'],
     });
-    console.log('registration: ', registration);
 
     const scoreList = await this.createQuestionAnswerListPrefilled(
       referenceId,

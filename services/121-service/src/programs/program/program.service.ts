@@ -42,7 +42,6 @@ import { UpdateProgramDto } from './dto/update-program.dto';
 import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { CriteriumForExport } from './dto/criterium-for-export.dto';
 import { FileDto } from './dto/file.dto';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
@@ -52,6 +51,7 @@ import { without, compact, sortBy } from 'lodash';
 import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
 import { ConnectionResponse } from '../../models/connection-response.model';
 import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
+import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 
 @Injectable()
 export class ProgramService {
@@ -969,29 +969,29 @@ export class ProgramService {
     }
   }
 
-  private getDateColumPerStatus(
-    filterStatus: PaStatus,
+  public getDateColumPerStatus(
+    filterStatus: RegistrationStatusEnum,
   ): PaStatusTimestampField {
     switch (filterStatus) {
-      case PaStatus.created:
-        return PaStatusTimestampField.created;
-      case PaStatus.imported:
+      case RegistrationStatusEnum.imported:
         return PaStatusTimestampField.importedDate;
-      case PaStatus.invited:
+      case RegistrationStatusEnum.invited:
         return PaStatusTimestampField.invitedDate;
-      case PaStatus.noLongerEligible:
+      case RegistrationStatusEnum.noLongerEligible:
         return PaStatusTimestampField.noLongerEligibleDate;
-      case PaStatus.registered:
-        return PaStatusTimestampField.appliedDate;
-      case PaStatus.selectedForValidation:
+      case RegistrationStatusEnum.startedRegistation:
+        return PaStatusTimestampField.created;
+      case RegistrationStatusEnum.registered:
+        return PaStatusTimestampField.registeredDate;
+      case RegistrationStatusEnum.selectedForValidation:
         return PaStatusTimestampField.selectedForValidationDate;
-      case PaStatus.validated:
+      case RegistrationStatusEnum.validated:
         return PaStatusTimestampField.validationDate;
-      case PaStatus.included:
+      case RegistrationStatusEnum.included:
         return PaStatusTimestampField.inclusionDate;
-      case PaStatus.inclusionEnded:
+      case RegistrationStatusEnum.inclusionEnded:
         return PaStatusTimestampField.inclusionEndDate;
-      case PaStatus.rejected:
+      case RegistrationStatusEnum.rejected:
         return PaStatusTimestampField.rejectionDate;
     }
   }
@@ -999,7 +999,7 @@ export class ProgramService {
   private async getTimestampsPerStatusAndTimePeriod(
     programId: number,
     connections: ConnectionResponse[],
-    filterStatus: PaStatus,
+    filterStatus: RegistrationStatusEnum,
     installment?: number,
     month?: number,
     year?: number,
@@ -1067,7 +1067,7 @@ export class ProgramService {
       [PaStatus.imported]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         connections,
-        PaStatus.imported,
+        RegistrationStatusEnum.imported,
         installment,
         month,
         year,
@@ -1076,7 +1076,7 @@ export class ProgramService {
       [PaStatus.invited]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         connections,
-        PaStatus.invited,
+        RegistrationStatusEnum.invited,
         installment,
         month,
         year,
@@ -1085,7 +1085,7 @@ export class ProgramService {
       [PaStatus.created]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         connections,
-        PaStatus.created,
+        RegistrationStatusEnum.startedRegistation,
         installment,
         month,
         year,
@@ -1094,7 +1094,7 @@ export class ProgramService {
       [PaStatus.registered]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         connections,
-        PaStatus.registered,
+        RegistrationStatusEnum.registered,
         installment,
         month,
         year,
@@ -1103,7 +1103,7 @@ export class ProgramService {
       [PaStatus.selectedForValidation]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         connections,
-        PaStatus.selectedForValidation,
+        RegistrationStatusEnum.selectedForValidation,
         installment,
         month,
         year,
@@ -1112,7 +1112,7 @@ export class ProgramService {
       [PaStatus.validated]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         connections,
-        PaStatus.validated,
+        RegistrationStatusEnum.validated,
         installment,
         month,
         year,
@@ -1120,7 +1120,7 @@ export class ProgramService {
       [PaStatus.included]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         connections,
-        PaStatus.included,
+        RegistrationStatusEnum.included,
         installment,
         month,
         year,
@@ -1129,7 +1129,7 @@ export class ProgramService {
       [PaStatus.inclusionEnded]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         connections,
-        PaStatus.inclusionEnded,
+        RegistrationStatusEnum.inclusionEnded,
         installment,
         month,
         year,
@@ -1138,7 +1138,7 @@ export class ProgramService {
       [PaStatus.noLongerEligible]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         connections,
-        PaStatus.noLongerEligible,
+        RegistrationStatusEnum.noLongerEligible,
         installment,
         month,
         year,
@@ -1146,7 +1146,7 @@ export class ProgramService {
       [PaStatus.rejected]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         connections,
-        PaStatus.rejected,
+        RegistrationStatusEnum.rejected,
         installment,
         month,
         year,

@@ -4,7 +4,10 @@ import { IsNull, Not, Repository } from 'typeorm';
 import { ProgramEntity } from '../../programs/program/program.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
-import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
+import {
+  CustomDataAttributes,
+  GenericAttributes,
+} from '../../connection/validation-data/dto/custom-data-attributes';
 import { ProgramQuestionEntity } from '../../programs/program/program-question.entity';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
 import { RegistrationStatusChangeEntity } from '../registration-status-change.entity';
@@ -18,19 +21,22 @@ import { StatusEnum } from '../../shared/enum/status.enum';
 import { TransactionEntity } from '../../programs/program/transactions.entity';
 import { ProgramService } from '../../programs/program/program.service';
 import { FspService } from '../../programs/fsp/fsp.service';
+import { PaStatusTimestampField } from '../../models/pa-status.model';
 
 @Injectable()
 export class ExportService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(RegistrationStatusChangeEntity)
-  @InjectRepository(ProgramEntity)
   @InjectRepository(ProgramQuestionEntity)
   private readonly programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(FspAttributeEntity)
   private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
+  @InjectRepository(RegistrationStatusChangeEntity)
+  private readonly registrationStatusChangeRepo: Repository<
+    RegistrationStatusChangeEntity
+  >;
 
   public constructor(
     private readonly actionService: ActionService,
@@ -96,7 +102,7 @@ export class ExportService {
   }
 
   private async filterAttributesToExport(pastPaymentDetails): Promise<any[]> {
-    const criteria = (await this.getAllCriteriaForExport()).map(
+    const criteria = (await this.getAllQuestionsForExport()).map(
       c => c.programQuestion,
     );
     const outputPaymentDetails = [];
@@ -127,25 +133,15 @@ export class ExportService {
     return response;
   }
 
-  private addGenericFieldsToExport(
+  private async addGenericFieldsToExport(
     row: object,
     registration: RegistrationEntity,
-  ): object {
+  ): Promise<object> {
     const genericFields = [
       'id',
-      'phoneNumber',
-      'importedDate',
-      'invitedDate',
-      'noLongerEligibleDate',
-      'created',
-      'appliedDate',
-      'selectedForValidationDate',
-      'validationDate',
-      'inclusionDate',
-      'inclusionEndDate',
-      'rejectionDate',
-      'namePartnerOrganization',
-      'paymentAmountMultiplier',
+      GenericAttributes.phoneNumber,
+      GenericAttributes.namePartnerOrganization,
+      GenericAttributes.paymentAmountMultiplier,
       'note',
     ];
     genericFields.forEach(field => {
@@ -154,6 +150,19 @@ export class ExportService {
 
     row['status'] = registration.registrationStatus;
     row['financialServiceProvider'] = registration.fsp?.fsp;
+
+    const registrationStatuses = Object.values(
+      RegistrationStatusEnum,
+    ).map(item => String(item));
+    for await (let status of registrationStatuses) {
+      const dateField = this.programService.getDateColumPerStatus(
+        RegistrationStatusEnum[status],
+      );
+      row[dateField] = await this.getLatestDateForRegistrationStatus(
+        registration,
+        RegistrationStatusEnum[status],
+      );
+    }
 
     return row;
   }
@@ -173,22 +182,40 @@ export class ExportService {
     return row;
   }
 
-  private async getAllCriteriaForExport(): Promise<ProgramQuestionForExport[]> {
+  private async getAllQuestionsForExport(): Promise<
+    ProgramQuestionForExport[]
+  > {
     return (await this.programQuestionRepository.find())
-      .map(c => {
+      .map(question => {
         return {
-          programQuestion: c.name,
-          export: JSON.parse(JSON.stringify(c.export)),
+          programQuestion: question.name,
+          export: JSON.parse(JSON.stringify(question.export)),
         };
       })
       .concat(
-        (await this.fspAttributeRepository.find()).map(c => {
+        (await this.fspAttributeRepository.find()).map(question => {
           return {
-            programQuestion: c.name,
-            export: JSON.parse(JSON.stringify(c.export)),
+            programQuestion: question.name,
+            export: JSON.parse(JSON.stringify(question.export)),
           };
         }),
       );
+  }
+
+  public async getLatestDateForRegistrationStatus(
+    registration: RegistrationEntity,
+    status: RegistrationStatusEnum,
+  ): Promise<Date> {
+    const registrationStatusChange = await this.registrationStatusChangeRepo.findOne(
+      {
+        where: {
+          registration: { id: registration.id },
+          registrationStatus: status,
+        },
+        order: { created: 'DESC' },
+      },
+    );
+    return registrationStatusChange ? registrationStatusChange.created : null;
   }
 
   private async addPaymentFieldsToExport(
@@ -232,36 +259,36 @@ export class ExportService {
   }
 
   private async getAllPeopleAffectedList(programId: number): Promise<FileDto> {
-    const connections = await this.registrationRepository.find({
+    const registrations = await this.registrationRepository.find({
       relations: ['fsp'],
     });
-    const criteria = await this.getAllCriteriaForExport();
+    const questions = await this.getAllQuestionsForExport();
     const installments = (
       await this.programService.getInstallments(programId)
     ).map(i => i.installment);
 
-    const connectionDetails = [];
+    const registrationDetails = [];
 
-    for await (let connection of connections) {
+    for await (let registration of registrations) {
       let row = {};
       row = this.addProgramQuestionsToExport(
         row,
-        criteria,
-        connection,
+        questions,
+        registration,
         ExportType.allPeopleAffected,
       );
-      row = this.addGenericFieldsToExport(row, connection);
+      row = this.addGenericFieldsToExport(row, registration);
       row = await this.addPaymentFieldsToExport(
         row,
-        connection,
+        registration,
         programId,
         installments,
       );
-      connectionDetails.push(row);
+      registrationDetails.push(row);
     }
     const response = {
       fileName: this.getExportFileName(ExportType.allPeopleAffected),
-      data: this.jsonToCsv(connectionDetails),
+      data: this.jsonToCsv(registrationDetails),
     };
 
     return response;
@@ -269,13 +296,16 @@ export class ExportService {
 
   private async getInclusionList(programId: number): Promise<FileDto> {
     const includedRegistrations = (
-      await this.registrationRepository.find({ relations: ['fsp'] })
+      await this.registrationRepository.find({
+        where: { program: { id: programId } },
+        relations: ['fsp'],
+      })
     ).filter(
       registration =>
         registration.registrationStatus === RegistrationStatusEnum.included,
     );
 
-    const criteria = await this.getAllCriteriaForExport();
+    const criteria = await this.getAllQuestionsForExport();
 
     const inclusionDetails = [];
     includedRegistrations.forEach(connection => {
@@ -330,7 +360,7 @@ export class ExportService {
         RegistrationStatusEnum.selectedForValidation,
     );
 
-    const criteria = await this.getAllCriteriaForExport();
+    const criteria = await this.getAllQuestionsForExport();
 
     const columnDetails = [];
     selectedRegistrations.forEach(connection => {

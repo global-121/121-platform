@@ -33,6 +33,7 @@ import { Attributes } from '../connection/dto/update-attribute.dto';
 import { ExportType } from '../programs/program/dto/export-details';
 import { FileDto } from '../programs/program/dto/file.dto';
 import { ExportService } from './services/export.service';
+import { PaStatusTimestampField } from '../models/pa-status.model';
 
 @Injectable()
 export class RegistrationsService {
@@ -451,62 +452,62 @@ export class RegistrationsService {
         registration.paymentAmountMultiplier;
 
       registrationResponse[
-        'created'
-      ] = await this.getLatestDateForRegistrationStatus(
+        PaStatusTimestampField.created
+      ] = await this.exportService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.startedRegistation,
       );
       registrationResponse[
-        'importedDate'
-      ] = await this.getLatestDateForRegistrationStatus(
+        PaStatusTimestampField.importedDate
+      ] = await this.exportService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.imported,
       );
       registrationResponse[
-        'invitedDate'
-      ] = await this.getLatestDateForRegistrationStatus(
+        PaStatusTimestampField.invitedDate
+      ] = await this.exportService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.invited,
       );
       registrationResponse[
-        'noLongerEligibleDate'
-      ] = await this.getLatestDateForRegistrationStatus(
+        PaStatusTimestampField.noLongerEligibleDate
+      ] = await this.exportService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.noLongerEligible,
       );
       registrationResponse[
-        'registeredDate'
-      ] = await this.getLatestDateForRegistrationStatus(
+        PaStatusTimestampField.registeredDate
+      ] = await this.exportService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.registered,
       );
       registrationResponse[
-        'selectedForValidationDate'
-      ] = await this.getLatestDateForRegistrationStatus(
+        PaStatusTimestampField.selectedForValidationDate
+      ] = await this.exportService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.selectedForValidation,
       );
       registrationResponse[
-        'validationDate'
-      ] = await this.getLatestDateForRegistrationStatus(
+        PaStatusTimestampField.validationDate
+      ] = await this.exportService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.validated,
       );
       registrationResponse[
-        'inclusionDate'
-      ] = await this.getLatestDateForRegistrationStatus(
+        PaStatusTimestampField.inclusionDate
+      ] = await this.exportService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.included,
       );
       registrationResponse[
-        'inclusionEndDate'
-      ] = await this.getLatestDateForRegistrationStatus(
+        PaStatusTimestampField.inclusionEndDate
+      ] = await this.exportService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.inclusionEnded,
       );
       registrationResponse[
-        'rejectionDate'
-      ] = await this.getLatestDateForRegistrationStatus(
+        PaStatusTimestampField.rejectionDate
+      ] = await this.exportService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.rejected,
       );
@@ -537,22 +538,6 @@ export class RegistrationsService {
       relations: ['fsp'],
       order: { inclusionScore: 'DESC' },
     });
-  }
-
-  private async getLatestDateForRegistrationStatus(
-    registration: RegistrationEntity,
-    status: RegistrationStatusEnum,
-  ): Promise<Date> {
-    const registrationStatusChange = await this.registrationStatusChangeRepository.findOne(
-      {
-        where: {
-          registration: { id: registration.id },
-          registrationStatus: status,
-        },
-        order: { created: 'DESC' },
-      },
-    );
-    return registrationStatusChange ? registrationStatusChange.created : null;
   }
 
   public async updateAttribute(
@@ -607,5 +592,19 @@ export class RegistrationsService {
     note.note = registration.note;
     note.noteUpdated = registration.noteUpdated;
     return note;
+  }
+
+  public async getExportList(
+    programId: number,
+    type: ExportType,
+    installment: number | null = null,
+    userId: number,
+  ): Promise<FileDto> {
+    return await this.exportService.getExportList(
+      programId,
+      type,
+      installment,
+      userId,
+    );
   }
 }

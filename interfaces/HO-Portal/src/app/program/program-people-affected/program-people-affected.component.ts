@@ -624,8 +624,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       digitalIdCreated: person.created
         ? formatDate(person.created, this.dateFormat, this.locale)
         : null,
-      vulnerabilityAssessmentCompleted: person.appliedDate
-        ? formatDate(person.appliedDate, this.dateFormat, this.locale)
+      vulnerabilityAssessmentCompleted: person.registeredDate
+        ? formatDate(person.registeredDate, this.dateFormat, this.locale)
         : null,
       inclusionScore: person.inclusionScore,
       selectedForValidation: person.selectedForValidationDate
