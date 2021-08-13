@@ -13,7 +13,7 @@ import { ConnectionEntity } from '../../connection/connection.entity';
 import { ProgramEntity } from '../program/program.entity';
 import { TransactionEntity } from '../program/transactions.entity';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
-import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
+import { UpdateFspAttributeDto, UpdateFspDto } from './api/dto/update-fsp.dto';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { PaPaymentDataDto } from './dto/pa-payment-data.dto';
 import {

@@ -17,12 +17,11 @@ In this file we document "how to do X", manually. As not everything is possible 
    - New WhatsApp phone(s)-number (if need to replace)
    - New SMS phone-number (if need to replace)
 3. **121-dev-team**:
-   1. Find the `connection` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
-   2. Use the found connection `referenceId` to update the phone-numbers.
-      - Use: [`/connection/phone/overwrite`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_phone_overwrite)  
-        To store the new SMS phone-number. (A phone number check is included, with automatic sanitization as far as possible.)
-      - Use: [`/connection/attribute`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_attribute)  
-        To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`. (A phone number check is included, with automatic sanitization as far as possible.)
+   1. Find the `registration` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
+   2. Use the found registration `referenceId` to update the phone-numbers.
+      - Use: [`/registrations/attribute`](https://test-vm.121.global/121-service/docs/#/registrations/attribute)  
+        - To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`)
+        - To store the new SMS phone-number use the same endpoint with: `key` set to `phoneNumer` (For bot a phone number check is included, with automatic sanitization as far as possible.)
 
 ---
 
@@ -37,7 +36,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 3. **121-dev-team**:
    1. Find the `connection` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
    2. Update FSP: Use the found connection `referenceId` to update the Financial Service Provider.
-      - Use: [`/connection/update-chosen-fsp`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_update_chosen_fsp)
+      - Use: [`/registrations/update-chosen-fsp`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_update_chosen_fsp)
       - Fill in the found `referenceId`
       - Choose the right new FSP name. It must be one out of the provided list.
       - Fill in the required attributes. If the new FSP requires more attributes than the example-provided `whatsappPhoneNumber`, you can manually change this.

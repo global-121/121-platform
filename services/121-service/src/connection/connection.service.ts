@@ -265,24 +265,6 @@ export class ConnectionService {
     }
   }
 
-  public async phoneNumberOverwrite(
-    referenceId: string,
-    phoneNumber: string,
-  ): Promise<ConnectionEntity> {
-    const connection = await this.findConnectionOrThrow(referenceId);
-
-    phoneNumber = await this.lookupService.lookupAndCorrect(phoneNumber);
-    // Save as notification first, in case it is not a known custom-data property, which would yield an HTTP-exception
-    connection.phoneNumber = phoneNumber;
-    await this.connectionRepository.save(connection);
-
-    return await this.updateAttribute(
-      referenceId,
-      CustomDataAttributes.phoneNumber,
-      phoneNumber,
-    );
-  }
-
   public async findConnectionWithQrIdentifier(
     qrIdentifier: string,
   ): Promise<ReferenceIdDto> {
@@ -316,68 +298,6 @@ export class ConnectionService {
       answers: fspAnswers,
       referenceId: referenceId,
     };
-  }
-
-  public async updateChosenFsp(
-    referenceId: string,
-    newFspName: fspName,
-    newFspAttributes: object,
-  ): Promise<ConnectionEntity> {
-    //Identify new FSP
-    const newFsp = await this.fspRepository.findOne({
-      where: { fsp: newFspName },
-      relations: ['attributes'],
-    });
-    if (!newFsp) {
-      const errors = `FSP with this name not found`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-
-    // Check if required attributes are present
-    newFsp.attributes.forEach(requiredAttribute => {
-      if (
-        !newFspAttributes ||
-        !Object.keys(newFspAttributes).includes(requiredAttribute.name)
-      ) {
-        const requiredAttributes = newFsp.attributes
-          .map(a => a.name)
-          .join(', ');
-        const errors = `Not all required FSP attributes provided correctly: ${requiredAttributes}`;
-        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-      }
-    });
-
-    // Get connection by referenceId
-    const connection = await this.connectionRepository.findOne({
-      where: { referenceId: referenceId },
-      relations: ['fsp', 'fsp.attributes'],
-    });
-    if (connection.fsp.id === newFsp.id) {
-      const errors = `New FSP is the same as existing FSP for this Person Affected.`;
-      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
-    }
-
-    // Remove old attributes
-    const oldFsp = connection.fsp;
-    oldFsp.attributes.forEach(attribute => {
-      Object.keys(connection.customData).forEach(key => {
-        if (attribute.name === key) {
-          delete connection.customData[key];
-        }
-      });
-    });
-    await this.connectionRepository.save(connection);
-
-    // Update FSP
-    const updatedConnection = await this.addFsp(referenceId, newFsp.id);
-
-    // Add new attributes
-    updatedConnection.fsp.attributes.forEach(async attribute => {
-      updatedConnection.customData[attribute.name] =
-        newFspAttributes[attribute.name];
-    });
-
-    return await this.connectionRepository.save(updatedConnection);
   }
 
   public getFspAnswers(

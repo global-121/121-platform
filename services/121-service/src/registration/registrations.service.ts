@@ -19,7 +19,10 @@ import {
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
 import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
-import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
+import {
+  FinancialServiceProviderEntity,
+  fspName,
+} from '../programs/fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { InlusionScoreService } from './services/inclusion-score.service';
@@ -34,6 +37,7 @@ import { ExportType } from '../programs/program/dto/export-details';
 import { FileDto } from '../programs/program/dto/file.dto';
 import { ExportService } from './services/export.service';
 import { PaStatusTimestampField } from '../models/pa-status.model';
+import { ConnectionEntity } from '../connection/connection.entity';
 
 @Injectable()
 export class RegistrationsService {
@@ -232,6 +236,7 @@ export class RegistrationsService {
     const registration = await this.getRegistrationFromReferenceId(referenceId);
     const fsp = await this.fspRepository.findOne({
       where: { id: fspId },
+      relations: ['attributes'],
     });
     registration.fsp = fsp;
     return await this.registrationRepository.save(registration);
@@ -549,7 +554,10 @@ export class RegistrationsService {
     let attributeFound = false;
 
     if (typeof registration[attribute] !== 'undefined') {
-      registration[attribute] = value;
+      registration[attribute] = await this.cleanCustomDataIfPhoneNr(
+        attribute,
+        String(value),
+      );
       attributeFound = true;
     }
     if (
@@ -674,7 +682,9 @@ export class RegistrationsService {
     name?: string,
     id?: number,
   ): Promise<RegistrationEntity[]> {
-    const registrations = await this.registrationRepository.find();
+    const registrations = await this.registrationRepository.find({
+      relations: ['fsp'],
+    });
     return registrations.filter(registration => {
       return (
         (name &&
@@ -695,5 +705,79 @@ export class RegistrationsService {
         registration.id === id
       );
     });
+  }
+
+  public async updateChosenFsp(
+    referenceId: string,
+    newFspName: fspName,
+    newFspAttributes: object,
+  ): Promise<RegistrationEntity> {
+    //Identify new FSP
+    const newFsp = await this.fspRepository.findOne({
+      where: { fsp: newFspName },
+      relations: ['attributes'],
+    });
+    if (!newFsp) {
+      const errors = `FSP with this name not found`;
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+
+    // Check if required attributes are present
+    newFsp.attributes.forEach(requiredAttribute => {
+      if (
+        !newFspAttributes ||
+        !Object.keys(newFspAttributes).includes(requiredAttribute.name)
+      ) {
+        const requiredAttributes = newFsp.attributes
+          .map(a => a.name)
+          .join(', ');
+        const errors = `Not all required FSP attributes provided correctly: ${requiredAttributes}`;
+        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+      }
+    });
+
+    // Get connection by referenceId
+    const registration = await this.registrationRepository.findOne({
+      where: { referenceId: referenceId },
+      relations: ['fsp', 'fsp.attributes'],
+    });
+    if (registration.fsp.id === newFsp.id) {
+      const errors = `New FSP is the same as existing FSP for this Person Affected.`;
+      throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+    }
+
+    // Remove old attributes
+    const oldFsp = registration.fsp;
+    oldFsp.attributes.forEach(attribute => {
+      Object.keys(registration.customData).forEach(key => {
+        if (attribute.name === key) {
+          delete registration.customData[key];
+        }
+      });
+    });
+    await this.registrationRepository.save(registration);
+
+    // Update FSP
+    const updatedRegistration = await this.addFsp(referenceId, newFsp.id);
+
+    // Add new attributes
+    updatedRegistration.fsp.attributes.forEach(async attribute => {
+      updatedRegistration.customData[attribute.name] =
+        newFspAttributes[attribute.name];
+    });
+
+    return await this.registrationRepository.save(updatedRegistration);
+  }
+
+  public async delete(referenceId: string): Promise<void> {
+    const registration = await this.registrationRepository.findOne({
+      where: { referenceId: referenceId },
+      relations: ['statusChanges', 'programAnswers'],
+    });
+    await this.registrationStatusChangeRepository.remove(
+      registration.statusChanges,
+    );
+    await this.programAnswerRepository.remove(registration.programAnswers);
+    await this.registrationRepository.remove(registration);
   }
 }

@@ -32,7 +32,7 @@ import { Response } from 'express-serve-static-core';
 import stream from 'stream';
 import { UserRole } from '../../user-role.enum';
 import { Roles } from '../../roles.decorator';
-import { UpdateFspAttributeDto, UpdateFspDto } from './dto/update-fsp.dto';
+import { UpdateFspAttributeDto, UpdateFspDto } from './api/dto/update-fsp.dto';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { RolesGuard } from '../../roles.guard';
 

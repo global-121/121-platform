@@ -32,7 +32,6 @@ import { UserRole } from '../user-role.enum';
 import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
-import { GetConnectionByPhoneNameDto } from './dto/get-connection-by-name-phone';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '../user/user.decorator';
 import { ImportResult } from './dto/bulk-import.dto';
@@ -65,25 +64,6 @@ export class ConnectionController {
     return await this.connectionService.delete(referenceIdDto.referenceId);
   }
 
-  @Roles(UserRole.FieldValidation, UserRole.PersonalData)
-  @ApiOperation({
-    title:
-      'Overwrite phone number for connection used by AW (app) or PM (Swagger)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Phone number overwritten for connection',
-  })
-  @Post('/phone/overwrite')
-  public async phoneNumberOverwrite(
-    @Body() setPhoneRequest: UpdatePhoneRequestDto,
-  ): Promise<ConnectionEntity> {
-    return await this.connectionService.phoneNumberOverwrite(
-      setPhoneRequest.referenceId,
-      setPhoneRequest.phonenumber,
-    );
-  }
-
   @Roles(UserRole.FieldValidation)
   @ApiOperation({ title: 'Find connection using qr identifier' })
   @ApiResponse({
@@ -111,23 +91,6 @@ export class ConnectionController {
   ): Promise<FspAnswersAttrInterface> {
     return await this.connectionService.getFspAnswersAttributes(
       referenceIdDto.referenceId,
-    );
-  }
-
-  @Roles(UserRole.FieldValidation)
-  @ApiOperation({ title: 'Update chosen fsp and attributes' })
-  @ApiResponse({
-    status: 200,
-    description: 'Updated fsp and attributes',
-  })
-  @Post('/update-chosen-fsp')
-  public async updateChosenFsp(
-    @Body() data: UpdateChosenFspDto,
-  ): Promise<ConnectionEntity> {
-    return await this.connectionService.updateChosenFsp(
-      data.referenceId,
-      data.newFspName,
-      data.newFspAttributes,
     );
   }
 }

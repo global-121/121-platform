@@ -25,7 +25,7 @@ import { User } from '../user/user.decorator';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { StoreProgramAnswersDto } from './dto/store-program-answers.dto';
 import { ProgramAnswerEntity } from './program-answer.entity';
-import { SetFspDto } from '../connection/dto/set-fsp.dto';
+import { SetFspDto, UpdateChosenFspDto } from '../connection/dto/set-fsp.dto';
 import { CustomDataDto } from '../programs/program/dto/custom-data.dto';
 import { SetPhoneRequestDto } from '../connection/dto/set-phone-request.dto';
 import {
@@ -43,11 +43,7 @@ import { ExportDetails } from '../programs/program/dto/export-details';
 import { MessageDto } from '../programs/program/dto/message.dto';
 import { PaStatusTimestampField } from '../models/pa-status.model';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import {
-  GetConnectionByPhoneNameDto,
-  GetRegistrationByPhoneNameIdDto,
-  SearchRegistrationDto,
-} from '../connection/dto/get-connection-by-name-phone';
+import { SearchRegistrationDto } from '../connection/dto/search-registration.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -416,7 +412,7 @@ export class RegistrationsController {
     status: 200,
     description: 'Returned registrations which match at least one of criteria',
   })
-  @Post('/get-connection/name-phone')
+  @Post('/search-name-phone')
   public async getConnectionByPhoneAndOrName(
     @Body() searchRegistrationDto: SearchRegistrationDto,
   ): Promise<RegistrationEntity[]> {
@@ -425,5 +421,29 @@ export class RegistrationsController {
       searchRegistrationDto.name,
       searchRegistrationDto.id,
     );
+  }
+
+  @Roles(UserRole.FieldValidation)
+  @ApiOperation({ title: 'Update chosen fsp and attributes' })
+  @ApiResponse({
+    status: 200,
+    description: 'Updated fsp and attributes',
+  })
+  @Post('/update-chosen-fsp')
+  public async updateChosenFsp(
+    @Body() data: UpdateChosenFspDto,
+  ): Promise<RegistrationEntity> {
+    return await this.registrationsService.updateChosenFsp(
+      data.referenceId,
+      data.newFspName,
+      data.newFspAttributes,
+    );
+  }
+
+  @ApiOperation({ title: 'Delete registration' })
+  @ApiResponse({ status: 200, description: 'Deleted registration' })
+  @Post('/delete')
+  public async delete(@Body() referenceIdDto: ReferenceIdDto): Promise<void> {
+    return await this.registrationsService.delete(referenceIdDto.referenceId);
   }
 }
