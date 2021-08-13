@@ -84,24 +84,6 @@ export class ConnectionController {
     );
   }
 
-  @Roles(UserRole.PersonalData)
-  @ApiOperation({
-    title: 'Find connection by name and/or phone number for PM (Swagger)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Returned connections which match at least one of criteria',
-  })
-  @Post('/get-connection/name-phone')
-  public async getConnectionByPhoneAndOrName(
-    @Body() getConnectionByPhoneNameDto: GetConnectionByPhoneNameDto,
-  ): Promise<ConnectionEntity[]> {
-    return await this.connectionService.getConnectionByPhoneAndOrName(
-      getConnectionByPhoneNameDto.phoneNumber,
-      getConnectionByPhoneNameDto.name,
-    );
-  }
-
   @Roles(UserRole.FieldValidation)
   @ApiOperation({ title: 'Find connection using qr identifier' })
   @ApiResponse({

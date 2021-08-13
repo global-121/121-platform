@@ -265,29 +265,6 @@ export class ConnectionService {
     }
   }
 
-  public async getConnectionByPhoneAndOrName(
-    phoneNumber?: string,
-    name?: string,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find();
-    return connections.filter(c => {
-      return (
-        (name &&
-          (c.customData[CustomDataAttributes.name] === name ||
-            c.customData[CustomDataAttributes.nameFirst] === name ||
-            c.customData[CustomDataAttributes.nameLast] === name ||
-            c.customData[CustomDataAttributes.firstName] === name ||
-            c.customData[CustomDataAttributes.secondName] === name ||
-            c.customData[CustomDataAttributes.thirdName] === name)) ||
-        (phoneNumber &&
-          (c.customData[CustomDataAttributes.phoneNumber] === phoneNumber ||
-            c.customData[CustomDataAttributes.whatsappPhoneNumber] ===
-              phoneNumber ||
-            c.phoneNumber === phoneNumber))
-      );
-    });
-  }
-
   public async phoneNumberOverwrite(
     referenceId: string,
     phoneNumber: string,

@@ -607,4 +607,93 @@ export class RegistrationsService {
       userId,
     );
   }
+
+  public async updateRegistrationStatusBatch(
+    programId: number,
+    referenceIds: object,
+    registrationStatus: RegistrationStatusEnum,
+    message?: string,
+  ): Promise<void> {
+    await this.findProgramOrThrow(programId);
+
+    for (let referenceId of JSON.parse(referenceIds['referenceIds'])) {
+      const registration = await this.setRegistrationStatus(
+        referenceId,
+        registrationStatus,
+      );
+
+      if (message) {
+        this.sendSmsMessage(registration, programId, message);
+      }
+    }
+  }
+
+  public async invite(
+    programId: number,
+    phoneNumbers: string,
+    message?: string,
+  ): Promise<void> {
+    await this.findProgramOrThrow(programId);
+
+    for (let phoneNumber of JSON.parse(phoneNumbers['phoneNumbers'])) {
+      const sanitizedPhoneNr = await this.lookupService.lookupAndCorrect(
+        phoneNumber,
+      );
+      let registration = await this.registrationRepository.findOne({
+        where: { phoneNumber: sanitizedPhoneNr },
+      });
+      if (!registration) continue;
+
+      this.setRegistrationStatus(
+        registration.referenceId,
+        RegistrationStatusEnum.invited,
+      );
+
+      if (message) {
+        this.sendSmsMessage(registration, programId, message);
+      }
+    }
+  }
+
+  private async sendSmsMessage(
+    registration: RegistrationEntity,
+    programId: number,
+    message?: string,
+  ): Promise<void> {
+    this.smsService.notifyBySms(
+      registration.phoneNumber,
+      registration.preferredLanguage,
+      programId,
+      message,
+      null,
+    );
+  }
+
+  public async searchRegistration(
+    phoneNumber?: string,
+    name?: string,
+    id?: number,
+  ): Promise<RegistrationEntity[]> {
+    const registrations = await this.registrationRepository.find();
+    return registrations.filter(registration => {
+      return (
+        (name &&
+          (registration.customData[CustomDataAttributes.name] === name ||
+            registration.customData[CustomDataAttributes.nameFirst] === name ||
+            registration.customData[CustomDataAttributes.nameLast] === name ||
+            registration.customData[CustomDataAttributes.firstName] === name ||
+            registration.customData[CustomDataAttributes.secondName] === name ||
+            registration.customData[CustomDataAttributes.thirdName] ===
+              name)) ||
+        (phoneNumber &&
+          (registration.customData[CustomDataAttributes.phoneNumber] ===
+            phoneNumber ||
+            registration.customData[
+              CustomDataAttributes.whatsappPhoneNumber
+            ] === phoneNumber ||
+            registration.phoneNumber === phoneNumber)) ||
+        registration.id === id
+      );
+    });
+  }
 }

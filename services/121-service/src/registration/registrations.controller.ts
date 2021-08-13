@@ -28,7 +28,10 @@ import { ProgramAnswerEntity } from './program-answer.entity';
 import { SetFspDto } from '../connection/dto/set-fsp.dto';
 import { CustomDataDto } from '../programs/program/dto/custom-data.dto';
 import { SetPhoneRequestDto } from '../connection/dto/set-phone-request.dto';
-import { ReferenceIdDto } from '../programs/program/dto/reference-id.dto';
+import {
+  ReferenceIdDto,
+  ReferenceIdsDto,
+} from '../programs/program/dto/reference-id.dto';
 import { AddQrIdentifierDto } from '../connection/dto/add-qr-identifier.dto';
 import { UserRole } from '../user-role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -37,6 +40,14 @@ import { Roles } from '../roles.decorator';
 import { NoteDto, UpdateNoteDto } from '../connection/dto/note.dto';
 import { UpdateAttributeDto } from '../connection/dto/update-attribute.dto';
 import { ExportDetails } from '../programs/program/dto/export-details';
+import { MessageDto } from '../programs/program/dto/message.dto';
+import { PaStatusTimestampField } from '../models/pa-status.model';
+import { RegistrationStatusEnum } from './enum/registration-status.enum';
+import {
+  GetConnectionByPhoneNameDto,
+  GetRegistrationByPhoneNameIdDto,
+  SearchRegistrationDto,
+} from '../connection/dto/get-connection-by-name-phone';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -298,5 +309,121 @@ export class RegistrationsController {
   @Get('/note/:referenceId')
   public async retrieveNote(@Param() params): Promise<NoteDto> {
     return await this.registrationsService.retrieveNote(params.referenceId);
+  }
+
+  @Roles(UserRole.RunProgram)
+  @ApiOperation({ title: 'Select set of PAs for validation' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('select-validation/:programId')
+  public async selectForValidation(
+    @Param() params,
+    @Body() data: ReferenceIdsDto,
+  ): Promise<void> {
+    await this.registrationsService.updateRegistrationStatusBatch(
+      params.programId,
+      data,
+      RegistrationStatusEnum.selectedForValidation,
+    );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({ title: 'Mark set of PAs as no longer eligible' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('no-longer-eligible/:programId')
+  public async markNoLongerEligible(
+    @Param() params,
+    @Body() data: ReferenceIdsDto,
+  ): Promise<void> {
+    await this.registrationsService.updateRegistrationStatusBatch(
+      Number(params.programId),
+      data,
+      RegistrationStatusEnum.noLongerEligible,
+    );
+  }
+
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'Include set of PAs' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('include/:programId')
+  public async include(
+    @Param() params,
+    @Body() referenceIdsData: ReferenceIdsDto,
+    @Body() messageData: MessageDto,
+  ): Promise<void> {
+    await this.registrationsService.updateRegistrationStatusBatch(
+      Number(params.programId),
+      referenceIdsData,
+      RegistrationStatusEnum.included,
+      messageData.message,
+    );
+  }
+
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'End inclusion of set of PAs' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('end/:programId')
+  public async end(
+    @Param() params,
+    @Body() referenceIdsData: ReferenceIdsDto,
+    @Body() messageData: MessageDto,
+  ): Promise<void> {
+    await this.registrationsService.updateRegistrationStatusBatch(
+      Number(params.programId),
+      referenceIdsData,
+      RegistrationStatusEnum.inclusionEnded,
+      messageData.message,
+    );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({ title: 'Reject set of PAs' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('reject/:programId')
+  public async reject(
+    @Param() params,
+    @Body() referenceIdsData: ReferenceIdsDto,
+    @Body() messageData: MessageDto,
+  ): Promise<void> {
+    await this.registrationsService.updateRegistrationStatusBatch(
+      Number(params.programId),
+      referenceIdsData,
+      RegistrationStatusEnum.rejected,
+      messageData.message,
+    );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({ title: 'Invite set of PAs for registration' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('invite/:programId')
+  public async invite(
+    @Param() params,
+    @Body() phoneNumbers: string,
+    @Body() messageData: MessageDto,
+  ): Promise<void> {
+    await this.registrationsService.invite(
+      Number(params.programId),
+      phoneNumbers,
+      messageData.message,
+    );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({
+    title: 'Find registration by name and/or phone number for PM (Swagger)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returned registrations which match at least one of criteria',
+  })
+  @Post('/get-connection/name-phone')
+  public async getConnectionByPhoneAndOrName(
+    @Body() searchRegistrationDto: SearchRegistrationDto,
+  ): Promise<RegistrationEntity[]> {
+    return await this.registrationsService.searchRegistration(
+      searchRegistrationDto.phoneNumber,
+      searchRegistrationDto.name,
+      searchRegistrationDto.id,
+    );
   }
 }

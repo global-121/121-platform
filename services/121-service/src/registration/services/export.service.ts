@@ -277,7 +277,7 @@ export class ExportService {
         registration,
         ExportType.allPeopleAffected,
       );
-      row = this.addGenericFieldsToExport(row, registration);
+      row = await this.addGenericFieldsToExport(row, registration);
       row = await this.addPaymentFieldsToExport(
         row,
         registration,
@@ -295,30 +295,30 @@ export class ExportService {
   }
 
   private async getInclusionList(programId: number): Promise<FileDto> {
-    const includedRegistrations = (
-      await this.registrationRepository.find({
-        where: { program: { id: programId } },
-        relations: ['fsp'],
-      })
-    ).filter(
-      registration =>
-        registration.registrationStatus === RegistrationStatusEnum.included,
-    );
+    const includedRegistrations = await this.registrationRepository.find({
+      where: {
+        program: { id: programId },
+        registrationStatus: RegistrationStatusEnum.included,
+      },
+      relations: ['fsp'],
+    });
+    console.log('includedRegistrations: ', includedRegistrations);
 
-    const criteria = await this.getAllQuestionsForExport();
+    const questions = await this.getAllQuestionsForExport();
+    console.log('questions: ', questions);
 
     const inclusionDetails = [];
-    includedRegistrations.forEach(connection => {
+    for await (let registration of includedRegistrations) {
       let row = {};
       row = this.addProgramQuestionsToExport(
         row,
-        criteria,
-        connection,
+        questions,
+        registration,
         ExportType.included,
       );
-      row = this.addGenericFieldsToExport(row, connection);
+      row = await this.addGenericFieldsToExport(row, registration);
       inclusionDetails.push(row);
-    });
+    }
     const filteredColumnDetails = this.filterUnusedColumn(inclusionDetails);
     const response = {
       fileName: this.getExportFileName('inclusion-list'),
@@ -363,17 +363,17 @@ export class ExportService {
     const criteria = await this.getAllQuestionsForExport();
 
     const columnDetails = [];
-    selectedRegistrations.forEach(connection => {
+    for await (let registration of selectedRegistrations) {
       let row = {};
       row = this.addProgramQuestionsToExport(
         row,
         criteria,
-        connection,
+        registration,
         ExportType.selectedForValidation,
       );
-      row = this.addGenericFieldsToExport(row, connection);
+      row = await this.addGenericFieldsToExport(row, registration);
       columnDetails.push(row);
-    });
+    }
 
     const filteredColumnDetails = this.filterUnusedColumn(columnDetails);
     const response = {

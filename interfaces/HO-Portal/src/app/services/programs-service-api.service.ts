@@ -350,7 +350,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/programs/${action}/${programId}`,
+        `/registrations/${action}/${programId}`,
         {
           referenceIds: JSON.stringify(referenceIds),
           message,
@@ -379,10 +379,14 @@ export class ProgramsServiceApiService {
     message: string,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, `/programs/invite/${programId}`, {
-        phoneNumbers: JSON.stringify(phoneNumbers),
-        message,
-      })
+      .post(
+        environment.url_121_service_api,
+        `/registrations/invite/${programId}`,
+        {
+          phoneNumbers: JSON.stringify(phoneNumbers),
+          message,
+        },
+      )
       .toPromise();
   }
 
