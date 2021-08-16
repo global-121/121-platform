@@ -26,29 +26,6 @@ export class ValidationDataController {
     this.validationDataService = validationDataService;
   }
 
-  @ApiOperation({ title: 'PA gets validationData attributes' })
-  @ApiResponse({ status: 200, description: 'Attributes received' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('/attributes/:programId')
-  public async getAttributes(@Param() params): Promise<any[]> {
-    return await this.validationDataService.getAttributes(
-      Number(params.programId),
-    );
-  }
-
-  @ApiOperation({ title: 'PA posts prefilled answers to attributes' })
-  @ApiResponse({ status: 200, description: 'Prefilled answers sent' })
-  @Post('/attributes')
-  public async prefilledAnswers(
-    @Body() prefilledAnswers: PrefilledAnswersDto,
-  ): Promise<any[]> {
-    return await this.validationDataService.uploadPrefilledAnswers(
-      prefilledAnswers.referenceId,
-      prefilledAnswers.programId,
-      prefilledAnswers.attributes,
-    );
-  }
-
   @Roles(UserRole.FieldValidation)
   @ApiOperation({ title: 'Get prefilled answers (for AW)' })
   @ApiResponse({ status: 200, description: 'Prefilled answers received' })
@@ -60,16 +37,6 @@ export class ValidationDataController {
       getAnswers.referenceId,
       getAnswers.programId,
     );
-  }
-
-  @Roles(UserRole.FieldValidation)
-  @ApiOperation({ title: 'Get all prefilled answers (for pre-download)' })
-  @ApiResponse({ status: 200, description: 'Prefilled answers downloaded' })
-  @Get('/download-data')
-  public async getAllPrefilledAnswers(
-    @User('id') userId: number,
-  ): Promise<DownloadData> {
-    return await this.validationDataService.downloadData(userId);
   }
 
   @Roles(UserRole.FieldValidation)

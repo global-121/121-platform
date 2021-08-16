@@ -44,6 +44,7 @@ import { MessageDto } from '../programs/program/dto/message.dto';
 import { PaStatusTimestampField } from '../models/pa-status.model';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { SearchRegistrationDto } from '../connection/dto/search-registration.dto';
+import { DownloadData } from '../connection/validation-data/interfaces/download-data.interface';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -445,5 +446,20 @@ export class RegistrationsController {
   @Post('/delete')
   public async delete(@Body() referenceIdDto: ReferenceIdDto): Promise<void> {
     return await this.registrationsService.delete(referenceIdDto.referenceId);
+  }
+
+  @Roles(UserRole.FieldValidation)
+  @ApiOperation({ title: 'Download all program answers (for validation)' })
+  @ApiResponse({ status: 200, description: 'Program answers downloaded' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Get('/download-validation-data')
+  public async downloadValidationData(
+    @Param('programId') programId: number,
+    @User('id') userId: number,
+  ): Promise<DownloadData> {
+    return await this.registrationsService.downloadValidationData(
+      programId,
+      userId,
+    );
   }
 }
