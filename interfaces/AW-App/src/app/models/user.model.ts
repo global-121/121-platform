@@ -5,7 +5,7 @@ export class UserModel {
 }
 
 export class User {
-  email: string;
+  username: string;
   roles: UserRole[];
   role?: string | 'aidworker'; // To support 'legacy' users
 }

@@ -129,7 +129,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        '/connection/validation-data/download-data',
+        '/registrations/download-validation-data',
       )
       .toPromise();
   }

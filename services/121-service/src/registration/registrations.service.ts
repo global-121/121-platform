@@ -2,7 +2,7 @@ import { SmsService } from './../notifications/sms/sms.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { getRepository, In, Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { UserEntity } from '../user/user.entity';
 import { RegistrationEntity } from './registration.entity';
@@ -38,6 +38,11 @@ import { FileDto } from '../programs/program/dto/file.dto';
 import { ExportService } from './services/export.service';
 import { PaStatusTimestampField } from '../models/pa-status.model';
 import { ConnectionEntity } from '../connection/connection.entity';
+import { DownloadData } from '../connection/validation-data/interfaces/download-data.interface';
+import {
+  AnswerSet,
+  FspAnswersAttrInterface,
+} from '../programs/fsp/fsp-interface';
 
 @Injectable()
 export class RegistrationsService {
@@ -779,5 +784,100 @@ export class RegistrationsService {
     );
     await this.programAnswerRepository.remove(registration.programAnswers);
     await this.registrationRepository.remove(registration);
+  }
+
+  public async downloadValidationData(
+    programId: number,
+    userId: number,
+  ): Promise<DownloadData> {
+    const user = await this.userRepository.findOne(userId, {
+      relations: ['assignedProgram'],
+    });
+    if (!user || !user.assignedProgram || user.assignedProgram.length === 0) {
+      const errors = 'User not found or no assigned programs';
+      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
+    }
+    const programIds = user.assignedProgram.map(p => p.id);
+    const data = {
+      answers: await this.getAllProgramAnswers(user),
+      fspData: await this.getAllFspAnswers(programIds),
+      qrConnectionMapping: await this.getQrRegistrationMapping(programIds),
+    };
+    return data;
+  }
+
+  public async getAllProgramAnswers(
+    user: UserEntity,
+  ): Promise<ProgramAnswerEntity[]> {
+    const programIds = user.assignedProgram.map(program => {
+      return { programId: program.id };
+    });
+    const answers = await this.programAnswerRepository.find({
+      where: programIds,
+    });
+    return answers;
+  }
+
+  public async getAllFspAnswers(
+    programIds: number[],
+  ): Promise<FspAnswersAttrInterface[]> {
+    const connections = await getRepository(RegistrationEntity)
+      .createQueryBuilder('registration')
+      .leftJoinAndSelect('registration.fsp', 'fsp')
+      .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
+      .where('registration.fsp IS NOT NULL')
+      // TO DO .andWhere('registration.validationDate IS NULL') // Filter to only download data for PA's not validated yet
+      .andWhere('registration."programId" IN (:...programIds)', {
+        programIds: programIds,
+      })
+      .getMany();
+
+    const fspDataPerConnection = [];
+    for (const connection of connections) {
+      const answers = this.getFspAnswers(
+        connection.fsp.attributes,
+        connection.customData,
+      );
+      const fspData = {
+        attributes: connection.fsp.attributes,
+        answers: answers,
+        referenceId: connection.referenceId,
+      };
+      fspDataPerConnection.push(fspData);
+    }
+    return fspDataPerConnection;
+  }
+
+  public getFspAnswers(
+    fspAttributes: FspAttributeEntity[],
+    customData: JSON,
+  ): AnswerSet {
+    const fspAttributeNames = [];
+    for (const attribute of fspAttributes) {
+      fspAttributeNames.push(attribute.name);
+    }
+    const fspCustomData = {};
+    for (const key in customData) {
+      if (fspAttributeNames.includes(key)) {
+        fspCustomData[key] = {
+          code: key,
+          value: customData[key],
+        };
+      }
+    }
+    return fspCustomData;
+  }
+
+  public async getQrRegistrationMapping(
+    programIds: number[],
+  ): Promise<RegistrationEntity[]> {
+    return await this.registrationRepository
+      .createQueryBuilder('registration')
+      .select(['registration.qrIdentifier', 'registration.referenceId'])
+      // TO DO: .where('registration.validationDate IS NULL') // Filter to only download data for PA's not validated yet
+      .where('registration."programId" IN (:...programIds)', {
+        programIds: programIds,
+      })
+      .getMany();
   }
 }
