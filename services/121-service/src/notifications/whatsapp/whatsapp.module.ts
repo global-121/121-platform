@@ -1,3 +1,4 @@
+import { RegistrationEntity } from './../../registration/registration.entity';
 import { ProgramEntity } from './../../programs/program/program.entity';
 import { ConnectionEntity } from './../../connection/connection.entity';
 import { TransactionEntity } from './../../programs/program/transactions.entity';
@@ -24,8 +25,8 @@ import { API_PATHS } from '../../config';
       TwilioMessageEntity,
       IntersolveBarcodeEntity,
       TransactionEntity,
-      ConnectionEntity,
       ProgramEntity,
+      RegistrationEntity,
     ]),
     ImageCodeModule,
     forwardRef(() => FspModule),

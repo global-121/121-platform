@@ -22,6 +22,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { IsInt, IsPositive, IsOptional } from 'class-validator';
+import { TransactionEntity } from '../programs/program/transactions.entity';
+import { ImageCodeExportVouchersEntity } from '../notifications/imagecode/image-code-export-vouchers.entity';
 
 @Entity('registration')
 export class RegistrationEntity {
@@ -41,6 +43,7 @@ export class RegistrationEntity {
     () => RegistrationStatusChangeEntity,
     statusChange => statusChange.registration,
   )
+  @JoinColumn()
   public statusChanges: RegistrationStatusChangeEntity[];
 
   @Index()
@@ -71,10 +74,11 @@ export class RegistrationEntity {
   @Column({ nullable: true })
   public preferredLanguage: LanguageEnum;
 
+  @Index({ unique: false })
   @Column({ nullable: true })
   public inclusionScore: number;
 
-  @ManyToOne(type => FinancialServiceProviderEntity)
+  @ManyToOne(_type => FinancialServiceProviderEntity)
   public fsp: FinancialServiceProviderEntity;
 
   @Column({ nullable: true })
@@ -91,4 +95,16 @@ export class RegistrationEntity {
 
   @Column({ nullable: true })
   public noteUpdated: Date;
+
+  @OneToMany(
+    _type => TransactionEntity,
+    transactions => transactions.registration,
+  )
+  public transactions: TransactionEntity[];
+
+  @OneToMany(
+    _type => ImageCodeExportVouchersEntity,
+    image => image.registration,
+  )
+  public images: ImageCodeExportVouchersEntity[];
 }

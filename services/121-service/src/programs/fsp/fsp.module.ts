@@ -1,3 +1,4 @@
+import { RegistrationEntity } from './../../registration/registration.entity';
 import { IntersolveInstructionsEntity } from './intersolve-instructions.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
 import { WhatsappModule } from './../../notifications/whatsapp/whatsapp.module';
@@ -34,7 +35,6 @@ import { UserEntity } from '../../user/user.entity';
     forwardRef(() => WhatsappModule),
     TypeOrmModule.forFeature([
       ProgramEntity,
-      ConnectionEntity,
       FinancialServiceProviderEntity,
       TransactionEntity,
       FspCallLogEntity,
@@ -47,6 +47,7 @@ import { UserEntity } from '../../user/user.entity';
       FspAttributeEntity,
       ActionEntity,
       UserEntity,
+      RegistrationEntity,
     ]),
   ],
   providers: [

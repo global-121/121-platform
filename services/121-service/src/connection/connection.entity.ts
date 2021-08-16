@@ -179,10 +179,4 @@ export class ConnectionEntity {
   public updateTimestamp(): void {
     this.updated = new Date();
   }
-
-  @OneToMany(
-    type => ImageCodeExportVouchersEntity,
-    image => image.connection,
-  )
-  public images: ImageCodeExportVouchersEntity[];
 }

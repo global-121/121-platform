@@ -33,9 +33,12 @@ import { TransactionEntity } from '../program/transactions.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
 import { TwilioStatusCallbackDto } from '../../notifications/twilio.dto';
 import { fspName } from './financial-service-provider.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
 
 @Injectable()
 export class IntersolveService {
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(IntersolveBarcodeEntity)
   private readonly intersolveBarcodeRepository: Repository<
     IntersolveBarcodeEntity
@@ -44,8 +47,6 @@ export class IntersolveService {
   private readonly intersolveInstructionsRepository: Repository<
     IntersolveInstructionsEntity
   >;
-  @InjectRepository(ConnectionEntity)
-  private readonly connectionRepository: Repository<ConnectionEntity>;
   @InjectRepository(IntersolveRequestEntity)
   private readonly intersolveRequestRepository: Repository<
     IntersolveRequestEntity
@@ -91,14 +92,14 @@ export class IntersolveService {
           result.paList.push(paResult);
           // If 'waiting' then transaction is stored already earlier, to make sure it's there before status-callback comes in
           if (paResult.status !== StatusEnum.waiting) {
-            const connection = await this.connectionRepository.findOne({
+            const registration = await this.registrationRepository.findOne({
               select: ['id'],
               where: { referenceId: paResult.referenceId },
             });
             await this.insertTransactionIntersolve(
               installment,
               paResult.calculatedAmount,
-              connection.id,
+              registration.id,
               1,
               paResult.status,
               paResult.message,
@@ -198,7 +199,7 @@ export class IntersolveService {
         voucherInfo => voucherInfo.resultCode == IntersolveResultCode.Ok,
       )
     ) {
-      // .. cancel all vouchers
+      // .. cancel all vouchers for phonenumber
       await this.cancelAllVouchersOnPhoneNumber(
         voucherInfoArray,
         transactionResult,
@@ -350,7 +351,7 @@ export class IntersolveService {
     whatsappPayment = whatsappPayment.split('{{1}}').join(calculatedAmount);
 
     // NOTE: Assumes 1st of theoretically multiple PA's on same phone-number
-    const connection = await this.connectionRepository.findOne({
+    const registration = await this.registrationRepository.findOne({
       select: ['id'],
       where: { referenceId: paymentInfo.paPaymentDataList[0].referenceId },
     });
@@ -362,7 +363,7 @@ export class IntersolveService {
           await this.insertTransactionIntersolve(
             voucherInfoArray[0].voucher.installment,
             voucherInfoArray[0].voucher.amount,
-            connection.id,
+            registration.id,
             1,
             StatusEnum.waiting,
             null,
@@ -387,7 +388,7 @@ export class IntersolveService {
     // Also if multiple PA's get the language of one (the first) PA, as you have to choose one..
     return (
       (
-        await this.connectionRepository.findOne({
+        await this.registrationRepository.findOne({
           where: { referenceId: referenceId, preferredLanguage: Not(IsNull()) },
         })
       )?.preferredLanguage || 'en'
@@ -450,7 +451,7 @@ export class IntersolveService {
     statusCallbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
     const transaction = (
-      await this.transactionRepository.find({ relations: ['connection'] })
+      await this.transactionRepository.find({ relations: ['registration'] })
     ).filter(
       t => t.customData['messageSid'] === statusCallbackData.MessageSid,
     )[0];
@@ -465,12 +466,12 @@ export class IntersolveService {
     if (succesStatuses.includes(statusCallbackData.MessageStatus)) {
       status = StatusEnum.success;
     } else if (failStatuses.includes(statusCallbackData.MessageStatus)) {
-      const connection = await this.connectionRepository.findOne({
-        where: { id: transaction.connection.id },
+      const registration = await this.registrationRepository.findOne({
+        where: { id: transaction.registration.id },
         relations: ['images', 'images.barcode'],
       });
       // NOTE: array.find yields 1st element, but this is line with 1 voucher per installment
-      const voucher = connection.images.find(
+      const voucher = registration.images.find(
         i => i.barcode.installment === transaction.installment,
       ).barcode;
       const intersolveRequest = await this.intersolveRequestRepository.findOne({
@@ -515,18 +516,18 @@ export class IntersolveService {
     referenceId: string,
     installment: number,
   ): Promise<any> {
-    const connection = await this.connectionRepository.findOne({
+    const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['images', 'images.barcode'],
     });
-    if (!connection) {
+    if (!registration) {
       throw new HttpException(
         'PA with this referenceId not found',
         HttpStatus.NOT_FOUND,
       );
     }
 
-    const voucher = connection.images.find(
+    const voucher = registration.images.find(
       image => image.barcode.installment === installment,
     );
     if (!voucher) {
@@ -601,7 +602,7 @@ export class IntersolveService {
     const previouslyUnusedVouchers = await this.intersolveBarcodeRepository.find(
       {
         where: { balanceUsed: false },
-        relations: ['image', 'image.connection'],
+        relations: ['image', 'image.registration'],
       },
     );
     const unusedVouchers = [];
@@ -614,8 +615,8 @@ export class IntersolveService {
         unusedVoucher.installment = voucher.installment;
         unusedVoucher.issueDate = voucher.timestamp;
         unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
-        unusedVoucher.phoneNumber = voucher.image[0].connection.phoneNumber;
-        unusedVoucher.customData = voucher.image[0].connection.customData;
+        unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
+        unusedVoucher.customData = voucher.image[0].registration.customData;
 
         unusedVouchers.push(unusedVoucher);
       } else {
@@ -630,7 +631,7 @@ export class IntersolveService {
   public async insertTransactionIntersolve(
     installment: number,
     amount: number,
-    connectionId: number,
+    registrationId: number,
     transactionStep: number,
     status: StatusEnum,
     errorMessage: string,
@@ -643,20 +644,20 @@ export class IntersolveService {
     transaction.created = new Date();
     transaction.errorMessage = errorMessage;
     transaction.transactionStep = transactionStep;
-    const connection = await this.connectionRepository.findOne({
-      where: { id: connectionId },
-      relations: ['fsp'],
+    const registration = await this.registrationRepository.findOne({
+      where: { id: registrationId },
+      relations: ['fsp', 'program'],
     });
-    transaction.connection = connection;
-    const programId = connection.programsApplied[0];
+    transaction.registration = registration;
+    const programId = registration.program.id;
     transaction.program = await this.programRepository.findOne(programId);
-    transaction.financialServiceProvider = connection.fsp;
+    transaction.financialServiceProvider = registration.fsp;
 
     transaction.customData = JSON.parse(JSON.stringify({}));
     if (messageSid) {
       transaction.customData['messageSid'] = messageSid;
     }
-    if (connection.fsp.fsp === fspName.intersolve) {
+    if (registration.fsp.fsp === fspName.intersolve) {
       transaction.customData['IntersolvePayoutStatus'] =
         transactionStep === 1
           ? IntersolvePayoutStatus.InitialMessage

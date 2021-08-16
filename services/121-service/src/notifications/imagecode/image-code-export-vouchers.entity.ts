@@ -1,3 +1,4 @@
+import { RegistrationEntity } from './../../registration/registration.entity';
 import { ConnectionEntity } from '../../connection/connection.entity';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
@@ -11,13 +12,13 @@ export class ImageCodeExportVouchersEntity {
   public image: any;
 
   @ManyToOne(
-    type => ConnectionEntity,
-    connection => connection.images,
+    _type => RegistrationEntity,
+    registration => registration.images,
   )
-  public connection: ConnectionEntity;
+  public registration: RegistrationEntity;
 
   @ManyToOne(
-    type => IntersolveBarcodeEntity,
+    _type => IntersolveBarcodeEntity,
     barcode => barcode.image,
   )
   public barcode: IntersolveBarcodeEntity;

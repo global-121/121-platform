@@ -1,6 +1,5 @@
 import { AfricasTalkingService } from './africas-talking.service';
 import { IntersolveService } from './intersolve.service';
-import { StatusEnum } from './../../shared/enum/status.enum';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
   fspName,
@@ -9,7 +8,6 @@ import {
 import { FspCallLogEntity } from './fsp-call-log.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ConnectionEntity } from '../../connection/connection.entity';
 import { ProgramEntity } from '../program/program.entity';
 import { TransactionEntity } from '../program/transactions.entity';
 import { AfricasTalkingNotificationEntity } from './africastalking-notification.entity';
@@ -26,13 +24,12 @@ import { UnusedVoucherDto } from './dto/unused-voucher.dto';
 import { ActionService } from '../../actions/action.service';
 import { AdditionalActionType } from '../../actions/action.entity';
 import { TwilioStatusCallbackDto } from '../../notifications/twilio.dto';
+import { RegistrationEntity } from '../../registration/registration.entity';
 
 @Injectable()
 export class FspService {
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
-  @InjectRepository(ConnectionEntity)
-  public connectionRepository: Repository<ConnectionEntity>;
   @InjectRepository(FspCallLogEntity)
   public fspCallLogRepository: Repository<FspCallLogEntity>;
   @InjectRepository(TransactionEntity)
@@ -47,6 +44,8 @@ export class FspService {
   public africasTalkingNotificationRepository: Repository<
     AfricasTalkingNotificationEntity
   >;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly africasTalkingService: AfricasTalkingService,
@@ -175,14 +174,14 @@ export class FspService {
     const fsp = await this.financialServiceProviderRepository.findOne({
       where: { fsp: fspName },
     });
-    const connection = await this.connectionRepository.findOne({
+    const registration = await this.registrationRepository.findOne({
       where: { referenceId: transactionResponse.referenceId },
     });
 
     const transaction = new TransactionEntity();
     transaction.amount = transactionResponse.calculatedAmount;
     transaction.created = transactionResponse.date || new Date();
-    transaction.connection = connection;
+    transaction.registration = registration;
     transaction.financialServiceProvider = fsp;
     transaction.program = program;
     transaction.installment = installment;

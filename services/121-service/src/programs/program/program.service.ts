@@ -52,6 +52,7 @@ import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status
 import { ConnectionResponse } from '../../models/connection-response.model';
 import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
+import { RegistrationEntity } from '../../registration/registration.entity';
 
 @Injectable()
 export class ProgramService {
@@ -77,6 +78,8 @@ export class ProgramService {
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(ActionEntity)
   public actionRepository: Repository<ActionEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private readonly actionService: ActionService,
@@ -347,46 +350,45 @@ export class ProgramService {
     return inclusionStatus;
   }
 
-  private async getIncludedConnections(
+  private async getIncludedRegistrations(
     programId: number,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
+  ): Promise<RegistrationEntity[]> {
+    return await this.registrationRepository.find({
+      where: {
+        program: { id: programId },
+        registrationStatus: RegistrationStatusEnum.included,
+      },
       relations: ['fsp'],
     });
-    const includedConnections = [];
-    for (let connection of connections) {
-      if (connection.programsIncluded.includes(programId)) {
-        includedConnections.push(connection);
-      }
-    }
-    return includedConnections;
   }
 
   public async getTotalIncluded(programId: number): Promise<TotalIncluded> {
-    const includedConnections = await this.getIncludedConnections(programId);
-    const sum = includedConnections.reduce(function(a, b) {
+    const includedRegistrations = await this.getIncludedRegistrations(
+      programId,
+    );
+    const sum = includedRegistrations.reduce(function(a, b) {
       return a + (b[Attributes.paymentAmountMultiplier] || 1);
     }, 0);
     return {
-      connections: includedConnections.length,
+      connections: includedRegistrations.length,
       transferAmounts: sum,
     };
   }
 
-  private async getConnectionsForPayment(
+  private async getRegistrationsForPayment(
     programId: number,
     installment: number,
     referenceId?: string,
-  ): Promise<ConnectionEntity[]> {
+  ): Promise<RegistrationEntity[]> {
     const knownInstallment = await this.transactionRepository.findOne({
       where: { installment: installment },
     });
-    let failedConnections;
+    let failedRegistrations;
     if (knownInstallment) {
       const failedReferenceIds = (
         await this.getFailedTransactions(programId, installment)
       ).map(t => t.referenceId);
-      failedConnections = await this.connectionRepository.find({
+      failedRegistrations = await this.registrationRepository.find({
         where: { referenceId: In(failedReferenceIds) },
         relations: ['fsp'],
       });
@@ -396,13 +398,13 @@ export class ProgramService {
     // If known installment, then only failed connections
     // otherwise (new payment) get all included PA's
     return referenceId
-      ? await this.connectionRepository.find({
+      ? await this.registrationRepository.find({
           where: { referenceId: referenceId },
           relations: ['fsp'],
         })
       : knownInstallment
-      ? failedConnections
-      : await this.getIncludedConnections(programId);
+      ? failedRegistrations
+      : await this.getIncludedRegistrations(programId);
   }
 
   public async payout(
@@ -420,22 +422,22 @@ export class ProgramService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    const targetedConnections = await this.getConnectionsForPayment(
+    const targetedRegistrations = await this.getRegistrationsForPayment(
       programId,
       installment,
       referenceId,
     );
 
-    if (targetedConnections.length < 1) {
+    if (targetedRegistrations.length < 1) {
       const errors = 'There are no targeted PAs for this payment';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
     const paPaymentDataList = await this.createPaPaymentDataList(
-      targetedConnections,
+      targetedRegistrations,
     );
 
-    this.actionService.saveAction(
+    await this.actionService.saveAction(
       userId,
       programId,
       installment === -1
@@ -450,18 +452,19 @@ export class ProgramService {
       amount,
       userId,
     );
+    console.log('paymentTransactionResult: ', paymentTransactionResult);
 
     return paymentTransactionResult;
   }
 
   private async createPaPaymentDataList(
-    includedConnections: ConnectionEntity[],
+    includedRegistrations: RegistrationEntity[],
   ): Promise<PaPaymentDataDto[]> {
     let paPaymentDataList = [];
-    for (let includedConnection of includedConnections) {
+    for (let includedRegistration of includedRegistrations) {
       const paPaymentData = new PaPaymentDataDto();
-      paPaymentData.referenceId = includedConnection.referenceId;
-      const fsp = await this.fspService.getFspById(includedConnection.fsp.id);
+      paPaymentData.referenceId = includedRegistration.referenceId;
+      const fsp = await this.fspService.getFspById(includedRegistration.fsp.id);
       // NOTE: this is ugly, but spent too much time already on how to automate this..
       if (fsp.fsp === fspName.intersolve) {
         paPaymentData.fspName = fspName.intersolve;
@@ -471,11 +474,11 @@ export class ProgramService {
         paPaymentData.fspName = fspName.africasTalking;
       }
       paPaymentData.paymentAddress = await this.getPaymentAddress(
-        includedConnection,
+        includedRegistration,
         fsp.attributes,
       );
       paPaymentData.paymentAmountMultiplier =
-        includedConnection.paymentAmountMultiplier;
+        includedRegistration.paymentAmountMultiplier;
 
       paPaymentDataList.push(paPaymentData);
     }
@@ -483,7 +486,7 @@ export class ProgramService {
   }
 
   private async getPaymentAddress(
-    includedConnection: ConnectionEntity,
+    includedRegistration: RegistrationEntity,
     fspAttributes: FspAttributeEntity[],
   ): Promise<null | string> {
     for (let attribute of fspAttributes) {
@@ -493,7 +496,7 @@ export class ProgramService {
         attribute.name === CustomDataAttributes.whatsappPhoneNumber
       ) {
         const paymentAddressColumn = attribute.name;
-        return includedConnection.customData[paymentAddressColumn];
+        return includedRegistration.customData[paymentAddressColumn];
       }
     }
     return null;
@@ -664,17 +667,61 @@ export class ProgramService {
     return enrolledConnections;
   }
 
-  public async getMonitoringData(programId: number): Promise<any[]> {
-    const connections = await this.getAllConnections(programId);
+  private async getAllRegistrations(programId: number): Promise<any[]> {
+    const q = getRepository(RegistrationEntity)
+      .createQueryBuilder('registration')
+      .innerJoinAndSelect(
+        'registration.program',
+        'program',
+        'program.id = :programId',
+        {
+          programId: programId,
+        },
+      )
+      .innerJoinAndSelect('registration.fsp', 'fsp.registrations')
+      .innerJoinAndSelect(
+        'registration.statusChanges',
+        'statusChangeStarted',
+        'registration.id = "statusChangeStarted"."registrationId"',
+      )
+      .innerJoinAndSelect(
+        'registration.statusChanges',
+        'statusChangeRegistered',
+        'registration.id = "statusChangeRegistered"."registrationId"',
+      )
+      .where('"statusChangeStarted"."registrationStatus" = :statusstarted', {
+        statusstarted: RegistrationStatusEnum.startedRegistation,
+      })
+      .andWhere(
+        '"statusChangeRegistered"."registrationStatus" = :statusregister',
+        {
+          statusregister: RegistrationStatusEnum.registered,
+        },
+      )
+      .orderBy('"statusChangeRegistered".created', 'DESC')
+      .orderBy('"statusChangeStarted".created', 'DESC')
+      .orderBy('"registration"."inclusionScore"', 'DESC')
+      .orderBy('"registration"."id"', 'DESC')
+      .distinctOn(['registration.id']);
+    return await q.getRawMany();
+  }
 
-    return connections.map(connection => {
-      const appliedDate = new Date(connection.appliedDate).getTime();
-      const startDate = new Date(connection.created).getTime();
-      const durationSeconds = (appliedDate - startDate) / 1000;
+  public async getMonitoringData(programId: number): Promise<any> {
+    const registrations = await this.getAllRegistrations(programId);
+    return registrations.map(registration => {
+      console.log('registration: ', registration);
+      const startDate = new Date(
+        registration['statusChangeStarted_created'],
+      ).getTime();
+      const registeredDate = new Date(
+        registration['statusChangeRegistered_created'],
+      ).getTime();
+      const durationSeconds = (registeredDate - startDate) / 1000;
       return {
-        monitoringAnswer: connection.customData['monitoringAnswer'],
+        monitoringAnswer:
+          registration['registration_customData']['monitoringAnswer'],
         registrationDuration: durationSeconds,
-        status: this.getPaStatus(connection, programId),
+        status: registration['registration_registrationStatus'],
       };
     });
   }
@@ -693,10 +740,10 @@ export class ProgramService {
       .select('installment')
       .addSelect('MIN(transaction.created)', 'installmentDate')
       .addSelect(
-        'MIN(transaction.amount / coalesce(c.paymentAmountMultiplier, 1) )',
+        'MIN(transaction.amount / coalesce(r.paymentAmountMultiplier, 1) )',
         'amount',
       )
-      .leftJoin('transaction.connection', 'c')
+      .leftJoin('transaction.registration', 'r')
       .where('transaction.program.id = :programId', { programId: programId })
       .groupBy('installment')
       .getRawMany();
@@ -709,12 +756,17 @@ export class ProgramService {
   ): Promise<any> {
     const maxAttemptPerPaAndInstallment = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select(['installment', '"connectionId"'])
+      .select(['installment', '"registrationId"'])
       .addSelect(
         `MAX(cast("transactionStep" as varchar) || '-' || cast(created as varchar)) AS max_attempt`,
       )
       .groupBy('installment')
-      .addGroupBy('"connectionId"');
+      .addGroupBy('"registrationId"');
+
+    console.log(
+      'maxAttemptPerPaAndInstallment: ',
+      maxAttemptPerPaAndInstallment,
+    );
 
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
@@ -730,15 +782,16 @@ export class ProgramService {
       .leftJoin(
         '(' + maxAttemptPerPaAndInstallment.getQuery() + ')',
         'subquery',
-        `transaction.connectionId = subquery."connectionId" AND transaction.installment = subquery.installment AND cast("transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
+        `transaction.registrationId = subquery."registrationId" AND transaction.installment = subquery.installment AND cast("transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
       )
-      .leftJoin('transaction.connection', 'c')
+      .leftJoin('transaction.registration', 'r')
       .where('transaction.program.id = :programId', { programId: programId })
       .andWhere('transaction.installment >= :minInstallment', {
         minInstallment: minInstallment || 0,
       })
       .andWhere('subquery.max_attempt IS NOT NULL')
       .getRawMany();
+    console.log('transactions: ', transactions);
     return transactions;
   }
 

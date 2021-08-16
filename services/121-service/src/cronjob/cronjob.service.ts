@@ -1,3 +1,4 @@
+import { RegistrationEntity } from './../registration/registration.entity';
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,7 +8,6 @@ import { ProgramEntity } from '../programs/program/program.entity';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolveRequestEntity } from '../programs/fsp/intersolve-request.entity';
 import { IntersolveApiService } from '../programs/fsp/api/instersolve.api.service';
-import { ConnectionEntity } from '../connection/connection.entity';
 
 @Injectable()
 export class CronjobService {
@@ -15,23 +15,25 @@ export class CronjobService {
   private readonly intersolveRequestRepository: Repository<
     IntersolveRequestEntity
   >;
-  @InjectRepository(ConnectionEntity)
-  private readonly connectionRepository: Repository<ConnectionEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor(
     private whatsappService: WhatsappService,
     private readonly intersolveApiService: IntersolveApiService,
   ) {}
 
-  private async getLanguageForConnection(referenceId: string): Promise<string> {
+  private async getLanguageForRegistration(
+    referenceId: string,
+  ): Promise<string> {
     const fallbackLanguage = 'en';
 
-    const connection = await this.connectionRepository.findOne({
+    const registration = await this.registrationRepository.findOne({
       referenceId: referenceId,
     });
 
-    if (connection && connection.preferredLanguage) {
-      return connection.preferredLanguage;
+    if (registration && registration.preferredLanguage) {
+      return registration.preferredLanguage;
     }
     return fallbackLanguage;
   }
@@ -68,11 +70,11 @@ export class CronjobService {
       .createQueryBuilder('barcode')
       .select([
         '"whatsappPhoneNumber"',
-        'connection."referenceId" AS "referenceId"',
+        'registration."referenceId" AS "referenceId"',
         'amount',
       ])
       .leftJoin('barcode.image', 'image')
-      .leftJoin('image.connection', 'connection')
+      .leftJoin('image.registration', 'registration')
       .where('send = false')
       .andWhere('timestamp < :sixteenHoursAgo', {
         sixteenHoursAgo: sixteenHoursAgo,
@@ -82,7 +84,7 @@ export class CronjobService {
     unsentIntersolveBarcodes.forEach(async unsentIntersolveBarcode => {
       const fromNumber = unsentIntersolveBarcode.whatsappPhoneNumber;
       const referenceId = unsentIntersolveBarcode.referenceId;
-      const language = await this.getLanguageForConnection(referenceId);
+      const language = await this.getLanguageForRegistration(referenceId);
       let whatsappPayment = this.getNotificationText(
         program,
         'whatsappPayment',

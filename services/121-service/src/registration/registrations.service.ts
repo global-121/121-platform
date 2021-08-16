@@ -392,7 +392,10 @@ export class RegistrationsService {
       throw new HttpException(errors, HttpStatus.NOT_FOUND);
     }
 
-    await this.registrationRepository.save(registration);
+    await this.setRegistrationStatus(
+      referenceId,
+      RegistrationStatusEnum.registered,
+    );
     this.inclusionScoreService.calculateInclusionScore(referenceId);
     this.smsService.notifyBySms(
       registration.phoneNumber,

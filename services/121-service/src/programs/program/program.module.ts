@@ -1,3 +1,4 @@
+import { RegistrationEntity } from './../../registration/registration.entity';
 import { FspModule } from './../fsp/fsp.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
 import { ValidationDataModule } from '../../connection/validation-data/validation-data.module';
@@ -31,6 +32,7 @@ import { LookupModule } from '../../notifications/lookup/lookup.module';
       ActionEntity,
       TransactionEntity,
       FspAttributeEntity,
+      RegistrationEntity,
     ]),
     ActionModule,
     forwardRef(() => ValidationDataModule),

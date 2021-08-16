@@ -1,3 +1,4 @@
+import { RegistrationEntity } from './../../registration/registration.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ConnectionEntity } from '../../connection/connection.entity';
@@ -48,4 +49,10 @@ export class TransactionEntity {
     connection => connection.transactions,
   )
   public connection: ConnectionEntity;
+
+  @ManyToOne(
+    _type => RegistrationEntity,
+    registration => registration.transactions,
+  )
+  public registration: RegistrationEntity;
 }

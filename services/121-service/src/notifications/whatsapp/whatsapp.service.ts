@@ -1,5 +1,4 @@
-import { ConnectionEntity } from './../../connection/connection.entity';
-import { IntersolvePayoutStatus } from './../../programs/fsp/api/enum/intersolve-payout-status.enum';
+import { RegistrationEntity } from './../../registration/registration.entity';
 import { EXTERNAL_API } from '../../config';
 import {
   forwardRef,
@@ -33,8 +32,8 @@ export class WhatsappService {
   >;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  @InjectRepository(ConnectionEntity)
-  private readonly connectionRepository: Repository<ConnectionEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   private readonly programId = 1;
   private readonly fallbackLanguage = 'en';
@@ -153,44 +152,44 @@ export class WhatsappService {
     }
   }
 
-  private async getConnectionsWithPhoneNumber(
+  private async getRegistrationsWithPhoneNumber(
     phoneNumber,
-  ): Promise<ConnectionEntity[]> {
-    const connectionsWithPhoneNumber = (
-      await this.connectionRepository.find({
+  ): Promise<RegistrationEntity[]> {
+    const regisrationsWithPhoneNumber = (
+      await this.registrationRepository.find({
         select: ['id', 'customData'],
       })
     ).filter(
-      c =>
-        c.customData[CustomDataAttributes.whatsappPhoneNumber] === phoneNumber,
+      r =>
+        r.customData[CustomDataAttributes.whatsappPhoneNumber] === phoneNumber,
     );
 
-    if (!connectionsWithPhoneNumber.length) {
+    if (!regisrationsWithPhoneNumber.length) {
       console.log(
         'Incoming WhatsApp-message from non-registered phone-number: ',
         phoneNumber.substr(-5).padStart(phoneNumber.length, '*'),
       );
     }
-    return connectionsWithPhoneNumber;
+    return regisrationsWithPhoneNumber;
   }
 
-  private async getConnectionsWithOpenVouchers(
-    connections: ConnectionEntity[],
-  ): Promise<ConnectionEntity[]> {
+  private async getRegistrationsWithOpenVouchers(
+    registrations: RegistrationEntity[],
+  ): Promise<RegistrationEntity[]> {
     // Trim connections down to only those with outstanding vouchers
-    const connectionIds = connections.map(c => c.id);
-    const connectionsWithVouchers = await this.connectionRepository.find({
-      where: { id: In(connectionIds) },
+    const registrationIds = registrations.map(c => c.id);
+    const registrationWithVouchers = await this.registrationRepository.find({
+      where: { id: In(registrationIds) },
       relations: ['images', 'images.barcode'],
     });
-    return connectionsWithVouchers
-      .map(connection => {
-        connection.images = connection.images.filter(
+    return registrationWithVouchers
+      .map(registration => {
+        registration.images = registration.images.filter(
           image => !image.barcode.send,
         );
-        return connection;
+        return registration;
       })
-      .filter(connection => connection.images.length > 0);
+      .filter(registration => registration.images.length > 0);
   }
 
   private cleanWhatsAppNr(value: string): string {
@@ -207,17 +206,18 @@ export class WhatsappService {
       );
     }
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
-    const connectionsWithPhoneNumber = await this.getConnectionsWithPhoneNumber(
+    const connectionsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
       fromNumber,
     );
-    const connectionsWithOpenVouchers = await this.getConnectionsWithOpenVouchers(
+    const registrationsWithOpenVouchers = await this.getRegistrationsWithOpenVouchers(
       connectionsWithPhoneNumber,
     );
 
     // If no connections with outstanding barcodes: send auto-reply
     const program = await getRepository(ProgramEntity).findOne(this.programId);
-    const language = connectionsWithOpenVouchers[0]?.preferredLanguage || 'en';
-    if (connectionsWithOpenVouchers.length === 0) {
+    const language =
+      registrationsWithOpenVouchers[0]?.preferredLanguage || 'en';
+    if (registrationsWithOpenVouchers.length === 0) {
       const whatsappDefaultReply =
         program.notifications[language]['whatsappReply'];
       await this.sendWhatsapp(whatsappDefaultReply, fromNumber, null);
@@ -226,8 +226,8 @@ export class WhatsappService {
 
     // Start loop over (potentially) multiple PA's
     let firstVoucherSent = false;
-    for await (let connection of connectionsWithOpenVouchers) {
-      const intersolveBarcodesPerPa = connection.images.map(
+    for await (let registration of registrationsWithOpenVouchers) {
+      const intersolveBarcodesPerPa = registration.images.map(
         image => image.barcode,
       );
 
@@ -240,7 +240,7 @@ export class WhatsappService {
         // Only include text with first voucher (across PA's and installments)
         let message = firstVoucherSent
           ? ''
-          : connectionsWithOpenVouchers.length > 1
+          : registrationsWithOpenVouchers.length > 1
           ? program.notifications[language]['whatsappVoucherMultiple'] ||
             program.notifications[language]['whatsappVoucher']
           : program.notifications[language]['whatsappVoucher'];
@@ -254,7 +254,7 @@ export class WhatsappService {
         await this.intersolveService.insertTransactionIntersolve(
           intersolveBarcode.installment,
           intersolveBarcode.amount,
-          connection.id,
+          registration.id,
           2,
           StatusEnum.success,
           null,
@@ -265,7 +265,7 @@ export class WhatsappService {
       }
     }
     // Send instruction message only once (outside of loops)
-    if (connectionsWithOpenVouchers.length > 0) {
+    if (registrationsWithOpenVouchers.length > 0) {
       await this.sendWhatsapp(
         '',
         fromNumber,
