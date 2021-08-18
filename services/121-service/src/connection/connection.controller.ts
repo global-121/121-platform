@@ -39,19 +39,4 @@ export class ConnectionController {
   public async delete(@Body() referenceIdDto: ReferenceIdDto): Promise<void> {
     return await this.connectionService.delete(referenceIdDto.referenceId);
   }
-
-  @Roles(UserRole.FieldValidation)
-  @ApiOperation({ title: 'Find connection using qr identifier' })
-  @ApiResponse({
-    status: 200,
-    description: 'Found connection using qr',
-  })
-  @Post('/qr-find-connection')
-  public async findConnectionWithQrIdentifier(
-    @Body() data: QrIdentifierDto,
-  ): Promise<ReferenceIdDto> {
-    return await this.connectionService.findConnectionWithQrIdentifier(
-      data.qrIdentifier,
-    );
-  }
 }

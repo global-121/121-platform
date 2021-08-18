@@ -40,6 +40,8 @@ export class ProgramAnswerEntity {
 
   @AfterLoad()
   public setName(): void {
-    this.name = this.programQuestion.name;
+    if (this.programQuestion) {
+      this.name = this.programQuestion.name;
+    }
   }
 }

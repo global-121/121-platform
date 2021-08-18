@@ -28,7 +28,7 @@ export class ScanQrComponent implements ValidationComponent {
     public programsService: ProgramsServiceApiService,
     private storage: Storage,
     private modalController: ModalController,
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.doScan();
@@ -49,8 +49,8 @@ export class ScanQrComponent implements ValidationComponent {
     const componentProps =
       environment.isDebug || environment.showDebug
         ? {
-            debugInput: `{ "referenceId": "_referenceId_"}`,
-          }
+          debugInput: `{ "referenceId": "_referenceId_"}`,
+        }
         : {};
     const qrScannerModal = await this.modalController.create({
       component: QrScannerComponent,
@@ -109,7 +109,6 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   private async getPaIdentifier(data: string): Promise<PaQrCode | false> {
-    console.log('data: getPaIdentifier', data);
     if (this.isValidPaQrCode(data)) {
       return JSON.parse(data);
     }
@@ -119,7 +118,6 @@ export class ScanQrComponent implements ValidationComponent {
     };
 
     referenceIdJson.referenceId = await this.getPaIdentifierOffline(data);
-    console.log('referenceIdProgramId: ', referenceIdJson);
     if (referenceIdJson.referenceId) {
       return referenceIdJson;
     }
@@ -147,9 +145,9 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   private async getPaIdentifierOnline(data: string): Promise<string> {
-    console.log('getPaIdentifierOnline');
+    console.log('getPaIdentifierOnline')
     try {
-      const response = await this.programsService.getConnectionByQrIdentifier(
+      const response = await this.programsService.getReferenceIdByQrIdentifier(
         data,
       );
       if (response.length === 0) {

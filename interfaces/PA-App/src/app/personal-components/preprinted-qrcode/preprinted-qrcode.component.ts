@@ -106,7 +106,7 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
   private async showQrScannerModal() {
     const componentProps =
       environment.isDebug || environment.showDebug
-        ? { debugInput: `1234567890` }
+        ? { debugInput: `01234567890` }
         : {};
 
     const qrScannerModal = await this.modalController.create({

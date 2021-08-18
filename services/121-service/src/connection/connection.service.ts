@@ -244,17 +244,4 @@ export class ConnectionService {
       return customDataValue;
     }
   }
-
-  public async findConnectionWithQrIdentifier(
-    qrIdentifier: string,
-  ): Promise<ReferenceIdDto> {
-    let connection = await this.connectionRepository.findOne({
-      where: { qrIdentifier: qrIdentifier },
-    });
-    if (!connection) {
-      const errors = 'No connection found for QR';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return { referenceId: connection.referenceId };
-  }
 }
