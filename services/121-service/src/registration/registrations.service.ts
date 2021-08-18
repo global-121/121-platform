@@ -42,6 +42,7 @@ import {
 } from '../programs/fsp/fsp-interface';
 import { Attributes } from './dto/update-attribute.dto';
 import { ValidationIssueDataDto } from '../connection/validation-data/dto/validation-issue-data.dto';
+import { ReferenceIdDto } from '../programs/program/dto/reference-id.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -221,7 +222,6 @@ export class RegistrationsService {
       customDataToStore = registration.customData;
     }
 
-    console.log('cleanedAnswers: ', cleanedAnswers);
     for (let answer of cleanedAnswers) {
       if (persistentQuestions.includes(answer.programQuestionName)) {
         customDataToStore[answer.programQuestionName] = answer.programAnswer;
@@ -789,12 +789,9 @@ export class RegistrationsService {
     await this.registrationRepository.remove(registration);
   }
 
-  public async downloadValidationData(
-    programId: number,
-    userId: number,
-  ): Promise<DownloadData> {
+  public async downloadValidationData(userId: number): Promise<DownloadData> {
     const user = await this.userRepository.findOne(userId, {
-      relations: ['assignedProgram'],
+      relations: ['assignedProgram', 'assignedProgram.registrations'],
     });
     if (!user || !user.assignedProgram || user.assignedProgram.length === 0) {
       const errors = 'User not found or no assigned programs';
@@ -805,6 +802,9 @@ export class RegistrationsService {
       answers: await this.getAllProgramAnswers(user),
       fspData: await this.getAllFspAnswers(programIds),
       qrConnectionMapping: await this.getQrRegistrationMapping(programIds),
+      programIds: user.assignedProgram.map(program => {
+        return program.id;
+      }),
     };
     return data;
   }
@@ -813,11 +813,24 @@ export class RegistrationsService {
     user: UserEntity,
   ): Promise<ProgramAnswerEntity[]> {
     const programIds = user.assignedProgram.map(program => {
-      return { programId: program.id };
+      return program.id;
     });
-    const answers = await this.programAnswerRepository.find({
-      where: programIds,
-    });
+    const registrationsToValidate = await getRepository(RegistrationEntity)
+      .createQueryBuilder('registration')
+      .leftJoin('registration.program', 'program')
+      .leftJoinAndSelect('registration.programAnswers', 'programAnswers')
+      // TO DO .andWhere('registration.validationDate IS NULL') // Filter to only download data for PA's not validated yet
+      .andWhere('registration.program.id IN (:...programIds)', {
+        programIds: programIds,
+      })
+      .andWhere('"registrationStatus" = :registerationStatus', {
+        registerationStatus: RegistrationStatusEnum.registered,
+      })
+      .getMany();
+    let answers = [];
+    for (const r of registrationsToValidate) {
+      answers = [...answers, ...r.programAnswers];
+    }
     return answers;
   }
 
@@ -828,10 +841,14 @@ export class RegistrationsService {
       .createQueryBuilder('registration')
       .leftJoinAndSelect('registration.fsp', 'fsp')
       .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
+      .leftJoin('registration.program', 'program')
       .where('registration.fsp IS NOT NULL')
       // TO DO .andWhere('registration.validationDate IS NULL') // Filter to only download data for PA's not validated yet
-      .andWhere('registration."programId" IN (:...programIds)', {
+      .andWhere('registration.program.id IN (:...programIds)', {
         programIds: programIds,
+      })
+      .andWhere('"registrationStatus" = :registerationStatus', {
+        registerationStatus: RegistrationStatusEnum.registered,
       })
       .getMany();
 
@@ -881,6 +898,9 @@ export class RegistrationsService {
       .where('registration."programId" IN (:...programIds)', {
         programIds: programIds,
       })
+      .andWhere('registration."registrationStatus" = :registerationStatus', {
+        registerationStatus: RegistrationStatusEnum.registered,
+      })
       .getMany();
   }
 
@@ -916,7 +936,6 @@ export class RegistrationsService {
 
   // Used by Aidworker
   public async issueValidation(payload: ValidationIssueDataDto): Promise<void> {
-    console.log('payload: ', payload);
     await this.storePersistentAnswers(
       payload.programAnswers,
       payload.referenceId,
@@ -925,5 +944,18 @@ export class RegistrationsService {
       payload.referenceId,
       RegistrationStatusEnum.validated,
     );
+  }
+
+  public async findReferenceIdWithQrIdentifier(
+    qrIdentifier: string,
+  ): Promise<ReferenceIdDto> {
+    let registration = await this.registrationRepository.findOne({
+      where: { qrIdentifier: qrIdentifier },
+    });
+    if (!registration) {
+      const errors = 'No registration found for QR';
+      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+    }
+    return { referenceId: registration.referenceId };
   }
 }

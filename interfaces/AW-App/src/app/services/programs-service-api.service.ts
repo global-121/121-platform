@@ -54,11 +54,11 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getConnectionByQrIdentifier(qrIdentifier: string): Promise<string> {
+  getReferenceIdByQrIdentifier(qrIdentifier: string): Promise<string> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/registrations/qr-find-connection',
+        '/registrations/qr-find-refenrence-id',
         {
           qrIdentifier,
         },
@@ -122,7 +122,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        '/registrations/download-validation-data',
+        '/registrations/download/validation-data',
       )
       .toPromise();
   }

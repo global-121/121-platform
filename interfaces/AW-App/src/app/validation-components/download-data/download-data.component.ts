@@ -65,7 +65,7 @@ export class DownloadDataComponent implements ValidationComponent {
         );
         await this.storage.set(IonicStorageTypes.validationFspData, fspData);
 
-        const myPrograms = await this.getProgramData(validationData);
+        const myPrograms = await this.getProgramData(response.programIds);
         await this.storage.set(IonicStorageTypes.myPrograms, myPrograms);
 
         this.nrDownloaded = this.countUniqueConnections(validationData);
@@ -79,8 +79,7 @@ export class DownloadDataComponent implements ValidationComponent {
     );
   }
 
-  private async getProgramData(validationData: ValidationAnswer[]) {
-    const programIds = this.getUniqueProgramIds(validationData);
+  private async getProgramData(programIds: number[]) {
     const programRequests = [];
     const myPrograms = [];
 
@@ -94,17 +93,6 @@ export class DownloadDataComponent implements ValidationComponent {
     await Promise.all(programRequests);
 
     return myPrograms;
-  }
-
-  private getUniqueProgramIds(validationData: ValidationAnswer[]) {
-    const programIds = [];
-    validationData.forEach((item) => {
-      if (!programIds.includes(item.programId)) {
-        programIds.push(item.programId);
-      }
-    });
-
-    return programIds;
   }
 
   public countUniqueConnections(validationData: ValidationAnswer[]): number {

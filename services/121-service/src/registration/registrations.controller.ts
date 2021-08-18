@@ -48,6 +48,7 @@ import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
 import { FspAnswersAttrInterface } from '../programs/fsp/fsp-interface';
 import { ValidationIssueDataDto } from '../connection/validation-data/dto/validation-issue-data.dto';
+import { QrIdentifierDto } from './dto/qr-identifier.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -455,16 +456,11 @@ export class RegistrationsController {
   @Roles(UserRole.FieldValidation)
   @ApiOperation({ title: 'Download all program answers (for validation)' })
   @ApiResponse({ status: 200, description: 'Program answers downloaded' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('/download-validation-data')
+  @Get('/download/validation-data')
   public async downloadValidationData(
-    @Param('programId') programId: number,
     @User('id') userId: number,
   ): Promise<DownloadData> {
-    return await this.registrationsService.downloadValidationData(
-      programId,
-      userId,
-    );
+    return await this.registrationsService.downloadValidationData(userId);
   }
 
   @Roles(UserRole.FieldValidation)
@@ -501,5 +497,20 @@ export class RegistrationsController {
     @Body() validationIssueData: ValidationIssueDataDto,
   ): Promise<void> {
     return await this.registrationsService.issueValidation(validationIssueData);
+  }
+
+  @Roles(UserRole.FieldValidation)
+  @ApiOperation({ title: 'Find reference id using qr identifier' })
+  @ApiResponse({
+    status: 200,
+    description: 'Found reference id using qr',
+  })
+  @Post('/qr-find-refenrence-id')
+  public async findReferenceIdWithQrIdentifier(
+    @Body() data: QrIdentifierDto,
+  ): Promise<ReferenceIdDto> {
+    return await this.registrationsService.findReferenceIdWithQrIdentifier(
+      data.qrIdentifier,
+    );
   }
 }

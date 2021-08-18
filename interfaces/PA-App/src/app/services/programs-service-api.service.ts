@@ -14,7 +14,7 @@ import { JwtService } from './jwt.service';
   providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(private apiService: ApiService, private jwtService: JwtService) {}
+  constructor(private apiService: ApiService, private jwtService: JwtService) { }
 
   getInstanceInformation(): Promise<InstanceData> {
     return this.apiService
