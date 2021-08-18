@@ -1,6 +1,5 @@
 import { RegistrationEntity } from './../../registration/registration.entity';
 import { ProgramEntity } from './../../programs/program/program.entity';
-import { ConnectionEntity } from './../../connection/connection.entity';
 import { TransactionEntity } from './../../programs/program/transactions.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';

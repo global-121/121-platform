@@ -27,7 +27,7 @@
     <ul>
       <li *ngFor="let question of questions">
         <span [innerHTML]="question.label"></span><br>
-        <strong>{{ answers[question.code]?.label }}</strong>
+        <strong>{{ answers[question.name]?.label }}</strong>
       </li>
     </ul>
 

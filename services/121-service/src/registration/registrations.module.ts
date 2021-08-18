@@ -21,6 +21,7 @@ import { ExportService } from './services/export.service';
 import { ProgramModule } from '../programs/program/program.module';
 import { FspModule } from '../programs/fsp/fsp.module';
 import { TransactionEntity } from '../programs/program/transactions.entity';
+import { RegistrationAnswersService } from './services/registration-answers.service';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { TransactionEntity } from '../programs/program/transactions.entity';
     BulkImportService,
     InlusionScoreService,
     ExportService,
+    RegistrationAnswersService,
   ],
   controllers: [RegistrationsController],
   exports: [],

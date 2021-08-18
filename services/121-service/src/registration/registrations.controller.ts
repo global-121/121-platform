@@ -1,3 +1,4 @@
+import { ProgramAnswersProgramId } from './dto/program-answers-program-id.dto';
 import { RegistrationEntity } from './registration.entity';
 import {
   Post,
@@ -25,26 +26,28 @@ import { User } from '../user/user.decorator';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { StoreProgramAnswersDto } from './dto/store-program-answers.dto';
 import { ProgramAnswerEntity } from './program-answer.entity';
-import { SetFspDto, UpdateChosenFspDto } from '../connection/dto/set-fsp.dto';
+import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { CustomDataDto } from '../programs/program/dto/custom-data.dto';
-import { SetPhoneRequestDto } from '../connection/dto/set-phone-request.dto';
 import {
   ReferenceIdDto,
   ReferenceIdsDto,
 } from '../programs/program/dto/reference-id.dto';
-import { AddQrIdentifierDto } from '../connection/dto/add-qr-identifier.dto';
+import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { UserRole } from '../user-role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ImportResult } from '../connection/dto/bulk-import.dto';
+import { ImportResult } from './dto/bulk-import.dto';
 import { Roles } from '../roles.decorator';
-import { NoteDto, UpdateNoteDto } from '../connection/dto/note.dto';
-import { UpdateAttributeDto } from '../connection/dto/update-attribute.dto';
+import { NoteDto, UpdateNoteDto } from './dto/note.dto';
 import { ExportDetails } from '../programs/program/dto/export-details';
 import { MessageDto } from '../programs/program/dto/message.dto';
 import { PaStatusTimestampField } from '../models/pa-status.model';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
-import { SearchRegistrationDto } from '../connection/dto/search-registration.dto';
+import { SearchRegistrationDto } from './dto/search-registration.dto';
 import { DownloadData } from '../connection/validation-data/interfaces/download-data.interface';
+import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
+import { UpdateAttributeDto } from './dto/update-attribute.dto';
+import { FspAnswersAttrInterface } from '../programs/fsp/fsp-interface';
+import { ValidationIssueDataDto } from '../connection/validation-data/dto/validation-issue-data.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -91,7 +94,8 @@ export class RegistrationsController {
     @Body() storeProgramAnswersDto: StoreProgramAnswersDto,
   ): Promise<void> {
     return await this.registrationsService.storeProgramAnswers(
-      storeProgramAnswersDto,
+      storeProgramAnswersDto.referenceId,
+      storeProgramAnswersDto.programAnswers,
     );
   }
 
@@ -461,5 +465,41 @@ export class RegistrationsController {
       programId,
       userId,
     );
+  }
+
+  @Roles(UserRole.FieldValidation)
+  @ApiOperation({ title: 'Get registration with prefilled answers (for AW)' })
+  @ApiResponse({ status: 200, description: 'Registration received' })
+  @ApiImplicitParam({
+    name: 'referenceId',
+  })
+  @Get('get/:referenceId')
+  public async getRegistration(@Param() params): Promise<RegistrationEntity> {
+    return await this.registrationsService.get(params.referenceId);
+  }
+
+  @Roles(UserRole.FieldValidation)
+  @ApiOperation({ title: 'Find fsp and attributes' })
+  @ApiResponse({
+    status: 200,
+    description: 'Found fsp and attributes',
+  })
+  @Post('/get-fsp')
+  public async getFspAnswersAttributes(
+    @Body() referenceIdDto: ReferenceIdDto,
+  ): Promise<FspAnswersAttrInterface> {
+    return await this.registrationsService.getFspAnswersAttributes(
+      referenceIdDto.referenceId,
+    );
+  }
+
+  @Roles(UserRole.FieldValidation)
+  @ApiOperation({ title: 'Issue validationData (For AW)' })
+  @ApiResponse({ status: 200, description: 'Validation Data issued' })
+  @Post('/issue-validation')
+  public async issue(
+    @Body() validationIssueData: ValidationIssueDataDto,
+  ): Promise<void> {
+    return await this.registrationsService.issueValidation(validationIssueData);
   }
 }

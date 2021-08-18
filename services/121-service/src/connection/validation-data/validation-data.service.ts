@@ -26,9 +26,12 @@ import {
   AnswerTypes,
   CustomDataAttributes,
 } from './dto/custom-data-attributes';
+import { RegistrationEntity } from '../../registration/registration.entity';
 
 @Injectable()
 export class ValidationDataService {
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ValidationDataAttributesEntity)
@@ -107,12 +110,12 @@ export class ValidationDataService {
       }
     }
 
-    const connection = await this.connectionRepository.findOne({
+    const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
     });
     if (
-      !connection.customData ||
-      Object.keys(connection.customData).length === 0
+      !registration.customData ||
+      Object.keys(registration.customData).length === 0
     ) {
       await this.storePersistentAnswers(
         prefilledAnswers,
@@ -183,58 +186,6 @@ export class ValidationDataService {
       }
     }
     connection.customData = JSON.parse(JSON.stringify(customDataToStore));
-    await this.connectionRepository.save(connection);
-  }
-
-  // AW: get answers to attributes for a given PA (identified first through referenceId/QR)
-  public async getPrefilledAnswers(
-    referenceId: string,
-    programId: number,
-  ): Promise<ValidationDataAttributesEntity[]> {
-    let validationData;
-    validationData = await this.validationDataAttributesRepository.find({
-      where: { referenceId: referenceId, programId: programId },
-    });
-    return validationData;
-  }
-
-  // AW: delete answers to attributes for a given PA after issuing validationData (identified first through referenceId/QR)
-  public async deletePrefilledAnswers(
-    referenceId: string,
-    programId: number,
-  ): Promise<DeleteResult> {
-    return await this.validationDataAttributesRepository.delete({
-      referenceId: referenceId,
-      programId: programId,
-    });
-  }
-
-  // Used by Aidworker
-  public async issueValidation(payload: ValidationIssueDataDto): Promise<void> {
-    await this.storePersistentAnswers(
-      payload.attributes,
-      payload.programId,
-      payload.referenceId,
-    );
-
-    await this.uploadPrefilledAnswers(
-      payload.referenceId,
-      payload.programId,
-      payload.attributes,
-    );
-
-    // await this.calculateInclusionScore(payload.referenceId, payload.programId);
-
-    await this.deletePrefilledAnswers(payload.referenceId, payload.programId);
-
-    await this.updateConnectionStatus(payload.referenceId);
-  }
-
-  private async updateConnectionStatus(referenceId): Promise<void> {
-    let connection = await this.connectionRepository.findOne({
-      where: { referenceId: referenceId },
-    });
-    connection.validationDate = new Date();
     await this.connectionRepository.save(connection);
   }
 

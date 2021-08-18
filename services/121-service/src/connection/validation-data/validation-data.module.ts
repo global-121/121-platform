@@ -1,3 +1,4 @@
+import { RegistrationEntity } from './../../registration/registration.entity';
 import { LookupModule } from '../../notifications/lookup/lookup.module';
 import { ConnectionEntity } from '../connection.entity';
 import { UserModule } from '../../user/user.module';
@@ -19,6 +20,7 @@ import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
       ConnectionEntity,
       ValidationDataAttributesEntity,
       FspAttributeEntity,
+      RegistrationEntity,
     ]),
     forwardRef(() => ProgramModule),
     LookupModule,

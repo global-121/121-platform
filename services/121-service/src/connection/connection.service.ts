@@ -1,45 +1,25 @@
-import { LookupService } from '../notifications/lookup/lookup.service';
-import { CustomCriterium } from '../programs/program/custom-criterium.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConnectionEntity } from './connection.entity';
-import { Repository, getRepository, IsNull, Not } from 'typeorm';
+import { Repository, Not, IsNull, getRepository } from 'typeorm';
 import { ValidationDataAttributesEntity } from './validation-data/validation-attributes.entity';
+import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
 import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
-import {
-  FinancialServiceProviderEntity,
-  fspName,
-} from '../programs/fsp/financial-service-provider.entity';
+import { CustomCriterium } from '../programs/program/custom-criterium.entity';
 import { TransactionEntity } from '../programs/program/transactions.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
+import { ValidationDataService } from './validation-data/validation-data.service';
+import { SmsService } from '../notifications/sms/sms.service';
+import { LookupService } from '../notifications/lookup/lookup.service';
+import { ActionService } from '../actions/action.service';
+import { validate } from 'class-validator';
+import { AnswerTypes } from './validation-data/dto/custom-data-attributes';
+import { ReferenceIdDto } from '../programs/program/dto/reference-id.dto';
 import {
   FspAnswersAttrInterface,
   AnswerSet,
 } from '../programs/fsp/fsp-interface';
-import { SmsService } from '../notifications/sms/sms.service';
-import { PaStatus } from '../models/pa-status.model';
-import {
-  BulkImportDto,
-  DynamicImportAttribute,
-  ImportRegistrationsDto,
-  ImportResult,
-} from './dto/bulk-import.dto';
-import { validate } from 'class-validator';
-import { Readable } from 'stream';
-import csv from 'csv-parser';
-import { ActionService } from '../actions/action.service';
-import { AdditionalActionType } from '../actions/action.entity';
-import { ReferenceIdDto } from './dto/reference-id.dto';
-import { ValidationDataService } from './validation-data/validation-data.service';
-import {
-  AnswerTypes,
-  Attribute,
-  CustomDataAttributes,
-  GenericAttributes,
-} from './validation-data/dto/custom-data-attributes';
-import { v4 as uuid } from 'uuid';
-import { NoteDto } from './dto/note.dto';
-import { Attributes } from './dto/update-attribute.dto';
+import { Attributes } from '../registration/dto/update-attribute.dto';
 
 @Injectable()
 export class ConnectionService {
@@ -276,47 +256,5 @@ export class ConnectionService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return { referenceId: connection.referenceId };
-  }
-
-  public async getFspAnswersAttributes(
-    referenceId: string,
-  ): Promise<FspAnswersAttrInterface> {
-    const qb = await getRepository(ConnectionEntity)
-      .createQueryBuilder('connection')
-      .leftJoinAndSelect('connection.fsp', 'fsp')
-      .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
-      .where('connection.referenceId = :referenceId', {
-        referenceId: referenceId,
-      });
-    const connection = await qb.getOne();
-    const fspAnswers = this.getFspAnswers(
-      connection.fsp.attributes,
-      connection.customData,
-    );
-    return {
-      attributes: connection.fsp.attributes,
-      answers: fspAnswers,
-      referenceId: referenceId,
-    };
-  }
-
-  public getFspAnswers(
-    fspAttributes: FspAttributeEntity[],
-    customData: JSON,
-  ): AnswerSet {
-    const fspAttributeNames = [];
-    for (const attribute of fspAttributes) {
-      fspAttributeNames.push(attribute.name);
-    }
-    const fspCustomData = {};
-    for (const key in customData) {
-      if (fspAttributeNames.includes(key)) {
-        fspCustomData[key] = {
-          code: key,
-          value: customData[key],
-        };
-      }
-    }
-    return fspCustomData;
   }
 }

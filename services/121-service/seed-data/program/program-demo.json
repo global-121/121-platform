@@ -23,7 +23,7 @@
   "endDate": "2020-12-31T12:00:00Z",
   "currency": "MWK",
   "distributionFrequency": "month",
-  "distributionDuration": 3,
+  "distributionDuration": 8,
   "fixedTransferValue": 10,
   "financialServiceProviders": [
     {

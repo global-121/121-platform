@@ -45,7 +45,6 @@ import { StatusEnum } from '../../shared/enum/status.enum';
 import { FileDto } from './dto/file.dto';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
-import { Attributes } from '../../connection/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/payout.dto';
 import { without, compact, sortBy } from 'lodash';
 import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
@@ -53,6 +52,7 @@ import { ConnectionResponse } from '../../models/connection-response.model';
 import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../registration/registration.entity';
+import { Attributes } from '../../registration/dto/update-attribute.dto';
 
 @Injectable()
 export class ProgramService {
@@ -97,23 +97,14 @@ export class ProgramService {
   }
 
   public async findOne(where): Promise<ProgramEntity> {
-    const qb = await getRepository(ProgramEntity)
-      .createQueryBuilder('program')
-      .leftJoinAndSelect('program.programQuestions', 'programQuestion')
-      .addOrderBy('programQuestion.id', 'ASC')
-      .leftJoinAndSelect('program.aidworkers', 'aidworker')
-      .leftJoinAndSelect(
-        'program.financialServiceProviders',
-        'financialServiceProvider',
-      )
-      .leftJoinAndSelect(
-        'program.protectionServiceProviders',
-        'protectionServiceProvider',
-      );
-
-    qb.whereInIds([where]);
-    const program = qb.getOne();
-    return program;
+    return await this.programRepository.findOne(where, {
+      relations: [
+        'programQuestions',
+        'protectionServiceProviders',
+        'aidworkers',
+        'financialServiceProviders',
+      ],
+    });
   }
 
   public async findAll(): Promise<ProgramsRO> {
@@ -310,18 +301,18 @@ export class ProgramService {
     return simpleProgramRO;
   }
 
-  private async getConnectionByReferenceId(
+  private async getRegistrationByReferenceId(
     referenceId: string,
-  ): Promise<ConnectionEntity> {
-    return await this.connectionRepository.findOne({
+  ): Promise<RegistrationEntity> {
+    return await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
     });
   }
 
-  private async getConnectionByReferenceIdOrThrow(
+  private async getRegistrationByReferenceIdOrThrow(
     referenceId: string,
-  ): Promise<ConnectionEntity> {
-    let connection = await this.getConnectionByReferenceId(referenceId);
+  ): Promise<RegistrationEntity> {
+    let connection = await this.getRegistrationByReferenceId(referenceId);
     if (!connection) {
       const errors = 'No connection found for PA.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -333,15 +324,19 @@ export class ProgramService {
     programId: number,
     referenceId: string,
   ): Promise<InclusionStatus> {
-    let connection = await this.getConnectionByReferenceIdOrThrow(referenceId);
+    let registration = await this.getRegistrationByReferenceIdOrThrow(
+      referenceId,
+    );
 
     await this.checkIfProgramExists(programId);
 
     let inclusionStatus: InclusionStatus;
 
-    if (connection.programsIncluded.includes(programId)) {
+    if (registration.registrationStatus === RegistrationStatusEnum.included) {
       inclusionStatus = { status: PaStatus.included };
-    } else if (connection.programsRejected.includes(programId)) {
+    } else if (
+      registration.registrationStatus === RegistrationStatusEnum.rejected
+    ) {
       inclusionStatus = { status: PaStatus.rejected };
     } else {
       inclusionStatus = { status: 'unavailable' };
@@ -763,11 +758,6 @@ export class ProgramService {
       .groupBy('installment')
       .addGroupBy('"registrationId"');
 
-    console.log(
-      'maxAttemptPerPaAndInstallment: ',
-      maxAttemptPerPaAndInstallment,
-    );
-
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select([
@@ -791,7 +781,6 @@ export class ProgramService {
       })
       .andWhere('subquery.max_attempt IS NOT NULL')
       .getRawMany();
-    console.log('transactions: ', transactions);
     return transactions;
   }
 
@@ -812,7 +801,9 @@ export class ProgramService {
   public async getTransaction(
     input: GetTransactionDto,
   ): Promise<GetTransactionOutputDto> {
-    const connection = await this.getConnectionByReferenceId(input.referenceId);
+    const registration = await this.getRegistrationByReferenceId(
+      input.referenceId,
+    );
 
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
@@ -825,15 +816,15 @@ export class ProgramService {
         'transaction.errorMessage as error',
         'transaction.customData as "customData"',
       ])
-      .leftJoin('transaction.connection', 'c')
+      .leftJoin('transaction.registration', 'c')
       .where('transaction.program.id = :programId', {
         programId: input.programId,
       })
       .andWhere('transaction.installment = :installmentId', {
         installmentId: input.installment,
       })
-      .andWhere('transaction.connection.id = :connectionId', {
-        connectionId: connection.id,
+      .andWhere('transaction.registration.id = :registrationId', {
+        registrationId: registration.id,
       })
       .orderBy('transaction.created', 'DESC')
       .getRawMany();
@@ -1082,7 +1073,7 @@ export class ProgramService {
     installment: number,
     transactionStepOfInterest: number,
   ): Promise<InstallmentStateSumDto> {
-    const currentInstallmentConnectionsAndCount = await this.transactionRepository.findAndCount(
+    const currentInstallmentRegistrationsAndCount = await this.transactionRepository.findAndCount(
       {
         where: {
           program: { id: programId },
@@ -1090,22 +1081,22 @@ export class ProgramService {
           installment: installment,
           transactionStep: transactionStepOfInterest,
         },
-        relations: ['connection'],
+        relations: ['registration'],
       },
     );
-    const currentInstallmentConnections =
-      currentInstallmentConnectionsAndCount[0];
-    const currentInstallmentCount = currentInstallmentConnectionsAndCount[1];
-    const currentInstallmentConnectionsIds = currentInstallmentConnections.map(
-      ({ connection }) => connection.id,
+    const currentInstallmentRegistrations =
+      currentInstallmentRegistrationsAndCount[0];
+    const currentInstallmentCount = currentInstallmentRegistrationsAndCount[1];
+    const currentInstallmentRegistrationsIds = currentInstallmentRegistrations.map(
+      ({ registration }) => registration.id,
     );
     let preExistingPa: number;
     if (currentInstallmentCount > 0) {
       preExistingPa = await this.transactionRepository
         .createQueryBuilder('transaction')
-        .leftJoin('transaction.connection', 'connection')
-        .where('transaction.connection.id IN (:...connectionids)', {
-          connectionids: currentInstallmentConnectionsIds,
+        .leftJoin('transaction.registration', 'registration')
+        .where('transaction.registration.id IN (:...registrationIds)', {
+          registrationIds: currentInstallmentRegistrationsIds,
         })
         .andWhere('transaction.installment = :installment', {
           installment: installment - 1,

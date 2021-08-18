@@ -5,6 +5,7 @@ import {
   Column,
   JoinColumn,
   ManyToOne,
+  AfterLoad,
 } from 'typeorm';
 import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
 
@@ -34,4 +35,11 @@ export class ProgramAnswerEntity {
 
   @Column()
   public programAnswer: string;
+
+  public name: string;
+
+  @AfterLoad()
+  public setName(): void {
+    this.name = this.programQuestion.name;
+  }
 }

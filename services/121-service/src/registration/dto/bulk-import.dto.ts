@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
 import { fspName } from '../../programs/fsp/financial-service-provider.entity';
-import { LanguageEnum } from '../../registration/enum/language.enum';
+import { LanguageEnum } from '../enum/language.enum';
 
 export class BulkImportDto {
   @ApiModelProperty()

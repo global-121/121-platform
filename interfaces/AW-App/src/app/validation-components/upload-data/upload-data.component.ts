@@ -71,25 +71,26 @@ export class UploadDataComponent implements ValidationComponent {
   public async validateProgramAnswers(
     validatedAnswers: ValidatedPaData,
   ): Promise<void> {
-    if (!validatedAnswers.attributes) {
+    console.log('validatedAnswers: ', validatedAnswers);
+    if (!validatedAnswers.programAnswers) {
       console.log('UploadData: No attributes validated, nothing to upload.');
       return;
     }
     await this.programsService
       .postValidationData(
         validatedAnswers.referenceId,
-        validatedAnswers.programId,
-        validatedAnswers.attributes,
+        validatedAnswers.programAnswers,
       )
       .then(
         () => {
           console.log(
-            `UploadData: Upload ${validatedAnswers.attributes.length} validated answers succesful for : ${validatedAnswers.referenceId}`,
+            `UploadData: Upload ${validatedAnswers.programAnswers.length} validated answers succesful for : ${validatedAnswers.referenceId}`,
           );
         },
-        () => {
+        (e) => {
+          console.log('e: ', e);
           console.warn(
-            `UploadData: Upload ${validatedAnswers.attributes.length} validated answers failed for : ${validatedAnswers.referenceId}`,
+            `UploadData: Upload ${validatedAnswers.programAnswers.length} validated answers failed for : ${validatedAnswers.referenceId}`,
           );
           this.uploadAborted = true;
         },

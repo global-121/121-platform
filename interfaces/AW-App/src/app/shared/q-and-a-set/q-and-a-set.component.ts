@@ -73,13 +73,13 @@ export class QAndASetComponent implements OnChanges {
 
   private fillAnswerModels() {
     Object.values(this.answers).forEach((item) => {
-      this.theFormModels[item.code] = item.value;
+      this.theFormModels[item.name] = item.value;
     });
   }
 
-  private getQuestionByCode(questionCode: string): Question {
+  private getQuestionByName(questionName: string): Question {
     const result = this.questions.find((question: Question) => {
-      return question.code === questionCode;
+      return question.name === questionName;
     });
 
     return result;
@@ -98,7 +98,7 @@ export class QAndASetComponent implements OnChanges {
 
   private createAnswer(question: Question, answerValue: string): Answer {
     const answer: Answer = {
-      code: question.code,
+      name: question.name,
       value: answerValue,
       label: answerValue,
     };
@@ -114,16 +114,16 @@ export class QAndASetComponent implements OnChanges {
     return answer;
   }
 
-  public onAnswerChange(questionCode: string, answerValue: string) {
+  public onAnswerChange(questionName: string, answerValue: string) {
     // Remove 'false positive' change-events on load/initiation of the component with data
     if (!answerValue) {
       return;
     }
-    const question = this.getQuestionByCode(questionCode);
+    const question = this.getQuestionByName(questionName);
     const answer = this.createAnswer(question, answerValue);
 
     // Save answer
-    this.answers[questionCode] = answer;
+    this.answers[questionName] = answer;
 
     const answersArray = Object.keys(this.answers);
 
@@ -131,7 +131,7 @@ export class QAndASetComponent implements OnChanges {
       this.questions,
       answersArray,
     );
-    this.showNextQuestion(answersArray.indexOf(questionCode));
+    this.showNextQuestion(answersArray.indexOf(questionName));
   }
 
   private showNextQuestion(currentIndex: number) {

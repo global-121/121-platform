@@ -27,22 +27,21 @@ import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { InlusionScoreService } from './services/inclusion-score.service';
 import { BulkImportService } from './services/bulk-import.service';
-import { ImportResult } from '../connection/dto/bulk-import.dto';
-import { ConnectionResponse } from '../models/connection-response.model';
+import { ImportResult } from './dto/bulk-import.dto';
 import { RegistrationResponse } from '../models/registration-response.model';
-import { NoteDto } from '../connection/dto/note.dto';
+import { NoteDto } from './dto/note.dto';
 import { validate } from 'class-validator';
-import { Attributes } from '../connection/dto/update-attribute.dto';
 import { ExportType } from '../programs/program/dto/export-details';
 import { FileDto } from '../programs/program/dto/file.dto';
 import { ExportService } from './services/export.service';
 import { PaStatusTimestampField } from '../models/pa-status.model';
-import { ConnectionEntity } from '../connection/connection.entity';
 import { DownloadData } from '../connection/validation-data/interfaces/download-data.interface';
 import {
   AnswerSet,
   FspAnswersAttrInterface,
 } from '../programs/fsp/fsp-interface';
+import { Attributes } from './dto/update-attribute.dto';
+import { ValidationIssueDataDto } from '../connection/validation-data/dto/validation-issue-data.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -127,14 +126,15 @@ export class RegistrationsService {
   }
 
   public async storeProgramAnswers(
-    storeProgramAnswersDto: StoreProgramAnswersDto,
+    referenceId: string,
+    rawProgramAnswers: ProgramAnswer[],
   ): Promise<void> {
     const registration = await this.getRegistrationFromReferenceId(
-      storeProgramAnswersDto.referenceId,
+      referenceId,
       ['program'],
     );
     const programAnswers = await this.cleanAnswers(
-      storeProgramAnswersDto.programAnswers,
+      rawProgramAnswers,
       registration.program.id,
     );
     for (let answer of programAnswers) {
@@ -159,11 +159,7 @@ export class RegistrationsService {
       }
     }
 
-    await this.storePersistentAnswers(
-      programAnswers,
-      registration.program.id,
-      storeProgramAnswersDto.referenceId,
-    );
+    await this.storePersistentAnswers(programAnswers, referenceId);
   }
 
   public async cleanAnswers(
@@ -200,9 +196,13 @@ export class RegistrationsService {
 
   public async storePersistentAnswers(
     programAnswers: ProgramAnswer[],
-    programId: number,
     referenceId: string,
   ): Promise<void> {
+    const registration = await this.getRegistrationFromReferenceId(
+      referenceId,
+      ['program'],
+    );
+    const programId = registration.program.id;
     const cleanedAnswers = await this.cleanAnswers(programAnswers, programId);
     const program = await this.programRepository.findOne(programId, {
       relations: ['programQuestions'],
@@ -214,7 +214,6 @@ export class RegistrationsService {
       }
     }
 
-    const registration = await this.getRegistrationFromReferenceId(referenceId);
     let customDataToStore;
     if (!registration.customData) {
       customDataToStore = {};
@@ -222,6 +221,7 @@ export class RegistrationsService {
       customDataToStore = registration.customData;
     }
 
+    console.log('cleanedAnswers: ', cleanedAnswers);
     for (let answer of cleanedAnswers) {
       if (persistentQuestions.includes(answer.programQuestionName)) {
         customDataToStore[answer.programQuestionName] = answer.programAnswer;
@@ -824,7 +824,7 @@ export class RegistrationsService {
   public async getAllFspAnswers(
     programIds: number[],
   ): Promise<FspAnswersAttrInterface[]> {
-    const connections = await getRepository(RegistrationEntity)
+    const regsitrations = await getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .leftJoinAndSelect('registration.fsp', 'fsp')
       .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
@@ -835,20 +835,20 @@ export class RegistrationsService {
       })
       .getMany();
 
-    const fspDataPerConnection = [];
-    for (const connection of connections) {
+    const fspDataPerRegistration = [];
+    for (const registration of regsitrations) {
       const answers = this.getFspAnswers(
-        connection.fsp.attributes,
-        connection.customData,
+        registration.fsp.attributes,
+        registration.customData,
       );
       const fspData = {
-        attributes: connection.fsp.attributes,
+        attributes: registration.fsp.attributes,
         answers: answers,
-        referenceId: connection.referenceId,
+        referenceId: registration.referenceId,
       };
-      fspDataPerConnection.push(fspData);
+      fspDataPerRegistration.push(fspData);
     }
-    return fspDataPerConnection;
+    return fspDataPerRegistration;
   }
 
   public getFspAnswers(
@@ -863,7 +863,7 @@ export class RegistrationsService {
     for (const key in customData) {
       if (fspAttributeNames.includes(key)) {
         fspCustomData[key] = {
-          code: key,
+          name: key,
           value: customData[key],
         };
       }
@@ -882,5 +882,48 @@ export class RegistrationsService {
         programIds: programIds,
       })
       .getMany();
+  }
+
+  // AW: get answers to attributes for a given PA (identified first through referenceId/QR)
+  public async get(referenceId: string): Promise<RegistrationEntity> {
+    return await this.registrationRepository.findOne({
+      where: { referenceId: referenceId },
+      relations: ['program', 'programAnswers', 'program.programQuestions'],
+    });
+  }
+
+  public async getFspAnswersAttributes(
+    referenceId: string,
+  ): Promise<FspAnswersAttrInterface> {
+    const qb = await getRepository(RegistrationEntity)
+      .createQueryBuilder('registration')
+      .leftJoinAndSelect('registration.fsp', 'fsp')
+      .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
+      .where('registration.referenceId = :referenceId', {
+        referenceId: referenceId,
+      });
+    const registration = await qb.getOne();
+    const fspAnswers = this.getFspAnswers(
+      registration.fsp.attributes,
+      registration.customData,
+    );
+    return {
+      attributes: registration.fsp.attributes,
+      answers: fspAnswers,
+      referenceId: referenceId,
+    };
+  }
+
+  // Used by Aidworker
+  public async issueValidation(payload: ValidationIssueDataDto): Promise<void> {
+    console.log('payload: ', payload);
+    await this.storePersistentAnswers(
+      payload.programAnswers,
+      payload.referenceId,
+    );
+    await this.setRegistrationStatus(
+      payload.referenceId,
+      RegistrationStatusEnum.validated,
+    );
   }
 }

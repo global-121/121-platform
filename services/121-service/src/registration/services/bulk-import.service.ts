@@ -22,7 +22,7 @@ import {
   DynamicImportAttribute,
   ImportRegistrationsDto,
   ImportResult,
-} from '../../connection/dto/bulk-import.dto';
+} from '../dto/bulk-import.dto';
 import { v4 as uuid } from 'uuid';
 import csv from 'csv-parser';
 import { ActionService } from '../../actions/action.service';

@@ -58,7 +58,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection/qr-find-connection',
+        '/registrations/qr-find-connection',
         {
           qrIdentifier,
         },
@@ -68,16 +68,9 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  getPrefilledAnswers(referenceId: string, programId: number): Promise<any> {
+  getRegistration(referenceId: string): Promise<any> {
     return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/connection/validation-data/get-answers/',
-        {
-          referenceId,
-          programId,
-        },
-      )
+      .get(environment.url_121_service_api, '/registrations/get/' + referenceId)
       .toPromise();
   }
 
@@ -86,7 +79,7 @@ export class ProgramsServiceApiService {
     programId: number,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, '/connection/get-fsp/', {
+      .post(environment.url_121_service_api, '/registrations/get-fsp/', {
         referenceId,
         programId,
       })
@@ -101,7 +94,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection/custom-data',
+        '/registrations/custom-data',
         {
           referenceId,
           key,
@@ -136,18 +129,17 @@ export class ProgramsServiceApiService {
 
   postValidationData(
     referenceId: string,
-    programId: number,
-    attributes: ProgramAnswer[],
+    programAnswers: ProgramAnswer[],
   ): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/connection/validation-data/issue',
+        '/registrations/issue-validation',
         {
           referenceId,
-          programId,
-          attributes,
+          programAnswers,
         },
+        true,
       )
       .toPromise();
   }

@@ -1,42 +1,18 @@
-import { ReferenceIdDto } from './dto/reference-id.dto';
-import { ConnectionService } from './connection.service';
-import {
-  Controller,
-  Post,
-  Body,
-  Param,
-  UseGuards,
-  UseInterceptors,
-  UploadedFile,
-  Get,
-} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiUseTags,
   ApiOperation,
   ApiResponse,
-  ApiImplicitParam,
-  ApiConsumes,
-  ApiImplicitFile,
 } from '@nestjs/swagger';
-import { ConnectionEntity } from './connection.entity';
-import {
-  SetPhoneRequestDto,
-  UpdatePhoneRequestDto,
-} from './dto/set-phone-request.dto';
-import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
-import { CustomDataDto } from '../programs/program/dto/custom-data.dto';
+import { UseGuards, Controller, Post, Body } from '@nestjs/common';
 import { RolesGuard } from '../roles.guard';
+import { ConnectionService } from './connection.service';
+import { ReferenceIdDto } from '../programs/program/dto/reference-id.dto';
+import { ConnectionEntity } from './connection.entity';
 import { Roles } from '../roles.decorator';
 import { UserRole } from '../user-role.enum';
-import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
-import { QrIdentifierDto } from './dto/qr-identifier.dto';
-import { FspAnswersAttrInterface } from 'src/programs/fsp/fsp-interface';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { User } from '../user/user.decorator';
-import { ImportResult } from './dto/bulk-import.dto';
-import { NoteDto, UpdateNoteDto } from './dto/note.dto';
-import { UpdateAttributeDto } from './dto/update-attribute.dto';
+import { QrIdentifierDto } from '../registration/dto/qr-identifier.dto';
+import { FspAnswersAttrInterface } from '../programs/fsp/fsp-interface';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -76,21 +52,6 @@ export class ConnectionController {
   ): Promise<ReferenceIdDto> {
     return await this.connectionService.findConnectionWithQrIdentifier(
       data.qrIdentifier,
-    );
-  }
-
-  @Roles(UserRole.FieldValidation)
-  @ApiOperation({ title: 'Find fsp and attributes' })
-  @ApiResponse({
-    status: 200,
-    description: 'Found fsp and attributes',
-  })
-  @Post('/get-fsp')
-  public async getFspAnswersAttributes(
-    @Body() referenceIdDto: ReferenceIdDto,
-  ): Promise<FspAnswersAttrInterface> {
-    return await this.connectionService.getFspAnswersAttributes(
-      referenceIdDto.referenceId,
     );
   }
 }

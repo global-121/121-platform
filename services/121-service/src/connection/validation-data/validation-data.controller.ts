@@ -25,29 +25,4 @@ export class ValidationDataController {
   public constructor(validationDataService: ValidationDataService) {
     this.validationDataService = validationDataService;
   }
-
-  @Roles(UserRole.FieldValidation)
-  @ApiOperation({ title: 'Get prefilled answers (for AW)' })
-  @ApiResponse({ status: 200, description: 'Prefilled answers received' })
-  @Post('/get-answers')
-  public async getPrefilledAnswers(
-    @Body() getAnswers: ReferenceIdProgramDto,
-  ): Promise<any[]> {
-    return await this.validationDataService.getPrefilledAnswers(
-      getAnswers.referenceId,
-      getAnswers.programId,
-    );
-  }
-
-  @Roles(UserRole.FieldValidation)
-  @ApiOperation({ title: 'Issue validationData (For AW)' })
-  @ApiResponse({ status: 200, description: 'Validation Data issued' })
-  @Post('/issue')
-  public async issue(
-    @Body() validationIssueData: ValidationIssueDataDto,
-  ): Promise<void> {
-    return await this.validationDataService.issueValidation(
-      validationIssueData,
-    );
-  }
 }

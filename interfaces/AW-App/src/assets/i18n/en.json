@@ -38,7 +38,7 @@
       "scan-button": "Scan QR-code",
       "error": "The scanned QR-code did not contain a reference-ID or program-ID.",
       "unknownReferenceIdCombination": "QR-code not found. You can try scanning another QR-code.",
-      "conclusion": "Thank you. You have scanned a valid combination of reference-ID and program-ID.",
+      "conclusion": "Thank you. You have scanned a valid reference-ID.",
       "main-menu": "Back to main menu"
     },
     "upload-data": {

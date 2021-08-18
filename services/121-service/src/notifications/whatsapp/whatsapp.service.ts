@@ -246,6 +246,9 @@ export class WhatsappService {
           : program.notifications[language]['whatsappVoucher'];
         message = message.split('{{1}}').join(intersolveBarcode.amount);
         await this.sendWhatsapp(message, fromNumber, mediaUrl);
+        console.log('mediaUrl: ', mediaUrl);
+        console.log('fromNumber: ', fromNumber);
+        console.log('message: ', message);
         firstVoucherSent = true;
 
         // Save results
@@ -264,6 +267,10 @@ export class WhatsappService {
         await new Promise(resolve => setTimeout(resolve, 2000));
       }
     }
+    console.log(
+      'registrationsWithOpenVouchers: ',
+      registrationsWithOpenVouchers,
+    );
     // Send instruction message only once (outside of loops)
     if (registrationsWithOpenVouchers.length > 0) {
       await this.sendWhatsapp(
