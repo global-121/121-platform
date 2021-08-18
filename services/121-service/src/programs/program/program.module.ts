@@ -11,7 +11,6 @@ import { UserEntity } from '../../user/user.entity';
 import { ProgramService } from './program.service';
 import { UserModule } from '../../user/user.module';
 import { CustomCriterium } from './custom-criterium.entity';
-import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { SmsModule } from '../../notifications/sms/sms.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ActionEntity } from '../../actions/action.entity';
@@ -28,7 +27,6 @@ import { LookupModule } from '../../notifications/lookup/lookup.module';
       CustomCriterium,
       ConnectionEntity,
       FinancialServiceProviderEntity,
-      ProtectionServiceProviderEntity,
       ActionEntity,
       TransactionEntity,
       FspAttributeEntity,

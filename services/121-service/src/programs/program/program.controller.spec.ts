@@ -26,7 +26,6 @@ const newProgramParameters = {
   distributionDuration: 3,
   fixedTransferValue: JSON.parse('[500, 500, 500]'),
   financialServiceProviders: JSON.parse('{}'),
-  protectionServiceProviders: JSON.parse('{}'),
   inclusionCalculationType: 'highestScoresX', // Only option for now later, it can also be a fancy algorithm
   minimumScore: 0,
   highestScoresX: 500,

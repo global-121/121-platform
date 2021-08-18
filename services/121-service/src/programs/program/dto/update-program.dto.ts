@@ -12,7 +12,6 @@ import {
   IsDefined,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ProtectionServiceProviderEntity } from '../protection-service-provider.entity';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 
 export class UpdateProgramDto {
@@ -78,16 +77,6 @@ export class UpdateProgramDto {
   @IsDefined()
   @Type(() => FinancialServiceProviderEntity)
   public readonly financialServiceProviders: FinancialServiceProviderEntity[];
-
-  @ApiModelProperty({
-    example: [],
-  })
-  @IsOptional()
-  @IsArray()
-  @ValidateNested()
-  @IsDefined()
-  @Type(() => ProtectionServiceProviderEntity)
-  public readonly protectionServiceProviders: ProtectionServiceProviderEntity[];
 
   @ApiModelProperty({ example: 'minimumScore' })
   @IsOptional()

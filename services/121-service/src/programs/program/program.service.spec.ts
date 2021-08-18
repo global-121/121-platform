@@ -15,7 +15,6 @@ import { ProgramEntity } from './program.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from '../../user/user.entity';
 import { HttpModule } from '@nestjs/common';
-import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { TwilioMessageEntity } from '../../notifications/twilio.entity';
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
@@ -86,10 +85,6 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(FspCallLogEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(ProtectionServiceProviderEntity),
             useFactory: repositoryMockFactory,
           },
           {

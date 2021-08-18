@@ -13,7 +13,6 @@ import {
 } from 'class-validator';
 import { CreateCustomCriteriumDto } from './create-custom-criterium.dto';
 import { Type } from 'class-transformer';
-import { ProtectionServiceProviderEntity } from '../protection-service-provider.entity';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 
 export class CreateProgramDto {
@@ -75,22 +74,6 @@ export class CreateProgramDto {
   @IsDefined()
   @Type(() => FinancialServiceProviderEntity)
   public readonly financialServiceProviders: FinancialServiceProviderEntity[];
-
-  @ApiModelProperty({
-    example: [
-      {
-        id: 1,
-      },
-      {
-        id: 2,
-      },
-    ],
-  })
-  @IsArray()
-  @ValidateNested()
-  @IsDefined()
-  @Type(() => ProtectionServiceProviderEntity)
-  public readonly protectionServiceProviders: ProtectionServiceProviderEntity[];
 
   @ApiModelProperty({ example: 'minimumScore' })
   @IsIn(['minimumScore', 'highestScoresX'])

@@ -15,6 +15,7 @@ import { UserRO } from './user.interface';
 import { UserRole } from '../user-role.enum';
 import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program/program-aidworker.entity';
 
 @Injectable()
 export class UserService {
@@ -24,6 +25,10 @@ export class UserService {
   private readonly userRoleRepository: Repository<UserRoleEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
+  @InjectRepository(ProgramAidworkerAssignmentEntity)
+  private readonly assignmentRepository: Repository<
+    ProgramAidworkerAssignmentEntity
+  >;
 
   public constructor() {}
 
@@ -37,7 +42,8 @@ export class UserService {
     const user = await getRepository(UserEntity)
       .createQueryBuilder('user')
       .addSelect('password')
-      .leftJoinAndSelect('user.roles', 'roles')
+      .leftJoinAndSelect('user.programAssignments', 'assignment')
+      .leftJoinAndSelect('assignment.roles', 'roles')
       .where(findOneOptions)
       .getOne();
     return user;
@@ -82,16 +88,13 @@ export class UserService {
     newUser.username = username;
     newUser.password = password;
     newUser.userType = userType;
-    newUser.programs = [];
-    newUser.assignedProgram = [];
-    newUser.roles = [];
     const savedUser = await this.userRepository.save(newUser);
     return this.buildUserRO(savedUser);
   }
 
   public async update(id: number, dto: UpdateUserDto): Promise<UserRO> {
     let toUpdate = await this.userRepository.findOne(id, {
-      relations: ['assignedProgram', 'roles'],
+      relations: ['programAssignments', 'programAssignments.roles'],
     });
     let updated = toUpdate;
     updated.password = crypto.createHmac('sha256', dto.password).digest('hex');
@@ -99,10 +102,11 @@ export class UserService {
     return this.buildUserRO(updated);
   }
 
-  public async assignProgram(userId: number, programId: number): Promise<any> {
-    let user = await this.userRepository.findOne(userId, {
-      relations: ['assignedProgram', 'roles'],
-    });
+  public async assignFieldValidationAidworkerToProgram(
+    userId: number,
+    programId: number,
+  ): Promise<any> {
+    let user = await this.userRepository.findOne(userId);
     if (!user) {
       const errors = { User: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
@@ -112,50 +116,33 @@ export class UserService {
       const errors = { Program: ' not found' };
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    if (!user.assignedProgram) {
+    if (!user.programAssignments) {
       console.log('No program assigned');
-      user.assignedProgram = [];
     }
-    user.assignedProgram.push(program);
-    await this.userRepository.save(user);
+    const assignment = await this.assignmentRepository.save({
+      user: { id: userId },
+      program: { id: programId },
+      roles: await this.userRoleRepository.find({
+        where: {
+          role: UserRole.FieldValidation,
+        },
+      }),
+    });
+    console.log('assignment: ', assignment);
+
     return this.buildUserRO(user);
   }
 
-  public async delete(
-    deleterId: number,
-    userId: number,
-  ): Promise<DeleteResult> {
-    const deleter = await this.userRepository.findOne(deleterId, {
-      relations: ['roles'],
-    });
+  public async delete(userId: number): Promise<DeleteResult> {
+    console.log('userId: ', userId);
     const user = await this.userRepository.findOne(userId, {
-      relations: ['roles'],
+      relations: ['programAssignments', 'programAssignments.roles'],
     });
+    console.log('user: ', user);
 
-    // If not run-program-role (= admin, as other roles have no access to this endpoint), can delete any user
-    if (
-      !deleter.roles.includes(
-        await this.userRoleRepository.findOne({
-          where: { role: UserRole.RunProgram },
-        }),
-      )
-    ) {
-      return await this.userRepository.delete(userId);
-    }
+    await this.assignmentRepository.remove(user.programAssignments);
 
-    // run-program-role can only delete aidworkers
-    if (
-      user.roles.includes(
-        await this.userRoleRepository.findOne({
-          where: { role: UserRole.FieldValidation },
-        }),
-      )
-    ) {
-      return await this.userRepository.delete(userId);
-    } else {
-      const errors = { Delete: 'run-program role can only delete aidworkers' };
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
+    return await this.userRepository.delete(userId);
   }
 
   public async deletePersonAffected(userId: number): Promise<DeleteResult> {
@@ -178,7 +165,7 @@ export class UserService {
   public async findByEmail(email: string): Promise<UserRO> {
     const user = await this.userRepository.findOne({
       where: { email: email },
-      relations: ['assignedProgram', 'roles'],
+      relations: ['programAssignments', 'programAssignments.roles'],
     });
     return this.buildUserRO(user);
   }
@@ -188,11 +175,16 @@ export class UserService {
     let exp = new Date(today);
     exp.setDate(today.getDate() + 60);
 
+    let roles = [];
+    if (user.programAssignments && user.programAssignments[0]) {
+      roles = user.programAssignments[0].roles.map(role => role.role);
+    }
+
     const result = jwt.sign(
       {
         id: user.id,
         username: user.username,
-        roles: user.roles.map(role => role.role),
+        roles,
         exp: exp.getTime() / 1000,
       },
       process.env.SECRETS_121_SERVICE_SECRET,
@@ -202,12 +194,15 @@ export class UserService {
   }
 
   private buildUserRO(user: UserEntity): UserRO {
+    let roles = [];
+    if (user.programAssignments && user.programAssignments[0]) {
+      roles = user.programAssignments[0].roles;
+    }
     const userRO = {
       id: user.id,
       username: user.username,
       token: this.generateJWT(user),
-      roles: user.roles,
-      assignedProgramId: user.assignedProgram,
+      roles,
     };
     return { user: userRO };
   }

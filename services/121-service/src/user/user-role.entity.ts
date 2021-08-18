@@ -1,6 +1,7 @@
 import { UserRole } from '../user-role.enum';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 import { UserEntity } from './user.entity';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program/program-aidworker.entity';
 
 @Entity('user_role')
 export class UserRoleEntity {
@@ -14,8 +15,8 @@ export class UserRoleEntity {
   public label: string;
 
   @ManyToMany(
-    () => UserEntity,
-    user => user.roles,
+    () => ProgramAidworkerAssignmentEntity,
+    assignment => assignment.roles,
   )
-  public users: UserEntity[];
+  public assignments: ProgramAidworkerAssignmentEntity[];
 }

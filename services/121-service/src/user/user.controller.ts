@@ -62,7 +62,8 @@ export class UserController {
     }
 
     const token = await this.userService.generateJWT(_user);
-    const { username, roles } = _user;
+    const username = _user.username;
+    const roles = _user.programAssignments[0].roles;
     const user = {
       username,
       token,
@@ -93,11 +94,8 @@ export class UserController {
   @ApiOperation({ title: 'Delete user by userId' })
   @Post('user/delete/:userId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
-  public async delete(
-    @User('id') deleterId: number,
-    @Param() params,
-  ): Promise<DeleteResult> {
-    return await this.userService.delete(deleterId, Number(params.userId));
+  public async delete(@Param() params): Promise<DeleteResult> {
+    return await this.userService.delete(Number(params.userId));
   }
 
   @ApiBearerAuth()
@@ -117,7 +115,7 @@ export class UserController {
   public async deleteCurrentUser(
     @User('id') deleterId: number,
   ): Promise<DeleteResult> {
-    return await this.userService.delete(deleterId, deleterId);
+    return await this.userService.delete(deleterId);
   }
 
   @ApiBearerAuth()
@@ -139,11 +137,11 @@ export class UserController {
   @Post('user/:userId/:programId')
   @ApiImplicitParam({ name: 'userId', required: true, type: 'integer' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  public async assignProgram(
+  public async assignFieldValidationAidworkerToProgram(
     @Param('userId') userId: number,
     @Param('programId') programId: number,
   ): Promise<UserRO> {
-    return await this.userService.assignProgram(
+    return await this.userService.assignFieldValidationAidworkerToProgram(
       Number(userId),
       Number(programId),
     );

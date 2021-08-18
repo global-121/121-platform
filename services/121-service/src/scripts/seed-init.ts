@@ -42,9 +42,9 @@ export class SeedInit implements InterfaceScript {
 
     const userRepository = this.connection.getRepository(UserEntity);
     await userRepository.save({
-      roles: await userRoleRepository.find({
-        where: { role: UserRole.Admin },
-      }),
+      // roles: await userRoleRepository.find({
+      //   where: { role: UserRole.Admin },
+      // }),
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       password: crypto
         .createHmac('sha256', process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN)

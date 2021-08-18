@@ -174,13 +174,12 @@
         "descHumanitarianObjective": "Description: Humanatarian objective",
         "descCashType": "Description: Cash Type",
         "published": "Published",
-        "state": "Current program phase",
+        "phase": "Current program phase",
         "created": "Program created at",
         "updated": "Program last updated at",
-        "customCriteria": "Inclusion criteria",
-        "aidworkers": "Assigned aidworkers",
+        "programQuestions": "Inclusion criteria",
+        "aidworkerAssignments": "Assigned aidworkers",
         "financialServiceProviders": "Financial Service-providers",
-        "protectionServiceProviders": "Protection Service-providers",
         "validation": "Program includes validation"
       },
       "program-payout": {

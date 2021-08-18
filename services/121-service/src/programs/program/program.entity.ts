@@ -2,21 +2,18 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   OneToMany,
   BeforeUpdate,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { UserEntity } from '../../user/user.entity';
-import { CustomCriterium } from './custom-criterium.entity';
-import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
 import { TransactionEntity } from './transactions.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
 import { ActionEntity } from '../../actions/action.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
+import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
 
 @Entity('program')
 export class ProgramEntity {
@@ -26,31 +23,31 @@ export class ProgramEntity {
   @Column({ default: ProgramPhase.design })
   public phase: ProgramPhase;
 
-  @Column()
+  @Column({ nullable: true })
   public location: string;
 
-  @Column('json')
+  @Column('json', { nullable: true })
   public title: JSON;
 
-  @Column()
+  @Column({ nullable: true })
   public ngo: string;
 
-  @Column()
+  @Column({ nullable: true })
   public startDate: Date;
 
-  @Column()
+  @Column({ nullable: true })
   public endDate: Date;
 
-  @Column()
+  @Column({ nullable: true })
   public currency: string;
 
-  @Column()
+  @Column({ nullable: true })
   public distributionFrequency: string;
 
-  @Column()
+  @Column({ nullable: true })
   public distributionDuration: number;
 
-  @Column()
+  @Column({ nullable: true })
   public fixedTransferValue: number;
 
   @ManyToMany(
@@ -60,41 +57,34 @@ export class ProgramEntity {
   @JoinTable()
   public financialServiceProviders: FinancialServiceProviderEntity[];
 
-  @ManyToMany(
-    () => ProtectionServiceProviderEntity,
-    protectionServiceProviders => protectionServiceProviders.program,
-  )
-  @JoinTable()
-  public protectionServiceProviders: ProtectionServiceProviderEntity[];
-
-  @Column()
+  @Column({ nullable: true })
   public inclusionCalculationType: string;
 
-  @Column()
+  @Column({ nullable: true })
   public minimumScore: number;
 
-  @Column()
+  @Column({ nullable: true })
   public highestScoresX: number;
 
-  @Column('json')
+  @Column('json', { nullable: true })
   public meetingDocuments: JSON;
 
-  @Column('json')
+  @Column('json', { nullable: true })
   public notifications: JSON;
 
   @Column({ nullable: true })
   public phoneNumberPlaceholder: string;
 
-  @Column('json')
+  @Column('json', { nullable: true })
   public description: JSON;
 
-  @Column('json')
+  @Column('json', { nullable: true })
   public descLocation: JSON;
 
-  @Column('json')
+  @Column('json', { nullable: true })
   public descHumanitarianObjective: JSON;
 
-  @Column('json')
+  @Column('json', { nullable: true })
   public descCashType: JSON;
 
   @Column({ default: false })
@@ -114,15 +104,15 @@ export class ProgramEntity {
     this.updated = new Date();
   }
 
-  @ManyToOne(
-    () => UserEntity,
-    user => user.programs,
+  @OneToMany(
+    () => ProgramAidworkerAssignmentEntity,
+    assignment => assignment.program,
   )
-  public author: UserEntity;
+  public aidworkerAssignments: ProgramAidworkerAssignmentEntity[];
 
   @OneToMany(
     () => ActionEntity,
-    program => program.user,
+    action => action.program,
   )
   public actions: ActionEntity[];
 
@@ -131,13 +121,6 @@ export class ProgramEntity {
     programQuestions => programQuestions.program,
   )
   public programQuestions: ProgramQuestionEntity[];
-
-  @ManyToMany(
-    () => UserEntity,
-    aidworker => aidworker.assignedProgram,
-  )
-  @JoinTable()
-  public aidworkers: UserEntity[];
 
   @OneToMany(
     () => TransactionEntity,

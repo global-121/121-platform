@@ -26,28 +26,30 @@ export class SeedDemoProgram implements InterfaceScript {
     await seedInit.run();
 
     // ***** CREATE USERS *****
-    await this.seedHelper.addUser({
-      roles: [UserRole.RunProgram],
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
-    });
-
-    await this.seedHelper.addUser({
-      roles: [UserRole.PersonalData],
-      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
-      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
-    });
-
-    await this.seedHelper.addUser({
-      roles: [UserRole.PersonalData, UserRole.RunProgram],
+    const fullAccessUser = await this.seedHelper.addUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
 
-    await this.seedHelper.addUser({
-      roles: [UserRole.View],
+    const runProgramUser = await this.seedHelper.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
+    });
+
+    const personalDataUser = await this.seedHelper.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
+      password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
+    });
+
+    const viewOnlyUser = await this.seedHelper.addUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
+    });
+
+    const fieldValidationUser = await this.seedHelper.addUser({
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,
+      password:
+        process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FIELD_VALIDATION,
     });
 
     // ***** CREATE FINANCIAL SERVICE PROVIDERS *****
@@ -58,8 +60,25 @@ export class SeedDemoProgram implements InterfaceScript {
     await this.seedHelper.addFsp(fspNoAttributes);
 
     // ***** CREATE PROGRAM *****
-    const examplePrograms = [programDemo];
-    await this.seedHelper.addPrograms(examplePrograms, 1);
+    const program = await this.seedHelper.addProgram(programDemo);
+
+    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
+    await this.seedHelper.assignAidworker(fullAccessUser.id, program.id, [
+      UserRole.PersonalData,
+      UserRole.RunProgram,
+    ]);
+    await this.seedHelper.assignAidworker(runProgramUser.id, program.id, [
+      UserRole.RunProgram,
+    ]);
+    await this.seedHelper.assignAidworker(personalDataUser.id, program.id, [
+      UserRole.PersonalData,
+    ]);
+    await this.seedHelper.assignAidworker(viewOnlyUser.id, program.id, [
+      UserRole.View,
+    ]);
+    await this.seedHelper.assignAidworker(fieldValidationUser.id, program.id, [
+      UserRole.FieldValidation,
+    ]);
 
     // ***** CREATE INSTANCE *****
     await this.seedHelper.addInstance(instanceDemo);

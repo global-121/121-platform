@@ -796,11 +796,15 @@ export class RegistrationsService {
     const user = await this.userRepository.findOne(userId, {
       relations: ['assignedProgram'],
     });
-    if (!user || !user.assignedProgram || user.assignedProgram.length === 0) {
+    if (
+      !user ||
+      !user.programAssignments ||
+      user.programAssignments.length === 0
+    ) {
       const errors = 'User not found or no assigned programs';
       throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
     }
-    const programIds = user.assignedProgram.map(p => p.id);
+    const programIds = user.programAssignments.map(p => p.program.id);
     const data = {
       answers: await this.getAllProgramAnswers(user),
       fspData: await this.getAllFspAnswers(programIds),
@@ -812,8 +816,8 @@ export class RegistrationsService {
   public async getAllProgramAnswers(
     user: UserEntity,
   ): Promise<ProgramAnswerEntity[]> {
-    const programIds = user.assignedProgram.map(program => {
-      return { programId: program.id };
+    const programIds = user.programAssignments.map(assignment => {
+      return { programId: assignment.program.id };
     });
     const answers = await this.programAnswerRepository.find({
       where: programIds,

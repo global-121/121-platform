@@ -12,7 +12,6 @@ const userRo = {
     email: 'test@example.org',
     token: undefined,
     roles: undefined,
-    assignedProgramId: undefined,
   },
 };
 

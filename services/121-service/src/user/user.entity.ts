@@ -6,16 +6,12 @@ import {
   Column,
   BeforeInsert,
   OneToMany,
-  ManyToMany,
-  JoinTable,
   Index,
 } from 'typeorm';
-import { IsEmail } from 'class-validator';
 import crypto from 'crypto';
-import { ProgramEntity } from '../programs/program/program.entity';
 import { ActionEntity } from '../actions/action.entity';
-import { UserRoleEntity } from './user-role.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program/program-aidworker.entity';
 
 @Entity('user')
 export class UserEntity {
@@ -29,13 +25,6 @@ export class UserEntity {
   @Column({ select: false })
   public password: string;
 
-  @ManyToMany(
-    () => UserRoleEntity,
-    role => role.users,
-  )
-  @JoinTable()
-  public roles: UserRoleEntity[];
-
   @BeforeInsert()
   public hashPassword(): any {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
@@ -45,22 +34,16 @@ export class UserEntity {
   public created: Date;
 
   @OneToMany(
-    () => ProgramEntity,
-    program => program.author,
+    () => ProgramAidworkerAssignmentEntity,
+    assignment => assignment.user,
   )
-  public programs: ProgramEntity[];
+  public programAssignments: ProgramAidworkerAssignmentEntity[];
 
   @OneToMany(
     () => ActionEntity,
     program => program.user,
   )
   public actions: ActionEntity[];
-
-  @ManyToMany(
-    () => ProgramEntity,
-    program => program.aidworkers,
-  )
-  public assignedProgram: ProgramEntity[];
 
   @OneToMany(
     () => RegistrationEntity,

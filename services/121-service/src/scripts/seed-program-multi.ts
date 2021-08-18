@@ -12,8 +12,6 @@ import fspNoAttributes from '../../seed-data/fsp/fsp-no-attributes.json';
 import fspIntersolve from '../../seed-data/fsp/fsp-intersolve.json';
 import fspAfricasTalking from '../../seed-data/fsp/fsp-africas-talking.json';
 
-import { ProtectionServiceProviderEntity } from '../programs/program/protection-service-provider.entity';
-
 import programAnonymousExample1 from '../../seed-data/program/program-anonymous1.json';
 import programAnonymousExample2 from '../../seed-data/program/program-anonymous2.json';
 import instanceAnonymous from '../../seed-data/instance/instance-anonymous.json';
@@ -30,32 +28,27 @@ export class SeedMultiProgram implements InterfaceScript {
     await seedInit.run();
 
     // ***** CREATE USERS *****
-    await this.seedHelper.addUser({
-      roles: [UserRole.PersonalData, UserRole.RunProgram],
+    const fullAccessUser = await this.seedHelper.addUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FULL_ACCESS,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FULL_ACCESS,
     });
 
-    await this.seedHelper.addUser({
-      roles: [UserRole.RunProgram],
+    const runProgramUser = await this.seedHelper.addUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_RUN_PROGRAM,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_RUN_PROGRAM,
     });
 
-    await this.seedHelper.addUser({
-      roles: [UserRole.PersonalData],
+    const personalDataUser = await this.seedHelper.addUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_PERSONAL_DATA,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_PERSONAL_DATA,
     });
 
-    await this.seedHelper.addUser({
-      roles: [UserRole.View],
+    const viewOnlyUser = await this.seedHelper.addUser({
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_VIEW,
       password: process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_VIEW,
     });
 
     const fieldValidationUser = await this.seedHelper.addUser({
-      roles: [UserRole.FieldValidation],
       username: process.env.USERCONFIG_121_SERVICE_EMAIL_USER_FIELD_VALIDATION,
       password:
         process.env.USERCONFIG_121_SERVICE_PASSWORD_USER_FIELD_VALIDATION,
@@ -69,34 +62,37 @@ export class SeedMultiProgram implements InterfaceScript {
     await this.seedHelper.addFsp(fspMixedAttributes);
     await this.seedHelper.addFsp(fspNoAttributes);
 
-    // ***** CREATE PROTECTION SERVICE PROVIDERS *****
-    const protectionServiceProviderRepository = this.connection.getRepository(
-      ProtectionServiceProviderEntity,
-    );
-    await protectionServiceProviderRepository.save([
-      { psp: 'Protection Service Provider A' },
-    ]);
-    await protectionServiceProviderRepository.save([
-      { psp: 'Protection Service Provider B' },
-    ]);
-
     // ***** CREATE A INSTANCES OF THE SAME EXAMPLE PROGRAM WITH DIFFERENT TITLES FOR DIFFERENT COUNTRIES*****
     const programAnonymousExample3 = { ...programAnonymousExample1 };
     const programAnonymousExample4 = { ...programAnonymousExample2 };
 
-    const examplePrograms = [
-      programAnonymousExample1,
-      programAnonymousExample2,
-      programAnonymousExample3,
-      programAnonymousExample4,
-    ];
-    await this.seedHelper.addPrograms(examplePrograms, 1);
+    const program1 = await this.seedHelper.addProgram(programAnonymousExample1);
+    const program2 = await this.seedHelper.addProgram(programAnonymousExample2);
+    const program3 = await this.seedHelper.addProgram(programAnonymousExample3);
+    const program4 = await this.seedHelper.addProgram(programAnonymousExample4);
 
-    // ***** ASSIGN AIDWORKER TO PROGRAM *****
-    await this.seedHelper.assignAidworker(fieldValidationUser.id, 1);
-    await this.seedHelper.assignAidworker(fieldValidationUser.id, 2);
-    await this.seedHelper.assignAidworker(fieldValidationUser.id, 3);
-    await this.seedHelper.assignAidworker(fieldValidationUser.id, 4);
+    // ***** ASSIGN AIDWORKER TO PROGRAM WITH ROLES *****
+    const programs = [program1, program2, program3, program4];
+    for (let program of programs) {
+      await this.seedHelper.assignAidworker(fullAccessUser.id, program.id, [
+        UserRole.PersonalData,
+        UserRole.RunProgram,
+      ]);
+      await this.seedHelper.assignAidworker(runProgramUser.id, program.id, [
+        UserRole.RunProgram,
+      ]);
+      await this.seedHelper.assignAidworker(personalDataUser.id, program.id, [
+        UserRole.PersonalData,
+      ]);
+      await this.seedHelper.assignAidworker(viewOnlyUser.id, program.id, [
+        UserRole.View,
+      ]);
+      await this.seedHelper.assignAidworker(
+        fieldValidationUser.id,
+        program.id,
+        [UserRole.FieldValidation],
+      );
+    }
 
     // ***** CREATE INSTANCE *****
     // NOTE: the multi-NGO setting of this seed-script does not comply with this single-NGO instance. We choose 'NGO A' here.

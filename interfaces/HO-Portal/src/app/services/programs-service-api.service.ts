@@ -441,7 +441,7 @@ export class ProgramsServiceApiService {
     roles: UserRole[] | string[],
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, `/user`, {
+      .post(environment.url_121_service_api, `/user/aidworker`, {
         email,
         password,
         roles,

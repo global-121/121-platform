@@ -9,29 +9,17 @@ import { ConnectionEntity } from '../../connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Repository,
-  getRepository,
-  DeleteResult,
-  Not,
-  IsNull,
-  Equal,
-  In,
-} from 'typeorm';
+import { Repository, getRepository, DeleteResult, In } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
 import { PaStatus, PaStatusTimestampField } from '../../models/pa-status.model';
-import { UserEntity } from '../../user/user.entity';
 import { CreateProgramDto } from './dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
 import { InclusionStatus } from './dto/inclusion-status.dto';
-import { ProtectionServiceProviderEntity } from './protection-service-provider.entity';
-import { SmsService } from '../../notifications/sms/sms.service';
 import {
   FinancialServiceProviderEntity,
   fspName,
 } from '../fsp/financial-service-provider.entity';
-import { ExportType } from './dto/export-details';
 import {
   ActionEntity,
   AdditionalActionType,
@@ -42,12 +30,8 @@ import { UpdateProgramDto } from './dto/update-program.dto';
 import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { FileDto } from './dto/file.dto';
-import { LookupService } from '../../notifications/lookup/lookup.service';
 import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
 import { TotalIncluded } from './dto/payout.dto';
-import { without, compact, sortBy } from 'lodash';
-import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
 import { ConnectionResponse } from '../../models/connection-response.model';
 import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
@@ -60,8 +44,6 @@ export class ProgramService {
   private readonly connectionRepository: Repository<ConnectionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(UserEntity)
-  private readonly userRepository: Repository<UserEntity>;
   @InjectRepository(CustomCriterium)
   public customCriteriumRepository: Repository<CustomCriterium>;
   @InjectRepository(FspAttributeEntity)
@@ -69,10 +51,6 @@ export class ProgramService {
   @InjectRepository(FinancialServiceProviderEntity)
   public financialServiceProviderRepository: Repository<
     FinancialServiceProviderEntity
-  >;
-  @InjectRepository(ProtectionServiceProviderEntity)
-  public protectionServiceProviderRepository: Repository<
-    ProtectionServiceProviderEntity
   >;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
@@ -83,9 +61,7 @@ export class ProgramService {
 
   public constructor(
     private readonly actionService: ActionService,
-    private readonly smsService: SmsService,
     private readonly fspService: FspService,
-    private readonly lookupService: LookupService,
   ) {}
 
   private async checkIfProgramExists(programId: number): Promise<void> {
@@ -97,14 +73,16 @@ export class ProgramService {
   }
 
   public async findOne(where): Promise<ProgramEntity> {
-    return await this.programRepository.findOne(where, {
+    const program = await this.programRepository.findOne(where, {
       relations: [
         'programQuestions',
-        'protectionServiceProviders',
-        'aidworkers',
+        'aidworkerAssignments',
+        'aidworkerAssignments.user',
+        'aidworkerAssignments.roles',
         'financialServiceProviders',
       ],
     });
+    return program;
   }
 
   public async findAll(): Promise<ProgramsRO> {
@@ -156,10 +134,6 @@ export class ProgramService {
     program.validation = programData.validation;
     program.programQuestions = [];
     program.financialServiceProviders = [];
-    program.protectionServiceProviders = [];
-
-    const author = await this.userRepository.findOne(userId);
-    program.author = author;
 
     // for (let customCriterium of programData.customCriteria) {
     //   let customReturn = await this.customCriteriumRepository.save(
@@ -178,18 +152,6 @@ export class ProgramService {
       }
       fsp.program.push(program);
       await this.financialServiceProviderRepository.save(fsp);
-    }
-    for (let item of programData.protectionServiceProviders) {
-      let psp = await this.protectionServiceProviderRepository.findOne({
-        relations: ['program'],
-        where: { id: item.id },
-      });
-      if (!psp) {
-        const errors = `No psp found with id ${item.id}`;
-        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-      }
-      psp.program.push(program);
-      await this.protectionServiceProviderRepository.save(psp);
     }
 
     const newProgram = await this.programRepository.save(program);
