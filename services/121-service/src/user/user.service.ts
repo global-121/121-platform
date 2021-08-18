@@ -105,7 +105,7 @@ export class UserService {
   public async assignFieldValidationAidworkerToProgram(
     userId: number,
     programId: number,
-  ): Promise<any> {
+  ): Promise<void> {
     let user = await this.userRepository.findOne(userId);
     if (!user) {
       const errors = { User: ' not found' };
@@ -119,7 +119,7 @@ export class UserService {
     if (!user.programAssignments) {
       console.log('No program assigned');
     }
-    const assignment = await this.assignmentRepository.save({
+    await this.assignmentRepository.save({
       user: { id: userId },
       program: { id: programId },
       roles: await this.userRoleRepository.find({
@@ -128,17 +128,12 @@ export class UserService {
         },
       }),
     });
-    console.log('assignment: ', assignment);
-
-    return this.buildUserRO(user);
   }
 
   public async delete(userId: number): Promise<DeleteResult> {
-    console.log('userId: ', userId);
     const user = await this.userRepository.findOne(userId, {
       relations: ['programAssignments', 'programAssignments.roles'],
     });
-    console.log('user: ', user);
 
     await this.assignmentRepository.remove(user.programAssignments);
 

@@ -140,7 +140,7 @@ export class UserController {
   public async assignFieldValidationAidworkerToProgram(
     @Param('userId') userId: number,
     @Param('programId') programId: number,
-  ): Promise<UserRO> {
+  ): Promise<void> {
     return await this.userService.assignFieldValidationAidworkerToProgram(
       Number(userId),
       Number(programId),
