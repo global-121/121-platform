@@ -59,21 +59,21 @@ export class TwilioValidateRequestDto {
 export class TwilioStatusCallbackDto {
   @ApiModelProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
-  public readonly MessageSid: string;
+  public MessageSid: string;
 
   @ApiModelProperty({ example: 'delivered' })
   @IsString()
-  public readonly MessageStatus: string;
+  public MessageStatus: string;
 
   @ApiModelProperty({ example: 'Twilio Error: []' })
   @IsString()
   @IsOptional()
-  public readonly ErrorMessage: string;
+  public ErrorMessage: string;
 
   @ApiModelProperty({ example: '63015' })
   @IsString()
   @IsOptional()
-  public readonly ErrorCode: string;
+  public ErrorCode: string;
 }
 
 export class TwilioIncomingCallbackDto {

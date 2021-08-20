@@ -1,7 +1,9 @@
+import { API_PATHS, BASE_PATH, EXTERNAL_API, PORT } from './../config';
 /* eslint-disable @typescript-eslint/camelcase */
-import { Injectable } from '@nestjs/common';
+import { HttpService, Injectable, Post } from '@nestjs/common';
 import {
   TwilioMessagesCreateDto,
+  TwilioStatusCallbackDto,
   TwilioValidateRequestDto,
 } from './twilio.dto';
 
@@ -16,7 +18,7 @@ export class TwilioClientMock {
     public async create(
       twilioMessagesCreateDto: TwilioMessagesCreateDto,
     ): Promise<object> {
-      console.log('TwilioClientMock: create():');
+      console.log('TwilioClientMock: create():', twilioMessagesCreateDto);
 
       const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
 
@@ -45,6 +47,7 @@ export class TwilioClientMock {
         },
       };
       console.log('TwilioClientMock create(): response:', response);
+      this.sendStatusResponse(twilioMessagesCreateDto, messageSid);
       return response;
     }
 
@@ -60,6 +63,34 @@ export class TwilioClientMock {
       }
 
       return result;
+    }
+
+    private async sendStatusResponse(
+      twilioMessagesCreateDto: TwilioMessagesCreateDto,
+      messageSid: string,
+    ): Promise<void> {
+      if (twilioMessagesCreateDto.from.includes('whatsapp')) {
+        console.log('twilioMessagesCreateDto: ', twilioMessagesCreateDto);
+
+        await new Promise(r => setTimeout(r, 3000));
+        const request = new TwilioStatusCallbackDto();
+        request.MessageSid = messageSid;
+        request.MessageStatus = 'delivered';
+        const httpService = new HttpService();
+        try {
+          await httpService
+            .post(EXTERNAL_API.whatsAppStatus, request)
+            .toPromise();
+        } catch (error) {
+          // In case external API is not reachable try localhost
+          const urlLocalhost = `http://localhost:${PORT}${BASE_PATH}/${API_PATHS.whatsAppStatus}`;
+          console.log('urlLocalhost: ', urlLocalhost);
+          const test = await httpService
+            .post(urlLocalhost, request)
+            .toPromise();
+          console.log('test: ', test);
+        }
+      }
     }
   };
 
