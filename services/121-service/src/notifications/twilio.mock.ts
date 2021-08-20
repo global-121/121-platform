@@ -7,11 +7,36 @@ import {
   TwilioValidateRequestDto,
 } from './twilio.dto';
 
+class PhoneNumbers {
+  public phoneNumber;
+  public constructor(phoneNumber = '+31600000000') {
+    this.phoneNumber = phoneNumber;
+  }
+  public async fetch(_: any): Promise<any> {
+    const twillioLookup = require('twilio')(
+      process.env.TWILIO_SID,
+      process.env.TWILIO_AUTHTOKEN,
+    );
+    return twillioLookup.lookups
+      .phoneNumbers(this.phoneNumber)
+      .fetch({ type: ['carrier'] });
+  }
+}
+
+class LookUp {
+  public constructor() {}
+  public phoneNumbers(nr): any {
+    return new PhoneNumbers(nr);
+  }
+}
+
 @Injectable()
 export class TwilioClientMock {
   public messages;
+  public lookups;
   public constructor() {
     this.messages = new this.Messages();
+    this.lookups = new LookUp();
   }
 
   public Messages = class {
@@ -47,7 +72,7 @@ export class TwilioClientMock {
         },
       };
       console.log('TwilioClientMock create(): response:', response);
-      this.sendStatusResponse(twilioMessagesCreateDto, messageSid);
+      this.sendStatusResponse121(twilioMessagesCreateDto, messageSid);
       return response;
     }
 
@@ -65,13 +90,14 @@ export class TwilioClientMock {
       return result;
     }
 
-    private async sendStatusResponse(
+    private async sendStatusResponse121(
       twilioMessagesCreateDto: TwilioMessagesCreateDto,
       messageSid: string,
     ): Promise<void> {
-      if (twilioMessagesCreateDto.from.includes('whatsapp')) {
-        console.log('twilioMessagesCreateDto: ', twilioMessagesCreateDto);
-
+      if (
+        twilioMessagesCreateDto.from &&
+        twilioMessagesCreateDto.from.includes('whatsapp')
+      ) {
         await new Promise(r => setTimeout(r, 3000));
         const request = new TwilioStatusCallbackDto();
         request.MessageSid = messageSid;
@@ -84,11 +110,7 @@ export class TwilioClientMock {
         } catch (error) {
           // In case external API is not reachable try localhost
           const urlLocalhost = `http://localhost:${PORT}${BASE_PATH}/${API_PATHS.whatsAppStatus}`;
-          console.log('urlLocalhost: ', urlLocalhost);
-          const test = await httpService
-            .post(urlLocalhost, request)
-            .toPromise();
-          console.log('test: ', test);
+          await httpService.post(urlLocalhost, request).toPromise();
         }
       }
     }
