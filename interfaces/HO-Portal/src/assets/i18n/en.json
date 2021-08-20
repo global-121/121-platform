@@ -98,7 +98,7 @@
           "validated": "PAs that were validated.",
           "included": "PAs that were included. <br> They will receive payments starting with the next payment/payout round.",
           "inclusionEnded": "PAs for which inclusion was ended. <br> They will not receive any (more) payments for the next payment/payout round.",
-          "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> They will not receive any (more) payments for the next payment/payout round.'",
+          "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> These are PAs who were invited but did not yet register and are meanwhile no longer eligible.",
           "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round."
         },
         "header": {
