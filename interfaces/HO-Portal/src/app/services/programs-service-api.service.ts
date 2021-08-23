@@ -21,7 +21,7 @@ import { ApiService } from './api.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService) {}
 
-  login(email: string, password: string): Promise<UserModel | null> {
+  login(username: string, password: string): Promise<UserModel | null> {
     console.log('ProgramsService : login()');
 
     return this.apiService
@@ -29,7 +29,7 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         '/user/login',
         {
-          email,
+          username,
           password,
         },
         true,
@@ -92,7 +92,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/programs/changePhase/${programId}`,
+        `/programs/change-phase/${programId}`,
         {
           newPhase,
         },
@@ -102,7 +102,7 @@ export class ProgramsServiceApiService {
 
   getMetricsById(programId: number | string): Promise<ProgramMetrics> {
     return this.apiService
-      .get(environment.url_121_service_api, `/programs/metrics/${programId}`)
+      .get(environment.url_121_service_api, `/export-metrics/person-affected/${programId}`)
       .toPromise();
   }
 
@@ -113,7 +113,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/metrics/${programId}?${condition}`,
+        `/export-metrics/person-affected/${programId}?${condition}`,
       )
       .toPromise();
   }
@@ -283,7 +283,7 @@ export class ProgramsServiceApiService {
     installment?: number,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, `/registrations/export-list`, {
+      .post(environment.url_121_service_api, `/export-metrics/export-list`, {
         programId,
         type,
         ...(installment && { installment }),

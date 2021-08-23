@@ -93,9 +93,9 @@ export class AuthService {
     };
   }
 
-  public async login(email: string, password: string): Promise<any> {
+  public async login(username: string, password: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.programsService.login(email, password).then(
+      this.programsService.login(username, password).then(
         (response) => {
           if (response && response.token) {
             this.jwtService.saveToken(response.token);

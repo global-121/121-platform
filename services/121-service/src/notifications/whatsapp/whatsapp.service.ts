@@ -18,7 +18,7 @@ import { StatusEnum } from '../../shared/enum/status.enum';
 import { FspService } from '../../programs/fsp/fsp.service';
 import { fspName } from '../../programs/fsp/financial-service-provider.entity';
 import { IntersolveService } from '../../programs/fsp/intersolve.service';
-import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
+import { CustomDataAttributes } from '../../registration/dto/custom-data-attributes';
 import {
   TwilioStatusCallbackDto,
   TwilioIncomingCallbackDto,
@@ -246,9 +246,6 @@ export class WhatsappService {
           : program.notifications[language]['whatsappVoucher'];
         message = message.split('{{1}}').join(intersolveBarcode.amount);
         await this.sendWhatsapp(message, fromNumber, mediaUrl);
-        console.log('mediaUrl: ', mediaUrl);
-        console.log('fromNumber: ', fromNumber);
-        console.log('message: ', message);
         firstVoucherSent = true;
 
         // Save results

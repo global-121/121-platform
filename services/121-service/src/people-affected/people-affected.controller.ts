@@ -1,3 +1,4 @@
+import { PersonAffectedRole } from './../user-role.enum';
 import { Post, Body, Controller, UseGuards, Get, Param } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -9,6 +10,7 @@ import { RolesGuard } from '../roles.guard';
 import { PeopleAffectedService } from './people-affected.service';
 import { User } from '../user/user.decorator';
 import { StoreDataDto } from './dto/store-data.dto';
+import { Roles } from '../roles.decorator';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -20,8 +22,9 @@ export class PeopleAffectedController {
     this.peopleAffectedService = peopleAffectedService;
   }
   @ApiBearerAuth()
+  @Roles(PersonAffectedRole.PersonAffected)
   @ApiOperation({ title: 'Post data to storage' })
-  @Post('datastorage')
+  @Post('data-storage')
   public async postData(
     @User('id') userId: number,
     @Body() storeData: StoreDataDto,
@@ -30,6 +33,7 @@ export class PeopleAffectedController {
   }
 
   @ApiBearerAuth()
+  @Roles(PersonAffectedRole.PersonAffected)
   @ApiOperation({ title: 'Get data from storage' })
   @ApiImplicitParam({
     name: 'type',
@@ -37,7 +41,7 @@ export class PeopleAffectedController {
     required: true,
     type: 'string',
   })
-  @Get('datastorage/:type')
+  @Get('data-storage/:type')
   public async getData(
     @User('id') userId: number,
     @Param() params,

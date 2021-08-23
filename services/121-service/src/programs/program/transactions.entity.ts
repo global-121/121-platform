@@ -1,14 +1,11 @@
 import { RegistrationEntity } from './../../registration/registration.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { ProgramEntity } from './program.entity';
-import { ConnectionEntity } from '../../connection/connection.entity';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { Base121Entity } from '../../base.entity';
 
 @Entity('transaction')
-export class TransactionEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class TransactionEntity extends Base121Entity {
   @Column()
   public amount: number;
 
@@ -43,12 +40,6 @@ export class TransactionEntity {
     financialServiceProvider => financialServiceProvider.transactions,
   )
   public financialServiceProvider: FinancialServiceProviderEntity;
-
-  @ManyToOne(
-    _type => ConnectionEntity,
-    connection => connection.transactions,
-  )
-  public connection: ConnectionEntity;
 
   @ManyToOne(
     _type => RegistrationEntity,

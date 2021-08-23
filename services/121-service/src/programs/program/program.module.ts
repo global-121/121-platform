@@ -1,8 +1,6 @@
 import { RegistrationEntity } from './../../registration/registration.entity';
 import { FspModule } from './../fsp/fsp.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
-import { ValidationDataModule } from '../../connection/validation-data/validation-data.module';
-import { ConnectionEntity } from './../../connection/connection.entity';
 import { Module, forwardRef, HttpModule } from '@nestjs/common';
 import { ProgramController } from './program.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -25,7 +23,6 @@ import { LookupModule } from '../../notifications/lookup/lookup.module';
       ProgramEntity,
       UserEntity,
       CustomCriterium,
-      ConnectionEntity,
       FinancialServiceProviderEntity,
       ActionEntity,
       TransactionEntity,
@@ -33,7 +30,6 @@ import { LookupModule } from '../../notifications/lookup/lookup.module';
       RegistrationEntity,
     ]),
     ActionModule,
-    forwardRef(() => ValidationDataModule),
     UserModule,
     forwardRef(() => SmsModule),
     VoiceModule,

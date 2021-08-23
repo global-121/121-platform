@@ -1,3 +1,4 @@
+import { RegistrationEntity } from './../registration/registration.entity';
 import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
 import { UserType } from './user-type-enum';
 import {
@@ -7,17 +8,15 @@ import {
   BeforeInsert,
   OneToMany,
   Index,
+  BeforeRemove,
 } from 'typeorm';
 import crypto from 'crypto';
 import { ActionEntity } from '../actions/action.entity';
-import { RegistrationEntity } from '../registration/registration.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program/program-aidworker.entity';
+import { CascadeDeleteEntity } from '../base.entity';
 
 @Entity('user')
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class UserEntity extends CascadeDeleteEntity {
   @Index({ unique: true })
   @Column({ nullable: true })
   public username: string;
@@ -29,9 +28,6 @@ export class UserEntity {
   public hashPassword(): any {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public created: Date;
 
   @OneToMany(
     () => ProgramAidworkerAssignmentEntity,
@@ -57,5 +53,28 @@ export class UserEntity {
   )
   public personAffectedAppData: PersonAffectedAppDataEntity[];
 
+  @Column()
   public userType: UserType;
+
+  @BeforeRemove()
+  public async cascadeDelete(): Promise<void> {
+    await this.deleteAllOneToMany([
+      {
+        entityClass: RegistrationEntity,
+        columnName: 'user',
+      },
+      {
+        entityClass: PersonAffectedAppDataEntity,
+        columnName: 'user',
+      },
+      {
+        entityClass: ActionEntity,
+        columnName: 'user',
+      },
+      {
+        entityClass: ProgramAidworkerAssignmentEntity,
+        columnName: 'user',
+      },
+    ]);
+  }
 }

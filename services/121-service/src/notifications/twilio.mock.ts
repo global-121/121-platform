@@ -98,7 +98,7 @@ export class TwilioClientMock {
         twilioMessagesCreateDto.from &&
         twilioMessagesCreateDto.from.includes('whatsapp')
       ) {
-        await new Promise(r => setTimeout(r, 3000));
+        await new Promise(r => setTimeout(r, 500));
         const request = new TwilioStatusCallbackDto();
         request.MessageSid = messageSid;
         request.MessageStatus = 'delivered';

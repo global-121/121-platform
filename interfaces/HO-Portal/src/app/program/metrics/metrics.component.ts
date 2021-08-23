@@ -180,7 +180,7 @@ export class MetricsComponent implements OnChanges {
       group,
       icon: 'body',
       label: 'page.program.program-details.aidworkers',
-      value: getValueOrEmpty(this.program.aidworkers, (value) => value.length),
+      value: getValueOrEmpty(this.program.aidworkerAssignments, (value) => value.length),
     });
   }
 }

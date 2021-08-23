@@ -6,13 +6,11 @@ import {
   BeforeUpdate,
   Index,
 } from 'typeorm';
+import { Base121Entity } from '../../base.entity';
 import { ProgramEntity } from './program.entity';
 
 @Entity()
-export class CustomCriterium {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class CustomCriterium extends Base121Entity {
   @Column()
   @Index({ unique: true })
   public criterium: string;
@@ -34,9 +32,6 @@ export class CustomCriterium {
 
   @Column('json')
   public scoring: JSON;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public created: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public updated: Date;

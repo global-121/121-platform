@@ -15,7 +15,7 @@ import { ProgramAnswerEntity } from './program-answer.entity';
 import {
   AnswerTypes,
   CustomDataAttributes,
-} from '../connection/validation-data/dto/custom-data-attributes';
+} from './dto/custom-data-attributes';
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
 import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
@@ -31,18 +31,15 @@ import { ImportResult } from './dto/bulk-import.dto';
 import { RegistrationResponse } from '../models/registration-response.model';
 import { NoteDto } from './dto/note.dto';
 import { validate } from 'class-validator';
-import { ExportType } from '../programs/program/dto/export-details';
-import { FileDto } from '../programs/program/dto/file.dto';
-import { ExportService } from './services/export.service';
 import { PaStatusTimestampField } from '../models/pa-status.model';
-import { DownloadData } from '../connection/validation-data/interfaces/download-data.interface';
+import { DownloadData } from './interfaces/download-data.interface';
 import {
   AnswerSet,
   FspAnswersAttrInterface,
 } from '../programs/fsp/fsp-interface';
 import { Attributes } from './dto/update-attribute.dto';
-import { ValidationIssueDataDto } from '../connection/validation-data/dto/validation-issue-data.dto';
 import { ReferenceIdDto } from '../programs/program/dto/reference-id.dto';
+import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -70,7 +67,6 @@ export class RegistrationsService {
     private readonly smsService: SmsService,
     private readonly inclusionScoreService: InlusionScoreService,
     private readonly bulkImportService: BulkImportService,
-    private readonly exportService: ExportService,
   ) {}
 
   private async findUserOrThrow(userId: number): Promise<UserEntity> {
@@ -252,15 +248,15 @@ export class RegistrationsService {
     customDataKey: string,
     customDataValueRaw: string,
   ): Promise<RegistrationEntity> {
-    const connection = await this.getRegistrationFromReferenceId(referenceId);
+    const registration = await this.getRegistrationFromReferenceId(referenceId);
     const customDataValue = await this.cleanCustomDataIfPhoneNr(
       customDataKey,
       customDataValueRaw,
     );
-    if (!(customDataKey in connection.customData)) {
-      connection.customData[customDataKey] = customDataValue;
+    if (!(customDataKey in registration.customData)) {
+      registration.customData[customDataKey] = customDataValue;
     }
-    return await this.registrationRepository.save(connection);
+    return await this.registrationRepository.save(registration);
   }
 
   public async cleanCustomDataIfPhoneNr(
@@ -466,69 +462,67 @@ export class RegistrationsService {
 
       registrationResponse[
         PaStatusTimestampField.created
-      ] = await this.exportService.getLatestDateForRegistrationStatus(
+      ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.startedRegistation,
       );
       registrationResponse[
         PaStatusTimestampField.importedDate
-      ] = await this.exportService.getLatestDateForRegistrationStatus(
+      ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.imported,
       );
       registrationResponse[
         PaStatusTimestampField.invitedDate
-      ] = await this.exportService.getLatestDateForRegistrationStatus(
+      ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.invited,
       );
       registrationResponse[
         PaStatusTimestampField.noLongerEligibleDate
-      ] = await this.exportService.getLatestDateForRegistrationStatus(
+      ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.noLongerEligible,
       );
       registrationResponse[
         PaStatusTimestampField.registeredDate
-      ] = await this.exportService.getLatestDateForRegistrationStatus(
+      ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.registered,
       );
       registrationResponse[
         PaStatusTimestampField.selectedForValidationDate
-      ] = await this.exportService.getLatestDateForRegistrationStatus(
+      ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.selectedForValidation,
       );
       registrationResponse[
         PaStatusTimestampField.validationDate
-      ] = await this.exportService.getLatestDateForRegistrationStatus(
+      ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.validated,
       );
       registrationResponse[
         PaStatusTimestampField.inclusionDate
-      ] = await this.exportService.getLatestDateForRegistrationStatus(
+      ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.included,
       );
       registrationResponse[
         PaStatusTimestampField.inclusionEndDate
-      ] = await this.exportService.getLatestDateForRegistrationStatus(
+      ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.inclusionEnded,
       );
       registrationResponse[
         PaStatusTimestampField.rejectionDate
-      ] = await this.exportService.getLatestDateForRegistrationStatus(
+      ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.rejected,
       );
 
       if (includePersonalData) {
-        registrationResponse['name'] = this.exportService.getName(
-          registration.customData,
-        );
+        registrationResponse['name'] = this.getName(registration.customData);
         registrationResponse['phoneNumber'] =
           registration.phoneNumber ||
           registration.customData[CustomDataAttributes.phoneNumber];
@@ -541,6 +535,74 @@ export class RegistrationsService {
       registrationsResponse.push(registrationResponse);
     }
     return registrationsResponse;
+  }
+
+  public async getLatestDateForRegistrationStatus(
+    registration: RegistrationEntity,
+    status: RegistrationStatusEnum,
+  ): Promise<Date> {
+    const registrationStatusChange = await this.registrationStatusChangeRepository.findOne(
+      {
+        where: {
+          registration: { id: registration.id },
+          registrationStatus: status,
+        },
+        order: { created: 'DESC' },
+      },
+    );
+    return registrationStatusChange ? registrationStatusChange.created : null;
+  }
+
+  public getName(customData): string {
+    if (customData[CustomDataAttributes.name]) {
+      return customData[CustomDataAttributes.name];
+    } else if (customData[CustomDataAttributes.firstName]) {
+      return (
+        customData[CustomDataAttributes.firstName] +
+        (customData[CustomDataAttributes.secondName]
+          ? ' ' + customData[CustomDataAttributes.secondName]
+          : '') +
+        (customData[CustomDataAttributes.thirdName]
+          ? ' ' + customData[CustomDataAttributes.thirdName]
+          : '')
+      );
+    } else if (customData[CustomDataAttributes.nameFirst]) {
+      return (
+        customData[CustomDataAttributes.nameFirst] +
+        (customData[CustomDataAttributes.nameLast]
+          ? ' ' + customData[CustomDataAttributes.nameLast]
+          : '')
+      );
+    } else {
+      return '';
+    }
+  }
+
+  public getDateColumPerStatus(
+    filterStatus: RegistrationStatusEnum,
+  ): PaStatusTimestampField {
+    switch (filterStatus) {
+      case RegistrationStatusEnum.imported:
+        return PaStatusTimestampField.importedDate;
+      case RegistrationStatusEnum.invited:
+        return PaStatusTimestampField.invitedDate;
+      case RegistrationStatusEnum.noLongerEligible:
+        return PaStatusTimestampField.noLongerEligibleDate;
+      case RegistrationStatusEnum.startedRegistation:
+        return PaStatusTimestampField.created;
+      case RegistrationStatusEnum.registered:
+        return PaStatusTimestampField.registeredDate;
+      case RegistrationStatusEnum.selectedForValidation:
+        return PaStatusTimestampField.selectedForValidationDate;
+      case RegistrationStatusEnum.validated:
+        return PaStatusTimestampField.validationDate;
+      case RegistrationStatusEnum.included:
+        return PaStatusTimestampField.inclusionDate;
+      case RegistrationStatusEnum.inclusionEnded:
+        return PaStatusTimestampField.inclusionEndDate;
+      case RegistrationStatusEnum.rejected:
+        return PaStatusTimestampField.rejectionDate;
+    }
   }
 
   private async getAllRegistrations(
@@ -608,20 +670,6 @@ export class RegistrationsService {
     note.note = registration.note;
     note.noteUpdated = registration.noteUpdated;
     return note;
-  }
-
-  public async getExportList(
-    programId: number,
-    type: ExportType,
-    installment: number | null = null,
-    userId: number,
-  ): Promise<FileDto> {
-    return await this.exportService.getExportList(
-      programId,
-      type,
-      installment,
-      userId,
-    );
   }
 
   public async updateRegistrationStatusBatch(
@@ -744,7 +792,7 @@ export class RegistrationsService {
       }
     });
 
-    // Get connection by referenceId
+    // Get registration by referenceId
     const registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
       relations: ['fsp', 'fsp.attributes'],
@@ -782,10 +830,6 @@ export class RegistrationsService {
       where: { referenceId: referenceId },
       relations: ['statusChanges', 'programAnswers'],
     });
-    await this.registrationStatusChangeRepository.remove(
-      registration.statusChanges,
-    );
-    await this.programAnswerRepository.remove(registration.programAnswers);
     await this.registrationRepository.remove(registration);
   }
 
@@ -846,7 +890,6 @@ export class RegistrationsService {
       .leftJoinAndSelect('fsp.attributes', ' fsp_attribute.fsp')
       .leftJoin('registration.program', 'program')
       .where('registration.fsp IS NOT NULL')
-      // TO DO .andWhere('registration.validationDate IS NULL') // Filter to only download data for PA's not validated yet
       .andWhere('registration.program.id IN (:...programIds)', {
         programIds: programIds,
       })

@@ -1,10 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Base121Entity } from '../../base.entity';
 
 @Entity('imagecode')
-export class ImageCodeEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class ImageCodeEntity extends Base121Entity {
   @Column()
   public secret: string;
 

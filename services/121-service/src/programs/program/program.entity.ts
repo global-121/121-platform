@@ -14,12 +14,10 @@ import { ActionEntity } from '../../actions/action.entity';
 import { RegistrationEntity } from '../../registration/registration.entity';
 import { ProgramQuestionEntity } from './program-question.entity';
 import { ProgramAidworkerAssignmentEntity } from './program-aidworker.entity';
+import { CascadeDeleteEntity } from '../../base.entity';
 
 @Entity('program')
-export class ProgramEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class ProgramEntity extends CascadeDeleteEntity {
   @Column({ default: ProgramPhase.design })
   public phase: ProgramPhase;
 
@@ -92,9 +90,6 @@ export class ProgramEntity {
 
   @Column({ default: true })
   public validation: boolean;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public created: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public updated: Date;

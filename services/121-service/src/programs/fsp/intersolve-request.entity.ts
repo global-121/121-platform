@@ -1,14 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Base121Entity } from '../../base.entity';
 import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
 
 @Entity('intersolve_request')
-export class IntersolveRequestEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public created: Date;
-
+export class IntersolveRequestEntity extends Base121Entity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public updated: Date;
 

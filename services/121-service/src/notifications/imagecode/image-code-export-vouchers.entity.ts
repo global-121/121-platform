@@ -1,13 +1,10 @@
 import { RegistrationEntity } from './../../registration/registration.entity';
-import { ConnectionEntity } from '../../connection/connection.entity';
 import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Base121Entity } from '../../base.entity';
 
 @Entity('imagecode_export_vouchers')
-export class ImageCodeExportVouchersEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class ImageCodeExportVouchersEntity extends Base121Entity {
   @Column({ type: 'bytea' })
   public image: any;
 

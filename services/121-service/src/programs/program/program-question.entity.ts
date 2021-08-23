@@ -9,12 +9,10 @@ import {
 } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramAnswerEntity } from '../../registration/program-answer.entity';
+import { Base121Entity } from '../../base.entity';
 
 @Entity('program_question')
-export class ProgramQuestionEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class ProgramQuestionEntity extends Base121Entity {
   @Column()
   @Index({ unique: true })
   public name: string;
@@ -36,9 +34,6 @@ export class ProgramQuestionEntity {
 
   @Column('json')
   public scoring: JSON;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public created: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public updated: Date;

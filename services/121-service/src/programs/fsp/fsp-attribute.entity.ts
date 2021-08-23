@@ -1,11 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Base121Entity } from '../../base.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
 @Entity('fsp_attribute')
-export class FspAttributeEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class FspAttributeEntity extends Base121Entity {
   @Column()
   public name: string;
 

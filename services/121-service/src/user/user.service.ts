@@ -1,8 +1,11 @@
+import { TransactionEntity } from './../programs/program/transactions.entity';
+import { RegistrationEntity } from './../registration/registration.entity';
+import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
 import { CreateUserPersonAffectedDto } from './dto/create-user-person-affected.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, DeleteResult } from 'typeorm';
+import { Repository, getRepository, DeleteResult, RemoveEvent } from 'typeorm';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
 import crypto from 'crypto';
@@ -21,6 +24,8 @@ import { ProgramAidworkerAssignmentEntity } from '../programs/program/program-ai
 export class UserService {
   @InjectRepository(UserEntity)
   private readonly userRepository: Repository<UserEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(UserRoleEntity)
   private readonly userRoleRepository: Repository<UserRoleEntity>;
   @InjectRepository(ProgramEntity)
@@ -29,12 +34,18 @@ export class UserService {
   private readonly assignmentRepository: Repository<
     ProgramAidworkerAssignmentEntity
   >;
+  @InjectRepository(PersonAffectedAppDataEntity)
+  private readonly personAffectedAppDataRepo: Repository<
+    PersonAffectedAppDataEntity
+  >;
+  @InjectRepository(TransactionEntity)
+  private readonly transactionRepository: Repository<TransactionEntity>;
 
   public constructor() {}
 
   public async findOne(loginUserDto: LoginUserDto): Promise<UserEntity> {
     const findOneOptions = {
-      username: loginUserDto.email,
+      username: loginUserDto.username,
       password: crypto
         .createHmac('sha256', loginUserDto.password)
         .digest('hex'),
@@ -130,23 +141,28 @@ export class UserService {
     });
   }
 
-  public async delete(userId: number): Promise<DeleteResult> {
+  public async delete(userId: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne(userId, {
       relations: ['programAssignments', 'programAssignments.roles'],
     });
 
     await this.assignmentRepository.remove(user.programAssignments);
 
-    return await this.userRepository.delete(userId);
+    return await this.userRepository.remove(user);
   }
 
-  public async deletePersonAffected(userId: number): Promise<DeleteResult> {
-    return await this.userRepository.delete(userId);
+  public async deletePersonAffected(userId: number): Promise<UserEntity> {
+    const user = await this.userRepository.findOne(userId);
+    return await this.userRepository.remove(user);
   }
 
-  public async findById(id: number): Promise<UserRO> {
+  public async findById(id: number): Promise<UserEntity> {
     const user = await this.userRepository.findOne(id, {
-      relations: ['roles'],
+      relations: [
+        'programAssignments',
+        'programAssignments.roles',
+        'registrations',
+      ],
     });
 
     if (!user) {
@@ -154,12 +170,12 @@ export class UserService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    return this.buildUserRO(user);
+    return user;
   }
 
-  public async findByEmail(email: string): Promise<UserRO> {
+  public async findByUsername(username: string): Promise<UserRO> {
     const user = await this.userRepository.findOne({
-      where: { email: email },
+      where: { username: username },
       relations: ['programAssignments', 'programAssignments.roles'],
     });
     return this.buildUserRO(user);
@@ -193,6 +209,7 @@ export class UserService {
     if (user.programAssignments && user.programAssignments[0]) {
       roles = user.programAssignments[0].roles;
     }
+
     const userRO = {
       id: user.id,
       username: user.username,

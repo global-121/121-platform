@@ -1,11 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Base121Entity } from '../../base.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 
 @Entity('fsp_call_log')
-export class FspCallLogEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class FspCallLogEntity extends Base121Entity {
   @ManyToOne(
     _type => FinancialServiceProviderEntity,
     fsp => fsp.logs,

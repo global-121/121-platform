@@ -45,7 +45,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/user/personaffected',
+        '/user/person-affected',
         {
           username,
           password,
@@ -95,7 +95,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/user/delete',
+        '/user/delete-person-affected',
         {
           password,
         },
@@ -108,7 +108,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/peopleaffected/datastorage',
+        '/peopleaffected/data-storage',
         {
           type,
           data,
@@ -122,7 +122,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        '/peopleaffected/datastorage/' + type,
+        '/peopleaffected/data-storage/' + type,
         false,
       )
       .pipe(
@@ -189,7 +189,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/programs/inclusionStatus/' + programId,
+        '/programs/inclusion-status/' + programId,
         {
           referenceId,
         },
@@ -288,19 +288,6 @@ export class ProgramsServiceApiService {
         {
           referenceId,
           qrIdentifier,
-        },
-        true,
-      )
-      .toPromise();
-  }
-
-  deleteConnection(referenceId: string): Promise<any> {
-    return this.apiService
-      .post(
-        environment.url_121_service_api,
-        '/connection/delete',
-        {
-          referenceId,
         },
         true,
       )

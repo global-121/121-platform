@@ -31,7 +31,6 @@ import { PayoutDto, TotalIncluded } from './dto/payout.dto';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
-import { ChangePhaseDto } from './dto/change-phase.dto';
 import { ExportDetails } from './dto/export-details';
 import { CustomCriterium } from './custom-criterium.entity';
 import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
@@ -42,6 +41,7 @@ import {
   GetTransactionOutputDto,
 } from './dto/get-transaction.dto';
 import { PaStatusTimestampField } from '../../models/pa-status.model';
+import { ChangePhaseDto } from './dto/change-phase.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -106,7 +106,7 @@ export class ProgramController {
   @Roles(UserRole.RunProgram)
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('changePhase/:programId')
+  @Post('change-phase/:programId')
   public async changePhase(
     @Param() params,
     @Body() changePhaseData: ChangePhaseDto,
@@ -119,7 +119,7 @@ export class ProgramController {
 
   @ApiOperation({ title: 'Get inclusion status (Used by PA)' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('inclusionStatus/:programId')
+  @Post('inclusion-status/:programId')
   public async inclusionStatus(
     @Param() params,
     @Body() data: ReferenceIdDto,
@@ -127,17 +127,6 @@ export class ProgramController {
     return await this.programService.getInclusionStatus(
       Number(params.programId),
       data.referenceId,
-    );
-  }
-
-  @Roles(UserRole.Admin)
-  @ApiOperation({ title: 'Get monitoring data' })
-  @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Get('/monitoring/:programId')
-  public async getMonitoringData(@Param() params): Promise<any[]> {
-    return await this.programService.getMonitoringData(
-      Number(params.programId),
     );
   }
 
@@ -217,54 +206,6 @@ export class ProgramController {
   @Get('total-included/:programId')
   public async getTotalIncluded(@Param() params): Promise<TotalIncluded> {
     return await this.programService.getTotalIncluded(Number(params.programId));
-  }
-
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get metrics by program-id' })
-  @ApiImplicitParam({
-    name: 'programId',
-    required: true,
-    type: 'integer',
-  })
-  @ApiImplicitQuery({
-    name: 'installment',
-    required: false,
-    type: 'integer',
-  })
-  @ApiImplicitQuery({
-    name: 'month',
-    required: false,
-    type: 'integer',
-  })
-  @ApiImplicitQuery({
-    name: 'year',
-    required: false,
-    type: 'integer',
-  })
-  @ApiImplicitQuery({
-    name: 'fromStart',
-    required: false,
-    type: 'integer',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Metrics of a program to gain an overview of the program ',
-  })
-  @Get('metrics/:programId')
-  public async getMetrics(
-    @Param() params,
-    @Query() query,
-  ): Promise<ProgramMetrics> {
-    return {
-      pa: await this.programService.getPaMetrics(
-        Number(params.programId),
-        query.installment ? Number(query.installment) : undefined,
-        query.month ? Number(query.month) : undefined,
-        query.year ? Number(query.year) : undefined,
-        query.fromStart ? Number(query.fromStart) : undefined,
-      ),
-      updated: new Date(),
-    };
   }
 
   @Roles(UserRole.Admin)

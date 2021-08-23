@@ -3,16 +3,14 @@ import {
   GetTransactionOutputDto,
 } from './dto/get-transaction.dto';
 import { ActionService } from './../../actions/action.service';
-import { PaMetrics } from './dto/pa-metrics.dto';
 import { TransactionEntity } from './transactions.entity';
-import { ConnectionEntity } from '../../connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult, In } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
-import { PaStatus, PaStatusTimestampField } from '../../models/pa-status.model';
+import { PaStatus } from '../../models/pa-status.model';
 import { CreateProgramDto } from './dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
 import { InclusionStatus } from './dto/inclusion-status.dto';
@@ -30,9 +28,8 @@ import { UpdateProgramDto } from './dto/update-program.dto';
 import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
+import { CustomDataAttributes } from '../../registration/dto/custom-data-attributes';
 import { TotalIncluded } from './dto/payout.dto';
-import { ConnectionResponse } from '../../models/connection-response.model';
 import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../registration/registration.entity';
@@ -40,8 +37,6 @@ import { Attributes } from '../../registration/dto/update-attribute.dto';
 
 @Injectable()
 export class ProgramService {
-  @InjectRepository(ConnectionEntity)
-  private readonly connectionRepository: Repository<ConnectionEntity>;
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(CustomCriterium)
@@ -274,12 +269,12 @@ export class ProgramService {
   private async getRegistrationByReferenceIdOrThrow(
     referenceId: string,
   ): Promise<RegistrationEntity> {
-    let connection = await this.getRegistrationByReferenceId(referenceId);
-    if (!connection) {
-      const errors = 'No connection found for PA.';
+    const registration = await this.getRegistrationByReferenceId(referenceId);
+    if (!registration) {
+      const errors = 'No registration found for PA.';
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
-    return connection;
+    return registration;
   }
 
   public async getInclusionStatus(
@@ -459,39 +454,6 @@ export class ProgramService {
     return null;
   }
 
-  private getPaStatus(
-    connection: ConnectionEntity,
-    programId: number,
-  ): PaStatus {
-    let paStatus: PaStatus;
-    if (connection.programsIncluded.includes(programId)) {
-      paStatus = PaStatus.included;
-    } else if (connection.inclusionEndDate) {
-      paStatus = PaStatus.inclusionEnded;
-    } else if (connection.programsRejected.includes(programId)) {
-      paStatus = PaStatus.rejected;
-    } else if (connection.appliedDate && connection.noLongerEligibleDate) {
-      paStatus = PaStatus.registeredWhileNoLongerEligible;
-    } else if (connection.validationDate) {
-      paStatus = PaStatus.validated;
-    } else if (connection.selectedForValidationDate) {
-      paStatus = PaStatus.selectedForValidation;
-    } else if (connection.appliedDate) {
-      paStatus = PaStatus.registered;
-    } else if (connection.accountCreatedDate) {
-      paStatus = PaStatus.created;
-    } else if (connection.noLongerEligibleDate) {
-      paStatus = PaStatus.noLongerEligible;
-    } else if (connection.invitedDate) {
-      paStatus = PaStatus.invited;
-    } else if (connection.importedDate) {
-      paStatus = PaStatus.imported;
-    } else if (connection.created) {
-      paStatus = PaStatus.created;
-    }
-    return paStatus;
-  }
-
   private getName(customData): string {
     if (customData[CustomDataAttributes.name]) {
       return customData[CustomDataAttributes.name];
@@ -515,172 +477,6 @@ export class ProgramService {
     } else {
       return '';
     }
-  }
-
-  public async getConnections(
-    programId: number,
-    includePersonalData: boolean,
-  ): Promise<ConnectionResponse[]> {
-    const selectedConnections = await this.getAllConnections(programId);
-
-    const financialServiceProviders = (
-      await this.findOne(programId)
-    ).financialServiceProviders.map(fsp => fsp.fsp);
-
-    const connectionsResponse = [];
-    for (let connection of selectedConnections) {
-      const connectionResponse = new ConnectionResponse();
-      connectionResponse['id'] = connection.id;
-      connectionResponse['referenceId'] = connection.referenceId;
-      connectionResponse['status'] = this.getPaStatus(connection, programId);
-      connectionResponse['inclusionScore'] = connection.inclusionScore;
-      connectionResponse['fsp'] = connection.fsp?.fsp;
-      connectionResponse['namePartnerOrganization'] =
-        connection.namePartnerOrganization;
-
-      connectionResponse['created'] = connection.accountCreatedDate;
-      connectionResponse['importedDate'] = connection.importedDate;
-      connectionResponse['invitedDate'] = connection.invitedDate;
-      connectionResponse['noLongerEligibleDate'] =
-        connection.noLongerEligibleDate;
-      connectionResponse['appliedDate'] = connection.appliedDate;
-      connectionResponse['selectedForValidationDate'] =
-        connection.selectedForValidationDate;
-      connectionResponse['validationDate'] = connection.validationDate;
-      connectionResponse['inclusionDate'] = connection.inclusionDate;
-      connectionResponse['inclusionEndDate'] = connection.inclusionEndDate;
-      connectionResponse['rejectionDate'] = connection.rejectionDate;
-
-      if (includePersonalData) {
-        connectionResponse['name'] = this.getName(connection.customData);
-        connectionResponse['phoneNumber'] =
-          connection.phoneNumber ||
-          connection.customData[CustomDataAttributes.phoneNumber];
-        connectionResponse['whatsappPhoneNumber'] =
-          connection.customData[CustomDataAttributes.whatsappPhoneNumber];
-        connectionResponse['location'] = connection.customData['location'];
-        connectionResponse['vnumber'] = connection.customData['vnumber'];
-        connectionResponse['age'] = connection.customData['age'];
-        connectionResponse['paymentAmountMultiplier'] =
-          connection.paymentAmountMultiplier;
-        connectionResponse['hasNote'] = !!connection.note;
-      }
-
-      if (financialServiceProviders.includes(fspName.africasTalking)) {
-        connectionResponse['phonenumberTestResult'] = await this.getMpesaStatus(
-          connection.id,
-          programId,
-        );
-      }
-
-      connectionsResponse.push(connectionResponse);
-    }
-    return connectionsResponse;
-  }
-
-  private async getMpesaStatus(
-    connectionId: number,
-    programId: number,
-  ): Promise<string> {
-    const transaction = await this.transactionRepository.findOne({
-      where: {
-        connection: { id: connectionId },
-        program: { id: programId },
-        installment: -1,
-      },
-      order: {
-        created: 'DESC',
-      },
-    });
-    if (!transaction) {
-      return null;
-    } else if (
-      transaction.errorMessage === 'Value is outside the allowed limits'
-    ) {
-      return 'Success: Valid M-PESA number';
-    } else if (transaction.errorMessage === 'Missing recipient name') {
-      return 'Error: No M-PESA number';
-    } else {
-      return 'Other error: ' + transaction.errorMessage;
-    }
-  }
-
-  private async getAllConnections(
-    programId: number,
-  ): Promise<ConnectionEntity[]> {
-    const connections = await this.connectionRepository.find({
-      relations: ['fsp'],
-      order: { inclusionScore: 'DESC' },
-    });
-    const enrolledConnections = [];
-    for (let connection of connections) {
-      if (
-        connection.programsApplied.includes(programId) || // Get connections applied to your program ..
-        connection.programsApplied.length === 0 // .. and connections applied to no program (so excluding connections applied to other program)
-      ) {
-        enrolledConnections.push(connection);
-      }
-    }
-    return enrolledConnections;
-  }
-
-  private async getAllRegistrations(programId: number): Promise<any[]> {
-    const q = getRepository(RegistrationEntity)
-      .createQueryBuilder('registration')
-      .innerJoinAndSelect(
-        'registration.program',
-        'program',
-        'program.id = :programId',
-        {
-          programId: programId,
-        },
-      )
-      .innerJoinAndSelect('registration.fsp', 'fsp.registrations')
-      .innerJoinAndSelect(
-        'registration.statusChanges',
-        'statusChangeStarted',
-        'registration.id = "statusChangeStarted"."registrationId"',
-      )
-      .innerJoinAndSelect(
-        'registration.statusChanges',
-        'statusChangeRegistered',
-        'registration.id = "statusChangeRegistered"."registrationId"',
-      )
-      .where('"statusChangeStarted"."registrationStatus" = :statusstarted', {
-        statusstarted: RegistrationStatusEnum.startedRegistation,
-      })
-      .andWhere(
-        '"statusChangeRegistered"."registrationStatus" = :statusregister',
-        {
-          statusregister: RegistrationStatusEnum.registered,
-        },
-      )
-      .orderBy('"statusChangeRegistered".created', 'DESC')
-      .orderBy('"statusChangeStarted".created', 'DESC')
-      .orderBy('"registration"."inclusionScore"', 'DESC')
-      .orderBy('"registration"."id"', 'DESC')
-      .distinctOn(['registration.id']);
-    return await q.getRawMany();
-  }
-
-  public async getMonitoringData(programId: number): Promise<any> {
-    const registrations = await this.getAllRegistrations(programId);
-    return registrations.map(registration => {
-      console.log('registration: ', registration);
-      const startDate = new Date(
-        registration['statusChangeStarted_created'],
-      ).getTime();
-      const registeredDate = new Date(
-        registration['statusChangeRegistered_created'],
-      ).getTime();
-      const durationSeconds = (registeredDate - startDate) / 1000;
-      return {
-        monitoringAnswer:
-          registration['registration_customData']['monitoringAnswer'],
-        registrationDuration: durationSeconds,
-        status: registration['registration_registrationStatus'],
-      };
-    });
   }
 
   public async getInstallments(
@@ -811,194 +607,6 @@ export class ProgramService {
         return transaction;
       }
     }
-  }
-
-  public getDateColumPerStatus(
-    filterStatus: RegistrationStatusEnum,
-  ): PaStatusTimestampField {
-    switch (filterStatus) {
-      case RegistrationStatusEnum.imported:
-        return PaStatusTimestampField.importedDate;
-      case RegistrationStatusEnum.invited:
-        return PaStatusTimestampField.invitedDate;
-      case RegistrationStatusEnum.noLongerEligible:
-        return PaStatusTimestampField.noLongerEligibleDate;
-      case RegistrationStatusEnum.startedRegistation:
-        return PaStatusTimestampField.created;
-      case RegistrationStatusEnum.registered:
-        return PaStatusTimestampField.registeredDate;
-      case RegistrationStatusEnum.selectedForValidation:
-        return PaStatusTimestampField.selectedForValidationDate;
-      case RegistrationStatusEnum.validated:
-        return PaStatusTimestampField.validationDate;
-      case RegistrationStatusEnum.included:
-        return PaStatusTimestampField.inclusionDate;
-      case RegistrationStatusEnum.inclusionEnded:
-        return PaStatusTimestampField.inclusionEndDate;
-      case RegistrationStatusEnum.rejected:
-        return PaStatusTimestampField.rejectionDate;
-    }
-  }
-
-  private async getTimestampsPerStatusAndTimePeriod(
-    programId: number,
-    connections: ConnectionResponse[],
-    filterStatus: RegistrationStatusEnum,
-    installment?: number,
-    month?: number,
-    year?: number,
-    fromStart?: number,
-  ): Promise<number> {
-    const dateColumn = this.getDateColumPerStatus(filterStatus);
-
-    let filteredConnections = connections.filter(
-      connection => !!connection[dateColumn],
-    );
-
-    if (
-      (typeof month !== 'undefined' && year === undefined) ||
-      (typeof year !== 'undefined' && month === undefined)
-    ) {
-      throw new HttpException(
-        'Please provide both month AND year',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    if (month >= 0 && year) {
-      filteredConnections = filteredConnections.filter(connection => {
-        const yearMonth = new Date(
-          connection[dateColumn].getFullYear(),
-          connection[dateColumn].getUTCMonth(),
-          1,
-        );
-        const yearMonthCondition = new Date(year, month, 1);
-        if (fromStart && fromStart === 1) {
-          return yearMonth <= yearMonthCondition;
-        } else {
-          return yearMonth.getTime() === yearMonthCondition.getTime();
-        }
-      });
-    }
-
-    if (installment) {
-      const installments = await this.getInstallments(programId);
-      const beginDate =
-        installment === 1 || (fromStart && fromStart === 1)
-          ? new Date(2000, 0, 1)
-          : installments.find(i => i.installment === installment - 1)
-              .installmentDate;
-      const endDate = installments.find(i => i.installment === installment)
-        .installmentDate;
-      filteredConnections = filteredConnections.filter(
-        connection =>
-          connection[dateColumn] > beginDate &&
-          connection[dateColumn] <= endDate,
-      );
-    }
-    return filteredConnections.length;
-  }
-
-  public async getPaMetrics(
-    programId: number,
-    installment?: number,
-    month?: number,
-    year?: number,
-    fromStart?: number,
-  ): Promise<PaMetrics> {
-    const connections = await this.getConnections(programId, false);
-
-    const metrics: PaMetrics = {
-      [PaStatus.imported]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        RegistrationStatusEnum.imported,
-        installment,
-        month,
-        year,
-        fromStart,
-      ),
-      [PaStatus.invited]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        RegistrationStatusEnum.invited,
-        installment,
-        month,
-        year,
-        fromStart,
-      ),
-      [PaStatus.created]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        RegistrationStatusEnum.startedRegistation,
-        installment,
-        month,
-        year,
-        fromStart,
-      ),
-      [PaStatus.registered]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        RegistrationStatusEnum.registered,
-        installment,
-        month,
-        year,
-        fromStart,
-      ),
-      [PaStatus.selectedForValidation]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        RegistrationStatusEnum.selectedForValidation,
-        installment,
-        month,
-        year,
-        fromStart,
-      ),
-      [PaStatus.validated]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        RegistrationStatusEnum.validated,
-        installment,
-        month,
-        year,
-      ),
-      [PaStatus.included]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        RegistrationStatusEnum.included,
-        installment,
-        month,
-        year,
-        fromStart,
-      ),
-      [PaStatus.inclusionEnded]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        RegistrationStatusEnum.inclusionEnded,
-        installment,
-        month,
-        year,
-        fromStart,
-      ),
-      [PaStatus.noLongerEligible]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        RegistrationStatusEnum.noLongerEligible,
-        installment,
-        month,
-        year,
-      ),
-      [PaStatus.rejected]: await this.getTimestampsPerStatusAndTimePeriod(
-        programId,
-        connections,
-        RegistrationStatusEnum.rejected,
-        installment,
-        month,
-        year,
-        fromStart,
-      ),
-    };
-
-    return metrics;
   }
 
   public async getInstallmentsWithStateSums(

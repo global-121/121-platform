@@ -1,3 +1,4 @@
+import { Base121Entity } from './../base.entity';
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum NotificationType {
@@ -7,10 +8,7 @@ export enum NotificationType {
 }
 
 @Entity('twilio_message')
-export class TwilioMessageEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class TwilioMessageEntity extends Base121Entity {
   @Column()
   public accountSid: string;
 

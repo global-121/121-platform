@@ -6,14 +6,12 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Base121Entity } from '../base.entity';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { RegistrationEntity } from './registration.entity';
 
 @Entity('registration_status_change')
-export class RegistrationStatusChangeEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class RegistrationStatusChangeEntity extends Base121Entity {
   @ManyToOne(
     _type => RegistrationEntity,
     registration => registration.statusChanges,
@@ -23,7 +21,4 @@ export class RegistrationStatusChangeEntity {
   @Index()
   @Column()
   public registrationStatus: RegistrationStatusEnum;
-
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public created: Date;
 }

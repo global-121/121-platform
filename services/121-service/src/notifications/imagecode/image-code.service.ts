@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../config';
 import crypto from 'crypto';
 import { ImageCodeExportVouchersEntity } from './image-code-export-vouchers.entity';
-import { ConnectionEntity } from '../../connection/connection.entity';
 import { IntersolveBarcodeEntity } from 'src/programs/fsp/intersolve-barcode.entity';
 import Jimp from 'jimp';
 import { RegistrationEntity } from '../../registration/registration.entity';

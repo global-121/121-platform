@@ -4,7 +4,6 @@ import { ImageCodeService } from './../../notifications/imagecode/image-code.ser
 import { AfricasTalkingService } from './../fsp/africas-talking.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
-import { ValidationDataAttributesEntity } from './../../connection/validation-data/validation-attributes.entity';
 import { ValidationDataService } from './../../connection/validation-data/validation-data.service';
 import { ConnectionEntity } from './../../connection/connection.entity';
 import { repositoryMockFactory } from './../../mock/repositoryMock.factory';
@@ -73,10 +72,6 @@ describe('Program service', (): void => {
           },
           {
             provide: getRepositoryToken(ConnectionEntity),
-            useFactory: repositoryMockFactory,
-          },
-          {
-            provide: getRepositoryToken(ValidationDataAttributesEntity),
             useFactory: repositoryMockFactory,
           },
           {

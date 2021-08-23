@@ -1,3 +1,4 @@
+import { CascadeDeleteEntity } from './../../base.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,15 +8,11 @@ import {
 } from 'typeorm';
 import { ProgramEntity } from '../program/program.entity';
 import { TransactionEntity } from '../program/transactions.entity';
-import { ConnectionEntity } from '../../connection/connection.entity';
 import { FspAttributeEntity } from './fsp-attribute.entity';
 import { FspCallLogEntity } from './fsp-call-log.entity';
 
 @Entity('fsp')
-export class FinancialServiceProviderEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   @Column()
   public fsp: string;
 
@@ -45,12 +42,6 @@ export class FinancialServiceProviderEntity {
     transactions => transactions.financialServiceProvider,
   )
   public transactions: TransactionEntity[];
-
-  @OneToMany(
-    _type => ConnectionEntity,
-    connection => connection.fsp,
-  )
-  public connection: ConnectionEntity[];
 }
 
 export enum fspName {

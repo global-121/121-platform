@@ -7,12 +7,10 @@ import {
   Index,
 } from 'typeorm';
 import { PaDataTypes } from './enum/padata-types.enum';
+import { Base121Entity } from '../base.entity';
 
 @Entity('people_affected_app_data')
-export class PersonAffectedAppDataEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class PersonAffectedAppDataEntity extends Base121Entity {
   @Index()
   @Column()
   public type: PaDataTypes;
@@ -25,8 +23,4 @@ export class PersonAffectedAppDataEntity {
     user => user.personAffectedAppData,
   )
   public user: UserEntity;
-
-  @Index()
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public created: Date;
 }

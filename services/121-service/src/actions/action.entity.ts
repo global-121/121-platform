@@ -2,12 +2,10 @@ import { ExportType } from './../programs/program/dto/export-details';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import { ProgramEntity } from '../programs/program/program.entity';
+import { Base121Entity } from '../base.entity';
 
 @Entity('action')
-export class ActionEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class ActionEntity extends Base121Entity {
   @Column()
   public actionType: ActionType;
 

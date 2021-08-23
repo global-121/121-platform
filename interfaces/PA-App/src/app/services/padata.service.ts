@@ -197,11 +197,6 @@ export class PaDataService {
     this.setLoggedOut();
   }
   public async deleteAccount(password: string): Promise<any> {
-    const referenceId = await this.retrieve(this.type.referenceId);
-
-    // All requests are dependent on their predecessors!
-    // A wallet should only be deleted if the account is already successfully deleted
-    // A connection should only be deleted if the wallet is already successfully deleted
     return new Promise(async (resolve, reject) => {
       if (!this.hasAccount) {
         return reject('');
@@ -209,17 +204,8 @@ export class PaDataService {
 
       await this.programService.deleteAccount(password).then(
         async () => {
-          let deleteConnectionResult = false;
-
-          await this.programService.deleteConnection(referenceId).then(
-            () => (deleteConnectionResult = true),
-            (error) => reject(error),
-          );
-
-          if (deleteConnectionResult) {
-            this.setLoggedOut();
-            return resolve(true);
-          }
+          this.setLoggedOut();
+          return resolve(true);
         },
         (error) => reject(error),
       );

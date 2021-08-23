@@ -1,3 +1,4 @@
+import { PersonAffectedRole } from './../user-role.enum';
 import { ProgramAnswersProgramId } from './dto/program-answers-program-id.dto';
 import { RegistrationEntity } from './registration.entity';
 import {
@@ -43,12 +44,12 @@ import { MessageDto } from '../programs/program/dto/message.dto';
 import { PaStatusTimestampField } from '../models/pa-status.model';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { SearchRegistrationDto } from './dto/search-registration.dto';
-import { DownloadData } from '../connection/validation-data/interfaces/download-data.interface';
+import { DownloadData } from './interfaces/download-data.interface';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
 import { FspAnswersAttrInterface } from '../programs/fsp/fsp-interface';
-import { ValidationIssueDataDto } from '../connection/validation-data/dto/validation-issue-data.dto';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
+import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -140,6 +141,7 @@ export class RegistrationsController {
     );
   }
 
+  @Roles(PersonAffectedRole.PersonAffected)
   @ApiOperation({ title: 'Set QR identifier for registration' })
   @ApiResponse({
     status: 201,
@@ -257,27 +259,7 @@ export class RegistrationsController {
     );
   }
 
-  @Roles(UserRole.PersonalData)
-  @ApiOperation({
-    title: 'Get an exported list of people',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of people exported',
-  })
-  @Post('export-list')
-  public async getExportList(
-    @Body() data: ExportDetails,
-    @User('id') userId: number,
-  ): Promise<any> {
-    return await this.registrationsService.getExportList(
-      data.programId,
-      data.type,
-      data.installment,
-      userId,
-    );
-  }
-
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Update attribute for registration' })
   @ApiResponse({
     status: 200,
@@ -294,6 +276,7 @@ export class RegistrationsController {
     );
   }
 
+  @Roles(UserRole.RunProgram, UserRole.PersonalData)
   @ApiOperation({ title: 'Update note for registration' })
   @ApiResponse({ status: 200, description: 'Update note for registration' })
   @Post('/note')
@@ -446,6 +429,7 @@ export class RegistrationsController {
     );
   }
 
+  @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Delete registration' })
   @ApiResponse({ status: 200, description: 'Deleted registration' })
   @Post('/delete')
@@ -505,7 +489,7 @@ export class RegistrationsController {
     status: 200,
     description: 'Found reference id using qr',
   })
-  @Post('/qr-find-refenrence-id')
+  @Post('/qr-find-reference-id')
   public async findReferenceIdWithQrIdentifier(
     @Body() data: QrIdentifierDto,
   ): Promise<ReferenceIdDto> {

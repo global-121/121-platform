@@ -1,3 +1,4 @@
+import { Base121Entity, CascadeDeleteEntity } from './../base.entity';
 import { UserEntity } from '../user/user.entity';
 import {
   Entity,
@@ -13,6 +14,7 @@ import {
   UpdateEvent,
   getConnection,
   BeforeInsert,
+  BeforeRemove,
 } from 'typeorm';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
@@ -26,10 +28,7 @@ import { TransactionEntity } from '../programs/program/transactions.entity';
 import { ImageCodeExportVouchersEntity } from '../notifications/imagecode/image-code-export-vouchers.entity';
 
 @Entity('registration')
-export class RegistrationEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class RegistrationEntity extends CascadeDeleteEntity {
   @ManyToOne(
     type => ProgramEntity,
     program => program.registrations,
@@ -107,4 +106,26 @@ export class RegistrationEntity {
     image => image.registration,
   )
   public images: ImageCodeExportVouchersEntity[];
+
+  @BeforeRemove()
+  public async cascadeDelete(): Promise<void> {
+    await this.deleteAllOneToMany([
+      {
+        entityClass: ImageCodeExportVouchersEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: TransactionEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: ProgramAnswerEntity,
+        columnName: 'registration',
+      },
+      {
+        entityClass: RegistrationStatusChangeEntity,
+        columnName: 'registration',
+      },
+    ]);
+  }
 }

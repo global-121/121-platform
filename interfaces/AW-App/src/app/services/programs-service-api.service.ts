@@ -19,13 +19,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  login(email: string, password: string): Promise<UserModel> {
+  login(username: string, password: string): Promise<UserModel> {
     return this.apiService
       .post(
         environment.url_121_service_api,
         '/user/login',
         {
-          email,
+          username,
           password,
         },
         true,
@@ -58,7 +58,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/registrations/qr-find-refenrence-id',
+        '/registrations/qr-find-reference-id',
         {
           qrIdentifier,
         },

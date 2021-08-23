@@ -22,7 +22,7 @@ export class RegistrationSubscriber
   }
 
   private async storeRegistrationStatusChange(
-    registration: RegistrationEntity,
+    registration: any,
   ): Promise<void> {
     const registrationStatusRepo = getConnection().getRepository(
       RegistrationStatusChangeEntity,

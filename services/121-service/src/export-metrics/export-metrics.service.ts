@@ -1,30 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { RegistrationResponse } from './../models/registration-response.model';
+import { RegistrationsService } from './../registration/registrations.service';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Not, Repository } from 'typeorm';
-import { ProgramEntity } from '../../programs/program/program.entity';
-import { RegistrationEntity } from '../registration.entity';
-import { RegistrationStatusEnum } from '../enum/registration-status.enum';
+import { IsNull, Not, Repository, getRepository } from 'typeorm';
+import { ProgramEntity } from '../programs/program/program.entity';
+import { RegistrationEntity } from '../registration/registration.entity';
+import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import {
   CustomDataAttributes,
   GenericAttributes,
-} from '../../connection/validation-data/dto/custom-data-attributes';
-import { ProgramQuestionEntity } from '../../programs/program/program-question.entity';
-import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
-import { RegistrationStatusChangeEntity } from '../registration-status-change.entity';
-import { ActionService } from '../../actions/action.service';
-import { ExportType } from '../../programs/program/dto/export-details';
-import { FileDto } from '../../programs/program/dto/file.dto';
-import { ProgramQuestionForExport } from '../../programs/program/dto/criterium-for-export.dto';
-import { IntersolvePayoutStatus } from '../../programs/fsp/api/enum/intersolve-payout-status.enum';
+} from '../registration/dto/custom-data-attributes';
+import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
+import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
+import { RegistrationStatusChangeEntity } from '../registration/registration-status-change.entity';
+import { ActionService } from '../actions/action.service';
+import { ExportType } from '../programs/program/dto/export-details';
+import { FileDto } from '../programs/program/dto/file.dto';
+import { ProgramQuestionForExport } from '../programs/program/dto/criterium-for-export.dto';
+import { IntersolvePayoutStatus } from '../programs/fsp/api/enum/intersolve-payout-status.enum';
 import { without, compact, sortBy } from 'lodash';
-import { StatusEnum } from '../../shared/enum/status.enum';
-import { TransactionEntity } from '../../programs/program/transactions.entity';
-import { ProgramService } from '../../programs/program/program.service';
-import { FspService } from '../../programs/fsp/fsp.service';
-import { PaStatusTimestampField } from '../../models/pa-status.model';
+import { StatusEnum } from '../shared/enum/status.enum';
+import { TransactionEntity } from '../programs/program/transactions.entity';
+import { ProgramService } from '../programs/program/program.service';
+import { FspService } from '../programs/fsp/fsp.service';
+import { PaStatusTimestampField, PaStatus } from '../models/pa-status.model';
+import { PaMetrics } from '../programs/program/dto/pa-metrics.dto';
 
 @Injectable()
-export class ExportService {
+export class ExportMetricsService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
   @InjectRepository(ProgramQuestionEntity)
@@ -33,15 +36,12 @@ export class ExportService {
   private readonly fspAttributeRepository: Repository<FspAttributeEntity>;
   @InjectRepository(TransactionEntity)
   private readonly transactionRepository: Repository<TransactionEntity>;
-  @InjectRepository(RegistrationStatusChangeEntity)
-  private readonly registrationStatusChangeRepo: Repository<
-    RegistrationStatusChangeEntity
-  >;
 
   public constructor(
     private readonly actionService: ActionService,
     private readonly programService: ProgramService,
     private readonly fspService: FspService,
+    private readonly registrationsService: RegistrationsService,
   ) {}
 
   public getExportList(
@@ -121,7 +121,7 @@ export class ExportService {
   private async getUnusedVouchers(): Promise<FileDto> {
     const unusedVouchers = await this.fspService.getUnusedVouchers();
     unusedVouchers.forEach(v => {
-      v.name = this.getName(v.customData);
+      v.name = this.registrationsService.getName(v.customData);
       delete v.customData;
     });
 
@@ -155,10 +155,12 @@ export class ExportService {
       RegistrationStatusEnum,
     ).map(item => String(item));
     for await (let status of registrationStatuses) {
-      const dateField = this.programService.getDateColumPerStatus(
+      const dateField = this.registrationsService.getDateColumPerStatus(
         RegistrationStatusEnum[status],
       );
-      row[dateField] = await this.getLatestDateForRegistrationStatus(
+      row[
+        dateField
+      ] = await this.registrationsService.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum[status],
       );
@@ -200,22 +202,6 @@ export class ExportService {
           };
         }),
       );
-  }
-
-  public async getLatestDateForRegistrationStatus(
-    registration: RegistrationEntity,
-    status: RegistrationStatusEnum,
-  ): Promise<Date> {
-    const registrationStatusChange = await this.registrationStatusChangeRepo.findOne(
-      {
-        where: {
-          registration: { id: registration.id },
-          registrationStatus: status,
-        },
-        order: { created: 'DESC' },
-      },
-    );
-    return registrationStatusChange ? registrationStatusChange.created : null;
   }
 
   private async addPaymentFieldsToExport(
@@ -385,7 +371,7 @@ export class ExportService {
   }
 
   private async getDuplicatePhoneNumbers(programId: number): Promise<FileDto> {
-    const allConnections = await this.registrationRepository.find({
+    const allRegistrations = await this.registrationRepository.find({
       relations: ['fsp'],
       where: {
         program: { id: programId },
@@ -393,11 +379,11 @@ export class ExportService {
       },
     });
 
-    const duplicates = allConnections.filter(connection => {
-      const others = without(allConnections, connection);
+    const duplicates = allRegistrations.filter(registration => {
+      const others = without(allRegistrations, registration);
       const currentPaNumbers = compact([
-        connection.customData[CustomDataAttributes.phoneNumber],
-        connection.customData[CustomDataAttributes.whatsappPhoneNumber],
+        registration.customData[CustomDataAttributes.phoneNumber],
+        registration.customData[CustomDataAttributes.whatsappPhoneNumber],
       ]);
 
       const hasDuplicateProgramNr = this.hasDuplicateCustomDataValues(
@@ -423,7 +409,7 @@ export class ExportService {
     const result = sortBy(duplicates, 'id').map(registration => {
       return {
         id: registration.id,
-        name: this.getName(registration.customData),
+        name: this.registrationsService.getName(registration.customData),
         status: registration.registrationStatus,
         fsp: registration.fsp ? registration.fsp.fsp : null,
         namePartnerOrganization: registration.namePartnerOrganization,
@@ -437,31 +423,6 @@ export class ExportService {
       fileName: this.getExportFileName(ExportType.duplicatePhoneNumbers),
       data: this.jsonToCsv(result),
     };
-  }
-
-  public getName(customData): string {
-    if (customData[CustomDataAttributes.name]) {
-      return customData[CustomDataAttributes.name];
-    } else if (customData[CustomDataAttributes.firstName]) {
-      return (
-        customData[CustomDataAttributes.firstName] +
-        (customData[CustomDataAttributes.secondName]
-          ? ' ' + customData[CustomDataAttributes.secondName]
-          : '') +
-        (customData[CustomDataAttributes.thirdName]
-          ? ' ' + customData[CustomDataAttributes.thirdName]
-          : '')
-      );
-    } else if (customData[CustomDataAttributes.nameFirst]) {
-      return (
-        customData[CustomDataAttributes.nameFirst] +
-        (customData[CustomDataAttributes.nameLast]
-          ? ' ' + customData[CustomDataAttributes.nameLast]
-          : '')
-      );
-    } else {
-      return '';
-    }
   }
 
   private hasDuplicateCustomDataValues(
@@ -497,9 +458,9 @@ export class ExportService {
       .select([
         'transaction.amount as "amount"',
         'transaction.installment as "installment"',
-        'connection.phoneNumber as "phoneNumber"',
-        'connection.customData as "customData"',
-        'connection.namePartnerOrganization as "partnerOrganization"',
+        'registration.phoneNumber as "phoneNumber"',
+        'registration.customData as "customData"',
+        'registration.namePartnerOrganization as "partnerOrganization"',
         'fsp.fsp AS financialServiceProvider',
       ])
       .innerJoin(
@@ -508,8 +469,8 @@ export class ExportService {
         'transaction.connectionId = subquery."connectionId" AND transaction.created = subquery."maxCreated"',
       )
       .setParameters(latestSuccessTransactionPerPa.getParameters())
-      .leftJoin('transaction.connection', 'connection')
-      .leftJoin('connection.fsp', 'fsp')
+      .leftJoin('transaction.registration', 'registration')
+      .leftJoin('registration.fsp', 'fsp')
       .getRawMany();
 
     return transactions;
@@ -536,5 +497,230 @@ export class ExportService {
 
   private getExportFileName(base: string): string {
     return `${base}_${new Date().toISOString().substr(0, 10)}.csv`;
+  }
+
+  public async getPaMetrics(
+    programId: number,
+    installment?: number,
+    month?: number,
+    year?: number,
+    fromStart?: number,
+  ): Promise<PaMetrics> {
+    const registrations = await this.registrationsService.getRegistrationsForProgram(
+      programId,
+      false,
+    );
+
+    const metrics: PaMetrics = {
+      [PaStatus.imported]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        registrations,
+        RegistrationStatusEnum.imported,
+        installment,
+        month,
+        year,
+        fromStart,
+      ),
+      [PaStatus.invited]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        registrations,
+        RegistrationStatusEnum.invited,
+        installment,
+        month,
+        year,
+        fromStart,
+      ),
+      [PaStatus.created]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        registrations,
+        RegistrationStatusEnum.startedRegistation,
+        installment,
+        month,
+        year,
+        fromStart,
+      ),
+      [PaStatus.registered]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        registrations,
+        RegistrationStatusEnum.registered,
+        installment,
+        month,
+        year,
+        fromStart,
+      ),
+      [PaStatus.selectedForValidation]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        registrations,
+        RegistrationStatusEnum.selectedForValidation,
+        installment,
+        month,
+        year,
+        fromStart,
+      ),
+      [PaStatus.validated]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        registrations,
+        RegistrationStatusEnum.validated,
+        installment,
+        month,
+        year,
+      ),
+      [PaStatus.included]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        registrations,
+        RegistrationStatusEnum.included,
+        installment,
+        month,
+        year,
+        fromStart,
+      ),
+      [PaStatus.inclusionEnded]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        registrations,
+        RegistrationStatusEnum.inclusionEnded,
+        installment,
+        month,
+        year,
+        fromStart,
+      ),
+      [PaStatus.noLongerEligible]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        registrations,
+        RegistrationStatusEnum.noLongerEligible,
+        installment,
+        month,
+        year,
+      ),
+      [PaStatus.rejected]: await this.getTimestampsPerStatusAndTimePeriod(
+        programId,
+        registrations,
+        RegistrationStatusEnum.rejected,
+        installment,
+        month,
+        year,
+        fromStart,
+      ),
+    };
+
+    return metrics;
+  }
+
+  private async getTimestampsPerStatusAndTimePeriod(
+    programId: number,
+    registrations: RegistrationResponse[],
+    filterStatus: RegistrationStatusEnum,
+    installment?: number,
+    month?: number,
+    year?: number,
+    fromStart?: number,
+  ): Promise<number> {
+    const dateColumn = this.registrationsService.getDateColumPerStatus(
+      filterStatus,
+    );
+
+    let filteredConnections = registrations.filter(
+      registration => !!registration[dateColumn],
+    );
+
+    if (
+      (typeof month !== 'undefined' && year === undefined) ||
+      (typeof year !== 'undefined' && month === undefined)
+    ) {
+      throw new HttpException(
+        'Please provide both month AND year',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (month >= 0 && year) {
+      filteredConnections = filteredConnections.filter(registration => {
+        const yearMonth = new Date(
+          registration[dateColumn].getFullYear(),
+          registration[dateColumn].getUTCMonth(),
+          1,
+        );
+        const yearMonthCondition = new Date(year, month, 1);
+        if (fromStart && fromStart === 1) {
+          return yearMonth <= yearMonthCondition;
+        } else {
+          return yearMonth.getTime() === yearMonthCondition.getTime();
+        }
+      });
+    }
+
+    if (installment) {
+      const installments = await this.programService.getInstallments(programId);
+      const beginDate =
+        installment === 1 || (fromStart && fromStart === 1)
+          ? new Date(2000, 0, 1)
+          : installments.find(i => i.installment === installment - 1)
+              .installmentDate;
+      const endDate = installments.find(i => i.installment === installment)
+        .installmentDate;
+      filteredConnections = filteredConnections.filter(
+        registration =>
+          registration[dateColumn] > beginDate &&
+          registration[dateColumn] <= endDate,
+      );
+    }
+    return filteredConnections.length;
+  }
+
+  public async getMonitoringData(programId: number): Promise<any> {
+    const registrations = await this.queryMonitoringData(programId);
+    return registrations.map(registration => {
+      console.log('registration: ', registration);
+      const startDate = new Date(
+        registration['statusChangeStarted_created'],
+      ).getTime();
+      const registeredDate = new Date(
+        registration['statusChangeRegistered_created'],
+      ).getTime();
+      const durationSeconds = (registeredDate - startDate) / 1000;
+      return {
+        monitoringAnswer:
+          registration['registration_customData']['monitoringAnswer'],
+        registrationDuration: durationSeconds,
+        status: registration['registration_registrationStatus'],
+      };
+    });
+  }
+
+  private async queryMonitoringData(programId: number): Promise<any[]> {
+    const q = getRepository(RegistrationEntity)
+      .createQueryBuilder('registration')
+      .innerJoinAndSelect(
+        'registration.program',
+        'program',
+        'program.id = :programId',
+        {
+          programId: programId,
+        },
+      )
+      .innerJoinAndSelect('registration.fsp', 'fsp.registrations')
+      .innerJoinAndSelect(
+        'registration.statusChanges',
+        'statusChangeStarted',
+        'registration.id = "statusChangeStarted"."registrationId"',
+      )
+      .innerJoinAndSelect(
+        'registration.statusChanges',
+        'statusChangeRegistered',
+        'registration.id = "statusChangeRegistered"."registrationId"',
+      )
+      .where('"statusChangeStarted"."registrationStatus" = :statusstarted', {
+        statusstarted: RegistrationStatusEnum.startedRegistation,
+      })
+      .andWhere(
+        '"statusChangeRegistered"."registrationStatus" = :statusregister',
+        {
+          statusregister: RegistrationStatusEnum.registered,
+        },
+      )
+      .orderBy('"statusChangeRegistered".created', 'DESC')
+      .orderBy('"statusChangeStarted".created', 'DESC')
+      .orderBy('"registration"."inclusionScore"', 'DESC')
+      .orderBy('"registration"."id"', 'DESC')
+      .distinctOn(['registration.id']);
+    return await q.getRawMany();
   }
 }

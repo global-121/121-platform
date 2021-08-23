@@ -1,10 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Base121Entity } from '../../base.entity';
 
 @Entity('at_notification')
-export class AfricasTalkingNotificationEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class AfricasTalkingNotificationEntity extends Base121Entity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   public timestamp: Date;
 

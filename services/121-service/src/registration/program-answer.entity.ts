@@ -8,12 +8,10 @@ import {
   AfterLoad,
 } from 'typeorm';
 import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
+import { Base121Entity } from '../base.entity';
 
 @Entity('program_answer')
-export class ProgramAnswerEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class ProgramAnswerEntity extends Base121Entity {
   @ManyToOne(
     _type => RegistrationEntity,
     registration => registration.programAnswers,

@@ -10,7 +10,7 @@ import {
   AnswerTypes,
   Attribute,
   GenericAttributes,
-} from '../../connection/validation-data/dto/custom-data-attributes';
+} from '../dto/custom-data-attributes';
 import { LookupService } from '../../notifications/lookup/lookup.service';
 import { ProgramQuestionEntity } from '../../programs/program/program-question.entity';
 import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
