@@ -53,6 +53,13 @@ export class ProgramController {
     return await this.programService.findOne(Number(params.programId));
   }
 
+  @ApiOperation({ title: 'Get all programs' })
+  @ApiResponse({ status: 200, description: 'Return all programs.' })
+  @Get()
+  public async findAll(): Promise<ProgramsRO> {
+    return await this.programService.findAll();
+  }
+
   @ApiOperation({ title: 'Get published programs' })
   @ApiResponse({ status: 200, description: 'Return all published programs.' })
   @Get('published/all')
