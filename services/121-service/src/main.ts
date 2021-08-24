@@ -31,11 +31,14 @@ async function bootstrap(): Promise<void> {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
-
   SwaggerModule.setup('/docs', app, document, {
     customSiteTitle: APP_TITLE,
     customfavIcon: APP_FAVICON,
     customCss: SWAGGER_CUSTOM_CSS,
+    swaggerOptions: {
+      tagsSorter: 'alpha',
+      operationsSorter: 'alpha',
+    },
   });
   app.useGlobalPipes(new ValidationPipe());
   app.use(bodyParser.json({ limit: '5mb' }));
