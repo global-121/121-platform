@@ -69,10 +69,9 @@ export class ProgramController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @Post()
   public async create(
-    @User('id') userId: number,
     @Body() programData: CreateProgramDto,
   ): Promise<ProgramEntity> {
-    return this.programService.create(userId, programData);
+    return this.programService.create(programData);
   }
 
   @Roles(UserRole.RunProgram)

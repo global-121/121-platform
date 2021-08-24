@@ -166,16 +166,4 @@ describe('ProgramController', (): void => {
       expect(spy).toHaveBeenCalled();
     });
   });
-  describe('unpublish', (): void => {
-    it('should publish a program', async (): Promise<void> => {
-      const spy = jest
-        .spyOn(programService, 'changePhase')
-        .mockImplementation(
-          (): Promise<SimpleProgramRO> => Promise.resolve(newSimpleProgramRO),
-        );
-
-      await programController.changePhase(1, { newState: ProgramPhase.design });
-      expect(spy).toHaveBeenCalled();
-    });
-  });
 });

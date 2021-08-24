@@ -51,14 +51,6 @@ export class ProgramService {
     private readonly fspService: FspService,
   ) {}
 
-  private async checkIfProgramExists(programId: number): Promise<void> {
-    let program = await this.programRepository.findOne(programId);
-    if (!program) {
-      const errors = `Program with ID "${programId}" not found.`;
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-  }
-
   public async findOne(where): Promise<ProgramEntity> {
     const program = await this.programRepository.findOne(where, {
       relations: [
@@ -94,10 +86,7 @@ export class ProgramService {
     return { programs, programsCount };
   }
 
-  public async create(
-    userId: number,
-    programData: CreateProgramDto,
-  ): Promise<ProgramEntity> {
+  public async create(programData: CreateProgramDto): Promise<ProgramEntity> {
     let program = new ProgramEntity();
     program.location = programData.location;
     program.ngo = programData.ngo;
@@ -212,16 +201,6 @@ export class ProgramService {
 
     const changedProgram = await this.findOne(programId);
     return await this.buildProgramRO(changedProgram);
-  }
-
-  public async unpublish(programId: number): Promise<SimpleProgramRO> {
-    let selectedProgram = await this.findOne(programId);
-    if (selectedProgram.published == false) {
-      const errors = { Program: ' already unpublished' };
-      throw new HttpException({ errors }, HttpStatus.UNAUTHORIZED);
-    }
-    await this.changeProgramValue(programId, { published: false });
-    return await this.buildProgramRO(selectedProgram);
   }
 
   private async changeProgramValue(
@@ -391,31 +370,6 @@ export class ProgramService {
       }
     }
     return null;
-  }
-
-  private getName(customData): string {
-    if (customData[CustomDataAttributes.name]) {
-      return customData[CustomDataAttributes.name];
-    } else if (customData[CustomDataAttributes.firstName]) {
-      return (
-        customData[CustomDataAttributes.firstName] +
-        (customData[CustomDataAttributes.secondName]
-          ? ' ' + customData[CustomDataAttributes.secondName]
-          : '') +
-        (customData[CustomDataAttributes.thirdName]
-          ? ' ' + customData[CustomDataAttributes.thirdName]
-          : '')
-      );
-    } else if (customData[CustomDataAttributes.nameFirst]) {
-      return (
-        customData[CustomDataAttributes.nameFirst] +
-        (customData[CustomDataAttributes.nameLast]
-          ? ' ' + customData[CustomDataAttributes.nameLast]
-          : '')
-      );
-    } else {
-      return '';
-    }
   }
 
   public async getInstallments(
