@@ -3,7 +3,11 @@
   <caption>
     <ion-row>
       <ion-col>
-        <ion-button float-left id="btn-export-csv" (click)="exportCSV()" size="small" >
+        <ion-button
+          (click)="exportCSV()"
+          size="small"
+          class="ion-float-left"
+        >
           {{ 'page.program.metrics.export-button.label'|translate }}
         </ion-button>
       </ion-col>

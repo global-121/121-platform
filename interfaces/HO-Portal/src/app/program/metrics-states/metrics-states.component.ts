@@ -1,12 +1,12 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { saveAs } from 'file-saver';
 import { PaStatus } from 'src/app/models/person.model';
 import { ProgramMetrics } from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { getValueOrUnknown } from 'src/app/shared/get-value-helpers';
 import { PastPaymentsService } from '../../services/past-payments.service';
-import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-metrics-states',
@@ -256,22 +256,36 @@ export class MetricsStatesComponent implements OnChanges {
   }
 
   public exportCSV() {
-    const rowHeader = (headerName) => this.translate.instant(`page.program.metrics.timeframe.${headerName}.label`);
+    const rowHeader = (headerName) =>
+      this.translate.instant(
+        `page.program.metrics.timeframe.${headerName}.label`,
+      );
 
     const rows = [
       ['', this.paStates.map(({ label }) => label)],
       [rowHeader('payment'), this.paStates.map(({ forPayment }) => forPayment)],
-      [rowHeader('payment-from-start'), this.paStates.map(({ forPaymentFromStart }) => forPaymentFromStart)],
-      [rowHeader('calendar-month'), this.paStates.map(({ forMonth }) => forMonth)],
-      [rowHeader('month-from-start'), this.paStates.map(({ forMonthFromStart }) => forMonthFromStart)],
-      [rowHeader('to-date'), this.paStates.map(({ toDate }) => toDate)]
-    ]
+      [
+        rowHeader('payment-from-start'),
+        this.paStates.map(({ forPaymentFromStart }) => forPaymentFromStart),
+      ],
+      [
+        rowHeader('calendar-month'),
+        this.paStates.map(({ forMonth }) => forMonth),
+      ],
+      [
+        rowHeader('month-from-start'),
+        this.paStates.map(({ forMonthFromStart }) => forMonthFromStart),
+      ],
+      [rowHeader('to-date'), this.paStates.map(({ toDate }) => toDate)],
+    ];
 
-    const csvContents = rows.map((e) => e.join(",")).join("\n");
+    const csvContents = rows.map((e) => e.join(',')).join('\n');
 
     saveAs(
       new Blob([csvContents], { type: 'text/csv' }),
-      `program-${this.program.id}-metrics-${new Date().toISOString().substr(0, 10)}.csv`
+      `program-${this.program.id}-metrics-${new Date()
+        .toISOString()
+        .substr(0, 10)}.csv`,
     );
   }
 }
