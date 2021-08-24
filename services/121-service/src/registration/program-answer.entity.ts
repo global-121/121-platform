@@ -7,7 +7,7 @@ import {
   ManyToOne,
   AfterLoad,
 } from 'typeorm';
-import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { Base121Entity } from '../base.entity';
 
 @Entity('program_answer')

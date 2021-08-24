@@ -1,7 +1,7 @@
 import { Module, HttpModule } from '@nestjs/common';
 import { InstanceController } from './instance.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ProgramEntity } from '../programs/program/program.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import { UserEntity } from '../user/user.entity';
 import { InstanceEntity } from './instance.entity';
 import { InstanceService } from './instance.service';

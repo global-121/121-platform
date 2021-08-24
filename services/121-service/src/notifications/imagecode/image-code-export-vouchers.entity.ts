@@ -1,5 +1,5 @@
 import { RegistrationEntity } from './../../registration/registration.entity';
-import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
+import { IntersolveBarcodeEntity } from '../../fsp/intersolve-barcode.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { Base121Entity } from '../../base.entity';
 

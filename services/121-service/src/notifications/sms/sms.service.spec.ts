@@ -3,8 +3,8 @@ import { SmsService } from './sms.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../../mock/repositoryMock.factory';
 import { TwilioMessageEntity } from '../twilio.entity';
-import { ProgramService } from '../../programs/program/program.service';
-import { ProgramServiceMock } from '../../programs/program/program.controller.spec';
+import { ProgramService } from '../../programs/program.service';
+import { ProgramServiceMock } from '../../programs/program.controller.spec';
 
 describe('SmsService', () => {
   let service: SmsService;

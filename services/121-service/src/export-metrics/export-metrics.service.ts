@@ -1,4 +1,4 @@
-import { RegistrationResponse } from './../models/registration-response.model';
+import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,23 +8,23 @@ import { RegistrationStatusEnum } from '../registration/enum/registration-status
 import {
   CustomDataAttributes,
   GenericAttributes,
-} from '../registration/dto/custom-data-attributes';
-import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
-import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
+} from '../registration/enum/custom-data-attributes';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
+import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { ActionService } from '../actions/action.service';
-import { ExportType } from '../programs/program/dto/export-details';
-import { FileDto } from '../programs/program/dto/file.dto';
-import { ProgramQuestionForExport } from '../programs/program/dto/program-question-for-export.dto';
-import { IntersolvePayoutStatus } from '../programs/fsp/api/enum/intersolve-payout-status.enum';
+import { ExportType } from './dto/export-details';
+import { FileDto } from './dto/file.dto';
+import { ProgramQuestionForExport } from '../programs/dto/program-question-for-export.dto';
+import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
 import { without, compact, sortBy } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
-import { TransactionEntity } from '../programs/program/transactions.entity';
-import { ProgramService } from '../programs/program/program.service';
-import { FspService } from '../programs/fsp/fsp.service';
-import { PaMetrics } from '../programs/program/dto/pa-metrics.dto';
+import { TransactionEntity } from '../programs/transactions.entity';
+import { ProgramService } from '../programs/program.service';
+import { FspService } from '../fsp/fsp.service';
+import { PaMetrics } from './dto/pa-metrics.dto';
 import { Attributes } from '../registration/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/total-included.dto';
-import { InstallmentStateSumDto } from '../programs/program/dto/installment-state-sum.dto';
+import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
 
 @Injectable()
 export class ExportMetricsService {

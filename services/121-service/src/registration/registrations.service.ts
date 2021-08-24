@@ -3,46 +3,40 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, In, Repository } from 'typeorm';
-import { ProgramEntity } from '../programs/program/program.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import { UserEntity } from '../user/user.entity';
 import { RegistrationEntity } from './registration.entity';
 import {
   RegistrationStatusEnum,
   RegistrationStatusTimestampField,
 } from './enum/registration-status.enum';
-import {
-  ProgramAnswer,
-  StoreProgramAnswersDto,
-} from './dto/store-program-answers.dto';
+import { ProgramAnswer } from './dto/store-program-answers.dto';
 import { ProgramAnswerEntity } from './program-answer.entity';
 import {
   AnswerTypes,
   CustomDataAttributes,
-} from './dto/custom-data-attributes';
+} from './enum/custom-data-attributes';
 import { LookupService } from '../notifications/lookup/lookup.service';
-import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
-import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
+import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import {
   FinancialServiceProviderEntity,
   fspName,
-} from '../programs/fsp/financial-service-provider.entity';
+} from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { InlusionScoreService } from './services/inclusion-score.service';
 import { BulkImportService } from './services/bulk-import.service';
 import { ImportResult } from './dto/bulk-import.dto';
-import { RegistrationResponse } from '../models/registration-response.model';
+import { RegistrationResponse } from './dto/registration-response.model';
 import { NoteDto } from './dto/note.dto';
 import { validate } from 'class-validator';
-import { DownloadData } from './interfaces/download-data.interface';
-import {
-  AnswerSet,
-  FspAnswersAttrInterface,
-} from '../programs/fsp/fsp-interface';
+import { DownloadData } from './dto/download-data.interface';
+import { AnswerSet, FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { Attributes } from './dto/update-attribute.dto';
-import { ReferenceIdDto } from '../programs/program/dto/reference-id.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
+import { ReferenceIdDto } from './dto/reference-id.dto';
 
 @Injectable()
 export class RegistrationsService {

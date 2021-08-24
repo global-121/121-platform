@@ -19,9 +19,9 @@ import { RolesGuard } from '../roles.guard';
 import { ExportMetricsService } from './export-metrics.service';
 import { Roles } from '../roles.decorator';
 import { UserRole } from '../user-role.enum';
-import { ExportDetails } from '../programs/program/dto/export-details';
+import { ExportDetails } from './dto/export-details';
 import { User } from '../user/user.decorator';
-import { ProgramMetrics } from '../programs/program/dto/program-metrics.dto';
+import { ProgramMetrics } from './dto/program-metrics.dto';
 import { TotalIncluded } from './dto/total-included.dto';
 
 @ApiBearerAuth()

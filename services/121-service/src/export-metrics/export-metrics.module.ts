@@ -1,18 +1,18 @@
 import { UserEntity } from './../user/user.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
-import { FspModule } from './../programs/fsp/fsp.module';
+import { FspModule } from '../fsp/fsp.module';
 import { ActionModule } from './../actions/action.module';
 import { ExportMetricsService } from './export-metrics.service';
 import { ExportMetricsController } from './export-metrics.controller';
 import { RegistrationsModule } from './../registration/registrations.module';
 import { Module } from '@nestjs/common';
-import { ProgramModule } from '../programs/program/program.module';
+import { ProgramModule } from '../programs/program.module';
 import { UserModule } from '../user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
-import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
-import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
-import { TransactionEntity } from '../programs/program/transactions.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
+import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
+import { TransactionEntity } from '../programs/transactions.entity';
 
 @Module({
   imports: [

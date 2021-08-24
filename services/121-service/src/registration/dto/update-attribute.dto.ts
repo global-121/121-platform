@@ -1,6 +1,6 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { Length, IsString, IsIn } from 'class-validator';
-import { CustomDataAttributes } from './custom-data-attributes';
+import { CustomDataAttributes } from '../enum/custom-data-attributes';
 
 export enum AdditionalAttributes {
   namePartnerOrganization = 'namePartnerOrganization',

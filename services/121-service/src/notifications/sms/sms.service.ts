@@ -1,4 +1,4 @@
-import { ProgramEntity } from './../../programs/program/program.entity';
+import { ProgramEntity } from './../../programs/program.entity';
 import { EXTERNAL_API } from './../../config';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';

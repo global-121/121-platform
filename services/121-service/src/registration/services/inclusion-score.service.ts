@@ -1,7 +1,7 @@
-import { ProgramQuestionEntity } from './../../programs/program/program-question.entity';
+import { ProgramQuestionEntity } from './../../programs/program-question.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProgramEntity } from '../../programs/program/program.entity';
+import { ProgramEntity } from '../../programs/program.entity';
 import { Repository } from 'typeorm';
 import { RegistrationEntity } from '../registration.entity';
 
