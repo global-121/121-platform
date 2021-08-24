@@ -1,10 +1,19 @@
 
 <table class="metrics-states--table">
   <caption>
-    <app-refresh-data
-      [lastUpdated]="lastUpdated"
-      (refresh)="update()"
-    ></app-refresh-data>
+    <ion-row>
+      <ion-col>
+        <ion-button float-left id="btn-export-csv" (click)="exportCSV()" size="small" >
+          {{ 'page.program.metrics.export-button.label'|translate }}
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <app-refresh-data
+          [lastUpdated]="lastUpdated"
+          (refresh)="update()"
+        ></app-refresh-data>
+      </ion-col>
+    </ion-row>
   </caption>
   <colgroup>
     <col>
@@ -135,8 +144,3 @@
     </tr>
   </tbody>
 </table>
-<ion-item lines="none">
-  <ion-button class="ion-float-right" id="btn-export-csv" (click)="exportCSV()" expand="block" shape="round">
-    Export as CSV
-  </ion-button>
-</ion-item>

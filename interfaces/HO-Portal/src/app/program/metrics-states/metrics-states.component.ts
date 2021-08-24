@@ -6,6 +6,7 @@ import { Program } from 'src/app/models/program.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { getValueOrUnknown } from 'src/app/shared/get-value-helpers';
 import { PastPaymentsService } from '../../services/past-payments.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-metrics-states',
@@ -255,21 +256,22 @@ export class MetricsStatesComponent implements OnChanges {
   }
 
   public exportCSV() {
-    const colHeaders = ['', this.paStates.map(({label}) => label)];
-    const rows = [
-        [this.translate.instant('page.program.metrics.timeframe.payment.label'), this.paStates.map(({forPayment}) => forPayment)],
-        [this.translate.instant('page.program.metrics.timeframe.payment-from-start.label'), this.paStates.map(({forPaymentFromStart}) => forPaymentFromStart)],
-        [this.translate.instant('page.program.metrics.timeframe.calendar-month.label'), this.paStates.map(({forMonth}) => forMonth)],
-        [this.translate.instant('page.program.metrics.timeframe.month-from-start.label'), this.paStates.map(({forMonthFromStart}) => forMonthFromStart)],
-        [this.translate.instant('page.program.metrics.timeframe.to-date.label'), this.paStates.map(({toDate}) => toDate)]
-    ]
-    
-    const csvContent = colHeaders.join(",") + ("\n") + rows.map((e) => e.join(",")).join("\n");
+    const rowHeader = (headerName) => this.translate.instant(`page.program.metrics.timeframe.${headerName}.label`);
 
-    const myBlob = new Blob([csvContent], {type: "data:text/csv;charset=utf-8"});
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(myBlob);
-    link.download = `ho-data-${new Date().getTime()}.csv`;
-    link.click();
+    const rows = [
+      ['', this.paStates.map(({ label }) => label)],
+      [rowHeader('payment'), this.paStates.map(({ forPayment }) => forPayment)],
+      [rowHeader('payment-from-start'), this.paStates.map(({ forPaymentFromStart }) => forPaymentFromStart)],
+      [rowHeader('calendar-month'), this.paStates.map(({ forMonth }) => forMonth)],
+      [rowHeader('month-from-start'), this.paStates.map(({ forMonthFromStart }) => forMonthFromStart)],
+      [rowHeader('to-date'), this.paStates.map(({ toDate }) => toDate)]
+    ]
+
+    const csvContents = rows.map((e) => e.join(",")).join("\n");
+
+    saveAs(
+      new Blob([csvContents], { type: 'text/csv' }),
+      `program-${this.program.id}-metrics-${new Date().toISOString().substr(0, 10)}.csv`
+    );
   }
 }
