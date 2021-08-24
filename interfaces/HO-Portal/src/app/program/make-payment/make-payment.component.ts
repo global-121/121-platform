@@ -48,7 +48,7 @@ export class MakePaymentComponent implements OnInit {
     const totalIncluded = await this.programsService.getTotalIncluded(
       this.programId,
     );
-    this.totalIncluded = totalIncluded.connections;
+    this.totalIncluded = totalIncluded.registrations;
     this.totalTransferAmounts = totalIncluded.transferAmounts;
     this.lastInstallmentId =
       await this.pastPaymentsService.getLastInstallmentId(this.programId);

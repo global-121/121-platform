@@ -1,5 +1,4 @@
 import { PersonAffectedRole } from './../user-role.enum';
-import { ProgramAnswersProgramId } from './dto/program-answers-program-id.dto';
 import { RegistrationEntity } from './registration.entity';
 import {
   Post,
@@ -26,7 +25,6 @@ import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { User } from '../user/user.decorator';
 import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { StoreProgramAnswersDto } from './dto/store-program-answers.dto';
-import { ProgramAnswerEntity } from './program-answer.entity';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
 import { CustomDataDto } from '../programs/program/dto/custom-data.dto';
 import {
@@ -39,9 +37,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ImportResult } from './dto/bulk-import.dto';
 import { Roles } from '../roles.decorator';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
-import { ExportDetails } from '../programs/program/dto/export-details';
 import { MessageDto } from '../programs/program/dto/message.dto';
-import { PaStatusTimestampField } from '../models/pa-status.model';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { SearchRegistrationDto } from './dto/search-registration.dto';
 import { DownloadData } from './interfaces/download-data.interface';
@@ -50,6 +46,7 @@ import { UpdateAttributeDto } from './dto/update-attribute.dto';
 import { FspAnswersAttrInterface } from '../programs/fsp/fsp-interface';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
+import { InclusionStatus } from './dto/inclusion-status.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -495,6 +492,19 @@ export class RegistrationsController {
   ): Promise<ReferenceIdDto> {
     return await this.registrationsService.findReferenceIdWithQrIdentifier(
       data.qrIdentifier,
+    );
+  }
+
+  @ApiOperation({ title: 'Get inclusion status (Used by PA)' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @Post('inclusion-status/:programId')
+  public async inclusionStatus(
+    @Param() params,
+    @Body() data: ReferenceIdDto,
+  ): Promise<InclusionStatus> {
+    return await this.registrationsService.getInclusionStatus(
+      Number(params.programId),
+      data.referenceId,
     );
   }
 }

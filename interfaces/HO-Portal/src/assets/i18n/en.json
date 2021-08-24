@@ -81,7 +81,7 @@
           "imported": "Imported",
           "invited": "Invited",
           "noLongerEligible": "No longer eligible",
-          "created": "Started Registration",
+          "startedRegistration": "Started Registration",
           "registered": "Registered",
           "selectedForValidation": "Selected for validation",
           "validated": "Validated",
@@ -92,7 +92,7 @@
         "state-explanation": {
           "imported": "PAs that were imported in the HO-portal, based on phone-number.",
           "invited": "PAs that were invited (after import).",
-          "created": "PAs that started registration in the PA-app.",
+          "startedRegistration": "PAs that started registration in the PA-app.",
           "registered": "PAs that finished registration in the PA-app.",
           "selectedForValidation": "PAs that were selected for validation.",
           "validated": "PAs that were validated.",

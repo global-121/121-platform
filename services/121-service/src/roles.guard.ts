@@ -58,7 +58,6 @@ export class RolesGuard implements CanActivate {
         process.env.SECRETS_121_SERVICE_SECRET,
       );
       const user = await this.userService.findById(decoded.id);
-      console.log('user: ', user);
       if (user.userType === UserType.personAffected) {
         hasAccess = await this.personAffectedCanActivate(user, request);
       }

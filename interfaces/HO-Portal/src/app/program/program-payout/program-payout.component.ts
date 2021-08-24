@@ -69,7 +69,7 @@ export class ProgramPayoutComponent implements OnInit {
 
     this.totalIncluded = (
       await this.programsService.getTotalIncluded(this.programId)
-    ).connections;
+    ).registrations;
 
     await this.createInstallments();
     this.lastPaymentResults = await this.getLastPaymentResults();

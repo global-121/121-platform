@@ -9,11 +9,11 @@ Feature: Export selected for validation list
     Given a logged-in user with "personal data" role
     When the user clicks the "export list: selected for validation" and confirms the confirm prompt
     Then a CSV-file is downloaded
-    And it shows a list of the connections that are "selected for validation"
+    And it shows a list of the registrations that are "selected for validation"
     And it shows the "name" and "phonenumber" to be able to identify people
     And it shows the dates at which the person reached each status, to be able to assess the trajectory towards "selected for validation"
     And the "export list" button remains enabled, so the action can be repeated infinitely
-    And if no "selected for validation" connections then an alert is shown that "no data can be downloaded"
+    And if no "selected for validation" registrations then an alert is shown that "no data can be downloaded"
 
   Scenario: Viewing the export button without access
     Given a logged-in user without the "personal data" role

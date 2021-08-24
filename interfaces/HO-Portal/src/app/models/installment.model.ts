@@ -18,6 +18,6 @@ export class PopupPayoutDetails {
 }
 
 export class TotalIncluded {
-  public connections: number;
+  public registrations: number;
   public transferAmounts: number;
 }

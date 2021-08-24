@@ -176,7 +176,7 @@ export class WhatsappService {
   private async getRegistrationsWithOpenVouchers(
     registrations: RegistrationEntity[],
   ): Promise<RegistrationEntity[]> {
-    // Trim connections down to only those with outstanding vouchers
+    // Trim registrations down to only those with outstanding vouchers
     const registrationIds = registrations.map(c => c.id);
     const registrationWithVouchers = await this.registrationRepository.find({
       where: { id: In(registrationIds) },
@@ -213,7 +213,7 @@ export class WhatsappService {
       connectionsWithPhoneNumber,
     );
 
-    // If no connections with outstanding barcodes: send auto-reply
+    // If no registrations with outstanding barcodes: send auto-reply
     const program = await getRepository(ProgramEntity).findOne(this.programId);
     const language =
       registrationsWithOpenVouchers[0]?.preferredLanguage || 'en';

@@ -19,7 +19,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 3. **121-dev-team**:
    1. Find the `registration` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
    2. Use the found registration `referenceId` to update the phone-numbers.
-      - Use: [`/registrations/attribute`](https://test-vm.121.global/121-service/docs/#/registrations/attribute)  
+      - Use: [`/registrations/attribute`](https://test-vm.121.global/121-service/docs/#/registrations/attribute)
         - To store the new WhatsApp phone-number, with: `key` set to `whatsappPhoneNumber`)
         - To store the new SMS phone-number use the same endpoint with: `key` set to `phoneNumer` (For bot a phone number check is included, with automatic sanitization as far as possible.)
 
@@ -51,10 +51,10 @@ In this file we document "how to do X", manually. As not everything is possible 
    Use the endpoint: [`/connection/get-connection/name-phone`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_get_connection_name_phone)  
    Where you can optionally fill in `name` and/or old `phoneNumber` to search for.
 
-   This will return all connections that match _at least one_ of the parameters.
+   This will return all registrations that match _at least one_ of the parameters.
 
-   - If 0 connections are returned, try spelling variations.
-   - If multiple connections are returned, try to figure out which is the correct one.
+   - If 0 registrations are returned, try spelling variations.
+   - If multiple registrations are returned, try to figure out which is the correct one.
      - Maybe there are PA with the same name, but different phone-numbers?
      - Maybe one is an unfinished registration?
      - Check back with the **Pilot-team** if still unclear.
@@ -68,7 +68,7 @@ In this file we document "how to do X", manually. As not everything is possible 
 2. Use the endpoint: [`/programs/monitoring/{programId}`](https://test-vm.121.global/121-service/docs/#/programs/get_programs_monitoring__programId_)  
    Fill in the `programId` = 1.
 
-   This will return all connections, with attributes:
+   This will return all registrations, with attributes:
 
    - Monitoring-question answer
    - Registration duration (in seconds)

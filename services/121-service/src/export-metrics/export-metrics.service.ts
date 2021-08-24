@@ -3,7 +3,6 @@ import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Not, Repository, getRepository } from 'typeorm';
-import { ProgramEntity } from '../programs/program/program.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
 import {
@@ -12,7 +11,6 @@ import {
 } from '../registration/dto/custom-data-attributes';
 import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
 import { FspAttributeEntity } from '../programs/fsp/fsp-attribute.entity';
-import { RegistrationStatusChangeEntity } from '../registration/registration-status-change.entity';
 import { ActionService } from '../actions/action.service';
 import { ExportType } from '../programs/program/dto/export-details';
 import { FileDto } from '../programs/program/dto/file.dto';
@@ -23,8 +21,10 @@ import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../programs/program/transactions.entity';
 import { ProgramService } from '../programs/program/program.service';
 import { FspService } from '../programs/fsp/fsp.service';
-import { PaStatusTimestampField, PaStatus } from '../models/pa-status.model';
 import { PaMetrics } from '../programs/program/dto/pa-metrics.dto';
+import { Attributes } from '../registration/dto/update-attribute.dto';
+import { TotalIncluded } from './dto/total-included.dto';
+import { InstallmentStateSumDto } from '../programs/program/dto/installment-state-sum.dto';
 
 @Injectable()
 export class ExportMetricsService {
@@ -512,7 +512,7 @@ export class ExportMetricsService {
     );
 
     const metrics: PaMetrics = {
-      [PaStatus.imported]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.imported]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
         RegistrationStatusEnum.imported,
@@ -521,7 +521,7 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [PaStatus.invited]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.invited]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
         RegistrationStatusEnum.invited,
@@ -530,7 +530,7 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [PaStatus.created]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.startedRegistation]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
         RegistrationStatusEnum.startedRegistation,
@@ -539,7 +539,7 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [PaStatus.registered]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.registered]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
         RegistrationStatusEnum.registered,
@@ -548,7 +548,7 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [PaStatus.selectedForValidation]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.selectedForValidation]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
         RegistrationStatusEnum.selectedForValidation,
@@ -557,7 +557,7 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [PaStatus.validated]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.validated]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
         RegistrationStatusEnum.validated,
@@ -565,7 +565,7 @@ export class ExportMetricsService {
         month,
         year,
       ),
-      [PaStatus.included]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.included]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
         RegistrationStatusEnum.included,
@@ -574,7 +574,7 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [PaStatus.inclusionEnded]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.inclusionEnded]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
         RegistrationStatusEnum.inclusionEnded,
@@ -583,7 +583,7 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [PaStatus.noLongerEligible]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.noLongerEligible]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
         RegistrationStatusEnum.noLongerEligible,
@@ -591,7 +591,7 @@ export class ExportMetricsService {
         month,
         year,
       ),
-      [PaStatus.rejected]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.rejected]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
         RegistrationStatusEnum.rejected,
@@ -665,6 +665,90 @@ export class ExportMetricsService {
     return filteredConnections.length;
   }
 
+  public async getInstallmentsWithStateSums(
+    programId: number,
+  ): Promise<InstallmentStateSumDto[]> {
+    const totalProcessedInstallments = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('MAX(transaction.installment)')
+      .getRawOne();
+    const program = await this.programService.findOne(programId);
+    const installmentNrSearch = Math.max(
+      ...[totalProcessedInstallments.max, program.distributionDuration],
+    );
+    const installmentsWithStats = [];
+    let i = 1;
+    const transactionStepMin = await await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('MIN(transaction.transactionStep)')
+      .getRawOne();
+    while (i < installmentNrSearch) {
+      const result = await this.getOneInstallmentWithStateSum(
+        programId,
+        i,
+        transactionStepMin.min,
+      );
+      installmentsWithStats.push(result);
+      i++;
+    }
+    return installmentsWithStats;
+  }
+
+  public async getOneInstallmentWithStateSum(
+    programId: number,
+    installment: number,
+    transactionStepOfInterest: number,
+  ): Promise<InstallmentStateSumDto> {
+    const currentInstallmentRegistrationsAndCount = await this.transactionRepository.findAndCount(
+      {
+        where: {
+          program: { id: programId },
+          status: StatusEnum.success,
+          installment: installment,
+          transactionStep: transactionStepOfInterest,
+        },
+        relations: ['registration'],
+      },
+    );
+    const currentInstallmentRegistrations =
+      currentInstallmentRegistrationsAndCount[0];
+    const currentInstallmentCount = currentInstallmentRegistrationsAndCount[1];
+    const currentInstallmentRegistrationsIds = currentInstallmentRegistrations.map(
+      ({ registration }) => registration.id,
+    );
+    let preExistingPa: number;
+    if (currentInstallmentCount > 0) {
+      preExistingPa = await this.transactionRepository
+        .createQueryBuilder('transaction')
+        .leftJoin('transaction.registration', 'registration')
+        .where('transaction.registration.id IN (:...registrationIds)', {
+          registrationIds: currentInstallmentRegistrationsIds,
+        })
+        .andWhere('transaction.installment = :installment', {
+          installment: installment - 1,
+        })
+        .andWhere('transaction.status = :status', {
+          status: StatusEnum.success,
+        })
+        .andWhere('transaction.transactionStep = :transactionStep', {
+          transactionStep: transactionStepOfInterest,
+        })
+        .andWhere('transaction.programId = :programId', {
+          programId: programId,
+        })
+        .getCount();
+    } else {
+      preExistingPa = 0;
+    }
+    return {
+      id: installment,
+      values: {
+        'pre-existing': preExistingPa,
+        new: currentInstallmentCount - preExistingPa,
+      },
+    };
+  }
+
   public async getMonitoringData(programId: number): Promise<any> {
     const registrations = await this.queryMonitoringData(programId);
     return registrations.map(registration => {
@@ -722,5 +806,18 @@ export class ExportMetricsService {
       .orderBy('"registration"."id"', 'DESC')
       .distinctOn(['registration.id']);
     return await q.getRawMany();
+  }
+
+  public async getTotalIncluded(programId: number): Promise<TotalIncluded> {
+    const includedRegistrations = await this.programService.getIncludedRegistrations(
+      programId,
+    );
+    const sum = includedRegistrations.reduce(function(a, b) {
+      return a + (b[Attributes.paymentAmountMultiplier] || 1);
+    }, 0);
+    return {
+      registrations: includedRegistrations.length,
+      transferAmounts: sum,
+    };
   }
 }

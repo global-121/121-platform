@@ -14,7 +14,7 @@ import { JwtService } from './jwt.service';
   providedIn: 'root',
 })
 export class ProgramsServiceApiService {
-  constructor(private apiService: ApiService, private jwtService: JwtService) { }
+  constructor(private apiService: ApiService, private jwtService: JwtService) {}
 
   getInstanceInformation(): Promise<InstanceData> {
     return this.apiService
@@ -108,7 +108,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/peopleaffected/data-storage',
+        '/people-affected/data-storage',
         {
           type,
           data,
@@ -122,7 +122,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        '/peopleaffected/data-storage/' + type,
+        '/people-affected/data-storage/' + type,
         false,
       )
       .pipe(
@@ -189,7 +189,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        '/programs/inclusion-status/' + programId,
+        '/registrations/inclusion-status/' + programId,
         {
           referenceId,
         },

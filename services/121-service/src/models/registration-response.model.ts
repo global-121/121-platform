@@ -1,6 +1,5 @@
 import { fspName } from '../programs/fsp/financial-service-provider.entity';
 import { RegistrationStatusEnum } from '../registration/enum/registration-status.enum';
-import { PaStatus } from './pa-status.model';
 
 export class RegistrationResponse {
   public id: number;

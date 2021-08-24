@@ -22,6 +22,7 @@ import { UserRole } from '../user-role.enum';
 import { ExportDetails } from '../programs/program/dto/export-details';
 import { User } from '../user/user.decorator';
 import { ProgramMetrics } from '../programs/program/dto/program-metrics.dto';
+import { TotalIncluded } from './dto/total-included.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -102,6 +103,25 @@ export class ExportMetricsController {
     };
   }
 
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'Get installments with state sums by program-id' })
+  @ApiImplicitParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Installment state sums to create bar charts to show the number of new vs existing PAs per installmet',
+  })
+  @Get('installment-state-sums/:programId')
+  public async getInstallmentsWithStateSums(@Param() params): Promise<any> {
+    return await this.exportMetricsService.getInstallmentsWithStateSums(
+      Number(params.programId),
+    );
+  }
+
   @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Get monitoring data' })
   @ApiResponse({ status: 200, description: 'All monitoring data of a program' })
@@ -109,6 +129,20 @@ export class ExportMetricsController {
   @Get('/monitoring/:programId')
   public async getMonitoringData(@Param() params): Promise<any[]> {
     return await this.exportMetricsService.getMonitoringData(
+      Number(params.programId),
+    );
+  }
+
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'Get total number of included per program' })
+  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
+  @ApiResponse({
+    status: 200,
+    description: 'Total number of included per program',
+  })
+  @Get('total-included/:programId')
+  public async getTotalIncluded(@Param() params): Promise<TotalIncluded> {
+    return await this.exportMetricsService.getTotalIncluded(
       Number(params.programId),
     );
   }
