@@ -6,7 +6,10 @@ import { getRepository, In, Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program/program.entity';
 import { UserEntity } from '../user/user.entity';
 import { RegistrationEntity } from './registration.entity';
-import { RegistrationStatusEnum } from './enum/registration-status.enum';
+import {
+  RegistrationStatusEnum,
+  RegistrationStatusTimestampField,
+} from './enum/registration-status.enum';
 import {
   ProgramAnswer,
   StoreProgramAnswersDto,
@@ -31,7 +34,6 @@ import { ImportResult } from './dto/bulk-import.dto';
 import { RegistrationResponse } from '../models/registration-response.model';
 import { NoteDto } from './dto/note.dto';
 import { validate } from 'class-validator';
-import { PaStatusTimestampField } from '../models/pa-status.model';
 import { DownloadData } from './interfaces/download-data.interface';
 import {
   AnswerSet,
@@ -40,6 +42,7 @@ import {
 import { Attributes } from './dto/update-attribute.dto';
 import { ReferenceIdDto } from '../programs/program/dto/reference-id.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
+import { InclusionStatus } from './dto/inclusion-status.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -461,61 +464,61 @@ export class RegistrationsService {
         registration.paymentAmountMultiplier;
 
       registrationResponse[
-        PaStatusTimestampField.created
+        RegistrationStatusTimestampField.created
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.startedRegistation,
       );
       registrationResponse[
-        PaStatusTimestampField.importedDate
+        RegistrationStatusTimestampField.importedDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.imported,
       );
       registrationResponse[
-        PaStatusTimestampField.invitedDate
+        RegistrationStatusTimestampField.invitedDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.invited,
       );
       registrationResponse[
-        PaStatusTimestampField.noLongerEligibleDate
+        RegistrationStatusTimestampField.noLongerEligibleDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.noLongerEligible,
       );
       registrationResponse[
-        PaStatusTimestampField.registeredDate
+        RegistrationStatusTimestampField.registeredDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.registered,
       );
       registrationResponse[
-        PaStatusTimestampField.selectedForValidationDate
+        RegistrationStatusTimestampField.selectedForValidationDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.selectedForValidation,
       );
       registrationResponse[
-        PaStatusTimestampField.validationDate
+        RegistrationStatusTimestampField.validationDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.validated,
       );
       registrationResponse[
-        PaStatusTimestampField.inclusionDate
+        RegistrationStatusTimestampField.inclusionDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.included,
       );
       registrationResponse[
-        PaStatusTimestampField.inclusionEndDate
+        RegistrationStatusTimestampField.inclusionEndDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.inclusionEnded,
       );
       registrationResponse[
-        PaStatusTimestampField.rejectionDate
+        RegistrationStatusTimestampField.rejectionDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.rejected,
@@ -580,28 +583,28 @@ export class RegistrationsService {
 
   public getDateColumPerStatus(
     filterStatus: RegistrationStatusEnum,
-  ): PaStatusTimestampField {
+  ): RegistrationStatusTimestampField {
     switch (filterStatus) {
       case RegistrationStatusEnum.imported:
-        return PaStatusTimestampField.importedDate;
+        return RegistrationStatusTimestampField.importedDate;
       case RegistrationStatusEnum.invited:
-        return PaStatusTimestampField.invitedDate;
+        return RegistrationStatusTimestampField.invitedDate;
       case RegistrationStatusEnum.noLongerEligible:
-        return PaStatusTimestampField.noLongerEligibleDate;
+        return RegistrationStatusTimestampField.noLongerEligibleDate;
       case RegistrationStatusEnum.startedRegistation:
-        return PaStatusTimestampField.created;
+        return RegistrationStatusTimestampField.created;
       case RegistrationStatusEnum.registered:
-        return PaStatusTimestampField.registeredDate;
+        return RegistrationStatusTimestampField.registeredDate;
       case RegistrationStatusEnum.selectedForValidation:
-        return PaStatusTimestampField.selectedForValidationDate;
+        return RegistrationStatusTimestampField.selectedForValidationDate;
       case RegistrationStatusEnum.validated:
-        return PaStatusTimestampField.validationDate;
+        return RegistrationStatusTimestampField.validationDate;
       case RegistrationStatusEnum.included:
-        return PaStatusTimestampField.inclusionDate;
+        return RegistrationStatusTimestampField.inclusionDate;
       case RegistrationStatusEnum.inclusionEnded:
-        return PaStatusTimestampField.inclusionEndDate;
+        return RegistrationStatusTimestampField.inclusionEndDate;
       case RegistrationStatusEnum.rejected:
-        return PaStatusTimestampField.rejectionDate;
+        return RegistrationStatusTimestampField.rejectionDate;
     }
   }
 
@@ -1003,5 +1006,28 @@ export class RegistrationsService {
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
     return { referenceId: registration.referenceId };
+  }
+
+  public async getInclusionStatus(
+    programId: number,
+    referenceId: string,
+  ): Promise<InclusionStatus> {
+    let registration = await this.getRegistrationFromReferenceId(referenceId);
+
+    await this.findProgramOrThrow(programId);
+
+    let inclusionStatus: InclusionStatus;
+
+    if (registration.registrationStatus === RegistrationStatusEnum.included) {
+      inclusionStatus = { status: RegistrationStatusEnum.included };
+    } else if (
+      registration.registrationStatus === RegistrationStatusEnum.rejected
+    ) {
+      inclusionStatus = { status: RegistrationStatusEnum.rejected };
+    } else {
+      inclusionStatus = { status: 'unavailable' };
+    }
+
+    return inclusionStatus;
   }
 }

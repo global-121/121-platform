@@ -116,13 +116,15 @@ export class MetricsStatesComponent implements OnChanges {
         toDate: this.programMetrics.pa[PaStatus.noLongerEligible],
       },
       {
-        name: PaStatus.created,
+        name: PaStatus.startedRegistration,
         enabled: true,
-        label: this.translate.instant('page.program.metrics.pa.created'),
-        explanation: this.translate.instant(
-          'page.program.metrics.state-explanation.created',
+        label: this.translate.instant(
+          'page.program.metrics.pa.startedRegistration',
         ),
-        toDate: this.programMetrics.pa[PaStatus.created],
+        explanation: this.translate.instant(
+          'page.program.metrics.state-explanation.startedRegistration',
+        ),
+        toDate: this.programMetrics.pa[PaStatus.startedRegistration],
       },
       {
         name: PaStatus.registered,

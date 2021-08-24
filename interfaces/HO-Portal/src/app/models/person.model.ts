@@ -56,7 +56,7 @@ export enum PaStatus {
   imported = 'imported',
   invited = 'invited',
   noLongerEligible = 'noLongerEligible',
-  created = 'created',
+  startedRegistration = 'startedRegistration',
   registered = 'registered',
   selectedForValidation = 'selectedForValidation',
   registeredWhileNoLongerEligible = 'registeredWhileNoLongerEligible',

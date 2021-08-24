@@ -8,11 +8,11 @@ import {
 } from '@nestjs/swagger';
 import { UserRole } from '../../user-role.enum';
 import { Roles } from '../../roles.decorator';
-import { PaStatus } from '../../models/pa-status.model';
 import {
   TwilioStatusCallbackDto,
   TwilioIncomingCallbackDto,
 } from '../twilio.dto';
+import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 
 @ApiUseTags('notifications')
 @Controller('notifications/whatsapp')
@@ -35,7 +35,7 @@ export class WhatsappController {
       'en',
       1,
       null,
-      PaStatus.registered,
+      RegistrationStatusEnum.registered,
     );
   }
 

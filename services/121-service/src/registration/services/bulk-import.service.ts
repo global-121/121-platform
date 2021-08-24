@@ -336,7 +336,7 @@ export class BulkImportService {
       importRecord.fspName = row.fspName;
       importRecord.programAttributes = [];
       for await (const att of dynamicAttributes) {
-        if (att.type === AnswerTypes.tel) {
+        if (att.type === AnswerTypes.tel && row[att.attribute]) {
           const sanitized = await this.lookupService.lookupAndCorrect(
             row[att.attribute],
             true,

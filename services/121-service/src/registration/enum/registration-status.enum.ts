@@ -11,3 +11,17 @@ export enum RegistrationStatusEnum {
   registeredWhileNoLongerEligible = 'registeredWhileNoLongerEligible',
   inclusionEnded = 'inclusionEnded',
 }
+
+export enum RegistrationStatusTimestampField {
+  created = 'created',
+  importedDate = 'importedDate',
+  invitedDate = 'invitedDate',
+  noLongerEligibleDate = 'noLongerEligibleDate',
+  accountCreatedDate = 'accountCreatedDate',
+  registeredDate = 'registeredDate',
+  selectedForValidationDate = 'selectedForValidationDate',
+  validationDate = 'validationDate',
+  inclusionDate = 'inclusionDate',
+  inclusionEndDate = 'inclusionEndDate',
+  rejectionDate = 'rejectionDate',
+}

@@ -23,14 +23,14 @@ Feature: Export payment details
     Then the "export list" button is enabled
     When the user clicks the "export list" button
     Then a CSV-file is dowloaded
-    And it shows a list of the connections that are "included"
+    And it shows a list of the registrations that are "included"
     And "transaction" information where the "amount" is the multiplication of the PA's "paymentAmountMultiplier" and the supplied "transfer value"
     And the "installment-number"
     And the known "phonenumber"
     And the "parter organization"
     And all "persistent data"
 
-  Scenario: No "included" connections
+  Scenario: No "included" registrations
     Given a logged-in user with "personal data" role
     Given the installment has taken place
     When the user selects a "closed" payment from the dropdown-list

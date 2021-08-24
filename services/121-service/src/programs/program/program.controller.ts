@@ -1,5 +1,5 @@
 import { ProgramQuestionEntity } from './program-question.entity';
-import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
+import { ReferenceIdDto } from './dto/reference-id.dto';
 import {
   Get,
   Post,
@@ -24,8 +24,7 @@ import {
   ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
-import { InclusionStatus } from './dto/inclusion-status.dto';
-import { PayoutDto, TotalIncluded } from './dto/payout.dto';
+import { PayoutDto } from './dto/payout.dto';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
@@ -88,19 +87,6 @@ export class ProgramController {
     return this.programService.changePhase(
       Number(params.programId),
       changePhaseData.newPhase,
-    );
-  }
-
-  @ApiOperation({ title: 'Get inclusion status (Used by PA)' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Post('inclusion-status/:programId')
-  public async inclusionStatus(
-    @Param() params,
-    @Body() data: ReferenceIdDto,
-  ): Promise<InclusionStatus> {
-    return await this.programService.getInclusionStatus(
-      Number(params.programId),
-      data.referenceId,
     );
   }
 
@@ -170,18 +156,6 @@ export class ProgramController {
     return await this.programService.getTransaction(data);
   }
 
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get total number of included per program' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @ApiResponse({
-    status: 200,
-    description: 'Total number of included per program',
-  })
-  @Get('total-included/:programId')
-  public async getTotalIncluded(@Param() params): Promise<TotalIncluded> {
-    return await this.programService.getTotalIncluded(Number(params.programId));
-  }
-
   @Roles(UserRole.Admin)
   @ApiOperation({ title: 'Update program' })
   @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
@@ -204,25 +178,6 @@ export class ProgramController {
   ): Promise<ProgramQuestionEntity> {
     return await this.programService.updateProgramQuestion(
       updateProgramQuestionDto,
-    );
-  }
-
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get installments with state sums by program-id' })
-  @ApiImplicitParam({
-    name: 'programId',
-    required: true,
-    type: 'integer',
-  })
-  @ApiResponse({
-    status: 200,
-    description:
-      'Installment state sums to create bar charts to show the number of new vs existing PAs per installmet',
-  })
-  @Get('installment-state-sums/:programId')
-  public async getInstallmentsWithStateSums(@Param() params): Promise<any> {
-    return await this.programService.getInstallmentsWithStateSums(
-      Number(params.programId),
     );
   }
 }

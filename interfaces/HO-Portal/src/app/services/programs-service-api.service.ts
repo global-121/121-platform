@@ -102,7 +102,10 @@ export class ProgramsServiceApiService {
 
   getMetricsById(programId: number | string): Promise<ProgramMetrics> {
     return this.apiService
-      .get(environment.url_121_service_api, `/export-metrics/person-affected/${programId}`)
+      .get(
+        environment.url_121_service_api,
+        `/export-metrics/person-affected/${programId}`,
+      )
       .toPromise();
   }
 
@@ -122,7 +125,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/total-included/${programId}`,
+        `/export-metrics/total-included/${programId}`,
       )
       .toPromise();
   }
@@ -462,7 +465,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/installment-state-sums/${programId}`,
+        `/export-metrics/installment-state-sums/${programId}`,
       )
       .toPromise();
   }

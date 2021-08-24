@@ -14,8 +14,8 @@ import { Roles } from '../roles.decorator';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
-@ApiUseTags('peopleAffected')
-@Controller('peopleaffected')
+@ApiUseTags('people-affected')
+@Controller('people-affected')
 export class PeopleAffectedController {
   private readonly peopleAffectedService: PeopleAffectedService;
   public constructor(peopleAffectedService: PeopleAffectedService) {

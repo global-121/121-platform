@@ -10,6 +10,7 @@ import { UserRoleEntity } from '../user/user-role.entity';
 import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
 import { ProgramAidworkerAssignmentEntity } from '../programs/program/program-aidworker.entity';
 import { UserRole } from '../user-role.enum';
+import { UserType } from '../user/user-type-enum';
 
 export class SeedHelper {
   public constructor(private connection: Connection) {}
@@ -19,6 +20,7 @@ export class SeedHelper {
     return await userRepository.save({
       username: userInput.username,
       password: crypto.createHmac('sha256', userInput.password).digest('hex'),
+      userType: UserType.aidWorker,
     });
   }
 

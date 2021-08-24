@@ -10,10 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult, In } from 'typeorm';
 import { ProgramEntity } from './program.entity';
 import { ProgramPhase } from '../../models/program-phase.model';
-import { PaStatus } from '../../models/pa-status.model';
 import { CreateProgramDto } from './dto';
 import { ProgramsRO, SimpleProgramRO } from './program.interface';
-import { InclusionStatus } from './dto/inclusion-status.dto';
 import {
   FinancialServiceProviderEntity,
   fspName,
@@ -29,11 +27,9 @@ import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
 import { CustomDataAttributes } from '../../registration/dto/custom-data-attributes';
-import { TotalIncluded } from './dto/payout.dto';
 import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 import { RegistrationEntity } from '../../registration/registration.entity';
-import { Attributes } from '../../registration/dto/update-attribute.dto';
 
 @Injectable()
 export class ProgramService {
@@ -262,43 +258,7 @@ export class ProgramService {
     });
   }
 
-  private async getRegistrationByReferenceIdOrThrow(
-    referenceId: string,
-  ): Promise<RegistrationEntity> {
-    const registration = await this.getRegistrationByReferenceId(referenceId);
-    if (!registration) {
-      const errors = 'No registration found for PA.';
-      throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
-    }
-    return registration;
-  }
-
-  public async getInclusionStatus(
-    programId: number,
-    referenceId: string,
-  ): Promise<InclusionStatus> {
-    let registration = await this.getRegistrationByReferenceIdOrThrow(
-      referenceId,
-    );
-
-    await this.checkIfProgramExists(programId);
-
-    let inclusionStatus: InclusionStatus;
-
-    if (registration.registrationStatus === RegistrationStatusEnum.included) {
-      inclusionStatus = { status: PaStatus.included };
-    } else if (
-      registration.registrationStatus === RegistrationStatusEnum.rejected
-    ) {
-      inclusionStatus = { status: PaStatus.rejected };
-    } else {
-      inclusionStatus = { status: 'unavailable' };
-    }
-
-    return inclusionStatus;
-  }
-
-  private async getIncludedRegistrations(
+  public async getIncludedRegistrations(
     programId: number,
   ): Promise<RegistrationEntity[]> {
     return await this.registrationRepository.find({
@@ -308,19 +268,6 @@ export class ProgramService {
       },
       relations: ['fsp'],
     });
-  }
-
-  public async getTotalIncluded(programId: number): Promise<TotalIncluded> {
-    const includedRegistrations = await this.getIncludedRegistrations(
-      programId,
-    );
-    const sum = includedRegistrations.reduce(function(a, b) {
-      return a + (b[Attributes.paymentAmountMultiplier] || 1);
-    }, 0);
-    return {
-      connections: includedRegistrations.length,
-      transferAmounts: sum,
-    };
   }
 
   private async getRegistrationsForPayment(
@@ -343,7 +290,7 @@ export class ProgramService {
     }
 
     // If 'referenceId' is passed (only in retry-payment-per PA) use this PA only,
-    // If known installment, then only failed connections
+    // If known installment, then only failed registrations
     // otherwise (new payment) get all included PA's
     return referenceId
       ? await this.registrationRepository.find({
@@ -603,89 +550,5 @@ export class ProgramService {
         return transaction;
       }
     }
-  }
-
-  public async getInstallmentsWithStateSums(
-    programId: number,
-  ): Promise<InstallmentStateSumDto[]> {
-    const totalProcessedInstallments = await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('MAX(transaction.installment)')
-      .getRawOne();
-    const program = await this.programRepository.findOne(programId);
-    const installmentNrSearch = Math.max(
-      ...[totalProcessedInstallments.max, program.distributionDuration],
-    );
-    const installmentsWithStats = [];
-    let i = 1;
-    const transactionStepMin = await await this.transactionRepository
-      .createQueryBuilder('transaction')
-      .select('MIN(transaction.transactionStep)')
-      .getRawOne();
-    while (i < installmentNrSearch) {
-      const result = await this.getOneInstallmentWithStateSum(
-        programId,
-        i,
-        transactionStepMin.min,
-      );
-      installmentsWithStats.push(result);
-      i++;
-    }
-    return installmentsWithStats;
-  }
-
-  public async getOneInstallmentWithStateSum(
-    programId: number,
-    installment: number,
-    transactionStepOfInterest: number,
-  ): Promise<InstallmentStateSumDto> {
-    const currentInstallmentRegistrationsAndCount = await this.transactionRepository.findAndCount(
-      {
-        where: {
-          program: { id: programId },
-          status: StatusEnum.success,
-          installment: installment,
-          transactionStep: transactionStepOfInterest,
-        },
-        relations: ['registration'],
-      },
-    );
-    const currentInstallmentRegistrations =
-      currentInstallmentRegistrationsAndCount[0];
-    const currentInstallmentCount = currentInstallmentRegistrationsAndCount[1];
-    const currentInstallmentRegistrationsIds = currentInstallmentRegistrations.map(
-      ({ registration }) => registration.id,
-    );
-    let preExistingPa: number;
-    if (currentInstallmentCount > 0) {
-      preExistingPa = await this.transactionRepository
-        .createQueryBuilder('transaction')
-        .leftJoin('transaction.registration', 'registration')
-        .where('transaction.registration.id IN (:...registrationIds)', {
-          registrationIds: currentInstallmentRegistrationsIds,
-        })
-        .andWhere('transaction.installment = :installment', {
-          installment: installment - 1,
-        })
-        .andWhere('transaction.status = :status', {
-          status: StatusEnum.success,
-        })
-        .andWhere('transaction.transactionStep = :transactionStep', {
-          transactionStep: transactionStepOfInterest,
-        })
-        .andWhere('transaction.programId = :programId', {
-          programId: programId,
-        })
-        .getCount();
-    } else {
-      preExistingPa = 0;
-    }
-    return {
-      id: installment,
-      values: {
-        'pre-existing': preExistingPa,
-        new: currentInstallmentCount - preExistingPa,
-      },
-    };
   }
 }

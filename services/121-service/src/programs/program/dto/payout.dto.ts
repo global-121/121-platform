@@ -18,8 +18,3 @@ export class PayoutDto {
   @IsOptional()
   public readonly referenceId: string;
 }
-
-export class TotalIncluded {
-  public connections: number;
-  public transferAmounts: number;
-}
