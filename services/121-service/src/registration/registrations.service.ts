@@ -857,9 +857,7 @@ export class RegistrationsService {
   public async getAllProgramAnswers(
     user: UserEntity,
   ): Promise<ProgramAnswerEntity[]> {
-    const programIds = user.programAssignments.map(assignment => {
-      return { programId: assignment.program.id };
-    });
+    const programIds = user.programAssignments.map(p => p.program.id);
     const registrationsToValidate = await getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
       .leftJoin('registration.program', 'program')
