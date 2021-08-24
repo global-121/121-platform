@@ -23,30 +23,26 @@ import { RolesGuard } from '../roles.guard';
 import { RegistrationsService } from './registrations.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { User } from '../user/user.decorator';
-import { UpdateRegistrationDto } from './dto/update-registration.dto';
 import { StoreProgramAnswersDto } from './dto/store-program-answers.dto';
 import { SetFspDto, UpdateChosenFspDto } from './dto/set-fsp.dto';
-import { CustomDataDto } from '../programs/program/dto/custom-data.dto';
-import {
-  ReferenceIdDto,
-  ReferenceIdsDto,
-} from '../programs/program/dto/reference-id.dto';
+import { CustomDataDto } from './dto/custom-data.dto';
 import { AddQrIdentifierDto } from './dto/add-qr-identifier.dto';
 import { UserRole } from '../user-role.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImportResult } from './dto/bulk-import.dto';
 import { Roles } from '../roles.decorator';
 import { NoteDto, UpdateNoteDto } from './dto/note.dto';
-import { MessageDto } from '../programs/program/dto/message.dto';
+import { MessageDto } from './dto/message.dto';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { SearchRegistrationDto } from './dto/search-registration.dto';
-import { DownloadData } from './interfaces/download-data.interface';
+import { DownloadData } from './dto/download-data.interface';
 import { SetPhoneRequestDto } from './dto/set-phone-request.dto';
 import { UpdateAttributeDto } from './dto/update-attribute.dto';
-import { FspAnswersAttrInterface } from '../programs/fsp/fsp-interface';
+import { FspAnswersAttrInterface } from '../fsp/fsp-interface';
 import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
+import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -68,18 +64,6 @@ export class RegistrationsController {
     return await this.registrationsService.create(
       createRegistrationDto,
       userId,
-    );
-  }
-
-  @ApiOperation({ title: 'Update registration' })
-  @ApiResponse({ status: 200, description: 'Updated registration' })
-  @Post('update-status')
-  public async updateRegistrationStatus(
-    @Body() updateRegistrationDto: UpdateRegistrationDto,
-  ): Promise<RegistrationEntity> {
-    return await this.registrationsService.setRegistrationStatus(
-      updateRegistrationDto.referenceId,
-      updateRegistrationDto.registrationStatus,
     );
   }
 
@@ -399,7 +383,7 @@ export class RegistrationsController {
     description: 'Returned registrations which match at least one of criteria',
   })
   @Post('/search-name-phone')
-  public async getConnectionByPhoneAndOrName(
+  public async searchRegistration(
     @Body() searchRegistrationDto: SearchRegistrationDto,
   ): Promise<RegistrationEntity[]> {
     return await this.registrationsService.searchRegistration(

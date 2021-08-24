@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 import crypto from 'crypto';
 import { ActionEntity } from '../actions/action.entity';
-import { ProgramAidworkerAssignmentEntity } from '../programs/program/program-aidworker.entity';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { CascadeDeleteEntity } from '../base.entity';
 
 @Entity('user')

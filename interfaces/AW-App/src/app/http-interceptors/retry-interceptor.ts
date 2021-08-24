@@ -35,7 +35,7 @@ export class RetryInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     const res = [
       '/registrations/get',
-      '/registrations/qr-find-connection',
+      '/registrations/qr-find-reference-id',
       '/registrations/get-fsp/',
     ];
     // Exclude interceptor for offline usage

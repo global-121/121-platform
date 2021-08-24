@@ -1,30 +1,22 @@
-import { Base121Entity, CascadeDeleteEntity } from './../base.entity';
+import { CascadeDeleteEntity } from './../base.entity';
 import { UserEntity } from '../user/user.entity';
 import {
   Entity,
-  PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
   Index,
   Column,
   OneToMany,
-  AfterUpdate,
-  AfterInsert,
-  Repository,
-  UpdateEvent,
-  getConnection,
-  BeforeInsert,
   BeforeRemove,
 } from 'typeorm';
-import { ProgramEntity } from '../programs/program/program.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import { RegistrationStatusEnum } from './enum/registration-status.enum';
 import { ProgramAnswerEntity } from './program-answer.entity';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { FinancialServiceProviderEntity } from '../programs/fsp/financial-service-provider.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { IsInt, IsPositive, IsOptional } from 'class-validator';
-import { TransactionEntity } from '../programs/program/transactions.entity';
+import { TransactionEntity } from '../programs/transactions.entity';
 import { ImageCodeExportVouchersEntity } from '../notifications/imagecode/image-code-export-vouchers.entity';
 
 @Entity('registration')

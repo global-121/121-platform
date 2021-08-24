@@ -11,14 +11,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, In } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
-import { ProgramEntity } from '../../programs/program/program.entity';
+import { ProgramEntity } from '../../programs/program.entity';
 import { ImageCodeService } from '../imagecode/image-code.service';
-import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
+import { IntersolveBarcodeEntity } from '../../fsp/intersolve-barcode.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { FspService } from '../../programs/fsp/fsp.service';
-import { fspName } from '../../programs/fsp/financial-service-provider.entity';
-import { IntersolveService } from '../../programs/fsp/intersolve.service';
-import { CustomDataAttributes } from '../../registration/dto/custom-data-attributes';
+import { FspService } from '../../fsp/fsp.service';
+import { fspName } from '../../fsp/financial-service-provider.entity';
+import { IntersolveService } from '../../fsp/intersolve.service';
+import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 import {
   TwilioStatusCallbackDto,
   TwilioIncomingCallbackDto,
@@ -206,11 +206,11 @@ export class WhatsappService {
       );
     }
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
-    const connectionsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
+    const regisrationsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
       fromNumber,
     );
     const registrationsWithOpenVouchers = await this.getRegistrationsWithOpenVouchers(
-      connectionsWithPhoneNumber,
+      regisrationsWithPhoneNumber,
     );
 
     // If no registrations with outstanding barcodes: send auto-reply

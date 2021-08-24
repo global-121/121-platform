@@ -1,14 +1,14 @@
 import { Connection, In } from 'typeorm';
 
-import { ProgramEntity } from '../programs/program/program.entity';
-import { FinancialServiceProviderEntity } from './../programs/fsp/financial-service-provider.entity';
+import { ProgramEntity } from '../programs/program.entity';
+import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { UserEntity } from '../user/user.entity';
-import { FspAttributeEntity } from './../programs/fsp/fsp-attribute.entity';
+import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
 import { InstanceEntity } from '../instance/instance.entity';
 import crypto from 'crypto';
 import { UserRoleEntity } from '../user/user-role.entity';
-import { ProgramQuestionEntity } from '../programs/program/program-question.entity';
-import { ProgramAidworkerAssignmentEntity } from '../programs/program/program-aidworker.entity';
+import { ProgramQuestionEntity } from '../programs/program-question.entity';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 import { UserRole } from '../user-role.enum';
 import { UserType } from '../user/user-type-enum';
 

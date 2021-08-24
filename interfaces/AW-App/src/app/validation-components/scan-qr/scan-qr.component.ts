@@ -28,7 +28,7 @@ export class ScanQrComponent implements ValidationComponent {
     public programsService: ProgramsServiceApiService,
     private storage: Storage,
     private modalController: ModalController,
-  ) { }
+  ) {}
 
   async ngOnInit() {
     this.doScan();
@@ -49,8 +49,8 @@ export class ScanQrComponent implements ValidationComponent {
     const componentProps =
       environment.isDebug || environment.showDebug
         ? {
-          debugInput: `{ "referenceId": "_referenceId_"}`,
-        }
+            debugInput: `{ "referenceId": "_referenceId_"}`,
+          }
         : {};
     const qrScannerModal = await this.modalController.create({
       component: QrScannerComponent,
@@ -74,9 +74,7 @@ export class ScanQrComponent implements ValidationComponent {
 
     this.scanError = false;
 
-    const paData = await this.findPaData(
-      paIdentifier.referenceId,
-    );
+    const paData = await this.findPaData(paIdentifier.referenceId);
 
     if (!paData) {
       this.unknownReferenceIdCombination = true;
@@ -131,13 +129,13 @@ export class ScanQrComponent implements ValidationComponent {
 
   private async getPaIdentifierOffline(data: string): Promise<string> {
     console.log('getPaIdentifierOffline');
-    const qrConnectionMapping = await this.storage.get(
-      IonicStorageTypes.qrConnectionMapping,
+    const qrRegistrationMapping = await this.storage.get(
+      IonicStorageTypes.qrRegistrationMapping,
     );
-    if (!qrConnectionMapping || !qrConnectionMapping.length) {
+    if (!qrRegistrationMapping || !qrRegistrationMapping.length) {
       return;
     }
-    for (const element of qrConnectionMapping) {
+    for (const element of qrRegistrationMapping) {
       if (data === element.qrIdentifier) {
         return element.referenceId;
       }
@@ -145,7 +143,7 @@ export class ScanQrComponent implements ValidationComponent {
   }
 
   private async getPaIdentifierOnline(data: string): Promise<string> {
-    console.log('getPaIdentifierOnline')
+    console.log('getPaIdentifierOnline');
     try {
       const response = await this.programsService.getReferenceIdByQrIdentifier(
         data,
@@ -162,9 +160,7 @@ export class ScanQrComponent implements ValidationComponent {
     }
   }
 
-  private async findPaData(
-    referenceId: string,
-  ): Promise<any> {
+  private async findPaData(referenceId: string): Promise<any> {
     let paData = await this.findPaDataOffline(referenceId);
     if (!paData) {
       paData = await this.findPaDataOnline(referenceId);
@@ -172,13 +168,9 @@ export class ScanQrComponent implements ValidationComponent {
     return paData;
   }
 
-  private async findPaDataOnline(
-    referenceId: string,
-  ): Promise<any> {
+  private async findPaDataOnline(referenceId: string): Promise<any> {
     try {
-      const response = await this.programsService.getRegistration(
-        referenceId,
-      );
+      const response = await this.programsService.getRegistration(referenceId);
       if (response.length === 0) {
         return;
       }
@@ -191,9 +183,7 @@ export class ScanQrComponent implements ValidationComponent {
     }
   }
 
-  private async findPaDataOffline(
-    referenceId: string,
-  ): Promise<any> {
+  private async findPaDataOffline(referenceId: string): Promise<any> {
     console.log('findPaDataOffline()');
     const offlineData = await this.storage.get(
       IonicStorageTypes.validationProgramData,
@@ -203,9 +193,7 @@ export class ScanQrComponent implements ValidationComponent {
     }
     const prefilledQuestions = [];
     offlineData.forEach((element) => {
-      if (
-        referenceId === element.referenceId
-      ) {
+      if (referenceId === element.referenceId) {
         prefilledQuestions.push(element);
       }
     });

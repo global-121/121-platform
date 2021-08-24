@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProgramEntity } from '../../programs/program/program.entity';
+import { ProgramEntity } from '../../programs/program.entity';
 import { UserEntity } from '../../user/user.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
@@ -10,11 +10,11 @@ import {
   AnswerTypes,
   Attribute,
   GenericAttributes,
-} from '../dto/custom-data-attributes';
+} from '../enum/custom-data-attributes';
 import { LookupService } from '../../notifications/lookup/lookup.service';
-import { ProgramQuestionEntity } from '../../programs/program/program-question.entity';
-import { FspAttributeEntity } from '../../programs/fsp/fsp-attribute.entity';
-import { FinancialServiceProviderEntity } from '../../programs/fsp/financial-service-provider.entity';
+import { ProgramQuestionEntity } from '../../programs/program-question.entity';
+import { FspAttributeEntity } from '../../fsp/fsp-attribute.entity';
+import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
 import { RegistrationStatusChangeEntity } from '../registration-status-change.entity';
 import {

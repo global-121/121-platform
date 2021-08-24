@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from './user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
-import { ProgramEntity } from '../programs/program/program.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import { UserRoleEntity } from './user-role.entity';
 
 const userRo = {

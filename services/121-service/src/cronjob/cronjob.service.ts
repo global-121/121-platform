@@ -3,11 +3,11 @@ import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository, Between } from 'typeorm';
-import { IntersolveBarcodeEntity } from '../programs/fsp/intersolve-barcode.entity';
-import { ProgramEntity } from '../programs/program/program.entity';
+import { IntersolveBarcodeEntity } from '../fsp/intersolve-barcode.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
-import { IntersolveRequestEntity } from '../programs/fsp/intersolve-request.entity';
-import { IntersolveApiService } from '../programs/fsp/api/instersolve.api.service';
+import { IntersolveRequestEntity } from '../fsp/intersolve-request.entity';
+import { IntersolveApiService } from '../fsp/api/instersolve.api.service';
 
 @Injectable()
 export class CronjobService {

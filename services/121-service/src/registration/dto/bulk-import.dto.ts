@@ -8,7 +8,7 @@ import {
   Min,
 } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
-import { fspName } from '../../programs/fsp/financial-service-provider.entity';
+import { fspName } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
 
 export class BulkImportDto {

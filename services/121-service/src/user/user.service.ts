@@ -1,4 +1,4 @@
-import { TransactionEntity } from './../programs/program/transactions.entity';
+import { TransactionEntity } from './../programs/transactions.entity';
 import { RegistrationEntity } from './../registration/registration.entity';
 import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
 import { CreateUserAidWorkerDto } from './dto/create-user-aid-worker.dto';
@@ -11,14 +11,14 @@ import { HttpStatus } from '@nestjs/common';
 import crypto from 'crypto';
 import jwt = require('jsonwebtoken');
 
-import { ProgramEntity } from '../programs/program/program.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import { LoginUserDto, UpdateUserDto } from './dto';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
 import { UserRole } from '../user-role.enum';
 import { UserRoleEntity } from './user-role.entity';
 import { UserType } from './user-type-enum';
-import { ProgramAidworkerAssignmentEntity } from '../programs/program/program-aidworker.entity';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
 
 @Injectable()
 export class UserService {

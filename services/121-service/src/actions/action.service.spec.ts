@@ -1,11 +1,11 @@
-import { ExportType } from './../programs/program/dto/export-details';
+import { ExportType } from './../programs/dto/export-details';
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserEntity } from '../user/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { repositoryMockFactory } from '../mock/repositoryMock.factory';
 import { ActionService } from './action.service';
 import { ActionEntity } from './action.entity';
-import { ProgramEntity } from '../programs/program/program.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import { ActionDto } from './dto/action.dto';
 import { MockType } from '../mock/mock.type';
 import { Repository } from 'typeorm';

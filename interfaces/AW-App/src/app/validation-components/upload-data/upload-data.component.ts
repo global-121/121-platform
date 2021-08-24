@@ -58,7 +58,7 @@ export class UploadDataComponent implements ValidationComponent {
         );
         await this.removeLocalStorageData(
           paAnswers.referenceId,
-          IonicStorageTypes.qrConnectionMapping,
+          IonicStorageTypes.qrRegistrationMapping,
         );
       }
       this.uploadReady = true;
