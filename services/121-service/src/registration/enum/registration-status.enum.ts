@@ -13,7 +13,7 @@ export enum RegistrationStatusEnum {
 }
 
 export enum RegistrationStatusTimestampField {
-  created = 'created',
+  startedRegistationDate = 'startedRegistationDate',
   importedDate = 'importedDate',
   invitedDate = 'invitedDate',
   noLongerEligibleDate = 'noLongerEligibleDate',

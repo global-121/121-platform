@@ -5,7 +5,7 @@ export class RegistrationResponse {
   public id: number;
   public referenceId: string;
 
-  public created: Date | null;
+  public startedRegistrationDate: Date | null;
   public importedDate: Date | null;
   public invitedDate: Date | null;
   public noLongerEligibleDate: Date | null;

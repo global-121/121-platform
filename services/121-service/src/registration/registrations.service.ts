@@ -458,7 +458,7 @@ export class RegistrationsService {
         registration.paymentAmountMultiplier;
 
       registrationResponse[
-        RegistrationStatusTimestampField.created
+        RegistrationStatusTimestampField.startedRegistationDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
         RegistrationStatusEnum.startedRegistation,
@@ -586,7 +586,7 @@ export class RegistrationsService {
       case RegistrationStatusEnum.noLongerEligible:
         return RegistrationStatusTimestampField.noLongerEligibleDate;
       case RegistrationStatusEnum.startedRegistation:
-        return RegistrationStatusTimestampField.created;
+        return RegistrationStatusTimestampField.startedRegistationDate;
       case RegistrationStatusEnum.registered:
         return RegistrationStatusTimestampField.registeredDate;
       case RegistrationStatusEnum.selectedForValidation:
@@ -832,7 +832,7 @@ export class RegistrationsService {
 
   public async downloadValidationData(userId: number): Promise<DownloadData> {
     const user = await this.userRepository.findOne(userId, {
-      relations: ['assignedProgram', 'assignedProgram.registrations'],
+      relations: ['programAssignments', 'programAssignments.program'],
     });
     if (
       !user ||
