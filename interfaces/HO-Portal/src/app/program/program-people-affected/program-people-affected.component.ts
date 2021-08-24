@@ -666,7 +666,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return personRow;
   }
 
-  private getTransactionOfInstallmentForConnection(
+  private getTransactionOfInstallmentForRegistration(
     installmentIndex: number,
     referenceId: string,
   ) {
@@ -679,7 +679,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private fillPaymentColumns(personRow: PersonRow): PersonRow {
     this.paymentColumns.forEach((paymentColumn) => {
-      const transaction = this.getTransactionOfInstallmentForConnection(
+      const transaction = this.getTransactionOfInstallmentForRegistration(
         paymentColumn.installmentIndex,
         personRow.referenceId,
       );

@@ -34,9 +34,9 @@ In this file we document "how to do X", manually. As not everything is possible 
    - New FSP: (`Intersolve-whatsapp` or `Intersolve-no-whatsapp`)
    - New WhatsApp phone number (if switching to `Intersolve-whatsapp`)
 3. **121-dev-team**:
-   1. Find the `connection` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
-   2. Update FSP: Use the found connection `referenceId` to update the Financial Service Provider.
-      - Use: [`/registrations/update-chosen-fsp`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_update_chosen_fsp)
+   1. Find the `registration` of the PA that we want to update, using `Find Reference ID of PA in database based on name and/or phone number` scenario below.
+   2. Update FSP: Use the found registration `referenceId` to update the Financial Service Provider.
+      - Use: [`/registrations/update-chosen-fsp`](https://test-vm.121.global/121-service/docs/#/registrations/post_registrations_update_chosen_fsp)
       - Fill in the found `referenceId`
       - Choose the right new FSP name. It must be one out of the provided list.
       - Fill in the required attributes. If the new FSP requires more attributes than the example-provided `whatsappPhoneNumber`, you can manually change this.
@@ -47,8 +47,8 @@ In this file we document "how to do X", manually. As not everything is possible 
 ## Find Reference ID of PA in database based on name and/or phone number
 
 1. [Log-in with Swagger-UI](./README.md#api-sign-uplog-in) with a user with the "`personal-data`"-role
-2. Find the `connection` of the PA that we want to update.  
-   Use the endpoint: [`/connection/get-connection/name-phone`](https://test-vm.121.global/121-service/docs/#/connection/post_connection_get_connection_name_phone)  
+2. Find the `registration` of the PA that we want to update.  
+   Use the endpoint: [`/registrations/search-name-phone`](https://test-vm.121.global/121-service/docs/#/registrations/post_registrations_search_name_phone)  
    Where you can optionally fill in `name` and/or old `phoneNumber` to search for.
 
    This will return all registrations that match _at least one_ of the parameters.
@@ -58,7 +58,7 @@ In this file we document "how to do X", manually. As not everything is possible 
      - Maybe there are PA with the same name, but different phone-numbers?
      - Maybe one is an unfinished registration?
      - Check back with the **Pilot-team** if still unclear.
-   - If 1 connection is returned, continue
+   - If 1 registration is returned, continue
 
 ---
 

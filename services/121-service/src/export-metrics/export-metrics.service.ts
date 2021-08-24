@@ -444,14 +444,14 @@ export class ExportMetricsService {
   ): Promise<any> {
     const latestSuccessTransactionPerPa = await this.transactionRepository
       .createQueryBuilder('transaction')
-      .select('transaction.connectionId', 'connectionId')
+      .select('transaction.registrationId', 'registrationId')
       .addSelect('MAX(transaction.created)', 'maxCreated')
       .where('transaction.program.id = :programId', { programId: programId })
       .andWhere('transaction.installment = :installmentId', {
         installmentId: installmentId,
       })
       .andWhere('transaction.status = :status', { status: StatusEnum.success })
-      .groupBy('transaction.connectionId');
+      .groupBy('transaction.registrationId');
 
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
@@ -466,7 +466,7 @@ export class ExportMetricsService {
       .innerJoin(
         '(' + latestSuccessTransactionPerPa.getQuery() + ')',
         'subquery',
-        'transaction.connectionId = subquery."connectionId" AND transaction.created = subquery."maxCreated"',
+        'transaction.registrationId = subquery."registrationId" AND transaction.created = subquery."maxCreated"',
       )
       .setParameters(latestSuccessTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
@@ -618,7 +618,7 @@ export class ExportMetricsService {
       filterStatus,
     );
 
-    let filteredConnections = registrations.filter(
+    let filteredRegistrations = registrations.filter(
       registration => !!registration[dateColumn],
     );
 
@@ -632,7 +632,7 @@ export class ExportMetricsService {
       );
     }
     if (month >= 0 && year) {
-      filteredConnections = filteredConnections.filter(registration => {
+      filteredRegistrations = filteredRegistrations.filter(registration => {
         const yearMonth = new Date(
           registration[dateColumn].getFullYear(),
           registration[dateColumn].getUTCMonth(),
@@ -656,13 +656,13 @@ export class ExportMetricsService {
               .installmentDate;
       const endDate = installments.find(i => i.installment === installment)
         .installmentDate;
-      filteredConnections = filteredConnections.filter(
+      filteredRegistrations = filteredRegistrations.filter(
         registration =>
           registration[dateColumn] > beginDate &&
           registration[dateColumn] <= endDate,
       );
     }
-    return filteredConnections.length;
+    return filteredRegistrations.length;
   }
 
   public async getInstallmentsWithStateSums(

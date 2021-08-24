@@ -399,7 +399,7 @@ export class RegistrationsController {
     description: 'Returned registrations which match at least one of criteria',
   })
   @Post('/search-name-phone')
-  public async getConnectionByPhoneAndOrName(
+  public async searchRegistration(
     @Body() searchRegistrationDto: SearchRegistrationDto,
   ): Promise<RegistrationEntity[]> {
     return await this.registrationsService.searchRegistration(

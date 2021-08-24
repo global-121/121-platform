@@ -35,6 +35,7 @@ import { IntersolveMockService } from './api/instersolve.mock';
 import { ActionService } from '../../actions/action.service';
 import { ActionEntity } from '../../actions/action.entity';
 import { UserEntity } from '../../user/user.entity';
+import { RegistrationEntity } from '../../registration/registration.entity';
 
 describe('Fsp service', (): void => {
   let service: FspService;
@@ -97,7 +98,7 @@ describe('Fsp service', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
-            provide: getRepositoryToken(ConnectionEntity),
+            provide: getRepositoryToken(RegistrationEntity),
             useFactory: repositoryMockFactory,
           },
           {

@@ -206,11 +206,11 @@ export class WhatsappService {
       );
     }
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
-    const connectionsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
+    const regisrationsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
       fromNumber,
     );
     const registrationsWithOpenVouchers = await this.getRegistrationsWithOpenVouchers(
-      connectionsWithPhoneNumber,
+      regisrationsWithPhoneNumber,
     );
 
     // If no registrations with outstanding barcodes: send auto-reply

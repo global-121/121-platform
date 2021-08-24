@@ -4,10 +4,7 @@ import { ImageCodeService } from './../../notifications/imagecode/image-code.ser
 import { AfricasTalkingService } from './../fsp/africas-talking.service';
 import { SmsService } from './../../notifications/sms/sms.service';
 import { VoiceService } from './../../notifications/voice/voice.service';
-import { ValidationDataService } from './../../connection/validation-data/validation-data.service';
-import { ConnectionEntity } from './../../connection/connection.entity';
 import { repositoryMockFactory } from './../../mock/repositoryMock.factory';
-import { CustomCriterium } from './custom-criterium.entity';
 import { ProgramService } from './program.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProgramEntity } from './program.entity';
@@ -33,6 +30,8 @@ import { ImageCodeExportVouchersEntity } from '../../notifications/imagecode/ima
 import { IntersolveRequestEntity } from '../fsp/intersolve-request.entity';
 import { ActionService } from '../../actions/action.service';
 import { IntersolveMockService } from '../fsp/api/instersolve.mock';
+import { RegistrationEntity } from '../../registration/registration.entity';
+import { ProgramQuestionEntity } from './program-question.entity';
 
 describe('Program service', (): void => {
   let service: ProgramService;
@@ -44,7 +43,6 @@ describe('Program service', (): void => {
         imports: [HttpModule],
         providers: [
           ProgramService,
-          ValidationDataService,
           VoiceService,
           SmsService,
           FspService,
@@ -67,11 +65,11 @@ describe('Program service', (): void => {
             useFactory: repositoryMockFactory,
           },
           {
-            provide: getRepositoryToken(CustomCriterium),
+            provide: getRepositoryToken(ProgramQuestionEntity),
             useFactory: repositoryMockFactory,
           },
           {
-            provide: getRepositoryToken(ConnectionEntity),
+            provide: getRepositoryToken(RegistrationEntity),
             useFactory: repositoryMockFactory,
           },
           {

@@ -1,6 +1,6 @@
 export interface DownloadData {
   answers: object[];
-  qrConnectionMapping: object[];
+  qrRegistrationMapping: object[];
   programIds: number[];
   fspData: any;
 }

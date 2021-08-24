@@ -852,7 +852,7 @@ export class RegistrationsService {
     const data = {
       answers: await this.getAllProgramAnswers(user),
       fspData: await this.getAllFspAnswers(programIds),
-      qrConnectionMapping: await this.getQrRegistrationMapping(programIds),
+      qrRegistrationMapping: await this.getQrRegistrationMapping(programIds),
       programIds: user.programAssignments.map(assignment => {
         return assignment.program.id;
       }),
