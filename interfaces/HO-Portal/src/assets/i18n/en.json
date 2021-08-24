@@ -140,6 +140,9 @@
             "explanation": "All PA that reached a certain status - e.g. included - at any moment between the start of the program and now. <br><br> This is not the number of included PA at the moment, but the number of all PA that were included at some point."
           }
         },
+        "export-button": {
+          "label": "Export as CSV"
+        },
         "over-time": {
           "pa": {
             "pre-existing": "Pre-existing",
