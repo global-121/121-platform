@@ -1,5 +1,4 @@
-import { TransactionEntity } from './transactions.entity';
-import { ProgramMetrics } from './dto/program-metrics.dto';
+import { ProgramQuestionEntity } from './program-question.entity';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import {
   Get,
@@ -25,22 +24,17 @@ import {
   ApiImplicitQuery,
 } from '@nestjs/swagger';
 import { ProgramEntity } from './program.entity';
-import { DeleteResult } from 'typeorm';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { PayoutDto, TotalIncluded } from './dto/payout.dto';
 import { RolesGuard } from '../../roles.guard';
 import { Roles } from '../../roles.decorator';
 import { UserRole } from '../../user-role.enum';
-import { ExportDetails } from './dto/export-details';
-import { CustomCriterium } from './custom-criterium.entity';
-import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
+import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-import { MessageDto } from './dto/message.dto';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
 } from './dto/get-transaction.dto';
-import { PaStatusTimestampField } from '../../models/pa-status.model';
 import { ChangePhaseDto } from './dto/change-phase.dto';
 
 @ApiBearerAuth()
@@ -59,13 +53,6 @@ export class ProgramController {
   @Get(':programId')
   public async findOne(@Param() params): Promise<ProgramEntity> {
     return await this.programService.findOne(Number(params.programId));
-  }
-
-  @ApiOperation({ title: 'Get all programs' })
-  @ApiResponse({ status: 200, description: 'Return all programs.' })
-  @Get()
-  public async findAll(): Promise<ProgramsRO> {
-    return await this.programService.findAll();
   }
 
   @ApiOperation({ title: 'Get published programs' })
@@ -88,19 +75,6 @@ export class ProgramController {
     @Body() programData: CreateProgramDto,
   ): Promise<ProgramEntity> {
     return this.programService.create(userId, programData);
-  }
-
-  @Roles(UserRole.RunProgram)
-  @ApiOperation({ title: 'Delete program' })
-  @ApiResponse({
-    status: 201,
-    description: 'The program has been successfully deleted.',
-  })
-  @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'programId', required: true, type: 'integer' })
-  @Delete(':programId')
-  public async delete(@Param() params): Promise<DeleteResult> {
-    return this.programService.delete(Number(params.programId));
   }
 
   @Roles(UserRole.RunProgram)
@@ -223,13 +197,13 @@ export class ProgramController {
   }
 
   @Roles(UserRole.Admin)
-  @ApiOperation({ title: 'Update custom criterium' })
-  @Post('update/custom-criterium')
-  public async updateCustomCriterium(
-    @Body() updateCustomCriteriumDto: UpdateCustomCriteriumDto,
-  ): Promise<CustomCriterium> {
-    return await this.programService.updateCustomCriterium(
-      updateCustomCriteriumDto,
+  @ApiOperation({ title: 'Update program questions' })
+  @Post('update/program-question')
+  public async updateProgramQuestion(
+    @Body() updateProgramQuestionDto: UpdateProgramQuestionDto,
+  ): Promise<ProgramQuestionEntity> {
+    return await this.programService.updateProgramQuestion(
+      updateProgramQuestionDto,
     );
   }
 

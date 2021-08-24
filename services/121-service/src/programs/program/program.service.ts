@@ -1,10 +1,10 @@
+import { ProgramQuestionEntity } from './program-question.entity';
 import {
   GetTransactionDto,
   GetTransactionOutputDto,
 } from './dto/get-transaction.dto';
 import { ActionService } from './../../actions/action.service';
 import { TransactionEntity } from './transactions.entity';
-import { CustomCriterium } from './custom-criterium.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, DeleteResult, In } from 'typeorm';
@@ -23,7 +23,7 @@ import {
   AdditionalActionType,
 } from '../../actions/action.entity';
 import { FspService } from '../fsp/fsp.service';
-import { UpdateCustomCriteriumDto } from './dto/update-custom-criterium.dto';
+import { UpdateProgramQuestionDto } from './dto/update-program-question.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
 import { PaPaymentDataDto } from '../fsp/dto/pa-payment-data.dto';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
@@ -39,8 +39,8 @@ import { Attributes } from '../../registration/dto/update-attribute.dto';
 export class ProgramService {
   @InjectRepository(ProgramEntity)
   private readonly programRepository: Repository<ProgramEntity>;
-  @InjectRepository(CustomCriterium)
-  public customCriteriumRepository: Repository<CustomCriterium>;
+  @InjectRepository(ProgramQuestionEntity)
+  public programQuestionRepository: Repository<ProgramQuestionEntity>;
   @InjectRepository(FspAttributeEntity)
   public fspAttributeRepository: Repository<FspAttributeEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
@@ -84,7 +84,7 @@ export class ProgramService {
     const qb = await getRepository(ProgramEntity)
       .createQueryBuilder('program')
       .leftJoinAndSelect('program.programQuestions', 'programQuestion')
-      .addOrderBy('customCriterium.id', 'ASC');
+      .addOrderBy('programQuestion.id', 'ASC');
 
     qb.where('1 = 1');
     qb.orderBy('program.created', 'DESC');
@@ -130,12 +130,12 @@ export class ProgramService {
     program.programQuestions = [];
     program.financialServiceProviders = [];
 
-    // for (let customCriterium of programData.customCriteria) {
-    //   let customReturn = await this.customCriteriumRepository.save(
-    //     customCriterium,
-    //   );
-    //   program.programQuestions.push(customReturn);
-    // }
+    for (let programQuestion of programData.programQuestions) {
+      let programQuestionReturn = await this.programQuestionRepository.save(
+        programQuestion,
+      );
+      program.programQuestions.push(programQuestionReturn);
+    }
     for (let item of programData.financialServiceProviders) {
       let fsp = await this.financialServiceProviderRepository.findOne({
         relations: ['program'],
@@ -171,29 +171,25 @@ export class ProgramService {
     return program;
   }
 
-  public async updateCustomCriterium(
-    updateCustomCriteriumDto: UpdateCustomCriteriumDto,
-  ): Promise<CustomCriterium> {
-    const criterium = await this.customCriteriumRepository.findOne({
-      where: { criterium: updateCustomCriteriumDto.criterium },
+  public async updateProgramQuestion(
+    updateProgramQuestionDto: UpdateProgramQuestionDto,
+  ): Promise<ProgramQuestionEntity> {
+    const programQuestion = await this.programQuestionRepository.findOne({
+      where: { name: updateProgramQuestionDto.name },
     });
-    if (!criterium) {
-      const errors = `No criterium found with name ${updateCustomCriteriumDto.criterium}`;
+    if (!programQuestion) {
+      const errors = `No programQuestion found with name ${updateProgramQuestionDto.name}`;
       throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
     }
 
-    for (let attribute in updateCustomCriteriumDto) {
-      if (attribute !== 'criterium') {
-        criterium[attribute] = updateCustomCriteriumDto[attribute];
+    for (let attribute in updateProgramQuestionDto) {
+      if (attribute !== 'name') {
+        programQuestion[attribute] = updateProgramQuestionDto[attribute];
       }
     }
 
-    await this.customCriteriumRepository.save(criterium);
-    return criterium;
-  }
-
-  public async delete(programId: number): Promise<DeleteResult> {
-    return await this.programRepository.delete(programId);
+    await this.programQuestionRepository.save(programQuestion);
+    return programQuestion;
   }
 
   public async changePhase(

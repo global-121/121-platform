@@ -30,7 +30,7 @@ export class InlusionScoreService {
         relations: ['programQuestions'],
       },
     );
-    const score = this.calculateScoreAllCriteria(
+    const score = this.calculateScoreAllProgramQuestions(
       program.programQuestions,
       scoreList,
     );
@@ -57,7 +57,7 @@ export class InlusionScoreService {
     return scoreList;
   }
 
-  private calculateScoreAllCriteria(
+  private calculateScoreAllProgramQuestions(
     programQuestions: ProgramQuestionEntity[],
     scoreList: object,
   ): number {
@@ -81,33 +81,33 @@ export class InlusionScoreService {
   }
 
   private getScoreForDropDown(
-    criterium: ProgramQuestionEntity,
+    programQuestion: ProgramQuestionEntity,
     answerPA: object,
   ): number {
     // If questions has no scoring system return 0;
-    if (Object.keys(criterium.scoring).length === 0) {
+    if (Object.keys(programQuestion.scoring).length === 0) {
       return 0;
     }
     let score = 0;
-    const options = JSON.parse(JSON.stringify(criterium.options));
+    const options = JSON.parse(JSON.stringify(programQuestion.options));
     for (let value of options) {
       if (value.option == answerPA) {
-        score = criterium.scoring[value.option];
+        score = programQuestion.scoring[value.option];
       }
     }
     return score;
   }
 
   private getScoreForNumeric(
-    criterium: ProgramQuestionEntity,
+    programQuestion: ProgramQuestionEntity,
     answerPA: number,
   ): number {
     let score = 0;
-    if (criterium.scoring['multiplier']) {
+    if (programQuestion.scoring['multiplier']) {
       if (isNaN(answerPA)) {
         answerPA = 0;
       }
-      score = criterium.scoring['multiplier'] * answerPA;
+      score = programQuestion.scoring['multiplier'] * answerPA;
     }
     return score;
   }

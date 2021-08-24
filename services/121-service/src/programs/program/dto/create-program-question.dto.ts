@@ -10,11 +10,11 @@ import {
 import { CreateOptionsDto } from './create-options.dto';
 import { Type } from 'class-transformer';
 
-export class CreateCustomCriteriumDto {
+export class CreateProgramQuestionDto {
   @ApiModelProperty()
   @IsNotEmpty()
   @IsString()
-  public readonly criterium: string;
+  public readonly name: string;
   @ApiModelProperty()
   @IsNotEmpty()
   public readonly label: JSON;
@@ -25,7 +25,7 @@ export class CreateCustomCriteriumDto {
   public readonly answerType: string;
   @ApiModelProperty()
   @IsNotEmpty()
-  public readonly criteriumType: string;
+  public readonly questionType: string;
   @ApiModelProperty()
   @ValidateIf(o => o.answerType === 'dropdown')
   @ValidateNested()
@@ -35,5 +35,10 @@ export class CreateCustomCriteriumDto {
   @ApiModelProperty()
   @IsNotEmpty()
   public readonly scoring: JSON;
+  @ApiModelProperty()
+  @IsNotEmpty()
   public readonly persistence: boolean;
+  @ApiModelProperty()
+  @IsNotEmpty()
+  public readonly pattern: string;
 }

@@ -1,3 +1,4 @@
+import { ProgramQuestionEntity } from './program-question.entity';
 import { RegistrationEntity } from './../../registration/registration.entity';
 import { FspModule } from './../fsp/fsp.module';
 import { VoiceModule } from './../../notifications/voice/voice.module';
@@ -8,7 +9,6 @@ import { ProgramEntity } from './program.entity';
 import { UserEntity } from '../../user/user.entity';
 import { ProgramService } from './program.service';
 import { UserModule } from '../../user/user.module';
-import { CustomCriterium } from './custom-criterium.entity';
 import { SmsModule } from '../../notifications/sms/sms.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';
 import { ActionEntity } from '../../actions/action.entity';
@@ -22,12 +22,12 @@ import { LookupModule } from '../../notifications/lookup/lookup.module';
     TypeOrmModule.forFeature([
       ProgramEntity,
       UserEntity,
-      CustomCriterium,
       FinancialServiceProviderEntity,
       ActionEntity,
       TransactionEntity,
       FspAttributeEntity,
       RegistrationEntity,
+      ProgramQuestionEntity,
     ]),
     ActionModule,
     UserModule,

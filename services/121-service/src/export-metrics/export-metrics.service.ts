@@ -16,7 +16,7 @@ import { RegistrationStatusChangeEntity } from '../registration/registration-sta
 import { ActionService } from '../actions/action.service';
 import { ExportType } from '../programs/program/dto/export-details';
 import { FileDto } from '../programs/program/dto/file.dto';
-import { ProgramQuestionForExport } from '../programs/program/dto/criterium-for-export.dto';
+import { ProgramQuestionForExport } from '../programs/program/dto/program-question-for-export.dto';
 import { IntersolvePayoutStatus } from '../programs/fsp/api/enum/intersolve-payout-status.enum';
 import { without, compact, sortBy } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
@@ -102,13 +102,13 @@ export class ExportMetricsService {
   }
 
   private async filterAttributesToExport(pastPaymentDetails): Promise<any[]> {
-    const criteria = (await this.getAllQuestionsForExport()).map(
+    const programQuestions = (await this.getAllQuestionsForExport()).map(
       c => c.programQuestion,
     );
     const outputPaymentDetails = [];
     pastPaymentDetails.forEach(transaction => {
       Object.keys(transaction.customData).forEach(key => {
-        if (criteria.includes(key)) {
+        if (programQuestions.includes(key)) {
           transaction[key] = transaction.customData[key];
         }
       });
@@ -346,14 +346,14 @@ export class ExportMetricsService {
         RegistrationStatusEnum.selectedForValidation,
     );
 
-    const criteria = await this.getAllQuestionsForExport();
+    const programQuestions = await this.getAllQuestionsForExport();
 
     const columnDetails = [];
     for await (let registration of selectedRegistrations) {
       let row = {};
       row = this.addProgramQuestionsToExport(
         row,
-        criteria,
+        programQuestions,
         registration,
         ExportType.selectedForValidation,
       );

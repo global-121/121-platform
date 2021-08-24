@@ -11,7 +11,7 @@ import {
   ValidateNested,
   IsDefined,
 } from 'class-validator';
-import { CreateCustomCriteriumDto } from './create-custom-criterium.dto';
+import { CreateProgramQuestionDto } from './create-program-question.dto';
 import { Type } from 'class-transformer';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 
@@ -118,25 +118,25 @@ export class CreateProgramDto {
   @ApiModelProperty({
     example: [
       {
-        criterium: 'id_number',
+        name: 'id_number',
         label: {
           en: 'What is your id number?',
           ny: 'Zaka zanu ndi id?',
         },
         answerType: 'numeric',
-        criteriumType: 'standard',
+        questionType: 'standard',
         options: null,
         persistence: true,
         scoring: {},
       },
       {
-        criterium: 'nr_of_children',
+        name: 'nr_of_children',
         label: {
           en: 'How many children do you have?',
           ny: 'Zaka zanu ndi zingati?',
         },
         answerType: 'numeric',
-        criteriumType: 'standard',
+        questionType: 'standard',
         options: null,
         scoring: {
           '0-18': 999,
@@ -145,13 +145,13 @@ export class CreateProgramDto {
         },
       },
       {
-        criterium: 'roof_type',
+        name: 'roof_type',
         label: {
           en: 'What type is your roof?',
           ny: 'Denga lanu ndi lotani?',
         },
         answerType: 'dropdown',
-        criteriumType: 'standard',
+        questionType: 'standard',
         options: {
           options: [
             {
@@ -182,8 +182,8 @@ export class CreateProgramDto {
   @IsArray()
   @ValidateNested()
   @IsDefined()
-  @Type(() => CreateCustomCriteriumDto)
-  public readonly programQuestions: CreateCustomCriteriumDto[];
+  @Type(() => CreateProgramQuestionDto)
+  public readonly programQuestions: CreateProgramQuestionDto[];
 
   @ApiModelProperty({ example: { en: 'description' } })
   public readonly description: JSON;

@@ -30,7 +30,7 @@ const newProgramParameters = {
   minimumScore: 0,
   highestScoresX: 500,
   meetingDocuments: JSON.parse('{"en": "documents"}'),
-  customCriteria: [],
+  programQuestions: [],
   notifications: JSON.parse('{}'),
   phoneNumberPlaceholder: '+000 000 00 00',
   validation: true,

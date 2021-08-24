@@ -46,7 +46,7 @@ export class SeedHelper {
     const programExampleDump = JSON.stringify(programExample);
     const program = JSON.parse(programExampleDump);
 
-    // Remove original custom criteria and add it to a sepperate variable
+    // Remove original program questions and add it to a sepperate variable
     const programQuestions = program.programQuestions;
     program.programQuestions = [];
 
@@ -55,7 +55,7 @@ export class SeedHelper {
       program.programQuestions.push(questionReturn);
     }
 
-    // Remove original fsp criteria and add it to a sepperate variable
+    // Remove original fsp questions and add it to a sepperate variable
     const fsps = program.financialServiceProviders;
     program.financialServiceProviders = [];
 
