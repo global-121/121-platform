@@ -6,7 +6,7 @@ import { ExportMetricsService } from './export-metrics.service';
 import { ExportMetricsController } from './export-metrics.controller';
 import { RegistrationsModule } from './../registration/registrations.module';
 import { Module } from '@nestjs/common';
-import { ProgramModule } from '../programs/program.module';
+import { ProgramModule } from '../programs/programs.module';
 import { UserModule } from '../user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';

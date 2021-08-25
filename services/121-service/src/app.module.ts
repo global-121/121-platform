@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
 import { Connection } from 'typeorm';
 import { AppController } from './app.controller';
-import { ProgramModule } from './programs/program.module';
+import { ProgramModule } from './programs/programs.module';
 import { UserModule } from './user/user.module';
 import { HealthModule } from './health.module';
 import { SmsModule } from './notifications/sms/sms.module';

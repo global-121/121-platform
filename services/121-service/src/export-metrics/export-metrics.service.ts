@@ -19,7 +19,7 @@ import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status
 import { without, compact, sortBy } from 'lodash';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../programs/transactions.entity';
-import { ProgramService } from '../programs/program.service';
+import { ProgramService } from '../programs/programs.service';
 import { FspService } from '../fsp/fsp.service';
 import { PaMetrics } from './dto/pa-metrics.dto';
 import { Attributes } from '../registration/dto/update-attribute.dto';
@@ -682,7 +682,7 @@ export class ExportMetricsService {
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
       .getRawOne();
-    while (i < installmentNrSearch) {
+    while (i <= installmentNrSearch) {
       const result = await this.getOneInstallmentWithStateSum(
         programId,
         i,

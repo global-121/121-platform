@@ -1,3 +1,4 @@
+import { UserRole } from 'src/app/auth/user-role.enum';
 import { formatCurrency, formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
@@ -175,12 +176,22 @@ export class MetricsComponent implements OnChanges {
 
   private renderAidWorkerMetrics() {
     const group = MetricGroup.aidworkers;
+    let nrOfFieldValidationUsers = 0
+    for (const assignment of this.program.aidworkerAssignments) {
+      for (const role of assignment.roles) {
+        console.log('role: ', role);
+        if (role.role === UserRole.FieldValidation) {
+          nrOfFieldValidationUsers = nrOfFieldValidationUsers + 1
+        }
+      }
+    }
+
 
     this.metricsMap.set(`${group}.assigned`, {
       group,
       icon: 'body',
-      label: 'page.program.program-details.aidworkers',
-      value: getValueOrEmpty(this.program.aidworkerAssignments, (value) => value.length),
+      label: 'page.program.program-details.aidworkerAssignments',
+      value: getValueOrEmpty(nrOfFieldValidationUsers),
     });
   }
 }
