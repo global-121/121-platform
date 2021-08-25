@@ -449,11 +449,16 @@ export class IntersolveService {
   public async processStatus(
     statusCallbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    const transaction = (
-      await this.transactionRepository.find({ relations: ['connection'] })
-    ).filter(
-      t => t.customData['messageSid'] === statusCallbackData.MessageSid,
-    )[0];
+    const transaction = await getRepository(TransactionEntity)
+      .createQueryBuilder('transaction')
+      .select(['transaction.id', 'transaction.installment'])
+      .leftJoinAndSelect('transaction.connection', 'connection')
+      .where('transaction.customData ::jsonb @> :customData', {
+        customData: {
+          messageSid: statusCallbackData.MessageSid,
+        },
+      })
+      .getOne();
     if (!transaction) {
       // If no transaction found, it cannot (and should not have to) be updated
       return;

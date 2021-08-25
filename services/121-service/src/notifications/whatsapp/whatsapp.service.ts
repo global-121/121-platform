@@ -156,14 +156,15 @@ export class WhatsappService {
   private async getConnectionsWithPhoneNumber(
     phoneNumber,
   ): Promise<ConnectionEntity[]> {
-    const connectionsWithPhoneNumber = (
-      await this.connectionRepository.find({
-        select: ['id', 'customData'],
+    const connectionsWithPhoneNumber = await getRepository(ConnectionEntity)
+      .createQueryBuilder('connection')
+      .select('connection.id')
+      .where('connection.customData ::jsonb @> :customData', {
+        customData: {
+          whatsappPhoneNumber: phoneNumber,
+        },
       })
-    ).filter(
-      c =>
-        c.customData[CustomDataAttributes.whatsappPhoneNumber] === phoneNumber,
-    );
+      .getMany();
 
     if (!connectionsWithPhoneNumber.length) {
       console.log(
