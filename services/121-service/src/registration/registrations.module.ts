@@ -17,7 +17,7 @@ import { SmsModule } from '../notifications/sms/sms.module';
 import { InlusionScoreService } from './services/inclusion-score.service';
 import { BulkImportService } from './services/bulk-import.service';
 import { ActionModule } from '../actions/action.module';
-import { ProgramModule } from '../programs/program.module';
+import { ProgramModule } from '../programs/programs.module';
 import { FspModule } from '../fsp/fsp.module';
 import { TransactionEntity } from '../programs/transactions.entity';
 import { RegistrationAnswersService } from './services/registration-answers.service';

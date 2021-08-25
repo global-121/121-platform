@@ -1,13 +1,13 @@
 import { ProgramQuestionEntity } from './program-question.entity';
-import { RegistrationEntity } from './../registration/registration.entity';
+import { RegistrationEntity } from '../registration/registration.entity';
 import { FspModule } from '../fsp/fsp.module';
-import { VoiceModule } from './../notifications/voice/voice.module';
+import { VoiceModule } from '../notifications/voice/voice.module';
 import { Module, forwardRef, HttpModule } from '@nestjs/common';
-import { ProgramController } from './program.controller';
+import { ProgramController } from './programs.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProgramEntity } from './program.entity';
 import { UserEntity } from '../user/user.entity';
-import { ProgramService } from './program.service';
+import { ProgramService } from './programs.service';
 import { UserModule } from '../user/user.module';
 import { SmsModule } from '../notifications/sms/sms.module';
 import { FinancialServiceProviderEntity } from '../fsp/financial-service-provider.entity';

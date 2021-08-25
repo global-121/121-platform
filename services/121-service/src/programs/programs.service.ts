@@ -3,7 +3,7 @@ import {
   GetTransactionDto,
   GetTransactionOutputDto,
 } from './dto/get-transaction.dto';
-import { ActionService } from './../actions/action.service';
+import { ActionService } from '../actions/action.service';
 import { TransactionEntity } from './transactions.entity';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
