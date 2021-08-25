@@ -597,7 +597,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private sortPeopleByInclusionScore(a: Person, b: Person) {
     if (a.inclusionScore === b.inclusionScore) {
-      return a.created > b.created ? -1 : 1;
+      return a.startedRegistationDate > b.startedRegistationDate ? -1 : 1;
     } else {
       return a.inclusionScore > b.inclusionScore ? -1 : 1;
     }
@@ -621,8 +621,8 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       markedNoLongerEligible: person.noLongerEligibleDate
         ? formatDate(person.noLongerEligibleDate, this.dateFormat, this.locale)
         : null,
-      digitalIdCreated: person.created
-        ? formatDate(person.created, this.dateFormat, this.locale)
+      digitalIdCreated: person.startedRegistationDate
+        ? formatDate(person.startedRegistationDate, this.dateFormat, this.locale)
         : null,
       vulnerabilityAssessmentCompleted: person.registeredDate
         ? formatDate(person.registeredDate, this.dateFormat, this.locale)

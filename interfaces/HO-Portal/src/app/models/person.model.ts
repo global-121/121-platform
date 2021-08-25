@@ -5,7 +5,7 @@ export class Person {
   phoneNumber?: string;
   inclusionScore?: number;
   name?: string;
-  created?: string;
+  startedRegistationDate?: string;
   importedDate?: string;
   invitedDate?: string;
   noLongerEligibleDate?: string;
