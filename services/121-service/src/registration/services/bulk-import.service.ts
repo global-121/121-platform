@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../../programs/program.entity';
-import { UserEntity } from '../../user/user.entity';
 import { RegistrationEntity } from '../registration.entity';
 import { RegistrationStatusEnum } from '../enum/registration-status.enum';
 import { ProgramAnswerEntity } from '../program-answer.entity';
@@ -16,7 +15,6 @@ import { ProgramQuestionEntity } from '../../programs/program-question.entity';
 import { FspAttributeEntity } from '../../fsp/fsp-attribute.entity';
 import { FinancialServiceProviderEntity } from '../../fsp/financial-service-provider.entity';
 import { LanguageEnum } from '../enum/language.enum';
-import { RegistrationStatusChangeEntity } from '../registration-status-change.entity';
 import {
   BulkImportDto,
   DynamicImportAttribute,
@@ -35,9 +33,6 @@ import { InlusionScoreService } from './inclusion-score.service';
 export class BulkImportService {
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
-  @InjectRepository(RegistrationStatusChangeEntity)
-  @InjectRepository(ProgramEntity)
-  private readonly programRepository: Repository<ProgramEntity>;
   @InjectRepository(ProgramAnswerEntity)
   private readonly programAnswerRepository: Repository<ProgramAnswerEntity>;
   @InjectRepository(ProgramQuestionEntity)

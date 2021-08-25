@@ -8,6 +8,7 @@ import { ProgramEntity } from '../programs/program.entity';
 import { WhatsappService } from '../notifications/whatsapp/whatsapp.service';
 import { IntersolveRequestEntity } from '../fsp/intersolve-request.entity';
 import { IntersolveApiService } from '../fsp/api/instersolve.api.service';
+import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
 
 @Injectable()
 export class CronjobService {
@@ -97,6 +98,7 @@ export class CronjobService {
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,
         fromNumber,
+        IntersolvePayoutStatus.InitialMessage,
         null,
       );
     });

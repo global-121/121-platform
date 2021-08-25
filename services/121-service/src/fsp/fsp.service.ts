@@ -208,7 +208,6 @@ export class FspService {
     fsp: fspName,
     statusCallbackData: object,
   ): Promise<void> {
-    console.log('processPaymentStatus: ');
     if (fsp === fspName.africasTalking) {
       const africasTalkingNotificationData = statusCallbackData as AfricasTalkingNotificationDto;
       const enrichedNotification = await this.africasTalkingService.processNotification(

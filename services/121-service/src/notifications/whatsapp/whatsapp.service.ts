@@ -22,7 +22,9 @@ import { CustomDataAttributes } from '../../registration/enum/custom-data-attrib
 import {
   TwilioStatusCallbackDto,
   TwilioIncomingCallbackDto,
+  TwilioStatus,
 } from '../twilio.dto';
+import { IntersolvePayoutStatus } from '../../fsp/api/enum/intersolve-payout-status.enum';
 
 @Injectable()
 export class WhatsappService {
@@ -67,12 +69,13 @@ export class WhatsappService {
     }
     const whatsappText =
       message || (await this.getWhatsappText(language, key, programId));
-    await this.sendWhatsapp(whatsappText, recipientPhoneNr, null);
+    await this.sendWhatsapp(whatsappText, recipientPhoneNr, null, null);
   }
 
   public async sendWhatsapp(
     message: string,
     recipientPhoneNr: string,
+    messageType: null | IntersolvePayoutStatus,
     mediaUrl: null | string,
   ): Promise<any> {
     const payload = {
@@ -84,6 +87,9 @@ export class WhatsappService {
     };
     if (mediaUrl) {
       payload['mediaUrl'] = mediaUrl;
+    }
+    if (!!process.env.MOCK_TWILIO) {
+      payload['messageType'] = messageType;
     }
     return twilioClient.messages
       .create(payload)
@@ -143,7 +149,12 @@ export class WhatsappService {
       { status: callbackData.MessageStatus },
     );
 
-    const statuses = ['delivered', 'read', 'failed', 'undelivered'];
+    const statuses = [
+      TwilioStatus.delivered,
+      TwilioStatus.read,
+      TwilioStatus.failed,
+      TwilioStatus.undelivered,
+    ];
     if (statuses.includes(callbackData.MessageStatus)) {
       await this.fspService.processPaymentStatus(
         fspName.intersolve,
@@ -155,22 +166,23 @@ export class WhatsappService {
   private async getRegistrationsWithPhoneNumber(
     phoneNumber,
   ): Promise<RegistrationEntity[]> {
-    const regisrationsWithPhoneNumber = (
-      await this.registrationRepository.find({
-        select: ['id', 'customData'],
+    const registrationsWithPhoneNumber = await getRepository(RegistrationEntity)
+      .createQueryBuilder('registration')
+      .select('registration.id')
+      .where('registration.customData ::jsonb @> :customData', {
+        customData: {
+          whatsappPhoneNumber: phoneNumber,
+        },
       })
-    ).filter(
-      r =>
-        r.customData[CustomDataAttributes.whatsappPhoneNumber] === phoneNumber,
-    );
+      .getMany();
 
-    if (!regisrationsWithPhoneNumber.length) {
+    if (!registrationsWithPhoneNumber.length) {
       console.log(
         'Incoming WhatsApp-message from non-registered phone-number: ',
         phoneNumber.substr(-5).padStart(phoneNumber.length, '*'),
       );
     }
-    return regisrationsWithPhoneNumber;
+    return registrationsWithPhoneNumber;
   }
 
   private async getRegistrationsWithOpenVouchers(
@@ -220,7 +232,7 @@ export class WhatsappService {
     if (registrationsWithOpenVouchers.length === 0) {
       const whatsappDefaultReply =
         program.notifications[language]['whatsappReply'];
-      await this.sendWhatsapp(whatsappDefaultReply, fromNumber, null);
+      await this.sendWhatsapp(whatsappDefaultReply, fromNumber, null, null);
       return;
     }
 
@@ -245,7 +257,12 @@ export class WhatsappService {
             program.notifications[language]['whatsappVoucher']
           : program.notifications[language]['whatsappVoucher'];
         message = message.split('{{1}}').join(intersolveBarcode.amount);
-        await this.sendWhatsapp(message, fromNumber, mediaUrl);
+        await this.sendWhatsapp(
+          message,
+          fromNumber,
+          IntersolvePayoutStatus.VoucherSent,
+          mediaUrl,
+        );
         firstVoucherSent = true;
 
         // Save results
@@ -264,15 +281,12 @@ export class WhatsappService {
         await new Promise(resolve => setTimeout(resolve, 2000));
       }
     }
-    console.log(
-      'registrationsWithOpenVouchers: ',
-      registrationsWithOpenVouchers,
-    );
     // Send instruction message only once (outside of loops)
     if (registrationsWithOpenVouchers.length > 0) {
       await this.sendWhatsapp(
         '',
         fromNumber,
+        null,
         EXTERNAL_API.voucherInstructionsUrl,
       );
     }
