@@ -17,9 +17,7 @@ class PhoneNumbers {
       process.env.TWILIO_SID,
       process.env.TWILIO_AUTHTOKEN,
     );
-    return twillioLookup.lookups
-      .phoneNumbers(this.phoneNumber)
-      .fetch({ type: ['carrier'] });
+    return twillioLookup.lookups.phoneNumbers(this.phoneNumber).fetch();
   }
 }
 

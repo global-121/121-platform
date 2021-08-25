@@ -89,7 +89,7 @@ export class RegistrationSummaryComponent extends PersonalComponent {
     const usePreprintedQrCodeData = await this.paData.retrieve(
       this.paData.type.usePreprintedQrCode,
     )
-    this.showQrCode = JSON.parse(usePreprintedQrCodeData);
+    this.showQrCode = !JSON.parse(usePreprintedQrCodeData);
   }
 
   private async getReferenceId() {
