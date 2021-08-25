@@ -682,7 +682,7 @@ export class ExportMetricsService {
       .createQueryBuilder('transaction')
       .select('MIN(transaction.transactionStep)')
       .getRawOne();
-    while (i < installmentNrSearch) {
+    while (i <= installmentNrSearch) {
       const result = await this.getOneInstallmentWithStateSum(
         programId,
         i,
