@@ -36,8 +36,10 @@ To set up a local development-environment:
 
 - Install Git: <https://git-scm.com/download/>
 - Install Node.js: <https://nodejs.org/en/download/>
+
   - Install the version specified in the [`.node-version`](.node-version)-file.
   - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
+
     - [NVM - Node Version Manager](http://nvm.sh/) (for macOS/Linux).  
       After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
 
@@ -48,7 +50,7 @@ To set up a local development-environment:
 - Install Docker
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
   - On Windows, install Docker Desktop: <https://docs.docker.com/docker-for-windows/install/>
-  - On Linux:  
+  - On Linux:
     - Install Docker Engine: <https://docs.docker.com/engine/install/>
     - Install Docker Compose: <https://docs.docker.com/compose/install/#install-compose-on-linux-systems>
 
@@ -117,6 +119,25 @@ All individual Angular applications, when started will be available via:
 | HO-Portal | <http://localhost:8888> | `npm run open:ho` |
 
 ---
+
+## Local development
+
+### Recommended code-editor/IDE tools/extensions
+
+To help with some types if files/tasks we've listed them here:
+
+- [Workspace recommendations for VS Code](.vscode/extensions.json)
+  When you open the root-folder of this repository in VSCode and go to: "_Extensions_" and use the filter: "_Recommended_";  
+  A list should be shown and each extension can be installed individually.
+
+  Generic highlights:
+
+  - [Cucumber (Gherkin) Full Support](https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete) - To work with `.feature`-files for test-scenarios
+  - [Azure Pipelines](https://marketplace.visualstudio.com/items?itemName=ms-azure-devops.azure-pipelines) - To work with the CI/CD Azure Pipelines configurations
+
+  Interfaces / front-end highlights:
+
+  - [i18n Ally](https://marketplace.visualstudio.com/items?itemName=Lokalise.i18n-ally) - To work with translations in the HTML-templates and component TS-files
 
 ## Common problems with Local Environment set-up
 
