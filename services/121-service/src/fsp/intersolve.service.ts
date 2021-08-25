@@ -30,7 +30,10 @@ import {
 import { UnusedVoucherDto } from './dto/unused-voucher.dto';
 import { TransactionEntity } from '../programs/transactions.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
-import { TwilioStatusCallbackDto } from '../notifications/twilio.dto';
+import {
+  TwilioStatus,
+  TwilioStatusCallbackDto,
+} from '../notifications/twilio.dto';
 import { fspName } from './financial-service-provider.entity';
 import { RegistrationEntity } from '../registration/registration.entity';
 
@@ -355,7 +358,12 @@ export class IntersolveService {
       where: { referenceId: paymentInfo.paPaymentDataList[0].referenceId },
     });
     await this.whatsappService
-      .sendWhatsapp(whatsappPayment, paymentInfo.paymentAddress, null)
+      .sendWhatsapp(
+        whatsappPayment,
+        paymentInfo.paymentAddress,
+        IntersolvePayoutStatus.InitialMessage,
+        null,
+      )
       .then(
         async response => {
           const messageSid = response;
@@ -449,18 +457,23 @@ export class IntersolveService {
   public async processStatus(
     statusCallbackData: TwilioStatusCallbackDto,
   ): Promise<void> {
-    const transaction = (
-      await this.transactionRepository.find({ relations: ['registration'] })
-    ).filter(
-      t => t.customData['messageSid'] === statusCallbackData.MessageSid,
-    )[0];
+    const transaction = await getRepository(TransactionEntity)
+      .createQueryBuilder('transaction')
+      .select(['transaction.id', 'transaction.installment'])
+      .leftJoinAndSelect('transaction.registration', 'registration')
+      .where('transaction.customData ::jsonb @> :customData', {
+        customData: {
+          messageSid: statusCallbackData.MessageSid,
+        },
+      })
+      .getOne();
     if (!transaction) {
       // If no transaction found, it cannot (and should not have to) be updated
       return;
     }
 
-    const succesStatuses = ['delivered', 'read'];
-    const failStatuses = ['undelivered', 'failed'];
+    const succesStatuses = [TwilioStatus.delivered, TwilioStatus.read];
+    const failStatuses = [TwilioStatus.undelivered, TwilioStatus.failed];
     let status: string;
     if (succesStatuses.includes(statusCallbackData.MessageStatus)) {
       status = StatusEnum.success;
