@@ -322,7 +322,6 @@ export class ProgramService {
       amount,
       userId,
     );
-    console.log('paymentTransactionResult: ', paymentTransactionResult);
 
     return paymentTransactionResult;
   }

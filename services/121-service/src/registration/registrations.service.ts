@@ -865,8 +865,11 @@ export class RegistrationsService {
       .andWhere('registration.program.id IN (:...programIds)', {
         programIds: programIds,
       })
-      .andWhere('"registrationStatus" = :registerationStatus', {
-        registerationStatus: RegistrationStatusEnum.registered,
+      .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
+        registrationStatuses: [
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+        ],
       })
       .getMany();
     let answers = [];
@@ -888,8 +891,11 @@ export class RegistrationsService {
       .andWhere('registration.program.id IN (:...programIds)', {
         programIds: programIds,
       })
-      .andWhere('"registrationStatus" = :registerationStatus', {
-        registerationStatus: RegistrationStatusEnum.registered,
+      .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
+        registrationStatuses: [
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+        ],
       })
       .getMany();
 
@@ -935,12 +941,14 @@ export class RegistrationsService {
     return await this.registrationRepository
       .createQueryBuilder('registration')
       .select(['registration.qrIdentifier', 'registration.referenceId'])
-      // TO DO: .where('registration.validationDate IS NULL') // Filter to only download data for PA's not validated yet
       .where('registration."programId" IN (:...programIds)', {
         programIds: programIds,
       })
-      .andWhere('registration."registrationStatus" = :registerationStatus', {
-        registerationStatus: RegistrationStatusEnum.registered,
+      .andWhere('"registrationStatus" IN (:...registrationStatuses)', {
+        registrationStatuses: [
+          RegistrationStatusEnum.registered,
+          RegistrationStatusEnum.selectedForValidation,
+        ],
       })
       .getMany();
   }
