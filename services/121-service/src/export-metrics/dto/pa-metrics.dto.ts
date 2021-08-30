@@ -4,7 +4,7 @@ export interface PaMetrics {
   [RegistrationStatusEnum.imported]?: number;
   [RegistrationStatusEnum.invited]?: number;
   [RegistrationStatusEnum.noLongerEligible]?: number;
-  [RegistrationStatusEnum.startedRegistation]: number;
+  [RegistrationStatusEnum.startedRegistration]: number;
   [RegistrationStatusEnum.registered]: number;
   [RegistrationStatusEnum.registeredWhileNoLongerEligible]?: number;
   [RegistrationStatusEnum.selectedForValidation]?: number;

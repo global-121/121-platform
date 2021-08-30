@@ -288,11 +288,7 @@ export class ExportMetricsService {
       },
       relations: ['fsp'],
     });
-    console.log('includedRegistrations: ', includedRegistrations);
-
     const questions = await this.getAllQuestionsForExport();
-    console.log('questions: ', questions);
-
     const inclusionDetails = [];
     for await (let registration of includedRegistrations) {
       let row = {};
@@ -530,10 +526,10 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
-      [RegistrationStatusEnum.startedRegistation]: await this.getTimestampsPerStatusAndTimePeriod(
+      [RegistrationStatusEnum.startedRegistration]: await this.getTimestampsPerStatusAndTimePeriod(
         programId,
         registrations,
-        RegistrationStatusEnum.startedRegistation,
+        RegistrationStatusEnum.startedRegistration,
         installment,
         month,
         year,
@@ -752,7 +748,6 @@ export class ExportMetricsService {
   public async getMonitoringData(programId: number): Promise<any> {
     const registrations = await this.queryMonitoringData(programId);
     return registrations.map(registration => {
-      console.log('registration: ', registration);
       const startDate = new Date(
         registration['statusChangeStarted_created'],
       ).getTime();
@@ -792,7 +787,7 @@ export class ExportMetricsService {
         'registration.id = "statusChangeRegistered"."registrationId"',
       )
       .where('"statusChangeStarted"."registrationStatus" = :statusstarted', {
-        statusstarted: RegistrationStatusEnum.startedRegistation,
+        statusstarted: RegistrationStatusEnum.startedRegistration,
       })
       .andWhere(
         '"statusChangeRegistered"."registrationStatus" = :statusregister',

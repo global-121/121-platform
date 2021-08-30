@@ -89,7 +89,7 @@ export class RegistrationsService {
     await this.registrationRepository.save(registration);
     return this.setRegistrationStatus(
       postData.referenceId,
-      RegistrationStatusEnum.startedRegistation,
+      RegistrationStatusEnum.startedRegistration,
     );
   }
 
@@ -383,7 +383,7 @@ export class RegistrationsService {
     );
 
     if (
-      RegistrationStatusEnum.startedRegistation !==
+      RegistrationStatusEnum.startedRegistration !==
       registration.registrationStatus
     ) {
       const errors = `Registration status is not 'startedRegistration'`;
@@ -458,10 +458,10 @@ export class RegistrationsService {
         registration.paymentAmountMultiplier;
 
       registrationResponse[
-        RegistrationStatusTimestampField.startedRegistationDate
+        RegistrationStatusTimestampField.startedRegistrationDate
       ] = await this.getLatestDateForRegistrationStatus(
         registration,
-        RegistrationStatusEnum.startedRegistation,
+        RegistrationStatusEnum.startedRegistration,
       );
       registrationResponse[
         RegistrationStatusTimestampField.importedDate
@@ -585,8 +585,8 @@ export class RegistrationsService {
         return RegistrationStatusTimestampField.invitedDate;
       case RegistrationStatusEnum.noLongerEligible:
         return RegistrationStatusTimestampField.noLongerEligibleDate;
-      case RegistrationStatusEnum.startedRegistation:
-        return RegistrationStatusTimestampField.startedRegistationDate;
+      case RegistrationStatusEnum.startedRegistration:
+        return RegistrationStatusTimestampField.startedRegistrationDate;
       case RegistrationStatusEnum.registered:
         return RegistrationStatusTimestampField.registeredDate;
       case RegistrationStatusEnum.selectedForValidation:

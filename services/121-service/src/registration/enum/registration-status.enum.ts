@@ -1,7 +1,7 @@
 export enum RegistrationStatusEnum {
   imported = 'imported',
   invited = 'invited',
-  startedRegistation = 'startedRegistration',
+  startedRegistration = 'startedRegistration',
   registered = 'registered',
   selectedForValidation = 'selectedForValidation',
   validated = 'validated',
@@ -13,7 +13,7 @@ export enum RegistrationStatusEnum {
 }
 
 export enum RegistrationStatusTimestampField {
-  startedRegistationDate = 'startedRegistationDate',
+  startedRegistrationDate = 'startedRegistrationDate',
   importedDate = 'importedDate',
   invitedDate = 'invitedDate',
   noLongerEligibleDate = 'noLongerEligibleDate',
