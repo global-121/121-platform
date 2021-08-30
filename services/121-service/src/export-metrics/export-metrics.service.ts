@@ -1,3 +1,4 @@
+import { GetTransactionOutputDto } from '../programs/dto/get-transaction.dto';
 import { RegistrationResponse } from '../registration/dto/registration-response.model';
 import { RegistrationsService } from './../registration/registrations.service';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -228,8 +229,25 @@ export class ExportMetricsService {
           input,
         );
       }
+      let creationTransaction: GetTransactionOutputDto;
+      if (transaction[IntersolvePayoutStatus.InitialMessage]) {
+        creationTransaction =
+          transaction[IntersolvePayoutStatus.InitialMessage];
+      } else {
+        creationTransaction = await this.programService.getTransaction({
+          referenceId: registration.referenceId,
+          programId: programId,
+          installment: installment,
+          customDataKey: null,
+          customDataValue: null,
+        });
+      }
       row[`payment${installment}_status`] =
         transaction[IntersolvePayoutStatus.InitialMessage]?.status;
+      row[`payment${installment}_voucherCreated_date`] =
+        creationTransaction?.status === StatusEnum.success
+          ? creationTransaction?.installmentDate
+          : null;
       row[`payment${installment}_initialMessage_date`] =
         transaction[IntersolvePayoutStatus.InitialMessage]?.status ===
         StatusEnum.success
