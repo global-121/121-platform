@@ -242,8 +242,7 @@ export class ExportMetricsService {
           customDataValue: null,
         });
       }
-      row[`payment${installment}_status`] =
-        transaction[IntersolvePayoutStatus.InitialMessage]?.status;
+      row[`payment${installment}_status`] = creationTransaction?.status;
       row[`payment${installment}_voucherCreated_date`] =
         creationTransaction?.status === StatusEnum.success
           ? creationTransaction?.installmentDate
