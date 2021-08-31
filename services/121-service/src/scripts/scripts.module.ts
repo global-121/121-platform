@@ -10,6 +10,7 @@ import { SeedProgramValidation } from './seed-program-validation';
 import { SeedPilotNLProgram } from './seed-program-pilot-nl';
 import { SeedPilotNL2Program } from './seed-program-pilot-nl-2';
 import { SeedDemoProgram } from './seed-program-demo';
+import MigrateRefactor from './migrate-registrations-refactor';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { SeedDemoProgram } from './seed-program-demo';
     SeedPilotNLProgram,
     SeedPilotNL2Program,
     SeedDemoProgram,
+    MigrateRefactor,
   ],
   controllers: [ScriptsController],
 })

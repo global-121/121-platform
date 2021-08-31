@@ -32,7 +32,7 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
   public program: ProgramEntity[];
 
   @OneToMany(
-    type => TransactionEntity,
+    _type => TransactionEntity,
     transactions => transactions.financialServiceProvider,
   )
   public transactions: TransactionEntity[];

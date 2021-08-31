@@ -3,6 +3,7 @@ import { ScriptsModule, InterfaceScript } from './scripts/scripts.module';
 import { EventEmitter } from 'events';
 
 async function runScript(scriptName): Promise<any> {
+  console.log('scriptName: ', scriptName);
   const context = await NestFactory.createApplicationContext(ScriptsModule);
   const { default: Module } = await import(
     `${__dirname}/scripts/${scriptName}.ts`
@@ -62,7 +63,7 @@ function main(): void {
   try {
     const name = process.argv[2];
 
-    if (name === 'seed-prod') {
+    if (name === 'seed-prod' || process.env.NODE_ENV === 'development') {
       runScript(name);
     } else {
       confirmRun(name);
