@@ -143,6 +143,9 @@
         "export-button": {
           "label": "Export as CSV"
         },
+        "totals":{
+          "total-helped-to-date": "Total Number of Individuals Helped to Date"
+        },
         "over-time": {
           "pa": {
             "pre-existing": "Pre-existing",
