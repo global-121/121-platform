@@ -3,7 +3,6 @@ import { Entity, Column, ManyToMany, OneToMany } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { TransactionEntity } from '../programs/transactions.entity';
 import { FspAttributeEntity } from './fsp-attribute.entity';
-import { FspCallLogEntity } from './fsp-call-log.entity';
 
 @Entity('fsp')
 export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
@@ -18,12 +17,6 @@ export class FinancialServiceProviderEntity extends CascadeDeleteEntity {
     attributes => attributes.fsp,
   )
   public attributes: FspAttributeEntity[];
-
-  @OneToMany(
-    _type => FspCallLogEntity,
-    logs => logs.fsp,
-  )
-  public logs: FspCallLogEntity[];
 
   @ManyToMany(
     _type => ProgramEntity,

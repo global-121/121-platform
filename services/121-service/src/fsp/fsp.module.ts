@@ -11,7 +11,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProgramEntity } from '../programs/program.entity';
 import { FinancialServiceProviderEntity } from './financial-service-provider.entity';
 import { TransactionEntity } from '../programs/transactions.entity';
-import { FspCallLogEntity } from './fsp-call-log.entity';
 import { SoapService } from './api/soap.service';
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { IntersolveService } from './intersolve.service';
@@ -36,7 +35,6 @@ import { UserEntity } from '../user/user.entity';
       ProgramEntity,
       FinancialServiceProviderEntity,
       TransactionEntity,
-      FspCallLogEntity,
       AfricasTalkingNotificationEntity,
       IntersolveInstructionsEntity,
       IntersolveBarcodeEntity,

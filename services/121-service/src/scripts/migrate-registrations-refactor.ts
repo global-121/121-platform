@@ -24,7 +24,6 @@ import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { InterfaceScript } from './scripts.module';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
-import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
 
 // docker exec -it 121-service npx ts-node src/scripts migrate-registrations-refactor
 
@@ -279,20 +278,6 @@ export class MigrateRefactor implements InterfaceScript {
         "121-service"."imagecode" a;
       `);
     await repo.save(i);
-  }
-
-  private async migrateFspCallLog(): Promise<void> {
-    const repo = this.connection.getRepository(FspCallLogEntity);
-    const logs = await this.oldConnection.query(`SELECT
-        *
-      FROM
-        "121-service"."fsp_call_log" a;
-      `);
-    for (const log of logs) {
-      log.fsp = { id: log.fspId };
-      log.created = log.timestamp;
-      repo.save(log);
-    }
   }
 
   private async disableAutoIncrementId(repo: Repository<any>): Promise<void> {
