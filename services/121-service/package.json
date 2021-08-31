@@ -29,7 +29,7 @@
     "seed:program-pilot-nl": "ts-node src/scripts seed-program-pilot-nl",
     "seed:program-pilot-nl2": "ts-node src/scripts seed-program-pilot-nl-2",
     "pretest": "npm run lint",
-    "test": "jest --config=jest.json",
+    "test": "jest --config=jest.json --passWithNoTests",
     "test:watchall": "npm test -- --watchAll",
     "test:coverage": "npm test -- --coverage --coverageDirectory=coverage",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
