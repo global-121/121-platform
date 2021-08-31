@@ -88,10 +88,7 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
 
   public skipPreprinted() {
     this.hasPreprinted = false;
-    this.paData.store(
-      this.paData.type.usePreprintedQrCode,
-      this.hasPreprinted,
-    );
+    this.paData.store(this.paData.type.usePreprintedQrCode, this.hasPreprinted);
     this.complete();
   }
 

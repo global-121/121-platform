@@ -153,7 +153,6 @@ export class ValidateFspComponent implements ValidationComponent {
   public async saveCustomAttributes($event: AnswerSet) {
     this.conversationService.startLoading();
     this.customAttributeAnswers = $event;
-    console.log('this.customAttributeAnswers : ', this.customAttributeAnswers );
 
     const fspAnswers: FspAnswer[] = [];
 
@@ -210,7 +209,6 @@ export class ValidateFspComponent implements ValidationComponent {
       };
       validatedData.push(validatedFspData);
     }
-    console.log('validatedFspData: ', validatedData);
     await this.storage.set(IonicStorageTypes.validatedData, validatedData);
   }
 

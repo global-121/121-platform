@@ -622,7 +622,11 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         ? formatDate(person.noLongerEligibleDate, this.dateFormat, this.locale)
         : null,
       digitalIdCreated: person.startedRegistrationDate
-        ? formatDate(person.startedRegistrationDate, this.dateFormat, this.locale)
+        ? formatDate(
+            person.startedRegistrationDate,
+            this.dateFormat,
+            this.locale,
+          )
         : null,
       vulnerabilityAssessmentCompleted: person.registeredDate
         ? formatDate(person.registeredDate, this.dateFormat, this.locale)

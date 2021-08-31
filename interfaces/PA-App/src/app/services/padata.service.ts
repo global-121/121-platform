@@ -110,14 +110,11 @@ export class PaDataService {
     username = username.trim();
 
     console.log('CreateAccountPA');
-    return this.programService
-      .createAccountPA(username, password)
-      .then((response) => {
-        console.log('response: ', response);
-        console.log('Account created.');
-        this.setLoggedIn();
-        this.setUsername(username);
-      });
+    return this.programService.createAccountPA(username, password).then(() => {
+      console.log('Account created.');
+      this.setLoggedIn();
+      this.setUsername(username);
+    });
   }
 
   async login(username: string, password: string): Promise<any> {

@@ -76,8 +76,7 @@ export class RegistrationSummaryComponent extends PersonalComponent {
 
   async initHistory() {
     this.isDisabled = this.data.isDisabled;
-    this.registrationStatus = this.data.registrationStatus
-
+    this.registrationStatus = this.data.registrationStatus;
   }
 
   async checkValidation() {
@@ -88,7 +87,7 @@ export class RegistrationSummaryComponent extends PersonalComponent {
   private async shouldShowQrCode() {
     const usePreprintedQrCodeData = await this.paData.retrieve(
       this.paData.type.usePreprintedQrCode,
-    )
+    );
     this.showQrCode = !JSON.parse(usePreprintedQrCodeData);
   }
 
@@ -141,7 +140,7 @@ export class RegistrationSummaryComponent extends PersonalComponent {
       name: PersonalComponents.registrationSummary,
       data: {
         isDisabled: this.isDisabled,
-        registrationStatus: this.registrationStatus
+        registrationStatus: this.registrationStatus,
       },
       next: this.getNextSection(),
     });

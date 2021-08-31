@@ -99,16 +99,13 @@ export class ValidateProgramComponent implements ValidationComponent {
   }
 
   private buildQuestions(programQuestions: ProgramQuestion[]) {
-    console.log('programQuestions: ', programQuestions);
     return programQuestions.map((question): Question => {
       return {
         name: question.name,
         answerType: question.answerType,
         label: this.translatableString.get(question.label),
         placeholder: this.translatableString.get(question.placeholder),
-        options: !question.options
-          ? null
-          : this.buildOptions(question.options),
+        options: !question.options ? null : this.buildOptions(question.options),
       };
     });
   }

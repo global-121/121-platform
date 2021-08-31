@@ -72,7 +72,6 @@ export class ManageAidworkersComponent implements OnInit {
 
     if (this.aidworkers && this.aidworkers.length) {
       this.aidworkers.forEach((aidworker) => {
-        console.log('aidworker: ', aidworker);
         aidworker.email = aidworker.user.username;
         aidworker.created = formatDate(
           aidworker.user.created,

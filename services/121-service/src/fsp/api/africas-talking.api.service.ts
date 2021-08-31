@@ -27,7 +27,6 @@ export class AfricasTalkingApiService {
     await payments
       .mobileB2C(payload)
       .then((response: any) => {
-        console.log('response africastalking: ', response);
         result = { response: response };
       })
       .catch((error: any) => {
