@@ -8,6 +8,7 @@ import { UploadDataComponent } from './upload-data.component';
 const mockValidationData = [{ referenceId: '', programId: 1, attributes: [] }];
 const storageIonicMock: any = {
   get: () => new Promise<any>((resolve) => resolve(mockValidationData)),
+  set: () => new Promise<any>((resolve) => resolve('')),
 };
 
 describe('UploadDataComponent', () => {
