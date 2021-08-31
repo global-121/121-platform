@@ -5,7 +5,6 @@ import {
   fspName,
   FinancialServiceProviderEntity,
 } from './financial-service-provider.entity';
-import { FspCallLogEntity } from './fsp-call-log.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProgramEntity } from '../programs/program.entity';
@@ -30,8 +29,6 @@ import { RegistrationEntity } from '../registration/registration.entity';
 export class FspService {
   @InjectRepository(ProgramEntity)
   public programRepository: Repository<ProgramEntity>;
-  @InjectRepository(FspCallLogEntity)
-  public fspCallLogRepository: Repository<FspCallLogEntity>;
   @InjectRepository(TransactionEntity)
   public transactionRepository: Repository<TransactionEntity>;
   @InjectRepository(FinancialServiceProviderEntity)
