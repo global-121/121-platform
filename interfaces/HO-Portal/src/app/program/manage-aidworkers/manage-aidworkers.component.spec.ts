@@ -40,7 +40,7 @@ describe('ManageAidworkersComponent', () => {
 
   it('should list all aidworkers if available', async () => {
     const programWithAidworkers = apiProgramsMock.programs[mockProgramId];
-    programWithAidworkers.aidworkers = [
+    programWithAidworkers.aidworkerAssignments = [
       {
         email: 'aidworker@example.org',
         created: '2020-01-01T12:00:00',
@@ -58,7 +58,7 @@ describe('ManageAidworkersComponent', () => {
     await fixture.isStable();
 
     expect(component.aidworkers.length).toEqual(
-      programWithAidworkers.aidworkers.length,
+      programWithAidworkers.aidworkerAssignments.length,
     );
   });
 
