@@ -29,7 +29,7 @@ export class IntersolveBarcodeEntity extends Base121Entity {
   public balanceUsed: boolean;
 
   @OneToMany(
-    type => ImageCodeExportVouchersEntity,
+    _type => ImageCodeExportVouchersEntity,
     image => image.barcode,
   )
   public image: ImageCodeExportVouchersEntity[];

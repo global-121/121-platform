@@ -1,3 +1,9 @@
+import { ImageCodeEntity } from './../notifications/imagecode/image-code.entity';
+import { IntersolveRequestEntity } from './../fsp/intersolve-request.entity';
+import { IntersolveInstructionsEntity } from './../fsp/intersolve-instructions.entity';
+import { TwilioMessageEntity } from './../notifications/twilio.entity';
+import { ActionEntity } from './../actions/action.entity';
+import { ProgramQuestionEntity } from './../programs/program-question.entity';
 import { ProgramEntity } from './../programs/program.entity';
 import { InstanceEntity } from './../instance/instance.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
@@ -18,6 +24,7 @@ import { UserType } from '../user/user-type-enum';
 import { UserEntity } from '../user/user.entity';
 import { InterfaceScript } from './scripts.module';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
+import { FspCallLogEntity } from '../fsp/fsp-call-log.entity';
 
 // docker exec -it 121-service npx ts-node src/scripts migrate-registrations-refactor
 
@@ -52,6 +59,12 @@ export class MigrateRefactor implements InterfaceScript {
     await this.migrateFsp();
     await this.migrateInstance();
     await this.migrateProgram();
+    await this.migrateActions();
+    await this.migrateTwilioMessages();
+    await this.migrateIntersolveInstruction();
+    await this.migrateIntersolveRequests();
+    await this.migrateImageCode();
+    await this.migrateFspCallLog();
   }
 
   public async migrateUsers(): Promise<void> {
@@ -189,14 +202,97 @@ export class MigrateRefactor implements InterfaceScript {
         "121-service"."program" i;
       `)
     )[0];
-    console.log('oldProgram: ', oldProgram);
-    const repo = this.connection.getRepository(ProgramEntity);
-    const newProgram = await repo.save(oldProgram);
-    const pqs = await this.oldConnection.query(`SELECT
-    *
-  FROM
-    "121-service"."program" i;
-  `);
+    const pRepo = this.connection.getRepository(ProgramEntity);
+    const newProgram = await pRepo.save(oldProgram);
+    const pQRepo = this.connection.getRepository(ProgramQuestionEntity);
+    const crits = await this.oldConnection.query(`SELECT
+        *
+      FROM
+        "121-service"."custom_criterium" c;
+      `);
+    for (let c of crits) {
+      c.name = c.criterium;
+      c.questionType = c.criteriumType;
+      console.log('c: ', c);
+      c.program = newProgram;
+      pQRepo.save(c);
+    }
+  }
+
+  private async migrateActions(): Promise<void> {
+    const repo = this.connection.getRepository(ActionEntity);
+    const oldActions = await this.oldConnection.query(`SELECT
+        *
+      FROM
+        "121-service"."action" a;
+      `);
+    for (let a of oldActions) {
+      a.created = a.timestamp;
+      a.user = { id: a.userId };
+      a.program = { id: this.programId };
+      repo.save(a);
+    }
+  }
+
+  private async migrateTwilioMessages(): Promise<void> {
+    console.log('migrateTwilioMessages: ');
+    const repo = this.connection.getRepository(TwilioMessageEntity);
+    const ms = await this.oldConnection.query(`SELECT
+        *
+      FROM
+        "121-service"."twilio-message" a;
+      `);
+    for (let m of ms) {
+      m.created = m.dateCreated;
+      await repo.save(m);
+    }
+  }
+
+  private async migrateIntersolveInstruction(): Promise<void> {
+    console.log('migrateIntersolveInstruction: ');
+    const repo = this.connection.getRepository(IntersolveInstructionsEntity);
+    const i = await this.oldConnection.query(`SELECT
+        *
+      FROM
+        "121-service"."intersolve_instruction" a;
+      `);
+    await repo.save(i);
+  }
+
+  private async migrateIntersolveRequests(): Promise<void> {
+    console.log('migrateIntersolveRequests: ');
+    const repo = this.connection.getRepository(IntersolveRequestEntity);
+    const i = await this.oldConnection.query(`SELECT
+        *
+      FROM
+        "121-service"."intersolve_request" a;
+      `);
+    await repo.save(i);
+  }
+
+  private async migrateImageCode(): Promise<void> {
+    console.log('migrateImageCode: ');
+    const repo = this.connection.getRepository(ImageCodeEntity);
+    const i = await this.oldConnection.query(`SELECT
+        *
+      FROM
+        "121-service"."imagecode" a;
+      `);
+    await repo.save(i);
+  }
+
+  private async migrateFspCallLog(): Promise<void> {
+    const repo = this.connection.getRepository(FspCallLogEntity);
+    const logs = await this.oldConnection.query(`SELECT
+        *
+      FROM
+        "121-service"."fsp_call_log" a;
+      `);
+    for (const log of logs) {
+      log.fsp = { id: log.fspId };
+      log.created = log.timestamp;
+      repo.save(log);
+    }
   }
 
   private async disableAutoIncrementId(repo: Repository<any>): Promise<void> {
