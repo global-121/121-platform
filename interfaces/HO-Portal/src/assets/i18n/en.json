@@ -98,7 +98,7 @@
           "validated": "PAs that were validated.",
           "included": "PAs that were included. <br> They will receive payments starting with the next payment/payout round.",
           "inclusionEnded": "PAs for which inclusion was ended. <br> They will not receive any (more) payments for the next payment/payout round.",
-          "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> They will not receive any (more) payments for the next payment/payout round.'",
+          "noLongerEligible": "PAs that were marked as 'no longer eligible'. <br> These are PAs who were invited but did not yet register and are meanwhile no longer eligible.",
           "rejected": "PAs that were rejected. <br> They will not receive any (more) payments for the next payment/payout round."
         },
         "header": {
@@ -139,6 +139,9 @@
             "label": "To date:",
             "explanation": "All PA that reached a certain status - e.g. included - at any moment between the start of the program and now. <br><br> This is not the number of included PA at the moment, but the number of all PA that were included at some point."
           }
+        },
+        "export-button": {
+          "label": "Export as CSV"
         },
         "over-time": {
           "pa": {

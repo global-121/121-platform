@@ -35,3 +35,10 @@ Feature: View PA-status metrics
     Then metrics are requested from the API for that "year" + "month"
     And the most recent values for all metrics are shown
     And a new date for "Last updated" is shown
+
+  Scenario: Export metrics as a CSV file
+    Given the user views the "dashboard"-page
+    When the user clicks the "export as csv"-button
+    Then a CSV file is downloaded
+    And it contains the translated headers and the data shown in the page
+    

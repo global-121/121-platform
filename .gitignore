@@ -1,0 +1,5 @@
+
+# IDE / Editor configurations
+.vscode/*
+!.vscode/extensions.json
+
