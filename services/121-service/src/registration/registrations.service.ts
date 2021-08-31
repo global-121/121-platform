@@ -258,8 +258,8 @@ export class RegistrationsService {
 
   public async cleanCustomDataIfPhoneNr(
     customDataKey: string,
-    customDataValue: string,
-  ): Promise<string> {
+    customDataValue: string | number,
+  ): Promise<string | number> {
     const answersTypeTel = [];
     const fspAttributesTypeTel = await this.fspAttributeRepository.find({
       where: { answerType: AnswerTypes.tel },
@@ -274,7 +274,7 @@ export class RegistrationsService {
       answersTypeTel.push(question.name);
     }
     if (answersTypeTel.includes(customDataKey)) {
-      return await this.lookupService.lookupAndCorrect(customDataValue);
+      return await this.lookupService.lookupAndCorrect(String(customDataValue));
     } else {
       return customDataValue;
     }
@@ -623,7 +623,7 @@ export class RegistrationsService {
     if (typeof registration[attribute] !== 'undefined') {
       registration[attribute] = await this.cleanCustomDataIfPhoneNr(
         attribute,
-        String(value),
+        value,
       );
       attributeFound = true;
     }
@@ -633,7 +633,7 @@ export class RegistrationsService {
     ) {
       registration.customData[attribute] = await this.cleanCustomDataIfPhoneNr(
         attribute,
-        String(value),
+        value,
       );
       attributeFound = true;
     }

@@ -29,6 +29,9 @@
   .shaded {
     background-color: var(--ion-color-light-tint);
   }
+  .border-bottom {
+    border-bottom: 1px solid #666;
+  }
 }
 
 .timeframe-select {

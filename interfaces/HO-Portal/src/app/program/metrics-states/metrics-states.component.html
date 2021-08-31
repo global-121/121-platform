@@ -1,10 +1,23 @@
 
 <table class="metrics-states--table">
   <caption>
-    <app-refresh-data
-      [lastUpdated]="lastUpdated"
-      (refresh)="update()"
-    ></app-refresh-data>
+    <ion-row>
+      <ion-col>
+        <ion-button
+          (click)="exportCSV()"
+          size="small"
+          class="ion-float-left"
+        >
+          {{ 'page.program.metrics.export-button.label'|translate }}
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <app-refresh-data
+          [lastUpdated]="lastUpdated"
+          (refresh)="update()"
+        ></app-refresh-data>
+      </ion-col>
+    </ion-row>
   </caption>
   <colgroup>
     <col>
@@ -27,7 +40,7 @@
       </th>
     </tr>
   </thead>
-  <tbody>
+  <tbody class="border-bottom">
     <tr>
       <th
         scope="row"
@@ -71,9 +84,8 @@
         class="cell-number"
       >{{ cell.forPaymentFromStart }}</td>
     </tr>
-    <tr style="border-bottom:1px solid black">
-      <td colspan="100%"></td>
-    </tr>
+  </tbody>
+  <tbody class="border-bottom">
     <tr>
       <th
         scope="row"
@@ -117,9 +129,8 @@
         class="cell-number"
       >{{ cell.forMonthFromStart }}</td>
     </tr>
-    <tr style="border-bottom:1px solid black">
-      <td colspan="100%"></td>
-    </tr>
+  </tbody>
+  <tbody>
     <tr class="shaded">
       <th
         scope="row"
