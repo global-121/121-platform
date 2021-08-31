@@ -66,18 +66,20 @@ export class ManageAidworkersComponent implements OnInit {
     const program: Program = await this.programsService.getProgramById(
       this.programId,
     );
-    this.aidworkers = program.aidworkerAssignments.filter((assignment) =>
-      assignment.roles.map((r) => r.role).includes(UserRole.FieldValidation),
-    );
+    this.aidworkers = program.aidworkerAssignments
+      ? program.aidworkerAssignments.filter((assignment) =>
+          assignment.roles
+            .map((r) => r.role)
+            .includes(UserRole.FieldValidation),
+        )
+      : [];
 
     if (this.aidworkers && this.aidworkers.length) {
       this.aidworkers.forEach((aidworker) => {
-        aidworker.email = aidworker.user.username;
-        aidworker.created = formatDate(
-          aidworker.user.created,
-          this.dateFormat,
-          this.locale,
-        );
+        aidworker.email = aidworker.user ? aidworker.user.username : null;
+        aidworker.created = aidworker.user
+          ? formatDate(aidworker.user.created, this.dateFormat, this.locale)
+          : null;
       });
     }
 
