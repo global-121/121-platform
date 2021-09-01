@@ -43,6 +43,7 @@ export class MigrateRefactor implements InterfaceScript {
   private registrationStatusChangeRepository;
   private programQuestionRepository;
   private intersolveBarcodeRepository;
+  private paDataStorageRepository;
 
   public async run(): Promise<void> {
     // await this.connection.query(`
@@ -81,6 +82,9 @@ export class MigrateRefactor implements InterfaceScript {
     );
     this.intersolveBarcodeRepository = this.connection.getRepository(
       IntersolveBarcodeEntity,
+    );
+    this.paDataStorageRepository = this.connection.getRepository(
+      PersonAffectedAppDataEntity,
     );
 
     await this.migrateUsers();
@@ -136,8 +140,8 @@ export class MigrateRefactor implements InterfaceScript {
     `);
 
     await this.disableAutoIncrementId(this.userRepository);
-    for (const oldUser of oldUsers) {
-      let newUser = await this.userRepository.findOne(oldUser.id);
+    for await (const oldUser of oldUsers) {
+      let newUser = await this.userRepository.findOne(oldUser.userId);
       if (!newUser) {
         newUser = new UserEntity();
         newUser.id = oldUser.userId;
@@ -174,11 +178,13 @@ export class MigrateRefactor implements InterfaceScript {
   }
 
   private async migratePaUsers(): Promise<void> {
+    console.log('migratePaUsers');
     const oldUsers = await this.oldConnection.query(`SELECT
         *
       FROM
         "pa-accounts"."user"
     `);
+    await this.disableAutoIncrementId(this.paDataStorageRepository);
     for await (const oldUser of oldUsers) {
       const newUser = new UserEntity();
       newUser.username = oldUser.username;
@@ -199,9 +205,12 @@ export class MigrateRefactor implements InterfaceScript {
       });
       await this.migratePaDataStorage(user);
     }
+    await this.enableAutoIncrementId(this.paDataStorageRepository);
   }
 
   private async migratePaDataStorage(user: UserEntity): Promise<void> {
+    console.log('migratePaDataStorage for user: ' + user.id);
+
     const query = `SELECT 
     *
   FROM
@@ -210,15 +219,14 @@ export class MigrateRefactor implements InterfaceScript {
   WHERE username = '${user.username}'
 `;
     const oldStorage = await this.oldConnection.query(query);
-    const paDataStorageRepository = this.connection.getRepository(
-      PersonAffectedAppDataEntity,
-    );
+
     for await (const oldRecord of oldStorage) {
       const newRecord = new PersonAffectedAppDataEntity();
+      newRecord.id = oldRecord.id;
       newRecord.type = oldRecord.type;
       newRecord.data = oldRecord.data;
       newRecord.user = user;
-      await paDataStorageRepository.save(newRecord);
+      await this.paDataStorageRepository.save(newRecord);
     }
   }
 
@@ -232,7 +240,7 @@ export class MigrateRefactor implements InterfaceScript {
       .query(`SELECT *, fa.id as attrid , f.id as fspid FROM "121-service".fsp f
     LEFT JOIN "121-service".fsp_attribute fa
     ON	f.id = fa."fspId"`);
-    for (const oldFsp of oldFsps) {
+    for await (const oldFsp of oldFsps) {
       const newFsp = await this.fspRepository.save({
         id: oldFsp.fspid,
         fsp: oldFsp.fsp,
@@ -240,7 +248,7 @@ export class MigrateRefactor implements InterfaceScript {
         program: [{ id: this.programId }],
       });
       if (oldFsp.attrid) {
-        fspAttrRepository.save({
+        await fspAttrRepository.save({
           id: oldFsp.attrid,
           name: oldFsp.name,
           label: oldFsp.label,
@@ -252,9 +260,12 @@ export class MigrateRefactor implements InterfaceScript {
         });
       }
     }
+    await this.enableAutoIncrementId(this.fspRepository);
+    await this.enableAutoIncrementId(fspAttrRepository);
   }
 
   private async migrateRegistrations(): Promise<void> {
+    console.log('migrateRegistrations: ');
     await this.disableAutoIncrementId(this.registrationRepository);
 
     const oldConnections = await this.oldConnection.query(
@@ -387,6 +398,7 @@ export class MigrateRefactor implements InterfaceScript {
     const programAnswerRepository = this.connection.getRepository(
       ProgramAnswerEntity,
     );
+    await this.disableAutoIncrementId(programAnswerRepository);
     const oldValidationData = await this.oldConnection.query(`SELECT
         *
       FROM
@@ -394,6 +406,7 @@ export class MigrateRefactor implements InterfaceScript {
       `);
     for (const oldRecord of oldValidationData) {
       const newRecord = new ProgramAnswerEntity();
+      newRecord.id = oldRecord.id;
       newRecord.programAnswer = oldRecord.answer;
       newRecord.programQuestion = await this.programQuestionRepository.findOne({
         where: { name: oldRecord.attribute },
@@ -401,25 +414,30 @@ export class MigrateRefactor implements InterfaceScript {
       newRecord.registration = await this.registrationRepository.findOne({
         where: { referenceId: oldRecord.referenceId },
       });
+      console.log('newRecord: ', newRecord);
       await programAnswerRepository.save(newRecord);
     }
+    await this.enableAutoIncrementId(programAnswerRepository);
   }
 
   public async migrateInstance(): Promise<void> {
     console.log('migrateInstance');
     const repo = this.connection.getRepository(InstanceEntity);
+    await this.disableAutoIncrementId(repo);
     const oldInstances = await this.oldConnection.query(`SELECT
         *
       FROM
         "121-service"."instance" i;
       `);
-    for (const i of oldInstances) {
+    for await (const i of oldInstances) {
       await repo.save(i);
     }
+    await this.enableAutoIncrementId(repo);
   }
 
   public async migrateProgram(): Promise<void> {
     console.log('migratePrograms: ');
+    await this.disableAutoIncrementId(this.programRepository);
     const oldProgram = (
       await this.oldConnection.query(`SELECT
         *
@@ -433,84 +451,98 @@ export class MigrateRefactor implements InterfaceScript {
       FROM
         "121-service"."custom_criterium" c;
       `);
-    for (let c of crits) {
+    for await (let c of crits) {
       c.name = c.criterium;
       c.questionType = c.criteriumType;
       c.program = newProgram;
-      this.programQuestionRepository.save(c);
+      await this.programQuestionRepository.save(c);
     }
+    await this.enableAutoIncrementId(this.programRepository);
   }
 
   private async migrateActions(): Promise<void> {
+    console.log('migrateActions: ');
     const repo = this.connection.getRepository(ActionEntity);
+    await this.disableAutoIncrementId(repo);
     const oldActions = await this.oldConnection.query(`SELECT
         *
       FROM
         "121-service"."action" a;
       `);
-    for (let a of oldActions) {
+    for await (let a of oldActions) {
       a.created = a.timestamp;
       a.user = { id: a.userId };
       a.program = { id: this.programId };
-      repo.save(a);
+      await repo.save(a);
     }
+    await this.enableAutoIncrementId(repo);
   }
 
   private async migrateTwilioMessages(): Promise<void> {
     console.log('migrateTwilioMessages: ');
     const repo = this.connection.getRepository(TwilioMessageEntity);
+    await this.disableAutoIncrementId(repo);
     const ms = await this.oldConnection.query(`SELECT
         *
       FROM
         "121-service"."twilio-message" a;
       `);
-    for (let m of ms) {
+    for await (let m of ms) {
       m.created = m.dateCreated;
       await repo.save(m);
     }
+    await this.enableAutoIncrementId(repo);
   }
 
   private async migrateIntersolveInstruction(): Promise<void> {
     console.log('migrateIntersolveInstruction: ');
     const repo = this.connection.getRepository(IntersolveInstructionsEntity);
+    await this.disableAutoIncrementId(repo);
     const i = await this.oldConnection.query(`SELECT
         *
       FROM
         "121-service"."intersolve_instruction" a;
       `);
     await repo.save(i);
+    await this.enableAutoIncrementId(repo);
   }
 
   private async migrateIntersolveRequests(): Promise<void> {
     console.log('migrateIntersolveRequests: ');
     const repo = this.connection.getRepository(IntersolveRequestEntity);
+    await this.disableAutoIncrementId(repo);
     const i = await this.oldConnection.query(`SELECT
         *
       FROM
         "121-service"."intersolve_request" a;
       `);
     await repo.save(i);
+    await this.enableAutoIncrementId(repo);
   }
 
   private async migrateImageCode(): Promise<void> {
     console.log('migrateImageCode: ');
     const repo = this.connection.getRepository(ImageCodeEntity);
+    await this.disableAutoIncrementId(repo);
     const i = await this.oldConnection.query(`SELECT
         *
       FROM
         "121-service"."imagecode" a;
       `);
     await repo.save(i);
+    await this.enableAutoIncrementId(repo);
   }
 
   private async migrateIntersolveBarcode(): Promise<void> {
     console.log('migrateIntersolveBarcode: ');
+    await this.disableAutoIncrementId(this.intersolveBarcodeRepository);
     const i = await this.oldConnection.query(`SELECT
         *
       FROM
         "121-service"."intersolve_barcode" a;
       `);
     await this.intersolveBarcodeRepository.save(i);
+    await this.enableAutoIncrementId(this.intersolveBarcodeRepository);
   }
 
   private async migrateImageCodeExportVouchers(): Promise<void> {
@@ -518,6 +550,7 @@ export class MigrateRefactor implements InterfaceScript {
     const imageCodeExportVouchersRepository = this.connection.getRepository(
       ImageCodeExportVouchersEntity,
     );
+    await this.disableAutoIncrementId(imageCodeExportVouchersRepository);
     const oldRecords = await this.oldConnection.query(`SELECT
         *
       FROM
@@ -525,6 +558,7 @@ export class MigrateRefactor implements InterfaceScript {
       `);
     for await (let oldRecord of oldRecords) {
       const newRecord = new ImageCodeExportVouchersEntity();
+      newRecord.id = oldRecord.id;
       newRecord.image = oldRecord.image;
       newRecord.registration = await this.registrationRepository.findOne(
         oldRecord.connectionId,
@@ -539,6 +573,7 @@ export class MigrateRefactor implements InterfaceScript {
         .values(newRecord)
         .execute();
     }
+    await this.enableAutoIncrementId(imageCodeExportVouchersRepository);
   }
 
   private async migrateTransactions(): Promise<void> {
@@ -546,6 +581,7 @@ export class MigrateRefactor implements InterfaceScript {
     const transactionRepository = this.connection.getRepository(
       TransactionEntity,
     );
+    await this.disableAutoIncrementId(transactionRepository);
     const program = await this.programRepository.findOne(this.programId);
     const oldRecords = await this.oldConnection.query(`SELECT
         *
@@ -563,6 +599,7 @@ export class MigrateRefactor implements InterfaceScript {
       );
       await transactionRepository.save(newRecord);
     }
+    await this.enableAutoIncrementId(transactionRepository);
   }
 
   private async disableAutoIncrementId(repo: Repository<any>): Promise<void> {
@@ -586,6 +623,10 @@ export class MigrateRefactor implements InterfaceScript {
       }
       return c;
     });
+
+    const maxId = await repo.findOne({
+      order: { id: 'DESC' },
+    });
     console.log('enableAutoIncrementId: ', repo.metadata.tableName);
     try {
       await repo.query(
@@ -597,9 +638,8 @@ export class MigrateRefactor implements InterfaceScript {
 
     await repo.query(`
       ALTER TABLE "121-service"."${repo.metadata.tableName}" ALTER COLUMN id SET DEFAULT nextval('"121-service".${repo.metadata.tableName}_id_seq');`);
-    await repo.query(
-      `UPDATE "121-service"."${repo.metadata.tableName}" SET id = nextval('"121-service".${repo.metadata.tableName}_id_seq')`,
-    );
+    await repo.query(`
+    SELECT setval('"121-service".${repo.metadata.tableName}_id_seq', ${maxId.id}, true);`);
   }
 }
 
