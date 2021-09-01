@@ -30,9 +30,9 @@ export class MetricsTotalsComponent implements OnChanges {
   }
 
   private async getTotals() {
-    const programMetrics = await this.programService.getMetricsTotals(
+    const programMetrics = await this.programService.getMetricsById(
       this.program.id,
     );
-    return programMetrics.totals;
+    return programMetrics.pa.totalPaHelped;
   }
 }
