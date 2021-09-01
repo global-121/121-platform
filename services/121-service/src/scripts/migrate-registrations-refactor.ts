@@ -59,11 +59,10 @@ export class MigrateRefactor implements InterfaceScript {
       name: 'oldConnection',
       type: 'postgres',
       host: '121db',
-      port: 5438,
+      port: 5432,
       username: process.env.ORMCONFIG_121_SERVICE_USERNAME,
       password: process.env.ORMCONFIG_121_SERVICE_PASSWORD,
-
-      database: 'global121',
+      database: 'global121-old',
       schema: '121-service',
     });
     this.userRepository = this.connection.getRepository(UserEntity);
