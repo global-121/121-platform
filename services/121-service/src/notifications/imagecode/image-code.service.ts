@@ -29,7 +29,7 @@ export class ImageCodeService {
     let barcode = new ImageCodeEntity();
     barcode.secret = crypto.randomBytes(100).toString('hex');
     barcode.image = await this.generateVoucherImage({
-      dateTime: barcodeData.timestamp,
+      dateTime: barcodeData.created,
       amount: barcodeData.amount,
       code: barcodeData.barcode,
       pin: barcodeData.pin,
@@ -49,7 +49,7 @@ export class ImageCodeService {
       where: { referenceId: referenceId },
     });
     barcode.image = await this.generateVoucherImage({
-      dateTime: barcodeData.timestamp,
+      dateTime: barcodeData.created,
       amount: barcodeData.amount,
       code: barcodeData.barcode,
       pin: barcodeData.pin,

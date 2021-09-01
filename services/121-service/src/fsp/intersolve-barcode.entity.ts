@@ -1,12 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { Base121Entity } from '../base.entity';
 import { ImageCodeExportVouchersEntity } from '../notifications/imagecode/image-code-export-vouchers.entity';
 
 @Entity('intersolve_barcode')
 export class IntersolveBarcodeEntity extends Base121Entity {
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public timestamp: Date;
-
   @Column({ nullable: true })
   public installment: number;
 

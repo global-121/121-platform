@@ -40,7 +40,7 @@ export class ActionService {
   ): Promise<ActionEntity> {
     const action = await this.actionRepository.findOne({
       where: { program: { id: programId }, actionType: actionType },
-      order: { timestamp: 'DESC' },
+      order: { created: 'DESC' },
     });
 
     return action;

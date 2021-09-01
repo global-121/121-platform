@@ -9,9 +9,6 @@ export class ActionEntity extends Base121Entity {
   @Column()
   public actionType: ActionType;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public timestamp: Date;
-
   @ManyToOne(
     type => UserEntity,
     user => user.actions,

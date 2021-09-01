@@ -10,9 +10,6 @@ export class TransactionEntity extends Base121Entity {
   public amount: number;
 
   @Column()
-  public created: Date;
-
-  @Column()
   public status: string;
 
   @Column({ nullable: true })

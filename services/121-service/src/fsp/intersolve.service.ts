@@ -625,7 +625,7 @@ export class IntersolveService {
       if (balance === voucher.amount) {
         let unusedVoucher = new UnusedVoucherDto();
         unusedVoucher.installment = voucher.installment;
-        unusedVoucher.issueDate = voucher.timestamp;
+        unusedVoucher.issueDate = voucher.created;
         unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
         unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
         unusedVoucher.customData = voucher.image[0].registration.customData;
