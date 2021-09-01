@@ -216,7 +216,7 @@ export class MigrateRefactor implements InterfaceScript {
   FROM
     "pa-accounts"."data-storage" ds
   LEFT JOIN "pa-accounts".user u ON ds."userId" = u.id
-  WHERE username = '${user.username}'
+  WHERE username = '${user.username.replace("'", "''")}'
 `;
     const oldStorage = await this.oldConnection.query(query);
 
@@ -522,7 +522,9 @@ export class MigrateRefactor implements InterfaceScript {
       FROM
         "121-service"."intersolve_request" a;
       `);
-    await repo.save(i);
+    for await (let a of i) {
+      await repo.save(a);
+    }
     await this.enableAutoIncrementId(repo);
   }
 
@@ -560,27 +562,31 @@ export class MigrateRefactor implements InterfaceScript {
       ImageCodeExportVouchersEntity,
     );
     await this.disableAutoIncrementId(imageCodeExportVouchersRepository);
-    const oldRecords = await this.oldConnection.query(`SELECT
-        *
-      FROM
-        "121-service"."imagecode_export_vouchers" a;
-      `);
-    for await (let oldRecord of oldRecords) {
-      const newRecord = new ImageCodeExportVouchersEntity();
-      newRecord.id = oldRecord.id;
-      newRecord.image = oldRecord.image;
-      newRecord.registration = await this.registrationRepository.findOne(
-        oldRecord.connectionId,
-      );
-      newRecord.barcode = await this.intersolveBarcodeRepository.findOne(
-        oldRecord.barcodeId,
-      );
+    for (let i = 1; i < 20000; i++) {
+      let oldRecord = await this.oldConnection.query(`SELECT
+      
+      *
+    FROM
+      "121-service"."imagecode_export_vouchers" WHERE id = ${i};
+    `);
 
-      await imageCodeExportVouchersRepository
-        .createQueryBuilder()
-        .insert()
-        .values(newRecord)
-        .execute();
+      if (oldRecord.length) {
+        oldRecord = oldRecord[0];
+        const newRecord = new ImageCodeExportVouchersEntity();
+        newRecord.id = oldRecord.id;
+        newRecord.image = oldRecord.image;
+        newRecord.registration = await this.registrationRepository.findOne(
+          oldRecord.connectionId,
+        );
+        newRecord.barcode = await this.intersolveBarcodeRepository.findOne(
+          oldRecord.barcodeId,
+        );
+        await imageCodeExportVouchersRepository
+          .createQueryBuilder()
+          .insert()
+          .values(newRecord)
+          .execute();
+      }
     }
     await this.enableAutoIncrementId(imageCodeExportVouchersRepository);
   }
