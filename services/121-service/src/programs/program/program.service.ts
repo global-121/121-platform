@@ -3,7 +3,7 @@ import {
   GetTransactionOutputDto,
 } from './dto/get-transaction.dto';
 import { ActionService } from './../../actions/action.service';
-import { PaMetrics } from './dto/pa-metrics.dto';
+import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { TransactionEntity } from './transactions.entity';
 import { ConnectionEntity } from '../../connection/connection.entity';
 import { CustomCriterium } from './custom-criterium.entity';
@@ -1456,15 +1456,6 @@ export class ProgramService {
       connection => !!connection[dateColumn],
     );
 
-    if (
-      (typeof month !== 'undefined' && year === undefined) ||
-      (typeof year !== 'undefined' && month === undefined)
-    ) {
-      throw new HttpException(
-        'Please provide both month AND year',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     if (month >= 0 && year) {
       filteredConnections = filteredConnections.filter(connection => {
         const yearMonth = new Date(
@@ -1507,6 +1498,16 @@ export class ProgramService {
     fromStart?: number,
   ): Promise<PaMetrics> {
     const connections = await this.getConnections(programId, false);
+
+    if (
+      (typeof month !== 'undefined' && year === undefined) ||
+      (typeof year !== 'undefined' && month === undefined)
+    ) {
+      throw new HttpException(
+        'Please provide both month AND year',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const metrics: PaMetrics = {
       [PaStatus.imported]: await this.getTimestampsPerStatusAndTimePeriod(
@@ -1597,17 +1598,57 @@ export class ProgramService {
         year,
         fromStart,
       ),
+      [PaMetricsProperty.totalPaHelped]: await this.getTotalPAHelped(
+        programId,
+        installment,
+        month,
+        year,
+        fromStart,
+      ),
     };
 
     return metrics;
   }
 
-  public async getTotalPAHelped(programId: number): Promise<number> {
-    const result = await this.connectionRepository
+  public async getTotalPAHelped(
+    programId: number,
+    installment?: number,
+    month?: number,
+    year?: number,
+    fromStart?: number,
+  ): Promise<number> {
+    let query = this.connectionRepository
       .createQueryBuilder('connection')
-      .innerJoinAndSelect('connection.transactions', 'transactions')
-      .getCount();
-    return result;
+      .innerJoinAndSelect('connection.transactions', 'transactions');
+    let yearMonthStartCondition;
+    if (month >= 0 && year) {
+      yearMonthStartCondition = new Date(year, month, 1, 0, 0, 0);
+      let yearMonthEndCondition;
+      if (fromStart || !(year || month)) {
+        yearMonthEndCondition = new Date(3000, month + 1, 1, 0, 0, 0);
+      } else {
+        yearMonthEndCondition = new Date(year, month + 1, 1, 0, 0);
+      }
+      query = query
+        .where('transactions.created > :yearMonthStartCondition', {
+          yearMonthStartCondition: yearMonthStartCondition,
+        })
+        .where('transactions.created < :yearMonthEndCondition', {
+          yearMonthEndCondition: yearMonthEndCondition,
+        });
+    }
+    if (installment) {
+      if (fromStart) {
+        query = query.where('transactions.installment >= :installment', {
+          installment: installment,
+        });
+      } else {
+        query = query.where('transactions.installment = :installment', {
+          installment: installment,
+        });
+      }
+    }
+    return await query.getCount();
   }
 
   public async getInstallmentsWithStateSums(

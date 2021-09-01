@@ -460,20 +460,4 @@ export class ProgramController {
       Number(params.programId),
     );
   }
-
-  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
-  @ApiOperation({ title: 'Get total PA helped' })
-  @ApiImplicitParam({
-    name: 'programId',
-    required: true,
-    type: 'integer',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Get total PA helped',
-  })
-  @Get('total-PA-helped/:programId')
-  public async getTotalPAHelped(@Param() params): Promise<number> {
-    return await this.programService.getTotalPAHelped(Number(params.programId));
-  }
 }

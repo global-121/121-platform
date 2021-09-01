@@ -1,5 +1,8 @@
 import { PaStatus } from '../../../models/pa-status.model';
 
+export enum PaMetricsProperty {
+  totalPaHelped = 'totalPaHelped',
+}
 export interface PaMetrics {
   [PaStatus.imported]?: number;
   [PaStatus.invited]?: number;
@@ -12,4 +15,5 @@ export interface PaMetrics {
   [PaStatus.included]: number;
   [PaStatus.inclusionEnded]: number;
   [PaStatus.rejected]: number;
+  [PaMetricsProperty.totalPaHelped]: number;
 }
