@@ -1602,6 +1602,14 @@ export class ProgramService {
     return metrics;
   }
 
+  public async getTotalPAHelped(programId: number): Promise<number> {
+    const result = await this.connectionRepository
+      .createQueryBuilder('connection')
+      .innerJoinAndSelect('connection.transactions', 'transactions')
+      .getCount();
+    return result;
+  }
+
   public async getInstallmentsWithStateSums(
     programId: number,
   ): Promise<InstallmentStateSumDto[]> {

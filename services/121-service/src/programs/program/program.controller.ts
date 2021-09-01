@@ -1,3 +1,4 @@
+import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
 import { TransactionEntity } from './transactions.entity';
 import { ProgramMetrics } from './dto/program-metrics.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
@@ -452,9 +453,27 @@ export class ProgramController {
       'Installment state sums to create bar charts to show the number of new vs existing PAs per installmet',
   })
   @Get('installment-state-sums/:programId')
-  public async getInstallmentsWithStateSums(@Param() params): Promise<any> {
+  public async getInstallmentsWithStateSums(
+    @Param() params,
+  ): Promise<InstallmentStateSumDto[]> {
     return await this.programService.getInstallmentsWithStateSums(
       Number(params.programId),
     );
+  }
+
+  @Roles(UserRole.View, UserRole.RunProgram, UserRole.PersonalData)
+  @ApiOperation({ title: 'Get total PA helped' })
+  @ApiImplicitParam({
+    name: 'programId',
+    required: true,
+    type: 'integer',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Get total PA helped',
+  })
+  @Get('total-PA-helped/:programId')
+  public async getTotalPAHelped(@Param() params): Promise<number> {
+    return await this.programService.getTotalPAHelped(Number(params.programId));
   }
 }
