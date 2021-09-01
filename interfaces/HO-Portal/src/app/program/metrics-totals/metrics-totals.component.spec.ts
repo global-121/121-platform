@@ -7,13 +7,12 @@ import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
 import { Program } from 'src/app/models/program.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MetricsTotalsComponent } from './metrics-totals.component';
 
 @Component({
-  template: `<app-metrics-totals
-    [program]="program"
-  ></app-metrics-totals>`,
+  template: `<app-metrics-totals [program]="program"></app-metrics-totals>`,
 })
 class TestHostComponent {
   program: Program | any;
@@ -52,7 +51,10 @@ describe('MetricsTotalsComponent', () => {
         NoopAnimationsModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(PastPaymentsService)],
+      providers: [
+        provideMagicalMock(PastPaymentsService),
+        provideMagicalMock(ProgramsServiceApiService),
+      ],
     }).compileComponents();
   }));
 
