@@ -11,9 +11,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { MetricsTotalsComponent } from './metrics-totals.component';
 
 @Component({
-  template: `<app-metrics-totals
-    [program]="program"
-  ></app-metrics-totals>`,
+  template: `<app-metrics-totals [program]="program"></app-metrics-totals>`,
 })
 class TestHostComponent {
   program: Program | any;
