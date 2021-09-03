@@ -119,7 +119,7 @@ export class ExportListComponent implements OnChanges {
     );
     if (latestAction) {
       this.actionTimestamp = formatDate(
-        new Date(latestAction.timestamp),
+        new Date(latestAction.created),
         this.dateFormat,
         this.locale,
       );

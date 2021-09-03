@@ -66,7 +66,7 @@ export class TestPaymentComponent implements OnInit {
     );
     if (latestAction) {
       this.actionTimestamp = formatDate(
-        new Date(latestAction.timestamp),
+        new Date(latestAction.created),
         this.dateFormat,
         this.locale,
       );
