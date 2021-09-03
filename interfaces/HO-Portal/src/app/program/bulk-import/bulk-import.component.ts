@@ -189,13 +189,13 @@ export class BulkImportComponent implements OnInit {
       this.programId,
     );
 
-    if (!latestAction || !latestAction.timestamp) {
+    if (!latestAction || !latestAction.created) {
       return '';
     }
 
     return this.translate.instant('page.program.bulk-import.timestamp', {
       dateTime: formatDate(
-        new Date(latestAction.timestamp),
+        new Date(latestAction.created),
         this.dateFormat,
         this.locale,
       ),

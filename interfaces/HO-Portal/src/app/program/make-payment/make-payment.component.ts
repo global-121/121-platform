@@ -180,8 +180,8 @@ export class MakePaymentComponent implements OnInit {
       return true;
     }
     // If started and finished, then compare timestamps
-    const startTimestamp = new Date(latestPaymentStartedAction.timestamp);
-    const finishTimestamp = new Date(latestPaymentFinishedAction.timestamp);
+    const startTimestamp = new Date(latestPaymentStartedAction.created);
+    const finishTimestamp = new Date(latestPaymentFinishedAction.created);
     return finishTimestamp < startTimestamp;
   }
 

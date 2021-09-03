@@ -9,5 +9,5 @@ export enum ActionType {
 export class LatestAction {
   id: number;
   actionType: ActionType;
-  timestamp: Date | string;
+  created: Date | string;
 }
