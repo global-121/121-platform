@@ -16,7 +16,6 @@ export const environment = {
 
   // APIs:
   url_121_service_api: 'http://localhost:3000/api',
-  url_pa_account_service_api: 'http://localhost:3001/api',
 
   // Third-party tokens:
   ai_ikey: '',

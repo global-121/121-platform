@@ -88,6 +88,7 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
 
   public skipPreprinted() {
     this.hasPreprinted = false;
+    this.paData.store(this.paData.type.usePreprintedQrCode, this.hasPreprinted);
     this.complete();
   }
 
@@ -106,7 +107,7 @@ export class PreprintedQrcodeComponent extends PersonalComponent {
   private async showQrScannerModal() {
     const componentProps =
       environment.isDebug || environment.showDebug
-        ? { debugInput: `1234567890` }
+        ? { debugInput: `01234567890` }
         : {};
 
     const qrScannerModal = await this.modalController.create({

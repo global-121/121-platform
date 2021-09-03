@@ -9,7 +9,7 @@ export class PeopleMetrics {
   [PaStatus.imported]: number;
   [PaStatus.invited]: number;
   [PaStatus.noLongerEligible]: number;
-  [PaStatus.created]: number;
+  [PaStatus.startedRegistration]: number;
   [PaStatus.registered]: number;
   [PaStatus.selectedForValidation]: number;
   [PaStatus.validated]: number;

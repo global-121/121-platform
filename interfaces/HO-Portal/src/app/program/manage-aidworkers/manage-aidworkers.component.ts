@@ -66,16 +66,20 @@ export class ManageAidworkersComponent implements OnInit {
     const program: Program = await this.programsService.getProgramById(
       this.programId,
     );
-    this.aidworkers = program.aidworkers;
+    this.aidworkers = program.aidworkerAssignments
+      ? program.aidworkerAssignments.filter((assignment) =>
+          assignment.roles
+            .map((r) => r.role)
+            .includes(UserRole.FieldValidation),
+        )
+      : [];
 
     if (this.aidworkers && this.aidworkers.length) {
       this.aidworkers.forEach((aidworker) => {
-        aidworker.email = aidworker.email;
-        aidworker.created = formatDate(
-          aidworker.created,
-          this.dateFormat,
-          this.locale,
-        );
+        aidworker.email = aidworker.user ? aidworker.user.username : null;
+        aidworker.created = aidworker.user
+          ? formatDate(aidworker.user.created, this.dateFormat, this.locale)
+          : null;
       });
     }
 
@@ -83,7 +87,7 @@ export class ManageAidworkersComponent implements OnInit {
   }
 
   public async deleteAidworker(row) {
-    await this.programsService.deleteUser(row.id);
+    await this.programsService.deleteUser(row.user.id);
     this.loadData();
   }
 

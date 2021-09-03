@@ -1,22 +1,50 @@
+import { API_PATHS, BASE_PATH, EXTERNAL_API, PORT } from './../config';
 /* eslint-disable @typescript-eslint/camelcase */
-import { Injectable } from '@nestjs/common';
+import { HttpService, Injectable, Post } from '@nestjs/common';
 import {
+  TwilioIncomingCallbackDto,
   TwilioMessagesCreateDto,
+  TwilioStatus,
+  TwilioStatusCallbackDto,
   TwilioValidateRequestDto,
 } from './twilio.dto';
+import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
+
+class PhoneNumbers {
+  public phoneNumber;
+  public constructor(phoneNumber = '+31600000000') {
+    this.phoneNumber = phoneNumber;
+  }
+  public async fetch(_: any): Promise<any> {
+    const twillioLookup = require('twilio')(
+      process.env.TWILIO_SID,
+      process.env.TWILIO_AUTHTOKEN,
+    );
+    return twillioLookup.lookups.phoneNumbers(this.phoneNumber).fetch();
+  }
+}
+
+class LookUp {
+  public constructor() {}
+  public phoneNumbers(nr): any {
+    return new PhoneNumbers(nr);
+  }
+}
 
 @Injectable()
 export class TwilioClientMock {
   public messages;
+  public lookups;
   public constructor() {
     this.messages = new this.Messages();
+    this.lookups = new LookUp();
   }
 
   public Messages = class {
     public async create(
       twilioMessagesCreateDto: TwilioMessagesCreateDto,
     ): Promise<object> {
-      console.log('TwilioClientMock: create():');
+      console.log('TwilioClientMock: create():', twilioMessagesCreateDto);
 
       const messageSid = 'SM' + this.createRandomHexaDecimalString(32);
 
@@ -45,6 +73,16 @@ export class TwilioClientMock {
         },
       };
       console.log('TwilioClientMock create(): response:', response);
+      this.sendStatusResponse121(twilioMessagesCreateDto, messageSid);
+
+      await new Promise(resolve => setTimeout(resolve, 100));
+      if (
+        twilioMessagesCreateDto.messageType ===
+        IntersolvePayoutStatus.InitialMessage
+      ) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        this.sendIncomingWhatsapp(twilioMessagesCreateDto, messageSid);
+      }
       return response;
     }
 
@@ -60,6 +98,56 @@ export class TwilioClientMock {
       }
 
       return result;
+    }
+
+    private async sendStatusResponse121(
+      twilioMessagesCreateDto: TwilioMessagesCreateDto,
+      messageSid: string,
+    ): Promise<void> {
+      if (
+        twilioMessagesCreateDto.from &&
+        twilioMessagesCreateDto.from.includes('whatsapp')
+      ) {
+        await new Promise(r => setTimeout(r, 500));
+        const request = new TwilioStatusCallbackDto();
+        request.MessageSid = messageSid;
+        request.MessageStatus = TwilioStatus.delivered;
+        const httpService = new HttpService();
+        try {
+          await httpService
+            .post(EXTERNAL_API.whatsAppStatus, request)
+            .toPromise();
+        } catch (error) {
+          // In case external API is not reachable try localhost
+          const urlLocalhost = `http://localhost:${PORT}${BASE_PATH}/${API_PATHS.whatsAppStatus}`;
+          await httpService.post(urlLocalhost, request).toPromise();
+        }
+      }
+    }
+
+    private async sendIncomingWhatsapp(
+      twilioMessagesCreateDto: TwilioMessagesCreateDto,
+      messageSid: string,
+    ): Promise<void> {
+      if (
+        twilioMessagesCreateDto.from &&
+        twilioMessagesCreateDto.from.includes('whatsapp')
+      ) {
+        await new Promise(r => setTimeout(r, 500));
+        const request = new TwilioIncomingCallbackDto();
+        request.MessageSid = messageSid;
+        request.From = twilioMessagesCreateDto.to.replace('whatsapp:', '');
+        const httpService = new HttpService();
+        try {
+          await httpService
+            .post(EXTERNAL_API.whatsAppIncoming, request)
+            .toPromise();
+        } catch (error) {
+          // In case external API is not reachable try localhost
+          const urlLocalhost = `http://localhost:${PORT}${BASE_PATH}/${API_PATHS.whatsAppIncoming}`;
+          await httpService.post(urlLocalhost, request).toPromise();
+        }
+      }
     }
   };
 

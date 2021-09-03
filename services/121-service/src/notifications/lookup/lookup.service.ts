@@ -15,6 +15,7 @@ export class LookupService {
         .fetch({ type: ['carrier'] });
       numberCorrect = true;
     } catch (e) {
+      console.log('e: ', e);
       if (e.status === HttpStatus.NOT_FOUND) {
         numberCorrect = false;
       }

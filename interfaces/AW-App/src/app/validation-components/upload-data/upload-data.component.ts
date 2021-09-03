@@ -58,7 +58,7 @@ export class UploadDataComponent implements ValidationComponent {
         );
         await this.removeLocalStorageData(
           paAnswers.referenceId,
-          IonicStorageTypes.qrConnectionMapping,
+          IonicStorageTypes.qrRegistrationMapping,
         );
       }
       this.uploadReady = true;
@@ -68,28 +68,24 @@ export class UploadDataComponent implements ValidationComponent {
     this.complete();
   }
 
-  public async validateProgramAnswers(
-    validatedAnswers: ValidatedPaData,
-  ): Promise<void> {
-    if (!validatedAnswers.attributes) {
+  public async validateProgramAnswers(paData: ValidatedPaData): Promise<void> {
+    console.log('paData: ', paData);
+    if (!paData.programAnswers) {
       console.log('UploadData: No attributes validated, nothing to upload.');
       return;
     }
     await this.programsService
-      .postValidationData(
-        validatedAnswers.referenceId,
-        validatedAnswers.programId,
-        validatedAnswers.attributes,
-      )
+      .postValidationData(paData.referenceId, paData.programAnswers)
       .then(
         () => {
           console.log(
-            `UploadData: Upload ${validatedAnswers.attributes.length} validated answers succesful for : ${validatedAnswers.referenceId}`,
+            `UploadData: Upload ${paData.programAnswers.length} validated answers succesful for : ${paData.referenceId}`,
           );
         },
-        () => {
+        (e) => {
+          console.log('e: ', e);
           console.warn(
-            `UploadData: Upload ${validatedAnswers.attributes.length} validated answers failed for : ${validatedAnswers.referenceId}`,
+            `UploadData: Upload ${paData.programAnswers.length} validated answers failed for : ${paData.referenceId}`,
           );
           this.uploadAborted = true;
         },
@@ -105,7 +101,7 @@ export class UploadDataComponent implements ValidationComponent {
     }
     for (const answer of validatedFspAnswers) {
       try {
-        await this.programsService.postConnectionCustomAttribute(
+        await this.programsService.postRegistrationCustomAttribute(
           answer.referenceId,
           answer.code,
           answer.value,

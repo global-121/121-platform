@@ -21,7 +21,7 @@ import { ApiService } from './api.service';
 export class ProgramsServiceApiService {
   constructor(private apiService: ApiService) {}
 
-  login(email: string, password: string): Promise<UserModel | null> {
+  login(username: string, password: string): Promise<UserModel | null> {
     console.log('ProgramsService : login()');
 
     return this.apiService
@@ -29,7 +29,7 @@ export class ProgramsServiceApiService {
         environment.url_121_service_api,
         '/user/login',
         {
-          email,
+          username,
           password,
         },
         true,
@@ -88,13 +88,13 @@ export class ProgramsServiceApiService {
       .toPromise();
   }
 
-  advancePhase(programId: number, newState: string): Promise<any> {
+  advancePhase(programId: number, newPhase: string): Promise<any> {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/programs/changeState/${programId}`,
+        `/programs/change-phase/${programId}`,
         {
-          newState,
+          newPhase,
         },
       )
       .toPromise();
@@ -102,7 +102,10 @@ export class ProgramsServiceApiService {
 
   getMetricsById(programId: number | string): Promise<ProgramMetrics> {
     return this.apiService
-      .get(environment.url_121_service_api, `/programs/metrics/${programId}`)
+      .get(
+        environment.url_121_service_api,
+        `/export-metrics/person-affected/${programId}`,
+      )
       .toPromise();
   }
 
@@ -113,7 +116,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/metrics/${programId}?${condition}`,
+        `/export-metrics/person-affected/${programId}?${condition}`,
       )
       .toPromise();
   }
@@ -122,7 +125,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/total-included/${programId}`,
+        `/export-metrics/total-included/${programId}`,
       )
       .toPromise();
   }
@@ -170,7 +173,7 @@ export class ProgramsServiceApiService {
     value: string | number,
   ): Promise<Person> {
     return this.apiService
-      .post(environment.url_121_service_api, `/connection/attribute`, {
+      .post(environment.url_121_service_api, `/registrations/attribute`, {
         referenceId,
         attribute,
         value,
@@ -180,7 +183,7 @@ export class ProgramsServiceApiService {
 
   updateNote(referenceId: string, note: string): Promise<Note> {
     return this.apiService
-      .post(environment.url_121_service_api, `/connection/note`, {
+      .post(environment.url_121_service_api, `/registrations/note`, {
         referenceId,
         note,
       })
@@ -189,7 +192,10 @@ export class ProgramsServiceApiService {
 
   retrieveNote(referenceId: string): Promise<Note> {
     return this.apiService
-      .get(environment.url_121_service_api, `/connection/note/${referenceId}`)
+      .get(
+        environment.url_121_service_api,
+        `/registrations/note/${referenceId}`,
+      )
       .toPromise();
   }
 
@@ -240,7 +246,7 @@ export class ProgramsServiceApiService {
       downloadData = await this.apiService
         .get(
           environment.url_121_service_api,
-          `/connection/import-template/${programId}`,
+          `/registrations/import-template/${programId}`,
           false,
         )
         .toPromise();
@@ -263,10 +269,10 @@ export class ProgramsServiceApiService {
     const formData = new FormData();
     formData.append('file', file);
 
-    let path = `/connection/import-bulk/${programId}`;
+    let path = `/registrations/import-bulk/${programId}`;
 
     if (destination === PaStatus.registered) {
-      path = `/connection/import-registrations/${programId}`;
+      path = `/registrations/import-registrations/${programId}`;
     }
 
     return this.apiService
@@ -280,7 +286,7 @@ export class ProgramsServiceApiService {
     installment?: number,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, `/programs/export-list`, {
+      .post(environment.url_121_service_api, `/export-metrics/export-list`, {
         programId,
         type,
         ...(installment && { installment }),
@@ -325,7 +331,7 @@ export class ProgramsServiceApiService {
 
   getPeopleAffected(programId: number | string): Promise<Person[]> {
     return this.apiService
-      .get(environment.url_121_service_api, `/programs/enrolled/${programId}`)
+      .get(environment.url_121_service_api, `/registrations/${programId}`)
       .toPromise();
   }
 
@@ -333,7 +339,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/enrolledPrivacy/${programId}`,
+        `/registrations/personal-data/${programId}`,
       )
       .toPromise();
   }
@@ -347,7 +353,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .post(
         environment.url_121_service_api,
-        `/programs/${action}/${programId}`,
+        `/registrations/${action}/${programId}`,
         {
           referenceIds: JSON.stringify(referenceIds),
           message,
@@ -376,10 +382,14 @@ export class ProgramsServiceApiService {
     message: string,
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, `/programs/invite/${programId}`, {
-        phoneNumbers: JSON.stringify(phoneNumbers),
-        message,
-      })
+      .post(
+        environment.url_121_service_api,
+        `/registrations/invite/${programId}`,
+        {
+          phoneNumbers: JSON.stringify(phoneNumbers),
+          message,
+        },
+      )
       .toPromise();
   }
 
@@ -434,7 +444,7 @@ export class ProgramsServiceApiService {
     roles: UserRole[] | string[],
   ): Promise<any> {
     return this.apiService
-      .post(environment.url_121_service_api, `/user`, {
+      .post(environment.url_121_service_api, `/user/aidworker`, {
         email,
         password,
         roles,
@@ -455,7 +465,7 @@ export class ProgramsServiceApiService {
     return this.apiService
       .get(
         environment.url_121_service_api,
-        `/programs/installment-state-sums/${programId}`,
+        `/export-metrics/installment-state-sums/${programId}`,
       )
       .toPromise();
   }

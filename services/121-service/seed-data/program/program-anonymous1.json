@@ -1,7 +1,7 @@
 {
   "published": false,
   "validation": true,
-  "state": "design",
+  "phase": "design",
   "location": "Location A",
   "ngo": "NGO A",
   "title": {
@@ -45,14 +45,6 @@
       "id": 6
     }
   ],
-  "protectionServiceProviders": [
-    {
-      "id": 1
-    },
-    {
-      "id": 2
-    }
-  ],
   "inclusionCalculationType": "highestScoresX",
   "minimumScore": 0,
   "highestScoresX": 250,
@@ -71,38 +63,38 @@
     }
   },
   "phoneNumberPlaceholder": "+000 000 00 00",
-  "customCriteria": [
+  "programQuestions": [
     {
-      "criterium": "name",
+      "name": "name",
       "label": {
         "en": "My full name:"
       },
       "answerType": "text",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
-      "criterium": "dob",
+      "name": "dob",
       "label": {
         "en": "My date of birth: Format is day-month-year example: 31-12-1970"
       },
       "answerType": "date",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
-      "criterium": "question1",
+      "name": "question1",
       "label": {
         "en": "1. I am..."
       },
       "answerType": "dropdown",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": [
         {
           "option": "optionA",
@@ -130,12 +122,12 @@
       }
     },
     {
-      "criterium": "question2",
+      "name": "question2",
       "label": {
         "en": "2. I am.."
       },
       "answerType": "dropdown",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": [
         {
           "option": "optionA",
@@ -163,12 +155,12 @@
       }
     },
     {
-      "criterium": "question3",
+      "name": "question3",
       "label": {
         "en": "Question 3..."
       },
       "answerType": "numeric",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "scoring": {
         "multiplier": 2

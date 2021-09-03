@@ -1,18 +1,24 @@
-import { ProgramAttribute } from './program.model';
+import { Program, ProgramAttribute } from './program.model';
 
-export class PaDataAttribute {
-  answer: string;
-  attribute: string;
+export class PaProgramAnswer {
+  programAnswer: string;
+  name: string;
   attributeId: number;
   referenceId: string;
   id: number;
   programId: number;
 }
 
+export class Registration {
+  public programAnswers: PaProgramAnswer[];
+  public program: Program;
+  public referenceId: string;
+}
+
 export class ValidatedPaData {
   referenceId: string;
   programId: number;
-  attributes?: ProgramAnswer[];
+  programAnswers?: ProgramAnswer[];
   fspanswers?: FspAnswer[];
 }
 

@@ -7,11 +7,12 @@ module.exports = {
   database: 'global121',
   schema: '121-service',
   entities: ['src/**/**.entity{.ts,.js}'],
+  subscribers: ['src/**/**.subscriber{.ts,.js}'],
   migrationsTableName: 'custom_migration_table',
   migrations: ['migration/*.ts'],
   cli: {
     migrationsDir: 'migration',
   },
   dropSchema: false,
-  synchronize: true,
+  synchronize: false,
 };

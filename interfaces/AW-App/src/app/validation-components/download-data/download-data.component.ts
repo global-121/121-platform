@@ -15,7 +15,7 @@ class ValidationAnswer {
   answer: string | number;
 }
 
-class QrConnectionMap {
+class QrRegistrationMap {
   referenceId: string;
   qrIdentifier: string;
 }
@@ -44,8 +44,8 @@ export class DownloadDataComponent implements ValidationComponent {
     await this.programsService.downloadData().then(
       async (response) => {
         const validationData: ValidationAnswer[] = response.answers;
-        const qrConnectionMapping: QrConnectionMap[] =
-          response.qrConnectionMapping;
+        const qrRegistrationMapping: QrRegistrationMap[] =
+          response.qrRegistrationMapping;
         const fspData = response.fspData;
 
         // If no data is available, stop.
@@ -60,15 +60,15 @@ export class DownloadDataComponent implements ValidationComponent {
           validationData,
         );
         await this.storage.set(
-          IonicStorageTypes.qrConnectionMapping,
-          qrConnectionMapping,
+          IonicStorageTypes.qrRegistrationMapping,
+          qrRegistrationMapping,
         );
         await this.storage.set(IonicStorageTypes.validationFspData, fspData);
 
-        const myPrograms = await this.getProgramData(validationData);
+        const myPrograms = await this.getProgramData(response.programIds);
         await this.storage.set(IonicStorageTypes.myPrograms, myPrograms);
 
-        this.nrDownloaded = this.countUniqueConnections(validationData);
+        this.nrDownloaded = this.countUniqueRegistrations(validationData);
         this.downloadReady = true;
         this.complete();
       },
@@ -79,8 +79,7 @@ export class DownloadDataComponent implements ValidationComponent {
     );
   }
 
-  private async getProgramData(validationData: ValidationAnswer[]) {
-    const programIds = this.getUniqueProgramIds(validationData);
+  private async getProgramData(programIds: number[]) {
     const programRequests = [];
     const myPrograms = [];
 
@@ -96,18 +95,7 @@ export class DownloadDataComponent implements ValidationComponent {
     return myPrograms;
   }
 
-  private getUniqueProgramIds(validationData: ValidationAnswer[]) {
-    const programIds = [];
-    validationData.forEach((item) => {
-      if (!programIds.includes(item.programId)) {
-        programIds.push(item.programId);
-      }
-    });
-
-    return programIds;
-  }
-
-  public countUniqueConnections(validationData: ValidationAnswer[]): number {
+  public countUniqueRegistrations(validationData: ValidationAnswer[]): number {
     const referenceIds = [];
     validationData.forEach((item) => {
       if (!referenceIds.includes(item.referenceId)) {

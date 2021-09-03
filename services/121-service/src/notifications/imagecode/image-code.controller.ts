@@ -5,6 +5,7 @@ import { Response } from 'express-serve-static-core';
 import stream from 'stream';
 
 @ApiUseTags('notifications')
+// I am afraid to change this url as it may break already sent whatsapps
 @Controller('notifications/imageCode')
 export class ImageCodeController {
   private readonly imageCodeService: ImageCodeService;

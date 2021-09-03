@@ -6,7 +6,7 @@ export class UserModel {
 
 export class User {
   token?: string;
-  email: string;
+  username: string;
   roles: UserRole[] | any; // During transition, use 'any'
   role?: UserRole | 'aidworker' | 'project-officer' | 'program-manager'; // Define 'Legacy' users
 }

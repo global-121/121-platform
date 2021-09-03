@@ -434,7 +434,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.isLoading = true;
 
     this.program = await this.programsService.getProgramById(this.programId);
-    this.activePhase = this.program.state;
+    this.activePhase = this.program.phase;
 
     this.canViewPersonalData = this.authService.hasUserRole([
       UserRole.View,
@@ -597,7 +597,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private sortPeopleByInclusionScore(a: Person, b: Person) {
     if (a.inclusionScore === b.inclusionScore) {
-      return a.created > b.created ? -1 : 1;
+      return a.startedRegistrationDate > b.startedRegistrationDate ? -1 : 1;
     } else {
       return a.inclusionScore > b.inclusionScore ? -1 : 1;
     }
@@ -621,11 +621,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       markedNoLongerEligible: person.noLongerEligibleDate
         ? formatDate(person.noLongerEligibleDate, this.dateFormat, this.locale)
         : null,
-      digitalIdCreated: person.created
-        ? formatDate(person.created, this.dateFormat, this.locale)
+      digitalIdCreated: person.startedRegistrationDate
+        ? formatDate(
+            person.startedRegistrationDate,
+            this.dateFormat,
+            this.locale,
+          )
         : null,
-      vulnerabilityAssessmentCompleted: person.appliedDate
-        ? formatDate(person.appliedDate, this.dateFormat, this.locale)
+      vulnerabilityAssessmentCompleted: person.registeredDate
+        ? formatDate(person.registeredDate, this.dateFormat, this.locale)
         : null,
       inclusionScore: person.inclusionScore,
       selectedForValidation: person.selectedForValidationDate
@@ -666,7 +670,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     return personRow;
   }
 
-  private getTransactionOfInstallmentForConnection(
+  private getTransactionOfInstallmentForRegistration(
     installmentIndex: number,
     referenceId: string,
   ) {
@@ -679,7 +683,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
 
   private fillPaymentColumns(personRow: PersonRow): PersonRow {
     this.paymentColumns.forEach((paymentColumn) => {
-      const transaction = this.getTransactionOfInstallmentForConnection(
+      const transaction = this.getTransactionOfInstallmentForRegistration(
         paymentColumn.installmentIndex,
         personRow.referenceId,
       );

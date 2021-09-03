@@ -1,6 +1,6 @@
-import { ProgramEntity } from './../../programs/program/program.entity';
-import { ConnectionEntity } from './../../connection/connection.entity';
-import { TransactionEntity } from './../../programs/program/transactions.entity';
+import { RegistrationEntity } from './../../registration/registration.entity';
+import { ProgramEntity } from './../../programs/program.entity';
+import { TransactionEntity } from './../../programs/transactions.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthMiddlewareTwilio } from '../auth.middlewareTwilio';
 import {
@@ -14,8 +14,8 @@ import { WhatsappService } from './whatsapp.service';
 import { WhatsappController } from './whatsapp.controller';
 import { TwilioMessageEntity } from '../twilio.entity';
 import { ImageCodeModule } from '../imagecode/image-code.module';
-import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
-import { FspModule } from '../../programs/fsp/fsp.module';
+import { IntersolveBarcodeEntity } from '../../fsp/intersolve-barcode.entity';
+import { FspModule } from '../../fsp/fsp.module';
 import { API_PATHS } from '../../config';
 
 @Module({
@@ -24,8 +24,8 @@ import { API_PATHS } from '../../config';
       TwilioMessageEntity,
       IntersolveBarcodeEntity,
       TransactionEntity,
-      ConnectionEntity,
       ProgramEntity,
+      RegistrationEntity,
     ]),
     ImageCodeModule,
     forwardRef(() => FspModule),

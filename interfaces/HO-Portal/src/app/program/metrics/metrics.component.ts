@@ -1,6 +1,7 @@
 import { formatCurrency, formatDate } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { UserRole } from 'src/app/auth/user-role.enum';
 import { MetricGroup, MetricRow } from 'src/app/models/program-metrics.model';
 import { DistributionFrequency, Program } from 'src/app/models/program.model';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
@@ -175,12 +176,20 @@ export class MetricsComponent implements OnChanges {
 
   private renderAidWorkerMetrics() {
     const group = MetricGroup.aidworkers;
+    let nrOfFieldValidationUsers = 0;
+    for (const assignment of this.program.aidworkerAssignments) {
+      for (const role of assignment.roles) {
+        if (role.role === UserRole.FieldValidation) {
+          nrOfFieldValidationUsers = nrOfFieldValidationUsers + 1;
+        }
+      }
+    }
 
     this.metricsMap.set(`${group}.assigned`, {
       group,
       icon: 'body',
-      label: 'page.program.program-details.aidworkers',
-      value: getValueOrEmpty(this.program.aidworkers, (value) => value.length),
+      label: 'page.program.program-details.aidworkerAssignments',
+      value: getValueOrEmpty(nrOfFieldValidationUsers),
     });
   }
 }

@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { UserRole } from 'src/app/auth/user-role.enum';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { provideMagicalMock } from 'src/app/mocks/helpers';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -40,14 +41,16 @@ describe('ManageAidworkersComponent', () => {
 
   it('should list all aidworkers if available', async () => {
     const programWithAidworkers = apiProgramsMock.programs[mockProgramId];
-    programWithAidworkers.aidworkers = [
+    programWithAidworkers.aidworkerAssignments = [
       {
-        email: 'aidworker@example.org',
+        username: 'aidworker@example.org',
         created: '2020-01-01T12:00:00',
+        roles: [{ role: UserRole.FieldValidation }],
       },
       {
-        email: 'aidworker-test2@example.org',
+        username: 'aidworker-test2@example.org',
         created: '2020-01-01T13:00:00',
+        roles: [{ role: UserRole.FieldValidation }],
       },
     ];
     mockProgramsApi.getProgramById.and.returnValue(
@@ -58,7 +61,7 @@ describe('ManageAidworkersComponent', () => {
     await fixture.isStable();
 
     expect(component.aidworkers.length).toEqual(
-      programWithAidworkers.aidworkers.length,
+      programWithAidworkers.aidworkerAssignments.length,
     );
   });
 

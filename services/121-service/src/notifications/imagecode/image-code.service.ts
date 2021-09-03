@@ -6,9 +6,9 @@ import { Repository } from 'typeorm';
 import { EXTERNAL_API } from '../../config';
 import crypto from 'crypto';
 import { ImageCodeExportVouchersEntity } from './image-code-export-vouchers.entity';
-import { ConnectionEntity } from '../../connection/connection.entity';
-import { IntersolveBarcodeEntity } from 'src/programs/fsp/intersolve-barcode.entity';
+import { IntersolveBarcodeEntity } from 'src/fsp/intersolve-barcode.entity';
 import Jimp from 'jimp';
+import { RegistrationEntity } from '../../registration/registration.entity';
 
 @Injectable()
 export class ImageCodeService {
@@ -18,8 +18,8 @@ export class ImageCodeService {
   private readonly imageExportVouchersRepository: Repository<
     ImageCodeExportVouchersEntity
   >;
-  @InjectRepository(ConnectionEntity)
-  private readonly connectionRepository: Repository<ConnectionEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   public constructor() {}
 
@@ -29,7 +29,7 @@ export class ImageCodeService {
     let barcode = new ImageCodeEntity();
     barcode.secret = crypto.randomBytes(100).toString('hex');
     barcode.image = await this.generateVoucherImage({
-      dateTime: barcodeData.timestamp,
+      dateTime: barcodeData.created,
       amount: barcodeData.amount,
       code: barcodeData.barcode,
       pin: barcodeData.pin,
@@ -45,11 +45,11 @@ export class ImageCodeService {
   ): Promise<ImageCodeExportVouchersEntity> {
     let barcode = new ImageCodeExportVouchersEntity();
 
-    barcode.connection = await this.connectionRepository.findOne({
+    barcode.registration = await this.registrationRepository.findOne({
       where: { referenceId: referenceId },
     });
     barcode.image = await this.generateVoucherImage({
-      dateTime: barcodeData.timestamp,
+      dateTime: barcodeData.created,
       amount: barcodeData.amount,
       code: barcodeData.barcode,
       pin: barcodeData.pin,

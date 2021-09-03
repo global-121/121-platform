@@ -2,13 +2,12 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { PaDataAttribute } from 'src/app/models/pa-data.model';
 import {
   AnswerType,
   Program,
   ProgramAttribute,
-  ProgramCriterium,
-  ProgramCriteriumOption,
+  ProgramQuestion,
+  ProgramQuestionOption,
 } from 'src/app/models/program.model';
 import {
   Answer,
@@ -19,6 +18,7 @@ import { ConversationService } from 'src/app/services/conversation.service';
 import { IonicStorageTypes } from 'src/app/services/iconic-storage-types.enum';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { TranslatableStringService } from 'src/app/services/translatable-string.service';
+import { Registration } from '../../models/pa-data.model';
 import { ValidationComponents } from '../validation-components.enum';
 import { ValidationComponent } from '../validation-components.interface';
 
@@ -56,8 +56,8 @@ export class ValidateProgramComponent implements ValidationComponent {
       return;
     }
 
-    this.referenceId = paData[0].referenceId;
-    this.programId = paData[0].programId;
+    this.referenceId = paData.referenceId;
+    this.programId = paData.program.id;
 
     await this.getProgramQuestions();
     this.initialAnswers(paData);
@@ -65,7 +65,7 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.ionContent.scrollToBottom(300);
   }
 
-  private getPaData(): PaDataAttribute[] | null {
+  private getPaData(): Registration | null {
     const paDataRaw = window.sessionStorage.getItem('paData');
     try {
       return JSON.parse(paDataRaw);
@@ -76,7 +76,7 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   private async getProgramQuestions() {
     this.currentProgram = await this.getCurrentProgram();
-    this.questions = this.buildQuestions(this.currentProgram.customCriteria);
+    this.questions = this.buildQuestions(this.currentProgram.programQuestions);
   }
 
   private async getCurrentProgram(): Promise<Program> {
@@ -98,21 +98,19 @@ export class ValidateProgramComponent implements ValidationComponent {
     }
   }
 
-  private buildQuestions(customCriteria: ProgramCriterium[]) {
-    return customCriteria.map((criterium): Question => {
+  private buildQuestions(programQuestions: ProgramQuestion[]) {
+    return programQuestions.map((question): Question => {
       return {
-        code: criterium.criterium,
-        answerType: criterium.answerType,
-        label: this.translatableString.get(criterium.label),
-        placeholder: this.translatableString.get(criterium.placeholder),
-        options: !criterium.options
-          ? null
-          : this.buildOptions(criterium.options),
+        name: question.name,
+        answerType: question.answerType,
+        label: this.translatableString.get(question.label),
+        placeholder: this.translatableString.get(question.placeholder),
+        options: !question.options ? null : this.buildOptions(question.options),
       };
     });
   }
 
-  private buildOptions(optionSet: ProgramCriteriumOption[]): QuestionOption[] {
+  private buildOptions(optionSet: ProgramQuestionOption[]): QuestionOption[] {
     return optionSet.map((option) => {
       return {
         value: option.option,
@@ -123,7 +121,7 @@ export class ValidateProgramComponent implements ValidationComponent {
 
   private getQuestionByCode(questionCode: string): Question {
     const result = this.questions.find((question: Question) => {
-      return question.code === questionCode;
+      return question.name === questionCode;
     });
 
     return result;
@@ -140,10 +138,10 @@ export class ValidateProgramComponent implements ValidationComponent {
     return option ? option.label : '';
   }
 
-  private buildAnswer(questionCode: string, answerValue: string) {
-    const question = this.getQuestionByCode(questionCode);
+  private buildAnswer(questionName: string, answerValue: string) {
+    const question = this.getQuestionByCode(questionName);
     const answer: Answer = {
-      code: questionCode,
+      name: questionName,
       value: answerValue,
       label: answerValue,
     };
@@ -156,12 +154,12 @@ export class ValidateProgramComponent implements ValidationComponent {
       );
     }
 
-    this.answers[questionCode] = answer;
+    this.answers[questionName] = answer;
   }
 
-  public initialAnswers(answers: PaDataAttribute[]) {
-    for (const answerItem of answers) {
-      this.buildAnswer(answerItem.attribute, answerItem.answer);
+  public initialAnswers(paData: Registration) {
+    for (const answerItem of paData.programAnswers) {
+      this.buildAnswer(answerItem.name, answerItem.programAnswer);
     }
   }
 
@@ -181,8 +179,8 @@ export class ValidateProgramComponent implements ValidationComponent {
     answers.forEach((item: Answer) => {
       attributes.push({
         attributeId: 0,
-        attribute: item.code,
-        answer: item.value,
+        programQuestionName: item.name,
+        programAnswer: item.value,
       });
     });
 
@@ -196,11 +194,10 @@ export class ValidateProgramComponent implements ValidationComponent {
     this.complete();
   }
 
-  public async storeValidatedAttributes(attributes: ProgramAttribute[]) {
+  public async storeValidatedAttributes(programAnswers: ProgramAttribute[]) {
     const validatedAttributes = {
       referenceId: this.referenceId,
-      programId: this.programId,
-      attributes,
+      programAnswers,
     };
     let validatedData = await this.storage.get(IonicStorageTypes.validatedData);
     if (!validatedData) {

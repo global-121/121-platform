@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ProgramEntity } from '../programs/program/program.entity';
+import { ProgramEntity } from '../programs/program.entity';
 import { UserEntity } from '../user/user.entity';
 
 import { ActionEntity, ActionType } from './action.entity';
@@ -40,7 +40,7 @@ export class ActionService {
   ): Promise<ActionEntity> {
     const action = await this.actionRepository.findOne({
       where: { program: { id: programId }, actionType: actionType },
-      order: { timestamp: 'DESC' },
+      order: { created: 'DESC' },
     });
 
     return action;

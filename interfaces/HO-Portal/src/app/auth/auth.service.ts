@@ -79,7 +79,7 @@ export class AuthService {
 
     if (
       !user ||
-      !user.email ||
+      !user.username ||
       !user.roles ||
       (user.roles.length === 1 && user.roles.includes(UserRole.FieldValidation))
     ) {
@@ -88,14 +88,14 @@ export class AuthService {
     }
 
     return {
-      email: user.email,
+      username: user.username,
       roles: user.roles,
     };
   }
 
-  public async login(email: string, password: string): Promise<any> {
+  public async login(username: string, password: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.programsService.login(email, password).then(
+      this.programsService.login(username, password).then(
         (response) => {
           if (response && response.token) {
             this.jwtService.saveToken(response.token);

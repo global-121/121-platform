@@ -21,10 +21,10 @@ export class Program {
   distributionFrequency: DistributionFrequency;
   meetingDocuments?: string | TranslatableString;
   financialServiceProviders?: any[];
-  aidworkers?: AidWorker[];
+  aidworkerAssignments?: any[];
   created: string;
   updated: string;
-  state: ProgramPhase;
+  phase: ProgramPhase;
   validation: boolean;
 }
 

@@ -3,7 +3,6 @@ import { BehaviorSubject } from 'rxjs';
 import { Program } from '../models/program.model';
 import { User } from '../models/user.model';
 import { JwtService } from './jwt.service';
-import { PaAccountApiService } from './pa-account-api.service';
 import { PaDataTypes } from './padata-types.enum';
 import { ProgramsServiceApiService } from './programs-service-api.service';
 
@@ -24,7 +23,6 @@ export class PaDataService {
   public authenticationState$ = this.authenticationStateSource.asObservable();
 
   constructor(
-    private paAccountApi: PaAccountApiService,
     private programService: ProgramsServiceApiService,
     private jwtService: JwtService,
   ) {
@@ -96,7 +94,7 @@ export class PaDataService {
       return;
     }
 
-    return this.paAccountApi.store(type, JSON.stringify(data));
+    return this.programService.store(type, JSON.stringify(data));
   }
 
   async retrieve(type: string): Promise<any> {
@@ -104,15 +102,15 @@ export class PaDataService {
       return;
     }
 
-    return await this.paAccountApi.retrieve(type);
+    return await this.programService.retrieve(type);
   }
 
   async createAccount(username: string, password: string): Promise<any> {
     // 'Sanitize' username:
     username = username.trim();
 
-    console.log('PaData: createAccount()');
-    return this.paAccountApi.createAccount(username, password).then(() => {
+    console.log('CreateAccountPA');
+    return this.programService.createAccountPA(username, password).then(() => {
       console.log('Account created.');
       this.setLoggedIn();
       this.setUsername(username);
@@ -121,7 +119,7 @@ export class PaDataService {
 
   async login(username: string, password: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.paAccountApi.login(username, password).then(
+      this.programService.login(username, password).then(
         () => {
           console.log('PaData: login successful');
           const user = this.getUserFromToken();
@@ -195,35 +193,16 @@ export class PaDataService {
     window.sessionStorage.removeItem(this.type.username);
     this.setLoggedOut();
   }
-
-  public setReferenceId(referenceId: string) {
-    return this.paAccountApi.setReferenceId(referenceId);
-  }
-
   public async deleteAccount(password: string): Promise<any> {
-    const referenceId = await this.retrieve(this.type.referenceId);
-
-    // All requests are dependent on their predecessors!
-    // A wallet should only be deleted if the account is already successfully deleted
-    // A connection should only be deleted if the wallet is already successfully deleted
     return new Promise(async (resolve, reject) => {
       if (!this.hasAccount) {
         return reject('');
       }
 
-      await this.paAccountApi.deleteAccount(password).then(
+      await this.programService.deleteAccount(password).then(
         async () => {
-          let deleteConnectionResult = false;
-
-          await this.programService.deleteConnection(referenceId).then(
-            () => (deleteConnectionResult = true),
-            (error) => reject(error),
-          );
-
-          if (deleteConnectionResult) {
-            this.setLoggedOut();
-            return resolve(true);
-          }
+          this.setLoggedOut();
+          return resolve(true);
         },
         (error) => reject(error),
       );

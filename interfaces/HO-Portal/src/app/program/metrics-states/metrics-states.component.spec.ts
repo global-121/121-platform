@@ -52,7 +52,7 @@ describe('MetricsStatesComponent', () => {
       [PaStatus.imported]: getRandomInt(0, 100),
       [PaStatus.invited]: getRandomInt(0, 100),
       [PaStatus.noLongerEligible]: getRandomInt(0, 100),
-      [PaStatus.created]: getRandomInt(0, 100),
+      [PaStatus.startedRegistration]: getRandomInt(0, 100),
       [PaStatus.registered]: getRandomInt(0, 100),
       [PaStatus.selectedForValidation]: getRandomInt(0, 100),
       [PaStatus.validated]: getRandomInt(0, 100),

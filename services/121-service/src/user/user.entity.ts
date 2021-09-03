@@ -1,50 +1,39 @@
+import { RegistrationEntity } from './../registration/registration.entity';
+import { PersonAffectedAppDataEntity } from './../people-affected/person-affected-app-data.entity';
+import { UserType } from './user-type-enum';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   BeforeInsert,
   OneToMany,
-  ManyToMany,
-  JoinTable,
+  Index,
+  BeforeRemove,
 } from 'typeorm';
-import { IsEmail } from 'class-validator';
 import crypto from 'crypto';
-import { ProgramEntity } from '../programs/program/program.entity';
 import { ActionEntity } from '../actions/action.entity';
-import { UserRoleEntity } from './user-role.entity';
+import { ProgramAidworkerAssignmentEntity } from '../programs/program-aidworker.entity';
+import { CascadeDeleteEntity } from '../base.entity';
 
 @Entity('user')
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
-  @Column()
-  @IsEmail()
-  public email: string;
+export class UserEntity extends CascadeDeleteEntity {
+  @Index({ unique: true })
+  @Column({ nullable: true })
+  public username: string;
 
   @Column({ select: false })
   public password: string;
-
-  @ManyToMany(
-    () => UserRoleEntity,
-    role => role.users,
-  )
-  @JoinTable()
-  public roles: UserRoleEntity[];
 
   @BeforeInsert()
   public hashPassword(): any {
     this.password = crypto.createHmac('sha256', this.password).digest('hex');
   }
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  public created: Date;
-
   @OneToMany(
-    () => ProgramEntity,
-    program => program.author,
+    () => ProgramAidworkerAssignmentEntity,
+    assignment => assignment.user,
   )
-  public programs: ProgramEntity[];
+  public programAssignments: ProgramAidworkerAssignmentEntity[];
 
   @OneToMany(
     () => ActionEntity,
@@ -52,9 +41,40 @@ export class UserEntity {
   )
   public actions: ActionEntity[];
 
-  @ManyToMany(
-    () => ProgramEntity,
-    program => program.aidworkers,
+  @OneToMany(
+    () => RegistrationEntity,
+    registration => registration.user,
   )
-  public assignedProgram: ProgramEntity[];
+  public registrations: RegistrationEntity[];
+
+  @OneToMany(
+    () => PersonAffectedAppDataEntity,
+    personAffectedAppData => personAffectedAppData.user,
+  )
+  public personAffectedAppData: PersonAffectedAppDataEntity[];
+
+  @Column()
+  public userType: UserType;
+
+  @BeforeRemove()
+  public async cascadeDelete(): Promise<void> {
+    await this.deleteAllOneToMany([
+      {
+        entityClass: RegistrationEntity,
+        columnName: 'user',
+      },
+      {
+        entityClass: PersonAffectedAppDataEntity,
+        columnName: 'user',
+      },
+      {
+        entityClass: ActionEntity,
+        columnName: 'user',
+      },
+      {
+        entityClass: ProgramAidworkerAssignmentEntity,
+        columnName: 'user',
+      },
+    ]);
+  }
 }

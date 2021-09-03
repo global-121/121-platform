@@ -22,15 +22,5 @@ services:
       - '121_service_node_modules:/home/node/app/node_modules'
       - './121-service:/home/node/app'
 
-  PA-accounts-service:
-    build:
-      target: development
-    volumes:
-      - 'pa_accounts_node_modules:/home/node/app/node_modules'
-      - './PA-accounts-service:/home/node/app'
-    # When the file-watcher isn't necessary, you can override the start-command here:
-    # command: 'npm start'
-
 volumes:
   121_service_node_modules:
-  pa_accounts_node_modules:

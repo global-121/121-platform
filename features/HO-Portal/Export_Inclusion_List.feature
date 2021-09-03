@@ -8,11 +8,11 @@ Feature: Export inclusion list
   Scenario: Export inclusion list
     When the user clicks the "export inclusion list" and confirms the confirm prompt
     Then a CSV-file is downloaded
-    And it shows a list of the connections that are "included"
+    And it shows a list of the registrations that are "included"
     And it shows the "name" and other program-attributes to be able to identify people
     And it shows the dates at which the person reached each status, to be able to assess the trajectory towards inclusion
     And the "export inclusion list" button remains enabled, so the action can be repeated infinitely
-    And if no "included" connections then an alert is shown that "no data can be downloaded"
+    And if no "included" registrations then an alert is shown that "no data can be downloaded"
 
   Scenario: Export inclusion list with 2000 PAs
     Given there are 2000 PAs in the system (see Admin-user/Import_test_registrations_NL.feature)

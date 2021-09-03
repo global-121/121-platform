@@ -1,5 +1,4 @@
-import { ConnectionEntity } from './../../connection/connection.entity';
-import { IntersolvePayoutStatus } from './../../programs/fsp/api/enum/intersolve-payout-status.enum';
+import { RegistrationEntity } from './../../registration/registration.entity';
 import { EXTERNAL_API } from '../../config';
 import {
   forwardRef,
@@ -12,18 +11,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, getRepository, In } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
-import { ProgramEntity } from '../../programs/program/program.entity';
+import { ProgramEntity } from '../../programs/program.entity';
 import { ImageCodeService } from '../imagecode/image-code.service';
-import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
+import { IntersolveBarcodeEntity } from '../../fsp/intersolve-barcode.entity';
 import { StatusEnum } from '../../shared/enum/status.enum';
-import { FspService } from '../../programs/fsp/fsp.service';
-import { fspName } from '../../programs/fsp/financial-service-provider.entity';
-import { IntersolveService } from '../../programs/fsp/intersolve.service';
-import { CustomDataAttributes } from '../../connection/validation-data/dto/custom-data-attributes';
+import { FspService } from '../../fsp/fsp.service';
+import { fspName } from '../../fsp/financial-service-provider.entity';
+import { IntersolveService } from '../../fsp/intersolve.service';
+import { CustomDataAttributes } from '../../registration/enum/custom-data-attributes';
 import {
   TwilioStatusCallbackDto,
   TwilioIncomingCallbackDto,
+  TwilioStatus,
 } from '../twilio.dto';
+import { IntersolvePayoutStatus } from '../../fsp/api/enum/intersolve-payout-status.enum';
 
 @Injectable()
 export class WhatsappService {
@@ -33,8 +34,8 @@ export class WhatsappService {
   >;
   @InjectRepository(TwilioMessageEntity)
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
-  @InjectRepository(ConnectionEntity)
-  private readonly connectionRepository: Repository<ConnectionEntity>;
+  @InjectRepository(RegistrationEntity)
+  private readonly registrationRepository: Repository<RegistrationEntity>;
 
   private readonly programId = 1;
   private readonly fallbackLanguage = 'en';
@@ -68,12 +69,13 @@ export class WhatsappService {
     }
     const whatsappText =
       message || (await this.getWhatsappText(language, key, programId));
-    await this.sendWhatsapp(whatsappText, recipientPhoneNr, null);
+    await this.sendWhatsapp(whatsappText, recipientPhoneNr, null, null);
   }
 
   public async sendWhatsapp(
     message: string,
     recipientPhoneNr: string,
+    messageType: null | IntersolvePayoutStatus,
     mediaUrl: null | string,
   ): Promise<any> {
     const payload = {
@@ -85,6 +87,9 @@ export class WhatsappService {
     };
     if (mediaUrl) {
       payload['mediaUrl'] = mediaUrl;
+    }
+    if (!!process.env.MOCK_TWILIO) {
+      payload['messageType'] = messageType;
     }
     return twilioClient.messages
       .create(payload)
@@ -144,7 +149,12 @@ export class WhatsappService {
       { status: callbackData.MessageStatus },
     );
 
-    const statuses = ['delivered', 'read', 'failed', 'undelivered'];
+    const statuses = [
+      TwilioStatus.delivered,
+      TwilioStatus.read,
+      TwilioStatus.failed,
+      TwilioStatus.undelivered,
+    ];
     if (statuses.includes(callbackData.MessageStatus)) {
       await this.fspService.processPaymentStatus(
         fspName.intersolve,
@@ -153,45 +163,45 @@ export class WhatsappService {
     }
   }
 
-  private async getConnectionsWithPhoneNumber(
+  private async getRegistrationsWithPhoneNumber(
     phoneNumber,
-  ): Promise<ConnectionEntity[]> {
-    const connectionsWithPhoneNumber = await getRepository(ConnectionEntity)
-      .createQueryBuilder('connection')
-      .select('connection.id')
-      .where('connection.customData ::jsonb @> :customData', {
+  ): Promise<RegistrationEntity[]> {
+    const registrationsWithPhoneNumber = await getRepository(RegistrationEntity)
+      .createQueryBuilder('registration')
+      .select('registration.id')
+      .where('registration.customData ::jsonb @> :customData', {
         customData: {
           whatsappPhoneNumber: phoneNumber,
         },
       })
       .getMany();
 
-    if (!connectionsWithPhoneNumber.length) {
+    if (!registrationsWithPhoneNumber.length) {
       console.log(
         'Incoming WhatsApp-message from non-registered phone-number: ',
         phoneNumber.substr(-5).padStart(phoneNumber.length, '*'),
       );
     }
-    return connectionsWithPhoneNumber;
+    return registrationsWithPhoneNumber;
   }
 
-  private async getConnectionsWithOpenVouchers(
-    connections: ConnectionEntity[],
-  ): Promise<ConnectionEntity[]> {
-    // Trim connections down to only those with outstanding vouchers
-    const connectionIds = connections.map(c => c.id);
-    const connectionsWithVouchers = await this.connectionRepository.find({
-      where: { id: In(connectionIds) },
+  private async getRegistrationsWithOpenVouchers(
+    registrations: RegistrationEntity[],
+  ): Promise<RegistrationEntity[]> {
+    // Trim registrations down to only those with outstanding vouchers
+    const registrationIds = registrations.map(c => c.id);
+    const registrationWithVouchers = await this.registrationRepository.find({
+      where: { id: In(registrationIds) },
       relations: ['images', 'images.barcode'],
     });
-    return connectionsWithVouchers
-      .map(connection => {
-        connection.images = connection.images.filter(
+    return registrationWithVouchers
+      .map(registration => {
+        registration.images = registration.images.filter(
           image => !image.barcode.send,
         );
-        return connection;
+        return registration;
       })
-      .filter(connection => connection.images.length > 0);
+      .filter(registration => registration.images.length > 0);
   }
 
   private cleanWhatsAppNr(value: string): string {
@@ -208,27 +218,28 @@ export class WhatsappService {
       );
     }
     const fromNumber = this.cleanWhatsAppNr(callbackData.From);
-    const connectionsWithPhoneNumber = await this.getConnectionsWithPhoneNumber(
+    const regisrationsWithPhoneNumber = await this.getRegistrationsWithPhoneNumber(
       fromNumber,
     );
-    const connectionsWithOpenVouchers = await this.getConnectionsWithOpenVouchers(
-      connectionsWithPhoneNumber,
+    const registrationsWithOpenVouchers = await this.getRegistrationsWithOpenVouchers(
+      regisrationsWithPhoneNumber,
     );
 
-    // If no connections with outstanding barcodes: send auto-reply
+    // If no registrations with outstanding barcodes: send auto-reply
     const program = await getRepository(ProgramEntity).findOne(this.programId);
-    const language = connectionsWithOpenVouchers[0]?.preferredLanguage || 'en';
-    if (connectionsWithOpenVouchers.length === 0) {
+    const language =
+      registrationsWithOpenVouchers[0]?.preferredLanguage || 'en';
+    if (registrationsWithOpenVouchers.length === 0) {
       const whatsappDefaultReply =
         program.notifications[language]['whatsappReply'];
-      await this.sendWhatsapp(whatsappDefaultReply, fromNumber, null);
+      await this.sendWhatsapp(whatsappDefaultReply, fromNumber, null, null);
       return;
     }
 
     // Start loop over (potentially) multiple PA's
     let firstVoucherSent = false;
-    for await (let connection of connectionsWithOpenVouchers) {
-      const intersolveBarcodesPerPa = connection.images.map(
+    for await (let registration of registrationsWithOpenVouchers) {
+      const intersolveBarcodesPerPa = registration.images.map(
         image => image.barcode,
       );
 
@@ -241,12 +252,17 @@ export class WhatsappService {
         // Only include text with first voucher (across PA's and installments)
         let message = firstVoucherSent
           ? ''
-          : connectionsWithOpenVouchers.length > 1
+          : registrationsWithOpenVouchers.length > 1
           ? program.notifications[language]['whatsappVoucherMultiple'] ||
             program.notifications[language]['whatsappVoucher']
           : program.notifications[language]['whatsappVoucher'];
         message = message.split('{{1}}').join(intersolveBarcode.amount);
-        await this.sendWhatsapp(message, fromNumber, mediaUrl);
+        await this.sendWhatsapp(
+          message,
+          fromNumber,
+          IntersolvePayoutStatus.VoucherSent,
+          mediaUrl,
+        );
         firstVoucherSent = true;
 
         // Save results
@@ -255,7 +271,7 @@ export class WhatsappService {
         await this.intersolveService.insertTransactionIntersolve(
           intersolveBarcode.installment,
           intersolveBarcode.amount,
-          connection.id,
+          registration.id,
           2,
           StatusEnum.success,
           null,
@@ -266,10 +282,11 @@ export class WhatsappService {
       }
     }
     // Send instruction message only once (outside of loops)
-    if (connectionsWithOpenVouchers.length > 0) {
+    if (registrationsWithOpenVouchers.length > 0) {
       await this.sendWhatsapp(
         '',
         fromNumber,
+        null,
         EXTERNAL_API.voucherInstructionsUrl,
       );
     }

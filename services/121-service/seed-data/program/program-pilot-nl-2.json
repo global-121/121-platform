@@ -1,7 +1,7 @@
 {
   "published": false,
   "validation": false,
-  "state": "design",
+  "phase": "design",
   "location": "Nederland",
   "ngo": "NLRC",
   "title": {
@@ -81,9 +81,9 @@
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
-  "customCriteria": [
+  "programQuestions": [
     {
-      "criterium": "nameFirst",
+      "name": "nameFirst",
       "label": {
         "en": "Please enter your first name:",
         "nl": "Vul je voornaam in:",
@@ -92,14 +92,14 @@
         "in": "Harap isi nama depan anda"
       },
       "answerType": "text",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
-      "criterium": "nameLast",
+      "name": "nameLast",
       "label": {
         "en": "Please enter your last name:",
         "nl": "Vul je achternaam in:",
@@ -108,14 +108,14 @@
         "in": "Harap isi nama akhir anda"
       },
       "answerType": "text",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
-      "criterium": "phoneNumber",
+      "name": "phoneNumber",
       "label": {
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
         "nl": "Geef het telefoonnummer waar je een SMS op kan ontvangen. We zullen dit telefoonnummer gebruiken om jou te informeren over het hulpprogramma. <br><br> Het zou er zo uit moeten zien: <code>+31 6 00 00 00 00</code>",
@@ -127,7 +127,7 @@
         "en": "+31 6 00 00 00 00"
       },
       "answerType": "tel",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": [],

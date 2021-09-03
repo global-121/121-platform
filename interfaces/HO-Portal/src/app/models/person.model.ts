@@ -5,11 +5,11 @@ export class Person {
   phoneNumber?: string;
   inclusionScore?: number;
   name?: string;
-  created?: string;
+  startedRegistrationDate?: string;
   importedDate?: string;
   invitedDate?: string;
   noLongerEligibleDate?: string;
-  appliedDate?: string;
+  registeredDate?: string;
   selectedForValidationDate?: string;
   validationDate?: string;
   inclusionDate?: string;
@@ -56,7 +56,7 @@ export enum PaStatus {
   imported = 'imported',
   invited = 'invited',
   noLongerEligible = 'noLongerEligible',
-  created = 'created',
+  startedRegistration = 'startedRegistration',
   registered = 'registered',
   selectedForValidation = 'selectedForValidation',
   registeredWhileNoLongerEligible = 'registeredWhileNoLongerEligible',

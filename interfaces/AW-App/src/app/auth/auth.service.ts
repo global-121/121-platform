@@ -60,7 +60,7 @@ export class AuthService {
     }
 
     return {
-      email: user.email,
+      username: user.username,
       roles: user.roles,
     };
   }

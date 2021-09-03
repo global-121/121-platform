@@ -1,5 +1,13 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
+import { IntersolvePayoutStatus } from '../fsp/api/enum/intersolve-payout-status.enum';
+
+export enum TwilioStatus {
+  delivered = 'delivered',
+  read = 'read',
+  undelivered = 'undelivered',
+  failed = 'failed',
+}
 
 export class TwilioMessagesCreateDto {
   @ApiModelProperty()
@@ -27,6 +35,11 @@ export class TwilioMessagesCreateDto {
   @IsString()
   @IsOptional()
   public readonly mediaUrl: string;
+
+  @ApiModelProperty({ example: IntersolvePayoutStatus.InitialMessage })
+  @IsString()
+  @IsOptional()
+  public readonly messageType: string;
 }
 
 class AccountSidObject {
@@ -59,47 +72,47 @@ export class TwilioValidateRequestDto {
 export class TwilioStatusCallbackDto {
   @ApiModelProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
-  public readonly MessageSid: string;
+  public MessageSid: string;
 
-  @ApiModelProperty({ example: 'delivered' })
+  @ApiModelProperty({ example: TwilioStatus.delivered })
   @IsString()
-  public readonly MessageStatus: string;
+  public MessageStatus: TwilioStatus;
 
   @ApiModelProperty({ example: 'Twilio Error: []' })
   @IsString()
   @IsOptional()
-  public readonly ErrorMessage: string;
+  public ErrorMessage: string;
 
   @ApiModelProperty({ example: '63015' })
   @IsString()
   @IsOptional()
-  public readonly ErrorCode: string;
+  public ErrorCode: string;
 }
 
 export class TwilioIncomingCallbackDto {
   @ApiModelProperty({ example: 'SMb677b6846ec347cf80b8a5fd948efb53' })
   @IsString()
   @IsOptional()
-  public readonly MessageSid: string;
+  public MessageSid: string;
 
   @ApiModelProperty({ example: 'whatsapp:+31600000000' })
   @IsString()
-  public readonly From: string;
+  public From: string;
 
   @ApiModelProperty({ example: '31600000000' })
   @IsString()
   @IsOptional()
-  public readonly WaId: string;
+  public WaId: string;
 
   @ApiModelProperty({
     example: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
   })
   @IsString()
   @IsOptional()
-  public readonly To: string;
+  public To: string;
 
   @ApiModelProperty({ example: 'Yes' })
   @IsString()
   @IsOptional()
-  public readonly Body: string;
+  public Body: string;
 }

@@ -161,7 +161,7 @@ export class SelectFspComponent extends PersonalComponent {
     this.processInOrder(
       Object.values(this.customAttributeAnswers),
       (answer: Answer) =>
-        this.programsService.postConnectionCustomAttribute(
+        this.programsService.postRegistrationCustomAttribute(
           this.referenceId,
           answer.code,
           answer.value,

@@ -10,6 +10,5 @@ export const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(
     save: jest.fn(entity => entity),
     delete: jest.fn(entity => entity),
     publish: jest.fn(entity => entity),
-    unpublish: jest.fn(entity => entity),
   }),
 );

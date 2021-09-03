@@ -62,7 +62,7 @@ describe('MakePaymentComponent', () => {
     mockProgramsApi = TestBed.get(ProgramsServiceApiService);
 
     mockProgramsApi.getTotalIncluded.and.returnValue(
-      new Promise((r) => r({ connections: 2, transferAmounts: 2 })),
+      new Promise((r) => r({ registrations: 2, transferAmounts: 2 })),
     );
     mockProgramsApi.getPastInstallments.and.returnValue(
       new Promise((r) => r(mockPastInstallments)),
@@ -90,7 +90,7 @@ describe('MakePaymentComponent', () => {
 
   it('should be disabled when 0 PA are included', async () => {
     mockProgramsApi.getTotalIncluded.and.returnValue(
-      new Promise((r) => r({ connections: 0, transferAmounts: 0 })),
+      new Promise((r) => r({ registrations: 0, transferAmounts: 0 })),
     );
 
     fixture.autoDetectChanges();
@@ -102,7 +102,7 @@ describe('MakePaymentComponent', () => {
 
   it('should be enabled when 1(+) PA are included', async () => {
     mockProgramsApi.getTotalIncluded.and.returnValue(
-      new Promise((r) => r({ connections: 1, transferAmounts: 1 })),
+      new Promise((r) => r({ registrations: 1, transferAmounts: 1 })),
     );
 
     fixture.autoDetectChanges();

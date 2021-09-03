@@ -8,20 +8,20 @@ export class Program {
   updated: string;
   meetingDocuments?: string | TranslatableString;
   ngo: string;
-  customCriteria: ProgramCriterium[];
+  programQuestions: ProgramQuestion[];
   financialServiceProviders: any[];
 }
 
-export class ProgramCriterium {
+export class ProgramQuestion {
   id: number;
-  criterium: string;
+  name: string;
   answerType: AnswerType;
   label: TranslatableString;
   placeholder?: TranslatableString;
-  options: null | ProgramCriteriumOption[];
+  options: null | ProgramQuestionOption[];
 }
 
-export class ProgramCriteriumOption {
+export class ProgramQuestionOption {
   option: string;
   label: TranslatableString;
 }
@@ -37,6 +37,6 @@ export enum AnswerType {
 
 export class ProgramAttribute {
   attributeId: number;
-  attribute: string;
-  answer: string;
+  programQuestionName: string;
+  programAnswer: string;
 }

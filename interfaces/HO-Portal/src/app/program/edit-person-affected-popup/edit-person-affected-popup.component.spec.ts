@@ -51,7 +51,7 @@ describe('EditPersonAffectedPopupComponent', () => {
     component.person = {
       id: 1,
       referenceId: 'test',
-      status: PaStatus.created,
+      status: PaStatus.startedRegistration,
     };
 
     fixture.detectChanges();

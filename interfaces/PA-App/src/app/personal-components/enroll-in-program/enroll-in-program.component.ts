@@ -3,8 +3,8 @@ import { InstanceInformation } from 'src/app/models/instance.model';
 import {
   Program,
   ProgramAttribute,
-  ProgramCriterium,
-  ProgramCriteriumOption,
+  ProgramQuestion,
+  ProgramQuestionOption,
 } from 'src/app/models/program.model';
 import { ConversationService } from 'src/app/services/conversation.service';
 import { InstanceService } from 'src/app/services/instance.service';
@@ -107,7 +107,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
     this.programId = program.id;
 
     this.programDetails = this.buildDetails(program);
-    this.questions = this.buildQuestions(program.customCriteria);
+    this.questions = this.buildQuestions(program.programQuestions);
   }
 
   private buildDetails(response: Program) {
@@ -124,22 +124,22 @@ export class EnrollInProgramComponent extends PersonalComponent {
     return programDetails;
   }
 
-  private buildQuestions(customCriteria: ProgramCriterium[]) {
-    return customCriteria.map((criterium): Question => {
+  private buildQuestions(programQuestions: ProgramQuestion[]) {
+    return programQuestions.map((programQuestion): Question => {
       return {
-        code: criterium.criterium,
-        answerType: criterium.answerType,
-        label: this.translatableString.get(criterium.label),
-        placeholder: this.translatableString.get(criterium.placeholder),
-        pattern: criterium.pattern,
-        options: criterium.options
-          ? this.buildOptions(criterium.options)
+        code: programQuestion.name,
+        answerType: programQuestion.answerType,
+        label: this.translatableString.get(programQuestion.label),
+        placeholder: this.translatableString.get(programQuestion.placeholder),
+        pattern: programQuestion.pattern,
+        options: programQuestion.options
+          ? this.buildOptions(programQuestion.options)
           : null,
       };
     });
   }
 
-  private buildOptions(optionSet: ProgramCriteriumOption[]): QuestionOption[] {
+  private buildOptions(optionSet: ProgramQuestionOption[]): QuestionOption[] {
     return optionSet.map((option) => {
       return {
         value: option.option,
@@ -186,10 +186,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
     const referenceId = await this.paData.retrieve(
       this.paData.type.referenceId,
     );
-
-    await this.programsService.postPrefilledAnswers(
+    await this.programsService.postProgramAnswers(
       referenceId,
-      this.programId,
       this.createAttributes(Object.values(this.answers)),
     );
   }
@@ -199,9 +197,8 @@ export class EnrollInProgramComponent extends PersonalComponent {
 
     answers.forEach((item: Answer) => {
       attributes.push({
-        attributeId: 0,
-        attribute: item.code,
-        answer: item.value,
+        programQuestionName: item.code,
+        programAnswer: item.value,
       });
     });
 
@@ -231,7 +228,7 @@ export class EnrollInProgramComponent extends PersonalComponent {
           id: this.currentProgram.id,
           title: this.currentProgram.title,
           description: this.currentProgram.description,
-          customCriteria: this.currentProgram.customCriteria,
+          programQuestions: this.currentProgram.programQuestions,
         },
         answers: this.answers,
       },

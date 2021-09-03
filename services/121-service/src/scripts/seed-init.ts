@@ -5,6 +5,7 @@ import { Connection } from 'typeorm';
 import { UserEntity } from '../user/user.entity';
 import crypto from 'crypto';
 import { UserRoleEntity } from '../user/user-role.entity';
+import { UserType } from '../user/user-type-enum';
 
 @Injectable()
 export class SeedInit implements InterfaceScript {
@@ -42,13 +43,11 @@ export class SeedInit implements InterfaceScript {
 
     const userRepository = this.connection.getRepository(UserEntity);
     await userRepository.save({
-      roles: await userRoleRepository.find({
-        where: { role: UserRole.Admin },
-      }),
-      email: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
+      username: process.env.USERCONFIG_121_SERVICE_EMAIL_ADMIN,
       password: crypto
         .createHmac('sha256', process.env.USERCONFIG_121_SERVICE_PASSWORD_ADMIN)
         .digest('hex'),
+      userType: UserType.aidWorker,
     });
   }
 }

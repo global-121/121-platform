@@ -4,7 +4,7 @@ import { IonContent } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { TimeoutError } from 'rxjs';
 import { FspAttribute, FspAttributeOption } from 'src/app/models/fsp.model';
-import { FspAnswer, PaDataAttribute } from 'src/app/models/pa-data.model';
+import { FspAnswer, Registration } from 'src/app/models/pa-data.model';
 import {
   Answer,
   AnswerSet,
@@ -53,8 +53,8 @@ export class ValidateFspComponent implements ValidationComponent {
       return;
     }
 
-    this.referenceId = paData[0].referenceId;
-    this.programId = paData[0].programId;
+    this.referenceId = paData.referenceId;
+    this.programId = paData.program.id;
 
     const attributesAnswers = await this.findFspAnswers();
     if (
@@ -70,7 +70,7 @@ export class ValidateFspComponent implements ValidationComponent {
     }
   }
 
-  private getPaData(): PaDataAttribute[] | null {
+  private getPaData(): Registration | null {
     const paDataRaw = window.sessionStorage.getItem('paData');
     try {
       return JSON.parse(paDataRaw);
@@ -125,7 +125,7 @@ export class ValidateFspComponent implements ValidationComponent {
   private buildQuestions(fspAttributes: FspAttribute[]) {
     return fspAttributes.map((attribute): Question => {
       return {
-        code: attribute.name,
+        name: attribute.name,
         answerType: attribute.answerType,
         label: this.translatableString.get(attribute.label),
         options: !attribute.options
@@ -163,7 +163,7 @@ export class ValidateFspComponent implements ValidationComponent {
       (answer: Answer) =>
         fspAnswers.push({
           referenceId: this.referenceId,
-          code: answer.code,
+          code: answer.name,
           value: answer.value,
         }),
     )

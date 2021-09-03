@@ -1,23 +1,21 @@
-import { ConnectionEntity } from '../../connection/connection.entity';
-import { IntersolveBarcodeEntity } from '../../programs/fsp/intersolve-barcode.entity';
+import { RegistrationEntity } from './../../registration/registration.entity';
+import { IntersolveBarcodeEntity } from '../../fsp/intersolve-barcode.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Base121Entity } from '../../base.entity';
 
 @Entity('imagecode_export_vouchers')
-export class ImageCodeExportVouchersEntity {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
+export class ImageCodeExportVouchersEntity extends Base121Entity {
   @Column({ type: 'bytea' })
   public image: any;
 
   @ManyToOne(
-    type => ConnectionEntity,
-    connection => connection.images,
+    _type => RegistrationEntity,
+    registration => registration.images,
   )
-  public connection: ConnectionEntity;
+  public registration: RegistrationEntity;
 
   @ManyToOne(
-    type => IntersolveBarcodeEntity,
+    _type => IntersolveBarcodeEntity,
     barcode => barcode.image,
   )
   public barcode: IntersolveBarcodeEntity;

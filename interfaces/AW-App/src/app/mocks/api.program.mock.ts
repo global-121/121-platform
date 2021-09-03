@@ -8,10 +8,10 @@ export const mockProgram: Program = {
   updated: new Date().toISOString(),
   meetingDocuments: 'document;document;',
   ngo: 'NGO',
-  customCriteria: [
+  programQuestions: [
     {
       id: 1,
-      criterium: 'question1',
+      name: 'question1',
       label: {
         en: 'Question 1:',
       },

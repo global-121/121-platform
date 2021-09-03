@@ -1,7 +1,7 @@
 {
   "published": false,
   "validation": false,
-  "state": "design",
+  "phase": "design",
   "location": "Nederland",
   "ngo": "NLRC",
   "title": {
@@ -66,37 +66,37 @@
     }
   },
   "phoneNumberPlaceholder": "+31 6 00 00 00 00",
-  "customCriteria": [
+  "programQuestions": [
     {
-      "criterium": "nameFirst",
+      "name": "nameFirst",
       "label": {
         "ar": "الرجاء إدخال اسمك الأول:",
         "en": "Please enter your first name:",
         "nl": "Vul je voornaam in:"
       },
       "answerType": "text",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
-      "criterium": "nameLast",
+      "name": "nameLast",
       "label": {
         "ar": "الرجاء إدخال اسم العائلة:",
         "en": "Please enter your last name:",
         "nl": "Vul je achternaam in:"
       },
       "answerType": "text",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
       "scoring": {}
     },
     {
-      "criterium": "vnumber",
+      "name": "vnumber",
       "label": {
         "ar": "رقم الـ V-number مكون من 10 ارقام. يمكنك إيجاده على إقامتك المؤقتة أو على أي رسالة من IND. <br><br> إذا لم تستطيع إيجاده، الرجاء التواصل مع الصليب الأحمر على واتس آب: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>31614458781+</a> <br><br> الرجاء إدخال رقم الـ V-Number:",
         "en": "Your V-number consists of 10 numbers. You can find it on your (former) permit of stay or on a letter from the IND.   <br><br>   If you can’t find your V-Number, please contact the Rode Kruis helpdesk via WhatsApp on: <a href='https://wa.me/31614458781' target='_blank' rel='noopener'>+31 6 14 45 87 81</a>   <br><br>   Please enter your V-Number:",
@@ -106,7 +106,7 @@
         "en": "0000000000"
       },
       "answerType": "numeric",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": ["all-people-affected", "included", "selected-for-validation"],
@@ -114,7 +114,7 @@
       "pattern": "^\\d{10}$"
     },
     {
-      "criterium": "phoneNumber",
+      "name": "phoneNumber",
       "label": {
         "ar": "الرجاء مشاركة رقم هاتف يمكننا إرسال رسالة نصية إليه. سوف نستخدم هذا الرقم لإعلامك عن برنامج المعونات. <br><br> مثال على الرقم: <code>+31600000000</code>",
         "en": "Please share the phone number that you can receive an SMS on. We will use this phone number to inform you on the aid program.   <br><br> It should look like: <code>+31 6 00 00 00 00</code>",
@@ -125,7 +125,7 @@
         "en": "+31 6 00 00 00 00"
       },
       "answerType": "tel",
-      "criteriumType": "standard",
+      "questionType": "standard",
       "options": null,
       "persistence": true,
       "export": [],
