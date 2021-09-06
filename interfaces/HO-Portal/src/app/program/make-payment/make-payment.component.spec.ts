@@ -35,12 +35,12 @@ describe('MakePaymentComponent', () => {
   const mockLatestStartAction = {
     id: 1,
     actionType: ActionType.paymentStarted,
-    timestamp: new Date(),
+    created: new Date(),
   };
   const mockLatestFinishAction = {
     id: 2,
     actionType: ActionType.paymentFinished,
-    timestamp: new Date(),
+    created: new Date(),
   };
 
   let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;

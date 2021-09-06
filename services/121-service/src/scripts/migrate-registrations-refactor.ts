@@ -142,37 +142,44 @@ export class MigrateRefactor implements InterfaceScript {
 
     await this.disableAutoIncrementId(this.userRepository);
     for await (const oldUser of oldUsers) {
-      let newUser = await this.userRepository.findOne(oldUser.userId);
+      let newUser = await this.userRepository.findOne(oldUser.userId, {
+        relations: ['programAssignments', 'programAssignments.roles'],
+      });
       if (!newUser) {
         newUser = new UserEntity();
         newUser.id = oldUser.userId;
         newUser.username = oldUser.email;
         newUser.password = 'temporary password';
         newUser.userType = UserType.aidWorker;
-        await this.userRepository.save(newUser);
+        newUser = await this.userRepository.save(newUser);
+        // This is needed to ensure that the old password is not double hashed
+        await this.connection
+          .createQueryBuilder()
+          .update(UserEntity)
+          .set({ password: oldUser.password })
+          .where('id = :id', { id: oldUser.userId })
+          .execute();
       }
-      // This is needed to ensure that the old password is not double hashed
-      await this.connection
-        .createQueryBuilder()
-        .update(UserEntity)
-        .set({ password: oldUser.password })
-        .where('id = :id', { id: oldUser.userId })
-        .execute();
 
-      const assignmentRepository = this.connection.getRepository(
-        ProgramAidworkerAssignmentEntity,
-      );
       const userRoleRepository = this.connection.getRepository(UserRoleEntity);
-      const roles = await userRoleRepository.find({
+      const role = await userRoleRepository.findOne({
         where: {
           role: oldUser.role,
         },
       });
-      await assignmentRepository.save({
-        user: { id: newUser.id },
-        program: { id: this.programId },
-        roles: roles,
-      });
+      const assignmentRepository = this.connection.getRepository(
+        ProgramAidworkerAssignmentEntity,
+      );
+      if (newUser.programAssignments && newUser.programAssignments.length > 0) {
+        newUser.programAssignments[0].roles.push(role);
+        await assignmentRepository.save(newUser.programAssignments);
+      } else {
+        await assignmentRepository.save({
+          user: { id: newUser.id },
+          program: { id: this.programId },
+          roles: [role],
+        });
+      }
     }
     await this.enableAutoIncrementId(this.userRepository);
   }
@@ -211,7 +218,7 @@ export class MigrateRefactor implements InterfaceScript {
   private async migratePaDataStorage(user: UserEntity): Promise<void> {
     console.log('migratePaDataStorage for user: ' + user.id);
 
-    const query = `SELECT 
+    const query = `SELECT
     ds.*
   FROM
     "pa-accounts"."data-storage" ds
@@ -269,7 +276,7 @@ export class MigrateRefactor implements InterfaceScript {
     await this.disableAutoIncrementId(this.registrationRepository);
 
     const oldConnections = await this.oldConnection.query(
-      `SELECT c.*,u.username 
+      `SELECT c.*,u.username
       FROM "121-service".connection c
       LEFT JOIN "pa-accounts".user u
       ON c."referenceId" = u."referenceId"
@@ -564,7 +571,7 @@ export class MigrateRefactor implements InterfaceScript {
     await this.disableAutoIncrementId(imageCodeExportVouchersRepository);
     for (let i = 1; i < 20000; i++) {
       let oldRecord = await this.oldConnection.query(`SELECT
-      
+
       *
     FROM
       "121-service"."imagecode_export_vouchers" WHERE id = ${i};
@@ -642,6 +649,11 @@ export class MigrateRefactor implements InterfaceScript {
     const maxId = await repo.findOne({
       order: { id: 'DESC' },
     });
+
+    let startSeq = 1;
+    if (maxId) {
+      startSeq = maxId.id;
+    }
     console.log('enableAutoIncrementId: ', repo.metadata.tableName);
     try {
       await repo.query(
@@ -654,7 +666,7 @@ export class MigrateRefactor implements InterfaceScript {
     await repo.query(`
       ALTER TABLE "121-service"."${repo.metadata.tableName}" ALTER COLUMN id SET DEFAULT nextval('"121-service".${repo.metadata.tableName}_id_seq');`);
     await repo.query(`
-    SELECT setval('"121-service".${repo.metadata.tableName}_id_seq', ${maxId.id}, true);`);
+    SELECT setval('"121-service".${repo.metadata.tableName}_id_seq', ${startSeq}, true);`);
   }
 }
 

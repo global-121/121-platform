@@ -1,3 +1,4 @@
+import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { SmsService } from './../notifications/sms/sms.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -19,10 +20,7 @@ import {
 import { LookupService } from '../notifications/lookup/lookup.service';
 import { ProgramQuestionEntity } from '../programs/program-question.entity';
 import { FspAttributeEntity } from '../fsp/fsp-attribute.entity';
-import {
-  FinancialServiceProviderEntity,
-  fspName,
-} from '../fsp/financial-service-provider.entity';
+import { fspName } from '../fsp/financial-service-provider.entity';
 import { LanguageEnum } from './enum/language.enum';
 import { RegistrationStatusChangeEntity } from './registration-status-change.entity';
 import { InlusionScoreService } from './services/inclusion-score.service';
@@ -443,95 +441,134 @@ export class RegistrationsService {
     includePersonalData: boolean,
   ): Promise<RegistrationResponse[]> {
     const registrations = await this.getAllRegistrations(programId);
-
-    const registrationsResponse = [];
-    for (let registration of registrations) {
-      const registrationResponse = new RegistrationResponse();
-      registrationResponse['id'] = registration.id;
-      registrationResponse['referenceId'] = registration.referenceId;
-      registrationResponse['status'] = registration.registrationStatus;
-      registrationResponse['inclusionScore'] = registration.inclusionScore;
-      registrationResponse['fsp'] = registration.fsp?.fsp;
-      registrationResponse['namePartnerOrganization'] =
-        registration.namePartnerOrganization;
-      registrationResponse['paymentAmountMultiplier'] =
-        registration.paymentAmountMultiplier;
-
-      registrationResponse[
-        RegistrationStatusTimestampField.startedRegistrationDate
-      ] = await this.getLatestDateForRegistrationStatus(
-        registration,
+    let q = await this.registrationRepository
+      .createQueryBuilder('registration')
+      .select('registration.id', 'id')
+      .addSelect('registration.referenceId', 'referenceId')
+      .addSelect('registration.registrationStatus', 'status')
+      .addSelect('registration.inclusionScore', 'inclusionScore')
+      .addSelect('fsp.fsp', 'fsp')
+      .addSelect(
+        'registration.namePartnerOrganization',
+        'namePartnerOrganization',
+      )
+      .addSelect(
+        'registration.paymentAmountMultiplier',
+        'paymentAmountMultiplier',
+      )
+      .addSelect(
+        `${RegistrationStatusEnum.startedRegistration}.created`,
+        RegistrationStatusTimestampField.startedRegistrationDate,
+      )
+      .addSelect(
+        `${RegistrationStatusEnum.imported}.created`,
+        RegistrationStatusTimestampField.importedDate,
+      )
+      .addSelect(
+        `${RegistrationStatusEnum.invited}.created`,
+        RegistrationStatusTimestampField.invitedDate,
+      )
+      .addSelect(
+        `${RegistrationStatusEnum.noLongerEligible}.created`,
+        RegistrationStatusTimestampField.noLongerEligibleDate,
+      )
+      .addSelect(
+        `${RegistrationStatusEnum.registered}.created`,
+        RegistrationStatusTimestampField.registeredDate,
+      )
+      .addSelect(
+        `${RegistrationStatusEnum.selectedForValidation}.created`,
+        RegistrationStatusTimestampField.selectedForValidationDate,
+      )
+      .addSelect(
+        `${RegistrationStatusEnum.validated}.created`,
+        RegistrationStatusTimestampField.validationDate,
+      )
+      .addSelect(
+        `${RegistrationStatusEnum.included}.created`,
+        RegistrationStatusTimestampField.inclusionDate,
+      )
+      .addSelect(
+        `${RegistrationStatusEnum.inclusionEnded}.created`,
+        RegistrationStatusTimestampField.inclusionEndDate,
+      )
+      .addSelect(
+        `${RegistrationStatusEnum.rejected}.created`,
+        RegistrationStatusTimestampField.rejectionDate,
+      )
+      .leftJoin('registration.fsp', 'fsp')
+      .leftJoin(
+        RegistrationStatusChangeEntity,
         RegistrationStatusEnum.startedRegistration,
-      );
-      registrationResponse[
-        RegistrationStatusTimestampField.importedDate
-      ] = await this.getLatestDateForRegistrationStatus(
-        registration,
+        `registration.id = ${RegistrationStatusEnum.startedRegistration}.registrationId AND ${RegistrationStatusEnum.startedRegistration}.registrationStatus = '${RegistrationStatusEnum.startedRegistration}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
         RegistrationStatusEnum.imported,
-      );
-      registrationResponse[
-        RegistrationStatusTimestampField.invitedDate
-      ] = await this.getLatestDateForRegistrationStatus(
-        registration,
+        `registration.id = ${RegistrationStatusEnum.imported}.registrationId AND ${RegistrationStatusEnum.imported}.registrationStatus = '${RegistrationStatusEnum.imported}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
         RegistrationStatusEnum.invited,
-      );
-      registrationResponse[
-        RegistrationStatusTimestampField.noLongerEligibleDate
-      ] = await this.getLatestDateForRegistrationStatus(
-        registration,
+        `registration.id = ${RegistrationStatusEnum.invited}.registrationId AND ${RegistrationStatusEnum.invited}.registrationStatus = '${RegistrationStatusEnum.invited}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
         RegistrationStatusEnum.noLongerEligible,
-      );
-      registrationResponse[
-        RegistrationStatusTimestampField.registeredDate
-      ] = await this.getLatestDateForRegistrationStatus(
-        registration,
+        `registration.id = ${RegistrationStatusEnum.noLongerEligible}.registrationId AND ${RegistrationStatusEnum.noLongerEligible}.registrationStatus = '${RegistrationStatusEnum.noLongerEligible}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
         RegistrationStatusEnum.registered,
-      );
-      registrationResponse[
-        RegistrationStatusTimestampField.selectedForValidationDate
-      ] = await this.getLatestDateForRegistrationStatus(
-        registration,
+        `registration.id = ${RegistrationStatusEnum.registered}.registrationId AND ${RegistrationStatusEnum.registered}.registrationStatus = '${RegistrationStatusEnum.registered}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
         RegistrationStatusEnum.selectedForValidation,
-      );
-      registrationResponse[
-        RegistrationStatusTimestampField.validationDate
-      ] = await this.getLatestDateForRegistrationStatus(
-        registration,
+        `registration.id = ${RegistrationStatusEnum.selectedForValidation}.registrationId AND ${RegistrationStatusEnum.selectedForValidation}.registrationStatus = '${RegistrationStatusEnum.selectedForValidation}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
         RegistrationStatusEnum.validated,
-      );
-      registrationResponse[
-        RegistrationStatusTimestampField.inclusionDate
-      ] = await this.getLatestDateForRegistrationStatus(
-        registration,
+        `registration.id = ${RegistrationStatusEnum.validated}.registrationId AND ${RegistrationStatusEnum.validated}.registrationStatus = '${RegistrationStatusEnum.validated}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
         RegistrationStatusEnum.included,
-      );
-      registrationResponse[
-        RegistrationStatusTimestampField.inclusionEndDate
-      ] = await this.getLatestDateForRegistrationStatus(
-        registration,
+        `registration.id = ${RegistrationStatusEnum.included}.registrationId AND ${RegistrationStatusEnum.included}.registrationStatus = '${RegistrationStatusEnum.included}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
         RegistrationStatusEnum.inclusionEnded,
-      );
-      registrationResponse[
-        RegistrationStatusTimestampField.rejectionDate
-      ] = await this.getLatestDateForRegistrationStatus(
-        registration,
+        `registration.id = ${RegistrationStatusEnum.inclusionEnded}.registrationId AND ${RegistrationStatusEnum.inclusionEnded}.registrationStatus = '${RegistrationStatusEnum.inclusionEnded}'`,
+      )
+      .leftJoin(
+        RegistrationStatusChangeEntity,
         RegistrationStatusEnum.rejected,
+        `registration.id = ${RegistrationStatusEnum.rejected}.registrationId AND ${RegistrationStatusEnum.rejected}.registrationStatus = '${RegistrationStatusEnum.rejected}'`,
       );
 
-      if (includePersonalData) {
-        registrationResponse['name'] = this.getName(registration.customData);
-        registrationResponse['phoneNumber'] =
-          registration.phoneNumber ||
-          registration.customData[CustomDataAttributes.phoneNumber];
-        registrationResponse['whatsappPhoneNumber'] =
-          registration.customData[CustomDataAttributes.whatsappPhoneNumber];
-        registrationResponse['vnumber'] = registration.customData['vnumber'];
-        registrationResponse['hasNote'] = !!registration.note;
-      }
-
-      registrationsResponse.push(registrationResponse);
+    if (!includePersonalData) {
+      return await q.getRawMany();
     }
-    return registrationsResponse;
+
+    q = q.addSelect('registration.phoneNumber', 'phoneNumber');
+    q = q.addSelect('registration.note', 'note');
+    q = q.addSelect('registration.customData', 'customData');
+
+    const rows = await q.getRawMany();
+    const responseRows = [];
+    for (let row of rows) {
+      row['name'] = this.getName(row.customData);
+      row['phoneNumber'] =
+        row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber];
+      row['whatsappPhoneNumber'] =
+        row.customData[CustomDataAttributes.whatsappPhoneNumber];
+      row['vnumber'] = row.customData['vnumber'];
+      delete row.customData;
+      responseRows.push(row);
+    }
+    return responseRows;
   }
 
   public async getLatestDateForRegistrationStatus(
