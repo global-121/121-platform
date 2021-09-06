@@ -232,6 +232,10 @@ export class ProgramPayoutComponent implements OnInit {
       this.exportInstallmentAvailable = false;
       return;
     }
+    if (isNaN(this.exportInstallmentId)) {
+      this.exportInstallmentAvailable = true;
+
+    }
     const installment = this.getInstallmentById(
       Number(this.exportInstallmentId),
     );

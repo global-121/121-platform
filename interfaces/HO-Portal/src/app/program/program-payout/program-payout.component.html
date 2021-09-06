@@ -12,6 +12,9 @@
       <option [value]="0">
         <ng-container>{{ 'page.program.program-payout.choose-payment'|translate }}</ng-container>
       </option>
+       <option [value]="">
+        <ng-container>{{ 'page.program.program-payout.all-closed-payments'|translate }}</ng-container>
+      </option>
       <option
         *ngFor="let installment of installments"
         [value]="installment.id"
@@ -35,6 +38,16 @@
       [paymentInstallment]="exportInstallmentId"
       [disabled]="!exportInstallmentAvailable"
     ></app-export-list>
+    <ng-container>
+      <app-export-list *ngIf="programId"
+      [programId]="programId"
+      [exportType]="enumExportType.payment"
+      [minInstallment]=10
+      [maxInstallment]=10
+      [disabled]="!exportInstallmentAvailable"
+    ></app-export-list>
+    </ng-container>
+
   </ion-row>
   <ion-row *ngIf="isIntersolve" class="ion-margin-vertical">
     <app-export-list

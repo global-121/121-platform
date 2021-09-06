@@ -189,6 +189,7 @@
         "section-title": "Manage Payments",
         "installment-nr": "Payment #{{number}}",
         "choose-payment": "Choose payment...",
+        "all-closed-payments": "All closed payments",
         "closed": "Closed",
         "open": "Open",
         "start-payout": "Start payout now",
