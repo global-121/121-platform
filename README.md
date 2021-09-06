@@ -11,15 +11,14 @@
 
 ## Status
 
-| Interfaces | Build Status |
-| ---------- | ------------ |
+| Interfaces | Build Status                                                                                                                                                                                                               |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | PA-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/PA-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=17&branchName=master) |
 | AW-App     | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/AW-App?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=18&branchName=master) |
-| HO-Portal  | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Interfaces/HO-Portal?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=13&branchName=master) |
 
-| Service            | Build Status |
-| ------------------- | ------------ |
-| 121-service         | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master) |
+| Service     | Build Status                                                                                                                                                                                                                  |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 121-service | [![Build Status](https://dev.azure.com/redcrossnl/121%20Platform/_apis/build/status/Services/121-service?branchName=master)](https://dev.azure.com/redcrossnl/121%20Platform/_build/latest?definitionId=12&branchName=master) |
 
 ---
 
@@ -43,6 +42,11 @@ To set up a local development-environment:
       After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
 
           nvm install && nvm install-latest-npm
+
+    - [NVM for Windows](https://github.com/coreybutler/nvm-windows) (for Windows).  
+      After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
+
+          nvm install <version in .node-version> && nvm install-latest-npm
 
     - [fnm](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux)
 
@@ -74,9 +78,9 @@ To see the status/logs of all Docker-containers, run from the `services/`-folder
     docker-compose logs -f <container-name>
 
 To verify the successful installation and setup of services, access their Swagger UI:
-|                     | URL                           | or run:                    |
+| | URL | or run: |
 | ------------------- | ----------------------------- | -------------------------- |
-| 121-service         | <http://localhost:3000/docs/> | `npm rum open:121-service` |
+| 121-service | <http://localhost:3000/docs/> | `npm rum open:121-service` |
 
 ---
 
@@ -220,7 +224,7 @@ Keep the following points in mind while writing test cases:
 - There are several methods which serve the purpose of defining class wide variables, which we should also test and verify. One of the typical examples of one such method is `ngOnInit`
 
 ```ts
-it('ngOnInit: should set up variables', () => {
+it("ngOnInit: should set up variables", () => {
   expect(component.isLoggedIn).toBeDefined(); // check for class variables to be defined
   expect(component.someValye).toBeTruthy(); // check for a variable to be TRUE
   expect(component.someValye).toBeFalsy(); // check for a variable to be FALSE
@@ -264,8 +268,8 @@ it("Test when xyz !== 'some-value'", () => {});
 - Make a Spy for the specific async call which returns a Promise object. For example a method containing a call routine `this.programsService.changePassword` can be spied using following
 
 ```ts
-let spy = spyOn(component.programsService, 'changePassword').and.returnValue(
-  Promise.resolve(true),
+let spy = spyOn(component.programsService, "changePassword").and.returnValue(
+  Promise.resolve(true)
 );
 ```
 
@@ -281,7 +285,7 @@ spy.calls.mostRecent().returnValue.then(() => {
 - Make sure the `done()` method is used to account for the async calls and fake async stubs/spies.
 
 ```ts
-it('XYZ', (done) => {
+it("XYZ", (done) => {
   // spies and stubs
 
   spy.calls.mostRecent().returnValue.then(() => {
