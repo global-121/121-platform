@@ -20,13 +20,14 @@
   class="ion-padding"
 >
   <section>
-    <ion-list lines="none">
+    <ion-list lines="full">
 
       <app-update-property-item
         [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.namePartnerOrganization.label'|translate"
         [value]="person?.namePartnerOrganization"
         (updated)="updatePaAttribute('namePartnerOrganization', $event)"
         [inProgress]="inProgress?.namePartnerOrganization || false"
+        class="ion-margin-vertical"
       ></app-update-property-item>
 
       <app-update-property-item
@@ -35,8 +36,27 @@
         [value]="person?.paymentAmountMultiplier"
         (updated)="updatePaAttribute('paymentAmountMultiplier', $event)"
         [inProgress]="inProgress?.paymentAmountMultiplier || false"
+        class="ion-margin-vertical"
       ></app-update-property-item>
 
+      <app-update-property-item
+        type="tel"
+        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.label'|translate"
+        [explanation]="'page.program.program-people-affected.edit-person-affected-popup.properties.phoneNumber.explanation'|translate"
+        [value]="person?.phoneNumber"
+        (updated)="updatePaAttribute('phoneNumber', $event)"
+        [inProgress]="inProgress?.phoneNumber || false"
+        class="ion-margin-vertical"
+      ></app-update-property-item>
+      <app-update-property-item
+        type="tel"
+        [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.label'|translate"
+        [explanation]="'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation'|translate"
+        [value]="person?.whatsappPhoneNumber"
+        (updated)="updatePaAttribute('whatsappPhoneNumber', $event)"
+        [inProgress]="inProgress?.whatsappPhoneNumber || false"
+        class="ion-margin-vertical"
+      ></app-update-property-item>
     </ion-list>
   </section>
   <hr />

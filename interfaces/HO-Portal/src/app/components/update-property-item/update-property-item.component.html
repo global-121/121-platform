@@ -22,6 +22,18 @@
           min="1"
         ></ion-input>
       </ng-container>
+      <ng-container *ngSwitchCase="'tel'">
+        <ion-input
+          ngDefaultControl
+          name="propertyInput"
+          [(ngModel)]="propertyModel"
+          [value]="value"
+          [placeholder]="placeholder"
+          type="tel"
+          inputmode="tel"
+          pattern="[0-9]*"
+        ></ion-input>
+      </ng-container>
       <ng-container *ngSwitchDefault>
         <ion-input
           ngDefaultControl
