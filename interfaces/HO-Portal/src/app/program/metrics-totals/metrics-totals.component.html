@@ -3,5 +3,14 @@
   (refresh)="update()"
 ></app-refresh-data>
 
-{{'page.program.metrics.totals.total-helped-to-date'|translate}} : {{total}}
+<table class="metrics-totals--table">
+  <tr>
+    <th scope="row" class="ion-padding ion-text-start shaded">
+      {{'page.program.metrics.totals.total-helped-to-date'|translate}}
+    </th>
+    <td class="ion-padding ion-text-end">
+      {{ total }}
+    </td>
+  </tr>
+</table>
 
