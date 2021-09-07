@@ -5,6 +5,10 @@ export class ProgramMetrics {
   pa?: PeopleMetrics;
 }
 
+export enum PeopleMetricsAttribute {
+  totalPaHelped = 'totalPaHelped',
+}
+
 export class PeopleMetrics {
   [PaStatus.imported]: number;
   [PaStatus.invited]: number;
@@ -16,6 +20,7 @@ export class PeopleMetrics {
   [PaStatus.included]: number;
   [PaStatus.inclusionEnded]: number;
   [PaStatus.rejected]: number;
+  [PeopleMetricsAttribute.totalPaHelped]: number;
 }
 
 export class MetricRow {

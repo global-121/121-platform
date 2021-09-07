@@ -1,5 +1,9 @@
 import { RegistrationStatusEnum } from '../../registration/enum/registration-status.enum';
 
+export enum PaMetricsProperty {
+  totalPaHelped = 'totalPaHelped',
+}
+
 export interface PaMetrics {
   [RegistrationStatusEnum.imported]?: number;
   [RegistrationStatusEnum.invited]?: number;
@@ -12,4 +16,5 @@ export interface PaMetrics {
   [RegistrationStatusEnum.included]: number;
   [RegistrationStatusEnum.inclusionEnded]: number;
   [RegistrationStatusEnum.rejected]: number;
+  [PaMetricsProperty.totalPaHelped]: number;
 }

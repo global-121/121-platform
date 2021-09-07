@@ -5,7 +5,10 @@ import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
 import { PaStatus } from 'src/app/models/person.model';
-import { ProgramMetrics } from 'src/app/models/program-metrics.model';
+import {
+  PeopleMetricsAttribute,
+  ProgramMetrics,
+} from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
 import { PastPaymentsService } from 'src/app/services/past-payments.service';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
@@ -59,6 +62,7 @@ describe('MetricsStatesComponent', () => {
       [PaStatus.included]: getRandomInt(0, 100),
       [PaStatus.inclusionEnded]: getRandomInt(0, 100),
       [PaStatus.rejected]: getRandomInt(0, 100),
+      [PeopleMetricsAttribute.totalPaHelped]: getRandomInt(0, 100),
     },
   };
 

@@ -5,8 +5,13 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { TranslateModule } from '@ngx-translate/core';
 import apiProgramsMock from 'src/app/mocks/api.programs.mock';
 import { getRandomInt, provideMagicalMock } from 'src/app/mocks/helpers';
+import { PaStatus } from 'src/app/models/person.model';
+import {
+  PeopleMetricsAttribute,
+  ProgramMetrics,
+} from 'src/app/models/program-metrics.model';
 import { Program } from 'src/app/models/program.model';
-import { PastPaymentsService } from 'src/app/services/past-payments.service';
+import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { MetricsTotalsComponent } from './metrics-totals.component';
 
@@ -21,22 +26,22 @@ describe('MetricsTotalsComponent', () => {
   let fixture: ComponentFixture<TestHostComponent>;
   let testHost: TestHostComponent;
 
-  const mockPastInstallmentsWithStateSums = [
-    {
-      id: 1,
-      values: {
-        'pre-existing': getRandomInt(0, 100),
-        new: getRandomInt(0, 100),
-      },
+  const mockProgramMetrics: ProgramMetrics = {
+    updated: new Date().toISOString(),
+    pa: {
+      [PaStatus.imported]: getRandomInt(0, 100),
+      [PaStatus.invited]: getRandomInt(0, 100),
+      [PaStatus.noLongerEligible]: getRandomInt(0, 100),
+      [PaStatus.startedRegistration]: getRandomInt(0, 100),
+      [PaStatus.registered]: getRandomInt(0, 100),
+      [PaStatus.selectedForValidation]: getRandomInt(0, 100),
+      [PaStatus.validated]: getRandomInt(0, 100),
+      [PaStatus.included]: getRandomInt(0, 100),
+      [PaStatus.inclusionEnded]: getRandomInt(0, 100),
+      [PaStatus.rejected]: getRandomInt(0, 100),
+      [PeopleMetricsAttribute.totalPaHelped]: getRandomInt(0, 100),
     },
-    {
-      id: 2,
-      values: {
-        'pre-existing': getRandomInt(0, 100),
-        new: getRandomInt(0, 100),
-      },
-    },
-  ];
+  };
 
   const fixtureProgram = apiProgramsMock.programs[0];
 
@@ -50,16 +55,16 @@ describe('MetricsTotalsComponent', () => {
         NoopAnimationsModule,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [provideMagicalMock(PastPaymentsService)],
+      providers: [provideMagicalMock(ProgramsServiceApiService)],
     }).compileComponents();
   }));
 
-  let mockPastPaymentsService: jasmine.SpyObj<PastPaymentsService>;
+  let mockProgramsApi: jasmine.SpyObj<ProgramsServiceApiService>;
 
   beforeEach(() => {
-    mockPastPaymentsService = TestBed.get(PastPaymentsService);
-    mockPastPaymentsService.getInstallmentsWithStateSums.and.returnValue(
-      new Promise((r) => r(mockPastInstallmentsWithStateSums)),
+    mockProgramsApi = TestBed.get(ProgramsServiceApiService);
+    mockProgramsApi.getMetricsById.and.returnValue(
+      new Promise((r) => r(mockProgramMetrics)),
     );
 
     fixture = TestBed.createComponent(TestHostComponent);
@@ -80,9 +85,9 @@ describe('MetricsTotalsComponent', () => {
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
-    expect(
-      mockPastPaymentsService.getInstallmentsWithStateSums,
-    ).toHaveBeenCalledWith(fixtureProgram.id);
+    expect(mockProgramsApi.getMetricsById).toHaveBeenCalledWith(
+      fixtureProgram.id,
+    );
   });
 
   it('should request the metrics (again) when triggered from the interface', async () => {
@@ -91,13 +96,9 @@ describe('MetricsTotalsComponent', () => {
     fixture.autoDetectChanges();
     await fixture.whenStable();
 
-    expect(
-      mockPastPaymentsService.getInstallmentsWithStateSums,
-    ).toHaveBeenCalledTimes(1);
+    expect(mockProgramsApi.getMetricsById).toHaveBeenCalledTimes(1);
     document.getElementById('refresh').click();
 
-    expect(
-      mockPastPaymentsService.getInstallmentsWithStateSums,
-    ).toHaveBeenCalledTimes(2);
+    expect(mockProgramsApi.getMetricsById).toHaveBeenCalledTimes(2);
   });
 });
