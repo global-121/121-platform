@@ -666,7 +666,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     };
 
     personRow = this.fillPaymentColumns(personRow);
-
     return personRow;
   }
 

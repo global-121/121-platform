@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.12.0...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.12.2...master)
 
 ---
+## [1.12.2](https://github.com/global-121/121-platform/compare/v1.12.1...v1.12.2) - 2021-09-07
+
+## [1.12.1](https://github.com/global-121/121-platform/compare/v1.12.0...v1.12.1) - 2021-09-03
+
 ## [1.12.0](https://github.com/global-121/121-platform/compare/v1.11.0...v1.12.0) - 2021-09-03
 
 ## [1.11.0](https://github.com/global-121/121-platform/compare/v1.10.2...v1.11.0) - 2021-08-30
@@ -33,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Incoming messages: improved error-handling/logging and status-management
 
 ## [1.7.3](https://github.com/global-121/121-platform/compare/v1.7.2...v1.7.3) - 2021-06-26
-- 2021-06-26: uuid lib PA-app suddenly failing in build prod-mode, replaced by random string function 
+- 2021-06-26: uuid lib PA-app suddenly failing in build prod-mode, replaced by random string function
 
 ## [1.7.2](https://github.com/global-121/121-platform/compare/v1.7.1...v1.7.2) - 2021-06-23
 
@@ -72,8 +76,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - 2021-05-25: Upgraded Node.js version to v12
-- 2021-05-26: Updated dependencies of 121-service and PA-accounts-service;  
-  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`  
+- 2021-05-26: Updated dependencies of 121-service and PA-accounts-service;
+  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
   To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
 ## [1.4.1](https://github.com/global-121/121-platform/compare/v1.4.0...v1.4.1) - 2021-05-12
@@ -88,7 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - 2021-04-14: Removed native Android build from PA-App
-- 2021-04-14: Removed "local storage"-features from PA-App  
+- 2021-04-14: Removed "local storage"-features from PA-App
   Make sure to update any ENV-variables no longer in use from [interfaces/PA-App/.env](interfaces/PA-App/.env.example)
 - 2021-04-20: Removed all components related to Sovrin
 
@@ -120,8 +124,8 @@ Hotfix for query-complexity.
 
 ### Changed
 
-- 2021-03-30: Updated dependency `y18n` to 121-service and PA-accounts-service;  
-  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`  
+- 2021-03-30: Updated dependency `y18n` to 121-service and PA-accounts-service;
+  To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
   To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
 ---
@@ -160,7 +164,7 @@ Hotfix: To run initial start-up without manual intervention.
 
 ### Added
 
-- 2021-03-09: Added new dependency `csv-parser` to 121-service;  
+- 2021-03-09: Added new dependency `csv-parser` to 121-service;
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 
 ## [0.19.1](https://github.com/global-121/121-platform/compare/v0.19.0...v0.19.1) - 2021-02-24
@@ -186,7 +190,7 @@ Hotfix: To run initial start-up without manual intervention.
 
   To retain the existing users' roles a manual migration-step is required.
 
-- 2021-02-09: Default user-accounts changed  
+- 2021-02-09: Default user-accounts changed
   The values defined in `services/.env` need to be updated according to: [`services/.env.example`](services/.env.example).
 
 ## [0.17.4](https://github.com/global-121/121-platform/compare/v0.17.3...v0.17.4) - 2021-02-03
@@ -221,9 +225,9 @@ Hotfix: To run initial start-up without manual intervention.
 
 ### Changed
 
-- 2020-12-30: Use named-volumes for `node_modules` in `docker-compose.yml`  
-  This fixes/enables automatic installation of new dependencies of the back-end services (when pulling newer code).  
-  It is recommended to fully remove the `node_modules`-folders in the `121-service` and the `PA-accounts-service` folders before deploying this version.  
+- 2020-12-30: Use named-volumes for `node_modules` in `docker-compose.yml`
+  This fixes/enables automatic installation of new dependencies of the back-end services (when pulling newer code).
+  It is recommended to fully remove the `node_modules`-folders in the `121-service` and the `PA-accounts-service` folders before deploying this version.
   They will be recreated/updated by the build-steps in their `Dockerfile`'s and/or the `docker-compose`-file when running `npm run start:services` from the root-folder.
 
 ## [0.14.0](https://github.com/global-121/121-platform/compare/v0.13.6...v0.14.0) - 2020-12-09
@@ -250,7 +254,7 @@ Hotfix: To run initial start-up without manual intervention.
 
 ### Changed
 
-- 2020-11-19: Updated/fixed dependencies of PA-accounts-service;  
+- 2020-11-19: Updated/fixed dependencies of PA-accounts-service;
   To update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
 ## [0.13.0](https://github.com/global-121/121-platform/compare/v0.12.2...v0.13.0) - 2020-11-18
@@ -265,7 +269,7 @@ Hotfix to fix Intersolve integration for NL-pilot.
 
 ### Changed
 
-- 2020-11-12: Updated/fixed dependencies of 121-service;  
+- 2020-11-12: Updated/fixed dependencies of 121-service;
   To update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 
 ## [0.12.0](https://github.com/global-121/121-platform/compare/v0.11.0...v0.12.0) - 2020-11-12
@@ -279,16 +283,16 @@ Hotfix to fix Intersolve integration for NL-pilot.
 ### Added
 
 - 2020-10-29: `deploy.sh` can log to a file, when defined with `GLOBAL_121_DEPLOY_LOG_FILE`-variable in [tools/.env](tools/.env.example).
-- 2020-11-03: Added new dependency `jimp` to 121-service;  
+- 2020-11-03: Added new dependency `jimp` to 121-service;
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
 
 ### Changed
 
-- 2020-11-11: Updated dependency `find-my-way` in 121-service;  
+- 2020-11-11: Updated dependency `find-my-way` in 121-service;
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
-- 2020-11-11: Updated dependency `find-my-way` in PA-accounts-service;  
+- 2020-11-11: Updated dependency `find-my-way` in PA-accounts-service;
   To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
-- 2020-11-11: Updated dependency `bl` in PA-accounts-service;  
+- 2020-11-11: Updated dependency `bl` in PA-accounts-service;
   To add/update manually: `docker-compose exec PA-accounts-service npm install --no-save --no-fund --no-audit`
 
 ## [0.10.0](https://github.com/global-121/121-platform/compare/v0.9.0...v0.10.0) - 2020-10-28
