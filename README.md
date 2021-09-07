@@ -177,6 +177,39 @@ When new Node.js dependencies are added to the services since it is last build o
 
       npm run start:services -- --force-recreate <container-name>
 
+### Node-sass related errors on interface start
+
+If you get an error related to node-sass when starting any interface, you might be using an incorrect version of Node.js.
+To fix this you can:
+
+1.  Check the correct Node.js version to use in the [`.node-version`](.node-version)-file.
+
+2.  Check if you already have it installed on your machine with
+
+        nvm list
+
+    - If the correct version is installed, switch to it with
+
+      (for macOS/Linux)
+
+          nvm use
+
+      (for Windows)
+
+          nvm use <version in .node-version>
+
+    - If the correct version is not installed, install it with
+
+      (for macOS/Linux)
+
+          nvm install
+
+      (for Windows)
+
+          nvm install <version in .node-version>
+
+      Then you can switch to it with `nvm use` or `nvm use <version in .node-version>`
+
 ---
 
 ## Testing
