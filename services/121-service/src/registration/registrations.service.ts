@@ -440,7 +440,6 @@ export class RegistrationsService {
     programId: number,
     includePersonalData: boolean,
   ): Promise<RegistrationResponse[]> {
-    const registrations = await this.getAllRegistrations(programId);
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id')
@@ -546,7 +545,8 @@ export class RegistrationsService {
         RegistrationStatusChangeEntity,
         RegistrationStatusEnum.rejected,
         `registration.id = ${RegistrationStatusEnum.rejected}.registrationId AND ${RegistrationStatusEnum.rejected}.registrationStatus = '${RegistrationStatusEnum.rejected}'`,
-      );
+      )
+      .where('registration.program.id = :programId', { programId: programId });
 
     if (!includePersonalData) {
       return await q.getRawMany();
@@ -637,16 +637,6 @@ export class RegistrationsService {
       case RegistrationStatusEnum.rejected:
         return RegistrationStatusTimestampField.rejectionDate;
     }
-  }
-
-  private async getAllRegistrations(
-    programId: number,
-  ): Promise<RegistrationEntity[]> {
-    return await this.registrationRepository.find({
-      where: { program: { id: programId } },
-      relations: ['fsp'],
-      order: { inclusionScore: 'DESC' },
-    });
   }
 
   public async updateAttribute(
