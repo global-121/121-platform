@@ -1,0 +1,16 @@
+<app-refresh-data
+  [lastUpdated]="lastUpdated"
+  (refresh)="update()"
+></app-refresh-data>
+
+<table class="metrics-totals--table">
+  <tr>
+    <th scope="row" class="ion-padding ion-text-start shaded">
+      {{'page.program.metrics.totals.total-helped-to-date'|translate}}
+    </th>
+    <td class="ion-padding ion-text-end">
+      {{ total }}
+    </td>
+  </tr>
+</table>
+

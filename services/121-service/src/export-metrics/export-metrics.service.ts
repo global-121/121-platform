@@ -22,7 +22,7 @@ import { StatusEnum } from '../shared/enum/status.enum';
 import { TransactionEntity } from '../programs/transactions.entity';
 import { ProgramService } from '../programs/programs.service';
 import { FspService } from '../fsp/fsp.service';
-import { PaMetrics } from './dto/pa-metrics.dto';
+import { PaMetrics, PaMetricsProperty } from './dto/pa-metrics.dto';
 import { Attributes } from '../registration/dto/update-attribute.dto';
 import { TotalIncluded } from './dto/total-included.dto';
 import { InstallmentStateSumDto } from './dto/installment-state-sum.dto';
@@ -613,6 +613,13 @@ export class ExportMetricsService {
         year,
         fromStart,
       ),
+      [PaMetricsProperty.totalPaHelped]: await this.getTotalPaHelped(
+        programId,
+        installment,
+        month,
+        year,
+        fromStart,
+      ),
     };
 
     return metrics;
@@ -676,6 +683,47 @@ export class ExportMetricsService {
       );
     }
     return filteredRegistrations.length;
+  }
+
+  public async getTotalPaHelped(
+    programId: number,
+    installment?: number,
+    month?: number,
+    year?: number,
+    fromStart?: number,
+  ): Promise<number> {
+    let query = this.registrationRepository
+      .createQueryBuilder('registration')
+      .innerJoinAndSelect('registration.transactions', 'transactions');
+    let yearMonthStartCondition;
+    if (month >= 0 && year) {
+      yearMonthStartCondition = new Date(year, month, 1, 0, 0, 0);
+      let yearMonthEndCondition;
+      if (fromStart || !(year || month)) {
+        yearMonthEndCondition = new Date(3000, month + 1, 1, 0, 0, 0);
+      } else {
+        yearMonthEndCondition = new Date(year, month + 1, 1, 0, 0);
+      }
+      query = query
+        .where('transactions.created > :yearMonthStartCondition', {
+          yearMonthStartCondition: yearMonthStartCondition,
+        })
+        .where('transactions.created < :yearMonthEndCondition', {
+          yearMonthEndCondition: yearMonthEndCondition,
+        });
+    }
+    if (installment) {
+      if (fromStart) {
+        query = query.where('transactions.installment >= :installment', {
+          installment: installment,
+        });
+      } else {
+        query = query.where('transactions.installment = :installment', {
+          installment: installment,
+        });
+      }
+    }
+    return await query.getCount();
   }
 
   public async getInstallmentsWithStateSums(
