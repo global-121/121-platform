@@ -21,9 +21,9 @@ export class ExportListComponent implements OnChanges {
   @Input()
   public paymentInstallment: number;
   @Input()
-    public minInstallment: number;
+  public minInstallment: number;
   @Input()
-    public maxInstallment: number;
+  public maxInstallment: number;
   @Input()
   public disabled: boolean;
   public isInProgress = false;

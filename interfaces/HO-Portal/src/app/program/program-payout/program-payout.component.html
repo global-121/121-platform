@@ -38,15 +38,14 @@
       [paymentInstallment]="exportInstallmentId"
       [disabled]="!exportInstallmentAvailable"
     ></app-export-list>
-    <ng-container>
-      <app-export-list *ngIf="programId"
+    <app-export-list
+      *ngIf="programId"
       [programId]="programId"
       [exportType]="enumExportType.payment"
-      [minInstallment]=10
-      [maxInstallment]=10
+      [minInstallment]="0"
+      [maxInstallment]="program.distributionDuration"
       [disabled]="!exportInstallmentAvailable"
     ></app-export-list>
-    </ng-container>
 
   </ion-row>
   <ion-row *ngIf="isIntersolve" class="ion-margin-vertical">
