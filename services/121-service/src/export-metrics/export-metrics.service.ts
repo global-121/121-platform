@@ -48,8 +48,9 @@ export class ExportMetricsService {
   public getExportList(
     programId: number,
     type: ExportType,
-    installment: number | null = null,
     userId: number,
+    minInstallment: number | null = null,
+    maxInstallment: number | null = null,
   ): Promise<FileDto> {
     this.actionService.saveAction(userId, programId, type);
     switch (type) {
@@ -63,7 +64,11 @@ export class ExportMetricsService {
         return this.getSelectedForValidationList(programId);
       }
       case ExportType.payment: {
-        return this.getPaymentDetails(programId, installment);
+        return this.getPaymentDetails(
+          programId,
+          minInstallment,
+          maxInstallment,
+        );
       }
       case ExportType.unusedVouchers: {
         return this.getUnusedVouchers();
@@ -76,16 +81,18 @@ export class ExportMetricsService {
 
   private async getPaymentDetails(
     programId: number,
-    installmentId: number,
+    minInstallmentId: number,
+    maxInstallmentId: number,
   ): Promise<FileDto> {
     let pastPaymentDetails = await this.getPaymentDetailsInstallment(
       programId,
-      installmentId,
+      minInstallmentId,
+      maxInstallmentId,
     );
 
     if (pastPaymentDetails.length === 0) {
       return {
-        fileName: `payment-details-future-installment-${installmentId}.csv`,
+        fileName: `payment-details-future-installment-${minInstallmentId}.csv`,
         data: (await this.getInclusionList(programId)).data,
       };
     }
@@ -95,7 +102,11 @@ export class ExportMetricsService {
     );
 
     const csvFile = {
-      fileName: `payment-details-completed-installment-${installmentId}.csv`,
+      fileName: `payment-details-completed-installment-${
+        minInstallmentId === maxInstallmentId
+          ? minInstallmentId
+          : `${minInstallmentId}-to-${maxInstallmentId}`
+      }.csv`,
       data: this.jsonToCsv(pastPaymentDetails),
     };
 
@@ -453,18 +464,26 @@ export class ExportMetricsService {
 
   private async getPaymentDetailsInstallment(
     programId: number,
-    installmentId: number,
+    minInstallmentId: number,
+    maxInstallmentId: number,
   ): Promise<any> {
     const latestSuccessTransactionPerPa = await this.transactionRepository
+
       .createQueryBuilder('transaction')
       .select('transaction.registrationId', 'registrationId')
+      .addSelect('transaction.installment', 'installment')
       .addSelect('MAX(transaction.created)', 'maxCreated')
       .where('transaction.program.id = :programId', { programId: programId })
-      .andWhere('transaction.installment = :installmentId', {
-        installmentId: installmentId,
-      })
+      .andWhere(
+        'transaction.installment between :minInstallmentId and :maxInstallmentId',
+        {
+          minInstallmentId: minInstallmentId,
+          maxInstallmentId: maxInstallmentId,
+        },
+      )
       .andWhere('transaction.status = :status', { status: StatusEnum.success })
-      .groupBy('transaction.registrationId');
+      .groupBy('transaction.registrationId')
+      .addGroupBy('transaction.installment');
 
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
@@ -479,7 +498,7 @@ export class ExportMetricsService {
       .innerJoin(
         '(' + latestSuccessTransactionPerPa.getQuery() + ')',
         'subquery',
-        'transaction.registrationId = subquery."registrationId" AND transaction.created = subquery."maxCreated"',
+        'transaction.registrationId = subquery."registrationId" AND transaction.installment = subquery.installment AND transaction.created = subquery."maxCreated"',
       )
       .setParameters(latestSuccessTransactionPerPa.getParameters())
       .leftJoin('transaction.registration', 'registration')
