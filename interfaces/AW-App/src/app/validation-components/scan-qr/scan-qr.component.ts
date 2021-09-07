@@ -121,7 +121,9 @@ export class ScanQrComponent implements ValidationComponent {
     }
     try {
       referenceIdJson.referenceId = await this.getPaIdentifierOnline(data);
-      return referenceIdJson;
+      if (referenceIdJson.referenceId) {
+        return referenceIdJson;
+      }
     } catch {
       return false;
     }

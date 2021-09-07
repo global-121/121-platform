@@ -3,7 +3,7 @@ Feature: Manage aidworkers
 
   Background:
     Given a logged-in user with the "run program" role
-    Given the user views the "program" page
+    Given the user views the "aid-workers" page
 
   Scenario: View assigned aidworkers
     When the user scrolls to the "manage aidworkers" section
