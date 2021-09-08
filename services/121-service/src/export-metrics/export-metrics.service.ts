@@ -208,8 +208,8 @@ export class ExportMetricsService {
   private async addPaymentFieldsToExport(
     row: object,
     registration: RegistrationEntity,
-    programId: number,
     installments: number[],
+    transactions: any[],
   ): Promise<object> {
     const voucherStatuses = [
       IntersolvePayoutStatus.InitialMessage,
@@ -218,15 +218,11 @@ export class ExportMetricsService {
     for await (let installment of installments) {
       const transaction = {};
       for await (let voucherStatus of voucherStatuses) {
-        const input = {
-          referenceId: registration.referenceId,
-          programId: programId,
-          installment: installment,
-          customDataKey: 'IntersolvePayoutStatus',
-          customDataValue: voucherStatus,
-        };
-        transaction[voucherStatus] = await this.programService.getTransaction(
-          input,
+        transaction[voucherStatus] = transactions.find(
+          t =>
+            t.installment === installment &&
+            t.referenceId === registration.referenceId &&
+            t.customData['IntersolvePayoutStatus'] === voucherStatus,
         );
       }
       let creationTransaction: GetTransactionOutputDto;
@@ -234,23 +230,17 @@ export class ExportMetricsService {
         creationTransaction =
           transaction[IntersolvePayoutStatus.InitialMessage];
       } else {
-        creationTransaction = await this.programService.getTransaction({
-          referenceId: registration.referenceId,
-          programId: programId,
-          installment: installment,
-          customDataKey: null,
-          customDataValue: null,
-        });
+        creationTransaction = transactions.find(
+          t =>
+            t.installment === installment &&
+            t.referenceId === registration.referenceId &&
+            !t.customData['IntersolvePayoutStatus'],
+        );
       }
       row[`payment${installment}_status`] = creationTransaction?.status;
       row[`payment${installment}_voucherCreated_date`] =
         creationTransaction?.status === StatusEnum.success
           ? creationTransaction?.installmentDate
-          : null;
-      row[`payment${installment}_initialMessage_date`] =
-        transaction[IntersolvePayoutStatus.InitialMessage]?.status ===
-        StatusEnum.success
-          ? transaction[IntersolvePayoutStatus.InitialMessage]?.installmentDate
           : null;
       row[`payment${installment}_voucherSent_date`] =
         transaction[IntersolvePayoutStatus.VoucherSent]?.status ===
@@ -266,11 +256,15 @@ export class ExportMetricsService {
       relations: ['fsp'],
     });
     const questions = await this.getAllQuestionsForExport();
-    const installments = (
-      await this.programService.getInstallments(programId)
-    ).map(i => i.installment);
-
+    const installments = (await this.programService.getInstallments(programId))
+      .map(i => i.installment)
+      .sort((a, b) => (a > b ? 1 : -1));
     const registrationDetails = [];
+
+    const transactions = await this.programService.getTransactions(
+      programId,
+      true,
+    );
 
     for await (let registration of registrations) {
       let row = {};
@@ -284,8 +278,8 @@ export class ExportMetricsService {
       row = await this.addPaymentFieldsToExport(
         row,
         registration,
-        programId,
         installments,
+        transactions,
       );
       registrationDetails.push(row);
     }
