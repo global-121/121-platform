@@ -16,7 +16,7 @@
           'page.program.program-payout.choose-payment' | translate
         }}</ng-container>
       </option>
-      <option [value]="-1">
+      <option [value]="-1" [disabled]="lastInstallmentId < 1">
         {{ 'page.program.program-payout.all-closed-payments' | translate }}
       </option>
       <option
