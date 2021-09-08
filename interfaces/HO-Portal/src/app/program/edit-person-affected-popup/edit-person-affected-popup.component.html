@@ -49,6 +49,7 @@
         class="ion-margin-vertical"
       ></app-update-property-item>
       <app-update-property-item
+        *ngIf="person.whatsappPhoneNumber"
         type="tel"
         [label]="'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.label'|translate"
         [explanation]="'page.program.program-people-affected.edit-person-affected-popup.properties.whatsappPhoneNumber.explanation'|translate"
