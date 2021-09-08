@@ -201,7 +201,7 @@ export class ScanQrComponent implements ValidationComponent {
     });
     if (prefilledQuestions.length > 0) {
       return {
-        referenceId: referenceId,
+        referenceId,
         program: { id: offlineData[0].programId },
         programAnswers: prefilledQuestions,
       };
