@@ -397,6 +397,7 @@ export class ProgramService {
 
   public async getTransactions(
     programId: number,
+    splitByTransactionStep: boolean,
     minInstallment?: number,
   ): Promise<any> {
     const maxAttemptPerPaAndInstallment = await this.transactionRepository
@@ -407,6 +408,12 @@ export class ProgramService {
       )
       .groupBy('installment')
       .addGroupBy('"registrationId"');
+
+    if (splitByTransactionStep) {
+      maxAttemptPerPaAndInstallment
+        .addSelect('"transactionStep"')
+        .addGroupBy('"transactionStep"');
+    }
 
     const transactions = await this.transactionRepository
       .createQueryBuilder('transaction')
@@ -422,7 +429,7 @@ export class ProgramService {
       .leftJoin(
         '(' + maxAttemptPerPaAndInstallment.getQuery() + ')',
         'subquery',
-        `transaction.registrationId = subquery."registrationId" AND transaction.installment = subquery.installment AND cast("transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
+        `transaction.registrationId = subquery."registrationId" AND transaction.installment = subquery.installment AND cast(transaction."transactionStep" as varchar) || '-' || cast(created as varchar) = subquery.max_attempt`,
       )
       .leftJoin('transaction.registration', 'r')
       .where('transaction.program.id = :programId', { programId: programId })
@@ -440,6 +447,7 @@ export class ProgramService {
   ): Promise<any> {
     const allLatestTransactionAttemptsPerPa = await this.getTransactions(
       programId,
+      false,
       installment,
     );
     const failedTransactions = allLatestTransactionAttemptsPerPa.filter(
