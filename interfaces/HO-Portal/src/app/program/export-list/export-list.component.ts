@@ -86,7 +86,8 @@ export class ExportListComponent implements OnChanges {
       .exportList(
         Number(this.programId),
         this.exportType,
-        Number(this.paymentInstallment),
+        Number(this.minInstallment),
+        Number(this.maxInstallment),
       )
       .then(
         (res) => {
