@@ -49,17 +49,24 @@ export class EditPersonAffectedPopupComponent implements OnInit {
         (error) => {
           this.inProgress[attribute] = false;
           console.log('error: ', error);
-          if (error && error.error && error.error.errors) {
+          if (error && error.error) {
             const errorMessage = this.translate.instant('common.update-error', {
-              error: this.formatConstraintsErrors(
-                error.error.errors,
-                attribute,
-              ),
+              error: this.formatErrors(error.error, attribute),
             });
             this.actionResult(errorMessage);
           }
         },
       );
+  }
+
+  private formatErrors(error, attribute: string): string {
+    console.log('error: formatErrors', error);
+    if (error.errors) {
+      return this.formatConstraintsErrors(error, attribute);
+    }
+    if (error.message) {
+      return '<br><br>' + error.message + '<br>';
+    }
   }
 
   private formatConstraintsErrors(errors, attribute: string): string {

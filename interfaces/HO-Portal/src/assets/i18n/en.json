@@ -294,6 +294,14 @@
             },
             "namePartnerOrganization": {
               "label": "Name of Partner organisation"
+            },
+            "phoneNumber": {
+              "label": "Phone number",
+              "explanation": "The required format is: ONLY numbers, including country-code."
+            },
+            "whatsappPhoneNumber": {
+              "label": "WhatsApp number",
+              "explanation": "This value is required for a 'WhatsApp-enabled' FSP only."
             }
           },
           "note": {
