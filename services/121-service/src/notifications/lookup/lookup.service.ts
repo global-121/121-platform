@@ -42,7 +42,7 @@ export class LookupService {
       }
       if (e.status === HttpStatus.NOT_FOUND) {
         const errors = `Phone number incorrect`;
-        throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
+        throw new HttpException(errors, HttpStatus.BAD_REQUEST);
       }
     }
   }
