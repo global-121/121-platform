@@ -239,7 +239,7 @@ export class ProgramPayoutComponent implements OnInit {
     }
     if (Number(this.exportInstallmentId) < 0) {
       this.minInstallment = 1;
-      this.maxInstallment = this.program.distributionDuration;
+      this.maxInstallment = this.lastInstallmentId;
     } else if (this.exportInstallmentId > 0) {
       this.minInstallment = this.exportInstallmentId;
       this.maxInstallment = this.exportInstallmentId;
