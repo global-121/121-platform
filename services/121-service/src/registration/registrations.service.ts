@@ -881,14 +881,14 @@ export class RegistrationsService {
     return data;
   }
 
-  public async getAllProgramAnswers(
-    user: UserEntity,
-  ): Promise<ProgramAnswerEntity[]> {
+  public async getAllProgramAnswers(user: UserEntity): Promise<any[]> {
     const programIds = user.programAssignments.map(p => p.program.id);
     const registrationsToValidate = await getRepository(RegistrationEntity)
       .createQueryBuilder('registration')
-      .leftJoin('registration.program', 'program')
+      .addSelect('"referenceId"')
+      .leftJoinAndSelect('registration.program', 'program')
       .leftJoinAndSelect('registration.programAnswers', 'programAnswers')
+      .leftJoinAndSelect('programAnswers.programQuestion', 'programQuestion')
       .andWhere('registration.program.id IN (:...programIds)', {
         programIds: programIds,
       })
@@ -899,8 +899,13 @@ export class RegistrationsService {
         ],
       })
       .getMany();
+
     let answers = [];
     for (const r of registrationsToValidate) {
+      for (const a of r.programAnswers) {
+        a['referenceId'] = r.referenceId;
+        a['programId'] = r.program.id;
+      }
       answers = [...answers, ...r.programAnswers];
     }
     return answers;
