@@ -3,12 +3,19 @@
   (refresh)="update()"
 ></app-refresh-data>
 
-{{ 'page.program.metrics.totals.total-helped-to-date' | translate
-}}<tooltip
-  [value]="
-    'page.program.metrics.totals.pas-that-received-one-or-more-payments'
-      | translate
-  "
-></tooltip>
-:
-{{ total }}
+<table class="metrics-totals--table">
+  <tr>
+    <th scope="row" class="ion-padding ion-text-start shaded">
+      {{ 'page.program.metrics.totals.total-helped-to-date' | translate }}
+      <tooltip
+        [value]="
+          'page.program.metrics.totals.pas-that-received-one-or-more-payments'
+            | translate
+        "
+      ></tooltip>
+    </th>
+    <td class="ion-padding ion-text-end">
+      {{ total }}
+    </td>
+  </tr>
+</table>

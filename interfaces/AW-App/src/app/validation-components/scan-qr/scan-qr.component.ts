@@ -121,7 +121,9 @@ export class ScanQrComponent implements ValidationComponent {
     }
     try {
       referenceIdJson.referenceId = await this.getPaIdentifierOnline(data);
-      return referenceIdJson;
+      if (referenceIdJson.referenceId) {
+        return referenceIdJson;
+      }
     } catch {
       return false;
     }
@@ -198,7 +200,11 @@ export class ScanQrComponent implements ValidationComponent {
       }
     });
     if (prefilledQuestions.length > 0) {
-      return prefilledQuestions;
+      return {
+        referenceId,
+        program: { id: offlineData[0].programId },
+        programAnswers: prefilledQuestions,
+      };
     }
   }
 

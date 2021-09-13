@@ -144,6 +144,7 @@ export class ProgramController {
   ): Promise<any> {
     return await this.programService.getTransactions(
       Number(programId),
+      false,
       minInstallment,
     );
   }

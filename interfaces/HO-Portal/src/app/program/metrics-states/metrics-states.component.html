@@ -1,148 +1,149 @@
+<ion-row>
+  <ion-col class="ion-text-start">
+    <ion-button
+      (click)="exportCSV()"
+      size="small"
+    >
+      {{ 'page.program.metrics.export-button.label'|translate }}
+    </ion-button>
+  </ion-col>
+  <ion-col class="ion-text-end">
+    <app-refresh-data
+      [lastUpdated]="lastUpdated"
+      (refresh)="update()"
+    ></app-refresh-data>
+  </ion-col>
+</ion-row>
+<ion-row>
+  <ion-col size="12">
+    <table class="metrics-states--table">
+      <colgroup>
+        <col>
+        <col [span]="paStates.length" class="state-col">
+      </colgroup>
+      <thead>
+        <tr>
+          <td></td>
+          <th
+            *ngFor="let col of paStates"
+            scope="col"
+            class="col-header"
+          >
+            <span *ngIf="!col.explanation">{{ col.label }}</span>
+            <span *ngIf="col.explanation">
+              <tooltip [value]="col.explanation"></tooltip>
+              <br>
+              {{ col.label }}
+            </span>
+          </th>
+        </tr>
+      </thead>
+      <tbody class="border-bottom">
+        <tr>
+          <th
+            scope="row"
+            class="row-header"
+          >
+            {{ 'page.program.metrics.timeframe.payment.label'|translate }}
+            <tooltip [value]="'page.program.metrics.timeframe.payment.explanation'|translate"></tooltip>
+            <select
+              name="time-payment"
+              [(ngModel)]="chosenPayment"
+              (change)="changeDataset(chosenPayment, 'forPayment')"
+              class="styled-select timeframe-select"
+              [title]="'page.program.metrics.timeframe.payment.select-hint'|translate"
+            >
+              <option value="">
+                {{ 'page.program.metrics.timeframe.payment.select-hint'|translate }}
+              </option>
+              <option
+                *ngFor="let item of pastPayments"
+                [value]="item.value"
+              >
+                {{ 'page.program.metrics.timeframe.payment.option'|translate:{ number: item.id, date: item.date|date:'yyyy-MM-dd' } }}
+              </option>
+            </select>
+          </th>
+          <td
+            *ngFor="let cell of paStates"
+            class="cell-number"
+          >{{ cell.forPayment }}</td>
+        </tr>
+        <tr>
+          <th
+            scope="row"
+            class="row-header"
+          >
+            {{ 'page.program.metrics.timeframe.payment-from-start.label'|translate }}
+            <tooltip [value]="'page.program.metrics.timeframe.payment-from-start.explanation'|translate"></tooltip>
+          </th>
+          <td
+            *ngFor="let cell of paStates"
+            class="cell-number"
+          >{{ cell.forPaymentFromStart }}</td>
+        </tr>
+      </tbody>
+      <tbody class="border-bottom">
+        <tr>
+          <th
+            scope="row"
+            class="row-header"
+          >
+            {{ 'page.program.metrics.timeframe.calendar-month.label'|translate }}
+            <tooltip [value]="'page.program.metrics.timeframe.calendar-month.explanation'|translate"></tooltip>
+            <select
+              name="time-calendar-month"
+              [(ngModel)]="chosenMonth"
+              (change)="changeDataset(chosenMonth, 'forMonth')"
+              class="styled-select timeframe-select"
+              [title]="'page.program.metrics.timeframe.calendar-month.select-hint'|translate"
+            >
+              <option value="">
+                {{ 'page.program.metrics.timeframe.calendar-month.select-hint'|translate }}
+              </option>
+              <option
+                *ngFor="let item of pastMonths"
+                [value]="item.value"
+              >
+                {{ item.date|date:'yyyy-MM' }}
+              </option>
+            </select>
+          </th>
+          <td
+            *ngFor="let cell of paStates"
+            class="cell-number"
+          >{{ cell.forMonth }}</td>
+        </tr>
+        <tr>
+          <th
+            scope="row"
+            class="row-header"
+          >
+            {{ 'page.program.metrics.timeframe.month-from-start.label'|translate }}
+            <tooltip [value]="'page.program.metrics.timeframe.month-from-start.explanation'|translate"></tooltip>
+          </th>
+          <td
+            *ngFor="let cell of paStates"
+            class="cell-number"
+          >{{ cell.forMonthFromStart }}</td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr class="shaded">
+          <th
+            scope="row"
+            class="row-header"
+          >
+            {{ 'page.program.metrics.timeframe.to-date.label'|translate }}
+            <tooltip [value]="'page.program.metrics.timeframe.to-date.explanation'|translate"></tooltip>
+          </th>
+          <td
+            *ngFor="let cell of paStates"
+            class="cell-number"
+          >{{ cell.toDate }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ion-col>
+</ion-row>
 
-<table class="metrics-states--table">
-  <caption>
-    <ion-row>
-      <ion-col>
-        <ion-button
-          (click)="exportCSV()"
-          size="small"
-          class="ion-float-left"
-        >
-          {{ 'page.program.metrics.export-button.label'|translate }}
-        </ion-button>
-      </ion-col>
-      <ion-col>
-        <app-refresh-data
-          [lastUpdated]="lastUpdated"
-          (refresh)="update()"
-        ></app-refresh-data>
-      </ion-col>
-    </ion-row>
-  </caption>
-  <colgroup>
-    <col>
-    <col [span]="paStates.length" class="state-col">
-  </colgroup>
-  <thead>
-    <tr>
-      <td></td>
-      <th
-        *ngFor="let col of paStates"
-        scope="col"
-        class="col-header"
-      >
-        <span *ngIf="!col.explanation">{{ col.label }}</span>
-        <span *ngIf="col.explanation">
-          <tooltip [value]="col.explanation"></tooltip>
-          <br>
-          {{ col.label }}
-        </span>
-      </th>
-    </tr>
-  </thead>
-  <tbody class="border-bottom">
-    <tr>
-      <th
-        scope="row"
-        class="row-header"
-      >
-        {{ 'page.program.metrics.timeframe.payment.label'|translate }}
-        <tooltip [value]="'page.program.metrics.timeframe.payment.explanation'|translate"></tooltip>
-        <select
-          name="time-payment"
-          [(ngModel)]="chosenPayment"
-          (change)="changeDataset(chosenPayment, 'forPayment')"
-          class="styled-select timeframe-select"
-          [title]="'page.program.metrics.timeframe.payment.select-hint'|translate"
-        >
-          <option value="">
-            {{ 'page.program.metrics.timeframe.payment.select-hint'|translate }}
-          </option>
-          <option
-            *ngFor="let item of pastPayments"
-            [value]="item.value"
-          >
-            {{ 'page.program.metrics.timeframe.payment.option'|translate:{ number: item.id, date: item.date|date:'yyyy-MM-dd' } }}
-          </option>
-        </select>
-      </th>
-      <td
-        *ngFor="let cell of paStates"
-        class="cell-number"
-      >{{ cell.forPayment }}</td>
-    </tr>
-    <tr>
-      <th
-        scope="row"
-        class="row-header"
-      >
-        {{ 'page.program.metrics.timeframe.payment-from-start.label'|translate }}
-        <tooltip [value]="'page.program.metrics.timeframe.payment-from-start.explanation'|translate"></tooltip>
-      </th>
-      <td
-        *ngFor="let cell of paStates"
-        class="cell-number"
-      >{{ cell.forPaymentFromStart }}</td>
-    </tr>
-  </tbody>
-  <tbody class="border-bottom">
-    <tr>
-      <th
-        scope="row"
-        class="row-header"
-      >
-        {{ 'page.program.metrics.timeframe.calendar-month.label'|translate }}
-        <tooltip [value]="'page.program.metrics.timeframe.calendar-month.explanation'|translate"></tooltip>
-        <select
-          name="time-calendar-month"
-          [(ngModel)]="chosenMonth"
-          (change)="changeDataset(chosenMonth, 'forMonth')"
-          class="styled-select timeframe-select"
-          [title]="'page.program.metrics.timeframe.calendar-month.select-hint'|translate"
-        >
-          <option value="">
-            {{ 'page.program.metrics.timeframe.calendar-month.select-hint'|translate }}
-          </option>
-          <option
-            *ngFor="let item of pastMonths"
-            [value]="item.value"
-          >
-            {{ item.date|date:'yyyy-MM' }}
-          </option>
-        </select>
-      </th>
-      <td
-        *ngFor="let cell of paStates"
-        class="cell-number"
-      >{{ cell.forMonth }}</td>
-    </tr>
-    <tr>
-      <th
-        scope="row"
-        class="row-header"
-      >
-        {{ 'page.program.metrics.timeframe.month-from-start.label'|translate }}
-        <tooltip [value]="'page.program.metrics.timeframe.month-from-start.explanation'|translate"></tooltip>
-      </th>
-      <td
-        *ngFor="let cell of paStates"
-        class="cell-number"
-      >{{ cell.forMonthFromStart }}</td>
-    </tr>
-  </tbody>
-  <tbody>
-    <tr class="shaded">
-      <th
-        scope="row"
-        class="row-header"
-      >
-        {{ 'page.program.metrics.timeframe.to-date.label'|translate }}
-        <tooltip [value]="'page.program.metrics.timeframe.to-date.explanation'|translate"></tooltip>
-      </th>
-      <td
-        *ngFor="let cell of paStates"
-        class="cell-number"
-      >{{ cell.toDate }}</td>
-    </tr>
-  </tbody>
-</table>

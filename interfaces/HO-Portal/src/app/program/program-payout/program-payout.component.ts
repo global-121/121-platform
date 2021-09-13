@@ -50,6 +50,8 @@ export class ProgramPayoutComponent implements OnInit {
   public lastInstallmentId: number;
   public nextInstallmentId: number;
   private totalIncluded: number;
+  public minInstallment: number;
+  public maxInstallment: number;
 
   constructor(
     private programsService: ProgramsServiceApiService,
@@ -228,14 +230,20 @@ export class ProgramPayoutComponent implements OnInit {
   }
 
   public changeExportInstallment() {
+    console.log(this.exportInstallmentId);
     if (Number(this.exportInstallmentId) === 0) {
       this.exportInstallmentAvailable = false;
       return;
+    } else {
+      this.exportInstallmentAvailable = true;
     }
-    const installment = this.getInstallmentById(
-      Number(this.exportInstallmentId),
-    );
-    this.exportInstallmentAvailable = installment.isExportAvailable;
+    if (Number(this.exportInstallmentId) < 0) {
+      this.minInstallment = 1;
+      this.maxInstallment = this.lastInstallmentId;
+    } else if (this.exportInstallmentId > 0) {
+      this.minInstallment = this.exportInstallmentId;
+      this.maxInstallment = this.exportInstallmentId;
+    }
   }
 
   async isIntersolve() {
