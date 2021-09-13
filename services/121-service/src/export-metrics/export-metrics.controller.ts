@@ -50,8 +50,9 @@ export class ExportMetricsController {
     return await this.exportMetricsService.getExportList(
       data.programId,
       data.type,
-      data.installment,
       userId,
+      data.minInstallment,
+      data.maxInstallment,
     );
   }
 

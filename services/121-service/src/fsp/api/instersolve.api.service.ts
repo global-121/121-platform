@@ -161,7 +161,7 @@ export class IntersolveApiService {
     intersolveRequest.cancellationAttempts =
       intersolveRequest.cancellationAttempts + 1;
     intersolveRequest.cancelByRefPosResultCode = result.resultCode;
-    intersolveRequest.toCancel = intersolveRequest.toCancel = !this.stopCancelByRefposCodes.includes(
+    intersolveRequest.toCancel = !this.stopCancelByRefposCodes.includes(
       Number(result.resultCode),
     );
     await this.intersolveRequestRepository.save(intersolveRequest);
@@ -210,7 +210,7 @@ export class IntersolveApiService {
     intersolveRequest.cancellationAttempts =
       intersolveRequest.cancellationAttempts + 1;
     intersolveRequest.cancelResultCode = result.resultCode;
-    intersolveRequest.toCancel = intersolveRequest.toCancel = !this.stopCancelByRefposCodes.includes(
+    intersolveRequest.toCancel = !this.stopCancelByRefposCodes.includes(
       Number(result.resultCode),
     );
     await this.intersolveRequestRepository.save(intersolveRequest);
