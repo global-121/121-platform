@@ -144,7 +144,8 @@
           "label": "Export as CSV"
         },
         "totals":{
-          "total-helped-to-date": "Total Number of Individuals Helped to Date"
+          "total-helped-to-date": "Total Number of Individuals Helped to Date",
+          "pas-that-received-one-or-more-payments":"PA's that received one or more payments"
         },
         "over-time": {
           "pa": {
