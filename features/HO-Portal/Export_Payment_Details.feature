@@ -30,12 +30,6 @@ Feature: Export payment details
     And the "parter organization"
     And all "persistent data"
 
-  Scenario: No "included" registrations
-    Given a logged-in user with "personal data" role
-    Given the installment has taken place
-    When the user selects a "closed" payment from the dropdown-list
-    Then the "export list"-button is disabled
-
   Scenario: Viewing the export options without permission
     Given a logged-in user without "personal data" role
     When the user views the "payment" page
