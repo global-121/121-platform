@@ -3,7 +3,6 @@ import { PersonAffectedAppDataEntity } from './../people-affected/person-affecte
 import { UserType } from './user-type-enum';
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
   BeforeInsert,
   OneToMany,

@@ -23,5 +23,8 @@ export class ExportDetails {
   public readonly type: ExportType;
 
   @ApiModelProperty()
-  public readonly installment: number | null;
+  public readonly minInstallment: number | null;
+
+  @ApiModelProperty()
+  public readonly maxInstallment: number | null;
 }

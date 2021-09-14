@@ -192,6 +192,7 @@
         "section-title": "Manage Payments",
         "installment-nr": "Payment #{{number}}",
         "choose-payment": "Choose payment...",
+        "all-closed-payments": "All closed payments",
         "closed": "Closed",
         "open": "Open",
         "start-payout": "Start payout now",
@@ -294,6 +295,14 @@
             },
             "namePartnerOrganization": {
               "label": "Name of Partner organisation"
+            },
+            "phoneNumber": {
+              "label": "Phone number",
+              "explanation": "The required format is: ONLY numbers, including country-code."
+            },
+            "whatsappPhoneNumber": {
+              "label": "WhatsApp number",
+              "explanation": "This value is required for a 'WhatsApp-enabled' FSP only."
             }
           },
           "note": {
