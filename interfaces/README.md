@@ -28,7 +28,11 @@ See the [/features/](../features/)-directory in this repository.
 For some 'offline' features in the AW-App and the HO-Portal it is required to run these interfaces in a specific way (i.e. to enable their service-worker).  
 See the related Angular-documentation: <https://v7.angular.io/guide/service-worker-getting-started#serving-with-http-server>
 
-To use it locally, run: `npm run debug:service-worker` instead of `npm start` (in each interfaces' specific folder).
+To use it locally:
+- run: `npm run debug:service-worker` instead of `npm start` (in each interfaces' specific folder).
+- it will give you the IP-address + port-number where the app is running.
+- however, use `localhost` instead of the given IP-address, for the service-worker to actually work.
+- Check (e.g. in Chrome) in `Developer Tools > Application > Service Workers` if it's active.
 
 ### Specific requirements
 
