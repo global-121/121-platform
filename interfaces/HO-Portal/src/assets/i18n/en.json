@@ -145,7 +145,7 @@
         },
         "totals":{
           "total-helped-to-date": "Total number of individual PA helped to date",
-          "pas-that-received-one-or-more-payments":"PA's that received one or more payments"
+          "tooltip":"PA's that received one or more payments"
         },
         "over-time": {
           "pa": {
