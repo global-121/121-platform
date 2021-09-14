@@ -139,7 +139,6 @@ export class ProgramsServiceApiService {
           referenceId,
           programAnswers,
         },
-        true,
       )
       .toPromise();
   }
