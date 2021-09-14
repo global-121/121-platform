@@ -43,7 +43,7 @@
     "@auth0/angular-jwt": "^4.2.0",
     "@ionic/angular": "^4.11.8",
     "@ionic/cli": "^6.11.8",
-    "@microsoft/applicationinsights-web": "^2.5.8",
+    "@microsoft/applicationinsights-web": "^2.7.0",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
     "@zxing/ngx-scanner": "^2.0.1",
