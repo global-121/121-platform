@@ -38,17 +38,11 @@ To set up a local development-environment:
   - Install the version specified in the [`.node-version`](.node-version)-file.
   - To prevent conflicts between projects or components using other versions of Node.js it is recommended to use a 'version manager'.
 
-    - [NVM - Node Version Manager](http://nvm.sh/) (for macOS/Linux).  
-      After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
+    - [NVM - Node Version Manager](http://nvm.sh/) (for macOS/Linux).
 
-          nvm install && nvm install-latest-npm
+    - [NVM for Windows](https://github.com/coreybutler/nvm-windows) (for Windows)
 
-    - [NVM for Windows](https://github.com/coreybutler/nvm-windows) (for Windows).  
-      After installing NVM, to install the required version of Node.js and `npm`, run from the root of this repository:
-
-          nvm install <version in .node-version> && nvm install-latest-npm
-
-    - [fnm](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux)
+    - [FNM](https://nodejs.org/en/download/package-manager/#fnm) (for Windows/macOS/Linux)
 
 - Install Docker
   - On macOS, install Docker Desktop: <https://docs.docker.com/docker-for-mac/install/>
@@ -59,7 +53,36 @@ To set up a local development-environment:
 
 With these tools in place you can checkout the code and start setting up:
 
-    git clone https://github.com/global-121/121-platform.git
+```
+git clone https://github.com/global-121/121-platform.git
+```
+
+Navigate to the root folder of this repository:
+
+```
+cd 121-platform
+```
+
+Then install the required version of Node.js and `npm`:
+
+- If you installed NVM
+
+  - On macOs/Linux
+
+    ```
+    nvm install && nvm install-latest-npm
+    ```
+
+  - On Windows
+
+    ```
+    nvm install <version in .node-version> && nvm install-latest-npm
+    ```
+
+- If you installed FNM
+  ```
+  fnm install && fnm install-latest-npm
+  ```
 
 ---
 
@@ -85,6 +108,8 @@ To verify the successful installation and setup of services, access their Swagge
 ---
 
 ## Setup Interfaces
+
+Follow the "[Getting started / installation](interfaces/README.md#getting-started--installation)"-section in the [interfaces/README](interfaces/README.md)-file.
 
 Install dependencies for all the interfaces at once, run:
 
@@ -176,6 +201,33 @@ When new Node.js dependencies are added to the services since it is last build o
   Or similarly:
 
       npm run start:services -- --force-recreate <container-name>
+
+### Node-sass related errors on interface start
+
+If you get an error related to node-sass when starting any interface, you might be using an incorrect version of Node.js.
+To fix this you have two options:
+
+1.  Check the correct Node.js version to use in the [`.node-version`](.node-version)-file.
+
+2.  Check if you already have it installed on your machine with
+
+        nvm list
+
+    - If the correct version is installed, switch to it with
+
+      (for macOS/Linux)
+
+          nvm use
+
+      (for Windows)
+
+          nvm use <version in .node-version>
+
+    - If the correct version is not installed, install it, then switch to it following the instructions above.
+
+3.  If you still encounter problems after switching to the correct node version, try rebuilding `node-sass` with the following command:
+
+        npm rebuild node-sass
 
 ---
 
