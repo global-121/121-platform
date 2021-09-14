@@ -443,6 +443,8 @@ export class RegistrationsService {
     let q = await this.registrationRepository
       .createQueryBuilder('registration')
       .select('registration.id', 'id')
+      .distinctOn(['registration.id'])
+      .orderBy(`registration.id`, 'ASC')
       .addSelect('registration.referenceId', 'referenceId')
       .addSelect('registration.registrationStatus', 'status')
       .addSelect('registration.inclusionScore', 'inclusionScore')
@@ -459,42 +461,58 @@ export class RegistrationsService {
         `${RegistrationStatusEnum.startedRegistration}.created`,
         RegistrationStatusTimestampField.startedRegistrationDate,
       )
+      .addOrderBy(
+        `${RegistrationStatusEnum.startedRegistration}.created`,
+        'DESC',
+      )
       .addSelect(
         `${RegistrationStatusEnum.imported}.created`,
         RegistrationStatusTimestampField.importedDate,
       )
+      .addOrderBy(`${RegistrationStatusEnum.imported}.created`, 'DESC')
       .addSelect(
         `${RegistrationStatusEnum.invited}.created`,
         RegistrationStatusTimestampField.invitedDate,
       )
+      .addOrderBy(`${RegistrationStatusEnum.invited}.created`, 'DESC')
       .addSelect(
         `${RegistrationStatusEnum.noLongerEligible}.created`,
         RegistrationStatusTimestampField.noLongerEligibleDate,
       )
+      .addOrderBy(`${RegistrationStatusEnum.noLongerEligible}.created`, 'DESC')
       .addSelect(
         `${RegistrationStatusEnum.registered}.created`,
         RegistrationStatusTimestampField.registeredDate,
       )
+      .addOrderBy(`${RegistrationStatusEnum.registered}.created`, 'DESC')
       .addSelect(
         `${RegistrationStatusEnum.selectedForValidation}.created`,
         RegistrationStatusTimestampField.selectedForValidationDate,
+      )
+      .addOrderBy(
+        `${RegistrationStatusEnum.selectedForValidation}.created`,
+        'DESC',
       )
       .addSelect(
         `${RegistrationStatusEnum.validated}.created`,
         RegistrationStatusTimestampField.validationDate,
       )
+      .addOrderBy(`${RegistrationStatusEnum.validated}.created`, 'DESC')
       .addSelect(
         `${RegistrationStatusEnum.included}.created`,
         RegistrationStatusTimestampField.inclusionDate,
       )
+      .addOrderBy(`${RegistrationStatusEnum.included}.created`, 'DESC')
       .addSelect(
         `${RegistrationStatusEnum.inclusionEnded}.created`,
         RegistrationStatusTimestampField.inclusionEndDate,
       )
+      .addOrderBy(`${RegistrationStatusEnum.inclusionEnded}.created`, 'DESC')
       .addSelect(
         `${RegistrationStatusEnum.rejected}.created`,
         RegistrationStatusTimestampField.rejectionDate,
       )
+      .addOrderBy(`${RegistrationStatusEnum.rejected}.created`, 'DESC')
       .leftJoin('registration.fsp', 'fsp')
       .leftJoin(
         RegistrationStatusChangeEntity,
@@ -560,6 +578,7 @@ export class RegistrationsService {
     const responseRows = [];
     for (let row of rows) {
       row['name'] = this.getName(row.customData);
+      row['hasNote'] = !!row.note;
       row['phoneNumber'] =
         row.phoneNumber || row.customData[CustomDataAttributes.phoneNumber];
       row['whatsappPhoneNumber'] =
