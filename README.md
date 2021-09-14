@@ -223,17 +223,7 @@ To fix this you can:
 
           nvm use <version in .node-version>
 
-    - If the correct version is not installed, install it with
-
-      (for macOS/Linux)
-
-          nvm install
-
-      (for Windows)
-
-          nvm install <version in .node-version>
-
-      Then you can switch to it with `nvm use` or `nvm use <version in .node-version>`
+    - If the correct version is not installed, install it, then switch to it following the instructions above.
 
 ---
 
