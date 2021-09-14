@@ -205,7 +205,7 @@ When new Node.js dependencies are added to the services since it is last build o
 ### Node-sass related errors on interface start
 
 If you get an error related to node-sass when starting any interface, you might be using an incorrect version of Node.js.
-To fix this you can:
+To fix this you have two options:
 
 1.  Check the correct Node.js version to use in the [`.node-version`](.node-version)-file.
 
@@ -224,6 +224,10 @@ To fix this you can:
           nvm use <version in .node-version>
 
     - If the correct version is not installed, install it, then switch to it following the instructions above.
+
+3.  If you still encounter problems after switching to the correct node version, try rebuilding `node-sass` with the following command:
+
+        npm rebuild node-sass
 
 ---
 
