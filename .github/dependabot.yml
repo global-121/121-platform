@@ -21,6 +21,10 @@ updates:
         versions: ['>= 12.0.0']
       - dependency-name: '@ngx-translate/http-loader'
         versions: ['>= 5.0.0']
+      - dependency-name: '@swimlane/ngx-charts'
+        versions: ['>= 14.0.0']
+      - dependency-name: '@swimlane/ngx-datatable'
+        versions: ['>= 17.0.0']
       - dependency-name: '@types/node'
         versions: ['>= 13.0.0']
       - dependency-name: codelyzer
@@ -35,14 +39,10 @@ updates:
         versions: ['>= 3.6.0']
       - dependency-name: karma
         versions: ['>= 6.0.0']
-      - dependency-name: ngx-translate-lint
-        versions: ['>= 1.14.0']
       - dependency-name: rxjs
         versions: ['>= 7.0.0']
       - dependency-name: 'zone.js'
         versions: ['>= 0.9.0']
-      - dependency-name: '@swimlane/ngx-datatable'
-        versions: ['>= 17.0.0']
 
   - package-ecosystem: npm
     directory: '/interfaces/AW-App'
