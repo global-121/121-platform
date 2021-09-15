@@ -35,7 +35,7 @@ export class InputPromptComponent implements AfterViewInit {
   public inputProps: InputProps;
   public inputModel: NgModel;
 
-  @ViewChild('input')
+  @ViewChild('input', { static: true })
   public input: any;
 
   public checked: boolean;

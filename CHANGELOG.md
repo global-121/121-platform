@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased](https://github.com/global-121/121-platform/compare/v1.13.0...master)
 
+### Changed
+
+- 2021-09-15: Upgrade PA-App to Angular v8
+- 2021-09-15: Upgrade HO-Portal to Angular v8
+
 ---
 
 ## [1.13.0](https://github.com/global-121/121-platform/compare/v1.12.2...v1.13.0) - 2021-09-15

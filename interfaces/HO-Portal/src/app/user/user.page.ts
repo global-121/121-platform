@@ -8,7 +8,7 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./user.page.scss'],
 })
 export class UserPage implements OnInit {
-  @ViewChild('newPasswordForm')
+  @ViewChild('newPasswordForm', { static: false })
   public newPasswordForm: NgForm;
 
   public newPassword: any;
