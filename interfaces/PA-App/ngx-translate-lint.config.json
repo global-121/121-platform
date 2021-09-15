@@ -1,9 +1,42 @@
 {
+  "tsconfig": "./",
   "project": "./src/app/**/*.{html,ts}",
-  "languages": "./src/assets/i18n/*.json",
-  "ignore": "./dist/**/*",
-  "views": "warn",
-  "zombies": "warn",
-  "misprint": "warn",
-  "maxWarnings": 0
+  "languages": "./src/assets/i18n/en.json",
+  "rules": {
+    "keysOnViews": "warning",
+    "zombieKeys": "warning",
+    "misprint": "warning",
+    "maxWarning": "0",
+    "misprintCoefficient": "0.9",
+    "ignoredKeys": [
+      "personal.select-language.introduction.ar",
+      "personal.select-language.introduction.en",
+      "personal.select-language.introduction.fr",
+      "personal.select-language.introduction.in",
+      "personal.select-language.introduction.nl",
+      "personal.select-language.introduction.ny_MW",
+      "personal.select-language.introduction.om_ET",
+      "personal.select-language.introduction.pt_BR",
+      "personal.select-language.introduction.saq_KE",
+      "personal.select-language.introduction.ti",
+      "personal.select-language.introduction.tl",
+      "personal.select-language.introduction.tuv_KE",
+      "personal.select-language.language.ar",
+      "personal.select-language.language.en",
+      "personal.select-language.language.fr",
+      "personal.select-language.language.in",
+      "personal.select-language.language.nl",
+      "personal.select-language.language.ny_MW",
+      "personal.select-language.language.om_ET",
+      "personal.select-language.language.pt_BR",
+      "personal.select-language.language.saq_KE",
+      "personal.select-language.language.ti",
+      "personal.select-language.language.tl",
+      "personal.select-language.language.tuv_KE"
+    ],
+    "ignoredMisprintKeys": [],
+    "ast": {
+      "isNgsTranslateImported": "error"
+    }
+  }
 }
