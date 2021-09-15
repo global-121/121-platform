@@ -14,7 +14,7 @@ import { ProgramsServiceApiService } from 'src/app/services/programs-service-api
   styleUrls: ['./phone-number-input.component.scss'],
 })
 export class PhoneNumberInputComponent {
-  @ViewChild('telInput', { static: true })
+  @ViewChild('telInput', { static: false })
   public telInput: any;
 
   @Input()

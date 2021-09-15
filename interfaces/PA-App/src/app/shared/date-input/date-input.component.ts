@@ -13,7 +13,7 @@ import { NgModel } from '@angular/forms';
   styleUrls: ['./date-input.component.scss'],
 })
 export class DateInputComponent {
-  @ViewChild('dateInput', { static: true })
+  @ViewChild('dateInput', { static: false })
   public dateInput: any;
 
   @Input()
