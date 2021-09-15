@@ -96,9 +96,9 @@ updates:
     versioning-strategy: increase-if-necessary
     ignore:
       - dependency-name: '@angular/*'
-        versions: ['>= 8.0.0', '>= 0.800.0']
+        versions: ['>= 9.0.0', '>= 0.900.0']
       - dependency-name: '@angular-devkit/*'
-        versions: ['>= 0.800.0']
+        versions: ['>= 9.0.0', '>= 0.900.0']
       - dependency-name: '@auth0/angular-jwt'
         versions: ['>= 5.0.0']
       - dependency-name: '@ionic/angular'
@@ -118,11 +118,9 @@ updates:
       - dependency-name: tslint
         versions: ['>= 6.0.0']
       - dependency-name: typescript
-        versions: ['>= 3.3.0']
+        versions: ['>= 3.6.0']
       - dependency-name: karma
         versions: ['>= 6.0.0']
-      - dependency-name: ngx-translate-lint
-        versions: ['>= 1.4.0', '>= 1.6.0']
       - dependency-name: rxjs
         versions: ['>= 7.0.0']
       - dependency-name: 'zone.js'

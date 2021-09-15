@@ -56,11 +56,11 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - CSS Utilities: <https://ionicframework.com/docs/v4/layout/css-utilities>
   - Icons: <https://ionicons.com/v4/>
 
-- [Angular v7](https://v7.angular.io/docs)  
+- [Angular v8](https://v8.angular.io/docs)  
   This front-end framework gives us a structure to create components that can be connected, combined, share data and can be delivered as a web-app.
 
-  - API Documentation: <https://v7.angular.io/api>
-  - Used by Angular, RxJS: <https://rxjs-dev.firebaseapp.com/api>
+  - API Documentation: <https://v8.angular.io/api>
+  - Used by Angular, RxJS: <https://v6.rxjs.dev/api>
 
 - [`ngx-translate` v11](https://www.npmjs.com/package/@ngx-translate/core/v/11.0.1)  
   An Angular-service to handle internationalization(i18n) or translations.
