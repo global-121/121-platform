@@ -12,21 +12,25 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: './login/login.module#LoginPageModule',
+    loadChildren: () =>
+      import('./login/login.module').then((m) => m.LoginPageModule),
   },
   {
     path: 'user',
-    loadChildren: './user/user.module#UserPageModule',
+    loadChildren: () =>
+      import('./user/user.module').then((m) => m.UserPageModule),
     canActivate: [AuthGuard],
   },
   {
     path: 'home',
-    loadChildren: './home/home.module#HomePageModule',
+    loadChildren: () =>
+      import('./home/home.module').then((m) => m.HomePageModule),
     canActivate: [AuthGuard],
   },
   {
     path: 'help',
-    loadChildren: './help/help.module#HelpPageModule',
+    loadChildren: () =>
+      import('./help/help.module').then((m) => m.HelpPageModule),
     canActivate: [AuthGuard],
   },
   {
@@ -40,13 +44,18 @@ const routes: Routes = [
       },
       {
         path: 'dashboard',
-        loadChildren: './pages/dashboard/dashboard.module#DashboardPageModule',
+        loadChildren: () =>
+          import('./pages/dashboard/dashboard.module').then(
+            (m) => m.DashboardPageModule,
+          ),
         canActivate: [AuthGuard],
       },
       {
         path: 'aid-workers',
-        loadChildren:
-          './pages/aid-workers/aid-workers.module#AidWorkersPageModule',
+        loadChildren: () =>
+          import('./pages/aid-workers/aid-workers.module').then(
+            (m) => m.AidWorkersPageModule,
+          ),
         canActivate: [AuthGuard],
         data: {
           roles: [UserRole.RunProgram],
@@ -54,35 +63,50 @@ const routes: Routes = [
       },
       {
         path: ProgramPhase.design,
-        loadChildren: './pages/design/design.module#DesignPageModule',
+        loadChildren: () =>
+          import('./pages/design/design.module').then(
+            (m) => m.DesignPageModule,
+          ),
         canActivate: [AuthGuard],
       },
       {
         path: ProgramPhase.registrationValidation,
-        loadChildren:
-          './pages/registration-validation/registration-validation.module#RegistrationValidationPageModule',
+        loadChildren: () =>
+          import(
+            './pages/registration-validation/registration-validation.module'
+          ).then((m) => m.RegistrationValidationPageModule),
         canActivate: [AuthGuard],
       },
       {
         path: ProgramPhase.inclusion,
-        loadChildren: './pages/inclusion/inclusion.module#InclusionPageModule',
+        loadChildren: () =>
+          import('./pages/inclusion/inclusion.module').then(
+            (m) => m.InclusionPageModule,
+          ),
         canActivate: [AuthGuard],
       },
       {
         path: ProgramPhase.payment,
-        loadChildren: './pages/payment/payment.module#PaymentPageModule',
+        loadChildren: () =>
+          import('./pages/payment/payment.module').then(
+            (m) => m.PaymentPageModule,
+          ),
         canActivate: [AuthGuard],
       },
       {
         path: ProgramPhase.evaluation,
-        loadChildren:
-          './pages/evaluation/evaluation.module#EvaluationPageModule',
+        loadChildren: () =>
+          import('./pages/evaluation/evaluation.module').then(
+            (m) => m.EvaluationPageModule,
+          ),
         canActivate: [AuthGuard],
       },
       {
         path: ProgramPhase.reviewInclusion,
-        loadChildren:
-          './pages/review-inclusion/review-inclusion.module#ReviewInclusionPageModule',
+        loadChildren: () =>
+          import('./pages/review-inclusion/review-inclusion.module').then(
+            (m) => m.ReviewInclusionPageModule,
+          ),
         canActivate: [AuthGuard],
       },
       {

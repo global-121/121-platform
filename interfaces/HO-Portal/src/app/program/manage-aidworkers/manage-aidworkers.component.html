@@ -23,18 +23,23 @@
     draggable="false"
   >
     <ng-template
-      *ngIf="column.prop === 'delete'"
       let-row="row"
+      let-value="value"
       ngx-datatable-cell-template
     >
-      <confirm-prompt
-        (confirm)="deleteAidworker(row)"
-        [message]="'page.program.manage-aidworkers.column-delete'|translate"
-        size="small"
-        fill="outline"
-      >
-        <ion-icon size="small" slot="icon-only" name="trash"></ion-icon>
-      </confirm-prompt>
+      <ng-container *ngIf="column.prop === 'delete'; else elseBlock">
+        <confirm-prompt
+          (confirm)="deleteAidworker(row)"
+          [message]="'page.program.manage-aidworkers.column-delete'|translate"
+          size="small"
+          fill="outline"
+        >
+          <ion-icon size="small" slot="icon-only" name="trash"></ion-icon>
+        </confirm-prompt>
+      </ng-container>
+      <ng-template #elseBlock>
+        {{ value }}
+      </ng-template>
     </ng-template>
   </ngx-datatable-column>
 </ngx-datatable>

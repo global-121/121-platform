@@ -38,10 +38,10 @@ import { InclusionStatusComponent } from './../personal-components/inclusion-sta
   styleUrls: ['personal.page.scss'],
 })
 export class PersonalPage implements OnInit {
-  @ViewChild(IonContent, { static: true })
+  @ViewChild(IonContent, { static: false })
   public ionContent: IonContent;
 
-  @ViewChild('conversationContainer', { read: ViewContainerRef, static: true })
+  @ViewChild('conversationContainer', { read: ViewContainerRef, static: false })
   public container: ViewContainerRef;
 
   public isDebug: boolean = environment.isDebug;

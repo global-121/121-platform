@@ -8,7 +8,7 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage {
-  @ViewChild('loginForm')
+  @ViewChild('loginForm', { static: true })
   public loginForm: NgForm;
 
   public email: any;
