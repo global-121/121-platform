@@ -12,7 +12,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../tab1/tab1.module#Tab1PageModule',
+            loadChildren: () =>
+              import('../tab1/tab1.module').then((m) => m.Tab1PageModule),
           },
         ],
       },
@@ -21,7 +22,10 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../personal/personal.module#PersonalPageModule',
+            loadChildren: () =>
+              import('../personal/personal.module').then(
+                (m) => m.PersonalPageModule,
+              ),
           },
         ],
       },

@@ -28,7 +28,11 @@ See the [/features/](../features/)-directory in this repository.
 For some 'offline' features in the AW-App and the HO-Portal it is required to run these interfaces in a specific way (i.e. to enable their service-worker).  
 See the related Angular-documentation: <https://v7.angular.io/guide/service-worker-getting-started#serving-with-http-server>
 
-To use it locally, run: `npm run debug:service-worker` instead of `npm start` (in each interfaces' specific folder).
+To use it locally:
+- run: `npm run debug:service-worker` instead of `npm start` (in each interfaces' specific folder).
+- it will give you the IP-address + port-number where the app is running.
+- however, use `localhost` instead of the given IP-address, for the service-worker to actually work.
+- Check (e.g. in Chrome) in `Developer Tools > Application > Service Workers` if it's active.
 
 ### Specific requirements
 
@@ -52,11 +56,11 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - CSS Utilities: <https://ionicframework.com/docs/v4/layout/css-utilities>
   - Icons: <https://ionicons.com/v4/>
 
-- [Angular v7](https://v7.angular.io/docs)  
+- [Angular v8](https://v8.angular.io/docs)  
   This front-end framework gives us a structure to create components that can be connected, combined, share data and can be delivered as a web-app.
 
-  - API Documentation: <https://v7.angular.io/api>
-  - Used by Angular, RxJS: <https://rxjs-dev.firebaseapp.com/api>
+  - API Documentation: <https://v8.angular.io/api>
+  - Used by Angular, RxJS: <https://v6.rxjs.dev/api>
 
 - [`ngx-translate` v11](https://www.npmjs.com/package/@ngx-translate/core/v/11.0.1)  
   An Angular-service to handle internationalization(i18n) or translations.

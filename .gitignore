@@ -1,5 +1,20 @@
 
 # IDE / Editor configurations
-.vscode/*
+.vscode
 !.vscode/extensions.json
 
+# Third-party code
+node_modules
+
+
+# Work in Progress:
+.hintrc
+
+tools/git-hooks/post-merge
+tools/git-hooks/post-rewrite
+tools/git-hooks/pre-push
+
+*.m4a
+*.ogg
+
+services/121-service/seed-data/*.csv
