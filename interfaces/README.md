@@ -29,6 +29,7 @@ For some 'offline' features in the AW-App and the HO-Portal it is required to ru
 See the related Angular-documentation: <https://v7.angular.io/guide/service-worker-getting-started#serving-with-http-server>
 
 To use it locally:
+
 - run: `npm run debug:service-worker` instead of `npm start` (in each interfaces' specific folder).
 - it will give you the IP-address + port-number where the app is running.
 - however, use `localhost` instead of the given IP-address, for the service-worker to actually work.
@@ -62,13 +63,13 @@ All interfaces use a common set of dependencies/frameworks/libraries.
   - API Documentation: <https://v8.angular.io/api>
   - Used by Angular, RxJS: <https://v6.rxjs.dev/api>
 
-- [`ngx-translate` v11](https://www.npmjs.com/package/@ngx-translate/core/v/11.0.1)  
+- [`ngx-translate` v12](https://www.npmjs.com/package/@ngx-translate/core/v/12.1.2)  
   An Angular-service to handle internationalization(i18n) or translations.
 
   - Website: <http://www.ngx-translate.com/>
-  - API Documentation: <https://github.com/ngx-translate/core/tree/v11.0.1#api>
+  - API Documentation: <https://github.com/ngx-translate/core/tree/v12.1.2#api>
 
-- [`ngx-translate-lint` v1.4](https://www.npmjs.com/package/ngx-translate-lint/v/1.4.0)  
+- [`ngx-translate-lint` v1.13.2](https://www.npmjs.com/package/ngx-translate-lint/v/1.13.2)  
    A lint-tool to check for missing or unused translations or typos in keys.
 
   - GitHub: <https://github.com/svoboda-rabstvo/ngx-translate-lint/tree/v1.4.0>
