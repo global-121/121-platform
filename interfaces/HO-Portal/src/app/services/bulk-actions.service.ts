@@ -66,6 +66,9 @@ export class BulkActionsService {
           PaStatus.registeredWhileNoLongerEligible,
         ]);
         break;
+      case BulkActionId.sendMessage:
+        personData.checkboxVisible = true;
+        break;
     }
     return personData;
   }
@@ -117,6 +120,13 @@ export class BulkActionsService {
           this.onlyIds(selectedPeople),
           message,
         );
+      case BulkActionId.sendMessage:
+        return console.log('Send Message');
+      // return await this.programsService.reject(
+      //   programId,
+      //   this.onlyIds(selectedPeople),
+      //   message,
+      // );
     }
   }
 }
