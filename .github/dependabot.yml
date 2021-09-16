@@ -42,7 +42,7 @@ updates:
       - dependency-name: rxjs
         versions: ['>= 7.0.0']
       - dependency-name: 'zone.js'
-        versions: ['>= 0.9.0']
+        versions: ['>= v0.11.1']
 
   - package-ecosystem: npm
     directory: '/interfaces/AW-App'
@@ -82,7 +82,7 @@ updates:
       - dependency-name: rxjs
         versions: ['>= 7.0.0']
       - dependency-name: 'zone.js'
-        versions: ['>= 0.9.0']
+        versions: ['>= v0.11.1']
       - dependency-name: '@zxing/ngx-scanner'
         versions: ['>= 3.0.0']
 
@@ -124,7 +124,7 @@ updates:
       - dependency-name: rxjs
         versions: ['>= 7.0.0']
       - dependency-name: 'zone.js'
-        versions: ['>= 0.9.0']
+        versions: ['>= v0.11.1']
       - dependency-name: angularx-qrcode
         versions: ['>= 2.1.0']
       - dependency-name: '@zxing/ngx-scanner'
