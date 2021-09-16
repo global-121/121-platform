@@ -41,7 +41,7 @@ export class PersonalPage implements OnInit {
   @ViewChild(IonContent, { static: false })
   public ionContent: IonContent;
 
-  @ViewChild('conversationContainer', { read: ViewContainerRef, static: false })
+  @ViewChild('conversationContainer', { read: ViewContainerRef, static: true })
   public container: ViewContainerRef;
 
   public isDebug: boolean = environment.isDebug;

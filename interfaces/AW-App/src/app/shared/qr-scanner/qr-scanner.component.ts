@@ -8,7 +8,7 @@ import { ZXingScannerComponent } from '@zxing/ngx-scanner';
   styleUrls: ['./qr-scanner.component.scss'],
 })
 export class QrScannerComponent {
-  @ViewChild('scanner')
+  @ViewChild('scanner', { static: false })
   scanner: ZXingScannerComponent;
 
   @Input()
