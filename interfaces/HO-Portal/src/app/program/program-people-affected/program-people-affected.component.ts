@@ -1,5 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { AlertController, ModalController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -207,8 +208,15 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     public modalController: ModalController,
     public platform: Platform,
     private pubSub: PubSubService,
+    private router: Router,
   ) {
     this.locale = environment.defaultLocale;
+    router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        // this.ngOnInit();
+        this.loadData();
+      }
+    });
 
     this.submitWarning = {
       message: '',
@@ -471,7 +479,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       this.refreshData();
     });
   }
-
   private setupProxyScrollbar() {
     const proxyScrollbar: HTMLElement =
       document.querySelector('.proxy-scrollbar');
