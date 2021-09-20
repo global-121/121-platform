@@ -213,7 +213,6 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.locale = environment.defaultLocale;
     router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        // this.ngOnInit();
         this.loadData();
       }
     });
