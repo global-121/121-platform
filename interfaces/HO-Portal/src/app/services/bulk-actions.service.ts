@@ -121,12 +121,10 @@ export class BulkActionsService {
           message,
         );
       case BulkActionId.sendMessage:
-        return console.log('Send Message');
-      // return await this.programsService.reject(
-      //   programId,
-      //   this.onlyIds(selectedPeople),
-      //   message,
-      // );
+        return await this.programsService.sendMessage(
+          this.onlyIds(selectedPeople),
+          message,
+        );
     }
   }
 }

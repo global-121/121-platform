@@ -419,6 +419,14 @@ export class ProgramsServiceApiService {
     return this.updatePaStatus('reject', programId, referenceIds, message);
   }
 
+  sendMessage(referenceIds: string[], message: string): Promise<any> {
+    return this.apiService
+      .post(environment.url_121_service_api, `/registrations/sms`, {
+        referenceIds,
+        message,
+      })
+      .toPromise();
+  }
   saveAction(actionType: ActionType, programId: number | string): Promise<any> {
     return this.apiService
       .post(environment.url_121_service_api, `/actions/save`, {
