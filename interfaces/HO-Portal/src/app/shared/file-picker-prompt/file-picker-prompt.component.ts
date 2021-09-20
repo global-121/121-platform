@@ -24,7 +24,7 @@ export interface FilePickerProps {
   styleUrls: ['./file-picker-prompt.component.scss'],
 })
 export class FilePickerPromptComponent implements OnInit, AfterViewInit {
-  @ViewChild('fileInput')
+  @ViewChild('fileInput', { static: false })
   public fileInput: IonInput;
 
   @Input()

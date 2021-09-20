@@ -13,7 +13,10 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../account/account.module#AccountPageModule',
+            loadChildren: () =>
+              import('../account/account.module').then(
+                (m) => m.AccountPageModule,
+              ),
           },
         ],
       },
@@ -22,8 +25,10 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren:
-              '../validation/validation.module#ValidationPageModule',
+            loadChildren: () =>
+              import('../validation/validation.module').then(
+                (m) => m.ValidationPageModule,
+              ),
             canActivate: [AuthGuard],
           },
         ],
@@ -33,7 +38,8 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: '../tab3/tab3.module#Tab3PageModule',
+            loadChildren: () =>
+              import('../tab3/tab3.module').then((m) => m.Tab3PageModule),
             canActivate: [AuthGuard],
           },
         ],

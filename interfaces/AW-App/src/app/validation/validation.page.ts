@@ -24,10 +24,10 @@ import { ValidationComponents } from '../validation-components/validation-compon
   styleUrls: ['validation.page.scss'],
 })
 export class ValidationPage implements OnInit {
-  @ViewChild(IonContent)
+  @ViewChild(IonContent, { static: true })
   public ionContent: IonContent;
 
-  @ViewChild('conversationContainer', { read: ViewContainerRef })
+  @ViewChild('conversationContainer', { read: ViewContainerRef, static: true })
   public container;
 
   public isDebug: boolean = environment.isDebug;

@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased](https://github.com/global-121/121-platform/compare/v1.12.2...master)
+## [Unreleased](https://github.com/global-121/121-platform/compare/v1.13.0...master)
+
+### Changed
+
+- 2021-09-15: Upgrade PA-App to Angular v8
+- 2021-09-15: Upgrade HO-Portal to Angular v8
+- 2021-09-15: Upgrade AW-App to Angular v8
 
 ---
+
+## [1.13.0](https://github.com/global-121/121-platform/compare/v1.12.2...v1.13.0) - 2021-09-15
+
 ## [1.12.2](https://github.com/global-121/121-platform/compare/v1.12.1...v1.12.2) - 2021-09-07
 
 ## [1.12.1](https://github.com/global-121/121-platform/compare/v1.12.0...v1.12.1) - 2021-09-03
@@ -29,14 +38,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.8.0](https://github.com/global-121/121-platform/compare/v1.7.3...v1.8.0) - 2021-07-05
 
 ### Added
+
 - Import data: "as registered"
 
 ### Changed
+
 - Import data: "as imported"
 - Export data (more data added)
 - Incoming messages: improved error-handling/logging and status-management
 
 ## [1.7.3](https://github.com/global-121/121-platform/compare/v1.7.2...v1.7.3) - 2021-06-26
+
 - 2021-06-26: uuid lib PA-app suddenly failing in build prod-mode, replaced by random string function
 
 ## [1.7.2](https://github.com/global-121/121-platform/compare/v1.7.1...v1.7.2) - 2021-06-23
@@ -46,6 +58,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.7.0](https://github.com/global-121/121-platform/compare/v1.6.1...v1.7.0) - 2021-06-23
 
 ### Added
+
 - 2021-06-23: `MOCK_INTERSOLVE`, `MOCK_TWILIO`, `DISABLE_GROUPING_ON_PHONENUMBER` to `services/.env`.
 
 ## [1.6.1](https://github.com/global-121/121-platform/compare/v1.6.0...v1.6.1) - 2021-06-09
@@ -55,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.5.5](https://github.com/global-121/121-platform/compare/v1.5.4...v1.5.5) - 2021-06-09
 
 ### Added
+
 - 2021-06-09: Portuguese translations
 
 ## [1.5.4](https://github.com/global-121/121-platform/compare/v1.5.3...v1.5.4) - 2021-06-02
@@ -64,17 +78,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.5.2](https://github.com/global-121/121-platform/compare/v1.5.1...v1.5.2) - 2021-06-02
 
 ### Changed
+
 - 2021-06-01: Changes to local development-environment setup
 
 ## [1.5.1](https://github.com/global-121/121-platform/compare/v1.5.0...v1.5.1) - 2021-05-28
 
 ### Fixed
+
 - 2021-05-28: Automatic installing of changed dependencies
 - 2021-05-28: `tsconfig` settings optimized for Node v12
 
 ## [1.5.0](https://github.com/global-121/121-platform/compare/v1.4.1...v1.5.0) - 2021-05-27
 
 ### Changed
+
 - 2021-05-25: Upgraded Node.js version to v12
 - 2021-05-26: Updated dependencies of 121-service and PA-accounts-service;
   To add/update manually: `docker-compose exec 121-service npm install --no-save --no-fund --no-audit`
@@ -85,6 +102,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.0](https://github.com/global-121/121-platform/compare/v1.3.0...v1.4.0) - 2021-05-12
 
 ### Added
+
 - 2021-05-12: Add custom note per PA in HO-Portal
 
 ## [1.3.0](https://github.com/global-121/121-platform/compare/v1.2.3...v1.3.0) - 2021-05-05
