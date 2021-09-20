@@ -1081,4 +1081,24 @@ export class RegistrationsService {
 
     return inclusionStatus;
   }
+
+  public async sendCustomSms(
+    referenceIds: string[],
+    message: string,
+  ): Promise<void> {
+    const phoneNumbers = [];
+    for (const referenceId of referenceIds) {
+      const registration = await this.getRegistrationFromReferenceId(
+        referenceId,
+      );
+      if (!registration.phoneNumber) {
+        const errors = `Registration with referenceId: ${registration.referenceId} has no phonenumber.`;
+        throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
+      }
+      phoneNumbers.push(registration.phoneNumber);
+    }
+    for (const phoneNumber of phoneNumbers) {
+      this.smsService.sendSms(message, phoneNumber);
+    }
+  }
 }

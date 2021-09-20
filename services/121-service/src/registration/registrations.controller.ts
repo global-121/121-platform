@@ -43,6 +43,7 @@ import { QrIdentifierDto } from './dto/qr-identifier.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
+import { SendCustomSmsDto } from './dto/send-custom-sms.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -489,6 +490,16 @@ export class RegistrationsController {
     return await this.registrationsService.getInclusionStatus(
       Number(params.programId),
       data.referenceId,
+    );
+  }
+
+  @Roles(UserRole.PersonalData, UserRole.RunProgram)
+  @ApiOperation({ title: 'Send custom sms to array of registrations' })
+  @Post('sms')
+  public async sendCustomSms(@Body() data: SendCustomSmsDto): Promise<void> {
+    return await this.registrationsService.sendCustomSms(
+      data.referenceIds,
+      data.message,
     );
   }
 }
