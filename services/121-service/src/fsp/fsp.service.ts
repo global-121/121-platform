@@ -19,7 +19,7 @@ import {
 } from './dto/payment-transaction-result.dto';
 import { AfricasTalkingNotificationDto } from './dto/africas-talking-notification.dto';
 import { AfricasTalkingValidationDto } from './dto/africas-talking-validation.dto';
-import { UnusedVoucherDto } from './dto/unused-voucher.dto';
+import { ExportedVoucherDto } from './dto/exported-voucher.dto';
 import { ActionService } from '../actions/action.service';
 import { AdditionalActionType } from '../actions/action.entity';
 import { TwilioStatusCallbackDto } from '../notifications/twilio.dto';
@@ -224,8 +224,12 @@ export class FspService {
     }
   }
 
-  public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
+  public async getUnusedVouchers(): Promise<ExportedVoucherDto[]> {
     return this.intersolveService.getUnusedVouchers();
+  }
+
+  public async getVouchersToCancel(): Promise<ExportedVoucherDto[]> {
+    return this.intersolveService.getVouchersToCancel();
   }
 
   public async getFspById(id: number): Promise<FinancialServiceProviderEntity> {

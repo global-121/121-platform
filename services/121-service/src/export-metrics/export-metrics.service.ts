@@ -73,6 +73,9 @@ export class ExportMetricsService {
       case ExportType.unusedVouchers: {
         return this.getUnusedVouchers();
       }
+      case ExportType.vouchersToCancel: {
+        return this.getVouchersToCancel();
+      }
       case ExportType.duplicatePhoneNumbers: {
         return this.getDuplicatePhoneNumbers(programId);
       }
@@ -140,6 +143,21 @@ export class ExportMetricsService {
     const response = {
       fileName: this.getExportFileName(ExportType.unusedVouchers),
       data: this.jsonToCsv(unusedVouchers),
+    };
+
+    return response;
+  }
+
+  private async getVouchersToCancel(): Promise<FileDto> {
+    const vouchersToCancel = await this.fspService.getVouchersToCancel();
+    vouchersToCancel.forEach(v => {
+      v.name = this.registrationsService.getName(v.customData);
+      delete v.customData;
+    });
+
+    const response = {
+      fileName: this.getExportFileName(ExportType.vouchersToCancel),
+      data: this.jsonToCsv(vouchersToCancel),
     };
 
     return response;

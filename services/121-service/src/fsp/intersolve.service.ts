@@ -11,7 +11,13 @@ import {
 import { IntersolveApiService } from './api/instersolve.api.service';
 import { StatusEnum } from '../shared/enum/status.enum';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, Not, IsNull } from 'typeorm';
+import {
+  Repository,
+  getRepository,
+  Not,
+  IsNull,
+  LessThanOrEqual,
+} from 'typeorm';
 import { IntersolveBarcodeEntity } from './intersolve-barcode.entity';
 import { ProgramEntity } from '../programs/program.entity';
 import { IntersolveResultCode } from './api/enum/intersolve-result-code.enum';
@@ -27,7 +33,7 @@ import {
   PaPaymentDataAggregateDto,
   PaPaymentDataDto,
 } from './dto/pa-payment-data.dto';
-import { UnusedVoucherDto } from './dto/unused-voucher.dto';
+import { ExportedVoucherDto } from './dto/exported-voucher.dto';
 import { TransactionEntity } from '../programs/transactions.entity';
 import { IntersolveRequestEntity } from './intersolve-request.entity';
 import {
@@ -610,34 +616,59 @@ export class IntersolveService {
     return realBalance;
   }
 
-  public async getUnusedVouchers(): Promise<UnusedVoucherDto[]> {
+  public async getUnusedVouchers(): Promise<ExportedVoucherDto[]> {
     const previouslyUnusedVouchers = await this.intersolveBarcodeRepository.find(
       {
         where: { balanceUsed: false },
         relations: ['image', 'image.registration'],
       },
     );
-    const unusedVouchers = [];
 
-    for await (const voucher of previouslyUnusedVouchers) {
+    return await this.returnVoucherForExportIfUnused(previouslyUnusedVouchers);
+  }
+
+  public async getVouchersToCancel(): Promise<ExportedVoucherDto[]> {
+    const maxInstallment = await this.intersolveBarcodeRepository.findOne({
+      order: { installment: 'DESC' },
+    });
+    const uncollectedVouchers = await this.intersolveBarcodeRepository.find({
+      where: {
+        send: false,
+        balanceUsed: false,
+        installment: LessThanOrEqual(
+          maxInstallment ? maxInstallment.installment - 3 : 0,
+        ),
+      },
+      relations: ['image', 'image.registration'],
+    });
+
+    return await this.returnVoucherForExportIfUnused(uncollectedVouchers);
+  }
+
+  private async returnVoucherForExportIfUnused(
+    vouchersInput: IntersolveBarcodeEntity[],
+  ): Promise<ExportedVoucherDto[]> {
+    const vouchersOutput = [];
+
+    for await (const voucher of vouchersInput) {
       const balance = await this.getBalance(voucher);
 
       if (balance === voucher.amount) {
-        let unusedVoucher = new UnusedVoucherDto();
-        unusedVoucher.installment = voucher.installment;
-        unusedVoucher.issueDate = voucher.created;
-        unusedVoucher.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
-        unusedVoucher.phoneNumber = voucher.image[0].registration.phoneNumber;
-        unusedVoucher.customData = voucher.image[0].registration.customData;
+        let voucherOutput = new ExportedVoucherDto();
+        voucherOutput.installment = voucher.installment;
+        voucherOutput.issueDate = voucher.created;
+        voucherOutput.whatsappPhoneNumber = voucher.whatsappPhoneNumber;
+        voucherOutput.phoneNumber = voucher.image[0].registration.phoneNumber;
+        voucherOutput.customData = voucher.image[0].registration.customData;
 
-        unusedVouchers.push(unusedVoucher);
+        vouchersOutput.push(voucherOutput);
       } else {
         voucher.balanceUsed = true;
         this.intersolveBarcodeRepository.save(voucher);
       }
     }
 
-    return unusedVouchers;
+    return vouchersOutput;
   }
 
   public async insertTransactionIntersolve(

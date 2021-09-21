@@ -1,4 +1,4 @@
-export class UnusedVoucherDto {
+export class ExportedVoucherDto {
   public installment: number;
   public issueDate: Date;
   public whatsappPhoneNumber: string;

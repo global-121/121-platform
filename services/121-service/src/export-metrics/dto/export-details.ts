@@ -9,6 +9,7 @@ export enum ExportType {
   payment = 'payment',
   selectedForValidation = 'selected-for-validation',
   unusedVouchers = 'unused-vouchers',
+  vouchersToCancel = 'vouchers-to-cancel',
 }
 
 export class ExportDetails {
