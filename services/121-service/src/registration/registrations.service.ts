@@ -394,6 +394,7 @@ export class RegistrationsService {
     );
     this.inclusionScoreService.calculateInclusionScore(referenceId);
     this.smsService.notifyBySms(
+      registration.id,
       registration.phoneNumber,
       registration.preferredLanguage,
       registration.program.id,
@@ -768,6 +769,7 @@ export class RegistrationsService {
     message?: string,
   ): Promise<void> {
     this.smsService.notifyBySms(
+      registration.id,
       registration.phoneNumber,
       registration.preferredLanguage,
       programId,
@@ -1086,7 +1088,7 @@ export class RegistrationsService {
     referenceIds: string[],
     message: string,
   ): Promise<void> {
-    const phoneNumbers = [];
+    const validRegistrations = [];
     for (const referenceId of referenceIds) {
       const registration = await this.getRegistrationFromReferenceId(
         referenceId,
@@ -1095,10 +1097,14 @@ export class RegistrationsService {
         const errors = `Registration with referenceId: ${registration.referenceId} has no phonenumber.`;
         throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       }
-      phoneNumbers.push(registration.phoneNumber);
+      validRegistrations.push(registration);
     }
-    for (const phoneNumber of phoneNumbers) {
-      this.smsService.sendSms(message, phoneNumber);
+    for (const validRegistration of validRegistrations) {
+      this.smsService.sendSms(
+        message,
+        validRegistration.phoneNumber,
+        validRegistration.id,
+      );
     }
   }
 }

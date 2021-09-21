@@ -18,6 +18,7 @@ import { LanguageEnum } from './enum/language.enum';
 import { IsInt, IsPositive, IsOptional } from 'class-validator';
 import { TransactionEntity } from '../programs/transactions.entity';
 import { ImageCodeExportVouchersEntity } from '../notifications/imagecode/image-code-export-vouchers.entity';
+import { TwilioMessageEntity } from '../notifications/twilio.entity';
 
 @Entity('registration')
 export class RegistrationEntity extends CascadeDeleteEntity {
@@ -99,6 +100,12 @@ export class RegistrationEntity extends CascadeDeleteEntity {
   )
   public images: ImageCodeExportVouchersEntity[];
 
+  @OneToMany(
+    _type => TwilioMessageEntity,
+    twilioMessages => twilioMessages.registration,
+  )
+  public twilioMessages: TwilioMessageEntity[];
+
   @BeforeRemove()
   public async cascadeDelete(): Promise<void> {
     await this.deleteAllOneToMany([
@@ -117,6 +124,10 @@ export class RegistrationEntity extends CascadeDeleteEntity {
       {
         entityClass: RegistrationStatusChangeEntity,
         columnName: 'registration',
+      },
+      {
+        entityClass: TwilioMessageEntity,
+        columnName: 'twilioMessages',
       },
     ]);
   }

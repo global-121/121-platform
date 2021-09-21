@@ -95,11 +95,16 @@ export class CronjobService {
         .split('{{1}}')
         .join(unsentIntersolveBarcode.amount);
 
+      const registration = await this.registrationRepository.findOne({
+        where: { referenceId: referenceId },
+      });
+
       await this.whatsappService.sendWhatsapp(
         whatsappPayment,
         fromNumber,
         IntersolvePayoutStatus.InitialMessage,
         null,
+        registration.id,
       );
     });
 

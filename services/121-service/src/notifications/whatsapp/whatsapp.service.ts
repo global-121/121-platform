@@ -49,6 +49,7 @@ export class WhatsappService {
   ) {}
 
   public async notifyByWhatsapp(
+    registrationId: number,
     recipientPhoneNr: string,
     language: string,
     programId: number,
@@ -69,7 +70,13 @@ export class WhatsappService {
     }
     const whatsappText =
       message || (await this.getWhatsappText(language, key, programId));
-    await this.sendWhatsapp(whatsappText, recipientPhoneNr, null, null);
+    await this.sendWhatsapp(
+      whatsappText,
+      recipientPhoneNr,
+      null,
+      null,
+      registrationId,
+    );
   }
 
   public async sendWhatsapp(
@@ -77,6 +84,7 @@ export class WhatsappService {
     recipientPhoneNr: string,
     messageType: null | IntersolvePayoutStatus,
     mediaUrl: null | string,
+    registrationId?: number,
   ): Promise<any> {
     const payload = {
       body: message,
@@ -94,7 +102,7 @@ export class WhatsappService {
     return twilioClient.messages
       .create(payload)
       .then(message => {
-        this.storeSendWhatsapp(message);
+        this.storeSendWhatsapp(message, registrationId);
         return message.sid;
       })
       .catch(err => {
@@ -121,7 +129,7 @@ export class WhatsappService {
     return fallbackNotifications[key] ? fallbackNotifications[key] : '';
   }
 
-  public storeSendWhatsapp(message): void {
+  public storeSendWhatsapp(message, registrationId: number): void {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
     twilioMessage.body = message.body;
@@ -131,6 +139,7 @@ export class WhatsappService {
     twilioMessage.status = message.status;
     twilioMessage.type = NotificationType.Whatsapp;
     twilioMessage.dateCreated = message.dateCreated;
+    twilioMessage.registrationId = registrationId;
     this.twilioMessageRepository.save(twilioMessage);
   }
 
@@ -232,7 +241,13 @@ export class WhatsappService {
     if (registrationsWithOpenVouchers.length === 0) {
       const whatsappDefaultReply =
         program.notifications[language]['whatsappReply'];
-      await this.sendWhatsapp(whatsappDefaultReply, fromNumber, null, null);
+      await this.sendWhatsapp(
+        whatsappDefaultReply,
+        fromNumber,
+        null,
+        null,
+        null,
+      );
       return;
     }
 
@@ -262,6 +277,7 @@ export class WhatsappService {
           fromNumber,
           IntersolvePayoutStatus.VoucherSent,
           mediaUrl,
+          registration.id,
         );
         firstVoucherSent = true;
 
@@ -288,6 +304,7 @@ export class WhatsappService {
         fromNumber,
         null,
         EXTERNAL_API.voucherInstructionsUrl,
+        registrationsWithOpenVouchers[0].id,
       );
     }
   }

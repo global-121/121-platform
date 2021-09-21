@@ -1,3 +1,4 @@
+import { RegistrationEntity } from './../../registration/registration.entity';
 import { ProgramEntity } from './../../programs/program.entity';
 import { EXTERNAL_API } from './../../config';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -14,6 +15,7 @@ export class SmsService {
   public constructor() {}
 
   public async notifyBySms(
+    registrationId: number,
     recipientPhoneNr: string,
     language: string,
     programId: number,
@@ -29,13 +31,14 @@ export class SmsService {
       }
       const smsText =
         message || (await this.getSmsText(language, key, programId));
-      this.sendSms(smsText, recipientPhoneNr);
+      this.sendSms(smsText, recipientPhoneNr, registrationId);
     }
   }
 
   public async sendSms(
     message: string,
     recipientPhoneNr: string,
+    registrationId: number,
   ): Promise<void> {
     // Overwrite recipient phone number for testing phase
     twilioClient.messages
@@ -45,7 +48,7 @@ export class SmsService {
         statusCallback: EXTERNAL_API.smsStatus,
         to: recipientPhoneNr,
       })
-      .then(message => this.storeSendSms(message))
+      .then(message => this.storeSendSms(message, registrationId))
       .catch(err => console.log('Error from Twilio:', err));
   }
 
@@ -58,7 +61,7 @@ export class SmsService {
     return program.notifications[language][key];
   }
 
-  public storeSendSms(message): void {
+  public storeSendSms(message, registrationId: number): void {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
     twilioMessage.body = message.body;
@@ -68,6 +71,7 @@ export class SmsService {
     twilioMessage.status = message.status;
     twilioMessage.type = NotificationType.Sms;
     twilioMessage.dateCreated = message.dateCreated;
+    twilioMessage.registrationId = registrationId;
     this.twilioMessageRepository.save(twilioMessage);
   }
 
