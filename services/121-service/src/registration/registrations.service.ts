@@ -864,10 +864,13 @@ export class RegistrationsService {
     const updatedRegistration = await this.addFsp(referenceId, newFsp.id);
 
     // Add new attributes
-    updatedRegistration.fsp.attributes.forEach(async attribute => {
-      updatedRegistration.customData[attribute.name] =
-        newFspAttributes[attribute.name];
-    });
+    for (const attribute of updatedRegistration.fsp.attributes) {
+      await this.addCustomData(
+        referenceId,
+        attribute.name,
+        newFspAttributes[attribute.name],
+      );
+    }
 
     return await this.registrationRepository.save(updatedRegistration);
   }
