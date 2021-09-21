@@ -213,7 +213,10 @@ export class ProgramPeopleAffectedComponent implements OnInit {
     this.locale = environment.defaultLocale;
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.loadData();
+        // this.loadData();
+        this.pubSub.subscribe(PubSubEvent.dataRegistrationChanged, () => {
+          this.refreshData();
+        });
       }
     });
 
