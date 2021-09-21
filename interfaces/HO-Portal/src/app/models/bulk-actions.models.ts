@@ -11,6 +11,7 @@ export enum BulkActionId {
   endInclusion = 'end-inclusion',
   reject = 'reject',
   markNoLongerEligible = 'mark-no-longer-eligible',
+  sendMessage = 'send-message',
 }
 
 export class BulkAction {

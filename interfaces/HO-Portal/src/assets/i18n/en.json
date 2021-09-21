@@ -268,7 +268,8 @@
           "select-for-validation": "Select for validation",
           "include": "Include in program",
           "reject": "Reject from program",
-          "end-inclusion": "End inclusion in program"
+          "end-inclusion": "End inclusion in program",
+          "send-message": "Send Message to PA's"
         },
         "action-inputs": {
           "message-checkbox": "Send a message to these People Affected",

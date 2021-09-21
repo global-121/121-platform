@@ -66,6 +66,9 @@ export class BulkActionsService {
           PaStatus.registeredWhileNoLongerEligible,
         ]);
         break;
+      case BulkActionId.sendMessage:
+        personData.checkboxVisible = true;
+        break;
     }
     return personData;
   }
@@ -114,6 +117,11 @@ export class BulkActionsService {
       case BulkActionId.reject:
         return await this.programsService.reject(
           programId,
+          this.onlyIds(selectedPeople),
+          message,
+        );
+      case BulkActionId.sendMessage:
+        return await this.programsService.sendMessage(
           this.onlyIds(selectedPeople),
           message,
         );
