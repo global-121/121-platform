@@ -1,3 +1,4 @@
+import { TwilioMessageEntity } from './../notifications/twilio.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { SmsService } from './../notifications/sms/sms.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
@@ -35,6 +36,7 @@ import { Attributes } from './dto/update-attribute.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
+import { MessageHistoryDto } from './dto/message-history.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -1106,5 +1108,26 @@ export class RegistrationsService {
         validRegistration.id,
       );
     }
+  }
+
+  public async getMessageHistoryRegistration(
+    referenceId: string,
+  ): Promise<MessageHistoryDto[]> {
+    return await this.registrationRepository
+      .createQueryBuilder('registration')
+      .select([
+        'twilioMessage.dateCreated as created',
+        'twilioMessage.from as from',
+        'twilioMessage.to as to',
+        'twilioMessage.body as body',
+        'twilioMessage.status as status',
+        'twilioMessage.type as type',
+        'twilioMessage.mediaUrl as mediaUrl',
+      ])
+      .leftJoin('registration.twilioMessages', 'twilioMessage')
+      .where('registration.referenceId = :referenceId', {
+        referenceId: referenceId,
+      })
+      .getRawMany();
   }
 }

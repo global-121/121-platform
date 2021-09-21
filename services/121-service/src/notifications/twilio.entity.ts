@@ -22,6 +22,9 @@ export class TwilioMessageEntity extends Base121Entity {
   @Column()
   public body: string;
 
+  @Column({ nullable: true })
+  public mediaUrl: string;
+
   @Column()
   public to: string;
 

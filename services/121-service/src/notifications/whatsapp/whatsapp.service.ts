@@ -102,7 +102,7 @@ export class WhatsappService {
     return twilioClient.messages
       .create(payload)
       .then(message => {
-        this.storeSendWhatsapp(message, registrationId);
+        this.storeSendWhatsapp(message, registrationId, mediaUrl);
         return message.sid;
       })
       .catch(err => {
@@ -129,10 +129,15 @@ export class WhatsappService {
     return fallbackNotifications[key] ? fallbackNotifications[key] : '';
   }
 
-  public storeSendWhatsapp(message, registrationId: number): void {
+  public storeSendWhatsapp(
+    message,
+    registrationId: number,
+    mediaUrl: string,
+  ): void {
     const twilioMessage = new TwilioMessageEntity();
     twilioMessage.accountSid = message.accountSid;
     twilioMessage.body = message.body;
+    twilioMessage.mediaUrl = mediaUrl;
     twilioMessage.to = message.to;
     twilioMessage.from = message.messagingServiceSid;
     twilioMessage.sid = message.sid;
