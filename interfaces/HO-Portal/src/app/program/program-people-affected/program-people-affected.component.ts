@@ -199,7 +199,12 @@ export class ProgramPeopleAffectedComponent implements OnInit {
         'page.program.program-people-affected.actions.send-message',
       ),
       roles: [UserRole.PersonalData],
-      phases: [ProgramPhase.registrationValidation],
+      phases: [
+        ProgramPhase.registrationValidation,
+        ProgramPhase.inclusion,
+        ProgramPhase.payment,
+        ProgramPhase.reviewInclusion,
+      ],
       showIfNoValidation: true,
       confirmConditions: {
         checkbox: this.translate.instant(
