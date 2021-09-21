@@ -44,6 +44,7 @@ import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto, ReferenceIdsDto } from './dto/reference-id.dto';
 import { SendCustomSmsDto } from './dto/send-custom-sms.dto';
+import { MessageHistoryDto } from './dto/message-history.dto';
 
 @ApiBearerAuth()
 @UseGuards(RolesGuard)
@@ -500,6 +501,17 @@ export class RegistrationsController {
     return await this.registrationsService.sendCustomSms(
       data.referenceIds,
       data.message,
+    );
+  }
+
+  @Roles(UserRole.PersonalData)
+  @ApiOperation({ title: 'Get message history for one registration' })
+  @Get('message-history/:referenceId')
+  public async getMessageHistoryRegistration(
+    @Param() params: ReferenceIdDto,
+  ): Promise<MessageHistoryDto[]> {
+    return await this.registrationsService.getMessageHistoryRegistration(
+      params.referenceId,
     );
   }
 }

@@ -31,6 +31,7 @@ export class WhatsappController {
   @Get(':number')
   public async sendWhatsapp(@Param() params): Promise<void> {
     return await this.whatsappService.notifyByWhatsapp(
+      1,
       params.number,
       'en',
       1,

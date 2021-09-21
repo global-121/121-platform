@@ -363,6 +363,7 @@ export class IntersolveService {
         paymentInfo.paymentAddress,
         IntersolvePayoutStatus.InitialMessage,
         null,
+        registration.id,
       )
       .then(
         async response => {

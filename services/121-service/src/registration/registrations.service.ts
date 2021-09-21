@@ -1,3 +1,4 @@
+import { TwilioMessageEntity } from './../notifications/twilio.entity';
 import { FinancialServiceProviderEntity } from './../fsp/financial-service-provider.entity';
 import { SmsService } from './../notifications/sms/sms.service';
 import { CreateRegistrationDto } from './dto/create-registration.dto';
@@ -35,6 +36,7 @@ import { Attributes } from './dto/update-attribute.dto';
 import { ValidationIssueDataDto } from './dto/validation-issue-data.dto';
 import { InclusionStatus } from './dto/inclusion-status.dto';
 import { ReferenceIdDto } from './dto/reference-id.dto';
+import { MessageHistoryDto } from './dto/message-history.dto';
 
 @Injectable()
 export class RegistrationsService {
@@ -394,6 +396,7 @@ export class RegistrationsService {
     );
     this.inclusionScoreService.calculateInclusionScore(referenceId);
     this.smsService.notifyBySms(
+      registration.id,
       registration.phoneNumber,
       registration.preferredLanguage,
       registration.program.id,
@@ -768,6 +771,7 @@ export class RegistrationsService {
     message?: string,
   ): Promise<void> {
     this.smsService.notifyBySms(
+      registration.id,
       registration.phoneNumber,
       registration.preferredLanguage,
       programId,
@@ -1086,7 +1090,7 @@ export class RegistrationsService {
     referenceIds: string[],
     message: string,
   ): Promise<void> {
-    const phoneNumbers = [];
+    const validRegistrations = [];
     for (const referenceId of referenceIds) {
       const registration = await this.getRegistrationFromReferenceId(
         referenceId,
@@ -1095,10 +1099,35 @@ export class RegistrationsService {
         const errors = `Registration with referenceId: ${registration.referenceId} has no phonenumber.`;
         throw new HttpException({ errors }, HttpStatus.NOT_FOUND);
       }
-      phoneNumbers.push(registration.phoneNumber);
+      validRegistrations.push(registration);
     }
-    for (const phoneNumber of phoneNumbers) {
-      this.smsService.sendSms(message, phoneNumber);
+    for (const validRegistration of validRegistrations) {
+      this.smsService.sendSms(
+        message,
+        validRegistration.phoneNumber,
+        validRegistration.id,
+      );
     }
+  }
+
+  public async getMessageHistoryRegistration(
+    referenceId: string,
+  ): Promise<MessageHistoryDto[]> {
+    return await this.registrationRepository
+      .createQueryBuilder('registration')
+      .select([
+        'twilioMessage.dateCreated as created',
+        'twilioMessage.from as from',
+        'twilioMessage.to as to',
+        'twilioMessage.body as body',
+        'twilioMessage.status as status',
+        'twilioMessage.type as type',
+        'twilioMessage.mediaUrl as mediaUrl',
+      ])
+      .leftJoin('registration.twilioMessages', 'twilioMessage')
+      .where('registration.referenceId = :referenceId', {
+        referenceId: referenceId,
+      })
+      .getRawMany();
   }
 }
