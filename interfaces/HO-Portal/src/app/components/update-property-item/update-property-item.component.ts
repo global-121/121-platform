@@ -41,14 +41,22 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   ngOnInit() {
     this.propertyModel = this.value;
+    if (this.type == 'fsp') this.getFspAttributes(this.value);
   }
 
   public doUpdate() {
     this.updated.emit(this.propertyModel);
   }
 
-  public getFspAttributes({ detail }) {
-    const selectedFsp = this.fspList.find(({ fsp }) => fsp == detail.value);
-    this.fspAttributes = selectedFsp.attributes;
+  onFspChange({ detail }) {
+    this.getFspAttributes(detail.value);
+  }
+
+  public getFspAttributes(fspString: string) {
+    const selectedFsp = this.fspList.find(
+      (fspItem) => fspItem.fsp == fspString,
+    );
+
+    if (selectedFsp) this.fspAttributes = selectedFsp.attributes;
   }
 }

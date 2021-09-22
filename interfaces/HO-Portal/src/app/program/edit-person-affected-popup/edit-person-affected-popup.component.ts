@@ -24,6 +24,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public noteLastUpdate: string;
 
   public fspList: any[];
+  public programFspLength: number = 0;
   public personFsp: Fsp;
 
   constructor(
@@ -149,6 +150,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.fspList = [];
 
     this.programsService.getProgramById(this.programId).then((program) => {
+      this.programFspLength = program.financialServiceProviders.length;
       program.financialServiceProviders.forEach((fsp) => {
         this.programsService.getFspById(fsp.id).then((fspItem) => {
           if (fspItem.fsp === this.person.fsp) this.personFsp = fspItem;

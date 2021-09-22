@@ -59,7 +59,7 @@
         class="ion-margin-vertical"
       ></app-update-property-item>
       <app-update-property-item
-        *ngIf="person?.fsp"
+        *ngIf="fspList.length == programFspLength"
         type="fsp"
         [fspList]="fspList"
         [label]="'page.program.program-people-affected.column.fsp'|translate"

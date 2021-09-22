@@ -42,7 +42,7 @@
           [value]="value"
           [placeholder]="placeholder"
           interface="popover"
-          (ionChange)="getFspAttributes($event)"
+          (ionChange)="onFspChange($event)"
         >
           <ion-select-option
             *ngFor="let fspItem of fspList"
