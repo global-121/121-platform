@@ -813,7 +813,7 @@ export class RegistrationsService {
   public async updateChosenFsp(
     referenceId: string,
     newFspName: fspName,
-    newFspAttributes: object,
+    newFspAttributesRaw: object,
   ): Promise<RegistrationEntity> {
     //Identify new FSP
     const newFsp = await this.fspRepository.findOne({
@@ -826,10 +826,11 @@ export class RegistrationsService {
     }
 
     // Check if required attributes are present
+
     newFsp.attributes.forEach(requiredAttribute => {
       if (
-        !newFspAttributes ||
-        !Object.keys(newFspAttributes).includes(requiredAttribute.name)
+        !newFspAttributesRaw ||
+        !Object.keys(newFspAttributesRaw).includes(requiredAttribute.name)
       ) {
         const requiredAttributes = newFsp.attributes
           .map(a => a.name)
@@ -838,6 +839,12 @@ export class RegistrationsService {
         throw new HttpException({ errors }, HttpStatus.BAD_REQUEST);
       }
     });
+
+    // Check if potential phonenumbers are correct and clean them
+    const newFspAttributes = {};
+    for (const [key, value] of Object.entries(newFspAttributesRaw)) {
+      newFspAttributes[key] = await this.cleanCustomDataIfPhoneNr(key, value);
+    }
 
     // Get registration by referenceId
     const registration = await this.registrationRepository.findOne({
@@ -864,14 +871,21 @@ export class RegistrationsService {
     const updatedRegistration = await this.addFsp(referenceId, newFsp.id);
 
     // Add new attributes
+
     for (const attribute of updatedRegistration.fsp.attributes) {
       await this.addCustomData(
         referenceId,
         attribute.name,
         newFspAttributes[attribute.name],
       );
-    }
 
+      updatedRegistration.customData[
+        attribute.name
+      ] = await this.cleanCustomDataIfPhoneNr(
+        attribute.name,
+        newFspAttributes[attribute.name],
+      );
+    }
     return await this.registrationRepository.save(updatedRegistration);
   }
 
