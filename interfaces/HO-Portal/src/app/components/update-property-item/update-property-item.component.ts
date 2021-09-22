@@ -36,12 +36,17 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   public propertyModel: any | NgModel;
   public fspAttributes: any[] = [];
+  public startingAttributes: any[] = [];
+  public attributeDifference: any[] = [];
 
   constructor() {}
 
   ngOnInit() {
     this.propertyModel = this.value;
-    if (this.type == 'fsp') this.getFspAttributes(this.value);
+    if (this.type == 'fsp') {
+      this.getFspAttributes(this.value);
+      this.startingAttributes = [...this.fspAttributes];
+    }
   }
 
   public doUpdate() {
@@ -58,5 +63,9 @@ export class UpdatePropertyItemComponent implements OnInit {
     );
 
     if (selectedFsp) this.fspAttributes = selectedFsp.attributes;
+
+    this.attributeDifference = this.startingAttributes.filter(
+      (attr) => !this.fspAttributes.includes(attr),
+    );
   }
 }

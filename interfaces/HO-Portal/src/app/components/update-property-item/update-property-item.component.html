@@ -50,6 +50,14 @@
               {{ fspItem.fsp }}
           </ion-select-option>
         </ion-select>
+        <ion-item *ngIf="attributeDifference.length > 0">
+          <ion-text color="warning">
+            <p>Selecting this FSP will delete the following attributes related to the old FSP:</p>
+            <ul>
+              <li *ngFor="let attr of attributeDifference">{{ attr.name }}</li>
+            </ul>
+            </ion-text>
+        </ion-item>
 
         <ion-item *ngFor="let attribute of fspAttributes">
           <ion-label position="stacked">
