@@ -8,7 +8,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, In } from 'typeorm';
+import { Repository, getRepository, In, MoreThan } from 'typeorm';
 import { TwilioMessageEntity, NotificationType } from '../twilio.entity';
 import { twilioClient } from '../twilio.client';
 import { ProgramEntity } from '../../programs/program.entity';
@@ -25,6 +25,7 @@ import {
   TwilioStatus,
 } from '../twilio.dto';
 import { IntersolvePayoutStatus } from '../../fsp/api/enum/intersolve-payout-status.enum';
+import { TransactionEntity } from '../../programs/transactions.entity';
 
 @Injectable()
 export class WhatsappService {
@@ -36,6 +37,8 @@ export class WhatsappService {
   private readonly twilioMessageRepository: Repository<TwilioMessageEntity>;
   @InjectRepository(RegistrationEntity)
   private readonly registrationRepository: Repository<RegistrationEntity>;
+  @InjectRepository(TransactionEntity)
+  public transactionRepository: Repository<TransactionEntity>;
 
   private readonly programId = 1;
   private readonly fallbackLanguage = 'en';
@@ -208,10 +211,20 @@ export class WhatsappService {
       where: { id: In(registrationIds) },
       relations: ['images', 'images.barcode'],
     });
+
+    // Don't send vouchers of more than 3 installments ago
+    const lastTransaction = await this.transactionRepository
+      .createQueryBuilder('transaction')
+      .select('MAX(transaction.installment)', 'max')
+      .getRawOne();
+    const minimunInstallment = lastTransaction ? lastTransaction.max - 3 : 0;
+
     return registrationWithVouchers
       .map(registration => {
         registration.images = registration.images.filter(
-          image => !image.barcode.send,
+          image =>
+            !image.barcode.send &&
+            image.barcode.installment > minimunInstallment,
         );
         return registration;
       })
