@@ -28,10 +28,14 @@ export class UpdatePropertyItemComponent implements OnInit {
   @Input()
   public inProgress: boolean;
 
+  @Input()
+  public fspList: any[];
+
   @Output()
   updated: EventEmitter<string> = new EventEmitter<string>();
 
   public propertyModel: any | NgModel;
+  public fspAttributes: any[] = [];
 
   constructor() {}
 
@@ -41,5 +45,10 @@ export class UpdatePropertyItemComponent implements OnInit {
 
   public doUpdate() {
     this.updated.emit(this.propertyModel);
+  }
+
+  public getFspAttributes({ detail }) {
+    const selectedFsp = this.fspList.find(({ fsp }) => fsp == detail.value);
+    this.fspAttributes = selectedFsp.attributes;
   }
 }

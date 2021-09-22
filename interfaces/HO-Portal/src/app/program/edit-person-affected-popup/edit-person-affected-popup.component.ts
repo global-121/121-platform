@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
+import { Fsp } from 'src/app/models/fsp.model';
 import { Person } from 'src/app/models/person.model';
 import { ProgramsServiceApiService } from 'src/app/services/programs-service-api.service';
 import { PubSubEvent, PubSubService } from 'src/app/services/pub-sub.service';
@@ -14,10 +15,16 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   @Input()
   public person: Person;
 
+  @Input()
+  public programId: number;
+
   public inProgress: any = {};
 
   public noteModel: string;
   public noteLastUpdate: string;
+
+  public fspList: any[];
+  public personFsp: Fsp;
 
   constructor(
     private modalController: ModalController,
@@ -29,6 +36,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.getNote();
+    this.getFspList();
   }
 
   public async updatePaAttribute(
@@ -135,5 +143,18 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public closeModal() {
     this.modalController.dismiss();
+  }
+
+  private getFspList() {
+    this.fspList = [];
+
+    this.programsService.getProgramById(this.programId).then((program) => {
+      program.financialServiceProviders.forEach((fsp) => {
+        this.programsService.getFspById(fsp.id).then((fspItem) => {
+          if (fspItem.fsp === this.person.fsp) this.personFsp = fspItem;
+          this.fspList.push(fspItem);
+        });
+      });
+    });
   }
 }
