@@ -396,7 +396,10 @@ export class RegistrationsController {
   }
 
   @Roles(UserRole.FieldValidation)
-  @ApiOperation({ title: 'Update chosen fsp and attributes' })
+  @ApiOperation({
+    title:
+      'Update chosen fsp and attributes. This will delete any custom data field related to the old FSP!',
+  })
   @ApiResponse({
     status: 200,
     description: 'Updated fsp and attributes',
