@@ -6,7 +6,6 @@ import { IonicModule } from '@ionic/angular';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgxPopperModule } from 'ngx-popper';
 import { HeaderComponent } from '../components/header/header.component';
 import { UpdatePropertyItemComponent } from '../components/update-property-item/update-property-item.component';
 import { UserStateComponent } from '../components/user-state/user-state.component';
@@ -51,7 +50,6 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     TranslateModule.forChild(),
     NgxChartsModule,
     NgxDatatableModule,
-    NgxPopperModule.forRoot(),
   ],
   exports: [
     BulkImportComponent,
@@ -63,7 +61,6 @@ import { TooltipComponent } from './tooltip/tooltip.component';
     InputPromptComponent,
     NgxChartsModule,
     NgxDatatableModule,
-    NgxPopperModule,
     PasswordToggleInputComponent,
     PhaseNavigationComponent,
     PhaseNextComponent,
