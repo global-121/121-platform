@@ -46,10 +46,12 @@
     "@microsoft/applicationinsights-web": "^2.7.0",
     "@ngx-translate/core": "^12.1.2",
     "@ngx-translate/http-loader": "^4.0.0",
+    "@popperjs/core": "~2.4.4",
     "@swimlane/ngx-charts": "^13.0.4",
     "@swimlane/ngx-datatable": "^16.1.1",
     "core-js": "2.6.8",
     "file-saver": "^2.0.2",
+    "ngx-popperjs": "^8.0.10",
     "rxjs": "^6.6.2",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"

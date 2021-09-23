@@ -16,7 +16,7 @@ export class TooltipComponent implements OnInit {
   @Input()
   public value: string;
 
-  @ViewChild('button', { static: true })
+  @ViewChild('button', { static: false })
   private button: any;
 
   constructor() {}

@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgxPopperModule } from 'ngx-popper';
+import { NgxPopperjsModule } from 'ngx-popperjs';
 import { TooltipComponent } from './tooltip.component';
 
 describe('TooltipComponent', () => {
@@ -10,7 +10,7 @@ describe('TooltipComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [TooltipComponent],
-      imports: [NgxPopperModule.forRoot()],
+      imports: [NgxPopperjsModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));

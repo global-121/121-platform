@@ -18,11 +18,11 @@ Next to the 'generic' dependencies/libraries/components used by all interfaces, 
   \- Documentation (latest only!): <https://swimlane.gitbook.io/ngx-datatable/>
   \- GitHub Docs: <https://github.com/swimlane/ngx-datatable/tree/16.1.1/docs>
 
-- [`ngx-popper`](https://www.npmjs.com/package/ngx-popper)  
+- [`ngx-popperjs` v8](https://www.npmjs.com/package/ngx-popperjs/v/8.0.10)  
   A component to add explanations to buttons, headers, labels, etc.
 
-  - Documentation: <https://github.com/MrFrankel/ngx-popper/#readme>
-  - `popper.js` Documentation: <https://popper.js.org/docs/v1/>
+  - Documentation: <https://github.com/tonysamperi/ngx-popperjs/tree/8.0.10#ngx-popperjs>
+  - `popper.js` Documentation: <https://popper.js.org/docs/v2/>
 
 - [`@swimlane/ngx-charts` v10](https://www.npmjs.com/package/@swimlane/ngx-charts/v/10.1.0)  
   A component to add explanations to buttons, headers, labels, etc.
