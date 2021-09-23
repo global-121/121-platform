@@ -11,17 +11,15 @@
   [popper]="value"
   popperTrigger="click"
   [popperDelay]="100"
-  [popperTimeoutAfterShow]="30000"
-  [popperCloseOnClickOutside]="true"
+  [popperTimeoutAfterShow]="300000"
+  [popperHideOnClickOutside]="true"
   popperPlacement="top"
   popperAppendTo="body"
   popperBoundaries="body"
   [popperPreventOverflow]="true"
   [popperPositionFixed]="true"
   popperApplyClass="tooltip--container"
-  [popperModifiers]="{
-    'preventOverflow.padding': 16
-  }"
+  popperApplyArrowClass="tooltip--arrow"
 >
   <ion-icon
     name="information-circle-outline"
