@@ -1,5 +1,6 @@
 import { formatCurrency } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ActionType } from 'src/app/models/actions.model';
@@ -38,7 +39,14 @@ export class MakePaymentComponent implements OnInit {
     private pastPaymentsService: PastPaymentsService,
     private translate: TranslateService,
     private alertController: AlertController,
-  ) {}
+    private router: Router,
+  ) {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.refresh();
+      }
+    });
+  }
 
   async ngOnInit() {
     if (!this.program) {
