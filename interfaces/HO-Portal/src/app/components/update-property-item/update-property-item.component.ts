@@ -28,44 +28,18 @@ export class UpdatePropertyItemComponent implements OnInit {
   @Input()
   public inProgress: boolean;
 
-  @Input()
-  public fspList: any[];
-
   @Output()
   updated: EventEmitter<string> = new EventEmitter<string>();
 
   public propertyModel: any | NgModel;
-  public fspAttributes: any[] = [];
-  public startingAttributes: any[] = [];
-  public attributeDifference: any[] = [];
 
   constructor() {}
 
   ngOnInit() {
     this.propertyModel = this.value;
-    if (this.type == 'fsp') {
-      this.getFspAttributes(this.value);
-      this.startingAttributes = [...this.fspAttributes];
-    }
   }
 
   public doUpdate() {
     this.updated.emit(this.propertyModel);
-  }
-
-  onFspChange({ detail }) {
-    this.getFspAttributes(detail.value);
-  }
-
-  public getFspAttributes(fspString: string) {
-    const selectedFsp = this.fspList.find(
-      (fspItem) => fspItem.fsp == fspString,
-    );
-
-    if (selectedFsp) this.fspAttributes = selectedFsp.attributes;
-
-    this.attributeDifference = this.startingAttributes.filter(
-      (attr) => !this.fspAttributes.includes(attr),
-    );
   }
 }

@@ -1,4 +1,3 @@
-import { AnswerType } from './q-and-a.models';
 import { TranslatableString } from './translatable-string.model';
 
 export class Fsp {
@@ -8,6 +7,15 @@ export class Fsp {
   attributes?: FspAttribute[];
 }
 
+export enum AnswerType {
+  // Translate the types used in the API to internal, proper types:
+  Number = 'numeric',
+  Text = 'text',
+  Date = 'date',
+  Enum = 'dropdown',
+  phoneNumber = 'tel',
+  email = 'email',
+}
 export class FspAttribute {
   id: number;
   name: string;

@@ -143,9 +143,9 @@
         "export-button": {
           "label": "Export as CSV"
         },
-        "totals":{
+        "totals": {
           "total-helped-to-date": "Total number of individual PA helped to date",
-          "tooltip":"PA's that received one or more payments"
+          "tooltip": "PA's that received one or more payments"
         },
         "over-time": {
           "pa": {
@@ -304,7 +304,8 @@
             "whatsappPhoneNumber": {
               "label": "WhatsApp number",
               "explanation": "This value is required for a 'WhatsApp-enabled' FSP only."
-            }
+            },
+            "fspChangeWarning": "Selecting this FSP will delete the following attributes related to the old FSP:"
           },
           "note": {
             "section-title": "Notes about Person Affected",

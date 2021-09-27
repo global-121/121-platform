@@ -23,7 +23,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public noteModel: string;
   public noteLastUpdate: string;
 
-  public fspList: any[];
+  public fspList: Fsp[];
   public programFspLength: number = 0;
   public personFsp: Fsp;
 

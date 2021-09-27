@@ -34,44 +34,6 @@
           pattern="[0-9]*"
         ></ion-input>
       </ng-container>
-      <ng-container *ngSwitchCase="'fsp'">
-        <ion-select
-          ngDefaultControl
-          name="propertyInput"
-          [(ngModel)]="propertyModel"
-          [value]="value"
-          [placeholder]="placeholder"
-          interface="popover"
-          (ionChange)="onFspChange($event)"
-        >
-          <ion-select-option
-            *ngFor="let fspItem of fspList"
-            value="{{ fspItem.fsp }}">
-              {{ fspItem.fsp }}
-          </ion-select-option>
-        </ion-select>
-        <ion-item *ngIf="attributeDifference.length > 0">
-          <ion-text color="warning">
-            <p>Selecting this FSP will delete the following attributes related to the old FSP:</p>
-            <ul>
-              <li *ngFor="let attr of attributeDifference">{{ attr.name }}</li>
-            </ul>
-            </ion-text>
-        </ion-item>
-
-        <ion-item *ngFor="let attribute of fspAttributes">
-          <ion-label position="stacked">
-            {{ attribute.name }}
-          </ion-label>
-          <ion-input
-            ngDefaultControl
-            [name]="attribute.name"
-            [value]="attribute.value"
-            [placeholder]="attribute.placeholder.en"
-          ></ion-input>
-        </ion-item>
-
-      </ng-container>
       <ng-container *ngSwitchDefault>
         <ion-input
           ngDefaultControl
