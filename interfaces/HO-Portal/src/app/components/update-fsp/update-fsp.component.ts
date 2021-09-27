@@ -41,10 +41,10 @@ export class UpdateFspComponent implements OnInit {
   public startingAttributes: any[] = [];
   public selectedFspAttributes: any[] = [];
   public attributeDifference: any[] = [];
-  public startingFspName: string = '';
-  public selectedFspName: string = '';
+  public startingFspName = '';
+  public selectedFspName = '';
   public attributesToSave: {} = {};
-  public enableUpdateBtn: boolean = true;
+  public enableUpdateBtn = true;
 
   ngOnInit() {
     this.propertyModel = this.value;
@@ -66,11 +66,12 @@ export class UpdateFspComponent implements OnInit {
     this.selectedFspName = fspString;
     if (this.fspList) {
       const selectedFsp = this.fspList.find(
-        (fspItem) => fspItem.fsp == this.selectedFspName,
+        (fspItem) => fspItem.fsp === this.selectedFspName,
       );
 
-      if (selectedFsp) this.selectedFspAttributes = selectedFsp.attributes;
-      console.log('selectedFsp: ', selectedFsp);
+      if (selectedFsp) {
+        this.selectedFspAttributes = selectedFsp.attributes;
+      }
 
       this.attributeDifference = this.startingAttributes.filter(
         (attr) => !this.selectedFspAttributes.includes(attr),
