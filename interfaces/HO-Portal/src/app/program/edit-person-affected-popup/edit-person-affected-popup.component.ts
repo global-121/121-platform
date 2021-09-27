@@ -22,6 +22,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public noteModel: string;
   public noteLastUpdate: string;
+  public messageHistory: any;
 
   public fspList: Fsp[] = [];
   public programFspLength = 0;
@@ -37,7 +38,11 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.getNote();
+<<<<<<< HEAD
     this.getFspList();
+=======
+    this.getMessageHistory();
+>>>>>>> AB#9526 Implement design
   }
 
   public async updatePaAttribute(
@@ -93,6 +98,13 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     this.noteModel = note.note;
     this.noteLastUpdate = note.noteUpdated;
+  }
+
+  private async getMessageHistory() {
+    const msghistory = await this.programsService.retrieveMsgHistory(
+      this.person.referenceId,
+    );
+    this.messageHistory = msghistory;
   }
 
   public async saveNote() {

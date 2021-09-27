@@ -106,4 +106,25 @@
       </ion-note>
     </ion-row>
   </section>
+  <section *ngIf="messageHistory">
+    <h4> {{ 'page.program.program-people-affected.edit-person-affected-popup.messageHistory.section-title'|translate }}</h4>
+
+    <ion-list>
+      <ion-item
+        *ngFor="let message of messageHistory"
+        >
+        <span class="ion-margin-end">
+          {{ message.timestamp|date:"iso-format?" }}
+        </span>
+        <span class="ion-margin-end">
+          <strong>{{ message.type }}</strong>
+        </span>
+        <span>
+          {{ message.body.substring(0, 20).trim() }}&hellip;
+        </span>
+        <ion-icon name="text" slot="end" size="small"></ion-icon>
+      </ion-item>
+    </ion-list>
+  </section>
+
 </ion-content>
