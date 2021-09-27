@@ -18,6 +18,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   public noteModel: string;
   public noteLastUpdate: string;
+  public messageHistory: any;
 
   constructor(
     private modalController: ModalController,
@@ -29,6 +30,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
   async ngOnInit() {
     this.getNote();
+    this.getMessageHistory();
   }
 
   public async updatePaAttribute(
@@ -84,6 +86,13 @@ export class EditPersonAffectedPopupComponent implements OnInit {
 
     this.noteModel = note.note;
     this.noteLastUpdate = note.noteUpdated;
+  }
+
+  private async getMessageHistory() {
+    const msghistory = await this.programsService.retrieveMsgHistory(
+      this.person.referenceId,
+    );
+    this.messageHistory = msghistory;
   }
 
   public async saveNote() {
