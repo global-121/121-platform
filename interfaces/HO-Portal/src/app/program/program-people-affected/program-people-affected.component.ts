@@ -798,7 +798,7 @@ export class ProgramPeopleAffectedComponent implements OnInit {
       component: EditPersonAffectedPopupComponent,
       componentProps: {
         person,
-        programId
+        programId,
       },
     });
 
