@@ -21,7 +21,11 @@ Feature: Edit information on Person Affected
     When the user click the "edit icon"
     Then a popup opens
     And in the title the ID-number of the Person Affected is mentioned
-    And an input-field for the "paymentAmountMultiplier" is shown
+    And an input-field for the "paymentAmountMultiplier", "partnerOrganization" and "phoneNumber" is shown
+    And an input-field for each FSP-attribute (such as "whatsappPhoneNumber") is shown
+    And all input-fields have an accompanying "update" button which is enabled
+    And the pop-up shows a dropdown-list for the current FSP is shown
+    And it has an accompanying "update" button which is disabled
     And the popup has a "Notes" section
     And there is an explanation, including PII-warning
     And there is a free text "note" field
@@ -68,3 +72,26 @@ Feature: Edit information on Person Affected
     Then the update-button changes into a progress indicator
     And a feedback message with the specific requirements of the value is shown
     And the progress indicator changes into the update-button again
+
+  Scenario: Update other attributes
+    Similar to updating 'paymentAmountMultiplier', possibly with other specific validation rules. TBC.
+    
+  Scenario: Update chosen FSP
+    Given a logged-in user with "personal data" role
+    Given the user has opened the popup to edit information
+    Given an input-field for the current "FSP" is shown
+    When the user changes the chosen FSP
+    Then a message appears that attributes relating to the current FSP will be deleted and it lists these attributes
+    And for each attribute of the new FSP a new input field appears
+    
+    When the user has filled in values for each new input field
+    Then the 'update' button of the chosen 'FSP' gets enabled
+
+    When the user clicks the 'update' button
+    Then the request is made
+    And response is given whether it was successfull or not (if not, likely due to validation errors on the input-fields)
+
+    When the user closes and re-opens the pop-update
+    Then the input-fields for attributes of the old FSP are gone
+    And input-fields for attributes of the new FSP are shown
+    And the new FSP shows as the current selected value of the dropdown
