@@ -212,19 +212,19 @@ export class WhatsappService {
       relations: ['images', 'images.barcode'],
     });
 
-    // Don't send vouchers of more than 3 installments ago
-    const lastTransaction = await this.transactionRepository
+    // Don't send more then 3 vouchers, so no vouchers of more than 2 installments ago
+    const lastInstallment = await this.transactionRepository
       .createQueryBuilder('transaction')
       .select('MAX(transaction.installment)', 'max')
       .getRawOne();
-    const minimunInstallment = lastTransaction ? lastTransaction.max - 3 : 0;
+    const minimumInstallment = lastInstallment ? lastInstallment.max - 2 : 0;
 
     return registrationWithVouchers
       .map(registration => {
         registration.images = registration.images.filter(
           image =>
             !image.barcode.send &&
-            image.barcode.installment > minimunInstallment,
+            image.barcode.installment >= minimumInstallment,
         );
         return registration;
       })
