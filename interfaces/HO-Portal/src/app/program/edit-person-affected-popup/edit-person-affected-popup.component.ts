@@ -18,7 +18,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   public noteModel: string;
   public noteLastUpdate: string;
   public messageHistory: any;
-  public historySize: Number = 5;
+  public historySize = 5;
 
   constructor(
     private modalController: ModalController,
