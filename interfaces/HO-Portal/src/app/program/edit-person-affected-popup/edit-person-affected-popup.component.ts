@@ -95,7 +95,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     );
     this.messageHistory = msghistory;
   }
-  private async loadMore(historyLength) {
+  public async loadMore(historyLength) {
     this.historySize = historyLength;
   }
 
