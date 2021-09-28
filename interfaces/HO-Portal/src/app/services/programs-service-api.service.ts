@@ -486,4 +486,18 @@ export class ProgramsServiceApiService {
       .get(environment.url_121_service_api, '/fsp/' + fspId)
       .toPromise();
   }
+
+  updateChosenFsp(
+    referenceId: string,
+    newFspName: string,
+    newFspAttributes?: object,
+  ): Promise<Fsp> {
+    return this.apiService
+      .post(
+        environment.url_121_service_api,
+        '/registrations/update-chosen-fsp',
+        { referenceId, newFspName, newFspAttributes },
+      )
+      .toPromise();
+  }
 }
