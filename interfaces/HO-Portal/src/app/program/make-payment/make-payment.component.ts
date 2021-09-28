@@ -43,7 +43,7 @@ export class MakePaymentComponent implements OnInit {
   ) {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.refresh();
+        this.ngOnInit();
       }
     });
   }
