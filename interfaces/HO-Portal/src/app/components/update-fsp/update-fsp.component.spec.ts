@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +20,7 @@ describe('UpdateFspComponent', () => {
         ProgramsServiceApiService,
         AlertController,
         TranslateService,
-        HttpClient,
+        HttpClientModule,
       ],
     }).compileComponents();
   }));
