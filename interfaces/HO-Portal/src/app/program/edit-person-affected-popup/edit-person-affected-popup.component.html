@@ -107,7 +107,7 @@
         *ngFor="let message of messageHistory | slice:0:historySize; let i=index"
         >
         <span class="ion-margin-end">
-          {{ message.timestamp|date:"yyyy-MM-dd, HH:mm" }}
+          {{ message.created|date:"yyyy-MM-dd, HH:mm" }}
         </span>
         <span class="ion-margin-end">
           <strong>{{ message.type }}</strong>
