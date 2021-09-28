@@ -149,16 +149,18 @@ export class EditPersonAffectedPopupComponent implements OnInit {
   private getFspList() {
     this.fspList = [];
 
-    this.programsService.getProgramById(this.programId).then((program) => {
-      this.programFspLength = program.financialServiceProviders.length;
-      program.financialServiceProviders.forEach((fsp) => {
-        this.programsService.getFspById(fsp.id).then((fspItem) => {
-          if (fspItem.fsp === this.person.fsp) {
-            this.personFsp = fspItem;
-          }
-          this.fspList.push(fspItem);
+    if (this.programId) {
+      this.programsService.getProgramById(this.programId).then((program) => {
+        this.programFspLength = program.financialServiceProviders.length;
+        program.financialServiceProviders.forEach((fsp) => {
+          this.programsService.getFspById(fsp.id).then((fspItem) => {
+            if (fspItem.fsp === this.person.fsp) {
+              this.personFsp = fspItem;
+            }
+            this.fspList.push(fspItem);
+          });
         });
       });
-    });
+    }
   }
 }
