@@ -154,7 +154,7 @@ export class EditPersonAffectedPopupComponent implements OnInit {
     this.fspList = [];
 
     this.programsService.getProgramById(this.programId).then((program) => {
-      if (!program) {
+      if (!program || !program.financialServiceProviders) {
         return;
       }
 
